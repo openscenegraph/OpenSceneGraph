@@ -548,12 +548,14 @@ void CullVisitor::apply(osg::OccluderNode& node)
 {
     // need to check if occlusion node is in the occluder
     // list, if so disable the appropriate ShadowOccluderVolume
-    disableOccluder(_nodePath);
+    disableAndPushOccludersCurrentMask(_nodePath);
     
-    // std::cout<<"CullVisitor:: We are in an Occlusion node"<<&node<<std::endl;
 
-
-    if (isCulled(node)) return;
+    if (isCulled(node))
+    {
+        popOccludersCurrentMask(_nodePath);
+        return;
+    }
 
     // push the culling mode.
     pushCurrentMask();
@@ -571,6 +573,9 @@ void CullVisitor::apply(osg::OccluderNode& node)
 
     // pop the culling mode.
     popCurrentMask();
+
+    // pop the current mask for the disabled occluder
+    popOccludersCurrentMask(_nodePath);
 }
 
 

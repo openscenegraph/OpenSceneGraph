@@ -85,9 +85,14 @@ class SG_EXPORT CullStack
             return pixelSize(bs.center(),bs.radius());
         }
 
-        inline void disableOccluder(NodePath& nodePath)
+        inline void disableAndPushOccludersCurrentMask(NodePath& nodePath)
         {
-            _modelviewCullingStack.back()->disableOccluder(nodePath);
+            _modelviewCullingStack.back()->disableAndPushOccludersCurrentMask(nodePath);
+        }
+
+        inline void popOccludersCurrentMask(NodePath& nodePath)
+        {
+            _modelviewCullingStack.back()->popOccludersCurrentMask(nodePath);
         }
 
         inline bool isCulled(const std::vector<Vec3>& vertices)

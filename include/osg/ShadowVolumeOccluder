@@ -103,6 +103,7 @@ typedef std::vector<ShadowVolumeOccluder> ShadowVolumeOccluderList;
 
 inline void ShadowVolumeOccluder::disableResultMasks()
 {
+    //std::cout<<"ShadowVolumeOccluder::disableResultMasks() - _occluderVolume.getMaskStack().size()="<<_occluderVolume.getMaskStack().size()<<"  "<<_occluderVolume.getCurrentMask()<<std::endl;
     _occluderVolume.setResultMask(0);
     for(HoleList::iterator itr=_holeList.begin();
         itr!=_holeList.end();
@@ -114,6 +115,7 @@ inline void ShadowVolumeOccluder::disableResultMasks()
 
 inline void ShadowVolumeOccluder::pushCurrentMask()
 {
+    //std::cout<<"ShadowVolumeOccluder::pushCurrentMasks() - _occluderVolume.getMaskStack().size()="<<_occluderVolume.getMaskStack().size()<<"  "<<_occluderVolume.getCurrentMask()<<std::endl;
     _occluderVolume.pushCurrentMask();
     if (!_holeList.empty())
     {
@@ -138,6 +140,7 @@ inline void ShadowVolumeOccluder::popCurrentMask()
             itr->popCurrentMask();
         }
     }
+    //std::cout<<"ShadowVolumeOccluder::popCurrentMasks() - _occluderVolume.getMaskStack().size()="<<_occluderVolume.getMaskStack().size()<<"  "<<_occluderVolume.getCurrentMask()<<std::endl;
 }
 
 }	// end of namespace

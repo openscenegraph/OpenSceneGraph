@@ -77,7 +77,6 @@ class SG_EXPORT CullingSet : public Referenced
         /** Compute the pixel of an bounding sphere.*/
         float pixelSize(const BoundingSphere& bs) const { return bs.radius()/(bs.center()*_pixelSizeVector); }
 
-        void disableOccluder(NodePath& nodePath);
 
         inline bool isCulled(const std::vector<Vec3>& vertices)
         {
@@ -197,6 +196,9 @@ class SG_EXPORT CullingSet : public Referenced
             }
         }
         
+        void disableAndPushOccludersCurrentMask(NodePath& nodePath);
+
+        void popOccludersCurrentMask(NodePath& nodePath);
         
     protected:
     

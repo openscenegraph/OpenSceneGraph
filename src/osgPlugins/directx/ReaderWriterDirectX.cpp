@@ -62,7 +62,8 @@ public:
                                 const osgDB::ReaderWriter::Options* options);
 
 private:
-    osg::Geode* convertFromDX(DX::Object& obj, bool flipTexture, float creaseAngle);
+    osg::Geode* convertFromDX(DX::Object& obj, bool flipTexture, float creaseAngle,
+                                               const osgDB::ReaderWriter::Options* options);
 };
 
 // Register with Registry to instantiate the above reader/writer.
@@ -81,9 +82,15 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
 
     osg::notify(osg::INFO) << "ReaderWriterDirectX::readNode(" << fileName.c_str() << ")\n";
 
+
+
     // Load DirectX mesh
     DX::Object obj;
     if (obj.load(fileName.c_str())) {
+
+        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
         // Options?
         bool flipTexture = true;
@@ -98,7 +105,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
         }
 
         // Convert to osg::Geode
-        osg::Geode* geode = convertFromDX(obj, flipTexture, creaseAngle);
+        osg::Geode* geode = convertFromDX(obj, flipTexture, creaseAngle, local_opt.get());
         if (!geode)
             return ReadResult::FILE_NOT_HANDLED;
 
@@ -110,7 +117,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
 
 // Convert DirectX mesh to osg::Geode
 osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
-                                               bool flipTexture, float creaseAngle)
+                                               bool flipTexture, float creaseAngle,
+                                               const osgDB::ReaderWriter::Options* options)
 {
     // Fetch mesh
     const DX::Mesh* mesh = obj.getMesh();
@@ -198,7 +206,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
             // Share image/texture pairs
             osg::Texture2D* texture = texForImage[mtl.texture[j]];
             if (!texture) {
-                osg::Image* image = osgDB::readImageFile(mtl.texture[j]);
+                osg::Image* image = osgDB::readImageFile(mtl.texture[j],options);
                 if (!image)
                     continue;
 

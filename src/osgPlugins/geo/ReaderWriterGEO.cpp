@@ -411,6 +411,10 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
             if (fin.is_open() )
             { // read the input file.
+                // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+                osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+                local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
                 typedef std::vector<osg::Node*> NodeList;
                 NodeList nodeList;
                 osg::Material *mt=new osg::Material;
@@ -440,9 +444,9 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
                 output(fout,sorted);
                 fout.close();
 #endif /**/
-                makeHeader(*(sorted.begin()));
+                makeHeader(*(sorted.begin()), local_opt.get());
 
-                nodeList=makeosg(sorted); // make a list of osg nodes
+                nodeList=makeosg(sorted, local_opt.get()); // make a list of osg nodes
                 geotxlist.clear();
                 geomatlist.clear(); 
                 txlist.clear();
@@ -1392,7 +1396,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             return clp;
         }
-        geoHeader *makeHeader(const georecord *gr) {
+        geoHeader *makeHeader(const georecord *gr, const Options* options) {
             if (!theHeader.valid()) theHeader=new geoHeaderGeo();
             // the header contains variables as well as a transform for the XYZup cases
             const geoField *gfd;
@@ -1430,7 +1434,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             std::vector<georecord *>::const_iterator itr;
             for (itr=geotxlist.begin(); itr<geotxlist.end(); itr++) {
-                makeTexture(*itr);
+                makeTexture(*itr, options);
             }
             std::vector< georecord *>bhv=gr->getBehaviour();
             if (!bhv.empty()) { // then add internal, user, extern variables
@@ -1455,13 +1459,13 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             return theHeader.get();
         }
-        void makeTexture(const georecord *gr) {
+        void makeTexture(const georecord *gr, const Options* options) {
             // scans the fields of this record and puts a new texture & environment into 'pool' stor
             const geoField *gfd=gr->getField(GEO_DB_TEX_FILE_NAME);
             const char *name = gfd->getChar();
             if (name) {
                 Texture2D *tx=new Texture2D;
-                Image *ctx=osgDB::readImageFile(name);
+                Image *ctx=osgDB::readImageFile(name,options);
                 if (ctx) {
                     ctx->setFileName(name);
                     tx->setImage(ctx);
@@ -1693,7 +1697,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             return mtr;
         }
-        std::vector<Node *> makeosg(const std::vector<georecord *> gr) {
+        std::vector<Node *> makeosg(const std::vector<georecord *> gr, const Options* options) {
             // recursive traversal of records and extract osg::Nodes equivalent
             Group *geodeholder=NULL;
             std::vector<Node *> nodelist;
@@ -1767,7 +1771,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
                             }
                             break; */
                         case DB_DSK_TEXTURE:
-                            makeTexture(gr);
+                            makeTexture(gr, options);
                             break;
                         case DB_DSK_BASE_GROUP: // start of a group plus extra features
                             holder=makeClipRegion(gr);
@@ -1900,7 +1904,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
                         }
                         if (holder) nodelist.push_back(holder);
 
-                        std::vector<Node *> child=makeosg((*itr)->getchildren());
+                        std::vector<Node *> child=makeosg((*itr)->getchildren(), options);
                         GeoClipRegion *clip=dynamic_cast<GeoClipRegion *>(holder);
                         for (std::vector<Node *>::iterator itr=child.begin();
                             itr!=child.end();

@@ -459,9 +459,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     if (fin)
     {
     
+        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+
         obj::Model model;
         model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
-        model.readOBJ(fin, options);
+        model.readOBJ(fin, local_opt.get());
         
         osg::Node* node = convertModelToSceneGraph(model);
         return node;

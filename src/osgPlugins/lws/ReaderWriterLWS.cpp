@@ -39,10 +39,14 @@ public:
         std::string fileName = osgDB::findDataFile(file, options);
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-        lwosg::SceneLoader::Options conv_options = parse_options(options);
+        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+        lwosg::SceneLoader::Options conv_options = parse_options(local_opt.get());
 
         lwosg::SceneLoader scene_loader(conv_options);
-        osg::ref_ptr<osg::Node> node = scene_loader.load(fileName, options);
+        osg::ref_ptr<osg::Node> node = scene_loader.load(fileName, local_opt.get());
         if (node.valid()) {
             return node.take();
         }

@@ -85,7 +85,11 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             // Anders Backmann - correct return if path not found
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            grp=ac_load_ac3d(fileName.c_str());
+            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+            local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+            grp=ac_load_ac3d(fileName.c_str(), local_opt.get());
             return grp;
         };
         virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* /*options*/)
@@ -400,7 +404,7 @@ protate(osg::Vec3 p, float m[9])
     p[2]=m[6]*t[0]+m[7]*t[1]+m[8]*t[3];
 }
 
-osg::Group *ac_load_object(std::istream &f,const ACObject *parent)
+osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::ReaderWriter::Options* options)
 {
     // most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
     char t[20];
@@ -507,7 +511,7 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent)
                     ctmp++;
                     if (*ctmp == '"') *ctmp='\0'; // latest ac3d seems toa dd more quotes than older versions.
                 }
-                osg::Image *ctx= osgDB::readImageFile(tokv[1]);
+                osg::Image *ctx= osgDB::readImageFile(tokv[1], options);
                 if (ctx)
                 { // image coukd be read
                     ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
@@ -781,7 +785,7 @@ osg::Group *ac_load_object(std::istream &f,const ACObject *parent)
                 }
                 for (n = 0; n < num; n++)
                 {
-                    osg::Group *k = ac_load_object(f,&ob); //, ob);
+                    osg::Group *k = ac_load_object(f,&ob, options); 
                     if (k == NULL)
                     {
                         printf("error reading expected child object %d of %d at line: %d\n", n+1, num, line);
@@ -854,7 +858,7 @@ int n;
 }*/
 
 
-osg::Group *ac_load_ac3d(const char *fname)
+osg::Group *ac_load_ac3d(const char *fname,const osgDB::ReaderWriter::Options* options)
 {
     osg::Group *ret = NULL;
     if (strlen(fname)>0) {
@@ -880,7 +884,7 @@ osg::Group *ac_load_ac3d(const char *fname)
         startmatindex = palette.size(); //num_palette;
 
 
-        ret = ac_load_object(fin,NULL); //, NULL);
+        ret = ac_load_object(fin,NULL, options); 
 
         
         fin.close();

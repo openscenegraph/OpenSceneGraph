@@ -31,6 +31,7 @@ CXXFILES =\
         Point.cpp\
         PolygonMode.cpp\
         PolygonOffset.cpp\
+        Projection.cpp\
         ReaderWriterOSG.cpp\
         ShadeModel.cpp\
         StateSet.cpp\

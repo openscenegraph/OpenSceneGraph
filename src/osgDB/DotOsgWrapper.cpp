@@ -9,6 +9,8 @@ DotOsgWrapper::DotOsgWrapper(osg::Object* proto,
               WriteFunc writeFunc,
               ReadWriteMode readWriteMode)
 {
+
+
     _prototype = proto;
     _name = name;
     

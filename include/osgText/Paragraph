@@ -36,7 +36,7 @@ class OSGTEXT_EXPORT Paragraph : public osg::Geode
         const osg::Vec3& getPosition() const { return _position; }
         
         void setAlignment(int alignment);
-        int getAlignment() { return _alignment; }
+        int getAlignment() const { return _alignment; }
 
         float getHeight() const;
         

@@ -370,10 +370,12 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     switch(_lightingMode)
     {
     case(HEADLIGHT):
-        renderStage->addPositionedAttribute(NULL,_light.get());
+        if (_light.valid()) renderStage->addPositionedAttribute(NULL,_light.get());
+        else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
         break;
     case(SKY_LIGHT):
-        renderStage->addPositionedAttribute(modelview,_light.get());
+        if (_light.valid()) renderStage->addPositionedAttribute(modelview,_light.get());
+        else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
         break;
     case(NO_SCENEVIEW_LIGHT):
         break;

@@ -30,13 +30,13 @@ enum NotifySeverity {
 };
 
 /** global notify level. */
-SG_EXPORT extern NotifySeverity g_NotifyLevel;
+//SG_EXPORT extern NotifySeverity g_NotifyLevel;
 
 /** global notify nul stream. added for Mac OSX */
-SG_EXPORT extern std::auto_ptr<std::ofstream> g_NotifyNulStream;
+//SG_EXPORT extern std::auto_ptr<std::ofstream> g_NotifyNulStream;
 
 /** global notify nul stream. added for Mac OSX */
-SG_EXPORT extern bool g_NotifyInit;
+//SG_EXPORT extern bool g_NotifyInit;
 
 /** set the notify level, overriding the default or value set by
   * the environmental variable OSGNOTIFYLEVEL.
@@ -69,17 +69,21 @@ SG_EXPORT extern bool initNotifyLevel();
 // previous implementation was causing Mac OSX to misbehave. This version
 // places less stress on compiler and runs on Mac
 
-inline std::ostream& notify(const NotifySeverity severity)
-{
-    if (!g_NotifyInit) initNotifyLevel();
-
-    if (severity<=g_NotifyLevel)
-    {
-        if (severity<=osg::WARN) return std::cerr;
-        else return std::cout;
-    }
-    return *osg::g_NotifyNulStream;
-}
+SG_EXPORT extern std::ostream& notify(const NotifySeverity severity);
+// {
+//     static bool initilized = false;
+//     if (!initilized) initilized = initNotifyLevel();
+// 
+//     if (severity<=g_NotifyLevel)
+//     {
+//         if (severity<=osg::WARN) return std::cerr;
+//         else return std::cout;
+//     }
+//     cout << "doing a notify to null stream "<<osg::g_NotifyLevel<<" "<<osg::g_NotifyNulStream.get()<<" "<<osg::g_NotifyInit<<endl;
+//     //if (osg::g_NotifyNulStream.get()==0L) abort();
+//     return std::cout;    
+//     //return *osg::g_NotifyNulStream;
+// }
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 

@@ -3,9 +3,7 @@
 
 using namespace std;
 
-osg::NotifySeverity osg::g_NotifyLevel = osg::NOTICE;
-std::auto_ptr<ofstream> osg::g_NotifyNulStream; 
-bool osg::g_NotifyInit = false;
+osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
 
 void osg::setNotifyLevel(osg::NotifySeverity severity)
 {
@@ -23,16 +21,11 @@ osg::NotifySeverity osg::getNotifyLevel()
 
 bool osg::initNotifyLevel()
 {
-    if (g_NotifyInit) return true;
-    
-    g_NotifyInit = true;
+    static bool s_NotifyInit = false;
 
-    // set up global notify null stream for inline notify
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
-    g_NotifyNulStream = std::auto_ptr<ofstream>(osgNew std::ofstream ("nul"));
-#else
-    g_NotifyNulStream.reset(osgNew std::ofstream ("/dev/null"));
-#endif
+    if (s_NotifyInit) return true;
+    
+    s_NotifyInit = true;
 
     // g_NotifyLevel
     // =============
@@ -67,4 +60,24 @@ bool osg::initNotifyLevel()
 
     return true;
 
+}
+
+std::ostream& osg::notify(const osg::NotifySeverity severity)
+{
+    // set up global notify null stream for inline notify
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+    static std::ofstream s_NotifyNulStream("nul");
+#else
+    static std::ofstream s_NotifyNulStream("/dev/null");
+#endif
+
+    static bool initialized = osg::initNotifyLevel();
+    initialized=initialized; // statement with no effect to stop GCC warning.
+
+    if (severity<=g_NotifyLevel)
+    {
+        if (severity<=osg::WARN) return std::cerr;
+        else return std::cout;
+    }
+    return s_NotifyNulStream;
 }

@@ -23,7 +23,12 @@ CXXFILES =\
 	Font.cpp \
 	Paragraph.cpp \
 	Text.cpp \
+	IO_Text.cpp \
+	IO_Font.cpp \
+	IO_Paragraph.cpp \
 	Version.cpp
+
+
 
 LIBS  += $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS)
 

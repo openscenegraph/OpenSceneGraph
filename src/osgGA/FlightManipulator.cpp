@@ -7,6 +7,7 @@ using namespace osgGA;
 FlightManipulator::FlightManipulator()
 {
     _modelScale = 0.01f;
+    _acceleration = 100.0f;
     _velocity = 0.0f;
     _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
 
@@ -237,7 +238,7 @@ bool FlightManipulator::calcMovement()
     {
         // pan model.
 
-        _velocity += dt*_modelScale*0.02f;
+        _velocity += dt*(_acceleration+_velocity);
 
     }
     else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
@@ -250,7 +251,7 @@ bool FlightManipulator::calcMovement()
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
 
-        _velocity -= dt*_modelScale*0.02f;
+        _velocity -= dt*(_acceleration+_velocity);
 
     }
 

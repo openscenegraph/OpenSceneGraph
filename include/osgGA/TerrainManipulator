@@ -40,10 +40,10 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
 
         /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
             center before the center is pushed forward.*/        
-        void setMinimumZoomScale(float minimumZoomScale) { _minimumZoomScale=minimumZoomScale; }
+        void setMinimumDistance(float minimumDistance) { _minimumDistance=minimumDistance; }
 
         /** get the minimum distance (as ratio) the eye point can be zoomed in */
-        float getMinimumZoomScale() const { return _minimumZoomScale; }
+        float getMminimumDistance() const { return _minimumDistance; }
 
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
@@ -122,10 +122,8 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node> _node;
 
-        double                   _modelScale;
-
         RotationMode            _rotationMode;
-        double                  _minimumZoomScale;
+        double                  _minimumDistance;
 
         bool                    _thrown;
         

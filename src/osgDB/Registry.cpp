@@ -244,6 +244,25 @@ void Registry::readCommandLine(std::vector<std::string>& commandLine)
             found = true;
         }
         
+        // read any option strings that exist.
+        itr = commandLine.begin();
+        for(;itr!=commandLine.end();++itr)
+        {
+            if (*itr=="-O") break;
+        }
+
+        if (itr!=commandLine.end())
+        {
+            std::vector<std::string>::iterator start = itr; 
+            ++itr;
+            if (itr!=commandLine.end())
+            {
+                osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(*itr));
+                ++itr;
+            }
+            commandLine.erase(start,itr);
+            found = true;
+        }
         
     }    
 }

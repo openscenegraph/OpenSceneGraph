@@ -35,16 +35,19 @@
 
 namespace txp
 {
+
 class ReaderWriterTXP : public osgDB::ReaderWriter
 {
-public:
-    virtual const char* className() { return "TXP Reader/Writer"; }
-    virtual bool acceptsExtension(const std::string& extension)
-    {
-        return osgDB::equalCaseInsensitive(extension,"txp");
-    }
-    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*);
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    public:
+        virtual const char* className() { return "TXP Reader/Writer"; }
+
+        virtual bool acceptsExtension(const std::string& extension)
+        {
+            return osgDB::equalCaseInsensitive(extension,"txp");
+        }
+
+        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 };
-}; // namespace
+
+} // namespace
 #endif

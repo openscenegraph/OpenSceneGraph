@@ -3,6 +3,8 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
     ReaderWriterTXP.cpp\
+    TerrapageNode.cpp\
+    IO_TerrapageNode.cpp\
     TrPageArchive.cpp\
     TrPageParser.cpp\
     trpage_basic.cpp\

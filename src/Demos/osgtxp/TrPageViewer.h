@@ -31,8 +31,6 @@
 
 #include <string>
 
-#include <osgTXP/Export.h>
-
 #include <osgTXP/trPagePageManager.h>
 
 namespace txp

@@ -473,7 +473,7 @@ int main( int argc, char **argv )
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootNode );
 
-    loadedModelTransform->setAppCallback(new TransformCallback(loadedModelTransform,45.0f));
+    loadedModelTransform->setAppCallback(new TransformCallback(loadedModelTransform,osg::inDegrees(45.0f)));
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);

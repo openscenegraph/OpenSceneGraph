@@ -405,7 +405,7 @@ bool DriveManipulator::calcMovement()
 
     float dx = _ga_t0->getX()-mx;
 
-    float yaw = dx*0.1f*dt;
+    float yaw = inDegrees(dx*0.1f*dt);
 
     osg::Matrix mat;
     mat.makeTrans(-center.x(),-center.y(),-center.z());

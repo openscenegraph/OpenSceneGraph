@@ -1,7 +1,20 @@
 OSG Change log
 ==============
 
-
+  o Moved the osg across to using radians for all angular paramters,
+    previously all angular paramters were degrees as per Performer.
+    If the osg is compiled with USE_DEGREES_INTERNALLY defined then
+    the osg will revert to using degrees for anglular paramters,
+    however, this is only a temporary measure to help users port.
+    The inline methods inDegrees(float), and inRadians(float) have
+    been added into osg/Types to make porting easier, these methods
+    covert the specified anglular quantity into the current internal
+    angular units.
+  o Added osg::EarthSky node to support users defined clearing of the
+    color and depth buffers.
+  o Added support for removal of duplicate StateSets using the 
+    osgUtil::OptimizeStateVisitor, previously of removal of duplicate
+    StateAttributes was supported.
   o Made spelling corrections in include/osgDB,osgUtil,osgGLUT,osgWX,
     spelling mistakes picked up by a script written by Neil Salter.
   o Made osg::Matrix::_mat private, and updated the rest of the osg

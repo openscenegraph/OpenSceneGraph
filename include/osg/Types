@@ -22,6 +22,18 @@ typedef uchar ubyte;
 #define M_2_SQRTPI      1.12837916709551257390
 #define M_SQRT2         1.41421356237309504880
 #define M_SQRT1_2       0.70710678118654752440
+#else
+#include <math.h>
+#endif
+
+#define USE_DEGREES_INTERNALLY
+
+#ifdef USE_DEGREES_INTERNALLY
+inline double inDegrees(float angle) { return angle; } 
+inline double inRadians(float angle) { return angle*180.0/M_PI; }
+#else
+inline double inDegrees(float angle) { return angle*M_PI/180.0; }
+inline double inRadians(float angle) { return angle; }
 #endif
 
 };

@@ -201,8 +201,8 @@ bool FlightManipulator::calcMovement()
     osg::Vec3 sv = _camera->getSideVector();
     osg::Vec3 lv = _camera->getLookVector();
 
-    float pitch = -dy*0.15f*dt;
-    float roll = -dx*0.1f*dt;
+    float pitch = inDegrees(-dy*0.15f*dt);
+    float roll = inDegrees(-dx*0.1f*dt);
 
     osg::Matrix mat;
     mat.makeTrans(-center);
@@ -211,7 +211,7 @@ bool FlightManipulator::calcMovement()
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
         float bank = asinf(sv.z());
-        float yaw = (-bank*180.0f/M_PI)*dt;
+        float yaw = inRadians(-bank)*dt;
         mat *= Matrix::rotate(yaw,0.0f,0.0f,1.0f);
     }
 

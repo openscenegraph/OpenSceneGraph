@@ -54,6 +54,8 @@ osg::Vec3 computePosition(bool leftHemisphere, double x, double y)
     else return osg::Vec3(-cos(latitude)*sin_longitude,-sin(latitude)*sin_longitude,-cos(longitude));
 }
 
+bool useCompressedTextures = true;
+bool use565 = true;
 
 osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x, double y, double w,double h)
 {
@@ -86,7 +88,6 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
         texture->setMaxAnisotropy(8);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
         
-        bool useCompressedTextures = true;
         if (useCompressedTextures)
         {
             texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
@@ -97,6 +98,12 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
             image->readImageFromCurrentTexture();
 
             texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+            
+        } else if (use565)
+        {
+
+            image->scaleImage(image->r(),image->s(),image->t(),GL_UNSIGNED_SHORT_5_6_5);
+
         }
         
     }
@@ -364,6 +371,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-w <filename>","Specify the west hemisphere input file to process");
     arguments.getApplicationUsage()->addCommandLineOption("-o <outputfile>","Specify the output master file to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Create compressed textures (default)");
+    arguments.getApplicationUsage()->addCommandLineOption("--565","Create R5G5B5A1 textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--RGB","Create R8G8B8 textures");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
     std::string west_hemisphere("land_shallow_topo_west.tif");
@@ -378,6 +388,9 @@ int main( int argc, char **argv )
     float numLevels=4;
     while (arguments.read("-l",numLevels)) {}
 
+    while (arguments.read("--compressed")) { useCompressedTextures = true; use565 = false; }
+    while (arguments.read("--565")) { useCompressedTextures = false; use565 = true;}
+    while (arguments.read("--RGB")) { useCompressedTextures = false; use565 = false; }
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -406,7 +419,7 @@ int main( int argc, char **argv )
     // create a graphics context to allow us to use OpenGL to compress textures.    
     GraphicsContext gfx;
 
-    createWorld(west_hemisphere,east_hemisphere,basename,numLevels);
+    createWorld(west_hemisphere,east_hemisphere,basename,(unsigned int)numLevels);
 
     return 0;
 }

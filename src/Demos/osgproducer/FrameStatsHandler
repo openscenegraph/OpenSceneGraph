@@ -1,0 +1,141 @@
+#ifndef FRAME_STATS_HANDLER
+#include <stdio.h>
+#include <GL/gl.h>
+
+namespace Producer {
+
+class FrameStatsHandler : public CameraGroup::StatsHandler, public Camera::Callback
+{
+    public:
+	FrameStatsHandler() 
+	{
+	    _fs.resize(6);
+	    _index = 0;
+	}
+
+	void setArraySize(unsigned int size) { _fs.resize(size); }
+	unsigned int getArraySize() { return _fs.size(); }
+
+        void operator() (const CameraGroup &cg )
+        {
+	    _index = (_index + 1) % _fs.size();
+            _fs[_index] = cg.getFrameStats();     
+        }
+
+	void operator() (const Camera &)
+        {
+	    glViewport( 0, 0, 1280, 1024 );
+	    // Set up the Orthographic view
+	    glMatrixMode( GL_PROJECTION );
+	    glPushMatrix();
+	    glLoadIdentity();
+	    glOrtho( -.01, .128, 600.0, -10.0, -1.0, 1.0 ); 
+
+            glPushAttrib( GL_ENABLE_BIT );
+	    glDisable( GL_LIGHTING );
+	    glDisable( GL_DEPTH_TEST );
+	    glEnable( GL_BLEND );
+
+	    glMatrixMode( GL_MODELVIEW );
+	    glPushMatrix();
+	    glLoadIdentity();
+
+            unsigned int lindex = (_index + 1) % _fs.size();
+            Camera::TimeStamp zero = _fs[lindex]._startOfFrame;
+            int i;
+	    double x1, x2, y1, y2;
+	    for( int frame = 0; frame < _fs.size(); frame++ )
+	    {
+		CameraGroup::FrameStats fs = _fs[(lindex + frame) % _fs.size()];
+	        y1 = 0.0;
+   	        y2 = y1 + 10;
+	        x1 = fs._startOfUpdate - zero;
+	        x2 = fs._endOfUpdate   - zero;
+
+	        glBegin( GL_QUADS );
+
+	        // Draw Update length
+ 	        glColor4f( 0.0, 1.0, 0.0, 0.5 );
+	        glVertex2d( x1, y1);
+	        glVertex2d( x2, y1);
+	        glVertex2d( x2, y2);
+	        glVertex2d( x1, y2);
+
+	        for( i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+                {
+		    Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+	            y1 += 13.0;
+	            y2 = y1 + 10.0;
+	            x1 = fts[Camera::BeginCull] - zero;
+	            x2 = fts[Camera::EndCull]   - zero;
+
+ 	            glColor4f( 0.0, 0.0, 1.0, 0.5 );
+	            glVertex2d( x1, y1);
+	            glVertex2d( x2, y1);
+	            glVertex2d( x2, y2);
+	            glVertex2d( x1, y2);
+
+	            x1 = fts[Camera::BeginDraw] - zero;
+	            x2 = fts[Camera::EndDraw]   - zero;
+
+ 	            glColor4f( 1.0, 0.0, 0.0, 0.5 );
+	            glVertex2d( x1, y1);
+	            glVertex2d( x2, y1);
+	            glVertex2d( x2, y2);
+	            glVertex2d( x1, y2);
+
+                }
+	        glEnd();
+
+	        glBegin( GL_LINES );
+	        glColor4f( 1, 1, 1, 0.5 );
+	        glVertex2d( fs._startOfFrame - zero , 0.0 );
+                y1 = fs.getNumFrameTimeStampSets() * 13.0 + 10.0;
+                glVertex2d( fs._startOfFrame - zero, y1 );
+
+                y1 = 12.5; 
+	        for( i = 0; i < fs.getNumFrameTimeStampSets(); i++ )
+                {
+		    y2 = y1 + 11; 
+		    Camera::FrameTimeStampSet fts = fs.getFrameTimeStampSet(i);
+		    Camera::TimeStamp vsync = fts[Camera::Vsync];
+		    double x1 = vsync - zero;
+                    glColor4f( 1.0, 1.0, 0.0, 0.5 );
+	            glVertex2d( x1, y1 );
+                    glVertex2d( x1, y2 );
+ 		    y1 += 13.0;
+  	        }
+	 	glEnd();	
+	    }
+
+    	    glBegin( GL_LINES );
+
+	    glColor4f( 1, 1, 1, 0.5 );
+	    for( i = 0; i < 128; i++ )
+            {
+	        glVertex2d((GLdouble)i*.001, y1);
+
+	       if( !(i%10) )
+	           glVertex2d((GLdouble)i*.001, y1 - 5.0);
+		else if( !(i%5) )
+		    glVertex2d((GLdouble)i*.001, y1 - 3.0);
+		else
+		    glVertex2d((GLdouble)i*.001, y1 - 1.0);
+	    }
+           
+	    glEnd();
+
+	    glPopMatrix();
+	    glMatrixMode( GL_PROJECTION );
+	    glPopMatrix();
+	    glMatrixMode( GL_MODELVIEW );
+
+	    glPopAttrib();
+        }
+
+    private:
+	std::vector <CameraGroup::FrameStats> _fs;
+	unsigned int _index;
+};
+}
+#endif

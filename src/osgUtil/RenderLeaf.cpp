@@ -41,14 +41,14 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
             RenderGraph::moveRenderGraph(state,prev_rg_parent,rg->_parent);
 
             // send state changes and matrix changes to OpenGL.
-            state.apply(rg->_stateset.get());
+            state.apply(rg->_stateset);
 
         }
         else if (rg!=prev_rg)
         {
 
             // send state changes and matrix changes to OpenGL.
-            state.apply(rg->_stateset.get());
+            state.apply(rg->_stateset);
 
         }
         
@@ -72,7 +72,7 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         // apply state if required.
          RenderGraph::moveRenderGraph(state,NULL,_parent->_parent);
 
-        state.apply(_parent->_stateset.get());
+        state.apply(_parent->_stateset);
 
 #ifndef APPLY_MATRICES_BEFORE_STATE
         // apply matrices if required.

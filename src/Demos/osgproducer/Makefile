@@ -3,7 +3,6 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	osgproducer_viewer.cpp\
-#	osgproducer_cameragroup.cpp\
 
 LIBS     += -losgProducer -lProducer $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
@@ -13,8 +12,8 @@ INSTFILES = \
 
 EXEC = osgproducer
 
-CXXFLAGS += $(OSG_INCLUDE_DIR)
-LDFLAGS  += $(OSG_LIB_DIR)
+CXXFLAGS += $(PRODUCER_INCLUDE_DIR)
+LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules 
 

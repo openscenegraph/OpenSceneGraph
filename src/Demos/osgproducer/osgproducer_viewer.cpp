@@ -11,6 +11,9 @@
 
 #include <osgProducer/Viewer>
 
+#include "FrameStatsHandler"
+
+
 int main( int argc, char **argv )
 {
 
@@ -61,6 +64,13 @@ int main( int argc, char **argv )
 
     // set up the value with sensible defaults.
     viewer->setUpViewer();
+
+    viewer->enableInstrumentation();
+
+    Producer::FrameStatsHandler* fsh = new Producer::FrameStatsHandler;
+    viewer->setStatsHandler(fsh);
+    viewer->getCamera(0)->addPostDrawCallback(fsh);
+    
 
     if( !pathfile.empty() ) {
 	osg::ref_ptr<osgGA::AnimationPathManipulator> apm = new osgGA::AnimationPathManipulator(pathfile);

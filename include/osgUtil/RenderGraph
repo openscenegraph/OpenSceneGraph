@@ -45,7 +45,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
 
         RenderGraph*                        _parent;
-        osg::ref_ptr<const osg::StateSet>   _stateset;
+        const osg::StateSet*                _stateset;
 
         int                                 _depth;
         ChildList                           _children;
@@ -197,7 +197,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
                     ++itr)
                 {
                     RenderGraph* rg = (*itr);
-                    if (rg->_stateset.valid()) state.pushStateSet(rg->_stateset.get());
+                    if (rg->_stateset) state.pushStateSet(rg->_stateset);
                 }
                 return;
             }
@@ -209,9 +209,9 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             {
                 
                 // state has changed so need to pop old state.
-                if (sg_curr->_stateset.valid()) state.popStateSet();
+                if (sg_curr->_stateset) state.popStateSet();
                 // and push new state.
-                if (sg_new->_stateset.valid()) state.pushStateSet(sg_new->_stateset.get());
+                if (sg_new->_stateset) state.pushStateSet(sg_new->_stateset);
                 return;
             }
         
@@ -219,7 +219,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             // need to pop back up to the same depth as the new state group.
             while (sg_curr->_depth>sg_new->_depth)
             {
-                if (sg_curr->_stateset.valid()) state.popStateSet();
+                if (sg_curr->_stateset) state.popStateSet();
                 sg_curr = sg_curr->_parent;
             }
             
@@ -240,7 +240,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             // nodes have the same parent
             while (sg_curr != sg_new)
             {
-                if (sg_curr->_stateset.valid()) state.popStateSet();
+                if (sg_curr->_stateset) state.popStateSet();
                 sg_curr = sg_curr->_parent;
 
                 return_path.push_back(sg_new);
@@ -252,7 +252,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
                 ++itr)
             {
                 RenderGraph* rg = (*itr);
-                if (rg->_stateset.valid()) state.pushStateSet(rg->_stateset.get());
+                if (rg->_stateset) state.pushStateSet(rg->_stateset);
             }
 
         }
@@ -262,7 +262,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             // need to pop back all statesets and matrices.
             while (sg_curr)
             {
-                if (sg_curr->_stateset.valid()) state.popStateSet();
+                if (sg_curr->_stateset) state.popStateSet();
                 sg_curr = sg_curr->_parent;
             }
             

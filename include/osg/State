@@ -682,7 +682,7 @@ class SG_EXPORT State : public Referenced
         typedef std::map<StateAttribute::Type,AttributeStack>   AttributeMap;
         typedef std::vector<AttributeMap>                       TextureAttributeMapList;
 
-        typedef std::vector<ref_ptr<const StateSet> >           StateSetStack;
+        typedef std::vector<const StateSet*>                    StateSetStack;
         typedef std::vector<ref_ptr<const Matrix> >             MatrixStack;
 
         ModeMap                                                 _modeMap;

@@ -103,9 +103,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Get the background color.*/
         const osg::Vec4& getBackgroundColor() const { return _backgroundColor; }
 
-        void setGlobalStateSet(osg::StateSet* state) { _globalState = state; }
-        osg::StateSet* getGlobalStateSet() { return _globalState.get(); }
-        const osg::StateSet* getGlobalStateSet() const { return _globalState.get(); }
+        void setGlobalStateSet(osg::StateSet* state) { _globalStateSet = state; }
+        osg::StateSet* getGlobalStateSet() { return _globalStateSet.get(); }
+        const osg::StateSet* getGlobalStateSet() const { return _globalStateSet.get(); }
+
+        void setLocalStateSet(osg::StateSet* state) { _localStateSet = state; }
+        osg::StateSet* getLocalStateSet() { return _localStateSet.get(); }
+        const osg::StateSet* getLocalStateSet() const { return _localStateSet.get(); }
 
         enum LightingMode {
             HEADLIGHT, // default
@@ -299,7 +303,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         void clearArea(int x,int y,int width,int height,const osg::Vec4& color);
 
         osg::ref_ptr<osg::Node>                     _sceneData;
-        osg::ref_ptr<osg::StateSet>                 _globalState;
+        osg::ref_ptr<osg::StateSet>                 _globalStateSet;
+        osg::ref_ptr<osg::StateSet>                 _localStateSet;
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::Camera>                   _camera;
         osg::ref_ptr<osg::RefMatrix>                _projectionMatrix;

@@ -191,13 +191,14 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
     {
         //ea->setWindowSize(-1.0f,-1.0f,1.0f,1.0f);
         
-        const Producer::RenderSurface::InputRectangle &ir = 
-            rs->getInputRectangle();
+        const Producer::RenderSurface::InputRectangle &ir = rs->getInputRectangle();
 
+        float minX = osg::minimum(ir.left(),ir.left()+ir.width());
+        float maxX = osg::maximum(ir.left(),ir.left()+ir.width());
+        float minY = osg::minimum(ir.bottom(),ir.bottom()+ir.height());
+        float maxY = osg::maximum(ir.bottom(),ir.bottom()+ir.height());
 
-        osg::notify(osg::INFO) << "RenderSurface::InputRectange left="<<ir.left()<<"\twidth="<<ir.width()<<"\tbottom="<<ir.bottom()<<"\theight="<<ir.height()<<std::endl;
-       
-        ea->setWindowSize(0.0f,rs->getWindowHeight(),rs->getWindowWidth(),0.0f);
+        ea->setWindowSize(minX,minY,maxX,maxY);
     }
     
     return ea;

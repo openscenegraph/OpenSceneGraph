@@ -13,7 +13,7 @@ CXXFILES =\
 	Validator.cpp\
 
 
-LIBS += -losg -losgDB -losgUtil $(GL_LIBS) $(OTHER_LIBS) $(DYNAMICLIBRARYLIB)
+LIBS += -losg -losgDB -losgUtil -losgGL2 $(GL_LIBS) $(OTHER_LIBS) $(DYNAMICLIBRARYLIB)
 DEF  += -DOSGFX_LIBRARY
 
 TARGET_BASENAME = osgFX

@@ -11,7 +11,7 @@
 */
 
 /* file:	examples/osgshaders/GL2Scene.cpp
- * author:	Mike Weiblen 2003-09-30
+ * author:	Mike Weiblen 2003-10-03
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -390,12 +390,12 @@ GL2Scene::reloadShaderSource()
     LoadShaderSource( ErodedFragObj, "shaders/eroded.frag" );
     ErodedProgObj->setUniform( "LightPosition", osg::Vec3(0.0f, 0.0f, 4.0f) );
     ErodedProgObj->setUniform( "Scale", 1.0f );
-    ErodedProgObj->setUniform( "sampler3d", 6 );
+    ErodedProgObj->setSampler( "sampler3d", 6 );
 
     LoadShaderSource( MarbleVertObj, "shaders/marble.vert" );
     LoadShaderSource( MarbleFragObj, "shaders/marble.frag" );
-    MarbleProgObj->setUniform( "Noise", 1 );
-    MarbleProgObj->setUniform( "Sine", 2 );
+    MarbleProgObj->setSampler( "Noise", 1 );
+    MarbleProgObj->setSampler( "Sine", 2 );
 }
 
 

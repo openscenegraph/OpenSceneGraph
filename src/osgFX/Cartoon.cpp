@@ -11,6 +11,8 @@
 #include <osg/LineWidth>
 #include <osg/Material>
 
+#include <osgGL2/ProgramObject>
+
 #include <sstream>
 
 using namespace osgFX;
@@ -148,6 +150,121 @@ namespace
 
 }
 
+///////////////////////////////////////////////////////////////////////////
+// A port of Marco Jez's "cartoon.cg" to the OpenGL Shading Language
+// using osgGL2 by Mike Weiblen 2003-10-03.
+//
+// This shader is simplified due to limitations in the OGLSL implementation
+// in the current 3Dlabs driver.  As the OGLSL implementation improves,
+// need to revisit and enhance this shader.
+
+namespace
+{
+    class OGLSL_Technique : public Technique {
+    public:
+        OGLSL_Technique(osg::Material *wf_mat, osg::LineWidth *wf_lw, int lightnum)
+            : Technique(), wf_mat_(wf_mat), wf_lw_(wf_lw), lightnum_(lightnum) {}
+
+        void getRequiredExtensions(std::vector<std::string> &extensions) const
+        {
+            extensions.push_back( "GL_ARB_shader_objects" );
+            extensions.push_back( "GL_ARB_vertex_shader" );
+            extensions.push_back( "GL_ARB_fragment_shader" );
+        }
+
+    protected:
+
+        void define_passes()
+        {
+            // implement pass #1 (solid surfaces)
+            {
+
+		const char * vert_source =
+		"const vec3 LightPosition = vec3( 0.0, 2.0, 4.0 );"
+		"varying float CartoonTexCoord;"
+		"void main( void )"
+		"{"
+		    "vec3 eye_space_normal = normalize(gl_NormalMatrix * gl_Normal).xyz;"
+		    "CartoonTexCoord = max(0.0, dot(normalize(LightPosition), eye_space_normal));"
+		    "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+		"}";
+
+		const char * frag_source =
+		"uniform sampler1D CartoonTexUnit;"
+		"varying float CartoonTexCoord;"
+		"void main( void )"
+		"{"
+		    "gl_FragColor = texture1D( CartoonTexUnit, CartoonTexCoord );"
+		"}";
+
+                osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
+
+                osg::ref_ptr<osg::PolygonOffset> polyoffset = new osg::PolygonOffset;
+                polyoffset->setFactor(1.0f);
+                polyoffset->setUnits(1.0f);
+                ss->setAttributeAndModes(polyoffset.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+		osg::ref_ptr<osgGL2::ProgramObject> progObj = new osgGL2::ProgramObject;
+		progObj->addShader( new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX, vert_source ) );
+		progObj->addShader( new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT, frag_source ) );
+		progObj->setSampler( "CartoonTexUnit", 0 );
+		ss->setAttributeAndModes( progObj.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
+                ss->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF);
+
+                osg::ref_ptr<osg::Texture1D> texture = new osg::Texture1D;
+                texture->setImage(create_sharp_lighting_map());
+                texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
+                texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
+                ss->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
+                osg::ref_ptr<osg::TexEnv> texenv = new osg::TexEnv;
+                texenv->setMode(osg::TexEnv::MODULATE);
+                ss->setTextureAttributeAndModes(0, texenv.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
+                addPass(ss.get());
+            }
+
+            // implement pass #2 (outlines)
+            {
+                osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
+                osg::ref_ptr<osg::PolygonMode> polymode = new osg::PolygonMode;
+                polymode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
+                ss->setAttributeAndModes(polymode.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+                osg::ref_ptr<osg::CullFace> cf = new osg::CullFace;
+                cf->setMode(osg::CullFace::FRONT);
+                ss->setAttributeAndModes(cf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+                wf_lw_->setWidth(2);
+                ss->setAttributeAndModes(wf_lw_.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
+                wf_mat_->setColorMode(osg::Material::OFF);
+                wf_mat_->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                wf_mat_->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                wf_mat_->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+                ss->setAttributeAndModes(wf_mat_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+                ss->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+                ss->setTextureMode(0, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+                ss->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+
+                   addPass(ss.get());
+
+            }
+        }
+
+    private:
+        osg::ref_ptr<osg::Material> wf_mat_;
+        osg::ref_ptr<osg::LineWidth> wf_lw_;
+        int lightnum_;
+    };
+
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 Cartoon::Cartoon()
 :    Effect(),
     wf_mat_(new osg::Material),
@@ -167,5 +284,6 @@ Cartoon::Cartoon(const Cartoon &copy, const osg::CopyOp &copyop)
 bool Cartoon::define_techniques()
 {
     addTechnique(new DefaultTechnique(wf_mat_.get(), wf_lw_.get(), lightnum_));
+    addTechnique(new OGLSL_Technique(wf_mat_.get(), wf_lw_.get(), lightnum_));
     return true;
 }

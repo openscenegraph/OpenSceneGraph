@@ -49,9 +49,10 @@ namespace osgFX
             "the first one draws solid surfaces, the second one draws the outlines. "
             "A vertex program is used to setup texture coordinates for a sharp lighting "
             "texture on unit 0 which is generated on-the-fly.\n"
-            "This effect requires the ARB_vertex_program extension.",
+            "This effect requires the ARB_vertex_program extension "
+            "or OpenGL Shading Language.",
             
-            "Marco Jez");
+            "Marco Jez; OGLSL port by Mike Weiblen");
 
         /** get the outline color */
         inline const osg::Vec4 &getOutlineColor() const;

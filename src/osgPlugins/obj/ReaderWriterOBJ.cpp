@@ -35,6 +35,9 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
+#include <osgUtil/TriStripVisitor>
+#include <osgUtil/SmoothingVisitor>
+
 #include "glm.h"
 
 #include <map>
@@ -60,13 +63,86 @@ public:
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
 protected:
-    osg::Drawable* makeDrawable(GLMmodel* obj, GLMgroup* grp);
+
+    enum DrawableMode
+    {
+        DUPLICATE_COORDS,
+        USE_SEPERATE_INDICES,
+    };
+
+    osg::Drawable* makeDrawable(DrawableMode drawableMode, GLMmodel* obj, GLMgroup* grp);
+    osg::Drawable* makeDrawable_duplicateCoords(GLMmodel* obj, GLMgroup* grp);
+    osg::Drawable* makeDrawable_useSeperateIndices(GLMmodel* obj, GLMgroup* grp);
     
     typedef std::map< std::string, osg::ref_ptr<osg::Texture2D> > TextureMap;
     typedef std::set< osg::ref_ptr<osg::Material>, DerefLess< osg::ref_ptr<osg::Material> > > MaterialSet;
     typedef std::set< osg::ref_ptr<osg::StateSet>, DerefLess< osg::ref_ptr<osg::StateSet> > > StateSetSet;
     typedef std::vector< osg::ref_ptr<osg::StateSet> > ObjMatierialOsgStateSetArray;
     
+    class IndexMap
+    {
+        public:
+
+            IndexMap():
+                _maximumIn(-1),
+                _maximumOut(-1) {}
+
+            inline void updateMaximum(int index)
+            {
+                if (index>_maximumIn) _maximumIn=index;
+            }
+            
+            inline void  initialize()
+            {
+                _indices.assign(_maximumIn+1,-1);
+            }
+            
+            inline void insertIndex(int index)
+            {
+                if (_indices[index]<0) _indices[index]=++_maximumOut;
+            }
+
+            inline int index(int i) const { return _indices[i]; }
+
+            osg::Vec3Array* createVec3Array(const float* array)
+            {
+                osg::Vec3Array* vec3array = new osg::Vec3Array(_maximumOut+1);
+                for(unsigned int i=0;i<_indices.size();++i)
+                {
+                    if (_indices[i]>=0) (*vec3array)[_indices[i]].set(array[i*3],-array[i*3+2],array[i*3+1]);
+                }
+                return vec3array;
+            }
+            
+            osg::Vec2Array* createVec2Array(const float* array)
+            {
+                osg::Vec2Array* vec2array = new osg::Vec2Array(_maximumOut+1);
+                for(unsigned int i=0;i<_indices.size();++i)
+                {
+                    if (_indices[i]>=0) (*vec2array)[_indices[i]].set(array[i*2],array[i*2+1]);
+                }
+                return vec2array;
+            }
+
+            osg::UByte4Array* createUByte4Array(const osg::UByte4* array)
+            {
+                osg::UByte4Array* ubyte4array = new osg::UByte4Array(_maximumOut+1);
+                for(unsigned int i=0;i<_indices.size();++i)
+                {
+                    if (_indices[i]>=0) (*ubyte4array)[_indices[i]] = array[i];
+                }
+                return ubyte4array;
+            }
+            
+            typedef std::vector<int> Indices;
+
+            int _maximumIn;
+            int _maximumOut;
+            Indices _indices;
+            
+    };
+
+
 };
 
 
@@ -97,14 +173,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     osg::notify(osg::INFO)  << "groups " << obj->numgroups << std::endl;
     
     
-    std::cout << "useColors "<<obj->useColors<<std::endl;
-
-    if (obj->numnormals==0)
-    {
-        osg::notify(osg::NOTICE)  << "No normals in .obj file, automatically calculating normals..."<< std::endl;
-        glmFacetNormals(obj);
-        glmVertexNormals(obj,90.0f);
-    }
+//     if (obj->numnormals==0)
+//     {
+//         osg::notify(osg::NOTICE)  << "No normals in .obj file, automatically calculating normals..."<< std::endl;
+//         glmFacetNormals(obj);
+//         glmVertexNormals(obj,90.0f);
+//     }
 
 
     unsigned int i;
@@ -223,13 +297,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         // note obj_x -> osg_x,
         //      obj_y -> osg_z,
         //      obj_z -> osg_y,
-        xform->setMatrix(osg::Matrix::translate(obj->position[0], obj->position[2], obj->position[1]));
+        xform->setMatrix(osg::Matrix::translate(obj->position[0], -obj->position[2], obj->position[1]));
         osg_top = xform;
     }
     else
         osg_top = new osg::Group;
 
     osg_top->setName(obj->pathname);
+
+    DrawableMode drawableMode = USE_SEPERATE_INDICES;
+//    DrawableMode drawableMode = DUPLICATE_COORDS;
 
     // subgroups
     // XXX one Geode per group is probably not necessary...
@@ -239,7 +316,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 
             osg::Geode* osg_geo = new osg::Geode;
             osg_geo->setName(ogrp->name);
-            osg::Drawable* drawable = makeDrawable(obj,ogrp);
+            osg::Drawable* drawable = makeDrawable(drawableMode,obj,ogrp);
             
             // state and material (if any)
             if (!osg_mtl.empty()) {
@@ -258,10 +335,18 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     return osg_top;
 }
 
+osg::Drawable* ReaderWriterOBJ::makeDrawable(DrawableMode drawableMode, GLMmodel* obj, GLMgroup* grp)
+{
+    switch(drawableMode)
+    {
+    case(DUPLICATE_COORDS): return makeDrawable_duplicateCoords(obj,grp);
+    case(USE_SEPERATE_INDICES): return makeDrawable_useSeperateIndices(obj,grp);
+    }
+    return 0;
+}
 
 // make drawable from OBJ group
-osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
-                                             GLMgroup* grp)
+osg::Drawable* ReaderWriterOBJ::makeDrawable_duplicateCoords(GLMmodel* obj, GLMgroup* grp)
 {
 
     GLMtriangle* tris = obj->triangles;
@@ -364,3 +449,142 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     return geom;
 }
 
+osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, GLMgroup* grp)
+{
+
+    GLMtriangle* tris = obj->triangles;
+
+    unsigned int ntris = grp->numtriangles;
+    unsigned int i = 0;
+
+    // geometry
+    osg::Geometry* geom = new osg::Geometry;
+    
+    // geom->setUseVertexBufferObjects(true);
+
+    // the following code for mapping the coords, normals and texcoords
+    // is complicated greatly by the need to create separate out the
+    // sets of coords etc for each drawable.
+
+    bool needColors = obj->useColors && obj->colors;
+    bool needNormals = obj->normals && obj->normals;
+    bool needTexcoords = obj->texcoords && obj->numtexcoords>0 && grp->hastexcoords;
+    
+
+//    needNormals = false;    
+    
+    IndexMap vertexIndexMap;
+    IndexMap normalIndexMap;
+    IndexMap texcoordIndexMap;
+       
+    // find maxium value.
+    for (i = 0; i < ntris; i++)
+    {
+        GLMtriangle& tri = tris[grp->triangles[i]];
+        for(int corner=0;corner<3;++corner)
+        {
+            vertexIndexMap.updateMaximum(tri.vindices[corner]);
+            if (needNormals) normalIndexMap.updateMaximum(tri.nindices[corner]);
+            if (needTexcoords) texcoordIndexMap.updateMaximum(tri.tindices[corner]);
+
+        }
+    }
+    
+    
+    // intialialize map.
+    vertexIndexMap.initialize();
+    if (needNormals) normalIndexMap.initialize();
+    if (needTexcoords) texcoordIndexMap.initialize();
+    
+    // populate map.
+    for (i = 0; i < ntris; i++)
+    {
+        GLMtriangle& tri = tris[grp->triangles[i]];
+        for(int corner=0;corner<3;++corner)
+        {
+            vertexIndexMap.insertIndex(tri.vindices[corner]);
+            if (needNormals) normalIndexMap.insertIndex(tri.nindices[corner]);
+            if (needTexcoords) texcoordIndexMap.insertIndex(tri.tindices[corner]);
+        }
+    }
+
+    // copy data across to geometry.
+    geom->setVertexArray(vertexIndexMap.createVec3Array(obj->vertices));
+    
+    if (needColors)
+    {
+        geom->setColorArray(vertexIndexMap.createUByte4Array(obj->colors));
+        geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    }
+
+    if (needNormals)
+    {
+        geom->setNormalArray(normalIndexMap.createVec3Array(obj->normals));
+        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    }
+
+    if (needTexcoords)
+    {
+        geom->setTexCoordArray(0,texcoordIndexMap.createVec2Array(obj->texcoords));
+    }
+    
+    
+    osg::ref_ptr<osg::UIntArray> vertexIndices = new osg::UIntArray(ntris*3);
+    osg::ref_ptr<osg::UIntArray> normalIndices = needNormals ? new osg::UIntArray(ntris*3) : 0;
+    osg::ref_ptr<osg::UIntArray> texcoordIndices = needTexcoords ? new osg::UIntArray(ntris*3) : 0;
+    
+    int vi=0;
+    for (i = 0; i < ntris; i++)
+    {
+        GLMtriangle& tri = (tris[grp->triangles[i]]);
+        
+        for(int corner=0;corner<3;++corner,++vi)
+        {
+            (*vertexIndices)[vi] = vertexIndexMap.index(tri.vindices[corner]);
+
+            if (needNormals)
+            {
+                (*normalIndices)[vi] = normalIndexMap.index(tri.nindices[corner]);
+            }
+
+            if (needTexcoords)
+            {
+                (*texcoordIndices)[vi] = texcoordIndexMap.index(tri.tindices[corner]);
+            }
+        }
+    }
+    
+    bool indexArraysEqual=true;
+    if (needNormals) indexArraysEqual=(*vertexIndices==*normalIndices);
+    if (indexArraysEqual && needTexcoords) indexArraysEqual=(*vertexIndices==*texcoordIndices);
+
+    if (indexArraysEqual)
+    {
+        //std::cout<<"Use draw element"<<std::endl;
+        
+        geom->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES,vertexIndices->begin(),vertexIndices->end()));
+
+        osgUtil::TriStripVisitor tsv;
+        tsv.stripify(*geom);
+
+    }
+    else
+    {
+        //std::cout<<"Use sepeate indices arrays"<<std::endl;
+        
+        geom->setVertexIndices(vertexIndices.get());
+        if (needColors) geom->setColorIndices(vertexIndices.get());
+        if (needNormals) geom->setNormalIndices(normalIndices.get());
+        if (needTexcoords) geom->setTexCoordIndices(0,texcoordIndices.get());
+
+        // primitives are only triangles
+        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
+
+    }
+    
+    osgUtil::SmoothingVisitor tsv;
+    tsv.smooth(*geom);
+
+
+    return geom;
+}

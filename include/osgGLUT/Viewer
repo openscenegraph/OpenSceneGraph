@@ -129,7 +129,6 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
         int backface;
         int lighting;
         int flat_shade;
-        int _two_sided_lighting;
         float frRate; // gwm Jul 2001 added convolved ('averaged') frame rate
         int _printStats; // gwm Jul 2001 change from bool
         struct { // gwm Jul 2001, added for display of statistics

@@ -29,6 +29,7 @@
 #include <osg/LineSegment>
 #include <osg/PolygonMode>
 #include <osg/Texture>
+#include <osg/LightModel>
 #include <osg/ShadeModel>
 #include <osg/Notify>
 
@@ -100,8 +101,6 @@ Viewer::Viewer()
 
     _viewFrustumCullingActive = true;
     _smallFeatureCullingActive = true;
-
-    _two_sided_lighting=0;
 
     _useDisplayLists = true;
 
@@ -358,8 +357,6 @@ float Viewer::cull(unsigned int viewport)
 float Viewer::draw(unsigned int viewport)
 {
     osg::Timer_t beforeDraw = _timer.tick();
-
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,_two_sided_lighting);
 
     // do draw traversal.
     getViewportSceneView(viewport)->draw();
@@ -943,7 +940,15 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             break;
 
         case 'T' :
-            _two_sided_lighting = 1 - _two_sided_lighting;
+            {
+                osg::LightModel* lightmodel = dynamic_cast<LightModel*>(sceneView->getGlobalStateSet()->getAttribute(osg::StateAttribute::LIGHTMODEL));
+                if (lightmodel)
+                {
+                    lightmodel = new osg::LightModel;
+                    sceneView->getGlobalStateSet()->setAttribute(lightmodel);
+                }
+                lightmodel->setTwoSided(!lightmodel->getTwoSided());
+            }
             break;
 
         case 'w' :

@@ -65,7 +65,7 @@ Node *makeSky( void )
             colors[ci][3] = 1.0;
 
             tcoords[ci][0] = (float)j/18.0;
-            tcoords[ci][0] = (float)i/(float)(nlev-1);
+            tcoords[ci][1] = (float)i/(float)(nlev-1);
 
             ci++;
         }

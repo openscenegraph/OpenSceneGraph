@@ -276,19 +276,66 @@ void TrPageArchive::LoadMaterials()
                     Texture2D* osg_texture = m_textures[texId].get();
                     if(osg_texture)
                     {
+
                         osg_texture->setWrap(Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
                         osg_texture->setWrap(Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture2D::REPEAT: Texture2D::CLAMP );
+
+                        // -----------
+                        // Min filter
+                        // -----------
+                        int32 minFilter;
+                        texEnv.GetMinFilter(minFilter);
+                        switch (minFilter)
+                        {
+                        case trpgTextureEnv::Point:
+                        case trpgTextureEnv::Nearest:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST);
+                            break;
+                        case trpgTextureEnv::Linear:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+                            break;
+                        case trpgTextureEnv::MipmapPoint:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_NEAREST);
+                            break;
+                        case trpgTextureEnv::MipmapLinear:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_LINEAR);
+                            break;
+                        case trpgTextureEnv::MipmapBilinear:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_NEAREST);
+                            break;
+                        case trpgTextureEnv::MipmapTrilinear:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
+                            break;
+                        default:
+                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+                            break;
+                        }
+
+
+                        // -----------
+                        // Mag filter
+                        // -----------
+                        int32 magFilter;
+                        texEnv.GetMagFilter(magFilter);
+                        switch (magFilter)
+                        {
+                        case trpgTextureEnv::Point:
+                        case trpgTextureEnv::Nearest:
+                            osg_texture->setFilter(osg::Texture2D::MAG_FILTER,Texture2D::NEAREST);
+                            break;
+                        case trpgTextureEnv::Linear:
+                        default:
+                            osg_texture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
+                            break;
+                        }
+
+                        // pass on to the stateset.                
                         osg_state_set->setTextureAttributeAndModes(ntex,osg_texture, StateAttribute::ON);
-                
-                        if(osg_texture->getImage())
+
+                        if(osg_texture->getImage() &&  osg_texture->getImage()->isImageTranslucent())
                         { 
-                            switch (osg_texture->getImage()->getPixelFormat())
-                            {
-                            case GL_LUMINANCE_ALPHA:
-                            case GL_RGBA:
-                                osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
-                                osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
-                            }
+                            osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
+                            osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
                         }
                     }        
                 }

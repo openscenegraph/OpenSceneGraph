@@ -392,3 +392,48 @@ Polytope State::getViewFrustum() const
     cv.transformProvidingInverse((*_modelView)*(*_projection));
     return cv;
 }
+
+typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
+
+bool State::setClientActiveTextureUnit( unsigned int unit )
+{
+    if (unit!=_currentClientActiveTextureUnit)
+    {
+        static ActiveTextureProc s_glClientActiveTexture =  
+                (ActiveTextureProc) osg::getGLExtensionFuncPtr("glClientActiveTexture","glClientActiveTextureARB");
+
+        if (s_glClientActiveTexture)
+        {
+            s_glClientActiveTexture(GL_TEXTURE0+unit);
+            _currentClientActiveTextureUnit = unit;
+        }
+        else
+        {
+            return unit==0;
+        }
+    }
+    return true;
+}
+
+
+/** set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
+  * note, only updates values that change.*/
+bool State::setActiveTextureUnit( unsigned int unit )
+{
+    if (unit!=_currentActiveTextureUnit)
+    {
+        static ActiveTextureProc s_glActiveTexture =  
+               (ActiveTextureProc) osg::getGLExtensionFuncPtr("glActiveTexture","glActiveTextureARB");
+
+        if (s_glActiveTexture)
+        {
+            s_glActiveTexture(GL_TEXTURE0+unit);
+            _currentActiveTextureUnit = unit;
+        }
+        else
+        {
+            return unit==0;
+        }
+    }
+    return true;
+}

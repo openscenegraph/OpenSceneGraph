@@ -163,7 +163,7 @@ class MySceneView : public osgUtil::SceneView {
         // override the basic SceneView::app traversal.
         virtual void app()
         {
-            osgUtil::SceneView::app();
+            SceneView::app();
             switch (_viewerMode)
             {
             case(MASTER):

@@ -119,8 +119,13 @@ class CameraPacket {
         
 };
 
+// using namespace osgUtil required to get round VisualStudio's inablility
+// to handle osgUtil::SceneView::app() in the code below, only SceneView::app
+// works..but this breaks the IRIX build, unless you have the osgUtil??!
+// Robert Osfield, July 2002.
+using namespace osgUtil;
 
-class MySceneView : public osgUtil::SceneView {
+class MySceneView : public SceneView {
 
     public:
     

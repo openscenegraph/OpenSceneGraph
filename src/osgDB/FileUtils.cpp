@@ -24,12 +24,25 @@
     #include <Winbase.h>
     #include <sys/types.h>
     #include <sys/stat.h>
+    #include <direct.h> // for _mkdir
+    #define mkdir(x,y) _mkdir((x))
+
     // set up for windows so acts just like unix access().
     #define F_OK 4
+
+
 #else // unix
     #include <unistd.h>
     #include <sys/types.h>
     #include <sys/stat.h>
+#endif
+
+    // set up _S_ISDIR()
+#if !defined(S_ISDIR)
+#  if defined( _S_IFDIR) && !defined( __S_IFDIR)
+#    define __S_IFDIR _S_IFDIR
+#  endif
+#  define S_ISDIR(mode)    (mode&__S_IFDIR)
 #endif
 
 #include <osg/Notify>
@@ -38,6 +51,72 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 
+#include <errno.h>
+#include <stack>
+
+bool osgDB::makeDirectory( const std::string &path )
+{
+    if (path.empty())
+    {
+        osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): cannot create an empty directory" << std::endl;
+        return false;
+    }
+    
+    struct stat stbuf;
+    if( stat( path.c_str(), &stbuf ) == 0 )
+    {
+        if( S_ISDIR(stbuf.st_mode))
+            return true;
+        else
+        {
+            osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << 
+                    path << " already exists and is not a directory!" << std::endl;
+            return false;
+        }
+    }
+
+    std::string dir = path;
+    std::stack<std::string> paths;
+    while( true )
+    {
+        if( dir.empty() )
+            break;
+ 
+        if( stat( dir.c_str(), &stbuf ) < 0 )
+        {
+            switch( errno )
+            {
+                case ENOENT:
+                case ENOTDIR:
+                    paths.push( dir );
+                    break;
+ 
+                default:
+                    osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << sys_errlist[errno] << std::endl;
+                    return false;
+            }
+        }
+        dir = getFilePath(std::string(dir));
+    }
+
+    while( !paths.empty() )
+    {
+        std::string dir = paths.top();
+ 
+        if( mkdir( dir.c_str(), 0755 )< 0 )
+        {
+            osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << sys_errlist[errno] << std::endl;
+            return false;
+        } 
+        paths.pop();
+    }
+    return true;
+}
+
+bool osgDB::makeDirectoryForFile( const std::string &path )
+{
+    return makeDirectory( getFilePath( path ));
+}
 
 void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
 {

@@ -686,7 +686,7 @@ class DataSet : public osg::Referenced
             
             void equalizeBoundaries();
             
-            void setTileComplete(bool complete) { _complete = complete; }
+            void setTileComplete(bool complete);
             bool getTileComplete() const { return _complete; }
 
             void optimizeResolution();
@@ -710,8 +710,8 @@ class DataSet : public osg::Referenced
             osg::ref_ptr<DestinationData>               _terrain;
             osg::ref_ptr<DestinationData>               _models;
             
-            DestinationTile*                            _neighbour[8];
-            bool                                        _equalized[8];
+            DestinationTile*                            _neighbour[NUMBER_OF_POSITIONS];
+            bool                                        _equalized[NUMBER_OF_POSITIONS];
             
             
             unsigned int                                _imagery_maxNumColumns;

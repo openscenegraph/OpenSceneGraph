@@ -6,7 +6,7 @@
 // purchase of the Open Scene Graph Professional License (OSGPL)
 // for further information contact robert@openscenegraph.com.
 
-#include <osgSim/LightPointDrawable>
+#include "LightPointDrawable.h"
 
 #include <osg/Point>
 
@@ -15,8 +15,7 @@ using namespace osgSim;
 LightPointDrawable::LightPointDrawable():
     osg::Drawable(),
     _referenceTime(0.0),
-    _referenceTimeInterval(0.0),
-    _sizedLightPointList()
+    _referenceTimeInterval(0.0)
 {
     setSupportsDisplayList(false);
     
@@ -26,9 +25,11 @@ LightPointDrawable::LightPointDrawable():
     _depthOn = osgNew osg::Depth;
     _depthOn->setWriteMask(true);
 
-    _blendOn = osgNew osg::BlendFunc;
-    _blendOn->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE);
-    //_blendOn->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+    _blendOne = osgNew osg::BlendFunc;
+    _blendOne->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE);
+    
+    _blendOneMinusSrcAlpha = osgNew osg::BlendFunc;
+    _blendOneMinusSrcAlpha->setFunction(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
 
     _colorMaskOff = osgNew osg::ColorMask;
     _colorMaskOff->setMask(false,false,false,false);
@@ -40,69 +41,133 @@ LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::
     osg::Drawable(lpd,copyop),
     _referenceTime(lpd._referenceTime),
     _referenceTimeInterval(lpd._referenceTimeInterval),
-    _sizedLightPointList(lpd._sizedLightPointList)
+    _sizedOpaqueLightPointList(lpd._sizedOpaqueLightPointList),
+    _sizedAdditiveLightPointList(lpd._sizedAdditiveLightPointList),
+    _sizedBlendedLightPointList(lpd._sizedBlendedLightPointList)
 {
 }
+
+void LightPointDrawable::reset()
+{
+    for(SizedLightPointList::iterator itr=_sizedOpaqueLightPointList.begin();
+        itr!=_sizedOpaqueLightPointList.end();
+        ++itr)
+    {
+        if (!itr->empty())
+            itr->erase(itr->begin(),itr->end());
+    }
+
+    for(SizedLightPointList::iterator itr=_sizedAdditiveLightPointList.begin();
+        itr!=_sizedAdditiveLightPointList.end();
+        ++itr)
+    {
+        if (!itr->empty())
+            itr->erase(itr->begin(),itr->end());
+    }
+
+    for(SizedLightPointList::iterator itr=_sizedBlendedLightPointList.begin();
+        itr!=_sizedBlendedLightPointList.end();
+        ++itr)
+    {
+        if (!itr->empty())
+            itr->erase(itr->begin(),itr->end());
+    }
+}
+
 
 void LightPointDrawable::drawImplementation(osg::State& state) const
 {
 
-    if (_sizedLightPointList.empty()) return;
-    
-        
     state.applyMode(GL_POINT_SMOOTH,true);
     state.applyMode(GL_BLEND,true);
     state.applyMode(GL_LIGHTING,false);
     state.applyTextureMode(0,GL_TEXTURE_1D,false);
     state.applyTextureMode(0,GL_TEXTURE_2D,false);
     
-
     glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
-    
-    state.applyAttribute(_blendOn.get());    
-    state.applyAttribute(_depthOff.get());
-    //state.applyMode(GL_DEPTH_TEST,false);
 
-    int pointsize;
-    SizedLightPointList::const_iterator sitr;
-    for(pointsize=1,sitr=_sizedLightPointList.begin();
-        sitr!=_sizedLightPointList.end();
-        ++sitr,++pointsize)
-    {
-
-        const LightPointList& lpl = *sitr;
-        if (!lpl.empty())
-        {
-            glPointSize(pointsize);
-            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            glDrawArrays(GL_POINTS,0,lpl.size());
-        }
-    }
-
-    // switch on depth mask to do set up depth mask.    
     state.applyAttribute(_depthOn.get());
-//    glDepthMask(GL_TRUE);
 
-    state.applyMode(GL_BLEND,false);
-    
-    state.applyAttribute(_colorMaskOff.get());
-//    glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+    state.applyAttribute(_blendOneMinusSrcAlpha.get());
+    state.applyMode(GL_POINT_SMOOTH,true);
 
-    for(pointsize=1,sitr=_sizedLightPointList.begin();
-        sitr!=_sizedLightPointList.end();
+    SizedLightPointList::const_iterator sitr;
+    unsigned int pointsize;
+    for(pointsize=1,sitr=_sizedOpaqueLightPointList.begin();
+        sitr!=_sizedOpaqueLightPointList.end();
         ++sitr,++pointsize)
     {
 
         const LightPointList& lpl = *sitr;
         if (!lpl.empty())
         {
+            //state.applyMode(GL_POINT_SMOOTH,pointsize!=1);
             glPointSize(pointsize);
             glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
             //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
             glDrawArrays(GL_POINTS,0,lpl.size());
         }
     }
+
+    state.applyMode(GL_BLEND,true);
+    state.applyAttribute(_blendOne.get());    
+    state.applyAttribute(_depthOff.get());
+
+    for(pointsize=1,sitr=_sizedAdditiveLightPointList.begin();
+        sitr!=_sizedAdditiveLightPointList.end();
+        ++sitr,++pointsize)
+    {
+
+        const LightPointList& lpl = *sitr;
+        if (!lpl.empty())
+        {
+            //state.applyMode(GL_POINT_SMOOTH,pointsize!=1);
+            glPointSize(pointsize);
+            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            glDrawArrays(GL_POINTS,0,lpl.size());
+        }
+    }
+
+    state.applyAttribute(_blendOneMinusSrcAlpha.get());
+
+    for(pointsize=1,sitr=_sizedBlendedLightPointList.begin();
+        sitr!=_sizedBlendedLightPointList.end();
+        ++sitr,++pointsize)
+    {
+
+        const LightPointList& lpl = *sitr;
+        if (!lpl.empty())
+        {
+            //state.applyMode(GL_POINT_SMOOTH,pointsize!=1);
+            glPointSize(pointsize);
+            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            glDrawArrays(GL_POINTS,0,lpl.size());
+        }
+    }
+
+//     // switch on depth mask to do set up depth mask.    
+//     state.applyAttribute(_depthOn.get());
+// 
+//     state.applyMode(GL_BLEND,false);
+//     
+//     state.applyAttribute(_colorMaskOff.get());
+// 
+//     for(pointsize=1,sitr=_sizedLightPointList.begin();
+//         sitr!=_sizedLightPointList.end();
+//         ++sitr,++pointsize)
+//     {
+// 
+//         const LightPointList& lpl = *sitr;
+//         if (!lpl.empty())
+//         {
+//             glPointSize(pointsize);
+//             glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+//             //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+//             glDrawArrays(GL_POINTS,0,lpl.size());
+//         }
+//     }
 
     glPointSize(1);
     
@@ -116,8 +181,33 @@ bool LightPointDrawable::computeBound() const
 {
     _bbox.init();
 
-    for(SizedLightPointList::const_iterator sitr=_sizedLightPointList.begin();
-        sitr!=_sizedLightPointList.end();
+    SizedLightPointList::const_iterator sitr;
+    for(sitr=_sizedOpaqueLightPointList.begin();
+        sitr!=_sizedOpaqueLightPointList.end();
+        ++sitr)
+    {
+        const LightPointList& lpl = *sitr;
+        for(LightPointList::const_iterator litr=lpl.begin();
+            litr!=lpl.end();
+            ++litr)
+        {
+            _bbox.expandBy(litr->second);
+        }
+    }
+    for(sitr=_sizedAdditiveLightPointList.begin();
+        sitr!=_sizedAdditiveLightPointList.end();
+        ++sitr)
+    {
+        const LightPointList& lpl = *sitr;
+        for(LightPointList::const_iterator litr=lpl.begin();
+            litr!=lpl.end();
+            ++litr)
+        {
+            _bbox.expandBy(litr->second);
+        }
+    }
+    for(sitr=_sizedBlendedLightPointList.begin();
+        sitr!=_sizedBlendedLightPointList.end();
         ++sitr)
     {
         const LightPointList& lpl = *sitr;

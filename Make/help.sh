@@ -17,38 +17,42 @@ The following targets can be used with any subsystem as well as the top
 level build (build in the OSG Root directory).  Note that debug versions 
 and optimized version of targets reside in parallel.
 
-  make              - Same as 'make opt'
-  make opt          - Makes optimized versions of all targets
-  make debug        - Makes debug versions of all targets.
-  make clean        - Removes all object files (both optimized and debug 
-                      versions)
-  make cleanopt     - Removes optimized version of object files
-  make cleandbg     - Removes debug version of object files
-  make cleanlite    - Removes only targets but leaves object files (both
-                      optimized and debug versions)
-  make cleanliteopt - Removes only optimized targets but leaves optimized
-                      objects files.
-  make cleanlitedbg - Removes only debug targets but leaves debug object
-                      files
-  make clobber      - Removes object files and targets (both optimized and
-                      debug versions)
-  make clobberopt   - Removes optimized object files and targets
-  make clobberdbg   - Removes debug object files and targets
-  make beautify     - Pretty print C++ files
-  make docs         - Builds documentation database for current target
-  make depend       - Force a rebuild of the dependency file.  Note that
-                      dependency files are generated automatically during
-                      builds.
+  make                - Same as 'make opt'
+  make opt            - Makes optimized versions of all targets
+  make debug          - Makes debug versions of all targets.
+  make clean          - Removes all object files (both optimized and debug 
+                        versions)
+  make cleanopt       - Removes optimized version of object files
+  make cleandbg       - Removes debug version of object files
+  make cleandepend    - Removes Makedepend file (both optimized and debug 
+                        versions)
+  make cleandependopt - Removes optimized version Makedepend file 
+  make cleandependdbg - Removes debug version Makedepend file 
+  make cleantarget    - Removes only targets but leaves object files (both
+                        optimized and debug versions)
+  make cleantargetopt - Removes only optimized targets but leaves optimized
+                        objects files.
+  make cleantargetdbg - Removes only debug targets but leaves debug object
+                        files
+  make clobber        - Removes object files and targets (both optimized and
+                        debug versions)
+  make clobberopt     - Removes optimized object files and targets
+  make clobberdbg     - Removes debug object files and targets
+  make beautify       - Pretty print C++ files
+  make docs           - Builds documentation database for current target
+  make depend         - Force a rebuild of the dependency file.  Note that
+                        dependency files are generated automatically during
+                        builds.
 
 
 Solars and IRIX can build 64 bit targets.  These require the ARCH=64 argument.
 For example:
 
-  make ARCH=64       - Same as 'make ARCH=64 opt'
-  make ARCH=64 opt   - Builds 64 bit optimized targets
-  make ARCH=64 debug - Builds 64 bit debug versions of targets
-  make ARCH=64 clean - Removes all 64 bit object files (both optimized and
-                       debug versions).
+  make ARCH=64         - Same as 'make ARCH=64 opt'
+  make ARCH=64 opt     - Builds 64 bit optimized targets
+  make ARCH=64 debug   - Builds 64 bit debug versions of targets
+  make ARCH=64 clean   - Removes all 64 bit object files (both optimized and
+                         debug versions).
 
   etc.
 

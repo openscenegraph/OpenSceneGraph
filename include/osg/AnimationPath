@@ -170,7 +170,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         void read(std::istream& in);
 
         /** write the anumation path to a flat ascii file stream.*/
-        void write(std::ostream& out);
+        void write(std::ostream& out) const;
 
     protected:
     
@@ -187,13 +187,12 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
     public:
 
         AnimationPathCallback():
+            _useInverseMatrix(false),
             _timeOffset(0.0),
             _timeMultiplier(1.0),
             _firstTime(DBL_MAX),
             _latestTime(0.0),
-            _pause(false),
             _pauseTime(0.0) {}
-            
 
         AnimationPathCallback(const AnimationPathCallback& apc,const CopyOp& copyop):
             NodeCallback(apc,copyop),

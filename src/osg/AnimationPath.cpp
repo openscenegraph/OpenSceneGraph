@@ -95,7 +95,7 @@ void AnimationPath::read(std::istream& in)
     }
 }
 
-void AnimationPath::write(std::ostream& fout)
+void AnimationPath::write(std::ostream& fout) const
 {
     const TimeControlPointMap& tcpm = getTimeControlPointMap();
     for(TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();

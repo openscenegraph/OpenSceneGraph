@@ -227,7 +227,7 @@ const Vec4& Material::getEmission(const Face face) const
 
 void Material::setShininess( const Face face, float shininess )
 {
-    clampBetweenRange(shininess,0.0f,1.0f,"Material::setShininess()");
+    clampBetweenRange(shininess,0.0f,128.0f,"Material::setShininess()");
     
     switch(face)
     {
@@ -389,12 +389,12 @@ void Material::apply(State&) const
 
     if (_shininessFrontAndBack)
     {
-        glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, _shininessFront* 128.0f );
+        glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, _shininessFront );
     }
     else
     {
-        glMaterialf( GL_FRONT, GL_SHININESS, _shininessFront* 128.0f );
-        glMaterialf( GL_BACK, GL_SHININESS, _shininessBack* 128.0f );
+        glMaterialf( GL_FRONT, GL_SHININESS, _shininessFront );
+        glMaterialf( GL_BACK, GL_SHININESS, _shininessBack );
     }
 
 }

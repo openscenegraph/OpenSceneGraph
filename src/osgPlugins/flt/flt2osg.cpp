@@ -919,7 +919,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             osgMaterial->setSpecular(osg::Material::FRONT_AND_BACK, specular);
             osgMaterial->setEmission(osg::Material::FRONT_AND_BACK, emissiv);
             osgMaterial->setAlpha(osg::Material::FRONT_AND_BACK, alpha);
-            osgMaterial->setShininess(osg::Material::FRONT_AND_BACK, pSMaterial->sfShininess/128.0f);
+            osgMaterial->setShininess(osg::Material::FRONT_AND_BACK, pSMaterial->sfShininess);
             osgStateSet->setAttribute(osgMaterial);
 
             if (alpha < 1.0f) bBlend = true;

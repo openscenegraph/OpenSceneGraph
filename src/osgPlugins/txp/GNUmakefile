@@ -2,12 +2,14 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-        IO_TerrapageNode.cpp\
         ReaderWriterTXP.cpp\
-        TerrapageNode.cpp\
-        TrPageArchive.cpp\
-        TrPageParser.cpp\
-        trPagePageManager.cpp\
+        TXPArchive.cpp\
+        TXPIO.cpp\
+        TXPNode.cpp\
+        TXPPageManager.cpp\
+        TXPTileNode.cpp\
+        TXPParser.cpp\
+        TXPSeamLOD.cpp\
         trpage_basic.cpp\
         trpage_compat.cpp\
         trpage_geom.cpp\
@@ -32,7 +34,6 @@ CXXFILES =\
         trpage_util.cpp\
         trpage_warchive.cpp\
         trpage_writebuf.cpp\
-
 
 
 INC += -I$(THISDIR)

@@ -16,8 +16,8 @@
 #include <trpage_util.h>
 
 /* trpage_util.cpp
-	This source file implements various utility routines for paging archive
-	*/
+    This source file implements various utility routines for paging archive
+    */
 
 /*  The merge routine used to be in here.
     However, merge isn't actually general enough to be part of the library.

@@ -910,8 +910,8 @@ void ComputeBoundShapeVisitor::apply(const HeightField& field)
     }
     else
     {
-    	float x = field.getXInterval()*field.getNumColumns();
-    	float y = field.getYInterval()*field.getNumRows();
+    	float x = field.getXInterval()*(field.getNumColumns()-1);
+    	float y = field.getYInterval()*(field.getNumRows()-1);
 
     	Vec3 base_1(Vec3(0,0,zMin));
     	Vec3 base_2(Vec3(x,0,zMin));

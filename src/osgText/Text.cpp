@@ -364,7 +364,7 @@ void Text::setDrawMode(unsigned int mode)
 { 
     if (_drawMode==mode) return;
 
-    if (_drawMode&3 != mode&3)
+    if ((_drawMode&3) != (mode&3))
     {
         _drawMode=mode;
         if (_drawMode&TEXT_PIXMAP)

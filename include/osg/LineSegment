@@ -63,7 +63,7 @@ class SG_EXPORT LineSegment : public Referenced
 
     protected:
 
-        virtual ~LineSegment() {}
+        virtual ~LineSegment();
         
         static bool intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb);
 

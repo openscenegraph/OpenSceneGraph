@@ -14,6 +14,10 @@
 
 using namespace osg;
 
+LineSegment::~LineSegment()
+{
+}
+
 bool LineSegment::intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb)
 {
     // compate s and e against the xMin to xMax range of bb.

@@ -107,7 +107,7 @@ std::string Font::getFileName() const
 
 void Font::setSize(unsigned int width, unsigned int height)
 {
-    if (_implementation.valid()) return _implementation->setSize(width, height);
+    if (_implementation.valid()) _implementation->setSize(width, height);
 }
 
 Font::Glyph* Font::getGlyph(unsigned int charcode)

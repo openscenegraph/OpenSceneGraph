@@ -102,6 +102,9 @@ void Viewer::setUpViewer(unsigned int options)
         // enable depth testing by default.
         globalStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
+        // enable lighting by default
+        globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+
         // set up an alphafunc by default to speed up blending operations.
         osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
         alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);

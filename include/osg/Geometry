@@ -28,22 +28,6 @@ enum ArrayType
     Vec4ArrayType     = 11
 };
 
-static char* s_classNames[] =
-{
-    "AttributeArray" // 0
-    "ByteArray",     // 1
-    "ShortArray",    // 2
-    "IntArray",      // 3
-    "UByteArray",    // 4
-    "UShortArray",   // 5
-    "UIntArray",     // 6
-    "UByte4Array",   // 7
-    "FloatArray",    // 8
-    "Vec2Array",     // 9
-    "Vec3Array",     // 10
-    "Vec4Array"      // 11
-};
-
 class AttributeArray : public Object
 {
 
@@ -62,7 +46,7 @@ class AttributeArray : public Object
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const AttributeArray*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "AttributeArray"; }
+        virtual const char* className() const;
 
 
         ArrayType               arrayType() const { return _arrayType; }
@@ -102,8 +86,6 @@ class TemplateArray : public AttributeArray, public std::vector<T>
 
         virtual Object* cloneType() const { return osgNew TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return s_classNames[ARRAYTYPE]; }
 
         virtual const GLvoid*   dataPointer() const { if (!empty()) return &front(); else return 0; }
 };
@@ -125,26 +107,17 @@ typedef TemplateArray<Vec4,Vec4ArrayType,4,GL_FLOAT>                      Vec4Ar
 enum PrimitiveType
 {
     PrimitivePrimitiveType              = 0,
-    DrawArraysPrimitiveType              = 1,
+    DrawArraysPrimitiveType             = 1,
     UByteDrawElementsPrimitiveType      = 2,
     UShortDrawElementsPrimitiveType     = 3,
     UIntDrawElementsPrimitiveType       = 4,
-};
-
-static char* s_PrimitiveNames[] =
-{
-    "Primitive",                // 0
-    "DrawArrays",                // 1
-    "UByteDrawElements",        // 2
-    "UShortDrawElements",       // 3
-    "UIntDrawElements"          // 4
 };
 
 class Primitive : public Object
 {
     public:
     
-        enum PrimitiveMode
+        enum Mode
         {
             POINTS = GL_POINTS,
             LINES = GL_LINES,
@@ -165,9 +138,9 @@ class Primitive : public Object
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Primitive*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Primitive"; }
+        virtual const char* className() const;
         
-        PrimitiveType primitiveType;
+        PrimitiveType primitiveType() const { return _primitiveType; }
         
         virtual void draw() const = 0;
         
@@ -200,6 +173,25 @@ class DrawArrays : public Primitive
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawArrays"; }
         
+
+        void set(GLenum mode, GLint first, GLsizei count)
+        {
+            _mode = mode;
+            _first = first;
+            _count = count;
+        }
+
+        void setMode(GLenum mode) { _mode = mode; }
+        GLenum getMode() const { return _mode; }
+        
+        void setFirst(GLint first) { _first = first; }
+        GLint getFirst() const { return _first; }
+        
+        void setCount(GLsizei count) { _count = count; }
+        GLsizei getCount() const { return _count; }
+
+
+
         virtual void draw() const 
         {
             glDrawArrays(_mode,_first,_count);
@@ -242,8 +234,10 @@ class DrawElements : public Primitive, public std::vector<T>
         virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElements(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElements*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return s_PrimitiveNames[PRIMTYPE]; }
         
+        void setMode(GLenum mode) { _mode = mode; }
+        GLenum getMode() const { return _mode; }
+
         virtual void draw() const 
         {
             glDrawElements(_mode,size(),_dataType,&front());
@@ -307,11 +301,16 @@ class SG_EXPORT Geometry : public Drawable
         const AttributeArray* getColorArray() const { return _colorArray.get(); }
 
 
-        typedef std::vector< ref_ptr<AttributeArray> >  TexCoordList;
+        typedef std::vector< ref_ptr<AttributeArray> >  TexCoordArrayList;
+
 
         void setTexCoordArray(unsigned int unit,AttributeArray*);
         AttributeArray* getTexCoordArray(unsigned int unit);
         const AttributeArray* getTexCoordArray(unsigned int unit) const;
+        
+        unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
+        TexCoordArrayList& getTexCoordArrayList() { return _texCoordList; }
+        const TexCoordArrayList& getTexCoordArrayList() const { return _texCoordList; }
 
 
         typedef std::vector< ref_ptr<Primitive> > PrimitiveList;
@@ -362,7 +361,7 @@ class SG_EXPORT Geometry : public Drawable
         AttributeBinding            _colorBinding;
         ref_ptr<AttributeArray>     _colorArray;
         
-        TexCoordList                _texCoordList;
+        TexCoordArrayList           _texCoordList;
 
 };
 

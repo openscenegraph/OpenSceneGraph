@@ -150,6 +150,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\GeoSet.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\Geometry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\Group.cpp
 # End Source File
 # Begin Source File

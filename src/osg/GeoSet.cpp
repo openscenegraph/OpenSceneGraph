@@ -416,6 +416,7 @@ void GeoSet::computeNumVerts() const
 }
 
 
+// just use the base Drawable's PrimitiveFunctor based implementation.
 const bool GeoSet::computeBound() const
 {
     _bbox.init();

@@ -3,19 +3,6 @@
 
 using namespace osg;
 
-void BoundingBox::expandBy(const Vec3& v)
-{
-    if(v.x()<_min.x()) _min.x() = v.x();
-    if(v.x()>_max.x()) _max.x() = v.x();
-
-    if(v.y()<_min.y()) _min.y() = v.y();
-    if(v.y()>_max.y()) _max.y() = v.y();
-
-    if(v.z()<_min.z()) _min.z() = v.z();
-    if(v.z()>_max.z()) _max.z() = v.z();
-}
-
-
 void BoundingBox::expandBy(const BoundingBox& bb)
 {
     if (!bb.valid()) return;

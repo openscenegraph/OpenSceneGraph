@@ -219,7 +219,9 @@ void LayoutAsGrid()
 int main( int argc, char **argv )
 {
     glutInit( &argc, argv );
+
     osgGLUT::Viewer viewer;
+    viewer.setWindowTitle(argv[0]);
 
     // create the commandline args.
     std::vector<std::string> commandLine;

@@ -364,7 +364,7 @@ ifeq ($(OS),CYGWIN)
   SHARED            = -shared\
 		              -Wl,--export-all-symbols  \
 		              -Wl,--output-def,lib$(TARGET_BASENAME).def \
-		              -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
+		              -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a 
   ARCH              = 
   ARCHINST          =
   ARCHARGS          = 
@@ -408,7 +408,7 @@ ifeq ($(OS),MINGW)
   SHARED            = -shared\
                       -Wl,--export-all-symbols  \
                       -Wl,--output-def,lib$(TARGET_BASENAME).def \
-                      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
+                      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a 
   ARCH              = 
   ARCHINST          =
   ARCHARGS          = 

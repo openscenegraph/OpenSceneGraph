@@ -9,6 +9,7 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Group>
+#include <osg/MatrixTransform>
 #include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/Material>
@@ -31,7 +32,7 @@ class ConvertToPerformer : protected osg::NodeVisitor {
         virtual void apply(osg::Billboard& node);
         
         virtual void apply(osg::Group& node);
-        virtual void apply(osg::Transform& node);
+        virtual void apply(osg::MatrixTransform& node);
         virtual void apply(osg::Switch& node);
         virtual void apply(osg::LOD& node);
 
@@ -42,7 +43,7 @@ class ConvertToPerformer : protected osg::NodeVisitor {
         pfNode* _pfRoot;
 
         virtual pfObject* getPfObject(osg::Object* osgObj);
-        virtual void regisiterOsgObjectForPfObject(osg::Object* osgObj,pfObject* pfObj);
+        virtual void registerOsgObjectForPfObject(osg::Object* osgObj,pfObject* pfObj);
 
         pfGeoSet* visitGeoSet(osg::GeoSet* geoset);
         pfGeoState* visitStateSet(osg::StateSet* geostate);

@@ -1,7 +1,6 @@
 #include "ConvertToPerformer.h"
 
 #include <osg/Group>
-#include <osg/Transform>
 #include <osg/LOD>
 #include <osg/Switch>
 #include <osg/Geode>
@@ -10,7 +9,6 @@
 #include <osg/Image>
 #include <osg/Notify>
 
-//#include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
@@ -101,7 +99,7 @@ pfObject* ConvertToPerformer::getPfObject(osg::Object* osgObj)
 }
 
 
-void ConvertToPerformer::regisiterOsgObjectForPfObject(osg::Object* osgObj,pfObject* pfObj)
+void ConvertToPerformer::registerOsgObjectForPfObject(osg::Object* osgObj,pfObject* pfObj)
 {
     _osgToPfMap[osgObj] = pfObj;
 }
@@ -128,7 +126,7 @@ void ConvertToPerformer::apply(osg::Group& node)
     if (!_pfRoot) _pfRoot = pf_group;
     if (_pfParent) _pfParent->addChild(pf_group);
 
-    regisiterOsgObjectForPfObject(&node,pf_group);
+    registerOsgObjectForPfObject(&node,pf_group);
 
     if (!node.getName().empty()) pf_group->setName(node.getName().c_str());
 
@@ -140,7 +138,7 @@ void ConvertToPerformer::apply(osg::Group& node)
 }
 
 
-void ConvertToPerformer::apply(osg::Transform& osgTransform)
+void ConvertToPerformer::apply(osg::MatrixTransform& osgTransform)
 {
     pfGroup* parent = _pfParent;
 
@@ -155,16 +153,16 @@ void ConvertToPerformer::apply(osg::Transform& osgTransform)
     if (!_pfRoot) _pfRoot = pf_dcs;
     if (_pfParent) _pfParent->addChild(pf_dcs);
 
-    regisiterOsgObjectForPfObject(&osgTransform,pf_dcs);
+    registerOsgObjectForPfObject(&osgTransform,pf_dcs);
 
     if (!osgTransform.getName().empty()) pf_dcs->setName(osgTransform.getName().c_str());
 
     const osg::Matrix& matrix = osgTransform.getMatrix();
 
     pfMatrix pf_matrix(matrix(0,0),matrix(0,1),matrix(0,2),matrix(0,3),
-        matrix(1,0),matrix(1,1),matrix(1,2),matrix(1,3),
-        matrix(2,0),matrix(2,1),matrix(2,2),matrix(2,3),
-        matrix(3,0),matrix(3,1),matrix(3,2),matrix(3,3));
+                       matrix(1,0),matrix(1,1),matrix(1,2),matrix(1,3),
+                       matrix(2,0),matrix(2,1),matrix(2,2),matrix(2,3),
+                       matrix(3,0),matrix(3,1),matrix(3,2),matrix(3,3));
 
     pf_dcs->setMat(pf_matrix);
 
@@ -173,7 +171,6 @@ void ConvertToPerformer::apply(osg::Transform& osgTransform)
     osgTransform.traverse(*this);
 
     _pfParent = parent;
-
 }
 
 
@@ -192,7 +189,7 @@ void ConvertToPerformer::apply(osg::Switch& node)
     if (!_pfRoot) _pfRoot = pf_switch;
     if (_pfParent) _pfParent->addChild(pf_switch);
 
-    regisiterOsgObjectForPfObject(&node,pf_switch);
+    registerOsgObjectForPfObject(&node,pf_switch);
 
     if (!node.getName().empty()) pf_switch->setName(node.getName().c_str());
 
@@ -219,7 +216,7 @@ void ConvertToPerformer::apply(osg::LOD& node)
     if (!_pfRoot) _pfRoot = pf_lod;
     if (_pfParent) _pfParent->addChild(pf_lod);
 
-    regisiterOsgObjectForPfObject(&node,pf_lod);
+    registerOsgObjectForPfObject(&node,pf_lod);
 
     if (!node.getName().empty()) pf_lod->setName(node.getName().c_str());
 
@@ -245,11 +242,11 @@ void ConvertToPerformer::apply(osg::Billboard& node)
     if (!_pfRoot) _pfRoot = pf_billboard;
     if (_pfParent) _pfParent->addChild(pf_billboard);
 
-    regisiterOsgObjectForPfObject(&node,pf_billboard);
+    registerOsgObjectForPfObject(&node,pf_billboard);
 
     if (!node.getName().empty()) pf_billboard->setName(node.getName().c_str());
 
-    for(int i=0;i<node.getNumDrawables();++i)
+    for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
         osg::GeoSet* osg_gset = dynamic_cast<osg::GeoSet*>(node.getDrawable(i));
         if (osg_gset)
@@ -278,11 +275,11 @@ void ConvertToPerformer::apply(osg::Geode& node)
     if (!_pfRoot) _pfRoot = pf_geode;
     if (_pfParent) _pfParent->addChild(pf_geode);
 
-    regisiterOsgObjectForPfObject(&node,pf_geode);
+    registerOsgObjectForPfObject(&node,pf_geode);
 
     if (!node.getName().empty()) pf_geode->setName(node.getName().c_str());
 
-    for(int i=0;i<node.getNumDrawables();++i)
+    for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
         osg::GeoSet* osg_gset = dynamic_cast<osg::GeoSet*>(node.getDrawable(i));
         if (osg_gset)
@@ -494,9 +491,9 @@ pfGeoState* ConvertToPerformer::visitStateSet(osg::StateSet* stateset)
 
     switch(stateset->getMode(GL_LIGHTING))
     {
-        case(osg::StateAttribute::OVERRIDE_ON):
+        case(osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON):
         case(osg::StateAttribute::ON): pf_geostate->setMode(PFSTATE_ENLIGHTING,PF_ON);break;
-        case(osg::StateAttribute::OVERRIDE_OFF):
+        case(osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF):
         case(osg::StateAttribute::OFF): pf_geostate->setMode(PFSTATE_ENLIGHTING,PF_OFF);break;
         // pfGeostate value as default inherit.
         case(osg::StateAttribute::INHERIT): break;
@@ -504,9 +501,9 @@ pfGeoState* ConvertToPerformer::visitStateSet(osg::StateSet* stateset)
 
     switch(stateset->getMode(GL_TEXTURE_2D))
     {
-        case(osg::StateAttribute::OVERRIDE_ON):
+        case(osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON):
         case(osg::StateAttribute::ON): pf_geostate->setMode(PFSTATE_ENTEXTURE,PF_ON);break;
-        case(osg::StateAttribute::OVERRIDE_OFF):
+        case(osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF):
         case(osg::StateAttribute::OFF): pf_geostate->setMode(PFSTATE_ENTEXTURE,PF_OFF);break;
         // pfGeostate value as default inherit.
         case(osg::StateAttribute::INHERIT): break;

@@ -36,6 +36,8 @@
 #include <osg/Notify>
 #include <osg/CollectOccludersVisitor>
 
+#include <osg/Fog>
+
 #include <osgDB/WriteFile>
 
 #include <osgUtil/IntersectVisitor>
@@ -843,6 +845,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         sceneView->setGlobalStateSet(globalStateSet);
     }
 
+
     switch( key )
     {
 
@@ -1219,6 +1222,38 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             }
             break;
 
+
+        case 'y':
+        case 'Y':
+            {
+                osg::Fog* globalFog = dynamic_cast<osg::Fog*>(globalStateSet->getAttribute(osg::StateAttribute::FOG));
+
+                if(!globalFog)
+                {
+                    globalFog = new osg::Fog;
+                    globalFog->setColor(osg::Vec4(0.9,0.9,0.9,1.0));
+                    globalFog->setDensity(0.01f);
+                    
+                    globalStateSet->setAttributeAndModes(globalFog,osg::StateAttribute::ON);
+                }
+
+                //increase/reduce fog:
+                if(globalFog)
+                {
+                    float density = globalFog->getDensity();
+
+                    if (key=='y') density -= 0.001;
+                    else density += 0.001;
+
+                    if (density<0.0f) density=0.0f;
+
+                    std::cout<<"setting fog density "<<density<<endl;                    
+                    
+                    globalFog->setDensity(density);
+                }
+            }
+            break;
+
         case 27 :
             
             _exit = true;
@@ -1529,16 +1564,16 @@ int writePrims( const int ypos, osg::Statistics& stats)
     int npix=0; // offset from ypos
     static char *prtypes[]=
     {
-        "  Point", // GL_POINTS				0x0000
-        "  Lines", // GL_LINES				0x0001
-        " LnLoop", // GL_LINE_LOOP			0x0002
-        "  LnStr", // GL_LINE_SRIP        		0x0002
-        "   Tris", // GL_TRIANGLES			0x0004 
-        " TriStr", // GL_TRIANGLE_STRIP			0x0005
-        " TriFan", // GL_TRIANGLE_FAN			0x0006
-        "  Quads", // GL_QUADS				0x0007
-        " QudStr", // GL_QUAD_STRIP			0x0008
-        "   Poly"  // GL_POLYGON				0x0009
+        "  Point", // GL_POINTS               0x0000
+        "  Lines", // GL_LINES                0x0001
+        " LnLoop", // GL_LINE_LOOP            0x0002
+        "  LnStr", // GL_LINE_SRIP            0x0002
+        "   Tris", // GL_TRIANGLES            0x0004 
+        " TriStr", // GL_TRIANGLE_STRIP       0x0005
+        " TriFan", // GL_TRIANGLE_FAN         0x0006
+        "  Quads", // GL_QUADS                0x0007
+        " QudStr", // GL_QUAD_STRIP           0x0008
+        "   Poly"  // GL_POLYGON              0x0009
     };         
             
     glColor3f(.9f,.9f,0.0f);

@@ -40,6 +40,7 @@ PLUGIN_DIRS = \
 	osg\
 	osgtgz\
 	pic\
+        pnm\
 	rgb\
 	tga\
 	tgz\
@@ -139,6 +140,8 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgviewer\
 
+#	osgautotransform\
+#	osgprerendercubemap\
 #	osgjigsaw\
 
 # comment in you want to compile the cluster demo.

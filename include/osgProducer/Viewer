@@ -150,8 +150,14 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         const osg::AnimationPath* getAnimationPath() const { return _animationPath.get(); }
 
 
+        const double* getPosition() const { return _position; }
+        double getSpeed() const { return _speed; }
+        osg::Quat getOrientation() const { return _orientation; }
+
+
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
+        
 
     protected :
 
@@ -166,11 +172,15 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         EventHandlerList _eventHandlerList;
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> _keyswitchManipulator;
 
-        osg::ref_ptr<osg::NodeVisitor> _updateVisitor;
+        osg::ref_ptr<osg::NodeVisitor>      _updateVisitor;
 
         bool                                _recordingAnimationPath;
         osg::ref_ptr<osg::AnimationPath>    _animationPath;
 
+        // record the current position and orientation of the view.
+        double                              _position[3];
+        osg::Quat                           _orientation;
+        double                              _speed;
 };
 
 }

@@ -715,8 +715,8 @@ bool createWorld(const std::string& inputFile, const std::string& baseName, cons
 
     bool doBumpMapping = true;
     
-    int bumpMapSizeWidth = 4097;
-    int bumpMapSizeHeight = 4097;
+    int bumpMapSizeWidth = 1024;
+    int bumpMapSizeHeight = 1024;
 //    int bumpMapSizeWidth = 512;
 //    int bumpMapSizeHeight = 512;
     

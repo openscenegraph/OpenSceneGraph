@@ -18,10 +18,7 @@ SlideShowConstructor::SlideShowConstructor()
 {
     _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
     _slideHeight = osg::DisplaySettings::instance()->getScreenHeight();
-    _slideWidth = _slideHeight*1280.0f/1024.f;
-
-    _slideOrigin.set(-_slideWidth*0.5f,_slideDistance,-_slideHeight*0.5f);
-    
+    _slideWidth = osg::DisplaySettings::instance()->getScreenWidth();
 
     _backgroundColor.set(0.0f,0.0f,0.0f,1.0f);
     _textColor.set(1.0f,1.0f,1.0f,1.0f);
@@ -60,6 +57,8 @@ void SlideShowConstructor::setPresentationAspectRatio(const std::string& str)
 
 void SlideShowConstructor::createPresentation()
 {
+    _slideOrigin.set(-_slideWidth*0.5f,_slideDistance,-_slideHeight*0.5f);
+
     _titleHeight = _slideHeight*0.06f;
     _titleWidth = _slideWidth*0.8f;
     _titleOrigin = _slideOrigin + osg::Vec3(_titlePositionRatios.x()*_slideWidth,_titlePositionRatios.y()*1.0f,_titlePositionRatios.z()*_slideHeight);
@@ -84,6 +83,8 @@ void SlideShowConstructor::createPresentation()
     hp->eye.set(0.0f,0.0f,0.0f);
     hp->center = slideCenter;
     hp->up.set(0.0f,0.0f,1.0f);
+    
+    std::cout<<" slideCenter "<<slideCenter<<std::endl;
     
     if (_presentationDuration!=0.0)
     {

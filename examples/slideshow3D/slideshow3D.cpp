@@ -87,7 +87,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Turn auto stepping on by default");
-    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in seconds between layers/slides");
+    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time duration in seconds between layers/slides");
+    arguments.getApplicationUsage()->addCommandLineOption("-s <float> <float> <float>","width, height, distance and of the screen away from the viewer");
     
 
     // construct the viewer.
@@ -112,6 +113,9 @@ int main( int argc, char **argv )
 
     bool autoSteppingActive = false;
     while (arguments.read("-a")) autoSteppingActive = true;
+    
+    
+    
 
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
     SlideEventHandler* seh = new SlideEventHandler;
@@ -124,6 +128,17 @@ int main( int argc, char **argv )
     PointsEventHandler* peh = new PointsEventHandler;
     viewer.getEventHandlerList().push_front(peh);
 
+    float width, height, distance;
+    bool sizesSpecified = false;
+    while (arguments.read("-s", width, height, distance)) 
+    {
+        sizesSpecified = true;
+        
+        osg::DisplaySettings::instance()->setScreenDistance(distance);
+        osg::DisplaySettings::instance()->setScreenHeight(height);
+        osg::DisplaySettings::instance()->setScreenWidth(width);
+    }
+
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
@@ -135,7 +150,7 @@ int main( int argc, char **argv )
     }
 
     // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
+    //arguments.reportRemainingOptionsAsUnrecognized();
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -179,6 +194,14 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
+    if (sizesSpecified)
+    {
+        double vfov = osg::RadiansToDegrees(atan2(height/2.0,distance)*2.0);
+        double hfov = osg::RadiansToDegrees(atan2(width/2.0,distance)*2.0);
+        
+        viewer.setLensPerspective( hfov, vfov, 0.1, 1000.0);
+    }
+    
     // set all the sceneview's up so that their left and right add cull masks are set up.
     for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
         itr!=viewer.getSceneHandlerList().end();

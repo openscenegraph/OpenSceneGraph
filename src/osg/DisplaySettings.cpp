@@ -48,8 +48,9 @@ void DisplaySettings::copy(const DisplaySettings& vs)
     _displayType = vs._displayType;
     _stereoMode = vs._stereoMode;
     _eyeSeparation = vs._eyeSeparation;
-    _screenDistance = vs._screenDistance;
+    _screenWidth = vs._screenWidth;
     _screenHeight = vs._screenHeight;
+    _screenDistance = vs._screenDistance;
 
     _splitStereoHorizontalEyeMapping = vs._splitStereoHorizontalEyeMapping;
     _splitStereoHorizontalSeparation = vs._splitStereoHorizontalSeparation;
@@ -89,8 +90,9 @@ void DisplaySettings::setDefaults()
     _stereo = false;
     _stereoMode = ANAGLYPHIC;
     _eyeSeparation = 0.05f;
-    _screenDistance = 0.5f;
+    _screenWidth = 0.325f;
     _screenHeight = 0.26f;
+    _screenDistance = 0.5f;
 
     _splitStereoHorizontalEyeMapping = LEFT_EYE_LEFT_VIEWPORT;
     _splitStereoHorizontalSeparation = 0;
@@ -200,14 +202,19 @@ void DisplaySettings::readEnvironmentalVariables()
         _eyeSeparation = atof(ptr);
     }
 
-    if( (ptr = getenv("OSG_SCREEN_DISTANCE")) != 0)
+    if( (ptr = getenv("OSG_SCREEN_WIDTH")) != 0)
     {
-        _screenDistance = atof(ptr);
+        _screenWidth = atof(ptr);
     }
 
     if( (ptr = getenv("OSG_SCREEN_HEIGHT")) != 0)
     {
         _screenHeight = atof(ptr);
+    }
+
+    if( (ptr = getenv("OSG_SCREEN_DISTANCE")) != 0)
+    {
+        _screenDistance = atof(ptr);
     }
 
     if( (ptr = getenv("OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING")) != 0)

@@ -136,6 +136,10 @@ Viewer::Viewer():
     _done(false),
     _recordingAnimationPath(false)
 {
+    _position[0] = 0.0;
+    _position[1] = 0.0;
+    _position[2] = 0.0;
+    _speed = 0.0;
 }
 
 Viewer::Viewer(Producer::CameraConfig *cfg):
@@ -143,6 +147,10 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
     _done(false),
     _recordingAnimationPath(false)
 {
+    _position[0] = 0.0;
+    _position[1] = 0.0;
+    _position[2] = 0.0;
+    _speed = 0.0;
 }
 
 Viewer::Viewer(const std::string& configFile):
@@ -150,6 +158,10 @@ Viewer::Viewer(const std::string& configFile):
     _done(false),
     _recordingAnimationPath(false)
 {
+    _position[0] = 0.0;
+    _position[1] = 0.0;
+    _position[2] = 0.0;
+    _speed = 0.0;
 }
 
 Viewer::Viewer(osg::ArgumentParser& arguments):
@@ -157,6 +169,11 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     _done(false),
     _recordingAnimationPath(false)
 {
+    _position[0] = 0.0;
+    _position[1] = 0.0;
+    _position[2] = 0.0;
+    _speed = 0.0;
+
     // report the usage options.
     if (arguments.getApplicationUsage())
     {
@@ -477,14 +494,38 @@ void Viewer::update()
 
 void Viewer::frame()
 {
+    // record the position of the view point.
+    osg::Matrixd matrix;
+    matrix.invert(getViewMatrix());
+    matrix.get(_orientation);
 
+    double newPosition[3];
+    newPosition[0] = matrix(3,0);
+    newPosition[1] = matrix(3,1);
+    newPosition[2] = matrix(3,2);
+    
+    _speed = sqrtf(osg::square(newPosition[0]-_position[0])+osg::square(newPosition[1]-_position[1])+osg::square(newPosition[2]-_position[2]));
+    _position[0] = newPosition[0];
+    _position[1] = newPosition[1];
+    _position[2] = newPosition[2];
+    
+#if 0
+    osg::Quat::value_type angle;
+    osg::Vec3 axis;
+    
+    osg::Quat roll;
+    roll.makeRotate(-osg::PI/2.0f,1,0,0);
+    
+    _orientation = roll*_orientation;
+    
+    _orientation.getRotate(angle,axis);
+    
+    std::cout<<"_position "<<_position[0]<<", "<<_position[1]<<", "<<_position[2]<<"  speed "<<_speed<<"  angle "<<osg::RadiansToDegrees(angle)<<" axis "<<axis<<std::endl;
+#endif    
+    
     if (getRecordingAnimationPath() && getAnimationPath())
     {
-        osg::Matrixd matrix;
-        matrix.invert(getViewMatrix());
-        osg::Quat quat;
-        matrix.get(quat);
-        getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(matrix.getTrans(),quat));
+        getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(osg::Vec3(_position[0],_position[1],_position[2]),_orientation));
     }
 
     OsgCameraGroup::frame();

@@ -488,12 +488,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& fi
             else constructor.setPresentationName("");
             xmlFree(key);
         }
-        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"ratio")))
+        /*else if ((!xmlStrcmp(cur->name, (const xmlChar *)"ratio")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) constructor.setPresentationAspectRatio((const char*)key);
             xmlFree(key);
-        }
+        }*/
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"bgcolor")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);

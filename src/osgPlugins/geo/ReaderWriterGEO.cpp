@@ -86,7 +86,7 @@ void geoHeaderGeo::addUserVar(const georecord &gr)
 //== handler for updating internal variables
 void geoHeaderGeo::update(void)
 { // update the scene
-    osg::Timer_t _frameTick = _timer.tick();;
+    osg::Timer_t _frameTick = _timer.tick();
     _lastFrameTick=_frameTick;
     
     _frameStamp.setFrameNumber(_frameStamp.getFrameNumber()+1);
@@ -224,7 +224,7 @@ public:
                                 cb->setColorPalette(ghdr->getColorPalette());
                                 cb->setVertIndices(ncoord-1,1); // part of colours array to be modified
                                 bool ok=cb->makeBehave((*rcitr), ghdr);
-                                BehList.push_back(cb);
+                                if (ok) BehList.push_back(cb);
                             } // if the model does not use vertex colours... there can be no colour animation at vertex level
                         }
                     }
@@ -250,7 +250,7 @@ public:
                 float red=cp[0]/255.0f;
                 float green=cp[1]/255.0f;
                 float blue=cp[2]/255.0f;
-                float alpha=cp[3]/255.0f;
+                // may need alpha in future:: float alpha=cp[3]/255.0f;
                 colors->push_back(Vec4(red,green,blue,1.0));
             } else { // look for a colour index (exclusive!)
                 gfd=gr->getField(GEO_DB_VRTX_COLOR_INDEX);
@@ -376,7 +376,7 @@ class ReaderWriterGEO : public ReaderWriter
                     gr.readfile(fin);
                     //if (gr.getType() != DB_DSK_INSTANCE) gr.writefile(fdup); // create a duplicate file
                     if (gr.getType() == DB_DSK_NORMAL_POOL) {
-                        geoField *gfff=gr.getModField(GEO_DB_NORMAL_POOL_VALUES);;
+                        geoField *gfff=gr.getModField(GEO_DB_NORMAL_POOL_VALUES);
                         gfff->uncompress();// uncompress the normals
                     }
                     recs.push_back(gr); // add to a list of all records
@@ -571,7 +571,7 @@ class ReaderWriterGEO : public ReaderWriter
             }
             return one;
         }
-        osg::Geometry *makeNewGeometry(const georecord *grec, geoInfo &ginf, uint imat) {
+        osg::Geometry *makeNewGeometry(const georecord *grec, geoInfo &ginf, int imat) {
             const int shademodel=ginf.getShademodel();
             const bool bothsides=ginf.getBothsides();
             osg::Geometry *nug;
@@ -602,7 +602,7 @@ class ReaderWriterGEO : public ReaderWriter
                     }
                 }
             }
-            if (imat<0 || imat>=matlist.size()) imat=0;
+            if (imat<0 || imat>=(int)matlist.size()) imat=0;
             const geoField *gfd=grec->getField(GEO_DB_POLY_USE_MATERIAL_DIFFUSE); // true: use material...
             bool usemat= gfd ? gfd->getBool() : false;
             if (!usemat) {
@@ -674,10 +674,11 @@ class ReaderWriterGEO : public ReaderWriter
                 for (std::vector<georecord *>::const_iterator itr=gr.begin();
                     itr!=gr.end();
                     ++itr) {
-                    bool hbeh=vinf->addIndices((*itr), theHeader, defcol, grec);
-                    if (hbeh) { // then add a behaviour callback to the primitive
-                        bool hasbehave=true;
-                    }
+                    //bool hbeh=
+					vinf->addIndices((*itr), theHeader, defcol, grec);
+                    //if (hbeh) { // then add a behaviour callback to the primitive
+                    //    bool hasbehave=true;
+                    //}
                     nv++;
                 }
             }
@@ -732,10 +733,6 @@ class ReaderWriterGEO : public ReaderWriter
                 gfd=gr->getField(GEO_DB_TEXT_COLOR_INDEX);
                 if (gfd) {
                     int icp=gfd->getInt();
-                    float red=1.0f; // convert to range {0-1}
-                    float green=1.0f;
-                    float blue=1.0f;
-                    float alpha=1.0f;
                     float col[4];
                     theHeader->getPalette(icp,col);
                     text->setColor(osg::Vec4(col[0],col[1],col[2],1.0));
@@ -828,7 +825,7 @@ class ReaderWriterGEO : public ReaderWriter
                         float red=cls[0]/255.0f;
                         float green=cls[1]/255.0f;
                         float blue=cls[2]/255.0f;
-                        float alpha=1.0f; // cls[3]*frac/255.0f;
+                        //float alpha=1.0f; // cls[3]*frac/255.0f;
                         osg::Vec4 colour(red,green,blue,1.0f);
                         lpn->addLightPoint(osgSim::LightPoint(true,coord_pool[idx],colour,1.0f,1.0f,30,0,0,osgSim::LightPoint::BLENDED));
                     } else { // get colour from palette
@@ -848,16 +845,16 @@ class ReaderWriterGEO : public ReaderWriter
                 ++itr)
             {
                 if ((*itr)->getType()==DB_DSK_LIGHTPT) { // light points ONLY
-                    geoInfo ginf(0,0, true);;
+                    geoInfo ginf(0,0, true);
                     ginf.setPools(&coord_pool, &normal_pool); // holds all types of coords, indices etc
                     osgSim::LightPointNode *gd=new osgSim::LightPointNode;
-                    const geoField *gfd=(*itr)->getField(GEO_DB_LIGHTPT_TYPE); // omni, uni, bi
+                 // to be implemented   const geoField *gfd=(*itr)->getField(GEO_DB_LIGHTPT_TYPE); // omni, uni, bi
                     makeLightPointNode((*itr),gd); // add vertex positions to light point set
                     nug->addChild(gd);
                 }
             }
         }
-        void makeAnimatedGeometry(const georecord grec, const unsigned int imat,Group *nug) {
+        void makeAnimatedGeometry(const georecord grec, const int imat,Group *nug) {
             // animated polygons - create a matrix & geode & poly & add to group nug
             const std::vector<georecord *> gr=grec.getchildren();
             bool bothsides=allOneSided(&grec);
@@ -873,7 +870,7 @@ class ReaderWriterGEO : public ReaderWriter
                         int shademodel=gfd ? gfd->getInt() : GEO_POLY_SHADEMODEL_LIT_GOURAUD;
                         gfd=(*itr)->getField(GEO_DB_POLY_USE_MATERIAL_DIFFUSE); // true: use material...
                         bool usemat= gfd ? gfd->getBool() : false;
-                        geoInfo ginf(txidx,shademodel, bothsides);;
+                        geoInfo ginf(txidx,shademodel, bothsides);
                         ginf.setPools(&coord_pool, &normal_pool); // holds all types of coords, indices etc
                         MatrixTransform *mtr=makeBehave(*itr);
                         Geode *gd=new Geode;
@@ -1084,7 +1081,7 @@ class ReaderWriterGEO : public ReaderWriter
             // - we need to create this tree to render text
             Group *nug=new Group;
             const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
-            const unsigned int imat=gfd ? gfd->getInt():0;
+            // may be used in future const unsigned int imat=gfd ? gfd->getInt():0;
             gfd=gr->getField(GEO_DB_RENDERGROUP_NAME);
             if (gfd) {
                 nug->setName(gfd->getChar());
@@ -1100,7 +1097,6 @@ class ReaderWriterGEO : public ReaderWriter
                 char *name = gfd->getChar();
                 nug->setName(name);
             }
-            Geode *gd=new Geode;
             makeLightPointGeometry(gr,nug);
             if (nug->getNumChildren() <=0) {
                 nug=NULL;
@@ -1112,9 +1108,9 @@ class ReaderWriterGEO : public ReaderWriter
             // movement actions require a transform node to be inserted, and this cannot be 
             // derived from Geode.  So create a group, add matrix transform(s) for each animated polygon
             const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
-            const unsigned int imat=gfd ? gfd->getInt():0;
-            gfd=gr->getField(GEO_DB_RENDERGROUP_IS_BILLBOARD);
-            bool isbillb = gfd ? gfd->getBool() : false;
+            const int imat=gfd ? gfd->getInt():0;
+       //     gfd=gr->getField(GEO_DB_RENDERGROUP_IS_BILLBOARD);
+         //   bool isbillb = gfd ? gfd->getBool() : false;
             Group *nug=new Group;
        /*     if (isbillb) {
                 Billboard *bilb= new Billboard ;
@@ -1199,7 +1195,7 @@ class ReaderWriterGEO : public ReaderWriter
                 int selector_mask = 0x1;
                 for(int pos=0;pos<32;++pos)
                 {
-                    sw->setValue(pos,imask&selector_mask); 
+                    sw->setValue(pos,((imask&selector_mask)?true:false)); 
                     selector_mask <<= 1;
                 }
                 osg::notify(osg::WARN) << gr << " imask " << imask << std::endl;
@@ -1454,7 +1450,7 @@ class ReaderWriterGEO : public ReaderWriter
                         break;
                     case DB_DSK_VISIBILITY_ACTION: {
                         geoVisibBehaviour *vb = new geoVisibBehaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_VISIBILITY_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                    }
@@ -1850,7 +1846,6 @@ void userVars::addUserVar(const georecord &gr) {
 
 void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
     double stmptime=_frameStamp.getReferenceTime();
-    osg::Timer_t _frameTick = _timer.tick();;
     int iord=0;
     for (std::vector<geoValue>::const_iterator itr=vars.begin(); //gfl.begin();
     itr!=vars.end(); // gfl.end();

@@ -185,11 +185,11 @@ void geoCompareBehaviour::doaction(void) const { // do compare operation
     if (in && out) {
         double var2=varop? *varop : constant;
         switch (oper) {
-        case 1: oper;  *out = (*in < var2) ? 1.0: -1.0; break;// Less
-        case 2: oper;  *out = (*in <= var2) ? 1.0: -1.0; break;//=LessOREQ
-        case 3: oper;  *out = (*in > var2) ? 1.0: -1.0; break; // greater...
-        case 4: oper;  *out = (*in >= var2) ? 1.0: -1.0; break;
-        case 5: oper;  *out = (*in == var2) ? 1.0: -1.0; break;
+        case 1: *out = (*in < var2) ? 1.0: -1.0; break;// Less
+        case 2: *out = (*in <= var2) ? 1.0: -1.0; break;//=LessOREQ
+        case 3: *out = (*in > var2) ? 1.0: -1.0; break; // greater...
+        case 4: *out = (*in >= var2) ? 1.0: -1.0; break;
+        case 5: *out = (*in == var2) ? 1.0: -1.0; break;
         case UNKNOWN: break;
         }
     }
@@ -409,7 +409,7 @@ bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *the
     }
     return ok;
 }
-void geoMoveVertexBehaviour::doaction(Matrix &mtr,osg::Drawable *dr) {
+void geoMoveVertexBehaviour::doaction(Matrix &mtr) {
     // update the matrix mtr
     if (getVar()) {
             switch (getType()) {
@@ -478,7 +478,7 @@ bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
     return ok;
 }
 
-bool geoVisibBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader, const uint act) {
+bool geoVisibBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
     bool ok=false;
     const geoField *gfd= grec->getField(GEO_DB_VISIBILITY_ACTION_INPUT_VAR);
     if (gfd) {
@@ -519,7 +519,8 @@ bool geoColourBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *t
 void geoColourBehaviour::doaction(osg::Drawable *dr) const
 { // do visibility operation on Node
     if (getVar()) {
-        uint idx=getValue();
+		double val=getValue();
+        uint idx=(uint)val;
         osg::Geometry *gm=dynamic_cast<osg::Geometry *>(dr);
         if (gm) {
             osg::Vec4Array* cla = dynamic_cast<osg::Vec4Array*>(gm->getColorArray());
@@ -640,7 +641,7 @@ void geoBehaviourDrawableCB::app(osg::NodeVisitor *,osg::Drawable *dr) {
         if (clrb) clrb->doaction(dr);
         geoMoveVertexBehaviour *mvvb=dynamic_cast<geoMoveVertexBehaviour *>(*itr);
         if (mvvb && (prevvtr<0 || prevvtr==mvvb->getindex())) {
-            mvvb->doaction(mtr,dr);
+            mvvb->doaction(mtr);
             pos=mvvb->getpos();
             prevvtr=mvvb->getindex();
         }
@@ -660,7 +661,7 @@ void geoBehaviourDrawableCB::app(osg::NodeVisitor *,osg::Drawable *dr) {
                 if (mvvb) {
                     int vidx=mvvb->getindex();
                     if (mvvb && (prevvtr<vidx || (newpos && prevvtr==vidx))) {
-                        mvvb->doaction(mtr,dr);
+                        mvvb->doaction(mtr);
                         prevvtr=vidx;
                         pos=mvvb->getpos();
                         newpos=true;

@@ -50,7 +50,7 @@ inline double addv(const double var1,const double var2) { return var1+var2; }
 inline double subv(const double var1,const double var2) { return var1-var2; }
 inline double mulv(const double var1,const double var2) { return var1*var2; }
 inline double divv(const double var1,const double var2) { return var1/var2; }
-inline double equa(const double var1,const double var2) { return var1; }
+inline double equa(const double var1,const double var2) { return var1==var2; }
 inline double linear(const double var1,const double var2,const double var3) { return var2*var1+var3; }
 inline double lininv(const double var1,const double var2,const double var3) { return var2/var1+var3; }
 inline double linmod(const double var1,const double var2,const double var3) { return var2*fmod(var1,var3); }
@@ -190,10 +190,10 @@ public:
     inline unsigned int getType(void) const { return type;}
     inline const double *getVar(void) const { return var;}
     inline double getValue(void) const { return *var;}
-    virtual void doaction(osg::Node *node) const {
+    virtual void doaction(osg::Node *) const {
     }
 
-    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader, const uint act) {
+    virtual bool makeBehave(const georecord *, geoHeaderGeo *, const uint ) {
 		return true;
     }
 private:
@@ -225,7 +225,7 @@ public:
 	void setpos(const osg::Vec3 p) { pos=p;}
 	void setindx(const int idx) { index=idx;}
 	inline int getindex(void) const { return index;}
-    void doaction(Matrix &mtr,osg::Drawable *dr);
+    void doaction(Matrix &mtr);
 
     bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader, const uint act);
 private:
@@ -240,7 +240,7 @@ public:
     geoVisibBehaviour() { }
     virtual ~geoVisibBehaviour() { }
 
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader, const uint act);
+    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
     void doaction(osg::Node *node) const;
 private:
 };

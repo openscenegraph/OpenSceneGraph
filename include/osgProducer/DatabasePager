@@ -1,0 +1,98 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGPRODUCER_DATABASEPAGER
+#define OSGPRODUCER_DATABASEPAGER 1
+
+#include <osg/NodeVisitor>
+#include <osg/Group>
+#include <osg/PagedLOD>
+
+#include <Producer/Thread>
+#include <Producer/Mutex>
+
+#include <osgProducer/Export>
+
+namespace osgProducer {
+
+/** Database paging class which manages the loading of files in a background thread, 
+  * and syncronizing of loaded models with the main scene graph.*/
+class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public Producer::Thread
+{
+    public :
+
+        DatabasePager();
+
+        /** add a request to load a node file to end the the database request list.*/
+        virtual void requestNodeFile(const std::string& fileName,osg::Group* group);
+
+        /** run does the database paging.*/        
+        virtual void run();
+        
+        /** add the loaded data to the scene graph.*/
+        void addLoadedDataToSceneGraph();
+
+        /** find all PagedLOD nodes in a subgraph and register them with 
+          * the DatabasePager so it can keep track of expired nodes.*/
+        void registerPagedLODs(osg::Node* subgraph);
+
+        /** Set the amount of time that a subgraph will be kept without being visited in the cull traversal
+          * before being removed.*/
+        void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
+        
+        /** Get the amount of time that a subgraph will be kept without being visited in the cull traversal
+          * before being removed.*/
+        double getExpiryDelay() const { return _expiryDelay; }
+
+        /** iterate through the active PagedLOD nodes children removing 
+          * children which havn't been visited since specified expiryTime.*/
+        void removeExpiredSubgraphs(double currentFrameTime);
+        
+
+    public:
+
+        typedef std::vector< osg::ref_ptr<osg::PagedLOD> > PagedLODList;
+
+    protected :
+
+        virtual ~DatabasePager() {}
+
+        struct DatabaseRequest : public osg::Referenced
+        {
+            DatabaseRequest():
+                _numOfRequests(0)
+            {}
+        
+            std::string                 _fileName;
+            unsigned int                _numOfRequests;
+            osg::ref_ptr<osg::Group>    _groupForAddingLoadedSubgraph;
+            osg::ref_ptr<osg::Node>     _loadedModel;
+        };
+        
+        typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
+
+        DatabaseRequestList     _fileRequestList;
+        Producer::Mutex         _fileRequestListMutex;
+        
+        DatabaseRequestList     _fileLoadedList;
+        Producer::Mutex         _fileLoadedListMutex;
+        
+        PagedLODList            _pagedLODList;
+        
+        double                  _expiryDelay;
+
+};
+
+}
+
+#endif

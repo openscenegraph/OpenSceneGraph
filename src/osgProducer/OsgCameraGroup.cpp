@@ -19,6 +19,7 @@
 #include <osgDB/FileUtils>
 
 #include <osgProducer/OsgCameraGroup>
+#include <osgProducer/DatabasePager>
 
 using namespace Producer;
 using namespace osgProducer;
@@ -262,23 +263,32 @@ bool OsgCameraGroup::realize( ThreadingModel thread_model )
 // small visitor to check for the existance of particle systems,
 // which currently arn't thread safe, so we would need to disable
 // multithreading of cull and draw.
-class SearchForParticleNodes : public osg::NodeVisitor
+class SearchForSpecialNodes : public osg::NodeVisitor
 {
 public:
-    SearchForParticleNodes():
+    SearchForSpecialNodes():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _foundParticles(false)        
+        _foundParticles(false),        
+        _foundPagedLOD(false)
     {
     }
     
     virtual void apply(osg::Node& node)
     {
         if (strcmp(node.libraryName(),"osgParticle")==0) _foundParticles = true;
-        if (!_foundParticles) traverse(node);
+        
+        if (!_foundParticles ||
+            !_foundPagedLOD) traverse(node);
     }
-    
+
+    virtual void apply(osg::PagedLOD& node)
+    {
+        _foundPagedLOD = true;
+        apply((osg::Node&)node);
+    }    
     
     bool _foundParticles;
+    bool _foundPagedLOD;
 };
 
 bool OsgCameraGroup::realize()
@@ -373,11 +383,11 @@ bool OsgCameraGroup::realize()
 
     setUpSceneViewsWithData();
     
-    if (getTopMostSceneData() && _thread_model!=Producer::CameraGroup::SingleThreaded)
+    if (getTopMostSceneData())
     {
-        SearchForParticleNodes sfpn;
-        getTopMostSceneData()->accept(sfpn);
-        if (sfpn._foundParticles)
+        SearchForSpecialNodes sfsn;
+        getTopMostSceneData()->accept(sfsn);
+        if (sfsn._foundParticles)
         {
             osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
             osg::notify(osg::INFO)<<"         to avoid threading problems in osgParticle."<<std::endl;
@@ -403,7 +413,26 @@ bool OsgCameraGroup::realize()
             
         }
         
+        
+        if (sfsn._foundPagedLOD)
+        {
+            std::cout << "setting up paged LOD"<<std::endl;
+        
+            _databasePager = new DatabasePager;
+            
+            _databasePager->registerPagedLODs(getTopMostSceneData());
+            
+            for(SceneHandlerList::iterator p=_shvec.begin();
+                p!=_shvec.end();
+                ++p)
+            {
+                (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+            }
+            
+        }
+        
     }
+    
 
     _initialized = CameraGroup::realize();
     

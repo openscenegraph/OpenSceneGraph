@@ -31,6 +31,44 @@
 using namespace osg;
 using namespace osgDB;
 
+#if 0
+    // temporary test of autoregistering, not compiled by default.
+    enum Methods
+    {
+        SET_1,
+        SET_2,
+        END
+    };
+
+
+    typedef std::pair<Methods,std::string> MethodPair;
+
+    class Proxy
+    {
+    public:
+        Proxy(MethodPair* methods)
+        {
+            std::cout<<"methods "<<methods<<std::endl;
+            for(int i=0;methods[i].first!=END;++i)
+            {
+                std::cout<<"\t"<<methods[i].first<<"\t"<<methods[i].second<<std::endl;
+            }
+        }
+    };
+
+
+    static MethodPair methods[] =
+    {
+        MethodPair(SET_1,"SET_1"),
+        MethodPair(SET_2,"SET_2"),
+        MethodPair(END,"")
+    };
+
+    Proxy myproxy(methods);
+
+#endif
+
+
 void PrintFilePathList(std::ostream& stream,const FilePathList& filepath)
 {
     for(FilePathList::const_iterator itr=filepath.begin();

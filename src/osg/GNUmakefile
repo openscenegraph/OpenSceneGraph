@@ -55,6 +55,7 @@ CXXFILES =\
 	Notify.cpp\
 	Object.cpp\
 	OccluderNode.cpp\
+	PagedLOD.cpp\
 	Point.cpp\
 	PolygonMode.cpp\
 	PolygonOffset.cpp\

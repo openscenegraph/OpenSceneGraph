@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_VIEWER_H
-#define OSG_VIEWER_H
+#ifndef OSGPRODUCER_VIEWER
+#define OSGPRODUCER_VIEWER 1
 
 #include <osg/NodeVisitor>
 #include <osg/ArgumentParser>

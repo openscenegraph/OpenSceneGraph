@@ -34,6 +34,7 @@ CXXFILES =\
         Node.cpp\
         Object.cpp\
         OccluderNode.cpp\
+        PagedLOD.cpp\
         Point.cpp\
         PolygonMode.cpp\
         PolygonOffset.cpp\

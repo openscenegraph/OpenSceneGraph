@@ -215,6 +215,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         osg::State* getState() { return _state.get(); }
         const osg::State* getState() const { return _state.get(); }
 
+
+
     protected:
 
 //         /** prevent unwanted copy construction.*/
@@ -255,10 +257,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         
         osg::ref_ptr<const osg::ClearNode> _clearNode;
 	
-        bool _impostorActive;
-        bool _depthSortImpostorSprites;
-        float _impostorPixelErrorThreshold;
-        int _numFramesToKeepImpostorSprites;
+        bool    _impostorActive;
+        bool    _depthSortImpostorSprites;
+        float   _impostorPixelErrorThreshold;
+        int     _numFramesToKeepImpostorSprites;
 	
         
 	typedef std::vector< osg::ref_ptr<RenderLeaf> > RenderLeafList;
@@ -267,7 +269,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 	
 	inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth=0.0f);
         
-        osg::ref_ptr<osg::ImpostorSpriteManager> _impostorSpriteManager;
+        osg::ref_ptr<osg::ImpostorSpriteManager>    _impostorSpriteManager;
 
         osg::ref_ptr<osg::State>                    _state;
 	

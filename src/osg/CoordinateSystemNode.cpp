@@ -35,6 +35,13 @@ CoordinateSystemNode::CoordinateSystemNode(const CoordinateSystemNode& csn,const
 {
 }
 
+void CoordinateSystemNode::set(const CoordinateSystemNode& csn)
+{
+    _format = csn._format;
+    _cs = csn._cs;
+    _ellipsoidModel = csn._ellipsoidModel;
+}
+
 CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(const Vec3d& position) const
 {
     if (_ellipsoidModel.valid())

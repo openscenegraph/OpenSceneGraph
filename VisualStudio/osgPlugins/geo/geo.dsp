@@ -116,6 +116,10 @@ SOURCE=..\..\..\src\osgPlugins\geo\geoUnits.h
 
 SOURCE=..\..\..\src\osgPlugins\geo\osgGeoStructs.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\geo\osgGeoAnimation.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

@@ -153,12 +153,38 @@ class SG_EXPORT State : public Referenced
         void apply();
 
 
+        inline void setGlobalDefaultModeValue(StateAttribute::GLMode mode,bool enabled)
+        {
+            ModeStack& ms = _modeMap[mode];
+            ms.global_default_value = enabled;
+        }
+
+        inline bool getGlobalDefaultModeValue(StateAttribute::GLMode mode)
+        {
+            return _modeMap[mode].global_default_value;
+        }
+
+
         /** Apply an OpenGL mode if required. */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled)
         {
             ModeStack& ms = _modeMap[mode];
             ms.changed = true;    
             return applyMode(mode,enabled,ms);
+        }
+
+        inline void setGlobalDefaultTextureModeValue(unsigned int unit, StateAttribute::GLMode mode,bool enabled)
+        {
+            ModeMap& modeMap = getOrCreateTextureModeMap(unit);
+            ModeStack& ms = modeMap[mode];
+            ms.global_default_value = enabled;
+        }
+
+        inline bool getGlobalDefaultTextureModeValue(unsigned int unit, StateAttribute::GLMode mode)
+        {
+            ModeMap& modeMap = getOrCreateTextureModeMap(unit);
+            ModeStack& ms = modeMap[mode];
+            return ms.global_default_value;
         }
 
         inline bool applyTextureMode(unsigned int unit, StateAttribute::GLMode mode,bool enabled)
@@ -174,6 +200,18 @@ class SG_EXPORT State : public Referenced
                 return false;
         }
 
+        inline void setGlobalDefaultAttribute(const StateAttribute* attribute)
+        {
+            AttributeStack& as = _attributeMap[attribute->getType()];
+            as.global_default_attribute = attribute;
+        }
+
+        inline const StateAttribute* getGlobalDefaultAttribute(StateAttribute::Type type)
+        {
+            AttributeStack& as = _attributeMap[type];
+            return as.global_default_attribute.get();
+        }
+
         /** Apply an attribute if required. */
         inline bool applyAttribute(const StateAttribute* attribute)
         {
@@ -181,6 +219,21 @@ class SG_EXPORT State : public Referenced
             as.changed = true;
             return applyAttribute(attribute,as);
         }
+
+        inline void setGlobalDefaultTextureAttribute(unsigned int unit, const StateAttribute* attribute)
+        {
+            AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
+            AttributeStack& as = attributeMap[attribute->getType()];
+            as.global_default_attribute = attribute;
+        }
+
+        inline const StateAttribute* getGlobalDefaultTextureAttribute(unsigned int unit, StateAttribute::Type type)
+        {
+            AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
+            AttributeStack& as = attributeMap[type];
+            return as.global_default_attribute.get();
+        }
+
 
         inline bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
         {
@@ -676,7 +729,7 @@ class SG_EXPORT State : public Referenced
             /** apply an attribute if required, passing in attribute and appropriate attribute stack */
             bool                    changed;
             const StateAttribute*   last_applied_attribute;
-            ref_ptr<StateAttribute> global_default_attribute;
+            ref_ptr<const StateAttribute> global_default_attribute;
             AttributeVec            attributeVec;
         };
         

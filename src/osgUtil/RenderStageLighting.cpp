@@ -53,7 +53,9 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
         
         // tell state about.
         state.haveAppliedAttribute(litr->first.get());
-            
+        
+        // set this state as a global default
+        state.setGlobalDefaultAttribute(litr->first.get());
     }
 
     for(TexUnitAttrMatrixListMap::iterator titr=_texAttrListMap.begin();
@@ -76,6 +78,8 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
             // tell state about.
             state.haveAppliedTextureAttribute(titr->first, litr->first.get());
 
+            // set this state as a global default
+            state.setGlobalDefaultTextureAttribute(titr->first, litr->first.get());
         }
 
     }

@@ -109,8 +109,10 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         }
         
         virtual void drawPreRenderStages(osg::State& state,RenderLeaf*& previous);
-        
+
         virtual void draw(osg::State& state,RenderLeaf*& previous);
+	
+        virtual void drawImplementation(osg::State& state,RenderLeaf*& previous);
 
         void addToDependencyList(RenderStage* rs);
 

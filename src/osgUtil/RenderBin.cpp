@@ -69,7 +69,8 @@ RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
         _renderGraphList(rhs._renderGraphList),
         _renderLeafList(rhs._renderLeafList),
         _sortMode(rhs._sortMode),
-        _sortLocalCallback(rhs._sortLocalCallback)
+        _sortCallback(rhs._sortCallback),
+        _drawCallback(rhs._drawCallback)
 {
 
 }
@@ -93,11 +94,11 @@ void RenderBin::sort()
         itr->second->sort();
     }
     
-    if (_sortLocalCallback.valid()) 
+    if (_sortCallback.valid()) 
     {
-        _sortLocalCallback->sort(this);
+        _sortCallback->sortImplementation(this);
     }
-    else sort_local();
+    else sortImplementation();
 }
 
 void RenderBin::setSortMode(SortMode mode)
@@ -105,18 +106,18 @@ void RenderBin::setSortMode(SortMode mode)
     _sortMode = mode;
 }
 
-void RenderBin::sort_local()
+void RenderBin::sortImplementation()
 {
     switch(_sortMode)
     {
         case(SORT_BY_STATE):
-            sort_local_by_state();
+            sortByState();
             break;
         case(SORT_FRONT_TO_BACK):
-            sort_local_front_to_back();
+            sortFrontToBack();
             break;
         case(SORT_BACK_TO_FRONT):
-            sort_local_back_to_front();
+            sortBackToFront();
             break;
         default:
             break;
@@ -131,13 +132,13 @@ struct SortByStateFunctor
     }
 };
 
-void RenderBin::sort_local_by_state()
+void RenderBin::sortByState()
 {
     // actually we'll do nothing right now, as fine grained sorting by state
     // appears to cost more to do than it saves in draw.  The contents of
     // the RenderGraph leaves is already coasrse grained sorted, this
     // sorting is as a function of the cull traversal.
-    // cout << "doing sort_local_by_state "<<this<<endl;
+    // cout << "doing sortByState "<<this<<endl;
 }
 
 struct FrontToBackSortFunctor
@@ -149,7 +150,7 @@ struct FrontToBackSortFunctor
 };
 
     
-void RenderBin::sort_local_front_to_back()
+void RenderBin::sortFrontToBack()
 {
     copyLeavesFromRenderGraphListToRenderLeafList();
 
@@ -167,7 +168,7 @@ struct BackToFrontSortFunctor
     }
 };
 
-void RenderBin::sort_local_back_to_front()
+void RenderBin::sortBackToFront()
 {
     copyLeavesFromRenderGraphListToRenderLeafList();
 
@@ -204,6 +205,9 @@ void RenderBin::copyLeavesFromRenderGraphListToRenderLeafList()
             _renderLeafList.push_back(dw_itr->get());
         }
     }
+    
+    // empty the render graph list to prevent it being drawn along side the render leaf list (see drawImplementation.)
+    _renderGraphList.clear();
 }
 
 RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
@@ -238,6 +242,15 @@ RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
 
 void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
 {
+    if (_drawCallback.valid()) 
+    {
+        _drawCallback->drawImplementation(this,state,previous);
+    }
+    else drawImplementation(state,previous);
+}
+
+void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
+{
     // draw first set of draw bins.
     RenderBinList::iterator itr;
     for(itr = _bins.begin();
@@ -247,51 +260,45 @@ void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
         itr->second->draw(state,previous);
     }
     
-    draw_local(state,previous);
 
+    // draw fine grained ordering.
+    for(RenderLeafList::iterator itr= _renderLeafList.begin();
+        itr!= _renderLeafList.end();
+        ++itr)
+    {
+        RenderLeaf* rl = *itr;
+        rl->render(state,previous);
+        previous = rl;
+    }
+
+
+    // draw coarse grained ordering.
+    for(RenderGraphList::iterator oitr=_renderGraphList.begin();
+        oitr!=_renderGraphList.end();
+        ++oitr)
+    {
+
+        for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+            dw_itr != (*oitr)->_leaves.end();
+            ++dw_itr)
+        {
+            RenderLeaf* rl = dw_itr->get();
+            rl->render(state,previous);
+            previous = rl;
+
+        }
+    }
+
+
+    // draw post bins.
     for(;
         itr!=_bins.end();
         ++itr)
     {
         itr->second->draw(state,previous);
     }
-}
 
-void RenderBin::draw_local(osg::State& state,RenderLeaf*& previous)
-{
-    // draw local bin.
-    
-    if (!_renderLeafList.empty())
-    {
-        // draw fine grained ordering.
-        for(RenderLeafList::iterator itr= _renderLeafList.begin();
-            itr!= _renderLeafList.end();
-            ++itr)
-        {
-            RenderLeaf* rl = *itr;
-            rl->render(state,previous);
-            previous = rl;
-        }
-    }
-    else
-    {    
-        // draw coarse grained ordering.
-        for(RenderGraphList::iterator oitr=_renderGraphList.begin();
-            oitr!=_renderGraphList.end();
-            ++oitr)
-        {
 
-            for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
-                dw_itr != (*oitr)->_leaves.end();
-                ++dw_itr)
-            {
-                RenderLeaf* rl = dw_itr->get();
-                rl->render(state,previous);
-                previous = rl;
-
-            }
-        }
-    }
 }
 
 // stats

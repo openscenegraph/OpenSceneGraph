@@ -35,7 +35,7 @@ struct SortByMinimumDistanceFunctor
 
 struct MySortCallback : public osgUtil::RenderBin::SortCallback
 {
-    virtual void sort(osgUtil::RenderBin* renderbin) 
+    virtual void sortImplementation(osgUtil::RenderBin* renderbin) 
     {
  
         osgUtil::RenderBin::RenderGraphList& renderGraphList = renderbin->_renderGraphList;
@@ -164,7 +164,7 @@ int main( int argc, char **argv )
     osgUtil::RenderStage* renderstage = viewer.getViewportSceneView(0)->getRenderStage();
     if (renderstage)
     {
-       renderstage->setSortLocalCallback(new MySortCallback);
+       renderstage->setSortCallback(new MySortCallback);
 //        renderstage->setSortMode(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
     }
     

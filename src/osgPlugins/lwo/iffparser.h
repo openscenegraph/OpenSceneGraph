@@ -92,10 +92,11 @@ namespace iff
 	{
 		std::string tag;
 		for (int i=0; i<4; ++i) tag += *(it++);
-		unsigned int len = ((static_cast<unsigned int>(*(it++)) & 0xFF) << 24) |
-			((static_cast<unsigned int>(*(it++)) & 0xFF) << 16) |
-			((static_cast<unsigned int>(*(it++)) & 0xFF) << 8) |
-			(static_cast<unsigned int>(*(it++)) & 0xFF);
+		unsigned int len = ((static_cast<unsigned int>(*(it)) & 0xFF) << 24) |
+			((static_cast<unsigned int>(*(it+1)) & 0xFF) << 16) |
+			((static_cast<unsigned int>(*(it+2)) & 0xFF) << 8) |
+			(static_cast<unsigned int>(*(it+3)) & 0xFF);
+                it += 4;
 		os_ << "DEBUG INFO: iffparser: reading chunk " << tag << ", length = " << len << ", context = " << context << "\n";
 		Chunk *chk = parse_chunk_data(tag, context, it, it+len);
 		if (!chk) os_ << "DEBUG INFO: iffparser: \tprevious chunk not handled\n";

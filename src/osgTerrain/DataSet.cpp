@@ -2903,10 +2903,6 @@ public:
             {
                 _callbackList.push_back(Triple(getNodePath(),geode.getDrawable(i),callback));
             }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"   Note found"<<geode.getDrawable(i)->getCullCallback()<<std::endl;
-            }
         }
     }
     

@@ -1,0 +1,40 @@
+#ifndef OSGUTIL_OPTIMIZESTATEVISITOR
+#define OSGUTIL_OPTIMIZESTATEVISITOR
+
+#include <osg/NodeVisitor>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** Insert impostor nodes into scene graph.
+  * For example of usage see src/Demos/osgimpostor.
+  */
+class OSGUTIL_EXPORT OptimizeStateVisitor : public osg::NodeVisitor
+{
+    public:
+
+        /// default to traversing all children.
+        OptimizeStateVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) {}
+        
+        /** empty visitor, make it ready for next traversal.*/        
+        virtual void reset();
+
+        void addStateSet(osg::StateSet* stateset);
+
+        virtual void apply(osg::Node& node);
+
+        virtual void apply(osg::Geode& geode);
+
+        void optimize();
+        
+    protected:
+    
+        typedef std::set<osg::StateSet*> StateSetList;
+        StateSetList _statesets;
+
+};
+
+};
+
+#endif

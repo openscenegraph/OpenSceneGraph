@@ -1714,7 +1714,7 @@ osg::Node* DataSet::DestinationTile::createScene()
         std::string imageName(_name+".rgb");
         std::cout<<"Writing out imagery to "<<imageName<<std::endl;
         _imagery->_image->setFileName(imageName.c_str());
-        osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
+        //osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
 
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());

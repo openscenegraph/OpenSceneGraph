@@ -52,7 +52,7 @@ void write_usage(std::ostream& out,const std::string& name)
 }
 
 
-osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3,const osg::Vec3& v4)
+osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3,const osg::Vec3& v4,float holeRatio=-1.0f)
 {
    // create and occluder which will site along side the loadmodel model.
     osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
@@ -70,7 +70,28 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     occluder.add(v2);
     occluder.add(v3);
     occluder.add(v4);
-  
+
+    // create a whole at the center of the occluder if needed.
+    if (holeRatio>0.0f)
+    {
+        // create hole.
+        float ratio = holeRatio;
+        float one_minus_ratio = 1-ratio;
+        osg::Vec3 center = (v1+v2+v3+v4)*0.25f;
+        osg::Vec3 v1dash = v1*ratio + center*one_minus_ratio;
+        osg::Vec3 v2dash = v2*ratio + center*one_minus_ratio;
+        osg::Vec3 v3dash = v3*ratio + center*one_minus_ratio;
+        osg::Vec3 v4dash = v4*ratio + center*one_minus_ratio;
+
+        osg::ConvexPlanerPolygon hole;
+        hole.add(v1dash);
+        hole.add(v2dash);
+        hole.add(v3dash);
+        hole.add(v4dash);
+
+        cpo->addHole(hole);
+    }    
+    
 
    // create a drawable for occluder.
     osg::GeoSet* geoset = osgNew osg::GeoSet;
@@ -145,7 +166,8 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
    scene->addChild(createOccluder(bb.corner(3),
                                   bb.corner(2),
                                   bb.corner(6),
-                                  bb.corner(7)));
+                                  bb.corner(7),
+                                  0.5f)); // create a hole half the size of the occluder.
 
     return scene;
 } 

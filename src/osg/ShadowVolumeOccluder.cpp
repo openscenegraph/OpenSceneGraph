@@ -390,7 +390,8 @@ bool ShadowVolumeOccluder::contains(const std::vector<Vec3>& vertices)
             itr!=_holeList.end();
             ++itr)
         {
-            if (itr->contains(vertices)) return false;
+            PointList points;
+            if (clip(itr->getPlaneList(),vertices,points)>=3) return false;
         }
         return true;
     }

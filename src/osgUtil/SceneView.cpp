@@ -406,13 +406,16 @@ void SceneView::cull()
             if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
             if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
+            
+            
 
-
+            _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
             cullStage(computeLeftEyeProjection(_projectionMatrix),computeLeftEyeView(_viewMatrix),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
 
 
             // set up the right eye.
+            _cullVisitorRight->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             cullStage(computeRightEyeProjection(_projectionMatrix),computeRightEyeView(_viewMatrix),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
            

@@ -333,6 +333,10 @@ SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ProceduralGeometry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Quat.cpp
 # End Source File
 # Begin Source File
@@ -342,6 +346,10 @@ SOURCE=..\..\src\osg\Sequence.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osg\ShadeModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Shape.cpp
 # End Source File
 # Begin Source File
 
@@ -705,6 +713,10 @@ SOURCE=..\..\Include\Osg\Projection
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\osg\ProceduralGeometry
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\PrimitiveSet
 # End Source File
 # Begin Source File
@@ -730,6 +742,10 @@ SOURCE=..\..\Include\Osg\Sequence
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ShadeModel
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Shape
 # End Source File
 # Begin Source File
 

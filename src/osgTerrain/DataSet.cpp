@@ -626,7 +626,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             else
             {
                 std::cout<<"We have no Scale"<<std::endl;
-                scale = (xyInDegrees /*&& !destination._dataSet->getConvertFromGeographicToGeocentric()*/) ? 1.0f/111319.0f : 1.0f;
+                //scale = (xyInDegrees /*&& !destination._dataSet->getConvertFromGeographicToGeocentric()*/) ? 1.0f/111319.0f : 1.0f;
             }
             
             std::cout<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;

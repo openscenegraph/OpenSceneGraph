@@ -419,25 +419,20 @@ struct TriangleIntersect
             if (ds31<d231) return;
         }
         
-        if (d312==0.0f || d123==0.0f || d231==0.0f)
-        {
-            // the triangle and the line must be parallel intersection.
-            
-        }
 
         float r3;
         if (ds12==0.0f) r3=0.0f;
-        else if (d312>0.0f) r3 = ds12/d312;
+        else if (d312!=0.0f) r3 = ds12/d312;
         else return; // the triangle and the line must be parallel intersection.
         
         float r1;
         if (ds23==0.0f) r1=0.0f;
-        else if (d123>0.0f) r1 = ds23/d123;
+        else if (d123!=0.0f) r1 = ds23/d123;
         else return; // the triangle and the line must be parallel intersection.
         
         float r2;
         if (ds31==0.0f) r2=0.0f;
-        else if (d231>0.0f) r2 = ds31/d231;
+        else if (d231!=0.0f) r2 = ds31/d231;
         else return; // the triangle and the line must be parallel intersection.
 
         float total_r = (r1+r2+r3);

@@ -8,5 +8,5 @@ const char* osgProducerGetVersion()
 
 const char* osgProducerGetLibraryName()
 {
-    return "Open Scene Graph Producer Library";
+    return "OpenSceneGraph Producer Library";
 }

@@ -589,7 +589,7 @@ void Viewer::update()
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
-        getSceneData()->accept(*_updateVisitor);
+        getTopMostSceneData()->accept(*_updateVisitor);
     }
     
     // update the main producer camera

@@ -8,5 +8,5 @@ const char* osgSimGetVersion()
 
 const char* osgSimGetLibraryName()
 {
-    return "Open Scene Graph Visual Simulation Library";
+    return "OpenSceneGraph Visual Simulation Library";
 }

@@ -20,5 +20,5 @@ const char* osgDBGetVersion()
 
 const char* osgDBGetLibraryName()
 {
-    return "Open Scene Graph DB (data base) Library";
+    return "OpenSceneGraph DB (data base) Library";
 }

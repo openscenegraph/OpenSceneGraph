@@ -8,5 +8,5 @@ const char* osgParticleGetVersion()
 
 const char* osgParticleGetLibraryName()
 {
-    return "Open Scene Graph Particle Library";
+    return "OpenSceneGraph Particle Library";
 }

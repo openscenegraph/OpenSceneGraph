@@ -12,7 +12,6 @@ ifeq ($(findstring CYGWIN,$(OS)),CYGWIN)
 OS := CYGWIN
 endif
 
-
 # TOPDIR needs to be redefined for every Makefile
 TOPDIR     ?= ../
 THISDIR    = .
@@ -262,7 +261,6 @@ ifeq ($(OS),CYGWIN)
 
   LIB_PREFIX        = cyg
   LIB_EXT           = dll
-  PLUGIN_PREFIX     = cygosgdb_
   PLUGIN_EXT        = dll
 
   LINK              = cp -f

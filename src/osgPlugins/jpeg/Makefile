@@ -9,6 +9,7 @@ INC += -I/usr/local/include/
 LIBS  += $(OSG_LIBS) $(JPEG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = jpeg
+include $(TOPDIR)/Make/cygwin_plugin_def
 PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

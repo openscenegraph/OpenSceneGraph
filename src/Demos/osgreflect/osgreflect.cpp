@@ -45,7 +45,7 @@
 osg::StateSet* createMirrorTexturedState(const std::string& filename)
 {
     osg::StateSet* dstate = new osg::StateSet;
-    dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
+    dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OFF|osg::StateAttribute::PROTECTED);
     
     // set up the texture.
     osg::Image* image = osgDB::readImageFile(filename.c_str());
@@ -53,7 +53,7 @@ osg::StateSet* createMirrorTexturedState(const std::string& filename)
     {
         osg::Texture* texture = new osg::Texture;
         texture->setImage(image);
-        dstate->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        dstate->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON|osg::StateAttribute::PROTECTED);
     }
     
     return dstate;

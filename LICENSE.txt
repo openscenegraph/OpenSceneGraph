@@ -6,7 +6,7 @@
   Everyone is permitted to copy and distribute verbatim copies
   of this licence document, but changing it is not allowed.
 
-                       OPENSCENEGRAPH LIBRARY LICENCE
+                       OPENSCENEGRAPH PUBLIC LICENCE
      TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
   This library is free software; you can redistribute it and/or modify it

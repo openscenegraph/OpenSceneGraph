@@ -442,6 +442,8 @@ bool Matrix::invert( const Matrix& _m )
         for ( j = 0; j < n; j++ )
             b[ i * n +  j] = m[ row[ i]][j + n];
 
+    fully_realized = true;
+
     return true;                 // It worked
 }
 

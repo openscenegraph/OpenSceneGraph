@@ -206,3 +206,22 @@ void Drawable::flushDeletedDisplayLists(uint contextID)
         s_deletedDisplayListCache.erase(citr);
     }
 }
+
+void Drawable::setAppCallback(AppCallback* ac)
+{
+    if (_appCallback==ac) return;
+    
+    int delta = 0;
+    if (_appCallback.valid()) --delta;
+    if (ac) ++delta;
+    
+    if (delta!=0)
+    {
+        for(ParentList::iterator itr=_parents.begin();
+            itr!=_parents.end();
+            ++itr)
+        {
+            (*itr)->setNumChildrenRequiringAppTraversal((*itr)->getNumChildrenRequiringAppTraversal()+delta);
+        }
+    }
+}

@@ -47,6 +47,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
+
     if (options & REMOVE_REDUNDENT_NODES)
     {
 
@@ -60,6 +61,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
+
 #if defined(CONVERT_GEOSET_TO_GEOMETRY)
     // convert the old style GeoSet to Geometry
     ConvertGeoSetsToGeometryVisitor cgtg;
@@ -1280,6 +1282,8 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         }
     }
 
+//    geode.dirtyBound();
+
 
     return false;
 }
@@ -1349,6 +1353,9 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     lhs.getPrimitiveSetList().insert(lhs.getPrimitiveSetList().end(),
                                      rhs.getPrimitiveSetList().begin(),rhs.getPrimitiveSetList().end());
+
+    lhs.dirtyBound();
+    lhs.dirtyDisplayList();
     
     return true;
 }

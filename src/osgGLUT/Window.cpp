@@ -14,11 +14,11 @@
 
 using namespace osgGLUT;
 
-GLUTWindow* GLUTWindow::s_theGLUTWindow = 0;
+Window* Window::s_theWindow = 0;
 
-GLUTWindow::GLUTWindow()
+Window::Window()
 {
-    s_theGLUTWindow = this;
+    s_theWindow = this;
 
     _fullscreen = false; 
     _is_open   = 0;
@@ -36,24 +36,24 @@ GLUTWindow::GLUTWindow()
 }
 
 
-GLUTWindow::~GLUTWindow()
+Window::~Window()
 {
 }
 
 
 /**
-  * Configure and open the GLUT window for this GLUTWindow
+  * Configure and open the GLUT window for this Window
   * 
   */
-bool GLUTWindow::open()
+bool Window::open()
 {
     if ( _is_open ) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::GLUTWindow::open() called with window already open."<< std::endl;
+        osg::notify(osg::NOTICE)<<"osgGLUT::Window::open() called with window already open."<< std::endl;
         return false;
     }
 
     //glutInit( &argc, argv );    // I moved this into main to avoid passing
-    // argc and argv to the GLUTWindow
+    // argc and argv to the Window
     glutInitWindowPosition( _wx, _wy );
     glutInitWindowSize( _ww, _wh );
 
@@ -74,62 +74,62 @@ bool GLUTWindow::open()
     return true;
 }
 
-void GLUTWindow::displayCB()
+void Window::displayCB()
 {
-    s_theGLUTWindow->display();
+    s_theWindow->display();
 }
 
 
-//void GLUTWindow::reshapeCB(GLint w, GLint h)
-void GLUTWindow::reshapeCB(int w, int h)
+//void Window::reshapeCB(GLint w, GLint h)
+void Window::reshapeCB(int w, int h)
 {
-    s_theGLUTWindow->reshape(w, h);
+    s_theWindow->reshape(w, h);
 }
 
 
-void GLUTWindow::visibilityCB( int state )
+void Window::visibilityCB( int state )
 {
-    s_theGLUTWindow->visibility(state);
+    s_theWindow->visibility(state);
 }
 
 
-void GLUTWindow::mouseCB(int button, int state, int x, int y)
+void Window::mouseCB(int button, int state, int x, int y)
 {
-    s_theGLUTWindow->mouse(button, state, x, y);
+    s_theWindow->mouse(button, state, x, y);
 }
 
 
-void GLUTWindow::mouseMotionCB(int x, int y)
+void Window::mouseMotionCB(int x, int y)
 {
-    s_theGLUTWindow->mouseMotion(x,y);
+    s_theWindow->mouseMotion(x,y);
 }
 
 
-void GLUTWindow::mousePassiveMotionCB(int x, int y)
+void Window::mousePassiveMotionCB(int x, int y)
 {
-    s_theGLUTWindow->mousePassiveMotion(x,y);
+    s_theWindow->mousePassiveMotion(x,y);
 }
 
 
-void GLUTWindow::keyboardCB(unsigned char key, int x, int y)
+void Window::keyboardCB(unsigned char key, int x, int y)
 {
-    s_theGLUTWindow->keyboard(key,x,y);
+    s_theWindow->keyboard(key,x,y);
 }
 
 
-void GLUTWindow::display()
+void Window::display()
 {
 }
 
 
-void GLUTWindow::reshape(GLint w, GLint h)
+void Window::reshape(GLint w, GLint h)
 {
     _ww = w;
     _wh = h;
 }
 
 
-void GLUTWindow::visibility(int state)
+void Window::visibility(int state)
 {
     if (state == GLUT_VISIBLE)
         glutIdleFunc( displayCB );
@@ -138,22 +138,22 @@ void GLUTWindow::visibility(int state)
 }
 
 
-void GLUTWindow::mouseMotion(int x, int y)
+void Window::mouseMotion(int , int )
 {
 }
 
 
-void GLUTWindow::mousePassiveMotion(int x, int y)
+void Window::mousePassiveMotion(int , int )
 {
 }
 
 
-void GLUTWindow::mouse(int button, int state, int x, int y)
+void Window::mouse(int , int , int , int )
 {
 }
 
 
-void GLUTWindow::keyboard(unsigned char key, int x, int y)
+void Window::keyboard(unsigned char key, int , int )
 {
     switch( key )
     {
@@ -173,10 +173,10 @@ void GLUTWindow::keyboard(unsigned char key, int x, int y)
     }
 }
 
-bool GLUTWindow::run()
+bool Window::run()
 {
     if (!_is_open) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::GLUTWindow::run() called without window open.  Opening window."<< std::endl;
+        osg::notify(osg::NOTICE)<<"osgGLUT::Window::run() called without window open.  Opening window."<< std::endl;
         if ( !open() )
             return false;
     }

@@ -9,15 +9,16 @@
 
 #include <string>
 
-namespace osgGLUT{
+namespace osgGLUT
+{
 
 /** A basic GLUTWindow base class which provides a just a basic window. */
-class OSGGLUT_EXPORT GLUTWindow
+class OSGGLUT_EXPORT Window
 {
     public:
 
-        GLUTWindow();
-        virtual ~GLUTWindow();
+        Window();
+        virtual ~Window();
 
         void setWindowOrigin(int x, int y) { _wx = x, _wy = y; };
         void setWindowSize(int width, int height) { _ww = width, _wh = height; };
@@ -27,7 +28,7 @@ class OSGGLUT_EXPORT GLUTWindow
         virtual bool open();
         virtual bool run();
         virtual void display();
-
+        
     protected:
 
         static void displayCB();
@@ -45,7 +46,7 @@ class OSGGLUT_EXPORT GLUTWindow
         virtual void mouse(int button, int state, int x, int y);
         virtual void keyboard(unsigned char key, int x, int y);
 
-        static GLUTWindow*    s_theGLUTWindow;
+        static Window*    s_theWindow;
 
         std::string _title;
         int _wx, _wy, _ww, _wh;

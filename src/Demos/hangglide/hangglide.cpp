@@ -81,8 +81,6 @@ int main( int argc, char **argv )
 
     viewer.selectCameraManipulator(pos);
 
-    osgUtil::SceneView* sv = viewer.getViewportSceneView(0);
-    
     viewer.run();
 
     return 0;

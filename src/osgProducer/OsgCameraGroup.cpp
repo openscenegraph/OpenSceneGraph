@@ -281,6 +281,8 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
             if (_ds->getStencilBuffer()) rs_vc->setStencilSize(_ds->getMinimumNumStencilBits());
             if (_ds->getAlphaBuffer()) rs_vc->setAlphaSize(_ds->getMinimumNumAlphaBits());
 
+            rs_vc->setDepthSize(24);
+
             if (numMultiSamples)
             {
                 #if defined( GLX_SAMPLES_SGIS )

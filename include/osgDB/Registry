@@ -397,6 +397,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
 
+    public:
         /** Functor used in internal implementations.*/
         struct ReadFunctor
         {
@@ -413,6 +414,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             const ReaderWriter::Options* _options;
         };
 
+   protected:
         // forward declare helper classes
         struct ReadObjectFunctor;
         struct ReadImageFunctor;

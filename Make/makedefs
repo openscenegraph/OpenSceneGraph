@@ -156,8 +156,6 @@ ifeq ($(OS),SunOS)
   ifeq ($(COMPILER),gnu)
     C++               = g++
     DEPARG            = -M
-    INC               += 
-    DEF               += -W -Wall -fPIC -fpermissive
     OPTF              = -O2
     DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
     SHARED            = -shared -fPIC 
@@ -195,6 +193,7 @@ ifeq ($(OS),SunOS)
     LINKARGS          =  
     GIF_LIBS          = /usr/local/lib/libgif.a
     TIFF_LIB	      = /usr/local/lib/libtiff.a
+    JPEG_INCLUDE      = -I/usr/local/include
     JPEG_LIBS         = /usr/local/lib/libjpeg.a
     PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
   endif 
@@ -218,6 +217,7 @@ ifeq ($(OS),SunOS)
   GDAL_LIBS         = `gdal-config --libs`
 
 
+
 endif
 
 #### IRIX Specific definitions
@@ -228,6 +228,7 @@ ifeq ($(OS),IRIX)
 	  C++               = CC
 	  DEPARG            = -M
 	  INC               += -I${TOPDIR}/include -I/usr/freeware/include
+	  LDFLAGS	    += -L/usr/local/lib
 	  DEF               += -LANG:std -OPT:Olimit=0 \
 		             -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303\
 		             -MDupdate $(MAKEDEPEND)

@@ -80,12 +80,11 @@ DataInputStream::DataInputStream(std::istream* istream)
       if ( endianType != OPPOSITE_ENDIAN_TYPE ) {
          throw Exception("DataInputStream::DataInputStream(): This file has an unreadable endian type.") ;
       }
-      if (_verboseOutput) std::cout<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
+      if (true/*_verboseOutput*/) std::cout<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
       _byteswap = 1 ;
    }
     
     _version = readUInt();
-    if (_byteswap) osg::swapBytes4((char *)&_version) ;
         
     // Are we trying to open a binary .ive file which version are newer than this library.
     if(_version>VERSION){

@@ -17,37 +17,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef WIN32
-#  pragma warning (disable:4786)
-#  pragma warning (disable:4541)
-#endif
-#include <stdio.h>
-#include <iostream>
-#include "mynode.h"
-#include "osgvisitor.h"
+#ifndef __ATR_VEC3_LIST_H__
+#define __ATR_VEC3_LIST_H__
 
-#include <osgGLUT/Viewer>
-#include <osgGLUT/glut>
+#include "attribute.h"
+#include "geometry.h"
 
-extern int yyparse();
-extern int yydebug;
-extern MyNode *getRoot();
-extern FILE *yyin;
-
-int isatty(int) { return 0; }
-
-osg::Node *readVRMLNode(const char *file) {
-    yydebug=0;
-    yyin=fopen(file,"r");
-    std::cout << "Parsing..." << std::endl;
-    if (yyparse()!=0) return 0;
-    osg::ref_ptr<MyNode> n=getRoot();
-    try {
-	std::cout << "Generating OSG tree..." << std::endl;
-	osg::ref_ptr<OSGVisitor> visitante=new OSGVisitor(n.get());
-	return visitante->getRoot();
-    } catch (...) {
-	std::cerr << "VRML: error reading" << std::endl;
-	return 0;
+class AtrVec3List: public Attribute {
+    VertexList *list;
+public:
+    AtrVec3List(char *name):Attribute(name) { list=0; }
+    AtrVec3List(char *name, VertexList *vlist):Attribute(name) {
+        this->list=vlist;
     }
-}
+    VertexList *getList() { return list; }
+    int getSize() { return list->size(); }
+    virtual char *type() { return "AtrVec3List"; }
+};
+
+
+#endif

@@ -26,6 +26,7 @@ class Coordinate3;
 class MatrixTransform;
 class Separator;
 class IndexedFaceSet;
+class IndexedTriStripSet;
 class TextureCoordinate;
 class Texture2;
 class Transform;
@@ -40,6 +41,7 @@ public:
     virtual void applyMatrixTransform(MatrixTransform *tr)=0;
     virtual void applySeparator(Separator *sep)=0;
     virtual void applyIndexedFaceSet(IndexedFaceSet *ifs)=0;
+    virtual void applyIndexedTriStripSet(IndexedTriStripSet *its)=0;
     virtual void applyTextureCoordinate(TextureCoordinate *texc)=0;
     virtual void applyTexture2(Texture2 *tex)=0;
     virtual void applyTransform(Transform *trans)=0;

@@ -22,6 +22,7 @@
 
 #include "mynodevisitor.h"
 #include <osg/Group>
+#include <osg/Geometry>
 
 class OSGVisitor: public MyNodeVisitor {
     osg::Node *root;
@@ -41,10 +42,13 @@ public:
     virtual void applyMatrixTransform(MatrixTransform *tr);
     virtual void applySeparator(Separator *sep);
     virtual void applyIndexedFaceSet(IndexedFaceSet *ifs);
+    virtual void applyIndexedTriStripSet(IndexedTriStripSet *its);
     virtual void applyTextureCoordinate(TextureCoordinate *texc);
     virtual void applyTexture2(Texture2 *tex);
     virtual void applyTransform(Transform *trans);
     osg::Node* getRoot();
+private:
+    void makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoSided);
 };
 
 #endif

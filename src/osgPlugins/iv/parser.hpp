@@ -27,21 +27,22 @@ typedef union {
 # define	DIFFUSE_COLOR	264
 # define	COORDINATE3	265
 # define	INDEXED_FACE_SET	266
-# define	A_POINT	267
-# define	COORD_INDEX	268
-# define	TEXTURE_COORD_INDEX	269
-# define	NORMAL_INDEX	270
-# define	TEXTURE_COORDINATE	271
-# define	TEXTURE2	272
-# define	MATRIX_TRANSFORM	273
-# define	MATRIX	274
-# define	LISTA_VACIA	275
-# define	FINPOLY	276
-# define	DOBLE_CARA	277
-# define	VECTOR	278
-# define	VRML_HEADER	279
-# define	TRANSFORM	280
-# define	USE	281
+# define	INDEXED_TRIANGLE_STRIP_SET	267
+# define	A_POINT	268
+# define	COORD_INDEX	269
+# define	TEXTURE_COORD_INDEX	270
+# define	NORMAL_INDEX	271
+# define	TEXTURE_COORDINATE	272
+# define	TEXTURE2	273
+# define	MATRIX_TRANSFORM	274
+# define	MATRIX	275
+# define	LISTA_VACIA	276
+# define	FINPOLY	277
+# define	TWO_SIDED	278
+# define	VECTOR	279
+# define	VRML_HEADER	280
+# define	TRANSFORM	281
+# define	USE	282
 
 
 extern YYSTYPE yylval;

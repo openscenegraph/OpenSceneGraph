@@ -28,6 +28,7 @@
 #include "separator.h"
 #include "matrixtransform.h"
 #include "indexedfaceset.h"
+#include "indexedtristripset.h"
 #include "texturecoordinate.h"
 #include "texture2.h"
 #include "transform.h"
@@ -51,18 +52,19 @@
 #include "atrvec.h"
 #include "atrfloat.h"
 #include "atrstring.h"
+#include "atrvec3list.h"
 
 #include "ltstr.h"
 #include "normals.h"
 
 #define CREASE_ANGLE 2//3.14159265359 * 2.0 / 3.0
 
-class CacheObjetos {
+class ObjectCache {
     typedef std::map<osg::ref_ptr<Material>, osg::ref_ptr<osg::Material> > MaterialMap;
     typedef std::map<const char*, osg::ref_ptr<osg::Texture>, ltstr> TextureMap;
     typedef std::map<osg::ref_ptr<MyNode>, osg::ref_ptr<osg::Node> > NodeMap;
 
-    static MaterialMap materiales;
+    static MaterialMap materials;
     static TextureMap textures;
     static NodeMap nodos;
 public:
@@ -71,21 +73,23 @@ public:
     }
 
     static osg::Material* getMaterial(Material* _material) {
-	if (materiales.find(_material) == materiales.end()) {
-	    AtrVec *ambient=(AtrVec*)_material->getAttribute("ambientColor");
-	    AtrVec *diffuse=(AtrVec*)_material->getAttribute("diffuseColor");
-	    AtrVec *specular=(AtrVec*)_material->getAttribute("specularColor");
-	    AtrFloat *shininess=(AtrFloat*)_material->getAttribute("shininess");
-	    AtrFloat *transparency=(AtrFloat*)_material->getAttribute("transparency");
+	if (materials.find(_material) == materials.end()) {
+	    AtrVec *ambient=dynamic_cast<AtrVec*>(_material->getAttribute("ambientColor"));
+	    AtrVec *diffuse=dynamic_cast<AtrVec*>(_material->getAttribute("diffuseColor"));
+	    AtrVec *specular=dynamic_cast<AtrVec*>(_material->getAttribute("specularColor"));
+	    AtrFloat *shininess=dynamic_cast<AtrFloat*>(_material->getAttribute("shininess"));
+	    AtrFloat *transparency=dynamic_cast<AtrFloat*>(_material->getAttribute("transparency"));
 	    osg::Material *material=new osg::Material();
 	    if (ambient) material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(ambient->getValCut(0),ambient->getValCut(1),ambient->getValCut(2),1.0f));
 	    if (diffuse) material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(diffuse->getValCut(0),diffuse->getValCut(1),diffuse->getValCut(2),1.0f));
 	    if (specular) material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(specular->getValCut(0),specular->getValCut(1),specular->getValCut(2),1.0f));
 	    if (shininess) material->setShininess(osg::Material::FRONT_AND_BACK,shininess->getValue());
 	    if (transparency) material->setTransparency(osg::Material::FRONT_AND_BACK,transparency->getValue());
-            materiales[_material]=material;
+            if (ambient || diffuse || specular || transparency)
+		materials[_material]=material;
+            else return 0;
 	}
-        return materiales[_material].get();
+        return materials[_material].get();
     }
 
     static osg::Texture* getTextura(const char* _texture) {
@@ -101,9 +105,9 @@ public:
     }
 };
 
-CacheObjetos::MaterialMap CacheObjetos::materiales;
-CacheObjetos::TextureMap CacheObjetos::textures;
-CacheObjetos::NodeMap CacheObjetos::nodos;
+ObjectCache::MaterialMap ObjectCache::materials;
+ObjectCache::TextureMap ObjectCache::textures;
+ObjectCache::NodeMap ObjectCache::nodos;
 
 static void makeTransform(MatrixTransform *matriz_active, osg::Transform *nodo) {
      // Original
@@ -214,21 +218,14 @@ osg::Primitive *generatePrimitive(PolygonList &polys, unsigned primsize) {
     return p;
 }
 
-void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
-    unsigned i;
-    if (coord3_active == 0) {
-	std::cerr << "ERROR: IndexedFaceSet without previous Coordinate3!" << std::endl;
-        throw -1;
-    }
-    osg::Geode *geode=new osg::Geode();
-    osg::Geometry *geometry=new osg::Geometry();
+void OSGVisitor::makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoSided) {
     osg::StateSet *state=new osg::StateSet();
     osg::FrontFace *frontface=new osg::FrontFace();
     frontface->setMode(osg::FrontFace::CLOCKWISE);
     state->setAttributeAndModes(frontface,osg::StateAttribute::ON);
     osg::CullFace *cull=new osg::CullFace();
     cull->setMode(osg::CullFace::BACK);
-    if (ifs->getTwoSided() == false) {
+    if (twoSided) {
 	state->setAttributeAndModes(cull,osg::StateAttribute::ON);
     } else {
 	std::cout <<  "Deactivating culling for this object" << std::endl;
@@ -242,18 +239,44 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
     geode->setStateSet(state);
     /** Applying the material */
     if (material_active!=0) {
-    osg::Material *material = CacheObjetos::getMaterial(material_active);
+    osg::Material *material = ObjectCache::getMaterial(material_active);
 	state->setAttributeAndModes(material,osg::StateAttribute::ON);
     }
     /** Applying the texture */
     if (texture_active!=0) {
         AtrString *filename=(AtrString*)texture_active->getAttribute("filename");
 	if (filename) {
-	    osg::Texture *texture=CacheObjetos::getTextura(filename->getValue());
+	    osg::Texture *texture=ObjectCache::getTextura(filename->getValue());
 	    state->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 	}
-
     }
+
+    /* If needed, apply per-vertex colors */
+    if (material_active) {
+	AtrVec3List *diffuse=dynamic_cast<AtrVec3List*>(material_active->getAttribute("diffuseColor"));
+	if (diffuse) { // Has per-vertex colors
+	    std::cout << "Per vertex colors" << std::endl;
+	    VertexList *colors=diffuse->getList();
+	    osg::Vec3Array *colors_osg=new osg::Vec3Array();
+	    for (unsigned i=0;i<colors->size();i++) {
+		colors_osg->push_back((*colors)[i]);
+	    }
+	    std::cout << colors->size() << " colors" << std::endl;
+	    geometry->setColorArray(colors_osg);
+	    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+	}
+    }
+}
+
+void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
+    unsigned i;
+    if (coord3_active == 0) {
+	std::cerr << "ERROR: IndexedFaceSet without previous Coordinate3!" << std::endl;
+        throw -1;
+    }
+    osg::Geode *geode=new osg::Geode();
+    osg::Geometry *geometry=new osg::Geometry();
+    makeGeode(geode,geometry,ifs->getTwoSided());
     /* Converting list of vertices to the OSG way (mostly the same) */
     VertexList vertices=coord3_active->getVertices();
     osg::Vec3Array *vertices_osg=new osg::Vec3Array();
@@ -261,6 +284,7 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
         vertices_osg->push_back(vertices[i]);
     }
     geometry->setVertexArray(vertices_osg);
+    total_vert+=vertices.size();
 
     /* Converting list of polys */
     PolygonList polys=ifs->getPolygons();
@@ -281,9 +305,10 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
 	    for (i=0;i<vertices.size();i++) {
 		texCoords->push_back(osg::Vec2(tcoord[i].first,tcoord[i].second));
 	    }
-	    geometry->setTexCoordArray(0,texCoords);
+            geometry->setTexCoordArray(0,texCoords);
 	}
     }
+
     osgUtil::SmoothingVisitor v;
     v.smooth(*geometry);
 
@@ -296,6 +321,65 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
     geode->addDrawable(geometry);
     parent->addChild(geode);
 }
+
+void OSGVisitor::applyIndexedTriStripSet(IndexedTriStripSet *its) {
+    unsigned i,j;
+    if (coord3_active == 0) {
+	std::cerr << "ERROR: IndexedFaceSet without previous Coordinate3!" << std::endl;
+        throw -1;
+    }
+    osg::Geode *geode=new osg::Geode();
+    osg::Geometry *geometry=new osg::Geometry();
+    makeGeode(geode,geometry,its->getTwoSided());
+    /* Converting list of vertices to the OSG way (mostly the same) */
+    VertexList vertices=coord3_active->getVertices();
+    osg::Vec3Array *vertices_osg=new osg::Vec3Array();
+    for (i=0;i<vertices.size();i++) {
+        vertices_osg->push_back(vertices[i]);
+    }
+    geometry->setVertexArray(vertices_osg);
+    total_vert+=vertices.size();
+
+    /* Converting list of polys */
+    PolygonList polys=its->getPolygons();
+    for (i=0;i<polys.size();i++) {
+	VertexIndexList vindex=*polys[i];
+	unsigned short *indices=new unsigned short[vindex.size()];
+	for (j=0;j<vindex.size();j++) {
+            indices[j]=vindex[j];
+	}
+        geometry->addPrimitive(new osg::DrawElementsUShort(osg::Primitive::TRIANGLE_STRIP,vindex.size(),indices));
+    }
+
+
+    TextureCoordList tcoord;
+    if (tcoord_active) tcoord=tcoord_active->getTextureCoords();
+    PolygonList textureIndices = its->getTextureIndices();
+    if (tcoord_active) {
+	if (its->hasTextureIndices()) {
+	    std::cerr << "texture indices are not supported!" << std::endl;
+	} else {
+	    osg::Vec2Array *texCoords=new osg::Vec2Array();
+	    for (i=0;i<vertices.size();i++) {
+		texCoords->push_back(osg::Vec2(tcoord[i].first,tcoord[i].second));
+	    }
+            geometry->setTexCoordArray(0,texCoords);
+	}
+    }
+
+    osgUtil::SmoothingVisitor v;
+    v.smooth(*geometry);
+
+    // As SmoothingVisitor doesn't take the front face into account:
+    osg::Vec3Array *norm=geometry->getNormalArray();
+    for (i=0;i<norm->size();i++) {
+        (*norm)[i] = - (*norm)[i];
+    }
+
+    geode->addDrawable(geometry);
+    parent->addChild(geode);
+}
+
 
 void OSGVisitor::applyTextureCoordinate(TextureCoordinate *texc) {
     tcoord_active=texc;

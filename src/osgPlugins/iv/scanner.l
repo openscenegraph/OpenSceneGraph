@@ -36,10 +36,11 @@ Texture2                { return TEXTURE2; }
 Separator		{ return SEPARATOR; }
 Material		{ return UN_MATERIAL; }
 IndexedFaceSet		{ return INDEXED_FACE_SET; }
+IndexedTriangleStripSet	{ return INDEXED_TRIANGLE_STRIP_SET; }
 TextureCoordinate2      { return TEXTURE_COORDINATE; }
 Transform		{ return TRANSFORM; }
 MatrixTransform		{ return MATRIX_TRANSFORM; }
-DobleCara               { return DOBLE_CARA; }
+TwoSided                { return TWO_SIDED; }
 matrix			{ return MATRIX; }
 point			{ return A_POINT; }
 coordIndex		{ BEGIN cindex;return COORD_INDEX; }
@@ -50,7 +51,7 @@ vector			{ return VECTOR; }
 <INITIAL,cindex>\]     	{ BEGIN INITIAL; return ']'; }
 USE			{ BEGIN def;return USE; }
 "#VRML\ V1.0 ascii" 	{ return VRML_HEADER; }
-"#Inventor\ V2.0 ascii" { return VRML_HEADER; }
+"#Inventor\ V2."." ascii" { return VRML_HEADER; }
 #[^\n\r]*
 "-"?{DIGIT}+"."{DIGIT}*	{
     yylval.f_value=strtod(yytext,NULL);

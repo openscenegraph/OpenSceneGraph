@@ -16,7 +16,7 @@ class ref_ptr
         ref_ptr() :_ptr(0L) {}
         ref_ptr(T* t):_ptr(t)              { if (_ptr) _ptr->ref(); }
         ref_ptr(const ref_ptr& rp):_ptr(rp._ptr)  { if (_ptr) _ptr->ref(); }
-        ~ref_ptr()                           { if (_ptr) _ptr->unref(); }
+        ~ref_ptr()                           { if (_ptr) _ptr->unref(); _ptr=0; }
 
         inline ref_ptr& operator = (const ref_ptr& rp)
         {

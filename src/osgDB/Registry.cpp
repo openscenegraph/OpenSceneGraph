@@ -28,22 +28,9 @@ void PrintFilePathList(std::ostream& stream,const FilePathList& filepath)
     }
 }
 
-class RegistryPtr
-{
-    public:
-        RegistryPtr() : _ptr(0L) {}
-        RegistryPtr(Registry* t): _ptr(t) {}
-        RegistryPtr(const RegistryPtr& rp):_ptr(rp._ptr) { }
-        ~RegistryPtr() { if (_ptr) delete _ptr; _ptr=0L; }
-
-        inline Registry* get() { return _ptr; }
-
-        Registry* _ptr;
-};
-
 Registry* Registry::instance()
 {
-    static RegistryPtr s_nodeFactory = new Registry;
+    static ref_ptr<Registry> s_nodeFactory = new Registry;
     return s_nodeFactory.get();
 }
 

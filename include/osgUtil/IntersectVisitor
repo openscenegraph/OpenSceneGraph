@@ -51,8 +51,8 @@ class OSGUTIL_EXPORT Hit
         osg::NodePath                   _nodePath;
         osg::ref_ptr<osg::Geode>        _geode;
         osg::ref_ptr<osg::Drawable>     _drawable;
-        osg::ref_ptr<osg::Matrix>       _matrix;
-        osg::ref_ptr<osg::Matrix>       _inverse;
+        osg::ref_ptr<osg::RefMatrix>    _matrix;
+        osg::ref_ptr<osg::RefMatrix>    _inverse;
         
         VecIndexList                    _vecIndexList;
         int                             _primitiveIndex;
@@ -102,8 +102,8 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
                 IntersectState();
 
-                osg::ref_ptr<osg::Matrix> _matrix;
-                osg::ref_ptr<osg::Matrix> _inverse;
+                osg::ref_ptr<osg::RefMatrix> _matrix;
+                osg::ref_ptr<osg::RefMatrix> _inverse;
 
                 typedef std::pair<osg::ref_ptr<osg::LineSegment>,osg::ref_ptr<osg::LineSegment> >   LineSegmentPair;
                 typedef std::vector< LineSegmentPair >                                              LineSegmentList;

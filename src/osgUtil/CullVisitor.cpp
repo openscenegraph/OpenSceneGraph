@@ -259,7 +259,7 @@ void CullVisitor::apply(Geode& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    Matrix& matrix = getModelViewMatrix();
+    RefMatrix& matrix = getModelViewMatrix();
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
         Drawable* drawable = node.getDrawable(i);
@@ -304,7 +304,7 @@ void CullVisitor::apply(Billboard& node)
     if (node_state) pushStateSet(node_state);
 
     const Vec3& eye_local = getEyeLocal();
-    const Matrix& modelview = getModelViewMatrix();
+    const RefMatrix& modelview = getModelViewMatrix();
 
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
@@ -314,7 +314,7 @@ void CullVisitor::apply(Billboard& node)
         // need to modify isCulled to handle the billboard offset.
         // if (isCulled(drawable->getBound())) continue;
 
-        Matrix* billboard_matrix = createOrReuseMatrix(modelview);
+        RefMatrix* billboard_matrix = createOrReuseMatrix(modelview);
 
         node.getMatrix(*billboard_matrix,eye_local,pos);
 
@@ -347,7 +347,7 @@ void CullVisitor::apply(LightSource& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    Matrix& matrix = getModelViewMatrix();
+    RefMatrix& matrix = getModelViewMatrix();
     StateAttribute* light = node.getLight();
     if (light)
     {
@@ -366,7 +366,7 @@ void CullVisitor::apply(ClipNode& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    Matrix& matrix = getModelViewMatrix();
+    RefMatrix& matrix = getModelViewMatrix();
 
     const ClipNode::ClipPlaneList& planes = node.getClipPlaneList();
     for(ClipNode::ClipPlaneList::const_iterator itr=planes.begin();
@@ -413,7 +413,7 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(getModelViewMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(getModelViewMatrix());
     node.getLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get());
     
@@ -447,7 +447,7 @@ void CullVisitor::apply(Projection& node)
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(node.getMatrix());
+    ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
     handle_cull_callbacks_and_traverse(node);
@@ -580,7 +580,7 @@ void CullVisitor::apply(Impostor& node)
         // within the impostor distance threshold therefore attempt
         // to use impostor instead.
         
-        Matrix& matrix = getModelViewMatrix();
+        RefMatrix& matrix = getModelViewMatrix();
 
         // search for the best fit ImpostorSprite;
         ImpostorSprite* impostorSprite = node.findBestImpostorSprite(eyeLocal);
@@ -748,7 +748,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     zfar *= 1.1f;
 
     // set up projection.
-    osg::Matrix* projection = new osg::Matrix;
+    osg::RefMatrix* projection = new osg::RefMatrix;
     if (isPerspectiveProjection)
     {
         // deal with projection issue move the top and right points
@@ -768,7 +768,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     Vec3 rotate_from = bs.center()-eye_local;
     Vec3 rotate_to   = getLookVectorLocal();
 
-    osg::Matrix* rotate_matrix = new osg::Matrix(
+    osg::RefMatrix* rotate_matrix = new osg::RefMatrix(
         osg::Matrix::translate(-eye_local)*        
         osg::Matrix::rotate(rotate_from,rotate_to)*
         osg::Matrix::translate(eye_local)*

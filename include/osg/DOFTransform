@@ -107,6 +107,7 @@ class SG_EXPORT DOFTransform : public Transform
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
     protected:
+
         virtual ~DOFTransform() {}
 
         Vec3 _minHPR;

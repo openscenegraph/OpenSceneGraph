@@ -113,7 +113,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
     {
     
         osg::Matrix matrix = cv->getModelViewMatrix();
-        osg::Matrix& projection = cv->getProjectionMatrix();
+        osg::RefMatrix& projection = cv->getProjectionMatrix();
         osgUtil::RenderGraph* rg = cv->getCurrentRenderGraph();
 
         if (rg->leaves_empty())

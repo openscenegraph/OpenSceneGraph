@@ -299,106 +299,6 @@ bool Cylinder_writeLocalData(const Object& obj, Output& fw)
 
 //////////////////////////////////////////////////////////////////////////////
 // forward declare functions to use later.
-bool InfinitePlane_readLocalData(Object& obj, Input& fr);
-bool InfinitePlane_writeLocalData(const Object& obj, Output& fw);
-
-//register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_InfinitePlaneFuncProxy
-(
-    new osg::InfinitePlane,
-    "InfinitePlane",
-    "Object InfinitePlane",
-    &InfinitePlane_readLocalData,
-    &InfinitePlane_writeLocalData,
-    DotOsgWrapper::READ_AND_WRITE
-);
-
-bool InfinitePlane_readLocalData(Object& obj, Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-    //InfinitePlane& infplane = static_cast<InfinitePlane&>(obj);
-
-    return iteratorAdvanced;
-}
-
-bool InfinitePlane_writeLocalData(const Object& obj, Output& fw)
-{
-    //const InfinitePlane& infplane = static_cast<const InfinitePlane&>(obj);
-
-    return true;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-
-// forward declare functions to use later.
-bool TriangleMesh_readLocalData(Object& obj, Input& fr);
-bool TriangleMesh_writeLocalData(const Object& obj, Output& fw);
-
-//register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TriangleMeshFuncProxy
-(
-    new osg::TriangleMesh,
-    "TriangleMesh",
-    "Object ",
-    &TriangleMesh_readLocalData,
-    &TriangleMesh_writeLocalData,
-    DotOsgWrapper::READ_AND_WRITE
-);
-
-bool TriangleMesh_readLocalData(Object& obj, Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-//    TriangleMesh& mesh = static_cast<TriangleMesh&>(obj);
-
-    return iteratorAdvanced;
-}
-
-bool TriangleMesh_writeLocalData(const Object& obj, Output& fw)
-{
-//    const TriangleMesh& mesh = static_cast<const TriangleMesh&>(obj);
-
-    return true;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// forward declare functions to use later.
-bool ConvexHull_readLocalData(Object& obj, Input& fr);
-bool ConvexHull_writeLocalData(const Object& obj, Output& fw);
-
-//register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ConvexHullFuncProxy
-(
-    new osg::ConvexHull,
-    "ConvexHull",
-    "Object ",
-    &ConvexHull_readLocalData,
-    &ConvexHull_writeLocalData,
-    DotOsgWrapper::READ_AND_WRITE
-);
-
-bool ConvexHull_readLocalData(Object& obj, Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-//    ConvexHull& geom = static_cast<ConvexHull&>(obj);
-
-    return iteratorAdvanced;
-}
-
-bool ConvexHull_writeLocalData(const Object& obj, Output& fw)
-{
-//    const ConvexHull& geom = static_cast<const ConvexHull&>(obj);
-
-    return true;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// forward declare functions to use later.
 bool HeightField_readLocalData(Object& obj, Input& fr);
 bool HeightField_writeLocalData(const Object& obj, Output& fw);
 
@@ -631,4 +531,107 @@ bool CompositeShape_writeLocalData(const Object& obj, Output& fw)
     return true;
 }
 
+
+// 
+// 
+// //////////////////////////////////////////////////////////////////////////////
+// // forward declare functions to use later.
+// bool InfinitePlane_readLocalData(Object& obj, Input& fr);
+// bool InfinitePlane_writeLocalData(const Object& obj, Output& fw);
+// 
+// //register the read and write functions with the osgDB::Registry.
+// RegisterDotOsgWrapperProxy g_InfinitePlaneFuncProxy
+// (
+//     new osg::InfinitePlane,
+//     "InfinitePlane",
+//     "Object InfinitePlane",
+//     &InfinitePlane_readLocalData,
+//     &InfinitePlane_writeLocalData,
+//     DotOsgWrapper::READ_AND_WRITE
+// );
+// 
+// bool InfinitePlane_readLocalData(Object& obj, Input& fr)
+// {
+//     bool iteratorAdvanced = false;
+// 
+//     //InfinitePlane& infplane = static_cast<InfinitePlane&>(obj);
+// 
+//     return iteratorAdvanced;
+// }
+// 
+// bool InfinitePlane_writeLocalData(const Object& obj, Output& fw)
+// {
+//     //const InfinitePlane& infplane = static_cast<const InfinitePlane&>(obj);
+// 
+//     return true;
+// }
+// 
+// 
+// //////////////////////////////////////////////////////////////////////////////
+// 
+// // forward declare functions to use later.
+// bool TriangleMesh_readLocalData(Object& obj, Input& fr);
+// bool TriangleMesh_writeLocalData(const Object& obj, Output& fw);
+// 
+// //register the read and write functions with the osgDB::Registry.
+// RegisterDotOsgWrapperProxy g_TriangleMeshFuncProxy
+// (
+//     new osg::TriangleMesh,
+//     "TriangleMesh",
+//     "Object ",
+//     &TriangleMesh_readLocalData,
+//     &TriangleMesh_writeLocalData,
+//     DotOsgWrapper::READ_AND_WRITE
+// );
+// 
+// bool TriangleMesh_readLocalData(Object& obj, Input& fr)
+// {
+//     bool iteratorAdvanced = false;
+// 
+// //    TriangleMesh& mesh = static_cast<TriangleMesh&>(obj);
+// 
+//     return iteratorAdvanced;
+// }
+// 
+// bool TriangleMesh_writeLocalData(const Object& obj, Output& fw)
+// {
+// //    const TriangleMesh& mesh = static_cast<const TriangleMesh&>(obj);
+// 
+//     return true;
+// }
+// 
+// 
+// //////////////////////////////////////////////////////////////////////////////
+// // forward declare functions to use later.
+// bool ConvexHull_readLocalData(Object& obj, Input& fr);
+// bool ConvexHull_writeLocalData(const Object& obj, Output& fw);
+// 
+// //register the read and write functions with the osgDB::Registry.
+// RegisterDotOsgWrapperProxy g_ConvexHullFuncProxy
+// (
+//     new osg::ConvexHull,
+//     "ConvexHull",
+//     "Object ",
+//     &ConvexHull_readLocalData,
+//     &ConvexHull_writeLocalData,
+//     DotOsgWrapper::READ_AND_WRITE
+// );
+// 
+// bool ConvexHull_readLocalData(Object& obj, Input& fr)
+// {
+//     bool iteratorAdvanced = false;
+// 
+// //    ConvexHull& geom = static_cast<ConvexHull&>(obj);
+// 
+//     return iteratorAdvanced;
+// }
+// 
+// bool ConvexHull_writeLocalData(const Object& obj, Output& fw)
+// {
+// //    const ConvexHull& geom = static_cast<const ConvexHull&>(obj);
+// 
+//     return true;
+// }
+// 
+// 
 

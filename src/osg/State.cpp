@@ -10,7 +10,7 @@ using namespace osg;
 State::State()
 {
     _contextID = 0;
-    _identity = new osg::Matrix(); // default Matrix constructs to identity.
+    _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _projection = _identity;
     _modelView = _identity;
 

@@ -215,15 +215,15 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
 
     if (cis->_matrix.valid())
     {
-        nis->_matrix = new Matrix;
+        nis->_matrix = new RefMatrix;
         nis->_matrix->mult(matrix,*(cis->_matrix));
     }
     else
     {
-        nis->_matrix = new Matrix(matrix);
+        nis->_matrix = new RefMatrix(matrix);
     }
 
-    Matrix* inverse_world = new Matrix;
+    RefMatrix* inverse_world = new RefMatrix;
     inverse_world->invert(*(nis->_matrix));
     nis->_inverse = inverse_world;
 
@@ -527,7 +527,7 @@ void IntersectVisitor::apply(Transform& node)
 {
     if (!enterNode(node)) return;
 
-    osg::ref_ptr<Matrix> matrix = new Matrix;
+    osg::ref_ptr<RefMatrix> matrix = new RefMatrix;
     node.getLocalToWorldMatrix(*matrix,this);
 
     pushMatrix(*matrix);

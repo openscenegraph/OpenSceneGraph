@@ -28,7 +28,7 @@ to by an osg::ref_ptr.
 */
 class SG_EXPORT Test: public osg::Referenced
 {
-public:
+    public:
 
 	typedef TestVisitor Visitor;    // Test is redundant
 
@@ -38,7 +38,9 @@ public:
 
 	virtual bool accept( Visitor& ) = 0;
 
-private:
+    protected:
+
+        virtual ~Test() {}
 
 	std::string _name;
 };
@@ -112,7 +114,7 @@ the traversal to be short-cicuited at any point during the visitation.
 */
 class TestVisitor
 {
-public:
+    public:
 
 	//..Should we enter this node and its children?
 	virtual bool visitEnter( TestSuite* ) { return true; }
@@ -122,7 +124,8 @@ public:
 
 	//..Returns true to continue to next Composite
 	virtual bool visitLeave( TestSuite* ) { return true; }
-protected:
+        
+    protected:
 
 	TestVisitor() {}
 	TestVisitor( const TestVisitor& ) {}
@@ -135,7 +138,7 @@ TestCase, is the supplies the interface for a Composite pattern's
 */
 class TestCase : public Test
 {
-public:
+    public:
 
 	typedef TestContext Context; // Test in TestContext? is redundant
 
@@ -144,6 +147,10 @@ public:
 	virtual bool accept( Visitor& v ) { return v.visit( this ); }
 
 	virtual void run( const Context& ) = 0;  // Subclass OSGUTX_EXPORT Responsibility
+
+    protected:
+
+        virtual ~TestCase() {}
 };
 
 /**
@@ -152,14 +159,14 @@ indicate problems during the run of a TestCase.
 */
 class TestX
 {
-public:
+    public:
 
 	TestX(const std::string& s):_what(s)	{}
 	virtual ~TestX() {}
 
 	const std::string& what() const { return _what; }
 
-private:
+    private:
 	std::string	_what;
 };
 
@@ -168,7 +175,7 @@ A TestFailureX indicates a failure in the tested component.
 */
 class TestFailureX: public TestX
 {
-public:
+    public:
 	TestFailureX(const std::string& s):TestX(s)	{}
 };
 
@@ -180,7 +187,7 @@ run which prevents the component from being tested.
 */
 class TestErrorX: public TestX
 {
-public:
+    public:
 	TestErrorX(const std::string& s):TestX(s)	{}
 };
 
@@ -197,7 +204,7 @@ class TestCase_ : public TestCase
 {
 	typedef void (FixtureT::*TestMethodPtr)( const Context& );
 
-public:
+    public:
 
 	// Constructor adds the TestMethod pointer
 	TestCase_( const std::string& sName, TestMethodPtr pTestMethod ) :
@@ -212,7 +219,9 @@ public:
 		( FixtureT().*_pTestMethod )( ctx );
 	}
 
-private:
+    protected:
+
+        virtual ~TestCase_() {}
 
 	TestMethodPtr _pTestMethod;
 };
@@ -223,7 +232,7 @@ and allows aggregation of Tests into hierarchies.
 */
 class SG_EXPORT TestSuite : public Test
 {
-public:
+    public:
 
 	TestSuite( const std::string& name );
 
@@ -237,7 +246,9 @@ public:
 
 	virtual bool accept( Test::Visitor& v );
 
-private:
+    protected:
+
+        virtual ~TestSuite() {}
 
 	typedef std::vector< osg::ref_ptr<Test> > Tests;
 	Tests _tests;  // Collection of Suites and/or Cases
@@ -250,7 +261,7 @@ primarily, it provides access to the root suite.
 class SG_EXPORT TestGraph
 {
 
-public:
+    public:
 
 	static TestGraph& instance();
 
@@ -283,7 +294,7 @@ public:
 	*/
 	TestSuite* suite(const std::string& path, TestSuite* tsuite = 0,bool createIfNecessary = false);
 
-private:
+    private:
 
 	/**
 		Does the same job as the version of suite listed above, but the path
@@ -312,7 +323,7 @@ class SG_EXPORT TestQualifier : public TestVisitor
 {
 	enum { SEPCHAR = '.' };
 
-public:
+    public:
 
 	// Entering a composite: Push its name on the Path
 	virtual bool visitEnter( TestSuite* pSuite );
@@ -323,7 +334,7 @@ public:
 	// Provide read-only access to the current qualifier
 	const std::string& currentPath() const;
 
-private:
+    private:
 
 	std::string _path;    // Current qualifier
 };

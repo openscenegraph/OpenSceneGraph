@@ -73,7 +73,7 @@ class SG_EXPORT NodeCallback : public virtual Object {
             }
         }
         
-   public:
+    public:
 
         ref_ptr<NodeCallback> _nestedCallback;
         

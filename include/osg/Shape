@@ -71,6 +71,9 @@ class SG_EXPORT Shape : public Object
             Must be defined by derived classes.*/
     	virtual void accept(ConstShapeVisitor&) const =0;
 
+    protected:
+    
+    	virtual ~Shape() {}
 };
 
 // forward declartions of Shape types.

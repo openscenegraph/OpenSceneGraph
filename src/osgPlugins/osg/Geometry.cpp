@@ -55,7 +55,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            if (!Primitive_readLocalData(fr,geom)) ++fr;
+            if (!Primitive_readLocalData(fr,geom)) fr.advanceOverCurrentFieldOrBlock();
         }
 
         ++fr;

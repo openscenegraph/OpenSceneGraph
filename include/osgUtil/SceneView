@@ -126,14 +126,14 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         const osg::Camera* getCamera() const { return _camera.get(); }
 
         /** set a projection matrix. Note, this will override a camera's projection matrix if it is not NULL.*/
-        void setProjectionMatrix(osg::Matrix* matrix) { _projectionMatrix = matrix; }
-        osg::Matrix* getProjectionMatrix() { return _projectionMatrix.get(); }
-        const osg::Matrix* getProjectionMatrix() const { return _projectionMatrix.get(); }
+        void setProjectionMatrix(osg::RefMatrix* matrix) { _projectionMatrix = matrix; }
+        osg::RefMatrix* getProjectionMatrix() { return _projectionMatrix.get(); }
+        const osg::RefMatrix* getProjectionMatrix() const { return _projectionMatrix.get(); }
 
         /** set a modelview matrix. Note, this will override a camera's modelview matrix if it is not NULL.*/
-        void setModelViewMatrix(osg::Matrix* matrix) { _modelviewMatrix = matrix; }
-        osg::Matrix* getModelViewMatrix() { return _modelviewMatrix.get(); }
-        const osg::Matrix* getModelViewMatrix() const { return _modelviewMatrix.get(); }
+        void setModelViewMatrix(osg::RefMatrix* matrix) { _modelviewMatrix = matrix; }
+        osg::RefMatrix* getModelViewMatrix() { return _modelviewMatrix.get(); }
+        const osg::RefMatrix* getModelViewMatrix() const { return _modelviewMatrix.get(); }
 
         
         void setInitVisitor(osg::NodeVisitor* av) { _initVisitor = av; }
@@ -283,7 +283,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         virtual ~SceneView();
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
-        virtual void cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
+        virtual void cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
 
         const osg::Matrix computeMVPW() const;
 
@@ -293,8 +293,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::StateSet>                 _globalState;
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::Camera>                   _camera;
-        osg::ref_ptr<osg::Matrix>                   _projectionMatrix;
-        osg::ref_ptr<osg::Matrix>                   _modelviewMatrix;
+        osg::ref_ptr<osg::RefMatrix>                _projectionMatrix;
+        osg::ref_ptr<osg::RefMatrix>                _modelviewMatrix;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         osg::ref_ptr<osg::State>                    _state;
         

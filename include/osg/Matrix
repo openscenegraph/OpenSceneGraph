@@ -18,7 +18,7 @@ namespace osg {
 
 class Quat;
 
-class SG_EXPORT Matrix : public Object
+class SG_EXPORT Matrix
 {
 
     public:
@@ -31,15 +31,7 @@ class SG_EXPORT Matrix : public Object
             float a20, float a21, float a22, float a23,
             float a30, float a31, float a32, float a33);
 
-        virtual Object* cloneType() const { return new Matrix(); } \
-        virtual Object* clone(const CopyOp&) const { return new Matrix(*this); } \
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Matrix*>(obj)!=NULL; } \
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Matrix"; }
-
-        virtual ~Matrix() {}
-
-
+        ~Matrix() {}
 
         int compare(const Matrix& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
 
@@ -237,6 +229,36 @@ class SG_EXPORT Matrix : public Object
         float _mat[4][4];
 
 };
+
+class RefMatrix : public Object, public Matrix
+{
+    public:
+    
+        RefMatrix():Matrix() {}
+        RefMatrix( const Matrix& other) : Matrix(other) {}
+        RefMatrix( const RefMatrix& other) : Object(other), Matrix(other) {}
+        explicit RefMatrix( float const * const def ):Matrix(def) {}
+        RefMatrix( float a00, float a01, float a02, float a03,
+            float a10, float a11, float a12, float a13,
+            float a20, float a21, float a22, float a23,
+            float a30, float a31, float a32, float a33):
+            Matrix(a00, a01, a02, a03,
+                   a10, a11, a12, a13,
+                   a20, a21, a22, a23,
+                   a30, a31, a32, a33) {}
+
+        virtual Object* cloneType() const { return new RefMatrix(); } 
+        virtual Object* clone(const CopyOp&) const { return new RefMatrix(*this); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const RefMatrix*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Matrix"; }
+        
+        
+    protected:
+    
+        virtual ~RefMatrix() {}
+};
+
 
 //static utility methods
 inline Matrix Matrix::identity(void)

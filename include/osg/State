@@ -58,8 +58,6 @@ class SG_EXPORT State : public Referenced
     public :
     
         State();
-        
-        virtual ~State();
 
         /** push stateset onto state stack.*/
         void pushStateSet(const StateSet* dstate);
@@ -73,7 +71,7 @@ class SG_EXPORT State : public Referenced
         /** reset the state object to an empty stack.*/
         void reset();
 
-        inline void applyProjectionMatrix(const osg::Matrix* matrix)
+        inline void applyProjectionMatrix(const osg::RefMatrix* matrix)
         {
             if (_projection!=matrix)
             {
@@ -97,7 +95,7 @@ class SG_EXPORT State : public Referenced
             return *_projection;
         }
 
-        inline void applyModelViewMatrix(const osg::Matrix* matrix)
+        inline void applyModelViewMatrix(const osg::RefMatrix* matrix)
         {
             if (_modelView!=matrix)
             {
@@ -551,15 +549,16 @@ class SG_EXPORT State : public Referenced
         typedef std::vector<AttributePair>                                      AttributeVec;
         typedef std::vector<StateAttribute::GLModeValue>                        ValueVec;
 
-    private:
+    protected:
 
-    
+        virtual ~State();
+
         unsigned int                _contextID;
         ref_ptr<FrameStamp>         _frameStamp;
         
-        ref_ptr<const Matrix>             _identity;
-        ref_ptr<const Matrix>             _projection;
-        ref_ptr<const Matrix>             _modelView;
+        ref_ptr<const RefMatrix>    _identity;
+        ref_ptr<const RefMatrix>    _projection;
+        ref_ptr<const RefMatrix>    _modelView;
         
         ref_ptr<DisplaySettings>    _displaySettings;
         

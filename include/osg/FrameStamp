@@ -28,7 +28,6 @@ class SG_EXPORT FrameStamp : public Referenced
 
         FrameStamp();
         FrameStamp(const FrameStamp& fs);
-        ~FrameStamp();
         
         FrameStamp& operator = (const FrameStamp& fs);
         
@@ -40,9 +39,14 @@ class SG_EXPORT FrameStamp : public Referenced
         
         void setCalendarTime(const tm& calendarTime);
         void getCalendarTime(tm& calendarTime) const;
-        
+
+        // keep public to allow it to be permit allocation which is 
+        // not on the heap used osgcluster
+        virtual ~FrameStamp();
+
     protected:
     
+
         // note no dynamic memory is used so that data can be passed
         // via a simple memory copy or within a data packet across
         // the network.

@@ -182,6 +182,11 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         double                  _timeMultiplier;
         double                  _firstTime;
         mutable double          _animationTime;
+
+    protected:
+    
+        ~AnimationPathCallback(){}
+
 };
 
 }

@@ -40,3 +40,22 @@ const bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,N
     }
     return true;
 }
+
+void PositionAttitudeTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
+{
+    PositionAttitudeTransform* pat = dynamic_cast<PositionAttitudeTransform*>(node);
+    if (pat &&
+        _animationPath.valid() && 
+        nv->getVisitorType()==NodeVisitor::APP_VISITOR && 
+        nv->getFrameStamp())
+    {
+        double time = nv->getFrameStamp()->getReferenceTime();
+        if (_firstTime==0.0) _firstTime = time;
+        AnimationPath::Key key;
+        if (_animationPath->getKeyFrame(time-_firstTime,key))
+        {
+            pat->setPosition(key._position);
+            pat->setAttitude(key._rotation);
+        }
+    }
+}

@@ -366,6 +366,7 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
          cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
 
+    cullVisitor->setCullingMode(_cullingMode);
     cullVisitor->setComputeNearFarMode(_computeNearFar);
     cullVisitor->setLODBias(_LODBias);
     cullVisitor->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);

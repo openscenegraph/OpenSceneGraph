@@ -65,7 +65,7 @@ bool TXPNode::computeBound() const
         _bsphere_computed = true;
         return true;
     }
-    return osg::Group::computeBound();
+    return Group::computeBound();
 }
 
 void TXPNode::setArchiveName(const std::string& archiveName)

@@ -52,7 +52,7 @@ public:
     virtual void apply(osg::Node& node)
     {
         _fw.writeObject(node);
-        osg::NodeVisitor::apply(node);
+        NodeVisitor::apply(node);
     }
     osgDB::Output &_fw;
 };

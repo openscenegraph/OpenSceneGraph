@@ -38,6 +38,10 @@ void OsgSceneHandler::init()
     osg::notify(osg::INFO)<<"   unlocked "<<this<<" init."<<std::endl;
 }
 
+void OsgSceneHandler::clear(Producer::Camera& /*camera*/)
+{
+    // no-op right now as scene view manages its own cleaer.
+}
 
 void OsgSceneHandler::cull(Producer::Camera &cam) 
 {

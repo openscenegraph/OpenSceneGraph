@@ -55,6 +55,8 @@ class InstanceDefinitionRecord;
 class InstanceReferenceRecord;
 class MultiTextureRecord;
 class UVListRecord;
+class LightSourceRecord;
+class LightSourcePaletteRecord;
 struct SFace;
 
 //class GeoSetBuilder;
@@ -124,6 +126,7 @@ class ConvertFromFLT
 
         // Palette records
         void visitColorPalette(osg::Group& osgParent, ColorPaletteRecord* rec);
+        void visitLightSourcePalette(osg::Group& osgParent, LightSourcePaletteRecord* rec);
         void visitMaterialPalette(osg::Group& osgParent, MaterialPaletteRecord* rec);
         void visitOldMaterialPalette(osg::Group& osgParent, OldMaterialPaletteRecord* rec);
         void visitTexturePalette(osg::Group& osgParent, TexturePaletteRecord* rec);
@@ -136,6 +139,7 @@ class ConvertFromFLT
         // Primary records
         osg::Group* visitHeader(HeaderRecord* rec);
         osg::Group* visitGroup(osg::Group& osgParent, GroupRecord* rec);
+        osg::Group* visitLightSource(osg::Group& osgParent, LightSourceRecord* rec);
         osg::Group* visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec);
         osg::Group* visitLOD(osg::Group& osgParent, LodRecord* rec);
         osg::Group* visitOldLOD(osg::Group& osgParent, OldLodRecord* rec);

@@ -20,6 +20,7 @@
 #include <osg/Vec4>
 #include <osg/Billboard>
 #include <osg/Texture2D>
+#include <osg/LightSource>
 #include <osg/Image>
 #include <osg/Notify>
 
@@ -63,6 +64,8 @@
 #include "LocalVertexPoolRecord.h"
 #include "MultiTextureRecord.h"
 #include "UVListRecord.h"
+#include "LightSourceRecord.h"
+#include "LightSourcePaletteRecord.h"
 
 
 
@@ -180,6 +183,10 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
             visitColorPalette(osgPrimary, (ColorPaletteRecord*)child);
             break;
 
+        case LIGHT_SOURCE_PALETTE_OP:
+            visitLightSourcePalette(osgPrimary, (LightSourcePaletteRecord*)child);
+            break;
+
         case MATERIAL_PALETTE_OP:
             visitMaterialPalette(osgPrimary, (MaterialPaletteRecord*)child);
             break;
@@ -265,6 +272,9 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
                 break;
             case GROUP_OP:
                 osgPrim = visitGroup(osgParent, (GroupRecord*)child);
+                break;
+            case LIGHT_SOURCE_OP:
+                osgPrim = visitLightSource(osgParent, (LightSourceRecord*)child);
                 break;
             case LOD_OP:
                 osgPrim = visitLOD(osgParent, (LodRecord*)child);
@@ -470,6 +480,33 @@ void ConvertFromFLT::visitColorPalette(osg::Group& , ColorPaletteRecord* rec)
 }
 
                                  /*osgParent*/
+void ConvertFromFLT::visitLightSourcePalette(osg::Group& , LightSourcePaletteRecord* rec)
+{
+
+    SLightSourcePalette* pLight = (SLightSourcePalette*)rec->getData();
+
+    osg::Light* light = new osg::Light();
+    
+    light->setAmbient( osg::Vec4(
+                pLight->sfAmbientRGBA[0], pLight->sfAmbientRGBA[1],
+                pLight->sfAmbientRGBA[2], pLight->sfAmbientRGBA[3] ) );
+    light->setDiffuse( osg::Vec4(
+                pLight->sfDiffuseRGBA[0], pLight->sfDiffuseRGBA[1],
+                pLight->sfDiffuseRGBA[2], pLight->sfDiffuseRGBA[3] ) );
+    light->setSpecular( osg::Vec4(
+                pLight->sfSpecularRGBA[0], pLight->sfSpecularRGBA[1],
+                pLight->sfSpecularRGBA[2], pLight->sfSpecularRGBA[3] ) );
+    light->setConstantAttenuation( pLight->sfConstantAttuenation );
+    light->setLinearAttenuation( pLight->sfLinearAttuenation );
+    light->setQuadraticAttenuation( pLight->sfQuadraticAttuenation );
+    //light->setSpotExponent( pLight->sfDropoff );
+    //light->setSpotCutoff( pLight->sfCutoff );
+
+    LightPool* pLightPool = rec->getFltFile()->getLightPool();
+    pLightPool->addLight( pLight->diIndex, light );
+}
+
+                                 /*osgParent*/
 void ConvertFromFLT::visitMaterialPalette(osg::Group&, MaterialPaletteRecord* rec)
 {
     if (!rec->getFltFile()->useInternalMaterialPalette()) return;
@@ -621,6 +658,49 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
         visitPrimaryNode(*group, rec);
         return group;
     }
+}
+
+osg::Group* ConvertFromFLT::visitLightSource(osg::Group& osgParent, LightSourceRecord* rec)
+{
+
+    static int lightnum = 0;
+
+    LightPool* pLightPool = rec->getFltFile()->getLightPool();
+    SLightSource* pLSource = (SLightSource*) rec->getData();
+
+    /*
+    if ( !(pLSource->dwFlags & 1) ) { // enabled
+        return NULL;
+    }
+    */
+
+    osg::LightSource* lightSource = new osg::LightSource();
+
+    osg::Light* pLight = pLightPool->getLight( pLSource->diIndex );
+    osg::Light* light = new osg::Light( *pLight );
+
+    light->setPosition( osg::Vec4(
+                pLSource->Coord.x(), pLSource->Coord.y(),
+                pLSource->Coord.z(), 1 ) );
+    light->setLightNum( lightnum );
+
+    lightSource->setLight( light );
+    lightSource->setLocalStateSetModes( osg::StateAttribute::ON );
+    osg::Node* node = &osgParent;
+    if ( 1 ) { //pLSource->dwFlags & 2 ) { // global
+        while ( !node->getParents().empty() ) {
+            node = *(node->getParents().begin());
+        }
+    }
+    lightSource->setStateSetModes( *(node->getOrCreateStateSet()),
+            osg::StateAttribute::ON );
+
+    lightnum++;
+
+    osgParent.addChild( lightSource );
+    visitPrimaryNode(*lightSource, rec);
+
+    return lightSource;
 }
 
 osg::Group* ConvertFromFLT::visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec)

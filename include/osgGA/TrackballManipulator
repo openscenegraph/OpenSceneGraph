@@ -24,7 +24,7 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
 
         TrackballManipulator();
 
-        virtual const char* className() { return "Trackball"; }
+        virtual const char* className() const { return "Trackball"; }
 
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.

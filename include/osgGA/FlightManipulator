@@ -31,7 +31,7 @@ class OSGGA_EXPORT FlightManipulator : public CameraManipulator
 
         FlightManipulator();
 
-        virtual const char* className() { return "Flight"; }
+        virtual const char* className() const { return "Flight"; }
 
         virtual void setNode(osg::Node*);
 

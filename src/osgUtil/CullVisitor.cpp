@@ -161,7 +161,7 @@ float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODSca
     float dist = distance(pos,matrix);
     
     if (withLODScale) return dist*getLODScale();
-    else return dist*getLODScale();
+    else return dist;
 }
 
 void CullVisitor::popProjectionMatrix()

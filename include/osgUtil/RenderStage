@@ -97,7 +97,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         double getClearDepth() const { return _clearDepth; }
 
         
-        /** Set the clear stencil value used in glClearStencil(). Defaults to 1.0 
+        /** Set the clear stencil value used in glClearStencil(). Defaults to 0 
           * glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true*/
         void setClearStencil(int stencil) { _clearStencil=stencil; }
         

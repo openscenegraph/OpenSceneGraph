@@ -64,12 +64,15 @@
 namespace osg {
 
 #ifdef USE_DEGREES_INTERNALLY
-inline double inDegrees(float angle) { return angle; } 
-inline double inRadians(float angle) { return angle*180.0/M_PI; }
+inline double inDegrees(double angle) { return angle; } 
+inline double inRadians(double angle) { return angle*180.0/M_PI; }
 #else
-inline double inDegrees(float angle) { return angle*M_PI/180.0; }
-inline double inRadians(float angle) { return angle; }
+inline double inDegrees(double angle) { return angle*M_PI/180.0; }
+inline double inRadians(double angle) { return angle; }
 #endif
+
+inline double DegreesToRadians(double angle) { return angle*M_PI/180.0; }
+inline double RadiansToDegrees(double angle) { return angle*180.0/M_PI; }
 
 };
 

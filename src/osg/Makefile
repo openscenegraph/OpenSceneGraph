@@ -104,6 +104,7 @@ TARGET_INCLUDE_FILES = \
 	osg/State\
 	osg/StateAttribute\
 	osg/StateSet\
+	osg/Statistics\
 	osg/Stencil\
 	osg/Switch\
 	osg/TexEnv\

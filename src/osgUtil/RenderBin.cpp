@@ -162,7 +162,7 @@ void RenderBin::draw_local(osg::State& state,RenderLeaf*& previous)
 }
 // stats
 #include <osg/GeoSet>
-void RenderBin::getPrims(Statistics *primStats)
+void RenderBin::getPrims(osg::Statistics *primStats)
 {
     for(RenderBinList::iterator itr = _bins.begin();
     itr!=_bins.end();

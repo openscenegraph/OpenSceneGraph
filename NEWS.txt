@@ -1,23 +1,42 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+23rd July 2003 - OpenSceneGraph-0.9.5
+
+    New osgGL2 library
+
+    Adoption of OpenThreads for cross platform threading support.
+
+    New osg::PagedLOD + osgDB::DatabasePager support for native, 
+    constant framerate database paging.
+
+    New native IVE binary format.
+
+    Support for ARB_fragment_program
+
     New 3dc points data cloud loader.
     
-    New dds iamge loader.
+    New dds image loader.
     
     New pnm image loader.
     
-    Support for vertex attribute in osg::Geometry.
+    Support for vertex attributes in osg::Geometry.
 
     TessellationHints now supported by ShapeDrawable.
 
-    Supported added for auto scaling and rotating text + peformance improvements.
+    Supported added for auto scaling and rotating text + performance improvements.
 
-    New examples - osgtexturerectangle, osgslideshow, osgpoints, osgdemeter.
+    New examples - osgtexturerectangle, osgprerendercubemap, slideshow3D, osgpoints, osgdemeter.
 
-    New native binary format.
-
-    Support added for Open Flight detail textures.
+    Support added for Open Flight detail textures via multi-texturing.
+    
+    Addition of camera style convince set and get methods to osgUtil::SceneView, consolidating
+    previous functionality that was provided by both osg::SceneView and osg::Camara into one place.
+    This move has made osg::Camera redundent so has it been removed to avoid confusion, 
+    usage inconsistencies and bloat of core libraries.
+    
+    Removal of the long time deprecated osg::GeoSet, osgconv still has a copy of GeoSet and the
+    .osg support for so is able to convert any remaining .osg database which contained GeoSet's.
 
 
 28th April 2003  - OpenSceneGraph-0.9.4-2

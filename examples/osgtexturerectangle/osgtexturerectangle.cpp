@@ -123,7 +123,7 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     geom->setTexCoordArray(0,texcoords);
 
     osg::Vec3Array* normals = new osg::Vec3Array(1);
-    (*normals)[0].set(-1.0f,0.0f,0.0f);
+    (*normals)[0].set(0.0f,-1.0f,0.0f);
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 

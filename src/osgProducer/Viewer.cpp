@@ -821,7 +821,6 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
 bool Viewer::computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
     bool hitFound = false;
-    osgUtil::IntersectVisitor::HitList hlist;
     for(unsigned int i=0;i<getNumberOfCameras();++i)
     {
         if (computeIntersections(x,y,i,node,hits,traversalMask)) hitFound = true;

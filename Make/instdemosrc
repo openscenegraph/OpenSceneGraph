@@ -26,12 +26,14 @@ TIFF_LIB=$2
 
 copy_demo_source()
 {
-    for d in `ls $TOPDIR/src/Demos/ | grep -v CVS`
+#DEMODIR=$TOPDIR/src/Demos/
+DEMODIR=$TOPDIR/examples
+    for d in `ls $DEMODIR | grep -v CVS`
     do
-        if [ -d $TOPDIR/src/Demos/$d ]
+        if [ -d $DEMODIR/$d ]
         then
             THISDIR=`pwd`
-            cd $TOPDIR/src/Demos/$d
+            cd $DEMODIR/$d
             [ -d $INST_DEMO_SRC/$d ] || mkdir -m 0755 -p $INST_DEMO_SRC/$d
             echo "         installing $d"
             for f in `$MAKE __instfiles | grep -v $MAKE`
@@ -115,7 +117,7 @@ echo "  generating make files ..."
 generate_makedefs > $INST_SRC/Make/makedefs
 generate_makerules > $INST_SRC/Make/makerules
 
-echo "  copying demo files ..."
+echo "  copying example files ..."
 copy_demo_source
 
 exit 0

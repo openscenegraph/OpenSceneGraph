@@ -177,7 +177,7 @@ void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
     EraseMacro(_nodeWrapperMap,wrapper);
 }
 
-#undef EraseMaroc
+#undef EraseMacro
 
 void Registry::addReaderWriter(ReaderWriter* rw)
 {

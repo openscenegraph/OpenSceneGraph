@@ -66,7 +66,7 @@ class KeyHandler: public osgGA::GUIEventHandler
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
-    ArgumentParser args(&argc,argv);
+    osg::ArgumentParser args(&argc,argv);
     
     // set up the usage document
     args.getApplicationUsage()->setApplicationName(args.getApplicationName());
@@ -98,7 +98,7 @@ int main( int argc, char **argv )
     }
 
     // create the scene
-    notify(NOTICE) << "osgGL2 version " << osgGL2GetVersion() << std::endl;
+    osg::notify(osg::NOTICE) << "osgGL2 version " << osgGL2GetVersion() << std::endl;
     GL2ScenePtr gl2Scene = new GL2Scene;
 
     viewer.setSceneData( gl2Scene->getRootNode().get() );

@@ -47,13 +47,13 @@ void SlideEventHandler::set(osg::Node* model)
     
     if (findPresentation._switch)
     {
-        std::cout<<"Found presenation '"<<model->getName()<<"'"<<std::endl;
+        std::cout<<"Presentation '"<<model->getName()<<"'"<<std::endl;
         _presentationSwitch = findPresentation._switch;
         selectSlide(0);
     }
     else
     {
-        std::cout<<"Not found presenation "<<std::endl;
+        std::cout<<"Not found presentation "<<std::endl;
 
         _presentationSwitch = 0;
         _activeSlide = 0;
@@ -63,7 +63,7 @@ void SlideEventHandler::set(osg::Node* model)
         
         if (findSlide._switch)
         {
-            std::cout<<"Found presenation slide"<<findSlide._switch->getName()<<std::endl;
+            std::cout<<"Found presentation slide"<<findSlide._switch->getName()<<std::endl;
 
             _slideSwitch = findSlide._switch;
             selectLayer(0);

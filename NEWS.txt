@@ -13,14 +13,16 @@ OSG News (most significant items from ChangeLog)
     New native IVE binary format.
 
     Support for ARB_fragment_program
+    
+    Support for ARB_vertex_buffer_object
+
+    Support for vertex attributes in osg::Geometry.
 
     New 3dc points data cloud loader.
     
     New dds image loader.
     
     New pnm image loader.
-    
-    Support for vertex attributes in osg::Geometry.
 
     TessellationHints now supported by ShapeDrawable.
 

@@ -254,7 +254,7 @@ bool Matrix::invert( const Matrix& mat )
     unsigned int i,j,k,l,ll;
     unsigned int icol = 0;
     unsigned int irow = 0;
-    float temp, pivinv, dum, big;
+    double temp, pivinv, dum, big;
 
     // copy in place this may be unnecessary
     *this = mat;

@@ -54,6 +54,10 @@ echo osgprerender dumptruck.osg
 osgprerender dumptruck.osg
 more memleaks.log
 
+echo osgshadowtexture cessna.osg
+osgshadowtexture cessna.osg
+more memleaks.log
+
 echo osgparticle
 osgparticle
 more memleaks.log

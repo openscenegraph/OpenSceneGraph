@@ -91,7 +91,7 @@ void Texture1D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if(getModifiedTag(contextID) != _image->getModifiedTag())
+        else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
             applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMimpmapLevels);
         }

@@ -94,7 +94,7 @@ void Texture2D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if(getModifiedTag(contextID) != _image->getModifiedTag())
+        else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
             applyTexImage2D(GL_TEXTURE_2D,_image.get(),state,
                             _textureWidth, _textureHeight, _numMimpmapLevels);

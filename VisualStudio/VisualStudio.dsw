@@ -201,6 +201,33 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Demo osghud"=.\Demos\osghud\osghud.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGLUT
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Demo osgimpostor"=.\Demos\osgimpostor\osgimpostor.dsp - Package Owner=<4>
 
 Package=<5>

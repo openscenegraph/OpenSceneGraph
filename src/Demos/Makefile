@@ -8,6 +8,7 @@ DIRS = \
 	osgconv\
 	osgcopy\
 	osgcube\
+	osghud\
 	osgimpostor\
 	osgreflect\
 	osgscribe\

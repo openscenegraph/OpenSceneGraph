@@ -302,7 +302,7 @@ LINK32=link.exe
 
 
 
-# ADD LINK32 glut32.lib glu32.lib opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgcallbackd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 glu32.lib opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgcallbackd.exe" /pdbtype:sept /libpath:"../../../lib"
 
 
 

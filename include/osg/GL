@@ -68,8 +68,9 @@
         #define DECLSPEC_IMPORT    __declspec(dllimport)
         #define WINGDIAPI DECLSPEC_IMPORT
     #endif
-           // XXX This is from Win32's <ctype.h> 
-    #ifndef _WCHAR_T_DEFINED
+           // XXX This is from Win32's <ctype.h>
+
+    #if !defined(_WCHAR_T_DEFINED) && !(defined(__GNUC__)&&(__GNUC__ == 3))
         typedef unsigned short wchar_t;
         #define _WCHAR_T_DEFINED
     #endif

@@ -319,8 +319,11 @@ WARN_LOGFILE           =
 INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgDB \
                          $(OSGHOME)/include/osgGA \
-                         $(OSGHOME)/include/osgGLUT \
                          $(OSGHOME)/include/osgParticle \
+                         $(OSGHOME)/include/osgProducer \
+                         $(OSGHOME)/include/osgSim \
+                         $(OSGHOME)/include/osgGL2 \
+                         $(OSGHOME)/include/osgFX \
                          $(OSGHOME)/include/osgText \
                          $(OSGHOME)/include/osgUtil \
                          $(OSGHOME)/doc/Doxyfiles/auto_Mainpage
@@ -850,14 +853,14 @@ TEMPLATE_RELATIONS     = YES
 # file showing the direct and indirect include dependencies of the file with 
 # other documented files.
 
-INCLUDE_GRAPH          = YES
+INCLUDE_GRAPH          = NO
 
 # If the ENABLE_PREPROCESSING, SEARCH_INCLUDES, INCLUDED_BY_GRAPH, and 
 # HAVE_DOT tags are set to YES then doxygen will generate a graph for each 
 # documented header file showing the documented files that directly or 
 # indirectly include this file.
 
-INCLUDED_BY_GRAPH      = YES
+INCLUDED_BY_GRAPH      = NO
 
 # If the GRAPHICAL_HIERARCHY and HAVE_DOT tags are set to YES then doxygen 
 # will graphical hierarchy of all classes instead of a textual one.

@@ -113,6 +113,22 @@ SOURCE=..\..\src\osgSim\Sector.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\ScalarsToColors.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\ScalarBar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\ColorRange.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\SphereSegment.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\Version.cpp
 # End Source File
 # End Group
@@ -138,6 +154,22 @@ SOURCE=..\..\include\osgSim\LightPointNode
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\Sector
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\ScalarsToColors
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\ScalarBar
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\ColorRange
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\SphereSegment
 # End Source File
 # Begin Source File
 

@@ -1,0 +1,103 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_VIEWER_H
+#define OSG_VIEWER_H
+
+#include <osg/Timer>
+#include <osg/NodeVisitor>
+
+#include <osgGA/GUIActionAdapter>
+#include <osgGA/GUIEventHandler>
+#include <osgGA/KeySwitchCameraManipulator>
+
+#include <osgProducer/CameraGroup>
+#include <osgProducer/KeyboardMouseCallback>
+
+#include <list>
+
+namespace osgProducer {
+
+class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAdapter
+{
+    public :
+
+        Viewer();
+
+        Viewer(Producer::CameraConfig *cfg);
+
+        Viewer(const std::string& configFile);
+
+        Viewer(int& argc, char** argv);
+
+        virtual ~Viewer() {}
+
+
+        bool readCommandLine(int& argc, char** argv);
+
+
+        enum ViewerOptions
+        {
+            TRACKBALL_MANIPULATOR   = 1,
+            DRIVE_MANIPULATOR       = 2,
+            FLIGHT_MANIPULATOR      = 4,
+            STATE_MANIPULATOR       = 8,
+            HEAD_LIGHT_SOURCE       = 16,
+            SKY_LIGHT_SOURCE        = 32,
+            STANDARD_SETTINGS = TRACKBALL_MANIPULATOR|
+                                DRIVE_MANIPULATOR |
+                                FLIGHT_MANIPULATOR |
+                                STATE_MANIPULATOR |
+                                HEAD_LIGHT_SOURCE
+        };
+        
+        void setUpViewer(ViewerOptions options=STANDARD_SETTINGS);
+        
+        bool done() const { return _done; }
+
+        virtual void sync();
+
+        virtual void update();
+
+        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
+
+        EventHandlerList& getEventHandlerList() { return _eventHandlerList; }
+        
+        virtual void realize( ThreadingModel thread_model= SingleThreaded );
+
+        virtual void requestRedraw() {}
+        virtual void requestContinuousUpdate(bool) {}
+        virtual void requestWarpPointer(int x,int y);
+
+    protected :
+
+
+        bool            _done;
+
+        unsigned int    _frameNumber;
+        osg::Timer      _timer;
+        osg::Timer_t    _start_tick;
+        
+        osgProducer::KeyboardMouseCallback* _kbmcb;
+
+        EventHandlerList _eventHandlerList;
+        osg::ref_ptr<osgGA::KeySwitchCameraManipulator> _keyswitchManipulator;
+
+        osg::ref_ptr<osg::Camera> _old_style_osg_camera;
+        
+        osg::ref_ptr<osg::NodeVisitor> _updateVisitor;
+};
+
+}
+
+#endif

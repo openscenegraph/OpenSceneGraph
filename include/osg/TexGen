@@ -11,6 +11,14 @@
 
 namespace osg {
 
+#ifndef GL_NORMAL_MAP_ARB
+#define GL_NORMAL_MAP_ARB                   0x8511
+#endif
+
+#ifndef GL_REFLECTION_MAP_ARB
+#define GL_REFLECTION_MAP_ARB               0x8512
+#endif
+
 /** TexGen - encapsulates the OpenGL glTexGen (texture coordinate generation) state.*/
 class SG_EXPORT TexGen : public StateAttribute
 {
@@ -69,9 +77,11 @@ class SG_EXPORT TexGen : public StateAttribute
         virtual void apply(State& state) const;
 
         enum Mode {
-            OBJECT_LINEAR = GL_OBJECT_LINEAR,
-            EYE_LINEAR    = GL_EYE_LINEAR,
-            SPHERE_MAP    = GL_SPHERE_MAP
+            OBJECT_LINEAR  = GL_OBJECT_LINEAR,
+            EYE_LINEAR     = GL_EYE_LINEAR,
+            SPHERE_MAP     = GL_SPHERE_MAP,
+            NORMAL_MAP     = GL_NORMAL_MAP_ARB,
+            REFLECTION_MAP = GL_REFLECTION_MAP_ARB
         };
 
         inline void setMode( const Mode mode ) { _mode = mode; }

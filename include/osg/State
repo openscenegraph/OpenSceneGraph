@@ -53,20 +53,6 @@ class SG_EXPORT State : public Referenced
         /** reset the state object to an empty stack.*/
         void reset();
 
-
-        /** apply an OpenGL mode if required. */
-        inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled)
-        {
-            return applyMode(mode,enabled,_modeMap[mode]);
-        }
-
-
-        /** apply an attribute if required. */
-        inline const bool applyAttribute(const StateAttribute* attribute)
-        {
-            return applyAttribute(attribute,_attributeMap[attribute->getType()]);
-        }
-
         inline void applyProjectionMatrix(const osg::Matrix* matrix)
         {
             if (_projection!=matrix)
@@ -117,23 +103,39 @@ class SG_EXPORT State : public Referenced
         ClippingVolume getClippingVolume() const;
 
 
-        /** apply stateset.*/
+
+        /** Apply stateset.*/
         void apply(const StateSet* dstate);
 
-        /** apply the state.*/
+        /** Apply the state.*/
         void apply();
+
+
+        /** Apply an OpenGL mode if required. */
+        inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled)
+        {
+            return applyMode(mode,enabled,_modeMap[mode]);
+        }
+
+
+        /** Apply an attribute if required. */
+        inline const bool applyAttribute(const StateAttribute* attribute)
+        {
+            return applyAttribute(attribute,_attributeMap[attribute->getType()]);
+        }
+
        
-        /** mode has been set externally, update state to reflect this setting.*/
+        /** Mode has been set externally, update state to reflect this setting.*/
         void haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
         
-        /** mode has been set externally, therefore dirty the associated mode in osg::State
+        /** Mode has been set externally, therefore dirty the associated mode in osg::State
           * so it is applied on next call to osg::State::apply(..)*/
         void haveAppliedMode(const StateAttribute::GLMode mode);
 
-        /** attribute has been applied externally, update state to reflect this setting.*/
+        /** Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedAttribute(const StateAttribute* attribute);
 
-        /** attribute has been applied externally, 
+        /** Attribute has been applied externally, 
           * and therefore this attribute type has been dirtied 
           * and will need to be re-appplied on next osg::State.apply(..).
           * note, if you have an osg::StateAttribute which you have applied externally
@@ -141,6 +143,12 @@ class SG_EXPORT State : public Referenced
           * track the current state more accuratly and enable lazy state updating such
           * that only changed state will be applied.*/
         void haveAppliedAttribute(const StateAttribute::Type type);
+
+        /** Get whether the current specified mode is enabled (true) or disabled (false).*/ 
+        const bool getCurrentMode(const StateAttribute::GLMode mode) const;
+        
+        /** Get the current specified attribute, return NULL is one has not yet been applied.*/ 
+        const StateAttribute* getCurrentAttribute(const StateAttribute::Type type) const;
 
         
         /** Set the current OpenGL context uniqueID.

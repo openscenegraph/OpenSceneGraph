@@ -74,6 +74,12 @@ template<typename T>
 inline T clampTo(T v,T minimum,T maximum) { return v<minimum?minimum:v>maximum?maximum:v; }
 
 template<typename T>
+inline T clampAbove(T v,T minimum) { return v<minimum?minimum:v; }
+
+template<typename T>
+inline T clampBelow(T v,T maximum) { return v>maximum?maximum:v; }
+
+template<typename T>
 inline T sign(T v) { return v<0?-1:1; }
 
 template<typename T>

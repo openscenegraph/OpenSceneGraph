@@ -40,7 +40,7 @@ int main( int argc, char** argv )
 
          osgUtx::QualifiedTestPrinter printer;
          osgUtx::TestGraph::instance().root()->accept( printer );    
-         std::cout<<endl;
+         std::cout<<std::endl;
     }
 
     std::cout<<"******   Running tests   ******"<<std::endl;

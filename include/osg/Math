@@ -80,25 +80,25 @@ template<typename T>
 inline T clampBelow(T v,T maximum) { return v>maximum?maximum:v; }
 
 template<typename T>
-inline T sign(T v) { return v<0?-1:1; }
+inline T sign(T v) { return v<(T)0?(T)-1:(T)1; }
 
 template<typename T>
 inline T square(T v) { return v*v; }
 
 template<typename T>
-inline T signedSquare(T v) { return v<0?-v*v:v*v;; }
+inline T signedSquare(T v) { return v<(T)0?-v*v:v*v;; }
 
 template<typename T>
-inline T inDegrees(T angle) { return angle*PI/180.0; }
+inline T inDegrees(T angle) { return angle*(T)PI/(T)180.0; }
 
 template<typename T>
 inline T inRadians(T angle) { return angle; }
 
 template<typename T>
-inline T DegreesToRadians(T angle) { return angle*PI/180.0; }
+inline T DegreesToRadians(T angle) { return angle*(T)PI/(T)180.0; }
 
 template<typename T>
-inline T RadiansToDegrees(T angle) { return angle*180.0/PI; }
+inline T RadiansToDegrees(T angle) { return angle*(T)180.0/(T)PI; }
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MWERKS__)
     inline bool isNaN(float v) { return _isnan(v)!=0; }

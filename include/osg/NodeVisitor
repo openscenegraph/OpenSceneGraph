@@ -188,7 +188,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         
         /** Method called by osg::Node::accept() method after
           * a call to NodeVisitor::apply(..).
-          * Note, the user does not typically call pushNodeOnPath() as it
+          * Note, the user does not typically call popFromNodePath() as it
           * will be called automatically by the Node::accept() method.*/
         inline void popFromNodePath()            { if (_traversalMode!=TRAVERSE_PARENTS) _nodePath.pop_back(); else _nodePath.erase(_nodePath.begin()); }
         

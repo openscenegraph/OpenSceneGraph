@@ -17,12 +17,6 @@ namespace flt {
 ////////////////////////////////////////////////////////////////////
 
 
-struct SMesh : public SFace
-{
-  // Members are identical to SFace (version 15.7).
-};
-
-
 // Note: the enums for FaceRecord are the same for MeshRecord, so we inherit 
 // and overload where necessary. I was sort of on the fence with this decision,
 // because a MeshRecord isn't really a more specific case of a FaceRecord s
@@ -41,10 +35,6 @@ public:
   virtual const char *  className() const { return "MeshRecord"; }
   virtual int           classOpcode() const { return MESH_OP; }
   virtual Record *      clone() const { return new MeshRecord(); }
-  
-  virtual SMesh*        getData() const { return (SMesh *) _pData; }
-
-  virtual size_t        sizeofData() const { return sizeof ( SMesh ); }
 
 protected:
 

@@ -134,7 +134,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
     sceneView->setDefaults();
     sceneView->setSceneData(loadedModel.get());
-    
+    sceneView->setLightingMode(osgUtil::SceneView::SKY_LIGHT);
     
     // do the set up of the DatabasePager...
     // create the database pager via the osgDB::Registry

@@ -137,8 +137,6 @@ class SG_EXPORT Image : public Object
 
         Image& operator = (const Image&) { return *this; }
 
-        void computePixelSize();
-
         std::string _fileName;
         int _s, _t, _r;
         GLint _internalTextureFormat;

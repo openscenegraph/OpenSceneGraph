@@ -63,11 +63,6 @@ void Image::setFileName(const std::string& fileName)
     _fileName = fileName;
 }
 
-
-void Image::computePixelSize()
-{
-}
-
 #ifndef GL_VERSION_1_2
     /* 1.2 definitions...*/
     #define GL_BGR					0x80E0
@@ -130,19 +125,19 @@ const unsigned int Image::computeNumComponents(GLenum type)
 
 const unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 {
-    switch(format)
+    switch(type)
     {
-        case(GL_BITMAP): return computeNumComponents(type);
+        case(GL_BITMAP): return computeNumComponents(format);
         
         case(GL_BYTE):
-        case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(type);
+        case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(format);
         
         case(GL_SHORT):
-        case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(type);
+        case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(format);
         
         case(GL_INT):
         case(GL_UNSIGNED_INT):
-        case(GL_FLOAT): return 32*computeNumComponents(type);
+        case(GL_FLOAT): return 32*computeNumComponents(format);
     
     
         case(GL_UNSIGNED_BYTE_3_3_2): 
@@ -159,7 +154,7 @@ const unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_UNSIGNED_INT_8_8_8_8_REV):
         case(GL_UNSIGNED_INT_10_10_10_2):
         case(GL_UNSIGNED_INT_2_10_10_10_REV): return 32;
-        default: return false;
+        default: return 0;
     }    
 
 }
@@ -169,7 +164,7 @@ const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum 
     unsigned int pixelSize = computePixelSizeInBits(format,type);
     int widthInBits = width*pixelSize;
     int packingInBits = packing*8;
-    return (widthInBits/packingInBits + (widthInBits%packingInBits)?1:0)*packing;
+    return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
 
@@ -185,7 +180,10 @@ void Image::createImage(int s,int t,int r,
     {
         if (_data) ::free(_data);
         
-        _data = (unsigned char *)malloc (newTotalSize);
+        if (newTotalSize)
+            _data = (unsigned char *)malloc (newTotalSize);
+        else
+            _data = 0L;
     }
 
     if (_data)
@@ -231,8 +229,6 @@ void Image::setImage(int s,int t,int r,
     _data = data;
     _packing = packing;
         
-    computePixelSize();
-
     // test scaling...
     //    scaleImageTo(16,16,_r);
     
@@ -270,7 +266,7 @@ void Image::scaleImage(const int s,const int t,const int r)
 
     // need to sort out what size to really use...
     unsigned char* newData = (unsigned char *)malloc(newTotalSize);
-    if (newData)
+    if (!newData)
     {
         // should we throw an exception???  Just return for time being.
         notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<std::endl;

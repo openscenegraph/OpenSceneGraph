@@ -171,11 +171,11 @@ int *numComponents_ret)
         if (swap) swapbyte(&infsize);
         unsigned char *hdr=new unsigned char[infsize]; // to hold the new header
         fread((char *)hdr, 1,infsize-sizeof(long), fp);
-        unsigned long hsiz=sizeof(inf); // minimum of structure size & 
+        long hsiz=sizeof(inf); // minimum of structure size & 
         if(infsize<=hsiz) hsiz=infsize;
         memcpy(&inf,hdr, hsiz/*-sizeof(long)*/); // copy only the bytes I can cope with
         delete [] hdr;
-        osg::notify(osg::WARN) << "loading "<<filename <<" "<<swap<<" "<<infsize<< " "<<sizeof(inf) << " "<<sizeof(bmpheader) << std::endl;
+        osg::notify(osg::INFO) << "loading "<<filename <<" "<<swap<<" "<<infsize<< " "<<sizeof(inf) << " "<<sizeof(bmpheader) << std::endl;
         if (swap) { // inverse the field of the header which need swapping
             swapbyte(&hd.siz[0]);
             swapbyte(&hd.siz[1]);
@@ -195,7 +195,7 @@ int *numComponents_ret)
             inf.Colorbits=cbits;
             inf.ColorUsed=(long)pow(2.0,(double)inf.Colorbits); // infer the colours
         }
-        osg::notify(osg::WARN) << "readbmp " <<inf.width<< " "<<inf.height << std::endl;
+        osg::notify(osg::INFO) << "readbmp " <<inf.width<< " "<<inf.height << std::endl;
         long size = hd.siz[1]+hd.siz[0]*65536;
         int ncpal=4; // default number of colours per palette entry
         size -= sizeof(bmpheader)+infsize;
@@ -334,13 +334,13 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             return pOsgImage;
 
         }
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options* op)
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             FILE *fp = fopen(fileName.c_str(), "wb");
             if (!fp) return WriteResult::ERROR_IN_WRITING_FILE;
             // its easier for me to write a binary write using stdio than streams
             struct bmpheader hd;
-            unsigned long nx=img.s(),ny=img.t(), ndep=img.r();
+            unsigned long nx=img.s(),ny=img.t(); //  unsigned long ndep=img.r();
             unsigned long size, wordsPerScan;
             long infsize;    //size of BMPinfo in bytes
             wordsPerScan=(nx*3+3)/4; // rounds up to next 32 bit boundary
@@ -353,15 +353,15 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             hd.siz[1]=(size&0xffff); // low word
             fwrite(&hd, sizeof(hd), 1, fp);
             struct BMPInfo inf;
-            osg::notify(osg::WARN) << "sizes "<<size << " "<<sizeof(inf)<< std::endl;
+            osg::notify(osg::INFO) << "sizes "<<size << " "<<sizeof(inf)<< std::endl;
             inf.width=nx;   //width of the image in pixels
             inf.height=ny;    //   height of the image in pixels
             inf.planes=1;       //:word: number of planes (always 1)
             inf.Colorbits=24;       //word: number of bits used to describe color in each pixel
             inf.compression=0;  //compression used windows says 0= no compression
             inf.ImageSize=size;    //nx*ny*3; //image size in bytes
-            inf.XpixPerMeter=.001; //pixels per meter in X
-            inf.YpixPerMeter=.001; //pixels per meter in Y
+            inf.XpixPerMeter=1000; //pixels per meter in X
+            inf.YpixPerMeter=1000; //pixels per meter in Y
             inf.ColorUsed=0;   //number of colors used
             inf.Important=0;   //number of "important" colors
    // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
@@ -369,16 +369,16 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             fwrite(&infsize, sizeof(long), 1, fp);
             fwrite(&inf, sizeof(inf), 1, fp); // one dword shorter than the structure defined by MS
               // the infsize value (above) completes the structure.
-            osg::notify(osg::WARN) << "save screen "<<fileName <<inf.width<< " "<<inf.height << std::endl;
-            osg::notify(osg::WARN) << "sizes "<<size << " "<<infsize <<" "<<sizeof(inf)<< std::endl;
+            osg::notify(osg::INFO) << "save screen "<<fileName <<inf.width<< " "<<inf.height << std::endl;
+            osg::notify(osg::INFO) << "sizes "<<size << " "<<infsize <<" "<<sizeof(inf)<< std::endl;
             // now output the bitmap
             // 1) swap Blue with Red - needed for Windoss.
             unsigned char *dta=new unsigned char[size];
             unsigned char tmp;
             memcpy(dta,img.data(),size*sizeof(unsigned char));
-            for(int i=0;i<ny;i++) { // per scanline
+            for(unsigned int i=0;i<ny;i++) { // per scanline
                 int ioff=4*wordsPerScan*i;
-                for(int j=0;j<nx;j++) {
+                for(unsigned int j=0;j<nx;j++) {
                 tmp=dta[3*j+ioff]; // swap r with b,  thanks to good ole Bill - 
   //"Let's use BGR it's more logical than rgb which everyone else uses."
                 dta[3*j+ioff]=dta[3*j+ioff+2];

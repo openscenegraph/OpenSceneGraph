@@ -4,9 +4,9 @@
 #ifndef OSG_CAMERA_GROUP_H
 #define OSG_CAMERA_GROUP_H
 
-#include <vector>
 
 #include <Producer/CameraGroup>
+
 #include <osg/Node>
 #include <osg/StateSet>
 #include <osg/FrameStamp>
@@ -16,37 +16,27 @@
 
 namespace osgProducer {
 
-class CameraGroup : public Producer::CameraGroup
+class OSGPRODUCER_EXPORT CameraGroup : public Producer::CameraGroup
 {
     public :
 
         typedef std::vector <osgProducer::SceneHandler *> SceneHandlerList;
 
-        CameraGroup() : Producer::CameraGroup() 
-        { _init(); }
+        CameraGroup();
 
-        CameraGroup(Producer::CameraConfig *cfg) : Producer::CameraGroup(cfg) 
-        { _init(); }
+        CameraGroup(Producer::CameraConfig *cfg);
 
-        CameraGroup(const std::string& configFile) : Producer::CameraGroup(configFile) 
-        { _init(); }
+        CameraGroup(const std::string& configFile);
 
         virtual ~CameraGroup() {}
 
-        void setSceneData( osg::Node *scene ) 
-        { 
-            _scene_data = scene; 
-            if( _shvec.size() > 0 )
-            {
-                SceneHandlerList::iterator p;
-                for( p = _shvec.begin(); p != _shvec.end(); p++ )
-                {
-                    (*p)->setSceneData( _scene_data );
-                }
-            }
-        }
-        osg::Node *getSceneData() { return _scene_data; }
+
+        void setSceneData( osg::Node *scene );
         
+        osg::Node *getSceneData() { return _scene_data.get(); }
+
+        const osg::Node *getSceneData() const { return _scene_data.get(); }
+
         
         
         void setDisplaySettings( osg::DisplaySettings *ds ) { _ds = ds; }
@@ -57,150 +47,53 @@ class CameraGroup : public Producer::CameraGroup
         
         
         
-        void setFrameStamp( osg::FrameStamp* fs )
-        {
-            _frameStamp = fs;
-
-            for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
-            {
-                (*p)->setFrameStamp( fs );
-            }
-        }
+        void setFrameStamp( osg::FrameStamp* fs );
 
         osg::FrameStamp *getFrameStamp() { return _frameStamp.get(); }
 
         const osg::FrameStamp *getFrameStamp() const { return _frameStamp.get(); }
 
 
-        void setGlobalStateSet( osg::StateSet *sset ) 
-        { 
-            _global_stateset = sset; 
+        void setGlobalStateSet( osg::StateSet *sset );
 
-            for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
-            {
-                (*p)->setGlobalStateSet( _global_stateset );
-            }
-        }
+        osg::StateSet *getGlobalStateSet() { return _global_stateset.get(); }
 
-        void setBackgroundColor( const osg::Vec4& backgroundColor ) 
-        {
-            _background_color = backgroundColor;
+        const osg::StateSet *getGlobalStateSet() const { return _global_stateset.get(); }
 
-            if( _shvec.size() > 0 )
-            {
-                SceneHandlerList::iterator p;
-                for( p = _shvec.begin(); p != _shvec.end(); p++ )
-                {
-                    (*p)->setBackgroundColor( _background_color );
-                }
-            }
-        }
 
-        void setLODScale( float bias )
-        {
-            if( _shvec.size() > 0 )
-            {
-                SceneHandlerList::iterator p;
-                for( p = _shvec.begin(); p != _shvec.end(); p++ )
-                {
-                    (*p)->setLODScale( bias );
-                }
-            }
-        }
-
-        void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f)
-        {
-            if( _shvec.size() > 0 )
-            {
-                SceneHandlerList::iterator p;
-                for( p = _shvec.begin(); p != _shvec.end(); p++ )
-                {
-                    (*p)->setFusionDistance( mode, value );
-                }
-            }
-        }
+        void setBackgroundColor( const osg::Vec4& backgroundColor );
 
         osg::Vec4& getBackgroundColor() { return _background_color; }
 
         const osg::Vec4& getBackgroundColor() const { return _background_color; }
 
-        osg::StateSet *getGlobalStateSet() { return _global_stateset; }
 
-        const osg::StateSet *getGlobalStateSet() const { return _global_stateset; }
+        void setLODScale( float bias );
 
-        void advance()
-        {
-            if( !_initialized ) return;
-            CameraGroup::advance();        
-        }
-
-        void realize( ThreadingModel thread_model= SingleThreaded )
-        {
-            if( _initialized ) return;
-
-            if (!_ds) _ds = osg::DisplaySettings::instance();
-            
-            _ds->setMaxNumberOfGraphicsContexts( _cfg->getNumberOfCameras() );
-            
-            for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
-            {
-                Producer::Camera *cam = _cfg->getCamera(i);
-                osgProducer::SceneHandler *sh = new osgProducer::SceneHandler(_ds.get());
-                sh->setDefaults();
-                if( _global_stateset != NULL )
-                    sh->setGlobalStateSet( _global_stateset );
-                if( _scene_data != NULL )
-                    sh->setSceneData( _scene_data );
-                sh->setBackgroundColor( _background_color);
-                sh->getState()->setContextID(i);
-                sh->setFrameStamp( _frameStamp.get() );
-                _shvec.push_back( sh );
-
-                cam->setSceneHandler( sh );
-            }
+        void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f);
 
 
-            /// Make all statesets the same as the first.
-            if( _global_stateset == NULL && _shvec.size() > 0 )
-            {
-                SceneHandlerList::iterator p;
-                p = _shvec.begin();
-                _global_stateset = (*p)->getGlobalStateSet();
-                p++;
-                for( ; p != _shvec.end(); p++ )
-                    (*p)->setGlobalStateSet( _global_stateset );
-            }
-
-            Producer::CameraGroup::realize( thread_model );        
-            _initialized = true;
-        }
-
-        virtual void frame( )
-        {
-            Producer::CameraGroup::frame();
-            _frameStamp->setFrameNumber( _frameStamp->getFrameNumber() + 1 );
-        }
+        void advance();
 
 
-    private :
+        void realize( ThreadingModel thread_model= SingleThreaded );
 
 
-        osg::Node *                         _scene_data;
-        osg::StateSet *                     _global_stateset;
+        virtual void frame();
+
+
+    protected :
+
+
+        osg::ref_ptr<osg::Node>             _scene_data;
+        osg::ref_ptr<osg::StateSet>         _global_stateset;
         osg::Vec4                           _background_color;
         SceneHandlerList                    _shvec;
         osg::ref_ptr<osg::DisplaySettings>  _ds;
         bool                                _initialized;
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;
 
-        void _init()
-        {
-            _scene_data = NULL;
-            _global_stateset = NULL;
-            _background_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
-            _initialized = false;
-            if (!_frameStamp) _frameStamp = new osg::FrameStamp;
-        }
+        void _init();;
 };
 
 }

@@ -82,6 +82,25 @@ void testLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up
     
 }
 
+void sizeOfTest()
+{
+  std::cout<<"sizeof(bool)=="<<sizeof(bool)<<std::endl;
+  std::cout<<"sizeof(char)=="<<sizeof(char)<<std::endl;
+  std::cout<<"sizeof(short)=="<<sizeof(short)<<std::endl;
+  std::cout<<"sizeof(int)=="<<sizeof(int)<<std::endl;
+  std::cout<<"sizeof(long)=="<<sizeof(long)<<std::endl;
+  std::cout<<"sizeof(long int)=="<<sizeof(long int)<<std::endl;
+
+#if defined(_MSC_VER)
+  // long long isn't supported on VS6.0...
+  std::cout<<"sizeof(__int64)=="<<sizeof(__int64)<<std::endl;
+#else
+  std::cout<<"sizeof(long long)=="<<sizeof(long long)<<std::endl;
+#endif
+  std::cout<<"sizeof(float)=="<<sizeof(float)<<std::endl;
+  std::cout<<"sizeof(double)=="<<sizeof(double)<<std::endl;
+}
+
 int main( int argc, char** argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
@@ -91,6 +110,7 @@ int main( int argc, char** argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("qt","Display qualified tests.");
+    arguments.getApplicationUsage()->addCommandLineOption("sizeof","Display sizeof tests.");
     arguments.getApplicationUsage()->addCommandLineOption("matrix","Display qualified tests.");
  
 
@@ -103,8 +123,11 @@ int main( int argc, char** argv )
     bool printQualifiedTest = false; 
     while (arguments.read("qt")) printQualifiedTest = true; 
 
-    bool displayMatrixTest = false; 
-    while (arguments.read("matrix")) displayMatrixTest = true; 
+    bool printMatrixTest = false; 
+    while (arguments.read("matrix")) printMatrixTest = true; 
+
+    bool printSizeOfTest = false; 
+    while (arguments.read("sizeof")) printSizeOfTest = true; 
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -125,7 +148,7 @@ int main( int argc, char** argv )
     }
     
 
-    if (displayMatrixTest)
+    if (printMatrixTest)
     {
         std::cout<<"******   Running matrix tests   ******"<<std::endl;
 
@@ -138,6 +161,15 @@ int main( int argc, char** argv )
         testLookAt(osg::Vec3(10.0,4.0,2.0),osg::Vec3(10.0,4.0,2.0)+osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0));
         testLookAt(osg::Vec3(10.0,4.0,2.0),osg::Vec3(10.0,4.0,2.0)+osg::Vec3(1.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0));
 
+    }
+    
+    if (printSizeOfTest)
+    {
+        std::cout<<"**** sizeof() tests  ******"<<std::endl;
+        
+        sizeOfTest();
+
+        std::cout<<std::endl;
     }
 
 

@@ -1,8 +1,9 @@
-#include <iostream>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/Notify>
 
 #include <set>
+#include <iostream>
 
 using namespace osg;
 
@@ -293,10 +294,42 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
             unsigned int prevpos = 0, pos = 0;
             while ((pos=option.find(' ',prevpos))!=std::string::npos)
             {
-                if (option[prevpos]=='-') options.insert(std::string(option,prevpos,pos-prevpos));
+                if (option[prevpos]=='-') 
+                {
+                    // verbose approach implemented for debugging string(const string&,unsigned int,unsigned int) operation on x86-64
+                    notify(INFO)<<"option=\""<<option<<"\" \tprevpos="<<prevpos<<" \tn="<<pos-prevpos;
+
+                    std::string str(option,prevpos,pos-prevpos);
+                    
+                    notify(INFO)<<" \tstr=\""<<str<<"\"";
+                    
+                    options.insert(str);
+                    
+                    notify(INFO)<<" \tinserted into options set"<<std::endl;
+                    
+                    
+                    // original op which causes a crash under x86-64
+                    //options.insert(std::string(option,prevpos,pos-prevpos));
+                }
                 prevpos=pos+1;
             }
-            if (option[prevpos]=='-') options.insert(std::string(option,prevpos,std::string::npos));
+            if (option[prevpos]=='-') 
+            {
+
+                // verbose approach implemented for debugging string(const string&,unsigned int,unsigned int) operation on x86-64
+                notify(INFO)<<"option=\""<<option<<"\"  \tprevpos="<<prevpos<<" \tn=npos";
+
+                std::string str(option,prevpos,pos-prevpos);
+
+                notify(INFO)<<" \tstr=\""<<str<<"\"";
+
+                options.insert(str);
+
+                notify(INFO)<<" \tinserted into options set"<<std::endl;
+
+                // original op
+                //options.insert(std::string(option,prevpos,std::string::npos));
+            }
         }
         
     }
@@ -318,7 +351,7 @@ void ArgumentParser::writeErrorMessages(std::ostream& output,ErrorSeverity sever
     {
         if (itr->second>=severity)
         {
-			output<< getProgramName() << ": " << itr->first << std::endl;
+            output<< getProgramName() << ": " << itr->first << std::endl;
         }
     }
 }

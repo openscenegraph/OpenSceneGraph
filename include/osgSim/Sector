@@ -19,6 +19,7 @@
 #include <osg/Quat>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Matrix>
 #include <osg/Math>
 #include <osg/Object>
 
@@ -63,7 +64,7 @@ class OSGSIM_EXPORT AzimRange
             float dotproduct = eyeLocal.x()*_sinAzim+eyeLocal.y()*_cosAzim;
             float length = sqrt(osg::square(eyeLocal.x())+osg::square(eyeLocal.y()));
             if (dotproduct<_cosFadeAngle*length) return 0.0f; // out of sector.
-            if (dotproduct>_cosAngle*length) return 1.0f; // fully in sector.
+            if (dotproduct>=_cosAngle*length) return 1.0f; // fully in sector.
             return (dotproduct-_cosFadeAngle*length)/((_cosAngle-_cosFadeAngle)*length);
         }
 
@@ -241,6 +242,76 @@ class OSGSIM_EXPORT ConeSector : public Sector
         osg::Vec3   _axis;
         float       _cosAngle;
         float       _cosAngleFade;
+};
+
+
+/* The DirectionalSector class was created to better handle OpenFlight directional
+  lightpoints.  The Elevation and Azimuth Sectors above impose invalid limits on
+  the elevation range which cause lightpoints whose direction vectors are not
+  on the XY plane to be displayed incorrectly.  Corbin Holtz 4/04 */
+
+class OSGSIM_EXPORT DirectionalSector : public Sector
+{
+    public:
+    
+        DirectionalSector():
+            Sector(),
+            _direction(0.0f, 0.0f, 1.0f),
+            _rollAngle(0.0f),
+            _cosHorizAngle(-1.0f),
+            _cosVertAngle(-1.0f),
+            _cosHorizFadeAngle(-1.0f),
+            _cosVertFadeAngle(-1.0f) {computeMatrix();}
+
+        DirectionalSector(const DirectionalSector& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            Sector(copy,copyop),
+            _direction(copy._direction),
+            _rollAngle(copy._rollAngle),
+            _local_to_LP(copy._local_to_LP),
+            _cosHorizAngle(copy._cosHorizAngle),
+            _cosVertAngle(copy._cosVertAngle),
+            _cosHorizFadeAngle(copy._cosHorizFadeAngle),
+            _cosVertFadeAngle(copy._cosVertFadeAngle) {}
+
+        DirectionalSector(const osg::Vec3& direction,float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle=0.0f);
+
+        META_Object(osgSim,DirectionalSector)
+
+        void setDirection(const osg::Vec3& direction);
+        
+        const osg::Vec3& getDirection() const;
+
+        void setHorizLobeAngle(float angle);
+        
+        float getHorizLobeAngle() const;
+    
+        void setLobeRollAngle(float angle);
+        
+        float getLobeRollAngle() const;
+    
+        void setVertLobeAngle(float angle);
+        
+        float getVertLobeAngle() const;
+    
+        void setFadeAngle(float angle);
+            
+        float getFadeAngle() const;
+
+        virtual float operator() (const osg::Vec3& eyeLocal) const;
+
+        void computeMatrix() ;
+
+    protected:
+
+        virtual ~DirectionalSector() {}
+    
+        osg::Vec3   _direction ;
+        float       _rollAngle ;
+        osg::Matrix _local_to_LP ;
+        float       _cosHorizAngle;
+        float       _cosVertAngle;
+        float       _cosHorizFadeAngle;
+        float       _cosVertFadeAngle;
 };
 
 }

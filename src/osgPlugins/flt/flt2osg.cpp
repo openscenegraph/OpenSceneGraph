@@ -29,6 +29,8 @@
 #include <osg/Image>
 #include <osg/Notify>
 #include <osg/Sequence>
+#include <osg/ShapeDrawable>
+#include <osg/Quat>
 
 #include <osgSim/MultiSwitch>
 #include <osgSim/DOFTransform>
@@ -83,7 +85,8 @@
 #include "AttrData.h"
 #include "BSPRecord.h"
 
-
+static int dprint = 0 ;
+#define DPRINT if(dprint)fprintf
 
 using namespace flt;
 
@@ -292,6 +295,8 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
 
         if (child && child->isPrimaryNode())
         {
+            DPRINT(stderr, "**************************************\nvisitPrimaryNode: Got child opcode %d\n", child->getOpcode()) ;
+            
             switch (child->getOpcode())
             {
             case MESH_OP:
@@ -306,17 +311,13 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
             {
                 FaceRecord* fr = (FaceRecord*)child;
                 if( fr->getData()->swTemplateTrans == 2)  //Axis type rotate
-                    visitFace(&billboardBuilder, fr);
+                    visitFace(&billboardBuilder, osgParent, fr);
                 else
-                    visitFace(&geoSetBuilder, fr);
+                    visitFace(&geoSetBuilder, osgParent, fr);
             }
             break;
             case LIGHT_POINT_OP:
-#ifdef USE_DEPRECATED_LIGHTPOINT
-                visitLightPoint(&geoSetBuilder, (LightPointRecord*)child);
-#else
                 visitLightPoint(osgParent, (LightPointRecord*)child);
-#endif
                 break;
             case INDEXED_LIGHT_PT_OP:
                 visitLightPointIndex(osgParent, (LightPointIndexRecord*)child);
@@ -762,13 +763,14 @@ void ConvertFromFLT::visitLtPtAppearancePalette(osg::Group& /*osgParent*/, LtPtA
         LtPtAppearancePool::PoolLtPtAppearance* entry = new LtPtAppearancePool::PoolLtPtAppearance;
 
         entry->_iBackColorIdx = ltPtApp->backColor;
-        entry->_sfIntensity = ltPtApp->intensity;
+        entry->_bIntensity = ltPtApp->intensity;
         entry->_sfMinPixelSize = ltPtApp->minPixelSize;
         entry->_sfMaxPixelSize = ltPtApp->maxPixelSize;
         entry->_sfActualSize = ltPtApp->actualSize;
         entry->_iDirectionality = ltPtApp->directionality;
         entry->_sfHLobeAngle = ltPtApp->horizLobeAngle;
         entry->_sfVLobeAngle = ltPtApp->vertLobeAngle;
+        entry->_sfLobeRollAngle = ltPtApp->lobeRollAngle;
 
         pool->add(ltPtApp->index, entry);
     }
@@ -1773,7 +1775,7 @@ ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
     }
 }
 
-void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
+void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, osg::Group& osgParent, FaceRecord* rec)
 {
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
     osg::StateSet* osgStateSet = dgset->getStateSet();
@@ -1815,7 +1817,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     setTransparency ( osgStateSet, bBlend );
 
     // Vertices
-    addVertices(pBuilder, rec);
+    addVertices(pBuilder, osgParent, rec);
 
     // Add face to builder pool
     pBuilder->addPrimitive();
@@ -1867,25 +1869,40 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             Record* child = rec->getChild(n);
 
             if (child && child->isOfType(FACE_OP))
-                visitFace(pBuilder, (FaceRecord*)child);
+                visitFace(pBuilder, osgParent, (FaceRecord*)child);
         }
         _nSubfaceLevel--;
     }
 }
 
+/* C.Holtz:  These global variables are to support the REPLICATE ancillary record
+   used for lightpoint strings in 15.7 (it really should support replication of any
+   node, but I really only needed lightpoint strings and it's such a hack, I don't
+   want to propagate it anywhere is doesn't really need to be :) */
+static osg::Matrix theMatrix ;
+static osg::Matrix theGeneralMatrix ;
+static osg::Vec3 from, delta ;
+static int num_replicate ;
+static int got_gm, got_m, got_t, got_replicate ;
 
 // Return number of vertices added to builder.
-int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec)
+int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, osg::Group& osgParent, PrimNodeRecord* primRec)
 {
     int i;
     int vertices=0;
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
 
+    /* Clear the replicate stuff each time through */
+    got_gm = got_m = got_t = got_replicate = 0 ;
+
+    DPRINT(stderr, ">>> addVerticies...%d children\n", primRec->getNumChildren()) ;
     for(i=0; i < primRec->getNumChildren(); i++)
     {
         Record* child = primRec->getChild(i);
         if (child == NULL) break;
 
+        DPRINT(stderr, "     child opcode = %d\n", child->getOpcode()) ;
+        
         switch (child->getOpcode())
         {
         case VERTEX_LIST_OP:
@@ -1896,6 +1913,83 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
             vertices += visitLocalVertexPool(pBuilder, (LocalVertexPoolRecord *)child);
             break;
 
+        case TRANSLATE_OP:
+           if (1) {
+           // This will be for replicated verticies
+           STranslate *pSTranslate = ((TranslateRecord *)child)->getData() ;
+           // scale position.
+           from.set(pSTranslate->From[0],pSTranslate->From[1],pSTranslate->From[2]) ;
+           from *= _unitScale ;
+           delta.set(pSTranslate->Delta[0],pSTranslate->Delta[1],pSTranslate->Delta[2]) ;
+           delta *= _unitScale ;
+           DPRINT(stderr, "   ** addVerticies: Got Translate: F=%lf, %lf, %lf / D=%lf, %lf, %lf\n",
+              from[0], from[1], from[2], delta[0], delta[1], delta[2]) ;
+           got_t = 1 ;
+           }
+           break ;
+        
+        case MATRIX_OP:
+           {
+           // This will be for replicated verticies
+           SMatrix *pSMatrix = ((MatrixRecord *)child)->getData() ;
+           for(int i=0;i<4;++i)
+           {
+               for(int j=0;j<4;++j)
+               {
+                   theMatrix(i,j) = pSMatrix->sfMat[i][j];
+               }
+           }
+           // scale position.
+           osg::Vec3 pos = theMatrix.getTrans();
+           theMatrix *= osg::Matrix::translate(-pos);
+           pos *= (float)_unitScale;
+           theMatrix *= osg::Matrix::translate(pos);
+           if(dprint)std::cout << "   ** addVerticies: Got Matrix: " << theMatrix << std::endl ;
+           got_m = 1 ;
+           }
+           break ;
+        
+        case GENERAL_MATRIX_OP:
+           {
+           // This will be for replicated verticies
+           SGeneralMatrix *pSMatrix = ((GeneralMatrixRecord *)child)->getData() ;
+           for(int i=0;i<4;++i)
+           {
+               for(int j=0;j<4;++j)
+               {
+                   theGeneralMatrix(i,j) = pSMatrix->sfMat[i][j];
+               }
+           }
+           // scale position.
+           osg::Vec3 pos = theGeneralMatrix.getTrans();
+           theGeneralMatrix *= osg::Matrix::translate(-pos);
+           pos *= (float)_unitScale;
+           theGeneralMatrix *= osg::Matrix::translate(pos);
+           if(dprint)std::cout << "   ** addVerticies: Got GeneralMatrix: " << theGeneralMatrix << std::endl ;
+           got_gm = 1 ;
+           }
+           break ;
+        
+        case REPLICATE_OP:
+           {
+           // This will be for replicated verticies
+           SReplicate *pSReplicate = (SReplicate *)(child->getData())  ;
+           ENDIAN(pSReplicate->iNumber) ;
+           num_replicate = pSReplicate->iNumber ;
+           DPRINT(stderr, "   ** addVerticies: Got Replicate: %d times\n", num_replicate) ;
+           got_replicate = 1 ;
+           }
+           break ;
+        
+        case LIGHT_POINT_OP:
+           {
+            /* Apparently, lightpoints are allowed to be clildren
+               of faces in older versions (<15.4?) */
+           DPRINT(stderr, "   ** addVerticies: Got LIGHT_POINT_OP\n") ;
+           visitLightPoint(osgParent, (LightPointRecord*)child) ;
+           }
+           break ;
+        
         default :
             vertices += addVertex(pBuilder, child);
             break;
@@ -1924,6 +2018,7 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
     int vertices = rec->numberOfVertices();
 
+    DPRINT(stderr, ">>> visitVertexList...%d vertices\n", vertices) ;
     // Add vertices to GeoSetBuilder
     for (int j=0; j < vertices; j++)
     {
@@ -1937,6 +2032,7 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
     {
         Record* child = rec->getChild(i);
     CERR << "OPCODE: " << child->getOpcode() << "\n";
+        
         if (!child->isAncillaryRecord())
             break;
 
@@ -1980,14 +2076,40 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
 // Return 1 if record is a known vertex record else return 0.
 int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
 {
+    
+    int i ;
+    
+    DPRINT(stderr, ">>> addVertex...") ;
+    
     switch(rec->getOpcode())
     {
     case VERTEX_C_OP:
+        DPRINT(stderr, "VERTEX_C_OP\n") ;
         {
             SVertex* pVert = (SVertex*)rec->getData();
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_VERTEX_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
 
@@ -1995,11 +2117,32 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     case VERTEX_CN_OP:
+        DPRINT(stderr, "VERTEX_CN_OP\n") ;
         {
             SNormalVertex* pVert = (SNormalVertex*)rec->getData();
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if (dgset->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_NORMAL(dgset, pVert)
             if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
@@ -2008,11 +2151,32 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     case VERTEX_CNT_OP:
+        DPRINT(stderr, "VERTEX_CNT_OP\n") ;
         {
             SNormalTextureVertex* pVert = (SNormalTextureVertex*)rec->getData();
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if (dgset->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_NORMAL(dgset, pVert)
             if (dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
@@ -2023,11 +2187,32 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     case VERTEX_CT_OP:
+        DPRINT(stderr, "VERTEX_CT_OP\n") ;
         {
             STextureVertex* pVert = (STextureVertex*)rec->getData();
             osg::Vec3 coord(pVert->Coord.x(), pVert->Coord.y(), pVert->Coord.z());
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if (dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_TCOORD(dgset, pVert)
             if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
@@ -2036,11 +2221,32 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     case OLD_VERTEX_OP:
+        DPRINT(stderr, "OLD_VERTEX_OP\n") ;
         {
             SOldVertex* pVert = (SOldVertex*)rec->getData();
             osg::Vec3 coord(pVert->v[0], pVert->v[1], pVert->v[2]);
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if ((dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
             &&  (rec->getSize() >= sizeof(SOldVertex)))
                 ADD_OLD_TCOORD(dgset, pVert)
@@ -2048,11 +2254,32 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     case OLD_VERTEX_COLOR_OP:
+        DPRINT(stderr, "OLD_VERTEX_COLOR_OP\n") ;
         {
             SOldVertexColor* pVert = (SOldVertexColor*)rec->getData();
             osg::Vec3 coord(pVert->v[0], pVert->v[1], pVert->v[2]);
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if (dgset->getColorBinding() == osg::Geometry::BIND_PER_VERTEX)
                 ADD_OLD_COLOR(dgset, pVert, rec->getFltFile()->getColorPool())
             if ((dgset->getTextureBinding() == osg::Geometry::BIND_PER_VERTEX)
@@ -2062,11 +2289,32 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     case OLD_VERTEX_COLOR_NORMAL_OP:
+        DPRINT(stderr, "OLD_VERTEX_COLOR_NORMAL_OP\n") ;
         {
             SOldVertexColorNormal* pVert = (SOldVertexColorNormal*)rec->getData();
             osg::Vec3 coord(pVert->v[0], pVert->v[1], pVert->v[2]);
             coord *= (float)_unitScale;
             dgset->addCoord(coord);
+            if ( got_replicate ) {
+               /* Handle vertex replication */
+               DPRINT(stderr, "      ### addVertex: Replicating (%f,%f,%f) %d times...\n", 
+                  coord[0], coord[1], coord[2], num_replicate) ;
+               for ( i = 0 ; i < num_replicate ; i++ ) {
+                  if ( got_t ) {
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  } else {
+                     /* If we didn't get a translate record, try to get the delta from the matrix */
+                     delta = theMatrix.getTrans() ;
+                     coord += delta ;
+                     DPRINT(stderr, "          >> Replicated vertex as (%f,%f,%f)\n", 
+                        coord[0], coord[1], coord[2]) ;
+                     dgset->addCoord(coord) ;
+                  }
+               }
+            }
             if (dgset->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX)
             {
                 osg::Vec3 normal(pVert->n[0], pVert->n[1], pVert->n[2]);
@@ -2082,8 +2330,13 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
         break;
 
     default :
+        DPRINT(stderr, "*** UNKNOWN (%d)***\n", rec->getOpcode()) ;
         return 0;
     }
+    
+    /* Clear out the replicate stuff so that it doesn't get reused if we
+       return to this function from somewhere other than addVerticies() */
+    got_gm = got_m = got_t = got_replicate = 0 ;
 
     return 1;
 }
@@ -2184,7 +2437,7 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
 }
 
 
-void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec)
+void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder,osg::Group& osgParent, LightPointRecord* rec)
 {
     DynGeoSet* dgset = pBuilder->getDynGeoSet();
     osg::StateSet* stateSet = dgset->getStateSet();
@@ -2221,7 +2474,7 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
     }
 
     // Visit vertices
-    addVertices(pBuilder, rec);
+    addVertices(pBuilder, osgParent, rec);
     pBuilder->addPrimitive();
 }
 
@@ -2244,58 +2497,128 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
         if( child->classOpcode() == COMMENT_OP) visitComment(*lpNode, (CommentRecord*)child);
     }
 
+    DPRINT(stderr, "visitLightPoint: visiting node '%s'...(%d children)\n", pSLightPoint->szIdent, rec->getNumChildren()) ;
+    lpNode->setName(pSLightPoint->szIdent) ;
+    
     lpNode->setMinPixelSize( pSLightPoint->sfMinPixelSize);
     lpNode->setMaxPixelSize( pSLightPoint->sfMaxPixelSize);
+    DPRINT(stderr, "   MinPixelSize = %f\n", pSLightPoint->sfMinPixelSize) ;
+    DPRINT(stderr, "   MaxPixelSize = %f\n", pSLightPoint->sfMaxPixelSize) ;
 
-    addVertices(&pBuilder, rec);
+    addVertices(&pBuilder, osgParent, rec);
 
     const DynGeoSet::CoordList& coords = dgset->getCoordList();
     const DynGeoSet::ColorList& colors = dgset->getColorList();
     const DynGeoSet::NormalList& norms = dgset->getNormalList();
 
-    float lobeVert = osg::DegreesToRadians( pSLightPoint->sfLobeVert );
-    float lobeHorz = osg::DegreesToRadians( pSLightPoint->sfLobeHoriz );
+    DPRINT(stderr, "   Num Coords=%d, Num Colors=%d, Num Norms=%d\n", coords.size(), colors.size(), norms.size()) ;
+    
+    bool directional = false;
+    int numInternalLightPoints = 0; // Number of osgSim::LightPoint objects to add per OpenFlight light point vertex
+    switch (pSLightPoint->diDirection)
+    {
+    case 0: // Omnidirectional;
+        DPRINT(stderr, "   OMNIDIRECTIONAL\n") ;
+        directional = false;
+        numInternalLightPoints = 1;
+        break;
+    case 1: // Unidirectional;
+        DPRINT(stderr, "   UNIDIRECTIONAL\n") ;
+        directional = true;
+        numInternalLightPoints = 1;
+        break;
+    case 2: // Bidirectional;
+        DPRINT(stderr, "   BIDIRECTIONAL\n") ;
+        directional = true;
+        numInternalLightPoints = 2;
+        break;
+    }
+
+    float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
+    if ( directional)
+    {
+        lobeVert = osg::DegreesToRadians( pSLightPoint->sfLobeVert );
+        lobeHorz = osg::DegreesToRadians( pSLightPoint->sfLobeHoriz );
+        lobeRoll = osg::DegreesToRadians( pSLightPoint->sfLobeRoll );
+    }
     float pointRadius =  pSLightPoint->afActualPixelSize * _unitScale;
 
+    DPRINT(stderr, "   Vertical Lobe Angle = %f\n", osg::RadiansToDegrees(lobeVert)) ;
+    DPRINT(stderr, "   Horizontal Lobe Angle = %f\n", osg::RadiansToDegrees(lobeHorz)) ;
+    DPRINT(stderr, "   Lobe Roll Angle = %f\n", osg::RadiansToDegrees(lobeRoll)) ;
+    DPRINT(stderr, "   Point Radius = %f\n", pointRadius) ;
+    
+    /* From my experience during all this testing, I think it's safe to assume that
+       each light point in a single light point node should share the same color
+       and normal.  Even if multiple normals are found, they seem to be wrong for some
+       reason */
+    osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f);
+    osg::Vec3 normal( 1.0f, 0.0f, 0.0f);
+    
     for ( unsigned int nl = 0; nl < coords.size(); nl++)
     {
-       osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f);
-       if( nl < colors.size())  color = colors[nl];
+       //if( nl < colors.size())  color = colors[nl];
+       if( colors.size()>0)  color = colors[0];
+       DPRINT(stderr, "   Color = %f, %f, %f, %f\n", color.x(), color.y(), color.z(), color.w()) ;
 
        osgSim::LightPoint lp( true, coords[ nl], color, pSLightPoint->sfIntensityFront, pointRadius);
 
        if( pSLightPoint->diDirection )
        {
-            // calc elevation angles
-            osg::Vec3 normal( 1.0f, 0.0f, 0.0f);
-            if( nl < norms.size())  normal = norms[nl];
-
-            float elevAngle = osg::PI_2 - acos( normal.z() );
-            if( normal.z() < 0.0f) elevAngle = -elevAngle;
-            float minElevation = elevAngle - lobeVert/2.0f;
-            float maxElevation = elevAngle + lobeVert/2.0f;
-
-            // calc azimuth angles
-            osg::Vec2 pNormal( normal.x(), normal.y() );
-            float lng = pNormal.normalize();
-            float azimAngle = 0.0f;
-            if( lng > 0.0000001)
-            {
-                azimAngle = acos( pNormal.y() );
-                if( pNormal.y() > 0.0f ) azimAngle = - azimAngle;
-
-                float minAzimuth = azimAngle - lobeHorz/2.0f;
-                float maxAzimuth = azimAngle + lobeHorz/2.0f;
-
-                float fadeRange = 0.0f;
-                lp._sector = new osgSim::AzimElevationSector( minAzimuth, maxAzimuth, minElevation, maxElevation, fadeRange);
+            DPRINT(stderr, "   LP is directional...\n") ;
+            if ( !pSLightPoint->diDirectionalMode ) {
+               DPRINT(stderr, "%%%%%%%% WARNING: diDirection is set, but diDirectionalMode is off!!!\n") ;
             }
-        }
+            
+            // calc elevation angles
+            //if( nl < norms.size())  normal = norms[nl];
+            if( norms.size()>0)  normal = norms[0];
+            DPRINT(stderr, "   Normal = %f, %f, %f\n", normal.x(), normal.y(), normal.z()) ;
+            
+            // Verify normal.  If normal is 0,0,0, then LP isn't really directional
+            if ( (fabsf(normal.x()) < 0.0001) && (fabsf(normal.y()) < 0.0001) && (fabsf(normal.z()) < 0.0001) ) {
+               DPRINT(stderr, "%%%%%%%% WARNING: diDirection is set, but normal is not set!!!\n") ;
+               DPRINT(stderr, "   ADDING LIGHTPOINT\n") ;
+               lpNode->addLightPoint( lp);
+               continue ;
+            }
+            if ( normal.isNaN() ) {
+               DPRINT(stderr, "%%%%%%%% WARNING: diDirection is set, but normal is NaN!!!\n") ;
+               DPRINT(stderr, "   ADDING LIGHTPOINT\n") ;
+               lpNode->addLightPoint( lp);
+               continue ;
+            }
+            
 
+            lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll);
+            
+            if( pSLightPoint->diDirection == 2 )
+            {
+                 DPRINT(stderr, "   ** LP is BIdirectional...\n") ;
+                 
+                 osg::Vec4 backcolor = pSLightPoint->dwBackColor.get() ;
+                 if ( backcolor.w() == 0.0 ) backcolor[3] = 1.0 ;
+                 osgSim::LightPoint lp2( true, coords[ nl], backcolor, 1.0f, pointRadius);
+                 DPRINT(stderr, "   Backface Color = %f, %f, %f, %f\n", backcolor.x(), backcolor.y(), backcolor.z(), backcolor.w()) ;
+                 // calc elevation angles
+                 osg::Vec3 backnormal = - normal ;
+                 DPRINT(stderr, "   Normal = %f, %f, %f\n", backnormal.x(), backnormal.y(), backnormal.z()) ;
+                 
+                 lp2._sector = new osgSim::DirectionalSector( backnormal, lobeHorz, lobeVert, lobeRoll);
+                 
+                 DPRINT(stderr, "   ADDING BACKFACING LIGHTPOINT\n") ;
+                 lpNode->addLightPoint(lp2);
+               }
+            }
+
+        DPRINT(stderr, "   ADDING LIGHTPOINT\n") ;
         lpNode->addLightPoint( lp);
+        
     }
 
+    DPRINT (stderr, "lpNode has %d children\n", lpNode->getNumLightPoints()) ;
     osgParent.addChild( lpNode);
+    
 }
 
 
@@ -2336,7 +2659,7 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
     lpNode->setMinPixelSize( ltPtApp->_sfMinPixelSize );
     lpNode->setMaxPixelSize( ltPtApp->_sfMaxPixelSize );
 
-    addVertices(&pBuilder, rec);
+    addVertices(&pBuilder, osgParent, rec);
 
     const DynGeoSet::CoordList& coords = dgset->getCoordList();
     const DynGeoSet::ColorList& colors = dgset->getColorList();
@@ -2360,11 +2683,12 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
         break;
     }
 
-    float lobeVert=0.f, lobeHorz=0.f;
+    float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
     if ( directional)
     {
         lobeVert = osg::DegreesToRadians( ltPtApp->_sfVLobeAngle );
         lobeHorz = osg::DegreesToRadians( ltPtApp->_sfHLobeAngle );
+        lobeRoll = osg::DegreesToRadians( ltPtApp->_sfLobeRollAngle );
     }
     float pointRadius =  ltPtApp->_sfActualSize * _unitScale;
 
@@ -2387,7 +2711,9 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
 			if (ltPtAnim && ltPtAnim->_blink.valid())
 				blink = ltPtAnim->_blink.get();
 
-            osgSim::LightPoint lp( true, coords[nl], color, ltPtApp->_sfIntensity, pointRadius,
+            // note in corbin's code the ltPtApp->_bIntensity was set to 1.0, however,
+            // I have left the original setting in place.
+            osgSim::LightPoint lp( true, coords[nl], color, ltPtApp->_bIntensity, pointRadius,
 				0, blink );
 
             if (directional)
@@ -2400,28 +2726,7 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
                     // Negate the normal for the back facing internal light point
                     normal = -normal;
 
-                float elevAngle = osg::PI_2 - acos( normal.z() );
-                if (normal.z() < 0.0f)
-                    elevAngle = -elevAngle;
-                float minElevation = elevAngle - lobeVert/2.0f;
-                float maxElevation = elevAngle + lobeVert/2.0f;
-
-                // calc azimuth angles
-                osg::Vec2 pNormal( normal.x(), normal.y() );
-                float lng = pNormal.normalize();
-                float azimAngle = 0.0f;
-                if( lng > 0.0000001)
-                {
-                    azimAngle = acos( pNormal.y() );
-                    if (pNormal.x() < 0.0f)
-                        azimAngle = -azimAngle;
-
-                    float minAzimuth = azimAngle - lobeHorz/2.0f;
-                    float maxAzimuth = azimAngle + lobeHorz/2.0f;
-
-                    float fadeRange = 0.0f;
-                    lp._sector = new osgSim::AzimElevationSector( minAzimuth, maxAzimuth, minElevation, maxElevation, fadeRange);
-                }
+                lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll);
             }
 
             lpNode->addLightPoint(lp);
@@ -2521,7 +2826,7 @@ void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, Me
     setTransparency ( osgStateSet, bBlend );
 
     // Add the vertices.
-    addVertices ( pBuilder, rec );
+    addVertices ( pBuilder, parent, rec );
 
     // Add the mesh primitives.
     addMeshPrimitives ( parent, pBuilder, rec );

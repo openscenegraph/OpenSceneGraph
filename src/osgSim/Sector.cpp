@@ -12,6 +12,7 @@
 */
 
 #include <osgSim/Sector>
+#include <osg/Vec2>
 
 using namespace osgSim;
 
@@ -212,4 +213,155 @@ float ConeSector::operator() (const osg::Vec3& eyeLocal) const
     if (dotproduct>_cosAngle*length) return 1.0f; // fully in sector
     if (dotproduct<_cosAngleFade*length) return 0.0f; // out of sector
     return (dotproduct-_cosAngleFade*length)/((_cosAngle-_cosAngleFade)*length);
+}
+
+//
+// DirectionalSector
+//
+DirectionalSector::DirectionalSector(const osg::Vec3& direction,float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle):
+            Sector()
+{
+    setDirection(direction);
+    setHorizLobeAngle(horizLobeAngle);
+    setVertLobeAngle(vertLobeAngle);
+    setLobeRollAngle(lobeRollAngle);
+    setFadeAngle(fadeAngle);
+}
+
+void DirectionalSector::computeMatrix()
+{
+   float cR = cos(_rollAngle) ;
+   float sR = sin(_rollAngle) ;
+   osg::Vec3 &D(_direction) ; // Just for clarity
+   
+   _local_to_LP.set(
+      cR*D[1]+sR*D[0]*D[2],    -cR*D[0]+sR*D[1]*D[2],   -sR*(D[0]*D[0]+D[1]*D[1]),    0.0,
+      D[0],                     D[1],                   D[2],                         0.0,
+      sR*D[1]-cR*D[0]*D[2],    -sR*D[0]-cR*D[1]*D[2],   cR*(D[0]*D[0]+D[1]*D[1]),     0.0,
+      0.0,                     0.0,                     0.0,                          1.0) ;
+
+}
+      
+
+void DirectionalSector::setDirection(const osg::Vec3& direction)
+{
+   _direction = direction ;
+   computeMatrix() ;
+}
+
+const osg::Vec3& DirectionalSector::getDirection() const
+{
+    return _direction;
+}
+
+void DirectionalSector::setHorizLobeAngle(float angle)
+{
+    _cosHorizAngle = cos(angle*0.5);
+}
+
+float DirectionalSector::getHorizLobeAngle() const
+{
+    return acos(_cosHorizAngle)*2.0;
+}
+
+void DirectionalSector::setVertLobeAngle(float angle)
+{
+    _cosVertAngle = cos(angle*0.5);
+}
+
+float DirectionalSector::getVertLobeAngle() const
+{
+    return acos(_cosVertAngle)*2.0;
+}
+
+void DirectionalSector::setLobeRollAngle(float angle)
+{
+    _rollAngle = angle ;
+    computeMatrix() ;
+}
+
+float DirectionalSector::getLobeRollAngle() const
+{
+    return _rollAngle ;
+}
+
+void DirectionalSector::setFadeAngle(float angle)
+{
+    float ang = acos(_cosHorizAngle)+angle ;
+    if ( ang > osg::PI ) _cosHorizFadeAngle = -1.0 ;
+    else _cosHorizFadeAngle = cos(ang);
+    
+    ang = acos(_cosVertAngle)+angle ;
+    if ( ang > osg::PI ) _cosVertFadeAngle = -1.0 ;
+    else _cosVertFadeAngle = cos(ang);
+}
+
+float DirectionalSector::getFadeAngle() const
+{
+    return acos(_cosHorizFadeAngle)-acos(_cosHorizAngle);
+}
+
+float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
+{      
+   float elev_intensity, azim_intensity ;
+   
+   // Tranform eyeLocal into the LightPoint frame
+   osg::Vec3 EPlp = _local_to_LP * eyeLocal ;
+   
+   /*fprintf(stderr, "    eyeLocal = %f, %f, %f\n", eyeLocal[0], eyeLocal[1], eyeLocal[2]) ;
+   fprintf(stderr, "    EPlp     = %f, %f, %f\n", EPlp[0], EPlp[1], EPlp[2]) ;*/
+   
+   // Elevation check
+     // Project EPlp into LP YZ plane and dot with LPy
+   osg::Vec2 EPyz(EPlp[1], EPlp[2]) ;
+   EPyz.normalize() ;
+   /*fprintf(stderr, "    EPyz.normalize() = %f, %f\n", EPyz[0], EPyz[1]) ;
+   fprintf(stderr, "        _cosVertFadeAngle = %f\n", _cosVertFadeAngle) ;
+   fprintf(stderr, "        _cosVertAngle     = %f\n", _cosVertAngle) ;*/
+      // cosElev = EPyz* LPy = EPyz[0]
+   if ( EPyz[0] < _cosVertFadeAngle ) {
+      // Completely outside elevation range
+      //fprintf(stderr, "   >> outside el range\n") ;
+      return(0.0f) ;
+   }
+   if ( EPyz[0] < _cosVertAngle ) {
+      // In the fade range
+      //fprintf(stderr, "   >> inside el fade range\n") ;
+      elev_intensity = (_cosVertAngle-EPyz[0])/(_cosVertAngle-_cosVertFadeAngle) ;
+   } else {
+      // Fully in elevation range
+      elev_intensity = 1.0 ;
+      //fprintf(stderr, "   >> fully inside el range\n") ;
+   }
+   // Elevation check passed
+   
+   // Azimuth check
+     // Project EPlp into LP XY plane and dot with LPy
+   osg::Vec2 EPxy(EPlp[0], EPlp[1]) ;
+   EPxy.normalize() ;
+   /*fprintf(stderr, "    EPxy.normalize() = %f, %f\n", EPxy[0], EPxy[1]) ;
+   fprintf(stderr, "        _cosHorizFadeAngle = %f\n", _cosHorizFadeAngle) ;
+   fprintf(stderr, "        _cosHorizAngle     = %f\n", _cosHorizAngle) ;*/
+      // cosAzim = EPxy * LPy = EPxy[1]
+      // if cosElev < 0.0, then need to negate EP for azimuth check
+   if ( EPyz[0] < 0.0 ) EPxy.set(-EPxy[0], -EPxy[1]) ;
+   if ( EPxy[1] < _cosHorizFadeAngle ) {
+      // Completely outside azimuth range
+      //fprintf(stderr, "   >> outside az range\n") ;
+      return(0.0f) ;
+   }
+   if ( EPxy[1] < _cosHorizAngle ) {
+      // In fade range
+      //fprintf(stderr, "   >> inside az fade range\n") ;
+      azim_intensity = (_cosHorizAngle-EPxy[1])/(_cosHorizAngle-_cosHorizFadeAngle) ;
+   } else {
+      // Fully in azimuth range
+      //fprintf(stderr, "   >> fully inside az range\n") ;
+      azim_intensity = 1.0 ;
+   }
+   // Azimuth check passed
+   
+   // We're good! Return full intensity
+   //fprintf(stderr, "   %%%% Returing intensity = %f\n", elev_intensity * azim_intensity) ;
+   return elev_intensity * azim_intensity ;
 }

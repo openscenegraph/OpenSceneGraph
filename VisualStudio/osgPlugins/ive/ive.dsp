@@ -330,6 +330,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Transform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.cpp
 # End Source File
 # Begin Source File
@@ -603,6 +607,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TextureCubeMap.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Transform.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.h
 # End Source File
 # Begin Source File
 

@@ -92,6 +92,7 @@ namespace ive {
 #define IVEMULTISWITCH				        0x00100008
 
 #define IVEVISIBILITYGROUP			    0x00100009
+#define IVEDIRECTIONALSECTOR         0x0010000A
 
 class ReadWrite{
 

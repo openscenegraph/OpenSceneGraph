@@ -65,6 +65,7 @@ CXXFILES =\
 	AzimSector.cpp\
 	BlinkSequence.cpp\
 	ConeSector.cpp\
+	DirectionalSector.cpp\
 	ElevationSector.cpp\
 	LightPoint.cpp\
 	LightPointNode.cpp\

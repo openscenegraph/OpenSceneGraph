@@ -18,6 +18,7 @@
 #include "ElevationSector.h"
 #include "AzimSector.h"
 #include "ConeSector.h"
+#include "DirectionalSector.h"
 
 using namespace ive;
 
@@ -46,6 +47,9 @@ void LightPoint::write(DataOutputStream* out){
 		}
 		else if(dynamic_cast<osgSim::ConeSector*>(_sector.get())){
 			((ive::ConeSector*)(_sector.get()))->write(out);
+		}
+		else if(dynamic_cast<osgSim::DirectionalSector*>(_sector.get())){
+			((ive::DirectionalSector*)(_sector.get()))->write(out);
 		}
 		else
 			throw Exception("Unknown sector in LightPoint::write()");
@@ -97,6 +101,11 @@ void LightPoint::read(DataInputStream* in){
 			else if(attributeID == IVECONESECTOR){
 				sector = new osgSim::ConeSector();
 				((ive::ConeSector*)(sector))->read(in);
+				_sector = sector;
+			}
+			else if(attributeID == IVEDIRECTIONALSECTOR){
+				sector = new osgSim::DirectionalSector();
+				((ive::DirectionalSector*)(sector))->read(in);
 				_sector = sector;
 			}
 			else

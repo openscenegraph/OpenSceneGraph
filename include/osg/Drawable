@@ -177,10 +177,10 @@ class SG_EXPORT Drawable : public Object
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
         void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
         
-        /** Get the non const ComputerTransfromCallback.*/
+        /** Get the non const DrawCallback.*/
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }
         
-        /** Get the const ComputerTransfromCallback.*/
+        /** Get the const DrawCallback.*/
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
         struct CullCallback : public osg::Referenced
@@ -194,10 +194,10 @@ class SG_EXPORT Drawable : public Object
         /** Set the CullCallback which allows users to attach customize the drawing of existing Drawable object.*/
         void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
         
-        /** Get the non const ComputerTransfromCallback.*/
+        /** Get the non const CullCallback.*/
         CullCallback* getCullCallback() { return _cullCallback.get(); }
         
-        /** Get the const ComputerTransfromCallback.*/
+        /** Get the const CullCallback.*/
         const CullCallback* getCullCallback() const { return _cullCallback.get(); }
 
 

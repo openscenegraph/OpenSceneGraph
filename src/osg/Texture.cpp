@@ -43,7 +43,7 @@ Texture::Texture()
 
     _borderColor.set(0.0, 0.0, 0.0, 0.0);//OpenGL default
 
-    _compile_flags = COMPILE_ALL;
+    _texParamtersDirty = true;
 }
 
 
@@ -121,11 +121,12 @@ void Texture::setWrap(const WrapParameter which, const WrapMode wrap)
 {
     switch( which )
     {
-        case WRAP_S : _wrap_s = wrap; break;
-        case WRAP_T : _wrap_t = wrap; break;
-        case WRAP_R : _wrap_r = wrap; break;
+        case WRAP_S : _wrap_s = wrap; _texParamtersDirty = true; break;
+        case WRAP_T : _wrap_t = wrap; _texParamtersDirty = true; break;
+        case WRAP_R : _wrap_r = wrap; _texParamtersDirty = true; break;
         default : notify(WARN)<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
+    
 }
 
 
@@ -145,8 +146,8 @@ void Texture::setFilter(const FilterParameter which, const FilterMode filter)
 {
     switch( which )
     {
-        case MIN_FILTER : _min_filter = filter; break;
-        case MAG_FILTER : _mag_filter = filter; break;
+        case MIN_FILTER : _min_filter = filter; _texParamtersDirty = true; break;
+        case MAG_FILTER : _mag_filter = filter; _texParamtersDirty = true; break;
         default : notify(WARN)<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
     }
 }
@@ -193,14 +194,7 @@ void Texture::apply(State& state) const
         if (_subloadMode == OFF)
         {
             glBindTexture( GL_TEXTURE_2D, handle );
-	    if( !(_compile_flags & COMPILE_MIN_FILTER) )
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
-	    if( !(_compile_flags & COMPILE_MAG_FILTER) )
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
-	    if( !(_compile_flags & COMPILE_WRAP_S) )
-    		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
-	    if( !(_compile_flags & COMPILE_WRAP_T) )
-    		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
+            if (_texParamtersDirty) applyTexParameters(state);
         }
         else  if (_image.valid() && _image->data())
         {
@@ -210,6 +204,7 @@ void Texture::apply(State& state) const
                 (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
             {
                 glBindTexture( GL_TEXTURE_2D, handle );
+                if (_texParamtersDirty) applyTexParameters(state);
                 glTexSubImage2D(GL_TEXTURE_2D, 0,
                                 _subloadOffsX, _subloadOffsY,
                                 _image->s(), _image->t(),
@@ -243,25 +238,8 @@ void Texture::compile(State& state) const
 }
 
 
-void Texture::applyImmediateMode(State& state) const
+void Texture::applyTexParameters(State&) const
 {
-    // if we don't have a valid image we can't create a texture!
-    if (!_image.valid() || !_image->data())
-        return;
-
-    // get the contextID (user defined ID of 0 upwards) for the 
-    // current OpenGL context.
-    const uint contextID = state.getContextID();
-
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = _image->getModifiedTag();
-
-
-    if (_subloadMode == OFF)
-        _image->ensureDimensionsArePowerOfTwo();
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_image->packing());
-
     WrapMode ws = _wrap_s, wt = _wrap_t;
 
     // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
@@ -287,9 +265,9 @@ void Texture::applyImmediateMode(State& state) const
     static bool s_borderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
     if(!s_borderClampSupported)
     {
-        if(ws == CLAMP_TO_BORDER_ARB)
+        if(ws == CLAMP_TO_BORDER)
             ws = CLAMP;
-        if(wt == CLAMP_TO_BORDER_ARB)
+        if(wt == CLAMP_TO_BORDER)
             wt = CLAMP;
     }
 
@@ -328,6 +306,30 @@ void Texture::applyImmediateMode(State& state) const
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
     }
 
+    _texParamtersDirty=false;
+
+}
+
+void Texture::applyImmediateMode(State& state) const
+{
+    // if we don't have a valid image we can't create a texture!
+    if (!_image.valid() || !_image->data())
+        return;
+
+    // get the contextID (user defined ID of 0 upwards) for the 
+    // current OpenGL context.
+    const uint contextID = state.getContextID();
+
+    // update the modified tag to show that it is upto date.
+    getModifiedTag(contextID) = _image->getModifiedTag();
+
+
+    if (_subloadMode == OFF)
+        _image->ensureDimensionsArePowerOfTwo();
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT,_image->packing());
+    
+    applyTexParameters(state);
 
     static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
     static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
@@ -549,10 +551,7 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     glGenTextures( 1, &handle );
 
     glBindTexture( GL_TEXTURE_2D, handle );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter );
+    applyTexParameters(state);
     glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
 
 
@@ -579,10 +578,7 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
     {
         // we have a valid image
         glBindTexture( GL_TEXTURE_2D, handle );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter );
+        applyTexParameters(state);
         glCopyTexSubImage2D( GL_TEXTURE_2D, 0, xoffset,yoffset, x, y, width, height);
 
         /* Redundant, delete later */

@@ -452,8 +452,9 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
         else
         if (streq(t, "url"))
             {
-            if (get_tokens(buff, &tokc, tokv) != 2)
-                printf("expected one arg to url at line %d (got %d)\n", line, tokv);
+	    int ret;
+            if ((ret = get_tokens(buff, &tokc, tokv)) != 2)
+                printf("expected one arg to url at line %d (got %d)\n", line, ret); 
             else
                 ob.url = STRING(tokv[1]);
             }

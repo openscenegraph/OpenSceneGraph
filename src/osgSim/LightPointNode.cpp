@@ -26,7 +26,7 @@ LightPointNode::LightPointNode()
 
 /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
 LightPointNode::LightPointNode(const LightPointNode& lpn,const osg::CopyOp& copyop):
-    Node(lpn,copyop),
+    osg::Node(lpn,copyop),
     _lightPointList(lpn._lightPointList)
 {
 }

@@ -68,7 +68,7 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
                 {
                     glPushMatrix();
                     glLoadMatrixf(_matrix.ptr());
-                    TexGen::apply(state);
+                    osg::TexGen::apply(state);
                     glPopMatrix();
                 }
 

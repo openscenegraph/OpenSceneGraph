@@ -13,7 +13,7 @@ C++FILES = \
 	IntersectVisitor.cpp\
         InsertImpostorsVisitor.cpp\
 	NvTriStripObjects.cpp\
-	OptimizeStateVisitor.cpp\
+	Optimizer.cpp\
 	RenderBin.cpp\
 	RenderGraph.cpp\
 	RenderLeaf.cpp\
@@ -55,7 +55,7 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/GUIEventHandler\
 	osgUtil/IntersectVisitor\
         osgUtil/InsertImpostorsVisitor\
-        osgUtil/OptimizeStateVisitor\
+        osgUtil/Optimizer\
 	osgUtil/RenderBin\
 	osgUtil/RenderGraph\
 	osgUtil/RenderLeaf\

@@ -137,7 +137,7 @@ SOURCE=..\..\src\osgUtil\NvTriStripObjects.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\OptimizeStateVisitor.cpp
+SOURCE=..\..\src\osgUtil\Optimizer.cpp
 # End Source File
 # Begin Source File
 
@@ -265,7 +265,7 @@ SOURCE=..\..\src\osgUtil\NvTriStripObjects.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\OptimizeStateVisitor
+SOURCE=..\..\include\osgUtil\Optimizer
 # End Source File
 # Begin Source File
 

@@ -104,9 +104,9 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "alignment " << text.getAlignment() << std::endl;
 
     // text
-    const osgText::Text::TextString& textstring = text.getText();
+    const osgText::String& textstring = text.getText();
     bool isACString = true;
-    for(osgText::Text::TextString::const_iterator itr=textstring.begin();
+    for(osgText::String::const_iterator itr=textstring.begin();
         itr!=textstring.end() && isACString;
         ++itr)
     {

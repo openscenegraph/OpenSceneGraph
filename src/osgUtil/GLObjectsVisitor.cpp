@@ -12,6 +12,7 @@
 */
 #include <osgUtil/GLObjectsVisitor>
 #include <osg/Drawable>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;
@@ -88,6 +89,7 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     }
     if (_mode&RELEASE_STATE_ATTRIBUTES)
     {
+        osg::notify(osg::NOTICE)<<"GLObjectsVisitor::apply"<<std::endl;
         stateset.releaseGLObjects(_state.get());
     }
 }

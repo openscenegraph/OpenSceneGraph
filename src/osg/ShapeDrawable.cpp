@@ -1280,6 +1280,8 @@ void ShapeDrawable::accept(PrimitiveFunctor& pf) const
 
 bool ShapeDrawable::computeBound() const
 {
+    _bbox.init();
+
 
     if (_shape.valid())
     {

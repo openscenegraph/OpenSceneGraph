@@ -62,6 +62,7 @@ public:
     typedef std::set< osg::ref_ptr<Point>,dereference_less> PointSet;
     typedef std::vector< osg::ref_ptr<Point> >              PointList;
     typedef std::list< osg::ref_ptr<Triangle> >             TriangleList;
+    typedef std::set< osg::ref_ptr<Triangle> >              TriangleSet;
 
     struct Point : public osg::Referenced
     {
@@ -71,7 +72,7 @@ public:
 
         osg::Vec3       _vertex;
         FloatList       _attributes;
-        TriangleList    _triangles;
+        TriangleSet     _triangles;
 
         bool operator < ( const Point& rhs) const
         {
@@ -152,8 +153,6 @@ public:
     };
 
 
-
-
     Triangle* addTriangle(unsigned int p1, unsigned int p2, unsigned int p3)
     {
         //std::cout<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
@@ -182,12 +181,24 @@ public:
         triangle->_e2 = addEdge(triangle, triangle->_p2.get(), triangle->_p3.get());
         triangle->_e3 = addEdge(triangle, triangle->_p3.get(), triangle->_p1.get());
         
-        _triangleList.push_back(triangle);
+        _triangleSet.insert(triangle);
         
         return triangle;
-
     }
     
+    void removeTriangle(Triangle* triangle)
+    {
+        removePoint(triangle,triangle->_p1.get());
+        removePoint(triangle,triangle->_p2.get());
+        removePoint(triangle,triangle->_p3.get());
+        
+        removeEdge(triangle,triangle->_e1.get());
+        removeEdge(triangle,triangle->_e2.get());
+        removeEdge(triangle,triangle->_e3.get());
+
+        _triangleSet.erase(triangle);
+    }
+
     Edge* addEdge(Triangle* triangle, Point* p1, Point* p2)
     {
         //std::cout<<"addEdge("<<p1<<","<<p2<<")"<<std::endl;
@@ -217,22 +228,32 @@ public:
         
         edge->addTriangle(triangle);
         
-        return 0;
+        return edge.get();
+    }
+
+    void removeEdge(Triangle* triangle, Edge* edge)
+    {
+        EdgeSet::iterator itr = _edgeSet.find(edge);
+        if (itr!=_edgeSet.end())
+        {
+            if (edge->_t1==triangle) edge->_t1 = 0;
+            if (edge->_t2==triangle) edge->_t2 = 0;
+            
+            if (!edge->_t1.valid() && !edge->_t2.valid())
+            {
+                edge->_p1 = 0;
+                edge->_p2 = 0;
+            
+                // edge no longer in use, so need to delete.
+                _edgeSet.erase(itr);
+            }
+        }
     }
 
     Point* addPoint(Triangle* triangle, unsigned int p1)
     {
         
         osg::ref_ptr<Point> point = _originalPointList[p1];
-
-#if 0
-        point->_index = p1;
-
-        if (_vertexList.valid() && p1<_vertexList->size())
-        {
-            point->_vertex = (*_vertexList)[p1];
-        }
-#endif
 
         PointSet::iterator itr = _pointSet.find(point);
         if (itr==_pointSet.end())
@@ -246,11 +267,27 @@ public:
             //std::cout<<"  reusePoint("<<point.get()<<")"<<std::endl;
         }
 
-        point->_triangles.push_back(triangle);
+        point->_triangles.insert(triangle);
         
         return point.get();
     }
 
+    void removePoint(Triangle* triangle, Point* point)
+    {
+        PointSet::iterator itr = _pointSet.find(point);
+        if (itr!=_pointSet.end())
+        {
+            point->_triangles.erase(triangle);
+            
+            if (point->_triangles.empty())
+            {
+                // point no longer in use, so need to delete.
+                _pointSet.erase(itr);
+            }
+        }
+        
+    }
+    
 protected:
 
     typedef std::vector< osg::ref_ptr<osg::Array> > ArrayList;
@@ -260,7 +297,7 @@ protected:
     
     unsigned int                    _targetNumTriangles;
     EdgeSet                         _edgeSet;
-    TriangleList                    _triangleList;
+    TriangleSet                     _triangleSet;
     PointSet                        _pointSet;
     PointList                       _originalPointList;
     
@@ -607,6 +644,39 @@ class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
 
 void EdgeCollapse::copyBackToGeometry()
 {
+    {
+        TriangleList toDelete;
+        float sampleRatio = 0.1;
+        unsigned int numAccepted = 0;
+        unsigned int numDeleted = 0;
+        for(TriangleSet::iterator titr=_triangleSet.begin();
+            titr!=_triangleSet.end();
+            ++titr)
+        {
+            float r = (numAccepted>0) ? (float)numAccepted / (float)(numAccepted+numDeleted) : 0.0f; 
+            if (r>sampleRatio)
+            {
+                Triangle* triangle = const_cast<Triangle*>((*titr).get());
+                toDelete.push_back(triangle);
+                ++numDeleted;
+            }
+            else
+            {
+                ++numAccepted;
+            }
+        }
+
+        for(TriangleList::iterator ditr=toDelete.begin();
+            ditr!=toDelete.end();
+            ++ditr)
+        {
+            Triangle* triangle = const_cast<Triangle*>((*ditr).get());
+            removeTriangle(triangle);
+            //_triangleSet.erase(triangle);
+        }
+    }
+
+
     // rebuild the _pointList from the _pointSet
     _originalPointList.clear();
     std::copy(_pointSet.begin(),_pointSet.end(),std::back_inserter(_originalPointList));
@@ -642,13 +712,13 @@ void EdgeCollapse::copyBackToGeometry()
             _geometry->getVertexAttribArray(vi)->accept(copyArrayToPoints);
     }
 
-    osg::DrawElementsUInt* primitives = new osg::DrawElementsUInt(GL_TRIANGLES,_triangleList.size()*3);
+    osg::DrawElementsUInt* primitives = new osg::DrawElementsUInt(GL_TRIANGLES,_triangleSet.size()*3);
     unsigned int pos = 0;
-    for(TriangleList::iterator titr=_triangleList.begin();
-        titr!=_triangleList.end();
+    for(TriangleSet::iterator titr=_triangleSet.begin();
+        titr!=_triangleSet.end();
         ++titr)
     {
-        Triangle* triangle = (*titr).get();
+        const Triangle* triangle = (*titr).get();
         (*primitives)[pos++] = triangle->_p1->_index;
         (*primitives)[pos++] = triangle->_p2->_index;
         (*primitives)[pos++] = triangle->_p3->_index;

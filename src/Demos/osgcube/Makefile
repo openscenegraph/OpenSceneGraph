@@ -17,3 +17,6 @@ C++FLAGS += -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
+
+test :
+	osgcube

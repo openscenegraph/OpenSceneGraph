@@ -18,5 +18,8 @@ MACOSXLIBS = -losgGLUT -losgText -losgUtil -losgDB -losg -lfreetype -ldl -lobjc 
 C++FLAGS += -I$(OSGHOME)/include -I. 
 LDFLAGS += -L$(OSGHOME)/lib -L/usr/freeware/lib32
 
+
 include $(OSGHOME)/Make/makerules
 
+test :
+	osgtext 

@@ -22,3 +22,6 @@ LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
 
+test :
+	osgviews glider.osg
+

@@ -67,7 +67,8 @@ int main( int argc, char **argv )
 
     // initialize the viewer.
     osgGLUT::Viewer viewer;
-    
+    viewer.setWindowTitle(argv[0]);
+
     // configure the viewer from the commandline arguments, and eat any
     // parameters that have been matched.
     viewer.readCommandLine(commandLine);

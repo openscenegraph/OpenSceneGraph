@@ -31,3 +31,6 @@ C++FLAGS += -I. -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
+
+test :
+	hangglide

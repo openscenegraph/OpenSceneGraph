@@ -149,6 +149,8 @@ void RenderBin::draw(osg::State& state,RenderLeaf*& previous)
 
 void RenderBin::draw_local(osg::State& state,RenderLeaf*& previous)
 {
+    sort_local();
+
     // draw local bin.
     for(RenderGraphList::iterator oitr=_renderGraphList.begin();
         oitr!=_renderGraphList.end();

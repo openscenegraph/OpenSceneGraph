@@ -23,3 +23,5 @@ LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
 
+test :
+	@echo no current test for osgconv:

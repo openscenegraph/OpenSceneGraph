@@ -170,6 +170,7 @@ int main( int argc, char **argv )
 
     // create the viewer and the model to it.
     osgGLUT::Viewer viewer;
+    viewer.setWindowTitle(argv[0]);
 
     // configure the viewer from the commandline arguments, and eat any
     // parameters that have been matched.

@@ -22,3 +22,6 @@ C++FLAGS += -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
+
+test :
+	osgtexture Images/lz.rgb Images/reflect.rgb

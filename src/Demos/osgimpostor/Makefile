@@ -22,3 +22,5 @@ LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules
 
+test :
+	osgimpostor Town.osg

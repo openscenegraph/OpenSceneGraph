@@ -420,46 +420,12 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 
         osg::notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
         osg::notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
-        
-        // which band do we want to read from...        
-        int numBands = _gdalDataSet->GetRasterCount();
-        GDALRasterBand* bandGray = 0;
-        GDALRasterBand* bandRed = 0;
-        GDALRasterBand* bandGreen = 0;
-        GDALRasterBand* bandBlue = 0;
-        GDALRasterBand* bandAlpha = 0;
 
-        for(int b=1;b<=numBands;++b)
-        {
-            GDALRasterBand* band = _gdalDataSet->GetRasterBand(b);
-            if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
-            else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
-            else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
-            else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
-            else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
-            else bandGray = band;
-        }
+        bool hasRGB = _gdalDataSet->GetRasterCount() >= 3;
+        bool hasColorTable = _gdalDataSet->GetRasterCount() >= 1 && _gdalDataSet->GetRasterBand(1)->GetColorTable();
+        bool hasGreyScale = _gdalDataSet->GetRasterCount() == 1;
 
-
-	GDALRasterBand* bandSelected = 0;
-	if (!bandSelected && bandGray) bandSelected = bandGray;
-	else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
-	else if (!bandSelected && bandRed) bandSelected = bandRed;
-	else if (!bandSelected && bandGreen) bandSelected = bandGreen;
-	else if (!bandSelected && bandBlue) bandSelected = bandBlue;
-        
-        if (!(bandRed && bandGreen && bandBlue) && bandSelected)
-        {
-            // do a hack to get the handling of gery scale images working by
-            // copying the single band three times...
-            // will fix later, Robert Osfield, May 2nd 2004.
-            bandRed = bandSelected;
-            bandGreen = bandSelected;
-            bandBlue = bandSelected;
-        }
-
-
-        if (bandRed && bandGreen && bandBlue)
+        if (hasRGB || hasColorTable || hasGreyScale)
         {
             // RGB
 
@@ -472,64 +438,152 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             unsigned char* imageData = destination._image->data(destX,destY+destHeight-1);
             osg::notify(osg::INFO) << "reading RGB"<<std::endl;
 
-            bool directCopy = false;
-            if (directCopy)
-            {
-                bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+1),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-                bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-            }
-            else
-            {
-                unsigned char* tempImage = new unsigned char[destWidth*destHeight*3];
+            unsigned char* tempImage = new unsigned char[destWidth*destHeight*3];
 
-                bandRed->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(tempImage+0),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
-                bandGreen->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(tempImage+1),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
-                bandBlue->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,(void*)(tempImage+2),destWidth,destHeight,targetGDALType,pixelSpace,pixelSpace*destWidth);
 
-                // now copy into destination image
-                unsigned char* sourceRowPtr = tempImage;
-                unsigned int sourceRowDelta = pixelSpace*destWidth;
-                unsigned char* destinationRowPtr = imageData;
-                unsigned int destinationRowDelta = lineSpace;
-                
-                for(int row=0;
-                    row<destHeight;
-                    ++row, sourceRowPtr+=sourceRowDelta, destinationRowPtr+=destinationRowDelta)
+            /* New code courtesy of Frank Warmerdam of the GDAL group */
+
+            // RGB images ... or at least we assume 3+ band images can be treated 
+            // as RGB. 
+            if( hasRGB ) 
+            { 
+                GDALRasterBand *bandRed, *bandGreen, *bandBlue; 
+
+
+                bandRed = _gdalDataSet->GetRasterBand(1); 
+                bandGreen = _gdalDataSet->GetRasterBand(2); 
+                bandBlue = _gdalDataSet->GetRasterBand(3); 
+
+
+                bandRed->RasterIO(GF_Read, windowX,_numValuesY-(windowY+windowHeight), 
+                                  windowWidth,windowHeight, 
+                                  (void*)(tempImage+0),destWidth,destHeight, 
+                                  targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                bandGreen->RasterIO(GF_Read, 
+                                    windowX,_numValuesY-(windowY+windowHeight), 
+                                    windowWidth,windowHeight, 
+                                    (void*)(tempImage+1),destWidth,destHeight, 
+                                    targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                bandBlue->RasterIO(GF_Read, 
+                                   windowX,_numValuesY-(windowY+windowHeight), 
+                                   windowWidth,windowHeight, 
+                                   (void*)(tempImage+2),destWidth,destHeight, 
+                                   targetGDALType,pixelSpace,pixelSpace*destWidth); 
+            } 
+
+            else if( hasColorTable ) 
+            { 
+                // Pseudocolored image.  Convert 1 band + color table to 24bit RGB. 
+
+                GDALRasterBand *band; 
+                GDALColorTable *ct; 
+                int i; 
+
+
+                band = _gdalDataSet->GetRasterBand(1); 
+
+
+                band->RasterIO(GF_Read, 
+                               windowX,_numValuesY-(windowY+windowHeight), 
+                               windowWidth,windowHeight, 
+                               (void*)(tempImage+0),destWidth,destHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+
+
+                ct = band->GetColorTable(); 
+
+
+                for( i = 0; i < destWidth * destHeight; i++ ) 
+                { 
+                    GDALColorEntry sEntry; 
+
+
+                    // default to greyscale equilvelent. 
+                    sEntry.c1 = tempImage[i*3]; 
+                    sEntry.c2 = tempImage[i*3]; 
+                    sEntry.c3 = tempImage[i*3]; 
+
+
+                    ct->GetColorEntryAsRGB( tempImage[i*3], &sEntry ); 
+
+
+                    // Apply RGB back over destination image. 
+                    tempImage[i*3 + 0] = sEntry.c1; 
+                    tempImage[i*3 + 1] = sEntry.c2; 
+                    tempImage[i*3 + 2] = sEntry.c3; 
+                } 
+            } 
+
+
+            else if (hasGreyScale)
+            { 
+                // Greyscale image.  Convert 1 band to 24bit RGB. 
+                GDALRasterBand *band; 
+
+
+                band = _gdalDataSet->GetRasterBand(1); 
+
+
+                band->RasterIO(GF_Read, 
+                               windowX,_numValuesY-(windowY+windowHeight), 
+                               windowWidth,windowHeight, 
+                               (void*)(tempImage+0),destWidth,destHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                band->RasterIO(GF_Read, 
+                               windowX,_numValuesY-(windowY+windowHeight), 
+                               windowWidth,windowHeight, 
+                               (void*)(tempImage+1),destWidth,destHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                band->RasterIO(GF_Read, 
+                               windowX,_numValuesY-(windowY+windowHeight), 
+                               windowWidth,windowHeight, 
+                               (void*)(tempImage+2),destWidth,destHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+            } 
+
+
+            // now copy into destination image
+            unsigned char* sourceRowPtr = tempImage;
+            unsigned int sourceRowDelta = pixelSpace*destWidth;
+            unsigned char* destinationRowPtr = imageData;
+            unsigned int destinationRowDelta = lineSpace;
+
+            for(int row=0;
+                row<destHeight;
+                ++row, sourceRowPtr+=sourceRowDelta, destinationRowPtr+=destinationRowDelta)
+            {
+                unsigned char* sourceColumnPtr = sourceRowPtr;
+                unsigned char* destinationColumnPtr = destinationRowPtr;
+
+                for(int col=0;
+                    col<destWidth;
+                    ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=pixelSpace)
                 {
-                    unsigned char* sourceColumnPtr = sourceRowPtr;
-                    unsigned char* destinationColumnPtr = destinationRowPtr;
-
-                    for(int col=0;
-                        col<destWidth;
-                        ++col, sourceColumnPtr+=pixelSpace, destinationColumnPtr+=pixelSpace)
-                    {
 #if 0
-                        unsigned int sourceTotal = sourceColumnPtr[0]+sourceColumnPtr[1]+sourceColumnPtr[2];
-                        unsigned int destinationTotal = destinationColumnPtr[0]+destinationColumnPtr[1]+destinationColumnPtr[2];
-                    
-                        if (sourceTotal>destinationTotal)
-                        {
-                            // copy pixel across
-                            destinationColumnPtr[0] = sourceColumnPtr[0];
-                            destinationColumnPtr[1] = sourceColumnPtr[1];
-                            destinationColumnPtr[2] = sourceColumnPtr[2];
-                        }
-#else                    
-                        if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
-                        {
-                            // copy pixel across
-                            destinationColumnPtr[0] = sourceColumnPtr[0];
-                            destinationColumnPtr[1] = sourceColumnPtr[1];
-                            destinationColumnPtr[2] = sourceColumnPtr[2];
-                        }
-#endif                        
+                    unsigned int sourceTotal = sourceColumnPtr[0]+sourceColumnPtr[1]+sourceColumnPtr[2];
+                    unsigned int destinationTotal = destinationColumnPtr[0]+destinationColumnPtr[1]+destinationColumnPtr[2];
+
+                    if (sourceTotal>destinationTotal)
+                    {
+                        // copy pixel across
+                        destinationColumnPtr[0] = sourceColumnPtr[0];
+                        destinationColumnPtr[1] = sourceColumnPtr[1];
+                        destinationColumnPtr[2] = sourceColumnPtr[2];
                     }
+#else                    
+                    if (sourceColumnPtr[0]!=0 || sourceColumnPtr[1]!=0 || sourceColumnPtr[2]!=0)
+                    {
+                        // copy pixel across
+                        destinationColumnPtr[0] = sourceColumnPtr[0];
+                        destinationColumnPtr[1] = sourceColumnPtr[1];
+                        destinationColumnPtr[2] = sourceColumnPtr[2];
+                    }
+#endif                        
                 }
-
-                delete [] tempImage;
-
             }
+
+            delete [] tempImage;
+
         }
         else
         {

@@ -45,7 +45,8 @@ PLUGIN_DIRS = \
 	tga\
 	tgz\
 	txp\
-	zip
+	zip\
+        ive
 
 #        3dc\
 

@@ -1,0 +1,15 @@
+#ifndef IVE_LIGHTSOURCE
+#define IVE_LIGHTSOURCE 1
+
+#include <osg/LightSource>
+#include "ReadWrite.h"
+
+namespace ive{
+class IVE_EXPORT LightSource : public osg::LightSource, public ReadWrite {
+public:
+	void write(DataOutputStream* out);
+	void read(DataInputStream* in);
+};
+}
+
+#endif

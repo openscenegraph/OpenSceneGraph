@@ -1,0 +1,15 @@
+#ifndef IVE_POSITIONATTITUDETRANSFORM
+#define IVE_POSITIONATTITUDETRANSFORM 1
+
+#include <osg/PositionAttitudeTransform>
+#include "ReadWrite.h"
+
+namespace ive{
+class IVE_EXPORT PositionAttitudeTransform : public osg::PositionAttitudeTransform, public ReadWrite {
+public:
+	void write(DataOutputStream* out);
+	void read(DataInputStream* in);
+};
+}
+
+#endif

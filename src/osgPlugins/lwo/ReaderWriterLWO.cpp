@@ -186,7 +186,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
                 (*gc._vertices++).set(lw->vertex[face.index[j]*3], lw->vertex[face.index[j]*3+2], lw->vertex[face.index[j]*3+1]);
             }
             
-            if (gc._texcoords && face.texcoord)
+            if (gc._texturesActive && face.texcoord)
             {
                 for(j=face.index_cnt-1;j>=0;--j)
                 {

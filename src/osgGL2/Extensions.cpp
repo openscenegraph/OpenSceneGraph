@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osgGL2/Extensions.cpp
- * author:	Mike Weiblen 2003-07-14
+ * author:	Mike Weiblen 2003-09-12
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -477,11 +477,11 @@ void Extensions::glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint
     }
 }
 
-void Extensions::glUniform1fv(GLint location, GLsizei count, GLfloat *value) const
+void Extensions::glUniform1fv(GLint location, GLsizei count, const GLfloat *value) const
 {
     if (_glUniform1fv)
     {
-	typedef void (APIENTRY * Uniform1fvProc) (GLint location, GLsizei count, GLfloat *value);
+	typedef void (APIENTRY * Uniform1fvProc) (GLint location, GLsizei count, const GLfloat *value);
 	((Uniform1fvProc)_glUniform1fv)(location, count, value);
     }
     else
@@ -490,11 +490,11 @@ void Extensions::glUniform1fv(GLint location, GLsizei count, GLfloat *value) con
     }
 }
 
-void Extensions::glUniform2fv(GLint location, GLsizei count, GLfloat *value) const
+void Extensions::glUniform2fv(GLint location, GLsizei count, const GLfloat *value) const
 {
     if (_glUniform2fv)
     {
-	typedef void (APIENTRY * Uniform2fvProc) (GLint location, GLsizei count, GLfloat *value);
+	typedef void (APIENTRY * Uniform2fvProc) (GLint location, GLsizei count, const GLfloat *value);
 	((Uniform2fvProc)_glUniform2fv)(location, count, value);
     }
     else
@@ -503,11 +503,11 @@ void Extensions::glUniform2fv(GLint location, GLsizei count, GLfloat *value) con
     }
 }
 
-void Extensions::glUniform3fv(GLint location, GLsizei count, GLfloat *value) const
+void Extensions::glUniform3fv(GLint location, GLsizei count, const GLfloat *value) const
 {
     if (_glUniform3fv)
     {
-	typedef void (APIENTRY * Uniform3fvProc) (GLint location, GLsizei count, GLfloat *value);
+	typedef void (APIENTRY * Uniform3fvProc) (GLint location, GLsizei count, const GLfloat *value);
 	((Uniform3fvProc)_glUniform3fv)(location, count, value);
     }
     else
@@ -516,11 +516,11 @@ void Extensions::glUniform3fv(GLint location, GLsizei count, GLfloat *value) con
     }
 }
 
-void Extensions::glUniform4fv(GLint location, GLsizei count, GLfloat *value) const
+void Extensions::glUniform4fv(GLint location, GLsizei count, const GLfloat *value) const
 {
     if (_glUniform4fv)
     {
-	typedef void (APIENTRY * Uniform4fvProc) (GLint location, GLsizei count, GLfloat *value);
+	typedef void (APIENTRY * Uniform4fvProc) (GLint location, GLsizei count, const GLfloat *value);
 	((Uniform4fvProc)_glUniform4fv)(location, count, value);
     }
     else
@@ -529,11 +529,11 @@ void Extensions::glUniform4fv(GLint location, GLsizei count, GLfloat *value) con
     }
 }
 
-void Extensions::glUniform1iv(GLint location, GLsizei count, GLint *value) const
+void Extensions::glUniform1iv(GLint location, GLsizei count, const GLint *value) const
 {
     if (_glUniform1iv)
     {
-	typedef void (APIENTRY * Uniform1ivProc) (GLint location, GLsizei count, GLint *value);
+	typedef void (APIENTRY * Uniform1ivProc) (GLint location, GLsizei count, const GLint *value);
 	((Uniform1ivProc)_glUniform1iv)(location, count, value);
     }
     else
@@ -542,11 +542,11 @@ void Extensions::glUniform1iv(GLint location, GLsizei count, GLint *value) const
     }
 }
 
-void Extensions::glUniform2iv(GLint location, GLsizei count, GLint *value) const
+void Extensions::glUniform2iv(GLint location, GLsizei count, const GLint *value) const
 {
     if (_glUniform2iv)
     {
-	typedef void (APIENTRY * Uniform2ivProc) (GLint location, GLsizei count, GLint *value);
+	typedef void (APIENTRY * Uniform2ivProc) (GLint location, GLsizei count, const GLint *value);
 	((Uniform2ivProc)_glUniform2iv)(location, count, value);
     }
     else
@@ -555,11 +555,11 @@ void Extensions::glUniform2iv(GLint location, GLsizei count, GLint *value) const
     }
 }
 
-void Extensions::glUniform3iv(GLint location, GLsizei count, GLint *value) const
+void Extensions::glUniform3iv(GLint location, GLsizei count, const GLint *value) const
 {
     if (_glUniform3iv)
     {
-	typedef void (APIENTRY * Uniform3ivProc) (GLint location, GLsizei count, GLint *value);
+	typedef void (APIENTRY * Uniform3ivProc) (GLint location, GLsizei count, const GLint *value);
 	((Uniform3ivProc)_glUniform3iv)(location, count, value);
     }
     else
@@ -568,11 +568,11 @@ void Extensions::glUniform3iv(GLint location, GLsizei count, GLint *value) const
     }
 }
 
-void Extensions::glUniform4iv(GLint location, GLsizei count, GLint *value) const
+void Extensions::glUniform4iv(GLint location, GLsizei count, const GLint *value) const
 {
     if (_glUniform4iv)
     {
-	typedef void (APIENTRY * Uniform4ivProc) (GLint location, GLsizei count, GLint *value);
+	typedef void (APIENTRY * Uniform4ivProc) (GLint location, GLsizei count, const GLint *value);
 	((Uniform4ivProc)_glUniform4iv)(location, count, value);
     }
     else
@@ -581,11 +581,11 @@ void Extensions::glUniform4iv(GLint location, GLsizei count, GLint *value) const
     }
 }
 
-void Extensions::glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) const
+void Extensions::glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const
 {
     if (_glUniformMatrix2fv)
     {
-	typedef void (APIENTRY * UniformMatrix2fvProc) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
+	typedef void (APIENTRY * UniformMatrix2fvProc) (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
 	((UniformMatrix2fvProc)_glUniformMatrix2fv)(location, count, transpose, value);
     }
     else
@@ -594,11 +594,11 @@ void Extensions::glUniformMatrix2fv(GLint location, GLsizei count, GLboolean tra
     }
 }
 
-void Extensions::glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) const
+void Extensions::glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const
 {
     if (_glUniformMatrix3fv)
     {
-	typedef void (APIENTRY * UniformMatrix3fvProc) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
+	typedef void (APIENTRY * UniformMatrix3fvProc) (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
 	((UniformMatrix3fvProc)_glUniformMatrix3fv)(location, count, transpose, value);
     }
     else
@@ -607,11 +607,11 @@ void Extensions::glUniformMatrix3fv(GLint location, GLsizei count, GLboolean tra
     }
 }
 
-void Extensions::glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, GLfloat *value) const
+void Extensions::glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) const
 {
     if (_glUniformMatrix4fv)
     {
-	typedef void (APIENTRY * UniformMatrix4fvProc) (GLint location, GLsizei count, GLboolean transpose, GLfloat *value);
+	typedef void (APIENTRY * UniformMatrix4fvProc) (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
 	((UniformMatrix4fvProc)_glUniformMatrix4fv)(location, count, transpose, value);
     }
     else

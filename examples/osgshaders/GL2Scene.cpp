@@ -11,7 +11,7 @@
 */
 
 /* file:	examples/osgshaders/GL2Scene.cpp
- * author:	Mike Weiblen 2003-07-14
+ * author:	Mike Weiblen 2003-09-30
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -23,49 +23,159 @@
 #include <osg/ShapeDrawable>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geode>
+#include <osg/Node>
+#include <osg/Material>
 #include <osg/Notify>
+#include <osg/Vec3>
+#include <osg/Texture1D>
+#include <osg/Texture2D>
+#include <osg/Texture3D>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgUtil/Optimizer>
 #include <osgGL2/ProgramObject>
 
+#include "GL2Scene.h"
+#include "Noise.h"
 
 ///////////////////////////////////////////////////////////////////////////
-// OpenGL Shading Language source code for the "microshader" example.
+///////////////////////////////////////////////////////////////////////////
+
+static osg::Image*
+make3DNoiseImage(int texSize)
+{
+    osg::Image* image = new osg::Image;
+    image->setImage(texSize, texSize, texSize,
+	    4, GL_RGBA, GL_UNSIGNED_BYTE,
+	    new unsigned char[4 * texSize * texSize * texSize],
+	    osg::Image::USE_NEW_DELETE);
+
+    const int startFrequency = 4;
+    const int numOctaves = 4;
+
+    int f, i, j, k, inc;
+    double ni[3];
+    double inci, incj, inck;
+    int frequency = startFrequency;
+    GLubyte *ptr;
+    double amp = 0.5;
+
+    osg::notify(osg::INFO) << "creating 3D noise texture... ";
+
+    for (f = 0, inc = 0; f < numOctaves; ++f, frequency *= 2, ++inc, amp *= 0.5)
+    {
+	SetNoiseFrequency(frequency);
+	ptr = image->data();
+	ni[0] = ni[1] = ni[2] = 0;
+
+	inci = 1.0 / (texSize / frequency);
+	for (i = 0; i < texSize; ++i, ni[0] += inci)
+	{
+	    incj = 1.0 / (texSize / frequency);
+	    for (j = 0; j < texSize; ++j, ni[1] += incj)
+	    {
+		inck = 1.0 / (texSize / frequency);
+		for (k = 0; k < texSize; ++k, ni[2] += inck, ptr += 4)
+		{
+		    *(ptr+inc) = (GLubyte) (((noise3(ni) + 1.0) * amp) * 128.0);
+		}
+	    }
+	}
+    }
+
+    osg::notify(osg::INFO) << "DONE" << std::endl;
+    return image;	
+}
+
+static osg::Texture3D*
+make3DNoiseTexture(int texSize )
+{
+    osg::Texture3D* noiseTexture = new osg::Texture3D;
+    noiseTexture->setFilter(osg::Texture3D::MIN_FILTER, osg::Texture3D::LINEAR);
+    noiseTexture->setFilter(osg::Texture3D::MAG_FILTER, osg::Texture3D::LINEAR);
+    noiseTexture->setWrap(osg::Texture3D::WRAP_S, osg::Texture3D::REPEAT);
+    noiseTexture->setWrap(osg::Texture3D::WRAP_T, osg::Texture3D::REPEAT);
+    noiseTexture->setWrap(osg::Texture3D::WRAP_R, osg::Texture3D::REPEAT);
+    noiseTexture->setImage( make3DNoiseImage(texSize) );
+    return noiseTexture;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+static osg::Image*
+make1DSineImage( int texSize )
+{
+    const float PI = 3.1415927;
+
+    osg::Image* image = new osg::Image;
+    image->setImage(texSize, 1, 1,
+	    4, GL_RGBA, GL_UNSIGNED_BYTE,
+	    new unsigned char[4 * texSize],
+	    osg::Image::USE_NEW_DELETE);
+
+    GLubyte* ptr = image->data();
+    float inc = 2. * PI / (float)texSize;
+    for(int i = 0; i < texSize; i++)
+    {
+	*ptr++ = (GLubyte)((sinf(i * inc) * 0.5 + 0.5) * 255.);
+	*ptr++ = 0;
+	*ptr++ = 0;
+	*ptr++ = 1;
+    }
+    return image;	
+}
+
+static osg::Texture1D*
+make1DSineTexture( int texSize )
+{
+    osg::Texture1D* sineTexture = new osg::Texture1D;
+    sineTexture->setWrap(osg::Texture1D::WRAP_S, osg::Texture1D::REPEAT);
+    sineTexture->setFilter(osg::Texture1D::MIN_FILTER, osg::Texture1D::LINEAR);
+    sineTexture->setFilter(osg::Texture1D::MAG_FILTER, osg::Texture1D::LINEAR);
+    sineTexture->setImage( make1DSineImage(texSize) );
+    return sineTexture;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+static osg::Node* createGlobe()
+{
+    osg::Geode* geode = new osg::Geode();
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setImage( osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") );
+    stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+    
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0,0,0), 2.0f)));
+    
+    return geode;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// OpenGL Shading Language source code for the "microshader" example,
+// which simply colors a fragment based on its location.
 
 static const char *microshaderVertSource = {
-    "varying vec3 color;"
+    "varying vec4 color;"
     "void main(void)"
     "{"
+	"color = gl_Vertex;"
 	"gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-	"color = gl_Vertex.zyx * 1.0;"
     "}"
 };
 
 static const char *microshaderFragSource = {
-    "varying vec3 color;"
+    "varying vec4 color;"
     "void main(void)"
     "{"
-	"gl_FragColor = vec4(color, 1.0);"
+	"gl_FragColor = color;"
     "}"
 };
 
 ///////////////////////////////////////////////////////////////////////////
 
-static osg::Group* rootNode;
-static osg::Node* masterModel;
-
-// Add a reference to the masterModel at the specified translation, and
-// return its StateSet so we can easily attach StateAttributes.
-static osg::StateSet*
-CloneMaster(float x, float y, float z )
-{
-    osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform();
-    xform->setPosition(osg::Vec3(x, y, z));
-    xform->addChild(masterModel);
-    rootNode->addChild(xform);
-    return xform->getOrCreateStateSet();
-}
+static osg::ref_ptr<osg::Group> rootNode;
 
 // Create some geometry upon which to render GL2 shaders.
 static osg::Geode*
@@ -78,96 +188,231 @@ CreateModel()
     return geode;
 }
 
-// read vert & frag shader source code from a pair of files.
-static void
-LoadShaderSource( osgGL2::ProgramObject* progObj, std::string baseFileName )
+// Add a reference to the masterModel at the specified translation, and
+// return its StateSet so we can easily attach StateAttributes.
+static osg::StateSet*
+ModelInstance()
 {
-    std::string vertFileName = osgDB::findDataFile(baseFileName + ".vert");
-    if( vertFileName.length() != 0 )
-    {
-	osgGL2::ShaderObject* vertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
-	vertObj->loadShaderSourceFromFile( vertFileName.c_str() );
-	progObj->addShader( vertObj );
-    }
-    else
-    {
-	osg::notify(osg::WARN) << "Warning: file \"" << baseFileName+".vert" << "\" not found." << std::endl;
-    }
+    static float zvalue = 0.0f;
+    static osg::Node* masterModel = CreateModel();
 
-    std::string fragFileName = osgDB::findDataFile(baseFileName + ".frag");
-    if( fragFileName.length() != 0 )
+    osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform();
+    xform->setPosition(osg::Vec3( 0.0f, -1.0f, zvalue ));
+    zvalue = zvalue + 2.2f;
+    xform->addChild(masterModel);
+    rootNode->addChild(xform);
+    return xform->getOrCreateStateSet();
+}
+
+// load source from a file.
+static void
+LoadShaderSource( osgGL2::ShaderObject* obj, const std::string& fileName )
+{
+    std::string fqFileName = osgDB::findDataFile(fileName);
+    if( fqFileName.length() != 0 )
     {
-	osgGL2::ShaderObject* fragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
-	fragObj->loadShaderSourceFromFile( fragFileName.c_str() );
-	progObj->addShader( fragObj );
+	obj->loadShaderSourceFromFile( fqFileName.c_str() );
     }
     else
     {
-	osg::notify(osg::WARN) << "Warning: file \"" << baseFileName+".frag" << "\" not found." << std::endl;
+	osg::notify(osg::WARN) << "File \"" << fileName << "\" not found." << std::endl;
     }
 }
+
+
+///////////////////////////////////////////////////////////////////////////
+// rude but convenient globals
+
+static osgGL2::ProgramObject* BlockyProgObj;
+static osgGL2::ShaderObject*  BlockyVertObj;
+static osgGL2::ShaderObject*  BlockyFragObj;
+
+static osgGL2::ProgramObject* ErodedProgObj;
+static osgGL2::ShaderObject*  ErodedVertObj;
+static osgGL2::ShaderObject*  ErodedFragObj;
+
+static osgGL2::ProgramObject* MarbleProgObj;
+static osgGL2::ShaderObject*  MarbleVertObj;
+static osgGL2::ShaderObject*  MarbleFragObj;
+
+///////////////////////////////////////////////////////////////////////////
+
+// TODO encapsulate inside an osgFX effect.
+class AnimateCallback: public osg::NodeCallback
+{
+    public:
+	AnimateCallback( osgGL2::ProgramObject* progObj ) :
+		osg::NodeCallback(),
+		_enabled(true)
+	{}
+
+	virtual void operator() ( osg::Node* node, osg::NodeVisitor* nv )
+	{
+	    if( _enabled )
+	    {
+		float angle = 2.0 * nv->getFrameStamp()->getReferenceTime();
+		float sine = sinf( angle );	// -1 -> 1
+		float v01 = 0.5f * sine + 0.5f;	//  0 -> 1
+		float v10 = 1.0f - v01;		//  1 -> 0
+
+		ErodedProgObj->setUniform( "Offset", osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
+
+		MarbleProgObj->setUniform( "Offset", osg::Vec3(0.505f, 0.8f*v01, 0.0f) );
+
+		BlockyProgObj->setUniform( "Sine", sine );
+		BlockyProgObj->setUniform( "Color1", osg::Vec3(v10, 0.0f, 0.0f) );
+		BlockyProgObj->setUniform( "Color2", osg::Vec3(v01, v01, v10) );
+	    }
+	    traverse(node, nv);
+	}
+
+    private:
+	bool _enabled;
+};
 
 ///////////////////////////////////////////////////////////////////////////
 // Compose a scenegraph with examples of GL2 shaders
 
-#define ZGRID 2.2
-
-osg::Node*
-GL2Scene()
+osg::ref_ptr<osg::Group>
+GL2Scene::buildScene()
 {
-    osg::StateSet* ss;
-    osgGL2::ProgramObject* progObj;
+    osg::Texture3D* noiseTexture = make3DNoiseTexture( 32 /*128*/ );
+    osg::Texture1D* sineTexture = make1DSineTexture( 32 /*1024*/ );
 
-    // the rootNode of our created graph.
-    rootNode = new osg::Group;
-    ss = rootNode->getOrCreateStateSet();
-
-    // attach an "empty" ProgramObject to the rootNode as a default
-    // StateAttribute.  An empty ProgramObject (ie without any attached
-    // ShaderObjects) is a special case, which means to use the
+    // the root of our scenegraph.
+    // attach an "empty" ProgramObject to the rootNode, which will act as
+    // the default StateAttribute.  An empty ProgramObject (ie without any
+    // attached ShaderObjects) is a special case, which means to use the
     // OpenGL 1.x "fixed functionality" rendering pipeline.
-    progObj = new osgGL2::ProgramObject;
-    ss->setAttributeAndModes(progObj, osg::StateAttribute::ON);
+    rootNode = new osg::Group;
+    rootNode->setUpdateCallback( new AnimateCallback(0) );
+    {
+	// TODO this definition of a "default ProgramObject state" will not
+	// be necessary when the OSG core has proper support for the unique
+	// requirements of ProgramObject.
+	osg::StateSet* ss = rootNode->getOrCreateStateSet();
+	osgGL2::ProgramObject* progObj = new osgGL2::ProgramObject;
+	_progObjList.push_back( progObj );
+	ss->setAttributeAndModes(progObj, osg::StateAttribute::ON);
+    }
 
-    // put the unadorned masterModel at the origin for comparison.
-    masterModel = CreateModel();
-    rootNode->addChild(masterModel);
+    // the simple Microshader (its source appears earlier in this file)
+    {
+	osg::StateSet* ss = ModelInstance();
+	osgGL2::ProgramObject* progObj = new osgGL2::ProgramObject;
+	_progObjList.push_back( progObj );
+	progObj->addShader( new osgGL2::ShaderObject(
+		    osgGL2::ShaderObject::VERTEX, microshaderVertSource ) );
+	progObj->addShader( new osgGL2::ShaderObject(
+		    osgGL2::ShaderObject::FRAGMENT, microshaderFragSource ) );
+	ss->setAttributeAndModes( progObj, osg::StateAttribute::ON );
+    }
+
+    // the "blocky" shader, a simple animation test
+    {
+	osg::StateSet* ss = ModelInstance();
+	BlockyProgObj = new osgGL2::ProgramObject;
+	_progObjList.push_back( BlockyProgObj );
+	BlockyVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
+	BlockyFragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
+	BlockyProgObj->addShader( BlockyFragObj );
+	BlockyProgObj->addShader( BlockyVertObj );
+	ss->setAttributeAndModes(BlockyProgObj, osg::StateAttribute::ON);
+    }
+
+    // the "eroded" shader, uses a noise texture to discard fragments
+    {
+	osg::StateSet* ss = ModelInstance();
+	ss->setTextureAttributeAndModes(6, noiseTexture, osg::StateAttribute::ON);
+	ErodedProgObj = new osgGL2::ProgramObject;
+	_progObjList.push_back( ErodedProgObj );
+	ErodedVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
+	ErodedFragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
+	ErodedProgObj->addShader( ErodedFragObj );
+	ErodedProgObj->addShader( ErodedVertObj );
+	ss->setAttributeAndModes(ErodedProgObj, osg::StateAttribute::ON);
+    }
+
+    // the "marble" shader, uses two textures
+    {
+	osg::StateSet* ss = ModelInstance();
+	ss->setTextureAttributeAndModes(1, noiseTexture, osg::StateAttribute::ON);
+	ss->setTextureAttributeAndModes(2, sineTexture, osg::StateAttribute::ON);
+	MarbleProgObj = new osgGL2::ProgramObject;
+	_progObjList.push_back( MarbleProgObj );
+	MarbleVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
+	MarbleFragObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT );
+	MarbleProgObj->addShader( MarbleFragObj );
+	MarbleProgObj->addShader( MarbleVertObj );
+	ss->setAttributeAndModes(MarbleProgObj, osg::StateAttribute::ON);
+    }
+
+    // regular GL 1.x texturing for comparison.
+    if( 0 ) {
+	osg::StateSet* ss = ModelInstance();
+	osg::Texture2D* tex0 = new osg::Texture2D;
+	tex0->setImage( osgDB::readImageFile( "images/3dl-ge100.png" ) );
+	ss->setTextureAttributeAndModes(0, tex0, osg::StateAttribute::ON);
+    }
+
+    reloadShaderSource();
 
     // add logo overlays
-    //rootNode->addChild( osgDB::readNodeFile( "3dl_ogl.logo" ) );
-
-    //
-    // create references to the masterModel and attach shaders
-    //
-
-    // apply the simple microshader example
-    // (the shader sources are hardcoded above in this .cpp file)
-    ss = CloneMaster(0,0,ZGRID*1);
-    progObj = new osgGL2::ProgramObject;
-    progObj->addShader( new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX, microshaderVertSource ) );
-    progObj->addShader( new osgGL2::ShaderObject( osgGL2::ShaderObject::FRAGMENT, microshaderFragSource ) );
-    ss->setAttributeAndModes(progObj, osg::StateAttribute::ON);
-
-    // load the "specular brick" shader from a pair of source files.
-    ss = CloneMaster(0,0,ZGRID*2);
-    progObj = new osgGL2::ProgramObject;
-    LoadShaderSource( progObj, "shaders/brick" );
-    ss->setAttributeAndModes(progObj, osg::StateAttribute::ON);
-
-    // load the "gold screen" shader from a pair of source files.
-    ss = CloneMaster(0,0,ZGRID*3);
-    progObj = new osgGL2::ProgramObject;
-    LoadShaderSource( progObj, "shaders/screen" );
-    ss->setAttributeAndModes(progObj, osg::StateAttribute::ON);
+    // rootNode->addChild( osgDB::readNodeFile( "3dl_ogl.logo" ) );
 
     return rootNode;
 }
 
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 
-void
-GL2Update()
+GL2Scene::GL2Scene()
 {
-    /* TODO : update uniform values for shader animation */
+    _rootNode = buildScene();
+    _shadersEnabled = true;
+}
+
+GL2Scene::~GL2Scene()
+{
+}
+
+// mew 2003-09-19 : This way of configuring the shaders is temporary,
+// pending a move to an osgFX-based approach.
+void
+GL2Scene::reloadShaderSource()
+{
+    osg::notify(osg::WARN) << "reloadShaderSource()" << std::endl;
+
+    LoadShaderSource( BlockyVertObj, "shaders/blocky.vert" );
+    LoadShaderSource( BlockyFragObj, "shaders/blocky.frag" );
+
+    LoadShaderSource( ErodedVertObj, "shaders/eroded.vert" );
+    LoadShaderSource( ErodedFragObj, "shaders/eroded.frag" );
+    ErodedProgObj->setUniform( "LightPosition", osg::Vec3(0.0f, 0.0f, 4.0f) );
+    ErodedProgObj->setUniform( "Scale", 1.0f );
+    ErodedProgObj->setUniform( "sampler3d", 6 );
+
+    LoadShaderSource( MarbleVertObj, "shaders/marble.vert" );
+    LoadShaderSource( MarbleFragObj, "shaders/marble.frag" );
+    MarbleProgObj->setUniform( "Noise", 1 );
+    MarbleProgObj->setUniform( "Sine", 2 );
+}
+
+
+// mew 2003-09-19 : TODO Need to revisit how to better control
+// osgGL2::ProgramObject enable state in OSG core.  glProgramObjects are
+// different enough from other GL state that StateSet::setAttributeAndModes()
+// doesn't fit well, so came up with a local implementation.
+void
+GL2Scene::toggleShaderEnable()
+{
+    _shadersEnabled = ! _shadersEnabled;
+    osg::notify(osg::WARN) << "shader enable = " <<
+	    ((_shadersEnabled) ? "ON" : "OFF") << std::endl;
+    for( unsigned int i = 0; i < _progObjList.size(); i++ )
+    {
+	_progObjList[i]->enable( _shadersEnabled );
+    }
 }
 
 /*EOF*/

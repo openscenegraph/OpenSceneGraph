@@ -12,7 +12,7 @@
 */
 
 /* file:	src/osgGL2/ProgramObject.cpp
- * author:	Mike Weiblen 2003-07-14
+ * author:	Mike Weiblen 2003-09-18
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -22,15 +22,17 @@
 
 #include <osg/Notify>
 #include <osg/State>
-#include <osg/ref_ptr>
 #include <osg/Timer>
+#include <osg/FrameStamp>
 
 #include <osgGL2/ProgramObject>
+#include <osgGL2/UniformValue>
 #include <osgGL2/Extensions>
 
 #include <list>
 
 using namespace osgGL2;
+
 
 ///////////////////////////////////////////////////////////////////////////
 // static cache of deleted GL2 objects which may only 
@@ -63,8 +65,12 @@ void ProgramObject::flushDeletedGL2Objects(unsigned int contextID,double /*curre
     {
         const Extensions* extensions = Extensions::Get(contextID,true);
 
-        if (!extensions->isShaderObjectsSupported())
-            return;
+	if (!extensions->isShaderObjectsSupported())
+	{
+	    // can we really get here?
+	    osg::notify(osg::WARN) << "flushDeletedGL2Objects not supported by OpenGL driver" << std::endl;
+	    return;
+	}
 
         GL2ObjectList& vpObjectList = citr->second;
 
@@ -81,25 +87,33 @@ void ProgramObject::flushDeletedGL2Objects(unsigned int contextID,double /*curre
     availableTime -= elapsedTime;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////
 // osgGL2::ProgramObject
 ///////////////////////////////////////////////////////////////////////////
 
 ProgramObject::ProgramObject()
 {
+    // To ensure all PCPOs consistently get the same values, we must
+    // postpone updates until all PCPOs have been created.
+    // They are created during ProgramObject::apply(), so let a frame
+    // go by before sending the updates.
+    _frameNumberOfLastPCPOUpdate = 1;
+    _enabled = true;
 }
 
 
 ProgramObject::ProgramObject(const ProgramObject& rhs, const osg::CopyOp& copyop):
     osg::StateAttribute(rhs, copyop)
 {
+    osg::notify(osg::FATAL) << "how got here?" << std::endl;
 }
 
 
 // virtual
 ProgramObject::~ProgramObject()
 {
-    for( unsigned int cxt=0; cxt<_pcpoList.size(); ++cxt )
+    for( unsigned int cxt=0; cxt < _pcpoList.size(); ++cxt )
     {
         if( ! _pcpoList[cxt] ) continue;
 
@@ -112,10 +126,10 @@ ProgramObject::~ProgramObject()
 }
 
 
-// mark each PCPO (per-context ProgramObject) as needing a relink
+// mark all PCPOs as needing a relink
 void ProgramObject::dirtyProgramObject()
 {
-    for( unsigned int cxt=0; cxt<_pcpoList.size(); ++cxt )
+    for( unsigned int cxt=0; cxt < _pcpoList.size(); ++cxt )
     {
         if( ! _pcpoList[cxt] ) continue;
 
@@ -124,10 +138,48 @@ void ProgramObject::dirtyProgramObject()
     }
 }
 
-void ProgramObject::addShader( ShaderObject* shader )
+
+// mark all attached ShaderObjects as needing a rebuild
+void ProgramObject::dirtyShaderObjects()
 {
-    _shaderObjectList.push_back(shader);
+    for( unsigned int i=0; i < _shaderObjectList.size() ; ++i )
+    {
+	_shaderObjectList[i]->dirtyShaderObject();
+    }
+}
+
+
+void ProgramObject::addShader( ShaderObject* shadObj )
+{
+    _shaderObjectList.push_back( shadObj );
+    shadObj->addProgObjRef( this );
     dirtyProgramObject();
+}
+
+
+void ProgramObject::setUniform( const char* uniformName, int value )
+{
+    _univalList.push_back( new UniformValue_int( uniformName, value ) );
+}
+
+void ProgramObject::setUniform( const char* uniformName, float value )
+{
+    _univalList.push_back( new UniformValue_float( uniformName, value ) );
+}
+
+void ProgramObject::setUniform( const char* uniformName, osg::Vec2 value )
+{
+    _univalList.push_back( new UniformValue_Vec2( uniformName, value ) );
+}
+
+void ProgramObject::setUniform( const char* uniformName, osg::Vec3 value )
+{
+    _univalList.push_back( new UniformValue_Vec3( uniformName, value ) );
+}
+
+void ProgramObject::setUniform( const char* uniformName, osg::Vec4 value )
+{
+    _univalList.push_back( new UniformValue_Vec4( uniformName, value ) );
 }
 
 
@@ -136,46 +188,45 @@ void ProgramObject::apply(osg::State& state) const
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = Extensions::Get(contextID,true);
 
-    if (!extensions->isShaderObjectsSupported())
-        return;
-
-    // if there are no ShaderObjects attached (ie it is "empty"),
-    // indicates to use GL 1.x "fixed functionality" rendering.
-    if( _shaderObjectList.size() == 0 )
+    // if there are no ShaderObjects on this ProgramObject,
+    // use GL 1.x "fixed functionality" rendering.
+    if( !_enabled || _shaderObjectList.empty() )
     {
-	// glProgramObject handle 0 == GL 1.x fixed functionality
-        extensions->glUseProgramObject( 0 );
+	if( extensions->isShaderObjectsSupported() )
+	{
+	    extensions->glUseProgramObject( 0 );
+	}
 	return;
     }
 
-    PerContextProgObj* pcpo = getPCPO( contextID );
-
-    // if the first apply(), attach glShaderObjects to the glProgramObject
-    if( pcpo->isUnattached() )
+    if( ! extensions->isShaderObjectsSupported() )
     {
-	for( unsigned int i=0; i < _shaderObjectList.size() ; ++i )
-	{
-	    if( ! _shaderObjectList[i] ) continue;
-	    _shaderObjectList[i]->attach( contextID, pcpo->getHandle() );
-	}
-	pcpo->markAsAttached();
+	osg::notify(osg::WARN) << "ARB_shader_objects not supported by OpenGL driver" << std::endl;
+        return;
     }
 
-    //  if we're dirty, build all attached objects, then build ourself
+    const osg::FrameStamp* frameStamp = state.getFrameStamp();
+    const int frameNumber = (frameStamp) ? frameStamp->getFrameNumber() : -1;
+
+    updateUniforms( frameNumber );
+
+    PerContextProgObj* pcpo = getPCPO( contextID );
+
     if( pcpo->isDirty() )
     {
 	for( unsigned int i=0; i < _shaderObjectList.size() ; ++i )
 	{
-	    if( ! _shaderObjectList[i] ) continue;
 	    _shaderObjectList[i]->build( contextID );
 	}
-
-	if( pcpo->build() )
-	    pcpo->markAsClean();
+	pcpo->build();
     }
+
 
     // make this glProgramObject part of current GL state
     pcpo->use();
+
+    // consume any pending setUniform messages
+    pcpo->applyUniformValues();
 }
 
 
@@ -183,48 +234,120 @@ ProgramObject::PerContextProgObj* ProgramObject::getPCPO(unsigned int contextID)
 {
     if( ! _pcpoList[contextID].valid() )
     {
-	_pcpoList[contextID] = new PerContextProgObj( this, Extensions::Get(contextID,true) );
+	_pcpoList[contextID] = new PerContextProgObj( this, contextID );
+
+	// attach all PCSOs to this new PCPO
+	for( unsigned int i=0; i < _shaderObjectList.size() ; ++i )
+	{
+	    _shaderObjectList[i]->attach( contextID, _pcpoList[contextID]->getHandle() );
+	}
     }
     return _pcpoList[contextID].get();
 }
 
+
+void ProgramObject::updateUniforms( int frameNumber ) const
+{
+    if( frameNumber <= _frameNumberOfLastPCPOUpdate )
+	return;
+
+    _frameNumberOfLastPCPOUpdate = frameNumber;
+
+    if( _univalList.empty() )
+	return;
+
+    for( unsigned int cxt=0; cxt < _pcpoList.size(); ++cxt )
+    {
+	if( ! _pcpoList[cxt] ) continue;
+
+	PerContextProgObj* pcpo = _pcpoList[cxt].get();
+	pcpo->updateUniforms( _univalList );
+    }
+    _univalList.clear();
+}
+
+
 ///////////////////////////////////////////////////////////////////////////
 // PCPO : OSG abstraction of the per-context Program Object
 
-ProgramObject::PerContextProgObj::PerContextProgObj(const ProgramObject* parent, Extensions* extensions) :
-	osg::Referenced()
+ProgramObject::PerContextProgObj::PerContextProgObj(const ProgramObject* progObj, unsigned int contextID ) :
+	osg::Referenced(),
+	_contextID( contextID )
 {
-    _parent = parent;
-    _extensions = extensions;
-    _handle= _extensions->glCreateProgramObject();
+    _progObj = progObj;
+    _extensions = Extensions::Get( _contextID, true );
+    _glProgObjHandle = _extensions->glCreateProgramObject();
     markAsDirty();
-    _unattached = true;
 }
 
 ProgramObject::PerContextProgObj::PerContextProgObj(const PerContextProgObj& rhs) :
-	osg::Referenced()
+	osg::Referenced(),
+	_contextID( rhs._contextID )
 {
-    _parent = rhs._parent;
+    _progObj = rhs._progObj;
     _extensions = rhs._extensions;
-    _handle= rhs._handle;
+    _glProgObjHandle = rhs._glProgObjHandle ;
     _dirty = rhs._dirty;
-    _unattached = rhs._unattached;
 }
 
 ProgramObject::PerContextProgObj::~PerContextProgObj()
 {
 }
 
-bool ProgramObject::PerContextProgObj::build() const
+void ProgramObject::PerContextProgObj::build()
 {
-    _extensions->glLinkProgram(_handle);
-    return true;
+    int linked;
+
+    _extensions->glLinkProgram( _glProgObjHandle );
+    _extensions->glGetObjectParameteriv(_glProgObjHandle,
+	    GL_OBJECT_LINK_STATUS_ARB, &linked);
+
+    _dirty = (linked == 0);
+    if( _dirty )
+    {
+	osg::notify(osg::WARN) << "glLinkProgram FAILED:" << std::endl;
+	printInfoLog(osg::WARN);
+    }
 }
+
 
 void ProgramObject::PerContextProgObj::use() const
 {
-    _extensions->glUseProgramObject( _handle );
+    _extensions->glUseProgramObject( _glProgObjHandle  );
 }
+
+void ProgramObject::PerContextProgObj::updateUniforms( const UniformValueList& univalList )
+{
+    // TODO: should the incoming list be appended rather than assigned?
+    _univalList = univalList;
+}
+
+void ProgramObject::PerContextProgObj::applyUniformValues()
+{
+    Extensions *ext = _extensions.get();
+    for( unsigned int i=0; i < _univalList.size() ; ++i )
+    {
+	_univalList[i]->apply( ext, _glProgObjHandle );
+    }
+    _univalList.clear();
+}
+
+
+void ProgramObject::PerContextProgObj::printInfoLog(osg::NotifySeverity severity) const
+{
+    int blen = 0;	// length of buffer to allocate
+    int slen = 0;	// strlen GL actually wrote to buffer
+
+    _extensions->glGetObjectParameteriv(_glProgObjHandle, GL_OBJECT_INFO_LOG_LENGTH_ARB , &blen);
+    if (blen > 1)
+    {
+	GLcharARB* infoLog = new GLcharARB[blen];
+	_extensions->glGetInfoLog(_glProgObjHandle, blen, &slen, infoLog);
+	osg::notify(severity) << infoLog << std::endl;
+	delete infoLog;
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 // osgGL2::ShaderObject
@@ -260,12 +383,18 @@ ShaderObject::~ShaderObject()
 // mark each PCSO (per-context Shader Object) as needing a recompile
 void ShaderObject::dirtyShaderObject()
 {
-    for( unsigned int cxt=0; cxt<_pcsoList.size(); ++cxt )
+    for( unsigned int cxt=0; cxt < _pcsoList.size(); ++cxt )
     {
         if( ! _pcsoList[cxt] ) continue;
 
 	PerContextShaderObj* pcso = _pcsoList[cxt].get();
 	pcso->markAsDirty();
+    }
+
+    // mark attached ProgramObjects dirty as well
+    for( unsigned int i=0; i < _programObjectList.size(); ++i )
+    {
+	_programObjectList[i]->dirtyProgramObject();
     }
 }
 
@@ -302,17 +431,25 @@ bool ShaderObject::loadShaderSourceFromFile( const char* fileName )
 }
 
 
+const char* ShaderObject::getTypename() const
+{
+    switch( getType() )
+    {
+	case VERTEX:	return "Vertex";
+	case FRAGMENT:	return "Fragment";
+        default:        return "UNKNOWN";
+    }
+}
 
-bool ShaderObject::build(unsigned int contextID ) const
+
+void ShaderObject::build(unsigned int contextID ) const
 {
     PerContextShaderObj* pcso = getPCSO( contextID );
 
     if( pcso->isDirty() )
     {
-	if( pcso->build() )
-	    pcso->markAsClean();
+	pcso->build();
     }
-    return true; /*TODO*/
 }
 
 
@@ -320,34 +457,44 @@ ShaderObject::PerContextShaderObj* ShaderObject::getPCSO(unsigned int contextID)
 {
     if( ! _pcsoList[contextID].valid() )
     {
-	_pcsoList[contextID] = new PerContextShaderObj( this, Extensions::Get(contextID,true) );
+	_pcsoList[contextID] = new PerContextShaderObj( this, contextID );
     }
     return _pcsoList[contextID].get();
 }
+
 
 void ShaderObject::attach(unsigned int contextID, GLhandleARB progObj) const
 {
     getPCSO( contextID )->attach( progObj );
 }
 
+
+void ShaderObject::addProgObjRef( ProgramObject* progObj )
+{
+    _programObjectList.push_back( progObj );
+}
+
+
 ///////////////////////////////////////////////////////////////////////////
 // PCSO : OSG abstraction of the per-context Shader Object
 
-ShaderObject::PerContextShaderObj::PerContextShaderObj(const ShaderObject* parent, Extensions* extensions) :
-	osg::Referenced()
+ShaderObject::PerContextShaderObj::PerContextShaderObj(const ShaderObject* shadObj, unsigned int contextID) :
+	osg::Referenced(),
+	_contextID( contextID )
 {
-    _parent = parent;
-    _extensions = extensions;
-    _handle = _extensions->glCreateShaderObject( parent->getType() );
+    _shadObj = shadObj;
+    _extensions = Extensions::Get( _contextID, true );
+    _glShaderObjHandle = _extensions->glCreateShaderObject( shadObj->getType() );
     markAsDirty();
 }
 
 ShaderObject::PerContextShaderObj::PerContextShaderObj(const PerContextShaderObj& rhs) :
-	osg::Referenced()
+	osg::Referenced(),
+	_contextID( rhs._contextID )
 {
-    _parent = rhs._parent;
+    _shadObj = rhs._shadObj;
     _extensions = rhs._extensions;
-    _handle = rhs._handle;
+    _glShaderObjHandle = rhs._glShaderObjHandle;
     _dirty = rhs._dirty;
 }
 
@@ -355,21 +502,42 @@ ShaderObject::PerContextShaderObj::~PerContextShaderObj()
 {
 }
 
-bool ShaderObject::PerContextShaderObj::build()
+void ShaderObject::PerContextShaderObj::build()
 {
-    const char* sourceText = _parent->getShaderSource().c_str();
+    int compiled;
+    const char* sourceText = _shadObj->getShaderSource().c_str();
 
-    _extensions->glShaderSource( _handle, 1, &sourceText, NULL );
-    _extensions->glCompileShader( _handle );
+    _extensions->glShaderSource( _glShaderObjHandle, 1, &sourceText, NULL );
+    _extensions->glCompileShader( _glShaderObjHandle );
+    _extensions->glGetObjectParameteriv(_glShaderObjHandle,
+	    GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
 
-    // _extensions->glAttachObject( _handle, vertShaderObject );
-
-    return true;
+    _dirty = (compiled == 0);
+    if( _dirty )
+    {
+	osg::notify(osg::WARN) << _shadObj->getTypename() << " glCompileShader FAILED:" << std::endl;
+	printInfoLog(osg::WARN);
+    }
 }
 
-void ShaderObject::PerContextShaderObj::attach(GLhandleARB progObj)
+void ShaderObject::PerContextShaderObj::attach(GLhandleARB progObj) const
 {
-    _extensions->glAttachObject(progObj, _handle);
+    _extensions->glAttachObject( progObj, _glShaderObjHandle );
+}
+
+void ShaderObject::PerContextShaderObj::printInfoLog(osg::NotifySeverity severity) const
+{
+    int blen = 0;	// length of buffer to allocate
+    int slen = 0;	// strlen GL actually wrote to buffer
+
+    _extensions->glGetObjectParameteriv(_glShaderObjHandle, GL_OBJECT_INFO_LOG_LENGTH_ARB , &blen);
+    if (blen > 1)
+    {
+	GLcharARB* infoLog = new GLcharARB[blen];
+	_extensions->glGetInfoLog(_glShaderObjHandle, blen, &slen, infoLog);
+	osg::notify(severity) << infoLog << std::endl;
+	delete infoLog;
+    }
 }
 
 /*EOF*/

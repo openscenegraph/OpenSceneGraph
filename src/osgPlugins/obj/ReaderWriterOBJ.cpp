@@ -581,10 +581,12 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, G
         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
 
     }
-    
-    osgUtil::SmoothingVisitor tsv;
-    tsv.smooth(*geom);
 
+    if (obj->numnormals==0)
+    {
+        osgUtil::SmoothingVisitor tsv;
+        tsv.smooth(*geom);
+    }
 
     return geom;
 }

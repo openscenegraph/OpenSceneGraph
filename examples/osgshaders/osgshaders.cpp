@@ -11,113 +11,108 @@
 */
 
 /* file:	examples/osgshaders/osgshaders.cpp
- * author:	Mike Weiblen 2003-07-14
+ * author:	Mike Weiblen 2003-09-18
  *
- * A simple app skeleton for viewing OpenGL Shading Language shaders;
- * derived from osgviewer.cpp from OSG 0.9.4-2
+ * A demo of the OpenGL Shading Language shaders using osgGL2.
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
 */
 
+#include <osg/Notify>
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIActionAdapter>
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
+#include <osgGL2/Version>
 
-#define GL2SCENE
-osg::Node* GL2Scene();
-void GL2Update();
+#include "GL2Scene.h"
+
+using namespace osg;
+
+///////////////////////////////////////////////////////////////////////////
+
+class KeyHandler: public osgGA::GUIEventHandler
+{
+    public:
+	KeyHandler( GL2ScenePtr gl2Scene ) :
+		_gl2Scene(gl2Scene)
+	{}
+
+	bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& )
+	{
+	    if( ea.getEventType() != osgGA::GUIEventAdapter::KEYDOWN )
+		return false;
+
+	    switch( ea.getKey() )
+	    {
+		case 'x':
+		    _gl2Scene->reloadShaderSource();
+		    return true;
+		case 'y':
+		    _gl2Scene->toggleShaderEnable();
+		    return true;
+	    }
+	    return false;
+	}
+
+    private:
+	GL2ScenePtr _gl2Scene;
+};
+
+///////////////////////////////////////////////////////////////////////////
 
 int main( int argc, char **argv )
 {
-
     // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
+    ArgumentParser args(&argc,argv);
     
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
+    // set up the usage document
+    args.getApplicationUsage()->setApplicationName(args.getApplicationName());
+    args.getApplicationUsage()->setDescription(args.getApplicationName() +
+	    " demonstrates the OpenGL Shading Language using osgGL2");
+    args.getApplicationUsage()->setCommandLineUsage(args.getApplicationName());
+    args.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+
+    args.getApplicationUsage()->addKeyboardMouseBinding( "x", "Reload and recompile shader source files." );
+    args.getApplicationUsage()->addKeyboardMouseBinding( "y", "Toggle shader enable" );
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgProducer::Viewer viewer(args);
+    viewer.setUpViewer( osgProducer::Viewer::STANDARD_SETTINGS );
+    viewer.getUsage( *args.getApplicationUsage() );
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
+    if( args.read("-h") || args.read("--help") )
     {
-        arguments.getApplicationUsage()->write(std::cout);
+        args.getApplicationUsage()->write(std::cout);
         return 1;
     }
 
     // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
+    args.reportRemainingOptionsAsUnrecognized();
+    if( args.errors() )
     {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-#ifdef GL2SCENE //(
-    osg::ref_ptr<osg::Node> loadedModel = GL2Scene();
-#else //)(
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        args.writeErrorMessages(std::cout);
         return 1;
     }
 
-    // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    // create the scene
+    notify(NOTICE) << "osgGL2 version " << osgGL2GetVersion() << std::endl;
+    GL2ScenePtr gl2Scene = new GL2Scene;
 
-    // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
-    {
-        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
-        return 1;
-    }
-
-
-    // optimize the scene graph, remove rendundent nodes and state etc.
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
-#endif //)
-
-    // set the scene to render
-    viewer.setSceneData(loadedModel.get());
-
-    // create the windows and run the threads.
+    viewer.setSceneData( gl2Scene->getRootNode().get() );
+    viewer.getEventHandlerList().push_front( new KeyHandler(gl2Scene) );
     viewer.realize();
-
     while( !viewer.done() )
     {
-        // wait for all cull and draw threads to complete.
         viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
         viewer.update();
-#ifdef GL2SCENE //(
-	GL2Update();
-#endif //)
-         
-        // fire off the cull and draw traversals of the scene.
         viewer.frame();
-        
     }
-    
-    // wait for all cull and draw threads to complete before exit.
     viewer.sync();
-
     return 0;
 }
+
+/*EOF*/
 

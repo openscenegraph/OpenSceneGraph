@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osgGL2/ProgramObject
- * author:	Mike Weiblen 2003-07-14
+ * author:	Mike Weiblen 2003-09-18
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -25,26 +25,32 @@
 #include <osg/StateAttribute>
 #include <osg/buffered_value>
 #include <osg/ref_ptr>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 
 #include <osgGL2/Export>
 #include <osgGL2/Extensions>
+#include <osgGL2/UniformValue>
 
 #include <string>
+#include <vector>
 
 
 namespace osgGL2 {
 
-
-
-///////////////////////////////////////////////////////////////////////////
+class ProgramObject;
+typedef osg::ref_ptr<ProgramObject> ProgramObjectPtr;
 
 class ShaderObject;
+typedef osg::ref_ptr<ShaderObject> ShaderObjectPtr;
+
+///////////////////////////////////////////////////////////////////////////
 
 /** Encapsulates the OpenGL Shading Language ProgramObject */
 class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 {
     public:
-
         ProgramObject();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -74,10 +80,29 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 
         // data access methods.
 
-        /** Force a relink on next apply() of associated glProgramObject. */
-        void dirtyProgramObject();        
+	/** Force a relink on next apply() of associated glProgramObject. */
+	void dirtyProgramObject();
 
-	void addShader( ShaderObject* shader );
+	/** Force a recompile of all ShaderObjects on next apply(). */
+	void dirtyShaderObjects();
+
+	/** Set whether rendering of ProgramObject is enabled or disabled */
+	void enable( bool enabled ) { _enabled = enabled; }
+
+	/** Attach a ShaderObject to this ProgramObject */
+	void addShader( ShaderObject* shadObj );
+
+	void setUniform( const char* uniformName, int value );
+	void setUniform( const char* uniformName, float value );
+	void setUniform( const char* uniformName, osg::Vec2 value );
+	void setUniform( const char* uniformName, osg::Vec3 value );
+	void setUniform( const char* uniformName, osg::Vec4 value );
+
+	inline void setSampler( const char* uniformName, int value )
+	{
+	    // emphatic alias for setUniform(int)
+	    setUniform( uniformName, static_cast<int>(value) );
+	}
         
         /** use deleteObject instead of glDeleteObject to allow
           * GL2 Objects to cached until they can be deleted
@@ -89,49 +114,51 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
           * in the OpenGL context related to contextID.*/
         static void flushDeletedGL2Objects(unsigned int contextID,double currentTime, double& availableTime);
 
+
     protected:
-
-        virtual ~ProgramObject();
-
-	typedef std::vector< osg::ref_ptr<ShaderObject> > ShaderObjectList;
-	ShaderObjectList _shaderObjectList;
-
-
-	class OSGGL2_EXPORT PerContextProgObj : public osg::Referenced
+	class PerContextProgObj : public osg::Referenced
 	{
 	    public:
-		PerContextProgObj(const ProgramObject* parent, Extensions* extensions);
+		PerContextProgObj(const ProgramObject* progObj, unsigned int contextID);
 		PerContextProgObj(const PerContextProgObj& rhs);
 
-		GLhandleARB& getHandle() {return _handle;}
+		GLhandleARB& getHandle() {return _glProgObjHandle;}
 
 		bool isDirty() const {return _dirty;}
 		void markAsDirty() {_dirty = true; }
-		void markAsClean() {_dirty = false;}
-		bool build() const;
+		void build();
 		void use() const;
 
-		void markAsAttached() {_unattached = false;}
-		bool isUnattached() const {return _unattached;}
+		void updateUniforms( const UniformValueList& univalList );
+		void applyUniformValues();
 
-	    protected:
-		PerContextProgObj() {};
+		void printInfoLog(osg::NotifySeverity severity) const;
+
+	    protected:	/*methods*/
+		PerContextProgObj();
 		~PerContextProgObj();
 
-		const ProgramObject* _parent;
+	    protected:	/*data*/
+		const ProgramObject* _progObj;
 		osg::ref_ptr<Extensions> _extensions;
-		GLhandleARB _handle;
+		GLhandleARB _glProgObjHandle;
 		bool _dirty;
-		bool _unattached;
+		UniformValueList _univalList;
+		const unsigned int _contextID;
 	};
 
-        typedef osg::buffered_value< osg::ref_ptr<PerContextProgObj> > PCPOList;
-        mutable PCPOList _pcpoList;
-
+    protected:	/*methods*/
+        virtual ~ProgramObject();
         PerContextProgObj* getPCPO(unsigned int contextID) const;
+	void updateUniforms( int frameNumber ) const;
 
+    protected:	/*data*/
+	bool _enabled;
+	std::vector< ShaderObjectPtr > _shaderObjectList;
+        mutable osg::buffered_value< osg::ref_ptr<PerContextProgObj> > _pcpoList;
+	mutable int _frameNumberOfLastPCPOUpdate;
+	mutable UniformValueList _univalList;
 };
-
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -159,51 +186,57 @@ class OSGGL2_EXPORT ShaderObject : public osg::Object
 	void setShaderSource( const char* sourceText );
 	inline const std::string& getShaderSource() const {return _shaderSource; }
 	bool loadShaderSourceFromFile( const char* fileName );
-	Type getType() const { return _type; }
+	inline Type getType() const { return _type; }
+	const char* getTypename() const;
 
         /** Force a recompile on next apply() of associated glShaderObject. */
         void dirtyShaderObject();        
 
-	bool build(unsigned int contextID) const;
+	void build(unsigned int contextID) const;
 	void attach(unsigned int contextID, GLhandleARB progObj) const;
 
+
     protected:
-
-        virtual ~ShaderObject();
-
-	std::string _shaderSource;
-	Type _type;
-
-	class OSGGL2_EXPORT PerContextShaderObj : public osg::Referenced
+	class PerContextShaderObj : public osg::Referenced
 	{
 	    public:
-		PerContextShaderObj(const ShaderObject* parent, Extensions* extensions);
+		PerContextShaderObj(const ShaderObject* shadObj, unsigned int contextID);
 		PerContextShaderObj(const PerContextShaderObj& rhs);
 
-		GLhandleARB& getHandle() {return _handle;}
+		GLhandleARB& getHandle() {return _glShaderObjHandle;}
 
 		bool isDirty() const {return _dirty;}
 		void markAsDirty() {_dirty = true; }
-		void markAsClean() {_dirty = false;}
-		bool build();
+		void build();
 
-		void attach(GLhandleARB progObj);
+		void attach(GLhandleARB progObj) const;
 
-	    protected:
-		PerContextShaderObj() {};
+		void printInfoLog(osg::NotifySeverity severity) const;
+
+	    protected:	/*methods*/
+		PerContextShaderObj();
 		~PerContextShaderObj();
 
-		const ShaderObject* _parent;
+	    protected:	/*data*/
+		const ShaderObject* _shadObj;
 		osg::ref_ptr<Extensions> _extensions;
-		GLhandleARB _handle;
+		GLhandleARB _glShaderObjHandle;
 		bool _dirty;
+		const unsigned int _contextID;
 	};
 
-        typedef osg::buffered_value< osg::ref_ptr<PerContextShaderObj> > PCSOList;
-        mutable PCSOList _pcsoList;
-
+    protected:	/*methods*/
+        virtual ~ShaderObject();
         PerContextShaderObj* getPCSO(unsigned int contextID) const;
 
+	friend void ProgramObject::addShader( ShaderObject* shadObj );	// to access addProgObjRef()
+	void addProgObjRef( ProgramObject* progObj );
+
+    protected:	/*data*/
+	Type _type;
+	std::string _shaderSource;
+	std::vector< ProgramObjectPtr > _programObjectList;
+        mutable osg::buffered_value< osg::ref_ptr<PerContextShaderObj> > _pcsoList;
 };
 
 }

@@ -1,3 +1,31 @@
+2004-08-18 10:34  robert
+
+	* NEWS.txt: Set date for 0.9.7-2 release
+
+2004-08-18 07:06  robert
+
+	* src/osg/: dxtctool.cpp, dxtctool.h: Rejigged the __int*
+	  definitions to try and get round Mingw compile errors
+
+2004-08-17 20:42  robert
+
+	* src/osg/: dxtctool.cpp, dxtctool.h: From Bruce Clay, fixes for
+	  VS6.0 build.
+
+2004-08-17 19:57  robert
+
+	* include/osgUtil/RenderBin: From David Fries, added getBinNum()
+	  method
+
+2004-08-17 19:56  robert
+
+	* src/osg/PrimitiveSet.cpp: Changed sizeof(..) references to 1,2,4
+	  respectively.
+
+2004-08-17 09:14  robert
+
+	* ChangeLog: Updated changelog
+
 2004-08-17 08:58  robert
 
 	* include/osg/AutoTransform, src/osg/AutoTransform.cpp: From David

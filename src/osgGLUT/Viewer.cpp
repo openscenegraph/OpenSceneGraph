@@ -776,6 +776,21 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     switch( key )
     {
 
+        case '>' :
+            {
+            osg::DisplaySettings* ds = const_cast<osg::DisplaySettings*>(sceneView->getDisplaySettings());
+            if (ds) ds->setEyeSeperation(ds->getEyeSeperation()*1.5f);
+            }
+            break;
+
+        case '<' :
+            {
+            osg::DisplaySettings* ds = const_cast<osg::DisplaySettings*>(sceneView->getDisplaySettings());
+            if (ds) ds->setEyeSeperation(ds->getEyeSeperation()/1.5f);
+            }
+            break;
+
+
         case '7' :
             sceneView->setBackgroundColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
             break;

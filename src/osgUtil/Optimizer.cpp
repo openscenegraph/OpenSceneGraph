@@ -129,7 +129,7 @@ void Optimizer::StateVisitor::addStateSet(osg::StateSet* stateset,osg::Object* o
 void Optimizer::StateVisitor::apply(osg::Node& node)
 {
     osg::StateSet* ss = node.getStateSet();
-    if (ss) addStateSet(ss,&node);
+    if (ss && ss->getDataType()==osg::StateAttribute::STATIC) addStateSet(ss,&node);
 
     traverse(node);
 }
@@ -137,14 +137,14 @@ void Optimizer::StateVisitor::apply(osg::Node& node)
 void Optimizer::StateVisitor::apply(osg::Geode& geode)
 {
     osg::StateSet* ss = geode.getStateSet();
-    if (ss) addStateSet(ss,&geode);
+    if (ss && ss->getDataType()==osg::StateAttribute::STATIC) addStateSet(ss,&geode);
     for(int i=0;i<geode.getNumDrawables();++i)
     {
         osg::Drawable* drawable = geode.getDrawable(i);
         if (drawable)
         {
             ss = drawable->getStateSet();
-            if (ss) addStateSet(ss,drawable);
+            if (ss && ss->getDataType()==osg::StateAttribute::STATIC) addStateSet(ss,drawable);
         }
     }
 }
@@ -172,7 +172,10 @@ void Optimizer::StateVisitor::optimize()
                 aitr!=attributes.end();
                 ++aitr)
             {
-                _attributeToStateSetMap[aitr->second.first.get()].insert(sitr->first);
+                if (aitr->second.first->getDataType()==osg::StateAttribute::STATIC)
+                {
+                    _attributeToStateSetMap[aitr->second.first.get()].insert(sitr->first);
+                }
             }
         }
 
@@ -559,7 +562,8 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
         {
             if (!group.getUserData() &&
                 !group.getAppCallback() &&
-                !group.getStateSet())
+                !group.getStateSet() &&
+                group.getNodeMask()!=0xffffffff)
             {
                 _redundentNodeList.insert(&group);
             }

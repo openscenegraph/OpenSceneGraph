@@ -31,6 +31,8 @@
 #include <vector>
 
 
+using namespace osgGLUT;
+
 ///////////////////////////////////////////////////////////////////////////////
 // globals
 #define        TEXT_POLYGON    "Polygon Font - jygq"
@@ -416,7 +418,7 @@ public:
     virtual float app(unsigned int viewport)
     {
         float ret;
-        ret=osgGLUT::Viewer::app(viewport);
+        ret=Viewer::app(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
         {
             _hudSceneView->app();
@@ -427,7 +429,7 @@ public:
     virtual float cull(unsigned int viewport)
     {
         float ret;
-        ret=osgGLUT::Viewer::cull(viewport);
+        ret=Viewer::cull(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
             _hudSceneView->cull();
         return ret;
@@ -436,7 +438,7 @@ public:
     virtual float draw(unsigned int viewport)
     {
         float ret;
-        ret=osgGLUT::Viewer::draw(viewport);
+        ret=Viewer::draw(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
             _hudSceneView->draw();
         return ret;
@@ -452,7 +454,7 @@ public:
     
     virtual void reshape(GLint w, GLint h)
     {
-        osgGLUT::Viewer::reshape(w,h);
+        Viewer::reshape(w,h);
         
         if(_hudSceneView.valid())
         {
@@ -463,7 +465,7 @@ public:
 
     virtual bool open()
     {
-        bool ret=osgGLUT::Viewer::open();
+        bool ret=Viewer::open();
 
         // set the clear flag / after the visualReq.Visitor
         if(_hudSceneView.valid())
@@ -536,7 +538,7 @@ protected:
                 }
                 return;
             default:
-                osgGLUT::Viewer::keyboard(key,x,y);
+                Viewer::keyboard(key,x,y);
         };
     }
 

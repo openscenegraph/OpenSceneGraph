@@ -29,6 +29,7 @@
 #include <osg/Texture2D>
 #include <osg/Material>
 #include <osg/CullFace>
+#include <osg/BlendFunc>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -68,7 +69,7 @@ Lwo2::ReadFile( const string& filename )
   _fin.open(filename.c_str(), ios::in | ios::binary );
   if (!_fin.is_open())
     {
-      notify(NOTICE) << "Can't open file '" << filename << "'" << std::endl;
+      notify(INFO) << "Can't open file '" << filename << "'" << std::endl;
       return false;
     }
 
@@ -82,7 +83,7 @@ Lwo2::ReadFile( const string& filename )
     }
   else 
     {
-      notify(NOTICE) << "Detected EA-IFF85 format" << std::endl;
+      notify(INFO) << "Detected EA-IFF85 format" << std::endl;
     }
 
   unsigned long form_size = _read_long();
@@ -93,13 +94,13 @@ Lwo2::ReadFile( const string& filename )
   if (_read_long() != tag_LWO2) 
     {
       unsigned long make_id(const char*);
-      notify(NOTICE) << "File '" << filename << "' is not LWO2 format file." << std::endl;
+      notify(INFO) << "File '" << filename << "' is not LWO2 format file." << std::endl;
       _fin.close();
       return false;
     }
   else 
     {
-      notify(NOTICE) << "Detected LWO2 format" << std::endl;
+      notify(INFO) << "Detected LWO2 format" << std::endl;
     }
 
   unsigned long read_bytes = 4;
@@ -654,9 +655,6 @@ Lwo2::GenerateGroup( Group& group )
 
   // create geometry from all layers
   for (IteratorLayers itr = _layers.begin(); itr != _layers.end(); itr++)
-  //  IteratorLayers itr = _layers.begin();
-  //  itr++;
-  //  itr++;
     {
       osg::Geode* geode = new osg::Geode();
 
@@ -669,6 +667,20 @@ Lwo2::GenerateGroup( Group& group )
 	{
 	  notify(DEBUG_INFO) << "  Assigning surface " << _tags[tag_mapping[i]] << " to drawable " << i << std::endl;
 	  geode->getDrawable(i)->setStateSet(_surfaces[_tags[tag_mapping[i]]]->state_set);
+
+	  // copy material color to color array of geometry
+	  // because when lighting off color not applyed
+	  Geometry* geometry = geode->getDrawable(i)->asGeometry();
+	  if (geometry)
+	    {
+	      Material* material = dynamic_cast<Material*>(_surfaces[_tags[tag_mapping[i]]]->state_set->getAttribute(StateAttribute::MATERIAL));
+	      if (material) {
+		Vec4Array* colors = new Vec4Array();
+		colors->push_back(material->getDiffuse(Material::FRONT_AND_BACK));
+		geometry->setColorBinding(Geometry::BIND_OVERALL);
+		geometry->setColorArray(colors);
+	      }
+	    }
 	}
 
       group.addChild(geode);
@@ -681,10 +693,16 @@ Lwo2::GenerateGroup( Group& group )
 void
 Lwo2::_generate_statesets_from_surfaces()
 {
+  ref_ptr<BlendFunc> blending = new BlendFunc();
+  blending->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  ref_ptr<CullFace> culling = new CullFace();
+  culling->setMode(CullFace::BACK);
+
   for (IteratorSurfaces itr_surf = _surfaces.begin(); itr_surf != _surfaces.end(); itr_surf++)
     {
       Lwo2Surface* surface = (*itr_surf).second;
       StateSet* state_set = new osg::StateSet;
+      bool use_blending = false;
 
       notify(DEBUG_INFO) << "\tcreating surface " << (*itr_surf).first << std::endl;
 
@@ -696,28 +714,62 @@ Lwo2::_generate_statesets_from_surfaces()
 	  notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
 	  if (image)
 	    {
+	      // create texture
 	      Texture2D* texture = new osg::Texture2D;
 	      texture->setImage(image);
 	      state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
+
+	      // setup texture wrapping
+	      texture->setWrap(Texture::WRAP_S, Texture::REPEAT);
+	      texture->setWrap(Texture::WRAP_T, Texture::REPEAT);
+
+	      // detect blending
+	      if (image->getPixelSizeInBits() == 32)
+		{
+		  for (int i = 0; i < image->s(); i++)
+		    {
+		      for (int j = 0; j < image->t(); j++)
+			{
+			  unsigned char* data = image->data(i, j);
+			  data++; // skip r
+			  data++; // skip g
+			  data++; // skip b
+
+			  // check alpha
+			  if (*data < 255) 
+			    {
+			      use_blending = true;
+			      break;
+			    }
+			}
+		      if (use_blending) break;
+		    }
+		}
 	    }
 	}
 
       // set color
       Material* material = new Material();
-      Vec4 color(surface->color[0], 
-		 surface->color[1], 
-		 surface->color[2], 
-		 1.0f);
-      material->setDiffuse(Material::FRONT_AND_BACK, color);
+      material->setDiffuse(Material::FRONT_AND_BACK, Vec4(surface->color, 1.0f));
       state_set->setAttribute(material);
 
-      // setup culling
-      CullFace* cull = new CullFace();
-      cull->setMode(CullFace::BACK);
-      state_set->setAttribute(cull);
-      state_set->setMode(GL_CULL_FACE, StateAttribute::ON);
-
       state_set->setMode(GL_NORMALIZE, StateAttribute::ON);
+
+      if (use_blending)
+	{
+	  // setup blending
+	  state_set->setAttribute(blending.get());
+	  state_set->setMode(GL_BLEND, StateAttribute::ON);
+
+	  // setup depth sorting
+	  state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+	}
+      else
+	{
+	  // setup culling
+	  state_set->setAttribute(culling.get());
+	  state_set->setMode(GL_CULL_FACE, StateAttribute::ON);
+	}
 
       surface->state_set = state_set;
     }

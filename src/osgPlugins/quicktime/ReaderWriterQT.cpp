@@ -18,6 +18,7 @@
 #endif
 
 #include "QTtexture.h"
+#include "QuicktimeImageStream.h"
 
 using namespace osg;
 
@@ -25,6 +26,14 @@ class ReaderWriterQT : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() { return "Default Quicktime Image Reader/Writer"; }
+        
+        virtual bool acceptsMovieExtension(const std::string& extension)
+        {
+            return osgDB::equalCaseInsensitive(extension,"mov") ||
+                   osgDB::equalCaseInsensitive(extension,"mpg") ||
+                   osgDB::equalCaseInsensitive(extension,"mpv") ||
+                   osgDB::equalCaseInsensitive(extension,"dv");
+        }
         
         virtual bool acceptsExtension(const std::string& extension)
         {
@@ -40,7 +49,8 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"png") ||
                 osgDB::equalCaseInsensitive(extension,"pict") ||
                 osgDB::equalCaseInsensitive(extension,"pct") ||
-                osgDB::equalCaseInsensitive(extension,"tga");
+                osgDB::equalCaseInsensitive(extension,"tga") ||
+                acceptsMovieExtension(extension);
         }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
@@ -51,6 +61,19 @@ class ReaderWriterQT : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
                 
+            // if the file is a movie file then load as an ImageStream.
+            if (acceptsMovieExtension(ext))
+            {
+                // note from Robert Osfield when integrating, we should probably have so
+                // error handling mechanism here.  Possibly move the load from
+                // the constructor to a seperate load method, and have a valid
+                // state on the ImageStream... will integrated as is right now
+                // to get things off the ground.
+                osg::QuicktimeImageStream* moov = new osg::QuicktimeImageStream(fileName);
+                moov->start();
+                return moov;
+            }
+
             long origWidth, origHeight,buffWidth,buffHeight,buffDepth,origDepth;
         
             // NOTE - implememntation means that this will always return 32 bits, so it is hard to work out if 

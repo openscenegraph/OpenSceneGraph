@@ -21,7 +21,7 @@ TestContext::TraceLevel TestContext::getTraceLevel() const
     return _tout.getTraceLevel();
 }
 
-std::ostream& TestContext::tout(TraceLevel tl=Full) const
+std::ostream& TestContext::tout(TraceLevel tl) const
 {
     return _tout.stream(tl);
 }
@@ -105,8 +105,8 @@ TestSuite* TestGraph::suite(const std::string& path, TestSuite* tsuite, bool cre
 }
 
 TestSuite* TestGraph::suite(
-        list<std::string>::iterator it,
-        list<std::string>::iterator end,
+		std::list<std::string>::iterator it,
+        std::list<std::string>::iterator end,
         TestSuite* tsuite, bool createIfNecessary)
 {
     using namespace std;
@@ -166,8 +166,8 @@ bool TestQualifier::visitEnter( TestSuite* pSuite )
 // Leaving a composite: Pop its name from the Path
 bool TestQualifier::visitLeave( TestSuite* pSuite )
 {
-    assert( _path.rfind( pSuite->name() + static_cast<const char>(SEPCHAR))
-                == _path.size() - pSuite->name().size()  - 1);
+//    assert( _path.rfind( pSuite->name() + static_cast<const char>(SEPCHAR))
+//                == _path.size() - pSuite->name().size()  - 1);
 
     _path.erase( _path.size() - pSuite->name().size() -1 );
     return true;
@@ -326,7 +326,7 @@ void TestRunner::perform( TestCase* pTest )
     }
     catch ( ... )
     {
-        record.log( "Unknown" );
+        record.log( std::string("Unknown") );
     }
 
 

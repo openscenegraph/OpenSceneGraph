@@ -84,7 +84,7 @@ class SG_EXPORT CoordinateSystemNode : public Group
 
         CoordinateSystemNode();
 
-        CoordinateSystemNode(const std::string& WKT);
+        CoordinateSystemNode(const std::string& format, const std::string& cs);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         CoordinateSystemNode(const CoordinateSystemNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -92,11 +92,17 @@ class SG_EXPORT CoordinateSystemNode : public Group
         META_Node(osg,CoordinateSystemNode);
         
                 
-        /** Set the CoordinateSystem reference string, should be stored in OpenGIS Well Know Text form.*/
-        void setCoordinateSystem(const std::string& WKT) { _WKT = WKT; }
+        /** Set the coordinate system format string. Typical values would be WKT, PROJ4, USGS etc.*/
+        void setFormat(const std::string& format) { _format = format; }
+        
+        /** Get the coordinate system format string.*/
+        const std::string& getFormat() const { return _format; }
+
+        /** Set the CoordinateSystem reference string, should be stored form consistent with the Format.*/
+        void setCoordinateSystem(const std::string& cs) { _cs = cs; }
         
         /** Get the CoordinateSystem reference string.*/
-        const std::string& getCoordinateSystem() const { return _WKT; }
+        const std::string& getCoordinateSystem() const { return _cs; }
         
         
         /** set EllipsoidModel to describe the model used to map lat, long and height into geocentric XYZ and back. */
@@ -118,7 +124,8 @@ class SG_EXPORT CoordinateSystemNode : public Group
 
         virtual ~CoordinateSystemNode() {}
                 
-        std::string             _WKT;
+        std::string             _format;
+        std::string             _cs;
         ref_ptr<EllipsoidModel> _ellipsoidModel;
 
 };

@@ -12,6 +12,7 @@
 */
 
 #include <osg/CoordinateSystemNode>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -20,16 +21,18 @@ CoordinateSystemNode::CoordinateSystemNode()
 {
 }
 
-CoordinateSystemNode::CoordinateSystemNode(const std::string& WKT)
+CoordinateSystemNode::CoordinateSystemNode(const std::string& format, const std::string& cs):
+    _format(format),
+    _cs(cs)
 {
-    _WKT = WKT;
 }
 
 CoordinateSystemNode::CoordinateSystemNode(const CoordinateSystemNode& csn,const osg::CopyOp& copyop):
-    Group(csn,copyop)
+    Group(csn,copyop),
+    _format(csn._format),
+    _cs(csn._cs),
+    _ellipsoidModel(csn._ellipsoidModel)
 {
-    _WKT = csn._WKT;
-    _ellipsoidModel = csn._ellipsoidModel;
 }
 
 CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(const Vec3d& position) const
@@ -37,14 +40,20 @@ CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(const Vec3d& p
     if (_ellipsoidModel.valid())
     {
         Matrixd localToWorld;
+        
+        double latitude, longitude, height;        
+        _ellipsoidModel->convertXYZToLatLongHeight(position.x(),position.y(),position.z(),latitude, longitude, height);
+        _ellipsoidModel->computeLocalToWorldTransformFromLatLongHeight(latitude, longitude, 0.0f, localToWorld);
+        
+        osg::notify(osg::NOTICE)<<"lat="<<latitude<<"\tlong="<<longitude<<"\theight"<<height<<std::endl;
     
-        _ellipsoidModel->computeLocalToWorldTransformFromXYZ(position.x(),position.y(),position.z(), localToWorld);
+        //_ellipsoidModel->computeLocalToWorldTransformFromXYZ(position.x(),position.y(),position.z(), localToWorld);
 
         return localToWorld;
     }
     else
     {
-        return Matrixd::translate(position);
+        return Matrixd::translate(position.x(),position.y(),0.0f);
     }
 }
 

@@ -191,7 +191,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                 const char* pszSourceSRS = gdalDataSet->GetProjectionRef();
                 if (!pszSourceSRS || strlen(pszSourceSRS)==0) pszSourceSRS = gdalDataSet->GetGCPProjection();
                 
-                data->_cs = new osg::CoordinateSystemNode(pszSourceSRS);
+                data->_cs = new osg::CoordinateSystemNode("WKT",pszSourceSRS);
 
                 double geoTransform[6];
                 if (gdalDataSet->GetGeoTransform(geoTransform)==CE_None)

@@ -118,7 +118,7 @@ class NetReader : public osgDB::ReaderWriter
             return readFile(NODE,fileName,options);
         }
 
-        ReadResult readFile(ObjectType objectType, ReaderWriter* rw, std::istream& fin, const Options *options) const
+        ReadResult readFile(ObjectType objectType, osgDB::ReaderWriter* rw, std::istream& fin, const Options *options) const
         {
             switch(objectType)
             {

@@ -52,8 +52,6 @@ endif
 VERSION       = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)
 
 INC        = -I$(TOPDIR)/include
-DEF        = -DOSG_VERSION="$(VERSION)"\
-             -DOSG_VERSION_REVISION="$(VERSION_REVISION)"
 
 ############################################################################
 ## NOTE - Semantics for the use of ARCH, ARCHARGS, and ARCHINST parameters

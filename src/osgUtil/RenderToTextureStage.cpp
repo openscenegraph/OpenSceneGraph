@@ -35,12 +35,20 @@ void RenderToTextureStage::reset()
 
 void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
 {
+    
+    if (_stageDrawnThisFrame) return;
+
+    //cout << "begining RTTS draw "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
 
     RenderStage::draw(state,previous);
 
     // now copy the rendered image to attached texture.
     if (_texture.valid())
+    {
+        //cout << "        reading "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
+
         _texture->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+    }
     
     if (_image.valid())
         _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),GL_RGBA,GL_UNSIGNED_BYTE);

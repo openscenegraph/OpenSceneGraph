@@ -143,6 +143,8 @@ class SG_EXPORT ImpostorSprite : public Drawable
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
 
+        // for debugging purposes.
+        Vec4 _color;
 
     protected:
 

@@ -629,11 +629,17 @@ void CullVisitor::apply(Impostor& node)
             // create the impostor sprite.
             impostorSprite = createImpostorSprite(node);
 
+            //if (impostorSprite) impostorSprite->_color.set(0.0f,0.0f,1.0f,1.0f);
+
         }
+        //else impostorSprite->_color.set(1.0f,1.0f,1.0f,1.0f);
         
         if (impostorSprite)
         {
             
+            // update frame number to show that impostor is in action.
+            impostorSprite->setLastFrameUsed(getTraversalNumber());
+
             if (_computeNearFar) updateCalculatedNearFar(matrix,*impostorSprite);
 
             StateSet* stateset = impostorSprite->getStateSet();
@@ -644,8 +650,6 @@ void CullVisitor::apply(Impostor& node)
 
             if (stateset) popStateSet();
             
-            // update frame number to show that impostor is in action.
-            impostorSprite->setLastFrameUsed(getTraversalNumber());
             
         }
         else
@@ -886,12 +890,18 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     
     dummyState->setAttribute(new_viewport);
 
-// create the impostor sprite.
-
+    // create the impostor sprite.
     ImpostorSprite* impostorSprite = 
         _impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,getTraversalNumber()-_numFramesToKeepImpostorSprites);
 
-    if (impostorSprite==NULL) return NULL;
+    if (impostorSprite==NULL)
+    {
+        osg::notify(osg::WARN)<<"Warning: unable to create required impostor sprite."<<std::endl;
+        return NULL;
+    }
+
+    // update frame number to show that impostor is in action.
+    impostorSprite->setLastFrameUsed(getTraversalNumber());
 
     // have successfully created an impostor sprite so now need to
     // add it into the impostor.

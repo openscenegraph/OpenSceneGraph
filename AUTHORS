@@ -86,7 +86,6 @@ Boris Bralo <boris.bralo@zg.tel.hr>
 
 Sasa Bistrivic <sasa.bistrovic@zg.hinet.hr>
         - option for detailed calculation of the near clipping plane during cull traversal.
-        
 
 Nikolaus Hanekamp <hanekamp@stn-atlas.de>
         - added support billboards to Open Flight loader.
@@ -95,6 +94,9 @@ Yefei He <yhe@nads-sc.uiowa.edu>
         - added support for nested extension, instance defination and reference
           to the Open Flight loader.
           
+Norman Vine <nhv@cape.com>
+        - Cygwin and Mingw ports.
+
 Bob Kuehne <rpk@mac.com>
         - assistance with MacOSX port.
         

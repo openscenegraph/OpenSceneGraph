@@ -186,7 +186,8 @@ void CullVisitor::popProjectionMatrix()
     CullStack::popProjectionMatrix();
 }
 
-bool CullVisitor::clampProjectionMatrix(osg::Matrix& projection, value_type& znear, value_type& zfar) const
+template<class matrix_type, class value_type>
+bool _clampProjectionMatrix(matrix_type& projection, value_type& znear, value_type& zfar, value_type nearFarRatio)
 {
     if (zfar>0.0f)
     {
@@ -225,7 +226,7 @@ bool CullVisitor::clampProjectionMatrix(osg::Matrix& projection, value_type& zne
             value_type desired_zfar = zfar *1.02;
 
             // near plane clamping.
-            double min_near_plane = zfar*_nearFarRatio;
+            double min_near_plane = zfar*nearFarRatio;
             if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 
             // assign the clamped values back to the computed values.
@@ -249,6 +250,16 @@ bool CullVisitor::clampProjectionMatrix(osg::Matrix& projection, value_type& zne
     return false;
 }
 
+
+bool CullVisitor::clampProjectionMatrix(osg::Matrixf& projection, value_type& znear, value_type& zfar) const
+{
+    return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
+}
+
+bool CullVisitor::clampProjectionMatrix(osg::Matrixd& projection, value_type& znear, value_type& zfar) const
+{
+    return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
+}
 
 void CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb)
 {

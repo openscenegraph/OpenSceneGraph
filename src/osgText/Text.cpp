@@ -95,7 +95,7 @@ void Text::setCharacterSize(float height,float aspectRatio)
 }
 
 
-void Text::setText(const TextString& text)
+void Text::setText(const String& text)
 {
     _text = text;
     computeGlyphRepresentation();
@@ -103,45 +103,20 @@ void Text::setText(const TextString& text)
 
 void Text::setText(const std::string& text)
 {
-    _text.clear();
-    std::copy(text.begin(),text.end(),std::back_inserter(_text));
+    _text.set(text);
     computeGlyphRepresentation();
 }
 
-void Text::setText(const std::string& text,Encoding encoding)
+void Text::setText(const std::string& text,String::Encoding encoding)
 {
-    _text.clear();
-
-    if (text.empty()) return;
-    
-    
-    std::cerr << "Text::setText(const std::string& text,Encoding encoding) not implemented yet."<<std::endl;
-
-    //std::string::const_iterator itr = text.begin();
-
-    if ((encoding == ENCODING_SIGNATURE) || 
-        (encoding == ENCODING_UTF16) || 
-        (encoding == ENCODING_UTF32))
-    {
-//        encoding = findEncoding(text,pos);
-    }
-    
-    
+    _text.set(text,encoding);
+    computeGlyphRepresentation();
 }
     
 
 void Text::setText(const wchar_t* text)
 {
-    _text.clear();
-    if (text)
-    {
-        // find the end of wchar_t string
-        const wchar_t* endOfText = text;
-        while (*endOfText) ++endOfText;
-        
-        // pass it to the _text field.
-        std::copy(text,endOfText,std::back_inserter(_text));
-    }
+    _text.set(text);
     computeGlyphRepresentation();
 }
 
@@ -249,7 +224,7 @@ void Text::computeGlyphRepresentation()
     float hr = _characterHeight/(float)activefont->getHeight();
     float wr = hr/_characterAspectRatio;
 
-    for(TextString::iterator itr=_text.begin();
+    for(String::iterator itr=_text.begin();
         itr!=_text.end();
         ++itr)
     {

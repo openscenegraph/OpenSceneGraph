@@ -18,6 +18,7 @@
 #include <osg/Quat>
 
 #include <osgText/Font>
+#include <osgText/String>
 
 namespace osgText {
 
@@ -56,44 +57,23 @@ public:
     unsigned int getFontHeight() const { return _fontWidth; }
     
     
-    /** TextString is a general purpose vector of char codes (unsigned int's)
-      * which is used internally by Text to represent strings.*/
-    typedef std::vector<unsigned int> TextString;
-
-    /** Set the text using a TextString.*/
-    void setText(const TextString& text);
+    /** Set the text using a osgText::String.*/
+    void setText(const String& text);
 
     /** Set the text using a std::string, 
       * which is converted to an internal TextString.*/
     void setText(const std::string& text);
 
-    /**
-     * Types of string encodings supported
-     */
-    enum Encoding
-    {
-        ENCODING_UNDEFINED,                 /// not using Unicode
-        ENCODING_ASCII = ENCODING_UNDEFINED,/// unsigned char ASCII
-        ENCODING_UTF8,                      /// 8-bit unicode transformation format
-        ENCODING_UTF16,                     /// 16-bit signature
-        ENCODING_UTF16_BE,                  /// 16-bit big-endian
-        ENCODING_UTF16_LE,                  /// 16-bit little-endian
-        ENCODING_UTF32,                     /// 32-bit signature
-        ENCODING_UTF32_BE,                  /// 32-bit big-endian
-        ENCODING_UTF32_LE,                  /// 32-bit little-endian
-        ENCODING_SIGNATURE                  /// detect encoding from signature
-    };
-
     /** Set the text using a Unicode encoded std::string, which is converted to an internal TextString.
       * The encoding parameter specificies which Unicode encodeding is used in the std::string. */
-    void setText(const std::string& text,Encoding encoding);
+    void setText(const std::string& text,String::Encoding encoding);
 
     /** Set the text using a wchar_t string, 
       * which is converted to an internal TextString.*/
     void setText(const wchar_t* text);
     
     /** Get the const text string.*/
-    const TextString& getText() const { return _text; }
+    const String& getText() const { return _text; }
 
 
     /** Set the rendered character size in object coordinates.*/
@@ -197,20 +177,20 @@ protected:
 
     
     // members which have public access.
-    osg::ref_ptr<Font>  _font;
-    unsigned int        _fontWidth;
-    unsigned int        _fontHeight;
-    float               _characterHeight;
-    float               _characterAspectRatio;
+    osg::ref_ptr<Font>      _font;
+    unsigned int            _fontWidth;
+    unsigned int            _fontHeight;
+    float                   _characterHeight;
+    float                   _characterAspectRatio;
 
-    TextString          _text;
-    osg::Vec3           _position;
-    AlignmentType       _alignment;
-    AxisAlignment       _axisAlignment;
-    osg::Quat           _rotation;
-    Layout              _layout;
-    osg::Vec4           _color;
-    unsigned int        _drawMode;
+    String                  _text;
+    osg::Vec3               _position;
+    AlignmentType           _alignment;
+    AxisAlignment           _axisAlignment;
+    osg::Quat               _rotation;
+    Layout                  _layout;
+    osg::Vec4               _color;
+    unsigned int            _drawMode;
 
     // internal structures, variable and methods used for rendering of characters.
     struct GlyphQuads

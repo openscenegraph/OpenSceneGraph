@@ -42,7 +42,7 @@ void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor*
         double time = nv->getFrameStamp()->getReferenceTime();
         if (_firstTime==0.0) _firstTime = time;
         Matrix matrix;
-        if (_animationPath->getMatrix(time-_firstTime,matrix))
+        if (_animationPath->getMatrix(((time-_firstTime)-_timeOffset)*_timeMultiplier,matrix))
         {
             mt->setMatrix(matrix);
         }

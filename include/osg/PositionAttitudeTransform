@@ -57,14 +57,18 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         {
             public:
             
-                AnimationPathCallback(AnimationPath* ap):
+                AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
                     _animationPath(ap),
+                    _timeOffset(timeOffset),
+                    _timeMultiplier(timeMultiplier),
                     _firstTime(0.0) {}
             
                 /** implements the callback*/
                 virtual void operator()(Node* node, NodeVisitor* nv);
                 
                 ref_ptr<AnimationPath>  _animationPath;
+                double                  _timeOffset;
+                double                  _timeMultiplier;
                 double                  _firstTime;
         };
 

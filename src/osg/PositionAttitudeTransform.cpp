@@ -52,7 +52,7 @@ void PositionAttitudeTransform::AnimationPathCallback::operator()(Node* node, No
         double time = nv->getFrameStamp()->getReferenceTime();
         if (_firstTime==0.0) _firstTime = time;
         AnimationPath::ControlPoint cp;
-        if (_animationPath->getInterpolatedControlPoint(time-_firstTime,cp))
+        if (_animationPath->getInterpolatedControlPoint(((time-_firstTime)-_timeOffset)*_timeMultiplier,cp))
         {
             pat->setPosition(cp._position);
             pat->setAttitude(cp._rotation);

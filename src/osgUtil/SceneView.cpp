@@ -150,6 +150,10 @@ void SceneView::app()
     //std::cout<<"*************************** New frame ************"<<std::endl;
 
 
+#ifdef OSG_COMPILE_UNIT_TESTS
+    std::cout<<"Number of objects created ="<<osg::Referenced::createdCount()<<"  deleted = "<<osg::Referenced::deletedCount()<<std::endl;
+    std::cout<<" Number of active objects ="<<osg::Referenced::createdCount()-osg::Referenced::deletedCount()<<std::endl;
+#endif
 
     if (_sceneData.valid() && _appVisitor.valid())
     { 

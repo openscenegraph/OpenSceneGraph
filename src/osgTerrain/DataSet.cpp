@@ -2014,7 +2014,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     osg::ref_ptr<osg::Vec3Array> n = new osg::Vec3Array(numVertices); // must use ref_ptr so the array isn't removed when smooothvisitor is used    
     
-    float skirtRatio = 0.01f;
+    float skirtRatio = _dataSet->getSkirtRatio();
     osg::Matrixd localToWorld;
     osg::Matrixd worldToLocal;
     osg::Vec3 skirtVector(0.0f,0.0f,0.0f);
@@ -2338,6 +2338,14 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         geometry->setColorArray(colours);
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
+    
+    
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(geometry);
+
+#if 1
+    osgDB::writeNodeFile(*geode,"NodeBeforeSimplification.osg");
+#endif
 
     unsigned int targetMaxNumVertices = 2048;
     float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
@@ -2352,8 +2360,6 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     tsv.stripify(*geometry);
 
 
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(geometry);
 
     if (useLocalToTileTransform)
     {
@@ -2800,6 +2806,7 @@ DataSet::DataSet()
     
     _radiusToMaxVisibleDistanceRatio = 7.0f;
     _verticalScale = 1.0f;
+    _skirtRatio = 0.02f;
 
     _convertFromGeographicToGeocentric = false;
     

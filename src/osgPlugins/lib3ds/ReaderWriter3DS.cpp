@@ -737,10 +737,19 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
             
             // so we'll override material back to white.
             // and no longer require the decal hack below...
+#if 0
+            // Eric orignal fallback
             osg::Vec4 white(1.0f,1.0f,1.0f,alpha);
             material->setAmbient(osg::Material::FRONT_AND_BACK,white);
             material->setDiffuse(osg::Material::FRONT_AND_BACK,white);
             material->setSpecular(osg::Material::FRONT_AND_BACK,white);
+#else
+            // try alternative to avoid staturating with white
+            // setting white as per OpenGL defaults.
+            material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.2f,0.2f,0.2f,alpha));
+            material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.8f,0.8f,0.8f,alpha));
+            material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,alpha));
+#endif            
         }
         
 // no longer required...        

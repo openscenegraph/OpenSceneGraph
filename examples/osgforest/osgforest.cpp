@@ -51,8 +51,40 @@ public:
         float           _height;
         unsigned int    _type;
     };
-
+    
     typedef std::vector< osg::ref_ptr<Tree> > TreeList;
+    
+    class Cell : public osg::Referenced
+    {
+    public:
+        typedef std::vector< osg::ref_ptr<Cell> > CellList;
+
+        Cell():_parent(0) {}
+        Cell(osg::BoundingBox& bb):_parent(0), _bb(bb) {}
+        
+        void addCell(Cell* cell) { cell->_parent=this; _cells.push_back(cell); }
+
+        void addTree(Tree* tree) { _trees.push_back(tree); }
+        
+        void addTrees(const TreeList& trees) { _trees.insert(_trees.end(),trees.begin(),trees.end()); }
+        
+        void computeBound();
+        
+        bool contains(const osg::Vec3& position) const { return _bb.contains(position); }
+        
+        bool divide(unsigned int maxNumTreesPerCell=10);
+        
+        bool devide(bool xAxis, bool yAxis, bool zAxis);
+        
+        void bin();
+
+
+        Cell*               _parent;
+        osg::BoundingBox    _bb;
+        CellList            _cells;
+        TreeList            _trees;
+        
+    };
 
     float random(float min,float max) { return min + (max-min)*(float)rand()/(float)RAND_MAX; }
     int random(int min,int max) { return min + (int)((float)(max-min)*(float)rand()/(float)RAND_MAX); }
@@ -64,6 +96,12 @@ public:
     osg::Geometry* createSprite( float w, float h, osg::UByte4 color );
 
     osg::Geometry* createOrthogonalQuads( const osg::Vec3& pos, float w, float h, osg::UByte4 color );
+
+    osg::Node* createBillboardGraph(Cell* cell,osg::StateSet* stateset);
+
+    osg::Node* createXGraph(Cell* cell,osg::StateSet* stateset);
+
+    osg::Node* createTransformGraph(Cell* cell,osg::StateSet* stateset);
 
     osg::Node* createScene();
     
@@ -142,6 +180,155 @@ void TechniqueEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("p or Right Array","Move to previous technique");
 }
 
+
+void ForestTechniqueManager::Cell::computeBound()
+{
+    _bb.init();
+    for(CellList::iterator citr=_cells.begin();
+        citr!=_cells.end();
+        ++citr)
+    {
+        (*citr)->computeBound();
+        _bb.expandBy((*citr)->_bb);
+    }
+
+    for(TreeList::iterator titr=_trees.begin();
+        titr!=_trees.end();
+        ++titr)
+    {
+        _bb.expandBy((*titr)->_position);
+    }
+}
+
+bool ForestTechniqueManager::Cell::divide(unsigned int maxNumTreesPerCell)
+{
+
+    if (_trees.size()<=maxNumTreesPerCell) return false;
+
+    computeBound();
+
+    float radius = _bb.radius();
+    float divide_distance = radius*0.7f;
+    if (devide((_bb.xMax()-_bb.xMin())>divide_distance,(_bb.yMax()-_bb.yMin())>divide_distance,(_bb.zMax()-_bb.zMin())>divide_distance))
+    {
+        // recusively divide the new cells till maxNumTreesPerCell is met.
+        for(CellList::iterator citr=_cells.begin();
+            citr!=_cells.end();
+            ++citr)
+        {
+            (*citr)->divide(maxNumTreesPerCell);
+        }
+        return true;
+   }
+   else
+   {
+        return false;
+   }
+}
+
+bool ForestTechniqueManager::Cell::devide(bool xAxis, bool yAxis, bool zAxis)
+{
+    if (!(xAxis || yAxis || zAxis)) return false;
+
+    if (_cells.empty())
+        _cells.push_back(new Cell(_bb));
+
+    if (xAxis)
+    {
+        unsigned int numCellsToDivide=_cells.size();
+        for(unsigned int i=0;i<numCellsToDivide;++i)
+        {
+            Cell* orig_cell = _cells[i].get();
+            Cell* new_cell = new Cell(orig_cell->_bb);
+
+            float xCenter = (orig_cell->_bb.xMin()+orig_cell->_bb.xMax())*0.5f;
+            orig_cell->_bb.xMax() = xCenter;
+            new_cell->_bb.xMin() = xCenter;
+
+            _cells.push_back(new_cell);
+        }
+    }
+
+    if (yAxis)
+    {
+        unsigned int numCellsToDivide=_cells.size();
+        for(unsigned int i=0;i<numCellsToDivide;++i)
+        {
+            Cell* orig_cell = _cells[i].get();
+            Cell* new_cell = new Cell(orig_cell->_bb);
+
+            float yCenter = (orig_cell->_bb.yMin()+orig_cell->_bb.yMax())*0.5f;
+            orig_cell->_bb.yMax() = yCenter;
+            new_cell->_bb.yMin() = yCenter;
+
+            _cells.push_back(new_cell);
+        }
+    }
+
+    if (zAxis)
+    {
+        unsigned int numCellsToDivide=_cells.size();
+        for(unsigned int i=0;i<numCellsToDivide;++i)
+        {
+            Cell* orig_cell = _cells[i].get();
+            Cell* new_cell = new Cell(orig_cell->_bb);
+
+            float zCenter = (orig_cell->_bb.zMin()+orig_cell->_bb.zMax())*0.5f;
+            orig_cell->_bb.zMax() = zCenter;
+            new_cell->_bb.zMin() = zCenter;
+
+            _cells.push_back(new_cell);
+        }
+    }
+
+    bin();
+
+    return true;
+
+}
+
+void ForestTechniqueManager::Cell::bin()
+{   
+    // put trees in apprpriate cells.
+    TreeList treesNotAssigned;
+    for(TreeList::iterator titr=_trees.begin();
+        titr!=_trees.end();
+        ++titr)
+    {
+        Tree* tree = titr->get();
+        bool assigned = false;
+        for(CellList::iterator citr=_cells.begin();
+            citr!=_cells.end() && !assigned;
+            ++citr)
+        {
+            if ((*citr)->contains(tree->_position))
+            {
+                (*citr)->addTree(tree);
+                assigned = true;
+            }
+        }
+        if (!assigned) treesNotAssigned.push_back(tree);
+    }
+
+    // put the unassigned trees back into the original local tree list.
+    _trees.swap(treesNotAssigned);
+
+
+    // prune empty cells.
+    CellList cellsNotEmpty;
+    for(CellList::iterator citr=_cells.begin();
+        citr!=_cells.end();
+        ++citr)
+    {
+        if (!((*citr)->_trees.empty()))
+        {
+            cellsNotEmpty.push_back(*citr);
+        }
+    }
+    _cells.swap(cellsNotEmpty);
+
+
+}
 
 osg::Geode* ForestTechniqueManager::createTerrain(const osg::Vec3& origin, const osg::Vec3& size)
 {
@@ -390,16 +577,152 @@ osg::Geometry* ForestTechniqueManager::createOrthogonalQuads( const osg::Vec3& p
     return geom;
 }
 
+osg::Node* ForestTechniqueManager::createBillboardGraph(Cell* cell,osg::StateSet* stateset)
+{
+    bool needGroup = !(cell->_cells.empty());
+    bool needBillboard = !(cell->_trees.empty());
+    
+    osg::Billboard* billboard = 0;
+    osg::Group* group = 0;
+    
+    if (needBillboard)
+    {
+        billboard = new osg::Billboard;
+        billboard->setStateSet(stateset);
+        for(TreeList::iterator itr=cell->_trees.begin();
+            itr!=cell->_trees.end();
+            ++itr)
+        {
+            Tree& tree = **itr;
+            billboard->addDrawable(createSprite(tree._width,tree._height,tree._color),tree._position);    
+        }
+    }
+    
+    if (needGroup)
+    {
+        group = new osg::Group;
+        for(Cell::CellList::iterator itr=cell->_cells.begin();
+            itr!=cell->_cells.end();
+            ++itr)
+        {
+            group->addChild(createBillboardGraph(itr->get(),stateset));
+        }
+        
+        if (billboard) group->addChild(billboard);
+        
+    }
+    if (group) return group;
+    else return billboard;
+}
+
+osg::Node* ForestTechniqueManager::createXGraph(Cell* cell,osg::StateSet* stateset)
+{
+    bool needGroup = !(cell->_cells.empty());
+    bool needTrees = !(cell->_trees.empty());
+    
+    osg::Geode* geode = 0;
+    osg::Group* group = 0;
+    
+    if (needTrees)
+    {
+        geode = new osg::Geode;
+        geode->setStateSet(stateset);
+        
+        for(TreeList::iterator itr=cell->_trees.begin();
+            itr!=cell->_trees.end();
+            ++itr)
+        {
+            Tree& tree = **itr;
+            geode->addDrawable(createOrthogonalQuads(tree._position,tree._width,tree._height,tree._color));
+        }
+    }
+    
+    if (needGroup)
+    {
+        group = new osg::Group;
+        for(Cell::CellList::iterator itr=cell->_cells.begin();
+            itr!=cell->_cells.end();
+            ++itr)
+        {
+            group->addChild(createXGraph(itr->get(),stateset));
+        }
+        
+        if (geode) group->addChild(geode);
+        
+    }
+    if (group) return group;
+    else return geode;
+}
+
+osg::Node* ForestTechniqueManager::createTransformGraph(Cell* cell,osg::StateSet* stateset)
+{
+    bool needGroup = !(cell->_cells.empty());
+    bool needTrees = !(cell->_trees.empty());
+    
+    osg::Group* transform_group = 0;
+    osg::Group* group = 0;
+    
+    if (needTrees)
+    {
+        transform_group = new osg::Group;
+        
+        osg::Geometry* geometry = createOrthogonalQuads(osg::Vec3(0.0f,0.0f,0.0f),1.0f,1.0f,osg::UByte4(255,255,255,255));
+        
+        for(TreeList::iterator itr=cell->_trees.begin();
+            itr!=cell->_trees.end();
+            ++itr)
+        {
+            Tree& tree = **itr;
+            osg::MatrixTransform* transform = new osg::MatrixTransform;
+            transform->setMatrix(osg::Matrix::scale(tree._width,tree._width,tree._height)*osg::Matrix::translate(tree._position));
+    
+            osg::Geode* geode = new osg::Geode;
+            geode->setStateSet(stateset);
+            geode->addDrawable(geometry);
+            transform->addChild(geode);
+            transform_group->addChild(transform);
+        }
+    }
+    
+    if (needGroup)
+    {
+        group = new osg::Group;
+        for(Cell::CellList::iterator itr=cell->_cells.begin();
+            itr!=cell->_cells.end();
+            ++itr)
+        {
+            group->addChild(createTransformGraph(itr->get(),stateset));
+        }
+        
+        if (transform_group) group->addChild(transform_group);
+        
+    }
+    if (group) return group;
+    else return transform_group;
+}
+
+
 osg::Node* ForestTechniqueManager::createScene()
 {
     osg::Vec3 origin(0.0f,0.0f,0.0f);
     osg::Vec3 size(1000.0f,1000.0f,200.0f);
     unsigned int numTreesToCreates = 10000;
 
+    std::cout<<"Creating terrain...";
     osg::ref_ptr<osg::Node> terrain = createTerrain(origin,size);
+    std::cout<<"done."<<std::endl;
     
+    std::cout<<"Creating tree locations...";std::cout.flush();
     TreeList trees;
     createTreeList(terrain.get(),origin,size,numTreesToCreates,trees);
+    std::cout<<"done."<<std::endl;
+    
+    std::cout<<"Creating cell subdivision...";
+    osg::ref_ptr<Cell> cell = new Cell;
+    cell->addTrees(trees);
+    cell->divide();
+     std::cout<<"done."<<std::endl;
+   
     
     osg::Texture2D *tex = new osg::Texture2D;
     tex->setImage(osgDB::readImageFile("Images/tree0.rgba"));
@@ -423,60 +746,17 @@ osg::Node* ForestTechniqueManager::createScene()
 
     _techniqueSwitch = new osg::Switch;
     
-    {
-        osg::Billboard* billboard = new osg::Billboard;
-        billboard->setStateSet(dstate);
+    std::cout<<"Creating billboard based forest...";
+   _techniqueSwitch->addChild(createBillboardGraph(cell.get(),dstate));
+    std::cout<<"done."<<std::endl;
 
-        for(TreeList::iterator itr=trees.begin();
-            itr!=trees.end();
-            ++itr)
-        {
-            Tree& tree = **itr;
-            billboard->addDrawable(createSprite(tree._width,tree._height,tree._color),tree._position);    
-        }
-    
-        _techniqueSwitch->addChild(billboard);
-    }
+    std::cout<<"Creating double quad based forest...";
+   _techniqueSwitch->addChild(createXGraph(cell.get(),dstate));
+    std::cout<<"done."<<std::endl;
 
-    {
-        osg::Geode* geode = new osg::Geode;
-        geode->setStateSet(dstate);
-        
-        for(TreeList::iterator itr=trees.begin();
-            itr!=trees.end();
-            ++itr)
-        {
-            Tree& tree = **itr;
-            geode->addDrawable(createOrthogonalQuads(tree._position,tree._width,tree._height,tree._color));
-        }
-        
-        _techniqueSwitch->addChild(geode);
-    }
-
-    {
-
-        osg::Group* transform_group = new osg::Group;
-        //group->setStateSet(dstate);
-        
-        osg::Geometry* geometry = createOrthogonalQuads(osg::Vec3(0.0f,0.0f,0.0f),1.0f,1.0f,osg::UByte4(255,255,255,255));
-        
-        for(TreeList::iterator itr=trees.begin();
-            itr!=trees.end();
-            ++itr)
-        {
-            Tree& tree = **itr;
-            osg::MatrixTransform* transform = new osg::MatrixTransform;
-            transform->setMatrix(osg::Matrix::scale(tree._width,tree._width,tree._height)*osg::Matrix::translate(tree._position));
-    
-            osg::Geode* geode = new osg::Geode;
-            geode->setStateSet(dstate);
-            geode->addDrawable(geometry);
-            transform->addChild(geode);
-            transform_group->addChild(transform);
-        }
-        
-        _techniqueSwitch->addChild(transform_group);
-    }
+    std::cout<<"Creating transform based forest...";
+   _techniqueSwitch->addChild(createTransformGraph(cell.get(),dstate));
+    std::cout<<"done."<<std::endl;
     
     _currentTechnique = 0;
     _techniqueSwitch->setSingleChildOn(_currentTechnique);

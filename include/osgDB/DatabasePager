@@ -94,10 +94,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         void signalEndFrame();
         
 
-        /** Add the loaded data to the scene graph.*/
-        void addLoadedDataToSceneGraph(double timeStamp);
-
-
         /** Find all PagedLOD nodes in a subgraph and register them with 
           * the DatabasePager so it can keep track of expired nodes.
           * note, should be only be called from the update thread. */
@@ -122,17 +118,27 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
         void removeExpiredSubgraphs(double currentFrameTime);
+
+        /** Add the loaded data to the scene graph.*/
+        void addLoadedDataToSceneGraph(double currentFrameTime);
+        
+        /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph*/
+        void updateSceneGraph(double currentFrameTime)
+        {
+            removeExpiredSubgraphs(currentFrameTime);
+            addLoadedDataToSceneGraph(currentFrameTime);
+        }
         
         
         /** Turn the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
-        void setCompileRenderingObjectsForContexID(unsigned int contextID, bool on);
+        void setCompileGLObjectsForContexID(unsigned int contextID, bool on);
         
         /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
-        bool getCompileRenderingObjectsForContexID(unsigned int contextID);
+        bool getCompileGLObjectsForContexID(unsigned int contextID);
 
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
           * note, should only be called from the draw thread.*/
-        void compileRenderingObjects(osg::State& state,double& availableTime);
+        void compileGLObjects(osg::State& state,double& availableTime);
 
         /** Helper class used internally to force the release of texture objects
           * and displace lists.*/

@@ -26,8 +26,6 @@
 #include <osg/DisplaySettings>
 #include <osg/Matrixd>
 
-#include <osgDB/DatabasePager>
-
 #include <osgProducer/OsgSceneHandler>
 
 namespace osgProducer {
@@ -115,13 +113,6 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f);
 
 
-        void setDatabasePager( osgDB::DatabasePager* pager) { _databasePager = pager; }
-
-        osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
-
-        const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
-
-
         /** RealizeCallback class one should override to provide an the implemention of realize callbacks.
           * Note, this callback overrides the normal call to OsgSceneHandler::init() so it become the your
           * responisibility to call this within your callback if required, it is a safe assumption to
@@ -197,8 +188,6 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         osg::Timer      _timer;
         osg::Timer_t    _start_tick;
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;
-        
-        osg::ref_ptr<osgDB::DatabasePager>      _databasePager;
 
         void _init();
 };

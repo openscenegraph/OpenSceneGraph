@@ -203,6 +203,8 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
 
 Viewer::~Viewer()
 {
+    // kill the DatabasePager and associated thread if one exists.
+    osgDB::Registry::instance()->setDatabasePager(0);
 }
 
 void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)
@@ -342,20 +344,16 @@ class DatabasePagerStartCullCallback : public OsgSceneHandler::Callback
 {
 public:
 
-        DatabasePagerStartCullCallback(osgDB::DatabasePager* databasePager):
-            _databasePager(databasePager)
-        {}
+        DatabasePagerStartCullCallback() {}
 
        virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
        {
-            
-            _databasePager->signalBeginFrame(sh.getSceneView()->getState()->getFrameStamp());
+            osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
+            if (dp) dp->signalBeginFrame(sh.getSceneView()->getState()->getFrameStamp());
 
             sh.cullImplementation(camera);
 
        }
-       
-       osg::ref_ptr<osgDB::DatabasePager> _databasePager;
 };
 
 class DatabasePagerCompileCallback : public OsgSceneHandler::Callback
@@ -371,6 +369,7 @@ public:
             
             sh.drawImplementation(camera);
 
+            osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
 #if 0
             double availableTime = 0.0025; //  2.5 ms
 
@@ -378,10 +377,10 @@ public:
             sh.getSceneView()->flushDeletedGLObjects(availableTime);
 
             // compile any GL objects that are required.
-            _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()),availableTime);
+            if (dp) dp->compileGLObjects(*(sh.getSceneView()->getState()),availableTime);
 #endif
 
-            _databasePager->signalEndFrame();
+            if (dp) dp->signalEndFrame();
 
        }
        
@@ -392,27 +391,26 @@ class PostSwapCompileCallback : public Producer::Camera::Callback
 {
 public:
 
-        PostSwapCompileCallback(osgUtil::SceneView* sceneView,osgDB::DatabasePager* databasePager):
-            _sceneView(sceneView),
-            _databasePager(databasePager)
+        PostSwapCompileCallback(osgUtil::SceneView* sceneView):
+            _sceneView(sceneView)
         {}
 
        virtual void operator()(const Producer::Camera&)
        {
             
+            osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
+
             double availableTime = 0.0025; //  5 ms
 
             // flush deleted GL objects.
             _sceneView->flushDeletedGLObjects(availableTime);
 
             // compile any GL objects that are required.
-            _databasePager->compileRenderingObjects(*(_sceneView->getState()),availableTime);
-
+            if (dp) dp->compileGLObjects(*(_sceneView->getState()),availableTime);
 
        }
        
        osg::ref_ptr<osgUtil::SceneView>     _sceneView;
-       osg::ref_ptr<osgDB::DatabasePager>   _databasePager;
 };
 
 bool Viewer::realize()
@@ -426,25 +424,25 @@ bool Viewer::realize()
 
     // by default set up the DatabasePager.
     {    
-        _databasePager = new osgDB::DatabasePager;
-        _databasePager->registerPagedLODs(getTopMostSceneData());
+        osgDB::DatabasePager* databasePager = osgDB::Registry::instance()->getOrCreateDatabasePager();
+        databasePager->registerPagedLODs(getTopMostSceneData());
 
         for(SceneHandlerList::iterator p=_shvec.begin();
             p!=_shvec.end();
             ++p)
         {
             // pass the database pager to the cull visitor so node can send requests to the pager.
-            (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+            (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(databasePager);
             
-            (*p)->setCullCallback(new DatabasePagerStartCullCallback(_databasePager.get()));
+            (*p)->setCullCallback(new DatabasePagerStartCullCallback());
 
             // set up a draw callback to pre compile any rendering object of database has loaded, 
             // but not yet merged with the main scene graph.
-            (*p)->setDrawCallback(new DatabasePagerCompileCallback(_databasePager.get()));
+            (*p)->setDrawCallback(new DatabasePagerCompileCallback(databasePager));
 
             
             // tell the database pager which graphic context the compile of rendering objexts is needed.
-            _databasePager->setCompileRenderingObjectsForContexID((*p)->getSceneView()->getState()->getContextID(),true);
+            databasePager->setCompileGLObjectsForContexID((*p)->getSceneView()->getState()->getContextID(),true);
         }
 
     
@@ -452,7 +450,7 @@ bool Viewer::realize()
         for(unsigned int cameraNum=0;cameraNum<getNumberOfCameras();++cameraNum)
         {
             Producer::Camera* camera=getCamera(cameraNum);
-            camera->addPostSwapCallback(new PostSwapCompileCallback(_shvec[cameraNum]->getSceneView(),_databasePager.get()));
+            camera->addPostSwapCallback(new PostSwapCompileCallback(_shvec[cameraNum]->getSceneView()));
         }
 
     }
@@ -507,16 +505,10 @@ void Viewer::update()
         }
     }
     
-    if (_databasePager.valid())
+    if (osgDB::Registry::instance()->getDatabasePager())
     {
-    
-        //_databasePager->signalBeginFrame(_frameStamp.get());
-    
-        // removed any children PagedLOD children that havn't been visited in the cull traversal recently.
-        _databasePager->removeExpiredSubgraphs(_frameStamp->getReferenceTime());
-        
-        // add the newly loaded data into the scene graph.
-        _databasePager->addLoadedDataToSceneGraph(_frameStamp->getReferenceTime());
+        // update the scene graph by remove expired subgraphs and merge newly loaded subgraphs
+        osgDB::Registry::instance()->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
     }    
     
     

@@ -30,6 +30,7 @@ DatabasePager::DatabasePager()
 
 DatabasePager::~DatabasePager()
 {
+    //std::cout<<"DatabasePager::~DatabasePager()"<<std::endl;
     if( isRunning() )
     {
         // cancel the thread..
@@ -44,6 +45,7 @@ DatabasePager::~DatabasePager()
         }
         
     }
+    std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
         
 }
 
@@ -175,10 +177,10 @@ void DatabasePager::signalEndFrame()
     _frameBlock->release();
 }
 
-class FindCompileableRenderingObjectsVisitor : public osg::NodeVisitor
+class FindCompileableGLObjectsVisitor : public osg::NodeVisitor
 {
 public:
-    FindCompileableRenderingObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
+    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _dataToCompile(dataToCompile)
     {
@@ -331,7 +333,7 @@ void DatabasePager::run()
                     ++itr;                
 
                     // find all the compileable rendering objects
-                    FindCompileableRenderingObjectsVisitor frov(dtc);
+                    FindCompileableGLObjectsVisitor frov(dtc);
                     databaseRequest->_loadedModel->accept(frov);
 
                     if (!dtc.first.empty() || !dtc.second.empty())
@@ -569,7 +571,7 @@ void DatabasePager::registerPagedLODs(osg::Node* subgraph)
     if (subgraph) subgraph->accept(fplv);
 }
 
-void DatabasePager::setCompileRenderingObjectsForContexID(unsigned int contextID, bool on)
+void DatabasePager::setCompileGLObjectsForContexID(unsigned int contextID, bool on)
 {
     if (on)
     {
@@ -581,13 +583,13 @@ void DatabasePager::setCompileRenderingObjectsForContexID(unsigned int contextID
     }
 }
 
-bool DatabasePager::getCompileRenderingObjectsForContexID(unsigned int contextID)
+bool DatabasePager::getCompileGLObjectsForContexID(unsigned int contextID)
 {
     return _activeGraphicsContexts.count(contextID)!=0;
 }
 
 
-void DatabasePager::compileRenderingObjects(osg::State& state, double& availableTime)
+void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 {
 
     const osg::Timer& timer = *osg::Timer::instance();

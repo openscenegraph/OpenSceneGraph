@@ -1,3 +1,22 @@
+2002-02-10 21:34  robert
+
+	* src/osgPlugins/: dw/Makefile (1.5), flt/Makefile (1.9),
+	gif/Makefile (1.7), jpeg/Makefile (1.6), lib3ds/Makefile (1.6),
+	lwo/Makefile (1.5), obj/Makefile (1.5), osg/Makefile (1.9),
+	osgtgz/Makefile (1.6), pfb/Makefile (1.9), pic/Makefile (1.5),
+	png/Makefile (1.6), quicktime/Makefile (1.2), tga/Makefile (1.5),
+	tgz/Makefile (1.5), tiff/Makefile (1.6), txp/Makefile (1.4),
+	zip/Makefile (1.5): Fixed a make install error on the plugins
+	related to the old definitions for plugin names hanging around
+	despite being deprecated.  These definiations confused the make
+	install/make instclean so it tried to link a non existant library. 
+	Have removed old definitions and everything intalls properly once
+	more:-)
+
+2002-02-10 20:02  robert
+
+	* ChangeLog (1.12): Updated changelog.
+
 2002-02-10 19:51  robert
 
 	* doc/doc++/: osg/NodeVisitor.html (1.5), osg/Statistics.html

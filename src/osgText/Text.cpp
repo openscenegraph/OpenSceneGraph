@@ -257,7 +257,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2 cursor, String::iter
     Font* activefont = getActiveFont();
     if (!activefont) return last;
 
-    float hr = _characterHeight/(float)activefont->getHeight();
+    float hr = _characterHeight/(float)activefont->getFontHeight();
     float wr = hr/_characterAspectRatio;
 
     bool horizontal = _layout!=VERTICAL;
@@ -370,9 +370,9 @@ void Text::computeGlyphRepresentation()
     bool horizontal = _layout!=VERTICAL;
     bool kerning = true;
 
-    activefont->setSize(_fontWidth,_fontHeight);
+    activefont->setFontResolution(_fontWidth,_fontHeight);
     
-    float hr = _characterHeight/(float)activefont->getHeight();
+    float hr = _characterHeight/(float)activefont->getFontHeight();
     float wr = hr/_characterAspectRatio;
 
     std::set<unsigned int> deliminatorSet;

@@ -1,4 +1,4 @@
-
+;
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
@@ -123,17 +123,17 @@ std::string Font::getFileName() const
     return "";
 }
 
-void Font::setSize(unsigned int width, unsigned int height)
+void Font::setFontResolution(unsigned int width, unsigned int height)
 {
-    if (_implementation.valid()) _implementation->setSize(width, height);
+    if (_implementation.valid()) _implementation->setFontResolution(width, height);
 }
 
-unsigned int Font::getWidth() const
+unsigned int Font::getFontWidth() const
 {
     return _width;
 }
 
-unsigned int Font::getHeight() const
+unsigned int Font::getFontHeight() const
 {
     return _height;
 }

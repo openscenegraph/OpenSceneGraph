@@ -138,8 +138,8 @@ void Viewer::setUpViewer(unsigned int options)
     _old_style_osg_camera = new osg::Camera;
 
     if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
-    if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
     if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
+    if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
     
     if (options&STATE_MANIPULATOR)
     {

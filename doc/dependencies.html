@@ -47,6 +47,24 @@ dependencies
 at all. A plugin is only needed if you need to load that specific file
 format,
 so it is not critical if you don't have all the required dependencies. <br>
+<br>
+Under UNIX you can take advantage of flexibility in the build system
+that allows you to manually define the external dependencies that are
+installed on your system.&nbsp; To override the default dependencies
+copy the Make/dependencies file to a directory of choosing, and then
+point to this file by setting the OSG_DEPENDENCIES environmental
+variable to point to this file.&nbsp; Then edit this file to reflect
+which dependencies are present. i.e<br>
+<br>
+&nbsp;&nbsp;&nbsp; cd /home/osguser/OpenSceneGraph<br>
+&nbsp;&nbsp;&nbsp; cp Make/dependencies my_custom_osg_dependencies<br>
+&nbsp;&nbsp;&nbsp; export
+OSG_DEPENDENCIES=/home/osguser/OpenSceneGraph/my_custom_osg_dependencies<br>
+&nbsp;&nbsp;&nbsp; myfavorite-editor my_custom_osg_dependencies<br>
+<br>
+When editing the file, simple change the no to yes, and visa-versa
+where apporpriate.<br>
+<br>
 <hr>
 <h3> <a name="Windows dependency arhives"></a><u>Windows dependency
 archives</u></h3>
@@ -92,7 +110,8 @@ guessed it, Producer...</li>
       <i><a href="http://www.andesengineering.com/Producer">http://www.andesengineering.com/Producer</a></i>
     </ul>
     <br>
-    <li>src/osgTerrain - The optional osgTerrain library depends upon GDAL to load large scale imagery and DEM's.</li>
+    <li>src/osgTerrain - The optional osgTerrain library depends upon
+GDAL to load large scale imagery and DEM's.</li>
     <br>
     <ul>
       <i><a href="http://www.remotesensing.org/gdal/">http://www.remotesensing.org/gdal/</a></i>
@@ -126,7 +145,7 @@ type fonts via the freetype library.
       <i><a href="http://www.freetype.org/">http://www.freetype.org/</a></i>
     </ul>
     <br>
-    <li> src/osgTerrain & src/osgPlugins/gdal</li>
+    <li> src/osgTerrain &amp; src/osgPlugins/gdal</li>
     <br>
 The GDAL plugin uses GDAL to load large scale imagery and DEM's.
     <ul>

@@ -136,6 +136,10 @@
 #define GL_TEXTURE_3D                     0x806F
 #endif
 
+#ifndef GL_TEXTURE_3D
+#define GL_TEXTURE_BINDING_3D             0x806A
+#endif
+
 #ifndef GL_TEXTURE_COMPARE_MODE_ARB
 #define GL_DEPTH_TEXTURE_MODE_ARB         0x884B
 #define GL_TEXTURE_COMPARE_MODE_ARB       0x884C

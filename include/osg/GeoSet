@@ -163,7 +163,9 @@ class SG_EXPORT GeoSet : public Drawable
         void computeNumVerts();
 
         /** get the number of coords required by the defined primitives. */
-        inline const int getNumCoords() const                    { return _numcoords; }
+       // inline const int getNumCoords() const                    
+        inline const int getNumCoords() 
+	{ if( _numcoords == 0 ) computeNumVerts(); return _numcoords; }
         /** get a pointer to Vec3 coord array. */
         inline Vec3* getCoords()                           { return _coords; }
         /** get a const pointer to Vec3 coord array. */

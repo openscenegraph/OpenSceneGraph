@@ -54,6 +54,10 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 	virtual void specialKeyRelease( Producer::KeyCharacter key);
 
 
+        void setEscapeSetDone(bool esc) { _escapeKeySetsDone = esc; }
+        bool getEscapeSetDone() const { return _escapeKeySetsDone; }
+
+
         // local methods and members
         typedef std::vector< osg::ref_ptr<EventAdapter> > EventQueue;
 

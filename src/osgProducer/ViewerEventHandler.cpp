@@ -735,8 +735,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
             }
 
             case osgGA::GUIEventAdapter::KEY_Help :
-            case '/' :
-            case '?' :
+            case 'h' :
             {
                 setDisplayHelp(!getDisplayHelp());
                 return true;
@@ -759,7 +758,7 @@ void ViewerEventHandler::accept(osgGA::GUIEventHandlerVisitor& gehv)
 void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("f","Toggle fullscreen");
-    usage.addKeyboardMouseBinding("?","Display help");
+    usage.addKeyboardMouseBinding("h","Display help");
     usage.addKeyboardMouseBinding("o","Write scene graph to file");
     usage.addKeyboardMouseBinding("s","Toggle intrumention");
     usage.addKeyboardMouseBinding("v","Toggle block and vsync");

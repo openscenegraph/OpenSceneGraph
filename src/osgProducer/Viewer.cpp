@@ -293,6 +293,11 @@ void Viewer::requestWarpPointer(int x,int y)
 
 void Viewer::getUsage(osg::ApplicationUsage& usage) const
 {
+    if (_kbmcb && _kbmcb->getEscapeSetDone()) 
+    {
+        usage.addKeyboardMouseBinding("Escape","Exit the application");
+    }
+
     for(EventHandlerList::const_iterator itr=_eventHandlerList.begin();
         itr!=_eventHandlerList.end();
         ++itr)

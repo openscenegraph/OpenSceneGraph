@@ -13,19 +13,18 @@
 #include <osg/Notify>
 #include <osg/GLExtensions>
 #include <osg/VertexProgram>
+#include <osg/State>
 
 using namespace osg;
 
 
-VertexProgram::VertexProgram() :
-    _vertexProgramId(0)
+VertexProgram::VertexProgram()
 {
 }
 
 
 VertexProgram::VertexProgram(const VertexProgram& vp,const CopyOp& copyop):
-    osg::StateAttribute(vp,copyop),
-    _vertexProgramId(vp._vertexProgramId)
+    osg::StateAttribute(vp,copyop)
 {}
 
 
@@ -53,16 +52,19 @@ void VertexProgram::apply(State& state) const
     static ProgramLocalParameter4fvProc s_glProgramLocalParameter4fv =
         (ProgramLocalParameter4fvProc)osg::getGLExtensionFuncPtr("glProgramLocalParameter4fvARB");
 
+
+    GLuint& vertexProgramId=getVertexProgramID(state.getContextID());
+
     // Vertex Program
-    if (_vertexProgramId != 0)
+    if (vertexProgramId != 0)
     {
-        s_glBindProgram( GL_VERTEX_PROGRAM_ARB, _vertexProgramId );
+        s_glBindProgram( GL_VERTEX_PROGRAM_ARB, vertexProgramId );
     }
     else if (!_vertexProgram.empty())
     {
         ::glGetError(); // Reset Error flags.
-        s_glGenPrograms( 1, &_vertexProgramId );
-        s_glBindProgram( GL_VERTEX_PROGRAM_ARB, _vertexProgramId );
+        s_glGenPrograms( 1, &vertexProgramId );
+        s_glBindProgram( GL_VERTEX_PROGRAM_ARB, vertexProgramId );
         s_glProgramString( GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB,
             _vertexProgram.length(), _vertexProgram.c_str());
 

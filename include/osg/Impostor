@@ -16,6 +16,7 @@
 
 #include <osg/LOD>
 #include <osg/ImpostorSprite>
+#include <osg/buffered_value>
 
 namespace osg {
 
@@ -64,7 +65,6 @@ class SG_EXPORT Impostor : public LOD
 
         Impostor(const Impostor& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             LOD(es,copyop),
-            _impostorSpriteList(),
             _impostorThreshold(es._impostorThreshold) {}
             
         META_Node(osg, Impostor);
@@ -87,16 +87,16 @@ class SG_EXPORT Impostor : public LOD
         inline float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
 
         /** Find the ImposterSprite which fits the current eye point best.*/
-        ImpostorSprite* findBestImpostorSprite(const osg::Vec3& currLocalEyePoint);
+        ImpostorSprite* findBestImpostorSprite(unsigned int contextID, const osg::Vec3& currLocalEyePoint) const;
         
         /** Add an ImpostorSprite to the Impostor.*/
-        void addImpostorSprite(ImpostorSprite* is);
+        void addImpostorSprite(unsigned int contextID, ImpostorSprite* is);
 
         /** Get the list of ImpostorSprites attached to this Impostor.*/
-        inline ImpostorSpriteList& getImpostorSpriteList() { return _impostorSpriteList; }
+        inline ImpostorSpriteList& getImpostorSpriteList(unsigned int contexID) { return _impostorSpriteListBuffer[contexID]; }
 
         /** Get a const list of ImpostorSprites attached to this const Impostor.*/
-        inline const ImpostorSpriteList& getImpostorSpriteList() const { return _impostorSpriteList; }
+        inline const ImpostorSpriteList& getImpostorSpriteList(unsigned int contexID) const { return _impostorSpriteListBuffer[contexID]; }
 
     protected :
 
@@ -104,7 +104,7 @@ class SG_EXPORT Impostor : public LOD
 
         virtual bool computeBound() const;
         
-        ImpostorSpriteList  _impostorSpriteList;
+        mutable buffered_object<ImpostorSpriteList>  _impostorSpriteListBuffer;
 
         float _impostorThreshold;
 

@@ -184,6 +184,13 @@ SOURCE=..\..\..\examples\osgshadowtexture\osgshadowtexture.cpp
 
 # End Source File
 
+# Begin Source File
+
+
+
+SOURCE=..\..\..\examples\osgshadowtexture\CreateShadowedScene.cpp
+
+# End Source File
 
 # End Group
 
@@ -193,6 +200,13 @@ SOURCE=..\..\..\examples\osgshadowtexture\osgshadowtexture.cpp
 
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
 
+# Begin Source File
+
+
+
+SOURCE=..\..\..\examples\osgshadowtexture\CreateShadowedScene.h
+
+# End Source File
 
 # End Group
 

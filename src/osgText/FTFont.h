@@ -119,7 +119,8 @@ class FTGL_EXPORT FTFont
          * @param string    a pointer to an array of decoded unicode characters
          * @return        advance width
          */
-        float Advance( std::vector<int>::const_iterator string);
+        float Advance( std::vector<int>::const_iterator first,
+                       std::vector<int>::const_iterator last);
 
         /**
          * Renders a string of characters
@@ -135,7 +136,9 @@ class FTGL_EXPORT FTFont
          * @param string    unicode string to be output.     
          */
         // mrn@changes
-        virtual void render( std::vector<int>::const_iterator string , unsigned int renderContext=0);
+        virtual void render( std::vector<int>::const_iterator first,
+                             std::vector<int>::const_iterator last,
+                             unsigned int renderContext=0);
 
         /**
          * Renders a string of characters

@@ -178,7 +178,7 @@ bool  Font::create(osg::State& state)
 void Font::output(osg::State& state, const EncodedText* text) const
 {
     if(_created)
-        _font->render(text->getUnicodeText(),state.getContextID());
+        _font->render(text->begin(),text->end(),state.getContextID());
     else
     {
         // ahhhh, this is bit doddy, the draw is potentially
@@ -204,8 +204,8 @@ void  Font::clear()
 float Font::
 getWidth(const EncodedText* text)  const
 {
-    if(_init && _created)
-        return _font->Advance(text->getUnicodeText());
+    if(_init && _created && text)
+        return _font->Advance(text->begin(),text->end());
     else
         return -1;
 }

@@ -56,7 +56,9 @@ class OSGTEXT_EXPORT EncodedText : public osg::Referenced
         Encoding getEncoding() const { return _encoding; }
 
         void setText(const unsigned char* text, int length = -1);
-        std::vector<int>::const_iterator getUnicodeText() const { return _unicodeText.begin(); } 
+
+        std::vector<int>::const_iterator begin() const { return _unicodeText.begin(); } 
+        std::vector<int>::const_iterator end() const { return _unicodeText.end(); } 
 
     protected:
     

@@ -1161,6 +1161,7 @@ DataSet::DestinationTile::DestinationTile():
     _level(0),
     _tileX(0),
     _tileY(0),
+    _maxSourceLevel(0),
     _imagery_maxNumColumns(4096),
     _imagery_maxNumRows(4096),
     _imagery_maxSourceResolutionX(0.0f),
@@ -1183,6 +1184,12 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
 {
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
+    
+        if ((*itr)->getMaxLevel()<_level)
+        {
+            // skip the contribution of this source since this destination tile exceeds its contribution level.
+            continue;
+        }
 
         SourceData* data = (*itr)->getSourceData();
         if (data && (*itr)->getType()!=Source::MODEL)
@@ -1192,13 +1199,15 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
 
             if (!sp._extents.intersects(_extents))
             {
-//                std::cout<<"DataSet::DestinationTile::computeMaximumSourceResolution:: source does not overlap ignoring for this tile."<<std::endl;
+                // skip this source since it doesn't overlap this tile.
                 continue;
             }
 
             
             if (sp._numValuesX!=0 && sp._numValuesY!=0)
             {
+                _maxSourceLevel = osg::maximum((*itr)->getMaxLevel(),_maxSourceLevel);
+
                 float sourceResolutionX = (sp._extents.xMax()-sp._extents.xMin())/(float)sp._numValuesX;
                 float sourceResolutionY = (sp._extents.yMax()-sp._extents.yMin())/(float)sp._numValuesY;
 
@@ -2932,8 +2941,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
 
     insertTileToQuadMap(destinationGraph);
 
-    if (currentLevel>=maxNumLevels-1)
-    {    
+    if (currentLevel>=maxNumLevels-1 || currentLevel>=tile->_maxSourceLevel)
+    {
         // bottom level can't divide any further.
         destinationGraph->_tiles.push_back(tile);
     }

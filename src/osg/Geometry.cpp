@@ -2141,11 +2141,11 @@ unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
         unsigned int primLength;
         switch(mode)
         {
-            case(GL_POINTS):    primLength=1; break;
-            case(GL_LINES):     primLength=2; break;
-            case(GL_TRIANGLES): primLength=3; break;
-            case(GL_QUADS):     primLength=4; break;
-            default:            primLength=0; break; // compute later when =0.
+            case(GL_POINTS):    primLength=1; osg::notify(osg::INFO)<<"prim=GL_POINTS"<<std::endl; break;
+            case(GL_LINES):     primLength=2; osg::notify(osg::INFO)<<"prim=GL_LINES"<<std::endl; break;
+            case(GL_TRIANGLES): primLength=3; osg::notify(osg::INFO)<<"prim=GL_TRIANGLES"<<std::endl; break;
+            case(GL_QUADS):     primLength=4; osg::notify(osg::INFO)<<"prim=GL_QUADS"<<std::endl; break;
+            default:            primLength=0; osg::notify(osg::INFO)<<"prim="<<std::hex<<mode<<std::dec<<std::endl; break; // compute later when =0.
         }
 
         // draw primtives by the more flexible "slow" path,
@@ -2167,8 +2167,8 @@ unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
             }
             default:
             {
-                if (primLength==0) totalNumberOfPrimitives += 1;
-                else totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength;
+                if (primLength==0) { totalNumberOfPrimitives += 1; osg::notify(osg::INFO)<<"   totalNumberOfPrimitives="<<totalNumberOfPrimitives<<std::endl;}
+                else { totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength; osg::notify(osg::INFO)<<"   primitiveset->getNumIndices()="<<primitiveset->getNumIndices()<<" totalNumberOfPrimitives="<<totalNumberOfPrimitives<<std::endl; }
 
             }
         }
@@ -2284,7 +2284,8 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
             {
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE_SET but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries"<<std::endl;
+                            <<"         "<<arrayName<< " array contains too many entries "<<std::endl
+                            <<"         "<<arrayName<< " array contains too many entries "<<std::endl;
             }
             break;
         case(osg::Geometry::BIND_PER_PRIMITIVE):
@@ -2298,7 +2299,9 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
                             <<"         "<<arrayName<< " array is not attached"<<std::endl
-                            <<"         reseting binding to BIND_OFF."<<std::endl;
+                            <<"         reseting binding to BIND_OFF."<<std::endl
+                            <<"         numPrimitives="<<numPrimitives<<std::endl
+                            <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
             }
             else if (numElements<numPrimitives)
             {
@@ -2308,13 +2311,17 @@ void _computeCorrectBindingsAndArraySizes(const osg::Geometry& geom, A& arrayDat
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
                             <<"         "<<arrayName<< " array contains too few entries"<<std::endl
-                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl;
+                            <<"         reseting binding to BIND_OFF "<<arrayName<<"array to 0."<<std::endl
+                            <<"         numPrimitives="<<numPrimitives<<" numElements="<<numElements<<std::endl
+                            <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
             }
             else if (numElements>numPrimitives)
             {
                 notify(WARN)<<"Warning: in osg::Geometry::computeCorrectBindingsAndArraySizes() "<<std::endl
                             <<"         "<<arrayName<<" binding is BIND_PER_PRIMITIVE but "<<std::endl
-                            <<"         "<<arrayName<< " array contains too many entries." <<std::endl;
+                            <<"         "<<arrayName<< " array contains too many entries." <<std::endl
+                            <<"         numPrimitives="<<numPrimitives<<" numElements="<<numElements<<std::endl
+                            <<"         numVertices="<<geom.getVertexArray()->getNumElements()<<std::endl;
             }
             
             break;

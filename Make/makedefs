@@ -261,15 +261,16 @@ ifeq ($(OS),Linux)
 
   SYSARCH           := $(shell arch)
   ifeq ($(SYSARCH),ia64)
+    ARCHARGS        = -m64 -DARCH64
     ARCH            = 64
     ARCHINST        = 64
   else
+    ARCHARGS        = 
     ARCH            = 32
     ARCHINST        = 
   endif
 
   SHARED            = -shared
-  ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 

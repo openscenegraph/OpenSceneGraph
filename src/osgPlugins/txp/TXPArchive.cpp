@@ -563,36 +563,3 @@ osg::Group* TXPArchive::getTileContent(int x, int y, int lod)
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models);
     return tileGroup;
 }
-
-osg::PagedLOD* TXPArchive::getPagedLOD(int x, int y, int lod)
-{
-    TileMap::iterator itr = _tileMap.find(TileTriple(x,y,lod));
-    if (itr!=_tileMap.end()) return itr->second.get();
-    else return 0;
-}
-
-void TXPArchive::insertPagedLOD(int x, int y, int lod, osg::PagedLOD* pagedLod)
-{
-    _tileMap[TileTriple(x,y,lod)]=pagedLod;
-}
-
-void TXPArchive::removePagedLOD(int x, int y, int lod)
-{
-    TileMap::iterator itr = _tileMap.find(TileTriple(x,y,lod));
-    if (itr!=_tileMap.end()) return _tileMap.erase(itr);
-}
-
-void TXPArchive::prunePagedLOD()
-{
-    for(TileMap::iterator itr = _tileMap.begin();
-        itr!=_tileMap.end();
-        ++itr)
-    {
-        if (itr->second.valid() && itr->second->referenceCount()==1)
-        {
-            TileMap::iterator eitr = itr;
-            --itr;
-            _tileMap.erase(eitr);
-        }
-    }
-}

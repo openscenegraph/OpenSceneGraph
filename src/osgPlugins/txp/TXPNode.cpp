@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "TileMapper.h"
 #include "TXPNode.h"
 using namespace txp;
 
@@ -193,7 +194,7 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
 
     _nodesToAdd.push_back(pagedLOD);
     
-    _archive->insertPagedLOD(x,y,lod,pagedLOD);
+    TileMapper::instance()->insertPagedLOD(x,y,lod,pagedLOD);
 
     return pagedLOD;
 }
@@ -219,7 +220,7 @@ void TXPNode::updateSceneGraph()
         
     }
 
-    _archive->prunePagedLOD();
+    TileMapper::instance()->prunePagedLOD();
     
 }
 

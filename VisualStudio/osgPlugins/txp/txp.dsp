@@ -98,11 +98,35 @@ SOURCE=..\..\..\src\osgPlugins\txp\ReaderWriterTXP.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TerrapageNode.cpp
+SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\IO_TerrapageNode.cpp
+SOURCE=..\..\..\src\osgPlugins\txp\TXPIO.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPTileNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TileMap.cpp
 # End Source File
 # Begin Source File
 
@@ -192,18 +216,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_warchive.cpp
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_writebuf.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TrPageArchive.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TrPageParser.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TrPagePageManager.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -214,15 +226,39 @@ SOURCE=..\..\..\src\osgPlugins\txp\ReaderWriterTXP.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TerrapageNode.h
+SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPPageManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPParser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPSeamLOD.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TXPTileNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\TileMap.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trdll.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\trPagePageManager.h
 # End Source File
 # Begin Source File
 
@@ -271,18 +307,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_util.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_write.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TrPageArchive.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\TrPageParser.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\txp\WaitBlock.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

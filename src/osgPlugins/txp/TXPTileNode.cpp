@@ -1,5 +1,6 @@
 #include <osg/PagedLOD>
 
+#include "TileMapper.h"
 #include "TXPTileNode.h"
 #include "TXPArchive.h"
 #include "TXPSeamLOD.h"
@@ -198,7 +199,7 @@ bool TXPTileNode::loadTile(int x, int y, int lod)
             pagedLOD->setRadius(info.radius);
             pagedLOD->setNumChildrenThatCannotBeExpired(1);
 
-            _archive->insertPagedLOD(x,y,lod,pagedLOD);
+            TileMapper::instance()->insertPagedLOD(x,y,lod,pagedLOD);
 
             addChild(pagedLOD);
         }

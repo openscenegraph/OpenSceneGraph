@@ -79,14 +79,6 @@ namespace txp
 
         osg::Group* getTileContent(int x, int y, int lod);
 
-        
-        osg::PagedLOD* getPagedLOD(int x, int y, int lod);
-
-        void insertPagedLOD(int x, int y, int lod, osg::PagedLOD* pagedLod);
-
-        void removePagedLOD(int x, int y, int lod);
-
-        void prunePagedLOD();
 
     protected:
 
@@ -118,29 +110,6 @@ namespace txp
 
         // Light attributes vector
         std::vector<DefferedLightAttribute>                _lights;
-
-
-        struct TileTriple
-        {
-            TileTriple(int ax, int ay, int alod):
-                x(ax),y(ay),lod(alod) {}
-                
-            int x,y,lod;
-            
-            bool operator < (const TileTriple& rhs) const
-            {
-                if (x<rhs.x) return true;
-                if (x>rhs.x) return false;
-                if (y<rhs.y) return true;
-                if (y>rhs.y) return false;
-                if (lod<rhs.lod) return true;
-                if (lod>rhs.lod) return false;
-                return false;
-            }
-        };
-        
-        typedef std::map< TileTriple, osg::ref_ptr<osg::PagedLOD> > TileMap;
-        TileMap _tileMap;
 
     };
 

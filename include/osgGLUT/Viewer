@@ -15,15 +15,12 @@
 #include <osgUtil/CameraManipulator>
 #include <osgUtil/SceneView>
 
-#include <osgGLUT/Export>
-
-#ifdef SGV_USE_RTFS
-#include <rtfs/rtfs.h>
-#endif
+#include <osgGLUT/Window>
 
 #include <string>
 
-namespace osgGLUT{
+namespace osgGLUT
+{
 
 /** A basic viewer base class which provides a window, simple keyboard and mouse interaction.
   * Please note, this viewer class has been developed via a rather haphazard
@@ -31,16 +28,12 @@ namespace osgGLUT{
   * but shouldn't be viewed as the be all and end of osg viewer classes.
   * Someone please rewrite it :-)
   */
-class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
+class OSGGLUT_EXPORT Viewer : public Window, osgUtil::GUIActionAdapter
 {
     public:
 
         Viewer();
         virtual ~Viewer();
-
-        void setWindowOrigin(int x, int y) { wx = x, wy = y; };
-        void setWindowSize(int width, int height) { ww = width, wh = height; };
-        void setWindowTitle(const std::string& title) { _title = title; }
 
         /** init is deprecated, you should use addViewport instead. init is
           * only available for backwards compatibility.*/
@@ -97,17 +90,8 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
 
     protected:
 
-        static void displayCB();
-        static void reshapeCB(int w, int h);
-        static void visibilityCB(int state);
-        static void mouseMotionCB(int x, int y);
-        static void mousePassiveMotionCB(int x, int y);
-        static void mouseCB(int button, int state, int x, int y);
-        static void keyboardCB(unsigned char key, int x, int y );
-
         virtual void display();
         virtual void reshape(GLint w, GLint h);
-        virtual void visibility(int state);
         virtual void mouseMotion(int x, int y);
         virtual void mousePassiveMotion(int x, int y);
         virtual void mouse(int button, int state, int x, int y);
@@ -136,15 +120,6 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         unsigned int _focusedViewport;
                 
         std::string                                 _saveFileName;
-
-        std::string _title;
-        int wx, wy, ww, wh;
-        int _is_open;
-
-        #ifdef SGV_USE_RTFS
-        unsigned int frame_rate;
-        RTfs *fs;
-        #endif
         
         bool _viewFrustumCullingActive;
         bool _smallFeatureCullingActive;

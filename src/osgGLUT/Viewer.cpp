@@ -79,18 +79,6 @@ Viewer::Viewer()
 {
     s_theViewer = this;
 
-    fullscreen = false; 
-    _is_open   = 0;
-    _saved_wx = wx = _saved_wy = wy = 0;
-    _saved_ww = ww = 800,
-    _saved_wh = wh = 600;
-
-    _title = "OSG Viewer";
-
-    mx = ww/2,
-    my = wh/2;
-    mbutton = 0;
-
     polymode = 0;
     texture = 1;
     backface = 1;
@@ -148,10 +136,6 @@ void Viewer::readCommandLine(std::vector<std::string>& commandLine)
   */
 bool Viewer::open()
 {
-    if ( _is_open ) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::open() called with window already open."<< std::endl;
-        return false;
-    }
     if ( getNumViewports() <= 0 ) {
         osg::notify(osg::FATAL)<<"osgGLUT::Viewer::open() called with no Viewports registered."<< std::endl;
         return false;
@@ -177,7 +161,7 @@ bool Viewer::open()
             selectCameraManipulator(0,index);
     }
 
-    GLUTEventAdapter::setWindowSize( wx, wy, ww, wh );
+    GLUTEventAdapter::setWindowSize( _wx, _wy, _ww, _wh );
     GLUTEventAdapter::setButtonMask(0);
 
 
@@ -192,8 +176,8 @@ bool Viewer::open()
         ++itr)
     {
         osgUtil::SceneView* sceneView = itr->sceneView.get();
-        int view[4] = { int(itr->viewport[0]*ww), int(itr->viewport[1]*wh),
-                        int(itr->viewport[2]*ww), int(itr->viewport[3]*wh) };
+        int view[4] = { int(itr->viewport[0]*_ww), int(itr->viewport[1]*_wh),
+                        int(itr->viewport[2]*_ww), int(itr->viewport[3]*_wh) };
 
         sceneView->setViewport(view[0], view[1], view[2], view[3]);
 
@@ -222,12 +206,6 @@ bool Viewer::open()
     
     if (_displaySettings->getStereo() && 
         _displaySettings->getStereoMode()==osg::DisplaySettings::QUAD_BUFFER) needQuadBufferStereo = true;
-
-    //glutInit( &argc, argv );    // I moved this into main to avoid passing
-    // argc and argv to the Viewer
-    glutInitWindowPosition( wx, wy );
-    glutInitWindowSize( ww, wh );
-
 
     // traverse the scene graphs gathering the requirements of the OpenGL buffers.
     osgUtil::DisplayRequirementsVisitor drv;
@@ -270,7 +248,6 @@ bool Viewer::open()
     // by other systems I've come across so not need to worry about it.
     displayMode |= GLUT_MULTISAMPLE;
     
-
     osg::notify(osg::INFO)                                    <<"osgGLUT::Viewer::open() requesting displayMode = "<<displayMode<< std::endl;
     if (displayMode & GLUT_DOUBLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_DOUBLE."<< std::endl;
     if (displayMode & GLUT_SINGLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_SINGLE."<< std::endl; 
@@ -281,29 +258,9 @@ bool Viewer::open()
     if (displayMode & GLUT_MULTISAMPLE) osg::notify(osg::INFO)<<"                        requesting GLUT_MULTISAMPLE."<< std::endl; 
     if (displayMode & GLUT_STEREO)      osg::notify(osg::INFO)<<"                        requesting GLUT_STEREO."<< std::endl; 
 
-    glutInitDisplayMode( displayMode);
-    
-    glutCreateWindow( _title.c_str() );
+    _displayMode = displayMode;
 
-    glutReshapeFunc(    reshapeCB );
-    glutVisibilityFunc( visibilityCB );
-    glutDisplayFunc(    displayCB );
-    glutKeyboardFunc(   keyboardCB );
-
-    glutMouseFunc( mouseCB );
-    glutMotionFunc( mouseMotionCB );
-    glutPassiveMotionFunc( mousePassiveMotionCB );
-
-    #ifdef USE_FLTK
-    // required to specify the idle function when using FLTK.
-    // GLUT and FLTK GLUT differ in that GLUT implicitly calls visibilityFunc
-    // on window creation, while FLTK calls it when the windows is iconised
-    // or deiconsied but not on window creation.
-    visibilityCB(GLUT_VISIBLE);
-    #endif
-    
-    _is_open = 1;
-    return true;
+    return Window::open();
 }
 
 
@@ -410,76 +367,31 @@ float Viewer::draw(unsigned int viewport)
 
 int Viewer::mapWindowXYToSceneView(int x, int y)
 {
-    int ogl_y = wh-y;
+    int ogl_y = _wh-y;
 
     int index = 0;
     for(ViewportList::iterator itr=_viewportList.begin();
         itr!=_viewportList.end();
         ++itr, ++index)
     {
-      if ( x >= int( itr->viewport[0]*ww ) &&
-           ogl_y  >= int( itr->viewport[1]*wh ) &&
-           x <= int( (itr->viewport[0]+itr->viewport[2])*ww ) &&
-           ogl_y  <= int( (itr->viewport[1]+itr->viewport[3])*wh ) )
+      if ( x >= int( itr->viewport[0]*_ww ) &&
+           ogl_y  >= int( itr->viewport[1]*_wh ) &&
+           x <= int( (itr->viewport[0]+itr->viewport[2])*_ww ) &&
+           ogl_y  <= int( (itr->viewport[1]+itr->viewport[3])*_wh ) )
         return index;
     }
     return -1;
 }
 
-
-void Viewer::displayCB()
-{
-    s_theViewer->display();
-}
-
-
-//void Viewer::reshapeCB(GLint w, GLint h)
-void Viewer::reshapeCB(int w, int h)
-{
-    s_theViewer->reshape(w, h);
-}
-
-
-void Viewer::visibilityCB( int state )
-{
-    s_theViewer->visibility(state);
-}
-
-
-void Viewer::mouseCB(int button, int state, int x, int y)
-{
-    s_theViewer->mouse(button, state, x, y);
-}
-
-
-void Viewer::mouseMotionCB(int x, int y)
-{
-    s_theViewer->mouseMotion(x,y);
-}
-
-
-void Viewer::mousePassiveMotionCB(int x, int y)
-{
-    s_theViewer->mousePassiveMotion(x,y);
-}
-
-
-void Viewer::keyboardCB(unsigned char key, int x, int y)
-{
-    s_theViewer->keyboard(key,x,y);
-}
-
-
-
 // GWM July 2001 - moved all draw stats to  Statistics structure, and related RenderBin
 // GWM Sept 2001 - all draw stats now calculated by calls to <Drawable>->getStats(Statistic..)
 
-void Viewer::showStats(const unsigned int viewport)
+void Viewer::showStats(const unsigned int /*viewport*/)
 { // collect stats for viewport
     static int maxbins=1; // count number of bins
     static GLfloat tmax=100;
-    glViewport(0,0,ww,wh);
-    float vh = wh;
+    glViewport(0,0,_ww,_wh);
+    float vh = _wh;
 
     glDisable( GL_DEPTH_TEST ); // to see the stats always
     glDisable( GL_ALPHA_TEST );
@@ -647,7 +559,7 @@ void Viewer::showStats(const unsigned int viewport)
         delete [] primStats; // free up
     }
     if (_printStats==Statistics::STAT_DC) { // yet more stats - read the depth complexity
-        int wid=ww, ht=wh; // temporary local screen size - must change during this section
+        int wid=_ww, ht=_wh; // temporary local screen size - must change during this section
         if (wid>0 && ht>0) {
             const int blsize=16;
             char *clin=new char[wid/blsize+2]; // buffer to print dc
@@ -756,8 +668,7 @@ void Viewer::display()
 
 void Viewer::reshape(GLint w, GLint h)
 {
-    ww = w;
-    wh = h;
+    Window::reshape(w,h);
 
     // Propagate new window size to viewports
     for(ViewportList::iterator itr=_viewportList.begin();
@@ -765,8 +676,8 @@ void Viewer::reshape(GLint w, GLint h)
         ++itr)
     {
         osgUtil::SceneView* sceneView = itr->sceneView.get();
-        int view[4] = { int(itr->viewport[0]*ww), int(itr->viewport[1]*wh),
-                        int(itr->viewport[2]*ww), int(itr->viewport[3]*wh) };
+        int view[4] = { int(itr->viewport[0]*_ww), int(itr->viewport[1]*_wh),
+                        int(itr->viewport[2]*_ww), int(itr->viewport[3]*_wh) };
 
         sceneView->setViewport(view[0], view[1], view[2], view[3]);
 
@@ -780,15 +691,6 @@ void Viewer::reshape(GLint w, GLint h)
             //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
     }
-}
-
-
-void Viewer::visibility(int state)
-{
-    if (state == GLUT_VISIBLE)
-        glutIdleFunc( displayCB );
-    else
-        glutIdleFunc(0L);
 }
 
 
@@ -1043,8 +945,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             fullscreen = !fullscreen;
             if (fullscreen)
             {
-                _saved_ww = ww;
-                _saved_wh = wh;
+                _saved_ww = _ww;
+                _saved_wh = _wh;
                 glutFullScreen();
             } else
             {
@@ -1113,7 +1015,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             osg::notify(osg::NOTICE) << "***** Intersecting **************"<< std::endl;
 
             osg::Vec3 near_point,far_point;
-            if (!sceneView->projectWindowXYIntoObject(x,wh-y,near_point,far_point))
+            if (!sceneView->projectWindowXYIntoObject(x,_wh-y,near_point,far_point))
             {
                 osg::notify(osg::NOTICE) << "Failed to calculate intersection ray."<< std::endl;
                 return;
@@ -1275,11 +1177,6 @@ osg::Timer_t Viewer::updateFrameTick()
 
 bool Viewer::run()
 {
-    if (!_is_open) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::run() called without window open.  Opening window."<< std::endl;
-        if ( !open() )
-            return false;
-    }
 
     // Reset the views of all of SceneViews
     osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
@@ -1292,11 +1189,7 @@ bool Viewer::run()
     }
 
     updateFrameTick();
-#ifdef SGV_USE_RTFS
-    fs->start();
-#endif
-    glutMainLoop();
-    return true;
+    return Window::run();
 }
 
 

@@ -41,11 +41,13 @@ void FireEffect::setDefaults()
     ps->setDefaultAttributes("Images/smoke.rgb", true, false);
 
     _particleSystem = ps;
+//    _particleSystem->setUseIntialViewMatrix(true);
 
     // set up the emitter
     {
         osgParticle::ModularEmitter *emitter = new osgParticle::ModularEmitter;
         emitter->setParticleSystem(ps);
+        emitter->setReferenceFrame(osgParticle::ParticleProcessor::ABSOLUTE_RF);
 
 
         osgParticle::Particle ptemplate;
@@ -125,6 +127,7 @@ void FireEffect::buildEffect()
 
     osg::Geode *geode = new osg::Geode;
     geode->addDrawable(_particleSystem.get());
+    //geode->setCullingActive(false);
 
     // add the geode to the scene graph
     addChild(geode);

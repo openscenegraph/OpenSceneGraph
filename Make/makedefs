@@ -254,8 +254,8 @@ ifeq ($(OS),Linux)
     DBGF            = -g -DOSG_COMPILE_UNIT_TESTS 
     ifeq ($(SYSARCH),ia64)
       ARCHARGS        = 
-      ARCH            = 64
-      ARCHINST        = 64
+      ARCH            = IA64
+      ARCHINST        = IA64
     else
       ARCHARGS        = 
       ARCH            = 32
@@ -268,7 +268,7 @@ ifeq ($(OS),Linux)
     DBGF            = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
     SYSARCH           := $(shell arch)
     ifeq ($(SYSARCH),x86_64)
-      ARCHARGS        = -m64 -DARCH64
+      ARCHARGS        =
       ARCH            = 64
       ARCHINST        = 64
     else
@@ -280,7 +280,11 @@ ifeq ($(OS),Linux)
 
 
   SHARED            = -shared
-  LINKARGS          = -L/usr/X11R6/lib
+  ifeq ($(SYSARCH),x86_64)
+    LINKARGS          = -L/usr/X11R6/lib64
+  else
+    LINKARGS          = -L/usr/X11R6/lib
+  endif
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype

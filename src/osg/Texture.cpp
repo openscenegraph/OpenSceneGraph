@@ -18,6 +18,9 @@ Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
 
 Texture::Texture()
 {
+    _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+    _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+
     _textureUnit = 0;
 
     _wrap_s    = CLAMP;
@@ -189,12 +192,10 @@ void Texture::apply(State& state) const
         }
         else  if (_image.valid() && _image->data())
         {
-            // pad out the modified tag list, if required.
-            while (_modifiedTag.size() <= contextID)
-                _modifiedTag.push_back(0);
+            uint& modifiedTag = getModifiedTag(contextID);
 
             if (_subloadMode == AUTO ||
-                (_subloadMode == IF_DIRTY && _modifiedTag[contextID] != _image->getModifiedTag()))
+                (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
             {
                 glBindTexture( GL_TEXTURE_2D, handle );
                 glTexSubImage2D(GL_TEXTURE_2D, 0,
@@ -203,7 +204,7 @@ void Texture::apply(State& state) const
                                 (GLenum) _image->pixelFormat(), (GLenum) _image->dataType(),
                                 _image->data());
                 // update the modified flag to show that the image has been loaded.
-                _modifiedTag[contextID] = _image->getModifiedTag();
+                modifiedTag = _image->getModifiedTag();
             }
         }
     }
@@ -240,12 +241,8 @@ void Texture::applyImmediateMode(State& state) const
     // current OpenGL context.
     const uint contextID = state.getContextID();
 
-    // pad out the modified tag list, if required.
-    while (_modifiedTag.size() <= contextID)
-        _modifiedTag.push_back(0);
-
     // update the modified tag to show that it is upto date.
-    _modifiedTag[contextID] = _image->getModifiedTag();
+    getModifiedTag(contextID) = _image->getModifiedTag();
 
 
     if (_subloadMode == OFF)

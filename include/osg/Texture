@@ -248,11 +248,21 @@ class SG_EXPORT Texture : public StateAttribute
         inline GLuint& getHandle(const uint contextID) const
         {
             // pad out handle list if required.
-            while (_handleList.size()<=contextID)
-                _handleList.push_back(0);
+            if (_handleList.size()<=contextID)
+                _handleList.resize(contextID,0);
 
             // get the globj for the current contextID.
             return _handleList[contextID];
+        }
+
+        inline uint& getModifiedTag(const uint contextID) const
+        {
+            // pad out handle list if required.
+            if (_modifiedTag.size()<=contextID)
+                _modifiedTag.resize(contextID,0);
+
+            // get the modified tag for the current contextID.
+            return _modifiedTag[contextID];
         }
 
         /** Force a recompile on next apply() of associated OpenGL texture objects.*/

@@ -32,6 +32,13 @@ class RegistryPtr
         Registry* _ptr;
 };
 
+Registry* Registry::instance()
+{
+    static RegistryPtr s_nodeFactory = new Registry;
+    return s_nodeFactory.get();
+}
+
+
 // definition of the Registry
 Registry::Registry()
 {
@@ -63,11 +70,6 @@ Registry::~Registry()
 }
 
 
-Registry* Registry::instance()
-{
-    static RegistryPtr s_nodeFactory = new Registry;
-    return s_nodeFactory.get();
-}
 
 void Registry::readCommandLine(std::vector<std::string>& commandLine)
 {

@@ -120,16 +120,16 @@ class SG_EXPORT Transform : public Group
         
 
         /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; dirtyBound(); }
+        void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; computeInverse(); dirtyBound(); }
         
         /** Get the transform's matrix. */
         inline const Matrix& getMatrix() const { return *_matrix; }
 
         /** preMult transform.*/
-        void preMult(const Matrix& mat) { _matrix->preMult(mat); _inverseDirty=true; dirtyBound(); }
+        void preMult(const Matrix& mat) { _matrix->preMult(mat); _inverseDirty=true; computeInverse(); dirtyBound(); }
         
         /** postMult transform.*/
-        void postMult(const Matrix& mat)  { _matrix->postMult(mat); _inverseDirty=true; dirtyBound(); }
+        void postMult(const Matrix& mat)  { _matrix->postMult(mat); _inverseDirty=true; computeInverse(); dirtyBound(); }
     
 
     protected :

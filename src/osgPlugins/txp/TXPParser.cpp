@@ -379,8 +379,8 @@ void TXPParser::loadLocalMaterials()
 
                     int wrap_s, wrap_t;   
                     texEnv.GetWrap(wrap_s, wrap_t);
-                    osg_texture->setWrap(osg::Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
-                    osg_texture->setWrap(osg::Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
+                    osg_texture->setWrap(osg::Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP_TO_EDGE );
+                    osg_texture->setWrap(osg::Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP_TO_EDGE );
                     
                     // by default is anisotropic filtering.
                     osg_texture->setMaxAnisotropy(_defaultMaxAnisotropy);

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::CollectOccludersVisitor</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -34,7 +34,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.46.7">getDistanceFromEyePoint</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos, bool withLODScale) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.46.8">apply</A></B>(osg::Node&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.46.8">apply</A></B>(<!1><A HREF="Node.html">osg::Node</A>&amp;)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.46.9">apply</A></B>(<!1><A HREF="Transform.html">osg::Transform</A>&amp; node)
 <DT>
@@ -86,9 +86,9 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CollectOccludersVisitor.html">CollectOccludersVisitor</A>&amp; <B><A HREF="#DOC.2.46.23">operator = </A></B>(const <!1><A HREF="CollectOccludersVisitor.html">CollectOccludersVisitor</A>&amp;)
 <DD><I>prevent unwanted copy operator</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.46.24">handle_cull_callbacks_and_traverse</A></B>(osg::Node&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.46.24">handle_cull_callbacks_and_traverse</A></B>(<!1><A HREF="Node.html">osg::Node</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.46.25">handle_cull_callbacks_and_accept</A></B>(osg::Node&amp; node, osg::Node* acceptNode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.46.25">handle_cull_callbacks_and_accept</A></B>(<!1><A HREF="Node.html">osg::Node</A>&amp; node, <!1><A HREF="Node.html">osg::Node</A>* acceptNode)
 </DL></P>
 
 </DL>
@@ -96,9 +96,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setVisitorType</B>(<!1><A HREF="NodeVisitor.html#DOC.2.95.2">VisitorType</A> type)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setVisitorType</B>(<!1><A HREF="NodeVisitor.html#DOC.2.97.2">VisitorType</A> type)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.95.2">VisitorType</A> <B>getVisitorType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.97.2">VisitorType</A> <B>getVisitorType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setTraversalNumber</B>(int fn)
 <DT>
@@ -116,29 +116,27 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   Node::NodeMask <B>getNodeMaskOverride</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   bool <B>validNodeMask</B>(const osg::Node&amp; node) const 
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>validNodeMask</B>(const <!1><A HREF="Node.html">osg::Node</A>&amp; node) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setTraversalMode</B>(<!1><A HREF="NodeVisitor.html#DOC.2.95.1">TraversalMode</A> mode)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setTraversalMode</B>(<!1><A HREF="NodeVisitor.html#DOC.2.97.1">TraversalMode</A> mode)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.95.1">TraversalMode</A> <B>getTraversalMode</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.97.1">TraversalMode</A> <B>getTraversalMode</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setTraversalVisitor</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>traverse</B>(<!1><A HREF="Node.html">Node</A>&amp; node)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* <B>getTraversalVisitor</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>traverse</B>(Node&amp; node)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>pushOntoNodePath</B>(Node* node)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>pushOntoNodePath</B>(<!1><A HREF="Node.html">Node</A>* node)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>popFromNodePath</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>NodePath&amp; <B>getNodePath</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodePath.html">NodePath</A>&amp; <B>getNodePath</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const NodePath&amp; <B>getNodePath</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="NodePath.html">NodePath</A>&amp; <B>getNodePath</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, Node* node)
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="Node.html">Node</A>* node)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getWorldToLocalMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, Node* node)
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getWorldToLocalMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="Node.html">Node</A>* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Vec3.html">osg::Vec3</A> <B>getEyePoint</B>() const 
 </DL></P>
 
 <P><DL>
@@ -150,21 +148,19 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.95.2">VisitorType</A> <B>_visitorType</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.97.2">VisitorType</A> <B>_visitorType</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>int <B>_traversalNumber</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  <B>_frameStamp</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&gt;  <B>_traversalVisitor</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.95.1">TraversalMode</A> <B>_traversalMode</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.97.1">TraversalMode</A> <B>_traversalMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>Node::NodeMask <B>_traversalMask</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>Node::NodeMask <B>_nodeMaskOverride</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>NodePath <B>_nodePath</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodePath.html">NodePath</A> <B>_nodePath</B>
 </DL></P>
 
 </DL>
@@ -172,26 +168,22 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline static   int <B>createdCount</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline static   int <B>deletedCount</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   int <B>_createdCount</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   int <B>_deletedCount</B>
 </DL></P>
 
 </DL>
@@ -209,19 +201,19 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>popViewport</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>pushProjectionMatrix</B>(<!1><A HREF="Matrix.html">osg::Matrix</A>* matrix)
+<IMG ALT="o" SRC=icon2.gif>void <B>pushProjectionMatrix</B>(<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>popProjectionMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>pushModelViewMatrix</B>(<!1><A HREF="Matrix.html">osg::Matrix</A>* matrix)
+<IMG ALT="o" SRC=icon2.gif>void <B>pushModelViewMatrix</B>(<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>popModelViewMatrix</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   float <B>getFrustumVolume</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullingMode</B>(<!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> mode)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullingMode</B>(<!1><A HREF="CullStack.html#DOC.2.53.5">CullingMode</A> mode)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> <B>getCullingMode</B>() const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.5">CullingMode</A> <B>getCullingMode</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>setLODScale</B>(float bias)
 <DT>
@@ -231,13 +223,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>float <B>getSmallFeatureCullingPixelSize</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>float <B>pixelSize</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.25.10">radius</A>) const 
+<IMG ALT="o" SRC=icon2.gif>float <B>pixelSize</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.26.10">radius</A>) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>float <B>pixelSize</B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>disableAndPushOccludersCurrentMask</B>(NodePath&amp; nodePath)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>disableAndPushOccludersCurrentMask</B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>popOccludersCurrentMask</B>(NodePath&amp; nodePath)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>popOccludersCurrentMask</B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>isCulled</B>(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)
 <DT>
@@ -245,29 +237,29 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>isCulled</B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isCulled</B>(const osg::Node&amp; node)
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isCulled</B>(const <!1><A HREF="Node.html">osg::Node</A>&amp; node)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>pushCurrentMask</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>popCurrentMask</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.33">CullingStack</A>&amp; <B>getClipSpaceCullingStack</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.33">CullingStack</A>&amp; <B>getClipSpaceCullingStack</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.33">CullingStack</A>&amp; <B>getProjectionCullingStack</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.33">CullingStack</A>&amp; <B>getProjectionCullingStack</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.33">CullingStack</A>&amp; <B>getModelViewCullingStack</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.33">CullingStack</A>&amp; <B>getModelViewCullingStack</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullingSet.html">CullingSet</A>&amp; <B>getCurrentCullingSet</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Viewport.html">osg::Viewport</A>* <B>getViewport</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B>getModelViewMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&amp; <B>getModelViewMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B>getProjectionMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&amp; <B>getProjectionMatrix</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A> <B>getWindowMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B>getMVPW</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&amp; <B>getMVPW</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <B>getEyeLocal</B>() const 
 <DT>
@@ -277,15 +269,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Viewport.html">Viewport</A>* <B>getViewport</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B>getModelViewMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">RefMatrix</A>&amp; <B>getModelViewMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B>getProjectionMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">RefMatrix</A>&amp; <B>getProjectionMatrix</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B>getWindowMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B>getMVPW</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="RefMatrix.html">RefMatrix</A>&amp; <B>getMVPW</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">RefMatrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
 </DL></P>
 
 <P><DL>
@@ -301,7 +293,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> <B>_cullingMode</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.5">CullingMode</A> <B>_cullingMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>float <B>_LODScale</B>
 <DT>
@@ -309,21 +301,21 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ShadowVolumeOccluderList.html">ShadowVolumeOccluderList</A> <B>_occluderList</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.52">MatrixStack</A> <B>_projectionStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.52">MatrixStack</A> <B>_projectionStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.52">MatrixStack</A> <B>_modelviewStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.52">MatrixStack</A> <B>_modelviewStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.52">MatrixStack</A> <B>_MVPW_Stack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.52">MatrixStack</A> <B>_MVPW_Stack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.56">ViewportStack</A> <B>_viewportStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.56">ViewportStack</A> <B>_viewportStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.58">EyePointStack</A> <B>_eyePointStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.58">EyePointStack</A> <B>_eyePointStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.33">CullingStack</A> <B>_clipspaceCullingStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.33">CullingStack</A> <B>_clipspaceCullingStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.33">CullingStack</A> <B>_projectionCullingStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.33">CullingStack</A> <B>_projectionCullingStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.33">CullingStack</A> <B>_modelviewCullingStack</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.33">CullingStack</A> <B>_modelviewCullingStack</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>float <B>_frustumVolume</B>
 <DT>
@@ -331,9 +323,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_bbCornerFar</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Matrix.html">osg::Matrix</A> <B>_identity</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&gt;  <B>_identity</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.54.68">MatrixList</A> <B>_reuseMatrixList</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.53.68">MatrixList</A> <B>_reuseMatrixList</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_currentReuseMatrixIndex</B>
 </DL></P>
@@ -346,18 +338,18 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>computeFrustumVolume</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt; &gt; <B>MatrixStack</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="RefMatrix.html">RefMatrix</A>&gt; &gt; <B>MatrixStack</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Viewport.html">Viewport</A>&gt; &gt; <B>ViewportStack</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; <B>EyePointStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="Matrix.html">osg::Matrix</A>&gt; &gt; <B>MatrixList</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&gt; &gt; <B>MatrixList</B>
 </DL></P>
 
 </DL>
@@ -397,7 +389,7 @@
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.46.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp;)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Node.html">osg::Node</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.46.9"></A>
@@ -464,11 +456,11 @@
 <DL><DT><DD></DL><P>
 <A NAME="handle_cull_callbacks_and_traverse"></A>
 <A NAME="DOC.2.46.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_cull_callbacks_and_traverse(osg::Node&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_cull_callbacks_and_traverse(<!1><A HREF="Node.html">osg::Node</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="handle_cull_callbacks_and_accept"></A>
 <A NAME="DOC.2.46.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_cull_callbacks_and_accept(osg::Node&amp; node, osg::Node* acceptNode)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_cull_callbacks_and_accept(<!1><A HREF="Node.html">osg::Node</A>&amp; node, <!1><A HREF="Node.html">osg::Node</A>* acceptNode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_minimumShadowOccluderVolume"></A>
 <A NAME="DOC.2.46.26"></A>

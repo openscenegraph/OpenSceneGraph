@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGDB_EXPORT osgDB::FieldReaderIterator</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -58,6 +58,34 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.18">advanceToEndOfBlock</A></B>(int noNestBrackets)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.19">matchSequence</A></B>(const char* str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.20">readSequence</A></B>(const char* keyword, std::string&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.21">readSequence</A></B>(const char* keyword, unsigned int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.22">readSequence</A></B>(const char* keyword, int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.23">readSequence</A></B>(const char* keyword, float&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.24">readSequence</A></B>(const char* keyword, osg::Vec2&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.25">readSequence</A></B>(const char* keyword, osg::Vec3&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.26">readSequence</A></B>(const char* keyword, osg::Vec4&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.27">readSequence</A></B>(std::string&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.28">readSequence</A></B>(unsigned int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.29">readSequence</A></B>(int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.30">readSequence</A></B>(float&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.31">readSequence</A></B>(osg::Vec2&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.32">readSequence</A></B>(osg::Vec3&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.33">readSequence</A></B>(osg::Vec4&amp; value)
 </DL></P>
 
 <P><DL>
@@ -155,6 +183,62 @@ whole block if the current field[0] is an open bracket
 <A NAME="matchSequence"></A>
 <A NAME="DOC.2.5.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchSequence(const char* str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, std::string&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, unsigned int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, float&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, osg::Vec2&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, osg::Vec3&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, osg::Vec4&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(std::string&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(unsigned int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(float&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(osg::Vec2&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(osg::Vec3&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(osg::Vec4&amp; value)</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:

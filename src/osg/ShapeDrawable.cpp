@@ -1,4 +1,4 @@
-#include <osg/ProceduralGeometry>
+#include <osg/ShapeDrawable>
 #include <osg/GL>
 
 using namespace osg;
@@ -1229,29 +1229,29 @@ void PrimitiveShapeVisitor::apply(const CompositeShape& group)
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// ProceduralGeometry itself..
+// ShapeDrawable itself..
 //
 
 
-ProceduralGeometry::ProceduralGeometry()
+ShapeDrawable::ShapeDrawable()
 {
 }
 
-ProceduralGeometry::ProceduralGeometry(Shape* shape)
+ShapeDrawable::ShapeDrawable(Shape* shape)
 {
     setShape(shape);
 }
 
-ProceduralGeometry::ProceduralGeometry(const ProceduralGeometry& pg,const CopyOp& copyop):
+ShapeDrawable::ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop):
     Drawable(pg,copyop)
 {
 }
 
-ProceduralGeometry::~ProceduralGeometry()
+ShapeDrawable::~ShapeDrawable()
 {
 }
 
-void ProceduralGeometry::drawImmediateMode(State& state)
+void ShapeDrawable::drawImmediateMode(State& state)
 {
     if (_shape.valid())
     {
@@ -1260,11 +1260,11 @@ void ProceduralGeometry::drawImmediateMode(State& state)
     }
 }
 
-void ProceduralGeometry::accept(ConstAttributeFunctor&) const
+void ShapeDrawable::accept(ConstAttributeFunctor&) const
 {
 }
 
-void ProceduralGeometry::accept(PrimitiveFunctor& pf) const
+void ShapeDrawable::accept(PrimitiveFunctor& pf) const
 {
     if (_shape.valid())
     {
@@ -1274,7 +1274,7 @@ void ProceduralGeometry::accept(PrimitiveFunctor& pf) const
 }
 
 
-bool ProceduralGeometry::computeBound() const
+bool ShapeDrawable::computeBound() const
 {
 
     if (_shape.valid())

@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_ProceduralGeometry
-#define OSG_ProceduralGeometry 1
+#ifndef OSG_SHAPEDRAWABLE
+#define OSG_SHAPEDRAWABLE 1
 
 #include <osg/Drawable>
 #include <osg/Vec2>
@@ -97,22 +97,22 @@ class TessellationHints : public Object
 
 };
 
-class SG_EXPORT ProceduralGeometry : public Drawable
+class SG_EXPORT ShapeDrawable : public Drawable
 {
     public:
 
-        ProceduralGeometry();
+        ShapeDrawable();
 
-        ProceduralGeometry(Shape* shape);
+        ShapeDrawable(Shape* shape);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        ProceduralGeometry(const ProceduralGeometry& pg,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
             
-        virtual Object* cloneType() const { return osgNew ProceduralGeometry(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew ProceduralGeometry(*this,copyop); }        
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ProceduralGeometry*>(obj)!=NULL; }
+        virtual Object* cloneType() const { return osgNew ShapeDrawable(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew ShapeDrawable(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ShapeDrawable*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "ProceduralGeometry"; }
+        virtual const char* className() const { return "ShapeDrawable"; }
 
 
     	void setTessellationHints(TessellationHints* hints) { _tessellationHints = hints; }
@@ -120,22 +120,22 @@ class SG_EXPORT ProceduralGeometry : public Drawable
     	const TessellationHints* getTessellationHints() const { return _tessellationHints.get(); }
 
 
-        /** draw ProceduralGeometry directly ignoring an OpenGL display list which could be attached.
+        /** draw ShapeDrawable directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
-          * and is the method to override when deriving from ProceduralGeometry for user-drawn objects.
+          * and is the method to override when deriving from ShapeDrawable for user-drawn objects.
           */
         virtual void drawImmediateMode(State& state);
 
         /** return false, osg::ProceduralGeoemtry does not support accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return false; }
 
-        /** return true, osg::ProceduralGeometry does support accept(ConstAttributeFunctor&).*/
+        /** return true, osg::ShapeDrawable does support accept(ConstAttributeFunctor&).*/
         virtual bool supports(ConstAttributeFunctor&) const { return true; }
 
         /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
         virtual void accept(ConstAttributeFunctor& af) const;
 
-        /** return true, osg::ProceduralGeometry does support accept(PrimitiveFunctor&) .*/
+        /** return true, osg::ShapeDrawable does support accept(PrimitiveFunctor&) .*/
         virtual bool supports(PrimitiveFunctor&) const { return true; }
 
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
@@ -143,9 +143,9 @@ class SG_EXPORT ProceduralGeometry : public Drawable
 
     protected:
 
-        ProceduralGeometry& operator = (const ProceduralGeometry&) { return *this;}
+        ShapeDrawable& operator = (const ShapeDrawable&) { return *this;}
 
-        virtual ~ProceduralGeometry();
+        virtual ~ShapeDrawable();
        
         virtual bool computeBound() const;
 	

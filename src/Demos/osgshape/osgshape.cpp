@@ -1,5 +1,5 @@
 #include <osg/Geode>
-#include <osg/ProceduralGeometry>
+#include <osg/ShapeDrawable>
 #include <osg/Material>
 #include <osg/Texture2D>
 
@@ -37,10 +37,10 @@ osg::Geode* createShapes()
     float radius = 0.8f;
     float height = 1.0f;
     
-    geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),radius)));
-    geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Box(osg::Vec3(2.0f,0.0f,0.0f),2*radius)));
-    geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height)));
-    geode->addDrawable(new osg::ProceduralGeometry(osgNew osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height)));
+    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),radius)));
+    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Box(osg::Vec3(2.0f,0.0f,0.0f),2*radius)));
+    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height)));
+    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height)));
 
     osg::Grid* grid = new osg::Grid;
     grid->allocateGrid(38,39);
@@ -54,7 +54,7 @@ osg::Geode* createShapes()
 	    grid->setHeight(c,r,vertex[r+c*39][2]);
 	}
     }
-    geode->addDrawable(new osg::ProceduralGeometry(grid));
+    geode->addDrawable(new osg::ShapeDrawable(grid));
     
     osg::ConvexHull* mesh = new osg::ConvexHull;
     osg::Vec3Array* vertices = new osg::Vec3Array(4);
@@ -77,7 +77,7 @@ osg::Geode* createShapes()
     (*indices)[11]=3;
     mesh->setVertices(vertices);
     mesh->setIndices(indices);
-    geode->addDrawable(new osg::ProceduralGeometry(mesh));
+    geode->addDrawable(new osg::ShapeDrawable(mesh));
     
     return geode;
 }

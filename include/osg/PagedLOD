@@ -24,7 +24,7 @@ class SG_EXPORT PagedLOD : public LOD
 {
     public :
     
-        PagedLOD() {}
+        PagedLOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PagedLOD(const PagedLOD&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);

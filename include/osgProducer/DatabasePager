@@ -45,7 +45,7 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         
 
         /** Add the loaded data to the scene graph.*/
-        void addLoadedDataToSceneGraph();
+        void addLoadedDataToSceneGraph(double timeStamp);
 
 
         /** Find all PagedLOD nodes in a subgraph and register them with 

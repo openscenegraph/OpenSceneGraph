@@ -36,7 +36,7 @@ class SG_EXPORT LOD : public Group
 {
     public :
     
-        LOD() {}
+        LOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         LOD(const LOD&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);

@@ -34,7 +34,7 @@ class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
         /** compute the control point, normal and deviation from the contents of the drawable.*/
         void computeFrom(const osg::Drawable* drawable);
 
-        void set(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation);
+        void set(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation, float radius);
 
         void setControlPoint(const osg::Vec3& controlPoint) { _controlPoint = controlPoint; }
         const osg::Vec3& getControlPoint() const { return _controlPoint; }

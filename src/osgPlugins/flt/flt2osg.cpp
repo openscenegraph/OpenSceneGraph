@@ -819,17 +819,17 @@ osg::Group* ConvertFromFLT::visitBSP(osg::Group& osgParent, BSPRecord* rec)
 
 osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
 {
-	const int fltVer = rec->getFltFile()->getFlightVersion();
+    const int fltVer = rec->getFltFile()->getFlightVersion();
 
     SGroup* currentGroup = (SGroup*) rec->getData();
 
     const bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM)!=0;
-	// OpenFlight 15.8 adds backwards animations
+    // OpenFlight 15.8 adds backwards animations
     const bool backwardAnim = ( (fltVer >= 1580) &&
-		((currentGroup->dwFlags & GroupRecord::BACKWARD_ANIM) != 0) );
-	// Regardless of forwards or backwards, animation could have swing bit set
-	const osg::Sequence::LoopMode loopMode = ( (currentGroup->dwFlags & GroupRecord::SWING_ANIM) == 0 ) ?
-		osg::Sequence::LOOP : osg::Sequence::SWING;
+        ((currentGroup->dwFlags & GroupRecord::BACKWARD_ANIM) != 0) );
+    // Regardless of forwards or backwards, animation could have swing bit set
+    const osg::Sequence::LoopMode loopMode = ( (currentGroup->dwFlags & GroupRecord::SWING_ANIM) == 0 ) ?
+        osg::Sequence::LOOP : osg::Sequence::SWING;
      
     if( forwardAnim || backwardAnim)
     {
@@ -838,10 +838,10 @@ osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
         visitAncillary(osgParent, *animSeq, rec)->addChild( animSeq );
         visitPrimaryNode(*animSeq, rec);
 
-		const int numReps = (fltVer >= 1580) ?
-			currentGroup->iLoopCount : 1000000;
-		const float frameDuration = (fltVer >= 1580) ?
-			currentGroup->fLoopDuration / (float)animSeq->getNumChildren() : 0.f;
+        const int numReps = (fltVer >= 1580) ?
+            currentGroup->iLoopCount : 1000000;
+        const float frameDuration = (fltVer >= 1580) ?
+            currentGroup->fLoopDuration / (float)animSeq->getNumChildren() : 0.f;
         animSeq->setDuration( frameDuration, numReps );
 
         if ( forwardAnim )

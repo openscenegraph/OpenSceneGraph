@@ -78,7 +78,7 @@ int main( int argc, char **argv )
     
     // configure the plugin registry from the commandline arguments, and 
     // eat any parameters that have been matched.
-    osgDB::readCommandLine(commandLine);
+    //osgDB::readCommandLine(commandLine);
 
     // Initialize the TXP database
     bool loadAll = false;

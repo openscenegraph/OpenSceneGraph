@@ -5,8 +5,8 @@ TOPDIR=$2
 INST_LIBS=$3
 INST_PLUGINS=$4
 INST_INCLUDE=$5
-INST_DEMOS=$6
-INST_DEMO_SRC=$7
+INST_EXAMPLES=$6
+INST_EXAMPLE_SRC=$7
 INST_DOC=$8
 INST_DATA=$9
 
@@ -61,22 +61,22 @@ The following targets may only be issued from the top-level OSG build:
   make install      - Install both execution environment and development
                       targets 
   make instbin      - Install execution environment targets only.  These
-                      consist of libraries, plugins and demo programs.
+                      consist of libraries, plugins and example programs.
                       Libraries are installed in
                         o $INST_LIBS,
                       plugins are installed in 
                         o $INST_PLUGINS,
-                      and demos are installed in 
-                        o $INST_DEMOS
+                      and examples are installed in 
+                        o $INST_EXAMPLES
                       on $OS
 
   make instdev      - Install development targets only.  These consist of
-                      header files, source code to the demo programs, and
+                      header files, source code to the example programs, and
                       documentation.
                       Header files are install in 
                         o $INST_INCLUDE,
-                      demo source code is installed in
-                        o $INST_DEMO_SRC,
+                      example source code is installed in
+                        o $INST_EXAMPLE_SRC,
                       and documentation is installed in
                         o $INST_DOC
                       on $OS
@@ -105,19 +105,19 @@ installation locations for $OS.
   make  INST_LIBS=<libs_location> \\
         INST_PLUGINS=<plugins_location>\\
         INST_INCLUDE=<header_file_location>\\
-        INST_DEMOS=<demos_location>\\
-        INST_DEMO_SRC=<demo_src_location>\\
+        INST_EXAMPLES=<examples_location>\\
+        INST_EXAMPLE_SRC=<example_src_location>\\
         INST_DOC=<doc_location>\\
         install
 
                      - Installs libraries in <libs_location>, plugins in 
                        <plugins_location>, header files in 
-                       <header_file_location>, demos in <demos_location>,
-                       demo source code in <demo_src_location> and 
+                       <header_file_location>, examples in <examples_location>,
+                       example source code in <example_src_location> and 
                        documentation in <doc_location>
 
 Note also that INST_LIBS, INST_PLUGINS, INST_INCLUDE, and INST_SHARE share 
-a common prefix by default: INST_LOCATION. Further INST_DEMOS, INST_DEMOS_SRC, 
+a common prefix by default: INST_LOCATION. Further INST_EXAMPES, INST_EXAMPLE_SRC, 
 INST_DOC, and INST_DATA share a common prefix by default : INST_SHARE, which
 is located under INST_LOCATION by default.  This provides a short cut for the 
 above 'make' usage.  For example,
@@ -132,9 +132,9 @@ These values can be tested by reissuing 'make help' with these arguments.
 After doing a 'make install' or 'make instlinks', and if not already added, 
 add
 
-    $INST_DEMOS
+    $INST_EXAMPLES
 
-to your PATH environmental variable to run the demos.  If it is not already 
+to your PATH environmental variable to run the examples.  If it is not already 
 present, add
 
     $INST_LIBS

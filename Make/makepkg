@@ -158,9 +158,9 @@ TOPDIR=$2
 INST_LIBS=$3
 INST_PLUGINS=$4
 INST_INCLUDE=$5
-INST_DEMOS=$6
+INST_EXAMPLES=$6
 INST_SRC=$7
-INST_DEMO_SRC=$8
+INST_EXAMPLE_SRC=$8
 shift;shift; shift;shift; shift;shift; shift;shift;
 INST_DOC=$1
 INST_DATA=$2
@@ -171,8 +171,8 @@ PKGSUBDIR=dist/PKG
 make_package\
 	"OpenSceneGraph" \
 	"Open Scene Graph - Run-time environment"\
-	"An OpenGL based scene graph. This installation includes a set of run-time libraries, and demo programs"\
-        $INST_LIBS $INST_PLUGINS $INST_DEMOS\
+	"An OpenGL based scene graph. This installation includes a set of run-time libraries, and example programs"\
+        $INST_LIBS $INST_PLUGINS $INST_EXAMPLES\
 
 make_installable "OpenSceneGraph"
 
@@ -188,12 +188,12 @@ do
 done
 
 #
-# Capthre Demos subdirectories
+# Capthre examples subdirectories
 #
-SUBDIRS=`ls $TOPDIR/src/Demos | grep -v CVS`
+SUBDIRS=`ls $TOPDIR/src/examples | grep -v CVS`
 for d in $SUBDIRS
 do
-    dd="$INST_DEMO_SRC"/"$d"
+    dd="$INST_EXAMPLE_SRC"/"$d"
     [ -d $dd ] && INSTARG="$INSTARG $dd"
 done
 
@@ -211,7 +211,7 @@ ls $dd
 make_package\
 	"OpenSceneGraph-dev"\
 	"Open Scene Graph - Development environment"\
-	"An OpenGL based scene graph. This installation includes header files and demo program source files"\
+	"An OpenGL based scene graph. This installation includes header files and example program source files"\
 	$INSTARG
 
 make_installable "OpenSceneGraph-dev"

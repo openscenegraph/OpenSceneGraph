@@ -5,9 +5,9 @@ distribution :
 		$(INST_LIBS)\
 		$(INST_PLUGINS)\
 		$(INST_INCLUDE)\
-		$(INST_DEMOS)\
+		$(INST_EXAMPLES)\
 		$(INST_SRC)\
-		$(INST_DEMO_SRC)\
+		$(INST_EXAMPLE_SRC)\
 		$(INST_DOC)\
 		$(INST_DATA)
 

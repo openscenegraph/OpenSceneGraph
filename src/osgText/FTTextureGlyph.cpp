@@ -1,5 +1,3 @@
-#include	"GL/gl.h"
-
 #include	"FTTextureGlyph.h"
 #include	"FTGL.h"
 
@@ -90,3 +88,4 @@ float FTTextureGlyph::Render( const FT_Vector& pen)
 
 	return advance;
 }
+

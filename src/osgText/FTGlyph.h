@@ -1,6 +1,8 @@
 #ifndef		__FTGlyph__
 #define		__FTGlyph__
 
+#include "FTGL.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -8,7 +10,7 @@
 //#include "FTGL.h"
 
 /**
- * FTGlyph is the base clas for FTGL glyphs.
+ * FTGlyph is the base class for FTGL glyphs.
  *
  * It provides the interface between Freetype glyphs and their openGL
  * renderable counterparts. This is an abstract class and derived classes
@@ -17,7 +19,7 @@
  * @see FTGlyphContainer
  *
  */
-class FTGlyph
+class FTGL_EXPORT FTGlyph
 {
 	public:
 		/**
@@ -74,3 +76,4 @@ class FTGlyph
 
 
 #endif	//	__FTGlyph__
+

@@ -65,7 +65,6 @@ void set2dScene(osg::Group* rootNode)
     osgText::Text*    text;
     osg::Geode*        geode;
     osg::Material*    textMaterial;
-    osg::Vec4        textColor;
     osg::StateSet*  textState;
     double            xOffset=250;
     double            yOffset=gFontSize+10;
@@ -250,7 +249,6 @@ void setScene(osg::Group* rootNode)
     osgText::Text*    text;
     osg::Geode*        geode;
     osg::Material*    textMaterial;
-    osg::Vec4        textColor;
     osg::StateSet*  textState;
     double            xOffset=0;
     double            yOffset=0;

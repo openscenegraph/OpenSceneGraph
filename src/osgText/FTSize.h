@@ -1,10 +1,11 @@
 #ifndef		__FTSize__
 #define		__FTSize__
 
+#include "FTGL.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "FTGL.h"
 
 
 /**
@@ -13,7 +14,7 @@
  * @see	"Freetype 2 Documentation - 2.0.4"
  *
  */
-class	FTSize
+class FTGL_EXPORT FTSize
 {
 	public:
 		/**
@@ -116,3 +117,4 @@ class	FTSize
 };
 
 #endif	//	__FTSize__
+

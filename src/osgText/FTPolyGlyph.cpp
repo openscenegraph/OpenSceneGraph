@@ -1,10 +1,8 @@
-#include	"GL/gl.h"
-#include	"GL/glu.h"
 
 #include	"FTPolyGlyph.h"
 #include	"FTVectoriser.h"
-#include	"FTGL.h"
 
+#include	"GL/glu.h"
 
 #ifndef CALLBACK
 #define CALLBACK

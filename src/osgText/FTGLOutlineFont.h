@@ -1,9 +1,9 @@
-#ifndef		__FTGLOutlineFont
-#define		__FTGLOutlineFont
+#ifndef		__FTGLOutlineFont__
+#define		__FTGLOutlineFont__
 
-
-#include	"FTFont.h"
 #include "FTGL.h"
+
+#include "FTFont.h"
 
 
 class FTOutlineGlyph;
@@ -14,24 +14,48 @@ class FTOutlineGlyph;
  *
  * @see		FTFont
  */
-class	FTGLOutlineFont : public FTFont
+class FTGL_EXPORT FTGLOutlineFont : public FTFont
 {
 	public:
-		// methods
+		/**
+		 * Default Constructor
+		 */
 		FTGLOutlineFont();
+		
+		/**
+		 * Destructor
+		 */
 		~FTGLOutlineFont();
 		
+		/**
+		 * Renders a string of characters
+		 * 
+		 * @param string	'C' style string to be output.	 
+		 */
 		void render( const char* string);
+		
+		/**
+		 * Renders a string of characters
+		 * 
+		 * @param string	wchar_t string to be output.	 
+		 */
 		void render( const wchar_t* string);
 
 		// attributes
 		
 	private:
-		// methods
+		/**
+		 * Constructs the internal glyph cache.
+		 *
+		 * This a list of glyphs processed for openGL rendering NOT
+		 * freetype glyphs
+		 */
 		bool MakeGlyphList();
 		
-		// attributes
+		/**
+		 * A temporary FTOutlineGlyph used for building the glyphList
+		 */
 		FTOutlineGlyph* tempGlyph;
 	
 };
-#endif
+#endif // __FTGLOutlineFont__

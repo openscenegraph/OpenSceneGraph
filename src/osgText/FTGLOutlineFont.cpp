@@ -1,5 +1,3 @@
-#include	"GL/gl.h"
-
 #include	"FTGLOutlineFont.h"
 #include	"FTGlyphContainer.h"
 #include	"FTGL.h"

@@ -1,5 +1,3 @@
-#include	"GL/gl.h"
-
 #include	"FTGLPixmapFont.h"
 #include	"FTGlyphContainer.h"
 #include	"FTPixmapGlyph.h"
@@ -64,3 +62,4 @@ void FTGLPixmapFont::render( const wchar_t* string)
 	glPopAttrib();
 
 }
+

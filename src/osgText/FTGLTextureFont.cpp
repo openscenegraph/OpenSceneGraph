@@ -1,8 +1,5 @@
-#include	"GL/gl.h"
-
 #include	"FTGLTextureFont.h"
 #include	"FTGlyphContainer.h"
-#include	"FTGL.h"
 #include	"FTTextureGlyph.h"
 
 using namespace std;
@@ -44,9 +41,11 @@ FTGLTextureFont::~FTGLTextureFont()
 
 bool FTGLTextureFont::MakeGlyphList()
 {
+	glEnable( GL_TEXTURE_2D);
+	
 	if( !maxTextSize)
 		glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&maxTextSize);
-	
+		
 	glyphHeight = ( charSize.Height()) + padding;
 	glyphWidth = ( charSize.Width()) + padding;
 	
@@ -91,7 +90,7 @@ bool FTGLTextureFont::MakeGlyphList()
 		glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
 
 		textMem = new unsigned char[totalMem]; // GL_ALPHA texture;
-		std::memset( textMem, 0, totalMem);
+		memset( textMem, 0, totalMem);
 
 		FillGlyphs( 0, glTextureID[0], textureWidth, textureHeight, textMem);
 		CreateTexture( 0, textureWidth, textureHeight, textMem);
@@ -208,3 +207,4 @@ void FTGLTextureFont::render( const wchar_t* string)
 	
 	glPopAttrib();
 }
+

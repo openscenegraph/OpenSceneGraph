@@ -1,5 +1,3 @@
-#include	"GL/gl.h"
-
 #include	"FTGLBitmapFont.h"
 #include	"FTGlyphContainer.h"
 #include	"FTBitmapGlyph.h"

@@ -2,7 +2,9 @@
 #define		__FTGLBitmapFont__
 
 
-#include	"FTFont.h"
+#include "FTGL.h"
+
+#include "FTFont.h"
 
 class FTBitmapGlyph;
 
@@ -12,7 +14,7 @@ class FTBitmapGlyph;
  *
  * @see		FTFont
  */
-class	FTGLBitmapFont : public FTFont
+class FTGL_EXPORT FTGLBitmapFont : public FTFont
 {
 	public:
 		/**
@@ -35,7 +37,7 @@ class	FTGLBitmapFont : public FTFont
 		/**
 		 * Renders a string of characters
 		 * 
-		 * @param string	'C' style string to be output.	 
+		 * @param string	'C' style wide string to be output.	 
 		 */
 		void render( const wchar_t* string);
 

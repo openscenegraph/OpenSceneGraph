@@ -37,6 +37,15 @@
 
 #include "glm.h"
 
+#include <map>
+#include <set>
+
+template <class T>
+struct DerefLess
+{
+    bool operator ()(T lhs,T rhs) const { return *lhs < *rhs; }
+};
+
 
 class ReaderWriterOBJ : public osgDB::ReaderWriter
 {
@@ -51,7 +60,13 @@ public:
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
 protected:
-    osg::Drawable* makeDrawable(GLMmodel* obj, GLMgroup* grp, osg::StateSet**);
+    osg::Drawable* makeDrawable(GLMmodel* obj, GLMgroup* grp);
+    
+    typedef std::map< std::string, osg::ref_ptr<osg::Texture2D> > TextureMap;
+    typedef std::set< osg::ref_ptr<osg::Material>, DerefLess< osg::ref_ptr<osg::Material> > > MaterialSet;
+    typedef std::set< osg::ref_ptr<osg::StateSet>, DerefLess< osg::ref_ptr<osg::StateSet> > > StateSetSet;
+    typedef std::vector< osg::ref_ptr<osg::StateSet> > ObjMatierialOsgStateSetArray;
+    
 };
 
 
@@ -92,43 +107,64 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     unsigned int i;
 
 
-    // materials
-    osg::StateSet** osg_mtl = NULL;
-    if (obj->nummaterials > 0) {
-        osg_mtl = new osg::StateSet*[obj->nummaterials];
-        for (i = 0; i < obj->nummaterials; i++) {
-            GLMmaterial* omtl = &(obj->materials[i]);
-            osg::notify(osg::DEBUG_INFO) << "mtl: " << omtl->name << std::endl;
+    TextureMap textureMap;
+    MaterialSet materialSet;
+    StateSetSet statesetSet;
+    
+    // create a sphere mapped texgen just in case we need it.
+    osg::ref_ptr<osg::TexGen> osg_texgen = new osg::TexGen;
+    osg_texgen->setMode(osg::TexGen::SPHERE_MAP);
 
-            osg::StateSet* stateset = new osg::StateSet;
-            osg_mtl[i] = stateset;
+    ObjMatierialOsgStateSetArray osg_mtl(obj->nummaterials);
 
-            osg::Material* mtl = new osg::Material;
-            mtl->setAmbient(osg::Material::FRONT_AND_BACK,
-                            osg::Vec4(omtl->ambient[0], omtl->ambient[1],
-                                      omtl->ambient[2], omtl->ambient[3]));
-            mtl->setDiffuse(osg::Material::FRONT_AND_BACK,
-                            osg::Vec4(omtl->diffuse[0], omtl->diffuse[1],
-                                      omtl->diffuse[2], omtl->diffuse[3]));
-            mtl->setSpecular(osg::Material::FRONT_AND_BACK,
-                             osg::Vec4(omtl->specular[0], omtl->specular[1],
-                                       omtl->specular[2], omtl->specular[3]));
-            mtl->setEmission(osg::Material::FRONT_AND_BACK,
-                             osg::Vec4(omtl->emmissive[0], omtl->emmissive[1],
-                                       omtl->emmissive[2], omtl->emmissive[3]));
-            // note, osg shininess scales between 0.0 and 1.0.
-            mtl->setShininess(osg::Material::FRONT_AND_BACK, omtl->shininess);
-            mtl->setAlpha(osg::Material::FRONT_AND_BACK, omtl->alpha);
-            
-            stateset->setAttribute(mtl);
+    for (i = 0; i < obj->nummaterials; i++)
+    {
+        GLMmaterial* omtl = &(obj->materials[i]);
+        osg::notify(osg::DEBUG_INFO) << "mtl: " << omtl->name << std::endl;
 
-            if (omtl->alpha<1.0f) {
-                stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-                stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-            }
-            
-            if (omtl->textureName)
+        osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+
+        osg::ref_ptr<osg::Material> mtl = new osg::Material;
+        mtl->setAmbient(osg::Material::FRONT_AND_BACK,
+                        osg::Vec4(omtl->ambient[0], omtl->ambient[1],
+                                  omtl->ambient[2], omtl->ambient[3]));
+        mtl->setDiffuse(osg::Material::FRONT_AND_BACK,
+                        osg::Vec4(omtl->diffuse[0], omtl->diffuse[1],
+                                  omtl->diffuse[2], omtl->diffuse[3]));
+        mtl->setSpecular(osg::Material::FRONT_AND_BACK,
+                         osg::Vec4(omtl->specular[0], omtl->specular[1],
+                                   omtl->specular[2], omtl->specular[3]));
+        mtl->setEmission(osg::Material::FRONT_AND_BACK,
+                         osg::Vec4(omtl->emmissive[0], omtl->emmissive[1],
+                                   omtl->emmissive[2], omtl->emmissive[3]));
+                                   
+        // note, osg shininess scales between 0.0 and 1.0.
+        mtl->setShininess(osg::Material::FRONT_AND_BACK, omtl->shininess);
+        mtl->setAlpha(osg::Material::FRONT_AND_BACK, omtl->alpha);
+
+        MaterialSet::iterator mitr = materialSet.find(mtl);
+        if (mitr==materialSet.end())
+        {
+            materialSet.insert(mtl);
+        }
+        else
+        {
+            mtl = *mitr;
+        }
+
+        stateset->setAttribute(mtl.get());
+
+        if (omtl->alpha<1.0f) {
+            stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
+
+        if (omtl->textureName)
+        {
+            TextureMap::iterator titr = textureMap.find(omtl->textureName);
+            if (titr==textureMap.end())
             {
+        
                 std::string fileName = osgDB::findFileInDirectory(omtl->textureName,directory,true);
                 if (!fileName.empty())
                 {
@@ -140,12 +176,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                         osg_texture->setImage(osg_image);
                         stateset->setTextureAttributeAndModes(0,osg_texture,osg::StateAttribute::ON);
                         
-                        if (omtl->textureReflection)
-                        {
-                            osg::TexGen* osg_texgen = new osg::TexGen;
-                            osg_texgen->setMode(osg::TexGen::SPHERE_MAP);
-                            stateset->setTextureAttributeAndModes(0,osg_texgen,osg::StateAttribute::ON);
-                        }
+                        textureMap[omtl->textureName] = osg_texture;
+
                     }
                     else
                     {
@@ -156,8 +188,29 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                 {
                     osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<< std::endl;
                 }
+                
+            }
+            else
+            {
+                stateset->setTextureAttributeAndModes(0,titr->second.get(),osg::StateAttribute::ON);
             }
         }
+        
+        if (omtl->textureReflection)
+        {
+            stateset->setTextureAttributeAndModes(0,osg_texgen.get(),osg::StateAttribute::ON);
+        }
+        
+        StateSetSet::iterator sitr = statesetSet.find(stateset);
+        if (sitr==statesetSet.end())
+        {
+            osg_mtl[i] = stateset;
+            statesetSet.insert(stateset);
+        }
+        else
+        {
+            osg_mtl[i] = *sitr;
+        }        
     }
 
     // toplevel group or transform
@@ -183,7 +236,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 
             osg::Geode* osg_geo = new osg::Geode;
             osg_geo->setName(ogrp->name);
-            osg_geo->addDrawable(makeDrawable(obj,ogrp, osg_mtl));
+            osg::Drawable* drawable = makeDrawable(obj,ogrp);
+            
+            // state and material (if any)
+            if (!osg_mtl.empty()) {
+                drawable->setStateSet(osg_mtl[ogrp->material].get());
+            }
+
+            osg_geo->addDrawable(drawable);
             osg_top->addChild(osg_geo);
         }
         ogrp = ogrp->next;
@@ -191,8 +251,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 
     // free
     glmDelete(obj);
-    if (osg_mtl)
-        delete[] osg_mtl;
 
     return osg_top;
 }
@@ -200,8 +258,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
 
 // make drawable from OBJ group
 osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
-                                             GLMgroup* grp,
-                                             osg::StateSet** mtl)
+                                             GLMgroup* grp)
 {
 
     GLMtriangle* tris = obj->triangles;
@@ -211,6 +268,8 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
 
     // geometry
     osg::Geometry* geom = new osg::Geometry;
+    
+    // geom->setUseVertexBufferObjects(true);
 
     // primitives are only triangles
     geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
@@ -281,14 +340,6 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
             }
         }
     }
-
-    // state and material (if any)
-    if (mtl) {
-    
-        geom->setStateSet(mtl[grp->material]);
-    }
-    else
-        osg::notify(osg::INFO) << "Group " << grp->name << " has no material" << std::endl;
 
     return geom;
 }

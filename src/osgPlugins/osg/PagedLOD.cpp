@@ -28,9 +28,9 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
 
     PagedLOD& lod = static_cast<PagedLOD&>(obj);
     
-    if (lod.getDatabasePath().empty() && fr.getOptions())
+    if (lod.getDatabasePath().empty() && fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
     {
-        const std::string& path = fr.getOptions()->getDatabasePath();
+        const std::string& path = fr.getOptions()->getDatabasePathList().front();
         if (!path.empty()) 
         {
             lod.setDatabasePath(path);

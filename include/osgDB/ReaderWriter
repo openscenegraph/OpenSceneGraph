@@ -24,9 +24,14 @@
 #include <osgDB/Export>
 #include <osgDB/ReentrantMutex>
 
+#include <deque>
+
 namespace osgDB {
 
 class Archive;
+
+/** list of directories to search through which searching for files. */
+typedef std::deque<std::string> FilePathList;
 
 /** pure virtual base class for reading and writing of non native formats. */
 class OSGDB_EXPORT ReaderWriter : public osg::Object
@@ -47,14 +52,45 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         class Options : public osg::Object
         {
             public:
+            
+            
+                /// bit mask for setting up which object types get cached by readObject/Image/HeightField/Node(filename) calls
+                enum CacheHintOptions
+                {   /// do not cache objects of any type
+                    CACHE_NONE          = 0,
 
-                Options() {}
+                    /// cache nodes loaded via readNode(filename)
+                    CACHE_NODES         = 1,
+
+                    /// cache images loaded via readImage(filename)
+                    CACHE_IMAGES        = 2,
+
+                    /// cache heightfield loaded via readHeightField(filename)
+                    CACHE_HEIGHTFIELDS  = 4, 
+
+                    /// cache heightfield loaded via readHeightField(filename)
+                    CACHE_ARCHIVES      = 8, 
+
+                    /// cache objects loaded via readObject(filename)
+                    CACHE_OBJECTS       = 16, 
+
+                    /// cache on all read*(filename) calls
+                    CACHE_ALL           = CACHE_NODES |
+                                          CACHE_IMAGES |
+                                          CACHE_HEIGHTFIELDS |
+                                          CACHE_ARCHIVES |
+                                          CACHE_OBJECTS
+                };
+            
+
+                Options():_useObjectCacheHint(CACHE_NONE) {}
                 Options(const std::string& str):_str(str) {}
                 
                 Options(const Options& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
                     Object(options,copyop),
                     _str(options._str),
-                    _databasePath(options._databasePath) {}
+                    _databasePaths(options._databasePaths),
+                    _useObjectCacheHint(options._useObjectCacheHint) {}
 
                 META_Object(osgDB,Options);
 
@@ -65,17 +101,28 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 const std::string& getOptionString() const { return _str; }
 
                 /** Set the database path to use a hint of where to look when loading models.*/
-                void setDatabasePath(const std::string& str) { _databasePath = str; }
+                void setDatabasePath(const std::string& str) { _databasePaths.clear();  _databasePaths.push_back(str); }
 
                 /** Get the database path which is used a hint of where to look when loading models.*/
-                const std::string& getDatabasePath() const { return _databasePath; }
+                FilePathList& getDatabasePathList() { return _databasePaths; }
+
+                /** Get the const database path which is used a hint of where to look when loading models.*/
+                const FilePathList& getDatabasePathList() const { return _databasePaths; }
+
+                /** Set whether the Registry::ObjectCache should be used by default.*/
+                void setUseObjectCacheHint(CacheHintOptions useObjectCache) { _useObjectCacheHint = useObjectCache; }
+
+                /** Get whether the Registry::ObjectCache should be used by default.*/
+                CacheHintOptions getUseObjectCacheHint() const { return _useObjectCacheHint; }
+
 
             protected:
 
                 virtual ~Options() {}
 
-                std::string _str;
-                std::string _databasePath;
+                std::string         _str;
+                FilePathList        _databasePaths;
+                CacheHintOptions    _useObjectCacheHint;
 
         };
 

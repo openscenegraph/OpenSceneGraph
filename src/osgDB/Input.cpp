@@ -80,22 +80,16 @@ osg::Node* Input::readNode()
 
 osg::Object* Input::readObject(const std::string& fileName)
 {
-    return readObjectFile(fileName);
+    return readObjectFile(fileName,_options.get());
 }
 
 osg::Image*  Input::readImage(const std::string& fileName)
 {
 
-    if (_options.valid() && !_options->getDatabasePath().empty())
-    {
-        osg::Image* image = readImageFile(_options->getDatabasePath()+'/'+fileName);
-        if (image) return image;
-    }
-
-    return readImageFile(fileName);
+    return readImageFile(fileName,_options.get());
 }
 
 osg::Node* Input::readNode(const std::string& fileName)
 {
-    return readNodeFile(fileName);
+    return readNodeFile(fileName,_options.get());
 }

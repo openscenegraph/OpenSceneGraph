@@ -1,6 +1,38 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+2nd February 2002 - osg-0.8.44.tar.gz
+
+    >>> Support added for Mac OSX, Cygwin and MinGW, and new TerraPage loader.
+    
+    The major item for this release is the completion of the Mac OSX port,
+    thanks to Phil Atkin and others for making this happen.
+    
+    Also added to support for Cygwin and MinGW builds which gives Windows
+    users a free and robust alternative to the Visual C++, which we
+    have Norman Vine to thank.
+    
+    Funtionality wise there has been a great deal of work behind the scenes
+    putting in place a flexible and extensible framework for handling 
+    transform nodes, users can now extend the osg::Transform node through
+    subclassing or via callbacks.  This work will underpin future work
+    on moving camera setup into the scene graph, and environmental effects
+    such as cloud layers, ground planes, stars and earth sky implementations
+    which are planned for the next release.
+    
+    Callbacks and virtual methods have also been added to the osg::LOD & 
+    osg::Billboard to allow users to customize their behavior.  Draw 
+    callbacks have also been added to allow customization of osg::Drawables
+    at runtime.
+    
+    The Open Flight .flt loader has undergone a number of improvements
+    including support for instancing and billboards.
+    
+    Support for the clone operation on osg::Object's has been expanded
+    to allow cloneType() - a simple clone an blank object of the same type,
+    and clone(CopyOp&) where CopyOp is a functor which allows users to
+    specify the deep copy vs shallow copying of object data.
+    
 
 2nd January 2002 - osg-0.8.43.tar.gz
 

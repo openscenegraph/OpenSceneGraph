@@ -164,13 +164,13 @@ void MpegImageStream::load(const char* fileName)
 
 
     // Allocate image data
-    // maybe use BGR888 and save some conversion somewhere?
-    unsigned char* data = new unsigned char [s * t * 3];
-    _videoWriteData = new unsigned char [s * t * 3];
+    // maybe use BGRA888 and save some conversion somewhere?
+    unsigned char* data = new unsigned char [s * t * 4];
+    _videoWriteData = new unsigned char [s * t * 4];
 
-    setImage(s, t, 0,
+    setImage(s, t, 1,
              GL_RGB,
-             GL_RGB, GL_UNSIGNED_BYTE, data,
+             GL_BGRA, GL_UNSIGNED_BYTE, data,
              osg::Image::USE_NEW_DELETE);
 
 
@@ -196,7 +196,7 @@ void MpegImageStream::swapData()
     for (int i = 0; i < t(); i++)
     {
         _rows[t()-i-1] = dp;
-        dp += (s() * 3);
+        dp += (s() * 4);
     }
 }
 
@@ -279,7 +279,7 @@ void MpegImageStream::run()
             mpeg3_read_frame(mpg, _rows,
                              0, 0, _s, _t,
                              _s, _t,
-                             MPEG3_RGB888, str);
+                             MPEG3_RGBA8888, str);
 
             swapData();
 

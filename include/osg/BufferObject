@@ -1,0 +1,259 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_BUFFEROBJECT
+#define OSG_BUFFEROBJECT 1
+
+#include <osg/State>
+#include <osg/buffered_value>
+
+#ifndef GL_ARB_vertex_buffer_object
+
+    #define GL_ARB_vertex_buffer_object
+
+    // for compatibility with gl.h headers that don't support VBO,
+    #if defined(_WIN64)
+        typedef __int64 GLintptrARB;
+        typedef __int64 GLsizeiptrARB;
+    #elif defined(__ia64__) || defined(__x86_64__)
+        typedef long int GLintptrARB;
+        typedef long int GLsizeiptrARB;
+    #else
+        typedef int GLintptrARB;
+        typedef int GLsizeiptrARB;
+    #endif
+
+    #define GL_ARRAY_BUFFER_ARB               0x8892
+    #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
+    #define GL_PIXEL_PACK_BUFFER_ARB          0x88EB
+    #define GL_PIXEL_UNPACK_BUFFER_ARB        0x88EC
+    #define GL_ARRAY_BUFFER_BINDING_ARB       0x8894
+    #define GL_ELEMENT_ARRAY_BUFFER_BINDING_ARB 0x8895
+    #define GL_VERTEX_ARRAY_BUFFER_BINDING_ARB 0x8896
+    #define GL_NORMAL_ARRAY_BUFFER_BINDING_ARB 0x8897
+    #define GL_COLOR_ARRAY_BUFFER_BINDING_ARB 0x8898
+    #define GL_INDEX_ARRAY_BUFFER_BINDING_ARB 0x8899
+    #define GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING_ARB 0x889A
+    #define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING_ARB 0x889B
+    #define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING_ARB 0x889C
+    #define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING_ARB 0x889D
+    #define GL_WEIGHT_ARRAY_BUFFER_BINDING_ARB 0x889E
+    #define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB 0x889F
+    #define GL_PIXEL_PACK_BUFFER_BINDING_ARB    0x88ED
+    #define GL_PIXEL_UNPACK_BUFFER_BINDING_ARB  0x88EF
+    #define GL_STREAM_DRAW_ARB                0x88E0
+    #define GL_STREAM_READ_ARB                0x88E1
+    #define GL_STREAM_COPY_ARB                0x88E2
+    #define GL_STATIC_DRAW_ARB                0x88E4
+    #define GL_STATIC_READ_ARB                0x88E5
+    #define GL_STATIC_COPY_ARB                0x88E6
+    #define GL_DYNAMIC_DRAW_ARB               0x88E8
+    #define GL_DYNAMIC_READ_ARB               0x88E9
+    #define GL_DYNAMIC_COPY_ARB               0x88EA
+    #define GL_READ_ONLY_ARB                  0x88B8
+    #define GL_WRITE_ONLY_ARB                 0x88B9
+    #define GL_READ_WRITE_ARB                 0x88BA
+    #define GL_BUFFER_SIZE_ARB                0x8764
+    #define GL_BUFFER_USAGE_ARB               0x8765
+    #define GL_BUFFER_ACCESS_ARB              0x88BB
+    #define GL_BUFFER_MAPPED_ARB              0x88BC
+    #define GL_BUFFER_MAP_POINTER_ARB         0x88BD
+
+#endif
+
+namespace osg 
+{
+
+class SG_EXPORT BufferObject : public Object
+{
+    public:
+
+        BufferObject();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        BufferObject(const BufferObject& bo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferObject*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "BufferObject"; }
+
+        struct BufferEntry
+        {
+            BufferEntry(): dataSize(0),offset(0) {}
+            BufferEntry(const BufferEntry& be): modifiedCount(be.modifiedCount),dataSize(be.dataSize),offset(be.offset) {}
+        
+            BufferEntry& operator = (const BufferEntry& be) { modifiedCount=be.modifiedCount; dataSize=be.dataSize; offset=be.offset; return *this; }
+
+            mutable buffered_value<unsigned int>    modifiedCount;
+            unsigned int                            dataSize;
+            unsigned int                            offset;
+        };
+
+        inline bool isBufferObjectSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isBufferObjectSupported(); }
+
+        inline GLuint& buffer(unsigned int contextID) const { return _bufferObjectList[contextID]; }
+        
+        inline void bindBuffer(unsigned int contextID) const
+        { 
+            Extensions* extensions = getExtensions(contextID,true);
+            extensions->glBindBuffer(_target,_bufferObjectList[contextID]);
+        }
+
+        inline void unbindBuffer(unsigned int contextID) const
+        { 
+            Extensions* extensions = getExtensions(contextID,true);
+            extensions->glBindBuffer(_target,0);
+        }
+
+        virtual bool needsCompile(unsigned int contextID) const = 0;
+
+        virtual void compileBuffer(State& state) const = 0;
+        
+        void releaseBuffer(State* state) const;
+
+
+        /** Use deleteVertexBufferObject instead of glDeleteBuffers to allow
+          * OpenGL buffer objects to be cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteBufferObject(unsigned int contextID,GLuint globj);
+
+        /** flush all the cached display list which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime);
+
+        /** Extensions class which encapsulates the querying of extensions and
+        * associated function pointers, and provide convenience wrappers to
+        * check for the extensions or use the associated functions.*/
+        class SG_EXPORT Extensions : public osg::Referenced
+        {
+        public:
+            Extensions();
+
+            Extensions(const Extensions& rhs);
+
+            void lowestCommonDenominator(const Extensions& rhs);
+
+            void setupGLExtenions();
+
+            bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
+
+            void glGenBuffers (GLsizei n, GLuint *buffers) const;
+            void glBindBuffer (GLenum target, GLuint buffer) const;
+            void glBufferData (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const;
+            void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
+            void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
+            GLboolean glIsBuffer (GLuint buffer) const;
+            void glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const;
+            GLvoid* glMapBuffer (GLenum target, GLenum access) const;
+            GLboolean glUnmapBuffer (GLenum target) const;
+            void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const;
+            void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const;
+
+        protected:
+
+            typedef void (APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
+            typedef void (APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
+            typedef void (APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
+            typedef void (APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
+            typedef void (APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
+            typedef GLboolean (APIENTRY * IsBufferProc) (GLuint buffer);
+            typedef void (APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
+            typedef GLvoid* (APIENTRY * MapBufferProc) (GLenum target, GLenum access);
+            typedef GLboolean (APIENTRY * UnmapBufferProc) (GLenum target);
+            typedef void (APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);
+            typedef void (APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
+
+            GenBuffersProc          _glGenBuffers;
+            BindBufferProc          _glBindBuffer;
+            BufferDataProc          _glBufferData;
+            BufferSubDataProc       _glBufferSubData;
+            DeleteBuffersProc       _glDeleteBuffers;
+            IsBufferProc            _glIsBuffer;
+            GetBufferSubDataProc    _glGetBufferSubData;
+            MapBufferProc           _glMapBuffer;
+            UnmapBufferProc         _glUnmapBuffer;
+            GetBufferParameterivProc _glGetBufferParameteriv;
+            GetBufferPointervProc   _glGetBufferPointerv;
+
+        };
+
+        /** Function to call to get the extension of a specified context.
+        * If the Exentsion object for that context has not yet been created  
+        * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+        * If 'createIfNotInitalized' is true then the Extensions object is 
+        * automatically created.  However, in this case the extension object is
+        * only created with the graphics context associated with ContextID..*/
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+        * typically used when you have different extensions supported across graphics pipes
+        * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+    protected:
+    
+        virtual ~BufferObject();
+        
+        unsigned int computeRequiredTotalSize() const;
+        
+        typedef osg::buffered_value<GLuint> GLObjectList;
+
+        typedef std::pair< BufferEntry, ref_ptr<Array> >        BufferEntryArrayPair;
+        typedef std::pair< BufferEntry, ref_ptr<PrimitiveSet> > BufferEntryPrimitiveSetPair;
+        
+        mutable GLObjectList    _bufferObjectList;
+
+        GLenum                  _target;
+        GLenum                  _usage;
+        mutable unsigned int    _totalSize;
+};
+
+class Image;
+class SG_EXPORT PixelBufferObject : public BufferObject
+{
+    public:
+
+        PixelBufferObject(osg::Image* image=0);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        PixelBufferObject(const PixelBufferObject& pbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg,PixelBufferObject);
+        
+        typedef std::pair< BufferEntry, Image* > BufferEntryImagePair;
+
+        void setImage(osg::Image* image);
+
+        Image* getImage() { return _bufferEntryImagePair.second; }
+        const Image* getImage() const { return _bufferEntryImagePair.second; }
+        
+        unsigned int offset() const { return _bufferEntryImagePair.first.offset; }
+        
+        virtual bool needsCompile(unsigned int contextID) const;
+
+        virtual void compileBuffer(State& state) const;
+
+    protected:
+    
+        virtual ~PixelBufferObject();
+        
+        unsigned int computeRequiredTotalSize() const;
+        
+        BufferEntryImagePair _bufferEntryImagePair;
+};
+
+
+}
+
+#endif

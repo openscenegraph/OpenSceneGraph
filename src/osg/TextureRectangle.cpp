@@ -17,6 +17,8 @@
 #include <osg/GLU>
 #include <osg/Notify>
 
+#include <osg/Timer>
+
 #ifndef GL_UNPACK_CLIENT_STORAGE_APPLE
 #define GL_UNPACK_CLIENT_STORAGE_APPLE    0x85B2
 #endif
@@ -143,12 +145,12 @@ void TextureRectangle::apply(State& state) const
         {
             _subloadCallback->subload(*this, state);
         }
-        else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
+        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
             applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
  
-            // update the modified tag to show that it is upto date.
-            getModifiedTag(contextID) = _image->getModifiedTag();
+            // update the modified count to show that it is upto date.
+            getModifiedCount(contextID) = _image->getModifiedCount();
         }
     }
     else if (_subloadCallback.valid())
@@ -221,8 +223,8 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
+    // update the modified count to show that it is upto date.
+    getModifiedCount(contextID) = image->getModifiedCount();
 
     // compute the internal texture format, sets _internalFormat.
     computeInternalFormat();
@@ -240,13 +242,35 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
         #endif
     }
 
+    unsigned int dataMinusOffset=0;
+    unsigned int dataPlusOffset=0;
+
+    const PixelBufferObject* pbo = image->getPixelBufferObject();
+    if (pbo && pbo->isBufferObjectSupported(contextID))
+    {
+        pbo->compileBuffer(state);
+        pbo->bindBuffer(contextID);
+        dataMinusOffset=(unsigned int)image->data();
+        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+    }
+    else
+    {
+        pbo = 0;
+    }
+
     // UH: ignoring compressed for now.
     glTexImage2D(target, 0, _internalFormat,
                  image->s(), image->t(), 0,
                  (GLenum)image->getPixelFormat(),
                  (GLenum)image->getDataType(),
-                 image->data());
+                 image->data() + -dataMinusOffset+dataPlusOffset);
     
+
+    if (pbo)
+    {
+        pbo->unbindBuffer(contextID);
+    }
+
     inwidth = image->s();
     inheight = image->t();
 
@@ -273,13 +297,39 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
+    // update the modified count to show that it is upto date.
+    getModifiedCount(contextID) = image->getModifiedCount();
 
     // compute the internal texture format, sets _internalFormat.
     computeInternalFormat();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, image->getPacking());
+
+#define DO_TIMING
+#ifdef DO_TIMING
+    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+    osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+#endif
+    unsigned int dataMinusOffset=0;
+    unsigned int dataPlusOffset=0;
+
+    const PixelBufferObject* pbo = image->getPixelBufferObject();
+    if (pbo && pbo->isBufferObjectSupported(contextID))
+    {
+        pbo->compileBuffer(state);
+        pbo->bindBuffer(contextID);
+        dataMinusOffset=(unsigned int)image->data();
+        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+
+#ifdef DO_TIMING
+        osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+#endif
+
+    }
+    else
+    {
+        pbo = 0;
+    }
 
     // UH: ignoring compressed for now.
     glTexSubImage2D(target, 0, 
@@ -287,7 +337,16 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
                  image->s(), image->t(),
                  (GLenum)image->getPixelFormat(),
                  (GLenum)image->getDataType(),
-                 image->data());
+                 image->data() + -dataMinusOffset+dataPlusOffset);
+
+    if (pbo)
+    {
+        pbo->unbindBuffer(contextID);
+    }
+
+#ifdef DO_TIMING
+    osg::notify(osg::NOTICE)<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+#endif
     
 }
 

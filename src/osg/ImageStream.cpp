@@ -20,6 +20,9 @@ ImageStream::ImageStream():
     _loopingMode(LOOPING)
 {
     setDataVariance(DYNAMIC); 
+    #if 1
+    setPixelBufferObject(new PixelBufferObject(this));
+    #endif
 }
 
 ImageStream::ImageStream(const ImageStream& image,const CopyOp& copyop):

@@ -11,6 +11,7 @@ CXXFILES =\
 	Billboard.cpp\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
+	BufferObject.cpp\
 	BlendColor.cpp\
 	BlendFunc.cpp\
 	BlendEquation.cpp\

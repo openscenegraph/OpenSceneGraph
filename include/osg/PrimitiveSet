@@ -14,9 +14,62 @@
 #ifndef OSG_PRIMITIVESET
 #define OSG_PRIMITIVESET 1
 
-#include <osg/Drawable>
+#include <osg/GL>
+#include <osg/Object>
+#include <osg/buffered_value>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+
+#include <vector>
 
 namespace osg {
+
+class State;    
+class PrimitiveFunctor
+{
+public:
+
+    virtual ~PrimitiveFunctor() {}
+
+    virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
+    virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
+    virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
+
+    virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
+    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
+    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
+    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
+
+    virtual void begin(GLenum mode) = 0;
+    virtual void vertex(const Vec2& vert) = 0;
+    virtual void vertex(const Vec3& vert) = 0;
+    virtual void vertex(const Vec4& vert) = 0;
+    virtual void vertex(float x,float y) = 0;
+    virtual void vertex(float x,float y,float z) = 0;
+    virtual void vertex(float x,float y,float z,float w) = 0;
+    virtual void end() = 0;
+};
+
+class PrimitiveIndexFunctor
+{
+public:
+
+    virtual ~PrimitiveIndexFunctor() {}
+
+    virtual void setVertexArray(unsigned int count,const Vec2* vertices) = 0;
+    virtual void setVertexArray(unsigned int count,const Vec3* vertices) = 0;
+    virtual void setVertexArray(unsigned int count,const Vec4* vertices) = 0;
+
+    virtual void drawArrays(GLenum mode,GLint first,GLsizei count) = 0;
+    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices) = 0;
+    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices) = 0;
+    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices) = 0;
+
+    virtual void begin(GLenum mode) = 0;
+    virtual void vertex(unsigned int pos) = 0;
+    virtual void end() = 0;
+};
 
 #ifndef _MSC_VER
 
@@ -114,26 +167,31 @@ class PrimitiveSet : public Object
 
         PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0):
             _primitiveType(primType),
-            _mode(mode) {}
+            _mode(mode),
+            _modifiedCount(0) {}
     
         PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(prim,copyop),
             _primitiveType(prim._primitiveType),
-            _mode(prim._mode) {}
+            _mode(prim._mode),
+            _modifiedCount(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PrimitiveSet*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "PrimitiveSet"; }
         
-        Type getType() const { return _primitiveType; }
-        
+        Type                    getType() const { return _primitiveType; }
+        virtual const GLvoid*   getDataPointer() const { return 0; }
+        virtual unsigned int    getTotalDataSize() const { return 0; }
+        virtual bool            supportsBufferObject() const { return false; }
+            
         void setMode(GLenum mode) { _mode = mode; }
         GLenum getMode() const { return _mode; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const = 0;
         
-        virtual void accept(Drawable::PrimitiveFunctor& functor) const = 0;
-        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const = 0;
+        virtual void accept(PrimitiveFunctor& functor) const = 0;
+        virtual void accept(PrimitiveIndexFunctor& functor) const = 0;
         
         virtual unsigned int index(unsigned int pos) const = 0;
         virtual unsigned int getNumIndices() const = 0;
@@ -157,12 +215,22 @@ class PrimitiveSet : public Object
             return 0;
         }
 
+        /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
+        inline void dirty() { ++_modifiedCount; }      
+      
+        /** Set the modified count value.*/
+        inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
+
+        /** Get modified count value.*/
+        inline unsigned int getModifiedCount() const { return _modifiedCount; }
+
     protected:
 
         virtual ~PrimitiveSet() {}
 
-        Type    _primitiveType;
-        GLenum  _mode;
+        Type            _primitiveType;
+        GLenum          _mode;
+        unsigned int    _modifiedCount;
 };
 
 class SG_EXPORT DrawArrays : public PrimitiveSet
@@ -206,8 +274,8 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
 
         virtual void draw(State& state, bool useVertexBufferObjects) const;
         
-        virtual void accept(Drawable::PrimitiveFunctor& functor) const;
-        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
+        virtual void accept(PrimitiveFunctor& functor) const;
+        virtual void accept(PrimitiveIndexFunctor& functor) const;
         
         virtual unsigned int getNumIndices() const { return _count; }
         virtual unsigned int index(unsigned int pos) const { return _first+pos; }
@@ -262,8 +330,8 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
         
         virtual void draw(State& state, bool useVertexBufferObjects) const;
         
-        virtual void accept(Drawable::PrimitiveFunctor& functor) const;
-        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
+        virtual void accept(PrimitiveFunctor& functor) const;
+        virtual void accept(PrimitiveIndexFunctor& functor) const;
         
         virtual unsigned int getNumIndices() const;
         virtual unsigned int index(unsigned int pos) const { return _first+pos; }
@@ -319,10 +387,14 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUByte"; }
 
+        virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
+        virtual unsigned int    getTotalDataSize() const { return size(); }
+        virtual bool            supportsBufferObject() const { return false; }
+
         virtual void draw(State& state, bool useVertexBufferObjects) const ;
         
-        virtual void accept(Drawable::PrimitiveFunctor& functor) const;
-        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
+        virtual void accept(PrimitiveFunctor& functor) const;
+        virtual void accept(PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
@@ -367,10 +439,14 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUShort"; }
 
+        virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
+        virtual unsigned int    getTotalDataSize() const { return 2*size(); }
+        virtual bool            supportsBufferObject() const { return false; }
+
         virtual void draw(State& state, bool useVertexBufferObjects) const;
         
-        virtual void accept(Drawable::PrimitiveFunctor& functor) const;
-        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
+        virtual void accept(PrimitiveFunctor& functor) const;
+        virtual void accept(PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
@@ -414,10 +490,14 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUInt"; }
 
+        virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
+        virtual unsigned int    getTotalDataSize() const { return 4*size(); }
+        virtual bool            supportsBufferObject() const { return false; }
+
         virtual void draw(State& state, bool useVertexBufferObjects) const;
         
-        virtual void accept(Drawable::PrimitiveFunctor& functor) const;
-        virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
+        virtual void accept(PrimitiveFunctor& functor) const;
+        virtual void accept(PrimitiveIndexFunctor& functor) const;
 
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }

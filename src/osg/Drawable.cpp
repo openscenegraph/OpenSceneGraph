@@ -497,7 +497,7 @@ void Drawable::setUpdateCallback(UpdateCallback* ac)
     }
 }
 
-struct ComputeBound : public Drawable::PrimitiveFunctor
+struct ComputeBound : public PrimitiveFunctor
 {
         ComputeBound():_vertices(0) {}
         

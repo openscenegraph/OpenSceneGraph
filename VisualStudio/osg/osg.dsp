@@ -144,6 +144,10 @@ SOURCE=..\..\src\osg\BoundingSphere.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\BufferObject.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ClearNode.cpp
 # End Source File
 # Begin Source File
@@ -553,6 +557,10 @@ SOURCE=..\..\Include\Osg\BoundingSphere
 # Begin Source File
 
 SOURCE=..\..\include\osg\BoundsChecking
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\BufferObject
 # End Source File
 # Begin Source File
 

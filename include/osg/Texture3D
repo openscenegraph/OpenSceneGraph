@@ -51,10 +51,10 @@ class SG_EXPORT Texture3D : public Texture
         /** Gets the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
 
-        inline unsigned int& getModifiedTag(unsigned int contextID) const
+        inline unsigned int& getModifiedCount(unsigned int contextID) const
         {
-            // get the modified tag for the current contextID.
-            return _modifiedTag[contextID];
+            // get the modified count for the current contextID.
+            return _modifiedCount[contextID];
         }
 
         /** Sets the texture image, ignoring face. */
@@ -221,8 +221,8 @@ class SG_EXPORT Texture3D : public Texture
 
         ref_ptr<SubloadCallback> _subloadCallback;
 
-        typedef buffered_value<unsigned int> ImageModifiedTag;
-        mutable ImageModifiedTag _modifiedTag;
+        typedef buffered_value<unsigned int> ImageModifiedCount;
+        mutable ImageModifiedCount _modifiedCount;
 
 };
 

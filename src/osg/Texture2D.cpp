@@ -92,7 +92,7 @@ int Texture2D::compare(const StateAttribute& sa) const
 void Texture2D::setImage(Image* image)
 {
     _image = image;
-    _modifiedTag.setAllElementsTo(0);
+    _modifiedCount.setAllElementsTo(0);
 }
 
 
@@ -119,13 +119,13 @@ void Texture2D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
+        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
                                     _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
  
             // update the modified tag to show that it is upto date.
-            getModifiedTag(contextID) = _image->getModifiedTag();
+            getModifiedCount(contextID) = _image->getModifiedCount();
      
         }
 
@@ -184,7 +184,7 @@ void Texture2D::apply(State& state) const
         
         
         // update the modified tag to show that it is upto date.
-        getModifiedTag(contextID) = _image->getModifiedTag();
+        getModifiedCount(contextID) = _image->getModifiedCount();
 
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)

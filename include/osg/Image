@@ -14,8 +14,7 @@
 #ifndef OSG_IMAGE
 #define OSG_IMAGE 1
 
-#include <osg/Object>
-#include <osg/GL>
+#include <osg/BufferObject>
 
 #include <string>
 #include <vector>
@@ -71,7 +70,6 @@ class SG_EXPORT Image : public Object
 
         void setFileName(const std::string& fileName);
         inline const std::string& getFileName() const { return _fileName; }
-        
         
         enum AllocationMode {
             NO_DELETE,
@@ -134,9 +132,6 @@ class SG_EXPORT Image : public Object
         void copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source);
 
 
-
-
-
         /** Width of image. */
         inline int s() const { return _s; }
 
@@ -190,6 +185,7 @@ class SG_EXPORT Image : public Object
             return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
         }
 
+
         /** Flip the image horizontally. */
         void flipHorizontal();
         
@@ -204,14 +200,14 @@ class SG_EXPORT Image : public Object
         */
         void ensureValidSizeForTexturing(GLint maxTextureSize);
       
-        /** Dirty the image, which increments the modified flag, to force osg::Texture to reload the image. */
-        inline void dirty() { ++_modifiedTag; }      
+        /** Dirty the image, which increments the modified count, to force osg::Texture to reload the image. */
+        inline void dirty() { ++_modifiedCount; }      
       
-        /** Set the modified tag value. Only used by osg::Texture when using texture subloading. */
-        inline void setModifiedTag(unsigned int value) { _modifiedTag=value; }
+        /** Set the modified count value. Used by osg::Texture when using texture subloading. */
+        inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
 
-        /** Get modified tag value. Only used by osg::Texture when using texture subloading. */
-        inline unsigned int getModifiedTag() const { return _modifiedTag; }
+        /** Get modified count value. Used by osg::Texture when using texture subloading. */
+        inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
 
         static bool isPackedType(GLenum type);
@@ -257,6 +253,15 @@ class SG_EXPORT Image : public Object
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         bool isImageTranslucent() const;
 
+        /** Set the optional PixelBufferObject used to map the image memory efficiently to graphics memory. */ 
+        void setPixelBufferObject(PixelBufferObject* buffer) { _bufferObject = buffer; if (_bufferObject.valid()) _bufferObject->setImage(this); }
+
+        /** Get the PixelBufferObject.*/ 
+        PixelBufferObject* getPixelBufferObject() { return _bufferObject.get(); }
+
+        /** Get the const PixelBufferObject.*/ 
+        const PixelBufferObject* getPixelBufferObject() const { return _bufferObject.get(); }
+        
     protected :
 
         virtual ~Image();
@@ -278,9 +283,11 @@ class SG_EXPORT Image : public Object
         
         void setData(unsigned char *data,AllocationMode allocationMode);
 
-        unsigned int _modifiedTag;
+        unsigned int _modifiedCount;
 
         MipmapDataType _mipmapData;
+        
+        ref_ptr<PixelBufferObject> _bufferObject;
 };
 
 class Geode;

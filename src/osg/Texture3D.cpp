@@ -88,7 +88,7 @@ void Texture3D::setImage(Image* image)
     // delete old texture objects.
     dirtyTextureObject();
 
-    _modifiedTag.setAllElementsTo(0);
+    _modifiedCount.setAllElementsTo(0);
 
     _image = image;
 }
@@ -170,12 +170,12 @@ void Texture3D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if (_image.get() && getModifiedTag(contextID) != _image->getModifiedTag())
+        else if (_image.get() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
             applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
-            // update the modified tag to show that it is upto date.
-            getModifiedTag(contextID) = _image->getModifiedTag();
+            // update the modified count to show that it is upto date.
+            getModifiedCount(contextID) = _image->getModifiedCount();
         }
 
     }
@@ -219,8 +219,8 @@ void Texture3D::apply(State& state) const
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
 
-        // update the modified tag to show that it is upto date.
-        getModifiedTag(contextID) = _image->getModifiedTag();
+        // update the modified count to show that it is upto date.
+        getModifiedCount(contextID) = _image->getModifiedCount();
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {

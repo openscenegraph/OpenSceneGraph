@@ -51,7 +51,7 @@ void Image::write(DataOutputStream* out)
     out->writeInt(getPacking());
 
     // Write modified tag.
-    out->writeInt(getModifiedTag()); 
+    out->writeInt(getModifiedCount()); 
 
     // Write mipmapdata vector
     int size = _mipmapData.size();
@@ -103,7 +103,7 @@ void Image::read(DataInputStream* in)
         unsigned int packing = (unsigned int)in->readInt();
 
         // Read modified tag.
-        setModifiedTag((unsigned int)in->readInt());
+        setModifiedCount((unsigned int)in->readInt());
 
         // Read mipmapdata vector        
         int size = in->readInt();

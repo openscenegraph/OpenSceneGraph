@@ -1303,7 +1303,7 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
 {
     public:
     
-    	PrimitiveShapeVisitor(Drawable::PrimitiveFunctor& functor,const TessellationHints* hints):
+    	PrimitiveShapeVisitor(PrimitiveFunctor& functor,const TessellationHints* hints):
             _functor(functor),
 	    _hints(hints) {}
     
@@ -1320,7 +1320,7 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
 
     	virtual void apply(const CompositeShape&);
 	
-        Drawable::PrimitiveFunctor& _functor;
+        PrimitiveFunctor& _functor;
 	const TessellationHints*  _hints;
 };
 

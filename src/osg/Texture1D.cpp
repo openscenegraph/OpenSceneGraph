@@ -80,7 +80,7 @@ void Texture1D::setImage(Image* image)
     dirtyTextureObject();
 
     _image = image;
-    _modifiedTag.setAllElementsTo(0);
+    _modifiedCount.setAllElementsTo(0);
 
 }
 
@@ -105,12 +105,12 @@ void Texture1D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
-        else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
+        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
             applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMipmapLevels);
 
-            // update the modified tag to show that it is upto date.
-            getModifiedTag(contextID) = _image->getModifiedTag();
+            // update the modified count to show that it is upto date.
+            getModifiedCount(contextID) = _image->getModifiedCount();
         }
 
     }
@@ -149,8 +149,8 @@ void Texture1D::apply(State& state) const
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
 
-        // update the modified tag to show that it is upto date.
-        getModifiedTag(contextID) = _image->getModifiedTag();
+        // update the modified count to show that it is upto date.
+        getModifiedCount(contextID) = _image->getModifiedCount();
     
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {

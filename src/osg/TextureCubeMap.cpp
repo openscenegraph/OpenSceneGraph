@@ -108,12 +108,12 @@ TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
     _images[4] = copyop(text._images[4].get());
     _images[5] = copyop(text._images[5].get());
 
-    _modifiedTag[0].setAllElementsTo(0);
-    _modifiedTag[1].setAllElementsTo(0);
-    _modifiedTag[2].setAllElementsTo(0);
-    _modifiedTag[3].setAllElementsTo(0);
-    _modifiedTag[4].setAllElementsTo(0);
-    _modifiedTag[5].setAllElementsTo(0);
+    _modifiedCount[0].setAllElementsTo(0);
+    _modifiedCount[1].setAllElementsTo(0);
+    _modifiedCount[2].setAllElementsTo(0);
+    _modifiedCount[3].setAllElementsTo(0);
+    _modifiedCount[4].setAllElementsTo(0);
+    _modifiedCount[5].setAllElementsTo(0);
 
 }    
 
@@ -167,7 +167,7 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 void TextureCubeMap::setImage( unsigned int face, Image* image)
 {
     _images[face] = image;
-    _modifiedTag[face].setAllElementsTo(0);
+    _modifiedCount[face].setAllElementsTo(0);
 }
 
 Image* TextureCubeMap::getImage(unsigned int face)
@@ -223,10 +223,10 @@ void TextureCubeMap::apply(State& state) const
             for (int n=0; n<6; n++)
             {
                 const osg::Image* image = _images[n].get();
-                if (image && getModifiedTag((Face)n,contextID) != image->getModifiedTag())
+                if (image && getModifiedCount((Face)n,contextID) != image->getModifiedCount())
                 {
                     applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
-                    getModifiedTag((Face)n,contextID) = image->getModifiedTag();
+                    getModifiedCount((Face)n,contextID) = image->getModifiedCount();
                 }
             }
         }
@@ -278,7 +278,7 @@ void TextureCubeMap::apply(State& state) const
                 {
                     applyTexImage2D_load( state, faceTarget[n], image, _textureWidth, _textureHeight, _numMipmapLevels);
                 }
-                getModifiedTag((Face)n,contextID) = image->getModifiedTag();
+                getModifiedCount((Face)n,contextID) = image->getModifiedCount();
             }
 
 

@@ -4,6 +4,7 @@ include ../../Make/makedefs
 C++FILES = \
 	GLUTEventAdapter.cpp\
         Version.cpp\
+        Window.cpp\
         Viewer.cpp\
 
 TARGET_BASENAME = osgGLUT
@@ -19,6 +20,7 @@ TARGET_INCLUDE_FILES = \
 	osgGLUT/Export\
 	osgGLUT/GLUTEventAdapter\
 	osgGLUT/Version\
+	osgGLUT/Window\
 	osgGLUT/Viewer\
 
 C++FLAGS += -I ../../include

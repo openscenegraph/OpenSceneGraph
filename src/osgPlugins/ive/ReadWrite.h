@@ -63,6 +63,7 @@ namespace ive {
 #define IVEVERTEXPROGRAM				0x0000012F
 #define IVELIGHTMODEL				        0x00001121
 #define IVECLIPPLANE				        0x00001122
+#define IVEFRONTFACE				0x00001123
 
 // Drawables
 #define IVEDRAWABLE					0x00001000

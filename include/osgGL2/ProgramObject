@@ -11,7 +11,7 @@
 */
 
 /* file:	include/osgGL2/ProgramObject
- * author:	Mike Weiblen 2003-09-18
+ * author:	Mike Weiblen 2003-10-03
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -28,6 +28,7 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Notify>
 
 #include <osgGL2/Export>
 #include <osgGL2/Extensions>

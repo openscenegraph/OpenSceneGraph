@@ -1,0 +1,26 @@
+/* XPM */
+static char *icon8_xpm[] = {
+/* width height ncolors chars_per_pixel */
+"16 16 3 1",
+/* colors */
+"` c #000000",
+"a c #FFFFFF",
+"b c #0000FF",
+/* pixels */
+"aaaaaaaaaaaaaaaa",
+"aaaaaaaa`aaaaaaa",
+"aaaaaaaa``aaaaaa",
+"aaaaaaaa`b`aaaaa",
+"aaaaaaaa`bb`aaaa",
+"aaaaaaaa`bbb`aaa",
+"a````````bbbb`aa",
+"a`bbbbbbbbbbbb`a",
+"a`bbbbbbbbbbbb`a",
+"a````````bbbb`aa",
+"aaaaaaaa`bbb`aaa",
+"aaaaaaaa`bb`aaaa",
+"aaaaaaaa`b`aaaaa",
+"aaaaaaaa``aaaaaa",
+"aaaaaaaa`aaaaaaa",
+"aaaaaaaaaaaaaaaa"
+};

@@ -1165,7 +1165,7 @@ bool TrPageParser::EndChildren(void *in_node)
     // 
     // track whether we are under a billboard in the scene graph
     //
-    if (is_billboard(static_cast<Billboard*>(in_node)))
+    if (is_billboard(node))
         in_billboard = false;
 
     // if we are under layer all the groups are dropped out, so no need to do this

@@ -13,12 +13,12 @@ CFG=tga - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "tga.mak" CFG="osgPlugin tga- Win32 Debug"
+!MESSAGE NMAKE /f "tga.mak" CFG="osgPlugin tga - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "osgPlugin tga- Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "osgPlugin tga- Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin tga - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin tga - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "osgPlugin tga- Win32 Release"
+!IF  "$(CFG)" == "osgPlugin tga - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_tga.dll" /libpath:"../../../lib"
 # SUBTRACT LINK32 /nodefaultlib
 
-!ELSEIF  "$(CFG)" == "osgPlugin tga- Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin tga - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -87,8 +87,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "osgPlugin tga- Win32 Release"
-# Name "osgPlugin tga- Win32 Debug"
+# Name "osgPlugin tga - Win32 Release"
+# Name "osgPlugin tga - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

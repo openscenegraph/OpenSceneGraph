@@ -119,8 +119,8 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
 
     float centerDistance = (_position-bs.center()).length();
 
-    float znear = centerDistance+bs.radius();
-    float zfar  = centerDistance-bs.radius();
+    float znear = centerDistance-bs.radius();
+    float zfar  = centerDistance+bs.radius();
     float zNearRatio = 0.001f;
     if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
     

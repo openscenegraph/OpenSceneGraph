@@ -26,6 +26,7 @@ PLUGIN_DIRS = \
 	ac3d\
 	bmp\
 	directx\
+	dds\
 	dw\
 	flt\
 	geo\

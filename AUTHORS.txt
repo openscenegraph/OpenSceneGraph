@@ -127,6 +127,9 @@ Tree <tree@stain.org>
 Vladimir Vukicevic <vladimir@pobox.com>
         - md2 loader.
         
+Rune Schmidt Jensen <sphere@aub.dk>
+        - dds loader.
+
 Indirect Contributors
 ---------------------
     

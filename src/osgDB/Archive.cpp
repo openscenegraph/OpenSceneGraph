@@ -93,13 +93,16 @@ bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap)
         pos_type position = *(reinterpret_cast<pos_type*>(ptr)); 
         ptr += sizeof(pos_type);
         
+        size_type size = *(reinterpret_cast<size_type*>(ptr)); 
+        ptr += sizeof(size_type);
+
         unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
         ptr += sizeof(unsigned int);
         
         std::string filename(ptr, ptr+filename_size);
         
         // record this entry into the FileNamePositionMap
-        indexMap[filename] = position;
+        indexMap[filename] = PositionSizePair(position,size);
         
         ptr += filename_size;
         
@@ -129,14 +132,17 @@ void Archive::IndexBlock::write(std::ostream& out)
 }
 
 
-bool Archive::IndexBlock::addFileReference(pos_type position, const std::string& filename)
+bool Archive::IndexBlock::addFileReference(pos_type position, size_type size, const std::string& filename)
 {
-    if (spaceAvailable(position, filename))
+    if (spaceAvailable(position, size, filename))
     {
         unsigned char* ptr = _data+_offsetOfNextAvailableSpace;
         
         *(reinterpret_cast<pos_type*>(ptr)) = position; 
         ptr += sizeof(pos_type);
+        
+        *(reinterpret_cast<size_type*>(ptr)) = size; 
+        ptr += sizeof(size_type);
         
         *(reinterpret_cast<unsigned int*>(ptr)) = filename.size();
         ptr += sizeof(unsigned int);
@@ -236,7 +242,7 @@ bool Archive::open(const std::string& filename, Status status)
                     mitr!=_indexMap.end();
                     ++mitr)
                 {
-                    osg::notify(osg::NOTICE)<<"    filename "<<(mitr->first)<<" pos="<<(int)(mitr->second)<<std::endl;
+                    osg::notify(osg::NOTICE)<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
                 }
 
 
@@ -300,7 +306,7 @@ bool Archive::fileExists(const std::string& filename) const
     return (_indexMap.count(filename)!=0);
 }
 
-bool Archive::addFileReference(pos_type position, const std::string& fileName)
+bool Archive::addFileReference(pos_type position, size_type size, const std::string& fileName)
 {
     if (_status==READ)
     {
@@ -321,7 +327,7 @@ bool Archive::addFileReference(pos_type position, const std::string& fileName)
     if (indexBlock.valid())
     {
         blockSize = indexBlock->getBlockSize();
-        if (!(indexBlock->spaceAvailable(position, fileName)))
+        if (!(indexBlock->spaceAvailable(position, size, fileName)))
         {
             previousBlock = indexBlock;
             indexBlock = 0;
@@ -340,11 +346,37 @@ bool Archive::addFileReference(pos_type position, const std::string& fileName)
     
     if (indexBlock.valid())
     {
-        return indexBlock->addFileReference(position, fileName);
+        return indexBlock->addFileReference(position, size, fileName);
     }
     return false;
 }
 
+
+#include <streambuf>
+
+class proxy_streambuf : public std::streambuf
+{
+   public:
+   
+      proxy_streambuf(std::streambuf* streambuf, unsigned int numChars):
+        _streambuf(streambuf),
+        _numChars(numChars) {}
+   
+      /// Destructor deallocates no buffer space.
+      virtual ~proxy_streambuf()  {}
+
+      std::streambuf* _streambuf;
+      unsigned int _numChars;
+
+    protected:
+
+      virtual int_type uflow ()
+      {
+         //if (_numChars==0) return -1;
+         //--_numChars;
+         return _streambuf->sbumpc();
+      }
+};
 
 ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const Options* options)
 {
@@ -361,8 +393,6 @@ ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const O
         return ReadResult(ReadResult::FILE_NOT_FOUND);
     }
     
-    _input.seekg(itr->second);
-
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(fileName));
     if (!rw)
     {
@@ -371,12 +401,32 @@ ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const O
     }
     
     osg::notify(osg::NOTICE)<<"Archive::readObject(obj, "<<fileName<<")"<<std::endl;
-    return rw->readObject(_input, options);
+    
+    _input.seekg(itr->second.first);
+
+    std::istream& ins = _input;
+
+    proxy_streambuf mystreambuf(ins.rdbuf(),itr->second.second);
+    ins.rdbuf(&mystreambuf);
+/*
+    while (!_input.eof())
+    {
+        osg::notify(osg::NOTICE).put(_input.get());
+    }
+    osg::notify(osg::NOTICE)<<"Exiting normally "<<std::endl;
+*/
+    ReaderWriter::ReadResult result = rw->readObject(_input, options);
+
+    ins.rdbuf(mystreambuf._streambuf);
+    
+    return result;
+
 }
 
 ReaderWriter::ReadResult Archive::readImage(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 ReaderWriter::ReadResult Archive::readHeightField(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 ReaderWriter::ReadResult Archive::readNode(const std::string& /*fileName*/,const Options*) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+
 
 
 
@@ -402,7 +452,10 @@ ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std:
     
     WriteResult result = rw->writeObject(obj, _output, options);
     
-    if (result.success()) addFileReference(position, fileName);
+    pos_type final_position = _output.tellp();
+    size_type size = size_type(final_position-position);
+
+    if (result.success()) addFileReference(position, size, fileName);
     
     return result;
 }

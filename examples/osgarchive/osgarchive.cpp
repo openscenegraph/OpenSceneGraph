@@ -9,6 +9,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#include <osg/Timer>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 
@@ -22,51 +23,38 @@
     #include <locale>
     #include <cstdio>
 
-template<typename _CharT, typename _Traits = std::char_traits<_CharT> >
-class proxy_basic_streambuf : public std::basic_streambuf<_CharT, _Traits>
+class proxy_streambuf : public std::streambuf
 {
    public:
    
-      typedef _CharT 					char_type;
-      typedef _Traits 					traits_type;
-      typedef typename traits_type::int_type 		int_type;
-      typedef typename traits_type::pos_type 		pos_type;
-      typedef typename traits_type::off_type 		off_type;
-  
-      proxy_basic_streambuf(unsigned int numChars):
+      proxy_streambuf(std::streambuf* streambuf, unsigned int numChars):
+        _streambuf(streambuf),
         _numChars(numChars) {}
    
       /// Destructor deallocates no buffer space.
-      virtual ~proxy_basic_streambuf()  {}
+      virtual ~proxy_streambuf()  {}
 
+      std::streambuf* _streambuf;
       unsigned int _numChars;
 
     protected:
 
-      virtual int_type overflow (int_type __c = traits_type::eof())
+      virtual int_type uflow ()
       {
-        if (_numChars==0)
-        {
-            putchar('E');
-            return traits_type::eof();
-        }
-      
- 	 if (__c == traits_type::eof()) return '\n'; traits_type::not_eof(__c);
-         //putchar('');
+         if (_numChars==0) return -1;
          --_numChars;
-         return putchar(__c);
+         return _streambuf->sbumpc();
       }
 };
 
-typedef proxy_basic_streambuf<char> proxy_streambuf;
-
 int main( int argc, char **argv )
 {
+/*
     std::ifstream fin("GNUmakefile");
     std::istream& ins = fin;
 
-    proxy_streambuf mystreambuf(100);
-    std::cout.rdbuf(&mystreambuf);
+    proxy_streambuf mystreambuf(ins.rdbuf(),10000);
+    ins.rdbuf(&mystreambuf);
     
     while (!fin.eof())
     {
@@ -74,9 +62,9 @@ int main( int argc, char **argv )
     }
     std::cout<<"Exiting normally "<<std::endl;
     
-    std::cout.rdbuf(0);
+    ins.rdbuf(mystreambuf._streambuf);
+*/
 
-/*
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -184,8 +172,10 @@ int main( int argc, char **argv )
                 itr!=files.end();
                 ++itr)
             {
+                osg::Timer_t start = osg::Timer::instance()->tick();
                 osgDB::ReaderWriter::ReadResult result = archive.readObject(*itr);                
                 osg::ref_ptr<osg::Object> obj = result.getObject();
+                std::cout<<"readObejct time = "<<osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick())<<std::endl;
                 if (obj.valid())
                 {
                     if (obj.valid()) osgDB::writeObjectFile(*obj, *itr);
@@ -202,12 +192,11 @@ int main( int argc, char **argv )
             itr!=indexMap.end();
             ++itr)
         {
-            std::cout<<"    "<<itr->first<<"\t"<<itr->second<<std::endl;
+            std::cout<<"    "<<itr->first<<"\t"<<itr->second.first<<"\t"<<itr->second.second<<std::endl;
         }
 
     }
     
-*/    
     return 0;
 }
 

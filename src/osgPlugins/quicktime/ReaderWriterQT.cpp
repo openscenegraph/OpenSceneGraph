@@ -64,7 +64,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
             // origDepth in BYTES, buffDepth in BITS 
             
             if (pixels == 0) {
-                    std::cerr << "LoadBufferFromDarwinPath failed " << fileName.c_str() << QTfailureMessage() << std::endl;
+                    osg::notify(osg::WARN) << "LoadBufferFromDarwinPath failed " << fileName.c_str() << QTfailureMessage() << std::endl;
                     return 0;
             }                      
             
@@ -84,7 +84,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                     pixelFormat = GL_RGBA;
                     break;
                 default :
-                    std::cerr << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
+                    osg::notify(osg::WARN) << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
                     pixelFormat = (GLenum)-1;
                     return 0;
                     break;
@@ -145,7 +145,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                             }
                             break;
                         default :
-                            // std::cerr << "ERROR IN RETURNED PIXEL DEPTH, CANNOT COPE" << std::endl;
+                            // osg::notify(osg::WARN) << "ERROR IN RETURNED PIXEL DEPTH, CANNOT COPE" << std::endl;
                             return 0;
                             break;
                     }

@@ -35,6 +35,7 @@
 #define __TXPPAGEDLOD_H_
 
 #include <osg/PagedLOD>
+#include "TileMapper.h"
 
 namespace txp
 {
@@ -52,33 +53,15 @@ namespace txp
 
         inline void setTileId(int x, int y, int lod)
         {
-            _tileX = x; _tileY = y; _tileLOD = lod;
+            _tileIdentifier.set(x,y,lod);
         }
 
-        inline void addNeighbour(int x,int y)
-        {
-            Neighbour n;
-            n._x = x;
-            n._y = y;
-            _neighbours.push_back(n);
-        }
+        TileIdentifier _tileIdentifier;
 
-		int _tileX;
-        int _tileY;
-        int _tileLOD;
-
-		inline const int getLastTraversedChild() const { return _lastChildTraversed; }
 
     protected:
         virtual ~TXPPagedLOD();
 
-        int _lastChildTraversed;
-
-        struct Neighbour
-        {
-            int _x, _y;
-        };
-        std::vector<Neighbour> _neighbours;
     };
 
 } // namespace

@@ -39,8 +39,7 @@
 #include <map>
 #include <string>
 
-#include "TXPTileNode.h"
-#include "TXPArchive.h"
+#include "TileMapper.h"
 
 namespace txp
 {
@@ -50,8 +49,7 @@ public:
 
     TXPSeamLOD();
 
-    TXPSeamLOD(int x, int y, int lod, const osg::Vec3& center, float dmin,
-        float dmid, float dmax);
+    TXPSeamLOD(int x, int y, int lod, int dx, int dy);
 
     TXPSeamLOD(const TXPSeamLOD&,
         const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
@@ -60,49 +58,12 @@ public:
 
     virtual void traverse(osg::NodeVisitor& nv);
 
-    void setTileRef(bool* b)
-    {
-        _tileRef = b;
-    }
-
-    void setTxpNode(TXPTileNode* txpNode)
-    {
-        _txpNode = txpNode;
-    }
-
-    TXPTileNode* getTxpNode() const
-    {
-        return _txpNode;
-    }
-
-    void setArchive(TXPArchive* ar)
-    {
-        _archive = ar;
-    }
-
-    inline void setHiResPresent(bool p) { _hiResPresent = p; }
-    inline void setNonSeamChildrenIndex(int ix) { _nonSeamChildrenIndex = ix; }
-
 protected:
 
-    bool _hiResPresent;
+    TileIdentifier _tid;
 
-    int _nonSeamChildrenIndex;
-
-    int _neighbourTileX;
-    int _neighbourTileY;
-    int _neighbourTileLOD;
-
-    osg::Vec3 _center;
-
-    float _min;
-    float _mid;
-    float _max;
-
-    bool* _tileRef;
-
-    TXPTileNode* _txpNode;
-    TXPArchive* _archive;
+    int _dx;
+    int _dy;
 };
 
 }

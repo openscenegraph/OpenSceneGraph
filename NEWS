@@ -7,9 +7,15 @@ OSG News (most significant items from ChangeLog)
 
     >>> Support added for Solaris, texture cube mapping & muliple projections.
    
-    The OpenSceneGraph now has new Makefile systems which supports all Unix
-    compilation including the new addition to the family - Solaris!  Thanks 
-    to Sun Microsystems for providing the hardware to do the port.
+    The OpenSceneGraph now has a new Makefile system which supports all Unix
+    compilation including the new addition to the family - Solaris!  
+
+    OpenSceneGraph welcomes Solaris to the list of supported platforms.  This
+    release puts all of the OpenSceneGraph functionality at the fingertips of
+    Sun Microsystem's customers and developers.  Solaris users can now have
+    the benefit of a high performance scene graph for visual simulation, 
+    virtual reality, scientific visualization, CAD, and architectural 
+    walk-throughs.  Many thanks to Sun for providing resources for the port.
     
     Support has also been added for OpenGL's texture cube mapping which
     is ideal for accurate environmental reflections and much more.

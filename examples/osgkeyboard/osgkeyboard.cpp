@@ -47,7 +47,6 @@ void KeyboardModel::keyChange(int key,int value)
     if (itr!=_keyModelMap.end())
     {
         itr->second->setSingleChildOn(value);
-        
     }
 }
 
@@ -184,7 +183,7 @@ void KeyboardModel::createKeyboard()
     addKey(pos,osgGA::GUIEventAdapter::KEY_BackSpace,"Backspace",3.0f,0.5f);
 
     pos.x() = 0.0f;
-    pos.z() += 1.0f;
+    pos.z() += 1.5f;
     
     float F_height = 0.5f;
     addKey(pos,osgGA::GUIEventAdapter::KEY_Escape,"Esc",2.0f,F_height);
@@ -203,20 +202,74 @@ void KeyboardModel::createKeyboard()
 
 
     
-    float cursorMoveHeight=0.5f;
+    float cursorMoveHeight=0.35f;
 
     pos = middle;    
-    addKey(pos,osgGA::GUIEventAdapter::KEY_Left,"Left",2.0f,cursorMoveHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Left,"Left",1.0f,cursorMoveHeight);
     osg::Vec3 down = pos;
-    addKey(pos,osgGA::GUIEventAdapter::KEY_Down,"Down",2.0f,cursorMoveHeight);
-    addKey(pos,osgGA::GUIEventAdapter::KEY_Right,"Right",2.0f,cursorMoveHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Down,"Down",1.0f,cursorMoveHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Right,"Right",1.0f,cursorMoveHeight);
     
+    osg::Vec3 keypad = pos;
+    keypad.x()+=1.0f;
+
     pos = down;
     pos.z() += 1.0f;
     
-    addKey(pos,osgGA::GUIEventAdapter::KEY_Up,"Up",2.0f,cursorMoveHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Up,"Up",1.0f,cursorMoveHeight);
     
 
+    float homeHeight = 0.35f;
+    pos = middle;
+    pos.z() += 3.0;    
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Delete,"Delete",1.0f,homeHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_End,"End",1.0f,homeHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Page_Down,"Page\nDown",1.0f,homeHeight);
+    
+    pos = middle;
+    pos.z() += 4.0;    
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Insert,"Insert",1.0f,homeHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Home,"Home",1.0f,homeHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Page_Up,"Page\nUp",1.0f,homeHeight);
+
+    pos = middle;
+    pos.z() += 5.5;    
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Print,"PrtScrn\nSysRq",1.0f,homeHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Scroll_Lock,"ScrLk",1.0f,homeHeight);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Pause,"Pause\nBreak",1.0f,homeHeight);
+    
+    
+
+    pos = keypad;
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Insert,"0",2.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Delete,".",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Enter,"Enter",1.0f,homeHeight);
+    
+    pos = keypad;
+    pos.z() += 1.0f;
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_End,"1",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Down,"2",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Page_Down,"3",1.0f,1.0f);
+
+    pos = keypad;
+    pos.z() += 2.0f;
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Left,"4",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Begin,"5",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Right,"6",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Add,"+",1.0f,1.0f);
+
+    pos = keypad;
+    pos.z() += 3.0f;
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Home,"7",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Up,"8",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Page_Up,"9",1.0f,1.0f);
+
+    pos = keypad;
+    pos.z() += 4.0f;
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Num_Lock,"Num\nLock",1.0f,0.3f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Divide,"/",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Multiply,"*",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_KP_Subtract,"-",1.0f,1.0f);
 
 }
 

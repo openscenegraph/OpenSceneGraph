@@ -873,7 +873,7 @@ int main( int argc, char **argv )
             if (normalmap_3d.valid())
             {
                 normalmap_3d->setFileName(name_no_ext + "_normalmap.dds");            
-                osgDB::writeImageFile(*image_3d, normalmap_3d->getFileName());
+                osgDB::writeImageFile(*normalmap_3d, normalmap_3d->getFileName());
             }
             
             osgDB::writeNodeFile(*rootNode, outputFile);

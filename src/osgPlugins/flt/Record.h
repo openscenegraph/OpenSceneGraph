@@ -80,9 +80,9 @@ class Record : public osg::Referenced
         Record*         _pParent;
         FltFile*        _pFltFile;
 
-        friend Input;
-        friend FltFile;
-        friend PrimNodeRecord;
+        friend class Input;
+        friend class FltFile;
+        friend class PrimNodeRecord;
 
     private:
 
@@ -176,7 +176,7 @@ class PrimNodeRecord : public Record
         typedef std::vector<osg::ref_ptr<Record> > ChildList;
         ChildList _children;
 
-        friend FaceRecord;
+        friend class FaceRecord;
 };
 
 

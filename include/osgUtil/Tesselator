@@ -98,7 +98,7 @@ class OSGUTIL_EXPORT Tesselator
 
 	protected:
     
-        friend VertexIndexSet;
+        friend struct VertexIndexSet;
 
         typedef std::vector<VertexIndexSet>  CoordVec;
 

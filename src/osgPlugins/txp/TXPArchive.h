@@ -45,6 +45,8 @@
 #include <osg/PagedLOD>
 #include <osgSim/LightPointNode>
 
+#include <OpenThreads/Mutex>
+
 namespace txp
 {
 // this one handles different placement of light direction in osg and terrapage
@@ -140,6 +142,9 @@ public:
         double realMinRange,
         double realMaxRange,
         double usedMaxRange);
+
+	// Get the number of tiles for given LOD
+	bool getLODSize(int lod, int& x, int& y);
         
 protected:
 
@@ -170,6 +175,9 @@ protected:
     
     // Light attributes vector
     std::vector<DefferedLightAttribute>                _lights;
+
+	//
+	OpenThreads::Mutex  _mutex;
     
 };
 

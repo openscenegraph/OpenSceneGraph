@@ -1,9 +1,8 @@
 TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
-CXXFILES =\
-	ReaderWriterQT.cpp\
-	QTtexture.cpp\
+CXXFILES = ReaderWriterQT.cpp
+CFILES = QTtexture.c
 
 LIBS  += $(QUICKTIME) $(OSG_LIBS) $(OTHER_LIBS)
 

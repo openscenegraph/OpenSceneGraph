@@ -224,7 +224,10 @@ ifeq ($(OS),Darwin)
   LIB_EXT            = dylib
   QUICKTIME_LIB	    = -framework QuickTime
   TIFF_LIB	    = -ltiff
-
+  SRC_DIRS          = osg osgUtil osgDB osgGLUT osgPlugins Demos
+  PLUGIN_DIRS       = osg rgb lib3ds flt obj lwo txp bmp pic tga osgtgz tgz zip
+  DEMOS_DIRS        = hangglide osgbillboard osgcluster osgconv osgcopy osgcube osgimpostor\
+                       osgreflect osgscribe osgstereoimage osgtexture osgviews osgversion sgv
 endif
 
 #### Cygwin/Mingw specific definitions

@@ -22,7 +22,7 @@ namespace osg {
 /** If value is greater than or equal to minValue do nothing - legal value,
   * Otherwise set value to minValue, and warn that valueName was clamped.
   * Note this is effectively A=max(A,B). */
-template <class T>
+template <typename T>
 inline void clampGEQUAL(T& value,const T minValue,const char* valueName)
 {
     if (value<minValue)
@@ -35,7 +35,7 @@ inline void clampGEQUAL(T& value,const T minValue,const char* valueName)
 /** If value is less than or equal to maxValue do nothing - legal value,
   * Otherwise set value to maxValue, and warn that valueName was clamped.
   * Note this is effectively A=min(A,B). */
-template <class T>
+template <typename T>
 inline void clampLEQUAL(T& value,const T maxValue,const char* valueName)
 {
     if (value>maxValue)
@@ -50,7 +50,7 @@ inline void clampLEQUAL(T& value,const T maxValue,const char* valueName)
   * was clamped. Equivilant to calling
   *   clampGEQUAL( value, minValue, valueName );
   *   clampLEQUAL( value, maxValue, valueName ); */
-template <class T>
+template <typename T>
 inline void clampBetweenRange(T& value,const T minValue,const T maxValue,const char* valueName)
 {
     if (value<minValue)
@@ -70,7 +70,7 @@ inline void clampBetweenRange(T& value,const T minValue,const T maxValue,const c
 /** If value[i] is greater than or equal to minValue do nothing - legal value,
   * Otherwise set value[i] to minValue, and warn that valueName[i] was clamped.
   * Note this is effectively A[i]=max(A[i],B). */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArrayElementGEQUAL(A& value,unsigned int i,const T minValue,const char* valueName)
 {
     if (value[i]<minValue)
@@ -83,7 +83,7 @@ inline void clampArrayElementGEQUAL(A& value,unsigned int i,const T minValue,con
 /** If value[i] is less than or equal to maxValue do nothing - legal value,
   * Otherwise set value[i] to maxValue, and warn that valueName[i] was clamped.
   * Note this is effectively A[i]=min(A[i],B). */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArrayElementLEQUAL(A& value,unsigned int i,const T maxValue,const char* valueName)
 {
     if (value[i]>maxValue)
@@ -98,7 +98,7 @@ inline void clampArrayElementLEQUAL(A& value,unsigned int i,const T maxValue,con
   * valueName[i] was clamped. Equivilant to calling
   *   clampArrayElementGEQUAL( value, i, minValue, valueName );
   *   clampArrayElementLEQUAL( value, i, maxValue, valueName ); */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArrayElementBetweenRange(A& value,unsigned int i,const T minValue,const T maxValue,const char* valueName)
 {
     if (value[i]<minValue)
@@ -118,7 +118,7 @@ inline void clampArrayElementBetweenRange(A& value,unsigned int i,const T minVal
 /** For each element of value[] in the range (first,last), if the element is
   * greater than or equal to minValue do nothing - legal value, Otherwise
   * clamp the element to minValue, and warn that valueName[i] was clamped. */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArrayElementsGEQUAL(A& value,unsigned int first,unsigned int last,const T minValue,const char* valueName)
 {
     for(unsigned int i=first;i<=last;++i)
@@ -128,7 +128,7 @@ inline void clampArrayElementsGEQUAL(A& value,unsigned int first,unsigned int la
 /** For each element of value[] in the range (first,last), if the element is
   * less than or equal to maxValue do nothing - legal value, Otherwise clamp
   * the element to maxValue, and warn that valueName[i] was clamped. */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArrayElementsLEQUAL(A& value,unsigned int first,unsigned int last,const T maxValue,const char* valueName)
 {
     for(unsigned int i=first;i<=last;++i)
@@ -141,7 +141,7 @@ inline void clampArrayElementsLEQUAL(A& value,unsigned int first,unsigned int la
   * clamped. Equivalent to calling
   *   clampArrayElementsGEQUAL( value, first, last, minValue, valueName);
   *   clampArrayElementsLEQUAL( value, first, last, maxValue, valueName); */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArrayElementsBetweenRange(A& value,unsigned int first,unsigned int last,const T minValue,const T maxValue,const char* valueName)
 {
     for(unsigned int i=first;i<=last;++i)
@@ -152,7 +152,7 @@ inline void clampArrayElementsBetweenRange(A& value,unsigned int first,unsigned 
 /** For each element of the three-element array value[], if the element is
   * greater than or equal to minValue do nothing - legal value, Otherwise
   * clamp the element to minValue, and warn that valueName[i] was clamped. */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArray3GEQUAL(A& value,const T minValue,const char* valueName)
 {
     clampArrayElementsGEQUAL(value,0u,2u,minValue,valueName);
@@ -161,7 +161,7 @@ inline void clampArray3GEQUAL(A& value,const T minValue,const char* valueName)
 /** For each element of the three-element array value[], if the element is
   * less than or equal to maxValue do nothing - legal value, Otherwise clamp
   * the element to maxValue, and warn that valueName[i] was clamped. */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArray3LEQUAL(A& value,const T maxValue,const char* valueName)
 {
     clampArrayElementsLEQUAL(value,0u,2u,maxValue,valueName);
@@ -173,7 +173,7 @@ inline void clampArray3LEQUAL(A& value,const T maxValue,const char* valueName)
   * clamped. Equivalent to calling
   *   clampArray3GEQUAL( value, minValue, valueName);
   *   clampArray3LEQUAL( value, maxValue, valueName); */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArray3BetweenRange(A& value,const T minValue,const T maxValue,const char* valueName)
 {
     clampArrayElementsBetweenRange(value,0u,2u,minValue,maxValue,valueName);
@@ -184,7 +184,7 @@ inline void clampArray3BetweenRange(A& value,const T minValue,const T maxValue,c
 /** For each element of the four-element array value[], if the element is
   * greater than or equal to minValue do nothing - legal value, Otherwise
   * clamp the element to minValue, and warn that valueName[i] was clamped. */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArray4GEQUAL(A& value,const T minValue,const char* valueName)
 {
     clampArrayElementsGEQUAL(value,0u,3u,minValue,valueName);
@@ -193,7 +193,7 @@ inline void clampArray4GEQUAL(A& value,const T minValue,const char* valueName)
 /** For each element of the four-element array value[], if the element is
   * less than or equal to maxValue do nothing - legal value, Otherwise clamp
   * the element to maxValue, and warn that valueName[i] was clamped. */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArray4LEQUAL(A& value,const T maxValue,const char* valueName)
 {
     clampArrayElementsLEQUAL(value,0u,3u,maxValue,valueName);
@@ -205,7 +205,7 @@ inline void clampArray4LEQUAL(A& value,const T maxValue,const char* valueName)
   * clamped. Equivalent to calling
   *   clampArray4GEQUAL( value, minValue, valueName);
   *   clampArray4LEQUAL( value, maxValue, valueName); */
-template <class A, class T>
+template <typename A, typename T>
 inline void clampArray4BetweenRange(A& value,const T minValue,const T maxValue,const char* valueName)
 {
     clampArrayElementsBetweenRange(value,0u,3u,minValue,maxValue,valueName);

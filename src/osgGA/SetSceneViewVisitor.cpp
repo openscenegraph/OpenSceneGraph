@@ -5,10 +5,7 @@
 void osgGA::SetSceneViewVisitor::visit(osgGA::MatrixManipulator& cm)
 {
     cm.setNode(_sceneView->getSceneData());
-    if (_sceneView->getModelViewMatrix())
-    {
-        cm.setByInverseMatrix(*(_sceneView->getModelViewMatrix()));
-    }
+    cm.setByInverseMatrix(_sceneView->getViewMatrix());
     cm.init(*getGUIEventAdapter(),*getGUIActionAdapter());
     cm.home(*getGUIEventAdapter(),*getGUIActionAdapter());
 }

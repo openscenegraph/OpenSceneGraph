@@ -20,8 +20,6 @@ using namespace osgProducer;
 OsgSceneHandler::OsgSceneHandler( osg::DisplaySettings *ds) :
     _sceneView(new osgUtil::SceneView(ds))
 {
-    _sceneView->setProjectionMatrix( new osg::RefMatrix );
-    _sceneView->setModelViewMatrix( new osg::RefMatrix );
 }
 
 void OsgSceneHandler::init()
@@ -46,8 +44,8 @@ void OsgSceneHandler::clearImplementation(Producer::Camera& /*camera*/)
 void OsgSceneHandler::cullImplementation(Producer::Camera &cam) 
 {
 
-    _sceneView->getProjectionMatrix()->set(cam.getProjectionMatrix());
-    _sceneView->getModelViewMatrix()->set(cam.getPositionAndAttitudeMatrix());
+    _sceneView->getProjectionMatrix().set(cam.getProjectionMatrix());
+    _sceneView->getViewMatrix().set(cam.getPositionAndAttitudeMatrix());
 
     int x, y;
     unsigned int w, h;

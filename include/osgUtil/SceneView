@@ -128,17 +128,23 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         const osg::State* getState() const { return _state.get(); }
 
 
-        /** set a projection matrix. Note, this will override a camera's projection matrix if it is not NULL.*/
+        /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
         void setProjectionMatrix(const osg::Matrix& matrix) { _projectionMatrix = new osg::RefMatrix(matrix); }
-        void setProjectionMatrix(osg::RefMatrix* matrix) { _projectionMatrix = matrix; }
-        osg::RefMatrix* getProjectionMatrix() { return _projectionMatrix.get(); }
-        const osg::RefMatrix* getProjectionMatrix() const { return _projectionMatrix.get(); }
 
-        /** set a modelview matrix. Note, this will override a camera's modelview matrix if it is not NULL.*/
-        void setModelViewMatrix(const osg::Matrix& matrix) { _modelviewMatrix = new osg::RefMatrix(matrix); }
-        void setModelViewMatrix(osg::RefMatrix* matrix) { _modelviewMatrix = matrix; }
-        osg::RefMatrix* getModelViewMatrix() { return _modelviewMatrix.get(); }
-        const osg::RefMatrix* getModelViewMatrix() const { return _modelviewMatrix.get(); }
+        /** Get the projection matrix.*/
+        osg::Matrix& getProjectionMatrix() { return *_projectionMatrix; }
+
+        /** Get the const projection matrix.*/
+        const osg::Matrix& getProjectionMatrix() const { return *_projectionMatrix; }
+
+        /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
+        void setViewMatrix(const osg::Matrix& matrix) { _viewMatrix = new osg::RefMatrix(matrix); }
+
+        /** Get the view matrix. */
+        osg::Matrix& getViewMatrix() { return *_viewMatrix; }
+
+        /** Get the const view matrix. */
+        const osg::Matrix& getViewMatrix() const { return *_viewMatrix; }
 
         
         void setInitVisitor(osg::NodeVisitor* av) { _initVisitor = av; }
@@ -297,7 +303,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::StateSet>                 _localStateSet;
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::RefMatrix>                _projectionMatrix;
-        osg::ref_ptr<osg::RefMatrix>                _modelviewMatrix;
+        osg::ref_ptr<osg::RefMatrix>                _viewMatrix;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         osg::ref_ptr<osg::State>                    _state;
         

@@ -60,7 +60,9 @@ class TexturePool : public osg::Referenced
         TexturePool() {}
 
         osg::StateSet* getTexture(int nIndex);
+    	std::string* getTextureName(int nIndex);
         void addTexture(int nIndex, osg::StateSet* stateset);
+        void addTextureName(int nIndex, std::string* name);
 
     protected :
 
@@ -70,6 +72,8 @@ class TexturePool : public osg::Referenced
 
         typedef std::map<int,osg::ref_ptr<osg::StateSet> > TexturePaletteMap;
         TexturePaletteMap _textureMap;
+        typedef std::map<int,std::string* > TextureNameMap;
+        TextureNameMap _textureNameMap;
 };
 
 

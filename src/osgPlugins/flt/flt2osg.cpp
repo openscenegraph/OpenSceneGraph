@@ -201,9 +201,17 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
         case VERTEX_CT_OP:
             visitTextureVertex(osgPrimary, (TextureVertexRecord*)child);
             break;
-	default:
-	    osg::notify( osg::INFO ) << "flt::ConvertFromFLT::visitAncillary: "
-		<< "Unknown opcode: " << child->getOpcode() << "\n";
+
+        default:
+
+        #ifdef _DEBUG
+
+			osg::notify( osg::INFO ) << "flt::ConvertFromFLT::visitAncillary: "
+			<< "Unknown opcode: " << child->getOpcode() << "\n";
+			
+        #endif
+
+            break;
         }
     }
     return parent;
@@ -277,13 +285,15 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
                 osgPrim = visitRoadConstruction(osgParent, (GroupRecord*)child);
                 break;
         
+            default:
+
             #ifdef _DEBUG
             
-            default:
-              osg::notify(osg::INFO) << "In ConvertFromFLT::visitPrimaryNode(), unknown opcode: " << child->getOpcode() << std::endl;
-              break;
+                osg::notify(osg::INFO) << "In ConvertFromFLT::visitPrimaryNode(), unknown opcode: " << child->getOpcode() << std::endl;
 
             #endif
+
+                break;
             }
         }
     }
@@ -488,72 +498,10 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
     if (pTexturePool == NULL) return;
 
 
-    // Get StateSet containing texture from registry pool.
-    osg::StateSet *osgStateSet = Registry::instance()->getTexture(pFilename);
+	std::string* textureName = new std::string(pFilename);
+	pTexturePool->addTextureName(nIndex, textureName);
 
-    if (osgStateSet)
-    {
-        // Add texture to local pool to be able to get by index.
-        pTexturePool->addTexture(nIndex, osgStateSet);
-        return;     // Texture already loaded
-    }
-    
-    CERR<<"visitTexturePalette attempting to load ("<<pFilename<<")"<<std::endl;
-    
-    unsigned int unit = 0;
-
-    // Read texture and attribute file
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pFilename);
-    if (image.valid())
-    {
-        std::string attrName(pFilename);
-        attrName += ".attr";
-
-        // Read attribute file
-        char options[256];
-        sprintf(options,"FLT_VER %d",rec->getFlightVersion());
-
-        osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(options));
-        osg::StateSet* osgStateSet =
-            dynamic_cast<osg::StateSet*>(osgDB::readObjectFile(attrName));
-        osgDB::Registry::instance()->setOptions(NULL);      // Delete options
-
-        // if not found create default StateSet
-        if (osgStateSet == NULL)
-        {
-            osgStateSet = new osg::StateSet;
-
-            osg::Texture2D* osgTexture = new osg::Texture2D;
-            osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
-            osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
-            osgStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
-
-            osg::TexEnv* osgTexEnv = new osg::TexEnv;
-            osgTexEnv->setMode(osg::TexEnv::MODULATE);
-            osgStateSet->setTextureAttribute( unit, osgTexEnv );
-        }
-
-        osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(osgStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
-        if (osgTexture == NULL)
-        {
-            osgTexture = new osg::Texture2D;
-            osgStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
-        }
-
-        osgTexture->setImage(image.get());
-
-        // Add new texture to registry pool
-        // ( umm... should this have reference to the texture unit? RO. July2002)
-        Registry::instance()->addTexture(pFilename, osgStateSet);
-
-        // Also add to local pool to be able to get texture by index.
-        // ( umm... should this have reference to the texture unit? RO. July2002)
-        pTexturePool->addTexture(nIndex, osgStateSet);
-        
-        CERR<<"Registry::instance()->addTexture("<<pFilename<<", "<<osgStateSet<<")"<<std::endl;
-        CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<osgStateSet<<")"<<std::endl;
-        
-    }
+	CERR<<"pTexturePool->addTextureName("<<nIndex<<", "<<textureName<<")"<<std::endl;
 }
 
                                  /*osgParent*/
@@ -1176,8 +1124,95 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
         TexturePool* pTexturePool = rec->getFltFile()->getTexturePool();
         if (pTexturePool)
         {
+			int nIndex = (int)pSFace->iTexturePattern;
             osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *>
-                (pTexturePool->getTexture((int)pSFace->iTexturePattern));
+                (pTexturePool->getTexture(nIndex));
+
+			if (!textureStateSet)
+			{
+				// Texture with this index not registered yet, try to find it and register
+				std::string* textureName = pTexturePool->getTextureName(nIndex);
+				if ( textureName )
+				{
+					// Valid index, find the texture
+					// Get StateSet containing texture from registry pool.
+					textureStateSet = Registry::instance()->getTexture(*textureName);
+
+					if (textureStateSet)
+					{
+						// Add texture to local pool to be able to get by index.
+						pTexturePool->addTexture(nIndex, textureStateSet);
+					}
+					else
+					{
+						char pFilename[80];
+						strcpy( pFilename, textureName->c_str() );
+
+						CERR<<"setTexture attempting to load ("<<textureName<<")"<<std::endl;
+    
+						unsigned int unit = 0;
+
+						// Read texture and attribute file
+						osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pFilename);
+						if (image.valid())
+						{
+							std::string attrName(pFilename);
+							attrName += ".attr";
+
+							// Read attribute file
+							char options[256];
+							sprintf(options,"FLT_VER %d",rec->getFlightVersion());
+
+							osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(options));
+							textureStateSet =
+								dynamic_cast<osg::StateSet*>(osgDB::readObjectFile(attrName));
+							osgDB::Registry::instance()->setOptions(NULL);      // Delete options
+
+							// if not found create default StateSet
+							if (textureStateSet == NULL)
+							{
+								textureStateSet = new osg::StateSet;
+
+								osg::Texture2D* osgTexture = new osg::Texture2D;
+								osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+								osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
+								textureStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
+
+								osg::TexEnv* osgTexEnv = new osg::TexEnv;
+								osgTexEnv->setMode(osg::TexEnv::MODULATE);
+								textureStateSet->setTextureAttribute( unit, osgTexEnv );
+							}
+
+							osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
+							if (osgTexture == NULL)
+							{
+								osgTexture = new osg::Texture2D;
+								textureStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
+							}
+
+							osgTexture->setImage(image.get());
+
+						}
+						else
+						{
+							// invalid image file, register an empty state set 
+							textureStateSet = new osg::StateSet;
+						}
+
+						// Add new texture to registry pool
+						// ( umm... should this have reference to the texture unit? RO. July2002)
+						Registry::instance()->addTexture(pFilename, textureStateSet);
+
+						// Also add to local pool to be able to get texture by index.
+						// ( umm... should this have reference to the texture unit? RO. July2002)
+						pTexturePool->addTexture(nIndex, textureStateSet);
+    
+						CERR<<"Registry::instance()->addTexture("<<pFilename<<", "<<textureStateSet<<")"<<std::endl;
+						CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<textureStateSet<<")"<<std::endl;
+					}
+
+				}
+			}
 
             if (textureStateSet)
             {
@@ -1396,9 +1431,15 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 		    addMultiTexture( dgset, mtr );
 		}
 		break;
+
 	    default:
+
+        #ifdef _DEBUG
+
 		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
 		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+        #endif
+
 		break;
 	}
     }
@@ -1470,16 +1511,15 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
     int vertices = rec->numberOfVertices();
 
     // Add vertices to GeoSetBuilder
-    int i;
-    for (i=0; i < vertices; i++)
+    for (int j=0; j < vertices; j++)
     {
-        Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(i));
+        Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(j));
         if (vertex)
             addVertex(pBuilder, vertex);
     }
 
     // Visit ancillary records
-    for(i=0; i < rec->getNumChildren(); i++)
+    for(int i=0; i < rec->getNumChildren(); i++)
     {
         Record* child = rec->getChild(i);
 	CERR << "OPCODE: " << child->getOpcode() << "\n";
@@ -1506,9 +1546,15 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
 		}
 		break;
 	    default:
+
+        #ifdef _DEBUG
+
 		osg::notify( osg::WARN )
 		    << "flt::ConvertFromFLT::visitVertexList: "
 		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+
+        #endif
+
 		break;
 	}
     }
@@ -1749,8 +1795,14 @@ void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, Me
 		}
 		break;
 	    default:
-		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
+
+        #ifdef _DEBUG
+
+		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitMesh: "
 		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+
+        #endif
+
 		break;
 	}
     }

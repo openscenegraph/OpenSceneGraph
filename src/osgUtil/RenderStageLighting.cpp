@@ -56,4 +56,27 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
             
     }
 
+    for(TexUnitAttrMatrixListMap::iterator titr=_texAttrListMap.begin();
+        titr!=_texAttrListMap.end();
+        ++titr)
+    {
+        state.setActiveTextureUnit(titr->first);
+        
+        AttrMatrixList attrList = titr->second;
+        
+        for(AttrMatrixList::iterator litr=attrList.begin();
+            litr!=attrList.end();
+            ++litr)
+        {
+            state.applyModelViewMatrix((*litr).second.get());
+
+            // apply the light source.
+            litr->first->apply(state);
+
+            // tell state about.
+            state.haveAppliedTextureAttribute(titr->first, litr->first);
+
+        }
+
+    }
 }

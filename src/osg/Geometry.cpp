@@ -11,6 +11,7 @@ Geometry::Geometry()
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
+    _primitives(geometry._primitives),
     _vertexArray(geometry._vertexArray),
     _normalBinding(geometry._normalBinding),
     _normalArray(geometry._normalArray),

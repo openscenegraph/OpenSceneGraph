@@ -27,6 +27,22 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
 
     PagedLOD& lod = static_cast<PagedLOD&>(obj);
 
+    float radius;
+    if (fr[0].matchWord("Radius") && fr[1].getFloat(radius))
+    {
+        lod.setRadius(radius);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    unsigned int num;
+    if (fr[0].matchWord("NumChildrenThatCannotBeExpired") && fr[1].getUInt(num))
+    {
+        lod.setNumChildrenThatCannotBeExpired(num);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+    
     bool matchFirst;
     if ((matchFirst=fr.matchSequence("FileNameList {")) || fr.matchSequence("FileNameList %i {"))
     {
@@ -90,6 +106,10 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
 bool PagedLOD_writeLocalData(const Object& obj, Output& fw)
 {
     const PagedLOD& lod = static_cast<const PagedLOD&>(obj);
+
+    fw.indent() << "Radius "<<lod.getRadius()<<std::endl;
+    
+    fw.indent() << "NumChildrenThatCannotBeExpired "<<lod.getNumChildrenThatCannotBeExpired()<<std::endl;
 
     fw.indent() << "FileNameList "<<lod.getNumFileNames()<<" {"<< std::endl;
     fw.moveIn();

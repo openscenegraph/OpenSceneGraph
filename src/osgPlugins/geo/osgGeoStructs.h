@@ -16,6 +16,7 @@ AUTHOR:			Geoff Michel
 #ifndef _GEO_STRUCTS_H_
 #define _GEO_STRUCTS_H_
 
+
 class geoField { // holds one field of data as read from the disk of a GEO file
 public:
 	geoField() {
@@ -181,20 +182,28 @@ public:
 			storage=(unsigned char *)norms;
 		}
 	}
-	void warn(const char *type, unsigned tval) const { if (getType() != tval) 
-			osg::notify(osg::WARN) << "Wrong type " << type <<" expecting "<< getType() << std::endl;}
-	unsigned int getUInt() const {warn("getUInt",DB_UINT); return *((unsigned int*)storage);} // return int value
-	char *getChar() const {warn("getChar",DB_CHAR); return (char *)storage;} // return chars, eg for name or file name
-	int getInt() const {warn("getInt", DB_INT); return *((int*)storage);} // return int value
-	float getFloat() const {warn("getFloat", DB_FLOAT); return (*(float *)storage);	}
-	float *getFloatArr() const {warn("getFloatArr", DB_FLOAT); return ( (float *)storage);	}
-	float *getVec3Arr() const {warn("getVec3Arr", DB_VEC3F); return ( (float *)storage);	}
-	float *getMat44Arr() const {warn("getMat44Arr", DB_VEC16F); return ( (float *)storage);	}
-	double getDouble() const {warn("getDouble", DB_DOUBLE); return (*(double *)storage);	}
-	friend inline std::ostream& operator << (std::ostream& output, const geoField& gf)
+	inline void warn(const char *type, unsigned tval) const { if (getType() != tval) 
+			osg::notify(osg::WARN) << "Wrong type " << type << (int)tval <<" expecting "<< (int)getType() << std::endl;}
+	inline unsigned int getUInt() const {warn("getUInt",DB_UINT); return *((unsigned int*)storage);} // return int value
+	inline char *getChar() const {warn("getChar",DB_CHAR); return (char *)storage;} // return chars, eg for name or file name
+	inline unsigned char getUChar() const {warn("getUChar",DB_CHAR); return *storage;} // return chars, eg for name or file name
+	inline int getInt() const {
+		warn("getInt", DB_INT); 
+		int val;
+		memcpy(&val,storage,sizeof(int));
+		return val;} // return int value
+	inline float getFloat() const {warn("getFloat", DB_FLOAT); return (*(float *)storage);	}
+	inline float *getFloatArr() const {warn("getFloatArr", DB_FLOAT); return ( (float *)storage);	}
+	inline int *getIntArr() const {warn("getIntArr", DB_INT); return ( (int *)storage);	}
+	inline float *getVec3Arr() const {warn("getVec3Arr", DB_VEC3F); return ( (float *)storage);	}
+	inline float *getMat44Arr() const {warn("getMat44Arr", DB_VEC16F); return ( (float *)storage);	}
+	inline double getDouble() const {warn("getDouble", DB_DOUBLE); return (*(double *)storage);	}
+	inline unsigned char *getUCh4Arr() const {warn("getUChArr", DB_VEC4UC); return ((unsigned char *)storage);	}
+	inline bool getBool() const {warn("getBool", DB_BOOL_WITH_PADDING); return (storage[0] != 0);	}
+	friend inline std::ostream& operator << (osgDB::Output& output, const geoField& gf)
     {
 		if (gf.tokenId!=GEO_DB_LAST_FIELD) {
-			output << " Field:token " << (int)gf.tokenId << " type " << (int)gf.TypeId
+			output.indent() << " Field:token " << (int)gf.tokenId << " datatype " << (int)gf.TypeId
 				<< " num its " << gf.numItems << " size " << gf.storeSize << std::endl;
 			for (uint i=0; i<gf.numItems; i++) {
 				int j,k;
@@ -216,113 +225,122 @@ public:
 			if (st.ch[0]) output << st.ch[0];
 			break;
 		case DB_SHORT:
-			output << st.sh[0] << std::endl;
+			output.indent() << st.sh[0] << std::endl;
 			break;
 		case DB_INT:
-			output << st.in[0] << std::endl;
+			output.indent() << st.in[0] << std::endl;
 			break;
 		case DB_FLOAT:
-			output << st.ft[0] << std::endl;
+			output.indent() << st.ft[0] << std::endl;
 			break;
 		case DB_LONG:
-			output << st.ln[0] << std::endl;
+			output.indent() << st.ln[0] << std::endl;
 			break;
 		case DB_ULONG:
-			output << st.uln[0] << std::endl;
+			output.indent() << st.uln[0] << std::endl;
 			break;
 		case DB_DOUBLE:
-			output << st.dbl[0] << std::endl;
+			output.indent() << st.dbl[0] << std::endl;
 			break;
 		case DB_VEC2F:
-			for (j=0; j<2; j++) output << st.ft[j] << " ";
+			output.indent() << st.ft[0] << " " << st.ft[1];
 			output << std::endl;
 			break;
 		case DB_VEC3F:
+			output.indent();
 			for (j=0; j<3; j++) output << st.ft[j] << " ";
 			output << std::endl;
 			break;
 		case DB_VEC4F:
+			output.indent();
 			for (j=0; j<4; j++) output << st.ft[j] << " ";
 			output << std::endl;
 			break;
 		case DB_VEC16F:
 			for (j=0; j<4; j++) {
+				output.indent();
 				for (k=0; k<4; k++) output << st.ch[j*4+k] << " ";
 				output << std::endl;
 			}
 			break;
 		case DB_VEC2I:
-			for (j=0; j<2; j++) output << st.in[j] << " ";
-			output << std::endl;
+			output.indent() << st.in[0] << " " << st.in[1] << std::endl;
 			break;
 		case DB_VEC3I:
-			for ( j=0; j<3; j++) output << st.in[j] << " ";
+			output.indent();
+			for ( j=0; j<3; j++) output << " " << st.in[j];
 			output << std::endl;
 			break;
 		case DB_VEC4I:
+			output.indent();
 			for ( j=0; j<4; j++) output << st.in[j] << " ";
 			output << std::endl;
 			break;
 		case DB_VEC2D:
+			output.indent();
 			for ( j=0; j<2; j++) output << st.dbl[j] << " ";
 			output << std::endl;
 			break;
 		case DB_VEC3D:
+			output.indent();
 			for ( j=0; j<3; j++) output << st.dbl[j] << " ";
 			output << std::endl;
 			break;
 		case DB_VEC4D:
+			output.indent();
 			for ( j=0; j<4; j++) output << st.dbl[j] << " ";
 			output << std::endl;
 			break;
 		case DB_VEC16D:
 			for (j=0; j<4; j++) {
+				output.indent();
 				for (k=0; k<4; k++) output << st.dbl[j*4+k] << " ";
 				output << std::endl;
 			}
 			break;
 		case DB_VRTX_STRUCT:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_UINT:
-			output << st.uin[0] << std::endl;
+			output.indent() << st.uin[0] << std::endl;
 			break;
 		case DB_USHORT:
-			output << st.ush[0] << std::endl;
+			output.indent() << st.ush[0] << std::endl;
 			break;
 		case DB_UCHAR:
-			output << (int)st.ch[0] << std::endl;
+			output.indent() << (int)st.ch[0] << std::endl;
 			break;
 		case DB_EXT_STRUCT:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_SHORT_WITH_PADDING:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_CHAR_WITH_PADDING:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_USHORT_WITH_PADDING:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_UCHAR_WITH_PADDING:
-			output << (int)st.ch[0] << std::endl;
+			output.indent() << (int)st.ch[0] << std::endl;
 			break;
 		case DB_BOOL_WITH_PADDING:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_EXTENDED_FIELD_STRUCT:
-			output << st.ch[0] << std::endl;
+			output.indent() << st.ch[0] << std::endl;
 			break;
 		case DB_VEC4UC:
+			output.indent();
 			for ( j=0; j<4; j++) output << (int)st.uch[j] << " ";
 			output << std::endl;
 			break;
 		case DB_DISCRETE_MAPPING_STRUCT:
-			output << st.ch[i] << std::endl;
+			output.indent() << st.ch[i] << std::endl;
 			break;
 		case DB_BITFLAGS:
-			output << st.ch[i] << std::endl;
+			output.indent() << st.ch[i] << std::endl;
 			break;
 				}
 			}
@@ -341,11 +359,65 @@ public:
     typedef std::vector< geoField > geoFieldList;
 	georecord() {id=0; parent=NULL; instance=NULL;}
 	~georecord() {;}
-	inline int getType(void) const {return id;}
+	inline const uint getType(void) const {return id;}
 	inline void setparent(georecord *p) { parent=p;}
-	inline class georecord *getparent() { return parent;}
-	inline std::vector<georecord *> getchildren(void) { return children;}
+	inline class georecord *getparent() const { return parent;}
+	inline std::vector<georecord *> getchildren(void) const { return children;}
 	void addchild(class georecord *gr) { children.push_back(gr);}
+	georecord *getLastChild(void) const { return children.back();}
+	void addBehaviour(class georecord *gr) { behaviour.push_back(gr);}
+	std::vector< georecord *>getBehaviour() const { return behaviour;}
+	const geoFieldList getFields() const { return fields;}
+	inline bool isVar(void) const {
+		switch (id) {
+		case DB_DSK_FLOAT_VAR:
+		case DB_DSK_INT_VAR:
+		case DB_DSK_LONG_VAR:
+		case DB_DSK_DOUBLE_VAR:
+		case DB_DSK_BOOL_VAR:
+		case DB_DSK_FLOAT2_VAR:
+		case DB_DSK_FLOAT3_VAR:
+		case DB_DSK_FLOAT4_VAR:
+			
+		case DB_DSK_INTERNAL_VARS:		   		
+		case DB_DSK_LOCAL_VARS:		   		
+		case DB_DSK_EXTERNAL_VARS:
+			return true;
+		default:
+			return false;
+		}
+	}
+	inline bool isAction(void) const {
+		switch (id) {
+		case DB_DSK_CLAMP_ACTION:
+		case DB_DSK_RANGE_ACTION			:
+		case DB_DSK_ROTATE_ACTION			:
+		case DB_DSK_TRANSLATE_ACTION		:
+		case DB_DSK_SCALE_ACTION			:
+		case DB_DSK_ARITHMETIC_ACTION		:
+		case DB_DSK_LOGIC_ACTION			:
+		case DB_DSK_CONDITIONAL_ACTION	:
+		case DB_DSK_LOOPING_ACTION		:
+		case DB_DSK_COMPARE_ACTION		:
+		case DB_DSK_VISIBILITY_ACTION		:
+		case DB_DSK_STRING_CONTENT_ACTION	:
+		case DB_DSK_COLOR_RAMP_ACTION:
+		case DB_DSK_LINEAR_ACTION			:
+		case DB_DSK_TASK_ACTION			:
+		case DB_DSK_PERIODIC_ACTION		:
+		case DB_DSK_PERIODIC2_ACTION		:
+		case DB_DSK_TRIG_ACTION			:
+		case DB_DSK_INVERSE_ACTION		:
+		case DB_DSK_TRUNCATE_ACTION		:
+		case DB_DSK_ABS_ACTION			:
+		case DB_DSK_IF_THEN_ELSE_ACTION	:
+		case DB_DSK_DCS_ACTION			:
+			return true;
+		default:
+			return false;
+		}
+		return false;
+	}
 	void readfile(std::ifstream &fin) {
 		if (!fin.eof()) {
 			fin.read((char *)&id,sizeof(int));
@@ -366,7 +438,7 @@ public:
 			}
 		}
 	}
-	friend inline std::ostream& operator << (std::ostream& output, const georecord& gr)
+	friend inline std::ostream& operator << (osgDB::Output& output, const georecord& gr)
     {
 		if (gr.id == DB_DSK_PUSH) output << "Push" << std::endl;
 		else if (gr.id == DB_DSK_POP) output << "Pop" << std::endl;
@@ -398,27 +470,54 @@ public:
 		else if (gr.id == DB_DSK_EXTERNAL) output << "External" << std::endl;
 		else if (gr.id == DB_DSK_PAGE) output << "Page" << std::endl;
 		else if (gr.id == DB_DSK_COLOR_PALETTE) output << "Colour palette" << std::endl;
-		else output << " inp record " << gr.id << std::endl;
+		else if (gr.id == DB_DSK_INTERNAL_VARS) output << "Internal vars" << std::endl;
+		else if (gr.id == DB_DSK_LOCAL_VARS) output << "Local vars" << std::endl;
+		else if (gr.id == DB_DSK_EXTERNAL_VARS) output << "External vars" << std::endl;
+		// behaviours
+		else if (gr.id == DB_DSK_BEHAVIOR) output << "Behaviour" << std::endl;
+		else if (gr.id == DB_DSK_CLAMP_ACTION) output << "clamp action" << std::endl;
+		else if (gr.id == DB_DSK_RANGE_ACTION) output << "range action" << std::endl;
+		else if (gr.id == DB_DSK_ROTATE_ACTION) output << "rotate action" << std::endl;
+		else if (gr.id == DB_DSK_TRANSLATE_ACTION) output << "translate action" << std::endl;
+		else if (gr.id == DB_DSK_SCALE_ACTION) output << "scale action" << std::endl;
+		else if (gr.id == DB_DSK_ARITHMETIC_ACTION) output << "arithmetic action" << std::endl;
+		else if (gr.id == DB_DSK_LOGIC_ACTION) output << "logic action" << std::endl;
+		else if (gr.id == DB_DSK_CONDITIONAL_ACTION) output << "conditional action" << std::endl;
+		else if (gr.id == DB_DSK_LOOPING_ACTION) output << "looping action" << std::endl;
+		else if (gr.id == DB_DSK_COMPARE_ACTION) output << "compare action" << std::endl;
+		else if (gr.id == DB_DSK_VISIBILITY_ACTION) output << "visibility action" << std::endl;
+		else if (gr.id == DB_DSK_STRING_CONTENT_ACTION) output << "string content action" << std::endl;
+		// var types
+		else if (gr.id == DB_DSK_FLOAT_VAR) output << "Float var" << std::endl;
+		else if (gr.id == DB_DSK_INT_VAR) output << "Int var" << std::endl;
+		else if (gr.id == DB_DSK_LONG_VAR) output << "Long var" << std::endl;
+		else if (gr.id == DB_DSK_DOUBLE_VAR) output << "Double var" << std::endl;
+		else if (gr.id == DB_DSK_BOOL_VAR) output << "Bool var" << std::endl;
+ 		else output << " inp record " << gr.id << std::endl;
  
 		for (geoFieldList::const_iterator itr=gr.fields.begin();
 		itr!=gr.fields.end();
 		++itr)
 		{
-			output << *itr << std::endl;
+			output << *itr;
+		}
+		output << std::endl;
+		std::vector< georecord *>bhv=gr.getBehaviour();
+		for (std::vector< georecord *>::const_iterator rcitr=bhv.begin();
+		rcitr!=bhv.end();
+		++rcitr)
+		{
+			output.indent() << "Behave ";
+			output << (**rcitr);
 		}
 	    return output; 	// to enable cascading, monkey copy from osg\plane or \quat, Ubyte4, vec2,3,4,... 
 	}
-/*	const char *getCharField(const int fieldid) const {
-		const geoField *gfd=getField(fieldid);
-		if (gfd) return (char *)gfd->getstore(0);
-		return NULL;
-	} */
 	const geoField *getField(const int fieldid) const { // return field if it exists.
 		for (geoFieldList::const_iterator itr=fields.begin();
 		itr!=fields.end();
 		++itr)
 		{
-			if (itr->getToken()==fieldid) return &(*itr);
+			if (itr->getToken()==fieldid) return itr;
 		}
 		return NULL;
 	}
@@ -452,11 +551,13 @@ public:
 			}
 		}
 	}
+	unsigned int getNumFields(void) const { return fields.size();}
 private:
-	int id;
+	uint id;
 	std::vector<geoField> fields; // each geo record has a variable number of fields
 	class georecord *parent; // parent of pushed/popped records
 	class georecord *instance; // this record is an instance of the pointed to record
+	std::vector< georecord *> behaviour; // behaviour & action records of this record
 	std::vector< georecord *> children; // children of this record
 };
 

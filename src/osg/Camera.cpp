@@ -667,11 +667,11 @@ void Camera::calculateMatricesAndClippingVolume() const
 
     _clippingVolume.transformProvidingInverse(*_modelViewMatrix);
 
-    if (!_MP.valid()) _MP = new Matrix;
-    _MP->mult(*_modelViewMatrix,*_projectionMatrix);
+    if (!_mp.valid()) _mp = new Matrix;
+    _mp->mult(*_modelViewMatrix,*_projectionMatrix);
     
-    if (!_inverseMP.valid()) _inverseMP = new Matrix;
-    _inverseMP->invert(*_MP);
+    if (!_inversemp.valid()) _inversemp = new Matrix;
+    _inversemp->invert(*_mp);
 
     _dirty = false;
 }
@@ -686,9 +686,9 @@ void Camera::ensureOrthogonalUpVector()
 
 const bool Camera::project(const Vec3& obj,const Viewport& viewport,Vec3& win) const
 {
-    if (_MP.valid())
+    if (_mp.valid())
     {
-        Vec3 v = obj * (*_MP);
+        Vec3 v = obj * (*_mp);
         
         win.set(
                 (float)viewport.x() + (float)viewport.width()*(v[0]+1.0f)*0.5f,
@@ -704,7 +704,7 @@ const bool Camera::project(const Vec3& obj,const Viewport& viewport,Vec3& win) c
 
 const bool Camera::unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const
 {
-    if (_inverseMP.valid())
+    if (_inversemp.valid())
     {
         Vec3 v(
                 2.0f*(win[0]-(float)viewport.x())/viewport.width() - 1.0f,
@@ -712,7 +712,7 @@ const bool Camera::unproject(const Vec3& win,const Viewport& viewport,Vec3& obj)
                 2.0f*(win[2]) - 1.0f
                );
                
-        obj = v * (*_inverseMP);
+        obj = v * (*_inversemp);
         
         return true;
     }

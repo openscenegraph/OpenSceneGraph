@@ -227,7 +227,6 @@ void Matrix::postMult( const Matrix& other )
     }
 }
 
-#undef SET_ROW
 #undef INNER_PRODUCT
 
 
@@ -310,24 +309,51 @@ bool Matrix::invert( const Matrix& mat )
     return true;
 }
 
-bool Matrix::invertAffine( const Matrix& mat)
+void Matrix::makeOrtho(const double left, const double right,
+                       const double bottom, const double top,
+                       const double zNear, const double zFar)
 {
- // |   R    p |'   |   R' -R'p |'
- // |          | -> |           |
- // | 0 0 0  1 |    | 0 0 0  1  |
- for (unsigned int i=0; i<3; i++)
- {
-    operator()(i,3) = 0;
-    operator()(3,i) = -(mat(i,0)*mat(3,0) +
-                           mat(i,1)*mat(3,1) +
-                           mat(i,2)*mat(3,2));
-    for (unsigned int j=0; j<3; j++)
-    {
-       operator()(i,j) = mat(j,i);
-    }
- }
- operator()(3,3) = 1;
-
- return true;
+    // note transpose of Matrix wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
+    double tx = -(right+left)/(right-left);
+    double ty = -(top+bottom)/(top-bottom);
+    double tz = -(zFar+zNear)/(zFar-zNear);
+    SET_ROW(0, 2.0f/(right-left),              0.0f,               0.0f, 0.0f )
+    SET_ROW(1,              0.0f, 2.0f/(top-bottom),               0.0f, 0.0f )
+    SET_ROW(2,              0.0f,              0.0f, -2.0f/(zFar-zNear), 0.0f )
+    SET_ROW(3,                tx,                ty,                 tz, 1.0f )
 }
 
+void Matrix::makeFrustum(const double left, const double right,
+                         const double bottom, const double top,
+                         const double zNear, const double zFar)
+{
+    // note transpose of Matrix wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
+    double A = (right+left)/(right-left);
+    double B = (top+bottom)/(top-bottom);
+    double C = -(zFar+zNear)/(zFar-zNear);
+    double D = -2.0*zFar*zNear/(zFar-zNear);
+    SET_ROW(0, 2.0f*zNear/(right-left),                    0.0f, 0.0f,  0.0f )
+    SET_ROW(1,                    0.0f, 2.0f*zNear/(top-bottom), 0.0f,  0.0f )
+    SET_ROW(2,                       A,                       B,    C, -1.0f )
+    SET_ROW(3,                    0.0f,                   0.0f,     D,  0.0f )
+}
+
+
+void Matrix::makePerspective(const double fovy,const double aspectRatio,
+                             const double zNear, const double zFar)
+{
+    // calculate the appropriate left, right etc.
+    double tan_fovy = tan(DegreesToRadians(fovy*0.5));
+    double right  =  tan_fovy * aspectRatio * zNear;
+    double left   = -right;
+    double top    =  tan_fovy * zNear;
+    double bottom =  -top;
+    makeFrustum(left,right,bottom,top,zNear,zFar);
+}
+
+
+void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+{
+}
+
+#undef SET_ROW

@@ -233,6 +233,7 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     }
 
     // get the camera's modelview
+    osg::Matrix* projection = osgNew osg::Matrix(camera->getProjectionMatrix());
     osg::Matrix* modelview = osgNew osg::Matrix(camera->getModelViewMatrix());
 
 
@@ -243,8 +244,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
 
 
     cullVisitor->setLODBias(_lodBias);
-    cullVisitor->setCamera(*local_camera);
-    cullVisitor->setViewport(_viewport.get());
     cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
     
     cullVisitor->setRenderGraph(rendergraph);
@@ -266,7 +265,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     rendergraph->clean();
 
     renderStage->setViewport(_viewport.get());
-    renderStage->setCamera(local_camera);
     renderStage->setClearColor(_backgroundColor);
 
 
@@ -285,7 +283,9 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     if (_globalState.valid()) cullVisitor->pushStateSet(_globalState.get());
 
 
-    cullVisitor->pushCullViewState_ModelView(modelview);
+    cullVisitor->pushViewport(_viewport.get());
+    cullVisitor->pushProjectionMatrix(projection);
+    cullVisitor->pushModelViewMatrix(modelview);
     
 
     // traverse the scene graph to generate the rendergraph.
@@ -293,7 +293,9 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
 
     if (_globalState.valid()) cullVisitor->popStateSet();
     
-    cullVisitor->popCullViewState();
+    cullVisitor->popModelViewMatrix();
+    cullVisitor->popProjectionMatrix();
+    cullVisitor->popViewport();
 
 
     const osg::EarthSky* earthSky = cullVisitor->getEarthSky();

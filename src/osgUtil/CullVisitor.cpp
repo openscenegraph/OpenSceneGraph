@@ -1280,8 +1280,11 @@ void CullVisitor::apply(Impostor& node)
         if (impostorSprite)
         {
             // impostor found, now check to see if it is good enough to use
-            float error = impostorSprite->calcPixelError(*_camera,*_viewport,matrix);
-            
+            // RO, commenting this out since the calcPixelError's calling convention
+            // has changed, this version of CullVisitor is soon to be removed
+            // so this shouldn't be a problem.
+            //float error = impostorSprite->calcPixelError(*_camera,*_viewport,matrix);
+            float error = 0.0f;            
             if (error>_impostorPixelErrorThreshold)
             {
                 // chosen impostor sprite pixel error is too great to use
@@ -1403,9 +1406,10 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // set up to charge the same RenderStageLighting is the parent previous stage.
     rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
     
-    
-    osg::Camera* camera = osgNew osg::Camera(*_camera);
-    rtts->setCamera(camera);
+// temporarily commeted out to keep things compiling.    
+   osg::Camera* camera = osgNew osg::Camera(*_camera);
+//    rtts->setCamera(camera);
+std::cout<<"Warning:: in createImpostorSprite() rtts->setCamera(camera) call has been removed, this will cause problems."<<std::endl;
 
     // record the render bin, to be restored after creation
     // of the render to text

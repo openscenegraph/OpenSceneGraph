@@ -88,9 +88,35 @@ class SG_EXPORT Matrix : public Object
         void makeRotate( float angle, float x, float y, float z );
         void makeRotate( const Quat& );
         void makeRotate( float, float, float ); //Euler angles
+        
+        
+        /** Set to a orthographic projection. See glOrtho for further details.*/
+        void makeOrtho(const double left, const double right,
+                       const double bottom, const double top,
+                       const double zNear, const double zFar);
+
+        /** Set to a 2D orthographic projection. See glOrtho2D for further details.*/
+        inline void makeOrtho2D(const double left, const double right,
+                                const double bottom, const double top)
+        {
+            makeOrtho(left,right,bottom,top,-1.0,1.0);
+        }
+
+        /** Set to a perspective projection. See glFrustum for further details.*/
+        void makeFrustum(const double left, const double right,
+                         const double bottom, const double top,
+                         const double zNear, const double zFar);
+
+        /** Set to a symmetrical perspective projection, See gluPerspective for further details.
+          * Aspect ratio is defined as width/height.*/
+        void makePerspective(const double fovy,const double aspectRatio,
+                             const double zNear, const double zFar);
+
+        /** Set to the position and orientation as per a camera, using the same convention as gluLookAt. */
+        void makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
+        
 
         bool invert( const Matrix& );
-        bool invertAffine( const Matrix& );
 
         //basic utility functions to create new matrices
 	inline static Matrix identity( void );
@@ -101,7 +127,30 @@ class SG_EXPORT Matrix : public Object
         inline static Matrix rotate( const Vec3&, const Vec3& );
         inline static Matrix rotate( float, float, float, float );
         inline static Matrix rotate( float angle, const Vec3& axis);
-        inline static Matrix rotate( const Quat& );
+        inline static Matrix rotate( const Quat&);
+        
+        /** Create a orthographic projection. See glOrtho for further details.*/
+        inline static Matrix ortho(const double left, const double right,
+                                   const double bottom, const double top,
+                                   const double zNear, const double zFar);
+
+        /** Create a 2D orthographic projection. See glOrtho for further details.*/
+        inline static Matrix ortho2D(const double left, const double right,
+                                     const double bottom, const double top);
+
+        /** Create a perspective projection. See glFrustum for further details.*/
+        inline static Matrix frustum(const double left, const double right,
+                                     const double bottom, const double top,
+                                     const double zNear, const double zFar);
+
+        /** Create a symmetrical perspective projection, See gluPerspective for further details.
+          * Aspect ratio is defined as width/height.*/
+        inline static Matrix perspective(const double fovy,const double aspectRatio,
+                                         const double zNear, const double zFar);
+
+        /** Create the position and orientation as per a camera, using the same convention as gluLookAt. */
+        inline static Matrix lookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
+
 
         inline Vec3 preMult( const Vec3& v ) const;
         inline Vec3 postMult( const Vec3& v ) const;
@@ -226,6 +275,48 @@ inline Matrix Matrix::rotate(const Vec3& from, const Vec3& to )
     m.makeRotate(from,to);
     return m;
 }
+
+inline Matrix Matrix::ortho(const double left, const double right,
+                            const double bottom, const double top,
+                            const double zNear, const double zFar)
+{
+    Matrix m;
+    m.makeOrtho(left,right,bottom,top,zNear,zFar);
+    return m;
+}
+
+inline Matrix Matrix::ortho2D(const double left, const double right,
+                              const double bottom, const double top)
+{
+    Matrix m;
+    m.makeOrtho2D(left,right,bottom,top);
+    return m;
+}
+
+inline Matrix Matrix::frustum(const double left, const double right,
+                              const double bottom, const double top,
+                              const double zNear, const double zFar)
+{
+    Matrix m;
+    m.makeFrustum(left,right,bottom,top,zNear,zFar);
+    return m;
+}
+
+inline Matrix Matrix::perspective(const double fovy,const double aspectRatio,
+                                  const double zNear, const double zFar)
+{
+    Matrix m;
+    m.makePerspective(fovy,aspectRatio,zNear,zFar);
+    return m;
+}
+
+inline Matrix Matrix::lookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+{
+    Matrix m;
+    m.makeLookAt(eye,center,up);
+    return m;
+}
+
 
 inline Vec3 Matrix::postMult( const Vec3& v ) const
 {

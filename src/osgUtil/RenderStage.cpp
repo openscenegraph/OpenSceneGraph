@@ -97,9 +97,6 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     glDisable( GL_SCISSOR_TEST );
 #endif
 
-    // set up projection
-    state.applyProjectionMatrix(&(_camera->getProjectionMatrix()));
-
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 

@@ -235,73 +235,7 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
         _status = status;
         _input.open(filename.c_str(), std::ios_base::binary | std::ios_base::in);
 
-        if (_input)
-        {
-            osg::notify(osg::INFO)<<"trying OSGA_Archive::open("<<filename<<")"<<std::endl;
-
-            char identifier[4];
-            _input.read(identifier,4);
-
-            bool validArchive = (identifier[0]=='o' && identifier[1]=='s' && identifier[2]=='g' && identifier[3]=='a');
-            if (validArchive) 
-            {
-            
-                unsigned int endianTestWord=0;
-                _input.read(reinterpret_cast<char*>(&endianTestWord),4);
-                bool doEndianSwap = (endianTestWord!=ENDIAN_TEST_NUMBER);
-            
-                _input.read(reinterpret_cast<char*>(&_version),sizeof(_version));
-                if (doEndianSwap)
-                {
-                    osg::swapBytes(reinterpret_cast<char*>(&_version),sizeof(_version));
-                }
-                
-                osg::notify(osg::INFO)<<"OSGA_Archive::open() doEndianSwap="<<doEndianSwap<<std::endl;
-                osg::notify(osg::INFO)<<"OSGA_Archive::open() Version="<<_version<<std::endl;
-                
-                IndexBlock *indexBlock = 0;
-                
-                while ( (indexBlock=OSGA_Archive::IndexBlock::read(_input, doEndianSwap)) != 0)
-                {
-                    _indexBlockList.push_back(indexBlock);
-                    if (indexBlock->getPositionNextIndexBlock()==pos_type(0)) break;
-                    
-                    _input.seekg(indexBlock->getPositionNextIndexBlock());
-                }
-                
-                osg::notify(osg::INFO)<<"OSGA_Archive::open("<<filename<<") succeeded"<<std::endl;
-                
-                // now need to build the filename map.
-                _indexMap.clear();                
-
-                if (!_indexBlockList.empty())
-                {
-                    _masterFileName = _indexBlockList.front()->getFirstFileName();
-                }
-
-                for(IndexBlockList::iterator itr=_indexBlockList.begin();
-                    itr!=_indexBlockList.end();
-                    ++itr)
-                {
-                    (*itr)->getFileReferences(_indexMap);
-                }
-                
-                for(FileNamePositionMap::iterator mitr=_indexMap.begin();
-                    mitr!=_indexMap.end();
-                    ++mitr)
-                {
-                    osg::notify(osg::INFO)<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
-                }
-
-
-                return true;
-            }
-        }
-
-        osg::notify(osg::INFO)<<"OSGA_Archive::open("<<filename<<") failed"<<std::endl;
-
-        _input.close();
-        return false;
+        return _open(_input);
     }
     else
     {
@@ -356,6 +290,70 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
 bool OSGA_Archive::open(std::istream& fin)
 {
     osg::notify(osg::NOTICE)<<"OSGA_Archive::open"<<std::endl;
+    static_cast<std::istream&>(_output).rdbuf(fin.rdbuf());
+    return false;
+}
+
+bool OSGA_Archive::_open(std::istream& input)
+{
+    if (input)
+    {
+        char identifier[4];
+        input.read(identifier,4);
+
+        bool validArchive = (identifier[0]=='o' && identifier[1]=='s' && identifier[2]=='g' && identifier[3]=='a');
+        if (validArchive) 
+        {
+
+            unsigned int endianTestWord=0;
+            input.read(reinterpret_cast<char*>(&endianTestWord),4);
+            bool doEndianSwap = (endianTestWord!=ENDIAN_TEST_NUMBER);
+
+            input.read(reinterpret_cast<char*>(&_version),sizeof(_version));
+            if (doEndianSwap)
+            {
+                osg::swapBytes(reinterpret_cast<char*>(&_version),sizeof(_version));
+            }
+
+            osg::notify(osg::INFO)<<"OSGA_Archive::open() doEndianSwap="<<doEndianSwap<<std::endl;
+            osg::notify(osg::INFO)<<"OSGA_Archive::open() Version="<<_version<<std::endl;
+
+            IndexBlock *indexBlock = 0;
+
+            while ( (indexBlock=OSGA_Archive::IndexBlock::read(input, doEndianSwap)) != 0)
+            {
+                _indexBlockList.push_back(indexBlock);
+                if (indexBlock->getPositionNextIndexBlock()==pos_type(0)) break;
+
+                input.seekg(indexBlock->getPositionNextIndexBlock());
+            }
+
+            // now need to build the filename map.
+            _indexMap.clear();                
+
+            if (!_indexBlockList.empty())
+            {
+                _masterFileName = _indexBlockList.front()->getFirstFileName();
+            }
+
+            for(IndexBlockList::iterator itr=_indexBlockList.begin();
+                itr!=_indexBlockList.end();
+                ++itr)
+            {
+                (*itr)->getFileReferences(_indexMap);
+            }
+
+            for(FileNamePositionMap::iterator mitr=_indexMap.begin();
+                mitr!=_indexMap.end();
+                ++mitr)
+            {
+                osg::notify(osg::INFO)<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
+            }
+
+
+            return true;
+        }
+    }
     return false;
 }
 

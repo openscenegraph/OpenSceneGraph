@@ -498,6 +498,7 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
     }
 
     // create vertices.
+    
     osg::Vec3Array* osg_coords = new osg::Vec3Array(noVertex);
     geom->setVertexArray(osg_coords);
 
@@ -586,7 +587,12 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
         geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
     
+    osg::UByte4Array* osg_colors = new osg::UByte4Array(1);
+    (*osg_colors)[0].set(255,255,255,255);
+    geom->setColorArray(osg_colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     
+
     // create primitives
     int numIndices = faceList.size()*3;
     DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES,numIndices);
@@ -687,28 +693,44 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
 
     stateset->setAttribute(material);
 
-    bool decal = false;
-    //bool decal = true;
     bool textureTransparancy=false;
     osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
     if (texture1_map)
     {
         stateset->setTextureAttributeAndModes(0,texture1_map,osg::StateAttribute::ON);
         
-        // not sure exactly how to interpret what is best for .3ds
-        // but the default text env MODULATE doesn't work well, and
-        // DECAL seems to work better.
-        osg::TexEnv* texenv = new osg::TexEnv;
-        if (decal)
-        {
-            texenv->setMode(osg::TexEnv::DECAL);
+        if (!textureTransparancy)
+        {        
+            // from an email from Eric Hamil, September 30, 2003.
+            // According to the 3DS spec, and other
+            // software (like Max, Lightwave, and Deep Exploration) a 3DS material that has
+            // a non-white diffuse base color and a 100% opaque bitmap texture, will show the
+            // texture with no influence from the base color.
+            
+            // so we'll override material back to white.
+            // and no longer require the decal hack below...
+            osg::Vec4 white(1.0f,1.0f,1.0f,alpha);
+            material->setAmbient(osg::Material::FRONT_AND_BACK,white);
+            material->setDiffuse(osg::Material::FRONT_AND_BACK,white);
+            material->setSpecular(osg::Material::FRONT_AND_BACK,white);
         }
-        else
-        {
-            texenv->setMode(osg::TexEnv::MODULATE);
-        }
-
-        stateset->setTextureAttribute(0,texenv);
+        
+// no longer required...        
+//         bool decal = false;
+//         
+//         // not sure exactly how to interpret what is best for .3ds
+//         // but the default text env MODULATE doesn't work well, and
+//         // DECAL seems to work better.
+//         osg::TexEnv* texenv = new osg::TexEnv;
+//         if (decal)
+//         {
+//             texenv->setMode(osg::TexEnv::DECAL);
+//         }
+//         else
+//         {
+//             texenv->setMode(osg::TexEnv::MODULATE);
+//         }
+//        stateset->setTextureAttribute(0,texenv);
     }
 
     if (transparency>0.0f || textureTransparancy)

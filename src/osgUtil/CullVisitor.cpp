@@ -166,7 +166,7 @@ void CullVisitor::reset()
     _windowToModelFactor = 1.0f;
 }
 
-void CullVisitor::pushPolytope()
+void CullVisitor::pushCullingSet()
 {
     _modelviewPolytopeStack.push_back();
     osg::Polytope& cv = _modelviewPolytopeStack.back();
@@ -177,14 +177,20 @@ void CullVisitor::pushPolytope()
     _MVPW_Stack.push_back(0L);
 
     _windowToModelFactorDirty = true;
+    
+
+    _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back()));
+    
 }
 
-void CullVisitor::popPolytope()
+void CullVisitor::popCullingSet()
 {
     _modelviewPolytopeStack.pop_back();
     _MVPW_Stack.pop_back();
     
     _windowToModelFactorDirty = true;
+    
+    _modelviewCullingStack.pop_back();
 }
 
 void CullVisitor::pushViewport(osg::Viewport* viewport)
@@ -207,7 +213,17 @@ void CullVisitor::pushProjectionMatrix(Matrix* matrix)
     _projectionPolytopeStack.back().setToUnitFrustumWithoutNearFar();
     _projectionPolytopeStack.back().transformProvidingInverse(*matrix);
     
-    pushPolytope();
+    
+    osg::CullingSet* cullingSet = osgNew osg::CullingSet();
+    cullingSet->getFrustum().setToUnitFrustumWithoutNearFar();
+    cullingSet->getFrustum().transformProvidingInverse(*matrix);
+    
+    _projectionCullingStack.push_back(cullingSet);
+    
+    //_projectionCullingStack.push_back(osgNew osg::CullingSet(*_clipspaceCullingStack.back(),*matrix));
+
+
+    pushCullingSet();
 }
 
 void CullVisitor::popProjectionMatrix()
@@ -241,14 +257,16 @@ void CullVisitor::popProjectionMatrix()
     _projectionStack.pop_back();
     _projectionPolytopeStack.pop_back();
 
-    popPolytope();
+    _projectionCullingStack.pop_back();
+
+    popCullingSet();
 }
 
 void CullVisitor::pushModelViewMatrix(Matrix* matrix)
 {
     _modelviewStack.push_back(matrix);
     
-    pushPolytope();
+    pushCullingSet();
 
     // fast method for computing the eye point in local coords which doesn't require the inverse matrix.
     const float x_0 = (*matrix)(0,0);
@@ -285,7 +303,7 @@ void CullVisitor::popModelViewMatrix()
 {
     _modelviewStack.pop_back();
     _eyePointStack.pop_back();
-    popPolytope();
+    popCullingSet();
 
 
     osg::Vec3 lookVector(0.0f,0.0f,-1.0f);

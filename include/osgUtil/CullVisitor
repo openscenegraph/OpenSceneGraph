@@ -348,8 +348,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
 
 
-        void pushPolytope();
-        void popPolytope();
+        void pushCullingSet();
+        void popCullingSet();
 
         
 //         typedef std::vector<osg::Polytope>            PolytopeStack;
@@ -380,8 +380,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         typedef osg::fast_back_stack<CullingMode>                   CullingModeStack;
         CullingModeStack                                            _cullingModeStack;
 
-        typedef osg::fast_back_stack<osg::ref_ptr<osg::CullingSet> > ClippingStack;
-        ClippingStack                                                 _clippingSet;
+        typedef osg::fast_back_stack<osg::ref_ptr<osg::CullingSet> > CullingStack;
+        CullingStack                                                _clipspaceCullingStack;
+        CullingStack                                                _projectionCullingStack;
+        CullingStack                                                _modelviewCullingStack;
 
         
         unsigned int                                                _bbCornerNear;

@@ -18,6 +18,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
+#include <osgGA/NodeTrackerManipulator>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
@@ -27,28 +28,9 @@
 
 static osg::Vec3 defaultPos( 0.0f, 0.0f, 0.0f );
 static osg::Vec3 centerScope(0.0f, 0.0f, 0.0f);
-
-
-osg::Group* createSunLight()
-{
-    osg::Group* lightNode = new osg::Group;
-
-    osg::Light* sunLight = new osg::Light;
-    sunLight->setPosition( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
-    sunLight->setAmbient( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
-
-    osg::LightSource* sunLightSource = new osg::LightSource;
-    sunLightSource->setLight( sunLight );
     
-    lightNode->addChild( sunLightSource );
-    
-    osg::LightModel* lightModel = new osg::LightModel;
-    lightModel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-    lightNode->getOrCreateStateSet()->setAttribute(lightModel);
 
 
-    return lightNode;        
-}// end createSunLight
 
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
@@ -78,108 +60,6 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
     return animationPath;    
 }// end createAnimationPath
 
-
-osg::MatrixTransform* createEarthTranslationAndTilt( double RorbitEarth, double tiltEarth ) 
-{
-        osg::MatrixTransform* earthPositioned = new osg::MatrixTransform;
-        //earthPositioned->setDataVariance(osg::Object::STATIC);
-        earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, RorbitEarth, 0.0 ) )*
-                                     osg::Matrix::scale(1.0, 1.0, 1.0)*
-                                     osg::Matrix::rotate(osg::inDegrees( tiltEarth ),0.0f,0.0f,1.0f));
-                                     
-        return earthPositioned;
-}// end createEarthTranslationAndTilt
-
-
-osg::MatrixTransform* createRotation( double orbit, double speed )
-{
-    osg::Vec3 center( 0.0, 0.0, 0.0 );
-    float animationLength = 10.0f;
-    osg::AnimationPath* animationPath = createAnimationPath( center, orbit, animationLength );
-    
-    osg::MatrixTransform* rotation = new osg::MatrixTransform;
-    rotation->setUpdateCallback( new osg::AnimationPathCallback( animationPath, 0.0f, speed ) );
-    
-    return rotation;
-}// end createEarthRotation
-
-
-osg::MatrixTransform* createMoonTranslation( double RorbitMoon )
-{
-    osg::MatrixTransform* moonPositioned = new osg::MatrixTransform;
-    //earthPositioned->setDataVariance(osg::Object::STATIC);
-    //earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( RorbitEarth, 0.0, 0.0 ) )*
-    moonPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, RorbitMoon, 0.0 ) )*
-    //earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, 0.0, RorbitEarth ) )*
-                                 osg::Matrix::scale(1.0, 1.0, 1.0)*
-                                 osg::Matrix::rotate(osg::inDegrees(0.0f),0.0f,0.0f,1.0f));
-
-    return moonPositioned;
-}// end createMoonTranslation
-
-
-osg::Geode* createSpace( double radius, const std::string& name, const std::string& textureName )
-{
-    osg::Sphere *spaceSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), radius );
-    
-    osg::ShapeDrawable *sSpaceSphere = new osg::ShapeDrawable( spaceSphere );
-    
-    if( !textureName.empty() )
-    {
-        osg::Image* image = osgDB::readImageFile( textureName );
-        if ( image )
-        {
-            sSpaceSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
-
-            // reset the object color to white to allow the texture to set the colour.
-            sSpaceSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
-        }
-    }
-    
-    osg::Geode* geodeSpace = new osg::Geode();
-    geodeSpace->setName( name );
-    
-    geodeSpace->addDrawable( sSpaceSphere );
-
-    return( geodeSpace );
-    
-}// end createSpace
-
-
-osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName )
-{
-    // create a cube shape
-    osg::Sphere *planetSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), radius );
-
-    // create a container that makes the sphere drawable
-    osg::ShapeDrawable *sPlanetSphere = new osg::ShapeDrawable( planetSphere );
-
-    // set the object color
-    sPlanetSphere->setColor( color );
-
-    if( !textureName.empty() )
-    {
-        osg::Image* image = osgDB::readImageFile( textureName );
-        if ( image )
-        {
-            sPlanetSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
-
-            // reset the object color to white to allow the texture to set the colour.
-            sPlanetSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
-        }
-    }
- 
-   
-    // create a geode object to as a container for our drawable sphere object
-    osg::Geode* geodePlanet = new osg::Geode();
-    geodePlanet->setName( name );
-    
-    // add our drawable sphere to the geode container
-    geodePlanet->addDrawable( sPlanetSphere );
-
-    return( geodePlanet );
-    
-}// end createPlanet
 
 
 class SolarSystem
@@ -211,73 +91,13 @@ public:
         _radiusSpace = 300.0;
     }
     
-    osg::Group* built()
-    {
-        osg::Group* thisSystem = new osg::Group;
-        
-        osg::StateSet* sunStateSet = new osg::StateSet;
-        osg::Material* material = new osg::Material;
-        material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 0.0f, 0.0f ) );
-        sunStateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
-        
-        
-        
-        // create the sun
-        osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 0, 0, 0, 1.0f), "" );
-        sun->setStateSet( sunStateSet );
-        
-        // stick sun right under root, no transformations for the sun
-        thisSystem->addChild( sun );
-        
-        
-        // create light source in the sun
-        osg::Group* sunLight = createSunLight();
-        
-        //creating right side of the graph with earth and moon and the rotations above it
-        
-        // create earth and moon
-        osg::Node* earth = createPlanet( _radiusEarth, "Earth", osg::Vec4( 0.0f, 0.0f, 1.0f, 1.0f), "Images/land_shallow_topo_2048.jpg" );
-        osg::Node* moon = createPlanet( _radiusMoon, "Moon", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f), "Images/moon256128.TGA" );
-        
-        // create transformations for the earthMoonGroup
-        osg::MatrixTransform* aroundSunRotation = createRotation( _RorbitEarth, _rotateSpeedEarthAndMoon );
-        osg::MatrixTransform* earthPosition = createEarthTranslationAndTilt( _RorbitEarth, _tiltEarth );
-        
-        //Group with earth and moon under it
-        osg::Group* earthMoonGroup = new osg::Group;
-        
-        //transformation to rotate the earth around itself
-        osg::MatrixTransform* earthRotationAroundItself = createRotation ( 0.0, _rotateSpeedEarth );
-        
-        //transformations for the moon
-        osg::MatrixTransform* moonAroundEarthXform = createRotation( _RorbitMoon, _rotateSpeedMoon );
-        osg::MatrixTransform* moonTranslation = createMoonTranslation( _RorbitMoon );
-        
-        
-        moonTranslation->addChild( moon );
-        moonAroundEarthXform->addChild( moonTranslation );
-        earthMoonGroup->addChild( moonAroundEarthXform );
-        
-        earthRotationAroundItself->addChild( earth );
-        earthMoonGroup->addChild( earthRotationAroundItself );
-        
-        
-        earthPosition->addChild( earthMoonGroup );
-        aroundSunRotation->addChild( earthPosition );
-        
-        sunLight->addChild( aroundSunRotation );
-        
-        thisSystem->addChild( sunLight );
-
-#if 0
-        // add space, but don't light it, as its not illuminated by our sun
-        osg::Node* space = createSpace( _radiusSpace, "Space", "Images/spacemap1.jpg" );
-        space->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-        thisSystem->addChild( space );
-#endif        
-                
-        return( thisSystem );
-    }
+    osg::MatrixTransform* createEarthTranslationAndTilt();
+    osg::MatrixTransform* createRotation( double orbit, double speed );
+    osg::MatrixTransform* createMoonTranslation();
+    osg::Geode* createSpace( const std::string& name, const std::string& textureName );
+    osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName );
+    osg::Group* createSunLight();
+    osg::Group* built();
     
     void printParameters()
     {
@@ -296,6 +116,27 @@ public:
     
 };  // end SolarSystem
 
+class FindNamedNodeVisitor : public osg::NodeVisitor
+{
+public:
+    FindNamedNodeVisitor(const std::string& name):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _name(name) {}
+    
+    virtual void apply(osg::Node& node)
+    {
+        if (node.getName()==_name)
+        {
+            _foundNodes.push_back(&node);
+        }
+        traverse(node);
+    }
+    
+    typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
+
+    std::string _name;
+    NodeList _foundNodes;
+};
 
 int main( int argc, char **argv )
 {
@@ -311,7 +152,7 @@ int main( int argc, char **argv )
     osgProducer::Viewer viewer(arguments);
 
     // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    viewer.setUpViewer(osgProducer::Viewer::ESCAPE_SETS_DONE | osgProducer::Viewer::VIEWER_MANIPULATOR | osgProducer::Viewer::STATE_MANIPULATOR);
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -328,6 +169,39 @@ int main( int argc, char **argv )
     while (arguments.read("--RorbitMoon",solarSystem._RorbitMoon)) { }
     while (arguments.read("--rotateSpeedMoon",solarSystem._rotateSpeedMoon)) { }
     while (arguments.read("--radiusSpace",solarSystem._radiusSpace)) { }
+    
+    
+    osgGA::NodeTrackerManipulator::TrackerMode trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
+    std::string mode;
+    while (arguments.read("--tracker-mode",mode))
+    {
+        if (mode=="NODE_CENTER_AND_ROTATION") trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
+        else if (mode=="NODE_CENTER_AND_AZIM") trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_AZIM;
+        else if (mode=="NODE_CENTER") trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER;
+        else
+        {
+            std::cout<<"Unrecognized --tracker-mode option "<<mode<<", valid options are:"<<std::endl;
+            std::cout<<"    NODE_CENTER_AND_ROTATION"<<std::endl;
+            std::cout<<"    NODE_CENTER_AND_AZIM"<<std::endl;
+            std::cout<<"    NODE_CENTER"<<std::endl;
+            return 1;
+        }
+    }
+    
+    
+    osgGA::NodeTrackerManipulator::RotationMode rotationMode = osgGA::NodeTrackerManipulator::TRACKBALL;
+    while (arguments.read("--rotation-mode",mode))
+    {
+        if (mode=="TRACKBALL") rotationMode = osgGA::NodeTrackerManipulator::TRACKBALL;
+        else if (mode=="ELEVATION_AZIM") rotationMode = osgGA::NodeTrackerManipulator::ELEVATION_AZIM;
+        else
+        {
+            std::cout<<"Unrecognized --rotation-mode option "<<mode<<", valid options are:"<<std::endl;
+            std::cout<<"    TRACKBALL"<<std::endl;
+            std::cout<<"    ELEVATION_AZIM"<<std::endl;
+            return 1;
+        }
+    }
     
 
     solarSystem.printParameters();
@@ -362,29 +236,128 @@ int main( int argc, char **argv )
     }
     
     
-    osg::Group* root = solarSystem.built();
-        
-    /*
-    // tilt the scene so the default eye position is looking down on the model.
-    osg::MatrixTransform* rootnode = new osg::MatrixTransform;
-    rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
-    rootnode->addChild(model);
-    */
+    osg::Group* root = new osg::Group;
 
+    osg::Group* sunLight = solarSystem.createSunLight();
+    root->addChild(sunLight);
+
+    // create the sun
+    osg::Node* sun = solarSystem.createPlanet( solarSystem._radiusSun, "Sun", osg::Vec4( 1.0, 1.0, 0, 1.0f), "" );
+    osg::StateSet* sunStateSet = sun->getOrCreateStateSet();
+    osg::Material* material = new osg::Material;
+    material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 0.0f, 0.0f ) );
+    sunStateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
+
+    // stick sun right under root, no transformations for the sun
+    sunLight->addChild( sun );
+
+    // create light source in the sun
+
+    // create earth and moon
+    osg::Node* earth = solarSystem.createPlanet( solarSystem._radiusEarth, "Earth", osg::Vec4( 0.0f, 0.0f, 1.0f, 1.0f), "Images/land_shallow_topo_2048.jpg" );
+    osg::Node* moon = solarSystem.createPlanet( solarSystem._radiusMoon, "Moon", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f), "Images/moon256128.TGA" );
+
+    // create transformations for the earthMoonGroup
+    osg::MatrixTransform* aroundSunRotation = solarSystem.createRotation( solarSystem._RorbitEarth, solarSystem._rotateSpeedEarthAndMoon );
+    osg::MatrixTransform* earthPosition = solarSystem.createEarthTranslationAndTilt();
+
+
+    //Group with earth and moon under it
+    osg::Group* earthMoonGroup = new osg::Group;
+    
+
+    //transformation to rotate the earth around itself
+    osg::MatrixTransform* earthRotationAroundItself = solarSystem.createRotation ( 0.0, solarSystem._rotateSpeedEarth );
+
+    //transformations for the moon
+    osg::MatrixTransform* moonAroundEarthXform = solarSystem.createRotation( solarSystem._RorbitMoon, solarSystem._rotateSpeedMoon );
+    osg::MatrixTransform* moonTranslation = solarSystem.createMoonTranslation();
+
+
+    moonTranslation->addChild( moon );
+    moonAroundEarthXform->addChild( moonTranslation );
+    earthMoonGroup->addChild( moonAroundEarthXform );
+
+    earthRotationAroundItself->addChild( earth );
+
+    earthMoonGroup->addChild( earthRotationAroundItself );
+
+    earthPosition->addChild( earthMoonGroup );
+
+    aroundSunRotation->addChild( earthPosition );
+
+    sunLight->addChild( aroundSunRotation );
+
+#if 0
+    // add space, but don't light it, as its not illuminated by our sun
+    osg::Node* space = solarSystem.createSpace( "Space", "Images/spacemap.jpg" );
+    space->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    root->addChild( space );
+#endif
+   
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
+    //optimzer.optimize( dynamic_cast<osg::CoordinateSystemNode*>( root.get() ) );
     optimzer.optimize( root );
      
     // set the scene to render
     viewer.setSceneData( root );
 
+
+    // set up tracker manipulators, once for each astral body
+    {
+        FindNamedNodeVisitor fnnv("Sun");
+        root->accept(fnnv);
+
+        if (!fnnv._foundNodes.empty())
+        {
+            // set up the node tracker.
+            osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm->setTrackerMode( trackerMode );
+            tm->setRotationMode( rotationMode );
+            tm->setTrackNode( fnnv._foundNodes.front().get() );
+
+            unsigned int num = viewer.addCameraManipulator( tm );
+            viewer.selectCameraManipulator( num );
+        }
+    }    
+
+    {
+        FindNamedNodeVisitor fnnv("Moon");
+        root->accept(fnnv);
+
+        if (!fnnv._foundNodes.empty())
+        {
+            // set up the node tracker.
+            osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm->setTrackerMode( trackerMode );
+            tm->setRotationMode( rotationMode );
+            tm->setTrackNode( fnnv._foundNodes.front().get() );
+
+            unsigned int num = viewer.addCameraManipulator( tm );
+            viewer.selectCameraManipulator( num );
+        }
+    }    
+
+    {
+        FindNamedNodeVisitor fnnv("Earth");
+        root->accept(fnnv);
+
+        if (!fnnv._foundNodes.empty())
+        {
+            // set up the node tracker.
+            osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm->setTrackerMode( trackerMode );
+            tm->setRotationMode( rotationMode );
+            tm->setTrackNode( fnnv._foundNodes.front().get() );
+
+            unsigned int num = viewer.addCameraManipulator( tm );
+            viewer.selectCameraManipulator( num );
+        }
+    }    
+    
     // create the windows and run the threads.
     viewer.realize();
-    
-    osg::Matrix lookAt;
-    lookAt.makeLookAt( osg::Vec3(0.0f, -80.0f, 0.0f), centerScope, osg::Vec3(0.0f, 0.0f, 1.0f ) );
-
-    viewer.setView( lookAt );
     
     viewer.setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 
@@ -406,4 +379,198 @@ int main( int argc, char **argv )
     viewer.sync();
 
     return 0;
-}
+}// end main
+
+
+osg::MatrixTransform* SolarSystem::createEarthTranslationAndTilt() 
+{
+        osg::MatrixTransform* earthPositioned = new osg::MatrixTransform;
+        earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, _RorbitEarth, 0.0 ) )*
+                                     osg::Matrix::scale(1.0, 1.0, 1.0)*
+                                     osg::Matrix::rotate(osg::inDegrees( _tiltEarth ),0.0f,0.0f,1.0f));
+
+        return earthPositioned;
+}// end SolarSystem::createEarthTranslationAndTilt
+
+
+osg::MatrixTransform* SolarSystem::createRotation( double orbit, double speed )
+{
+    osg::Vec3 center( 0.0, 0.0, 0.0 );
+    float animationLength = 10.0f;
+    osg::AnimationPath* animationPath = createAnimationPath( center, orbit, animationLength );
+
+    osg::MatrixTransform* rotation = new osg::MatrixTransform;
+    rotation->setUpdateCallback( new osg::AnimationPathCallback( animationPath, 0.0f, speed ) );
+
+    return rotation;
+}// end SolarSystem::createEarthRotation
+
+
+osg::MatrixTransform* SolarSystem::createMoonTranslation()
+{
+    osg::MatrixTransform* moonPositioned = new osg::MatrixTransform;
+    moonPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, _RorbitMoon, 0.0 ) )*
+                                 osg::Matrix::scale(1.0, 1.0, 1.0)*
+                                 osg::Matrix::rotate(osg::inDegrees(0.0f),0.0f,0.0f,1.0f));
+
+    return moonPositioned;
+}// end SolarSystem::createMoonTranslation
+    
+    
+osg::Geode* SolarSystem::createSpace( const std::string& name, const std::string& textureName )
+{
+    osg::Sphere *spaceSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), _radiusSpace );
+
+    osg::ShapeDrawable *sSpaceSphere = new osg::ShapeDrawable( spaceSphere );
+
+    if( !textureName.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName );
+        if ( image )
+        {
+            sSpaceSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+
+            // reset the object color to white to allow the texture to set the colour.
+            sSpaceSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+        }
+    }
+
+    osg::Geode* geodeSpace = new osg::Geode();
+    geodeSpace->setName( name );
+
+    geodeSpace->addDrawable( sSpaceSphere );
+
+    return( geodeSpace );
+
+}// end SolarSystem::createSpace
+
+    
+osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName )
+{
+    // create a cube shape
+    osg::Sphere *planetSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), radius );
+
+    // create a container that makes the sphere drawable
+    osg::ShapeDrawable *sPlanetSphere = new osg::ShapeDrawable( planetSphere );
+
+    // set the object color
+    sPlanetSphere->setColor( color );
+
+    if( !textureName.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName );
+        if ( image )
+        {
+            sPlanetSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+
+            // reset the object color to white to allow the texture to set the colour.
+            sPlanetSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+        }
+    }
+
+
+    // create a geode object to as a container for our drawable sphere object
+    osg::Geode* geodePlanet = new osg::Geode();
+    geodePlanet->setName( name );
+
+    // add our drawable sphere to the geode container
+    geodePlanet->addDrawable( sPlanetSphere );
+
+    return( geodePlanet );
+
+}// end SolarSystem::createPlanet
+    
+osg::Group* SolarSystem::createSunLight()
+{
+
+    osg::LightSource* sunLightSource = new osg::LightSource;
+
+    osg::Light* sunLight = sunLightSource->getLight();
+    sunLight->setPosition( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+    sunLight->setAmbient( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+
+    sunLightSource->setLight( sunLight );
+    sunLightSource->setLocalStateSetModes( osg::StateAttribute::ON );
+    sunLightSource->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+
+    osg::LightModel* lightModel = new osg::LightModel;
+    lightModel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    sunLightSource->getOrCreateStateSet()->setAttribute(lightModel);
+
+
+    return sunLightSource;
+}// end SolarSystem::createSunLight
+    
+
+/*
+osg::Group* SolarSystem::built()
+{
+    osg::Group* thisSystem = new osg::Group;
+
+    // create light source in the sun
+    osg::Group* sunLight = createSunLight();
+    thisSystem->addChild( sunLight );
+
+
+    // create the sun
+    osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 0, 0, 0, 1.0f), "" );
+    osg::StateSet* sunStateSet = sun->getOrCreateStateSet();
+    osg::Material* material = new osg::Material;
+    material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 0.0f, 0.0f ) );
+    sunStateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
+
+    if( !sun )
+    {
+        std::cout << "Sonne konnte nicht erstellt werden!" << std::endl;
+        exit(0);
+    }
+    sun->setStateSet( sunStateSet );
+
+    // stick sun right under root, no transformations for the sun
+    sunLight->addChild(sun);
+
+
+    //creating right side of the graph with earth and moon and the rotations above it
+
+    // create earth and moon
+    osg::Node* earth = createPlanet( _radiusEarth, "Earth", osg::Vec4( 0.0f, 0.0f, 1.0f, 1.0f), "Images/land_shallow_topo_2048.jpg" );
+    osg::Node* moon = createPlanet( _radiusMoon, "Moon", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f), "Images/moon256128.TGA" );
+
+    // create transformations for the earthMoonGroup
+    osg::MatrixTransform* aroundSunRotation = createRotation( _RorbitEarth, _rotateSpeedEarthAndMoon );
+    osg::MatrixTransform* earthPosition = createEarthTranslationAndTilt( _RorbitEarth, _tiltEarth );
+
+    //Group with earth and moon under it
+    osg::Group* earthMoonGroup = new osg::Group;
+
+    //transformation to rotate the earth around itself
+    osg::MatrixTransform* earthRotationAroundItself = createRotation ( 0.0, _rotateSpeedEarth );
+
+    //transformations for the moon
+    osg::MatrixTransform* moonAroundEarthXform = createRotation( _RorbitMoon, _rotateSpeedMoon );
+    osg::MatrixTransform* moonTranslation = createMoonTranslation( _RorbitMoon );
+
+
+    moonTranslation->addChild( moon );
+    moonAroundEarthXform->addChild( moonTranslation );
+    earthMoonGroup->addChild( moonAroundEarthXform );
+
+    earthRotationAroundItself->addChild( earth );
+
+    earthMoonGroup->addChild( earthRotationAroundItself );
+
+    earthPosition->addChild( earthMoonGroup );
+
+
+    aroundSunRotation->addChild( earthPosition );
+
+    sunLight->addChild( aroundSunRotation );
+
+    // add space, but don't light it, as its not illuminated by our sun
+    osg::Node* space = createSpace( _radiusSpace, "Space", "Images/spacemap.jpg" );
+    space->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    thisSystem->addChild( space );
+
+    return( thisSystem );
+}// end SolarSystem::built()
+*/

@@ -174,39 +174,13 @@ void TrPageArchive::LoadMaterials()
             // TODO : multitextuting
             // also note that multitexturing in terrapage can came from two sides
             // - multiple textures per material, and multiple materials per geometry
-            if(numMatTex)
+            if( numMatTex )
             {
-                int texId;
-                trpgTextureEnv texEnv;
-                mat->GetTexture(0,texId,texEnv);
-                
-                // Set up texture environment
-                TexEnv       *osg_texenv       = new TexEnv();
-                int32 te_mode;
-                texEnv.GetEnvMode(te_mode);
-                switch( te_mode )
-                {
-                case trpgTextureEnv::Alpha :
-                    osg_texenv->setMode(TexEnv::REPLACE);
-                    break;
-                case trpgTextureEnv::Decal:
-                    osg_texenv->setMode(TexEnv::DECAL);
-                    break;
-                case trpgTextureEnv::Blend :
-                    osg_texenv->setMode(TexEnv::BLEND);
-                    break;
-                case trpgTextureEnv::Modulate :
-                    osg_texenv->setMode(TexEnv::MODULATE);
-                    break;
-                }
-                
-                osg_state_set->setTextureAttribute(0,osg_texenv);
-                
                 Material     *osg_material     = new Material;
                 
                 float64 alpha;
                 mat->GetAlpha(alpha);
-                
+             
                 trpgColor color;
                 mat->GetAmbient(color);
                 osg_material->setAmbient( Material::FRONT_AND_BACK , 
@@ -246,27 +220,57 @@ void TrPageArchive::LoadMaterials()
                     osg_state_set->setAttributeAndModes(osg_alpha_func, StateAttribute::ON);
                 }
                 
-                int wrap_s, wrap_t;   
-                texEnv.GetWrap(wrap_s, wrap_t);
-                
-                Texture* osg_texture = m_textures[texId].get();
-                if(osg_texture)
+                for (int ntex = 0; ntex < numMatTex; ntex ++ )
                 {
-                    osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                    osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                    osg_state_set->setTextureAttributeAndModes(0,osg_texture, StateAttribute::ON);
+                    int texId;
+                    trpgTextureEnv texEnv;
+                    mat->GetTexture(ntex,texId,texEnv);
                 
-                    if(osg_texture->getImage())
-                    { 
-                        switch (osg_texture->getImage()->getPixelFormat())
-                        {
-                        case GL_LUMINANCE_ALPHA:
-                        case GL_RGBA:
-                            osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
-                            osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
-                        }
+                    // Set up texture environment
+                    TexEnv       *osg_texenv       = new TexEnv();
+                    int32 te_mode;
+                    texEnv.GetEnvMode(te_mode);
+                    switch( te_mode )
+                    {
+                    case trpgTextureEnv::Alpha :
+                        osg_texenv->setMode(TexEnv::REPLACE);
+                        break;
+                    case trpgTextureEnv::Decal:
+                        osg_texenv->setMode(TexEnv::DECAL);
+                        break;
+                    case trpgTextureEnv::Blend :
+                        osg_texenv->setMode(TexEnv::BLEND);
+                        break;
+                    case trpgTextureEnv::Modulate :
+                        osg_texenv->setMode(TexEnv::MODULATE);
+                        break;
                     }
-                }        
+                
+                    osg_state_set->setTextureAttribute(ntex,osg_texenv);
+
+                    int wrap_s, wrap_t;   
+                    texEnv.GetWrap(wrap_s, wrap_t);
+
+                    Texture* osg_texture = m_textures[texId].get();
+                    if(osg_texture)
+                    {
+                        osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                        osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
+                        osg_state_set->setTextureAttributeAndModes(ntex,osg_texture, StateAttribute::ON);
+                
+                        if(osg_texture->getImage())
+                        { 
+                            switch (osg_texture->getImage()->getPixelFormat())
+                            {
+                            case GL_LUMINANCE_ALPHA:
+                            case GL_RGBA:
+                                osg_state_set->setMode(GL_BLEND,StateAttribute::ON);
+                                osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
+                            }
+                        }
+                    }        
+                }
+                
                 int cullMode;
                 mat->GetCullMode(cullMode);
                 

@@ -233,7 +233,7 @@ class SG_EXPORT Matrix : public Object
 //         Matrix( const MatrixProduct& p ) //allows implicit evaluation of the product
 //             {    mult( p.A, p.B ); }
 
-    private:
+    protected:
         float _mat[4][4];
 
 };

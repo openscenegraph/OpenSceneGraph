@@ -39,6 +39,10 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
 
 	bool valid() const { return _animationPath.valid(); }
 
+        void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
             
     private:
@@ -48,6 +52,9 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
 	void handleFrame( double time );
 
 	osg::ref_ptr<osg::AnimationPath> _animationPath;
+        
+        double _timeOffset;
+        double _timeScale;
 
 };
 

@@ -64,12 +64,12 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
 
         void setType(statsType t) {stattype=t;}
         
-        virtual void setVertexArray(unsigned int count,Vec3*) { _vertexCount += count; }
+        virtual void setVertexArray(unsigned int count,const Vec3*) { _vertexCount += count; }
 
         virtual void drawArrays(GLenum mode,GLint,GLsizei count) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
-        virtual void drawElements(GLenum mode,GLsizei count,GLubyte*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
-        virtual void drawElements(GLenum mode,GLsizei count,GLushort*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
-        virtual void drawElements(GLenum mode,GLsizei count,GLuint*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
+        virtual void drawElements(GLenum mode,GLsizei count,const GLubyte*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
+        virtual void drawElements(GLenum mode,GLsizei count,const GLushort*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
+        virtual void drawElements(GLenum mode,GLsizei count,const GLuint*) { PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; prim.second+=count; } 
 
         virtual void begin(GLenum mode) { _currentPrimtiveFunctorMode=mode; PrimitivePair& prim = _primitiveCount[mode]; ++prim.first; }
         virtual void vertex(const Vec3&) { PrimitivePair& prim = _primitiveCount[_currentPrimtiveFunctorMode]; ++prim.second; }

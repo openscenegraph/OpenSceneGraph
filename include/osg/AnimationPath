@@ -108,12 +108,17 @@ class SG_EXPORT AnimationPath : public osg::Referenced
         
         LoopMode getLoopMode() const { return _loopMode; }
 
+
+        typedef std::map<double,ControlPoint> TimeControlPointMap;
+        
+        TimeControlPointMap& getTimeControlPointMap() { return _timeControlPointMap; }
+        
+        const TimeControlPointMap& getTimeControlPointMap() const { return _timeControlPointMap; }
+
     protected:
     
         virtual ~AnimationPath() {}
 
-        typedef std::map<double,ControlPoint> TimeControlPointMap;
-        
         TimeControlPointMap _timeControlPointMap;
         LoopMode            _loopMode;
 

@@ -126,11 +126,20 @@ class SG_EXPORT ProceduralGeometry : public Drawable
           */
         virtual void drawImmediateMode(State& state);
 
-        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
-        virtual void accept(AttributeFunctor& af);
+        /** return false, osg::ProceduralGeoemtry does not support accept(AttributeFunctor&).*/
+        virtual bool supports(AttributeFunctor&) const { return false; }
+
+        /** return true, osg::ProceduralGeometry does support accept(ConstAttributeFunctor&).*/
+        virtual bool supports(ConstAttributeFunctor&) const { return true; }
+
+        /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(ConstAttributeFunctor& af) const;
+
+        /** return true, osg::ProceduralGeometry does support accept(PrimitiveFunctor&) .*/
+        virtual bool supports(PrimitiveFunctor&) const { return true; }
 
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
-        virtual void accept(PrimitiveFunctor& pf);
+        virtual void accept(PrimitiveFunctor& pf) const;
 
     protected:
 

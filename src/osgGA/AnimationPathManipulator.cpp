@@ -6,6 +6,8 @@ using namespace osgGA;
 AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animationPath) 
 {
     _animationPath = animationPath;
+    _timeOffset = 0.0f;
+    _timeScale = 1.0f;
 }
 
 AnimationPathManipulator::AnimationPathManipulator( const std::string& filename ) 
@@ -35,6 +37,19 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
     fclose(fp);
 }
 
+void AnimationPathManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter&)
+{
+    if (_animationPath.valid())
+    {
+        _timeOffset = _animationPath->getFirstTime()-ea.time();
+    }
+}
+
+void AnimationPathManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& aa)
+{
+    home(ea,aa);
+}
+
 bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us)
 {
     if( !valid() ) return false;
@@ -49,6 +64,15 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
             retval =  true;
 	    break;
 	case GUIEventAdapter::KEYBOARD:
+            if (ea.getKey()==' ')
+            {
+                home(ea,us);
+                us.requestRedraw();
+                us.requestContinuousUpdate(false);
+                return true;
+            } 
+            return false;
+
 	    retval =  false;
 	    break;
         default:
@@ -60,17 +84,14 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
 void AnimationPathManipulator::handleFrame( double time )
 {
     osg::AnimationPath::ControlPoint cp;
-    _animationPath->getInterpolatedControlPoint( time, cp );
+    _animationPath->getInterpolatedControlPoint( (time+_timeOffset)*_timeScale, cp );
 
-    osg::Matrix mat;
-    cp.getMatrix( mat );
-
-    osg::Vec3 eye(mat(3,0), mat(3,1), mat(3,2));
-    mat(3,0) = 0.0;
-    mat(3,1) = 0.0;
-    mat(3,2) = 0.0;
-    osg::Vec3 look = eye + (osg::Vec3(0,1,0) * mat);
-    osg::Vec3 up = osg::Vec3(0,0,1) * mat;
-    if( _camera.valid() )
-	_camera->setView( eye, look, up );
+    osg::Matrix matrix;
+    cp.getMatrix( matrix );
+    
+    if (_camera.valid())
+    {
+        _camera->home();
+        _camera->transformLookAt(matrix);
+    }
 }

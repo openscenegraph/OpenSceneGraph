@@ -1,3 +1,4 @@
+
 //C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
@@ -332,8 +333,11 @@ class SG_EXPORT GeoSet : public Drawable
         /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
         virtual void accept(AttributeFunctor& af);
 
+        /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(ConstAttributeFunctor& af) const;
+
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
-        virtual void accept(PrimitiveFunctor& pf);
+        virtual void accept(PrimitiveFunctor& pf) const;
 
         /** convinience function for converting GeoSet's to equivilant Geometry nodes.*/
         Geometry* convertToGeometry();

@@ -116,11 +116,24 @@ class SG_EXPORT ImpostorSprite : public Drawable
         /** draw ImpostorSprite directly. */
         virtual void drawImmediateMode(State& state);
 
+        /** return true, osg::ImpostorSprite does support accept(AttributeFunctor&).*/
+        virtual bool supports(AttributeFunctor&) const { return true; }
+
         /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
         virtual void accept(AttributeFunctor& af);
-        
+
+        /** return true, osg::ImpostorSprite does support accept(ConstAttributeFunctor&).*/
+        virtual bool supports(ConstAttributeFunctor&) const { return true; }
+
+        /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(ConstAttributeFunctor& af) const;
+
+        /** return true, osg::ImpostorSprite does support accept(PrimitiveFunctor&) .*/
+        virtual bool supports(PrimitiveFunctor&) const { return true; }
+
         /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
-        virtual void accept(PrimitiveFunctor& pf);
+        virtual void accept(PrimitiveFunctor& pf) const;
+
 
     protected:
 

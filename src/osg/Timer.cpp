@@ -43,7 +43,7 @@ const Timer* Timer::instance()
         
         if (_useStandardClock)
         {
-            _secsPerClick = (1.0 / (double) CLOCKS_PER_SEC);            
+            _secsPerTick = (1.0 / (double) CLOCKS_PER_SEC);            
         }
         else
         {
@@ -59,7 +59,7 @@ const Timer* Timer::instance()
 
                 _tempSecsPerClick = 1.0/(double)(end_time-start_time);
             }
-            _secsPerClick = _tempSecsPerClick;
+            _secsPerTick = _tempSecsPerClick;
 
         }
     }
@@ -77,7 +77,7 @@ const Timer* Timer::instance()
         
         if (_useStandardClock)
         {
-            _secsPerClick = 1e-6; // gettimeofday()'s precision.
+            _secsPerTick = 1e-6; // gettimeofday()'s precision.
         }
         else
         {
@@ -92,7 +92,7 @@ const Timer* Timer::instance()
                 return;
             }
 
-            _secsPerClick = 1.0/cpuspeed;
+            _secsPerTick = 1.0/cpuspeed;
         }
     }
     
@@ -113,7 +113,7 @@ const Timer* Timer::instance()
         
         if (_useStandardClock)
         {
-            _secsPerClick = 1e-6; // gettimeofday()'s precision.
+            _secsPerTick = 1e-6; // gettimeofday()'s precision.
         }
         else
         {
@@ -145,11 +145,11 @@ const Timer* Timer::instance()
                 Timer_t start_time = tick();
                 sleep (1);
                 Timer_t end_time = tick();
-                _secsPerClick = 1.0/(double)(end_time-start_time);
+                _secsPerTick = 1.0/(double)(end_time-start_time);
             }
             else
             {
-                _secsPerClick = 1e-6/cpu_mhz;
+                _secsPerTick = 1e-6/cpu_mhz;
             }
         }        
     }
@@ -210,7 +210,7 @@ const Timer* Timer::instance()
                 _clockAddress_32 = (unsigned long *) iotimer_addr,
                 _clockAddress_64 = 0;
 
-            _secsPerClick = (double)(cycleval)* 1e-12;
+            _secsPerTick = (double)(cycleval)* 1e-12;
             
 #if 0 // Obsolete
             // this is to force the use of the standard clock in
@@ -224,7 +224,7 @@ const Timer* Timer::instance()
 
         if (_useStandardClock)
         {
-            _secsPerClick = 1e-6; // gettimeofday()'s precision.
+            _secsPerTick = 1e-6; // gettimeofday()'s precision.
         }
 
     }
@@ -242,7 +242,7 @@ const Timer* Timer::instance()
     Timer::Timer( void )
     {
 	    _useStandardClock = false;
-	    _secsPerClick = 1e-6; // Carbon timer's precision.
+	    _secsPerTick = 1e-6; // Carbon timer's precision.
 
     }
 
@@ -259,7 +259,7 @@ const Timer* Timer::instance()
     Timer::Timer( void )
     {
         _useStandardClock = true;
-        _secsPerClick = 1e-6; // gettimeofday()'s precision.
+        _secsPerTick = 1e-6; // gettimeofday()'s precision.
     }
 
 #else 
@@ -269,7 +269,7 @@ const Timer* Timer::instance()
     Timer::Timer( void )
     {
         _useStandardClock = true;
-        _secsPerClick = (1.0 / (double) CLOCKS_PER_SEC);
+        _secsPerTick = (1.0 / (double) CLOCKS_PER_SEC);
     }
 
 #endif

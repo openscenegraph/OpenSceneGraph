@@ -1468,8 +1468,17 @@ unsigned int Viewer::addViewport(osgUtil::SceneView* sv,
     def.viewport[2] = width;
     def.viewport[3] = height;
     
+    if (!_viewportList.empty())
+    {
+        // force all the viewports to share the same state object as
+        // they all share the same graphics context.
+        osg::State* state = _viewportList.front().sceneView->getState();
+        def.sceneView->setState(state);
+    }
+
     unsigned int pos = _viewportList.size();
     _viewportList.push_back(def);
+    
     
     return pos;
 }

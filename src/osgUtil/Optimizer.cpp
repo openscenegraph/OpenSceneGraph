@@ -548,6 +548,15 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         }
         
 
+        void collectDataFor(osg::Node* node)
+        {
+            _currentObjectList.push_back(node);
+            
+            node->accept(*this);
+            
+            _currentObjectList.pop_back();
+        }
+
         void collectDataFor(osg::Billboard* billboard)
         {
             _currentObjectList.push_back(billboard);
@@ -578,9 +587,13 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
 
         inline bool isOperationPermissableForObject(const osg::Object* object)
         {
+            // disable if cannot apply transform functor.
             const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
             if (drawable && !drawable->supports(_transformFunctor)) return false;
             
+            // disable if object is a light point node.
+            if (strcmp(object->className(),"LightPointNode")==0) return false;
+
             return _optimizer ? _optimizer->isOperationPermissableForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true; 
         }
 
@@ -903,9 +916,17 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
     return transformRemoved;
 }
 
+void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Node& node)
+{
+    if (strcmp(node.className(),"LightPointNode")==0)
+    {
+        _excludedNodeSet.insert(&node);
+    }
+    traverse(node);
+}
+
 void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
 {
-
     if (!_transformStack.empty())
     {
         for(unsigned int i=0;i<geode.getNumDrawables();++i)
@@ -944,6 +965,13 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
 {
     CollectLowestTransformsVisitor cltv(_optimizer);
+
+    for(NodeSet::iterator nitr=_excludedNodeSet.begin();
+        nitr!=_excludedNodeSet.end();
+        ++nitr)
+    {
+        cltv.collectDataFor(*nitr);
+    }
 
     for(DrawableSet::iterator ditr=_drawableSet.begin();
         ditr!=_drawableSet.end();

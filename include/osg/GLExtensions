@@ -8,12 +8,13 @@
 #include <osg/Export>
 
 #if defined(WIN32)
-#include <windows.h>
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
 #elif defined(__DARWIN_OSX__)
-#include <string>
-#include <mach-o/dyld.h>
+    #include <string>
+    #include <mach-o/dyld.h>
 #else
-#include <dlfcn.h>
+    #include <dlfcn.h>
 #endif
 
 namespace osg {

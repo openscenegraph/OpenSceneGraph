@@ -289,7 +289,7 @@ bool trpgHeader::Read(trpgReadBuffer &buf)
     return isValid();
 }
 
-// Read the LOD info (seperate token)
+// Read the LOD info (separate token)
 bool trpgHeader::ReadLodInfo(trpgReadBuffer &buf)
 {
     float64 range;

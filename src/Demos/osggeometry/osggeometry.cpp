@@ -63,7 +63,7 @@ osg::Node* createScene()
     // create the Geode (Geometry Node) to contain all our osg::Geometry objects.
     osg::Geode* geode = new osg::Geode();
 
-    // follows are seperate blocks for creating POINTS, LINES, LINE_STRIP, LINE_LOOP, POLYGON, QUADS,
+    // follows are separate blocks for creating POINTS, LINES, LINE_STRIP, LINE_LOOP, POLYGON, QUADS,
     // QUAD_STRIP, TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN primtives.  A image of these primtives
     // are provided in the distribution : OpenSceneGraph-Data/Images/primtives.gif.
 
@@ -259,7 +259,7 @@ osg::Node* createScene()
 
 
 
-    // now we'll stop creating seperate normal and color arrays
+    // now we'll stop creating separate normal and color arrays
     // since we are using the same values all the time, we'll just
     // share the same ColorArray and NormalArrays..
 

@@ -27,8 +27,8 @@ LightModel::~LightModel()
 #define GL_SINGLE_COLOR 0x81F9
 #endif
 
-#ifndef GL_SEPERATE_SPECULAR_COLOR
-#define GL_SEPERATE_SPECULAR_COLOR 0x81FA
+#ifndef GL_SEPARATE_SPECULAR_COLOR
+#define GL_SEPARATE_SPECULAR_COLOR 0x81FA
 #endif
 
 
@@ -36,12 +36,12 @@ void LightModel::apply(State&) const
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,_ambient.ptr());
 
-    static bool s_seperateSpecularSupported = strcmp((const char *)glGetString(GL_VERSION),"1.2")>=0;
-    if (s_seperateSpecularSupported)
+    static bool s_separateSpecularSupported = strcmp((const char *)glGetString(GL_VERSION),"1.2")>=0;
+    if (s_separateSpecularSupported)
     {
-        if (_colorControl==SEPERATE_SPECULAR_COLOR)
+        if (_colorControl==SEPARATE_SPECULAR_COLOR)
         {
-	        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPERATE_SPECULAR_COLOR);
+	        glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR);
         }
         else
         {

@@ -210,7 +210,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     geom->addPrimitive(new osg::DrawArrays(osg::Primitive::TRIANGLES,0,ntris*3));
 
     // the following code for mapping the coords, normals and texcoords
-    // is complicated greatly by the need to create seperate out the
+    // is complicated greatly by the need to create separate out the
     // sets of coords etc for each drawable.
 
     bool needNormals = obj->normals && obj->normals>0;

@@ -9,7 +9,6 @@ C++FILES = \
         ConvertToPerformer.cpp\
         ReaderWriterPFB.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_pfb.$(SO_EXT)
 
 LIBS = -losg -losgDB \
 	-lpf3ds\
@@ -44,6 +43,8 @@ LIBS = -losg -losgDB \
 # comment in for PFB loader texture support on IRIX
 #   (note: you may need to build libimage.so from libimage.a)
 # LIBS += -limage
+
+TARGET_BASENAME = osgdb_pfb
 
 LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
 LIB=

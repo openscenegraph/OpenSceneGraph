@@ -144,6 +144,7 @@ void SceneView::app()
 
 void SceneView::cull()
 {
+
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
     
@@ -157,46 +158,45 @@ void SceneView::cull()
         _cameraLeft->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
         _cameraRight->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
 
+        if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
+        if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
         if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->cloneType());
+
+        if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
+        if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
         if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->cloneType());
 
-        cullStage(_cameraLeft.get(),_renderStageLeft.get());
-        cullStage(_cameraRight.get(),_renderStageRight.get());
+        cullStage(_cameraLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+        cullStage(_cameraRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
 
     }
     else
     {
 
-        cullStage(_camera.get(),_renderStage.get());
+        cullStage(_camera.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
     }
+
 }
 
-void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
+void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
     if (!_sceneData || !_viewport->valid()) return;
 
     if (!_initCalled) init();
 
-    _camera->adjustAspectRatio(_viewport->aspectRatio());
+    camera->adjustAspectRatio(_viewport->aspectRatio());
     
     
-    // comment out reset of rendergraph since clean is more efficient.
-    //  _rendergraph->reset();
 
-    // use clean of the rendergraph rather than reset, as it is able to
-    // reuse the structure on the rendergraph in the next frame. This
-    // achieves a certain amount of frame cohereancy of memory allocation.
-    _rendergraph->clean();
+    cullVisitor->reset();
 
-    _cullVisitor->reset();
-
-    _cullVisitor->setFrameStamp(_frameStamp.get());
+    cullVisitor->setFrameStamp(_frameStamp.get());
 
     // use the frame number for the traversal number.
     if (_frameStamp.valid())
     {
-         _cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+         cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
 
     // get the camera's modelview
@@ -209,17 +209,28 @@ void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
     local_camera->attachTransform(osg::Camera::NO_ATTACHED_TRANSFORM); 
 
 
-    _cullVisitor->setLODBias(_lodBias);
-    _cullVisitor->setCamera(*local_camera);
-    _cullVisitor->setViewport(_viewport.get());
-    _cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
+    cullVisitor->setLODBias(_lodBias);
+    cullVisitor->setCamera(*local_camera);
+    cullVisitor->setViewport(_viewport.get());
+    cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
+    
+    cullVisitor->setRenderGraph(rendergraph);
+    cullVisitor->setRenderStage(renderStage);
 
     // SandB
     //now make it compute "clipping directions" needed for detailed culling
-    if(_cullVisitor->getDetailedCulling()) 
-	    _cullVisitor->calcClippingDirections();//only once pre frame
+    if(cullVisitor->getDetailedCulling()) 
+	    cullVisitor->calcClippingDirections();//only once pre frame
 
     renderStage->reset();
+
+    // comment out reset of rendergraph since clean is more efficient.
+    //  rendergraph->reset();
+
+    // use clean of the rendergraph rather than reset, as it is able to
+    // reuse the structure on the rendergraph in the next frame. This
+    // achieves a certain amount of frame cohereancy of memory allocation.
+    rendergraph->clean();
 
     renderStage->setViewport(_viewport.get());
     renderStage->setCamera(local_camera);
@@ -238,21 +249,21 @@ void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
         break;
     }            
 
-    if (_globalState.valid()) _cullVisitor->pushStateSet(_globalState.get());
+    if (_globalState.valid()) cullVisitor->pushStateSet(_globalState.get());
 
 
-    _cullVisitor->pushCullViewState(modelview);
+    cullVisitor->pushCullViewState(modelview);
     
 
     // traverse the scene graph to generate the rendergraph.
-    _sceneData->accept(*_cullVisitor);
+    _sceneData->accept(*cullVisitor);
 
-    if (_globalState.valid()) _cullVisitor->popStateSet();
+    if (_globalState.valid()) cullVisitor->popStateSet();
     
-    _cullVisitor->popCullViewState();
+    cullVisitor->popCullViewState();
 
 
-    const osg::EarthSky* earthSky = _cullVisitor->getEarthSky();
+    const osg::EarthSky* earthSky = cullVisitor->getEarthSky();
     if (earthSky)
     {
         if (earthSky->getRequiresClear())
@@ -271,17 +282,11 @@ void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
         }
     }
 
-    // prune out any empty RenderGraph children.
-    // note, this would be not required if the _renderGraph had been
-    // reset at the start of each frame (see top of this method) but
-    // a clean has been used instead to try to minimize the amount of
-    // allocation and deleteing of the RenderGraph nodes.
-    _rendergraph->prune();
 
     if (_calc_nearfar)
     {
-        _near_plane = _cullVisitor->getCalculatedNearPlane();
-        _far_plane = _cullVisitor->getCalculatedFarPlane();
+        _near_plane = cullVisitor->getCalculatedNearPlane();
+        _far_plane = cullVisitor->getCalculatedFarPlane();
 
         if (_near_plane<=_far_plane)
         {
@@ -295,7 +300,7 @@ void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
 
             // if required clamp the near plane to prevent negative or near zero
             // near planes.
-            if(!_cullVisitor->getDetailedCulling())
+            if(!cullVisitor->getDetailedCulling())
             {
                 float min_near_plane = _far_plane*0.0005f;
                 if (_near_plane<min_near_plane) _near_plane=min_near_plane;
@@ -311,6 +316,12 @@ void SceneView::cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage)
         camera->setNearFar(_near_plane,_far_plane);
     }
 
+    // prune out any empty RenderGraph children.
+    // note, this would be not required if the rendergraph had been
+    // reset at the start of each frame (see top of this method) but
+    // a clean has been used instead to try to minimize the amount of
+    // allocation and deleteing of the RenderGraph nodes.
+    rendergraph->prune();
 }
 
 

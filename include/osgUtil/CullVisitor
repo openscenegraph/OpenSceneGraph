@@ -43,6 +43,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         CullVisitor();
         virtual ~CullVisitor();
 
+        virtual CullVisitor* cloneType() const { return new CullVisitor(); }
+
         virtual void reset();
 
         virtual void apply(osg::Node&);

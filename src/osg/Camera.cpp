@@ -94,7 +94,7 @@ void Camera::copy(const Camera& camera)
     // cached matrix and clipping volume derived from above settings.
     _dirty = false;//    camera._dirty;
     _projectionMatrix = NULL; //camera._projectionMatrix;
-    _modelViewMatrix = NULL; camera._modelViewMatrix;
+    _modelViewMatrix = NULL; //camera._modelViewMatrix;
 //    _clippingVolume = camera._clippingVolume;
 
     _mp = NULL;
@@ -757,20 +757,20 @@ void Camera::calculateMatricesAndClippingVolume() const
                 // note, _left,_right,_top and _bottom are already devided
                 // by _zNear so no need to take into account for normal
                 // calculations.
-                Vec3 leftNormal  (1.0f,0.0f,_left);
+                Vec3 leftNormal  (1.0f,0.0f,left);
                 leftNormal.normalize();
                 _clippingVolume.add(Plane(leftNormal,0.0f));
                 
                 
-                Vec3 rightNormal (-1.0f,0.0f,-_right);
+                Vec3 rightNormal (-1.0f,0.0f,-right);
                 rightNormal.normalize();
                 _clippingVolume.add(Plane(rightNormal,0.0f));
                 
-                Vec3 bottomNormal(0.0f,1.0f,_bottom); 
+                Vec3 bottomNormal(0.0f,1.0f,bottom); 
                 bottomNormal.normalize();
                 _clippingVolume.add(Plane(bottomNormal,0.0f));
                 
-                Vec3 topNormal(0.0f,-1.0f,-_top);
+                Vec3 topNormal(0.0f,-1.0f,-top);
                 topNormal.normalize();
                 _clippingVolume.add(Plane(topNormal,0.0f));
                 

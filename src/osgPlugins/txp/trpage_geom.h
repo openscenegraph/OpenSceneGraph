@@ -541,7 +541,7 @@ public:
 		float64					transparentScale;
 		float64					transparentClamp;
 		float64					fogScale;
-	};
+	} _PerformerAttr;
 
 	// Struct for Animated Lights
 	typedef struct AnimationAttr {
@@ -551,7 +551,7 @@ public:
 		float64					timeOn;
 		trpg3dPoint				vector;
 		int32					flags;
-	};
+	} _AnimationAttr;
 
 	// Struct for Calligraphic Lights
 	typedef struct CalligraphicAttr {
@@ -559,7 +559,7 @@ public:
 		int32					drawOrder;
 		float64					minDefocus;
 		float64					maxDefocus;
-	};
+	} _CalligraphicAttr;
 
 	// Setters
 	// Set Type

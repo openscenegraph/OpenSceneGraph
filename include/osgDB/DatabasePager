@@ -182,7 +182,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         void getMaxAnisotropyPolicy(bool& changeAnisotropy, float& valueAnisotropy) const { changeAnisotropy = _changeAnisotropy; valueAnisotropy = _valueAnisotropy; }
 
 
-        /** Return trye if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
+        /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
         bool requiresUpdateSceneGraph() const;
         
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.

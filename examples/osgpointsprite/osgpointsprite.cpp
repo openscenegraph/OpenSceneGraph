@@ -92,5 +92,7 @@ int main(int, char *[])
         viewer.update();
         viewer.frame();
     }
+
+    return(0);
 }
 

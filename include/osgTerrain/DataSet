@@ -11,6 +11,17 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#ifdef WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+// Disable unavoidable warning messages:
+//
+// C4503 - decorated name length exceeded, name was truncated
+//
+#pragma warning(disable : 4503)
+
+#endif // WIN32
+
 #ifndef DATASET_H
 #define DATASET_H 1
 

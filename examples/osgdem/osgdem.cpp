@@ -9,6 +9,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
+#ifdef WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+// Disable unavoidable warning messages:
+
+//  4114: same type qualifier used more than once
+//  4201: nonstandard extension used : nameless struct/union
+//  4237: "keyword" reserved for future use
+//  4251: class needs to have dll-interface to export class
+//  4275: non DLL-interface class used as base for DLL-interface class
+//  4290: C++ Exception Specification ignored
+//  4503: ecorated name length exceeded, name was truncated
+//  4786: string too long - truncated to 255 characters
+
+//#pragma warning(disable : 4103 4114 4201 4237 4251 4275 4290 4335 4786)
+#pragma warning(disable : 4503)
+
+#endif // WIN32
+
 #include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/State>

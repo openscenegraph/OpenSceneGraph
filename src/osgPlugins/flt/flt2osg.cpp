@@ -253,10 +253,6 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
             case EXTERNAL_REFERENCE_OP:
                 osgPrim = visitExternal(osgParent, (ExternalRecord*)child);
                 break;
-			case ROAD_CONSTRUCTION_OP:
-				// treat road construction record as a group record for now
-				osgPrim = visitRoadConstruction(osgParent, (GroupRecord*)child);
-				break;
             }
         }
     }
@@ -572,8 +568,8 @@ osg::Group* ConvertFromFLT::visitRoadConstruction(osg::Group& osgParent, GroupRe
     osg::Group* group = new osg::Group;
 
     group->setName(rec->getData()->szIdent);
-	//cout<<"Converted a road construction node of ID "<<group->getName()<<" to group node."<<endl;
-	visitAncillary(osgParent, *group, rec)->addChild( group );
+    //cout<<"Converted a road construction node of ID "<<group->getName()<<" to group node."<<endl;
+    visitAncillary(osgParent, *group, rec)->addChild( group );
     visitPrimaryNode(*group, rec);
     return group;
 }
@@ -732,8 +728,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     // Cull face & wireframe
     //
 
-    int drawMode = pSFace->swDrawFlag & (BIT0 | BIT1);
-    switch(drawMode)
+    switch(pSFace->swDrawFlag)
     {
         case FaceRecord::SOLID_BACKFACED:
             // Enable backface culling
@@ -755,6 +750,12 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 
         case FaceRecord::WIREFRAME_CLOSED:
             dgset->setPrimType(osg::Primitive::LINE_LOOP);
+            break;
+
+        case FaceRecord::OMNIDIRECTIONAL_LIGHT:
+        case FaceRecord::UNIDIRECTIONAL_LIGHT:
+        case FaceRecord::BIDIRECTIONAL_LIGHT:
+            dgset->setPrimType(osg::Primitive::POINTS);
             break;
     }
 

@@ -21,8 +21,7 @@
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
-
-#include <Producer/Block>
+#include <OpenThreads/Condition>
 
 #include <osgDB/Export>
 
@@ -30,6 +29,46 @@
 #include <set>
 
 namespace osgDB {
+
+class Block: public osg::Referenced {
+    public:
+        Block():_released(false) {}
+
+        void block()
+        {
+            _mut.lock();
+            if( !_released )
+                _cond.wait(&_mut);
+            _mut.unlock();
+        }
+
+        void release()
+        {
+            _mut.lock();
+            _released = true;
+            _cond.broadcast();
+            _mut.unlock();
+        }
+
+        void reset()
+        {
+            _mut.lock();
+            _released = false;
+            _mut.unlock();
+        }
+
+    protected:
+
+        ~Block()
+        {
+            release();
+        }
+
+    private:
+        OpenThreads::Mutex _mut;
+        OpenThreads::Condition _cond;
+        bool _released;
+};
 
 /** Database paging class which manages the loading of files in a background thread, 
   * and syncronizing of loaded models with the main scene graph.*/
@@ -151,12 +190,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         virtual ~DatabasePager();
 
-        osg::ref_ptr<Producer::Block>   _frameBlock;
+        osg::ref_ptr<Block>             _frameBlock;
         int                             _frameNumber;
 
         DatabaseRequestList             _fileRequestList;
         OpenThreads::Mutex              _fileRequestListMutex;
-        osg::ref_ptr<Producer::Block>   _fileRequestListEmptyBlock;
+        osg::ref_ptr<Block>             _fileRequestListEmptyBlock;
         
         DatabaseRequestList             _dataToCompileList;
         OpenThreads::Mutex              _dataToCompileListMutex;

@@ -332,7 +332,7 @@ bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemo
 {
     if (i<_primitives.size() && numElementsToRemove>0)
     {
-        if (i+numElementsToRemove<_primitives.size())
+        if (i+numElementsToRemove<=_primitives.size())
         {
             _primitives.erase(_primitives.begin()+i,_primitives.begin()+i+numElementsToRemove);
         }

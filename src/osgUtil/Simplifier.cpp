@@ -1260,7 +1260,7 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
 
 
         template<typename T,typename R>
-        void copy(T& array, R dummy)
+        void copy(T& array, R /*dummy*/)
         {
             array.resize(_pointList.size());
         

@@ -231,13 +231,9 @@ void Image::allocateImage(int s,int t,int r,
         _dataType = type;
         _packing = packing;
 
-        cout << "allocated ok "<<_s<<","<<_t<<"  pf="<<_pixelFormat<<" dt="<<_dataType<<endl;
-
     }
     else
     {
-        cout << "allocation error"<<endl;
-    
     
         // throw exception?? not for now, will simply set values to 0.
         _s = 0;

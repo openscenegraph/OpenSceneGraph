@@ -194,7 +194,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if(fileName.empty())
             {
                 // note from Robert, Dec03, I find returning a valid image when no

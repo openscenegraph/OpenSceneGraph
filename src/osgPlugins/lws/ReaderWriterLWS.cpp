@@ -36,13 +36,13 @@ public:
         std::string ext = osgDB::getLowerCaseFileExtension(file);        
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-        std::string fileName = osgDB::findDataFile(file);
+        std::string fileName = osgDB::findDataFile(file, options);
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
         lwosg::SceneLoader::Options conv_options = parse_options(options);
 
         lwosg::SceneLoader scene_loader(conv_options);
-        osg::ref_ptr<osg::Node> node = scene_loader.load(fileName);
+        osg::ref_ptr<osg::Node> node = scene_loader.load(fileName, options);
         if (node.valid()) {
             return node.take();
         }

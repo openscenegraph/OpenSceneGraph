@@ -14,6 +14,8 @@
 #include <osg/ref_ptr>
 #include <osg/Group>
 
+#include <osgDB/ReaderWriter>
+
 #include <string>
 
 namespace lwosg
@@ -37,7 +39,7 @@ namespace lwosg
 
 		osg::Group *convert(Object &obj);
 		osg::Group *convert(const iff::Chunk_list &data);
-		osg::Group *convert(const std::string &filename);
+		osg::Group *convert(const std::string &filename, const osgDB::ReaderWriter::Options* options);
 
 		inline osg::Group *get_root() { return root_.get(); }
 		inline const osg::Group *get_root() const { return root_.get(); }

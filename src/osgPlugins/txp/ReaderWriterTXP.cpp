@@ -29,7 +29,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
     // We load archive.txp
     if (strncmp(name.c_str(),"archive",7)==0)
     {
-        std::string fileName = osgDB::findDataFile( file );
+        std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
         osg::ref_ptr<TXPNode> txpNode = new TXPNode;

@@ -103,12 +103,12 @@ const float StlColorDepth = float(StlColorSize); // 2^5 - 1
 
 // Read node
 osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& file,
-                                                          const osgDB::ReaderWriter::Options*)
+                                                          const osgDB::ReaderWriter::Options* options)
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string fileName = osgDB::findDataFile( file );
+    std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     osg::notify(osg::INFO) << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")\n";

@@ -31,12 +31,17 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"tgz");
         }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
              std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            osg::notify(osg::NOTICE)<<"file="<<file<<std::endl;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+
+            osg::notify(osg::NOTICE)<<"fileName="<<fileName<<std::endl;
+
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::notify(osg::INFO)<<   "ReaderWriterTGZ::readNode( "<<fileName.c_str()<<" )\n";
@@ -70,11 +75,20 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                 fileName.c_str(), dirname, dirname,
                 fileName.c_str());
         #endif
+ 
+            osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
+
             system( command );
 
             osg::Group *grp = new osg::Group;
  
-            osgDB::PushAndPopDataPath tmppath(dirname );
+            osg::notify(osg::NOTICE)<<"Done"<<std::endl;
+ 
+            osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
+            local_options->getDatabasePathList().push_front(dirname);
+
+            osg::notify(osg::NOTICE)<<"local_options->getDatabasePathList().="<<local_options->getDatabasePathList().front()<<std::endl;
+            osg::notify(osg::NOTICE)<<"dirname="<<dirname<<std::endl;
 
             // deactivate the automatic generation of images to geode's.
             bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();
@@ -90,7 +104,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                     *itr!=std::string(".") && 
                     *itr!=std::string(".."))
                 {
-                    osg::Node *node = osgDB::readNodeFile(*itr);
+                    osg::Node *node = osgDB::readNodeFile(*itr, local_options.get());
                     grp->addChild( node );
                 }
             }

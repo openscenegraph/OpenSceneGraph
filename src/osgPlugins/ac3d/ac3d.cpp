@@ -76,11 +76,11 @@ class ReaderWriterAC : public osgDB::ReaderWriter
         {
             return osgDB::equalCaseInsensitive(extension,"ac");
         }
-        virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options)
         {
             osg::Group *grp; // holder for all loaded objects
             // GWM added Dec 2003 - get full path name (change in osgDB handling of files).
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             
             // Anders Backmann - correct return if path not found
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;

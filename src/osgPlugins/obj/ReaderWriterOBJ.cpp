@@ -446,12 +446,12 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model)
 
 
 // read file and convert to OSG.
-osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string fileName = osgDB::findDataFile( file );
+    std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
     
     
@@ -461,7 +461,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     
         obj::Model model;
         model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
-        model.readOBJ(fin);
+        model.readOBJ(fin, options);
         
         osg::Node* node = convertModelToSceneGraph(model);
         return node;
@@ -470,12 +470,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     return ReadResult::FILE_NOT_HANDLED;
 }
 
-osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, const Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, const Options* options)
 {
     if (fin)
     {
         obj::Model model;
-        model.readOBJ(fin);
+        model.readOBJ(fin, options);
         
         osg::Node* node = convertModelToSceneGraph(model);
         return node;

@@ -260,7 +260,7 @@ bool Model::readMTL(std::istream& fin)
     return true;
 }
 
-bool Model::readOBJ(std::istream& fin)
+bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options)
 {
     osg::notify(osg::INFO)<<"Reading OBJ file"<<std::endl;
 
@@ -390,7 +390,7 @@ bool Model::readOBJ(std::istream& fin)
             else if (strncmp(line,"mtllib ",7)==0)
             {
             
-                std::string fileName = osgDB::findDataFile( line+7 );
+                std::string fileName = osgDB::findDataFile( line+7, options );
                 if (!fileName.empty())
                 {
                     std::ifstream mfin(fileName.c_str());

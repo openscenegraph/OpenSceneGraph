@@ -26,7 +26,8 @@ FltFile::FltFile(
     TexturePool* pTexturePool,
     MaterialPool* pMaterialPool,
     LtPtAppearancePool* pLtPtAppearancePool,
-    LtPtAnimationPool* pLtPtAnimationPool)
+    LtPtAnimationPool* pLtPtAnimationPool,
+    osgDB::ReaderWriter::Options* options)
 {
     _useTextureAlphaForTransparancyBinning = true;
     _doUnitsConversion = true;
@@ -93,6 +94,8 @@ FltFile::FltFile(
 
     // instances are always internally defined 
     setInstancePool( new InstancePool );
+    
+    _options = options;
 }
 
 
@@ -154,17 +157,12 @@ bool FltFile::readModel(const std::string& fileName)
 bool FltFile::readFile(const std::string& fileName)
 {
 
+    // havn't found file, look in OSGFILEPATH
+    std::string foundFileName = osgDB::findDataFile(fileName, _options.get());
+    if (foundFileName.empty()) return false;
+
     FileInput fin;
-    if (!fin.open(fileName)) 
-    {
-        // havn't found file, look in OSGFILEPATH
-        std::string foundFileName = osgDB::findDataFile(fileName);
-
-        if (foundFileName.empty()) return false;
-        if (!fin.open(foundFileName)) return false;
-    }
-
-    osg::notify(osg::INFO) << "Loading " << fileName << " ... " << std::endl;
+    if (!fin.open(foundFileName)) return false;
 
     Record* pRec = fin.readCreateRecord(this);
     if (pRec == NULL)
@@ -234,39 +232,63 @@ bool FltFile::readFile(const std::string& fileName)
                         }
                     }
 
-    #if REGISTER_FLT
-                    pExternalFltFile = Registry::instance()->getFltFile(filename);
+
+                #if REGISTER_FLT
+                    bool registerFLT = true;
+                #else
+                    bool registerFLT = false;
+                #endif
+    
+                    pExternalFltFile = registerFLT ? Registry::instance()->getFltFile(filename) : NULL;
+
                     if (pExternalFltFile == NULL)
                     {
-                        //Path for Nested external references
-                        std::string filePath = osgDB::getFilePath(filename);
-                        std::string pushAndPopPath;
-                        //If absolute path
-                        if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
-                            (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
+                        osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
+
+                        if (_pFltFile->getOptions())
                         {
-                            pushAndPopPath = filePath;
+                            options = _pFltFile->getOptions();
                         }
                         else
                         {
-                            osgDB::FilePathList fpl = osgDB::getDataFilePathList();
-                            pushAndPopPath = fpl.empty() ? "." : fpl.front();
-                            if(pushAndPopPath.empty()) pushAndPopPath = ".";
-                            pushAndPopPath += "/" + filePath;
-                        }
-                        osgDB::PushAndPopDataPath tmpfile(pushAndPopPath);
+                            options = new osgDB::ReaderWriter::Options;
+                        
+                            //Path for Nested external references
+                            std::string filePath = osgDB::getFilePath(filename);
+                            std::string pushAndPopPath;
+                            //If absolute path
+                            if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
+                                (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
+                            {
+                                pushAndPopPath = filePath;
+                            }
+                            else
+                            {
+                                osgDB::FilePathList fpl = osgDB::getDataFilePathList();
+                                pushAndPopPath = fpl.empty() ? "." : fpl.front();
+                                pushAndPopPath += "/" + filePath;
+                            }
 
+                            char optionsString[256];
+                            sprintf(optionsString,"FLT_VER %d",rec.getFlightVersion());
+                            options->setOptionString(optionsString);
+
+                            osg::notify(osg::NOTICE)<<"Create local path"<<pushAndPopPath<<std::endl;
+
+                            options->getDatabasePathList().push_back(pushAndPopPath);
+                        }
 
                         pExternalFltFile = new FltFile( pColorPool, pTexturePool, pMaterialPool,
-                            pLtPtAppearancePool, pLtPtAnimationPool );                        
+                            pLtPtAppearancePool, pLtPtAnimationPool, options.get() );
+
+                        if (registerFLT)
+                        {
+                            Registry::instance()->addFltFile(filename, pExternalFltFile);
+                        }
+
                         pExternalFltFile->readModel(filename);
                     }
-                    Registry::instance()->addFltFile(filename, pExternalFltFile);
-    #else
-                    pExternalFltFile = new FltFile( pColorPool, pTexturePool, pMaterialPool,
-                        pLtPtAppearancePool, pLtPtAnimationPool );
-                    pExternalFltFile->readModel(filename);
-    #endif
+
                     rec.setExternal(pExternalFltFile);
                 }
             }

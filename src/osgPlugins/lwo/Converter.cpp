@@ -241,9 +241,9 @@ osg::Group *Converter::convert(const iff::Chunk_list &data)
 	return convert(obj);
 }
 
-osg::Group *Converter::convert(const std::string &filename)
+osg::Group *Converter::convert(const std::string &filename, const osgDB::ReaderWriter::Options* options)
 {
-	std::string file = osgDB::findDataFile(filename);
+	std::string file = osgDB::findDataFile(filename, options);
 	if (file.empty()) return 0;
 
 	std::ifstream ifs(file.c_str(), std::ios_base::in | std::ios_base::binary);

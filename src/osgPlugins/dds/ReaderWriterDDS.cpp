@@ -721,7 +721,7 @@ public:
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-        std::string fileName = osgDB::findDataFile( file );
+        std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
         
         std::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);

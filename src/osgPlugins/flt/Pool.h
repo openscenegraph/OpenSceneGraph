@@ -15,6 +15,8 @@
 #include <osg/Group>
 #include <osgSim/BlinkSequence>
 
+#include <osgDB/ReaderWriter>
+
 #include "AttrData.h"
 
 #include <string>
@@ -66,7 +68,7 @@ class TexturePool : public osg::Referenced
 
         TexturePool() {}
 
-        flt::AttrData* getTexture(int nIndex, int fltVersion);
+        flt::AttrData* getTexture(int nIndex, osgDB::ReaderWriter::Options* options);
         std::string* getTextureName(int nIndex);
         void addTexture(int nIndex, flt::AttrData* attrdata);
         void addTextureName(int nIndex, const std::string& name);

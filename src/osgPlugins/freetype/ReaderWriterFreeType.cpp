@@ -22,12 +22,12 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                    osgDB::equalCaseInsensitive(extension,"fnt");    // Windows bitmap fonts
         }
 
-        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             
             osgText::Font* font = FreeTypeLibrary::instance()->getFont(fileName,0);

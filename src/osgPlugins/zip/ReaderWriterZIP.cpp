@@ -29,13 +29,13 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"zip");
         }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
 
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
@@ -67,7 +67,8 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
             osg::Group *grp = new osg::Group;
  
-            osgDB::PushAndPopDataPath tmppath(dirname );
+            osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
+            local_options->getDatabasePathList().push_front(dirname);
 
             bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();
             osgDB::Registry::instance()->setCreateNodeFromImage(false);
@@ -82,7 +83,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                     *itr!=std::string(".") && 
                     *itr!=std::string(".."))
                 {
-                    osg::Node *node = osgDB::readNodeFile( *itr );
+                    osg::Node *node = osgDB::readNodeFile( *itr, local_options.get() );
                     grp->addChild( node );
                 }
             }

@@ -113,7 +113,7 @@ ColorPool::ColorName* ColorPool::getColorName(int nIndex)
 ////////////////////////////////////////////////////////////////////
 
 
-flt::AttrData* TexturePool::getTexture(int nIndex, int fltVersion)
+flt::AttrData* TexturePool::getTexture(int nIndex, osgDB::ReaderWriter::Options* options)
 {
     TexturePaletteMap::iterator fitr = _textureMap.find(nIndex);
     if (fitr != _textureMap.end())
@@ -145,24 +145,13 @@ flt::AttrData* TexturePool::getTexture(int nIndex, int fltVersion)
                 unsigned int unit = 0;
 
                 // Read texture and attribute file
-                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureName);
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureName, options ? options : osgDB::Registry::instance()->getOptions());
                 if (image.valid())
                 {
                     std::string attrName(textureName);
                     attrName += ".attr";
 
-                    // Read attribute file
-                    char options[256];
-                    sprintf(options,"FLT_VER %d",fltVersion);
-
-                    // Add this line to save the existing options
-                    osg::ref_ptr<osgDB::ReaderWriter::Options> oldOptions = osgDB::Registry::instance()->getOptions();
-
-                    osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(options));
-                    textureAttrData = dynamic_cast<flt::AttrData*>(osgDB::readObjectFile(attrName));
-
-                    // Changed this line to restore the old options
-                    osgDB::Registry::instance()->setOptions( oldOptions.get() );      // Restore options
+                    textureAttrData = dynamic_cast<flt::AttrData*>(osgDB::readObjectFile(attrName, options ? options : osgDB::Registry::instance()->getOptions() ));
 
                     // if not found create default StateSet for the AttrData
                     if (textureAttrData == NULL)

@@ -30,12 +30,12 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"osgtgz");
         }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file,options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::notify(osg::INFO)<<"sgReaderWriterOSGTGZ::readNode( "<<fileName.c_str()<<" )\n";
@@ -75,7 +75,8 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
             osg::Group *grp = new osg::Group;
             
-            osgDB::PushAndPopDataPath tmppath(dirname );
+            osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
+            local_options->getDatabasePathList().push_front(dirname);
 
             osgDB::DirectoryContents contents = osgDB::getDirectoryContents(dirname);
             for(osgDB::DirectoryContents::iterator itr = contents.begin();
@@ -85,7 +86,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
                 std::string file_ext = osgDB::getLowerCaseFileExtension(*itr);
                 if (osgDB::equalCaseInsensitive(file_ext,"osg"))
                 {
-                    osg::Node *node = osgDB::readNodeFile( *itr );
+                    osg::Node *node = osgDB::readNodeFile( *itr, local_options.get() );
                     grp->addChild( node );
                 }
             }

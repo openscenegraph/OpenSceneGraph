@@ -80,12 +80,12 @@ SceneLoader::SceneLoader(const Options &options)
 {
 }
 
-osg::Group *SceneLoader::load(const std::string &filename, bool search)
+osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWriter::Options *options, bool search)
 {
     std::string fname;
 
     if (search) {
-        fname = osgDB::findDataFile(filename);
+        fname = osgDB::findDataFile(filename, options);
         if (fname.empty()) return 0;
     } else {
         fname = filename;

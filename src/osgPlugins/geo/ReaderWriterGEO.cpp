@@ -400,12 +400,12 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
 
         virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName,opt); }
 
-        virtual ReadResult readNode(const std::string& file, const Options*)
+        virtual ReadResult readNode(const std::string& file, const Options* options)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );

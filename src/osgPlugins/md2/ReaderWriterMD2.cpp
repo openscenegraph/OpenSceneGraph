@@ -61,12 +61,12 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterMD2> g_readerWriter_MD2_Proxy;
 
 osgDB::ReaderWriter::ReadResult
 ReaderWriterMD2::readNode (const std::string& file,
-			   const osgDB::ReaderWriter::Options*)
+			   const osgDB::ReaderWriter::Options* options)
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string filename = osgDB::findDataFile( file );
+    std::string filename = osgDB::findDataFile( file, options );
     if (filename.empty()) return ReadResult::FILE_NOT_FOUND;
 
     return load_md2 (filename.data());

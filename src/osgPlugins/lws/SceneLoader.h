@@ -14,6 +14,8 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+#include <osgDB/ReaderWriter>
+
 #include <string>
 #include <vector>
 #include <map>
@@ -60,7 +62,7 @@ namespace lwosg
         SceneLoader();
         SceneLoader(const Options &options);
 
-        osg::Group *load(const std::string &filename, bool search = false);
+        osg::Group *load(const std::string &filename, const osgDB::ReaderWriter::Options *options, bool search = false);
 
         inline osg::Group *get_root() { return root_.get(); }
         inline const osg::Group *get_root() const { return root_.get(); }

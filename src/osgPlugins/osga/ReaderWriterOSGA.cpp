@@ -17,13 +17,13 @@ public:
         return osgDB::equalCaseInsensitive(extension,"osga");
     }
 
-    virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* = NULL)
+    virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* options=NULL)
     {
         
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-        std::string fileName = osgDB::findDataFile( file );
+        std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) 
         {
             if (status==READ) return ReadResult::FILE_NOT_FOUND;

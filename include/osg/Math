@@ -52,6 +52,10 @@
     #define fabsf (float)fabs
     #endif
 
+    #ifndef isnanf
+    #define isnanf (float)isnan
+    #endif
+
 #endif
 
 namespace osg {

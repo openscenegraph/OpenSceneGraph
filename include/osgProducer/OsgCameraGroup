@@ -42,7 +42,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         OsgCameraGroup(osg::ArgumentParser& arguments);
 
-        virtual ~OsgCameraGroup() {}
+        virtual ~OsgCameraGroup();
 
 
         void setApplicationUsage(osg::ApplicationUsage* au) { _applicationUsage = au; }

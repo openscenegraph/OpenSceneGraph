@@ -60,6 +60,8 @@ namespace osg {
         /// Rewind stream to beginning.
         virtual void rewind() { setCmd(THREAD_REWIND); }
 
+        virtual void quit(bool wiatForThreadToExit);
+
         /// Enable/disable MMX.
         inline void enableMMX(bool b) { _useMMX = b; }
 

@@ -59,8 +59,8 @@ namespace osg {
         /// Rewind stream to beginning.
         virtual void rewind() { setCmd(THREAD_REWIND); }
 
-
-
+        virtual void quit(bool wiatForThreadToExit);
+	
         /// Get total length in seconds.
         inline float getLength() const { return _len; }
         
@@ -89,10 +89,6 @@ namespace osg {
         int _wrIndex, _rdIndex;
 
         OpenThreads::Mutex _mutex;
-
-        // Lock/unlock object.
-        inline void lock() { _mutex.lock(); }
-        inline void unlock() { _mutex.unlock(); }
 
         /// Set command.
         void setCmd(ThreadCommand cmd);

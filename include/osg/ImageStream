@@ -50,6 +50,8 @@ class SG_EXPORT ImageStream : public Image
         virtual void pause() { _status=PAUSED; }
 
         virtual void rewind() { _status=REWINDING; }
+        
+        virtual void quit(bool /*wiatForThreadToExit*/ = true) {}
 
         StreamStatus getStatus() { return _status; }
         

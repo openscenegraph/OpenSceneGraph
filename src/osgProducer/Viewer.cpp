@@ -303,8 +303,6 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
 
 Viewer::~Viewer()
 {
-    // kill the DatabasePager and associated thread if one exists.
-    osgDB::Registry::instance()->setDatabasePager(0);
 }
 
 void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)

@@ -115,7 +115,7 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
     {
         Producer::Camera *cam = _cfg->getCamera(i);
         Producer::RenderSurface *rs = cam->getRenderSurface();
-        if (rs->getWindowName()==" *** RenderSurface *** ")
+        if (rs->getWindowName()== Producer::RenderSurface::defaultWindowName )
         {
             rs->setWindowName(arguments.getApplicationName());
         }

@@ -57,7 +57,9 @@ protected:
     osg::Vec4   _textColor;
     std::string _textFont;
     float       _titleHeight;
+    float       _titleWidth;
     float       _textHeight;
+    float       _textWidth;
     std::string _presentationName;
 
 

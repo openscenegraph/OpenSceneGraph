@@ -59,7 +59,6 @@ void ReaderWriterSS3D::parseModel(SlideShowConstructor& constructor, xmlDocPtr d
     float rotation = 0.0f;
     float position = 0.5f;
 
-    printf("        new model\n");
     xmlChar *key;
     cur = cur->xmlChildrenNode;
     while (cur != NULL)
@@ -67,25 +66,25 @@ void ReaderWriterSS3D::parseModel(SlideShowConstructor& constructor, xmlDocPtr d
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"filename")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("            filename: %s\n", key);
+            if (key) filename = (const char*)key;
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"scale")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("            scale: %s\n", key);
+            if (key) scale = atoi((const char*)key);
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"rotation")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("            rotation: %s\n", key);
+            if (key) rotation = atoi((const char*)key);
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"position")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("            position: %s\n", key);
+            if (key) position = atoi((const char*)key)/100.0f;
             xmlFree(key);
         }
         cur = cur->next;
@@ -98,7 +97,6 @@ void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr d
 {
     constructor.addLayer();
 
-    printf("    new layer\n");
     xmlChar *key;
     cur = cur->xmlChildrenNode;
     while (cur != NULL)
@@ -106,15 +104,13 @@ void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr d
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"bullet")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            constructor.addBullet((const char*)key);
-            printf("        bullet: %s\n", key);
+            if (key) constructor.addBullet((const char*)key);
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"paragraph")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("        paragraph: %s\n", key);
-            constructor.addParagraph((const char*)key);
+            if (key) constructor.addParagraph((const char*)key);
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"image")))
@@ -123,19 +119,14 @@ void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr d
             float height = 1.0f;
 
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("        image: %s\n", key);
-            filename = (const char*)key;
+            if (key) filename = (const char*)key;
             xmlFree(key);
             
             key = xmlGetProp (cur, (const xmlChar *)"height");
-            if (key)
-            {
-                printf("            height: %s\n", key);
-                height = atoi((const char*)key);
-                xmlFree(key);
-            }
+            if (key) height = atoi((const char*)key);
+            xmlFree(key);
 
-            constructor.addImage(filename,height);
+            if (!filename.empty()) constructor.addImage(filename,height);
 
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"model")))
@@ -150,8 +141,6 @@ void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr d
 void ReaderWriterSS3D::parseSlide (SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur)
 {
 
-    printf("new slide\n");
-
     constructor.addSlide();
     
     xmlChar *key;
@@ -161,15 +150,15 @@ void ReaderWriterSS3D::parseSlide (SlideShowConstructor& constructor, xmlDocPtr 
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"title")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            constructor.setSlideTitle((const char*)key);
-            printf("    title: %s\n", key);
+            if (key) constructor.setSlideTitle((const char*)key);
+            else constructor.setSlideTitle("");
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"background")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            constructor.setSlideBackground((const char*)key);
-            printf("    background: %s\n", key);
+            if (key) constructor.setSlideBackground((const char*)key);
+            else constructor.setSlideBackground("");
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"layer")))
@@ -223,22 +212,20 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& fi
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            constructor.setPresentationName((const char*)key);
-            printf("name: %s\n", key);
+            if (key) constructor.setPresentationName((const char*)key);
+            else constructor.setPresentationName("");
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"bgcolor")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            constructor.setBackgroundColor(mapStringToColor((const char*)key));
-            printf("bgcolor: %s\n", key);
+            if (key) constructor.setBackgroundColor(mapStringToColor((const char*)key));
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"textcolor")))
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            constructor.setTextColor(mapStringToColor((const char*)key));
-            printf("textcolor: %s\n", key);
+            if (key) constructor.setTextColor(mapStringToColor((const char*)key));
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"slide")))

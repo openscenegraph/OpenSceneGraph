@@ -113,7 +113,9 @@ void Sequence::traverse(NodeVisitor& nv)
         int end = (_end < 0 ? nch + _end : _end);
 
         int sw = getValue();
-        if (sw == ALL_CHILDREN_OFF || sw == ALL_CHILDREN_ON) {
+        if (sw == ALL_CHILDREN_OFF || 
+            sw == ALL_CHILDREN_ON ||
+            sw == MULTIPLE_CHILDREN_ON ) {
             sw = begin;
             _step = (begin < end ? 1 : -1);
         }

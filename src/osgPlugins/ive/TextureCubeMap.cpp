@@ -40,31 +40,38 @@ void TextureCubeMap::write(DataOutputStream* out){
     // Write number of mipmap levels
     out->writeInt(getNumMipmapLevels());
 
-    // Write images if any
-    out->writeBool(getImage(osg::TextureCubeMap::POSITIVE_X)!=0);
-    if(getImage(osg::TextureCubeMap::POSITIVE_X))
-        ((ive::Image*)(getImage(osg::TextureCubeMap::POSITIVE_X)))->write(out);
+    // Should we include images date in stream
+    bool includeImg = out->getIncludeImageData();
+    out->writeBool(includeImg);
 
-    out->writeBool(getImage(osg::TextureCubeMap::NEGATIVE_X)!=0);
-    if(getImage(osg::TextureCubeMap::NEGATIVE_X))
-        ((ive::Image*)(getImage(osg::TextureCubeMap::NEGATIVE_X)))->write(out);
+    writeImage(out,includeImg,getImage(osg::TextureCubeMap::POSITIVE_X));
+    writeImage(out,includeImg,getImage(osg::TextureCubeMap::NEGATIVE_X));
+    writeImage(out,includeImg,getImage(osg::TextureCubeMap::POSITIVE_Y));
+    writeImage(out,includeImg,getImage(osg::TextureCubeMap::NEGATIVE_Y));
+    writeImage(out,includeImg,getImage(osg::TextureCubeMap::POSITIVE_Z));
+    writeImage(out,includeImg,getImage(osg::TextureCubeMap::NEGATIVE_Z));
 
-    out->writeBool(getImage(osg::TextureCubeMap::POSITIVE_Y)!=0);
-    if(getImage(osg::TextureCubeMap::POSITIVE_Y))
-        ((ive::Image*)(getImage(osg::TextureCubeMap::POSITIVE_Y)))->write(out);
+}
 
-    out->writeBool(getImage(osg::TextureCubeMap::NEGATIVE_Y)!=0);
-    if(getImage(osg::TextureCubeMap::NEGATIVE_Y))
-        ((ive::Image*)(getImage(osg::TextureCubeMap::NEGATIVE_Y)))->write(out);
 
-    out->writeBool(getImage(osg::TextureCubeMap::POSITIVE_Z)!=0);
-    if(getImage(osg::TextureCubeMap::POSITIVE_Z))
-        ((ive::Image*)(getImage(osg::TextureCubeMap::POSITIVE_Z)))->write(out);
-
-    out->writeBool(getImage(osg::TextureCubeMap::NEGATIVE_Z)!=0);
-    if(getImage(osg::TextureCubeMap::NEGATIVE_Z))
-        ((ive::Image*)(getImage(osg::TextureCubeMap::NEGATIVE_Z)))->write(out);
-
+void TextureCubeMap::writeImage(DataOutputStream* out,bool includeImg,osg::Image* image)
+{
+    if(includeImg)
+    {
+        // Write images if any
+        out->writeBool(image!=0);
+        if(image)
+            ((ive::Image*)(image))->write(out);
+    }
+    else
+    {
+        if (image && !(image->getFileName().empty())){
+            out->writeString(image->getFileName());
+        }
+        else{ 
+            out->writeString("");
+        }    
+    }
 }
 
 void TextureCubeMap::read(DataInputStream* in)
@@ -91,40 +98,43 @@ void TextureCubeMap::read(DataInputStream* in)
         // Read number of mipmap levels
         setNumMipmapLevels((unsigned int)in->readInt());
 
-        // Read images if any
-        if(in->readBool()){
-            osg::Image* image = new osg::Image();
-            ((ive::Image*)(image))->read(in);
-            setImage(osg::TextureCubeMap::POSITIVE_X, image);
-        }
-        if(in->readBool()){
-            osg::Image* image = new osg::Image();
-            ((ive::Image*)(image))->read(in);
-            setImage(osg::TextureCubeMap::NEGATIVE_X, image);
-        }
-        if(in->readBool()){
-            osg::Image* image = new osg::Image();
-            ((ive::Image*)(image))->read(in);
-            setImage(osg::TextureCubeMap::POSITIVE_Y, image);
-        }
-        if(in->readBool()){
-            osg::Image* image = new osg::Image();
-            ((ive::Image*)(image))->read(in);
-            setImage(osg::TextureCubeMap::NEGATIVE_Y, image);
-        }
-        if(in->readBool()){
-            osg::Image* image = new osg::Image();
-            ((ive::Image*)(image))->read(in);
-            setImage(osg::TextureCubeMap::POSITIVE_Z, image);
-        }
-        if(in->readBool()){
-            osg::Image* image = new osg::Image();
-            ((ive::Image*)(image))->read(in);
-            setImage(osg::TextureCubeMap::NEGATIVE_Z, image);
-        }
+        // Should we read image data from stream
+        bool includeImg = in->readBool();
 
+        setImage(osg::TextureCubeMap::POSITIVE_X,readImage(in, includeImg));
+        setImage(osg::TextureCubeMap::NEGATIVE_X,readImage(in, includeImg));
+        setImage(osg::TextureCubeMap::POSITIVE_Y,readImage(in, includeImg));
+        setImage(osg::TextureCubeMap::NEGATIVE_Y,readImage(in, includeImg));
+        setImage(osg::TextureCubeMap::POSITIVE_Z,readImage(in, includeImg));
+        setImage(osg::TextureCubeMap::NEGATIVE_Z,readImage(in, includeImg));
+        
     }
     else{
         throw Exception("TextureCubeMap::read(): Expected TextureCubeMap identification.");
     }
+}
+
+osg::Image* TextureCubeMap::readImage(DataInputStream* in, bool includeImg)
+{        
+    if(includeImg)
+    {
+        // Read image data from stream
+        if(in->readBool())
+        {
+            osg::Image* image = new osg::Image();
+            ((ive::Image*)image)->read(in);
+            return image;
+        }
+    }
+    else
+    {
+        // Only read image name from stream.
+        std::string filename = in->readString();
+        if(filename.compare("")!=0)
+        {
+            osg::Image* image = in->readImage(filename);
+            return image;
+        }
+    }
+    return 0;
 }

@@ -1,4 +1,5 @@
 #include <osg/GL>
+#include <osg/GLExtensions>
 #include <osg/ColorMatrix>
 
 using namespace osg;
@@ -15,8 +16,11 @@ ColorMatrix::~ColorMatrix()
 void ColorMatrix::apply(State&) const
 {
 //    std::cout<<"applying matrix"<<_matrix<<std::endl;
-
-    glMatrixMode( GL_COLOR );
-    glLoadMatrixf( _matrix.ptr() );
-    glMatrixMode( GL_MODELVIEW );
+    static bool s_ARB_imaging = isGLExtensionSupported("GL_ARB_imaging");
+	if (s_ARB_imaging)
+	{
+		glMatrixMode( GL_COLOR );
+		glLoadMatrixf( _matrix.ptr() );
+		glMatrixMode( GL_MODELVIEW );
+	}
 }

@@ -240,43 +240,35 @@ bool FltFile::readFile(const std::string& fileName)
                 #endif
     
                     pExternalFltFile = registerFLT ? Registry::instance()->getFltFile(filename) : NULL;
-
                     if (pExternalFltFile == NULL)
                     {
-                        osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
+                        osg::ref_ptr<osgDB::ReaderWriter::Options> options = 
+                            _pFltFile->getOptions() ? _pFltFile->getOptions() : 
+						                              new osgDB::ReaderWriter::Options;
 
-                        if (_pFltFile->getOptions())
+                        //Path for Nested external references
+                        osgDB::FilePathList& fpl = options->getDatabasePathList();
+                        std::string filePath = osgDB::getFilePath(filename);
+                        std::string pushAndPopPath;
+                        //If absolute path
+                        if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
+                            (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
                         {
-                            options = _pFltFile->getOptions();
+                            pushAndPopPath = filePath;
                         }
                         else
                         {
-                            options = new osgDB::ReaderWriter::Options;
-                        
-                            //Path for Nested external references
-                            std::string filePath = osgDB::getFilePath(filename);
-                            std::string pushAndPopPath;
-                            //If absolute path
-                            if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||
-                                (filePath.length()>2 && filePath.substr(1,1)==":" && filePath.find_first_of("/\\")==2) )
-                            {
-                                pushAndPopPath = filePath;
-                            }
-                            else
-                            {
-                                osgDB::FilePathList fpl = osgDB::getDataFilePathList();
-                                pushAndPopPath = fpl.empty() ? "." : fpl.front();
-                                pushAndPopPath += "/" + filePath;
-                            }
-
-                            char optionsString[256];
-                            sprintf(optionsString,"FLT_VER %d",rec.getFlightVersion());
-                            options->setOptionString(optionsString);
-
-                            osg::notify(osg::NOTICE)<<"Create local path"<<pushAndPopPath<<std::endl;
-
-                            options->getDatabasePathList().push_back(pushAndPopPath);
+                            pushAndPopPath = (fpl.empty() ? "." : fpl.back()) + "/" + filePath;
                         }
+
+                        char optionsString[256];
+                        sprintf(optionsString,"FLT_VER %d",rec.getFlightVersion());
+                        options->setOptionString(optionsString);
+
+                        //osg::notify(osg::NOTICE)<<"Create local path"<<pushAndPopPath<<std::endl;
+
+                        fpl.push_back(pushAndPopPath);
+                       
 
                         pExternalFltFile = new FltFile( pColorPool, pTexturePool, pMaterialPool,
                             pLtPtAppearancePool, pLtPtAnimationPool, options.get() );

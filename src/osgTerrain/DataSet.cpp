@@ -1810,17 +1810,42 @@ osg::Node* DataSet::DestinationTile::createScene()
         std::string imageName(_name+".rgb");
         _imagery->_image->setFileName(imageName.c_str());
 
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+        osg::Image* image = _imagery->_image.get();
+
+	osg::Texture2D* texture = new osg::Texture2D;
+	texture->setImage(image);
+        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        texture->setMaxAnisotropy(8);
+	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        
+        if (_dataSet->getTextureType()==COMPRESSED_TEXTURE)
+        {
+            texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+
+            osg::ref_ptr<osg::State> state = new osg::State;
+            texture->apply(*state);
+
+            image->readImageFromCurrentTexture();
+
+            texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+            
+        } else if (_dataSet->getTextureType()==RGB_16_BIT)
+        {
+
+            image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
+
+        }
+
         if (_dataSet->getDestinationTileExtension()!=".ive")
         {
             std::cout<<"Writing out imagery to "<<imageName<<std::endl;
             osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
         }
-        
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP);
-        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+
     }
 
     return geode;

@@ -150,8 +150,8 @@ osg::Node* TXPTileNode::seamReplacement(osg::Node* child,int x, int y, int level
             
                 TXPSeamLOD* seam = new TXPSeamLOD(x,y,level,lod1->getCenter(),lod1->getMinRange(0),lod1->getMaxRange(0),lod2->getMaxRange(0));
                 seam->setArchive(_archive);
-                seam->addChild(lod1->getChild(0)); // high res
-                seam->addChild(lod2->getChild(0)); // low res
+                seam->addChild(lod1->getChild(0)); // low res
+                seam->addChild(lod2->getChild(0)); // high res
                 return seam;
             }
         }

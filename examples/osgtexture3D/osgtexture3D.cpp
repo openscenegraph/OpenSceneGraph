@@ -24,10 +24,10 @@
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
 
-class ConstructStateCallback : public osg::NodeCallback
+class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallback
 {
     public:
-        ConstructStateCallback() {}
+        ConstructStateCallback(osg::Node* node):_node(node),_initialized(false) {}
         
         osg::StateSet* constructState()
         {
@@ -82,6 +82,7 @@ class ConstructStateCallback : public osg::NodeCallback
             osg::Texture3D* texture3D = new osg::Texture3D;
             texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
             texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
+            texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::REPEAT);
             texture3D->setImage(image_3d);
 
 
@@ -103,6 +104,32 @@ class ConstructStateCallback : public osg::NodeCallback
             return stateset;
         }
 
+        virtual void operator()(const Producer::RenderSurface&, osgProducer::OsgCameraGroup* , osgProducer::OsgSceneHandler* sh)
+        { 
+            if (!_initialized)
+            {
+                // only initialize state once, only need for cases where multiple graphics contexts are
+                // if which case this callback can get called multiple times.
+                _initialized = true;
+
+                if (_node) _node->setStateSet(constructState());
+            }            
+            // now safe to con
+            sh->init();
+            
+        }
+        
+        
+        osg::Node*  _node;
+        bool        _initialized;
+        
+};
+
+class UpdateStateCallback : public osg::NodeCallback
+{
+    public:
+        UpdateStateCallback() {}
+        
         void animateState(osg::StateSet* stateset)
         {
             // here we simply get any existing texgen, and then increment its
@@ -113,7 +140,7 @@ class ConstructStateCallback : public osg::NodeCallback
             {
                 texgen->getPlane(osg::TexGen::R)[3] += 0.001f;
             }
-            
+
         }
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
@@ -124,14 +151,6 @@ class ConstructStateCallback : public osg::NodeCallback
             {
                 // we have an exisitng stateset, so lets animate it.
                 animateState(stateset);
-            }
-            else
-            {
-                // no state exist yet, so we must be in the first
-                // pass, so lets create our stateset with all the 
-                // textures in it.
-                stateset = constructState();
-                if (stateset) node->setStateSet(stateset);
             }
 
             // note, callback is repsonsible for scenegraph traversal so
@@ -189,7 +208,7 @@ osg::Node* createModel()
     // A bit hacky, and my plan is to reimplement the osg::scaleImage and
     // osg::Image::copySubImage() without using GLU which will get round
     // this current limitation.
-    geode->setUpdateCallback(new ConstructStateCallback());
+    geode->setUpdateCallback(new UpdateStateCallback());
     
     return geode;
 
@@ -241,6 +260,11 @@ int main( int argc, char **argv )
 
         // set the scene to render
         viewer.setSceneData(rootNode);
+        
+        // the construct state uses gl commands to resize images so we are forced
+        // to only call it once a valid graphics context has been established,
+        // for that we use a realize callback.
+        viewer.setRealizeCallback(new ConstructStateCallback(rootNode));
 
         // create the windows and run the threads.
         viewer.realize(Producer::CameraGroup::ThreadPerCamera);

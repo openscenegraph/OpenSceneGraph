@@ -135,9 +135,7 @@ extern "C" {
 const char* sockerr::errstr () const
 {
 #ifndef WIN32
-    //extern char *sys_errlist;
     return sys_errlist[err];
-  //return SYS_ERRLIST [err];
 #else
 	return 0; // TODO
 #endif
@@ -265,6 +263,11 @@ sockbuf::sockbuf (const sockbuf::sockdesc& sd)
 sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
   : rep (0)
 {
+#ifdef WIN32
+  WORD version = MAKEWORD(1,1);
+  WSADATA wsaData;
+  WSAStartup(version, &wsaData);
+#endif
   SOCKET soc = ::socket (domain, st, proto);
   
   if (soc == SOCKET_ERROR)
@@ -493,10 +496,7 @@ sockbuf::sockdesc sockbuf::accept (sockAddr& sa)
 {
   int len = sa.size ();
   int soc = -1;
-  if ((soc = ::accept (rep->sock, sa.addr (), 
-#ifndef __sgi
-          (socklen_t*) // LN
-#endif
+  if ((soc = ::accept (rep->sock, sa.addr (), (socklen_t*) // LN
                        &len)) == -1)
     throw sockerr (errno, "sockbuf::sockdesc", sockname.c_str());
   return sockdesc (soc);
@@ -520,7 +520,8 @@ int sockbuf::read (void* buf, int len)
     throw sockoob ();
 
   int rval = 0;
-  if ((rval = ::read (rep->sock, (char*) buf, len)) == -1)
+  //if ((rval = ::read (rep->sock, (char*) buf, len)) == -1)
+  if ((rval = ::recv (rep->sock, (char*) buf, len, 0)) == -1)
     throw sockerr (errno, "sockbuf::read", sockname.c_str());
   return rval;
 }
@@ -551,10 +552,7 @@ int sockbuf::recvfrom (sockAddr& sa, void* buf, int len, int msgf)
   int __sa_len = sa.size ();
   
   if ((rval = ::recvfrom (rep->sock, (char*) buf, len,
-                          msgf, sa.addr (), 
-#ifndef __sgi
-                          (socklen_t*) // LN
-#endif
+                          msgf, sa.addr (), (socklen_t*) // LN
                           &__sa_len)) == -1)
     throw sockerr (errno, "sockbuf::recvfrom", sockname.c_str());
   return rval;
@@ -569,7 +567,8 @@ int sockbuf::write(const void* buf, int len)
   
   int wlen=0;
   while(len>0) {
-    int	wval = ::write (rep->sock, (char*) buf, len);
+    //int	wval = ::write (rep->sock, (char*) buf, len);
+    int	wval = ::send (rep->sock, (char*) buf, len, 0);
     if (wval == -1) throw wlen;
     len -= wval;
     wlen += wval;
@@ -721,10 +720,7 @@ void sockbuf::shutdown (shuthow sh)
 
 int sockbuf::getopt (int op, void* buf, int len, int level) const
 {
-    if (::getsockopt (rep->sock, level, op, (char*) buf, 
-#ifndef __sgi
-            (socklen_t*) // LN
-#endif
+    if (::getsockopt (rep->sock, level, op, (char*) buf, (socklen_t*) // LN
                       &len) == -1)
     throw sockerr (errno, "sockbuf::getopt", sockname.c_str());
   return len;

@@ -277,22 +277,29 @@ void Registry::readCommandLine(std::vector<std::string>& commandLine)
     }    
 }
 
-void Registry::readCommandLine(osg::ArgumentParser& parser)
+void Registry::readCommandLine(osg::ArgumentParser& arguments)
 {
+    // report the usage options.
+    if (arguments.getApplicationUsage())
+    {
+        arguments.getApplicationUsage()->addCommandLineOption("-l <library>","Load the plugin");
+        arguments.getApplicationUsage()->addCommandLineOption("-e <extension>","Load the plugin associated with handling files with specified extension");
+        arguments.getApplicationUsage()->addCommandLineOption("-O <option_string>","Provide an option string to reader/writers used to load databases");
+    }
 
     std::string value;
-    while(parser.read("-l",value))
+    while(arguments.read("-l",value))
     {
         loadLibrary(value);
     }
         
-    while(parser.read("-e",value))
+    while(arguments.read("-e",value))
     {
         std::string libName = createLibraryNameForExt(value);
         loadLibrary(libName);
     }
 
-    while(parser.read("-O",value))
+    while(arguments.read("-O",value))
     {
         setOptions(new osgDB::ReaderWriter::Options(value));
     }

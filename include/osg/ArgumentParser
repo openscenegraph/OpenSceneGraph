@@ -16,18 +16,24 @@
 
 #include <osg/Export>
 
-#include <string>
 #include <map>
+#include <string>
+#include <iostream>
 
 namespace osg {
+
+// forward declare
+class ApplicationUsage;
 
 class SG_EXPORT ArgumentParser
 {
     public:
-        ArgumentParser(int* argc,char **argv):
-            _argc(argc),
-            _argv(argv) {}
-            
+        ArgumentParser(int* argc,char **argv);
+
+        void setApplicationUsage(ApplicationUsage* usage) { _usage = usage; }
+        ApplicationUsage* getApplicationUsage() { return _usage; }
+        const ApplicationUsage* getApplicationUsage() const { return _usage; }
+
         /** return the argument count.*/
         int& argc() { return *_argc; }
 
@@ -40,8 +46,6 @@ class SG_EXPORT ArgumentParser
         /** return const char* argument at specificed position.*/
         const char* operator [] (int pos) const { return _argv[pos]; }
 
-  
-        
         /** return the program name, as specified by argv[0] */
         std::string getProgramName() const;
 
@@ -131,9 +135,10 @@ class SG_EXPORT ArgumentParser
   
   protected:
         
-        int*            _argc;
-        char**          _argv;
-        ErrorMessageMap _errorMessageMap;
+        int*                _argc;
+        char**              _argv;
+        ErrorMessageMap     _errorMessageMap;
+        ApplicationUsage*   _usage;
         
 };
 

@@ -127,6 +127,49 @@ class SG_EXPORT Geometry : public Drawable
         const TexCoordArrayList& getTexCoordArrayList() const { return _texCoordList; }
 
 
+#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
+
+        void setArray(AttributeType type, Array* array);
+        Array* getArray(AttributeType type);
+        const Array* getArray(AttributeType type) const;
+        
+        void setIndices(AttributeType type, IndexArray* indices);
+        IndexArray* getIndices(AttributeType type);
+        const IndexArray* getIndices(AttributeType type) const;
+        
+        void setNormalize(AttributeType type, GLboolean normalize);
+        GLboolean getNormalize(AttributeType type) const;
+        
+        void setBinding(AttributeType type,AttributeBinding binding);
+        AttributeBinding getBinding(AttributeType type) const;
+        
+        struct AttributeData
+        {
+            AttributeData():
+                _normalize(GL_FALSE),
+                _binding(BIND_OFF) {}
+        
+            ref_ptr<Array>          _array;
+            ref_ptr<IndexArray>     _indices;
+            GLboolean               _normalize;
+            AttributeBinding        _binding;
+        };
+        
+        unsigned int getNumArrays() const { return _attributeList.size(); }
+        
+        AttributeData& getAttributeData(unsigned int type) { return _attributeList[type]; }
+        
+        const AttributeData& getAttributeData(unsigned int type) const { return _attributeList[type]; }
+
+        typedef std::vector<AttributeData> AttributeList;
+        
+        void setAttributeList(AttributeList& al) { _attributeList = al; }
+                
+        AttributeList& getAttributeList() { return _attributeList; }
+        
+        const AttributeList& getAttributeList() const { return _attributeList; }
+        
+#endif
 
         typedef std::pair< ref_ptr<Array>, ref_ptr<IndexArray> > VertexAttribArrayPair;
         typedef std::pair< GLboolean, VertexAttribArrayPair > VertexAttribNormArrayPair;
@@ -320,6 +363,9 @@ class SG_EXPORT Geometry : public Drawable
        
         PrimitiveSetList                _primitives;
         
+#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
+        AttributeList                   _attributeList;
+#endif
         ref_ptr<Vec3Array>                _vertexArray;
         ref_ptr<IndexArray>                _vertexIndices;
 

@@ -170,6 +170,9 @@ int main( int argc, char **argv )
     // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;
     Receiver        rc;
+    
+    bc.setPort(socketNumber);
+    rc.setPort(socketNumber);
 
     while( !viewer.done() )
     {

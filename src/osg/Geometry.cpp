@@ -83,51 +83,51 @@ public:
             _normalized(normalized),
             _extensions(extensions),
             _attribcoords(attribcoords),
-            _indices(indices) {}
+            _indices(indices) {;}
 
-          void operator () (unsigned int pos)
-          {
-              if (_indices) _attribcoords->accept(_indices->index(pos),*this);
-              else _attribcoords->accept(pos,*this);
-          }
+    void operator () (unsigned int pos)
+    {
+        if (_indices) _attribcoords->accept(_indices->index(pos),*this);
+        else _attribcoords->accept(pos,*this);
+    }
 
-          virtual void apply(const GLshort& s) 
-          {
-              _extensions->glVertexAttrib1s( _index, s );
-          }
-          virtual void apply(const GLfloat& f) 
-          {
-              _extensions->glVertexAttrib1f( _index, f );
-          }
-          virtual void apply(const UByte4& v) 
-          {
-              if( _normalized )
-              {
-                  _extensions->glVertexAttrib4Nubv( _index, v.ptr() );
-              }
-              else
-              {
-                  _extensions->glVertexAttrib4ubv( _index, v.ptr() );
-              }
-          }
-          virtual void apply(const Vec2& v) 
-          {
-              _extensions->glVertexAttrib2fv( _index, v.ptr() );
-          }
-          virtual void apply(const Vec3& v) 
-          {
-              _extensions->glVertexAttrib3fv( _index, v.ptr() );
-          }
-          virtual void apply(const Vec4& v) 
-          {
-              _extensions->glVertexAttrib4fv( _index, v.ptr() );
-          }
+    virtual void apply(const GLshort& s) 
+    {
+        _extensions->glVertexAttrib1s( _index, s );
+    }
+    virtual void apply(const GLfloat& f) 
+    {
+        _extensions->glVertexAttrib1f( _index, f );
+    }
+    virtual void apply(const UByte4& v) 
+    {
+        if( _normalized )
+        {
+            _extensions->glVertexAttrib4Nubv( _index, v.ptr() );
+        }
+        else
+        {
+            _extensions->glVertexAttrib4ubv( _index, v.ptr() );
+        }
+    }
+    virtual void apply(const Vec2& v) 
+    {
+        _extensions->glVertexAttrib2fv( _index, v.ptr() );
+    }
+    virtual void apply(const Vec3& v) 
+    {
+        _extensions->glVertexAttrib3fv( _index, v.ptr() );
+    }
+    virtual void apply(const Vec4& v) 
+    {
+        _extensions->glVertexAttrib4fv( _index, v.ptr() );
+    }
 
-          unsigned int                  _index;
-          GLboolean                     _normalized;
-          const Geometry::Extensions*   _extensions;
-          const Array*                  _attribcoords;
-          const IndexArray*             _indices;
+    const Geometry::Extensions *_extensions;
+    const Array*            _attribcoords;
+    const IndexArray*        _indices;
+    GLboolean                _normalized;
+    unsigned int            _index;
 };
 
 class DrawTexCoord : public osg::Referenced, public osg::ConstValueVisitor
@@ -247,6 +247,9 @@ Geometry::Geometry()
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
+#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
+    _attributeList(geometry._attributeList),
+#endif    
     _vertexArray(dynamic_cast<Vec3Array*>(copyop(geometry._vertexArray.get()))),
     _normalBinding(geometry._normalBinding),
     _normalArray(dynamic_cast<Vec3Array*>(copyop(geometry._normalArray.get()))),
@@ -331,6 +334,89 @@ const IndexArray* Geometry::getTexCoordIndices(unsigned int unit) const
     else return 0;
 }
 
+
+#ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
+
+void Geometry::setArray(AttributeType type,Array* array)
+{
+    if (_attributeList.size()<=type)
+        _attributeList.resize(type+1);
+        
+   _attributeList[type]._array = array;
+
+    dirtyDisplayList();
+}
+
+Array* Geometry::getArray(AttributeType type)
+{
+    if (type<_attributeList.size()) return _attributeList[type]._array.get();
+    else return 0;
+}
+
+const Array* Geometry::getArray(AttributeType type) const
+{
+    if (type<_attributeList.size()) return _attributeList[type]._array.get();
+    else return 0;
+}
+
+
+void Geometry::setIndices(AttributeType type,IndexArray* array)
+{
+    if (_attributeList.size()<=type)
+        _attributeList.resize(type+1);
+        
+   _attributeList[type]._indices = array;
+
+    dirtyDisplayList();
+}
+
+IndexArray* Geometry::getIndices(AttributeType type)
+{
+    if (type<_attributeList.size()) return _attributeList[type]._indices.get();
+    else return 0;
+}
+
+const IndexArray* Geometry::getIndices(AttributeType type) const
+{
+    if (type<_attributeList.size()) return _attributeList[type]._indices.get();
+    else return 0;
+}
+
+
+void Geometry::setNormalize(AttributeType type,GLboolean normalize)
+{
+    if (_attributeList.size()<=type)
+        _attributeList.resize(type+1);
+        
+   _attributeList[type]._normalize = normalize;
+
+    dirtyDisplayList();
+}
+
+GLboolean Geometry::getNormalize(AttributeType type) const
+{
+    if (type<_attributeList.size()) return _attributeList[type]._normalize;
+    else return GL_FALSE;
+}
+
+void Geometry::setBinding(AttributeType type,AttributeBinding binding)
+{
+    if (_attributeList.size()<=type)
+        _attributeList.resize(type+1);
+        
+   _attributeList[type]._binding = binding;
+
+    dirtyDisplayList();
+}
+
+Geometry::AttributeBinding Geometry::getBinding(AttributeType type) const
+{
+    if (type<_attributeList.size()) return _attributeList[type]._binding;
+    else return BIND_OFF;
+}
+
+#endif
+
 void Geometry::setVertexAttribArray(unsigned int index,bool normalize,Array* array,AttributeBinding ab)
 {
     if (_vertexAttribList.size()<=index)
@@ -342,7 +428,15 @@ void Geometry::setVertexAttribArray(unsigned int index,bool normalize,Array* arr
     _vertexAttribList[index].first = normalize;
     _vertexAttribList[index].second.first = array;
 
-    _vertexAttribBindingList[index] = ab;
+    if( index == 0 )
+    {
+        // Force bind per vertex
+        _vertexAttribBindingList[index] = BIND_PER_VERTEX;
+    }
+    else
+    {
+        _vertexAttribBindingList[index] = ab;
+    }
 
     _fastPathComputed = false;
     dirtyDisplayList();
@@ -683,8 +777,6 @@ void Geometry::drawImplementation(State& state) const
     //
     if(!extensions->isVertexProgramSupported())
     {
-        notify(WARN) << "Error: VertexProgram not supported by OpenGL driver" << std::endl;
-        
         for( unsigned int va = 0; va < _vertexAttribBindingList.size(); ++va )
         {
             if (_vertexAttribBindingList[va]!=BIND_OFF)
@@ -720,7 +812,10 @@ void Geometry::drawImplementation(State& state) const
         // fast path.        
         //
 
-        state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->getDataPointer());
+        if( _vertexArray.valid() )
+            state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->getDataPointer());
+        else
+            state.disableVertexPointer();
     
         if (_normalBinding==BIND_PER_VERTEX)
             state.setNormalPointer(GL_FLOAT,0,_normalArray->getDataPointer());
@@ -759,34 +854,29 @@ void Geometry::drawImplementation(State& state) const
             for( index = 0; index < _vertexAttribList.size(); ++index )
             {
                 const Array* array = _vertexAttribList[index].second.first.get();
-                const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
+                const AttributeBinding ab = _vertexAttribBindingList[index];
 
-                if( _vertexAttribBindingList[index] == BIND_PER_VERTEX )
+                if( ab == BIND_PER_VERTEX && array )
                 {
-                    if( array )
-                    {
-                        state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(), 
-                            _vertexAttribList[index].first, 0, array->getDataPointer() );
-                    }
-                    else
-                    {
-                        state.disableVertexAttribPointer( index );
-                    }
+                    state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(), 
+                        _vertexAttribList[index].first, 0, array->getDataPointer() );
                 }
                 else
                 {
-                    if( indexArray )
+                    if( array )
                     {
-                        if( indexArray->getNumElements() > 0 )
+                        const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
+
+                        if( indexArray && indexArray->getNumElements() > 0 )
                         {
-                            drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
+                            drawVertexAttribMap[ab].push_back( 
                                 new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,indexArray) );
                         }
-                    }
-                    else
-                    {
-                        drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
-                            new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
+                        else
+                        {
+                            drawVertexAttribMap[ab].push_back( 
+                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
+                        }
                     }
 
                     state.disableVertexAttribPointer( index );
@@ -908,24 +998,25 @@ void Geometry::drawImplementation(State& state) const
         if( extensions->isVertexProgramSupported() )
         {
             unsigned int index;
-            for( index = 0; index < _vertexAttribList.size(); ++index )
+            for( index = 1; index < _vertexAttribList.size(); ++index )
             {
                 const Array* array = _vertexAttribList[index].second.first.get();
-                const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
 
-                if( indexArray )
+                if( array && array->getNumElements() > 0 )
                 {
-                    if( indexArray->getNumElements() > 0 )
+                    const IndexArray* indexArray = _vertexAttribList[index].second.second.get();
+
+                    if( indexArray && indexArray->getNumElements() > 0 )
                     {
                         drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
                             new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,indexArray) );
                     }
+                    else
+                    {
+                        drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
+                            new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
+                    }            
                 }
-                else
-                {
-                    drawVertexAttribMap[_vertexAttribBindingList[index]].push_back( 
-                        new DrawVertexAttrib(extensions,index,_vertexAttribList[index].first,array,0) );
-                }            
             }
         }
 
@@ -954,6 +1045,18 @@ void Geometry::drawImplementation(State& state) const
 
         // set up vertex functor.
         DrawVertex drawVertex(_vertexArray.get(),_vertexIndices.get());
+
+        bool useVertexAttrib =  _vertexAttribList.size() > 0 &&
+                                _vertexAttribList[0].second.first.valid() && 
+                                 _vertexAttribList[0].second.first->getNumElements();
+
+        ref_ptr<DrawVertexAttrib> drawVertexAttribZero;
+        if( useVertexAttrib )
+        {
+            drawVertexAttribZero = new DrawVertexAttrib(extensions,0,
+                _vertexAttribList[0].first,_vertexAttribList[0].second.first.get(),
+                _vertexAttribList[0].second.second.get()); 
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //
@@ -1048,7 +1151,14 @@ void Geometry::drawImplementation(State& state) const
                         }
                         if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
-                        drawVertex(vindex);
+                        if( useVertexAttrib )
+                        {
+                            (*drawVertexAttribZero)(vindex);
+                        }
+                        else
+                        {
+                            drawVertex(vindex);
+                        }
                     }
                     
                     glEnd();
@@ -1109,8 +1219,15 @@ void Geometry::drawImplementation(State& state) const
                             }
                             if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
-                            drawVertex(vindex);
-                            
+                            if( useVertexAttrib )
+                            {
+                                (*drawVertexAttribZero)(vindex);
+                            }
+                            else
+                            {
+                                drawVertex(vindex);
+                            }
+
                             ++vindex;
                         }
                         
@@ -1173,7 +1290,14 @@ void Geometry::drawImplementation(State& state) const
                         }
                         if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
-                        drawVertex(vindex);
+                        if( useVertexAttrib )
+                        {
+                            (*drawVertexAttribZero)(vindex);
+                        }
+                        else
+                        {
+                            drawVertex(vindex);
+                        }
                     }
 
                     glEnd();
@@ -1233,7 +1357,14 @@ void Geometry::drawImplementation(State& state) const
                         }
                         if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
-                        drawVertex(vindex);
+                        if( useVertexAttrib )
+                        {
+                            (*drawVertexAttribZero)(vindex);
+                        }
+                        else
+                        {
+                            drawVertex(vindex);
+                        }
                     }
 
                     glEnd();
@@ -1293,7 +1424,14 @@ void Geometry::drawImplementation(State& state) const
                         }
                         if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
-                        drawVertex(vindex);
+                        if( useVertexAttrib )
+                        {
+                            (*drawVertexAttribZero)(vindex);
+                        }
+                        else
+                        {
+                            drawVertex(vindex);
+                        }
                     }
 
                     glEnd();

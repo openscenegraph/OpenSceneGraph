@@ -919,6 +919,8 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
             case(PFTG_OBJECT_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::OBJECT_LINEAR);
                 osgStateSet->setAttribute(osgTexGen);
+                osgStateSet->setMode(GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+                osgStateSet->setMode(GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_EYE_LINEAR_IDENT) :
                 std::cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
@@ -926,10 +928,14 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::GeoSet* osgGeoSet,pfGeoS
             case(PFTG_EYE_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
                 osgStateSet->setAttribute(osgTexGen);
+                osgStateSet->setMode(GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+                osgStateSet->setMode(GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_SPHERE_MAP) :
                 osgTexGen->setMode(osg::TexGen::SPHERE_MAP);
                 osgStateSet->setAttribute(osgTexGen);
+                osgStateSet->setMode(GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+                osgStateSet->setMode(GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_OFF) :
                 osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);

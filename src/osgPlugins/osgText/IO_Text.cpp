@@ -149,7 +149,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         itAdvanced = true;
     }
 
-    if (fr.matchSequence("layout %w"))
+    if (fr.matchSequence("layout %w") && fr[1].getStr())
     {
         std::string str = fr[1].getStr();
         if      (str=="LEFT_TO_RIGHT") text.setLayout(osgText::Text::LEFT_TO_RIGHT);
@@ -196,7 +196,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     }
 
     // text
-    if (fr.matchSequence("text %s")) {
+    if (fr.matchSequence("text %s") && fr[1].getStr()) {
         text.setText(std::string(fr[1].getStr()));
         fr += 2;
         itAdvanced = true;

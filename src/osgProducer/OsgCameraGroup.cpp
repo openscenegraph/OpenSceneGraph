@@ -213,7 +213,6 @@ void OsgCameraGroup::_init()
     _scene_data = NULL;
     _global_stateset = NULL;
     _clear_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
-    _LODScale = 1.0f;
 
     _fusionDistanceMode = osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
@@ -295,7 +294,6 @@ void OsgCameraGroup::setUpSceneViewsWithData()
         
         sv->setFrameStamp( _frameStamp.get() );
         sv->setGlobalStateSet( _global_stateset.get() );
-        sv->setLODScale( _LODScale );
         sv->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
     }
 }
@@ -331,9 +329,13 @@ const osg::Vec4& OsgCameraGroup::getClearColor() const
 
 void OsgCameraGroup::setLODScale( float scale )
 {
-    // need to set a local variable?
-    _LODScale = scale;
+    getCullSettings().setLODScale(scale);
     setUpSceneViewsWithData();
+}
+
+float OsgCameraGroup::getLODScale() const
+{
+    return getCullSettings().getLODScale();
 }
 
 void OsgCameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value)

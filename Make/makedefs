@@ -195,7 +195,7 @@ endif
                       -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
                       -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf 
   SOCKET_LIBS       = 
-  OTHER_LIBS        = 
+  OTHER_LIBS        = -lpthread
   PNG_LIBS          = -lpng
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff

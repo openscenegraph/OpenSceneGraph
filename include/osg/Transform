@@ -17,6 +17,10 @@
 #include <osg/Group>
 #include <osg/Matrix>
 
+#ifndef GL_RESCALE_NORMAL
+#define GL_RESCALE_NORMAL                 0x803A
+#endif
+
 namespace osg {
 
 

@@ -46,25 +46,26 @@ is in easy reach.
 Windows:</li>
 
 <ul><b>set PATH = C:/all/the/exisitng/paths;C:/OpenSceneGraph/bin</b>
-<br><b>set OSG_FILE_PATH = C:/OpenSceneGraph-Data;C:/OpenSceneGraph-Data/Images;C:/OpenSceneGraph-Data/Fonts</b></ul>
+<br><b>set OSG_FILE_PATH = C:/OpenSceneGraph-Data;C:/OpenSceneGraph-Data/Images</b></ul>
 
 <li>
 Unix</li>
 
 <ul><b>export PATH = ${PATH}:/home/myaccount/OpenSceneGraph/bin</b>
 <br><b>export LD_LIBRARY_PATH = ${LD_LIBRARY_PATH}:/home/myaccount/OpenSceneGraph/lib</b>
-<br><b>export OSG_FILE_PATH = /home/myaccount/OpenSceneGraph-Data:/home/myaccount/OpenSceneGraph-Data/Images:/home/myaccount/OpenSceneGraph-Data/Fonts</b>
+<br><b>export OSG_FILE_PATH = /home/myaccount/OpenSceneGraph-Data:/home/myaccount/OpenSceneGraph-Data/Images</b>
 <br>or
 <br><b>setenv PATH ${PATH}:/home/myaccount/OpenSceneGraph/bin</b>
 <br><b>setenv LD_LIBRARY_PATH = ${LD_LIBRARY_PATH}:/home/myaccount/OpenSceneGraph/lib</b>
-<br><b>setenv OSG_FILE_PATH /home/myaccount/OpenSceneGraph-Data:/home/myaccount/OpenSceneGraph-Data/Images:/home/myaccount/OpenSceneGraph-Data/Fonts</b></ul>
+<br><b>setenv OSG_FILE_PATH /home/myaccount/OpenSceneGraph-Data:/home/myaccount/OpenSceneGraph-Data/Images</b></ul>
 
 <li>
 MacOSX:</li>
 
 <ul><b>setenv PATH "${PATH}:${OSGHOME}/lib:${OSGHOME}/lib/osgPlugins"</b>
 <br><b>setenv DYLD_LIBRARY_PATH "${OSGHOME}/lib:${OSGHOME}/lib/osgPlugins"</b>
-<br><b>setenv OSG_FILE_PATH "/home/myaccount/OpenSceneGraph-Data:/home/myaccount/OpenSceneGraph-Data/Images:/home/myaccount/OpenSceneGraph-Data/Fonts"</b></ul>
+<br><b>setenv DYLD_BIND_AT_LAUNCH</b>
+<br><b>setenv OSG_FILE_PATH "/home/myaccount/OpenSceneGraph-Data:/home/myaccount/OpenSceneGraph-Data/Images"</b></ul>
 
 All the demos run on the commandline, most requiring parameters, such as
 what file to load, if you are in any doubt just run the application and

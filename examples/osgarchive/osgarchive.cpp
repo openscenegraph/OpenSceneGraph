@@ -113,40 +113,38 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    osgDB::Archive archive;
+    osg::ref_ptr<osgDB::Archive> archive;
 
     if (insert)
     {
-        osgDB::Archive archive;
-        archive.open(archiveFilename, osgDB::Archive::WRITE);
+        archive = osgDB::openArchive(archiveFilename, osgDB::Archive::WRITE);
         
-        std::cout<<"Going through files"<<files.size()<<std::endl;
-
-        for (FileNameList::iterator itr=files.begin();
-            itr!=files.end();
-            ++itr)
+        if (archive.valid())
         {
-            std::cout<<" Tring to read"<<*itr<<std::endl;
-            osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
-            if (obj.valid())
+            for (FileNameList::iterator itr=files.begin();
+                itr!=files.end();
+                ++itr)
             {
-                std::cout<<"   Have read"<<*itr<<std::endl;
-                archive.writeObject(*obj, *itr);
+                osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
+                if (obj.valid())
+                {
+                    archive->writeObject(*obj, *itr);
+                }
             }
         }
     }
     else 
     {
-        archive.open(archiveFilename,osgDB::Archive::READ);
+        archive = osgDB::openArchive(archiveFilename, osgDB::Archive::READ);
         
-        if (extract)
+        if (extract && archive.valid())
         {
             for (FileNameList::iterator itr=files.begin();
                 itr!=files.end();
                 ++itr)
             {
                 osg::Timer_t start = osg::Timer::instance()->tick();
-                osgDB::ReaderWriter::ReadResult result = archive.readObject(*itr);                
+                osgDB::ReaderWriter::ReadResult result = archive->readObject(*itr);                
                 osg::ref_ptr<osg::Object> obj = result.getObject();
                 std::cout<<"readObejct time = "<<osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick())<<std::endl;
                 if (obj.valid())
@@ -157,11 +155,11 @@ int main( int argc, char **argv )
         }
     }
 
-    if (list)
+    if (list && archive.valid())
     {        
         std::cout<<"List of files in archive:"<<std::endl;
         osgDB::Archive::FileNameList fileNames;
-        if (archive.getFileNames(fileNames))
+        if (archive->getFileNames(fileNames))
         {
             for(osgDB::Archive::FileNameList::const_iterator itr=fileNames.begin();
                 itr!=fileNames.end();
@@ -172,7 +170,7 @@ int main( int argc, char **argv )
         }
         
         std::cout<<std::endl;
-        std::cout<<"Master file "<<archive.getMasterFileName()<<std::endl;
+        std::cout<<"Master file "<<archive->getMasterFileName()<<std::endl;
     }
     
     return 0;

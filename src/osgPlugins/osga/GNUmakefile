@@ -2,6 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+	OSGA_Archive.cpp\
 	ReaderWriterOSGA.cpp\
 
 

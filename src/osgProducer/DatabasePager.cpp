@@ -356,7 +356,7 @@ public:
     {
         apply(drawable->getStateSet());
 
-        if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects());
+        if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects())
         {
             drawable->dirtyDisplayList();
         }

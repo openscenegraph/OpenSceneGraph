@@ -29,8 +29,8 @@ void MyRenderToTextureStage::draw(osg::State& state, osgUtil::RenderLeaf*& previ
     {
         // Create pbuffer texture
         const unsigned int contextID = state.getContextID();
-        osg::Texture::TextureObject* textureObeject = _texture->getTextureObject(contextID);
-        if (textureObeject == 0)
+        osg::Texture::TextureObject* textureObject = _texture->getTextureObject(contextID);
+        if (textureObject == 0)
         {
             // Create dynamic texture, subload callback required.
             _texture->apply(state);

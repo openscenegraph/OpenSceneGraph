@@ -9,6 +9,7 @@ CXXFILES =\
         OsgSceneHandler.cpp\
         ViewerEventHandler.cpp\
         Viewer.cpp\
+        Version.cpp\
 
 LIBS += -lProducer $(GL_LIBS) -losgText -losgGA -losgUtil -losgDB -losg $(OTHER_LIBS)
 DEF  += -DOSGPRODUCER_LIBRARY

@@ -105,15 +105,15 @@ void Image::read(DataInputStream* in)
         // Read modified tag.
         setModifiedTag((unsigned int)in->readInt());
 
-        // Read mipmapdata vector
+        // Read mipmapdata vector        
         int size = in->readInt();
-        _mipmapData.resize(size);
+        MipmapDataType mipmapData(size);
 
         //if (size) std::cout<<"is mip mapped ";
 
         for(int i=0;i<size;i++)
         {
-            _mipmapData[i]=(unsigned int)in->readInt();
+            mipmapData[i]=(unsigned int)in->readInt();
             //std::cout<<_mipmapData[i]<<"\t";
         }
         //std::cout<<std::endl;
@@ -139,6 +139,8 @@ void Image::read(DataInputStream* in)
             setImage(is, it, ir, internalTextureFormat, pixelFormat,
                 dataType, (unsigned char* ) data, osg::Image::USE_NEW_DELETE, packing);
         }
+
+        _mipmapData.swap(mipmapData);
     }
     else{
         throw Exception("Image::read(): Expected Image identification.");

@@ -57,6 +57,11 @@ class SG_EXPORT BoundingBox
             return _max.x()>=_min.x();
         }
                 
+        inline const bool valid() const
+        {
+            return _max.x()>=_min.x();
+        }
+
         inline void set (float xmin,float ymin,float zmin,
                          float xmax,float ymax,float zmax)
         {

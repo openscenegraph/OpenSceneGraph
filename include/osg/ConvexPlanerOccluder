@@ -6,7 +6,7 @@
 #define OSG_CONVEXPLANEROCCLUDER 1
 
 #include <osg/ConvexPlanerPolygon>
-#include <osg/Referenced>
+#include <osg/Object>
 
 namespace osg {
 
@@ -14,14 +14,18 @@ class OccluderVolume;
 
 /** A class for representing convex clipping volumes made up.
   * When adding planes, their normals should point inwards (into the volume) */
-class SG_EXPORT ConvexPlanerOccluder : public Referenced
+class SG_EXPORT ConvexPlanerOccluder : public Object
 {
 
     public:
 
-        inline ConvexPlanerOccluder() {}
+        ConvexPlanerOccluder():Object() {}
+        ConvexPlanerOccluder(const ConvexPlanerOccluder& cpo,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(cpo,copyop),
+            _occluder(cpo._occluder),
+            _holeList(cpo._holeList) {}
         
-
+        META_Object(osg,ConvexPlanerOccluder)
 
         void setOccluder(const ConvexPlanerPolygon& cpp) { _occluder = cpp; }
         
@@ -47,9 +51,7 @@ class SG_EXPORT ConvexPlanerOccluder : public Referenced
 
     protected:
 
-        float       _area;
-        Vec3        _center;
-        Vec3        _normal;
+        ~ConvexPlanerOccluder() {}
 
         ConvexPlanerPolygon _occluder;
         HoleList _holeList;

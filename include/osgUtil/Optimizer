@@ -49,12 +49,14 @@ class OSGUTIL_EXPORT Optimizer
             COPY_SHARED_NODES =         0x080,
             TRISTRIP_GEOMETRY =         0x100,
             TESSELATE_GEOMETRY =        0x200,
+            OPTIMIZE_TEXTURE_SETTINGS = 0x400,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
-                                CHECK_GEOMETRY,
+                                CHECK_GEOMETRY |
+                                OPTIMIZE_TEXTURE_SETTINGS,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
@@ -63,7 +65,8 @@ class OSGUTIL_EXPORT Optimizer
                                 CHECK_GEOMETRY |
                                 SPATIALIZE_GROUPS |
                                 COPY_SHARED_NODES |
-                                TRISTRIP_GEOMETRY
+                                TRISTRIP_GEOMETRY |
+                                OPTIMIZE_TEXTURE_SETTINGS
         };
 
         /** reset internal data to initial state - the getPrimissableOptionsMap is cleared.*/
@@ -408,6 +411,43 @@ class OSGUTIL_EXPORT Optimizer
                 Optimizer*      _optimizer;
 
         };
+
+
+        /** For all textures apply settings.*/
+        class OSGUTIL_EXPORT TextureVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                TextureVisitor(bool changeAutoUnRef, bool valueAutoUnRef,
+                               bool changeClientImageStorage, bool valueClientImageStorage,
+                               bool changeAnisotropy, float valueAnisotropy,
+                               Optimizer* optimizer=0):
+                        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+                        _optimizer(optimizer),
+                        _changeAutoUnRef(changeAutoUnRef), _valueAutoUnRef(valueAutoUnRef),
+                        _changeClientImageStorage(changeClientImageStorage), _valueClientImageStorage(valueClientImageStorage),
+                        _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy) {}
+                
+                virtual void apply(osg::Geode& node);
+                virtual void apply(osg::Node& node);
+
+                void apply(osg::StateSet& stateset);
+                void apply(osg::Texture& texture);
+                
+                inline bool isOperationPermissableForObject(const osg::Object* object) const
+                {
+                    return _optimizer ? _optimizer->isOperationPermissableForObject(object,OPTIMIZE_TEXTURE_SETTINGS) :  true; 
+                }
+
+                Optimizer*      _optimizer;
+                bool            _changeAutoUnRef, _valueAutoUnRef;
+                bool            _changeClientImageStorage, _valueClientImageStorage;
+                bool            _changeAnisotropy, _valueAnisotropy;
+                                           
+                
+
+        };
+
 };
 
 }

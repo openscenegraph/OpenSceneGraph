@@ -242,21 +242,14 @@ public:
         {
             // search for the existance of any texture object attributes
             bool foundTextureState = false;
-            osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
-            for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
-                itr!=tal.end() && !foundTextureState;
-                ++itr)
+            for(unsigned int i=0;i<stateset->getTextureAttributeList().size();++i)
             {
-                osg::StateSet::AttributeList& al = *itr;
-                if (al.count(osg::StateAttribute::TEXTURE)==1)
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+                if (texture)
                 {
+                    texture->setUnRefImageDataAfterApply(_unrefImageOnApply);
+                    texture->setClientStorageHint(_clientStorageHint);
                     foundTextureState = true;
-                    osg::Texture* texture = dynamic_cast<osg::Texture*>(al[osg::StateAttribute::TEXTURE].first.get());
-                    if (texture)
-                    {
-                        texture->setUnRefImageDataAfterApply(_unrefImageOnApply);
-                        texture->setClientStorageHint(_clientStorageHint);
-                    }
                 }
             }
 

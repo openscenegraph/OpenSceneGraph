@@ -403,11 +403,15 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() { return "TIFF Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) { return extension=="tiff"; }
+        virtual bool acceptsExtension(const std::string& extension) 
+	{ 
+	    if( extension == "tiff" ) return true;
+	    if( extension == "tif" ) return true;
+	    return false;
+	}
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
-
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
@@ -415,7 +419,13 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 
             imageData = simage_tiff_load(fileName.c_str(),&width_ret,&height_ret,&numComponents_ret);
 
-            if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
+            if (imageData==NULL) 
+	    {
+		char err_msg[256];
+		simage_tiff_error( err_msg, sizeof(err_msg)); 
+		osg::notify(osg::WARN) << err_msg << std::endl;
+		return ReadResult::FILE_NOT_HANDLED;
+	    }
 
             int s = width_ret;
             int t = height_ret;

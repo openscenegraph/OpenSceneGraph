@@ -19,6 +19,10 @@ DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
+    _frameNumber = 0;
+    _frameBlock = new Producer::Block;
+    _fileRequestListEmptyBlock = new Producer::Block;
+
     _deleteRemovedSubgraphsInDatabaseThread = true;
     
     _expiryDelay = 1.0;
@@ -47,6 +51,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 {
    
     double timestamp = framestamp?framestamp->getReferenceTime():0.0;
+    int frameNumber = framestamp?framestamp->getFrameNumber():_frameNumber;
    
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
@@ -60,6 +65,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             if ((*litr)->_fileName==fileName)
             {
                 foundEntry = true;
+                (*litr)->_frameNumberLastRequest = frameNumber;
                 (*litr)->_timestampLastRequest = timestamp;
                 (*litr)->_priorityLastRequest = priority;
                 ++((*litr)->_numOfRequests);
@@ -79,6 +85,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                 if ((*litr)->_fileName==fileName)
                 {
                     foundEntry = true;
+                    (*litr)->_frameNumberLastRequest = frameNumber;
                     (*litr)->_timestampLastRequest = timestamp;
                     (*litr)->_priorityLastRequest = priority;
                     ++((*litr)->_numOfRequests);
@@ -104,20 +111,27 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                     foundEntry = true;
                     (*ritr)->_timestampLastRequest = timestamp;
                     (*ritr)->_priorityLastRequest = priority;
+                    (*ritr)->_frameNumberLastRequest = frameNumber;
                     ++((*ritr)->_numOfRequests);
                 }
             }        
 
             if (!foundEntry)
             {
+                osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
+
                 osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
 
                 databaseRequest->_fileName = fileName;
+                databaseRequest->_frameNumberFirstRequest = frameNumber;
                 databaseRequest->_timestampFirstRequest = timestamp;
                 databaseRequest->_priorityFirstRequest = priority;
+                databaseRequest->_frameNumberLastRequest = frameNumber;
                 databaseRequest->_timestampLastRequest = timestamp;
                 databaseRequest->_priorityLastRequest = priority;
                 databaseRequest->_groupForAddingLoadedSubgraph = group;
+
+                if (_fileRequestList.empty()) _fileRequestListEmptyBlock->release();
 
                 _fileRequestList.push_back(databaseRequest);
             }
@@ -142,6 +156,23 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         }
                 
     }
+}
+
+void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
+{
+    if (framestamp)
+    {
+        osg::notify(osg::INFO) << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
+        _frameNumber = framestamp->getFrameNumber();
+    } else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
+
+    _frameBlock->reset();
+}
+
+void DatabasePager::signalEndFrame()
+{
+    osg::notify(osg::INFO) << "signalEndFrame <<<<<<<<<<<<<<<<<<<< "<<std::endl;
+    _frameBlock->release();
 }
 
 class FindCompileableRenderingObjectsVisitor : public osg::NodeVisitor
@@ -232,6 +263,17 @@ void DatabasePager::run()
     
     do
     {
+        //std::cout<<"In run loop"<<std::endl;
+    
+    
+        osg::Timer_t t1 = osg::Timer::instance()->tick();
+        _fileRequestListEmptyBlock->block();
+        osg::Timer_t t2 = osg::Timer::instance()->tick();
+        _frameBlock->block();
+        osg::Timer_t t3 = osg::Timer::instance()->tick();
+        
+        //std::cout<<"Time in _fileRequestListEmptyBlock block()"<<osg::Timer::instance()->delta_m(t1,t2)<<std::endl;
+        //std::cout<<"Time in _frameBlock block()"<<osg::Timer::instance()->delta_m(t2,t3)<<std::endl;
     
         //
         // delete any children if required.
@@ -263,74 +305,95 @@ void DatabasePager::run()
         
         if (databaseRequest.valid())
         {
-            // load the data, note safe to write to the databaseRequest since once 
-            // it is created this thread is the only one to write to the _loadedModel pointer.
-            databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
-
-            bool loadedObjectsNeedToBeCompiled = false;
-
-            if (databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
+            // check if databaseRequest is still relevant
+            if (_frameNumber-databaseRequest->_frameNumberLastRequest<=1)
             {
-                // force a compute of the loaded model's bounding volume, so that when the subgraph
-                // merged with the main scene graph and large computeBound() isn't incurred.
-                databaseRequest->_loadedModel->getBound();
-            
-            
-                ActiveGraphicsContexts::iterator itr = _activeGraphicsContexts.begin();
-            
-                DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
-                ++itr;                
-                
-                // find all the compileable rendering objects
-                FindCompileableRenderingObjectsVisitor frov(dtc);
-                databaseRequest->_loadedModel->accept(frov);
-                
-                if (!dtc.first.empty() || !dtc.second.empty())
+        
+                // load the data, note safe to write to the databaseRequest since once 
+                // it is created this thread is the only one to write to the _loadedModel pointer.
+                osg::notify(osg::INFO)<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
+                osg::Timer_t before = osg::Timer::instance()->tick();
+                databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
+                osg::notify(osg::INFO)<<"     node read"<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<std::endl;
+
+                bool loadedObjectsNeedToBeCompiled = false;
+
+                if (databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
                 {
-                    loadedObjectsNeedToBeCompiled = true;                
-                
-                    // copy the objects to compile list to the other graphics context list.
-                    for(;
-                        itr != _activeGraphicsContexts.end();
-                        ++itr)
+                    // force a compute of the loaded model's bounding volume, so that when the subgraph
+                    // merged with the main scene graph and large computeBound() isn't incurred.
+                    databaseRequest->_loadedModel->getBound();
+
+
+                    ActiveGraphicsContexts::iterator itr = _activeGraphicsContexts.begin();
+
+                    DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
+                    ++itr;                
+
+                    // find all the compileable rendering objects
+                    FindCompileableRenderingObjectsVisitor frov(dtc);
+                    databaseRequest->_loadedModel->accept(frov);
+
+                    if (!dtc.first.empty() || !dtc.second.empty())
                     {
-                        databaseRequest->_dataToCompileMap[*itr] = dtc;
+                        loadedObjectsNeedToBeCompiled = true;                
+
+                        // copy the objects to compile list to the other graphics context list.
+                        for(;
+                            itr != _activeGraphicsContexts.end();
+                            ++itr)
+                        {
+                            databaseRequest->_dataToCompileMap[*itr] = dtc;
+                        }
                     }
-                }
-            }            
+                }            
 
 
-            // move the databaseRequest from the front of the fileRequest to the end of
-            // dataLoad list.
-            _fileRequestListMutex.lock();
+                // move the databaseRequest from the front of the fileRequest to the end of
+                // dataLoad list.
+                _fileRequestListMutex.lock();
 
-                if (databaseRequest->_loadedModel.valid())
-                {
-                    if (loadedObjectsNeedToBeCompiled)
+                    if (databaseRequest->_loadedModel.valid())
                     {
-                        _dataToCompileListMutex.lock();
-                            _dataToCompileList.push_back(databaseRequest);
-                        _dataToCompileListMutex.unlock();
-                    }
-                    else
-                    {
-                        _dataToMergeListMutex.lock();
-                            _dataToMergeList.push_back(databaseRequest);
-                        _dataToMergeListMutex.unlock();
-                    }
-                }        
+                        if (loadedObjectsNeedToBeCompiled)
+                        {
+                            _dataToCompileListMutex.lock();
+                                _dataToCompileList.push_back(databaseRequest);
+                            _dataToCompileListMutex.unlock();
+                        }
+                        else
+                        {
+                            _dataToMergeListMutex.lock();
+                                _dataToMergeList.push_back(databaseRequest);
+                            _dataToMergeListMutex.unlock();
+                        }
+                    }        
 
-                _fileRequestList.erase(_fileRequestList.begin());
+                    _fileRequestList.erase(_fileRequestList.begin());
 
-            _fileRequestListMutex.unlock();
+                    if (_fileRequestList.empty()) _fileRequestListEmptyBlock->reset();
 
+                _fileRequestListMutex.unlock();
+            }
+            else
+            {
+                //std::cout<<"frame number delta for "<<databaseRequest->_fileName<<" "<<_frameNumber-databaseRequest->_frameNumberLastRequest<<std::endl;
+                // remove the databaseRequest from the front of the fileRequest to the end of
+                // dataLoad list as its is no longer relevant
+                _fileRequestListMutex.lock();
 
-            
+                    _fileRequestList.erase(_fileRequestList.begin());
 
+                    if (_fileRequestList.empty()) _fileRequestListEmptyBlock->reset();
+
+                _fileRequestListMutex.unlock();
+            }
         }
         
         // go to sleep till our the next time our thread gets scheduled.
-        YieldCurrentThread();
+        //YieldCurrentThread();
+
+        //std::cout<<"At end of loop"<<std::endl;
 
     } while (!testCancel());
     

@@ -123,7 +123,7 @@ Makedepend : $(CXXFILES) $(CFILES)
 ifeq ($(OS),IRIX)   
 	touch $@
 else
-	$(C++) $(INC) $(DEPARG) $? > $(MAKEDEPEND)
+	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
 endif
 
 

@@ -168,16 +168,18 @@ int main( int argc, char **argv )
     for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
 
     // create the viewer and the model to it.
-    osgGLUT::Viewer viewer;
+    osgGLUT::Viewer& viewer = *(osgNew osgGLUT::Viewer);
+
     viewer.setWindowTitle(argv[0]);
 
+ 
     // configure the viewer from the commandline arguments, and eat any
     // parameters that have been matched.
     viewer.readCommandLine(commandLine);
     
     osg::MatrixTransform* myTransform = new osg::MatrixTransform();
     myTransform->addChild( createGeometryCube() );
-    
+
     // move node in a circle at 90 degrees a sec.
     myTransform->setAppCallback(new MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
 

@@ -117,7 +117,8 @@ Viewer::Viewer()
 
     _initialTick = _timer.tick();
     _frameTick = _initialTick;
-    frRate=0; // added by gwm to display fram Rate smoothed
+    _lastFrameTick = _initialTick;
+    frRate=0;
 
     _focusedViewport = 0;         // The viewport with mouse/keyboard focus
     
@@ -125,6 +126,19 @@ Viewer::Viewer()
     _frameStamp = osgNew osg::FrameStamp;
     
     _displaySettings = osgNew osg::DisplaySettings;
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

@@ -22,7 +22,7 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         CollectOccludersVisitor();
         virtual ~CollectOccludersVisitor();
 
-        virtual CollectOccludersVisitor* cloneType() const { return new CollectOccludersVisitor(); }
+        virtual CollectOccludersVisitor* cloneType() const { return osgNew CollectOccludersVisitor(); }
 
         virtual void reset();
 

@@ -27,19 +27,20 @@
 
 typedef    struct tag_au
 {
-    size_t        actualSize;
-    size_t        reportedSize;
-    void        *actualAddress;
-    void        *reportedAddress;
-    char        sourceFile[40];
-    char        sourceFunc[40];
+    size_t          actualSize;
+    size_t          reportedSize;
+    void            *actualAddress;
+    void            *reportedAddress;
+    char            sourceFile[40];
+    char            sourceFunc[40];
     unsigned int    sourceLine;
     unsigned int    allocationType;
-    bool        breakOnDealloc;
-    bool        breakOnRealloc;
+    bool            breakOnDealloc;
+    bool            breakOnRealloc;
     unsigned int    allocationNumber;
-    struct tag_au    *next;
-    struct tag_au    *prev;
+    struct tag_au   *next;
+    struct tag_au   *prev;
+    bool            printedOutUnintializedInfo;
 } sAllocUnit;
 
 typedef    struct

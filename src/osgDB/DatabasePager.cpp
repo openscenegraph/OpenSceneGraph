@@ -50,6 +50,10 @@ DatabasePager::DatabasePager()
     
     _expiryDelay = 10;
 
+    _targetFrameRate = 100.0;
+    _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
+    _maximumNumOfObjectsToCompilePerFrame = 8;
+
     // make sure a SharedStateManager exists.
     //osgDB::Registry::instance()->getOrCreateSharedStateManager();
     
@@ -834,7 +838,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
         // while there are valid databaseRequest's in the to compile list and there is
         // sufficient time left compile each databaseRequest's stateset and drawables.
-        while (databaseRequest.valid() && elapsedTime<availableTime && numObjectsCompiled<maxNumObjectsToCompile) 
+        while (databaseRequest.valid() && elapsedTime<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame) 
         {
             DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
             DataToCompile& dtc = dcm[state.getContextID()];

@@ -108,7 +108,7 @@ int main( int argc, char **argv )
     }
     else
     {
-		osg::notify(osg::NOTICE)<<"unable to load reflect map, model will not be mutlitextured"<<std::endl;
+        osg::notify(osg::NOTICE)<<"unable to load reflect map, model will not be mutlitextured"<<std::endl;
     }
 
 

@@ -158,9 +158,10 @@ static std::vector<osg::Material*> palette; // change to dynamic array
 static int startmatindex = 0;
 
 
-osg::Material*ac_palette_get_material(int id)
+osg::Material*ac_palette_get_material(const unsigned int id)
 {
-    return(palette[id]);
+    if (id<palette.size()) return(palette[id]);
+    else return NULL;
 }
 
 
@@ -651,8 +652,9 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                             {
                                 geom->setTexCoordArray(0,tgeom); // share same set of TexCoords
                             }
-                            osg::Material*mat=ac_palette_get_material(asurf.mat);
                             osg::StateSet *dstate = new osg::StateSet;
+                            osg::Material*mat=ac_palette_get_material(asurf.mat);
+                            if (mat) {
                             dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
                             dstate->setAttribute(mat);
                             const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
@@ -664,6 +666,7 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                             else
                             {
                                 dstate->setMode(GL_BLEND,osg::StateAttribute::OFF);
+                            }
                             }
                             if (ob.texture.valid()) dstate->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
                             if (ob.texture.valid())

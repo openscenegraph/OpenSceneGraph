@@ -6,6 +6,7 @@ CXXFILES =\
 	AnimationPath.cpp\
         ApplicationUsage.cpp\
         ArgumentParser.cpp\
+        AutoTransform.cpp\
 	Array.cpp\
 	Billboard.cpp\
 	BoundingBox.cpp\

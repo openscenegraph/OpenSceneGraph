@@ -21,6 +21,7 @@
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/TriStripVisitor>
+#include <osgUtil/Simplifier>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -2177,6 +2178,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
     
+    osgUtil::Simplifier simplifier;
+    simplifier.simplify(*geometry,0.5f);  // this will replace the normal vector with a new one
+
+
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);
 

@@ -161,6 +161,10 @@ SOURCE=..\..\src\osgUtil\SceneView.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\Simplifier.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\SmoothingVisitor.cpp
 # End Source File
 # Begin Source File
@@ -274,6 +278,10 @@ SOURCE=..\..\include\osgUtil\RenderToTextureStage
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\SceneView
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\Simplifier
 # End Source File
 # Begin Source File
 

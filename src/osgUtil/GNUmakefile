@@ -3,11 +3,13 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
-	UpdateVisitor.cpp\
+	CubeMapGenerator.cpp\
 	CullVisitor.cpp\
+	DelaunayTriangulator.cpp\
 	DisplayListVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
-	DelaunayTriangulator.cpp\
+	HalfWayMapGenerator.cpp\
+	HighlightMapGenerator.cpp\
 	InsertImpostorsVisitor.cpp\
 	IntersectVisitor.cpp\
 	Optimizer.cpp\
@@ -18,16 +20,15 @@ CXXFILES = \
 	RenderStageLighting.cpp\
 	RenderToTextureStage.cpp\
 	SceneView.cpp\
+	Simplifier.cpp\
 	SmoothingVisitor.cpp\
 	TangentSpaceGenerator.cpp\
 	Tesselator.cpp\
-	TransformCallback.cpp\
 	TransformAttributeFunctor.cpp\
-	TriStripVisitor.cpp\
+	TransformCallback.cpp\
         TriStrip_tri_stripper.cpp\
-	CubeMapGenerator.cpp\
-	HalfWayMapGenerator.cpp\
-	HighlightMapGenerator.cpp\
+	TriStripVisitor.cpp\
+	UpdateVisitor.cpp\
 	Version.cpp\
 
 DEF     += -DOSGUTIL_LIBRARY

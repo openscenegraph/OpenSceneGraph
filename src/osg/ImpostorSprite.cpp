@@ -114,7 +114,7 @@ const bool ImpostorSprite::computeBound() const
     
     if (!_bbox.isValid())
     {
-		notify(WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
+        notify(WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
         notify(WARN) << "*******  = "<<_coords[0]<<std::endl;
         notify(WARN) << "*******  = "<<_coords[1]<<std::endl;
         notify(WARN) << "*******  = "<<_coords[2]<<std::endl;
@@ -286,12 +286,8 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
 
 bool ImpostorSprite::getStats(Statistics &stat) 
 { // analyse the drawable Impostor Sprite
-    stat.primtypes[0]++;
-    stat.primtypes[GeoSet::QUADS]++;
-    stat.primlens[GeoSet::QUADS]+=2; // 1 quads quad is equiv to 2 triangles
-    stat.numprimtypes[GeoSet::QUADS]++;
-    stat.primverts[GeoSet::QUADS]+=4;
-    stat.primverts[0]+=38;
-    stat.nimpostor++;
+    stat.addNumPrims(1); // use new member functions of Statistics class to update
+    stat.addNumPrims(Statistics::QUADS, 2, 1, 4);
+    stat.addImpostor(1);
     return true;
 }

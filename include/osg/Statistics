@@ -59,6 +59,7 @@ class SG_EXPORT Statistics : public osg::Referenced, public osg::Drawable::Attri
         {
             STAT_NONE, // default
             STAT_FRAMERATE, STAT_GRAPHS,
+            STAT_VIEWPARMS,  // descrbe the view parameters (FOV, near/far...)
             STAT_PRIMS, STAT_PRIMSPERVIEW, STAT_PRIMSPERBIN,
             STAT_DC,
             STAT_RESTART // hint to restart the stats

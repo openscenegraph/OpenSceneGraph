@@ -1,5 +1,5 @@
 #if defined(_MSC_VER)
-	#pragma warning( disable : 4786 )
+    #pragma warning( disable : 4786 )
 #endif
 
 #include <math.h>
@@ -875,8 +875,9 @@ Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf
 bool GeoSet::getStats(Statistics &stat)
 { // analyse the drawable GeoSet
     const int np=getNumPrims(); // number of primitives in this geoset
-    stat.nprims += np;
+    stat.addNumPrims(np);
     const int type=getPrimType();
+    int nprimlens=0, numprimtypes=0, primverts=0; 
     switch (type) {
     case    osg::GeoSet::POINTS:
     case    osg::GeoSet::LINES:
@@ -889,26 +890,16 @@ bool GeoSet::getStats(Statistics &stat)
     case    osg::GeoSet::FLAT_TRIANGLE_FAN:
     case    osg::GeoSet::QUAD_STRIP:
     case    osg::GeoSet::POLYGON:
-        stat.primtypes[type]++;
-        stat.primtypes[0]++;
         break;
     case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
-        stat.primtypes[type]++;
-        stat.primtypes[0]++;
-        stat.primlens[0]+=np;
-        stat.primlens[type]+=np;
-        stat.numprimtypes[type]+=np;
-        stat.primverts[type]+=3*np;
-        stat.primverts[0]+=3*np;
+        nprimlens=np;
+        numprimtypes=np;
+        primverts=3*np;
         break;
     case    osg::GeoSet::QUADS:
-        stat.primtypes[type]++;
-        stat.primtypes[0]++;
-        stat.primlens[0]+=np*2;
-        stat.primlens[type]+=np*2; // quad is equiv to 2 triangles
-        stat.numprimtypes[type]+=np;
-        stat.primverts[type]+=4*np;
-        stat.primverts[0]+=4*np;
+        nprimlens=np*2;
+        primverts=4*np;
+        numprimtypes=np;
         break;
     case    osg::GeoSet::NO_TYPE:
     default:
@@ -916,7 +907,7 @@ bool GeoSet::getStats(Statistics &stat)
     }
     // now count the lengths, ie efficiency of triangulation
     const int *lens=getPrimLengths(); // primitive lengths
-    if (lens) {
+    if (lens) { // then count for each length
         for (int i=0; i<np; i++) {
             switch (type) {
             case    osg::GeoSet::POINTS:
@@ -927,16 +918,14 @@ bool GeoSet::getStats(Statistics &stat)
             case    osg::GeoSet::TRIANGLES: // should not have any lengths for tris & quads
             case    osg::GeoSet::QUADS:
             case    osg::GeoSet::QUAD_STRIP:
-            case    osg::GeoSet::POLYGON:
-                stat.primlens[0]+=lens[i];
-                stat.primlens[type]+=lens[i];
+                nprimlens+=lens[i];
                 break;
+            case    osg::GeoSet::POLYGON: // moved Nov 2001 to count triangles cf lengths
             case    osg::GeoSet::TRIANGLE_STRIP:
             case    osg::GeoSet::FLAT_TRIANGLE_STRIP:
             case    osg::GeoSet::TRIANGLE_FAN:
             case    osg::GeoSet::FLAT_TRIANGLE_FAN:
-                stat.primlens[0]+=lens[i]-2;
-                stat.primlens[type]+=lens[i]-2; // tri strips & fans create lens[i]-2 triangles
+                nprimlens+=lens[i]-2; // tri strips & fans create lens[i]-2 triangles
                 break;
             case    osg::GeoSet::NO_TYPE:
             default:
@@ -956,10 +945,8 @@ bool GeoSet::getStats(Statistics &stat)
             case    osg::GeoSet::FLAT_TRIANGLE_FAN:
             case    osg::GeoSet::QUAD_STRIP:
             case    osg::GeoSet::POLYGON:
-                stat.numprimtypes[0]++;
-                stat.numprimtypes[type]++;
-                stat.primverts[type]+=lens[i];
-                stat.primverts[0]+=lens[i];
+                numprimtypes++;
+                primverts+=lens[i];
                 break;
             case    osg::GeoSet::NO_TYPE:
             default:
@@ -969,11 +956,11 @@ bool GeoSet::getStats(Statistics &stat)
     } else { // no lengths - num prims is the length of a point set
         switch (type) {
         case    osg::GeoSet::POINTS:
-            stat.numprimtypes[0]++;
-            stat.numprimtypes[type]++;
-            stat.primverts[type]+=np;
+            numprimtypes++;
+            primverts+=np;
             break;
         }
     }
+    stat.addNumPrims(type, nprimlens, numprimtypes, primverts);
     return true;
 }

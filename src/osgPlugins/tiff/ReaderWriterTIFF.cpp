@@ -1,4 +1,3 @@
-#include <tiffio.h>
 
 #include <osg/Image>
 #include <osg/Notify>
@@ -10,6 +9,7 @@
 #include <osgDB/FileNameUtils>
 
 #include <stdio.h>
+#include <tiffio.h>
 
 /****************************************************************************
  *

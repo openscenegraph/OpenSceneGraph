@@ -211,13 +211,7 @@ void CullVisitor::popProjectionMatrix()
         // so it doesn't cull them out.
         osg::Matrix& projection = *_projectionStack.back();
         
-        double znear = _computed_znear;
-        double zfar = _computed_zfar;
-
-        clampProjectionMatrix(projection, znear, zfar);
-        
-        _computed_znear = znear;
-        _computed_zfar = zfar;
+        clampProjectionMatrix(projection, _computed_znear, _computed_zfar);
     }
     else
     {

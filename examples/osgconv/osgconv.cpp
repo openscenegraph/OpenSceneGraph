@@ -11,6 +11,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 #include <osgDB/ReaderWriter>
 
 #include <osgUtil/Optimizer>
@@ -360,12 +361,17 @@ int main( int argc, char **argv )
             
         if (compressTextures)
         {
-            osg::notify(osg::NOTICE)<<"Need to implement compressed textures."<< std::endl;
-            
-            CompressTexturesVisitor ctv;
-            root->accept(ctv);
-            ctv.compress();
-            
+            std::string ext = osgDB::getFileExtension(fileNameOut);
+            if (ext=="ive")
+            {
+                CompressTexturesVisitor ctv;
+                root->accept(ctv);
+                ctv.compress();
+            }
+            else
+            {
+                std::cout<<"Warning: compressing texture only supported when outputing to .ive"<<std::endl;
+            }
         }
 
         if (osgDB::writeNodeFile(*root,fileNameOut))

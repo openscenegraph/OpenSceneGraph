@@ -19,7 +19,7 @@
 
 namespace osg {
 
-/** Leaf Node for defining the position of ClipPlanes in the scene.*/
+/** Node for defining the position of ClipPlanes in the scene.*/
 class SG_EXPORT ClipNode : public Group
 {
 

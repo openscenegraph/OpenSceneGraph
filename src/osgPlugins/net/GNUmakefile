@@ -6,7 +6,7 @@ CXXFILES =\
     sockinet.cpp\
     sockstream.cpp\
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS) $(SOCKET_LIBS)
 
 TARGET_BASENAME = net
 include $(TOPDIR)/Make/cygwin_plugin_def

@@ -67,7 +67,7 @@
 typedef int socklen_t;
 #endif
 
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 extern "C" {
 #	include <sys/time.h>
 #	include <sys/socket.h>
@@ -134,7 +134,7 @@ extern "C" {
 
 const char* sockerr::errstr () const
 {
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
     return sys_errlist[err];
 #else
 	return 0; // TODO
@@ -240,7 +240,7 @@ bool sockerr::benign () const
   case EWOULDBLOCK:
 // On FreeBSD (and probably on Linux too) 
 // EAGAIN has the same value as EWOULDBLOCK
-#if !defined( __sgi) && !defined(__linux__) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
+#if !defined(__CYGWIN__) && !defined( __sgi) && !defined(__linux__) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
   case EAGAIN:
 #endif
     return true;
@@ -263,7 +263,7 @@ sockbuf::sockbuf (const sockbuf::sockdesc& sd)
 sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
   : rep (0)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
   WORD version = MAKEWORD(1,1);
   WSADATA wsaData;
   WSAStartup(version, &wsaData);
@@ -271,7 +271,7 @@ sockbuf::sockbuf (int domain, sockbuf::type st, int proto)
   SOCKET soc = ::socket (domain, st, proto);
   
   if (soc == SOCKET_ERROR)
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
     throw sockerr (errno, "sockbuf::sockbuf");
 #else
 		throw sockerr(WSAGetLastError(), "sockbuf::sockbuf");
@@ -319,14 +319,14 @@ sockbuf::~sockbuf ()
   if (--rep->cnt == 0) {
     delete [] pbase ();
     delete [] eback ();
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
     int c = close (rep->sock);
 #else
 		int c = closesocket(rep->sock);
 #endif
     delete rep;
     if (c == SOCKET_ERROR) 
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 			throw sockerr (errno, "sockbuf::~sockbuf", sockname.c_str());
 #else
 			throw sockerr(WSAGetLastError(), "sockbuf::~sockbuf", sockname.c_str());
@@ -899,7 +899,7 @@ bool sockbuf::atmark () const
 // return true, if the read pointer for socket points to an
 // out of band data
 {
-#ifndef WIN32
+#if !(defined(__CYGWIN__) || defined(WIN32))
 	int arg;
   if (::ioctl (rep->sock, SIOCATMARK, &arg) == -1)
     throw sockerr (errno, "sockbuf::atmark", sockname.c_str());
@@ -911,7 +911,7 @@ bool sockbuf::atmark () const
   return arg!=0;
 }
 
-#ifndef WIN32
+#if !(defined(__CYGWIN__) || defined(WIN32))
 int sockbuf::pgrp () const
 // return the process group id that would receive SIGIO and SIGURG
 // signals
@@ -953,7 +953,7 @@ long sockbuf::nread () const
 // the socket.
 {
 	long arg;
-#ifndef WIN32  
+#if defined(__CYGWIN__) || !defined(WIN32)
   if (::ioctl (rep->sock, FIONREAD, &arg) == -1)
     throw sockerr (errno, "sockbuf::nread", sockname.c_str());
 #else
@@ -976,7 +976,7 @@ void sockbuf::nbio (bool set) const
 // The read or write operation will result throwing a sockerr
 // exception with errno set to  EWOULDBLOCK.
 {
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
   int arg = set;
   if (::ioctl (rep->sock, FIONBIO, &arg) == -1)
     throw sockerr (errno, "sockbuf::nbio", sockname.c_str());
@@ -987,7 +987,7 @@ void sockbuf::nbio (bool set) const
 #endif // !WIN32
 }
 
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 void sockbuf::async (bool set) const
 // if set is true, set socket for asynchronous io. If any io is
 // possible on the socket, the process will get SIGIO

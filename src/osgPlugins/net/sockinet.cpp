@@ -38,7 +38,7 @@
 typedef int socklen_t;
 #endif
 
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 extern "C" {
 #	include <netdb.h>
 #	include <sys/time.h>

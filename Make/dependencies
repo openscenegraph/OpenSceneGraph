@@ -1,5 +1,5 @@
 ################################################################
-# Dependancy library which have been installed on this system
+# Dependency library which have been installed on this system
 
 GDAL_INSTALLED = yes
 

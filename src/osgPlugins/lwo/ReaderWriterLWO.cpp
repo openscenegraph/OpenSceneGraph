@@ -198,7 +198,30 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         {
             GeometryCollection& gc = mtgcm[face.material];
             
-            gc._geom->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,gc._coordCount,face.index_cnt));
+            osg::Primitive::Mode mode;
+            switch(face.index_cnt)
+            {
+                case(0):
+                    mode = osg::Primitive::POINTS;
+                    break;
+                case(1):
+                    mode = osg::Primitive::POINTS;
+                    break;
+                case(2):
+                    mode = osg::Primitive::LINES;
+                    break;
+                case(3):
+                    mode = osg::Primitive::TRIANGLES;
+                    break;
+                case(4):
+                    mode = osg::Primitive::QUADS;
+                    break;
+                default:
+                    mode = osg::Primitive::POLYGON;
+                    break;
+            }
+                        
+            gc._geom->addPrimitive(osgNew osg::DrawArrays(mode,gc._coordCount,face.index_cnt));
             gc._coordCount += face.index_cnt;
 
             // From the spec_low.lxt :
@@ -239,7 +262,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         if (gc._geom)
         {
             
-            //tesselator.retesselatePolygons(*gc._geom);
+            tesselator.retesselatePolygons(*gc._geom);
         
             smoother.smooth(*gc._geom);
             

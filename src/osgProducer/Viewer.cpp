@@ -174,7 +174,7 @@ unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)
 
 bool Viewer::done() const
 {
-    return _done;
+    return _done || !validForRendering();
 }
 
 void Viewer::setViewByMatrix( const Producer::Matrix & pm)

@@ -71,7 +71,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         void setUpViewer(unsigned int options=STANDARD_SETTINGS);
         
         /** return true if the application is done and should exit.*/
-        bool done() const;
+        virtual bool done() const;
 
         /** Override the Producer::CameraGroup::setViewByMatrix to catch all changes to view.*/
         virtual void setViewByMatrix( const Producer::Matrix & pm);

@@ -1,4 +1,4 @@
-# Microsoft Developer Studio Project File - Name="osgtext" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgversion" - Package Owner=<4>
 
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 
@@ -10,7 +10,7 @@
 
 
 
-CFG=osgtext - Win32 Debug
+CFG=osgversion - Win32 Debug
 
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 
@@ -18,7 +18,7 @@ CFG=osgtext - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgtext.mak".
+!MESSAGE NMAKE /f "osgversion.mak".
 
 !MESSAGE 
 
@@ -28,7 +28,7 @@ CFG=osgtext - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgtext.mak" CFG="Demo osgtext - Win32 Debug"
+!MESSAGE NMAKE /f "osgversion.mak" CFG="Demo osgversion - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgtext - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "Demo osgtext - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgversion - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "Demo osgtext - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgversion - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "Demo osgtext - Win32 Release"
+!IF  "$(CFG)" == "Demo osgversion - Win32 Release"
 
 
 
@@ -102,11 +102,11 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgtext.exe" /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/osgversion.exe" /libpath:"../../../lib"
 
 
 
-!ELSEIF  "$(CFG)" == "Demo osgtext - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgversion - Win32 Debug"
 
 
 
@@ -150,7 +150,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 glut32.lib glu32.lib opengl32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgtextd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/osgversiond.exe" /pdbtype:sept /libpath:"../../../lib"
 
 # SUBTRACT LINK32 /incremental:no
 
@@ -164,15 +164,15 @@ LINK32=link.exe
 
 
 
-# Name "Demo osgtext - Win32 Release"
+# Name "Demo osgversion - Win32 Release"
 
-# Name "Demo osgtext - Win32 Debug"
+# Name "Demo osgversion - Win32 Debug"
 
 # Begin Source File
 
 
 
-SOURCE=..\..\..\src\Demos\osgtext\main.cpp
+SOURCE=..\..\..\src\Demos\osgversion\osgversion.cpp
 
 # End Source File
 

@@ -104,7 +104,7 @@ void Text::setText(const TextString& text)
 void Text::setText(const std::string& text)
 {
     _text.clear();
-    _text.insert(_text.end(),text.begin(),text.end());
+    std::copy(text.begin(),text.end(),std::back_inserter(_text));
     computeGlyphRepresentation();
 }
 
@@ -140,7 +140,7 @@ void Text::setText(const wchar_t* text)
         while (*endOfText) ++endOfText;
         
         // pass it to the _text field.
-        _text.insert(_text.end(),text,endOfText);
+        std::copy(text,endOfText,std::back_inserter(_text));
     }
     computeGlyphRepresentation();
 }

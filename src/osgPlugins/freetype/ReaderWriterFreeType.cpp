@@ -4,7 +4,7 @@
 #include "FreeTypeLibrary.h"
 
 class ReaderWriterFreeType : public osgDB::ReaderWriter
-{;
+{
     public:
         virtual const char* className() { return "FreeType Font Reader/Writer"; }
         

@@ -114,7 +114,8 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     }
     if (isACString)
     {
-        std::string str(textstring.begin(),textstring.end());
+        std::string str;
+        std::copy(textstring.begin(),textstring.end(),std::back_inserter(str));
         fw.indent() << "text " << fw.wrapString(str) << std::endl;
     }
     else

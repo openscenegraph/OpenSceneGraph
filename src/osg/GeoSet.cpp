@@ -129,7 +129,7 @@ void GeoSet::drawImmediateMode(State&)
         draw_alternate_path();
 }
 
-void GeoSet::computeNumVerts()
+void GeoSet::computeNumVerts() const
 {
     int i;
     int numverts=0;
@@ -294,9 +294,7 @@ const bool GeoSet::computeBound() const
 
     if( _numcoords == 0 )
     {
-        // a dirty hack to cast away constness of this..
-        GeoSet* gset = const_cast<GeoSet*>(this);
-        gset->computeNumVerts();
+        computeNumVerts();
     }
 
     if( _numcoords == 0 )
@@ -645,16 +643,17 @@ void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *ia, I
     set_fast_path();
 }
  
-Drawable::AttributeBitMask GeoSet::suppportsAttributeUpdate() const
+Drawable::AttributeBitMask GeoSet::suppportsAttributeOperation() const
 {
     // we do support coords,normals,texcoords and colors so return true.
     return COORDS | NORMALS | COLORS | TEXTURE_COORDS;
 }
 
-Drawable::AttributeBitMask GeoSet::applyAttributeUpdate(AttributeBitMask amb,AttributeUpdateFunctor& auf)
+Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf)
 {
-    computeNumVerts();
+    if (_numcoords == 0) computeNumVerts();
 
+    AttributeBitMask amb = auf.getAttributeBitMask();
     AttributeBitMask ramb = 0;
     
     if ((amb & COORDS) && _coords && _numcoords)
@@ -671,12 +670,12 @@ Drawable::AttributeBitMask GeoSet::applyAttributeUpdate(AttributeBitMask amb,Att
         if (auf.apply(NORMALS,_normals,_normals+_numnormals)) ramb = NORMALS;
     }
     
-    if ((amb & COLORS) && _colors)
+    if ((amb & COLORS) && _colors && _numcolors)
     {
         if (auf.apply(COLORS,_colors,_colors+_numcolors)) ramb = COLORS;
     }
     
-    if ((amb & TEXTURE_COORDS) && _tcoords)
+    if ((amb & TEXTURE_COORDS) && _tcoords && _numtcoords)
     {
         if (auf.apply(TEXTURE_COORDS,_tcoords,_tcoords+_numtcoords)) ramb = TEXTURE_COORDS;
     }

@@ -227,6 +227,22 @@ void TexturePool::addTextureName(int nIndex, const std::string& name)
 ////////////////////////////////////////////////////////////////////
 
 
+osg::Light* LightPool::getLight(int nIndex)
+{
+    if (nIndex < 0) return NULL;
+    LightPaletteMap::iterator fitr = _lightMap.find(nIndex);
+    if (fitr != _lightMap.end())
+        return (*fitr).second.get();
+
+    return NULL;
+}
+
+
+void LightPool::addLight(int nIndex, osg::Light* light)
+{
+    _lightMap[nIndex] = light;
+}
+
 MaterialPool::PoolMaterial* MaterialPool::getMaterial(int nIndex)
 {
     if (nIndex < 0) return NULL;

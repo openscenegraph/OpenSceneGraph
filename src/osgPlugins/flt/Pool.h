@@ -8,6 +8,7 @@
 #include <osg/Vec4>
 #include <osg/Material>
 #include <osg/StateSet>
+#include <osg/Light>
 #include <osg/Group>
 
 #include <string>
@@ -74,6 +75,27 @@ class TexturePool : public osg::Referenced
         TexturePaletteMap _textureMap;
         typedef std::map<int,std::string > TextureNameMap;
         TextureNameMap _textureNameMap;
+};
+
+
+
+class LightPool : public osg::Referenced
+{
+    public :
+
+        LightPool() {}
+
+        osg::Light* getLight(int nIndex );
+        void addLight(int nIndex, osg::Light* light);
+
+    protected :
+
+        virtual ~LightPool() {}
+
+    private :
+
+        typedef std::map<int,osg::ref_ptr<osg::Light> > LightPaletteMap;
+        LightPaletteMap _lightMap;
 };
 
 

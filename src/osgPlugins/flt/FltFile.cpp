@@ -65,6 +65,9 @@ FltFile::FltFile(
         setMaterialPool( new MaterialPool );
     }
 
+    // no support for external light palettes
+    setLightPool( new LightPool );
+
     // instances are always internally defined 
     setInstancePool( new InstancePool );
 }

@@ -168,12 +168,15 @@ void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
     NodeCallback::traverse(node,nv);
 }
 
+double AnimationPathCallback::getAnimationTime() const
+{
+    return ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier;
+}
+
 void AnimationPathCallback::update(osg::Node& node)
 {
-    double animationTime = ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier;
-
     AnimationPath::ControlPoint cp;
-    if (_animationPath->getInterpolatedControlPoint(animationTime,cp))
+    if (_animationPath->getInterpolatedControlPoint(getAnimationTime(),cp))
     {
         AnimationPathCallbackVisitor apcv(cp,_useInverseMatrix);
         node.accept(apcv);

@@ -232,6 +232,10 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
 
         void setPause(bool pause);
 
+        /** get the animation time that is used to specify the position along the AnimationPath.
+          * Animation time is computed from the formula ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier.*/
+        double getAnimationTime() const;
+
         /** implements the callback*/
         virtual void operator()(Node* node, NodeVisitor* nv);
         

@@ -19,9 +19,10 @@ const float x,
 const float y,
 const float z    )
 {
+    float _angle = -angle;  // Convert to right handed coordinate system
     float inversenorm  = 1.0/sqrt( x*x + y*y + z*z );
-    float coshalfangle = cos( 0.5*angle );
-    float sinhalfangle = sin( 0.5*angle );
+    float coshalfangle = cos( 0.5*_angle );
+    float sinhalfangle = sin( 0.5*_angle );
 
     _fv[0] = x * sinhalfangle * inversenorm;
     _fv[1] = y * sinhalfangle * inversenorm;
@@ -50,6 +51,8 @@ void Quat::makeRot( const Vec3& vec1, const Vec3& vec2 )
     
     // dot product vec1*vec2
     float cosangle = vec1*vec2/(length1*length2);
+
+    cosangle = - cosangle; // Convert to right-handed coordinate system
 
     if ( fabs(cosangle - 1) < epsilon )
     {

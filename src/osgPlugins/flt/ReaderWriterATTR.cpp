@@ -42,6 +42,10 @@
 #include <iostream>
 #include <fstream>
 
+#ifndef OSG_USE_IO_DOT_H
+using std::ios;
+#endif
+
 typedef signed char     int8;
 typedef unsigned char   uint8;
 typedef signed short    int16;

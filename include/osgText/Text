@@ -1,0 +1,345 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+/* --------------------------------------------------------------------------
+ *
+ *    openscenegraph textLib / FTGL wrapper
+ *
+ * --------------------------------------------------------------------------
+ *    
+ *    prog:    max rheiner;mrn@paus.ch
+ *    date:    4/25/2001    (m/d/y)
+ *
+ * --------------------------------------------------------------------------
+ *
+ * --------------------------------------------------------------------------
+ */
+
+
+#ifndef OSGTEXT_TEXT
+#define OSGTEXT_TEXT 1 
+
+#include <string>
+
+#include <osg/GL>
+#include <osg/Object>
+#include <osg/Drawable>
+#include <osg/Vec3>
+#include <osg/Vec2>
+
+// http://homepages.paradise.net.nz/henryj/code/
+/*
+#include <FTFace.h>
+#include <FTGLBitmapFont.h>
+#include <FTGLPixmapFont.h>
+#include <FTGLOutlineFont.h>
+#include <FTGLPolygonFont.h>
+#include <FTGLTextureFont.h>
+*/
+#include <osgText/Export>
+
+class FTFont;
+
+namespace osgText {
+
+using namespace osg;
+
+///////////////////////////////////////////////////////////////////////////////
+// Font    - FontBaseClass
+class OSGTEXT_EXPORT Font:public Object
+{
+public:
+
+    Font();
+
+
+    virtual bool open(const std::string& font);
+    
+    virtual bool create(int  pointSize, const unsigned int res = 72 );
+    virtual bool create();
+    virtual void output(const char* text);
+
+    virtual bool isOk(void) const { return _init; }
+    virtual bool isCreated(void) const { return isOk() && _created; }
+
+    virtual float getWidth(const char* text) const;
+    virtual int getHeight() const;
+    virtual int getDescender() const;
+    virtual int getAscender() const;
+
+    int        getPointSize(void) const    { return _pointSize; }
+    const std::string& getFontName();
+
+    FTFont*     getFont(void) { return _font; }
+
+protected:
+
+    virtual    ~Font();
+
+    virtual void    clear();
+
+    virtual FTFont* createFontObj(void)=0;
+
+    bool init(const std::string& font);
+
+    bool            _init;
+    bool            _created;
+
+    FTFont*            _font;
+    std::string        _fontName;
+    int                _pointSize;
+    int                _res;
+};
+// Font
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// RasterFont
+class OSGTEXT_EXPORT RasterFont:public Font
+{
+public:
+    RasterFont():Font(){;}
+    RasterFont(const std::string& font):Font(){;}
+
+protected:
+
+};
+
+// RasterFont
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// VectorFont
+class OSGTEXT_EXPORT VectorFont:public Font
+{
+public:
+    VectorFont():Font(){;}
+    VectorFont(const std::string& font):Font(){;}
+
+protected:
+    double    _precision;
+};
+
+// VectorFont
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// BitmapFont
+class OSGTEXT_EXPORT BitmapFont:public RasterFont
+{
+public:
+
+
+    BitmapFont() {;}
+    
+    BitmapFont(const std::string&    font, 
+               int                    point_size);
+    
+    META_Object(BitmapFont);
+
+protected:
+
+
+    virtual FTFont* createFontObj(void);
+};
+
+// BitmapFont
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// PixmapFont
+class OSGTEXT_EXPORT PixmapFont:public RasterFont
+{
+public:
+
+    PixmapFont() {;}
+    
+    PixmapFont(const std::string&    font, 
+               int                    point_size);
+    
+    META_Object(PixmapFont);
+
+protected:
+
+    virtual FTFont* createFontObj(void);
+
+};
+// PixmapFont
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// TextureFont
+
+class OSGTEXT_EXPORT TextureFont:public RasterFont
+{
+public:
+
+    TextureFont() {;}
+    
+    TextureFont(const std::string&    font, 
+               int                    point_size);
+    
+    META_Object(TextureFont);
+
+protected:
+
+    virtual FTFont* createFontObj(void);
+
+};
+// PixmapFont
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// OutlineFont
+class OSGTEXT_EXPORT OutlineFont:public VectorFont
+{
+public:
+
+    OutlineFont() {;}
+    
+    OutlineFont(const std::string&    font, 
+                int                    point_size,
+                double                precision);
+    
+    META_Object(OutlineFont);
+
+protected:
+
+    virtual FTFont* createFontObj(void);
+
+
+};
+// OutlineFont
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// PolygonFont
+class OSGTEXT_EXPORT PolygonFont:public VectorFont
+{
+public:
+
+    PolygonFont() {;}
+    
+    PolygonFont(const std::string&    font, 
+                int                    point_size,
+                double                precision);
+    
+    META_Object(PolygonFont);
+
+protected:
+
+    virtual FTFont* createFontObj(void);
+
+};
+// PolygonFont
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Text
+class OSGTEXT_EXPORT Text:public Drawable    
+{
+public:
+
+    enum AlignmentType
+    {    // from left to right, top to bottom
+        LEFT_TOP,
+        LEFT_CENTER,
+        LEFT_BOTTOM,
+
+        CENTER_TOP,
+        CENTER_CENTER,
+        CENTER_BOTTOM,
+
+        RIGHT_TOP,
+        RIGHT_CENTER,
+        RIGHT_BOTTOM,
+    };
+
+    enum BoundingBoxType
+    {
+        GEOMETRY,
+        GLYPH,
+    };
+
+    enum DrawModeType
+    {    // from left to right, top to bottom
+        TEXT            =    1<<0,
+        BOUNDINGBOX        =    1<<1,
+        ALIGNEMENT        =    1<<2,
+        DEFAULT            =    TEXT,
+    };
+
+    Text();
+    Text(Font* font);
+
+    META_Object(Text);
+
+    void    setPosition(const Vec3& pos);
+    void    setPosition(const Vec2& pos);
+
+    void    setDrawMode(int mode)        { _drawMode=mode; }
+    int        getDrawMode(void)            { return _drawMode; }
+
+    void    setBoundingBox(int mode);
+    int        getBoundingBox(void)            { return _boundingBoxType; }
+
+    void    setAlignement(int alignement);
+    int        getAlignement(void) { return _alignement; }
+
+    void    setFont(Font* font);
+    Font*    getFont(void);
+
+    void    setText(const char* text)    { _text=text; }
+    void    setText(std::string& text)    { _text=text; }
+    const    std::string&    getText() const { return _text; }
+
+    virtual void    drawImmediateMode(State& state);
+    virtual void    drawBoundingBox(void);
+    virtual void    drawAlignement(void);
+    
+    const Vec3&    getPosition() { return _pos; }
+    const Vec3&    getAlignementPos()    { return _alignementPos; };
+
+    
+protected:
+
+    enum FontType
+    {
+        UNDEF,
+        BITMAP,
+        PIXMAP,
+        OUTLINE,
+        POLYGON,
+        TEXTURE,
+    };
+   
+    virtual    ~Text();
+
+    virtual void        setDefaults(void);
+    virtual const bool    computeBound(void) const;
+    virtual void        calcBounds(Vec3* min,Vec3* max) const;
+    void                initAlignement(Vec3* min,Vec3* max);
+    bool                initAlignement(void);
+
+    ref_ptr<Font>    _font;
+
+    bool            _init;
+    bool            _initAlignement;
+    std::string        _text;
+    int                _fontType;
+    int                _alignement;
+    int                _drawMode;
+    int                _boundingBoxType;
+    
+    Vec3        _pos;
+    Vec3        _alignementPos;
+};
+// Text
+///////////////////////////////////////////////////////////////////////////////
+
+};
+
+#endif // _OSG_TEXT_H

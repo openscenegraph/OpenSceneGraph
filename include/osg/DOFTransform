@@ -3,11 +3,11 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#if !defined(OSG_DOFTRANSFORM)
-#define OSG_DOFTRANSFORM
+#ifndef OSG_DOFTRANSFORM
+#define OSG_DOFTRANSFORM 1
 
 //base class:
-#include <osg/MatrixTransform>
+#include <osg/Transform>
 
 namespace osg{
 /** DOFTransform - encapsulates Multigen DOF behavior*/

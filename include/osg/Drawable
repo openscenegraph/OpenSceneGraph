@@ -97,11 +97,11 @@ class Geometry;
 
 #endif
 
-// this is define to alter the way display lists are compiled inside the
+// this is defined to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
 // to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display 
 // lists, but optimize a separate COMPILE very well?!  Define it as default
-// the use of a sperate COMPILE, then glCallList rather than use COMPILE_AND_EXECUTE.
+// the use of a separate COMPILE, then glCallList rather than use COMPILE_AND_EXECUTE.
 
 #define USE_SEPARATE_COMPILE_AND_EXECUTE
 
@@ -173,7 +173,7 @@ class SG_EXPORT Drawable : public Object
         inline const StateSet* getStateSet() const { return _stateset.get();}
 
         /** Get the attached const StateSet, 
-          * if one is not already attach create one, 
+          * if one is not already attached create one, 
           * attach it to the drawable and return a pointer to it.*/
         StateSet* getOrCreateStateSet();
 
@@ -185,7 +185,7 @@ class SG_EXPORT Drawable : public Object
 
         /** get bounding box of geoset. 
           * Note, now made virtual to make it possible to implement user-drawn
-          * objects albeit so what crudely, to be improved later.
+          * objects albeit somewhat crudely, to be improved later.
           */
         inline const BoundingBox& getBound() const
         {
@@ -196,8 +196,8 @@ class SG_EXPORT Drawable : public Object
 
 
         /** Set the Shape of the drawable. The shape can be used to
-      * speed up collision detection or as a guide for produral
-      * geometry generation - see osg::ProduralGeometry.*/
+      * speed up collision detection or as a guide for procedural
+      * geometry generation - see osg::Shape.*/
         inline void setShape(Shape* shape) { _shape = shape; }
 
         /** Get the Shape of the Drawable.*/
@@ -208,10 +208,10 @@ class SG_EXPORT Drawable : public Object
 
 
 
-        /** Set the drawable to it can or cannot be used in conjunction with OpenGL
-          * display lists.  With set to true, calls to Drawable::setUseDisplayList,
+        /** Set the drawable so that it can or cannot be used in conjunction with OpenGL
+          * display lists.  When set to true, calls to Drawable::setUseDisplayList,
           * whereas when set to false, no display lists can be created and calls
-          * to setUseDisplayList are ignored, and a warning is produced.  The later
+          * to setUseDisplayList are ignored, and a warning is produced.  The latter
           * is typically used to guard against the switching on of display lists
           * on objects with dynamic internal data such as continuous Level of Detail
           * algorithms.*/
@@ -222,14 +222,14 @@ class SG_EXPORT Drawable : public Object
 
 
         /** When set to true, force the draw method to use OpenGL Display List for rendering.
-            If false rendering directly.  If the display list has not been already
-            compile the next call to draw will automatically create the display list.*/
+            If false, rendering directly.  If the display list has not been compiled
+            already, the next call to draw will automatically create the display list.*/
         void setUseDisplayList(bool flag);
 
         /** Return whether OpenGL display lists are being used for rendering.*/
         inline bool getUseDisplayList() const { return _useDisplayList; }
 
-        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplemention 
+        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
             method to use OpenGL vertex buffer objects for rendering..*/
         void setUseVertexBufferObjects(bool flag);
 
@@ -256,8 +256,10 @@ class SG_EXPORT Drawable : public Object
             Note II, compile is not intended to be overridden in subclasses.*/
         virtual void compileGLObjects(State& state) const;
 
-        /** release any OpenGL display lists associated with graphics context specified
-            in osg::State object is supplied, or release all display lists for all graphics contexts if state pointer is NULL*/
+        /** 
+            if osg::State object is supplied: release any OpenGL display lists associated with graphics context specified
+            or 
+            if state pointer is NULL: release all display lists for all graphics contexts */
         virtual void releaseGLObjects(State* state=0) const;
 
         struct UpdateCallback : public virtual osg::Object
@@ -272,7 +274,7 @@ class SG_EXPORT Drawable : public Object
             virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
         };
         
-        /** Set the UpdateCallback which allows users to attach customize the undating of an object during the update traversal.*/
+        /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
         void setUpdateCallback(UpdateCallback* ac);
         
         /** Get the non const UpdateCallback.*/
@@ -294,7 +296,7 @@ class SG_EXPORT Drawable : public Object
             virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
         };
 
-        /** Set the CullCallback which allows users to attach customize the culling of Drawable during the cull traversal.*/
+        /** Set the CullCallback which allows users to customize the culling of Drawable during the cull traversal.*/
         void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
         
         /** Get the non const CullCallback.*/
@@ -308,9 +310,9 @@ class SG_EXPORT Drawable : public Object
 
         /** Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
           * The draw callback is implement as a replacement to the Drawable's own drawImplementation() method, if the
-          * the user intends to decorate the exist draw code then simple call the drawable->drawImplementation() from
+          * the user intends to decorate the existing draw code then simple call the drawable->drawImplementation() from
           * with the callbacks drawImplementation() method.  This allows the users to do both pre and post callbacks
-          * without fuss and can even diable the inner draw in required.*/
+          * without fuss and can even disable the inner draw if required.*/
         struct DrawCallback : public virtual osg::Object
         {
             DrawCallback() {}
@@ -343,7 +345,7 @@ class SG_EXPORT Drawable : public Object
 
 
         /** use deleteDisplayList instead of glDeleteList to allow
-          * OpenGL display list to cached until they can be deleted
+          * OpenGL display list to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
         static void deleteDisplayList(unsigned int contextID,GLuint globj);
@@ -353,7 +355,7 @@ class SG_EXPORT Drawable : public Object
         static void flushDeletedDisplayLists(unsigned int contextID,double currentTime, double& availableTime);
 
         /** use deleteVertexBufferObject instead of glDeleteList to allow
-          * OpenGL buffer objects to cached until they can be deleted
+          * OpenGL buffer objects to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
         static void deleteVertexBufferObject(unsigned int contextID,GLuint globj);
@@ -412,8 +414,9 @@ class SG_EXPORT Drawable : public Object
         /** return true if the Drawable subclass supports accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return false; }
 
-        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.
-          * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.*/
+        /** accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
+          * return true if functor handled by drawable, 
+          * return false on failure of drawable to generate functor calls.*/
         virtual void accept(AttributeFunctor&) {}
         
 
@@ -441,8 +444,9 @@ class SG_EXPORT Drawable : public Object
         /** return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/
         virtual bool supports(ConstAttributeFunctor&) const { return false; }
 
-        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.
-          * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.*/
+        /** accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
+          * return true if functor handled by drawable, 
+          * return false on failure of drawable to generate functor calls.*/
         virtual void accept(ConstAttributeFunctor&) const {}
 
 
@@ -496,24 +500,24 @@ class SG_EXPORT Drawable : public Object
         /** return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
         virtual bool supports(PrimitiveFunctor&) const { return false; }
 
-        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.
+        /** accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
-          * Note, PrimtiveFunctor only provide const access of the primtives, as primitives may be procedurally generated
+          * Note, PrimtiveFunctor only provides const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveFunctor&) const {}
 
         /** return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&).*/
         virtual bool supports(PrimitiveIndexFunctor&) const { return false; }
 
-        /** accept a PrimtiveIndexFunctor and call its methods to tell it about the interal primtives that this Drawable has.
+        /** accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
-          * Note, PrimtiveIndexFunctor only provide const access of the primtives, as primitives may be procedurally generated
+          * Note, PrimtiveIndexFunctor only provide const access of the primitives, as primitives may be procedurally generated
           * so one cannot modify it.*/
         virtual void accept(PrimitiveIndexFunctor&) const {}
 
 
-        /** Extensions class which encapsulates the querring of extensions and
-        * associated function pointers, and provide convinience wrappers to 
+        /** Extensions class which encapsulates the querying of extensions and
+        * associated function pointers, and provide convenience wrappers to 
         * check for the extensions or use the associated functions.*/        
         class SG_EXPORT Extensions : public osg::Referenced
         {
@@ -675,11 +679,11 @@ class SG_EXPORT Drawable : public Object
         };
 
         /** Function to call to get the extension of a specified context.
-        * If the Exentsion object for that context has not yet been created then 
+        * If the Exentsion object for that context has not yet been created  
         * and the 'createIfNotInitalized' flag been set to false then returns NULL.
         * If 'createIfNotInitalized' is true then the Extensions object is 
-        * automatically created.  However, in this case the extension object 
-        * only be created with the graphics context associated with ContextID..*/
+        * automatically created.  However, in this case the extension object is
+        * only created with the graphics context associated with ContextID..*/
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** setExtensions allows users to override the extensions across graphics contexts.

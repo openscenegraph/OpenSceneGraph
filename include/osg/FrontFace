@@ -19,7 +19,7 @@
 
 namespace osg {
 
-/** Class to specifies the orientation of front-facing polygons.
+/** Class to specify the orientation of front-facing polygons.
 */     
 class SG_EXPORT FrontFace : public StateAttribute
 {

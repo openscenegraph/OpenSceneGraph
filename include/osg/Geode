@@ -35,7 +35,7 @@ class SG_EXPORT Geode : public Node
         META_Node(osg, Geode);
 
         /** Add Drawable to Geode.
-         *  If gset is not NULL and is not contained in Geode then increment its  
+         *  If drawable is not NULL and is not contained in Geode then increment its  
          *  reference count, add it to the drawables list and dirty the bounding 
          *  sphere to force it to recompute on next getBound() and return true for success.
          *  Otherwise return false.
@@ -43,16 +43,16 @@ class SG_EXPORT Geode : public Node
         virtual bool addDrawable( Drawable *drawable );
 
         /** Remove Drawable from Geode.
-          * Equivalent to setDrawabke(getDrawableIndex(orignChild),node), 
-          * see docs for setNode for futher details on implementation.*/
+          * Equivalent to setDrawable(getDrawableIndex(originChild),node), 
+          * see docs for setNode for further details on implementation.*/
         virtual bool removeDrawable( Drawable *drawable );
 
         /** Remove drawable(s) from the specified position in Geode's drawable list.*/
         virtual bool removeDrawable(unsigned int i,unsigned int numDrawablesToRemove=1);
 
         /** Replace specified Drawable with another Drawable.
-          * Equivalent to setDrawable(getDrawableIndex(orignChild),node), 
-          * see docs for setDrawable for futher details on implementation.*/
+          * Equivalent to setDrawable(getDrawableIndex(originChild),node), 
+          * see docs for setDrawable for further details on implementation.*/
         virtual bool replaceDrawable( Drawable *origDraw, Drawable *newDraw );
 
         /** set drawable at position i.
@@ -66,7 +66,7 @@ class SG_EXPORT Geode : public Node
          */
         virtual bool setDrawable( unsigned int i, Drawable* drawable );
 
-        /** return the number of drawable's.*/
+        /** return the number of drawables.*/
         inline unsigned int getNumDrawables() const { return _drawables.size(); }
 
         /** return drawable at position i.*/
@@ -103,7 +103,7 @@ class SG_EXPORT Geode : public Node
         /** compile OpenGL Display List for each drawable.*/
         void compileDrawables(State& state);
         
-        /** return the Geode's bounding box, which the union of all the
+        /** return the Geode's bounding box, which is the union of all the
           * bounding boxes of the geode's drawables.*/
         inline const BoundingBox& getBoundingBox() const
         {

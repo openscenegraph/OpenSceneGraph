@@ -32,7 +32,7 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
     public:
 
-        /** Maintain a DisplaySettings singleton for objects to querry at runtime.*/
+        /** Maintain a DisplaySettings singleton for objects to query at runtime.*/
         static DisplaySettings* instance();
 
 

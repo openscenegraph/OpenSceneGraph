@@ -341,7 +341,17 @@ class Cylinder : public Shape
 class InfinitePlane : public Shape, public Plane
 {
     public:
-      	
+    	InfinitePlane() {}
+	
+        InfinitePlane(const InfinitePlane& plane,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+            Shape(plane,copyop),
+            Plane(plane) {}
+
+     	META_Shape(osg, InfinitePlane)
+     	
+     protected:
+     
+        virtual ~InfinitePlane() {}
 };
 
 class TriangleMesh : public Shape

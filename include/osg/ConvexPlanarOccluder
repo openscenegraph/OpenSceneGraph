@@ -43,12 +43,6 @@ class SG_EXPORT ConvexPlanarOccluder : public Object
         
         const HoleList& getHoleList() const { return _holeList; }
 
-        void computeAttributes();
-        
-        void computeBound(BoundingBox& bb) const;
-
-        void computeBound(BoundingSphere& bs) const;
-
     protected:
 
         ~ConvexPlanarOccluder() {}

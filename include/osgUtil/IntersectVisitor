@@ -95,7 +95,7 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
     protected:
 
-
+		/** \internal JAVA: SUPPRESS UNBRIDGABLE :JAVA */
         class IntersectState : public osg::Referenced
         {
             public:

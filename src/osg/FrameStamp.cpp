@@ -47,7 +47,7 @@ FrameStamp& FrameStamp::operator = (const FrameStamp& fs)
     return *this;
 }
 
-void FrameStamp::setCalanderTime(const std::tm& ct)
+void FrameStamp::setCalanderTime(const tm& ct)
 {
     tm_sec = ct.tm_sec;            /* Seconds.    [0-60] (1 leap second) */
     tm_min = ct.tm_min;            /* Minutes.    [0-59] */
@@ -60,7 +60,7 @@ void FrameStamp::setCalanderTime(const std::tm& ct)
     tm_isdst = ct.tm_isdst;            /* DST.        [-1/0/1]*/
 }
 
-void FrameStamp::getCalanderTime(std::tm& ct) const
+void FrameStamp::getCalanderTime(tm& ct) const
 {
     ct.tm_sec = tm_sec;            /* Seconds.    [0-60] (1 leap second) */
     ct.tm_min = tm_min;            /* Minutes.    [0-59] */

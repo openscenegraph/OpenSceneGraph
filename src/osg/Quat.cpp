@@ -36,6 +36,24 @@ void Quat::makeRotate( const float angle, const Vec3& vec )
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
+void Quat::makeRotate( float heading, float pitch, float roll)
+{
+
+    // lifted straight from SOLID library v1.01 Quaternion.h
+    // available from http://www.win.tue.nl/~gino/solid/
+    // and also distributed under the LGPL
+    float cosHeading = cos(heading / 2);
+    float sinHeading = sin(heading / 2);
+    float cosPitch = cos(pitch / 2);
+    float sinPitch = sin(pitch / 2);
+    float cosRoll = cos(roll / 2);
+    float sinRoll = sin(roll / 2);
+    set(sinRoll * cosPitch * cosHeading - cosRoll * sinPitch * sinHeading,
+            cosRoll * sinPitch * cosHeading + sinRoll * cosPitch * sinHeading,
+            cosRoll * cosPitch * sinHeading - sinRoll * sinPitch * cosHeading,
+            cosRoll * cosPitch * cosHeading + sinRoll * sinPitch * sinHeading);
+            
+}
 
 // Make a rotation Quat which will rotate vec1 to vec2
 // Generally take adot product to get the angle between these

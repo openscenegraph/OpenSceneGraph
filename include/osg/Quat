@@ -210,7 +210,11 @@ class SG_EXPORT Quat
             are co-incident or opposite in direction.*/
         void makeRotate( const Vec3& vec1, const Vec3& vec2 );
 
-        /** Return the angle and vector components represented by the quaternion.*/
+        /** make a rotation Quat from euler angles.*/
+        void makeRotate( float heading, float pitch, float roll);
+    
+    
+            /** Return the angle and vector components represented by the quaternion.*/
         void getRotate ( float& angle, float& x, float& y, float& z ) const;
         /** Return the angle and vector represented by the quaternion.*/
         void getRotate ( float& angle, Vec3& vec ) const;

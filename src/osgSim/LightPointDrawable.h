@@ -50,22 +50,36 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         
         void reset();
 
+        inline unsigned long asRGBA(const osg::Vec4& color) const
+        {
+#if defined(__sgi) || defined (__hpux__)
+            // big endian.
+            return color.asABGR();
+#elif defined (sun)
+            // should probably test at runtime for endianess, assume big endian right now.
+            return color.asABGR();
+#else
+            // x86 little endian
+            return color.asRGBA();
+#endif
+        }
+
         inline void addOpaqueLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
         {
             if (pointSize>=_sizedOpaqueLightPointList.size()) _sizedOpaqueLightPointList.resize(pointSize+1);
-            _sizedOpaqueLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
+            _sizedOpaqueLightPointList[pointSize].push_back(ColorPosition(asRGBA(color),position));
         }
 
         inline void addAdditiveLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
         {
             if (pointSize>=_sizedAdditiveLightPointList.size()) _sizedAdditiveLightPointList.resize(pointSize+1);
-            _sizedAdditiveLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
+            _sizedAdditiveLightPointList[pointSize].push_back(ColorPosition(asRGBA(color),position));
         }
 
         inline void addBlendedLightPoint(unsigned int pointSize,const osg::Vec3& position,const osg::Vec4& color)
         {
             if (pointSize>=_sizedBlendedLightPointList.size()) _sizedBlendedLightPointList.resize(pointSize+1);
-            _sizedBlendedLightPointList[pointSize].push_back(ColorPosition(color.asRGBA(),position));
+            _sizedBlendedLightPointList[pointSize].push_back(ColorPosition(asRGBA(color),position));
         }
         
         /** draw LightPoints. */

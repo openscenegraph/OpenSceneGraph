@@ -66,8 +66,8 @@ bool AnimationPath_readLocalData(osg::Object &obj, osgDB::Input &fr)
         fr += 2;
         
 
-        float time;
-        Vec3 position,scale;
+        double time;
+        Vec3d position,scale;
         Quat rotation;
         
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
@@ -131,6 +131,9 @@ bool AnimationPath_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "ControlPoints {"<< std::endl;
     fw.moveIn();
 
+    int prec = fw.precision();
+    fw.precision(15);
+
     for (AnimationPath::TimeControlPointMap::const_iterator itr=tcpm.begin();
          itr!=tcpm.end(); 
          ++itr)
@@ -138,6 +141,8 @@ bool AnimationPath_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
         fw.indent() << itr->first << " " << itr->second._position << " " << itr->second._rotation << " " << itr->second._scale << std::endl;
 
     }
+
+    fw.precision(prec);
 
     fw.moveOut();
     fw.indent() << "}"<< std::endl;

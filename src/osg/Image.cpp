@@ -488,7 +488,7 @@ Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
             osg::StateSet* dstate = osgNew osg::StateSet;
             dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
             dstate->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-            dstate->setAttributeAndModes(texture,osg::StateAttribute::ON);
+            dstate->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
             // set up the geoset.
             Geometry* geom = osgNew Geometry;

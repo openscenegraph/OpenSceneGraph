@@ -132,13 +132,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                     {
                         osg::Texture* osg_texture = new osg::Texture;
                         osg_texture->setImage(osg_image);
-                        stateset->setAttributeAndModes(osg_texture,osg::StateAttribute::ON);
+                        stateset->setTextureAttributeAndModes(0,osg_texture,osg::StateAttribute::ON);
                         
                         if (omtl->textureReflection)
                         {
                             osg::TexGen* osg_texgen = new osg::TexGen;
                             osg_texgen->setMode(osg::TexGen::SPHERE_MAP);
-                            stateset->setAttributeAndModes(osg_texgen,osg::StateAttribute::ON);
+                            stateset->setTextureAttributeAndModes(0,osg_texgen,osg::StateAttribute::ON);
                         }
                     }
                     else

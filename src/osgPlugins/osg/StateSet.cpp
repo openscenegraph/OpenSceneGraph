@@ -46,11 +46,13 @@ RegisterDotOsgWrapperProxy g_GeoStateFuncProxy
 //
 // Set up the maps from name to GLMode and visa versa.
 //
-typedef std::map<std::string,StateAttribute::GLMode> GLNameToGLModeMap;
-typedef std::map<StateAttribute::GLMode,std::string> GLModeToGLNameMap;
+typedef std::map<std::string,StateAttribute::GLMode>    GLNameToGLModeMap;
+typedef std::map<StateAttribute::GLMode,std::string>    GLModeToGLNameMap;
+typedef std::set<StateAttribute::GLMode>                TextureGLModeSet;
 
 GLNameToGLModeMap s_GLNameToGLModeMap;
 GLModeToGLNameMap s_GLModeToGLNameMap;
+TextureGLModeSet s_TextureGLModeSet;
 
 #define ADD_NAME(name,mode) s_GLNameToGLModeMap[name]=mode; s_GLModeToGLNameMap[mode]=name;
 
@@ -100,6 +102,19 @@ void initGLNames()
     ADD_NAME("GL_LIGHT5",GL_LIGHT5);
     ADD_NAME("GL_LIGHT6",GL_LIGHT6);
     ADD_NAME("GL_LIGHT7",GL_LIGHT7);
+    
+    
+    s_TextureGLModeSet.insert(GL_TEXTURE_1D);
+    s_TextureGLModeSet.insert(GL_TEXTURE_2D);
+    s_TextureGLModeSet.insert(GL_TEXTURE_3D);
+    
+    s_TextureGLModeSet.insert(GL_TEXTURE_CUBE_MAP);
+    
+    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_Q);
+    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_R);
+    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_S);
+    s_TextureGLModeSet.insert(GL_TEXTURE_GEN_T);
+    
 
 //     for(GLNameToGLModeMap::iterator itr=s_GLNameToGLModeMap.begin();
 //         itr!=s_GLNameToGLModeMap.end();
@@ -159,7 +174,7 @@ bool GeoState_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("texturing") && StateSet_matchModeStr(fr[1].getStr(),mode))
     {
-        statset.setMode(GL_TEXTURE_2D,mode);
+        statset.setTextureMode(0,GL_TEXTURE_2D,mode);
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -218,7 +233,15 @@ bool GeoState_readLocalData(Object& obj, Input& fr)
     StateAttribute* attribute = NULL;
     while((attribute=fr.readStateAttribute())!=NULL)
     {
-        statset.setAttribute(attribute);
+        if (attribute->isTextureAttribute())
+        {
+            // remap to be a texture attribute
+            statset.setTextureAttribute(0,attribute);
+        }
+        else
+        {
+            statset.setAttribute(attribute);
+        }
         
         if (attribute->getType()==StateAttribute::TEXGEN) 
             statset.setAssociatedModes(attribute,texgening);
@@ -314,7 +337,16 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
             {
                 int mode;
                 fr[0].getInt(mode);
-                stateset.setMode((StateAttribute::GLMode)mode,value);
+                
+                if (s_TextureGLModeSet.find(mode)!=s_TextureGLModeSet.end())
+                {
+                    // remap to a texture unit.
+                    stateset.setTextureMode(0,(StateAttribute::GLMode)mode,value);
+                }
+                else
+                {
+                    stateset.setMode((StateAttribute::GLMode)mode,value);
+                }
                 fr+=2;
                 iteratorAdvanced = true;
                 readingMode=true;
@@ -329,7 +361,15 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
                 if (nitr!=s_GLNameToGLModeMap.end())
                 {
                     StateAttribute::GLMode mode = nitr->second;
-                    stateset.setMode(mode,value);
+                    if (s_TextureGLModeSet.find(mode)!=s_TextureGLModeSet.end())
+                    {
+                        // remap to a texture unit.
+                        stateset.setTextureMode(0,mode,value);
+                    }
+                    else
+                    {
+                        stateset.setMode(mode,value);
+                    }
                     fr+=2;
                     iteratorAdvanced = true;
                     readingMode=true;
@@ -344,7 +384,15 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     StateAttribute* attribute = NULL;
     while((attribute=fr.readStateAttribute())!=NULL)
     {
-        stateset.setAttribute(attribute);
+        if (attribute->isTextureAttribute())
+        {
+            // remap to be a texture attribute
+            stateset.setTextureAttribute(0,attribute);
+        }
+        else
+        {
+            stateset.setAttribute(attribute);
+        }
         iteratorAdvanced = true;
     }
     

@@ -201,7 +201,7 @@ void TrPageArchive::LoadMaterials()
                     break;
                 }
                 
-                osg_state_set->setAttribute(osg_texenv);
+                osg_state_set->setTextureAttribute(0,osg_texenv);
                 
                 Material     *osg_material     = new Material;
                 
@@ -255,7 +255,7 @@ void TrPageArchive::LoadMaterials()
                 {
                     osg_texture->setWrap(Texture::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
                     osg_texture->setWrap(Texture::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? Texture::REPEAT: Texture::CLAMP );
-                    osg_state_set->setAttributeAndModes(osg_texture, StateAttribute::ON);
+                    osg_state_set->setTextureAttributeAndModes(0,osg_texture, StateAttribute::ON);
                 
                     if(osg_texture->getImage())
                     { 

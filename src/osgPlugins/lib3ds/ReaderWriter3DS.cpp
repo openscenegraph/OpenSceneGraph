@@ -692,7 +692,7 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
     osg::Texture* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
     if (texture1_map)
     {
-        stateset->setAttributeAndModes(texture1_map,osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(0,texture1_map,osg::StateAttribute::ON);
         
         // not sure exactly how to interpret what is best for .3ds
         // but the default text env MODULATE doesn't work well, and
@@ -707,7 +707,7 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
             texenv->setMode(osg::TexEnv::MODULATE);
         }
 
-        stateset->setAttribute(texenv);
+        stateset->setTextureAttribute(0,texenv);
     }
 
     if (transparency>0.0f || textureTransparancy)

@@ -56,9 +56,9 @@ Node *makeBase( void )
 
     StateSet *dstate = new StateSet;
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );
-    dstate->setAttributeAndModes( tex, StateAttribute::ON );
+    dstate->setTextureAttributeAndModes(0, tex, StateAttribute::ON );
 
-    dstate->setAttribute( new TexEnv );
+    dstate->setTextureAttribute(0, new TexEnv );
 
     // clear the depth to the far plane.
     osg::Depth* depth = new osg::Depth;

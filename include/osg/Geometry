@@ -1,0 +1,200 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_GEOMETRY
+#define OSG_GEOMETRY 1
+
+#include <osg/Drawable>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+
+namespace osg {
+
+
+class AttributeArray : public Object
+{
+
+    public:
+    
+        AttributeArray(GLint dataSize=0,GLenum dataType=0):_dataSize(dataSize),_dataType(dataType) {}
+    
+        AttributeArray(const AttributeArray& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(array,copyop),
+            _dataSize(array._dataSize),
+            _dataType(array._dataType) {}
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const AttributeArray*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "AttributeArray"; }
+
+
+        GLint                   dataSize() const { return _dataSize; }
+        GLenum                  dataType() const { return _dataType; }
+        virtual const GLvoid*   dataPointer() const = 0;
+
+    protected:
+    
+        virtual ~AttributeArray() {}
+
+        GLint   _dataSize;
+        GLenum  _dataType;
+};
+
+static char* s_classNames[] = {
+    "ByteArray",    // 0
+    "ShortArray",   // 1
+    "IntArray",     // 2
+    "UByteArray",   // 3
+    "UShortArray",  // 4
+    "UIntArray",    // 5
+    "FloatArray",   // 6
+    "Vec2Array",    // 7
+    "Vec3Array",    // 8
+    "Vec4Array"     // 9
+    };
+
+template<typename T,int DataSize,int DataType,unsigned int ClassName>
+class TemplateArray : public AttributeArray, public std::vector<T>
+{
+    public:
+    
+        TemplateArray() : TemplateArray(DataSize,DataType) {}
+
+        TemplateArray(const T& t,const CopyOp& copyop=CopyOp::SHALLOW_COPY) : AttributeArray(t,copyop), std::vector<T>(t) {}
+        
+        virtual Object* cloneType() const { return osgNew TemplateArray(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return s_classNames[ClassName]; }
+
+        virtual const GLvoid*   dataPointer() const { if (!empty()) return &(*begin()); else return 0; }
+};
+
+typedef TemplateArray<char,1,GL_BYTE,0>                       ByteArray;
+typedef TemplateArray<short,1,GL_SHORT,1>                     ShortArray;
+typedef TemplateArray<int,1,GL_INT,2>                         IntArray;
+typedef TemplateArray<unsigned char,1,GL_UNSIGNED_BYTE,3>     UByteArray;
+typedef TemplateArray<unsigned short,1,GL_UNSIGNED_SHORT,4>   UShortArray;
+typedef TemplateArray<unsigned int,1,GL_UNSIGNED_INT,5>       UIntArray;
+typedef TemplateArray<float,1,GL_FLOAT,6>                     FloatArray;
+typedef TemplateArray<Vec2,2,GL_FLOAT,7>                      Vec2Array;
+typedef TemplateArray<Vec3,3,GL_FLOAT,8>                      Vec3Array;
+typedef TemplateArray<Vec4,4,GL_FLOAT,9>                      Vec4Array;
+
+
+/** Experiemntal replacement for GeoSet.
+*/
+class SG_EXPORT Geometry : public Drawable
+{
+    public:
+
+
+        Geometry();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Geometry(const Geometry& Geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+            
+        virtual Object* cloneType() const { return osgNew Geometry(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew Geometry(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geometry*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Geometry"; }
+        
+        enum PrimitiveType
+        {
+            POINTS = GL_POINTS,
+            LINES = GL_LINES,
+            LINE_STRIP = GL_LINE_STRIP,
+            LINE_LOOP = GL_LINE_LOOP,
+            TRIANGLES = GL_TRIANGLES,
+            TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
+            TRIANGLE_FAN = GL_TRIANGLE_FAN,
+            QUADS = GL_QUADS,
+            QUAD_STRIP = GL_QUAD_STRIP,
+            POLYGON = GL_POLYGON
+        };
+        
+        enum AttributeType
+        {
+            PRIMITIVES,
+            COORDS,
+            NORMALS,
+            COLORS,
+            TEX_COORDS,
+            TEX_COORDS_0 = TEX_COORDS,
+            TEX_COORDS_1,
+            TEX_COORDS_2,
+            TEX_COORDS_3,
+            TEX_COORDS_4,
+            TEX_COORDS_5,
+            TEX_COORDS_6,
+            TEX_COORDS_7
+        };
+        
+        void setAttribute(AttributeType type,AttributeArray* array);
+        
+        void setAttribute(AttributeType type,AttributeArray* array,AttributeArray* indices);
+
+        AttributeArray* getAttribute(AttributeType type);
+        
+        void setIndices(AttributeType type,AttributeArray* indices);
+
+        AttributeArray* getIndices(AttributeType type);
+
+
+        /** draw Geometry directly ignoring an OpenGL display list which could be attached.
+          * This is the internal draw method which does the drawing itself,
+          * and is the method to override when deriving from Geometry for user-drawn objects.
+          */
+        virtual void drawImmediateMode(State& state);
+
+        /** Statistics collection for each drawable- 26.09.01
+         */
+        bool getStats(Statistics &);
+
+
+        /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
+        virtual AttributeBitMask suppportsAttributeOperation() const;
+
+        /** return the attributes successully applied in applyAttributeUpdate.*/
+        virtual AttributeBitMask applyAttributeOperation(AttributeFunctor& auf);
+
+
+    protected:
+
+        Geometry& operator = (const Geometry&) { return *this;}
+
+        virtual ~Geometry();
+
+        virtual const bool computeBound() const;
+        
+        void setTexCoordArray(unsigned int pos,AttributeArray*);
+        AttributeArray* getTexCoordArray(unsigned int pos);
+        
+        void setTexCoordIndicesArray(unsigned int pos,AttributeArray*);
+        AttributeArray* getTexCoordIndicesArray(unsigned int pos);
+        
+        typedef std::vector< ref_ptr<AttributeArray> > TexCoordList;
+        
+        ref_ptr<AttributeArray>     _primitives;
+        
+        ref_ptr<AttributeArray>     _coords;
+        ref_ptr<AttributeArray>     _coordIndices;
+        
+        ref_ptr<AttributeArray>     _normals;
+        ref_ptr<AttributeArray>     _normalIndices;
+        
+        ref_ptr<AttributeArray>     _colors;
+        ref_ptr<AttributeArray>     _colorIndices;
+
+        TexCoordList                _texCoordList;
+        TexCoordList                _texCoordIndicesList;
+
+};
+
+
+}
+
+#endif

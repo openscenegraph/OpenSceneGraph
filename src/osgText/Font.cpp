@@ -355,7 +355,7 @@ void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     glyph->setTexture(this);
     glyph->setTexturePosition(posX,posY);
     unsigned int sizeAdjustment = 0; // was 1.
-    glyph->setMinTexCoord(osg::Vec2((float)(posX+_margin-1)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+_margin-1)/(float)(getTextureHeight()-sizeAdjustment)));
+    glyph->setMinTexCoord(osg::Vec2((float)(posX+_margin)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+_margin)/(float)(getTextureHeight()-sizeAdjustment)));
     glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s()-_margin)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+glyph->t()-_margin)/(float)(getTextureHeight()-sizeAdjustment)));
 }
 

@@ -91,6 +91,16 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr)
     ReadVec3(setMaxScale,"maxScale")
     ReadVec3(setIncrementScale,"incrementScale")
     ReadVec3(setCurrentScale,"currentScale")
+
+    if (fr[0].matchWord("multOrder"))
+    {
+        if (fr[1].matchWord("PRH")) dof.setHPRMultOrder(DOFTransform::PRH);
+        else if(fr[1].matchWord("PHR")) dof.setHPRMultOrder(DOFTransform::PHR);
+        else if(fr[1].matchWord("HPR")) dof.setHPRMultOrder(DOFTransform::HPR);
+        else if(fr[1].matchWord("HRP")) dof.setHPRMultOrder(DOFTransform::HRP);
+        else if(fr[1].matchWord("RHP")) dof.setHPRMultOrder(DOFTransform::RHP);
+        else if(fr[1].matchWord("RPH")) dof.setHPRMultOrder(DOFTransform::RPH);
+    }
     
 
     if (fr.matchSequence("limitationFlags %i"))
@@ -150,6 +160,10 @@ bool DOFTransform_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"axScale            "<<transform.getMaxScale()<<std::endl;
     fw.indent()<<"incrementScale     "<<transform.getIncrementScale()<<std::endl;
     fw.indent()<<"currentScale       "<<transform.getCurrentScale()<<std::endl;
+
+
+    const char* mOrderStr[] = {"PRH", "PHR", "HPR", "HRP", "RPH", "RHP"};
+    fw.indent()<<"multOrder          "<<mOrderStr[transform.getHPRMultOrder()]<<std::endl;
 
     fw.indent()<<"limitationFlags    0x"<<hex<<transform.getLimitationFlags()<<dec<<std::endl;
 

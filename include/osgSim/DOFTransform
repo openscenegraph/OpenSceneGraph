@@ -35,6 +35,7 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
 
         virtual void traverse(osg::NodeVisitor& nv);
 
+
         void setMinHPR(const osg::Vec3& hpr) { _minHPR = hpr;}
         const osg::Vec3& getMinHPR() const { return _minHPR;}
 
@@ -48,14 +49,14 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
         const osg::Vec3& getCurrentHPR() const {return _currentHPR;}
 
         void updateCurrentHPR(const osg::Vec3& hpr);
-        
+
 
         void setMinTranslate(const osg::Vec3& translate) {_minTranslate = translate;}
         const osg::Vec3& getMinTranslate() const { return _minTranslate;}
-        
+
         void setMaxTranslate(const osg::Vec3& translate) {_maxTranslate = translate;}
         const osg::Vec3& getMaxTranslate() const { return _maxTranslate;}
-        
+
         void setIncrementTranslate(const osg::Vec3& translate) { _incrementTranslate = translate;}
         const osg::Vec3& getIncrementTranslate() const { return _incrementTranslate;}
 
@@ -89,6 +90,18 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
         void setLimitationFlags(unsigned long flags) { _limitationFlags = flags;}
         inline unsigned long getLimitationFlags() const {return _limitationFlags;}
 
+        enum MultOrder
+        {
+            PRH,
+            PHR,
+            HPR,
+            HRP,
+            RPH,
+            RHP
+        };
+
+        void setHPRMultOrder(const MultOrder order) {_multOrder = order;}
+        inline const MultOrder getHPRMultOrder() const { return _multOrder;}
 
         inline void setAnimationOn(bool do_animate) {_animationOn = do_animate;}
         inline bool getAnimationOn() const {return _animationOn;}
@@ -153,7 +166,10 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
         8 = z scale
         */
         unsigned short _increasingFlags;
-};
+
+        MultOrder _multOrder;
+
+    };
 
 }
 #endif

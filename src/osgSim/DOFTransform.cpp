@@ -31,7 +31,8 @@ DOFTransform::DOFTransform():
     _previousTime(0.0),
     _limitationFlags(0), 
     _animationOn(true), 
-    _increasingFlags(0xffff)
+    _increasingFlags(0xffff),
+    _multOrder(PRH)
 {
     setNumChildrenRequiringUpdateTraversal(1);
 }
@@ -56,7 +57,8 @@ DOFTransform::DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop):
     _inversePut(dof._inversePut),
     _limitationFlags(dof._limitationFlags),
     _animationOn(dof._animationOn),
-    _increasingFlags(dof._increasingFlags)
+    _increasingFlags(dof._increasingFlags),
+    _multOrder(dof._multOrder)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
@@ -92,9 +94,43 @@ bool DOFTransform::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisito
     current.makeTranslate(getCurrentTranslate());
 
     //now create the local rotation:
-    current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
-    current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
-    current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+    if(_multOrder == PRH)
+    {
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+    }
+    else if(_multOrder == PHR)
+    {
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+    }
+    else if(_multOrder == HPR)
+    {
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+    }
+    else if(_multOrder == HRP)
+    {
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+    }
+    else if(_multOrder == RHP)
+    {
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+    }
+    else // _multOrder == RPH
+    {
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.preMult(osg::Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+    }
+
 
     //and scale:
     current.preMult(osg::Matrix::scale(getCurrentScale()));
@@ -128,11 +164,42 @@ bool DOFTransform::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisito
     current.makeTranslate(-getCurrentTranslate());
 
     //now create the local rotation:
-
-
-    current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
-    current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
-    current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+    if(_multOrder == PRH)
+    {
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+    }
+    else if(_multOrder == PHR)
+    {
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+    }
+    else if(_multOrder == HPR)
+    {
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+    }
+    else if(_multOrder == HRP)
+    {
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+    }
+    else if(_multOrder == RHP)
+    {
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+    }
+    else // _multOrder == MultOrder::RPH
+    {
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+        current.postMult(osg::Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+    }
 
     //and scale:
     current.postMult(osg::Matrix::scale(1./getCurrentScale()[0], 1./getCurrentScale()[1], 1./getCurrentScale()[2]));

@@ -119,6 +119,8 @@ void ScalarBar::createDrawables()
     // Remove any existing Drawables
     _drawables.erase(_drawables.begin(), _drawables.end());
     
+    if (_numColors==0) return;
+    
     osg::Matrix matrix;
     if(_orientation==HORIZONTAL)
     {
@@ -189,8 +191,8 @@ void ScalarBar::createDrawables()
     osgText::Font* font = osgText::readFontFile(_textProperties._fontFile.c_str());
 
     std::vector<osgText::Text*> texts(_numLabels);      // We'll need to collect pointers to these for later
-    float labelIncr = (_stc->getMax()-_stc->getMin())/(_numLabels-1);
-    float labelxIncr = (_width)/(_numLabels-1);
+    float labelIncr = (_numLabels>0) ? (_stc->getMax()-_stc->getMin())/(_numLabels-1) : 0.0f;
+    float labelxIncr = (_numLabels>0) ? (_width)/(_numLabels-1) : 0.0f;
     float labely = arOffset + characterSize*0.3f;
     for(i=0; i<_numLabels; ++i)
     {

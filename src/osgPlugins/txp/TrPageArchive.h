@@ -30,8 +30,6 @@
 
 #include "TrPageParser.h"
 
-#include <osg/GeoSet>
-
 #include <string>
 #include <vector>
 #include <memory> // for auto_ptr

@@ -45,8 +45,8 @@ class ConvertFromPerformer {
         osg::Node* visitBillboard(osg::Group* osgParent,pfBillboard* billboard);
 
         int getNumVerts(pfGeoSet *gset);
-        osg::GeoSet* visitGeoSet(osg::Geode* osgParent,pfGeoSet* geoset);
-        osg::StateSet* visitGeoState(osg::GeoSet* osgGeoSet,pfGeoState* geostate);
+        osg::Drawable* visitGeoSet(osg::Geode* osgParent,pfGeoSet* geoset);
+        osg::StateSet* visitGeoState(osg::Drawable* osgGeoSet,pfGeoState* geostate);
         osg::Material* visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat);
         osg::Texture* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
 

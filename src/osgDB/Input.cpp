@@ -31,7 +31,7 @@ Input::~Input()
 osg::Object* Input::getObjectForUniqueID(const std::string& uniqueID)
 {
     UniqueIDToObjectMapping::iterator fitr = _uniqueIDToObjectMap.find(uniqueID);
-    if (fitr != _uniqueIDToObjectMap.end()) return (*fitr).second;
+    if (fitr != _uniqueIDToObjectMap.end()) return (*fitr).second.get();
     else return NULL;
 }
 

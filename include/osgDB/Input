@@ -51,7 +51,7 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
 
     private:
     
-        typedef std::map<std::string,osg::Object*> UniqueIDToObjectMapping;
+        typedef std::map< std::string, osg::ref_ptr<osg::Object> > UniqueIDToObjectMapping;
         UniqueIDToObjectMapping _uniqueIDToObjectMap;
 
 };

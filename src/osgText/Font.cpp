@@ -231,6 +231,10 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
         _stateSetList.push_back(stateset);
 
         glyphTexture = new GlyphTexture;
+        
+//         static int numberOfTexturesAllocated = 0;
+//         ++numberOfTexturesAllocated;
+//         std::cout << this<< "  numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);

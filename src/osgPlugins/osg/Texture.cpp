@@ -83,6 +83,27 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr.matchSequence("borderWidth %f %f %f %f"))
+    {
+        Vec4 color;
+        fr[1].getFloat(color[0]);
+        fr[2].getFloat(color[1]);
+        fr[3].getFloat(color[2]);
+        fr[4].getFloat(color[3]);
+        texture.setBorderColor(color);
+        fr +=5 ;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("borderWidth %i"))
+    {
+        int width=0;
+        fr[1].getInt(width);
+        texture.setBorderWidth(width);
+        fr +=2 ;
+        iteratorAdvanced = true;
+    }
+
     if (fr[0].matchWord("useHardwareMipMapGeneration"))
     {
         if (fr[1].matchWord("TRUE")) 
@@ -151,6 +172,9 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
     fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
     
+    fw.indent() << "borderColor " << texture.getBorderColor() << std::endl;
+    fw.indent() << "borderWidth " << texture.getBorderWidth() << std::endl;
+
     fw.indent() << "useHardwareMipMapGeneration "<< (texture.getUseHardwareMipMapGeneration()?"TRUE":"FALSE") << std::endl;
     fw.indent() << "unRefImageDataAfterApply "<< (texture.getUnRefImageDataAfterApply()?"TRUE":"FALSE") << std::endl;
             

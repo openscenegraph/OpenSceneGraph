@@ -223,7 +223,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     {
         numMipmapLevels = 1;
         extensions->glTexImage3D( target, 0, _internalFormat,
-                                  image->s(), image->t(), image->r(), 0,
+                                  image->s(), image->t(), image->r(), _borderWidth,
                                   (GLenum)image->getPixelFormat(),
                                   (GLenum)image->getDataType(),
                                   image->data() );
@@ -260,7 +260,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
                     depth = 1;
 
                 extensions->glTexImage3D( target, k, _internalFormat,
-                                          width, height, depth, 0,
+                                          width, height, depth, _borderWidth,
                                           (GLenum)image->getPixelFormat(),
                                           (GLenum)image->getDataType(),
                                           image->getMipmapData(k));

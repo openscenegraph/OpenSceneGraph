@@ -126,12 +126,17 @@ class SG_EXPORT Texture : public osg::StateAttribute
         WrapMode getWrap(WrapParameter which) const;
 
 
-        /** Sets the border color for this texture. Makes difference only if
+        /** Set the border color for this texture. Makes difference only if
           * wrap mode is CLAMP_TO_BORDER */
         void setBorderColor(const Vec4& color) { _borderColor = color; dirtyTextureParameters(); }
         
+        /** Get the border color for this texture.*/
         const Vec4& getBorderColor() const { return _borderColor; }
         
+        /** Set the border width.*/
+        void setBorderWidth(GLint width) { _borderWidth = width; dirtyTextureParameters(); }
+        
+        GLint getBorderWidth() const { return _borderWidth; }
 
         enum FilterParameter {
             MIN_FILTER,
@@ -401,7 +406,8 @@ class SG_EXPORT Texture : public osg::StateAttribute
         bool            _useHardwareMipMapGeneration;
         bool            _unrefImageDataAfterApply;
 
-        Vec4 _borderColor;
+        Vec4            _borderColor;
+        GLint           _borderWidth;
 
         InternalFormatMode  _internalFormatMode;
         mutable GLint       _internalFormat;

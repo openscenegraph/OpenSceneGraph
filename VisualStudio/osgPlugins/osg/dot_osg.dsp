@@ -138,10 +138,6 @@ SOURCE=..\..\..\src\osgPlugins\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\DOFTransform.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\osg\ClearNode.cpp
 # End Source File
 # Begin Source File

@@ -27,21 +27,11 @@
 #include <osg/Vec2>
 #include <osg/StateSet>
 #include <osg/ref_ptr>
+#include <osg/Texture>
+#include <osg/Group>
+#include <osg/StateSet>
 #include <vector>
 #include "trpage_read.h"
-
-// forward declarations
-namespace osg
-{
-    class Group;
-    class Node;
-    class Material;
-    class Texture;
-    class TexEnv;
-    class Light;
-    class Transparency;
-    class CullFace;
-};
 
 namespace txp
 {

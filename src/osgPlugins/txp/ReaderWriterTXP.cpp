@@ -35,7 +35,7 @@ public:
         std::string foundname =  osgDB::findFile(filename.c_str());
         if( !foundname.empty())
         {
-            if (archive.OpenFile(foundname))
+            if (archive.OpenFile(foundname.c_str()))
             {
                 notify(INFO) << "TXPFile::loadFile(): loading archive: "
                     << foundname << std::endl;

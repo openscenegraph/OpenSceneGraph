@@ -44,7 +44,7 @@ namespace txp
         ~TrPageArchive();
         
         // open archive file
-        bool OpenFile(const std::string& filename);
+        virtual bool OpenFile(const char* file);
         
         /// Load and create textures and materials
         void LoadMaterials();

@@ -379,6 +379,26 @@ bool OsgCameraGroup::realize()
             osg::notify(osg::INFO)<<"         to avoid threading problems in osgParticle."<<std::endl;
             _thread_model = Producer::CameraGroup::SingleThreaded;
         }
+        else
+        {
+            std::set<RenderSurface*> renderSurfaceSet;
+            for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+            {
+                Producer::Camera *cam = _cfg->getCamera(i);
+                renderSurfaceSet.insert(cam->getRenderSurface());
+            }
+            if (renderSurfaceSet.size()!=_cfg->getNumberOfCameras())
+            {
+                // camera's must be sharing a RenderSurface, so we need to ensure that we're
+                // running single threaded, to avoid OpenGL threading issues.
+                osg::notify(osg::INFO)<<"Warning: disabling multi-threading of cull and draw to avoid"<<std::endl;
+                osg::notify(osg::INFO)<<"         threading problems when camera's share a RenderSurface."<<std::endl;
+                _thread_model = Producer::CameraGroup::SingleThreaded;
+            }
+            
+            
+        }
+        
     }
 
     _initialized = CameraGroup::realize();

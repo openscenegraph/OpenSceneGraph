@@ -15,6 +15,7 @@ class LOD;
 class Sequence;
 class Switch;
 class Impostor;
+class EarthSky;
 
 /** Visitor for type safe operations on osg::Node's.
     Based on GOF's Visitor pattern.*/ 
@@ -128,6 +129,7 @@ class SG_EXPORT NodeVisitor : public Referenced
         virtual void apply(Sequence& node)   { apply((Group&)node); }
         virtual void apply(LOD& node)        { apply((Group&)node); }
         virtual void apply(Impostor& node)   { apply((LOD&)node); }
+        virtual void apply(EarthSky& node)   { apply((Group&)node); }
 
     protected:
 

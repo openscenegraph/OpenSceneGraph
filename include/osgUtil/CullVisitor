@@ -10,6 +10,7 @@
 #include <osg/State>
 #include <osg/Camera>
 #include <osg/Impostor>
+#include <osg/EarthSky>
 #include <osg/Notify>
 
 #include <osgUtil/RenderGraph>
@@ -47,11 +48,18 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         virtual void apply(osg::Transform& node);
         virtual void apply(osg::Switch& node);
         virtual void apply(osg::LOD& node);
+        virtual void apply(osg::EarthSky& node);
         virtual void apply(osg::Impostor& node);
 
-        void setCamera(const osg::Camera& camera);
 
+
+        void setCamera(const osg::Camera& camera);
         const osg::Camera* getCamera() const { return _camera.get(); }
+
+
+        void setEarthSky(const osg::EarthSky* earthSky) { _earthSky = earthSky; }
+        const osg::EarthSky* getEarthSky() const { return _earthSky.get(); }
+
 
         void setLODBias(const float bias) { _LODBias = bias; }
         const float getLODBias() const    { return _LODBias; }
@@ -279,6 +287,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         float _calculated_zfar;
         
         osg::ref_ptr<const osg::Camera> _camera;
+        
+        osg::ref_ptr<const osg::EarthSky> _earthSky;
 
         TransparencySortMode _tsm;
 	

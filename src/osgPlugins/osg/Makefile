@@ -9,6 +9,7 @@ C++FILES = \
         CullFace.cpp\
         Depth.cpp\
         Drawable.cpp\
+        EarthSky.cpp\
         Fog.cpp\
         FrontFace.cpp\
         Geode.cpp\

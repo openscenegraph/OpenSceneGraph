@@ -573,9 +573,14 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
             case SoTexture2::BLEND:
                 texEnv->setMode(osg::TexEnv::BLEND);
                 break;
+
+#ifdef COIN_BASIC_H
+// crude COIN detection so that REPLACE is only compiled in when using Coin
+// as the SGI Inventor does do have REPLACE
             case SoTexture2::REPLACE:
                 texEnv->setMode(osg::TexEnv::REPLACE);
                 break;
+#endif
         }
         stateSet->setTextureAttributeAndModes(0,texEnv,osg::StateAttribute::ON);
     }

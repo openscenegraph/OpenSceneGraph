@@ -88,7 +88,7 @@ void SceneView::setDefaults()
     
     // enable lighting by default.
     _globalState->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-    _light->setStateSetModes(*_globalState,osg::StateAttribute::ON);
+    _globalState->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
     
     // enable depth testing by default.
     _globalState->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
@@ -98,10 +98,10 @@ void SceneView::setDefaults()
     alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
     _globalState->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
 
-    // set up an alphafunc by default to speed up blending operations.
-    osg::TexEnv* texenv = osgNew osg::TexEnv;
-    texenv->setMode(osg::TexEnv::MODULATE);
-    _globalState->setAttributeAndModes(texenv, osg::StateAttribute::ON);
+    // set up an texture environment by default to speed up blending operations.
+     osg::TexEnv* texenv = osgNew osg::TexEnv;
+     texenv->setMode(osg::TexEnv::MODULATE);
+     _globalState->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
 
     osg::LightModel* lightmodel = osgNew osg::LightModel;
     lightmodel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));

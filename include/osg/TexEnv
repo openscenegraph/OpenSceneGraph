@@ -25,6 +25,8 @@ class SG_EXPORT TexEnv : public StateAttribute
 
         META_StateAttribute(osg, TexEnv, TEXENV);
 
+        virtual bool isTextureAttribute() const { return true; }
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const
         {

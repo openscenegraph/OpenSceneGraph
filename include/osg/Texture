@@ -11,7 +11,6 @@
 #include <osg/Types>
 #include <osg/Image>
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 #include <osg/ref_ptr>
 #include <osg/Vec4>
 
@@ -103,12 +102,14 @@ class SG_EXPORT Texture : public StateAttribute
 
         META_StateAttribute(osg, Texture,TEXTURE);
         
+        virtual bool isTextureAttribute() const { return true; }
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(_target,value);
+            modes.push_back(_target);
         }
 
         /** Set the texture image. */

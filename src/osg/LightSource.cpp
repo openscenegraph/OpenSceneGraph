@@ -29,7 +29,7 @@ void LightSource::setStateSetModes(StateSet& stateset,const StateAttribute::GLMo
 {
     if (_light.valid())
     {
-        _light->setStateSetModes(stateset,value);
+        stateset.setAssociatedModes(_light.get(),value);
     }
 }
 

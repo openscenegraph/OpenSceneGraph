@@ -7,7 +7,6 @@
 
 #include <osg/Vec4>
 #include <osg/StateAttribute>
-#include <osg/StateSet>
 
 namespace osg {
 
@@ -37,6 +36,8 @@ class SG_EXPORT TexGen : public StateAttribute
 
         META_StateAttribute(osg, TexGen, TEXGEN);
         
+        virtual bool isTextureAttribute() const { return true; }
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const
         {
@@ -54,10 +55,10 @@ class SG_EXPORT TexGen : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            ds.setMode(GL_TEXTURE_GEN_S,value);
-            ds.setMode(GL_TEXTURE_GEN_T,value);
+            modes.push_back(GL_TEXTURE_GEN_S);
+            modes.push_back(GL_TEXTURE_GEN_T);
 
             // Not happy with turning all tex gen paramters on
             // as the OSG currently only supports 2D textures and therefore
@@ -69,9 +70,8 @@ class SG_EXPORT TexGen : public StateAttribute
             // The tidy up is now happening, but will have a think before
             // resolving the below parameters.
 
-            // ds.setMode(GL_TEXTURE_GEN_R,value);
-            // ds.setMode(GL_TEXTURE_GEN_Q,value);
-            
+            modes.push_back(GL_TEXTURE_GEN_R);
+            modes.push_back(GL_TEXTURE_GEN_Q);
         }
 
         virtual void apply(State& state) const;

@@ -138,7 +138,7 @@ class SG_EXPORT Texture3D : public Texture
                 Extensions(const Extensions& rhs);
                 
                 void lowestCommonDenominator(const Extensions& rhs);
-                
+                    
                 void setupGLExtenions();
 
                 void setTexture3DSupported(bool flag) { _isTexture3DSupported=flag; }
@@ -159,6 +159,14 @@ class SG_EXPORT Texture3D : public Texture
                 void setCopyTexSubImage3DProc(void* ptr) { _glCopyTexSubImage3D = ptr; }
                 void glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const;
                 
+                bool isCompressedTexImage3DSupported() const { return _glCompressedTexImage3D!=0; }
+                void setCompressedTexImage3DProc(void* ptr) { _glCompressedTexImage3D = ptr; }
+                void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data) const;
+
+                bool isCompressedTexSubImage3DSupported() const { return _glCompressedTexSubImage3D!=0; }
+                void setCompressedTexSubImage3DProc(void* ptr) { _glCompressedTexSubImage3D = ptr; }
+                void glCompressedTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data ) const;
+
                 void setBuild3DMipmapsProc(void* ptr) { _gluBuild3DMipmaps = ptr; }
                 void gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data) const;
 
@@ -172,6 +180,8 @@ class SG_EXPORT Texture3D : public Texture
 
                 void*   _glTexImage3D;
                 void*   _glTexSubImage3D;
+                void*   _glCompressedTexImage3D;
+                void*   _glCompressedTexSubImage3D;
                 void*   _glCopyTexSubImage3D;
                 void*   _gluBuild3DMipmaps;
 

@@ -20,6 +20,7 @@
 #include <osg/Geometry>
 #include <osg/StateSet>
 #include <osg/Texture2D>
+#include <osg/Texture3D>
 
 #include "dxtctool.h"
 
@@ -404,20 +405,31 @@ void Image::readPixels(int x,int y,int width,int height,
 void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable)
 {
     const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
+    const osg::Texture3D::Extensions* extensions3D = osg::Texture3D::getExtensions(contextID,true);
+
+    
+    GLboolean binding1D, binding2D, binding3D;
+    glGetBooleanv(GL_TEXTURE_BINDING_1D, &binding1D);
+    glGetBooleanv(GL_TEXTURE_BINDING_2D, &binding2D);
+    glGetBooleanv(GL_TEXTURE_BINDING_3D, &binding3D);
+
+    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : 0;
+    
+    if (textureMode==0) return;
 
     GLint internalformat;
     GLint width;
     GLint height;
     GLint depth;
-    
+
     GLint numMipMaps = 0;
     if (copyMipMapsIfAvailable)
     {
         for(;numMipMaps<20;++numMipMaps)
         {
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, numMipMaps, GL_TEXTURE_WIDTH, &width);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, numMipMaps, GL_TEXTURE_HEIGHT, &height);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, numMipMaps, GL_TEXTURE_DEPTH, &depth);
+            glGetTexLevelParameteriv(textureMode, numMipMaps, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(textureMode, numMipMaps, GL_TEXTURE_HEIGHT, &height);
+            glGetTexLevelParameteriv(textureMode, numMipMaps, GL_TEXTURE_DEPTH, &depth);
             if (width==0 || height==0 || depth==0) break;
         }
     }
@@ -429,11 +441,23 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         
     GLint compressed = 0;
 
-    if (extensions->isCompressedTexImage2DSupported())
+    if (textureMode==GL_TEXTURE_2D)
     {
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+        if (extensions->isCompressedTexImage2DSupported())
+        {
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+        }
+    }
+    else if (textureMode==GL_TEXTURE_2D)
+    {
+        if (extensions3D->isCompressedTexImage3DSupported())
+        {
+            glGetTexLevelParameteriv(GL_TEXTURE_3D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+        }
     }
     
+    
+        
     /* if the compression has been successful */
     if (compressed == GL_TRUE)
     {
@@ -447,7 +471,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             if (i>0) mipMapData.push_back(total_size);
             
             GLint compressed_size;
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB, &compressed_size);
+            glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB, &compressed_size);
             
             total_size += compressed_size;
         }
@@ -462,10 +486,10 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
         deallocateData(); // and sets it to NULL.
 
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_DEPTH, &depth);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_WIDTH, &width);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_HEIGHT, &height);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_DEPTH, &depth);
 
         _data = data;
         _s = width;
@@ -480,7 +504,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         
         for(i=0;i<numMipMaps;++i)
         {
-            extensions->glGetCompressedTexImage(GL_TEXTURE_2D, i, getMipmapData(i));
+            extensions->glGetCompressedTexImage(textureMode, i, getMipmapData(i));
         }
 
         ++_modifiedTag;
@@ -496,9 +520,9 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         {
             if (i>0) mipMapData.push_back(total_size);
             
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_WIDTH, &width);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_HEIGHT, &height);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_DEPTH, &depth);
+            glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_HEIGHT, &height);
+            glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_DEPTH, &depth);
             
             unsigned int level_size = computeRowWidthInBytes(width,_pixelFormat,GL_UNSIGNED_BYTE,_packing)*height*depth;
 
@@ -515,10 +539,10 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
         deallocateData(); // and sets it to NULL.
 
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_DEPTH, &depth);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_WIDTH, &width);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_HEIGHT, &height);
+        glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_DEPTH, &depth);
 
         _data = data;
         _s = width;
@@ -533,7 +557,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         
         for(i=0;i<numMipMaps;++i)
         {
-            glGetTexImage(GL_TEXTURE_2D,i,_pixelFormat,_dataType,getMipmapData(i));
+            glGetTexImage(textureMode,i,_pixelFormat,_dataType,getMipmapData(i));
         }
 
         ++_modifiedTag;

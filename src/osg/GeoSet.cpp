@@ -432,10 +432,21 @@ const bool GeoSet::computeBound() const
     int i;
     if( _iaformat == IA_OFF )
     {
-        for( i = 0; i < _numcoords; i++ )
-        {
-            center += _coords[i];
-            _bbox.expandBy(_coords[i]);
+        if( _cindex.valid() )
+	{
+            for( i = 0; i < _numcoords; i++ )
+            {
+                center += _coords[_cindex[i]];
+                _bbox.expandBy(_coords[_cindex[i]]);
+            }
+	}
+	else
+	{
+            for( i = 0; i < _numcoords; i++ )
+            {
+                center += _coords[i];
+                _bbox.expandBy(_coords[i]);
+            }
         }
     }
     else

@@ -1,21 +1,22 @@
 /**********************************************************************
  *
- *	FILE:			ReaderWriterdds.cpp
+ *    FILE:            ReaderWriterdds.cpp
  *
- *	DESCRIPTION:	Class for reading a DDS file into an osg::Image.
+ *    DESCRIPTION:    Class for reading a DDS file into an osg::Image.
  *
- *					Example on reading a DDS file code can be found at:
- *					http://developer.nvidia.com/docs/IO/1327/ATT/
- *					ARB_texture_compression.pdf
- *					Author: Sébastien Dominé, NVIDIA Corporation
+ *                    Example on reading a DDS file code can be found at:
+ *                    http://developer.nvidia.com/docs/IO/1327/ATT/
+ *                    ARB_texture_compression.pdf
+ *                    Author: Sébastien Dominé, NVIDIA Corporation
  *
- *	CREATED BY:		Rune Schmidt Jensen, rsj@uni-dk
+ *    CREATED BY:        Rune Schmidt Jensen, rsj@uni-dk
  *
- *	HISTORY:		Created 31.03.2003
+ *    HISTORY:        Created 31.03.2003
  *
   **********************************************************************/
 
 #include <osg/Texture>
+#include <osg/Notify>
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
@@ -27,44 +28,44 @@
 // sizeof(DWORD) = 4
 typedef struct _DDCOLORKEY
 {
-    unsigned long	dwColorSpaceLowValue;
-	unsigned long	dwColorSpaceHighValue;
+    unsigned long    dwColorSpaceLowValue;
+    unsigned long    dwColorSpaceHighValue;
 } DDCOLORKEY;
 
 
 typedef struct _DDPIXELFORMAT
 {
-    unsigned long	dwSize;
-    unsigned long	dwFlags;
-    unsigned long	dwFourCC;
+    unsigned long    dwSize;
+    unsigned long    dwFlags;
+    unsigned long    dwFourCC;
     union
     {
-	unsigned long	dwRGBBitCount;
-	unsigned long	dwYUVBitCount;
-	unsigned long	dwZBufferBitDepth;
-	unsigned long	dwAlphaBitDepth;
+        unsigned long    dwRGBBitCount;
+        unsigned long    dwYUVBitCount;
+        unsigned long    dwZBufferBitDepth;
+        unsigned long    dwAlphaBitDepth;
     };
     union
     {
-	unsigned long	dwRBitMask;
-	unsigned long	dwYBitMask;
+        unsigned long    dwRBitMask;
+        unsigned long    dwYBitMask;
     };
     union
     {
-	unsigned long	dwGBitMask;
-	unsigned long	dwUBitMask;
+        unsigned long    dwGBitMask;
+        unsigned long    dwUBitMask;
     };
     union
     {
-	unsigned long	dwBBitMask;
-	unsigned long	dwVBitMask;
+        unsigned long    dwBBitMask;
+        unsigned long    dwVBitMask;
     };
     union
     {
-	unsigned long	dwRGBAlphaBitMask;
-	unsigned long	dwYUVAlphaBitMask;
-	unsigned long	dwRGBZBitMask;
-	unsigned long	dwYUVZBitMask;
+        unsigned long    dwRGBAlphaBitMask;
+        unsigned long    dwYUVAlphaBitMask;
+        unsigned long    dwRGBZBitMask;
+        unsigned long    dwYUVZBitMask;
     };
 } DDPIXELFORMAT;
 
@@ -80,15 +81,16 @@ typedef struct _DDSCAPS2
     };
 } DDSCAPS2;
 
-typedef struct _DDSURFACEDESC2 {
+typedef struct _DDSURFACEDESC2 
+{
     unsigned long         dwSize;
     unsigned long         dwFlags;
     unsigned long         dwHeight;
     unsigned long         dwWidth;
     union
     {
-        long      lPitch;
-        unsigned long      dwLinearSize;
+        long              lPitch;
+        unsigned long     dwLinearSize;
     };
     unsigned long         dwBackBufferCount;
     union
@@ -123,81 +125,105 @@ typedef struct _DDSURFACEDESC2 {
 #define FOURCC_DXT4  (MAKEFOURCC('D','X','T','4'))
 #define FOURCC_DXT5  (MAKEFOURCC('D','X','T','5'))
 
-osg::Image* ReadDDSFile(const char *filename){
-	osg::Image* osgImage = new osg::Image();	
+osg::Image* ReadDDSFile(const char *filename)
+{
+    osg::Image* osgImage = new osg::Image();    
 
-	DDSURFACEDESC2 ddsd;
+    DDSURFACEDESC2 ddsd;
 
-	char filecode[4];
-	FILE *fp;
+    char filecode[4];
+    FILE *fp;
 
-	// Open file.
-	fp = fopen(filename, "rb");
-	if (fp == NULL)
-		return NULL;
+    // Open file.
+    fp = fopen(filename, "rb");
+    if (fp == NULL)
+        return NULL;
 
-	// Verify that this is a DDS file.
-	fread(filecode, 1, 4, fp);
-	if (strncmp(filecode, "DDS ", 4) != 0) {
-		fclose(fp);
-		return NULL;
-	}
+    // Verify that this is a DDS file.
+    fread(filecode, 1, 4, fp);
+    if (strncmp(filecode, "DDS ", 4) != 0) {
+        fclose(fp);
+        return NULL;
+    }
 
-	// Get the surface desc.
-	fread(&ddsd, sizeof(ddsd), 1, fp);
+    // Get the surface desc.
+    fread(&ddsd, sizeof(ddsd), 1, fp);
 
-	// Read image data.
-	unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * 2 : ddsd.dwLinearSize;
-	unsigned char* imageData = (unsigned char*) malloc(size * sizeof(unsigned char));
-	fread(imageData, 1, size, fp);
-	// Close the file.
-	fclose(fp);
+    // Read image data.
+    unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * 2 : ddsd.dwLinearSize;
+    unsigned char* imageData = new unsigned char [size];
+    fread(imageData, 1, size, fp);
+    // Close the file.
+    fclose(fp);
 
-	// Retreive image properties.
-	int s = ddsd.dwWidth;
-	int t = ddsd.dwHeight;
-    int r = ddsd.dwMipMapCount>1?ddsd.dwMipMapCount:0;
-	unsigned int dataType = GL_UNSIGNED_BYTE;
-	unsigned int pixelFormat;
-	unsigned int internalFormat;
-	switch(ddsd.ddpfPixelFormat.dwFourCC){
-		case FOURCC_DXT1:
-			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-			pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-			break;
-		case FOURCC_DXT3:
-			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			break;
-		case FOURCC_DXT5:
-			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			break;
-		default:
-			free(imageData);
-			return NULL;
-	}
+    // Retreive image properties.
+    int s = ddsd.dwWidth;
+    int t = ddsd.dwHeight;
+    int r = 1; // we're not a 3d texture...
+    unsigned int dataType = GL_UNSIGNED_BYTE;
+    unsigned int pixelFormat;
+    unsigned int internalFormat;
+    switch(ddsd.ddpfPixelFormat.dwFourCC)
+    {
+        case FOURCC_DXT1:
+            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            break;
+        case FOURCC_DXT3:
+            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            break;
+        case FOURCC_DXT5:
+            internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            break;
+        default:
+            delete [] imageData;
+            return NULL;
+    }
+    
+    if (ddsd.dwMipMapCount>1)
+    {
+        osg::notify(osg::WARN)<<"Warning: Mipmaps in dds file are ignored."<<std::endl;
 
-	// Set image data and properties.
-	osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+//      this is code from the txp plugin, so won't compile here, but it'll be useful guide
+//      to implementing the real mip mapping code.
+//         // now set mipmap data (offsets into image raw data)
+//         Image::MipmapDataType mipmaps;
+//         // number of offsets in osg is one less than num_mipmaps
+//         // because it's assumed that first offset iz 0 
+//         mipmaps.resize(num_mipmaps-1);
+//         for( int k = 1 ; k < num_mipmaps;k++ )
+//         {
+//             mipmaps[k-1] = tmp_tex->MipLevelOffset(k);
+//         }
+//         image->setMipmapData(mipmaps);
 
-	// Return Image.
-	return osgImage;
+    }
+
+    // Set image data and properties.
+    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+
+    // Return Image.
+    return osgImage;
 }
 
 class ReaderWriterDDS : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() { 
-			return "DDS Image Reader"; 
-		}
+        virtual const char* className()
+        { 
+            return "DDS Image Reader"; 
+        }
 
-        virtual bool acceptsExtension(const std::string& extension) { 
-			return osgDB::equalCaseInsensitive(extension,"dds"); 
-		}
+        virtual bool acceptsExtension(const std::string& extension)
+        { 
+            return osgDB::equalCaseInsensitive(extension,"dds"); 
+        }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*) {
-			osg::Image* osgImage = ReadDDSFile(fileName.c_str());
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        {
+            osg::Image* osgImage = ReadDDSFile(fileName.c_str());
             if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
             return osgImage;
 

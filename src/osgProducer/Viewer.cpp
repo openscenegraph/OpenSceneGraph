@@ -488,6 +488,23 @@ void Viewer::update()
     osgProducer::KeyboardMouseCallback::EventQueue queue;
     if (_kbmcb.valid()) _kbmcb->getEventQueue(queue);
 
+    if (getKeySwitchMatrixManipulator() && !_coordinateSystemNodePath.empty())
+    {
+        osg::Matrixd coordinateFrame;
+        
+        osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(_coordinateSystemNodePath.back());
+        if (csn)
+        {
+            coordinateFrame = csn->computeLocalCoordinateFrame(_position[0],_position[1],_position[2])* osg::computeLocalToWorld(_coordinateSystemNodePath);
+        }
+        else
+        {
+            coordinateFrame =  osg::computeLocalToWorld(_coordinateSystemNodePath);
+        }
+        
+        getKeySwitchMatrixManipulator()->setCoordinateFrame(coordinateFrame);
+    }
+    
     // create an event to signal the new frame.
     osg::ref_ptr<osgProducer::EventAdapter> frame_event = new osgProducer::EventAdapter;
     frame_event->adaptFrame(_frameStamp->getReferenceTime());
@@ -512,7 +529,6 @@ void Viewer::update()
         // update the scene graph by remove expired subgraphs and merge newly loaded subgraphs
         osgDB::Registry::instance()->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
     }    
-    
     
     if (_updateVisitor.valid())
     {

@@ -79,7 +79,7 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         {
             osg::NodeCallback* callback = node.getUpdateCallback();
             if (callback) (*callback)(&node,this);
-            else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverseGeode(node);
+            /*else if (node.getNumChildrenRequiringUpdateTraversal()>0)*/ traverseGeode(node);
         }
         
         inline void traverseGeode(osg::Geode& geode)

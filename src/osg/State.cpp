@@ -28,7 +28,7 @@ State::State()
     _modelView = _identity;
 
     _abortRenderingPtr = false;    
-    _reportGLErrors = true;
+    _reportGLErrors = false;
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;

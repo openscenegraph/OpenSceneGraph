@@ -42,7 +42,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 //         bool result = false;
 //         do
 //         {
-//             cout << "************ RemoveLowestStaticTransformsVisitor "<<i<<std::endl;
+//             std::cout << "************ RemoveLowestStaticTransformsVisitor "<<i<<std::endl;
 //             RemoveLowestStaticTransformsVisitor fstv;
 //             node->accept(fstv);
 //             result = fstv.removeTransforms();
@@ -1339,14 +1339,12 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                     }
                     if (combine)
                     {
-                        cout << "found compatible"<<endl;
                         primitives.erase(primitives.begin()+primNo+1);
                     }
 
                     if (!combine)
                     {
                         primNo++;
-                        cout << "no compatible"<<endl;
                     }
                 }
             }

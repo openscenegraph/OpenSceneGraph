@@ -1223,6 +1223,8 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         ReaderWriter* rw = getReaderWriterForExtension("net");
         if (rw)
         {
+            std::string& filename = const_cast<std::string&>(readFunctor._filename);
+            filename = serverName+':'+serverFile;
             return readFunctor.doRead(*rw);
         }
         else

@@ -11,7 +11,6 @@ CXXFILES =\
 	WriteFile.cpp\
 	Input.cpp\
 	Output.cpp\
-	ParameterOutput.cpp\
 	Field.cpp\
 	FieldReader.cpp\
 	FieldReaderIterator.cpp\

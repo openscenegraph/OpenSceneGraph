@@ -129,10 +129,6 @@ SOURCE=..\..\Src\osgDB\Output.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Src\osgDB\ParameterOutput.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Src\osgDB\ReadFile.cpp
 # End Source File
 # Begin Source File

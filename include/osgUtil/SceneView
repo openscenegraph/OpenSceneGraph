@@ -131,15 +131,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         osg::StateSet* getLocalStateSet() { return _localStateSet.get(); }
         const osg::StateSet* getLocalStateSet() const { return _localStateSet.get(); }
 
-#if 1
         typedef Options LightingMode;
-#else
-        enum LightingMode {
-            HEADLIGHT, // default
-            SKY_LIGHT,
-            NO_SCENEVIEW_LIGHT
-        };
-#endif
+
         void setLightingMode(LightingMode mode) { _lightingMode=mode; }
         LightingMode getLightingMode() const { return _lightingMode; }
 

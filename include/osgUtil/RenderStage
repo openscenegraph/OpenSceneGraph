@@ -133,8 +133,12 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** extract stats for current draw list. */
         bool getStats(Statistics* primStats); 
         
-    public:
+#ifndef USE_DEPRECATED_API
+    protected:
+#endif
         
+        virtual ~RenderStage();
+
         typedef std::vector< osg::ref_ptr<RenderStage> > DependencyList;
 
         bool                                _stageDrawnThisFrame;
@@ -152,9 +156,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         mutable osg::ref_ptr<RenderStageLighting>   _renderStageLighting;
         
-    protected:
     
-        virtual ~RenderStage();
 
 };
 

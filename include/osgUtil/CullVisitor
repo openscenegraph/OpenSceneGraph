@@ -107,7 +107,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         {
             if (_currentRenderGraph->_stateset->useRenderBinDetails())
             {
-                _currentRenderBin = _currentRenderBin->_parent;
+                _currentRenderBin = _currentRenderBin->getParent();
             }
             _currentRenderGraph = _currentRenderGraph->_parent;
         }
@@ -351,13 +351,13 @@ inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::RefMat
 /** Add an attribute which is positioned related to the modelview matrix.*/
 inline void CullVisitor::addPositionedAttribute(osg::RefMatrix* matrix,const osg::StateAttribute* attr)
 {
-    _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
+    _currentRenderBin->getStage()->addPositionedAttribute(matrix,attr);
 }
 
 /** Add an attribute which is positioned related to the modelview matrix.*/
 inline void CullVisitor::addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix,const osg::StateAttribute* attr)
 {
-    _currentRenderBin->_stage->addPositionedTextureAttribute(textureUnit,matrix,attr);
+    _currentRenderBin->getStage()->addPositionedTextureAttribute(textureUnit,matrix,attr);
 }
 
 inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth)

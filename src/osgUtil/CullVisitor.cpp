@@ -1202,7 +1202,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // set up lighting.
     // currently ignore lights in the scene graph itself..
     // will do later.
-    RenderStage* previous_stage = _currentRenderBin->_stage;
+    RenderStage* previous_stage = _currentRenderBin->getStage();
 
     // set up the background color and clear mask.
     osg::Vec4 clear_color = previous_stage->getClearColor();
@@ -1330,7 +1330,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
 
 
-    if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
+    if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
     {
         // getting to this point means that all the subgraph has been
         // culled by small feature culling or is beyond LOD ranges.
@@ -1475,7 +1475,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     // and the render to texture stage to the current stages
     // dependancy list.
-    _currentRenderBin->_stage->addToDependencyList(rtts.get());
+    _currentRenderBin->getStage()->addToDependencyList(rtts.get());
 
     // attach texture to the RenderToTextureStage.
     rtts->setTexture(texture);

@@ -74,12 +74,23 @@ void NodeTrackerManipulator::setNode(osg::Node* node)
 
 void NodeTrackerManipulator::setTrackNode(osg::Node* node)
 {
+    if (!node)
+    {
+        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
+        return;
+    }
+
     CollectParentPaths cpp;
     node->accept(cpp);
 
     if (!cpp._nodePaths.empty())
     {
+        osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*): Path set"<<std::endl;
         _trackNodePath = cpp._nodePaths[0];
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
     }
 }
 

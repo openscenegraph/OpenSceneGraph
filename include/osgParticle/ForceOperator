@@ -87,7 +87,7 @@ namespace osgParticle
     
     inline void ForceOperator::beginOperate(Program *prg)
     {
-        if (prg->getReferenceFrame() == ModularProgram::RELATIVE) {
+        if (prg->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
             xf_force_ = prg->rotateLocalToWorld(force_);
         } else {
             xf_force_ = force_;

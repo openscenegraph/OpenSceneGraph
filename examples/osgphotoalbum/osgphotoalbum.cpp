@@ -80,7 +80,7 @@ public:
 
     virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const 
     {
-        if (_referenceFrame==RELATIVE)
+        if (_referenceFrame==RELATIVE_RF)
         {
             matrix.preMult(getMatrix());
         }
@@ -96,7 +96,7 @@ public:
     {
         const osg::Matrix& inverse = getInverseMatrix();
 
-        if (_referenceFrame==RELATIVE)
+        if (_referenceFrame==RELATIVE_RF)
         {
             matrix.postMult(inverse);
         }

@@ -29,7 +29,7 @@ MatrixTransform::MatrixTransform(const MatrixTransform& transform,const CopyOp& 
 
 MatrixTransform::MatrixTransform(const Matrix& mat )
 {
-    _referenceFrame = RELATIVE;
+    _referenceFrame = RELATIVE_RF;
 
     _matrix = mat;
     _inverseDirty = false;
@@ -42,7 +42,7 @@ MatrixTransform::~MatrixTransform()
 
 bool MatrixTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    if (_referenceFrame==RELATIVE)
+    if (_referenceFrame==RELATIVE_RF)
     {
         matrix.preMult(_matrix);
     }
@@ -57,7 +57,7 @@ bool MatrixTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) con
 {
     const Matrix& inverse = getInverseMatrix();
 
-    if (_referenceFrame==RELATIVE)
+    if (_referenceFrame==RELATIVE_RF)
     {
         matrix.postMult(inverse);
     }

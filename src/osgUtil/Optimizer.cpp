@@ -625,7 +625,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
                 if (transform)
                 {
                     if (transform->getDataVariance()==osg::Transform::DYNAMIC) _moreThanOneMatrixRequired=true;
-                    else if (transform->getReferenceFrame()==osg::Transform::RELATIVE) _moreThanOneMatrixRequired=true;
+                    else if (transform->getReferenceFrame()==osg::Transform::RELATIVE_RF) _moreThanOneMatrixRequired=true;
                     else
                     {
                         if (_transformSet.empty()) transform->computeLocalToWorldMatrix(_firstMatrix,0);

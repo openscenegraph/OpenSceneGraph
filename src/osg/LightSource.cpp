@@ -16,7 +16,7 @@ using namespace osg;
 
 LightSource::LightSource():
     _value(StateAttribute::ON),
-    _referenceFrame(RELATIVE)
+    _referenceFrame(RELATIVE_RF)
 {
     // switch off culling of light source nodes by default.
     setCullingActive(false);
@@ -33,7 +33,7 @@ LightSource::~LightSource()
 void LightSource::setReferenceFrame(ReferenceFrame rf)
 {
     _referenceFrame = rf;
-    setCullingActive(_referenceFrame==RELATIVE);
+    setCullingActive(_referenceFrame==RELATIVE_RF);
 }
 
 void LightSource::setLight(Light* light)
@@ -62,7 +62,7 @@ bool LightSource::computeBound() const
 {
     Group::computeBound();
     
-    if (_light.valid() && _referenceFrame==RELATIVE)
+    if (_light.valid() && _referenceFrame==RELATIVE_RF)
     {
         const Vec4& pos = _light->getPosition();
         if (pos[3]!=0.0f)

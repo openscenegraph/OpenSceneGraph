@@ -89,19 +89,19 @@ class SG_EXPORT Transform : public Group
 
         enum ReferenceFrame
         {
-            RELATIVE,
-            ABSOLUTE
+            RELATIVE_RF,
+            ABSOLUTE_RF
 #ifdef USE_DEPRECATED_API
             ,
-            RELATIVE_TO_PARENTS=RELATIVE,
-            RELATIVE_TO_ABSOLUTE=ABSOLUTE,
+            RELATIVE_TO_PARENTS=RELATIVE_RF,
+            RELATIVE_TO_ABSOLUTE=ABSOLUTE_RF,
 #endif
         };
         
         /** Set the transform's ReferenceFrame, either to be relative to its
           * parent reference frame, or relative to an absolute coordinate
-          * frame. RELATIVE is the default.
-          * Note: Setting the ReferenceFrame to be RELATIVE_TO_ABSOLUTE will
+          * frame. RELATIVE_RF is the default.
+          * Note: Setting the ReferenceFrame to be ABSOLUTE_RF will
           * also set the CullingActive flag on the transform, and hence all
           * of its parents, to false, thereby disabling culling of it and
           * all its parents.  This is neccessary to prevent inappropriate
@@ -116,7 +116,7 @@ class SG_EXPORT Transform : public Group
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            if (_referenceFrame==RELATIVE)
+            if (_referenceFrame==RELATIVE_RF)
             {
                 return false;
             }
@@ -129,7 +129,7 @@ class SG_EXPORT Transform : public Group
         
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
-            if (_referenceFrame==RELATIVE)
+            if (_referenceFrame==RELATIVE_RF)
             {
                 return false;
             }

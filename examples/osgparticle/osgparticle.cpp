@@ -47,10 +47,10 @@ public:
 	// operators on the particle set via the operate() method.	
 	void beginOperate(osgParticle::Program *prg)
 	{
-		// we have to check whether the reference frame is relative to parents
+		// we have to check whether the reference frame is RELATIVE_RF to parents
 		// or it's absolute; in the first case, we must transform the vectors
 		// from local to world space.
-		if (prg->getReferenceFrame() == osgParticle::Program::RELATIVE) {
+		if (prg->getReferenceFrame() == osgParticle::Program::RELATIVE_RF) {
 			// transform the center point (full transformation)
 			xf_center_ = prg->transformLocalToWorld(center_);
 			// transform the axis vector (only rotation and scale)

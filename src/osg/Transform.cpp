@@ -98,7 +98,7 @@ Matrix osg::computeEyeToLocal(const Matrix& modelview,const NodePath& nodePath)
 
 Transform::Transform()
 {
-    _referenceFrame = RELATIVE;
+    _referenceFrame = RELATIVE_RF;
 }
 
 Transform::Transform(const Transform& transform,const CopyOp& copyop):
@@ -118,7 +118,7 @@ void Transform::setReferenceFrame(ReferenceFrame rf)
     _referenceFrame = rf;
     
     // switch off culling if transform is absolute.
-    if (_referenceFrame==RELATIVE) setCullingActive(false);
+    if (_referenceFrame==RELATIVE_RF) setCullingActive(false);
     else setCullingActive(true);
 }
 

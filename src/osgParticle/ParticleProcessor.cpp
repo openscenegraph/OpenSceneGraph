@@ -13,7 +13,7 @@ using namespace osg;
 
 osgParticle::ParticleProcessor::ParticleProcessor()
 :    osg::Node(),
-    rf_(RELATIVE),
+    rf_(RELATIVE_RF),
     enabled_(true),
     t0_(-1),
     ps_(0),

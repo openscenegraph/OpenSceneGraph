@@ -140,7 +140,8 @@ class ConvertFromFLT
     private:
 
         int addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec);
-        int addVertex(GeoSetBuilder* pBuilder, Record* rec);
+        int addVertex(DynGeoSet* dgset, Record* rec);
+        int addVertex(GeoSetBuilder* pBuilder, Record* rec) {return addVertex( pBuilder->getDynGeoSet(), rec);} ;
         Record* getVertexFromPool(int nOffset);
         void regisiterVertex(int nOffset, Record* pRec);
 

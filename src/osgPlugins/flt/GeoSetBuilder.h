@@ -43,9 +43,9 @@ class DynGeoSet : public osg::GeoSet
 {
     public:
 
-		DynGeoSet();
+        DynGeoSet();
         
-		virtual osg::Object* clone() const { return new DynGeoSet(); }
+        virtual osg::Object* clone() const { return new DynGeoSet(); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const DynGeoSet*>(obj)!=NULL; }
         virtual const char* className() const { return "GeoSet"; }
 
@@ -114,15 +114,15 @@ class DynGeoSet : public osg::GeoSet
 class GeoSetBuilder
 {
     public:
-
-        GeoSetBuilder(osg::Geode* geode);
+        GeoSetBuilder(osg::Geode* geode = NULL);
         virtual ~GeoSetBuilder() {}
 
-        bool addPrimitive();
-        osg::Geode* createOsgGeoSets();
+        bool addPrimitive( bool dontMerge = false);
+        osg::Geode* createOsgGeoSets(osg::Geode* geode = NULL);
 
         inline DynGeoSet* getDynGeoSet() { return _dynGeoSet.get(); }
         inline const DynGeoSet* getDynGeoSet() const { return _dynGeoSet.get(); }
+        inline bool empty()    { return _dynGeoSetList.empty(); } ;
 
     protected:
 

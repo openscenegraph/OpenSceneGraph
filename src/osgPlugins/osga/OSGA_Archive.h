@@ -151,7 +151,7 @@ class OSGA_Archive : public osgDB::Archive
         /** Functor used in internal implementations.*/
         struct ReadFunctor
         {
-            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
+            ReadFunctor(const std::string& filename, const osgDB::ReaderWriter::Options* options):
                 _filename(filename),
                 _options(options) {}
 
@@ -159,7 +159,7 @@ class OSGA_Archive : public osgDB::Archive
             virtual osgDB::ReaderWriter::ReadResult doRead(osgDB::ReaderWriter& rw, std::istream& input) const = 0;
 
             std::string _filename;
-            const ReaderWriter::Options* _options;
+            const osgDB::ReaderWriter::Options* _options;
         };
         
         struct ReadObjectFunctor;
@@ -170,7 +170,7 @@ class OSGA_Archive : public osgDB::Archive
         /** Functor used in internal implementations.*/
         struct WriteFunctor
         {
-            WriteFunctor(const std::string& filename, const ReaderWriter::Options* options):
+            WriteFunctor(const std::string& filename, const osgDB::ReaderWriter::Options* options):
                 _filename(filename),
                 _options(options) {}
 
@@ -178,7 +178,7 @@ class OSGA_Archive : public osgDB::Archive
             virtual osgDB::ReaderWriter::WriteResult doWrite(osgDB::ReaderWriter& rw, std::ostream& output) const = 0;
 
             std::string _filename;
-            const ReaderWriter::Options* _options;
+            const osgDB::ReaderWriter::Options* _options;
         };
 
         struct WriteObjectFunctor;
@@ -187,8 +187,8 @@ class OSGA_Archive : public osgDB::Archive
         struct WriteNodeFunctor;
 
 
-        ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
-        ReaderWriter::WriteResult write(const WriteFunctor& writeFunctor);
+        osgDB::ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
+        osgDB::ReaderWriter::WriteResult write(const WriteFunctor& writeFunctor);
     
         typedef std::list< osg::ref_ptr<IndexBlock> >   IndexBlockList;
         

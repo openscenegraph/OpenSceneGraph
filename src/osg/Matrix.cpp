@@ -15,6 +15,8 @@
 #include <osg/Notify>
 #include <osg/Math>
 
+#include <osg/GL>
+
 #include <stdlib.h>
 
 using namespace osg;
@@ -35,22 +37,22 @@ using namespace osg;
 
 
 
-Matrix::Matrix()
+Matrixf::Matrixf()
 {
     makeIdentity();
 }
 
-Matrix::Matrix( const Matrix& other)
+Matrixf::Matrixf( const Matrixf& other)
 {
     set( (const float *) other._mat );
 }
 
-Matrix::Matrix( const float * const def )
+Matrixf::Matrixf( const float * const def )
 {    
     set( def ); 
 }
 
-Matrix::Matrix( float a00, float a01, float a02, float a03,
+Matrixf::Matrixf( float a00, float a01, float a02, float a03,
                 float a10, float a11, float a12, float a13,
                 float a20, float a21, float a22, float a23,
                 float a30, float a31, float a32, float a33)
@@ -61,7 +63,7 @@ Matrix::Matrix( float a00, float a01, float a02, float a03,
     SET_ROW(3, a30, a31, a32, a33 )
 }
 
-void Matrix::set( float a00, float a01, float a02, float a03,
+void Matrixf::set( float a00, float a01, float a02, float a03,
                   float a10, float a11, float a12, float a13,
                   float a20, float a21, float a22, float a23,
                   float a30, float a31, float a32, float a33)
@@ -72,7 +74,7 @@ void Matrix::set( float a00, float a01, float a02, float a03,
     SET_ROW(3, a30, a31, a32, a33 )
 }
 
-void Matrix::setTrans( float tx, float ty, float tz )
+void Matrixf::setTrans( float tx, float ty, float tz )
 {
     _mat[3][0] = tx;
     _mat[3][1] = ty;
@@ -80,14 +82,14 @@ void Matrix::setTrans( float tx, float ty, float tz )
 }
 
 
-void Matrix::setTrans( const Vec3& v )
+void Matrixf::setTrans( const Vec3& v )
 {
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
     _mat[3][2] = v[2];
 }
 
-void Matrix::makeIdentity()
+void Matrixf::makeIdentity()
 {
     SET_ROW(0,    1, 0, 0, 0 )
     SET_ROW(1,    0, 1, 0, 0 )
@@ -95,12 +97,12 @@ void Matrix::makeIdentity()
     SET_ROW(3,    0, 0, 0, 1 )
 }
 
-void Matrix::makeScale( const Vec3& v )
+void Matrixf::makeScale( const Vec3& v )
 {
     makeScale(v[0], v[1], v[2] );
 }
 
-void Matrix::makeScale( float x, float y, float z )
+void Matrixf::makeScale( float x, float y, float z )
 {
     SET_ROW(0,    x, 0, 0, 0 )
     SET_ROW(1,    0, y, 0, 0 )
@@ -108,12 +110,12 @@ void Matrix::makeScale( float x, float y, float z )
     SET_ROW(3,    0, 0, 0, 1 )
 }
 
-void Matrix::makeTranslate( const Vec3& v )
+void Matrixf::makeTranslate( const Vec3& v )
 {
     makeTranslate( v[0], v[1], v[2] );
 }
 
-void Matrix::makeTranslate( float x, float y, float z )
+void Matrixf::makeTranslate( float x, float y, float z )
 {
     SET_ROW(0,    1, 0, 0, 0 )
     SET_ROW(1,    0, 1, 0, 0 )
@@ -121,33 +123,33 @@ void Matrix::makeTranslate( float x, float y, float z )
     SET_ROW(3,    x, y, z, 1 )
 }
 
-void Matrix::makeRotate( const Vec3& from, const Vec3& to )
+void Matrixf::makeRotate( const Vec3& from, const Vec3& to )
 {
     Quat quat;
     quat.makeRotate(from,to);
     quat.get(*this);
 }
 
-void Matrix::makeRotate( float angle, const Vec3& axis )
+void Matrixf::makeRotate( float angle, const Vec3& axis )
 {
     Quat quat;
     quat.makeRotate( angle, axis);
     quat.get(*this);
 }
 
-void Matrix::makeRotate( float angle, float x, float y, float z ) 
+void Matrixf::makeRotate( float angle, float x, float y, float z ) 
 {
     Quat quat;
     quat.makeRotate( angle, x, y, z);
     quat.get(*this);
 }
 
-void Matrix::makeRotate( const Quat& q )
+void Matrixf::makeRotate( const Quat& q )
 {
     q.get(*this);    
 }
 
-void Matrix::makeRotate( float angle1, const Vec3& axis1, 
+void Matrixf::makeRotate( float angle1, const Vec3& axis1, 
                          float angle2, const Vec3& axis2,
                          float angle3, const Vec3& axis3)
 {
@@ -158,7 +160,7 @@ void Matrix::makeRotate( float angle1, const Vec3& axis1,
     quat.get(*this);
 }
 
-void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
+void Matrixf::mult( const Matrix& lhs, const Matrix& rhs )
 {   
     if (&lhs==this)
     {
@@ -191,7 +193,7 @@ void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
     _mat[3][3] = INNER_PRODUCT(lhs, rhs, 3, 3);
 }
 
-void Matrix::preMult( const Matrix& other )
+void Matrixf::preMult( const Matrix& other )
 {
     // brute force method requiring a copy
     //Matrix tmp(other* *this);
@@ -212,7 +214,7 @@ void Matrix::preMult( const Matrix& other )
 
 }
 
-void Matrix::postMult( const Matrix& other )
+void Matrixf::postMult( const Matrix& other )
 {
     // brute force method requiring a copy
     //Matrix tmp(*this * other);
@@ -243,7 +245,7 @@ inline T SGL_ABS(T a)
 #define SGL_SWAP(a,b,temp) ((temp)=(a),(a)=(b),(b)=(temp))
 #endif
 
-bool Matrix::invert( const Matrix& mat )
+bool Matrixf::invert( const Matrix& mat )
 {
     if (&mat==this) {
        Matrix tm(mat);
@@ -312,7 +314,7 @@ bool Matrix::invert( const Matrix& mat )
     return true;
 }
 
-void Matrix::makeOrtho(double left, double right,
+void Matrixf::makeOrtho(double left, double right,
                        double bottom, double top,
                        double zNear, double zFar)
 {
@@ -326,7 +328,7 @@ void Matrix::makeOrtho(double left, double right,
     SET_ROW(3,                tx,                ty,                 tz, 1.0f )
 }
 
-void Matrix::getOrtho(double& left, double& right,
+void Matrixf::getOrtho(double& left, double& right,
                       double& bottom, double& top,
                       double& zNear, double& zFar)
 {
@@ -341,7 +343,7 @@ void Matrix::getOrtho(double& left, double& right,
 }            
 
 
-void Matrix::makeFrustum(double left, double right,
+void Matrixf::makeFrustum(double left, double right,
                          double bottom, double top,
                          double zNear, double zFar)
 {
@@ -356,7 +358,7 @@ void Matrix::makeFrustum(double left, double right,
     SET_ROW(3,                    0.0f,                   0.0f,     D,  0.0f )
 }
 
-void Matrix::getFrustum(double& left, double& right,
+void Matrixf::getFrustum(double& left, double& right,
                         double& bottom, double& top,
                         double& zNear, double& zFar)
 {
@@ -371,7 +373,7 @@ void Matrix::getFrustum(double& left, double& right,
 }                 
 
 
-void Matrix::makePerspective(double fovy,double aspectRatio,
+void Matrixf::makePerspective(double fovy,double aspectRatio,
                              double zNear, double zFar)
 {
     // calculate the appropriate left, right etc.
@@ -384,7 +386,7 @@ void Matrix::makePerspective(double fovy,double aspectRatio,
 }
 
 
-void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+void Matrixf::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
 {
     Vec3 f(center-eye);
     f.normalize();
@@ -399,10 +401,10 @@ void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
         s[2],     u[2],     -f[2],     0.0f,
         0.0f,     0.0f,     0.0f,      1.0f);
 
-    preMult(Matrix::translate(-eye));
+    preMult(Matrixf::translate(-eye));
 }
 
-void Matrix::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+void Matrixf::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
 {
     Matrix inv;
     inv.invert(*this);
@@ -413,4 +415,13 @@ void Matrix::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
     center = eye + center*lookDistance;
 }
 
+void Matrixf::glLoadMatrix() const
+{
+    glLoadMatrixf((GLfloat*)_mat);
+}
+
+void Matrixf::glMultMatrix() const
+{
+    glMultMatrixf((GLfloat*)_mat);
+}
 #undef SET_ROW

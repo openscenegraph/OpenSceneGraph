@@ -27,26 +27,35 @@ namespace osg {
 
 class Quat;
 
-class SG_EXPORT Matrix
+class SG_EXPORT Matrixf
 {
 
     public:
 
-        Matrix();
-        Matrix( const Matrix& other);
-        explicit Matrix( float const * const def );
-        Matrix( float a00, float a01, float a02, float a03,
+        Matrixf();
+        
+        Matrixf( const Matrixf& other);
+        
+        explicit Matrixf( float const * const def );
+        
+        explicit Matrixf(double const * const ptr )
+        {
+            for(int i=0;i<16;++i)
+                ((float*)_mat)[i] = ptr[i];
+        }
+
+        Matrixf( float a00, float a01, float a02, float a03,
             float a10, float a11, float a12, float a13,
             float a20, float a21, float a22, float a23,
             float a30, float a31, float a32, float a33);
 
-        ~Matrix() {}
+        ~Matrixf() {}
 
-        int compare(const Matrix& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
+        int compare(const Matrixf& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
 
-        bool operator < (const Matrix& m) const { return compare(m)<0; }
-        bool operator == (const Matrix& m) const { return compare(m)==0; }
-        bool operator != (const Matrix& m) const { return compare(m)!=0; }
+        bool operator < (const Matrixf& m) const { return compare(m)<0; }
+        bool operator == (const Matrixf& m) const { return compare(m)==0; }
+        bool operator != (const Matrixf& m) const { return compare(m)!=0; }
 
         inline float& operator()(int row, int col) { return _mat[row][col]; }
         inline float operator()(int row, int col) const { return _mat[row][col]; }
@@ -59,14 +68,14 @@ class SG_EXPORT Matrix
 
 
 
-        inline Matrix& operator = (const Matrix& other)
+        inline Matrixf& operator = (const Matrixf& other)
         {
             if( &other == this ) return *this;
             std::copy((float*)other._mat,(float*)other._mat+16,(float*)(_mat));
             return *this;
         }
         
-        inline void set(const Matrix& other)
+        inline void set(const Matrixf& other)
         {
             std::copy((float*)other._mat,(float*)other._mat+16,(float*)(_mat));
         }
@@ -82,7 +91,7 @@ class SG_EXPORT Matrix
                   float a30, float a31, float a32, float a33);
                   
         float * ptr() { return (float *)_mat; }
-        float * ptr() const { return (float *)_mat; }
+        const float * ptr() const { return (const float *)_mat; }
 
         void makeIdentity();
         
@@ -143,44 +152,44 @@ class SG_EXPORT Matrix
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
         void getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance=1.0f);
 
-        bool invert( const Matrix& );
+        bool invert( const Matrixf& );
 
         //basic utility functions to create new matrices
-	inline static Matrix identity( void );
-        inline static Matrix scale( const Vec3& sv);
-        inline static Matrix scale( float sx, float sy, float sz);
-        inline static Matrix translate( const Vec3& dv);
-        inline static Matrix translate( float x, float y, float z);
-        inline static Matrix rotate( const Vec3& from, const Vec3& to);
-        inline static Matrix rotate( float angle, float x, float y, float z);
-        inline static Matrix rotate( float angle, const Vec3& axis);
-        inline static Matrix rotate( float angle1, const Vec3& axis1, 
+	inline static Matrixf identity( void );
+        inline static Matrixf scale( const Vec3& sv);
+        inline static Matrixf scale( float sx, float sy, float sz);
+        inline static Matrixf translate( const Vec3& dv);
+        inline static Matrixf translate( float x, float y, float z);
+        inline static Matrixf rotate( const Vec3& from, const Vec3& to);
+        inline static Matrixf rotate( float angle, float x, float y, float z);
+        inline static Matrixf rotate( float angle, const Vec3& axis);
+        inline static Matrixf rotate( float angle1, const Vec3& axis1, 
                                      float angle2, const Vec3& axis2,
                                      float angle3, const Vec3& axis3);
-        inline static Matrix rotate( const Quat& quat);
-        inline static Matrix inverse( const Matrix& matrix);
+        inline static Matrixf rotate( const Quat& quat);
+        inline static Matrixf inverse( const Matrixf& matrix);
         
         /** Create a orthographic projection. See glOrtho for further details.*/
-        inline static Matrix ortho(double left, double right,
+        inline static Matrixf ortho(double left, double right,
                                    double bottom, double top,
                                    double zNear, double zFar);
 
         /** Create a 2D orthographic projection. See glOrtho for further details.*/
-        inline static Matrix ortho2D(double left, double right,
+        inline static Matrixf ortho2D(double left, double right,
                                      double bottom, double top);
 
         /** Create a perspective projection. See glFrustum for further details.*/
-        inline static Matrix frustum(double left, double right,
+        inline static Matrixf frustum(double left, double right,
                                      double bottom, double top,
                                      double zNear, double zFar);
 
         /** Create a symmetrical perspective projection, See gluPerspective for further details.
           * Aspect ratio is defined as width/height.*/
-        inline static Matrix perspective(double fovy,double aspectRatio,
+        inline static Matrixf perspective(double fovy,double aspectRatio,
                                          double zNear, double zFar);
 
         /** Create the position and orientation as per a camera, using the same convention as gluLookAt. */
-        inline static Matrix lookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
+        inline static Matrixf lookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
 
 
 
@@ -199,35 +208,43 @@ class SG_EXPORT Matrix
         inline Vec3 getScale() const { return Vec3(_mat[0][0],_mat[1][1],_mat[2][2]); }
         
     	/** apply apply an 3x3 transform of v*M[0..2,0..2]  */
-    	inline static Vec3 transform3x3(const Vec3& v,const Matrix& m);
+    	inline static Vec3 transform3x3(const Vec3& v,const Matrixf& m);
     	/** apply apply an 3x3 transform of M[0..2,0..2]*v  */
-    	inline static Vec3 transform3x3(const Matrix& m,const Vec3& v);
+    	inline static Vec3 transform3x3(const Matrixf& m,const Vec3& v);
 
 
         // basic Matrix multiplication, our workhorse methods.
-        void mult( const Matrix&, const Matrix& );
-        void preMult( const Matrix& );
-        void postMult( const Matrix& );
+        void mult( const Matrixf&, const Matrixf& );
+        void preMult( const Matrixf& );
+        void postMult( const Matrixf& );
 
-        inline void operator *= ( const Matrix& other ) 
+        inline void operator *= ( const Matrixf& other ) 
         {    if( this == &other ) {
-                Matrix temp(other);
+                Matrixf temp(other);
                 postMult( temp );
             }
             else postMult( other ); 
         }
 
-        inline Matrix operator * ( const Matrix &m ) const
+        inline Matrixf operator * ( const Matrixf &m ) const
 	{
-	    osg::Matrix r;
+	    osg::Matrixf r;
             r.mult(*this,m);
 	    return  r;
 	}
+        
+        /** call glLoadMatixf with this matrix.*/
+        void glLoadMatrix() const;
+        
+        /** call glMultMatixf with this matrix.*/
+        void glMultMatrix() const;
 
     protected:
         float _mat[4][4];
 
 };
+
+typedef Matrixf Matrix;
 
 class RefMatrix : public Object, public Matrix
 {

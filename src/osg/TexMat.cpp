@@ -27,6 +27,6 @@ TexMat::~TexMat()
 void TexMat::apply(State&) const
 {
     glMatrixMode( GL_TEXTURE );
-    glLoadMatrixf( _matrix.ptr() );
-    glMatrixMode( GL_MODELVIEW ); // fix! GWM Aug 2001
+    _matrix.glLoadMatrix();
+    glMatrixMode( GL_MODELVIEW );
 }

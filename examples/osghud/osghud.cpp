@@ -149,6 +149,7 @@ osg::Node* createHUD()
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
     modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    modelview_abs->setCullingActive(false);
     modelview_abs->setMatrix(osg::Matrix::identity());
     modelview_abs->addChild(geode);
 

@@ -399,6 +399,14 @@ Geometry::~Geometry()
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
+void Geometry::setTexCoordData(unsigned int unit,const ArrayData& arrayData)
+{
+	if (_texCoordList.size()<=unit)
+		_texCoordList.resize(unit+1);
+	
+	_texCoordList[unit] = arrayData;
+}
+
 Geometry::ArrayData& Geometry::getTexCoordData(unsigned int unit)
 {
     if (_texCoordList.size()<=unit)

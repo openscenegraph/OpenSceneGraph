@@ -14,9 +14,9 @@ class geoBehaviour { // base class for action & math functions where var out = f
 public:
     geoBehaviour() { }
     virtual ~geoBehaviour() { }
-    virtual void doaction(void) const
-    { // do math or action operation 
-    }
+    virtual void doaction(osg::Node *)=0;// {} // do math or action operation 
+
+    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader)=0; // pure virtual
 protected:
 };
 
@@ -36,9 +36,8 @@ public:
     virtual ~geoMathBehaviour() { }
     virtual void setInVar(const double *indvar) {in=indvar;}
     virtual void setOutVar(double *outdvar) {out=outdvar;}
-    virtual void doaction(void) const
-    { // do math operation eg *out=*in or =f(*in).
-    }
+    virtual void doaction(osg::Node *)=0; // do math operation eg *out=*in or =f(*in).
+    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) { return true;}; // pure virtual
 protected:
     const double *in; // address of input variable
     double *out; // address of output
@@ -89,8 +88,8 @@ public:
     bool setVariable(const double *varvar) { return acon.set(varvar);}
 	void setConstant(float v) {acon.set(v); }
 	inline double getconstant(void) { return acon.get();}
-    void doaction(void) const; // do math operation
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Node *); // do math operation
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 private:
 	double (* op)(const double d1, const double v2);
 	geoArithConstant acon;
@@ -105,8 +104,8 @@ public:
     void setTrigType(int iop);
     void setPeriodicType(int iop);
 	
-    void doaction(void); // do math operation
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader, const uint act);
+    virtual void doaction(osg::Node *); // do math operation
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 private:
     geoArithConstant bcon;
 	double (* op)(const double d1, const double v2, const double v3);
@@ -120,8 +119,8 @@ public:
     void setType(uint iop);
     void setVariable(const double *varvar) { varop=varvar;}
 
-    void doaction(void) const; // do compare operation
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Node *); // do compare operation
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 private:
     float constant;
     optype oper;
@@ -137,8 +136,8 @@ public:
     void setInMin(const double v) { inmin=v;}
     void setOutMax(const double v) { outmax=v;}
     void setOutMin(const double v) { outmin=v;}
-    void doaction(void) const; // do math operation
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Node *); // do math operation
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 private:
     float inmin,inmax;
     float outmin,outmax;
@@ -149,8 +148,8 @@ public:
     ~geoClampBehaviour() { }
     void setMax(const double v) { max=v;}
     void setMin(const double v) { min=v;}
-    void doaction(void) const; // do math operation
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Node *); // do math operation
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 private:
     float min,max;
 };
@@ -171,8 +170,8 @@ class geoDiscreteBehaviour : public geoMathBehaviour { // discrete action -- out
 public:
 	geoDiscreteBehaviour() {nrange=1;	}
 	virtual ~geoDiscreteBehaviour() {}
-    void doaction(void) const; // do math operation
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Node *); // do math operation
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
 
 private:
 	int nrange;
@@ -190,12 +189,12 @@ public:
     inline unsigned int getType(void) const { return type;}
     inline const double *getVar(void) const { return var;}
     inline double getValue(void) const { return *var;}
-    virtual void doaction(osg::Node *) const {
+    virtual void doaction(osg::Node *) {
     }
 
-    virtual bool makeBehave(const georecord *, geoHeaderGeo *, const uint ) {
-		return true;
-    }
+    virtual bool makeBehave(const georecord *, const geoHeaderGeo * )=0;// {
+	//	return true;
+    //}
 private:
     // for fast transform behaviours
     unsigned int type; // eg GEO_DB_ROTATE_ACTION_INPUT_VAR, translate etc
@@ -209,15 +208,15 @@ public:
     void setAxis(const Vec3 v) { axis=v;}
 	inline Vec3 getAxis() { return axis;}
 	inline Vec3 getCentre() { return centre;}
-    void doaction(osg::Node *node);
+    virtual void doaction(osg::Node *node);
 
-    bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader, const uint act);
+    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
 private:
     // for fast transform behaviours
     osg::Vec3 axis; // axis of rotation or translate or scale
     osg::Vec3 centre; // centre of rotation or scale
 };
-class geoMoveVertexBehaviour : public geoActionBehaviour { // class of rotate & translate vertex actions
+class geoMoveVertexBehaviour : public geoMoveBehaviour { // class of rotate & translate vertex actions
 public:
     geoMoveVertexBehaviour() { index=0; pos.set(0,0,0);}
     virtual ~geoMoveVertexBehaviour() { }
@@ -225,14 +224,13 @@ public:
 	void setpos(const osg::Vec3 p) { pos=p;}
 	void setindx(const int idx) { index=idx;}
 	inline int getindex(void) const { return index;}
-    void doaction(Matrix &mtr);
+    virtual void doaction(osg::Matrix *); // Matrix &mtr);
 
-    bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader, const uint act);
+    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
 private:
     // for fast transform behaviours
 	int index; // which index in the geometry
 	Vec3 pos; // raw position of the vertex
-	geoMoveBehaviour movb;
 };
 
 class geoVisibBehaviour : public geoActionBehaviour { // visibility action -- sets node mask
@@ -240,8 +238,8 @@ public:
     geoVisibBehaviour() { }
     virtual ~geoVisibBehaviour() { }
 
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
-    void doaction(osg::Node *node) const;
+    bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Node *node);
 private:
 };
 class geoColourBehaviour : public geoActionBehaviour { // colour action
@@ -250,10 +248,10 @@ public:
     geoColourBehaviour() { topcindx=4096; botcindx=0; numramps=1; type=UNKNOWN; colours=NULL;}
     virtual ~geoColourBehaviour() { }
 	enum cacts {UNKNOWN, PALETTE, RAMP};
-    bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
-    void doaction(osg::Drawable *dr) const;
+    virtual void doaction(osg::Drawable *dr);
 	void setVertIndices(const uint ns, const uint n) { nstart=ns; nend=ns+n;}
 	void setColorPalette(const colourPalette *color_palette) {colours=color_palette;}
+    virtual bool makeBehave(const georecord *, const geoHeaderGeo * );
 private:
 	uint numramps;
 	uint topcindx,botcindx; // top & bottom colour indices
@@ -268,8 +266,8 @@ public:
     geoStrContentBehaviour() {format=NULL;PADDING_TYPE=0;
         PAD_FOR_SIGN=0; vt=UNKNOWN; }
     virtual ~geoStrContentBehaviour() { delete [] format;}
-    void doaction(osg::Drawable *node); // do new text
-    bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual void doaction(osg::Drawable *node); // do new text
+    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
     enum valuetype {UNKNOWN, INT, FLOAT, DOUBLE, CHAR};
 private:
     char *format;

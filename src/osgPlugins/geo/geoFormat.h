@@ -143,6 +143,10 @@ const unsigned int DB_DSK_CYLINDER_TEXTURE_MAPPING_INFO	= 176;	// not implemente
 const unsigned int DB_DSK_SPHERE_TEXTURE_MAPPING_INFO	= 177;	// not implemented in 1.0
 const unsigned int DB_DSK_GRID_TEXTURE_MAPPING_INFO		= 178;	// not implemented in 1.0
 
+const unsigned int DB_DSK_PERSPECTIVE_GRID_INFO			= 179;
+const unsigned int DB_DSK_XY_GRID_INFO					= 180;	// not implemented in 1.0
+const unsigned int DB_DSK_XZ_GRID_INFO					= 181;	// not implemented in 1.0
+const unsigned int DB_DSK_YZ_GRID_INFO					= 182;	// not implemented in 1.0
 					
 					
 
@@ -224,10 +228,10 @@ const unsigned char SIZEOF_BITFLAGS						= (SIZEOF_INT);
 
 
 
-const  short MIN_CHAR_VAL						= -128;
+const unsigned short MIN_CHAR_VAL						= -128;
 const unsigned short MAX_CHAR_VAL			            = 127;
 const unsigned short MAX_UCHAR_VAL			            = 255;
-const  short MIN_SHORT_VAL			            = -32768;
+const unsigned short MIN_SHORT_VAL			            = -32768;
 const unsigned short MAX_SHORT_VAL			            = 32767;
 const unsigned short MAX_USHORT_VAL			            = 65535;
 
@@ -450,6 +454,24 @@ const unsigned char GEO_DB_VIEW_TRACKBALL			= 5;
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// DB_DSK_PERSPECTIVE_GRID_INFO Record 
+// DB_DSK_XY_GRID_INFO Record 
+// DB_DSK_XZ_GRID_INFO Record 
+// DB_DSK_YZ_GRID_INFO Record - Field Ids Ids
+//
+const unsigned char GEO_DB_GRID_ON					= 1;
+const unsigned char GEO_DB_GRID_ZBUFFER				= 2;
+const unsigned char GEO_DB_GRID_SNAP				= 3;
+const unsigned char GEO_DB_GRID_OVER				= 4;
+const unsigned char GEO_DB_GRID_MAJOR				= 5;
+const unsigned char GEO_DB_GRID_MINOR				= 6;
+const unsigned char GEO_DB_GRID_NUM_CELLS			= 7;
+const unsigned char GEO_DB_GRID_POS					= 8;
+const unsigned char GEO_DB_GRID_MATRIX				= 9;
+
+
+
+///////////////////////////////////////////////////////////////////////////////
 // GEO_DB_GROUP Record - Field Ids IDs
 //
 const unsigned char GEO_DB_GRP_EXT					= 1;   // alias for GEO_DB_USER_EXT_VALUE_FIELD
@@ -486,6 +508,8 @@ const unsigned char GEO_DB_SEQUENCE_NAME			= 2;
 const unsigned char GEO_DB_SEQUENCE_MODE			= 3;
 const unsigned char GEO_DB_SEQUENCE_ACTIVE			= 4;
 const unsigned char GEO_DB_SEQUENCE_INSTANCE_DEF	= 5;
+const unsigned char GEO_DB_SEQUENCE_FRAME_TIME		= 6;
+const unsigned char GEO_DB_SEQUENCE_USE_FRAME_TIME	= 7;
 const unsigned char GEO_DB_SEQUENCE_TRANSFORM		= 253;
 const unsigned char GEO_DB_SEQUENCE_EXTENDED		= 254; // alias for GEO_DB_EXTENDED_FIELD
 const unsigned char GEO_DB_SEQUENCE_COMMENT			= 255; // alias for GEO_DB_COMMENT_FIELD
@@ -598,6 +622,8 @@ const unsigned char GEO_DB_POLY_SHADEMODEL			= 8;
 const unsigned char GEO_DB_POLY_USE_MATERIAL_DIFFUSE= 9;
 const unsigned char GEO_DB_POLY_USE_VERTEX_COLORS   = 10;
 const unsigned char GEO_DB_POLY_COLOR_INDEX			= 11;
+const unsigned char GEO_DB_POLY_PT_SIZE				= 12;
+const unsigned char GEO_DB_POLY_LINE_WIDTH			= 13;
 const unsigned char GEO_DB_POLY_EXTENDED			= 254; // alias for GEO_DB_EXTENDED_FIELD
 const unsigned char GEO_DB_POLY_COMMENT				= 255; // alias for GEO_DB_COMMENT_FIELD
 

@@ -44,8 +44,10 @@
 #include "osgGeoStructs.h"
 #include "osgGeoNodes.h"
 #include "osgGeoAction.h"
-#include <osgText/Text> // needed for text nodes
 
+#ifdef USETEXT // buggy text feb 2003
+#include <osgText/Text> // needed for text nodes
+#endif
 
 
 //
@@ -195,14 +197,14 @@ public:
                 {
                     if ((*rcitr)->getType()==DB_DSK_TRANSLATE_ACTION) {
                         geoMoveVertexBehaviour *mb=new geoMoveVertexBehaviour;
-                        mb->makeBehave((*rcitr),ghdr,DB_DSK_TRANSLATE_ACTION);
+                        mb->makeBehave((*rcitr),ghdr);
                         mb->setpos((*cpool)[idx]);
                         mb->setindx(ncoord-1);
                         BehList.push_back(mb);
                     }
                     if ((*rcitr)->getType()==DB_DSK_ROTATE_ACTION) {
                         geoMoveVertexBehaviour *mb=new geoMoveVertexBehaviour;
-                        mb->makeBehave((*rcitr),ghdr,DB_DSK_ROTATE_ACTION);
+                        mb->makeBehave((*rcitr),ghdr);
                         mb->setpos((*cpool)[idx]);
                         mb->setindx(ncoord-1);
                         BehList.push_back(mb);
@@ -381,12 +383,12 @@ class ReaderWriterGEO : public ReaderWriter
                 //fdup.close();
                 // now sort the records so that any record followed by a PUSh has a child set = next record, etc
                 std::vector<georecord *> sorted=sort(recs); // tree-list of sorted record pointers
-#ifdef _DEBUG
+//#ifdef _DEBUG
                 osgDB::Output fout("georex.txt"); //, std::ios_base::out );
                 fout << "Debug file " << fileName << std::endl;
                 output(fout,sorted);
                 fout.close();
-#endif
+//#endif
 
                 nodeList=makeosg(sorted); // make a list of osg nodes
 
@@ -522,6 +524,9 @@ class ReaderWriterGEO : public ReaderWriter
                 case DB_DSK_DCS_ACTION:
                 case DB_DSK_SQRT_ACTION:    // square root action
                     (curparent->getLastChild())->addBehaviourRecord(&(*itr));
+                    break;
+                case DB_DSK_PERSPECTIVE_GRID_INFO: // Feb 2003 not sure what this is yet!
+                    (curparent)->addchild(&(*itr));
                     break;
                 case DB_DSK_PLANE_TEXTURE_MAPPING_INFO: // not needed for real time
                 case DB_DSK_CYLINDER_TEXTURE_MAPPING_INFO:    // not implemented in 1.0
@@ -696,6 +701,8 @@ class ReaderWriterGEO : public ReaderWriter
             }
         }
         osg::MatrixTransform *makeText(georecord *gr) { // make transform, geode & text
+            osg::MatrixTransform *numt=NULL;
+#ifdef USETEXT // buggy text feb 2003
             std::string    ttfPath("fonts/times.ttf");
             int    gFontSize1=2;
             osgText::PolygonFont*    polygonFont= new  osgText::PolygonFont(ttfPath,
@@ -738,7 +745,7 @@ class ReaderWriterGEO : public ReaderWriter
             osg::StateSet *textState = new osg::StateSet();
             textState->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
             geod->setStateSet( textState );
-            osg::MatrixTransform *numt=new osg::MatrixTransform;
+            numt=new osg::MatrixTransform;
             gfd=gr->getField(GEO_DB_TEXT_MATRIX);
             if (gfd) {
                 float *fmat=gfd->getMat44Arr();            
@@ -770,6 +777,7 @@ class ReaderWriterGEO : public ReaderWriter
                     }
                 }
             }
+#endif
             return numt;
         }
         void addPolyActions(std::vector< georecord *>bhv, geoInfo &gi , const uint nv) {
@@ -1395,7 +1403,7 @@ class ReaderWriterGEO : public ReaderWriter
                         break;
                     case DB_DSK_ROTATE_ACTION: {
                         geoMoveBehaviour *cb= new geoMoveBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader,DB_DSK_ROTATE_ACTION);
+                        ok=cb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                                }
@@ -1403,14 +1411,14 @@ class ReaderWriterGEO : public ReaderWriter
                         
                     case DB_DSK_SCALE_ACTION: {
                         geoMoveBehaviour *sb=new geoMoveBehaviour;
-                        ok=sb->makeBehave((*rcitr), theHeader,DB_DSK_SCALE_ACTION);
+                        ok=sb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(sb);
                         else delete sb;
                                               }
                         break;
                     case DB_DSK_TRANSLATE_ACTION: {
                         geoMoveBehaviour *cb= new geoMoveBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader,DB_DSK_TRANSLATE_ACTION);
+                        ok=cb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                                   }
@@ -1454,49 +1462,49 @@ class ReaderWriterGEO : public ReaderWriter
                         // ar3 types
                     case DB_DSK_TRIG_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_TRIG_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                              }
                         break;
                     case DB_DSK_INVERSE_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_INVERSE_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                 }
                         break;
                     case DB_DSK_LINEAR_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_LINEAR_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                }
                         break;
                     case DB_DSK_PERIODIC_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_PERIODIC_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                  }
                         break;
                     case DB_DSK_PERIODIC2_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_PERIODIC2_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                   }
                         break;
                     case DB_DSK_TRUNCATE_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_TRUNCATE_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                  }
                         break;
                     case DB_DSK_ABS_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_ABS_ACTION);
+                        ok=vb->makeBehave((*rcitr), theHeader);
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                             }
@@ -1517,7 +1525,7 @@ class ReaderWriterGEO : public ReaderWriter
                     case DB_DSK_IF_THEN_ELSE_ACTION:
                         {
                             geoAr3Behaviour *vb = new geoAr3Behaviour;
-                            ok=vb->makeBehave((*rcitr), theHeader, DB_DSK_IF_THEN_ELSE_ACTION);
+                            ok=vb->makeBehave((*rcitr), theHeader);
                             if (ok) gcb->addBehaviour(vb);
                             else delete vb;
                         }

@@ -44,7 +44,7 @@ void geoArithBehaviour::setType(uint iop) {
     case 5: op=equa; break;
     }
 }
-void geoArithBehaviour::doaction(void) const { // do math operation
+void geoArithBehaviour::doaction(osg::Node *) { // do math operation
     if (in && out && op) {
         (*out)=op(*in,acon.get());
         //    std::cout << " math sum " << out<< " " << (*out) << " " << in <<" " << (*in) << std::endl;
@@ -112,16 +112,17 @@ void geoAr3Behaviour::setPeriodicType(int iop) {
     }
 }
 
-void geoAr3Behaviour::doaction(void) { // do math operation
+void geoAr3Behaviour::doaction(osg::Node *) { // do math operation
     if (in && out && op) {
         double var3=bcon.get();
         *out=op(*in,getconstant(),var3);
         //std::cout << " ar3 sum " << out<< " " << (*out) << " con " << getconstant() <<" b: " << bcon.get() << std::endl;
     }
 }
-bool geoAr3Behaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader, const uint act) {
+bool geoAr3Behaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
     bool ok=false;
     const geoField *gfd=grec->getField(GEO_DB_EQUATION_ACTION_INPUT_VAR);
+	const uint act=grec->getType();
     if (gfd) {
         unsigned fid= gfd->getUInt(); // field identifier
         in=theHeader->getVar(fid); // returns address of input var with fid
@@ -181,7 +182,7 @@ void geoCompareBehaviour::setType(uint iop) {
     }
 }
 
-void geoCompareBehaviour::doaction(void) const { // do compare operation
+void geoCompareBehaviour::doaction(osg::Node *) { // do compare operation
     if (in && out) {
         double var2=varop? *varop : constant;
         switch (oper) {
@@ -225,7 +226,7 @@ bool geoCompareBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHea
     return ok;
 }
 
-void geoRangeBehaviour::doaction(void) const { // do math operation
+void geoRangeBehaviour::doaction(osg::Node *) { // do math operation
     if (in && out) {
         float v=*in;
         if (v<inmin) v=inmin;
@@ -260,7 +261,7 @@ bool geoRangeBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeade
     return ok;
 }
 
-void geoClampBehaviour::doaction(void) const { // do math operation
+void geoClampBehaviour::doaction(osg::Node *) { // do math operation
     if (in && out) {
         float v=*in;
         if (v<min) v=min;
@@ -290,7 +291,7 @@ bool geoClampBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeade
     return ok;
 }
 
-void geoDiscreteBehaviour::doaction(void) const { // do math operation
+void geoDiscreteBehaviour::doaction(osg::Node *) { // do math operation
     if (in && out) {
         float v=*in;
         *out=rangelist.begin()->getVal();
@@ -361,8 +362,9 @@ void geoMoveBehaviour::doaction(osg::Node *node) {
     }
 }
 
-bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader, const uint act) {
+bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) {
     bool ok=false;
+	const uint act=grec->getType();
     setType(act);
     if (act==DB_DSK_ROTATE_ACTION) {
         const geoField *gfd=grec->getField(GEO_DB_ROTATE_ACTION_INPUT_VAR);
@@ -409,27 +411,29 @@ bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *the
     }
     return ok;
 }
-void geoMoveVertexBehaviour::doaction(Matrix &mtr) {
+void geoMoveVertexBehaviour::doaction(osg::Matrix *mtr) {
     // update the matrix mtr
     if (getVar()) {
             switch (getType()) {
             case DB_DSK_SCALE_ACTION:
-                mtr = mtr*osg::Matrix::scale(movb.getAxis()*(getValue())) ;
+                *mtr = (*mtr)*osg::Matrix::scale(getAxis()*(getValue())) ;
                 break;
             case DB_DSK_TRANSLATE_ACTION:
-                mtr = mtr*osg::Matrix::translate(movb.getAxis()*(getValue())) ;
+                *mtr = (*mtr)*osg::Matrix::translate(getAxis()*(getValue())) ;
                 break;
             case DB_DSK_ROTATE_ACTION:
                 //std::cout << dr->getName() << " v: " << getVar() << " rotion " << DEG2RAD(getValue()) << std::endl;
-                mtr = mtr*osg::Matrix::translate(-movb.getCentre())* 
-                    osg::Matrix::rotate(DEG2RAD(getValue()),movb.getAxis())* 
-                    osg::Matrix::translate(movb.getCentre());
+                *mtr = (*mtr)*osg::Matrix::translate(-getCentre())* 
+                    osg::Matrix::rotate(DEG2RAD(getValue()),getAxis())* 
+                    osg::Matrix::translate(getCentre());
                 break;
             }
     }
 }
 
-bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader, const uint act) {
+bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader)
+{
+	const uint act=grec->getType();
     bool ok=false;
     setType(act);
     if (act==DB_DSK_ROTATE_ACTION) {
@@ -443,12 +447,12 @@ bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
                 gfd=grec->getField(GEO_DB_ROTATE_ACTION_VECTOR);
                 if (gfd) {
                     float *ax= gfd->getVec3Arr(); // field identifier
-                    movb.setAxis(osg::Vec3(ax[0],ax[1],ax[2]));
+                    setAxis(osg::Vec3(ax[0],ax[1],ax[2]));
                 }
                 gfd=grec->getField(GEO_DB_ROTATE_ACTION_ORIGIN);
                 if (gfd) {
                     float *ct= gfd->getVec3Arr(); // field identifier
-                    movb.setCentre(osg::Vec3(ct[0],ct[1],ct[2]));
+                    setCentre(osg::Vec3(ct[0],ct[1],ct[2]));
                 }
                 ok=true;
             }
@@ -463,12 +467,12 @@ bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
                 gfd=grec->getField(GEO_DB_TRANSLATE_ACTION_VECTOR);
                 if (gfd) {
                     float *ax= gfd->getVec3Arr(); // field identifier
-                    movb.setAxis(osg::Vec3(ax[0],ax[1],ax[2]));
+                    setAxis(osg::Vec3(ax[0],ax[1],ax[2]));
                 }
                 gfd=grec->getField(GEO_DB_TRANSLATE_ACTION_ORIGIN);
                 if (gfd) {
                     float *ct= gfd->getVec3Arr(); // field identifier
-                    movb.setCentre(osg::Vec3(ct[0],ct[1],ct[2]));
+                    setCentre(osg::Vec3(ct[0],ct[1],ct[2]));
                 }
                 ok=true;
             }
@@ -478,7 +482,7 @@ bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
     return ok;
 }
 
-bool geoVisibBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
+bool geoVisibBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) {
     bool ok=false;
     const geoField *gfd= grec->getField(GEO_DB_VISIBILITY_ACTION_INPUT_VAR);
     if (gfd) {
@@ -488,7 +492,7 @@ bool geoVisibBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeade
     }
     return ok;
 }
-void geoVisibBehaviour::doaction(osg::Node *node) const
+void geoVisibBehaviour::doaction(osg::Node *node)
 { // do visibility operation on Node
     if (getVar()) {
         if (getValue() <0.0) {
@@ -516,7 +520,7 @@ bool geoColourBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *t
     }
     return ok;
 }
-void geoColourBehaviour::doaction(osg::Drawable *dr) const
+void geoColourBehaviour::doaction(osg::Drawable *dr)
 { // do visibility operation on Node
     if (getVar()) {
 		double val=getValue();
@@ -538,6 +542,7 @@ void geoColourBehaviour::doaction(osg::Drawable *dr) const
 }
 
 void geoStrContentBehaviour::doaction(osg::Drawable *node) { // do new text
+#ifdef USETEXT // buggy text feb 2003
     osgText::Text *txt=dynamic_cast<osgText::Text *>(node);
     char content[32];
     switch (vt) {
@@ -557,6 +562,7 @@ void geoStrContentBehaviour::doaction(osg::Drawable *node) { // do new text
         sprintf(content, format, (char *)getVar());
     }
     txt->setText(std::string(content));
+#endif
 }
 bool geoStrContentBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
     bool ok=false;
@@ -595,23 +601,25 @@ void geoBehaviourCB::operator() (osg::Node *node, osg::NodeVisitor* nv)
     for (std::vector<geoBehaviour *>::const_iterator itr=gblist.begin();
     itr<gblist.end();
     itr++) { // motion behaviour
-        geoArithBehaviour *ab=dynamic_cast<geoArithBehaviour *>(*itr);
-        if (ab) ab->doaction();
+ 		(*itr)->doaction(node);
+/* === the above is equivalent to my old code with lots of tests in: */
+/*      geoArithBehaviour *ab=dynamic_cast<geoArithBehaviour *>(*itr);
+        if (ab) ab->doaction(node);
         geoAr3Behaviour *a3=dynamic_cast<geoAr3Behaviour *>(*itr);
-        if (a3) a3->doaction();
+        if (a3) a3->doaction(node);
         geoClampBehaviour *cb=dynamic_cast<geoClampBehaviour *>(*itr);
-        if (cb) cb->doaction();
+        if (cb) cb->doaction(node);
         geoRangeBehaviour *cr=dynamic_cast<geoRangeBehaviour *>(*itr);
-        if (cr) cr->doaction();
+        if (cr) cr->doaction(node);
         geoCompareBehaviour *cmb=dynamic_cast<geoCompareBehaviour *>(*itr);
-        if (cmb) cmb->doaction();
+        if (cmb) cmb->doaction(node);
         geoDiscreteBehaviour *db=dynamic_cast<geoDiscreteBehaviour *>(*itr);
-        if (db) db->doaction();
+        if (db) db->doaction(node);
         geoMoveBehaviour *mb=dynamic_cast<geoMoveBehaviour *>(*itr);
         if (mb) mb->doaction(node);
         // or visibility..
         geoVisibBehaviour *vb=dynamic_cast<geoVisibBehaviour *>(*itr);
-        if (vb) vb->doaction(node);
+        if (vb) vb->doaction(node);  */
     }
     traverse(node,nv);
 }
@@ -626,14 +634,16 @@ void geoBehaviourDrawableCB::update(osg::NodeVisitor *,osg::Drawable *dr) {
          itr<gblist.end();
          itr++)
         { // color or string action behaviour, can also do maths...
+		//	 (*itr)->doaction(dr);
+			 Node *nd=NULL;
         geoArithBehaviour *ab=dynamic_cast<geoArithBehaviour *>(*itr);
-        if (ab) ab->doaction();
+        if (ab) ab->doaction(nd);
         geoAr3Behaviour *a3=dynamic_cast<geoAr3Behaviour *>(*itr);
-        if (a3) a3->doaction();
+        if (a3) a3->doaction(nd);
         geoClampBehaviour *cb=dynamic_cast<geoClampBehaviour *>(*itr);
-        if (cb) cb->doaction();
+        if (cb) cb->doaction(nd);
         geoRangeBehaviour *cr=dynamic_cast<geoRangeBehaviour *>(*itr);
-        if (cr) cr->doaction();
+        if (cr) cr->doaction(nd);
         geoStrContentBehaviour *sb=dynamic_cast<geoStrContentBehaviour *>(*itr);
         if (sb) sb->doaction(dr);
         // colorbehaviour may be for 1 or all vertices
@@ -641,7 +651,7 @@ void geoBehaviourDrawableCB::update(osg::NodeVisitor *,osg::Drawable *dr) {
         if (clrb) clrb->doaction(dr);
         geoMoveVertexBehaviour *mvvb=dynamic_cast<geoMoveVertexBehaviour *>(*itr);
         if (mvvb && (prevvtr<0 || prevvtr==mvvb->getindex())) {
-            mvvb->doaction(mtr);
+            mvvb->doaction(&mtr);
             pos=mvvb->getpos();
             prevvtr=mvvb->getindex();
         }
@@ -661,7 +671,7 @@ void geoBehaviourDrawableCB::update(osg::NodeVisitor *,osg::Drawable *dr) {
                 if (mvvb) {
                     int vidx=mvvb->getindex();
                     if (mvvb && (prevvtr<vidx || (newpos && prevvtr==vidx))) {
-                        mvvb->doaction(mtr);
+                        mvvb->doaction(&mtr);
                         prevvtr=vidx;
                         pos=mvvb->getpos();
                         newpos=true;

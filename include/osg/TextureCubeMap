@@ -29,6 +29,11 @@ class SG_EXPORT TextureCubeMap : public Texture
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;
 
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        {
+            modes.push_back(GL_TEXTURE_CUBE_MAP);
+        }
+
         enum Face {
             POSITIVE_X=0,
             NEGATIVE_X=1,

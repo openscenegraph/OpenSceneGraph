@@ -31,7 +31,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
         virtual const char* className() { return "Performer Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="pfb"; }
 
-        virtual osg::Image* readImage(const std::string& fileName)
+        virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
 
@@ -84,7 +84,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         }
 
-        virtual bool writeNode(const osg::Node& node,const std::string& fileName)
+        virtual bool writeNode(const osg::Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
             initPerformer();

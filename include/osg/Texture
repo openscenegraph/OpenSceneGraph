@@ -481,7 +481,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         mutable TextureObjectBuffer _textureObjectBuffer;
 
 
-        class TextureObjectManager : public osg::Referenced
+        class SG_EXPORT TextureObjectManager : public osg::Referenced
         {
         public:        
 

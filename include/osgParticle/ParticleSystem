@@ -151,6 +151,8 @@ namespace osgParticle
         /// Update the particles. Don't call this directly, use a <CODE>ParticleSystemUpdater</CODE> instead.
         virtual void update(double dt);
 
+        virtual void drawImplementation(osg::State &state) const;
+
     protected:
 
         virtual ~ParticleSystem();
@@ -158,7 +160,6 @@ namespace osgParticle
         ParticleSystem &operator=(const ParticleSystem &) { return *this; }
 
         inline virtual bool computeBound() const;
-        virtual void drawImplementation(osg::State &state) const;
         inline void update_bounds(const osg::Vec3 &p, float r);
         void single_pass_render(osg::State &state, const osg::Matrix &modelview) const;
 

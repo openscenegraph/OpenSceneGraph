@@ -254,14 +254,7 @@ osg::Image* ReadDDSFile(const char *filename)
         osg::notify(osg::INFO) << "ReadDDSFile info : power2_s="<<power2_s<<std::endl;
         osg::notify(osg::INFO) << "ReadDDSFile info : power2_t="<<power2_t<<std::endl;
         
-        
-//Alberto's fix, which I can't quite figure out why its needed..
-//         int prop = (int)(s>=t ? (s/t) : (t/s));
-//         prop = (int)(log(prop)/log(2));
-//         mipmaps.resize(ddsd.dwMipMapCount+prop);
-        
-
-        mipmaps.resize(ddsd.dwMipMapCount-1);
+        mipmaps.resize((unsigned int)osg::maximum(power2_s,power2_t),0);
 
         // Handle compressed mipmaps.
         if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)

@@ -31,37 +31,53 @@ bool FragmentProgram_readLocalData(Object& obj, Input& fr)
 
     FragmentProgram& fragmentProgram = static_cast<FragmentProgram&>(obj);
 
-    if (fr.matchSequence("code {")) {
-	std::string code;
-	fr += 2;
-	iteratorAdvanced = true;
-	int entry = fr[0].getNoNestedBrackets();
-	while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry) {
-	    if (fr[0].getStr()) {
-		code.append(std::string(fr[0].getStr()));
-		code += '\n';
-	    }
-	    ++fr;
-	}
+    if (fr[0].matchWord("ProgramLocalParameter"))
+    {
+        int index;
+        Vec4 vec;
+        fr[1].getInt(index);
+        fr[2].getFloat(vec[0]);
+        fr[3].getFloat(vec[1]);
+        fr[4].getFloat(vec[2]);
+        fr[5].getFloat(vec[3]);
+        fr += 6;
+        iteratorAdvanced = true;
+        fragmentProgram.setProgramLocalParameter(index, vec);
+    }
+
+    if (fr.matchSequence("code {"))
+    {
+        std::string code;
+        fr += 2;
+        iteratorAdvanced = true;
+        int entry = fr[0].getNoNestedBrackets();
+        while (!fr.eof() && fr[0].getNoNestedBrackets() >= entry) {
+            if (fr[0].getStr()) {
+            code.append(std::string(fr[0].getStr()));
+            code += '\n';
+            }
+            ++fr;
+        }
         fragmentProgram.setFragmentProgram(code);
     }
 
-    if( fr.matchSequence("file %s")) {
-	    std::string filename = fr[1].getStr();
-	    fr += 2;
-	    iteratorAdvanced = true;
+    if( fr.matchSequence("file %s"))
+    {
+        std::string filename = fr[1].getStr();
+        fr += 2;
+        iteratorAdvanced = true;
 
-	    ifstream vfstream( filename.c_str() );
+        ifstream vfstream( filename.c_str() );
 
-	    if( vfstream ) {
-		    ostringstream vstream;
-		    char ch;
+        if( vfstream ) {
+            ostringstream vstream;
+            char ch;
 
-		    /* xxx better way to transfer a ifstream to a string?? */
-		    while( vfstream.get(ch)) vstream.put(ch);
+            /* xxx better way to transfer a ifstream to a string?? */
+            while( vfstream.get(ch)) vstream.put(ch);
 
-		    fragmentProgram.setFragmentProgram( vstream.str() );
-	    }
+            fragmentProgram.setFragmentProgram( vstream.str() );
+        }
     }
     
     return iteratorAdvanced;
@@ -72,19 +88,27 @@ bool FragmentProgram_writeLocalData(const Object& obj,Output& fw)
 {
     const FragmentProgram& fragmentProgram = static_cast<const FragmentProgram&>(obj);
 
+    const FragmentProgram::LocalParamList& lpl = fragmentProgram.getLocalParamList();
+    FragmentProgram::LocalParamList::const_iterator i;
+    for(i=lpl.begin(); i!=lpl.end(); i++)
+    {
+        fw.indent() << "ProgramLocalParameter " << (*i).first << " " << (*i).second << std::endl;
+    }
     std::vector<std::string> lines;
     std::istringstream iss(fragmentProgram.getFragmentProgram());
     std::string line;
-    while (std::getline(iss, line)) {
-	lines.push_back(line);
+    while (std::getline(iss, line))
+    {
+        lines.push_back(line);
     }
 
     fw.indent() << "code {\n";
     fw.moveIn();
 
     std::vector<std::string>::const_iterator j;
-    for (j=lines.begin(); j!=lines.end(); ++j) {
-	fw.indent() << "\"" << *j << "\"\n";
+    for (j=lines.begin(); j!=lines.end(); ++j)
+    {
+        fw.indent() << "\"" << *j << "\"\n";
     }
 
     fw.moveOut();

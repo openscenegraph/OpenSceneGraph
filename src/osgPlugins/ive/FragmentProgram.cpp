@@ -34,6 +34,14 @@ void FragmentProgram::write( DataOutputStream* out )
     }
 
     // Write FragmentProgram properties.
+    FragmentProgram::LocalParamList lpl = getLocalParamList();
+    out->writeInt(lpl.size());
+    for(FragmentProgram::LocalParamList::iterator i=lpl.begin(); i!=lpl.end(); ++i)
+    {
+        out->writeInt(i->first);
+        out->writeVec4(i->second);
+    }
+
     // Write program.
     out->writeString( this->getFragmentProgram() );
 }
@@ -58,6 +66,11 @@ void FragmentProgram::read(DataInputStream* in){
         }
 
         // Read data
+        int i, size;
+        size = in->readInt();
+        for(i=0; i<size; i++)
+            this->setProgramLocalParameter( in->readInt(), in->readVec4() );
+
         std::string fp = in->readString();
         this->setFragmentProgram( fp );
     }

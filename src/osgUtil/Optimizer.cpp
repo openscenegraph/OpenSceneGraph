@@ -1265,7 +1265,8 @@ struct LessGeometry
     
         // therefore lhs->getNumTexCoordArrays()==rhs->getNumTexCoordArrays()
         
-        for(unsigned int i=0;i<lhs->getNumTexCoordArrays();++i)
+        unsigned int i;
+        for(i=0;i<lhs->getNumTexCoordArrays();++i)
         {
             if (rhs->getTexCoordArray(i)) 
             {
@@ -1277,7 +1278,7 @@ struct LessGeometry
             else if (lhs->getTexCoordIndices(i)) return false;
         }
         
-        for(unsigned int i=0;i<lhs->getNumVertexAttribArrays();++i)
+        for(i=0;i<lhs->getNumVertexAttribArrays();++i)
         {
             if (rhs->getVertexAttribArray(i)) 
             {
@@ -1731,7 +1732,8 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
 
 
-    for(unsigned int unit=0;unit<lhs.getNumTexCoordArrays();++unit)
+    unsigned int unit;
+    for(unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
         merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit));
         if (lhs.getTexCoordIndices(unit) && rhs.getTexCoordIndices(unit))
@@ -1740,7 +1742,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         }
     }
     
-    for(unsigned int unit=0;unit<lhs.getNumVertexAttribArrays();++unit)
+    for(unit=0;unit<lhs.getNumVertexAttribArrays();++unit)
     {
         merger.merge(lhs.getVertexAttribArray(unit),rhs.getVertexAttribArray(unit));
         if (lhs.getVertexAttribIndices(unit) && rhs.getVertexAttribIndices(unit))

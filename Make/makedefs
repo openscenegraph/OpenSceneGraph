@@ -100,24 +100,8 @@ ifeq ($(ARCH),64)
 else
     ARCHARGS          = 
 endif
-  LINKARGS          =  
-  DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -L/usr/local/lib -lfreetype
   GLUT_LIB          = -L/usr/local/glut-3.7/lib/glut -lglut
-  GL_LIBS           = -lGLU -lGL 
-  X_LIBS            = -lXext -lXmu -lXi -lX11 
-  SOCKET_LIBS       = -lsocket -lnsl
   OTHER_LIBS        = 
-  TIFF_LIB        = -ltiff
-
-  INSTBINCMD        = cp
-  INSTDEVCMD        = cp
-
-  INST_SYS_PREFIX   = /opt/OpenSceneGraph
-  INST_SHARE_PREFIX = /opt
-
-  MAKEDIST          = $(TOPDIR)/Make/makepkg
 
 #### using forte compilers (default)
 else
@@ -134,16 +118,8 @@ ifeq ($(ARCH),64)
 else
     ARCHARGS          = 
 endif
-  LINKARGS          =  
-  DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -L/usr/local/lib -lfreetype
   GLUT_LIB          = -lglut
-  GL_LIBS           = -lGLU -lGL 
-  X_LIBS            = -lXext -lXmu -lXi -lX11 
-  SOCKET_LIBS       = -lsocket -lnsl
   OTHER_LIBS        = -lCstd
-  TIFF_LIB	    = -ltiff
 
   INSTBINCMD        = cp
   INSTDEVCMD        = cp
@@ -153,6 +129,28 @@ endif
 
   MAKEDIST          = $(TOPDIR)/Make/makepkg
 endif
+
+
+  LINKARGS          =  
+  DYNAMICLIBRARYLIB = -ldl
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  FREETYPE_LIB      = /usr/local/lib/libfreetype.a
+
+  GL_LIBS           = -lGLU -lGL 
+  X_LIBS            = -lXext -lXmu -lXi -lX11 
+  SOCKET_LIBS       = -lsocket -lnsl
+  GIF_LIBS          = /usr/local/lib/libgif.a
+  TIFF_LIB	    = /usr/local/lib/libtiff.a
+  JPEG_LIBS         = /usr/local/lib/libjpeg.a
+  PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
+
+  INSTBINCMD        = cp
+  INSTDEVCMD        = cp
+
+  INST_SYS_PREFIX   = /opt/OpenSceneGraph
+  INST_SHARE_PREFIX = /opt
+
+  MAKEDIST          = $(TOPDIR)/Make/makepkg
 
 endif 
 

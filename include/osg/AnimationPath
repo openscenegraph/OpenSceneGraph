@@ -218,6 +218,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
             _latestTime(0.0),
             _pause(false),
             _pauseTime(0.0) {}
+
             
         void setAnimationPath(AnimationPath* path) { _animationPath = path; }
 
@@ -227,6 +228,13 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         
         void setUseInverseMatrix(bool useInverseMatrix) { _useInverseMatrix = useInverseMatrix; }
         bool getUseInverseMatrix() const { return _useInverseMatrix; }
+
+        void setTimeOffset(double offset) { _timeOffset = offset; }
+        double getTimeOffset() const { return _timeOffset; }
+        
+        void setTimeMultiplier(double multiplier) { _timeMultiplier = multiplier; }
+        double getTimeMultiplier() const { return _timeMultiplier; }
+
 
         void reset();
 

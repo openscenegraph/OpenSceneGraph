@@ -49,7 +49,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     
     if (!_viewport)
     {
-        notify(FATAL) << "Error: cannot drawm stage due to undefined viewport."<< std::endl;
+        notify(FATAL) << "Error: cannot draw stage due to undefined viewport."<< std::endl;
         return;
     }
     

@@ -1,4 +1,5 @@
 #include "SlideEventHandler.h"
+#include "SlideShowConstructor.h"
 
 class FindNamedSwitchVisitor : public osg::NodeVisitor
 {
@@ -49,6 +50,14 @@ void SlideEventHandler::set(osg::Node* model)
     {
         std::cout<<"Presentation '"<<model->getName()<<"'"<<std::endl;
         _presentationSwitch = findPresentation._switch;
+        
+        SlideShowConstructor::Duration* durationData = dynamic_cast<SlideShowConstructor::Duration*>(_presentationSwitch->getUserData());
+        if (durationData)
+        {
+            std::cout<<"Presentation time set to "<<durationData->duration<<std::endl;
+            _timePerSlide = durationData->duration;
+        }
+        
         selectSlide(0);
     }
     else
@@ -76,6 +85,24 @@ void SlideEventHandler::set(osg::Node* model)
     }
 }
 
+double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
+{
+    const SlideShowConstructor::Duration* durationData = dynamic_cast<const SlideShowConstructor::Duration*>(_slideSwitch->getChild(_activeLayer)->getUserData());
+    if (durationData)
+    {
+        return durationData->duration;
+    }
+    
+    durationData = dynamic_cast<const SlideShowConstructor::Duration*>(_slideSwitch->getUserData());
+    if (durationData)
+    {
+        return durationData->duration;
+    }
+    
+    return _timePerSlide;
+}
+
+
 bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
     switch(ea.getEventType())
@@ -91,7 +118,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     _firstTraversal = false;
                     _previousTime = time;
                 }
-                else if (time-_previousTime>_timePerSlide)
+                else if (time-_previousTime>getCurrentTimeDelayBetweenSlides())
                 {
                     _previousTime = time;
 

@@ -58,6 +58,8 @@ public:
     void setTimeDelayBetweenSlides(double dt) { _timePerSlide = dt; }
     double getTimeDelayBetweenSlides() const { return _timePerSlide; }
     
+    double getCurrentTimeDelayBetweenSlides() const;
+
 protected:
 
     ~SlideEventHandler() {}

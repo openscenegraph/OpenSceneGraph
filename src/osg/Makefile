@@ -77,6 +77,7 @@ TARGET_INCLUDE_FILES = \
 	osg/FrontFace\
 	osg/GL\
 	osg/GLExtensions\
+	osg/GLU\
 	osg/GeoSet\
 	osg/Geode\
 	osg/Group\

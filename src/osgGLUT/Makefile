@@ -22,6 +22,8 @@ TARGET_INCLUDE_FILES = \
 	osgGLUT/Version\
 	osgGLUT/Window\
 	osgGLUT/Viewer\
+	osgGLUT/glut\
+	
 
 C++FLAGS += -I ../../include
 

@@ -32,6 +32,7 @@ TARGET_DIRS    = \
 		/usr/include/osgDB \
 		/usr/include/osgGLUT \
 		/usr/include/osgUtil \
+		/usr/include/osgText \
 		/usr/share/OpenSceneGraph\
 		/usr/share/OpenSceneGraph/data\
 		/usr/share/OpenSceneGraph/data/Images\

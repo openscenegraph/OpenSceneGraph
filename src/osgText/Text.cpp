@@ -25,6 +25,7 @@
 #include "FTGLTextureFont.h"
 
 
+using namespace osg;
 using namespace osgText;
 
 // define the default paths to look for fonts.
@@ -356,6 +357,32 @@ Text::
 {
 }
 
+void Text::setFont(Font* font)
+{
+    if (_font==font) return;
+    
+    if(font && font->isOk())
+    {
+	_init=true;
+	_font=font;
+
+	if(dynamic_cast<PolygonFont*>(_font.get()))
+		_fontType=POLYGON;
+	else if(dynamic_cast<BitmapFont*>(_font.get()))
+		_fontType=BITMAP;
+	else if(dynamic_cast<PixmapFont*>(_font.get()))
+		_fontType=PIXMAP;
+	else if(dynamic_cast<TextureFont*>(_font.get()))
+		_fontType=TEXTURE;
+	else if(dynamic_cast<OutlineFont*>(_font.get()))
+		_fontType=OUTLINE;
+
+        _initAlignement = false;
+        dirtyBound();            
+
+    }
+}
+
 void Text::
 setDefaults()
 {
@@ -415,8 +442,7 @@ computeBound() const
 	return true;
 }
 
-void Text::
-drawImmediateMode(State& state)
+void Text::drawImmediateMode(State& state)
 {
 	if(!_init)
 		return;

@@ -14,8 +14,8 @@ namespace osg {
   * the standard pure virtual clone, isSameKindAs and className methods 
   * which are required for all Object subclasses.*/
 #define META_Object(name) \
-        virtual Object* clone() const { return new name (); } \
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual osg::Object* clone() const { return new name (); } \
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* className() const { return #name; }
 
 

@@ -48,7 +48,7 @@ class ConvertFromPerformer {
 
         int getNumVerts(pfGeoSet *gset);
         osg::Drawable* visitGeoSet(osg::Geode* osgParent,pfGeoSet* geoset);
-        osg::StateSet* visitGeoState(osg::Drawable* osgGeoSet,pfGeoState* geostate);
+        osg::StateSet* visitGeoState(osg::Drawable* osgDrawble,pfGeoState* geostate);
         osg::Material* visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat);
         osg::Texture* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
 

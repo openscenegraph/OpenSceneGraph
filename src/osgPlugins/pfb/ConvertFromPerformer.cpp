@@ -718,7 +718,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 }
 
 
-osg::StateSet* ConvertFromPerformer::visitGeoState(osg:Drawable* osgDrawable,pfGeoState* geostate)
+osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pfGeoState* geostate)
 {
     if (geostate==NULL) return NULL;
 
@@ -732,7 +732,7 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg:Drawable* osgDrawable,pfG
     osgStateSet = new osg::StateSet;
     if (osgDrawable) osgDrawable->setStateSet(osgStateSet);
 
-    regisiterPfObjectForOsgObject(geostate,osgStateSet);
+    registerPfObjectForOsgObject(geostate,osgStateSet);
 
     // Don could you fill in some of these blanks???
     unsigned int inherit = geostate->getInherit();

@@ -19,8 +19,8 @@
 #include <osg/PagedLOD>
 #include <osg/Drawable>
 
-#include <Producer/Thread>
-#include <Producer/Mutex>
+#include <OpenThreads/Thread>
+#include <OpenThreads/Mutex>
 
 #include <osgProducer/Export>
 
@@ -31,7 +31,7 @@ namespace osgProducer {
 
 /** Database paging class which manages the loading of files in a background thread, 
   * and syncronizing of loaded models with the main scene graph.*/
-class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public Producer::Thread
+class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public OpenThreads::Thread
 {
     public :
 
@@ -118,17 +118,17 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
 
         DatabaseRequestList     _fileRequestList;
-        Producer::Mutex         _fileRequestListMutex;
+        OpenThreads::Mutex         _fileRequestListMutex;
         
         DatabaseRequestList     _dataToCompileList;
-        Producer::Mutex         _dataToCompileListMutex;
+        OpenThreads::Mutex         _dataToCompileListMutex;
         
         bool                    _deleteRemovedSubgraphsInDatabaseThread;
         osg::NodeList           _childrenToDeleteList;
-        Producer::Mutex         _childrenToDeleteListMutex;
+        OpenThreads::Mutex         _childrenToDeleteListMutex;
 
         DatabaseRequestList     _dataToMergeList;
-        Producer::Mutex         _dataToMergeListMutex;
+        OpenThreads::Mutex         _dataToMergeListMutex;
         
         
         PagedLODList            _pagedLODList;

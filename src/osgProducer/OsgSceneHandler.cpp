@@ -11,8 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <OpenThreads/Mutex>
+
 #include <osgProducer/OsgSceneHandler>
-#include <Producer/Mutex>
 
 using namespace osgUtil;
 using namespace osgProducer;
@@ -24,7 +25,7 @@ OsgSceneHandler::OsgSceneHandler( osg::DisplaySettings *ds) :
 
 void OsgSceneHandler::init()
 {
-    static Producer::Mutex mutex;
+    static OpenThreads::Mutex mutex;
     osg::notify(osg::INFO)<<"entering "<<this<<" init."<<std::endl;
     mutex.lock();
     osg::notify(osg::INFO)<<"   running "<<this<<" init."<<std::endl;

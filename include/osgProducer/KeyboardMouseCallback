@@ -14,10 +14,10 @@
 #ifndef OSGPRODUCER_EVENTCALLBACK
 #define OSGPRODUCER_EVENTCALLBACK 1
 
+#include <OpenThreads/Mutex>
 
 #include <Producer/RenderSurface> // For definition of KeySymbol
 #include <Producer/KeyboardMouse>
-#include <Producer/Mutex>
 
 #include <osgProducer/EventAdapter>
 
@@ -90,7 +90,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
 
         osg::Timer_t    _startTick;
         osg::Timer      _timer;
-        Producer::Mutex _eventQueueMutex;
+        OpenThreads::Mutex _eventQueueMutex;
         EventQueue      _eventQueue;
         
 };

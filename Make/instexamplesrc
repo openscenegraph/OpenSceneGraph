@@ -21,7 +21,7 @@ shift; shift; shift; shift; shift; shift; shift; shift;
 OTHER_LIBS=$1
 TIFF_LIB=$2
 
-[ "`uname`" = "Darwin" ] && MAKE=make || MAKE=gmake
+[ "`uname`" = "Darwin" ] && MAKE=gnumake || MAKE=gmake
 
 
 copy_example_source()

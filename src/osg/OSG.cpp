@@ -144,8 +144,6 @@ Order of precedence for
   OSG_LD_LIBRARY_PATH 
   s_default_dso_path
   LD_LIBRARY*_PATH
-
- * DO NOT USE PATH or OSGFILEPATH
  */
 
 char *osg::findDSO( const char *name )
@@ -164,10 +162,10 @@ char *osg::findDSO( const char *name )
     strcat( path, PathDelimitor );
     strcat( path, s_default_dso_path );
 
-#ifdef __sgi
+#ifdef __sgi // [
 
 // bloody mess see rld(1) man page
-#   if (_MIPS_SIM == _MIPS_SIM_ABI32)
+#   if (_MIPS_SIM == _MIPS_SIM_ABI32) // [
 
     if( (ptr = getenv( "LD_LIBRARY_PATH" )))
     {
@@ -175,7 +173,7 @@ char *osg::findDSO( const char *name )
         strcat( path, ptr );
     }
 
-#   elif (_MIPS_SIM == _MIPS_SIM_NABI32)
+#   elif (_MIPS_SIM == _MIPS_SIM_NABI32) // ][
 
     if( !(ptr = getenv( "LD_LIBRARYN32_PATH" )))
         ptr = getenv( "LD_LIBRARY_PATH" );
@@ -186,7 +184,7 @@ char *osg::findDSO( const char *name )
         strcat( path, ptr );
     }
 
-#   elif (_MIPS_SIM == _MIPS_SIM_ABI64)
+#   elif (_MIPS_SIM == _MIPS_SIM_ABI64) // ][
 
     if( !(ptr = getenv( "LD_LIBRARYN32_PATH" )))
         ptr = getenv( "LD_LIBRARY_PATH" );
@@ -196,26 +194,25 @@ char *osg::findDSO( const char *name )
         strcat( path, PathDelimitor );
         strcat( path, ptr );
     }
-#   endif
+#   endif // ]
 
-#else
+#else // ][
 
-#if 0 // DO NOT USE PATH or OSGFILEPATH
-#	ifdef WIN32
+#	ifdef WIN32 // [
     if ((ptr = getenv( "PATH" ))) 
     {
         notify(DEBUG) << "PATH = "<<ptr<<endl;
         strcat( path, PathDelimitor );
         strcat( path, ptr );
     }
-#	else
+#	else // ][
     if( (ptr = getenv( "LD_LIBRARY_PATH" )))
     {
         strcat( path, PathDelimitor );
         strcat( path, ptr );
     }
-#endif
-#endif
+#endif // ]
+#endif // ]
 
 #ifndef WIN32
 
@@ -246,9 +243,6 @@ char *osg::findDSO( const char *name )
     delete prependosgPlugins;
     
     return fileFound;
-#endif
-
-    return FindFileInPath( name, path );
 }
 
 

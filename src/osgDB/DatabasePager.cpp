@@ -226,13 +226,71 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     }
 }
 
+static double s_start_frame = 0;
+static double s_before_compile = 0;
+static double s_after_compile = 0;
+static osg::Timer_t startTick = 0;
+
 void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
 {
+
     if (framestamp)
     {
         //osg::notify(osg::INFO) << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
         _frameNumber = framestamp->getFrameNumber();
+        
+        
     } //else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
+
+    if (startTick==0) startTick = osg::Timer::instance()->tick();
+
+    double timeStamp = osg::Timer::instance()->delta_s(startTick,osg::Timer::instance()->tick());
+
+    double drawTime = s_before_compile-s_start_frame;
+    double compileTime = s_after_compile-s_before_compile;
+    double timeDelta = timeStamp-s_start_frame;
+    
+    unsigned int numFrames = (timeDelta*60.0074);
+/*    
+    if (timeDelta>0.02) 
+    {
+        std::string str;
+        if (osg::Texture::s_numberTextureReusedLastInLastFrame > 0) str += " RT ";
+        if (osg::Texture::s_numberNewTextureInLastFrame > 0) str += " NT ";
+        if (osg::Texture::s_numberDeletedTextureInLastFrame > 0) str += " DT ";
+        if (osg::Drawable::s_numberDrawablesReusedLastInLastFrame > 0) str += " RD ";
+        if (osg::Drawable::s_numberNewDrawablesInLastFrame > 0) str += " ND ";
+        if (osg::Drawable::s_numberDeletedDrawablesInLastFrame > 0) str += " DD ";
+        
+        if (str.empty()) str += " ?? ";
+
+        osg::notify(osg::NOTICE)<<" ************* frame="<<timeDelta<<"\tdraw="<<drawTime<<"\tcompile="<<compileTime<<" ***** FRAMES DROPPED ********** "<<str<<std::dec<<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberTextureReusedLastInLastFrame = "<<osg::Texture::s_numberTextureReusedLastInLastFrame<<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberNewTextureInLastFrame = "<<osg::Texture::s_numberNewTextureInLastFrame <<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberDeletedTextureInLastFrame = "<<osg::Texture::s_numberDeletedTextureInLastFrame <<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberDrawablesReusedLastInLastFrame = "<<osg::Drawable::s_numberDrawablesReusedLastInLastFrame <<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberNewDrawablesInLastFrame = "<<osg::Drawable::s_numberNewDrawablesInLastFrame <<std::endl;
+        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberDeletedDrawablesInLastFrame = "<<osg::Drawable::s_numberDeletedDrawablesInLastFrame <<std::endl;
+
+    }
+*/    
+    s_start_frame = timeStamp;
+
+    osg::Texture::s_numberTextureReusedLastInLastFrame = 0;
+    osg::Texture::s_numberNewTextureInLastFrame = 0;
+    osg::Texture::s_numberDeletedTextureInLastFrame = 0;
+    osg::Drawable::s_numberDrawablesReusedLastInLastFrame = 0;
+    osg::Drawable::s_numberNewDrawablesInLastFrame = 0;
+    osg::Drawable::s_numberDeletedDrawablesInLastFrame = 0;
+
+
+
+
+
+
+
+
+
 
     _frameBlock->reset();
 
@@ -353,12 +411,10 @@ void DatabasePager::run()
     osg::notify(osg::INFO)<<"DatabasePager::run()"<<std::endl;
 
     // need to set the texture object manager to be able to reuse textures
-    // by keeping deleted texture objects around for 10 seconds after being deleted.
     osg::Texture::setMinimumNumberOfTextureObjectsToRetainInCache(100);
     
     // need to set the texture object manager to be able to reuse textures
-    // by keeping deleted texture objects around for 10 seconds after being deleted.
-    osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(2000);
+    osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(500);
 
     bool firstTime = true;
     
@@ -526,34 +582,7 @@ void DatabasePager::run()
 
 void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
 {
-/*  
-    static double s_previous = timeStamp;
-    double timeDelta = timeStamp-s_previous;
-    if (timeDelta>0.02) 
-    {
-        std::string str;
-        if (osg::Texture::s_numberTextureReusedLastInLastFrame > 0) str += " RT ";
-        if (osg::Texture::s_numberNewTextureInLastFrame > 0) str += " NT ";
-        if (osg::Texture::s_numberDeletedTextureInLastFrame > 0) str += " DT ";
-        if (osg::Drawable::s_numberDrawablesReusedLastInLastFrame > 0) str += " RD ";
-        if (osg::Drawable::s_numberNewDrawablesInLastFrame > 0) str += " ND ";
-        if (osg::Drawable::s_numberDeletedDrawablesInLastFrame > 0) str += " DD ";
-        
-        if (str.empty()) str += " ?? ";
 
-        osg::notify(osg::NOTICE)<<"addLoadedDataToSceneGraph "<<timeDelta;
-        osg::notify(osg::NOTICE)<<" ************* FRAME DROP ********** "<<str<<std::dec<<std::endl;
-        osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberTextureReusedLastInLastFrame = "<<osg::Texture::s_numberTextureReusedLastInLastFrame<<std::endl;
-        osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberNewTextureInLastFrame = "<<osg::Texture::s_numberNewTextureInLastFrame <<std::endl;
-        osg::notify(osg::NOTICE)<<"\tosg::Texture::s_numberDeletedTextureInLastFrame = "<<osg::Texture::s_numberDeletedTextureInLastFrame <<std::endl;
-        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberDrawablesReusedLastInLastFrame = "<<osg::Drawable::s_numberDrawablesReusedLastInLastFrame <<std::endl;
-        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberNewDrawablesInLastFrame = "<<osg::Drawable::s_numberNewDrawablesInLastFrame <<std::endl;
-        osg::notify(osg::NOTICE)<<"\tosg::Drawable::s_numberDeletedDrawablesInLastFrame = "<<osg::Drawable::s_numberDeletedDrawablesInLastFrame <<std::endl;
-
-    }
-    
-    s_previous = timeStamp;
-*/    
     // osg::Timer_t before = osg::Timer::instance()->tick();
 
     DatabaseRequestList localFileLoadedList;
@@ -592,12 +621,6 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
 
     // osg::notify(osg::NOTICE)<<"Done DatabasePager::addLoadedDataToSceneGraph"<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms  objects"<<localFileLoadedList.size()<<std::endl;
     
-    osg::Texture::s_numberTextureReusedLastInLastFrame = 0;
-    osg::Texture::s_numberNewTextureInLastFrame = 0;
-    osg::Texture::s_numberDeletedTextureInLastFrame = 0;
-    osg::Drawable::s_numberDrawablesReusedLastInLastFrame = 0;
-    osg::Drawable::s_numberNewDrawablesInLastFrame = 0;
-    osg::Drawable::s_numberDeletedDrawablesInLastFrame = 0;
 }
 
 void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
@@ -646,7 +669,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     
     unsigned int i = 0;
     // unsigned int numberOfPagedLODToTest = _inactivePagedLODList.size();
-    unsigned int targetNumOfInActivePagedLODs = 1000;
+    unsigned int targetNumOfInActivePagedLODs = 100;
     unsigned int targetNumOfRemovedChildPagedLODs = 0;
     if (_inactivePagedLODList.size()>targetNumOfInActivePagedLODs) targetNumOfRemovedChildPagedLODs = _inactivePagedLODList.size()-targetNumOfInActivePagedLODs;
     
@@ -793,169 +816,187 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 {
 //    osg::notify(osg::NOTICE)<<"DatabasePager::compileGLObjects "<<_frameNumber<<std::endl;
 
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-    double estimatedTextureDuration = 0.0;
-    double estimatedDrawableDuration = 0.0;
 
-    osg::ref_ptr<DatabaseRequest> databaseRequest;
-    
-    // get the first compileable entry.
+    s_before_compile = osg::Timer::instance()->delta_s(startTick,osg::Timer::instance()->tick());
+
+
+    double drawTime = s_before_compile-s_start_frame;    
+    if (drawTime<0.01)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
-        if (!_dataToCompileList.empty())
+
+        const osg::Timer& timer = *osg::Timer::instance();
+        osg::Timer_t start_tick = timer.tick();
+        double elapsedTime = 0.0;
+        double estimatedTextureDuration = 0.0;
+        double estimatedDrawableDuration = 0.0;
+
+        osg::ref_ptr<DatabaseRequest> databaseRequest;
+
+        // get the first compileable entry.
         {
-            std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
-
-            DatabaseRequestList::iterator litr;
-            int i=0;
-            for(litr = _dataToCompileList.begin();
-                (litr != _dataToCompileList.end()) && (_frameNumber == (*litr)->_frameNumberLastRequest);
-                ++litr,i++)
-            {
-                //osg::notify(osg::NOTICE)<<"Compile "<<_frameNumber-(*litr)->_frameNumberLastRequest<<std::endl;
-            }
-            if (litr != _dataToCompileList.end())
-            {
-                if (_deleteRemovedSubgraphsInDatabaseThread)
-                {
-                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_childrenToDeleteListMutex);
-                    
-                    for(DatabaseRequestList::iterator ditr=litr;
-                        ditr!=_dataToCompileList.end();
-                        ++ditr)
-                    {
-                        _childrenToDeleteList.push_back((*ditr)->_loadedModel.get());
-                    }
-                }
-                //osg::notify(osg::NOTICE)<<"Pruning "<<_dataToCompileList.size()-i<<std::endl;
-                _dataToCompileList.erase(litr,_dataToCompileList.end());
-            }
-
-
-            databaseRequest = _dataToCompileList.front();
-        }
-    };
-
-    unsigned int numObjectsCompiled = 0;
-    unsigned int maxNumObjectsToCompile = 4;
-
-    // while there are valid databaseRequest's in the to compile list and there is
-    // sufficient time left compile each databaseRequest's stateset and drawables.
-    while (databaseRequest.valid() && elapsedTime<availableTime && numObjectsCompiled<maxNumObjectsToCompile) 
-    {
-        DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
-        DataToCompile& dtc = dcm[state.getContextID()];
-        if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile)
-        {
-        
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
-        
-            // we have StateSet's to compile
-            StateSetList& sslist = dtc.first;
-            //osg::notify(osg::INFO)<<"Compiling statesets"<<std::endl;
-            StateSetList::iterator itr=sslist.begin();
-            for(;
-                itr!=sslist.end() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile;
-                ++itr)
-            {
-                //osg::notify(osg::INFO)<<"    Compiling stateset "<<(*itr).get()<<std::endl;
-
-                double startCompileTime = timer.delta_s(start_tick,timer.tick());
-
-                (*itr)->compileGLObjects(state);
-
-                GLint p;
-                glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
-
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-                
-
-                // estimate the duration of the compile based on current compile duration.
-                estimatedTextureDuration = (elapsedTime-startCompileTime);
-                
-                ++numObjectsCompiled;
-            }
-            // remove the compiled stateset from the list.
-            sslist.erase(sslist.begin(),itr);
-        }
-        
-        if (!dtc.second.empty() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile)
-        {
-            // we have Drawable's to compile
-            //osg::notify(osg::INFO)<<"Compiling drawables"<<std::endl;
-            DrawableList& dwlist = dtc.second;
-            DrawableList::iterator itr=dwlist.begin();
-            for(;
-                itr!=dwlist.end() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile;
-                ++itr)
-            {
-                //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;
-                double startCompileTime = timer.delta_s(start_tick,timer.tick());
-                (*itr)->compileGLObjects(state);
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-
-                // estimate the duration of the compile based on current compile duration.
-                estimatedDrawableDuration = (elapsedTime-startCompileTime);
-
-                ++numObjectsCompiled;
-
-            }
-            // remove the compiled drawables from the list.
-            dwlist.erase(dwlist.begin(),itr);
-        }
-        
-        //osg::notify(osg::INFO)<<"Checking if compiled"<<std::endl;
-
-        // now check the to compile entries for all active graphics contexts
-        // to make sure that all have been compiled.
-        bool allCompiled = true;
-        for(DataToCompileMap::iterator itr=dcm.begin();
-            itr!=dcm.end() && allCompiled;
-            ++itr)
-        {
-            if (!(itr->second.first.empty())) allCompiled=false;
-            if (!(itr->second.second.empty())) allCompiled=false;
-        }
-        
-        
-        if (allCompiled)
-        {
-            osg::notify(osg::INFO)<<"All compiled"<<std::endl;
-
-            // we've compile all of the current databaseRequest so we can now pop it off the
-            // to compile list and place it on the merge list.
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
-            
-            {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
-                _dataToMergeList.push_back(databaseRequest);
-            }
-
-            if (!_dataToCompileList.empty()) _dataToCompileList.erase(_dataToCompileList.begin());
-
             if (!_dataToCompileList.empty())
             {
                 std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
+
+                DatabaseRequestList::iterator litr;
+                int i=0;
+                for(litr = _dataToCompileList.begin();
+                    (litr != _dataToCompileList.end()) && (_frameNumber == (*litr)->_frameNumberLastRequest);
+                    ++litr,i++)
+                {
+                    //osg::notify(osg::NOTICE)<<"Compile "<<_frameNumber-(*litr)->_frameNumberLastRequest<<std::endl;
+                }
+                if (litr != _dataToCompileList.end())
+                {
+                    if (_deleteRemovedSubgraphsInDatabaseThread)
+                    {
+                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_childrenToDeleteListMutex);
+
+                        for(DatabaseRequestList::iterator ditr=litr;
+                            ditr!=_dataToCompileList.end();
+                            ++ditr)
+                        {
+                            _childrenToDeleteList.push_back((*ditr)->_loadedModel.get());
+                        }
+                    }
+                    //osg::notify(osg::NOTICE)<<"Pruning "<<_dataToCompileList.size()-i<<std::endl;
+                    _dataToCompileList.erase(litr,_dataToCompileList.end());
+                }
+
+
                 databaseRequest = _dataToCompileList.front();
             }
-            else databaseRequest = 0;
+        };
 
-        }
-        else 
+        unsigned int numObjectsCompiled = 0;
+        unsigned int maxNumObjectsToCompile = 4;
+
+        // while there are valid databaseRequest's in the to compile list and there is
+        // sufficient time left compile each databaseRequest's stateset and drawables.
+        while (databaseRequest.valid() && elapsedTime<availableTime && numObjectsCompiled<maxNumObjectsToCompile) 
         {
-            //osg::notify(osg::INFO)<<"Not all compiled"<<std::endl;
-            databaseRequest = 0;
+            DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
+            DataToCompile& dtc = dcm[state.getContextID()];
+            if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile)
+            {
+
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
+
+                // we have StateSet's to compile
+                StateSetList& sslist = dtc.first;
+                //osg::notify(osg::INFO)<<"Compiling statesets"<<std::endl;
+                StateSetList::iterator itr=sslist.begin();
+                for(;
+                    itr!=sslist.end() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile;
+                    ++itr)
+                {
+                    //osg::notify(osg::INFO)<<"    Compiling stateset "<<(*itr).get()<<std::endl;
+
+                    double startCompileTime = timer.delta_s(start_tick,timer.tick());
+
+                    (*itr)->compileGLObjects(state);
+
+                    GLint p;
+                    glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
+
+                    elapsedTime = timer.delta_s(start_tick,timer.tick());
+
+
+                    // estimate the duration of the compile based on current compile duration.
+                    estimatedTextureDuration = (elapsedTime-startCompileTime);
+
+                    ++numObjectsCompiled;
+                }
+                // remove the compiled stateset from the list.
+                sslist.erase(sslist.begin(),itr);
+            }
+
+            if (!dtc.second.empty() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile)
+            {
+                // we have Drawable's to compile
+                //osg::notify(osg::INFO)<<"Compiling drawables"<<std::endl;
+                DrawableList& dwlist = dtc.second;
+                DrawableList::iterator itr=dwlist.begin();
+                for(;
+                    itr!=dwlist.end() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<maxNumObjectsToCompile;
+                    ++itr)
+                {
+                    //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;
+                    double startCompileTime = timer.delta_s(start_tick,timer.tick());
+                    (*itr)->compileGLObjects(state);
+                    elapsedTime = timer.delta_s(start_tick,timer.tick());
+
+                    // estimate the duration of the compile based on current compile duration.
+                    estimatedDrawableDuration = (elapsedTime-startCompileTime);
+
+                    // osg::notify(osg::NOTICE)<<"    Compiling drawable "<<estimatedDrawableDuration<<std::endl;
+
+                    ++numObjectsCompiled;
+
+                }
+                // remove the compiled drawables from the list.
+                dwlist.erase(dwlist.begin(),itr);
+            }
+
+            //osg::notify(osg::INFO)<<"Checking if compiled"<<std::endl;
+
+            // now check the to compile entries for all active graphics contexts
+            // to make sure that all have been compiled.
+            bool allCompiled = true;
+            for(DataToCompileMap::iterator itr=dcm.begin();
+                itr!=dcm.end() && allCompiled;
+                ++itr)
+            {
+                if (!(itr->second.first.empty())) allCompiled=false;
+                if (!(itr->second.second.empty())) allCompiled=false;
+            }
+
+
+            if (allCompiled)
+            {
+                osg::notify(osg::INFO)<<"All compiled"<<std::endl;
+
+                // we've compile all of the current databaseRequest so we can now pop it off the
+                // to compile list and place it on the merge list.
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
+
+                {
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
+                    _dataToMergeList.push_back(databaseRequest);
+                }
+
+                if (!_dataToCompileList.empty()) _dataToCompileList.erase(_dataToCompileList.begin());
+
+                if (!_dataToCompileList.empty())
+                {
+                    std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
+                    databaseRequest = _dataToCompileList.front();
+                }
+                else databaseRequest = 0;
+
+            }
+            else 
+            {
+                //osg::notify(osg::INFO)<<"Not all compiled"<<std::endl;
+                databaseRequest = 0;
+            }
+
+            elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
-        
-        elapsedTime = timer.delta_s(start_tick,timer.tick());
+
+        // availableTime -= elapsedTime;
+
+    //    osg::notify(osg::NOTICE)<<"elapsedTime="<<elapsedTime<<" time remaining ="<<availableTime<<std::endl;
+        //osg::notify(osg::NOTICE)<<"estimatedTextureDuration="<<estimatedTextureDuration;
+        //osg::notify(osg::NOTICE)<<"\testimatedDrawableDuration="<<estimatedDrawableDuration<<std::endl;
+    }
+    else
+    {
+        availableTime = 0.0f;
     }
     
-    availableTime -= elapsedTime;
+    s_after_compile = osg::Timer::instance()->delta_s(startTick,osg::Timer::instance()->tick());
 
-//    osg::notify(osg::NOTICE)<<"elapsedTime="<<elapsedTime<<" time remaining ="<<availableTime<<std::endl;
-    //osg::notify(osg::NOTICE)<<"estimatedTextureDuration="<<estimatedTextureDuration;
-    //osg::notify(osg::NOTICE)<<"\testimatedDrawableDuration="<<estimatedDrawableDuration<<std::endl;
 }
 

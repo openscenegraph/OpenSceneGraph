@@ -38,17 +38,17 @@ unsigned int Drawable::s_numberDeletedDrawablesInLastFrame = 0;
 // static cache of deleted display lists which can only 
 // by completely deleted once the appropriate OpenGL context
 // is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
-typedef std::list<GLuint> DisplayListList;
-typedef std::map<GLuint,DisplayListList> DeletedDisplayListCache;
+typedef std::multimap<unsigned int,GLuint> DisplayListMap;
+typedef std::map<unsigned int,DisplayListMap> DeletedDisplayListCache;
 
 static OpenThreads::Mutex s_mutex_deletedDisplayListCache;
 static DeletedDisplayListCache s_deletedDisplayListCache;
 
-GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int /*sizeHint*/)
+GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHint)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 
-    DisplayListList& dll = s_deletedDisplayListCache[contextID];
+    DisplayListMap& dll = s_deletedDisplayListCache[contextID];
     if (dll.empty())
     {
         ++s_numberNewDrawablesInLastFrame;
@@ -56,11 +56,24 @@ GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int /*size
     }
     else 
     {
-        ++s_numberDrawablesReusedLastInLastFrame;
-        // notify(NOTICE)<<"reusing display list "<<std::endl;
-        GLuint globj = dll.back();
-        dll.pop_back();
-        return globj;
+        DisplayListMap::iterator itr = dll.lower_bound(sizeHint);
+        if (itr!=dll.end())
+        {
+            // osg::notify(osg::NOTICE)<<"Reusing a display list of size = "<<itr->first<<" for requested size = "<<sizeHint<<std::endl;
+
+            ++s_numberDrawablesReusedLastInLastFrame;
+            
+            GLuint globj = itr->second;
+            dll.erase(itr);
+            
+            return globj;
+        } 
+        else
+        {
+            // osg::notify(osg::NOTICE)<<"Creating a new display list of size = "<<sizeHint<<" although "<<dll.size()<<" are available"<<std::endl;
+            ++s_numberNewDrawablesInLastFrame;
+            return  glGenLists( 1 );
+        }
     }
 }
 
@@ -75,14 +88,14 @@ unsigned int Drawable::getMinimumNumberOfDisplayListsToRetainInCache()
     return s_minimumNumberOfDisplayListsToRetainInCache;
 }
 
-void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int /*sizeHint*/)
+void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint)
 {
     if (globj!=0)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 
         // insert the globj into the cache for the appropriate context.
-        s_deletedDisplayListCache[contextID].push_back(globj);
+        s_deletedDisplayListCache[contextID].insert(DisplayListMap::value_type(sizeHint,globj));
     }
 }
 
@@ -93,13 +106,13 @@ void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
     DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
     if (citr!=s_deletedDisplayListCache.end())
     {
-        DisplayListList& dll = citr->second;
+        DisplayListMap& dll = citr->second;
 
-        for(DisplayListList::iterator ditr=dll.begin();
+        for(DisplayListMap::iterator ditr=dll.begin();
             ditr!=dll.end();
             ++ditr)
         {
-            glDeleteLists(*ditr,1);
+            glDeleteLists(ditr->second,1);
         }
         
         dll.clear();         
@@ -123,19 +136,60 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
         DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
         if (citr!=s_deletedDisplayListCache.end())
         {
-            DisplayListList& dll = citr->second;
+            DisplayListMap& dll = citr->second;
             
-            for(DisplayListList::iterator ditr=dll.begin();
-                ditr!=dll.end() && elapsedTime<availableTime && dll.size()>s_minimumNumberOfDisplayListsToRetainInCache;
-                )
+            
+            bool trimFromFront = true;
+            if (trimFromFront)
             {
-                glDeleteLists(*ditr,1);
-                ditr = dll.erase(ditr);
-                elapsedTime = timer.delta_s(start_tick,timer.tick());
-               ++noDeleted;
-               
-               ++Drawable::s_numberDeletedDrawablesInLastFrame;
-             }
+                unsigned int prev_size = dll.size();
+            
+                DisplayListMap::iterator ditr=dll.begin();
+                unsigned int maxNumToDelete = (dll.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? dll.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
+                for(;
+                    ditr!=dll.end() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
+                    ++ditr)
+                {
+                    glDeleteLists(ditr->second,1);
+
+                    elapsedTime = timer.delta_s(start_tick,timer.tick());
+                    ++noDeleted;
+
+                    ++Drawable::s_numberDeletedDrawablesInLastFrame;
+                 }
+
+                 if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
+
+                 if (noDeleted+dll.size() != prev_size)
+                 {
+                    osg::notify(osg::WARN)<<"Error in delete"<<std::endl;
+                 }    
+            }
+            else
+            {
+                unsigned int prev_size = dll.size();
+
+                DisplayListMap::reverse_iterator ditr=dll.rbegin();
+                unsigned int maxNumToDelete = (dll.size() > s_minimumNumberOfDisplayListsToRetainInCache) ? dll.size()-s_minimumNumberOfDisplayListsToRetainInCache : 0;
+                for(;
+                    ditr!=dll.rend() && elapsedTime<availableTime && noDeleted<maxNumToDelete;
+                    ++ditr)
+                {
+                    glDeleteLists(ditr->second,1);
+
+                    elapsedTime = timer.delta_s(start_tick,timer.tick());
+                    ++noDeleted;
+
+                    ++Drawable::s_numberDeletedDrawablesInLastFrame;
+                 }
+
+                 if (ditr!=dll.rbegin()) dll.erase(ditr.base(),dll.end());
+                 
+                 if (noDeleted+dll.size() != prev_size)
+                 {
+                    osg::notify(osg::WARN)<<"Error in delete"<<std::endl;
+                 }    
+            }
         }
     }
     elapsedTime = timer.delta_s(start_tick,timer.tick());
@@ -156,7 +210,7 @@ void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
         
         // insert the globj into the cache for the appropriate context.
-        s_deletedVertexBufferObjectCache[contextID].push_back(globj);
+        s_deletedVertexBufferObjectCache[contextID].insert(DisplayListMap::value_type(0,globj));
     }
 }
 
@@ -182,17 +236,18 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
 
             unsigned int noDeleted = 0;
 
-            DisplayListList& dll = citr->second;
+            DisplayListMap& dll = citr->second;
 
-            for(DisplayListList::iterator ditr=dll.begin();
+            DisplayListMap::iterator ditr=dll.begin();
+            for(;
                 ditr!=dll.end() && elapsedTime<availableTime;
-                )
+                ++ditr)
             {
-                extensions->glDeleteBuffers(1,&(*ditr));
-                ditr = dll.erase(ditr);
+                extensions->glDeleteBuffers(1,&(ditr->second));
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
                 ++noDeleted;
             }
+            if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
 
             if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
         }

@@ -25,10 +25,10 @@ class Node;
 // this is define to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
 // to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display 
-// lists, but optimize a seperate COMPILE very well?!  Define it as default
+// lists, but optimize a separate COMPILE very well?!  Define it as default
 // the use of a sperate COMPILE, then glCallList rather than use COMPILE_AND_EXECUTE.
 
-#define USE_SEPERATE_COMPILE_AND_EXECUTE
+#define USE_SEPARATE_COMPILE_AND_EXECUTE
 
 /** Pure virtual base class for drawable Geometry.  Contains no drawing primitives
     directly, these are provided by subclasses such as osg::Geometry. State attributes 
@@ -346,7 +346,7 @@ inline void Drawable::draw(State& state)
         }
         else if (_useDisplayList)
         {
-#ifdef USE_SEPERATE_COMPILE_AND_EXECUTE
+#ifdef USE_SEPARATE_COMPILE_AND_EXECUTE
             globj = glGenLists( 1 );
             glNewList( globj, GL_COMPILE );
             if (_drawCallback.valid())

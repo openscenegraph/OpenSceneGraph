@@ -72,7 +72,7 @@ const Vec4& Material::getAmbient(const Face face) const
             if (!_ambientFrontAndBack)
             {
                 notify(NOTICE)<<"Notice: Material::getAmbient(FRONT_AND_BACK) called on material "<< std::endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK ambient colors."<< std::endl;
+                notify(NOTICE)<<"        with separate FRONT and BACK ambient colors."<< std::endl;
             }
             return _ambientFront;
     }
@@ -120,7 +120,7 @@ const Vec4& Material::getDiffuse(const Face face) const
             if (!_diffuseFrontAndBack)
             {
                 notify(NOTICE)<<"Notice: Material::getDiffuse(FRONT_AND_BACK) called on material "<< std::endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK diffuse colors."<< std::endl;
+                notify(NOTICE)<<"        with separate FRONT and BACK diffuse colors."<< std::endl;
             }
             return _diffuseFront;
     }
@@ -168,7 +168,7 @@ const Vec4& Material::getSpecular(const Face face) const
             if (!_specularFrontAndBack)
             {
                 notify(NOTICE)<<"Notice: Material::getSpecular(FRONT_AND_BACK) called on material "<< std::endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK specular colors."<< std::endl;
+                notify(NOTICE)<<"        with separate FRONT and BACK specular colors."<< std::endl;
             }
             return _specularFront;
     }
@@ -216,7 +216,7 @@ const Vec4& Material::getEmission(const Face face) const
             if (!_emissionFrontAndBack)
             {
                 notify(NOTICE)<<"Notice: Material::getEmission(FRONT_AND_BACK) called on material "<< std::endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK emission colors."<< std::endl;
+                notify(NOTICE)<<"        with separate FRONT and BACK emission colors."<< std::endl;
             }
             return _emissionFront;
     }
@@ -263,7 +263,7 @@ const float Material::getShininess(const Face face) const
             if (!_shininessFrontAndBack)
             {
                 notify(NOTICE)<<"Notice: Material::getShininess(FRONT_AND_BACK) called on material "<< std::endl;
-                notify(NOTICE)<<"        with seperate FRONT and BACK shininess colors."<< std::endl;
+                notify(NOTICE)<<"        with separate FRONT and BACK shininess colors."<< std::endl;
             }
             return _shininessFront;
     }

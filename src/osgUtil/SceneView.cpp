@@ -223,7 +223,7 @@ void SceneView::cull()
             fusionDistance = _camera->getFusionDistance();
         }
         
-        float iod = _displaySettings->getEyeSeperation();
+        float iod = _displaySettings->getEyeSeparation();
         float sd = _displaySettings->getScreenDistance();
         float es = 0.5f*iod*(fusionDistance/sd);
 
@@ -499,10 +499,10 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
             {
-                int seperation = _displaySettings->getSplitStereoHorizontalSeperation();
+                int separation = _displaySettings->getSplitStereoHorizontalSeparation();
 
-                int left_half_width = (_viewport->width()-seperation)/2;
-                int right_half_begin = (_viewport->width()+seperation)/2;
+                int left_half_width = (_viewport->width()-separation)/2;
+                int right_half_begin = (_viewport->width()+separation)/2;
                 int right_half_width = _viewport->width()-right_half_begin;
 
                 osg::ref_ptr<osg::Viewport> viewportLeft = osgNew osg::Viewport;
@@ -512,7 +512,7 @@ void SceneView::draw()
                 viewportRight->setViewport(_viewport->x()+right_half_begin,_viewport->y(),right_half_width,_viewport->height());
 
 
-                clearArea(_viewport->x()+left_half_width,_viewport->y(),seperation,_viewport->height(),_renderStageLeft->getClearColor());
+                clearArea(_viewport->x()+left_half_width,_viewport->y(),separation,_viewport->height(),_renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
                 {
@@ -540,10 +540,10 @@ void SceneView::draw()
         case(osg::DisplaySettings::VERTICAL_SPLIT):
             {
 
-                int seperation = _displaySettings->getSplitStereoVerticalSeperation();
+                int separation = _displaySettings->getSplitStereoVerticalSeparation();
 
-                int bottom_half_height = (_viewport->height()-seperation)/2;
-                int top_half_begin = (_viewport->height()+seperation)/2;
+                int bottom_half_height = (_viewport->height()-separation)/2;
+                int top_half_begin = (_viewport->height()+separation)/2;
                 int top_half_height = _viewport->height()-top_half_begin;
 
                 osg::ref_ptr<osg::Viewport> viewportTop = osgNew osg::Viewport;
@@ -552,7 +552,7 @@ void SceneView::draw()
                 osg::ref_ptr<osg::Viewport> viewportBottom = osgNew osg::Viewport;
                 viewportBottom->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half_height);
 
-                clearArea(_viewport->x(),_viewport->y()+bottom_half_height,_viewport->width(),seperation,_renderStageLeft->getClearColor());
+                clearArea(_viewport->x(),_viewport->y()+bottom_half_height,_viewport->width(),separation,_renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
                 {

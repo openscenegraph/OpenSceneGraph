@@ -50,7 +50,7 @@ class SG_EXPORT LightModel : public StateAttribute
 
         enum ColorControl
         {
-            SEPERATE_SPECULAR_COLOR,
+            SEPARATE_SPECULAR_COLOR,
             SINGLE_COLOR
         };
         

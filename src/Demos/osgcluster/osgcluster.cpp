@@ -72,7 +72,7 @@ class CameraPacket {
         
         void getSceneViewUpdate(osgUtil::SceneView& sv)
         {
-            // note pass a seperate reference counted FrameStamp
+            // note pass a separate reference counted FrameStamp
             // rather than this frame stamp as it can get overwritten.
             sv.setFrameStamp(new osg::FrameStamp(_frameStamp));
         }

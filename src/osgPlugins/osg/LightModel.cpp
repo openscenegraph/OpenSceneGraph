@@ -43,9 +43,9 @@ bool LightModel_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("colorControl"))
     {
-        if (fr[1].matchWord("SEPERATE_SPECULAR_COLOR"))
+        if (fr[1].matchWord("SEPARATE_SPECULAR_COLOR"))
         {
-            lightmodel.setColorControl(osg::LightModel::SEPERATE_SPECULAR_COLOR);
+            lightmodel.setColorControl(osg::LightModel::SEPARATE_SPECULAR_COLOR);
         }
         else if (fr[1].matchWord("SINGLE_COLOR"))
         {
@@ -95,8 +95,8 @@ bool LightModel_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << "ambientIntensity " << lightmodel.getAmbientIntensity() << std::endl;
     
-    if (lightmodel.getColorControl()==osg::LightModel::SEPERATE_SPECULAR_COLOR)
-        fw.indent() << "colorControl SEPERATE_SPECULAR_COLOR" << std::endl;
+    if (lightmodel.getColorControl()==osg::LightModel::SEPARATE_SPECULAR_COLOR)
+        fw.indent() << "colorControl SEPARATE_SPECULAR_COLOR" << std::endl;
     else
         fw.indent() << "colorControl SINGLE_COLOR" << std::endl;
 

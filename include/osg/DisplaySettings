@@ -70,8 +70,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setStereoMode(const StereoMode mode) { _stereoMode = mode; }
         const StereoMode getStereoMode() const { return _stereoMode; }
 
-        void setEyeSeperation(const float eyeSeperation) { _eyeSeperation = eyeSeperation; }
-        const float getEyeSeperation() const { return _eyeSeperation; }
+        void setEyeSeparation(const float eyeSeparation) { _eyeSeparation = eyeSeparation; }
+        const float getEyeSeparation() const { return _eyeSeparation; }
 
         void setScreenDistance(const float distance) { _screenDistance = distance; }
         const float getScreenDistance() const { return _screenDistance; }
@@ -85,8 +85,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setSplitStereoHorizontalEyeMapping(SplitStereoHorizontalEyeMapping m) { _splitStereoHorizontalEyeMapping = m; }
         SplitStereoHorizontalEyeMapping getSplitStereoHorizontalEyeMapping() const { return _splitStereoHorizontalEyeMapping; }
 
-        void setSplitStereoHorizontalSeperation(const int s) { _splitStereoHorizontalSeperation = s; }
-        const int getSplitStereoHorizontalSeperation() const { return _splitStereoHorizontalSeperation; }
+        void setSplitStereoHorizontalSeparation(const int s) { _splitStereoHorizontalSeparation = s; }
+        const int getSplitStereoHorizontalSeparation() const { return _splitStereoHorizontalSeparation; }
 
         enum SplitStereoVerticalEyeMapping
         {
@@ -97,8 +97,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setSplitStereoVerticalEyeMapping(SplitStereoVerticalEyeMapping m) { _splitStereoVerticalEyeMapping = m; }
         SplitStereoVerticalEyeMapping getSplitStereoVerticalEyeMapping() const { return _splitStereoVerticalEyeMapping; }
 
-        void setSplitStereoVerticalSeperation(const int s) { _splitStereoVerticalSeperation = s; }
-        const int getSplitStereoVerticalSeperation() const { return _splitStereoVerticalSeperation; }
+        void setSplitStereoVerticalSeparation(const int s) { _splitStereoVerticalSeparation = s; }
+        const int getSplitStereoVerticalSeparation() const { return _splitStereoVerticalSeparation; }
 
 
         void setScreenHeight(const float height) { _screenHeight = height; }
@@ -137,14 +137,14 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
         bool                            _stereo;
         StereoMode                      _stereoMode;
-        float                           _eyeSeperation;
+        float                           _eyeSeparation;
         float                           _screenDistance;
         float                           _screenHeight;
 
         SplitStereoHorizontalEyeMapping _splitStereoHorizontalEyeMapping;
-        int                             _splitStereoHorizontalSeperation;
+        int                             _splitStereoHorizontalSeparation;
         SplitStereoVerticalEyeMapping   _splitStereoVerticalEyeMapping;
-        int                             _splitStereoVerticalSeperation;
+        int                             _splitStereoVerticalSeparation;
     
         bool                            _doubleBuffer;
         bool                            _RGB;

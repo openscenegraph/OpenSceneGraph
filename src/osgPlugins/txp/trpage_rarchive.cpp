@@ -55,7 +55,7 @@ void trpgr_Archive::SetDirectory(const char *in_dir)
 bool trpgr_Archive::OpenFile(const char *name)
 {
     char file[1024];
-    sprintf(file,"%s" PATHSEPERATOR "%s",dir,name);
+    sprintf(file,"%s" PATHSEPARATOR "%s",dir,name);
 
     CloseFile();
 
@@ -161,7 +161,7 @@ bool trpgr_Archive::ReadHeader()
     if (tileMode == trpgTileTable::Local) {
         if (tileCache)  delete tileCache;
         char fullBase[1024];
-        sprintf(fullBase,"%s" PATHSEPERATOR "tileFile",dir);
+        sprintf(fullBase,"%s" PATHSEPARATOR "tileFile",dir);
         tileCache = new trpgrAppFileCache(fullBase,"tpf");
     }
 
@@ -191,7 +191,7 @@ bool trpgr_Archive::ReadTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf
         // Figure out the file name
         // Note: This assumes External tiles
         char filename[1024];
-        sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
+        sprintf(filename,"%s" PATHSEPARATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
 
         // Open the file and read the contents
         FILE *fp=NULL;
@@ -313,7 +313,7 @@ trpgrImageHelper::trpgrImageHelper(trpgEndian inNess,char *inDir,
     // Set up the texture cache
     // It doesn't do anything until it's called anyway
     char fullBase[1024];
-    sprintf(fullBase,"%s" PATHSEPERATOR "texFile",dir);
+    sprintf(fullBase,"%s" PATHSEPARATOR "texFile",dir);
     texCache = new trpgrAppFileCache(fullBase,"txf");
 }
 
@@ -481,7 +481,7 @@ bool trpgrImageHelper::GetImagePath(const trpgTexture *tex,char *fullPath,int pa
     if (strlen(dir) + nameLen + 2 > static_cast<unsigned int>(pathLen))
         return false;
 
-    sprintf(fullPath,"%s" PATHSEPERATOR "%s",dir,name);
+    sprintf(fullPath,"%s" PATHSEPARATOR "%s",dir,name);
 
     return true;
 }

@@ -193,7 +193,7 @@ bool trpgwArchive::OpenFile(const char *in_dir,const char *name)
 
     strncpy(dir,in_dir,1023);
 
-    sprintf(filename,"%s" PATHSEPERATOR "%s",dir,name);
+    sprintf(filename,"%s" PATHSEPARATOR "%s",dir,name);
 
     if (!(fp = fopen(filename,"wb")))
         return false;
@@ -353,7 +353,7 @@ bool trpgwArchive::IncrementTileFile()
 
     // Open the next one
     char filename[1024];
-    sprintf(filename,"%s" PATHSEPERATOR "tileFile_%d.tpf",dir,tileFileCount++);
+    sprintf(filename,"%s" PATHSEPARATOR "tileFile_%d.tpf",dir,tileFileCount++);
     tileFile = new trpgwAppFile(ness,filename);
     if (!tileFile->isValid())
         return false;
@@ -379,7 +379,7 @@ bool trpgwArchive::DesignateTileFile(int id)
 
     // Open a named on
     char filename[1024];
-    sprintf(filename,"%s" PATHSEPERATOR "tileFile_%d.tpf",dir,id);
+    sprintf(filename,"%s" PATHSEPARATOR "tileFile_%d.tpf",dir,id);
     tileFile = new trpgwAppFile(ness,filename);
     if (!tileFile->isValid())
     return false;
@@ -409,7 +409,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
         // Make a new filename
         char filename[1024];
         // Note: Windows specific
-        sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
+        sprintf(filename,"%s" PATHSEPARATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
         if (!(tfp = fopen(filename,"wb")))
             return false;
 
@@ -974,7 +974,7 @@ bool trpgwImageHelper::IncrementTextureFile()
 
     // Open the next one
     char filename[1024];
-    sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,texFileIDs.size());
+    sprintf(filename,"%s" PATHSEPARATOR "texFile_%d.txf",dir,texFileIDs.size());
     texFile = new trpgwAppFile(ness,filename);
     if (!texFile->isValid())
         return false;
@@ -996,7 +996,7 @@ bool trpgwImageHelper::DesignateTextureFile(int id)
 
     // Open one with the given base name
     char filename[1024];
-    sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,id);
+    sprintf(filename,"%s" PATHSEPARATOR "texFile_%d.txf",dir,id);
     texFile = new trpgwAppFile(ness,filename);
     if (!texFile->isValid())
     return false;

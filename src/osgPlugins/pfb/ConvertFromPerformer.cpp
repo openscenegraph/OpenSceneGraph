@@ -1067,7 +1067,7 @@ osg::Material* ConvertFromPerformer::visitMaterial(osg::StateSet* osgStateSet,pf
         material->getColor(PFMTL_SPECULAR,&r,&g,&b);
         osgMaterial->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(r,g,b,a));
     }
-    else                         // seperate materials for front and back.
+    else                         // separate materials for front and back.
     {
 
         int colorMode = front_mat->getColorMode(front_mat->getSide());

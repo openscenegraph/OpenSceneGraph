@@ -45,15 +45,15 @@ DisplaySettings::~DisplaySettings()
 void DisplaySettings::copy(const DisplaySettings& vs)
 {
     _stereoMode = vs._stereoMode;
-    _eyeSeperation = vs._eyeSeperation;
+    _eyeSeparation = vs._eyeSeparation;
     _screenDistance = vs._screenDistance;
     _screenHeight = vs._screenHeight;
 
     _splitStereoHorizontalEyeMapping = vs._splitStereoHorizontalEyeMapping;
-    _splitStereoHorizontalSeperation = vs._splitStereoHorizontalSeperation;
+    _splitStereoHorizontalSeparation = vs._splitStereoHorizontalSeparation;
 
     _splitStereoVerticalEyeMapping = vs._splitStereoVerticalEyeMapping;
-    _splitStereoVerticalSeperation = vs._splitStereoVerticalSeperation;
+    _splitStereoVerticalSeparation = vs._splitStereoVerticalSeparation;
 
     _doubleBuffer = vs._doubleBuffer;
     _RGB = vs._RGB;
@@ -82,15 +82,15 @@ void DisplaySettings::setDefaults()
 {
     _stereo = false;
     _stereoMode = ANAGLYPHIC;
-    _eyeSeperation = 0.05f;
+    _eyeSeparation = 0.05f;
     _screenDistance = 0.5f;
     _screenHeight = 0.26f;
 
     _splitStereoHorizontalEyeMapping = LEFT_EYE_LEFT_VIEWPORT;
-    _splitStereoHorizontalSeperation = 42;
+    _splitStereoHorizontalSeparation = 42;
 
     _splitStereoVerticalEyeMapping = LEFT_EYE_TOP_VIEWPORT;
-    _splitStereoVerticalSeperation = 42;
+    _splitStereoVerticalSeparation = 42;
 
     _doubleBuffer = true;
     _RGB = true;
@@ -144,9 +144,9 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    if( (ptr = getenv("OSG_EYE_SEPERATION")) != 0)
+    if( (ptr = getenv("OSG_EYE_SEPARATION")) != 0)
     {
-        _eyeSeperation = atof(ptr);
+        _eyeSeparation = atof(ptr);
     }
 
     if( (ptr = getenv("OSG_SCREEN_DISTANCE")) != 0)
@@ -172,9 +172,9 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    if( (ptr = getenv("OSG_SPLIT_STEREO_HORIZONTAL_SEPERATION")) != 0)
+    if( (ptr = getenv("OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION")) != 0)
     {
-        _splitStereoHorizontalSeperation = atoi(ptr);
+        _splitStereoHorizontalSeparation = atoi(ptr);
     }
 
 
@@ -191,9 +191,9 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    if( (ptr = getenv("OSG_SPLIT_STEREO_VERTICAL_SEPERATION")) != 0)
+    if( (ptr = getenv("OSG_SPLIT_STEREO_VERTICAL_SEPARATION")) != 0)
     {
-        _splitStereoVerticalSeperation = atoi(ptr);
+        _splitStereoVerticalSeparation = atoi(ptr);
     }
 
     if( (ptr = getenv("OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS")) != 0)

@@ -9,7 +9,11 @@
 // include Export simply to disable Visual Studio silly warnings.
 #include <osgParticle/Export>
 
+#ifndef __sgi
 #include <cstdlib>
+#else
+#include <stdlib.h>
+#endif
 
 #include <osg/Vec2>
 #include <osg/Vec3>

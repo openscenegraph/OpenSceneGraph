@@ -31,9 +31,7 @@
 #include <osg/Group>
 #include <osg/StateSet>
 #include <vector>
-#include <osgTXP/trpage_read.h>
-
-#include <osgTXP/Export.h>
+#include <trpage_read.h>
 
 namespace txp
 {
@@ -46,7 +44,7 @@ namespace txp
 		int id;
 	} GroupIDInfo;
 
-    class OSGTXP_EXPORT TrPageParser : public trpgSceneParser
+    class TrPageParser : public trpgSceneParser
     {
     public:
         TrPageParser(TrPageArchive* parent);

@@ -25,13 +25,11 @@
 
 
 
-#include <osgTXP/trpage_sys.h>
-#include <osgTXP/trpage_read.h>
-#include <osgTXP/trpage_managers.h>
+#include <trpage_sys.h>
+#include <trpage_read.h>
+#include <trpage_managers.h>
 
-#include <osgTXP/TrPageParser.h>
-
-#include <osgTXP/Export.h>
+#include <TrPageParser.h>
 
 #include <string>
 #include <vector>
@@ -40,7 +38,7 @@
 namespace txp
 {
     /// main class for loading terrapage archives  
-    class OSGTXP_EXPORT TrPageArchive : public trpgr_Archive
+    class TrPageArchive : public trpgr_Archive
     {
     public:
         TrPageArchive();

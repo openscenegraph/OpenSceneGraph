@@ -1,5 +1,5 @@
 #include "ReaderWriterTXP.h"
-#include <osgTXP/TrPageArchive.h>
+#include <TrPageArchive.h>
 
 #include <osg/Group>
 #include <osg/Object>

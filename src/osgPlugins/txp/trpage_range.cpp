@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <osgTXP/trpage_geom.h>
-#include <osgTXP/trpage_read.h>
+#include <trpage_geom.h>
+#include <trpage_read.h>
 
 /* *******************
     Range Methods

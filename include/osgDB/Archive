@@ -55,6 +55,10 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         /** return true if file exists in archive.*/        
         virtual bool fileExists(const std::string& filename) const;
         
+        typedef std::istream::pos_type pos_type;
+        typedef std::map<std::string, pos_type> FileNamePositionMap;
+
+        const FileNamePositionMap& getFileNamePositionMap() const { return _indexMap; }
 
         virtual ReadResult readObject(const std::string& fileName,const Options* options=NULL);
         virtual ReadResult readImage(const std::string& fileName,const Options* options=NULL);
@@ -69,8 +73,6 @@ class OSGDB_EXPORT Archive : public ReaderWriter
     protected:
     
         
-        typedef std::istream::pos_type pos_type;
-        typedef std::map<std::string, pos_type> FileNamePositionMap;
 
         class IndexBlock : public osg::Referenced
         {

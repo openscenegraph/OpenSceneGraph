@@ -168,6 +168,7 @@ EXAMPLE_DIRS = \
 	osgsimple\
 	osgshaders\
 	osgshadowtexture\
+	osgdepthshadow\
 	osgshape\
 	osgstereoimage\
 	osgteapot\

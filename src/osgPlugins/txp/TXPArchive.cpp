@@ -92,7 +92,7 @@ bool TXPArchive::openFile(const std::string& archiveName)
     modelTable.GetNumModels(numModel);
     _models.resize(numModel);
 
-	int numMaterials;
+    int numMaterials;
     materialTable.GetNumMaterial(numMaterials);
     _gstates.resize(numMaterials);
 
@@ -101,11 +101,11 @@ bool TXPArchive::openFile(const std::string& archiveName)
 
 bool TXPArchive::loadMaterial(int ix)
 {
-	int i = ix;
+    int i = ix;
 
-	if (_gstates[ix].get()) return true;
+    if (_gstates[ix].get()) return true;
 
-	osg::StateSet* osg_state_set = new osg::StateSet;
+    osg::StateSet* osg_state_set = new osg::StateSet;
             
     const trpgMaterial *mat;
     mat = materialTable.GetMaterialRef(0,i);
@@ -196,7 +196,7 @@ bool TXPArchive::loadMaterial(int ix)
             int wrap_s, wrap_t;   
             texEnv.GetWrap(wrap_s, wrap_t);
 
-			loadTexture(texId);
+            loadTexture(texId);
             osg::Texture2D* osg_texture = _textures[texId].get();
             if(osg_texture)
             {
@@ -290,7 +290,7 @@ bool TXPArchive::loadMaterial(int ix)
 
 bool TXPArchive::loadMaterials()
 {
-	return true;
+    return true;
 }
 
 bool TXPArchive::loadTexture(int i)
@@ -301,7 +301,7 @@ bool TXPArchive::loadTexture(int i)
 
     const trpgTexture *tex;
     tex = texTable.GetTextureRef(i);
-	if (!tex) return false;
+    if (!tex) return false;
 
     trpgTexture::ImageMode mode;
     tex->GetImageMode(mode);
@@ -357,7 +357,7 @@ bool TXPArchive::loadTexture(int i)
         _textures[i] = 0;
     }
 
-	return (_textures[i].get() != 0);
+    return (_textures[i].get() != 0);
 }
 
 bool TXPArchive::loadModel(int ix)
@@ -520,24 +520,24 @@ bool TXPArchive::loadLightAttributes()
 
 bool TXPArchive::loadTextStyles()
 {
-	const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
-	if (!textStyleTable) return false;
+    const trpgTextStyleTable *textStyleTable = GetTextStyleTable();
+    if (!textStyleTable) return false;
 
-	_fonts.resize(textStyleTable->GetNumStyle());
-	for (int i = 0; i < textStyleTable->GetNumStyle(); i++)
-	{
-		const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(i);
-		if (!textStyle) continue;
+    _fonts.resize(textStyleTable->GetNumStyle());
+    for (int i = 0; i < textStyleTable->GetNumStyle(); i++)
+    {
+        const trpgTextStyle *textStyle = textStyleTable->GetStyleRef(i);
+        if (!textStyle) continue;
 
-		const std::string *fontName = textStyle->GetFont();
-		if (!fontName) continue;
+        const std::string *fontName = textStyle->GetFont();
+        if (!fontName) continue;
 
-		osg::ref_ptr< osgText::Font > font = osgText::readFontFile(*fontName + ".ttf");
+        osg::ref_ptr< osgText::Font > font = osgText::readFontFile(*fontName + ".ttf");
 
-		_fonts[i] = font;
-	}
+        _fonts[i] = font;
+    }
 
-	return true;
+    return true;
 }
 
 void TXPArchive::addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att)
@@ -622,7 +622,6 @@ osg::Group* TXPArchive::getTileContent(
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     tileCenter = _parser->getTileCenter();
 
-#if 1
     // Prune
     unsigned int i = 0;
     for (i = 0; i < _gstates.size(); i++) 
@@ -634,7 +633,7 @@ osg::Group* TXPArchive::getTileContent(
     {
         if (_textures[i].valid() && (_textures[i]->referenceCount()==1)) _textures[i] = 0;
     }
-#endif
+
     return tileGroup;
 }
 

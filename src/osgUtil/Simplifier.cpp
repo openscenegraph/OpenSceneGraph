@@ -753,14 +753,16 @@ public:
             _edgeSet.insert(*oeitr);
         }
 
-        for(TriangleList::iterator titr_p1 = triangles_p1.begin();
+        TriangleList::iterator titr_p1, titr_p2;
+        
+        for(titr_p1 = triangles_p1.begin();
             titr_p1 != triangles_p1.end();
             ++titr_p1)
         {
             removeTriangle(const_cast<Triangle*>(titr_p1->get()));
         }
 
-        for(TriangleList::iterator titr_p2 = triangles_p2.begin();
+        for(titr_p2 = triangles_p2.begin();
             titr_p2 != triangles_p2.end();
             ++titr_p2)
         {
@@ -780,7 +782,7 @@ public:
         LocalEdgeList newEdges;
 
  
-        for(TriangleList::iterator titr_p1 = triangles_p1.begin();
+        for(titr_p1 = triangles_p1.begin();
             titr_p1 != triangles_p1.end();
             ++titr_p1)
         {
@@ -798,7 +800,7 @@ public:
         }
 
 
-        for(TriangleList::iterator titr_p2 = triangles_p2.begin();
+        for(titr_p2 = triangles_p2.begin();
             titr_p2 != triangles_p2.end();
             ++titr_p2)
         {

@@ -1470,7 +1470,8 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
     int vertices = rec->numberOfVertices();
 
     // Add vertices to GeoSetBuilder
-    for (int i=0; i < vertices; i++)
+    int i;
+    for (i=0; i < vertices; i++)
     {
         Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(i));
         if (vertex)
@@ -1478,7 +1479,7 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
     }
 
     // Visit ancillary records
-    for(int i=0; i < rec->getNumChildren(); i++)
+    for(i=0; i < rec->getNumChildren(); i++)
     {
         Record* child = rec->getChild(i);
 	CERR << "OPCODE: " << child->getOpcode() << "\n";

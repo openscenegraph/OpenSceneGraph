@@ -68,6 +68,22 @@ bool MatrixTransform_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr[0].matchWord("AnimationPath"))
+    {
+        static osg::ref_ptr<osg::AnimationPath> prototype = new osg::AnimationPath; 
+        osg::ref_ptr<osg::Object> object = fr.readObjectOfType(*prototype);
+        osg::AnimationPath* path = dynamic_cast<osg::AnimationPath*>(object.get());
+        if (path)
+        {
+            transform.setAnimationPath(path);
+        }
+        else
+        {
+            osg::Node* node = dynamic_cast<osg::Node*>(object.get());
+            if (node) transform.addChild(node);
+        }
+    }
+
     return iteratorAdvanced;
 }
 
@@ -77,6 +93,11 @@ bool MatrixTransform_writeLocalData(const Object& obj, Output& fw)
     const MatrixTransform& transform = static_cast<const MatrixTransform&>(obj);
 
     fw.writeObject(transform.getMatrix());
+
+    if (transform.getAnimationPath())
+    {
+        fw.writeObject(*transform.getAnimationPath());
+    }
 
     return true;
 }

@@ -111,25 +111,9 @@ const bool Geode::computeBound() const
         bb.expandBy((*itr)->getBound());
     }
 
-    if (bb.isValid())
+    if (bb.valid())
     {
-
-        _bsphere._center = bb.center();
-        _bsphere._radius = 0.0f;
-
-        for(itr=_drawables.begin();
-            itr!=_drawables.end();
-            ++itr)
-        {
-            const BoundingBox& bbox = (*itr)->getBound();
-            for(unsigned int c=0;c<8;++c)
-            {
-                _bsphere.expandRadiusBy(bbox.corner(c));
-            }
-        }
-
-//         if (_occluder.valid()) _occluder->computeBound(_bsphere);
-
+        _bsphere.expandBy(bb);
         _bsphere_computed=true;
         return true;
     }

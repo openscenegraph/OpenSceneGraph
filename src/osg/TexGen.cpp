@@ -78,6 +78,20 @@ void TexGen::apply(State&) const
         // have an effect, see above comment in enable(). RO.
 
     }
+    else if (_mode == NORMAL_MAP)
+    {
+        glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
+//      glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
+    }
+    else if (_mode == REFLECTION_MAP)
+    {
+        glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
+        glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
+//      glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
+    }
     else                         // SPHERE_MAP
     {
         // We ignore the planes if we are not in OBJECT_ or EYE_LINEAR mode.

@@ -305,6 +305,10 @@ SOURCE=..\..\src\osg\Texture.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TextureCubeMap.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Timer.cpp
 # End Source File
 # Begin Source File
@@ -590,6 +594,10 @@ SOURCE=..\..\Include\Osg\TexMat
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Texture
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TextureCubeMap
 # End Source File
 # Begin Source File
 

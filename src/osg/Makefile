@@ -56,6 +56,7 @@ C++FILES = \
 	TexGen.cpp\
 	TexMat.cpp\
 	Texture.cpp\
+	TextureCubeMap.cpp\
 	Timer.cpp\
 	Transform.cpp\
 	Transparency.cpp\
@@ -132,6 +133,7 @@ TARGET_INCLUDE_FILES = \
 	osg/TexGen\
 	osg/TexMat\
 	osg/Texture\
+	osg/TextureCubeMap\
 	osg/Timer\
 	osg/Transform\
 	osg/Transparency\

@@ -24,6 +24,7 @@ namespace osg {
 #define GL_TEXTURE0 0x84C0
 #endif
 
+
 /** macro for use with osg::StateAttrbiute::apply methods for detected and 
   * reporting OpenGL error messages.*/
 #define OSG_GL_DEBUG(message) \
@@ -358,48 +359,12 @@ class SG_EXPORT State : public Referenced
 
         /** set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
-        inline bool setClientActiveTextureUnit( unsigned int unit )
-        {
-            if (unit!=_currentClientActiveTextureUnit)
-            {
-                static ActiveTextureProc s_glClientActiveTexture =  
-                        (ActiveTextureProc) osg::getGLExtensionFuncPtr("glClientActiveTexture","glClientActiveTextureARB");
-
-                if (s_glClientActiveTexture)
-                {
-                    s_glClientActiveTexture(GL_TEXTURE0+unit);
-                    _currentClientActiveTextureUnit = unit;
-                }
-                else
-                {
-                    return unit==0;
-                }
-            }
-            return true;
-        }
+        bool setClientActiveTextureUnit( unsigned int unit );
 
 
         /** set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
-        inline bool setActiveTextureUnit( unsigned int unit )
-        {
-            if (unit!=_currentActiveTextureUnit)
-            {
-                static ActiveTextureProc s_glActiveTexture =  
-                       (ActiveTextureProc) osg::getGLExtensionFuncPtr("glActiveTexture","glActiveTextureARB");
-
-                if (s_glActiveTexture)
-                {
-                    s_glActiveTexture(GL_TEXTURE0+unit);
-                    _currentActiveTextureUnit = unit;
-                }
-                else
-                {
-                    return unit==0;
-                }
-            }
-            return true;
-        }
+        bool setActiveTextureUnit( unsigned int unit );
         
 
         
@@ -523,7 +488,6 @@ class SG_EXPORT State : public Referenced
                 return false;
         }
         
-        typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
 
         typedef std::map<StateAttribute::GLMode,ModeStack>      ModeMap;
         typedef std::vector<ModeMap>                            TextureModeMapList;

@@ -814,27 +814,38 @@ osg::Group* ConvertFromFLT::visitBSP(osg::Group& osgParent, BSPRecord* rec)
 
 osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
 {
+	const int fltVer = rec->getFltFile()->getFlightVersion();
 
     SGroup* currentGroup = (SGroup*) rec->getData();
 
-    // OpenFlight 15.7 has two animation flags, forward and swing 
-    bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM)!=0;
-    bool swingAnim = (currentGroup->dwFlags & GroupRecord::SWING_ANIM)!=0;
+    const bool forwardAnim = (currentGroup->dwFlags & GroupRecord::FORWARD_ANIM)!=0;
+	// OpenFlight 15.8 adds backwards animations
+    const bool backwardAnim = ( (fltVer >= 1580) &&
+		((currentGroup->dwFlags & GroupRecord::BACKWARD_ANIM) != 0) );
+	// Regardless of forwards or backwards, animation could have swing bit set
+	const osg::Sequence::LoopMode loopMode = ( (currentGroup->dwFlags & GroupRecord::SWING_ANIM) == 0 ) ?
+		osg::Sequence::LOOP : osg::Sequence::SWING;
      
-    if( forwardAnim || swingAnim )
+    if( forwardAnim || backwardAnim)
     {
         osg::Sequence* animSeq = new osg::Sequence;
         
         visitAncillary(osgParent, *animSeq, rec)->addChild( animSeq );
         visitPrimaryNode(*animSeq, rec);
 
-        animSeq->setDuration(0.0,1000000);
+		const int numReps = (fltVer >= 1580) ?
+			currentGroup->iLoopCount : 1000000;
+		const float frameDuration = (fltVer >= 1580) ?
+			currentGroup->fLoopDuration / (float)animSeq->getNumChildren() : 0.f;
+        animSeq->setDuration( frameDuration, numReps );
 
         if ( forwardAnim )
-            animSeq->setInterval(osg::Sequence::LOOP, 0, -1);
-        else 
-            animSeq->setInterval(osg::Sequence::SWING, 0, -1);
-        
+            animSeq->setInterval( loopMode, 0, -1 );
+        else // Backwards animation
+            animSeq->setInterval( loopMode, -1, 0 );
+
+        animSeq->setMode( osg::Sequence::START );
+
         // Only set the name from the normal record ID if the visitAncillary()
         // call didn't find a Long ID record on this group
         if (animSeq->getName().length() == 0)
@@ -2345,7 +2356,6 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
 
     osgParent.addChild(lpNode);
 }
-
 
 
 void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, MeshRecord *rec )

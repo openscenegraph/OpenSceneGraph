@@ -1,0 +1,136 @@
+#!/bin/sh
+
+
+die()
+{
+    echo >& $1
+    exit 1
+}
+
+x() 
+{ 
+    echo $*
+    $* 
+}
+
+
+
+print_pkginfo()
+{
+    
+    __pstamp=`fgrep $LOGNAME /etc/passwd | cut -f5 -d":"`
+    cat <<- EOF
+PKG="$1"
+NAME="$2"
+`[ "$OS" = "SunOS" ] && echo ARCH=sparc`
+VERSION=`$TOPDIR/bin/osgversion`
+CATEGORY="application,graphics,opengl"
+DESC="$3"
+BASEDIR="/opt/"
+VENDOR="OpenSceneGraph"
+EMAIL="info@openscenegraph.org"
+PSTAMP=$__pstamp
+URL="http://openscenegraph.org"
+MAXINST="1"
+EOF
+
+}
+
+print_prototype()
+{
+    echo "i pkginfo"
+    [ -f depend ] && echo "i depend"
+
+    for d in $*
+    do
+	d=`echo $d | sed 's/\/opt\///` 
+        echo "d none $d ? root sys"
+    done
+
+    for d in $*
+    do
+	for f in `ls -1 $d`
+	do 
+	     f=$d/$f
+	     if [ -f $f ] 
+	     then
+ 		[ -x $f ] && MODE=0555 || MODE=0444
+		dest=`echo $f | sed 's/\/opt\///'`
+	        echo "f none $dest=$f $MODE root sys"
+	     fi
+	done
+    done
+
+}
+
+
+make_package()
+{
+    PKGNAME=$1
+    PKGDIR=$PKGSUBDIR/$PKGNAME.pkg
+    x rm -rf $PKGDIR
+    x mkdir  $PKGDIR
+
+    echo Making pkginfo ...
+    print_pkginfo "$1" "$2" "$3"  > $PKGDIR/pkginfo
+
+    shift; shift; shift
+
+    echo Making prototype ...
+
+    print_prototype  $*  > $PKGDIR/prototype
+
+    DISTNAME="$PKGNAME"-"`$TOPDIR/bin/osgversion`"-"$OS"-"local"
+
+    THISDIR=`pwd`
+    x cd $PKGDIR
+    x pkgmk -d .
+    x cd $THISDIR
+    x pkgtrans -s $PKGDIR $DISTNAME $PKGNAME
+    x mv "$PKGDIR"/"$DISTNAME" "$PKGDIR"/..
+}
+
+
+OS=$1
+TOPDIR=$2
+INST_LIBS=$3
+INST_PLUGINS=$4
+INST_INCLUDE=$5
+INST_DEMOS=$6
+INST_DEMO_SRC=$7
+INST_DOC=$8
+INST_DATA=$9
+
+
+PKGSUBDIR=dist/PKG
+
+
+make_package\
+	"OpenSceneGraph" \
+	"Open Scene Graph - Run-time environment"\
+	"An OpenGL based scene graph. This installation includes a set of run-time libraries, and demo programs"\
+        $INST_LIBS $INST_PLUGINS $INST_DEMOS\
+
+SUBDIRS=`ls $TOPDIR/include | grep -v CVS`
+INSTARG=""
+for d in $SUBDIRS
+do
+    dd="$INST_INCLUDE"/"$d"
+    [ -d $dd ] && INSTARG="$INSTARG $dd"
+done
+
+SUBDIRS=`ls $TOPDIR/src/Demos | grep -v CVS`
+for d in $SUBDIRS
+do
+    dd="$INST_DEMO_SRC"/"$d"
+    [ -d $dd ] && INSTARG="$INSTARG $dd"
+done
+
+make_package\
+	"OpenSceneGraph-dev"\
+	"Open Scene Graph - Development environment"\
+	"An OpenGL based scene graph. This installation includes header files and demo program source files"\
+	$INSTARG
+
+
+exit 0

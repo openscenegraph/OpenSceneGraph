@@ -12,12 +12,11 @@ DIRS = \
 	osgreflect\
 	osgscribe\
 	osgstereoimage\
+	osgtext\
 	osgtexture\
 	osgviews\
 	osgversion\
 	sgv
 
-LEFT_TO_DO =\
-	osgtext\
 
 include $(TOPDIR)/Make/makedirrules

@@ -1,5 +1,7 @@
 distribution : 
-	@$(MAKEDIST) $(TOPDIR)\
+	@$(MAKEDIST) \
+		$(OS)\
+		$(TOPDIR)\
 		$(INST_LIBS)\
 		$(INST_PLUGINS)\
 		$(INST_INCLUDE)\
@@ -9,3 +11,6 @@ distribution :
 		$(INST_DATA)
 
 	
+
+cleandist:
+	@$(MAKECLEANDIST)

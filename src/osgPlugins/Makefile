@@ -1,7 +1,10 @@
 TOPDIR = ../..
 include $(TOPDIR)/Make/makedefs
 
-DIRS = osg rgb lib3ds flt obj lwo txp dw bmp pic tga osgtgz tgz zip  
+#DIRS = osg rgb lib3ds flt obj lwo txp dw bmp pic tga osgtgz tgz zip  
+DIRS = osg rgb lib3ds flt obj lwo dw bmp pic tga osgtgz tgz zip  
+
+#DIRS += txp
 
 # comment in if you have Performer installed.
 # DIRS += pfb

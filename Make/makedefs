@@ -39,22 +39,24 @@ INST_PLUGINS       = $(INST_SYS_PREFIX)/lib$(ARCH)/osgPlugins
 INST_INCLUDE       = $(INST_SYS_PREFIX)/include
 INST_SHARE_PREFIX  = /usr/share
 INST_DEMOS         = $(INST_SHARE_PREFIX)/OpenSceneGraph/bin
-INST_DEMO_SRC      = $(INST_SHARE_PREFIX)/OpenSceneGraph/src/demos
+INST_SRC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/src
 INST_DOC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/doc
 INST_DATA          = $(INST_SHARE_PREFIX)/OpenSceneGraph/data
+INST_DEMO_SRC      = $(INST_SRC)/demos
 
-LINK          = ln -sf
-INSTBINCMD       = install -m 755
-INSTDEVCMD       = install -m 644
-INSTLINKBIN   = $(LINK)
-INSTLINKDEV   = $(LINK)
+LINK               = ln -sf
+INSTBINCMD         = install -m 755
+INSTDEVCMD         = install -m 644
+INSTLINKBINCMD     = $(LINK)
+INSTLINKDEVCMD     = $(LINK)
 
-LIB_PREFIX     = lib
+LIB_PREFIX         = lib
 LIB_EXT        = so
 PLUGIN_PREFIX  = osgdb_
 PLUGIN_EXT     = so
 
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
+INSTLOGFILE    = /tmp/.osg_inst_log
 
 RECURSIVE_TARGETS = \
 	  opt\
@@ -102,8 +104,9 @@ endif
   INSTDEVCMD        = cp
 
   INST_SYS_PREFIX   = /opt/OpenSceneGraph
-  INST_SHARE_PREFIX = /opt/OpenSceneGraph
+  INST_SHARE_PREFIX = /opt
 
+  MAKEDIST          = $(TOPDIR)/Make/makepkg
 endif
 
 #### IRIX Specific definitions

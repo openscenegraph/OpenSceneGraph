@@ -30,7 +30,7 @@ class SG_EXPORT Geometry : public Drawable
 
         Geometry();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Geometry(const Geometry& geometry,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
             
         virtual Object* cloneType() const { return new Geometry(); }
@@ -137,8 +137,9 @@ class SG_EXPORT Geometry : public Drawable
             mutable unsigned int    offset;
         };
 
-        /** static ArrayData which is returned get getTexCoordData(i) const and getVertexAttribData(i) const 
-          * when i is out of range.*/
+        /** Static ArrayData which is returned from getTexCoordData(i) const and getVertexAttribData(i) const 
+          * when i is out of range.
+        */
         static const ArrayData s_InvalidArrayData;
         
         typedef std::vector< ArrayData >  ArrayList;
@@ -275,34 +276,36 @@ class SG_EXPORT Geometry : public Drawable
         PrimitiveSet* getPrimitiveSet(unsigned int pos) { return _primitives[pos].get(); }
         const PrimitiveSet* getPrimitiveSet(unsigned int pos) const { return _primitives[pos].get(); }
         
-        /** Add a primitive set to the geometry.*/
+        /** Add a primitive set to the geometry. */
         bool addPrimitiveSet(PrimitiveSet* primitiveset);
         
-        /** Set a primitive set to the specified position in geometry's primitive set list.*/
+        /** Set a primitive set to the specified position in geometry's primitive set list. */
         bool setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
         
-        /** Insert a primitive set to the specified position in geometry's primitive set list.*/
+        /** Insert a primitive set to the specified position in geometry's primitive set list. */
         bool insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset);
         
-        /** Remove primitive set(s) from the specified position in geometry's primitive set list.*/
+        /** Remove primitive set(s) from the specified position in geometry's primitive set list. */
         bool removePrimitiveSet(unsigned int i,unsigned int numElementsToRemove=1);
 
         /** Get the index number of a primitive set, return a value between
           * 0 and getNumPrimitiveSet()-1 if found, if not found then return getNumPrimitiveSet().
-          * When checking for a valid find value use if ((value=geoemtry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet()) as*/
+          * When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet())
+        */
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
-        /** Set whether fast paths should be used when supported.*/
+        /** Set whether fast paths should be used when supported. */
         void setFastPathHint(bool on) {  _fastPathHint = on; }
 
-        /** Get whether fast paths should be used when supported.*/
+        /** Get whether fast paths should be used when supported. */
         bool getFastPathHint() const { return _fastPathHint; }
 
-        /** return true if OpenGL fast paths will be used with drawing this Geometry.
+        /** Return true if OpenGL fast paths will be used with drawing this Geometry.
           * Fast paths use vertex arrays, and glDrawArrays/glDrawElements.  Slow paths
           * use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed
-          * arrays will drop the rendering path off the fast path.*/
+          * arrays will drop the rendering path off the fast path.
+        */
         inline bool areFastPathsUsed() const { return _fastPath && _fastPathHint; }
 
         bool computeFastPathsUsed();
@@ -327,34 +330,34 @@ class SG_EXPORT Geometry : public Drawable
         const osg::Geometry* getInternalOptimizedGeometry() const { return _internalOptimizedGeometry.get(); }
 
 
-        /** draw Geometry directly ignoring an OpenGL display list which could be attached.
+        /** Draw Geometry directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Geometry for user-drawn objects.
-          */
+        */
         virtual void drawImplementation(State& state) const;
 
-        /** return true, osg::Geometry does support accept(AttributeFunctor&).*/
+        /** Return true, osg::Geometry does support accept(AttributeFunctor&). */
         virtual bool supports(AttributeFunctor&) const { return true; }
 
-        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        /** Accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
         virtual void accept(AttributeFunctor& af);
 
-        /** return true, osg::Geometry does support accept(ConstAttributeFunctor&).*/
+        /** Return true, osg::Geometry does support accept(ConstAttributeFunctor&). */
         virtual bool supports(ConstAttributeFunctor&) const { return true; }
 
-        /** accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        /** Accept a ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
         virtual void accept(ConstAttributeFunctor& af) const;
 
-        /** return true, osg::Geometry does support accept(PrimitiveFunctor&) .*/
+        /** Return true, osg::Geometry does support accept(PrimitiveFunctor&). */
         virtual bool supports(PrimitiveFunctor&) const { return true; }
 
-        /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
+        /** Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. */
         virtual void accept(PrimitiveFunctor& pf) const;
 
-        /** return true, osg::Geometry does support accept(PrimitiveIndexFunctor&) .*/
+        /** Return true, osg::Geometry does support accept(PrimitiveIndexFunctor&). */
         virtual bool supports(PrimitiveIndexFunctor&) const { return true; }
 
-        /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
+        /** Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. */
         virtual void accept(PrimitiveIndexFunctor& pf) const;
 
 
@@ -387,11 +390,13 @@ class SG_EXPORT Geometry : public Drawable
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.
-  * Tex coords go from left bottom (l,b) to right top (r,t).*/
+  * Tex coords go from left bottom (l,b) to right top (r,t).
+*/
 extern SG_EXPORT Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float l, float b, float r, float t);
 
 /** Convenience function to be used for creating quad geometry with texture coords.
-  * Tex coords go from bottom left (0,0) to top right (s,t).*/
+  * Tex coords go from bottom left (0,0) to top right (s,t).
+*/
 inline Geometry* createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float s=1.0f, float t=1.0f)
 {
     return createTexturedQuadGeometry(corner,widthVec,heightVec, 0.0f, 0.0f, s, t);

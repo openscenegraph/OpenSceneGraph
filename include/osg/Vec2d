@@ -19,10 +19,10 @@
 namespace osg {
 
 /** General purpose double pair, uses include representation of
-    texture coordinates.
-    No support yet added for double * Vec2d - is it necessary?
-    Need to define a non-member non-friend operator*  etc.
-    BTW:	     Vec2d * double is okay
+  * texture coordinates.
+  * No support yet added for double * Vec2d - is it necessary?
+  * Need to define a non-member non-friend operator* etc.
+  * BTW: Vec2d * double is okay
 */
 
 class Vec2d
@@ -69,19 +69,19 @@ class Vec2d
         inline bool valid() const { return !isNaN(); }
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
 
-        /// dot product
+        /** Dot product. */
         inline value_type operator * (const Vec2d& rhs) const
         {
             return _v[0]*rhs._v[0]+_v[1]*rhs._v[1];
         }
 
-        /// multiply by scalar
+        /** Multiply by scalar. */
         inline const Vec2d operator * (value_type rhs) const
         {
             return Vec2d(_v[0]*rhs, _v[1]*rhs);
         }
 
-        /// unary multiply by scalar
+        /** Unary multiply by scalar. */
         inline Vec2d& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
@@ -89,13 +89,13 @@ class Vec2d
 	    return *this;
         }
 
-        /// divide by scalar
+        /** Divide by scalar. */
         inline const Vec2d operator / (value_type rhs) const
         {
             return Vec2d(_v[0]/rhs, _v[1]/rhs);
         }
 
-        /// unary divide by scalar
+        /** Unary divide by scalar. */
         inline Vec2d& operator /= (value_type rhs)
         {
             _v[0]/=rhs;
@@ -103,14 +103,15 @@ class Vec2d
 	    return *this;
         }
 
-        /// binary vector add
+        /** Binary vector add. */
         inline const Vec2d operator + (const Vec2d& rhs) const
         {
             return Vec2d(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
         }
 
-        /** unary vector add.  Slightly more efficient because no temporary
-            intermediate object.*/
+        /** Unary vector add. Slightly more efficient because no temporary
+          * intermediate object.
+		*/
         inline Vec2d& operator += (const Vec2d& rhs)
         {
             _v[0] += rhs._v[0];
@@ -118,13 +119,13 @@ class Vec2d
 	    return *this;
         }
 
-        /// binary vector subtract
+        /** Binary vector subtract. */
         inline const Vec2d operator - (const Vec2d& rhs) const
         {
             return Vec2d(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
         }
 
-        /// unary vector subtract
+        /** Unary vector subtract. */
         inline Vec2d& operator -= (const Vec2d& rhs)
         {
             _v[0]-=rhs._v[0];
@@ -132,26 +133,27 @@ class Vec2d
 	    return *this;
 	}
 
-        /// negation operator.  Returns the negative of the Vec2d
+        /** Negation operator. Returns the negative of the Vec2d. */
         inline const Vec2d operator - () const
         {
 	    return Vec2d (-_v[0], -_v[1]);
 	}
 
-        /// Length of the vector = sqrt( vec . vec )
+        /** Length of the vector = sqrt( vec . vec ) */
 	inline value_type length() const
 	{
 	    return sqrt( _v[0]*_v[0] + _v[1]*_v[1] );
 	}
 
-        /// Length squared of the vector = vec . vec
+        /** Length squared of the vector = vec . vec */
         inline value_type length2( void ) const
         {
             return _v[0]*_v[0] + _v[1]*_v[1];
         }
 
-        /** normalize the vector so that it has length unity
-            returns the previous length of the vector*/
+        /** Normalize the vector so that it has length unity.
+          * Returns the previous length of the vector.
+		*/
 	inline value_type normalize()
 	{
 	    value_type norm = Vec2d::length();

@@ -19,14 +19,14 @@
 namespace osg {
 
 /**
- * Image Stream class.
- */
+  * Image Stream class.
+*/
 class SG_EXPORT ImageStream : public Image
 {
     public:
         ImageStream();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         ImageStream(const ImageStream& image,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual Object* cloneType() const { return new ImageStream(); }
@@ -35,7 +35,7 @@ class SG_EXPORT ImageStream : public Image
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "ImageStream"; }
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const Image& rhs) const;
 
 	enum StreamStatus
@@ -51,7 +51,7 @@ class SG_EXPORT ImageStream : public Image
 
         virtual void rewind() { _status=REWINDING; }
         
-        virtual void quit(bool /*wiatForThreadToExit*/ = true) {}
+        virtual void quit(bool /*waitForThreadToExit*/ = true) {}
 
         StreamStatus getStatus() { return _status; }
         

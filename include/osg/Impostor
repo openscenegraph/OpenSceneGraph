@@ -24,8 +24,8 @@ namespace osg {
   * between children depending on distance from eye point and image caching.
   * 
   * The principle behind Imposters is that they cache an image of real geometry and then the image is drawn 
-  * in subsequent frames instead of the real geometry.  Its a bit like a
-  * Billboard *but* is updated at runtime and w.r.t view point.  By drawing
+  * in subsequent frames instead of the real geometry. It's a bit like a
+  * Billboard *but* is updated at runtime and w.r.t view point. By drawing
   * just the texture mapped quad you can cut down scene complexity and
   * improve performance.
   * 
@@ -34,7 +34,7 @@ namespace osg {
   *    http://grail.cs.washington.edu/projects/hic/
   * 
   * The OSG doesn't implement exactly the same technique as above, but its
-  * should be a good starting place.  The OSG's impostors are much less
+  * should be a good starting place. The OSG's impostors are much less
   * intrusive since you don't need to restructure your whole scene to use
   * them.
   *
@@ -73,29 +73,31 @@ class SG_EXPORT Impostor : public LOD
 
         /** Set the Impostor threshold distance.
           * For eye points further than this threshold the Imposter is used if appropriate,
-          * otherwise the LOD children as chosen as per a standard LOD node.*/
+          * otherwise the LOD children as chosen as per a standard LOD node.
+		*/
         inline void setImpostorThreshold(float distance) { _impostorThreshold = distance; }
         
         /** Set the Impostor threshold distance relative to the node's bounding
-          * sphere's radius.*/
+          * sphere's radius.
+		*/
         inline void setImpostorThresholdToBound(float ratio=1.0f) { _impostorThreshold = getBound().radius()*ratio; }
 
-        /* Get the Impostor threshold distance.*/
+        /* Get the Impostor threshold distance. */
         inline float getImpostorThreshold() const { return _impostorThreshold; }
 
-        /* Get the Impostor threshold distance squared.*/
+        /* Get the Impostor threshold distance squared. */
         inline float getImpostorThreshold2() const { return _impostorThreshold*_impostorThreshold; }
 
-        /** Find the ImposterSprite which fits the current eye point best.*/
+        /** Find the ImposterSprite which fits the current eye point best. */
         ImpostorSprite* findBestImpostorSprite(unsigned int contextID, const osg::Vec3& currLocalEyePoint) const;
         
-        /** Add an ImpostorSprite to the Impostor.*/
+        /** Add an ImpostorSprite to the Impostor. */
         void addImpostorSprite(unsigned int contextID, ImpostorSprite* is);
 
-        /** Get the list of ImpostorSprites attached to this Impostor.*/
+        /** Get the list of ImpostorSprites attached to this Impostor. */
         inline ImpostorSpriteList& getImpostorSpriteList(unsigned int contexID) { return _impostorSpriteListBuffer[contexID]; }
 
-        /** Get a const list of ImpostorSprites attached to this const Impostor.*/
+        /** Get a const list of ImpostorSprites attached to this const Impostor. */
         inline const ImpostorSpriteList& getImpostorSpriteList(unsigned int contexID) const { return _impostorSpriteListBuffer[contexID]; }
 
     protected :

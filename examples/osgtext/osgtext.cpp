@@ -16,26 +16,175 @@
 #include <osgDB/Registry>
 #include <osgProducer/Viewer>
 
-#include <osg/Material>
 #include <osg/Geode>
-#include <osg/BlendFunc>
-#include <osg/Depth>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
 
+#include <osgText/Font>
 #include <osgText/Text>
 
 
 osg::Group* createHUDText()
 {
 
+    osgText::Font* font = osgText::readFontFile("fonts/arial.ttf");
+
     osg::Geode* geode  = new osg::Geode;
 
-    osgText::Text* text1 = new osgText::Text;
-    text1->setCharacterSize(12.0f);
-    text1->setText("20 GOTO 10");
-    geode->addDrawable(text1);
+    float windowHeight = 1024.0f;
+    float windowWidth = 1280.0f;
+    float margin = 50.0f;
 
+
+    osg::Vec4 layoutColor(1.0f,1.0f,0.0f,1.0f);
+    float layoutCharacterSize = 20.0f;    
+    
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(layoutColor);
+        text->setCharacterSize(layoutCharacterSize);
+        text->setPosition(osg::Vec3(margin,windowHeight-margin,0.0f));
+
+        // the default layout is left to right, typically used in languages
+        // originating from europe such as English, French, German, Spanish etc..
+        text->setLayout(osgText::Text::LEFT_TO_RIGHT);
+
+        text->setText("text->setLayout(osgText::Text::LEFT_TO_RIGHT);");
+        geode->addDrawable(text);
+    }
+
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(layoutColor);
+        text->setCharacterSize(layoutCharacterSize);
+        text->setPosition(osg::Vec3(windowWidth-margin,windowHeight-margin,0.0f));
+
+        // right to left layouts would be used for hebrew or arabic fonts.
+        text->setLayout(osgText::Text::RIGHT_TO_LEFT);
+
+        text->setText("text->setLayout(osgText::Text::RIGHT_TO_LEFT);");
+        geode->addDrawable(text);
+    }
+
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(layoutColor);
+        text->setPosition(osg::Vec3(margin,windowHeight-margin,0.0f));
+        text->setCharacterSize(layoutCharacterSize);
+
+        // vertical font layout would be used for asian fonts.
+        text->setLayout(osgText::Text::VERTICAL);
+
+        text->setText("text->setLayout(osgText::Text::VERTICAL);");
+        geode->addDrawable(text);
+    }
+    
+    
+    osg::Vec4 fontSizeColor(0.0f,1.0f,1.0f,1.0f);
+    float fontSizeCharacterSize = 30;
+    
+    osg::Vec3 cursor = osg::Vec3(margin*2,windowHeight-margin*2,0.0f);
+    
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(fontSizeColor);
+        text->setCharacterSize(fontSizeCharacterSize);
+        text->setPosition(cursor);
+        
+        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        text->setFontSize(10,10); // blocky but small texture memory usage
+        
+        text->setText("text->setFontSize(10,10); // blocky but small texture memory usage");
+        geode->addDrawable(text);
+    }
+    
+    cursor.y() -= fontSizeCharacterSize;
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(fontSizeColor);
+        text->setCharacterSize(fontSizeCharacterSize);
+        text->setPosition(cursor);
+        
+        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        text->setFontSize(20,20); // smoother but higher texture memory usage (but still quite low).
+        
+        text->setText("text->setFontSize(20,20); // smoother but higher texture memory usage (but still quite low).");
+        geode->addDrawable(text);
+    }
+    
+    cursor.y() -= fontSizeCharacterSize;
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(fontSizeColor);
+        text->setCharacterSize(fontSizeCharacterSize);
+        text->setPosition(cursor);
+        
+        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        text->setFontSize(40,40); // even smoother but again higher texture memory usage.
+        
+        text->setText("text->setFontSize(40,40); // even smoother but again higher texture memory usage.");
+        geode->addDrawable(text);
+    }
+
+
+    osg::Vec4 characterSizeColor(1.0f,0.0f,1.0f,1.0f);
+    
+    cursor.y() -= fontSizeCharacterSize*2.0f;
+    
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(characterSizeColor);
+        text->setFontSize(15,15);
+        text->setPosition(cursor);
+        
+        // use text that 15 units high.
+        text->setCharacterSize(15); // tiny
+        
+        text->setText("text->setCharacterSize(15.0f); // tiny");
+        geode->addDrawable(text);
+    }
+    
+    cursor.y() -= fontSizeCharacterSize;
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(characterSizeColor);
+        text->setFontSize(30,30);
+        text->setPosition(cursor);
+        
+        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        text->setCharacterSize(30.0f); // tiny
+        
+        text->setText("text->setCharacterSize(30.0f); // medium size");
+        geode->addDrawable(text);
+    }
+    
+    cursor.y() -= fontSizeCharacterSize;
+    {
+        osgText::Text* text = new osgText::Text;
+        text->setFont(font);
+        text->setColor(characterSizeColor);
+        text->setFontSize(40,40);
+        text->setPosition(cursor);
+        
+        // use text that uses 10 by 10 texels as a target resolution for fonts.
+        text->setCharacterSize(40.0f); // tiny
+        
+        text->setText("text->setCharacterSize(40.0f); // big, but can go much bigger :-)");
+        geode->addDrawable(text);
+    }
+
+
+
+if (0)
+{
     osgText::Text* text2 = new osgText::Text;
     text2->setPosition(osg::Vec3(0.0f,50.0f,0.0f));
     text2->setCharacterSize(12.0f);
@@ -65,7 +214,7 @@ osg::Group* createHUDText()
     text5->setDrawMode(osgText::Text::TEXT|osgText::Text::ALIGNMENT|osgText::Text::BOUNDINGBOX);
     text5->setText("This is a test of text AVAV/.|¬!£$%^&*() - fonts/dirtydoz.ttf");
     geode->addDrawable(text5);
-
+}
 
 //     osgText::Text::TextString string;
 //     for(int i=0;i<2048;++i)

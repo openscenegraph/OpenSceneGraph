@@ -69,7 +69,7 @@ public:
     virtual bool hasVertical() const = 0;
 
     // make Text a friend to allow it add and remove its entry in the Font's _textList.
-    friend Text;
+    friend class Text;
 
 protected:
 

@@ -1045,12 +1045,18 @@ struct LessGeometry
         if (lhs->getStateSet()<rhs->getStateSet()) return true;
         if (rhs->getStateSet()<lhs->getStateSet()) return false;
         
+        if (lhs->getNormalBinding()<rhs->getNormalBinding()) return true;
+        if (rhs->getNormalBinding()<lhs->getNormalBinding()) return false;
+
         if (lhs->getColorBinding()<rhs->getColorBinding()) return true;
         if (rhs->getColorBinding()<lhs->getColorBinding()) return false;
         
-        if (lhs->getNormalBinding()<rhs->getNormalBinding()) return true;
-        if (rhs->getNormalBinding()<lhs->getNormalBinding()) return false;
-        
+        if (lhs->getSecondaryColorBinding()<rhs->getSecondaryColorBinding()) return true;
+        if (rhs->getSecondaryColorBinding()<lhs->getSecondaryColorBinding()) return false;
+
+        if (lhs->getFogCoordBinding()<rhs->getFogCoordBinding()) return true;
+        if (rhs->getFogCoordBinding()<lhs->getFogCoordBinding()) return false;
+
         if (lhs->getNumTexCoordArrays()<rhs->getNumTexCoordArrays()) return true;
         if (rhs->getNumTexCoordArrays()<lhs->getNumTexCoordArrays()) return false;
     
@@ -1205,7 +1211,11 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom)
         {
-            if (geom->getNumPrimitiveSets()>0)
+            if (geom->getNumPrimitiveSets()>0 &&
+                geom->getNormalBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
+                geom->getColorBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
+                geom->getSecondaryColorBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET &&
+                geom->getFogCoordBinding()!=osg::Geometry::BIND_PER_PRIMITIVE_SET)
             {
                 osg::Geometry::PrimitiveSetList& primitives = geom->getPrimitiveSetList();
                 unsigned int primNo=0;
@@ -1312,6 +1322,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setColorArray(rhs.getColorArray());
     }
     
+    // need to implement handle secondary color array.
+    
+    // need to implement handle fog coord array.
+
     for(unsigned int unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
         // we need to add the handling of the other array types...

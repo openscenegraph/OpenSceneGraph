@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
+	AnimationPathManipulator.cpp\
 	CameraManipulator.cpp\
 	DriveManipulator.cpp\
 	FlightManipulator.cpp\

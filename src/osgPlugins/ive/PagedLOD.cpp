@@ -30,7 +30,7 @@ void PagedLOD::write(DataOutputStream* out){
         else
 		throw Exception("PagedLOD::write(): Could not cast this osg::PagedLOD to an osg::LOD.");
 
-
+        out->writeString(getDatabasePath());
         out->writeFloat(getRadius());
         out->writeUInt(getNumChildrenThatCannotBeExpired());
 
@@ -97,6 +97,8 @@ void PagedLOD::read(DataInputStream* in){
                 else
                     throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
 
+
+				setDatabasePath(in->readString());
 
                 if (getDatabasePath().empty() && in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
                 {

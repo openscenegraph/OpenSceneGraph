@@ -427,7 +427,7 @@ class SG_EXPORT Drawable : public Object
 
 
         /** Return true if the Drawable subclass supports accept(AttributeFunctor&).*/
-        virtual bool supports(AttributeFunctor&) const { return false; }
+        virtual bool supports(const AttributeFunctor&) const { return false; }
 
         /** accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
           * return true if functor handled by drawable,
@@ -457,7 +457,7 @@ class SG_EXPORT Drawable : public Object
         };
 
         /** Return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/
-        virtual bool supports(ConstAttributeFunctor&) const { return false; }
+        virtual bool supports(const ConstAttributeFunctor&) const { return false; }
 
         /** Accept an AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.
           * return true if functor handled by drawable,
@@ -467,7 +467,7 @@ class SG_EXPORT Drawable : public Object
 
 
         /** Return true if the Drawable subclass supports accept(PrimitiveFunctor&).*/
-        virtual bool supports(PrimitiveFunctor&) const { return false; }
+        virtual bool supports(const PrimitiveFunctor&) const { return false; }
 
         /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.
@@ -476,7 +476,7 @@ class SG_EXPORT Drawable : public Object
         virtual void accept(PrimitiveFunctor&) const {}
 
         /** Return true if the Drawable subclass supports accept(PrimitiveIndexFunctor&).*/
-        virtual bool supports(PrimitiveIndexFunctor&) const { return false; }
+        virtual bool supports(const PrimitiveIndexFunctor&) const { return false; }
 
         /** Accept a PrimitiveIndexFunctor and call its methods to tell it about the internal primitives that this Drawable has.
           * return true if functor handled by drawable, return false on failure of drawable to generate functor calls.

@@ -277,6 +277,10 @@ SOURCE=..\..\src\osg\Object.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\OccluderNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Point.cpp
 # End Source File
 # Begin Source File
@@ -574,6 +578,10 @@ SOURCE=..\..\Include\Osg\Notify
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Object
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\OccluderNode
 # End Source File
 # Begin Source File
 

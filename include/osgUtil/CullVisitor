@@ -78,6 +78,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         virtual void apply(osg::Switch& node);
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::EarthSky& node);
+        virtual void apply(osg::OccluderNode& node);
         virtual void apply(osg::Impostor& node);
 
         void setEarthSky(const osg::EarthSky* earthSky) { _earthSky = earthSky; }

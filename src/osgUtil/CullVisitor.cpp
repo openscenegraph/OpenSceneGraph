@@ -5,6 +5,7 @@
 #include <osg/Billboard>
 #include <osg/LightSource>
 #include <osg/ClipNode>
+#include <osg/OccluderNode>
 #include <osg/Notify>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
@@ -709,6 +710,34 @@ void CullVisitor::apply(osg::EarthSky& node)
     if (node_state) popStateSet();
 
 }
+
+void CullVisitor::apply(osg::OccluderNode& node)
+{
+    // need to check if occlusion node is in the occluder
+    // list, if so disable the appropriate ShadowOccluderVolume
+    
+    std::cout<<"We are in an Occlusion node"<<&node<<std::endl;
+
+    if (isCulled(node)) return;
+
+    // push the culling mode.
+    pushCurrentMask();
+
+    // push the node's state.
+    StateSet* node_state = node.getStateSet();
+    if (node_state) pushStateSet(node_state);
+
+
+
+    handle_cull_callbacks_and_traverse(node);
+
+    // pop the node's state off the render graph stack.    
+    if (node_state) popStateSet();
+
+    // pop the culling mode.
+    popCurrentMask();
+}
+
 
 
 void CullVisitor::apply(Impostor& node)

@@ -48,6 +48,7 @@ CXXFILES =\
 	NodeVisitor.cpp\
 	Notify.cpp\
 	Object.cpp\
+	OccluderNode.cpp\
 	Point.cpp\
 	PolygonMode.cpp\
 	PolygonOffset.cpp\

@@ -8,7 +8,6 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Drawable>
-#include <osg/ConvexPlanerOccluder>
 
 namespace osg {
 
@@ -109,17 +108,6 @@ class SG_EXPORT Geode : public Node
         /** compile OpenGL Display List for each geoset.*/
         void compileDrawables(State& state);
         
-        
-        
-        /** Attach a ConvexPlanerOccluder to a Geode.*/            
-        void setOccluder(ConvexPlanerOccluder* occluder) { _occluder = occluder; }
-        
-        /** Get the ConvexPlanerOccluder* attached to a Geode. */            
-        ConvexPlanerOccluder* getOccluder() { return _occluder.get(); }
-        
-        /** Get the const ConvexPlanerOccluder* attached to a Geode.*/            
-        const ConvexPlanerOccluder* getOccluder() const { return _occluder.get(); }
-
     protected:
 
         virtual ~Geode();
@@ -127,7 +115,6 @@ class SG_EXPORT Geode : public Node
         virtual const bool computeBound() const;
 
         DrawableList                    _drawables;
-        ref_ptr<ConvexPlanerOccluder>   _occluder;
 
 };
 

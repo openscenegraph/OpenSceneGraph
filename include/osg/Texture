@@ -49,6 +49,10 @@
 #define GL_MIRRORED_REPEAT_IBM            0x8370
 #endif
 
+#ifndef GL_CLAMP_TO_EDGE
+#define GL_CLAMP_TO_EDGE                  0x812F
+#endif
+
 #ifndef GL_GENERATE_MIPMAP_SGIS
 #define GL_GENERATE_MIPMAP_SGIS           0x8191
 #define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
@@ -118,6 +122,7 @@ class SG_EXPORT Texture : public StateAttribute
 
         enum WrapMode {
             CLAMP  = GL_CLAMP,
+            CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
             REPEAT = GL_REPEAT,
             MIRROR = GL_MIRRORED_REPEAT_IBM
         };

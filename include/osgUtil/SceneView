@@ -109,7 +109,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         {
             MONO,
             QUAD_BUFFER_STEREO,
-            RED_GREEN_STEREO,
+            ANAGLYPHIC_STEREO,
             HORIZONTAL_SPLIT_STEREO,
             VERTICAL_SPLIT_STEREO
         };

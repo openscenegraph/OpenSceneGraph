@@ -117,7 +117,7 @@ installation locations for $OS.
                        documentation in <doc_location>
 
 Note also that INST_LIBS, INST_PLUGINS, INST_INCLUDE, and INST_SHARE share 
-a common prefix by default: INST_LOCATION. Further INST_EXAMPES, INST_EXAMPLE_SRC, 
+a common prefix by default: INST_LOCATION. Further INST_EXAMPLES, INST_EXAMPLE_SRC, 
 INST_DOC, and INST_DATA share a common prefix by default : INST_SHARE, which
 is located under INST_LOCATION by default.  This provides a short cut for the 
 above 'make' usage.  For example,

@@ -113,7 +113,7 @@ osg:: Node* createGlobe(const osg::BoundingBox& bb,float ratio)
 
     osg::StateSet* stateset = osgNew osg::StateSet();
 
-    osg::Image* image = osgDB::readImageFile("land_shallow_topo_2048.tif");
+    osg::Image* image = osgDB::readImageFile("land_shallow_topo_2048.jpg");
     if (image)
     {
 	osg::Texture2D* texture = osgNew osg::Texture2D;

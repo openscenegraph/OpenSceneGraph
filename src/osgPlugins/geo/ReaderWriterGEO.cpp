@@ -360,7 +360,7 @@ class ReaderWriterGEO : public ReaderWriter
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
-            std::ofstream fdup("geodup.geo", std::ios::binary | std::ios::out );
+            //std::ofstream fdup("geodup.geo", std::ios::binary | std::ios::out );
             if (fin.is_open() )
             { // read the input file.
                 typedef std::vector<osg::Node*> NodeList;
@@ -374,7 +374,7 @@ class ReaderWriterGEO : public ReaderWriter
                 {
                     georecord gr;
                     gr.readfile(fin);
-                    if (gr.getType() != DB_DSK_INSTANCE) gr.writefile(fdup); // create a duplicate file
+                    //if (gr.getType() != DB_DSK_INSTANCE) gr.writefile(fdup); // create a duplicate file
                     if (gr.getType() == DB_DSK_NORMAL_POOL) {
                         geoField *gfff=gr.getModField(GEO_DB_NORMAL_POOL_VALUES);;
                         gfff->uncompress();// uncompress the normals
@@ -382,7 +382,7 @@ class ReaderWriterGEO : public ReaderWriter
                     recs.push_back(gr); // add to a list of all records
                 }
                 fin.close();
-                fdup.close();
+                //fdup.close();
                 // now sort the records so that any record followed by a PUSh has a child set = next record, etc
                 std::vector<georecord *> sorted=sort(recs); // tree-list of sorted record pointers
 #ifdef _DEBUG
@@ -1923,3 +1923,4 @@ void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
 // now register with Registry to instantiate the above
 // reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterGEO> gReaderWriter_GEO_Proxy;
+ÿÿ

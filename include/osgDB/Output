@@ -77,6 +77,7 @@ class OSGDB_EXPORT Output : public std::ofstream
         inline PathNameHint getPathNameHint() const { return _pathNameHint; }
 
         virtual std::string getFileNameForOutput(const std::string& filename) const;
+        const std::string& getFileName() const { return _filename; }
 
         
     protected:

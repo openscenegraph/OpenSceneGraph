@@ -575,8 +575,8 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
                 break;
 
 #ifdef COIN_BASIC_H
-// crude COIN detection so that REPLACE is only compiled in when using Coin
-// as the SGI Inventor does do have REPLACE
+// This check is a very crude Coin detector.
+// SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
             case SoTexture2::REPLACE:
                 texEnv->setMode(osg::TexEnv::REPLACE);
                 break;

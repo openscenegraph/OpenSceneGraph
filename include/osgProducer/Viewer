@@ -180,6 +180,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         osg::ref_ptr<osg::NodeVisitor>      _updateVisitor;
 
         bool                                _recordingAnimationPath;
+        double                              _recordingStartTime;
         osg::ref_ptr<osg::AnimationPath>    _animationPath;
 
         // record the current position and orientation of the view.

@@ -141,7 +141,8 @@ private:
 //
 Viewer::Viewer():
     _done(false),
-    _recordingAnimationPath(false)
+    _recordingAnimationPath(false),
+    _recordingStartTime(0.0)
 {
     _position[0] = 0.0;
     _position[1] = 0.0;
@@ -152,18 +153,21 @@ Viewer::Viewer():
 Viewer::Viewer(Producer::CameraConfig *cfg):
     OsgCameraGroup(cfg),
     _done(false),
-    _recordingAnimationPath(false)
+    _recordingAnimationPath(false),
+    _recordingStartTime(0.0)
 {
     _position[0] = 0.0;
     _position[1] = 0.0;
     _position[2] = 0.0;
     _speed = 0.0;
+    _recordingStartTime = 0.0;
 }
 
 Viewer::Viewer(const std::string& configFile):
     OsgCameraGroup(configFile),
     _done(false),
-    _recordingAnimationPath(false)
+    _recordingAnimationPath(false),
+    _recordingStartTime(0.0)
 {
     _position[0] = 0.0;
     _position[1] = 0.0;
@@ -174,7 +178,8 @@ Viewer::Viewer(const std::string& configFile):
 Viewer::Viewer(osg::ArgumentParser& arguments):
     OsgCameraGroup(arguments),
     _done(false),
-    _recordingAnimationPath(false)
+    _recordingAnimationPath(false),
+    _recordingStartTime(0.0)
 {
     _position[0] = 0.0;
     _position[1] = 0.0;
@@ -563,7 +568,9 @@ void Viewer::frame()
     
     if (getRecordingAnimationPath() && getAnimationPath())
     {
-        getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(osg::Vec3(_position[0],_position[1],_position[2]),_orientation));
+        if (getAnimationPath()->empty()) _recordingStartTime = _frameStamp->getReferenceTime();
+        
+        getAnimationPath()->insert(_frameStamp->getReferenceTime()-_recordingStartTime,osg::AnimationPath::ControlPoint(osg::Vec3(_position[0],_position[1],_position[2]),_orientation));
     }
 
     OsgCameraGroup::frame();

@@ -1,0 +1,70 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGGA_CAMERAMANIPULATOR
+#define OSGGA_CAMERAMANIPULATOR 1
+
+#include <osg/Camera>
+#include <osg/Node>
+
+#include <osgGA/Export>
+#include <osgGA/GUIEventHandler>
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIActionAdapter>
+
+namespace osgGA{
+
+class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
+{
+    public:
+
+	CameraManipulator();
+	virtual ~CameraManipulator();
+
+        /** attach a camera to the manipulator to be used for specifying view.*/
+	virtual void setCamera(osg::Camera*);
+
+        /** get the attached camera.*/
+	virtual const osg::Camera * getCamera() const;
+
+        /** get the attached camera.*/
+	virtual osg::Camera * getCamera();
+
+        /** Attach a node to the manipulator. 
+            Automatically detaches previously attached node.
+            setNode(NULL) detaches previously nodes.
+            Is ignored by manipulators which do not require a reference model.*/
+        virtual void setNode(osg::Node*) {}
+
+        /** Return node if attached.*/
+        virtual const osg::Node* getNode() const { return NULL; }
+
+        /** Return node if attached.*/
+        virtual osg::Node* getNode() { return NULL; }
+
+        /** Move the camera to the default position. 
+            May be ignored by manipulators if home functionality is not appropriate.*/
+        virtual void home(const GUIEventAdapter& ,GUIActionAdapter&) {}
+        
+        /** Start/restart the manipulator.*/
+        virtual void init(const GUIEventAdapter& ,GUIActionAdapter&) {}
+
+        /** Handle events, return true if handled, false otherwise.*/
+	virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        /** Handle visitations */
+        virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
+
+
+    protected:
+
+	// Reference pointer to a camera
+	osg::ref_ptr<osg::Camera>	_camera;
+
+};
+
+}
+
+#endif
+

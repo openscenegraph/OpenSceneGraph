@@ -1,0 +1,123 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGGA_GUIEVENTHANDLER
+#define OSGGA_GUIEVENTHANDLER 1
+
+#include <vector>
+
+#include <osg/Referenced>
+
+#include <osgGA/Export>
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIActionAdapter>
+#include <osgGA/GUIEventHandlerVisitor>
+
+namespace osgGA{
+
+class CompositeGUIEventHandler;
+
+/**
+
+GUIEventHandler provides a basic interface for any class which wants to handle
+a GUI Events.
+
+The GUIEvent is supplied by a GUIEventAdapter. Feedback resulting from the
+handle method is supplied by a GUIActionAdapter, which allows the GUIEventHandler
+to ask the GUI to take some action in response to an incoming event.
+
+For example, consider a Trackball Viewer class which takes mouse events and
+manipulates a scene camera in response. The Trackball Viewer is a GUIEventHandler,
+and receives the events via the handle method. If the user 'throws' the model,
+the Trackball Viewer class can detect this via the incoming events, and
+request that the GUI set up a timer callback to continually redraw the view.
+This request is made via the GUIActionAdapter class.
+
+*/
+
+class OSGGA_EXPORT GUIEventHandler : public osg::Referenced
+{
+    public:
+
+        /** Handle events, return true if handled, false otherwise.*/
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us)=0;
+
+        /** Is this const GUIEventHandler a composite? */
+        virtual const CompositeGUIEventHandler* getComposite() const { return 0; }
+
+        /** Is this non-const GUIEventHandler a composite? */
+        virtual CompositeGUIEventHandler* getComposite() { return 0; }
+
+        /** Accept visits from GUIEventHandler visitors */
+        virtual void accept(GUIEventHandlerVisitor&) = 0;
+        //virtual void accept(GUIEventHandlerVisitor&) { }
+
+};
+
+
+/**
+CompositeGUIEventHandler allows GUIEventHandlers to be composed into hierarchies.
+*/
+
+class OSGGA_EXPORT CompositeGUIEventHandler : public GUIEventHandler
+{
+    public:
+
+        typedef std::vector< osg::ref_ptr<GUIEventHandler> > ChildList;
+
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa);
+
+        virtual const CompositeGUIEventHandler* getComposite() const { return this; }
+
+        virtual CompositeGUIEventHandler* getComposite() { return this; }
+
+        virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
+
+
+
+        /* Composite-specific methods below */
+
+        virtual bool addChild(GUIEventHandler *geh);
+
+        virtual bool removeChild(GUIEventHandler *geh);
+
+        const int  getNumChildren() const { return _children.size(); }
+
+        GUIEventHandler *getChild( int i) { return _children[i].get(); }
+
+        const GUIEventHandler *getChild( int i ) const { return _children[i].get(); }
+
+        bool containsNode( const GUIEventHandler* node ) const
+        {
+            
+            for (ChildList::const_iterator itr=_children.begin();
+                 itr!=_children.end();
+                 ++itr)
+            {
+                if (itr->get()==node) return true;
+            }
+            return false;
+        }
+
+        ChildList::iterator findChild( const GUIEventHandler* node )
+        {
+            for (ChildList::iterator itr=_children.begin();
+                 itr!=_children.end();
+                 ++itr)
+            {
+                if (itr->get()==node) return itr;
+            }
+            return _children.end();
+        }
+
+    private:
+
+        ChildList   _children;
+
+};
+
+
+}
+
+#endif

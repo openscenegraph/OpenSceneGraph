@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_GLU
-#define OSG_GL 1
+#ifndef OSG_GLUT
+#define OSG_GLUT 1
 
 #ifdef __APPLE__
 	#include </System/Library/Frameworks/GLUT.Framework/Versions/A/Headers/glut.h>
@@ -11,4 +11,4 @@
 	#include <GL/glut.h>
 #endif
 
-#endif  // __osgGL_h
+#endif  // __osgGLUT_h

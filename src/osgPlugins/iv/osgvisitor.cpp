@@ -159,14 +159,69 @@ void OSGVisitor::applySeparator(Separator *sep) {
     }
 }
 
-void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
+osg::Primitive *generatePrimitive(PolygonList &polys, unsigned primsize) {
     unsigned i,j;
+    osg::Primitive *p=0;
+    // Fisrt of all count the number of polygons
+    unsigned count=0;
+    for (i=0;i<polys.size();i++) {
+	VertexIndexList vindex=*polys[i];
+	if (vindex.size() == primsize) {
+            count++;
+	}
+    }
+    if (count==0) return 0; ///If no polys, no primitive :)
+
+    // The type of primitive
+    osg::Primitive::Mode mode;
+    switch (primsize) {
+    case 1: mode=osg::Primitive::POINTS;break;
+    case 2: mode=osg::Primitive::LINES;break;
+    case 3: mode=osg::Primitive::TRIANGLES;break;
+    case 4: mode=osg::Primitive::QUADS;break;
+    default: mode=osg::Primitive::QUADS;
+    }
+    // Now will generate the indices and the primitive
+    if (count < 65536) {
+	unsigned short *indices=new unsigned short[count*primsize];
+        unsigned count2=0;
+	for (i=0;i<polys.size();i++) {
+	    VertexIndexList vindex=*polys[i];
+	    if (vindex.size() == primsize) {
+		for (j=0;j<vindex.size();j++) {
+                    indices[count2*primsize+j]=vindex[j];
+		}
+		count2++;
+	    }
+	}
+	p=new osg::DrawElementsUShort(mode,count*primsize,indices);
+	delete indices;
+    } else {
+	unsigned int *indices=new unsigned int[count*primsize];
+        unsigned count2=0;
+	for (i=0;i<polys.size();i++) {
+	    VertexIndexList vindex=*polys[i];
+	    if (vindex.size() == primsize) {
+		for (j=0;j<vindex.size();j++) {
+                    indices[count2*primsize+j]=vindex[j];
+		}
+		count2++;
+	    }
+	}
+	p=new osg::DrawElementsUInt(mode,count*primsize,indices);
+	delete indices;
+    }
+    return p;
+}
+
+void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
+    unsigned i;
     if (coord3_active == 0) {
 	std::cerr << "ERROR: IndexedFaceSet without previous Coordinate3!" << std::endl;
         throw -1;
     }
     osg::Geode *geode=new osg::Geode();
-    osg::GeoSet *objeto=new osg::GeoSet();
+    osg::Geometry *geometry=new osg::Geometry();
     osg::StateSet *state=new osg::StateSet();
     osg::FrontFace *frontface=new osg::FrontFace();
     frontface->setMode(osg::FrontFace::CLOCKWISE);
@@ -199,69 +254,46 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
 	}
 
     }
+    /* Converting list of vertices to the OSG way (mostly the same) */
     VertexList vertices=coord3_active->getVertices();
+    osg::Vec3Array *vertices_osg=new osg::Vec3Array();
+    for (i=0;i<vertices.size();i++) {
+        vertices_osg->push_back(vertices[i]);
+    }
+    geometry->setVertexArray(vertices_osg);
+
+    /* Converting list of polys */
     PolygonList polys=ifs->getPolygons();
+    for (i=1;i<=4;i++) {
+	osg::Primitive *p=generatePrimitive(polys,i);
+	if (p!=0) {
+            geometry->addPrimitive(p);
+	}
+    }
     TextureCoordList tcoord;
     if (tcoord_active) tcoord=tcoord_active->getTextureCoords();
-    unsigned nPoly=polys.size();
-    unsigned nvert_total=0;
-
-    objeto->setPrimType(osg::GeoSet::POLYGON);
-    objeto->setNumPrims(nPoly);
-
-    /** Calculating length of primitives */
-    int *long_primitivas=new int[nPoly];
-    for (j=0;j<nPoly;j++) {
-	long_primitivas[j]=polys[j]->size();
-        nvert_total+=long_primitivas[j];
-    }
-    objeto->setPrimLengths(long_primitivas);
-    this->total_vert+=nvert_total;
-
-    /** We change from the ad-hoc scenegraph to the OSG one */
-    unsigned posCoords=0;
-    osg::Vec3 *coords = new osg::Vec3[nvert_total];
-    osg::Vec2 *tcoords = new osg::Vec2[nvert_total];
-    osg::Vec3 *normalsFlat = new osg::Vec3[nvert_total];
-    bool hasTextureIndices=ifs->hasTextureIndices();
     PolygonList textureIndices = ifs->getTextureIndices();
-    for (j=0; j < nPoly; j++) {
-	VertexIndexList vindex=*polys[j];
-	VertexIndexList texindex;
-	if (hasTextureIndices) texindex=*textureIndices[j];
-	unsigned nVert=vindex.size();
-	osg::Vec3 normal;
-	if (nVert > 2) {
-	    normal = calcNormal(vertices[vindex[0]],vertices[vindex[1]],vertices[vindex[2]]);
+    if (tcoord_active) {
+	if (ifs->hasTextureIndices()) {
+	    std::cerr << "texture indices are not supported!" << std::endl;
 	} else {
-	    normal = osg::Vec3(0,0,0);
-	}
-	for (i=0; i < nVert; i++) {
-	    int vert = vindex[i];
-	    coords[posCoords].set(vertices[vert][0],vertices[vert][1],vertices[vert][2]);
-            normalsFlat[posCoords].set(normal[0],normal[1],normal[2]);
-	    if (tcoord_active) {
-		if (hasTextureIndices) {
-                    int coord=texindex[i];
-		    tcoords[posCoords].set(tcoord[coord].first,tcoord[coord].second);
-		} else {
-		    tcoords[posCoords].set(tcoord[vert].first,tcoord[vert].second);
-		}
+	    osg::Vec2Array *texCoords=new osg::Vec2Array();
+	    for (i=0;i<vertices.size();i++) {
+		texCoords->push_back(osg::Vec2(tcoord[i].first,tcoord[i].second));
 	    }
-	    posCoords++;
+	    geometry->setTexCoordArray(0,texCoords);
 	}
+    }
+    osgUtil::SmoothingVisitor v;
+    v.smooth(*geometry);
+
+    // As SmoothingVisitor doesn't take the front face into account:
+    osg::Vec3Array *norm=geometry->getNormalArray();
+    for (i=0;i<norm->size();i++) {
+        (*norm)[i] = - (*norm)[i];
     }
 
-    /** Establishing parameters of the geoset */
-    objeto->setCoords(coords);
-    if (tcoord_active) {
-	objeto->setTextureCoords(tcoords);
-	objeto->setTextureBinding(osg::GeoSet::BIND_PERVERTEX);
-    }
-    //osg::Vec3 *normals=calcNormals(vertices,polys,nvert_total);
-    //objeto->setNormals(normals);
-    
-    geode->addDrawable(objeto);
+    geode->addDrawable(geometry);
     parent->addChild(geode);
 }
 

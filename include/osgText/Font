@@ -228,7 +228,6 @@ public:
     public:
 
         Glyph();
-        virtual ~Glyph();
 
         unsigned int getGlyphCode() const;
 
@@ -267,6 +266,8 @@ public:
         void draw(osg::State& state) const;
 
     protected:
+
+        virtual ~Glyph();
 
         Font*                       _font;
         unsigned int                _glyphCode;

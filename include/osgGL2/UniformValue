@@ -43,7 +43,7 @@ namespace osgGL2 {
   * glProgramObjects during the next osgGL2::ProgramObject.apply().
   */
 
-class UniformValue : public osg::Referenced
+class OSGGL2_EXPORT UniformValue : public osg::Referenced
 {
     public:
 	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const = 0;

@@ -44,7 +44,7 @@ class SG_EXPORT PagedLOD : public LOD
         virtual bool removeChild(Node *child);
         
         
-        struct PerRangeData
+        struct SG_EXPORT PerRangeData
         {
             PerRangeData();
             PerRangeData(const PerRangeData& prd);

@@ -14,6 +14,8 @@
 #ifndef OSG_ENDIAN
 #define OSG_ENDIAN 1
 
+#include <algorithm>
+
 namespace osg {
 
 enum Endian

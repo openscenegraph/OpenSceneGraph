@@ -33,7 +33,7 @@ class SG_EXPORT NodeCallback : public virtual Object {
             _nestedCallback(_nestedCallback) {}
 
         
-        META_Object(osg,NodeCallback)
+        META_Object(osg,NodeCallback);
         
         
         /** Callback method called by the NodeVisitor when visiting a node.*/

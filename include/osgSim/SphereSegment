@@ -225,7 +225,7 @@ public:
     /** Set color of all components. */
     void setAllColors(const osg::Vec4& c);
 
-    META_Node(osgSim, SphereSegment)
+    META_Node(osgSim, SphereSegment);
 
 private:
 

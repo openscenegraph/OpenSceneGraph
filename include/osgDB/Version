@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_VERSION
-#define OSG_VERSION 1
+#ifndef OSGDB_VERSION
+#define OSGDB_VERSION 1
 
 #include <osgDB/Export>
 

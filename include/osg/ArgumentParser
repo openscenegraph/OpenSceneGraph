@@ -29,7 +29,7 @@ class SG_EXPORT ArgumentParser
 {
     public:
 
-        class Parameter
+        class SG_EXPORT Parameter
         {
         public:
             enum ParameterType

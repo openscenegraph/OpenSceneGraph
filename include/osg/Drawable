@@ -278,7 +278,7 @@ class SG_EXPORT Drawable : public Object
 
             UpdateCallback(const UpdateCallback&,const CopyOp&) {}
 
-            META_Object(osg,UpdateCallback)
+            META_Object(osg,UpdateCallback);
 
             /** do customized update code.*/
             virtual void update(osg::NodeVisitor*, osg::Drawable*) {}
@@ -300,7 +300,7 @@ class SG_EXPORT Drawable : public Object
 
             CullCallback(const CullCallback&,const CopyOp&) {}
 
-            META_Object(osg,CullCallback)
+            META_Object(osg,CullCallback);
 
             /** do customized cull code, return true if drawable should be culled.*/
             virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const { return false; }
@@ -329,7 +329,7 @@ class SG_EXPORT Drawable : public Object
 
             DrawCallback(const DrawCallback&,const CopyOp&) {}
 
-            META_Object(osg,DrawCallback)
+            META_Object(osg,DrawCallback);
 
             /** do customized draw code.*/
             virtual void drawImplementation(osg::State&,const osg::Drawable*) const {}

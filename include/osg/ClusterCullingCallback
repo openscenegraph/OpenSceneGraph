@@ -30,7 +30,7 @@ class SG_EXPORT ClusterCullingCallback : public Drawable::CullCallback
         ClusterCullingCallback(const osg::Vec3& controlPoint, const osg::Vec3& normal, float deviation);
         ClusterCullingCallback(const osg::Drawable* drawable);
 
-        META_Object(osg,ClusterCullingCallback)
+        META_Object(osg,ClusterCullingCallback);
 
         /** Computes the control point, normal, and deviation from the
 		  * given drawable contents. */

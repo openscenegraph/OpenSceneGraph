@@ -498,7 +498,7 @@ class SG_EXPORT HeightField : public Shape
             _borderWidth(mesh._borderWidth),
             _heights(mesh._heights) {}
         
-    	META_Shape(osg, HeightField)
+    	META_Shape(osg, HeightField);
 
     	typedef std::vector<float> HeightList;
 

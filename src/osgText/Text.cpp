@@ -25,6 +25,8 @@ Text::Text():
     _fontHeight(32),
     _characterHeight(32),
     _characterAspectRatio(1.0f),
+    _maximumWidth(0.0f),
+    _maximumHeight(0.0f),
     _alignment(BASE_LINE),
     _axisAlignment(XY_PLANE),
     _rotation(),
@@ -42,6 +44,8 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _fontHeight(text._fontHeight),
     _characterHeight(text._characterHeight),
     _characterAspectRatio(text._characterAspectRatio),
+    _maximumWidth(text._maximumWidth),
+    _maximumHeight(text._maximumHeight),
     _text(text._text),
     _position(text._position),
     _alignment(text._alignment),
@@ -86,6 +90,18 @@ void Text::setCharacterSize(float height,float aspectRatio)
     computeGlyphRepresentation();
 }
 
+void Text::setMaximumWidth(float maximumWidth)
+{
+    _maximumWidth = maximumWidth;
+    computeGlyphRepresentation();
+}
+
+void  Text::setMaximumHeight(float maximumHeight)
+{
+    _maximumHeight = maximumHeight;
+    computeGlyphRepresentation();
+}
+    
 
 void Text::setText(const String& text)
 {
@@ -270,10 +286,64 @@ void Text::computeGlyphRepresentation()
         
             local = cursor;
         
+
             osg::Vec2 bearing(horizontal?glyph->getHorizontalBearing():glyph->getVerticalBearing());
             local.x() += bearing.x() * wr;
             local.y() += bearing.y() * hr;
-            
+
+            // check to see if we are still within line if not move to next line.
+            switch(_layout)
+            {
+              case LEFT_TO_RIGHT:
+              {
+                if (_maximumWidth>0.0f)
+                {
+                    if (local.x()+width>_maximumWidth)
+                    {
+                        startOfLine.y() -= _fontHeight;
+                        cursor = startOfLine;
+                        previous_charcode = 0;
+
+                        local = cursor;
+                        local.x() += bearing.x() * wr;
+                        local.y() += bearing.y() * hr;
+                    }
+                }
+                break;
+              }
+              case RIGHT_TO_LEFT:
+              {
+                if (_maximumWidth>0.0f)
+                {
+                    if (local.x()<-_maximumWidth)
+                    {
+                        startOfLine.y() -= _fontHeight;
+                        cursor = startOfLine;
+                        previous_charcode = 0;
+
+                        local = cursor;
+                        local.x() += bearing.x() * wr;
+                        local.y() += bearing.y() * hr;
+                    }
+                }
+                break;
+              }
+              case VERTICAL:
+                if (_maximumHeight>0.0f)
+                {
+                    if (local.y()<-_maximumHeight)
+                    {
+                        startOfLine.x() += _fontWidth;
+                        cursor = startOfLine;
+                        previous_charcode = 0;
+
+                        local = cursor;
+                        local.x() += bearing.x() * wr;
+                        local.y() += bearing.y() * hr;
+                    }
+                }
+                break;
+            }
         
             GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
             

@@ -12,7 +12,7 @@ INSTFILES = \
 
 EXEC = osgcameragroup
 
-CXXFLAGS += $(PRODUCER_INCLUDE_DIR)
+INC += $(PRODUCER_INCLUDE_DIR)
 LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules 

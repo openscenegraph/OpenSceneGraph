@@ -48,6 +48,13 @@ class StateSet;
         if (parameter<rhs.parameter) return -1; \
         if (rhs.parameter<parameter) return 1;
 
+
+// define for the GL_EXT_secondary_color extension, GL_COLOR_SUM is OpenGL
+// mode to be used to enable and disable the off the second color.
+#ifndef GL_COLOR_SUM
+#define GL_COLOR_SUM    0x8458
+#endif
+
 /** Base class for state attribuets.
 */     
 class SG_EXPORT StateAttribute : public Object

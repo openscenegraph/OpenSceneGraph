@@ -22,110 +22,142 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.49.1">Geometry</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.1">Geometry</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.49.2">Geometry</A></B>(const <!1><A HREF="Geometry.html#DOC.2.49.2">Geometry</A>&amp; <!1><A HREF="Geometry.html#DOC.2.49.2">Geometry</A>, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.2">Geometry</A></B>(const <!1><A HREF="Geometry.html#DOC.2.50.2">Geometry</A>&amp; geometry, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.49.3">cloneType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.50.3">cloneType</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.49.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.50.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.49.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.50.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.49.6">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.50.6">libraryName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.49.7">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.50.7">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.9">setVertexArray</A></B>(Vec3Array* array)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.9">setVertexArray</A></B>(Vec3Array* array)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Vec3Array* <B><A HREF="#DOC.2.49.10">getVertexArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Vec3Array* <B><A HREF="#DOC.2.50.10">getVertexArray</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const Vec3Array* <B><A HREF="#DOC.2.49.11">getVertexArray</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const Vec3Array* <B><A HREF="#DOC.2.50.11">getVertexArray</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.12">setNormalBinding</A></B>(<!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> ab)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.12">setNormalBinding</A></B>(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> <B><A HREF="#DOC.2.49.13">getNormalBinding</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.13">getNormalBinding</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.14">setNormalArray</A></B>(Vec3Array* array)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.14">setNormalArray</A></B>(Vec3Array* array)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Vec3Array* <B><A HREF="#DOC.2.49.15">getNormalArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Vec3Array* <B><A HREF="#DOC.2.50.15">getNormalArray</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const Vec3Array* <B><A HREF="#DOC.2.49.16">getNormalArray</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const Vec3Array* <B><A HREF="#DOC.2.50.16">getNormalArray</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.17">setColorBinding</A></B>(<!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> ab)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.17">setColorBinding</A></B>(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> <B><A HREF="#DOC.2.49.18">getColorBinding</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.18">getColorBinding</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.19">setColorArray</A></B>(<!1><A HREF="Array.html">Array</A>* array)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.19">setColorArray</A></B>(<!1><A HREF="Array.html">Array</A>* array)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.49.20">getColorArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.50.20">getColorArray</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.49.21">getColorArray</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.50.21">getColorArray</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt; &gt; TexCoordArrayList void <B><A HREF="#DOC.2.49.22">setTexCoordArray</A></B>(unsigned int unit, <!1><A HREF="Array.html">Array</A>*)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.22">setSecondaryColorBinding</A></B>(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.49.23">getTexCoordArray</A></B>(unsigned int unit)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.23">getSecondaryColorBinding</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.49.24">getTexCoordArray</A></B>(unsigned int unit) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.24">setSecondaryColorArray</A></B>(<!1><A HREF="Array.html">Array</A>* array)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.49.25">getNumTexCoordArrays</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.50.25">getSecondaryColorArray</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TexCoordArrayList&amp; <B><A HREF="#DOC.2.49.26">getTexCoordArrayList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.50.26">getSecondaryColorArray</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const TexCoordArrayList&amp; <B><A HREF="#DOC.2.49.27">getTexCoordArrayList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.27">setFogCoordBinding</A></B>(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Primitive.html">Primitive</A>&gt; &gt; PrimitiveList void <B><A HREF="#DOC.2.49.28">setPrimitiveList</A></B>(const PrimitiveList&amp; primitives)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.28">getFogCoordBinding</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>PrimitiveList&amp; <B><A HREF="#DOC.2.49.29">getPrimitiveList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.29">setFogCoordArray</A></B>(FloatArray* array)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const PrimitiveList&amp; <B><A HREF="#DOC.2.49.30">getPrimitiveList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>FloatArray* <B><A HREF="#DOC.2.50.30">getFogCoordArray</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.31">addPrimitive</A></B>(<!1><A HREF="Primitive.html">Primitive</A>* primitive)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const FloatArray* <B><A HREF="#DOC.2.50.31">getFogCoordArray</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.49.32">verifyBindings</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt; &gt; TexCoordArrayList void <B><A HREF="#DOC.2.50.32">setTexCoordArray</A></B>(unsigned int unit, <!1><A HREF="Array.html">Array</A>*)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.33">computeCorrectBindingsAndArraySizes</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.50.33">getTexCoordArray</A></B>(unsigned int unit)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.49.34">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.50.34">getTexCoordArray</A></B>(unsigned int unit) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.50.35">getNumTexCoordArrays</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TexCoordArrayList&amp; <B><A HREF="#DOC.2.50.36">getTexCoordArrayList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const TexCoordArrayList&amp; <B><A HREF="#DOC.2.50.37">getTexCoordArrayList</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Primitive.html">Primitive</A>&gt; &gt; PrimitiveList void <B><A HREF="#DOC.2.50.38">setPrimitiveList</A></B>(const PrimitiveList&amp; primitives)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>PrimitiveList&amp; <B><A HREF="#DOC.2.50.39">getPrimitiveList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const PrimitiveList&amp; <B><A HREF="#DOC.2.50.40">getPrimitiveList</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.50.41">getNumPrimitives</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Primitive.html">Primitive</A>* <B><A HREF="#DOC.2.50.42">getPrimitive</A></B>(unsigned int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Primitive.html">Primitive</A>* <B><A HREF="#DOC.2.50.43">getPrimitive</A></B>(unsigned int pos) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.44">addPrimitive</A></B>(<!1><A HREF="Primitive.html">Primitive</A>* primitive)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.45">verifyBindings</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.46">computeCorrectBindingsAndArraySizes</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.47">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DD><I>draw Geometry directly ignoring an OpenGL display list which could be attached.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.49.35">accept</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.48">accept</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)
 <DD><I>accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.49.36">accept</A></B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.49">accept</A></B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf)
 <DD><I>accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.49.8">AttributeBinding</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.50.8">AttributeBinding</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>PrimitiveList <B><A HREF="#DOC.2.49.40">_primitives</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>PrimitiveList <B><A HREF="#DOC.2.50.52">_primitives</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Vec3Array&gt;  <B><A HREF="#DOC.2.49.41">_vertexArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Vec3Array&gt;  <B><A HREF="#DOC.2.50.53">_vertexArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> <B><A HREF="#DOC.2.49.42">_normalBinding</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.54">_normalBinding</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Vec3Array&gt;  <B><A HREF="#DOC.2.49.43">_normalArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Vec3Array&gt;  <B><A HREF="#DOC.2.50.55">_normalArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> <B><A HREF="#DOC.2.49.44">_colorBinding</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.56">_colorBinding</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt;  <B><A HREF="#DOC.2.49.45">_colorArray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt;  <B><A HREF="#DOC.2.50.57">_colorArray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TexCoordArrayList <B><A HREF="#DOC.2.49.46">_texCoordList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.58">_secondaryColorBinding</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt;  <B><A HREF="#DOC.2.50.59">_secondaryColorArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> <B><A HREF="#DOC.2.50.60">_fogCoordBinding</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;FloatArray&gt;  <B><A HREF="#DOC.2.50.61">_fogCoordArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TexCoordArrayList <B><A HREF="#DOC.2.50.62">_texCoordList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html">Geometry</A>&amp; <B><A HREF="#DOC.2.49.37">operator = </A></B>(const <!1><A HREF="Geometry.html">Geometry</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html">Geometry</A>&amp; <B><A HREF="#DOC.2.50.50">operator = </A></B>(const <!1><A HREF="Geometry.html">Geometry</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.49.38">~Geometry</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.49.39">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.51">~Geometry</A></B>()
 </DL></P>
 
 </DL>
@@ -133,9 +165,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.40.6">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.42.6">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.40.6">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.42.6">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getParent</B>(const unsigned int i)
 <DT>
@@ -165,23 +197,23 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="Drawable.html#DOC.2.40.23">AppCallback</A>* ac)
+<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="Drawable.html#DOC.2.42.23">AppCallback</A>* ac)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.40.23">AppCallback</A>* <B>getAppCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.42.23">AppCallback</A>* <B>getAppCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.40.23">AppCallback</A>* <B>getAppCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.42.23">AppCallback</A>* <B>getAppCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.40.27">CullCallback</A>* cc)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.42.27">CullCallback</A>* cc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.40.27">CullCallback</A>* <B>getCullCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.42.27">CullCallback</A>* <B>getCullCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.40.27">CullCallback</A>* <B>getCullCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.42.27">CullCallback</A>* <B>getCullCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.40.31">DrawCallback</A>* dc)
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.42.31">DrawCallback</A>* dc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.40.31">DrawCallback</A>* <B>getDrawCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.42.31">DrawCallback</A>* <B>getDrawCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.40.31">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.42.31">DrawCallback</A>* <B>getDrawCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(uint contextID, uint globj)
 <DT>
@@ -209,7 +241,7 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.40.6">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.42.6">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
 <DT>
@@ -221,15 +253,17 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bbox_computed</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.40.23">AppCallback</A>&gt;  <B>_appCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.42.23">AppCallback</A>&gt;  <B>_appCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.40.31">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.42.31">DrawCallback</A>&gt;  <B>_drawCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.40.27">CullCallback</A>&gt;  <B>_cullCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.42.27">CullCallback</A>&gt;  <B>_cullCallback</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(osg::Node* node)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(osg::Node* node)
@@ -247,9 +281,9 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.90.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.90.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -265,7 +299,7 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.90.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -297,211 +331,275 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DL>
 
 <A NAME="Geometry"></A>
-<A NAME="DOC.2.49.1"></A>
+<A NAME="DOC.2.50.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Geometry()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Geometry"></A>
-<A NAME="DOC.2.49.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Geometry(const <!1><A HREF="Geometry.html#DOC.2.49.2">Geometry</A>&amp; <!1><A HREF="Geometry.html#DOC.2.49.2">Geometry</A>, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.50.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Geometry(const <!1><A HREF="Geometry.html#DOC.2.50.2">Geometry</A>&amp; geometry, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.2.49.3"></A>
+<A NAME="DOC.2.50.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.49.4"></A>
+<A NAME="DOC.2.50.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.49.5"></A>
+<A NAME="DOC.2.50.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.49.6"></A>
+<A NAME="DOC.2.50.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.49.7"></A>
+<A NAME="DOC.2.50.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AttributeBinding"></A>
-<A NAME="DOC.2.49.8"></A>
+<A NAME="DOC.2.50.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AttributeBinding</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="BIND_OFF"></A>
-<A NAME="DOC.2.49.8.1"></A>
+<A NAME="DOC.2.50.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_OFF</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BIND_OVERALL"></A>
-<A NAME="DOC.2.49.8.2"></A>
+<A NAME="DOC.2.50.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_OVERALL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BIND_PER_PRIMITIVE"></A>
-<A NAME="DOC.2.49.8.3"></A>
+<A NAME="DOC.2.50.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_PER_PRIMITIVE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BIND_PER_VERTEX"></A>
-<A NAME="DOC.2.49.8.4"></A>
+<A NAME="DOC.2.50.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BIND_PER_VERTEX</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setVertexArray"></A>
-<A NAME="DOC.2.49.9"></A>
+<A NAME="DOC.2.50.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVertexArray(Vec3Array* array)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getVertexArray"></A>
-<A NAME="DOC.2.49.10"></A>
+<A NAME="DOC.2.50.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Vec3Array* getVertexArray()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getVertexArray"></A>
-<A NAME="DOC.2.49.11"></A>
+<A NAME="DOC.2.50.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const Vec3Array* getVertexArray() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setNormalBinding"></A>
-<A NAME="DOC.2.49.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormalBinding(<!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> ab)</B></TT>
+<A NAME="DOC.2.50.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormalBinding(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNormalBinding"></A>
-<A NAME="DOC.2.49.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> getNormalBinding() const </B></TT>
+<A NAME="DOC.2.50.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> getNormalBinding() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setNormalArray"></A>
-<A NAME="DOC.2.49.14"></A>
+<A NAME="DOC.2.50.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormalArray(Vec3Array* array)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNormalArray"></A>
-<A NAME="DOC.2.49.15"></A>
+<A NAME="DOC.2.50.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Vec3Array* getNormalArray()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNormalArray"></A>
-<A NAME="DOC.2.49.16"></A>
+<A NAME="DOC.2.50.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const Vec3Array* getNormalArray() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setColorBinding"></A>
-<A NAME="DOC.2.49.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColorBinding(<!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> ab)</B></TT>
+<A NAME="DOC.2.50.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColorBinding(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getColorBinding"></A>
-<A NAME="DOC.2.49.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> getColorBinding() const </B></TT>
+<A NAME="DOC.2.50.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> getColorBinding() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setColorArray"></A>
-<A NAME="DOC.2.49.19"></A>
+<A NAME="DOC.2.50.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColorArray(<!1><A HREF="Array.html">Array</A>* array)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getColorArray"></A>
-<A NAME="DOC.2.49.20"></A>
+<A NAME="DOC.2.50.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html">Array</A>* getColorArray()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getColorArray"></A>
-<A NAME="DOC.2.49.21"></A>
+<A NAME="DOC.2.50.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Array.html">Array</A>* getColorArray() const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="setSecondaryColorBinding"></A>
+<A NAME="DOC.2.50.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSecondaryColorBinding(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSecondaryColorBinding"></A>
+<A NAME="DOC.2.50.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> getSecondaryColorBinding() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSecondaryColorArray"></A>
+<A NAME="DOC.2.50.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSecondaryColorArray(<!1><A HREF="Array.html">Array</A>* array)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSecondaryColorArray"></A>
+<A NAME="DOC.2.50.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html">Array</A>* getSecondaryColorArray()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSecondaryColorArray"></A>
+<A NAME="DOC.2.50.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Array.html">Array</A>* getSecondaryColorArray() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFogCoordBinding"></A>
+<A NAME="DOC.2.50.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFogCoordBinding(<!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> ab)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFogCoordBinding"></A>
+<A NAME="DOC.2.50.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> getFogCoordBinding() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFogCoordArray"></A>
+<A NAME="DOC.2.50.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFogCoordArray(FloatArray* array)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFogCoordArray"></A>
+<A NAME="DOC.2.50.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>FloatArray* getFogCoordArray()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFogCoordArray"></A>
+<A NAME="DOC.2.50.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const FloatArray* getFogCoordArray() const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="setTexCoordArray"></A>
-<A NAME="DOC.2.49.22"></A>
+<A NAME="DOC.2.50.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt; &gt; TexCoordArrayList void setTexCoordArray(unsigned int unit, <!1><A HREF="Array.html">Array</A>*)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTexCoordArray"></A>
-<A NAME="DOC.2.49.23"></A>
+<A NAME="DOC.2.50.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html">Array</A>* getTexCoordArray(unsigned int unit)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTexCoordArray"></A>
-<A NAME="DOC.2.49.24"></A>
+<A NAME="DOC.2.50.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Array.html">Array</A>* getTexCoordArray(unsigned int unit) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNumTexCoordArrays"></A>
-<A NAME="DOC.2.49.25"></A>
+<A NAME="DOC.2.50.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getNumTexCoordArrays() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTexCoordArrayList"></A>
-<A NAME="DOC.2.49.26"></A>
+<A NAME="DOC.2.50.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TexCoordArrayList&amp; getTexCoordArrayList()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTexCoordArrayList"></A>
-<A NAME="DOC.2.49.27"></A>
+<A NAME="DOC.2.50.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const TexCoordArrayList&amp; getTexCoordArrayList() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setPrimitiveList"></A>
-<A NAME="DOC.2.49.28"></A>
+<A NAME="DOC.2.50.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Primitive.html">Primitive</A>&gt; &gt; PrimitiveList void setPrimitiveList(const PrimitiveList&amp; primitives)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPrimitiveList"></A>
-<A NAME="DOC.2.49.29"></A>
+<A NAME="DOC.2.50.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>PrimitiveList&amp; getPrimitiveList()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPrimitiveList"></A>
-<A NAME="DOC.2.49.30"></A>
+<A NAME="DOC.2.50.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const PrimitiveList&amp; getPrimitiveList() const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="getNumPrimitives"></A>
+<A NAME="DOC.2.50.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getNumPrimitives() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrimitive"></A>
+<A NAME="DOC.2.50.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Primitive.html">Primitive</A>* getPrimitive(unsigned int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrimitive"></A>
+<A NAME="DOC.2.50.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Primitive.html">Primitive</A>* getPrimitive(unsigned int pos) const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="addPrimitive"></A>
-<A NAME="DOC.2.49.31"></A>
+<A NAME="DOC.2.50.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addPrimitive(<!1><A HREF="Primitive.html">Primitive</A>* primitive)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="verifyBindings"></A>
-<A NAME="DOC.2.49.32"></A>
+<A NAME="DOC.2.50.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool verifyBindings() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeCorrectBindingsAndArraySizes"></A>
-<A NAME="DOC.2.49.33"></A>
+<A NAME="DOC.2.50.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeCorrectBindingsAndArraySizes()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawImmediateMode"></A>
-<A NAME="DOC.2.49.34"></A>
+<A NAME="DOC.2.50.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImmediateMode(<!1><A HREF="State.html">State</A>&amp; state)</B></TT>
 <DD>draw Geometry directly ignoring an OpenGL display list which could be attached.
 This is the internal draw method which does the drawing itself,
 and is the method to override when deriving from Geometry for user-drawn objects.
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.49.35"></A>
+<A NAME="DOC.2.50.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)</B></TT>
 <DD>accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.49.36"></A>
+<A NAME="DOC.2.50.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf)</B></TT>
 <DD>accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.49.37"></A>
+<A NAME="DOC.2.50.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html">Geometry</A>&amp; operator = (const <!1><A HREF="Geometry.html">Geometry</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Geometry"></A>
-<A NAME="DOC.2.49.38"></A>
+<A NAME="DOC.2.50.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Geometry()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="computeBound"></A>
-<A NAME="DOC.2.49.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_primitives"></A>
-<A NAME="DOC.2.49.40"></A>
+<A NAME="DOC.2.50.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>PrimitiveList _primitives</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_vertexArray"></A>
-<A NAME="DOC.2.49.41"></A>
+<A NAME="DOC.2.50.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Vec3Array&gt;  _vertexArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normalBinding"></A>
-<A NAME="DOC.2.49.42"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> _normalBinding</B></TT>
+<A NAME="DOC.2.50.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> _normalBinding</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normalArray"></A>
-<A NAME="DOC.2.49.43"></A>
+<A NAME="DOC.2.50.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Vec3Array&gt;  _normalArray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_colorBinding"></A>
-<A NAME="DOC.2.49.44"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.49.8">AttributeBinding</A> _colorBinding</B></TT>
+<A NAME="DOC.2.50.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> _colorBinding</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_colorArray"></A>
-<A NAME="DOC.2.49.45"></A>
+<A NAME="DOC.2.50.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt;  _colorArray</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_secondaryColorBinding"></A>
+<A NAME="DOC.2.50.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> _secondaryColorBinding</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_secondaryColorArray"></A>
+<A NAME="DOC.2.50.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Array.html">Array</A>&gt;  _secondaryColorArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fogCoordBinding"></A>
+<A NAME="DOC.2.50.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html#DOC.2.50.8">AttributeBinding</A> _fogCoordBinding</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fogCoordArray"></A>
+<A NAME="DOC.2.50.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;FloatArray&gt;  _fogCoordArray</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_texCoordList"></A>
-<A NAME="DOC.2.49.46"></A>
+<A NAME="DOC.2.50.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TexCoordArrayList _texCoordList</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -12,7 +12,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=305>
-<param name=classes value="MNode,M,CGroup,MGroup.html,CTransform,MTransform.html,CSwitch,MSwitch.html,CProjection,MProjection.html,COccluderNode,MOccluderNode.html,CLightSource,MLightSource.html,CLOD,MLOD.html,CEarthSky,MEarthSky.html,CClipNode,MClipNode.html">
+<param name=classes value="MNode,M,CGroup,MGroup.html,CTransform,MTransform.html,CSwitch,MSwitch.html,CProjection,MProjection.html,COccluderNode,MOccluderNode.html,CLightSource,MLightSource.html,CLOD,MLOD.html,CClipNode,MClipNode.html,CClearNode,MClearNode.html">
 <param name=before value="M,M,M|_,MR_,MR_,MR_,MR_,MR_,MR_,Mr_">
 <param name=after value="Md_,M,M,M,M,M,M,M,M,M">
 <param name=indent value="0,1,1,1,1,1,1,1,1,1">
@@ -23,53 +23,53 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; ChildList <B><A HREF="#DOC.2.55.1">Group</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; ChildList <B><A HREF="#DOC.2.58.1">Group</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.55.2">Group</A></B>(const <!1><A HREF="Group.html#DOC.2.55.2">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.58.2">Group</A></B>(const <!1><A HREF="Group.html#DOC.2.58.2">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.55.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Group.html">Group</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.58.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Group.html">Group</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.55.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.58.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.55.5">addChild</A></B>( Node* child )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.58.5">addChild</A></B>( Node* child )
 <DD><I>Add Node to Group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.55.6">removeChild</A></B>( Node* child )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.58.6">removeChild</A></B>( Node* child )
 <DD><I>Remove Node from Group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.55.7">replaceChild</A></B>( Node* origChild, Node* newChild )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.58.7">replaceChild</A></B>( Node* origChild, Node* newChild )
 <DD><I>Replace specified Node with another Node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.55.8">getNumChildren</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.58.8">getNumChildren</A></B>() const 
 <DD><I>return the number of chilren nodes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.55.9">getChild</A></B>( const unsigned int i )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.58.9">getChild</A></B>( const unsigned int i )
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.55.10">getChild</A></B>( const unsigned int i ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.58.10">getChild</A></B>( const unsigned int i ) const 
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.55.11">containsNode</A></B>( const Node* node ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.58.11">containsNode</A></B>( const Node* node ) const 
 <DD><I>return true if node is contained within Group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::iterator <B><A HREF="#DOC.2.55.12">findNode</A></B>( const Node* node )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::iterator <B><A HREF="#DOC.2.58.12">findNode</A></B>( const Node* node )
 <DD><I>return the iterator position for specified Node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::const_iterator <B><A HREF="#DOC.2.55.13">findNode</A></B>( const Node* node ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::const_iterator <B><A HREF="#DOC.2.58.13">findNode</A></B>( const Node* node ) const 
 <DD><I>return the const_iterator position for specified Node.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ChildList <B><A HREF="#DOC.2.55.16">_children</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ChildList <B><A HREF="#DOC.2.58.16">_children</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.55.14">~Group</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.58.14">~Group</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.55.15">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.58.15">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -83,24 +83,24 @@ with memory management handled automatically via osg::Referenced.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Group"></A>
-<A NAME="DOC.2.55.1"></A>
+<A NAME="DOC.2.58.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; ChildList Group()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Group"></A>
-<A NAME="DOC.2.55.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Group(const <!1><A HREF="Group.html#DOC.2.55.2">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.58.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Group(const <!1><A HREF="Group.html#DOC.2.58.2">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.55.3"></A>
+<A NAME="DOC.2.58.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Group.html">Group</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.55.4"></A>
+<A NAME="DOC.2.58.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.55.5"></A>
+<A NAME="DOC.2.58.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild( Node* child )</B></TT>
 <DD>Add Node to Group.
 If node is not NULL and is not contained in Group then increment its  
@@ -109,7 +109,7 @@ sphere to force it to recompute on next getBound() and return true for success.
 Otherwise return false. Scene nodes can't be added as child nodes.
 <DL><DT><DD></DL><P>
 <A NAME="removeChild"></A>
-<A NAME="DOC.2.55.6"></A>
+<A NAME="DOC.2.58.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild( Node* child )</B></TT>
 <DD>Remove Node from Group.
 If Node is contained in Group then remove it from the child
@@ -119,7 +119,7 @@ return true for success.  If Node is not found then return false
 and do not change the reference count of the Node.
 <DL><DT><DD></DL><P>
 <A NAME="replaceChild"></A>
-<A NAME="DOC.2.55.7"></A>
+<A NAME="DOC.2.58.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool replaceChild( Node* origChild, Node* newChild )</B></TT>
 <DD>Replace specified Node with another Node.
 Decrement the reference count origNode and increments the
@@ -130,47 +130,47 @@ add newNode.  If newNode is NULL then return false and do
 not remove origNode. Also returns false if newChild is a Scene node.
 <DL><DT><DD></DL><P>
 <A NAME="getNumChildren"></A>
-<A NAME="DOC.2.55.8"></A>
+<A NAME="DOC.2.58.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumChildren() const </B></TT>
 <DD>return the number of chilren nodes
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
-<A NAME="DOC.2.55.9"></A>
+<A NAME="DOC.2.58.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Node* getChild( const unsigned int i )</B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
-<A NAME="DOC.2.55.10"></A>
+<A NAME="DOC.2.58.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node* getChild( const unsigned int i ) const </B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="containsNode"></A>
-<A NAME="DOC.2.55.11"></A>
+<A NAME="DOC.2.58.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool containsNode( const Node* node ) const </B></TT>
 <DD>return true if node is contained within Group
 <DL><DT><DD></DL><P>
 <A NAME="findNode"></A>
-<A NAME="DOC.2.55.12"></A>
+<A NAME="DOC.2.58.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ChildList::iterator findNode( const Node* node )</B></TT>
 <DD>return the iterator position for specified Node.
 return _children.end() if node is not contained in Group.
 <DL><DT><DD></DL><P>
 <A NAME="findNode"></A>
-<A NAME="DOC.2.55.13"></A>
+<A NAME="DOC.2.58.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ChildList::const_iterator findNode( const Node* node ) const </B></TT>
 <DD>return the const_iterator position for specified Node.
 return _children.end() if node is not contained in Group.
 <DL><DT><DD></DL><P>
 <A NAME="~Group"></A>
-<A NAME="DOC.2.55.14"></A>
+<A NAME="DOC.2.58.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Group()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.55.15"></A>
+<A NAME="DOC.2.58.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_children"></A>
-<A NAME="DOC.2.55.16"></A>
+<A NAME="DOC.2.58.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ChildList _children</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
@@ -181,8 +181,8 @@ return _children.end() if node is not contained in Group.
 <A HREF="OccluderNode.html">OccluderNode</A><BR>
 <A HREF="LightSource.html">LightSource</A><BR>
 <A HREF="LOD.html">LOD</A><BR>
-<A HREF="EarthSky.html">EarthSky</A><BR>
 <A HREF="ClipNode.html">ClipNode</A><BR>
+<A HREF="ClearNode.html">ClearNode</A><BR>
 </DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>

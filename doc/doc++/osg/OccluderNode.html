@@ -23,33 +23,33 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.88.1">OccluderNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.1">OccluderNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.88.2">OccluderNode</A></B>(const <!1><A HREF="OccluderNode.html#DOC.2.88.2">OccluderNode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.2">OccluderNode</A></B>(const <!1><A HREF="OccluderNode.html#DOC.2.91.2">OccluderNode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.88.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="OccluderNode.html">OccluderNode</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.91.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="OccluderNode.html">OccluderNode</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.4">setOccluder</A></B>(<!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>* occluder)
-<DD><I>Attach a ConvexPlanerOccluder to an OccluderNode</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.91.4">setOccluder</A></B>(<!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>* occluder)
+<DD><I>Attach a ConvexPlanarOccluder to an OccluderNode</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>* <B><A HREF="#DOC.2.88.5">getOccluder</A></B>()
-<DD><I>Get the ConvexPlanerOccluder* attached to a OccluderNode.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>* <B><A HREF="#DOC.2.91.5">getOccluder</A></B>()
+<DD><I>Get the ConvexPlanarOccluder* attached to a OccluderNode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>* <B><A HREF="#DOC.2.88.6">getOccluder</A></B>() const 
-<DD><I>Get the const ConvexPlanerOccluder* attached to a OccluderNode</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>* <B><A HREF="#DOC.2.91.6">getOccluder</A></B>() const 
+<DD><I>Get the const ConvexPlanarOccluder* attached to a OccluderNode</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>&gt;  <B><A HREF="#DOC.2.88.9">_occluder</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>&gt;  <B><A HREF="#DOC.2.91.9">_occluder</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.88.7">~OccluderNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.91.7">~OccluderNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.88.8">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.91.8">computeBound</A></B>() const 
 <DD><I>Override's Group's computeBound</I>
 </DL></P>
 
@@ -96,45 +96,45 @@ to represent the different states of a traffic light.</BLOCKQUOTE>
 <DL>
 
 <A NAME="OccluderNode"></A>
-<A NAME="DOC.2.88.1"></A>
+<A NAME="DOC.2.91.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OccluderNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="OccluderNode"></A>
-<A NAME="DOC.2.88.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OccluderNode(const <!1><A HREF="OccluderNode.html#DOC.2.88.2">OccluderNode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.91.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OccluderNode(const <!1><A HREF="OccluderNode.html#DOC.2.91.2">OccluderNode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.88.3"></A>
+<A NAME="DOC.2.91.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="OccluderNode.html">OccluderNode</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setOccluder"></A>
-<A NAME="DOC.2.88.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOccluder(<!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>* occluder)</B></TT>
-<DD>Attach a ConvexPlanerOccluder to an OccluderNode
+<A NAME="DOC.2.91.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOccluder(<!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>* occluder)</B></TT>
+<DD>Attach a ConvexPlanarOccluder to an OccluderNode
 <DL><DT><DD></DL><P>
 <A NAME="getOccluder"></A>
-<A NAME="DOC.2.88.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>* getOccluder()</B></TT>
-<DD>Get the ConvexPlanerOccluder* attached to a OccluderNode. 
+<A NAME="DOC.2.91.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>* getOccluder()</B></TT>
+<DD>Get the ConvexPlanarOccluder* attached to a OccluderNode. 
 <DL><DT><DD></DL><P>
 <A NAME="getOccluder"></A>
-<A NAME="DOC.2.88.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>* getOccluder() const </B></TT>
-<DD>Get the const ConvexPlanerOccluder* attached to a OccluderNode
+<A NAME="DOC.2.91.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>* getOccluder() const </B></TT>
+<DD>Get the const ConvexPlanarOccluder* attached to a OccluderNode
 <DL><DT><DD></DL><P>
 <A NAME="~OccluderNode"></A>
-<A NAME="DOC.2.88.7"></A>
+<A NAME="DOC.2.91.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~OccluderNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.88.8"></A>
+<A NAME="DOC.2.91.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DD>Override's Group's computeBound
 <DL><DT><DD></DL><P>
 <A NAME="_occluder"></A>
-<A NAME="DOC.2.88.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ConvexPlanerOccluder.html">ConvexPlanerOccluder</A>&gt;  _occluder</B></TT>
+<A NAME="DOC.2.91.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>&gt;  _occluder</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -21,7 +21,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.13.4">update</A></B>(double dt)
 <DD><I>Update the particle (don't call this method manually).</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.5">render</A></B>(const osg::Matrix &amp;modelview, float scale = 1.0f) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.5">render</A></B>(const osg::Vec3 &amp;xpos, const osg::Vec3 &amp;px, const osg::Vec3 &amp;py, float scale = 1.0f) const 
 <DD><I>Render the particle.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Particle::Shape <B><A HREF="#DOC.2.13.26">getShape</A></B>() const 
@@ -193,7 +193,7 @@ by computing <I>P = P + V * dt</I> (where <I>P</I> is the position and <I>V</I> 
 <DL><DT><DD></DL><P>
 <A NAME="render"></A>
 <A NAME="DOC.2.13.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void render(const osg::Matrix &amp;modelview, float scale = 1.0f) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void render(const osg::Vec3 &amp;xpos, const osg::Vec3 &amp;px, const osg::Vec3 &amp;py, float scale = 1.0f) const </B></TT>
 <DD>Render the particle. Called automatically by particle systems.
 <DL><DT><DD></DL><P>
 <A NAME="getShape"></A>

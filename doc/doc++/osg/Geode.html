@@ -23,54 +23,54 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html">Drawable</A>&gt; &gt; DrawableList <B><A HREF="#DOC.2.48.1">Geode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html">Drawable</A>&gt; &gt; DrawableList <B><A HREF="#DOC.2.49.1">Geode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.48.2">Geode</A></B>(const <!1><A HREF="Geode.html#DOC.2.48.2">Geode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.49.2">Geode</A></B>(const <!1><A HREF="Geode.html#DOC.2.49.2">Geode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.48.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Geode.html">Geode</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.49.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Geode.html">Geode</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.48.4">addDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* drawable )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.49.4">addDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* drawable )
 <DD><I>Add Drawable to Geode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.48.5">removeDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* drawable )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.49.5">removeDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* drawable )
 <DD><I>Remove Drawable from Geode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.48.6">replaceDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* origDraw, <!1><A HREF="Drawable.html">Drawable</A>* newDraw )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.49.6">replaceDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* origDraw, <!1><A HREF="Drawable.html">Drawable</A>* newDraw )
 <DD><I>Replace specified Drawable with another Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.48.7">getNumDrawables</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.49.7">getNumDrawables</A></B>() const 
 <DD><I>return the number of geoset's</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.48.8">getDrawable</A></B>( const unsigned int i )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.49.8">getDrawable</A></B>( const unsigned int i )
 <DD><I>return geoset at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.48.9">getDrawable</A></B>( const unsigned int i ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.49.9">getDrawable</A></B>( const unsigned int i ) const 
 <DD><I>return geoset at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.48.10">containsDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.49.10">containsDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
 <DD><I>return true if geoset is contained within Geode</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   DrawableList::iterator <B><A HREF="#DOC.2.48.11">findDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   DrawableList::iterator <B><A HREF="#DOC.2.49.11">findDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset)
 <DD><I>return the iterator position for specified Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   DrawableList::const_iterator <B><A HREF="#DOC.2.48.12">findDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   DrawableList::const_iterator <B><A HREF="#DOC.2.49.12">findDrawable</A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const 
 <DD><I>return the const_iterator position for specified Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.48.13">compileDrawables</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.49.13">compileDrawables</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
 <DD><I>compile OpenGL Display List for each geoset</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DrawableList <B><A HREF="#DOC.2.48.16">_drawables</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DrawableList <B><A HREF="#DOC.2.49.16">_drawables</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.48.14">~Geode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.49.14">~Geode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.48.15">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.49.15">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -82,20 +82,20 @@
 <DL>
 
 <A NAME="Geode"></A>
-<A NAME="DOC.2.48.1"></A>
+<A NAME="DOC.2.49.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html">Drawable</A>&gt; &gt; DrawableList Geode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Geode"></A>
-<A NAME="DOC.2.48.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Geode(const <!1><A HREF="Geode.html#DOC.2.48.2">Geode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.49.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Geode(const <!1><A HREF="Geode.html#DOC.2.49.2">Geode</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.48.3"></A>
+<A NAME="DOC.2.49.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Geode.html">Geode</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addDrawable"></A>
-<A NAME="DOC.2.48.4"></A>
+<A NAME="DOC.2.49.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool addDrawable( <!1><A HREF="Drawable.html">Drawable</A>* drawable )</B></TT>
 <DD>Add Drawable to Geode.
 If gset is not NULL and is not contained in Geode then increment its  
@@ -104,7 +104,7 @@ sphere to force it to recompute on next getBound() and return true for success.
 Otherwise return false.
 <DL><DT><DD></DL><P>
 <A NAME="removeDrawable"></A>
-<A NAME="DOC.2.48.5"></A>
+<A NAME="DOC.2.49.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool removeDrawable( <!1><A HREF="Drawable.html">Drawable</A>* drawable )</B></TT>
 <DD>Remove Drawable from Geode.
 If gset is contained in Geode then remove it from the geoset
@@ -114,7 +114,7 @@ return true for success.  If gset is not found then return false
 and do not change the reference count of gset.
 <DL><DT><DD></DL><P>
 <A NAME="replaceDrawable"></A>
-<A NAME="DOC.2.48.6"></A>
+<A NAME="DOC.2.49.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool replaceDrawable( <!1><A HREF="Drawable.html">Drawable</A>* origDraw, <!1><A HREF="Drawable.html">Drawable</A>* newDraw )</B></TT>
 <DD>Replace specified Drawable with another Drawable.
 Decrement the reference count origGSet and increments the
@@ -125,52 +125,52 @@ add newGset.  If newGset is NULL then return false and do
 not remove origGset.
 <DL><DT><DD></DL><P>
 <A NAME="getNumDrawables"></A>
-<A NAME="DOC.2.48.7"></A>
+<A NAME="DOC.2.49.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumDrawables() const </B></TT>
 <DD>return the number of geoset's
 <DL><DT><DD></DL><P>
 <A NAME="getDrawable"></A>
-<A NAME="DOC.2.48.8"></A>
+<A NAME="DOC.2.49.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Drawable.html">Drawable</A>* getDrawable( const unsigned int i )</B></TT>
 <DD>return geoset at position i
 <DL><DT><DD></DL><P>
 <A NAME="getDrawable"></A>
-<A NAME="DOC.2.48.9"></A>
+<A NAME="DOC.2.49.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Drawable.html">Drawable</A>* getDrawable( const unsigned int i ) const </B></TT>
 <DD>return geoset at position i
 <DL><DT><DD></DL><P>
 <A NAME="containsDrawable"></A>
-<A NAME="DOC.2.48.10"></A>
+<A NAME="DOC.2.49.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool containsDrawable(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const </B></TT>
 <DD>return true if geoset is contained within Geode
 <DL><DT><DD></DL><P>
 <A NAME="findDrawable"></A>
-<A NAME="DOC.2.48.11"></A>
+<A NAME="DOC.2.49.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   DrawableList::iterator findDrawable(const <!1><A HREF="Drawable.html">Drawable</A>* gset)</B></TT>
 <DD>return the iterator position for specified Drawable.
 return _geoset.end() if gset not is contained in Geode.
 <DL><DT><DD></DL><P>
 <A NAME="findDrawable"></A>
-<A NAME="DOC.2.48.12"></A>
+<A NAME="DOC.2.49.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   DrawableList::const_iterator findDrawable(const <!1><A HREF="Drawable.html">Drawable</A>* gset) const </B></TT>
 <DD>return the const_iterator position for specified Drawable.
 return _geoset.end() if gset not is contained in Geode.
 <DL><DT><DD></DL><P>
 <A NAME="compileDrawables"></A>
-<A NAME="DOC.2.48.13"></A>
+<A NAME="DOC.2.49.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void compileDrawables(<!1><A HREF="State.html">State</A>&amp; state)</B></TT>
 <DD>compile OpenGL Display List for each geoset
 <DL><DT><DD></DL><P>
 <A NAME="~Geode"></A>
-<A NAME="DOC.2.48.14"></A>
+<A NAME="DOC.2.49.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Geode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.48.15"></A>
+<A NAME="DOC.2.49.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawables"></A>
-<A NAME="DOC.2.48.16"></A>
+<A NAME="DOC.2.49.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>DrawableList _drawables</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

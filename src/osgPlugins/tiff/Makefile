@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	ReaderWriterTIFF.cpp\
 
-LIBS  += $(TIFF_LIB) $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) $(TIFF_LIB) $(OTHER_LIBS)
 
 INC     += -I/usr/local/include
 LDFLAGS += -L/usr/local/lib

@@ -83,7 +83,7 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("borderWidth %f %f %f %f"))
+    if (fr.matchSequence("borderColor %f %f %f %f"))
     {
         Vec4 color;
         fr[1].getFloat(color[0]);

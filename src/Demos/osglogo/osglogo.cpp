@@ -17,7 +17,7 @@
 
 #include <osgDB/ReadFile>
 
-#include <osg/Math>
+//#include "CreateShadowedScene.h"
 
 osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const osg::Vec3& right,float chordRatio)
 {
@@ -91,7 +91,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     text->setText("OpenSceneGraph");
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
-    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),0.0f,(bb.zMax()-bb.zMin())*0.2f));
+    text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.2f));
     text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f));
     osg::StateSet* stateset = text->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
@@ -179,6 +179,37 @@ osg:: Node* createBoxNo5(const osg::BoundingBox& bb,float chordRatio)
     return geode;
 }
 
+osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const osg::Vec3& right)
+{
+
+
+
+    osg::Geometry* geom = new osg::Geometry;
+
+    osg::Vec3 normal = (corner-top)^(right-corner);
+    normal.normalize();
+
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    vertices->push_back(top);
+    vertices->push_back(corner);
+    vertices->push_back(right);
+    vertices->push_back(right+(top-corner));
+
+    geom->setVertexArray(vertices);
+
+    osg::Vec3Array* normals = new osg::Vec3Array;
+    normals->push_back(normal);
+    geom->setNormalArray(normals);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
+    geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,vertices->getNumElements()));
+
+    osg::Geode* geode = osgNew osg::Geode();
+    geode->addDrawable(geom);
+    
+    return geode;    
+}
+
 osg::Node* createLogo()
 {
     osg::BoundingBox bb(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(100.0f,100.0f,100.0f));
@@ -186,7 +217,7 @@ osg::Node* createLogo()
     float sphereRatio = 0.6f; 
 
     // create a group to hold the whole model.
-    osg::Group* group = new osg::Group;
+    osg::Group* logo_group = new osg::Group;
 
     // create a transform to orientate the box and globe.
     osg::MatrixTransform* xform = new osg::MatrixTransform;
@@ -201,15 +232,33 @@ osg::Node* createLogo()
     xform->addChild(createBoxNo5(bb,chordRatio));
 
     // add the transform to the group.
-    group->addChild(xform);
+    logo_group->addChild(xform);
 
-    group->addChild(createGlobe(bb,sphereRatio));
+    logo_group->addChild(createGlobe(bb,sphereRatio));
 
     // add the text to the group.
     //group->addChild(createTextBelow(bb));
-    group->addChild(createTextLeft(bb));
+    logo_group->addChild(createTextLeft(bb));
+    
+    
+    // create the backdrop to render the shadow to.
+    osg::Vec3 corner(-800.0f,150.0f,-100.0f);
+    osg::Vec3 top(0.0f,0.0f,300.0f); top += corner;
+    osg::Vec3 right(1000.0f,0.0f,0.0f); right += corner;
+    
+    
+    osg::Group* backdrop = new osg::Group;
+    backdrop->addChild(createBackdrop(corner,top,right));
 
-    return group;    
+    osg::Vec3 lightPosition(-500.0f,-2500.0f,500.0f);
+
+    //osg::Node* scene = createShadowedScene(logo_group,backdrop,lightPosition,0.0f,0);
+
+    osg::Group* scene = new osg::Group;
+    scene->addChild(logo_group);
+    scene->addChild(backdrop);
+
+    return scene;
 }
 
 int main( int argc, char **argv )

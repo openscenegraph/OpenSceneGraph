@@ -74,7 +74,7 @@ representation of your 3d worlds, and efficient rendering thereof. Physics model
 collision detection and audio are left to other development libraries that
 a user will integrate with. The fact that scene graphs don't typically
 integrate all these features is actually a really good thing: it aids interoprability
-with clients' own applications and tools and allows them to serve many varied
+with clients' own applications and tools and allows it to serve many varied
 markets from games, visual simulation, virtual reality,
 scientific and commercial visualization, training through to modeling programs.
 </p>
@@ -93,11 +93,11 @@ maximizing graphics performance. A good scene graph employs two key techniques
 of properties such as textures and materials, so that all similar objects
 are drawn together. Without culling the CPU, buses and GPU will all become
 swamped by many times the amount of data than they actually require to
-represent your work accurately. The hierarchical structure of the scene
+represent your scenes accurately. The hierarchical structure of the scene
 graph makes this culling process very efficient, for instance a whole city can be culled
 with just a few operations! Without state sorting, the the buses and GPU
 will thrash between states, stalling the graphics pipeline and destroying graphics
-througput. As GPU's get faster and faster, the cost of stalling the graphics
+throughput. As GPU's get faster and faster, the cost of stalling the graphics pipeline
 is also going up, so scene graphs are becoming ever more important.
 
 <p>
@@ -110,7 +110,7 @@ in Object Oriented programming is that of object composition, enshrined
 in the <i>Composite Design Pattern</i>, which fits the scene graph tree structure
 perfectly and makes it a highly flexible and reusable design - in real
 terms this means that it can be easily adapted to solve your problems.
-With scene graphs often also come additional utility libraries which range from
+Scene graphs also often come additional utility libraries which range from
 helping users set up and manage graphics windows to importing of 3d models
 and images. All this together allows the user to achieve a great deal with
 very little coding. A dozen lines of code can be enough to load your data
@@ -137,7 +137,6 @@ underlying hardware configurations.
 </ul>
 
 
-<br>
 <h3>
 <u>The OpenSceneGraph - <i> a robust, high peformance Open Source scene graph</i></u></h3>
 With the OpenSceneGraph our goal is make the benefits of scene graph technology 
@@ -147,8 +146,8 @@ amongst the development community for its high performance, cleanness of
 design and portability. Written entirely in Standard C++ and OpenGL, it
 makes full use of the STL and Design Patterns, and leverages the open source
 development model to provide a development library that is legacy free
-and well focused on the solving the task. The OpenSceneGraph delivers on
-the four key benefits of scene graph technology outlined above using the
+and focused on the needs of end users. The OpenSceneGraph delivers on
+the four key benefits of scene graph technology outlined above with the
 following features:
 <ul>
 <li><b><i>Performance</i></b></li>
@@ -156,8 +155,8 @@ Supports view frustum culling, occlusion culling, small feature culling,
 Level Of Detail (LOD) nodes, state sorting, vertex arrays and display
 lists as part of the core scene graph. These together make the OpenSceneGraph
 one of the highest performance scene graph available. User feedback is that
-performance surpasses that of much more established scene graphs such as Performer, VTree, Vega
-Scene Graph and Java3D! The OpenSceneGraph also supports easy customization
+performance matches or surpasses that of much more established scene graphs such 
+as Performer, VTree, Vega Scene Graph and Java3D! The OpenSceneGraph also supports easy customization
 of the drawing process, which has allowed implementation of Continuous Level
 of Detail (CLOD) meshes on top the scene graph. These allow the visualization
 of massive terrain databases interactively, examples of this approach can
@@ -166,36 +165,49 @@ with the OpenSceneGraph.
 
 <p>
 <li><b><i>Productivity</i></b> </li>
-Combining lessons learned from established scene graphs like Performer 
-and Open Inventor, with modern software engineering
-methods like Design Patterns, along with a great deal of feedback early on
-in the development cycle, it has been possible to design a library that is
-clean and highly interpretable. This has made it easy for users to adopt
-to the OpenSceneGraph and to integrate it with their own applications. With
-a full feature set in the core scene graph, utilities (osgUtil) to set up the scene
-graph and viewers (osgProducer).
+<p>
+The core scene graph provides encapsulate the majority of OpenGL 
+functionality including latest extensions,  provides rending optimizations
+such as culling and sorting, and a whole set of add on libraries which make
+it possible to develop high peformance graphics applications very rapidly. The 
+application developer is freed to concentrate on content and how that content is 
+controlled rather than low level coding.
 </p>
 <p>
-For reading and writing databases an addition database library (osgDB) adds support for a wide
+Combining lessons learned from established scene graphs like Performer 
+and Open Inventor, with modern software engineering methods like Design Patterns, 
+along with a great deal of feedback early on in the development cycle, it has been 
+possible to design a library that is clean and extensible. This has made it easy 
+for users to adopt to the OpenSceneGraph and to integrate it with their own applications.
+</p>
+<p>
+For reading and writing databases an the database library (osgDB) adds support for a wide
 variety of database formats via a extensible dynamic plugin mechansim - the distribution now includes 33
 seperate plugins for loading various 3D and Image data formats. 3D Database loaders include OpenFlight (.flt), 
 TerraPage (.txp) including multi-threading support, LightWave (.lwo), Alias Wavefront (.obj), 
 Carbon Graphics GEO (.geo), 3D Studio MAX (.3ds), Peformer (.pfb), Quake Character Models (.md2). Direct X (.x), 
 and Inventor Ascii 2.0 (.iv)/ VRML 1.0 (.wrl), Designer Workshop (.dw) and AC3D (.ac) and the native .osg ASCII format.
-Image loaders include .rgb, .gif, .jpg, .png, .tiff, .pic, .bmp, .dds (include compressed mip mapped imagery), .tga and qucktime (under OSX).  A whole set of quality fonts 
-can also be loaded via the freetype plugin.
+Image loaders include .rgb, .gif, .jpg, .png, .tiff, .pic, .bmp, .dds (include compressed mip mapped imagery), .tga and qucktime (under OSX).  
+A whole set of high quality, anti-aliased fonts can also be loaded via the freetype plugin.
 </p>
 <p>
-The scene graph also has a set of <i>Node Kits</i> which are seperate libraries
-that be compiled directly or loaded in at runtime to add support for particle systems (osgParticle),
+The scene graph also has a set of <i>Node Kits</i> which are seperate libraries,
+that can be compiled in with your applications or loaded in at runtime, which add support for particle systems (osgParticle),
 high quality anti-aliased text (osgText) and navigational light points (osgSim).  
 </p>
 <p>
-The community has also developed a number of additional <i>Node Kits</i> such as <a href="http://osgnv.sourceforge.net/">osgNV</a> 
-(which includes support for NVidia's vertex, fragment, combiner etc extension and NVidia's Cg shader language.), a whole set libraries that
-integrating the leading Windowing API's and whole applications like OSG-Edit.  Links can be found in the bazaar sections on the 
+The community has also developed a number of additional <i>Node Kits</i> such as 
+<a href="http://osgnv.sourceforge.net/">osgNV</a> (which includes support for NVidia's vertex, fragment, combiner etc extension and NVidia's Cg shader language.), 
+<a href="http://www.terrainengine.com">Demeter</a> (CLOD terrain + integration with OSG). 
+<a href="http://osgcal.sourceforge.net">osgCal</a> (which integrates <a href="http://cal3d.sourceforge.net//">Cal3D</a> and the OSG), 
+<a href="http://www.cs.umu.se/kurser/TDBD12/HT02/lab/osgVortex/">osgVortex</a> (which integrates the <a href="http://www.cm-labs.com/">CM-Labs Vortex</a> physics enginer with OSG)
+and a whole set libraries that integrating the leading Windowing API's Links can be found in the bazaar sections on the 
 <a href="http://www.openscenegraph.org/download/">download</a> page of OpenSceneGraph webiste.  
 </p>
+<p>
+The project has also been integrated with  <a href=http://www.vrjuggler.org/>VR Juggler</a> and 
+<a href="http://http://vess.ist.ucf.edu/">Vess</a> virtual realilty the frameworks, with others in developments. 
+
 
 <li><b><i>Portability</i></b></li>
 The core scene graph has also been designed to
@@ -246,10 +258,16 @@ place, with a 1.0 release in second half of 2003. Despite the beta development s
 the project has already earned the reputation as the leading open source scene
 graph, and is establishing itself as a viable alternative to the commercial
 scene graphs. Numerous companies, university researchers and graphics enthusiasts
-have already adopted the OpenSceneGraph for their projects, all over the world.
-<br>
+have already adopted the OpenSceneGraph for their projects, all over the world. 
+Examples of the wide variety of applications already developed ontop of the OpenSceneGraph include 
+ <a href="http://http://www.andesengineering.com/BlueMarbleViewer/">Blue Marble Viewer</a>,
+ <a href="http://www.vterrain.org"> Virtual Terrain Project</a>,
+ <a href="http://http://csp.sourceforge.net/">Combat Simulator Project</a>, 
+ <a href="http://osgedit.sourceforge.net/">OSG-Edit</a>. This is just a snippet of the projects 
+ that use the project, more examples can be found on the screenshot pages and bazaar on the website.
+</p>
 
-<br>
+
 <h3>
 <u>Getting started</u></h3>
 The first thing is to select the distribution which suits you, there are
@@ -265,7 +283,7 @@ the OpenSceneGraph.
 </p>
 <p>The development distribution contains the libraries (.dll's /.so's),
 example executables, include files, and source to the examples. This is suitable
-for using the developers using the OpenSceneGraph.
+for developers using the OpenSceneGraph.
 </p>
 <p>The source distribution contains all the source and include files
 required to build the OpenSceneGraph from scratch, and is ideal if you
@@ -281,7 +299,6 @@ list for further details.
 <p>For full instructions of how to run the examples read the <a href="examples.html">examples</a>
 page.
 </p>
-<br>
 
 <h3>
 <u>Learning how to use the OpenSceneGraph</u></h3>
@@ -315,9 +332,6 @@ end it is worth obtaining a copy of the OpenGL programming guide - <a href="http
 Book`</a> and OpenGL reference guide 'Blue Book'. The main <a href="http://www.opengl.org">OpenGL
 website</a> is also a good source of links and further information.
 </p>
-<br>
-
-<br>
 <h3>
 <u>Support and discussion - the <i>openscenegraph-news</i> mailing list</u></h3>
 For scene graph related questions, bug reports, bug fixes, and general

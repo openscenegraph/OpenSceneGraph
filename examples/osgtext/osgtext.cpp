@@ -227,7 +227,9 @@ osg::Group* createHUDText()
     alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_TOP,"text->setAlignment(osgText::Text::RIGHT_TOP);"));
     alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_CENTER,"text->setAlignment(osgText::Text::RIGHT_CENTER);"));
     alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BOTTOM,"text->setAlignment(osgText::Text::RIGHT_BOTTOM);"));
-    alignmentList.push_back(AlignmentPair(osgText::Text::BASE_LINE,"text->setAlignment(osgText::Text::BASE_LINE);//default"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::LEFT_BASE_LINE,"text->setAlignment(osgText::Text::BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::CENTER_BASE_LINE,"text->setAlignment(osgText::Text::CENTER_BASE_LINE);"));
+    alignmentList.push_back(AlignmentPair(osgText::Text::RIGHT_BASE_LINE,"text->setAlignment(osgText::Text::RIGHT_BASE_LINE);"));
 
     osg::Sequence* sequence = new osg::Sequence;
     {

@@ -108,6 +108,12 @@ class SG_EXPORT TexGen : public StateAttribute
         Plane& getPlane(Coord which);
 
         const Plane& getPlane(Coord which) const;
+        
+        /** Set the tex gen planes from specified matrix.
+          * Typical usage would be to pass in a projection
+          * matrix to set up projective texturing.
+          */
+        void setPlanesFromMatrix(const Matrixd& matrix);
 
     protected :
 

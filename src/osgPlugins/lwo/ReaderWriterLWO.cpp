@@ -28,6 +28,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/FileNameUtils>
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tesselator>
@@ -42,7 +43,7 @@ public:
 
     virtual const char* className() { return "Lightwave Object Reader"; }
     virtual bool acceptsExtension(const std::string& extension) {
-        return (extension == "lwo" || extension == "lw" || extension == "geo");
+        return osgDB::equalCaseInsensitive(extension,"lwo") || osgDB::equalCaseInsensitive(extension,"lw") || osgDB::equalCaseInsensitive(extension,"geo");
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)

@@ -6,6 +6,7 @@
 #include <osg/GL>
 
 #include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 #include <stdio.h>
 
@@ -405,8 +406,8 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
         virtual const char* className() { return "TIFF Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) 
 	{ 
-	    if( extension == "tiff" ) return true;
-	    if( extension == "tif" ) return true;
+	    if( osgDB::equalCaseInsensitive(extension,"tiff")) return true;
+	    if( osgDB::equalCaseInsensitive(extension,"tif") ) return true;
 	    return false;
 	}
 

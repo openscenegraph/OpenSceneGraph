@@ -84,7 +84,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         ReaderWriter3DS();
 
         virtual const char* className() { return "3DS Auto Studio Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) { return extension=="3ds"; }
+        virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"3ds"); }
 
         virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 

@@ -4,6 +4,7 @@
 #include <osg/GL>
 
 #include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 /****************************************************************************
  *
@@ -187,7 +188,7 @@ class ReaderWriterPIC : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() { return "PIC Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) { return extension=="pic"; }
+        virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"pic"); }
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {

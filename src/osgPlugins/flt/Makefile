@@ -16,10 +16,10 @@ C++FILES = \
 	ExternalRecord.cpp\
 	Record.cpp\
 	FaceRecord.cpp\
-	FltFile.cpp\
 	RecordVisitor.cpp\
 	GeoSetBuilder.cpp\
 	Registry.cpp\
+	FltFile.cpp\
 	GroupRecord.cpp\
 	SwitchRecord.cpp\
 	HeaderRecord.cpp\
@@ -41,6 +41,7 @@ C++FILES = \
 	ReaderWriterATTR.cpp\
 #	PointLight.cpp\
 	
+
 
 C++FLAGS += -I../../../include
 

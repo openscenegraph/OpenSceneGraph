@@ -138,8 +138,9 @@ bool FltFile::readFile(const std::string& fileName)
 
 #define REGISTER_FLT 1
 
-void FltFile::readExternals()
-{
+// This class was originally scoped within FltFile::readExternals() function.
+// Irix 7.3 compilers hork on this.
+
     class ReadExternal : public RecordVisitor
     {
         public:
@@ -202,6 +203,8 @@ void FltFile::readExternals()
             FltFile* _pFltFile;
     };
 
+void FltFile::readExternals()
+{
     ReadExternal visitor(this);
     _headerRecord->accept(visitor);
 }

@@ -51,11 +51,11 @@ void PositionAttitudeTransform::AnimationPathCallback::operator()(Node* node, No
     {
         double time = nv->getFrameStamp()->getReferenceTime();
         if (_firstTime==0.0) _firstTime = time;
-        AnimationPath::Key key;
-        if (_animationPath->getKeyFrame(time-_firstTime,key))
+        AnimationPath::ControlPoint cp;
+        if (_animationPath->getInterpolatedControlPoint(time-_firstTime,cp))
         {
-            pat->setPosition(key._position);
-            pat->setAttitude(key._rotation);
+            pat->setPosition(cp._position);
+            pat->setAttitude(cp._rotation);
         }
     }
 }

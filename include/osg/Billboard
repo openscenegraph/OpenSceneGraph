@@ -84,30 +84,11 @@ class SG_EXPORT Billboard : public Geode
         virtual const bool removeDrawable( Drawable *gset );
                 
 
-        /** Callback attached to an Billboard which allows the users to customize the billboard orientation calculation during cull traversal.*/
-        struct ComputeBillboardCallback : public osg::Referenced
-        {
-            /** Get the transformation matrix which moves from local coords to world coords.*/
-            virtual const bool computeMatrix(Matrix& modelview, const Billboard* billboard, const Vec3& eye_local, const Vec3& pos_local) const = 0;
-        };
-
-        /** Set the ComputeBillboardCallback which allows users to attach custom computation of the local transformation as 
-          * seen by cull traversers and alike.*/
-        void setComputeBillboardCallback(ComputeBillboardCallback* ctc) { _computeBillboardCallback=ctc; }
-        
-        /** Get the non const ComputeBillboardCallback.*/
-        ComputeBillboardCallback* getComputeBillboardCallback() { return _computeBillboardCallback.get(); }
-        
-        /** Get the const ComputeBillboardCallback.*/
-        const ComputeBillboardCallback* getComputeBillboardCallback() const { return _computeBillboardCallback.get(); }        
 
         
         inline const bool getMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
         {
-            if (_computeBillboardCallback.valid())
-                return _computeBillboardCallback->computeMatrix(modelview,this,eye_local,pos_local);
-            else
-                return computeMatrix(modelview,eye_local,pos_local);
+            return computeMatrix(modelview,eye_local,pos_local);
         }
 
         virtual const bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
@@ -131,7 +112,6 @@ class SG_EXPORT Billboard : public Geode
         Vec3                                _axis;
         Vec3                                _normal;
         PositionList                        _positionList;
-        ref_ptr<ComputeBillboardCallback>   _computeBillboardCallback;
         
         // used internally as cache of which what _axis is aligned to help
         // deicde which method of rotation to use.

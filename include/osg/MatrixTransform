@@ -6,6 +6,7 @@
 #define OSG_MATRIXTRANSFORM 1
 
 #include <osg/Transform>
+#include <osg/AnimationPath>
 
 namespace osg {
 
@@ -77,6 +78,23 @@ class SG_EXPORT MatrixTransform : public Transform
             }
             return true;
         }
+
+        /** Callback which can be attached to a MatrixTransform as an app 
+          * callback to allow it to follow the path defined by a AnimationPath.*/
+        class AnimationPathCallback : public NodeCallback
+        {
+            public:
+            
+                AnimationPathCallback(AnimationPath* ap):
+                    _animationPath(ap),
+                    _firstTime(0.0) {}
+            
+                /** implements the callback*/
+                virtual void operator()(Node* node, NodeVisitor* nv);
+                
+                ref_ptr<AnimationPath>  _animationPath;
+                double                  _firstTime;
+        };
 
     protected :
     

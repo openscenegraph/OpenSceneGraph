@@ -58,4 +58,6 @@ void PositionAttitudeTransform::AnimationPathCallback::operator()(Node* node, No
             pat->setAttitude(cp._rotation);
         }
     }
+    // must call any nested node callbacks and continue subgraph traversal.
+    traverse(node,nv);
 }

@@ -47,4 +47,6 @@ void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor*
             mt->setMatrix(matrix);
         }
     }
+    // must call any nested node callbacks and continue subgraph traversal.
+    traverse(node,nv);
 }

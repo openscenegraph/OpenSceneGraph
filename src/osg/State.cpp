@@ -84,6 +84,7 @@ void State::reset()
     _projection = _identity;
     
     dirtyAllVertexArrays();
+    setActiveTextureUnit(0);
 }
 
 void State::pushStateSet(const StateSet* dstate)

@@ -632,7 +632,7 @@ StateSet* Attr::createOsgStateSet()
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
         break;
     case MIN_FILTER_BICUBIC:
-        cout << "MIN_FILTER_BICUBIC"<<endl;
+		std::cout << "MIN_FILTER_BICUBIC"<< std::endl;
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
         break;
     case MIN_FILTER_BILINEAR_GEQUAL:

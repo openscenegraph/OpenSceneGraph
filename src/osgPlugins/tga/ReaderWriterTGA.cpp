@@ -319,7 +319,7 @@ int *numComponents_ret)
     else format = depth;
 
     /*    SoDebugError::postInfo("simage_tga_load", "TARGA file: %d %d %d %d %d\n",  */
-    /*  			 type, width, height, depth, format); */
+    /*               type, width, height, depth, format); */
 
     rleIsCompressed = 0;
     rleRemaining = 0;
@@ -328,6 +328,13 @@ int *numComponents_ret)
     dest = buffer;
     bpr = format * width;
     linebuf = (unsigned char *)malloc(width*depth);
+
+    //check the intended image orientation
+    bool bLeftToRight = (flags&0x10)==0;
+    bool bTopToBottom = (flags&0x20)!=0;
+    int lineoffset = bTopToBottom ? -bpr : bpr;
+    if (bTopToBottom) //move start point to last line in buffer
+        dest += (bpr*(height-1));
 
     switch(type)
     {
@@ -352,9 +359,9 @@ int *numComponents_ret)
                 }
                 for (x = 0; x < width; x++)
                 {
-                    convert_data(linebuf, dest, x, depth, format);
+                    convert_data(linebuf, dest, bLeftToRight ? x : (width-1) - x, depth, format);
                 }
-                dest += bpr;
+                dest += lineoffset;
             }
         }
         break;
@@ -395,9 +402,9 @@ int *numComponents_ret)
                 assert(src <= buf + size);
                 for (x = 0; x < width; x++)
                 {
-                    convert_data(linebuf, dest, x, depth, format);
+                    convert_data(linebuf, dest,  bLeftToRight ? x : (width-1) - x, depth, format);
                 }
-                dest += bpr;
+                dest += lineoffset;
             }
             if (buf) free(buf);
         }
@@ -437,14 +444,14 @@ int headerlen)
     if (buf[1] == 1 && buf[2] == 1 && buf[17] < 64)
     {
         /*      SoDebugError::postInfo("simage_tga_identify", */
-        /*  			   "TARGA colormap file: %s\n", filename); */
+        /*                 "TARGA colormap file: %s\n", filename); */
         return 0;
     }
     if ((buf[1] == 0 || buf[1] == 1) && buf[2] == 2 && buf[17] < 64) return 1;
     if (buf[1] == 1 && buf[2] == 9 && buf[17] < 64)
     {
         /*      SoDebugError::postInfo("simage_tga_identity", */
-        /*  			   "TARGA RLE and colormap file: %s\n", filename);  */
+        /*                 "TARGA RLE and colormap file: %s\n", filename);  */
 
         /* will soon be supported */
         return 0;
@@ -457,7 +464,7 @@ int headerlen)
     else                         /* unsupported */
     {
         /*      SoDebugError::postInfo("simage_tga_identify", */
-        /*  			   "Unsupported TARGA type.\n"); */
+        /*                 "Unsupported TARGA type.\n"); */
     }
     /* not a TGA, or not supported type */
     return 0;

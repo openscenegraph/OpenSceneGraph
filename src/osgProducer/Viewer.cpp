@@ -1,8 +1,5 @@
-#include <osgProducer/Viewer>
-#include <osgProducer/FrameStatsHandler>
-#include <osgProducer/StatsEventHandler>
-
 #include <osg/LightSource>
+#include <osg/ApplicationUsage>
 
 #include <osgUtil/UpdateVisitor>
 
@@ -13,6 +10,10 @@
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 #include <osgGA/StateSetManipulator>
+
+#include <osgProducer/Viewer>
+#include <osgProducer/FrameStatsHandler>
+#include <osgProducer/StatsEventHandler>
 
 using namespace osgProducer;
 
@@ -46,7 +47,14 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     _frameNumber(0),
     _kbmcb(0)
 {
+    // report the usage options.
+    if (arguments.getApplicationUsage())
+    {
+        arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Specify camera path file to animate the camera through the loaded scene");
+    }
+
     osg::DisplaySettings::instance()->readCommandLine(arguments);
+    osgDB::readCommandLine(arguments);
 
     std::string pathfile;
     while (arguments.read("-p",pathfile))

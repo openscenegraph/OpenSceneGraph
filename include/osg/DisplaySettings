@@ -15,12 +15,15 @@
 #define OSG_DisplaySettings 1
 
 #include <osg/Referenced>
-#include <osg/ArgumentParser>
 
 #include <string>
 #include <vector>
 
 namespace osg {
+
+// forward declare
+class ArgumentParser;
+class ApplicationUsage;
 
 /** DisplaySettings class for encapsulating what visuals are required and
   * have been set up, and the status of stereo viewing.*/

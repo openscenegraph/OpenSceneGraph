@@ -295,29 +295,40 @@ void DisplaySettings::readCommandLine(std::vector<std::string>& commandLine)
     }    
 }
 
-void DisplaySettings::readCommandLine(ArgumentParser& parser)
+void DisplaySettings::readCommandLine(ArgumentParser& arguments)
 {
-    int pos;
-    while ((pos=parser.find("-stereo"))!=0)
+
+    // report the usage options.
+    if (arguments.getApplicationUsage())
     {
-        if (parser.match(pos+1,"ANAGLYPHIC"))            { parser.remove(pos,2); _stereo = true;_stereoMode = ANAGLYPHIC; }
-        else if (parser.match(pos+1,"QUAD_BUFFER"))      { parser.remove(pos,2); _stereo = true;_stereoMode = QUAD_BUFFER; }
-        else if (parser.match(pos+1,"HORIZONTAL_SPLIT")) { parser.remove(pos,2); _stereo = true;_stereoMode = HORIZONTAL_SPLIT; }
-        else if (parser.match(pos+1,"VERTICAL_SPLIT"))   { parser.remove(pos,2); _stereo = true;_stereoMode = VERTICAL_SPLIT; }
-        else if (parser.match(pos+1,"LEFT_EYE"))         { parser.remove(pos,2); _stereo = true;_stereoMode = LEFT_EYE; }
-        else if (parser.match(pos+1,"RIGHT_EYE"))        { parser.remove(pos,2); _stereo = true;_stereoMode = RIGHT_EYE; }
-        else if (parser.match(pos+1,"ON"))               { parser.remove(pos,2); _stereo = true; }
-        else if (parser.match(pos+1,"OFF"))              { parser.remove(pos,2); _stereo = false; }
-        else                                             { parser.remove(pos); _stereo = true; }
+        arguments.getApplicationUsage()->addCommandLineOption("--stereo","Use default stereo mode which is ANAGLYPHIC if not overriden by environmental variable");
+        arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | ON | OFF ");
+        arguments.getApplicationUsage()->addCommandLineOption("--rgba","Request a RGBA color buffer visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
     }
 
-    while (parser.read("-rgba"))
+
+    int pos;
+    while ((pos=arguments.find("--stereo"))!=0)
+    {
+        if (arguments.match(pos+1,"ANAGLYPHIC"))            { arguments.remove(pos,2); _stereo = true;_stereoMode = ANAGLYPHIC; }
+        else if (arguments.match(pos+1,"QUAD_BUFFER"))      { arguments.remove(pos,2); _stereo = true;_stereoMode = QUAD_BUFFER; }
+        else if (arguments.match(pos+1,"HORIZONTAL_SPLIT")) { arguments.remove(pos,2); _stereo = true;_stereoMode = HORIZONTAL_SPLIT; }
+        else if (arguments.match(pos+1,"VERTICAL_SPLIT"))   { arguments.remove(pos,2); _stereo = true;_stereoMode = VERTICAL_SPLIT; }
+        else if (arguments.match(pos+1,"LEFT_EYE"))         { arguments.remove(pos,2); _stereo = true;_stereoMode = LEFT_EYE; }
+        else if (arguments.match(pos+1,"RIGHT_EYE"))        { arguments.remove(pos,2); _stereo = true;_stereoMode = RIGHT_EYE; }
+        else if (arguments.match(pos+1,"ON"))               { arguments.remove(pos,2); _stereo = true; }
+        else if (arguments.match(pos+1,"OFF"))              { arguments.remove(pos,2); _stereo = false; }
+        else                                                { arguments.remove(pos); _stereo = true; }
+    }
+
+    while (arguments.read("--rgba"))
     {
         _RGB = true;
         _minimumNumberAlphaBits = 1;
     }            
 
-    while (parser.read("-stencil"))
+    while (arguments.read("--stencil"))
     {
         _minimumNumberStencilBits = 1;
     }

@@ -99,7 +99,6 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine)
 
 Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments)
 {
-    osgDB::readCommandLine(arguments);
 
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;

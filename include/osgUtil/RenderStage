@@ -6,6 +6,7 @@
 #define OSGUTIL_RENDERSTAGE 1
 
 #include <osg/ColorMask>
+#include <osg/Viewport>
 
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderStageLighting>

@@ -125,12 +125,12 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::Camera* getCamera() { return _camera.get(); }
         const osg::Camera* getCamera() const { return _camera.get(); }
 
-        /** set an projection matrix. Note, this will override a camera's projection matrix if it is not NULL.*/
+        /** set a projection matrix. Note, this will override a camera's projection matrix if it is not NULL.*/
         void setProjectionMatrix(osg::Matrix* matrix) { _projectionMatrix = matrix; }
         osg::Matrix* getProjectionMatrix() { return _projectionMatrix.get(); }
         const osg::Matrix* getProjectionMatrix() const { return _projectionMatrix.get(); }
 
-        /** set an modelview matrix. Note, this will override a camera's modelview matrix if it is not NULL.*/
+        /** set a modelview matrix. Note, this will override a camera's modelview matrix if it is not NULL.*/
         void setModelViewMatrix(osg::Matrix* matrix) { _modelviewMatrix = matrix; }
         osg::Matrix* getModelViewMatrix() { return _modelviewMatrix.get(); }
         const osg::Matrix* getModelViewMatrix() const { return _modelviewMatrix.get(); }

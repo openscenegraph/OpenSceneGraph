@@ -8,7 +8,7 @@
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
-#include "osgDB/Output"
+#include "osgDB/ParameterOutput"
 
 using namespace osg;
 using namespace osgDB;
@@ -717,7 +717,7 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
     }
     if (writeOutPrimitiveLengths)
     {
-        writeArrayBlock(fw,geoset.getPrimLengths(),geoset.getPrimLengths()+geoset.getNumPrims());
+        writeArray(fw,geoset.getPrimLengths(),geoset.getPrimLengths()+geoset.getNumPrims());
     }
 
     GeoSet& non_const_geoset = const_cast<GeoSet&>(geoset);
@@ -1010,13 +1010,13 @@ bool GeoSet_writeIndexData(Output& fw, const char* IndexName,const GeoSet::Index
         {
             // write our CoordIndex
             fw.indent() << IndexName << " ushort " << ip._size<< std::endl;
-            writeArrayBlock(fw,ip._ptr._ushort,ip._ptr._ushort+ip._size);
+            writeArray(fw,ip._ptr._ushort,ip._ptr._ushort+ip._size);
         }
         else
         {
             // write our CoordIndex
             fw.indent() << IndexName << " uint " << ip._size<< std::endl;
-            writeArrayBlock(fw,ip._ptr._uint,ip._ptr._uint+ip._size);
+            writeArray(fw,ip._ptr._uint,ip._ptr._uint+ip._size);
         }
         return true;
     }

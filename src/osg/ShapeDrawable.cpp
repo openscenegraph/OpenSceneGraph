@@ -734,6 +734,8 @@ void ComputeBoundShapeVisitor::apply(const ConvexHull& hull)
 void ComputeBoundShapeVisitor::apply(const HeightField& field)
 {
 
+
+
     float zMin=FLT_MAX;
     float zMax=-FLT_MAX;
 
@@ -745,6 +747,12 @@ void ComputeBoundShapeVisitor::apply(const HeightField& field)
 	    if (z<zMin) zMin = z;
 	    if (z>zMax) zMax = z;
 	}
+    }
+
+    if (zMin>zMax)
+    {
+        // no valid entries so don't reset the bounding box
+        return;
     }
 
 	    

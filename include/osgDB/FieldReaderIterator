@@ -5,6 +5,10 @@
 #ifndef OSGDB_FIELDREADERITERATOR
 #define OSGDB_FIELDREADERITERATOR 1
 
+#include <osg/Vec2>
+#include <osg/Vec2>
+#include <osg/Vec4>
+
 #include <osgDB/Field>
 #include <osgDB/FieldReader>
 
@@ -48,6 +52,22 @@ class OSGDB_EXPORT FieldReaderIterator
         void advanceToEndOfBlock(int noNestBrackets);
 
         bool matchSequence(const char* str);
+        
+        bool readSequence(const char* keyword,std::string& value);
+        bool readSequence(const char* keyword,unsigned int& value);
+        bool readSequence(const char* keyword,int& value);
+        bool readSequence(const char* keyword,float& value);
+        bool readSequence(const char* keyword,osg::Vec2& value);
+        bool readSequence(const char* keyword,osg::Vec3& value);
+        bool readSequence(const char* keyword,osg::Vec4& value);
+
+        bool readSequence(std::string& value);
+        bool readSequence(unsigned int& value);
+        bool readSequence(int& value);
+        bool readSequence(float& value);
+        bool readSequence(osg::Vec2& value);
+        bool readSequence(osg::Vec3& value);
+        bool readSequence(osg::Vec4& value);
 
     private:
 

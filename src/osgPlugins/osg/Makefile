@@ -41,6 +41,7 @@ CXXFILES =\
         Projection.cpp\
         ReaderWriterOSG.cpp\
         ShadeModel.cpp\
+        Shape.cpp\
         ShapeDrawable.cpp\
         StateSet.cpp\
         Sequence.cpp\

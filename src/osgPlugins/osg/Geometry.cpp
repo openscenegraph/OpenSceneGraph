@@ -3,7 +3,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
-#include <osgDB/Output>
+#include <osgDB/ParameterOutput>
 
 using namespace osg;
 using namespace osgDB;
@@ -557,74 +557,6 @@ Array* Array_readLocalData(Input& fr)
 }
 
 
-template<class Iterator>
-void Array_writeLocalData(Output& fw, Iterator first, Iterator last,int noItemsPerLine=8)
-{
-    fw.indent() << "{"<<std::endl;
-    fw.moveIn();
-
-    int column=0;
-    
-    for(Iterator itr=first;
-        itr!=last;
-        ++itr)
-    {
-        if (column==0) fw.indent();
-        
-        fw << *itr;
-        
-        ++column;
-        if (column==noItemsPerLine)
-        {
-            fw << std::endl;
-            column = 0;
-        }
-        else
-        {
-            fw << " ";
-        }
-    }
-    if (column!=0) fw << std::endl;
-    
-    fw.moveOut();
-    fw.indent()<<"}"<<std::endl;
-    
-}
-
-template<class Iterator>
-void Array_writeLocalDataAsInts(Output& fw, Iterator first, Iterator last,int noItemsPerLine=8)
-{
-    fw.indent() << "{"<<std::endl;
-    fw.moveIn();
-
-    int column=0;
-    
-    for(Iterator itr=first;
-        itr!=last;
-        ++itr)
-    {
-        if (column==0) fw.indent();
-        
-        fw << (int)*itr;
-        
-        ++column;
-        if (column==noItemsPerLine)
-        {
-            fw << std::endl;
-            column = 0;
-        }
-        else
-        {
-            fw << " ";
-        }
-    }
-    if (column!=0) fw << std::endl;
-    
-    fw.moveOut();
-    fw.indent()<<"}"<<std::endl;
-    
-}
-
 bool Array_writeLocalData(const Array& array,Output& fw)
 {
     if (array.referenceCount()>1)
@@ -651,7 +583,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const ByteArray& carray = static_cast<const ByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalDataAsInts(fw,carray.begin(),carray.end());
+                writeArrayAsInts(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -659,7 +591,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const ShortArray& carray = static_cast<const ShortArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                writeArray(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -667,7 +599,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const IntArray& carray = static_cast<const IntArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                writeArray(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -675,7 +607,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UByteArray& carray = static_cast<const UByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalDataAsInts(fw,carray.begin(),carray.end());
+                writeArrayAsInts(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -683,7 +615,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UShortArray& carray = static_cast<const UShortArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                writeArray(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -691,7 +623,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UIntArray& carray = static_cast<const UIntArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                writeArray(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -699,7 +631,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const UByte4Array& carray = static_cast<const UByte4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -707,7 +639,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const FloatArray& carray = static_cast<const FloatArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end());
+                writeArray(fw,carray.begin(),carray.end());
                 return true;
             }
             break;
@@ -715,7 +647,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec2Array& carray = static_cast<const Vec2Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -723,7 +655,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec3Array& carray = static_cast<const Vec3Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -731,7 +663,7 @@ bool Array_writeLocalData(const Array& array,Output& fw)
             {
                 const Vec4Array& carray = static_cast<const Vec4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
-                Array_writeLocalData(fw,carray.begin(),carray.end(),1);
+                writeArray(fw,carray.begin(),carray.end(),1);
                 return true;
             }
             break;
@@ -912,7 +844,7 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
             {
                 const DrawArrayLengths& cprim = static_cast<const DrawArrayLengths&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                writeArray(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
@@ -920,7 +852,7 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
             {
                 const DrawElementsUByte& cprim = static_cast<const DrawElementsUByte&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                writeArrayAsInts(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
@@ -928,7 +860,7 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
             {
                 const DrawElementsUShort& cprim = static_cast<const DrawElementsUShort&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                writeArray(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;
@@ -936,7 +868,7 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
             {
                 const DrawElementsUInt& cprim = static_cast<const DrawElementsUInt&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
-                Array_writeLocalData(fw,cprim.begin(),cprim.end());
+                writeArray(fw,cprim.begin(),cprim.end());
                 return true;
             }
             break;

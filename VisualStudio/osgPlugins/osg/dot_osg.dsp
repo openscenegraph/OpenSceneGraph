@@ -246,6 +246,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\ShadeModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\Shape.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\ShapeDrawable.cpp
 # End Source File
 # Begin Source File

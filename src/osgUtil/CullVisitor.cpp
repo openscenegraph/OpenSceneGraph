@@ -330,6 +330,9 @@ void CullVisitor::apply(Geode& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
+    // traverse any call callbacks and traverse any children.
+    handle_cull_callbacks_and_traverse(node);
+
     RefMatrix& matrix = getModelViewMatrix();
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
@@ -373,6 +376,9 @@ void CullVisitor::apply(Billboard& node)
     // push the node's state.
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
+
+    // traverse any call callbacks and traverse any children.
+    handle_cull_callbacks_and_traverse(node);
 
     const Vec3& eye_local = getEyeLocal();
     const RefMatrix& modelview = getModelViewMatrix();

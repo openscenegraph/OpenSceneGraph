@@ -70,6 +70,30 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
 }
 
 
+class AnimationPathCallbackVisitor : public NodeVisitor
+{
+    public:
+
+        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp):
+            _cp(cp) {}
+
+        virtual void apply(MatrixTransform& mt)
+        {
+            Matrix matrix;
+            _cp.getMatrix(matrix);
+            mt.setMatrix(matrix);
+        }
+        
+        virtual void apply(PositionAttitudeTransform& pat)
+        {
+            pat.setPosition(_cp._position);
+            pat.setAttitude(_cp._rotation);
+        }
+        
+        AnimationPath::ControlPoint _cp;
+      
+};
+
 void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
 {
     if (_animationPath.valid() && 
@@ -81,30 +105,15 @@ void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
         
         _animationTime = ((time-_firstTime)-_timeOffset)*_timeMultiplier;
         
-        node->accept(*this);
-        
+        AnimationPath::ControlPoint cp;
+        if (_animationPath->getInterpolatedControlPoint(_animationTime,cp))
+        {
+            AnimationPathCallbackVisitor apcv(cp);
+            node->accept(apcv);
+        }
+
     }
 
     // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
-}
-
-void AnimationPathCallback::apply(MatrixTransform& mt)
-{
-    Matrix matrix;
-    if (_animationPath->getMatrix(_animationTime,matrix))
-    {
-        mt.setMatrix(matrix);
-    }
-}
-
-
-void AnimationPathCallback::apply(PositionAttitudeTransform& pat)
-{
-    AnimationPath::ControlPoint cp;
-    if (_animationPath->getInterpolatedControlPoint(_animationTime,cp))
-    {
-        pat.setPosition(cp._position);
-        pat.setAttitude(cp._rotation);
-    }
 }

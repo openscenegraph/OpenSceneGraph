@@ -102,7 +102,6 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
         const LightPointList& lpl = *sitr;
         if (!lpl.empty())
         {
-            //state.applyMode(GL_POINT_SMOOTH,pointsize!=1);
             glPointSize(pointsize);
             glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
             //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
@@ -111,8 +110,28 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
     }
 
     state.applyMode(GL_BLEND,true);
-    state.applyAttribute(_blendOne.get());    
     state.applyAttribute(_depthOff.get());
+
+
+    state.applyAttribute(_blendOneMinusSrcAlpha.get());
+
+    for(pointsize=1,sitr=_sizedBlendedLightPointList.begin();
+        sitr!=_sizedBlendedLightPointList.end();
+        ++sitr,++pointsize)
+    {
+
+        const LightPointList& lpl = *sitr;
+        if (!lpl.empty())
+        {
+            glPointSize(pointsize);
+            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
+            glDrawArrays(GL_POINTS,0,lpl.size());
+        }
+    }
+
+
+    state.applyAttribute(_blendOne.get());    
 
     for(pointsize=1,sitr=_sizedAdditiveLightPointList.begin();
         sitr!=_sizedAdditiveLightPointList.end();
@@ -130,51 +149,14 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
         }
     }
 
-    state.applyAttribute(_blendOneMinusSrcAlpha.get());
-
-    for(pointsize=1,sitr=_sizedBlendedLightPointList.begin();
-        sitr!=_sizedBlendedLightPointList.end();
-        ++sitr,++pointsize)
-    {
-
-        const LightPointList& lpl = *sitr;
-        if (!lpl.empty())
-        {
-            //state.applyMode(GL_POINT_SMOOTH,pointsize!=1);
-            glPointSize(pointsize);
-            glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-            glDrawArrays(GL_POINTS,0,lpl.size());
-        }
-    }
-
-//     // switch on depth mask to do set up depth mask.    
-//     state.applyAttribute(_depthOn.get());
-// 
-//     state.applyMode(GL_BLEND,false);
-//     
-//     state.applyAttribute(_colorMaskOff.get());
-// 
-//     for(pointsize=1,sitr=_sizedLightPointList.begin();
-//         sitr!=_sizedLightPointList.end();
-//         ++sitr,++pointsize)
-//     {
-// 
-//         const LightPointList& lpl = *sitr;
-//         if (!lpl.empty())
-//         {
-//             glPointSize(pointsize);
-//             glInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-//             //state.setInterleavedArrays(GL_C4UB_V3F,0,&lpl.front());
-//             glDrawArrays(GL_POINTS,0,lpl.size());
-//         }
-//     }
-
     glPointSize(1);
     
     glHint(GL_POINT_SMOOTH_HINT,GL_FASTEST);
 
     state.haveAppliedAttribute(osg::StateAttribute::POINT);
+    
+    // restore the state afterwards.
+    state.apply();
 
 }
 

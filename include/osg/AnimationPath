@@ -7,7 +7,7 @@
 
 #include <osg/Matrix>
 #include <osg/Quat>
-#include <osg/NodeVisitor>
+#include <osg/NodeCallback>
 
 #include <map>
 
@@ -133,7 +133,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
 };
 
 
-class SG_EXPORT AnimationPathCallback : public NodeCallback, public NodeVisitor
+class SG_EXPORT AnimationPathCallback : public NodeCallback
 {
     public:
 
@@ -174,9 +174,6 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback, public NodeVisitor
         /** implements the callback*/
         virtual void operator()(Node* node, NodeVisitor* nv);
         
-        virtual void apply(MatrixTransform& mt);
-        
-        virtual void apply(PositionAttitudeTransform& pat);
 
     public:
 

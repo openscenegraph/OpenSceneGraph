@@ -94,17 +94,6 @@
 //
 // DXWriter.h
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <string>
-#include <stdio.h>
-#include <math.h>
-#include <assert.h>
-#include <stdarg.h>
-#include <limits.h>
-#include <string.h>
-#include <stdlib.h>
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/LOD>
@@ -120,6 +109,20 @@
 #include <osg/CullFace>
 #include <osg/Billboard>
 #include <osgDB/ReadFile>
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <string>
+#include <stdio.h>
+#include <math.h>
+#include <assert.h>
+#include <stdarg.h>
+#include <limits.h>
+#include <string.h>
+#include <stdlib.h>
+
+
 #include "DXWriter.h"
 #include "AreaGeoSetTriangulator.h"
 #include "StateSetStr.h"

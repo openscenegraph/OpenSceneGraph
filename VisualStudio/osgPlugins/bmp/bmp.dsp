@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="bmp" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgPlugin bmp" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=bmp - Win32 Debug
+CFG=osgPlugin bmp - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=bmp - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "bmp.mak" CFG="osgPlugin bmp - Win32 Debug"
+!MESSAGE NMAKE /f "bmp.mak" CFG="osgPlugin bmp - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -107,4 +107,3 @@ SOURCE=..\..\..\src\osgPlugins\bmp\ReaderWriterBMP.cpp
 # End Group
 # End Target
 # End Project
-

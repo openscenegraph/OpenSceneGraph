@@ -24,14 +24,17 @@
 #define _TRPAGEARCHIVE_H_
 
 
+
+#include "trpage_sys.h"
+#include "trpage_read.h"
+
+#include "TrPageParser.h"
+
+#include <osg/GeoSet>
+
 #include <string>
 #include <vector>
 #include <memory> // for auto_ptr
-#include "trpage_sys.h"
-#include "trpage_read.h"
-#include <osg/GeoSet>
-
-#include "TrPageParser.h"
 
 namespace txp
 {

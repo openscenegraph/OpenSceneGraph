@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="osgGLUT" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Core osgGLUT" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgGLUT - Win32 Debug
+CFG=Core osgGLUT - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=osgGLUT - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgGLUT.mak" CFG="Core osgGLUT - Win32 Debug"
+!MESSAGE NMAKE /f "osgGLUT.mak" CFG="Core osgGLUT - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -101,11 +101,11 @@ SOURCE=..\..\src\osgGLUT\Version.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGLUT\Window.cpp
+SOURCE=..\..\src\osgGLUT\Viewer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGLUT\Viewer.cpp
+SOURCE=..\..\src\osgGLUT\Window.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -125,15 +125,15 @@ SOURCE=..\..\Include\osgGLUT\GLUTEventAdapter
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgGLUT\Window
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\osgGLUT\Version
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\Include\osgGLUT\Viewer
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgGLUT\Window
 # End Source File
 # End Group
 # Begin Group "Resource Files"
@@ -142,4 +142,3 @@ SOURCE=..\..\Include\osgGLUT\Viewer
 # End Group
 # End Target
 # End Project
-

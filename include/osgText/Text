@@ -20,16 +20,14 @@
 #ifndef OSGTEXT_TEXT
 #define OSGTEXT_TEXT 1 
 
-#include <string>
-
-#include <osg/GL>
 #include <osg/Drawable>
+#include <osg/GL>
 #include <osg/Vec3>
 #include <osg/Vec2>
 
-// http://homepages.paradise.net.nz/henryj/code/
-
 #include <osgText/Font>
+
+#include <string>
 
 namespace osgText {
 

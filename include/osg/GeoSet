@@ -5,10 +5,10 @@
 #ifndef OSG_GEOSET
 #define OSG_GEOSET 1
 
+#include <osg/Drawable>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
-#include <osg/Drawable>
 
 namespace osg {
 

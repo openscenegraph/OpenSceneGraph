@@ -19,7 +19,7 @@
 
 #include <osg/Export>
 
-#define USE_REF_MUTEX 1
+// #define USE_REF_MUTEX 1
 
 namespace osg {
 

@@ -27,6 +27,8 @@ using namespace std;
 
 Image::Image()
 {
+    setDataVariance(STATIC); 
+
     _fileName               = "";
     _s = _t = _r            = 0;
     _internalTextureFormat  = 0;

@@ -164,18 +164,18 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 }
 
 
-void TextureCubeMap::setImage( Face face, Image* image)
+void TextureCubeMap::setImage( unsigned int face, Image* image)
 {
     _images[face] = image;
     _modifiedTag[face].setAllElementsTo(0);
 }
 
-Image* TextureCubeMap::getImage(Face face)
+Image* TextureCubeMap::getImage(unsigned int face)
 {
     return _images[face].get();
 }
 
-const Image* TextureCubeMap::getImage(Face face) const
+const Image* TextureCubeMap::getImage(unsigned int face) const
 {
     return _images[face].get();
 }
@@ -284,7 +284,7 @@ void TextureCubeMap::apply(State& state) const
 
         }
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && getDataVariance()==STATIC)
         {
             TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
             for (int n=0; n<6; n++)
@@ -292,12 +292,6 @@ void TextureCubeMap::apply(State& state) const
                 non_const_this->_images[n] = 0;
             }
         }
-
-        // in theory the following line is redundent, but in practice
-        // have found that the first frame drawn doesn't apply the textures
-        // unless a second bind is called?!!
-        // perhaps it is the first glBind which is not required...
-        //glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
         
     }
     else

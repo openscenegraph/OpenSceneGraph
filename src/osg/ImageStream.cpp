@@ -18,6 +18,7 @@ using namespace osg;
 ImageStream::ImageStream():
     _status(PAUSED)
 {
+    setDataVariance(DYNAMIC); 
 }
 
 ImageStream::ImageStream(const ImageStream& image,const CopyOp& copyop):

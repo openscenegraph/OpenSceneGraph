@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\gif\ReaderWriterGIF.cpp
 # End Group
 # End Target
 # End Project
+\c

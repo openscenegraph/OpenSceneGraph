@@ -93,3 +93,4 @@ SOURCE=..\..\..\src\Demos\osgreflect\osgreflect.cpp
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
 # End Project
+\c

@@ -154,3 +154,4 @@ SOURCE=..\..\..\src\Demos\hangglide\terrain_texcoords.h
 # End Group
 # End Target
 # End Project
+\c

@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\zip\ReaderWriterZIP.cpp
 # End Group
 # End Target
 # End Project
+\c

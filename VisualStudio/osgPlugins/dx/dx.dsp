@@ -135,3 +135,4 @@ SOURCE=..\..\..\src\osgPlugins\dx\StateSetStr.h
 # End Group
 # End Target
 # End Project
+\c

@@ -267,3 +267,4 @@ SOURCE=..\..\..\src\osgPlugins\osg\Transparency.cpp
 # End Group
 # End Target
 # End Project
+\c

@@ -670,3 +670,4 @@ SOURCE=..\..\include\osg\Viewport
 # End Group
 # End Target
 # End Project
+\c

@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\rgb\ReaderWriterRGB.cpp
 # End Group
 # End Target
 # End Project
+\c

@@ -247,3 +247,4 @@ SOURCE=..\..\..\src\osgPlugins\txp\TrPageParser.h
 # End Group
 # End Target
 # End Project
+\c

@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\png\ReaderWriterPNG.cpp
 # End Group
 # End Target
 # End Project
+\c

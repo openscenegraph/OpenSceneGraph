@@ -693,9 +693,9 @@ class DataSet : public osg::Referenced
 
             osg::Node* createScene();
 
-            osg::ShapeDrawable* createDrawableHeightField();
-            
-            osg::Geometry* createDrawablePolygonal();
+            osg::StateSet* createStateSet();
+            osg::Node* createHeightField();
+            osg::Node* createPolygonal();
 
             void unrefData();
             
@@ -872,23 +872,6 @@ class DataSet : public osg::Referenced
         void setDestinationTileExtension(const std::string& extension) { _tileExtension = extension; }
         const std::string& getDestinationTileExtension() const { return _tileExtension; }
         
-        CompositeDestination* createDestinationGraph(CompositeDestination* parent,
-                                                     osgTerrain::CoordinateSystem* cs,
-                                                     const osg::BoundingBox& extents,
-                                                     unsigned int maxImageSize,
-                                                     unsigned int maxTerrainSize,
-                                                     unsigned int currentLevel,
-                                                     unsigned int currentX,
-                                                     unsigned int currentY,
-                                                     unsigned int maxNumLevels);
-        
-        
-        void computeDestinationGraphFromSources(unsigned int numLevels);
-        void updateSourcesForDestinationGraphNeeds();
-        void populateDestinationGraphFromSources();
-        
-        void createDestination(unsigned int numLevels);
-        
         enum DatabaseType
         {
             LOD_DATABASE,
@@ -915,8 +898,31 @@ class DataSet : public osg::Referenced
         void setTextureType(TextureType type) { _textureType = type; }
         TextureType getTextureType() const { return _textureType; }
 
+        void setUseLocalTileTransform(bool flag) { _useLocalTileTransform = flag; }
+        bool getUseLocalTileTransform() const { return _useLocalTileTransform; }
+        
 
+
+        CompositeDestination* createDestinationGraph(CompositeDestination* parent,
+                                                     osgTerrain::CoordinateSystem* cs,
+                                                     const osg::BoundingBox& extents,
+                                                     unsigned int maxImageSize,
+                                                     unsigned int maxTerrainSize,
+                                                     unsigned int currentLevel,
+                                                     unsigned int currentX,
+                                                     unsigned int currentY,
+                                                     unsigned int maxNumLevels);
+        
+        
+        void computeDestinationGraphFromSources(unsigned int numLevels);
+        void updateSourcesForDestinationGraphNeeds();
+        void populateDestinationGraphFromSources();
+        
+        void createDestination(unsigned int numLevels);
         void writeDestination();
+        
+
+
         
         osg::Node* getDestinationRootNode() { return _rootNode.get(); }
 
@@ -955,7 +961,7 @@ class DataSet : public osg::Referenced
         DatabaseType                                _databaseType;
         GeometryType                                _geometryType;
         TextureType                                 _textureType;
-        
+        bool                                        _useLocalTileTransform;
         
         osg::ref_ptr<osg::Node>                     _rootNode;
         

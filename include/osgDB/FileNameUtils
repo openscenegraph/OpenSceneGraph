@@ -27,6 +27,13 @@ extern OSGDB_EXPORT std::string getSimpleFileName(const std::string& fileName);
 extern OSGDB_EXPORT std::string getNameLessExtension(const std::string& fileName);
 extern OSGDB_EXPORT std::string getStrippedName(const std::string& fileName);
 
+
+extern OSGDB_EXPORT std::string convertFileNameToWindowsStyle(const std::string& fileName);
+extern OSGDB_EXPORT std::string convertFileNameToUnixStyle(const std::string& fileName);
+
+extern OSGDB_EXPORT bool isFileNameNativeStyle(const std::string& fileName);
+extern OSGDB_EXPORT std::string convertFileNameToNativeStyle(const std::string& fileName);
+
 extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string& lhs,const std::string& rhs);
 extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string& lhs,const char* rhs);
 

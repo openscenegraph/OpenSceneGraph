@@ -171,6 +171,9 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
     if (filename.empty()) 
         return filename;
 
+    if (!isFileNameNativeStyle(filename)) 
+        return findFileInPath(convertFileNameToNativeStyle(filename), filepath, caseSensitivity);
+
 
     for(FilePathList::const_iterator itr=filepath.begin();
         itr!=filepath.end();

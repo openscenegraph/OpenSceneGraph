@@ -73,6 +73,13 @@ void DynGeoSet::append(DynGeoSet* source)
             break;                                      \
         }
 
+DynGeoSet::DynGeoSet():osg::GeoSet()
+{
+	// disable the attribute delete functor since the vectors contained in DynGeoSet
+	// will delete the memory for us.
+	_adf = NULL;
+}
+
 void DynGeoSet::setBinding()
 {
     VERIFY_DynGeoSet_Binding(_normal_binding, _normalList)
@@ -97,20 +104,20 @@ bool DynGeoSet::setLists()
 {
     if ((_primLenList.size() > 0) && (_coordList.size() > 0))
     {
-        osg::GeoSet::setPrimLengths(_primLenList.begin());
-        osg::GeoSet::setCoords(_coordList.begin());
+        setPrimLengths(_primLenList.begin());
+        setCoords(_coordList.begin());
 
         if ((_normalList.size() > 0)
         &&  (getNormalBinding() != osg::GeoSet::BIND_OFF))
-            osg::GeoSet::setNormals(_normalList.begin());
+            setNormals(_normalList.begin());
 
         if ((_colorList.size() > 0)
         &&  (getColorBinding() != osg::GeoSet::BIND_OFF))
-            osg::GeoSet::setColors(_colorList.begin());
+            setColors(_colorList.begin());
 
         if ((_tcoordList.size() > 0)
         &&  (getTextureBinding() != osg::GeoSet::BIND_OFF))
-            osg::GeoSet::setTextureCoords(_tcoordList.begin());
+            setTextureCoords(_tcoordList.begin());
 
         return true;
     }

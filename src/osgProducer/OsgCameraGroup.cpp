@@ -19,7 +19,6 @@
 #include <osgDB/FileUtils>
 
 #include <osgProducer/OsgCameraGroup>
-#include <osgProducer/DatabasePager>
 
 using namespace Producer;
 using namespace osgProducer;

@@ -65,7 +65,7 @@ class SG_EXPORT StateSet : public Object
             nodes which inherit all of their modes for the global state.*/
         void setAllToInherit();
         
-       /** merge this stateset with stateset rhs, this overrides
+        /** merge this stateset with stateset rhs, this overrides
           * the rhs if OVERRIDE is specified, otherwise rhs takes precedence.*/
         void merge(const StateSet& rhs);
 
@@ -76,7 +76,7 @@ class SG_EXPORT StateSet : public Object
         void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         
         /** set this StateSet to inherit specified GLMode type from parents.
-          * Has the effect of deleting any GlMode of specified type from StateSet.*/
+          * Has the effect of deleting any GLMode of specified type from StateSet.*/
         void setModeToInherit(StateAttribute::GLMode mode);
 
         /** get specified GLModeValue for specified GLMode.
@@ -105,15 +105,15 @@ class SG_EXPORT StateSet : public Object
         void setAttributeToInherit(StateAttribute::Type type);
 
         /** get specified StateAttribute for specified type.
-          * returns NULL if no type is contained within StateSet.*/
+          * Returns NULL if no type is contained within StateSet.*/
         StateAttribute* getAttribute(StateAttribute::Type type);
 
         /** get specified const StateAttribute for specified type.
-          * returns NULL if no type is contained within const StateSet.*/
+          * Returns NULL if no type is contained within const StateSet.*/
         const StateAttribute* getAttribute(StateAttribute::Type type) const;
 
         /** get specified RefAttributePair for specified type.
-          * returns NULL if no type is contained within StateSet.*/
+          * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getAttributePair(StateAttribute::Type type) const;
         
         /** return the list of all StateAttributes contained in this StateSet.*/
@@ -129,7 +129,7 @@ class SG_EXPORT StateSet : public Object
         /** set this StateSet to contain specified GLMode and value.*/
         void setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         /** set this StateSet to inherit specified GLMode type from parents.
-          * has the effect of deleting any GlMode of specified type from StateSet.*/
+          * has the effect of deleting any GLMode of specified type from StateSet.*/
         void setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode);
 
         /** get specified GLModeValue for specified GLMode.
@@ -162,13 +162,13 @@ class SG_EXPORT StateSet : public Object
         const StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type) const;
 
         /** get specified Texture related RefAttributePair for specified type.
-          * returns NULL if no type is contained within StateSet.*/
+          * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const;
         
-        /** return the list of all Texture related StateAttributes contained in this StateSet.*/
+        /** Return the list of all Texture related StateAttributes contained in this StateSet.*/
         inline TextureAttributeList& getTextureAttributeList() { return _textureAttributeList; }
 
-        /** return the const list of all Texture related StateAttributes contained in this const StateSet.*/
+        /** Return the const list of all Texture related StateAttributes contained in this const StateSet.*/
         inline const TextureAttributeList& getTextureAttributeList() const { return _textureAttributeList; }
 
 

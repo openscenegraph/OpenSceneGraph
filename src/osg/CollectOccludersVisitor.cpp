@@ -199,11 +199,15 @@ void CollectOccludersVisitor::removeOccludedOccluders()
             // do so in reverse order so that the iterators remain valid.
             for(ShadowVolumeOccluder::HoleList::reverse_iterator holeItr=holeList.rbegin();
                 holeItr!=holeList.rend();
-                ++holeItr)
+                )
             {
                 if (occluder->contains(holeItr->getReferenceVertexList()))
                 {
-                    holeList.erase(holeItr.base());
+                    holeList.erase((++holeItr).base());
+                }
+                else
+                {
+                    ++holeItr;
                 }
                 
             }

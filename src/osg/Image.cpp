@@ -173,16 +173,29 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
 
 unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 {
+    
+    if(format & 0x80F0)  /*  DXT* compressed formats */
+    {
+        switch(format)
+        {
+            case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
+
+            case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
+
+            case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
+
+            case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
+            default: 
+                {
+                    notify(WARN)<<"error format = "<<format<<std::endl;
+                    return 0;
+                }
+        }
+    }
+
     switch(type)
     {
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
-
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
-        
-        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
-        
-        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
-    
+   
         case(GL_BITMAP): return computeNumComponents(format);
         
         case(GL_BYTE):
@@ -268,12 +281,19 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
    if (t==0) t=1;
    if (r==0) r=1;
    
-   unsigned int sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*
-                                   r*t;
+   unsigned int sizeOfLastMipMap;
+   if(_pixelFormat & 0x80F0)
+   {
+       unsigned int blockSize = (_pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
+       sizeOfLastMipMap = maximum(computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)* r*t, blockSize);
+   }
+   else
+       sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)* r*t;
 
    // notify(INFO)<<"sizeOfLastMipMap="<<sizeOfLastMipMap<<"\ts="<<s<<"\tt="<<t<<"\tr"<<r<<std::endl;                  
-    
+
    return maxValue+sizeOfLastMipMap;
+
 }
 
 

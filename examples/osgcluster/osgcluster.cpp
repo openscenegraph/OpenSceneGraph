@@ -203,7 +203,7 @@ int main( int argc, char **argv )
                 osg::Matrix modelview;
                 cp.getModelView(modelview,camera_offset);
                 
-                viewer.setView(modelview.ptr());
+                viewer.setView(modelview);
 
                 if (cp.getMasterKilled()) 
                 {

@@ -264,7 +264,7 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
     unsigned int max_components = 0;
     int total_r = 0;
     ImageList::iterator itr;
-    for(ImageList::iterator itr=imageList.begin();
+    for(itr=imageList.begin();
         itr!=imageList.end();
         ++itr)
     {
@@ -276,9 +276,9 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
             pixelFormat==GL_RGB || 
             pixelFormat==GL_RGBA)
         {
-            max_s = std::max(image->s(), max_s);
-            max_t = std::max(image->t(), max_t);
-            max_components = std::max(osg::Image::computeNumComponents(pixelFormat), max_components);
+            max_s = osg::maximum(image->s(), max_s);
+            max_t = osg::maximum(image->t(), max_t);
+            max_components = osg::maximum(osg::Image::computeNumComponents(pixelFormat), max_components);
             total_r += image->r();
         }
         else
@@ -325,7 +325,7 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
     int curr_dest_r = 0;
 
     // copy across the values from the source imager into the image_3d.
-    for(ImageList::iterator itr=imageList.begin();
+    for(itr=imageList.begin();
         itr!=imageList.end();
         ++itr)
     {

@@ -35,10 +35,15 @@ class SG_EXPORT Billboard : public Geode
         /** Get the billboard rotation mode. */
         inline const Mode getMode() const { return _mode; }
 
-        /** Set the axis about which all the billboard's drawable rotate. */
+        /** Set the axis about which all the billboard's drawable rotate. Only utlized when mode==AXIAL_ROT*/
         void setAxis(const Vec3& axis);
         /** Get the axis about which all the billboard's drawable rotate. */
         inline const Vec3& getAxis() const { return _axis; }
+
+        /** Set the normal which defines the billboard's drawable front face, when unrotated. */
+        void setNormal(const Vec3& normal);
+        /** Get the normal of billboard's drawable front face. */
+        inline const Vec3& getNormal() const { return _normal; }
 
 
         /** Set the position of specified drawable. */
@@ -117,20 +122,22 @@ class SG_EXPORT Billboard : public Geode
         {
             AXIAL_ROT_X_AXIS=AXIAL_ROT+1,
             AXIAL_ROT_Y_AXIS,
-            AXIAL_ROT_Z_AXIS
+            AXIAL_ROT_Z_AXIS,
+            CACHE_DIRTY
         };
 
 
         Mode                                _mode;
         Vec3                                _axis;
+        Vec3                                _normal;
         PositionList                        _positionList;
         ref_ptr<ComputeBillboardCallback>   _computeBillboardCallback;
         
         // used internally as cache of which what _axis is aligned to help
         // deicde which method of rotation to use.
-        int              _cachedMode;
-        
-        void setCachedMode();
+        int                                 _cachedMode;
+        Vec3                                _side;
+        void updateCache();
 
 };
 

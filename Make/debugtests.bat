@@ -46,8 +46,8 @@ echo osgparticle
 osgparticle
 more memleaks.log
 
-echo osgbillboard lz.rgb
-osgbillboard lz.rgb
+echo osgbillboard
+osgbillboard
 more memleaks.log
 
 echo osgcube

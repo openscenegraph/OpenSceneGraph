@@ -5,8 +5,6 @@ C++FILES = ReaderWriterOBJ.cpp glm.cpp
 
 TARGET_BASENAME = osgdb_obj
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(DL_EXT)
-
 LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
 LIB=
 

@@ -5,8 +5,6 @@ C++FILES = ReaderWriterDW.cpp
 
 TARGET_BASENAME = osgdb_dw
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(DL_EXT)
-
 LIB=
 LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
 

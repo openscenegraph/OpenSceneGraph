@@ -373,7 +373,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         };
         
         void setComputeStereoMatricesCallback(ComputeStereoMatricesCallback* callback) { _computeStereoMatricesCallback=callback; }
-        ComputeStereoMatricesCallback* getComputeStereoMatricesCallback(ComputeStereoMatricesCallback* callback) { return _computeStereoMatricesCallback.get(); }
+        ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() { return _computeStereoMatricesCallback.get(); }
         const ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() const { return _computeStereoMatricesCallback.get(); }
 
         inline osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection)  const

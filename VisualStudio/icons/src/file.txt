@@ -1,0 +1,13 @@
+osg.xcf:      GIMP XCF image data, version 0, 122 x 122, RGB Color
+osg16-32.png: PNG image data, 16 x 16, 8-bit/color RGBA, non-interlaced
+osg16-4.png:  PNG image data, 16 x 16, 4-bit colormap, non-interlaced
+osg16-8.png:  PNG image data, 16 x 16, 8-bit colormap, non-interlaced
+osg16.xcf:    GIMP XCF image data, version 0, 16 x 16, RGB Color
+osg32-32.png: PNG image data, 32 x 32, 8-bit/color RGBA, non-interlaced
+osg32-4.png:  PNG image data, 32 x 32, 4-bit colormap, non-interlaced
+osg32-8.png:  PNG image data, 32 x 32, 8-bit colormap, non-interlaced
+osg32.xcf:    GIMP XCF image data, version 0, 32 x 32, RGB Color
+osg48-32.png: PNG image data, 48 x 48, 8-bit/color RGBA, non-interlaced
+osg48-4.png:  PNG image data, 48 x 48, 4-bit colormap, non-interlaced
+osg48-8.png:  PNG image data, 48 x 48, 8-bit colormap, non-interlaced
+osg48.xcf:    GIMP XCF image data, version 0, 48 x 48, RGB Color

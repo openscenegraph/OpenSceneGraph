@@ -176,6 +176,11 @@ SOURCE=..\..\..\examples\osgviewer\osgviewer.cpp
 
 # End Source File
 
+# Begin Source File
+
+SOURCE=.\resources.rc
+# End Source File
+
 # End Target
 
 # Begin Group "Resource Files"

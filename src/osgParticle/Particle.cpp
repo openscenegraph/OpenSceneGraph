@@ -41,7 +41,13 @@ osgParticle::Particle::Particle()
     angular_vel_(0, 0, 0),
     t0_(0),
     current_size_(0),
-    current_alpha_(0)
+    current_alpha_(0),
+	s_tile_(1.0f),
+    t_tile_(1.0f),
+	num_tile_(1),
+	cur_tile_(-1),
+	s_coord_(0.0f),
+	t_coord_(0.0f)
 {
 }
 
@@ -69,6 +75,16 @@ bool osgParticle::Particle::update(double dt)
         return false;
     }
 
+	//Compute the current texture tile based on our normalized age
+	int currentTile = static_cast<int>(x * num_tile_);
+	
+	//If the current texture tile is different from previous, then compute new texture coords
+	if(currentTile != cur_tile_) {
+		cur_tile_ = currentTile;
+		s_coord_ = s_tile_ * fmod(cur_tile_ , 1.0 / s_tile_);
+		t_coord_ = 1.0 - t_tile_ * (static_cast<int>(cur_tile_ * t_tile_) + 1);
+	}
+	
     // compute the current values for size, alpha and color.
     current_size_ = si_.get()->interpolate(x, sr_);
     current_alpha_ = ai_.get()->interpolate(x, ar_);
@@ -115,13 +131,13 @@ void osgParticle::Particle::render(const osg::Vec3 &xpos, const osg::Vec3 &px, c
         break;
 
     case QUAD:
-        glTexCoord2f(0, 0);
+        glTexCoord2f(s_coord_, t_coord_);
         glVertex3fv((xpos-(p1+p2)*R).ptr());
-        glTexCoord2f(1, 0);
+        glTexCoord2f(s_coord_+s_tile_, t_coord_);
         glVertex3fv((xpos+(p1-p2)*R).ptr());
-        glTexCoord2f(1, 1);
+        glTexCoord2f(s_coord_+s_tile_, t_coord_+t_tile_);
         glVertex3fv((xpos+(p1+p2)*R).ptr());
-        glTexCoord2f(0, 1);
+        glTexCoord2f(s_coord_, t_coord_+t_tile_);
         glVertex3fv((xpos-(p1-p2)*R).ptr());
         break;
 
@@ -131,13 +147,13 @@ void osgParticle::Particle::render(const osg::Vec3 &xpos, const osg::Vec3 &px, c
         glMultMatrix(R.ptr());
         // we must glBegin() and glEnd() here, because each particle is a single strip
         glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(1, 1);
+        glTexCoord2f(s_coord_+s_tile_, t_coord_+t_tile_);
         glVertex3fv((p1+p2).ptr());      
-        glTexCoord2f(0, 1);
+        glTexCoord2f(s_coord_, t_coord_+t_tile_);
         glVertex3fv((-p1+p2).ptr());        
-        glTexCoord2f(1, 0);
+        glTexCoord2f(s_coord_+s_tile_, t_coord_);
         glVertex3fv((p1-p2).ptr());
-        glTexCoord2f(0, 0);
+        glTexCoord2f(s_coord_, t_coord_);
         glVertex3fv((-p1-p2).ptr());
         glEnd();
         glPopMatrix();
@@ -149,21 +165,21 @@ void osgParticle::Particle::render(const osg::Vec3 &xpos, const osg::Vec3 &px, c
         glMultMatrix(R.ptr());        
         // we must glBegin() and glEnd() here, because each particle is a single fan
         glBegin(GL_TRIANGLE_FAN);
-        glTexCoord2f(0.5f, 0.5f);
+        glTexCoord2f(s_coord_ + s_tile_ * 0.5f, t_coord_ + t_tile_ * 0.5f);
         glVertex3f(0,0,0);
-        glTexCoord2f(hex_texcoord_x1, hex_texcoord_y1);
+        glTexCoord2f(s_coord_ + s_tile_ * hex_texcoord_x1, t_coord_ + t_tile_ * hex_texcoord_y1);
         glVertex3fv((p1*cosPI3+p2*sinPI3).ptr());
-        glTexCoord2f(hex_texcoord_x2, hex_texcoord_y1);
+        glTexCoord2f(s_coord_ + s_tile_ * hex_texcoord_x2, t_coord_ + t_tile_ * hex_texcoord_y1);
         glVertex3fv((-p1*cosPI3+p2*sinPI3).ptr());
-        glTexCoord2f(0, 0.5f);
+        glTexCoord2f(s_coord_, t_coord_ + t_tile_ * 0.5f);
         glVertex3fv((-p1).ptr());
-        glTexCoord2f(hex_texcoord_x2, hex_texcoord_y2);
+        glTexCoord2f(s_coord_ + s_tile_ * hex_texcoord_x2, t_coord_ + t_tile_ * hex_texcoord_y2);
         glVertex3fv((-p1*cosPI3-p2*sinPI3).ptr());
-        glTexCoord2f(hex_texcoord_x1, hex_texcoord_y2);
+        glTexCoord2f(s_coord_ + s_tile_ * hex_texcoord_x1, t_coord_ + t_tile_ * hex_texcoord_y2);
         glVertex3fv((p1*cosPI3-p2*sinPI3).ptr());
-        glTexCoord2f(1, 0.5f);
+        glTexCoord2f(s_coord_ + s_tile_, t_coord_ + t_tile_ * 0.5f);
         glVertex3fv((p1).ptr());
-        glTexCoord2f(hex_texcoord_x1, hex_texcoord_y1);
+        glTexCoord2f(s_coord_ + s_tile_ * hex_texcoord_x1, t_coord_ + t_tile_ * hex_texcoord_y1);
         glVertex3fv((p1*cosPI3+p2*sinPI3).ptr());
         glEnd();
         glPopMatrix();

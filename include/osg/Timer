@@ -140,6 +140,26 @@ class SG_EXPORT Timer {
 
 #if defined(__ia64) || defined(__x86_64__) || defined(__powerpc)
     #define CLK(x)        ((x)=0)
+#elif __powerpc
+#ifndef __HAVE_POWERPC_GET_TBL
+#define __HAVE_POWERPC_GET_TBL 1
+static inline unsigned long get_tbl(void)
+{
+        unsigned long tbl;
+        asm volatile ("mftb %0":"=r" (tbl));
+        return tbl;
+}
+#endif
+
+#define CLK(x)\
+{ \
+        unsigned long tb, tblu; \
+        do { \
+                tb = get_tbl(); \
+               __asm__ __volatile__ ("mftbu %0":"=r" (tblu)); \
+        } while (tb != get_tbl()); \
+        x = (((Timer_t) tblu) << 32) | (Timer_t) tb; \
+}
 #else
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
 #endif

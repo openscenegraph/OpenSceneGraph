@@ -54,17 +54,21 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             
             
             std::cout << "num="<<num<<std::endl;
+            
+            unsigned int targetNumVertices = 10000;
+           
     
+            osg::Geode* geode = new osg::Geode;
+
             osg::Geometry* geometry = new osg::Geometry;
             
             osg::Vec3Array* vertices = new osg::Vec3Array;
             osg::Vec3Array* normals = new osg::Vec3Array;
             osg::UByte4Array* colours = new osg::UByte4Array;
-            //osg::Vec4Array* colours = new osg::Vec4Array;
             
-            vertices->reserve(num);
-            normals->reserve(num);
-            colours->reserve(num);
+            vertices->reserve(targetNumVertices);
+            normals->reserve(targetNumVertices);
+            colours->reserve(targetNumVertices);
             
             fin.close();
             
@@ -91,20 +95,43 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                                 
                                 
                     if (a)
-                    {            
+                    {
+                    
+                        if (vertices->size()>=targetNumVertices)
+                        {
+                            // finishing setting up the current geometry and add it to the geode.
+                            geometry->setUseDisplayList(false);    
+                            geometry->setVertexArray(vertices);
+                            geometry->setNormalArray(normals);
+                            geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+                            geometry->setColorArray(colours);
+                            geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                            geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,vertices->size()));
+                            
+                            geode->addDrawable(geometry);
+
+                            // allocate a new geometry                            
+                            geometry = new osg::Geometry;
+
+                            vertices = new osg::Vec3Array;
+                            normals = new osg::Vec3Array;
+                            colours = new osg::UByte4Array;
+
+                            vertices->reserve(targetNumVertices);
+                            normals->reserve(targetNumVertices);
+                            colours->reserve(targetNumVertices);
+
+                        }
+                                                        
                         vertices->push_back(pos);
                         normals->push_back(normal);
                         colours->push_back(osg::UByte4(r,g,b,255));
-                        //colours->push_back(osg::Vec4((float)r/255.0f,(float)g/255.0f,(float)b/255.0f,1.0f));
                         
                     }
                 }
-
                 
-                //std::cout << "["<<std::endl;
-                //std::cout <<line<<std::endl;
-                //std::cout <<"]"<<std::endl;
             }
+
 
             geometry->setUseDisplayList(false);    
             geometry->setVertexArray(vertices);
@@ -114,7 +141,6 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
             geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,vertices->size()));
 
-            osg::Geode* geode = new osg::Geode;
             geode->addDrawable(geometry);
     
             return geode;

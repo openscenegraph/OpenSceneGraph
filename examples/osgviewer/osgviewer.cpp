@@ -42,9 +42,6 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
     {
@@ -69,6 +66,15 @@ int main( int argc, char **argv )
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
     }
 
     osg::Timer_t end_tick = timer.tick();

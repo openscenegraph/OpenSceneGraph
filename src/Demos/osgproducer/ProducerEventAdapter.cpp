@@ -70,9 +70,9 @@ void ProducerEventAdapter::adaptButtonPress(double time,float x, float y, unsign
     _time = time;
 
     _eventType = PUSH;
-    _button = button;
+    _button = button-1;
 
-    switch(button)
+    switch(_button)
     {
         case(0): 
 	    _s_accumulatedButtonMask = 
@@ -92,7 +92,7 @@ void ProducerEventAdapter::adaptButtonPress(double time,float x, float y, unsign
     }
 
     _s_mx = (int)(x*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
-    _s_my = (int)(y*(float)(_s_Ymax-_s_Ymin))+_s_Ymin;
+    _s_my = (int)(y*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
 
     copyStaticVariables();
 }
@@ -102,9 +102,9 @@ void ProducerEventAdapter::adaptButtonRelease(double time,float x, float y, unsi
     _time = time;
 
     _eventType = RELEASE;
-    _button = button;
+    _button = button-1;
 
-    switch(button)
+    switch(_button)
     {
         case(0): 
 	    _s_accumulatedButtonMask = 
@@ -124,7 +124,7 @@ void ProducerEventAdapter::adaptButtonRelease(double time,float x, float y, unsi
     }
 
     _s_mx = (int)(x*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
-    _s_my = (int)(y*(float)(_s_Ymax-_s_Ymin))+_s_Ymin;
+    _s_my = (int)(y*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
 
     copyStaticVariables();
 }
@@ -135,7 +135,7 @@ void ProducerEventAdapter::adaptMouseMotion(double time, float x, float y)
     _eventType = DRAG;
     _time = time;
     _s_mx = (int)(x*(float)(_s_Xmax-_s_Xmin))+_s_Xmin;
-    _s_my = (int)(y*(float)(_s_Ymax-_s_Ymin))+_s_Ymin;
+    _s_my = (int)(y*(float)(_s_Ymin-_s_Ymax))+_s_Ymax;
     copyStaticVariables();
 }
 

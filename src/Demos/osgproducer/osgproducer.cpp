@@ -22,7 +22,17 @@
 
 #include <osgDB/ReadFile>
 
-#include "MyKeyboardMouseCallback"
+#include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
+
+#if USE_MY_KEYBOARD_MOUSE_CALLBACK
+    #include "MyKeyboardMouseCallback"
+#else
+    #include "ProducerEventCallback.h"
+    #include "ProducerActionAdapter.h"
+#endif
+
+#include <list>
 
 static Producer::CameraConfig *BuildConfig(void)
 {
@@ -100,11 +110,11 @@ int main( int argc, char **argv )
 
 
     // read the scene.
-    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(filenameList);
-    if (!scene) return 1;
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(filenameList);
+    if (!loadedModel) return 1;
 
     osgUtil::Optimizer optimizer;
-    optimizer.optimize(scene.get());
+    optimizer.optimize(loadedModel.get());
 
 
     // set up the keyboard and mouse handling.
@@ -113,10 +123,19 @@ int main( int argc, char **argv )
                                    (new Producer::KeyboardMouse(ia)) : 
                                    (new Producer::KeyboardMouse(cg->getCamera(0)->getRenderSurface()));
 
+#if USE_MY_KEYBOARD_MOUSE_CALLBACK
     bool done = false;
     MyKeyboardMouseCallback kbmcb(done);
     kbm->setCallback( &kbmcb );
     kbm->startThread();
+#else
+
+    bool done = false;
+    ProducerEventCallback kbmcb(done);
+    kbm->setCallback( &kbmcb );
+    kbm->startThread();
+    
+#endif
 
     Producer::Trackball tb;
     tb.setOrientation( Producer::Trackball::Y_UP );
@@ -124,9 +143,9 @@ int main( int argc, char **argv )
 
 
     // set the globa state
-    osg::StateSet* globalStateSet = new osg::StateSet;
+    osg::ref_ptr<osg::StateSet> globalStateSet = new osg::StateSet;
     globalStateSet->setGlobalDefaults();
-    cg->setGlobalStateSet(globalStateSet);
+    cg->setGlobalStateSet(globalStateSet.get());
     
     
     // add either a headlight or sun light to the scene.
@@ -136,7 +155,7 @@ int main( int argc, char **argv )
     lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE);
     lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
 
-    lightsource->addChild(scene.get());
+    lightsource->addChild(loadedModel.get());
     
     
     // set the scene to render
@@ -159,6 +178,26 @@ int main( int argc, char **argv )
     osg::Timer timer;
     osg::Timer_t start_tick = timer.tick();
 
+
+    // create a camera to use with the manipulators.
+    osg::ref_ptr<osg::Camera> old_style_osg_camera = new osg::Camera;
+
+    osg::ref_ptr<osgGA::TrackballManipulator> trackballManipulator = new osgGA::TrackballManipulator;
+    trackballManipulator->setCamera(old_style_osg_camera.get());
+    trackballManipulator->setNode(loadedModel.get());
+
+    osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
+    statesetManipulator->setStateSet(globalStateSet.get());
+
+    // create an event handler list, we'll dispatch our event to these..
+    typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
+    EventHandlerList eventHandlerList;
+    eventHandlerList.push_back(trackballManipulator.get());
+    eventHandlerList.push_back(statesetManipulator.get());
+
+    // create a dummy action adapter right now.
+    ProducerActionAdapter actionAdapter;
+
     while( !done )
     {
         // syncronize to screen refresh.
@@ -172,12 +211,41 @@ int main( int argc, char **argv )
         // update the trackball
         tb.input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
         
+
+        // get the event since the last frame.
+        ProducerEventCallback::EventQueue queue;
+        kbmcb.getEventQueue(queue);
+        
+        // create an event to signal the new frame.
+        osg::ref_ptr<ProducerEventAdapter> frame_event = new ProducerEventAdapter;
+        frame_event->adaptFrame(frameStamp->getReferenceTime());
+        queue.push_back(frame_event);
+
+        // dispatch the events in order of arrival.
+        for(ProducerEventCallback::EventQueue::iterator event_itr=queue.begin();
+            event_itr!=queue.end();
+            ++event_itr)
+        {
+            bool handled = false;
+            for(EventHandlerList::iterator handler_itr=eventHandlerList.begin();
+                handler_itr!=eventHandlerList.end() && !handled;
+                ++handler_itr)
+            {   
+                handled = (*handler_itr)->handle(*(*event_itr),actionAdapter);
+            }
+        }
+
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
-        scene->accept(update);
+        cg->getSceneData()->accept(update);
 
-        // update the main camera
+
+        // update the main producer camera
+#if USE_MY_KEYBOARD_MOUSE_CALLBACK
         cg->setView(tb.getMatrix().ptr());
+#else
+        cg->setView(old_style_osg_camera->getModelViewMatrix().ptr());
+#endif
          
         // fire off the cull and draw traversals of the scene.
         cg->frame();

@@ -72,9 +72,13 @@ class SG_EXPORT State : public Referenced
         /** push stateset onto state stack.*/
         void pushStateSet(const StateSet* dstate);
 
-        /** pop drawstate off state stack.*/
+        /** pop stateset off state stack.*/
         void popStateSet();
        
+        /** pop all stateset's off state stack, ensuring its empty ready for the next frame.
+          * note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
+        void popAllStateSets();
+
         /** copy the modes and attributes which captures the current state.*/
         void captureCurrentState(StateSet& stateset) const;
 

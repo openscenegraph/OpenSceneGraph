@@ -253,7 +253,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     const uint contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
-    WrapMode ws = _wrap_s, wt = _wrap_t;
+    WrapMode ws = _wrap_s, wt = _wrap_t, wr = _wrap_r;
 
     // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
     if (!extensions->isTextureMirroredRepeatSupported())
@@ -262,6 +262,8 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             ws = REPEAT;
         if (wt == MIRROR)
             wt = REPEAT;
+        if (wr == MIRROR)
+            wr = REPEAT;
     }
 
     // GL_EXT_texture_edge_clamp, fall-back CLAMP
@@ -271,6 +273,8 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             ws = CLAMP;
         if (wt == CLAMP_TO_EDGE)
             wt = CLAMP;
+        if (wr == CLAMP_TO_EDGE)
+            wr = CLAMP;
     }
 
     if(!extensions->isTextureBorderClampSupported())
@@ -279,10 +283,13 @@ void Texture::applyTexParameters(GLenum target, State& state) const
             ws = CLAMP;
         if(wt == CLAMP_TO_BORDER)
             wt = CLAMP;
+        if(wr == CLAMP_TO_BORDER)
+            wr = CLAMP;
     }
 
     glTexParameteri( target, GL_TEXTURE_WRAP_S, ws );
     glTexParameteri( target, GL_TEXTURE_WRAP_T, wt );
+    glTexParameteri( target, GL_TEXTURE_WRAP_R, wt );
 
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);

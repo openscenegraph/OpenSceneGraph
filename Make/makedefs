@@ -91,7 +91,7 @@ BININST    = bin/$(OS)$(ARCH)/
 PLUGININST = lib/$(OS)$(ARCH)/osgPlugins
 LIBINST    = lib/$(OS)$(ARCH)
 
-INST_LOCATION  = /usr/local
+INST_LOCATION  ?= /usr/local
 INST_LIBS      = $(INST_LOCATION)/lib$(ARCHINST)
 INST_PLUGINS   = $(INST_LOCATION)/lib$(ARCHINST)/osgPlugins
 INST_INCLUDE   = $(INST_LOCATION)/include
@@ -207,7 +207,7 @@ ifeq ($(OS),SunOS)
   SOCKET_LIBS       = -lsocket -lnsl
   INSTBINCMD        = cp
   INSTDEVCMD        = cp
-  INST_LOCATION     = /opt/OpenSceneGraph
+  INST_LOCATION     ?= /opt/OpenSceneGraph
   MAKEDIST          = $(TOPDIR)/Make/makepkg
   OTHER_LIBS        = -lOpenThreads
 
@@ -541,7 +541,7 @@ ifeq ($(OS),CYGWIN)
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_LOCATION   = /usr/local/OpenSceneGraph
+  INST_LOCATION     ?= /usr/local/OpenSceneGraph
   INST_LIBS         = $(INST_LOCATION)/bin
   INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include
@@ -596,7 +596,7 @@ ifeq ($(OS),MINGW)
   LIB_EXT           = dll
   PLUGIN_EXT        = dll
   LINK              = cp -f
-  INST_LOCATION     = /usr/local/OpenSceneGraph
+  INST_LOCATION     ?= /usr/local/OpenSceneGraph
   INST_LIBS         = $(INST_LOCATION)/bin
   INST_PLUGINS      = $(INST_LOCATION)/bin
   INST_INCLUDE      = $(INST_LOCATION)/include

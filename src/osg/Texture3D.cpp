@@ -168,7 +168,7 @@ void Texture3D::apply(State& state) const
         // update the modified tag to show that it is upto date.
         getModifiedTag(contextID) = _image->getModifiedTag();
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && getDataVariance()==STATIC)
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {
             Texture3D* non_const_this = const_cast<Texture3D*>(this);
             non_const_this->_image = 0;

@@ -3,7 +3,8 @@
 
 using namespace osgProducer;
 
-Producer::CameraConfig* osgProducer::readCameraConfigFile(const std::string& filename)
+
+Producer::CameraConfig* buildConfig()
 {
     Producer::RenderSurface *rs1 = new Producer::RenderSurface;
     rs1->setScreenNum(0);
@@ -39,4 +40,7 @@ Producer::CameraConfig* osgProducer::readCameraConfigFile(const std::string& fil
     return cfg;
 }
 
-
+Producer::CameraConfig* osgProducer::readCameraConfigFile(const std::string& filename)
+{
+    return buildConfig();
+}

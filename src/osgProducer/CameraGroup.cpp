@@ -1,0 +1,159 @@
+//Open Producer - Copyright (C) 2002 Don Burns
+//Distributed under the terms of the GNU LIBRARY GENERAL PUBLIC LICENSE (LGPL)
+//as published by the Free Software Foundation.
+
+#include <osgProducer/CameraGroup>
+#include <osgProducer/ReadCameraConfigFile>
+
+using namespace osgProducer;
+
+CameraGroup::CameraGroup() : Producer::CameraGroup() 
+{
+    _init();
+}
+
+CameraGroup::CameraGroup(Producer::CameraConfig *cfg): Producer::CameraGroup(cfg) 
+{
+    _init();
+}
+
+CameraGroup::CameraGroup(const std::string& configFile) : Producer::CameraGroup(readCameraConfigFile(configFile)) 
+{
+    _init();
+}
+
+void CameraGroup::_init()
+{
+    _scene_data = NULL;
+    _global_stateset = NULL;
+    _background_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
+    _initialized = false;
+    if (!_frameStamp) _frameStamp = new osg::FrameStamp;
+}
+
+void CameraGroup::setSceneData( osg::Node *scene ) 
+{ 
+    _scene_data = scene; 
+    if( _shvec.size() > 0 )
+    {
+        SceneHandlerList::iterator p;
+        for( p = _shvec.begin(); p != _shvec.end(); p++ )
+        {
+            (*p)->setSceneData( _scene_data.get() );
+        }
+    }
+}
+        
+        
+void CameraGroup::setFrameStamp( osg::FrameStamp* fs )
+{
+    _frameStamp = fs;
+
+    for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
+    {
+        (*p)->setFrameStamp( fs );
+    }
+}
+
+
+void CameraGroup::setGlobalStateSet( osg::StateSet *sset ) 
+{ 
+    _global_stateset = sset; 
+
+    for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
+    {
+        (*p)->setGlobalStateSet( _global_stateset.get() );
+    }
+}
+
+void CameraGroup::setBackgroundColor( const osg::Vec4& backgroundColor ) 
+{
+    _background_color = backgroundColor;
+
+    if( _shvec.size() > 0 )
+    {
+        SceneHandlerList::iterator p;
+        for( p = _shvec.begin(); p != _shvec.end(); p++ )
+        {
+            (*p)->setBackgroundColor( _background_color );
+        }
+    }
+}
+
+void CameraGroup::setLODScale( float bias )
+{
+    if( _shvec.size() > 0 )
+    {
+        SceneHandlerList::iterator p;
+        for( p = _shvec.begin(); p != _shvec.end(); p++ )
+        {
+            (*p)->setLODScale( bias );
+        }
+    }
+}
+
+void CameraGroup::setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f)
+{
+    if( _shvec.size() > 0 )
+    {
+        SceneHandlerList::iterator p;
+        for( p = _shvec.begin(); p != _shvec.end(); p++ )
+        {
+            (*p)->setFusionDistance( mode, value );
+        }
+    }
+}
+
+void CameraGroup::advance()
+{
+    if( !_initialized ) return;
+    CameraGroup::advance();        
+}
+
+void CameraGroup::realize( ThreadingModel thread_model= SingleThreaded )
+{
+    if( _initialized ) return;
+
+    if (!_ds) _ds = osg::DisplaySettings::instance();
+
+    _ds->setMaxNumberOfGraphicsContexts( _cfg->getNumberOfCameras() );
+
+    for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+    {
+        Producer::Camera *cam = _cfg->getCamera(i);
+        osgProducer::SceneHandler *sh = new osgProducer::SceneHandler(_ds.get());
+        sh->setDefaults();
+        if( _global_stateset != NULL )
+            sh->setGlobalStateSet( _global_stateset.get() );
+        if( _scene_data != NULL )
+            sh->setSceneData( _scene_data.get() );
+        sh->setBackgroundColor( _background_color);
+        sh->getState()->setContextID(i);
+        sh->setFrameStamp( _frameStamp.get() );
+        _shvec.push_back( sh );
+
+        cam->setSceneHandler( sh );
+    }
+
+
+    /// Make all statesets the same as the first.
+    if( _global_stateset == NULL && _shvec.size() > 0 )
+    {
+        SceneHandlerList::iterator p;
+        p = _shvec.begin();
+        _global_stateset = (*p)->getGlobalStateSet();
+        p++;
+        for( ; p != _shvec.end(); p++ )
+            (*p)->setGlobalStateSet( _global_stateset.get() );
+    }
+
+    Producer::CameraGroup::realize( thread_model );        
+    _initialized = true;
+}
+
+void CameraGroup::frame()
+{
+    Producer::CameraGroup::frame();
+    _frameStamp->setFrameNumber( _frameStamp->getFrameNumber() + 1 );
+}
+

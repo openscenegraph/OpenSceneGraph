@@ -18,12 +18,6 @@
 using namespace txp;
 using namespace osg;
 
-#if defined(WIN32) 
-#define sleep(x) Sleep((x)) 
-#else
-#define sleep(x) usleep((x)*1000) 
-#endif
-
 OSGPageManager::OSGPageManager(TrPageArchive *in_arch,trpgPageManager *in_pageManage)
 {
     archive = in_arch;
@@ -291,7 +285,6 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
         }
         else
         {
-            //sleep(10);
             OpenThreads::Thread::Yield();
         }
             

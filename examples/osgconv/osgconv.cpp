@@ -140,7 +140,7 @@ parse_args( int argc, char **argv, FileNameList &fileNames,
                     case('e'):
                         if (nexti<argc)
                         {
-                            std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(argv[nexti++]);
+                            std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(argv[nexti++]);
                             osgDB::Registry::instance()->loadLibrary(libName);
                         }
 			else

@@ -93,6 +93,8 @@ Registry::Registry()
 
     _createNodeFromImage = true;
     _openingLibrary = false;
+    
+    _useObjectCacheHint = false;
 
     initFilePathLists();
 
@@ -143,6 +145,7 @@ Registry::Registry()
     addFileExtensionAlias("pbm", "pnm");
     addFileExtensionAlias("pgm", "pnm");
     addFileExtensionAlias("ppm", "pnm");
+    
 }
 
 

@@ -15,8 +15,6 @@
 
 #include <osgParticle/RandomRateCounter>
 #include <osgParticle/RadialShooter>
-#include <osgParticle/AccelOperator>
-#include <osgParticle/FluidFrictionOperator>
 #include <osgParticle/SectorPlacer>
 #include <osgParticle/ParticleSystemUpdater>
 
@@ -31,6 +29,9 @@ SmokeEffect::SmokeEffect(const osg::Vec3& position, float scale, float intensity
     _position = position;
     _scale = scale;
     _intensity = intensity;
+
+    _emitterDuration = 65.0;
+    _particleDuration = 5.0*_scale;
         
     buildEffect();
 }
@@ -43,78 +44,94 @@ SmokeEffect::SmokeEffect(const SmokeEffect& copy, const osg::CopyOp& copyop):
 void SmokeEffect::setDefaults()
 {
     ParticleEffect::setDefaults();
+    
+    _emitterDuration = 65.0;
+    _particleDuration = 5.0*_scale;
 }
 
 void SmokeEffect::setUpEmitterAndProgram()
 {
-    
-    osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
-    ps->setDefaultAttributes("Images/smoke.rgb", false, false);
-
-    _particleSystem = ps;
-//    _particleSystem->setUseIntialViewMatrix(true);
-
-    // set up the emitter
+    // set up particle system
+    if (!_particleSystem)
     {
-        osgParticle::ModularEmitter *emitter = new osgParticle::ModularEmitter;
-        emitter->setParticleSystem(ps);
-        emitter->setReferenceFrame(osgParticle::ParticleProcessor::ABSOLUTE_RF);
+        _particleSystem = new osgParticle::ParticleSystem;
+    }
 
+    if (_particleSystem.valid())
+    {
+        _particleSystem->setDefaultAttributes("Images/smoke.rgb", false, false);
 
-        osgParticle::Particle ptemplate;
+        osgParticle::Particle& ptemplate = _particleSystem->getDefaultParticleTemplate();
+        ptemplate.setLifeTime(5*_scale);
 
-        ptemplate.setLifeTime(10*_scale);
+        float radius = 0.5f*_scale; 
+        float density = 1.0f; // 1.0kg/m^3
 
         // the following ranges set the envelope of the respective 
         // graphical properties in time.
-        ptemplate.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
+        ptemplate.setSizeRange(osgParticle::rangef(radius*0.75f, radius*3.0f));
         ptemplate.setAlphaRange(osgParticle::rangef(0.1f, 1.0f));
         ptemplate.setColorRange(osgParticle::rangev4(
             osg::Vec4(1, 1.0f, 1.0f, 1.0f), 
             osg::Vec4(1, 1.0f, 1.f, 0.0f)));
 
         // these are physical properties of the particle
-        ptemplate.setRadius(0.05f*_scale);    // 5 cm wide particles
-        ptemplate.setMass(0.01f*_scale);    // 10g heavy
+        ptemplate.setRadius(radius);    // 5 cm wide particles
+        ptemplate.setMass(density*osg::PI*4.0f*radius*radius*radius/3.0f);
 
-        // assign the particle template to the system.
-        ps->setDefaultParticleTemplate(ptemplate);
-
-        osgParticle::RandomRateCounter* counter = new osgParticle::RandomRateCounter;
-        counter->setRateRange(1*_intensity*_scale,2*_intensity*_scale);    // generate 1000 particles per second
-        emitter->setCounter(counter);
-
-        osgParticle::SectorPlacer* placer = new osgParticle::SectorPlacer;
-        placer->setCenter(_position);
-        placer->setRadiusRange(0.0f*_scale,0.25f*_scale);
-        emitter->setPlacer(placer);
-
-        osgParticle::RadialShooter* shooter = new osgParticle::RadialShooter;
-        shooter->setThetaRange(0.0f, osg::PI_4);
-        shooter->setInitialSpeedRange(0.0f*_scale,0.0f*_scale);
-        emitter->setShooter(shooter);
-
-        emitter->setStartTime(0.0f);
-
-        _emitter = emitter;
     }
 
 
-    // set up the program
+    // set up emitter
+    if (!_emitter)
     {
-        osgParticle::ModularProgram *program = new osgParticle::ModularProgram;
-        program->setParticleSystem(ps);
+        _emitter = new osgParticle::ModularEmitter;
+        _emitter->setCounter(new osgParticle::RandomRateCounter);
+        _emitter->setPlacer(new osgParticle::SectorPlacer);
+        _emitter->setShooter(new osgParticle::RadialShooter);
+    }
 
-        // create an operator that simulates the gravity acceleration.
-        osgParticle::AccelOperator *op1 = new osgParticle::AccelOperator;
-        op1->setToGravity(-0.1);
-        program->addOperator(op1);
+    if (_emitter.valid())
+    {
+        _emitter->setParticleSystem(_particleSystem.get());
+        _emitter->setReferenceFrame(_useLocalParticleSystem?
+                                    osgParticle::ParticleProcessor::ABSOLUTE_RF:
+                                    osgParticle::ParticleProcessor::RELATIVE_RF);
 
-        // let's add a fluid operator to simulate air friction.
-        osgParticle::FluidFrictionOperator *op3 = new osgParticle::FluidFrictionOperator;
-        op3->setFluidToAir();
-        program->addOperator(op3);
+        _emitter->setStartTime(_startTime);
+        _emitter->setLifeTime(_emitterDuration);
+        _emitter->setEndless(false);
 
-        _program = program;
+        osgParticle::RandomRateCounter* counter = dynamic_cast<osgParticle::RandomRateCounter*>(_emitter->getCounter());
+        if (counter)
+        {
+            counter->setRateRange(3*_intensity,5*_intensity);
+        }
+
+        osgParticle::SectorPlacer* placer = dynamic_cast<osgParticle::SectorPlacer*>(_emitter->getPlacer());
+        if (placer)
+        {
+            placer->setCenter(_position);
+            placer->setRadiusRange(0.0f*_scale,0.25f*_scale);
+        }
+
+        osgParticle::RadialShooter* shooter = dynamic_cast<osgParticle::RadialShooter*>(_emitter->getShooter());
+        if (shooter)
+        {
+            shooter->setThetaRange(0.0f, osg::PI_4);
+            shooter->setInitialSpeedRange(0.0f*_scale,0.0f*_scale);
+        }
+    }
+
+    // set up program.
+    if (!_program)
+    {        
+        _program = new osgParticle::FluidProgram;
+    }
+    
+    if (_program.valid())
+    {
+        _program->setParticleSystem(_particleSystem.get());
+        _program->setWind(_wind);
     }
 }

@@ -123,6 +123,13 @@ public:
         inverseMVPW.invert(projm);
         osg::Vec3 near_point = osg::Vec3(x,y,-1.0f)*inverseMVPW;
         osg::Vec3 far_point = osg::Vec3(x,y,1.0f)*inverseMVPW;
+        
+        if (!near_point.valid() || !far_point.valid())
+        {
+            osg::notify(osg::INFO)<<"Warning: PickVisitor caught invalid nea/far poiints."<<std::endl;
+            return _PIVsegHitList;
+        }
+        
         setxy(x,y);    
         getHits(node,near_point,far_point);
         return _PIVsegHitList;

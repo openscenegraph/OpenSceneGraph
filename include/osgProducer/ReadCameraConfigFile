@@ -1,0 +1,23 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGDB_READCAMERACONDIGFILE
+#define OSGDB_READCAMERACONDIGFILE 1
+
+#include <Producer/CameraConfig>
+
+#include <osgProducer/Export>
+
+#include <string>
+
+namespace osgProducer {
+
+/** Read a Producer::CameraConfig from file. 
+  * Return valid Producer::CameraConfig on success,
+  * return NULL on failure.*/
+extern OSGPRODUCER_EXPORT Producer::CameraConfig* readCameraConfigFile(const std::string& filename);
+
+}
+
+#endif

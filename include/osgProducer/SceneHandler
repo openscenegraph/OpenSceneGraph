@@ -10,54 +10,25 @@
 #include <osgUtil/SceneView>
 #include <osg/Matrix>
 
-#include <iostream>
-
 namespace osgProducer {
 
-class SceneHandler : public Producer::Camera::SceneHandler, public osgUtil::SceneView
+class OSGPRODUCER_EXPORT SceneHandler : public Producer::Camera::SceneHandler, public osgUtil::SceneView
 {
     public :
-        SceneHandler( osg::DisplaySettings *ds = NULL) : osgUtil::SceneView(ds)
-        {
-            mm = new osg::RefMatrix;
-            pm = new osg::RefMatrix;
-        }
+    
+        SceneHandler( osg::DisplaySettings *ds = NULL);
 
-        void cull(Producer::Camera &cam) 
-        {
-            pm->set(cam.getProjectionMatrix());
-            mm->set(cam.getPositionAndAttitudeMatrix());
-            setProjectionMatrix( pm.get() );
-            setModelViewMatrix( mm.get() );
+        void cull(Producer::Camera &cam);
 
-            int x, y;
-            unsigned int w, h;
-            cam.getProjectionRect( x, y, w, h );
+        void draw(Producer::Camera &);
 
-            setViewport( x, y, w, h );
-#ifdef _windows_is_non_standard
-            SceneView::cull();
-#else
-            osgUtil::SceneView::cull();
-#endif
-        }
-
-        void draw(Producer::Camera &) 
-        {
-#ifdef _windows_is_non_standard
-            SceneView::draw();
-#else
-            osgUtil::SceneView::draw();
-#endif
-        }
-
-        void setContextID( int id )
-        {
-            getState()->setContextID( id );
-        }
+        void setContextID( int id );
 
 
-    private:
+    protected:
+    
+        virtual ~SceneHandler() {}
+    
         osg::ref_ptr<osg::RefMatrix> mm; 
         osg::ref_ptr<osg::RefMatrix> pm;
 };

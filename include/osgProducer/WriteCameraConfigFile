@@ -1,0 +1,23 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGDB_WRITECAMERACONDIGFILE
+#define OSGDB_WRITECAMERACONDIGFILE 1
+
+#include <Producer/CameraConfig>
+
+#include <osgProducer/Export>
+
+#include <string>
+
+namespace osgProducer {
+
+/** Write a Producer::CameraConfig to file. 
+  * Return true on success,
+  * return false on failure.*/
+extern OSGPRODUCER_EXPORT bool writeCameraConfigFile(const Producer::CameraConfig& cameraconfig, const std::string& filename);
+
+}
+
+#endif

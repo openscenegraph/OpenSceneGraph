@@ -32,6 +32,7 @@
 #include <osgUtil/Tesselator>
 
 #include "lw.h"
+#include "Lwo2.h"
 
 class ReaderWriterLWO : public osgDB::ReaderWriter
 {
@@ -43,14 +44,41 @@ public:
         return (extension == "lwo" || extension == "lw" || extension == "geo");
     }
 
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+    {
+        ReadResult result = readNode_LWO1(fileName,options);
+        if (result.success()) return result;
+        
+        return readNode_LWO2(fileName,options);
+    }
+
+    virtual ReadResult readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
 protected:
+
+    
+
 };
 
 
 // register with Registry to instantiate the above reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
+
+
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+{
+    std::auto_ptr<Lwo2> lwo2(new Lwo2());
+    lwo2->ReadFile(fileName);
+
+    osg::ref_ptr<Geode> geode = new osg::Geode();
+    if (lwo2->GenerateGeode(*geode)) return geode.take();
+
+    return ReadResult::FILE_NOT_HANDLED;
+}
+
+
+
 
 
 // collect all the data relavent to a particular osg::Geometry being created.
@@ -79,7 +107,7 @@ struct GeometryCollection
 
 
 // read file and convert to OSG.
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     lwObject* lw = lw_object_read(fileName.c_str());
     if (!lw)

@@ -3,6 +3,8 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	lw.cpp\
+        Lwo2.cpp\
+        Lwo2Layer.cpp\
 	ReaderWriterLWO.cpp\
 
 

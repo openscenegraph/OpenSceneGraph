@@ -292,6 +292,8 @@ class MyTextureSubloadCallback : public osg::Texture2D::SubloadCallback
     
         MyTextureSubloadCallback():
             _subloadMode(AUTO),
+            _textureWidth(0),
+            _textureHeight(0),
             _subloadTextureOffsetX(0),
             _subloadTextureOffsetY(0),
             _subloadImageOffsetX(0),

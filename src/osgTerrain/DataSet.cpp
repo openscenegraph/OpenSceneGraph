@@ -1927,17 +1927,7 @@ osg::Node* DataSet::DestinationTile::createHeightField()
 }
 
 
-static osg::Vec3 computeLocalPosition(const osg::Matrixd& localToWorld, double X, double Y, double Z)
-{
-    X -= localToWorld(3,0);
-    Y -= localToWorld(3,1);
-    Z -= localToWorld(3,2);
-    return osg::Vec3(X*localToWorld(0,0) + Y*localToWorld(0,1) + Z*localToWorld(0,2),
-                     X*localToWorld(1,0) + Y*localToWorld(1,1) + Z*localToWorld(1,2),
-                     X*localToWorld(2,0) + Y*localToWorld(2,1) + Z*localToWorld(2,2));
-}
-
-static osg::Vec3 computeLocalPosition2(const osg::Matrixd& worldToLocal, double X, double Y, double Z)
+static osg::Vec3 computeLocalPosition(const osg::Matrixd& worldToLocal, double X, double Y, double Z)
 {
     return osg::Vec3(X*worldToLocal(0,0) + Y*worldToLocal(1,0) + Z*worldToLocal(2,0) + worldToLocal(3,0),
                      X*worldToLocal(0,1) + Y*worldToLocal(1,1) + Z*worldToLocal(2,1) + worldToLocal(3,1),
@@ -2033,8 +2023,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             
             worldToLocal.invert(localToWorld);
             
-            //center_position = computeLocalPosition(localToWorld,midX,midY,midZ);
-            center_position = computeLocalPosition2(worldToLocal,midX,midY,midZ);
+            center_position = computeLocalPosition(worldToLocal,midX,midY,midZ);
             transformed_center_normal = osg::Matrixd::transform3x3(localToWorld,center_normal);
             
         }
@@ -2104,8 +2093,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
             if (useLocalToTileTransform)
             {
-                //v[vi] = computeLocalPosition(localToWorld,X,Y,Z);
-                v[vi] = computeLocalPosition2(worldToLocal,X,Y,Z);
+                v[vi] = computeLocalPosition(worldToLocal,X,Y,Z);
             }
             else
             {
@@ -2318,6 +2306,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
 
     osgUtil::TriStripVisitor tsv;
+    tsv.setMinStripSize(3);
     tsv.stripify(*geometry);
 
 

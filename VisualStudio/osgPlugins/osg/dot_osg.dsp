@@ -328,6 +328,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\MatrixTransform.cpp
 
 SOURCE=..\..\..\src\osgPlugins\osg\BlendFunc.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\VertexProgram.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

@@ -60,6 +60,7 @@ CXXFILES =\
         TextureRectangle.cpp\
         TextureCubeMap.cpp\
         Transform.cpp\
+        VertexProgram.cpp\
 
 
 LIBS   += $(OSG_LIBS) $(OTHER_LIBS)

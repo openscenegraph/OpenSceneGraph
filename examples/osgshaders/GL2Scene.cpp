@@ -11,7 +11,7 @@
 */
 
 /* file:	examples/osgshaders/GL2Scene.cpp
- * author:	Mike Weiblen 2003-12-28
+ * author:	Mike Weiblen 2004-09-15
  *
  * Compose a scene of several instances of a model, with a different
  * OpenGL Shading Language shader applied to each.
@@ -137,24 +137,6 @@ make1DSineTexture( int texSize )
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-#if 0 //[
-static osg::Node* createGlobe()
-{
-    osg::Geode* geode = new osg::Geode();
-    osg::StateSet* stateset = geode->getOrCreateStateSet();
-
-    osg::Texture2D* texture = new osg::Texture2D;
-    texture->setImage( osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") );
-    stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-
-    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0,0,0), 2.0f)));
-
-    return geode;
-}
-#endif //]
-
-///////////////////////////////////////////////////////////////////////////
 // OpenGL Shading Language source code for the "microshader" example,
 // which simply colors a fragment based on its location.
 
@@ -275,6 +257,9 @@ class AnimateCallback: public osg::NodeCallback
 ///////////////////////////////////////////////////////////////////////////
 // Compose a scenegraph with examples of GL2 shaders
 
+#define TEXUNIT_SINE	1
+#define TEXUNIT_NOISE	2
+
 osg::ref_ptr<osg::Group>
 GL2Scene::buildScene()
 {
@@ -325,7 +310,7 @@ GL2Scene::buildScene()
     // the "eroded" shader, uses a noise texture to discard fragments
     {
 	osg::StateSet* ss = ModelInstance();
-	ss->setTextureAttributeAndModes(6, noiseTexture, osg::StateAttribute::ON);
+	ss->setTextureAttribute(TEXUNIT_NOISE, noiseTexture);
 	ErodedProgObj = new osgGL2::ProgramObject;
 	_progObjList.push_back( ErodedProgObj );
 	ErodedVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
@@ -338,8 +323,8 @@ GL2Scene::buildScene()
     // the "marble" shader, uses two textures
     {
 	osg::StateSet* ss = ModelInstance();
-	ss->setTextureAttributeAndModes(1, noiseTexture, osg::StateAttribute::ON);
-	ss->setTextureAttributeAndModes(2, sineTexture, osg::StateAttribute::ON);
+	ss->setTextureAttribute(TEXUNIT_NOISE, noiseTexture);
+	ss->setTextureAttribute(TEXUNIT_SINE, sineTexture);
 	MarbleProgObj = new osgGL2::ProgramObject;
 	_progObjList.push_back( MarbleProgObj );
 	MarbleVertObj = new osgGL2::ShaderObject( osgGL2::ShaderObject::VERTEX );
@@ -394,12 +379,12 @@ GL2Scene::reloadShaderSource()
     LoadShaderSource( ErodedFragObj, "shaders/eroded.frag" );
     ErodedProgObj->setUniform( "LightPosition", osg::Vec3(0.0f, 0.0f, 4.0f) );
     ErodedProgObj->setUniform( "Scale", 1.0f );
-    ErodedProgObj->setSampler( "sampler3d", 6 );
+    ErodedProgObj->setSampler( "sampler3d", TEXUNIT_NOISE );
 
     LoadShaderSource( MarbleVertObj, "shaders/marble.vert" );
     LoadShaderSource( MarbleFragObj, "shaders/marble.frag" );
-    MarbleProgObj->setSampler( "Noise", 1 );
-    MarbleProgObj->setSampler( "Sine", 2 );
+    MarbleProgObj->setSampler( "Noise", TEXUNIT_NOISE );
+    MarbleProgObj->setSampler( "Sine", TEXUNIT_SINE );
 }
 
 

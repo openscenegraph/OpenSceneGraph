@@ -13,11 +13,14 @@ July 2002 - OpenSceneGraph-0.9.0.tar.gz
     both comerical and open source.  
 
     Multi-texturing support added to osg::StateSet, osg::Geometry, osg::State
-    and txp loader.
+    and txp loader, so multi-texturing can now be done with very little coding
+    from the user - all you need to do is specify the texture unit to use 
+    when setting texturing state and texture coordinates and the rest is 
+    handled automatically by the scene graph!
     
-    New osg::Geometry classes which supersedes the old Performer style osg::GeoSet,
-    support multi-texturing, and uses sharable osg::Arrays which use
-    std::vector<> for data storage and manipulation.
+    The new osg::Geometry classes which supersedes the old Performer style 
+    osg::GeoSet, support multi-texturing, and uses sharable osg::Arrays which
+    utilize std::vector<> for data storage and manipulation.
 
     Shadow volume occlusion culling adding to the core OSG, developed as a
     collobaration between Mike Connell and Robert Osfield. Our implementation
@@ -28,7 +31,12 @@ July 2002 - OpenSceneGraph-0.9.0.tar.gz
     powerful feature for large scale urban and indoor visulisation. 
 
     osgParticle developed by Marco Jez adds support for a range of particle
-    effects.
+    effects such smoke, fires, engine plumes, fountains, fire works, and
+    is fully customizable to produce your own favorite effects. osgParticle 
+    is a NodeKit (see below) which can be directly linked to in your 
+    application to allow you to create particle effects by hand, or have 
+    the library dynamically loaded in when you load a database which contains 
+    particle effects.
     
     osgGA (Gui Abstraction) library written by Neil Salter adds classes for 
     adapting different GUI toolkits to work with a standard set of manipulators for

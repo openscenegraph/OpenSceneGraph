@@ -146,8 +146,8 @@ class SG_EXPORT BoundingBox
             if(y<_min.y()) _min.y() = y;
             if(y>_max.y()) _max.y() = y;
 
-            if(x<_min.z()) _min.z() = x;
-            if(x>_max.z()) _max.z() = x;
+            if(z<_min.z()) _min.z() = z;
+            if(z>_max.z()) _max.z() = z;
         }
 
         /** If incoming box is out-with the box expand to encompass incoming box.

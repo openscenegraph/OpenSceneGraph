@@ -222,12 +222,12 @@ void State::apply(const StateSet* dstate)
                         if (!ms.valueVec.empty())
                         {
                             bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                            apply_mode(this_mitr->first,new_value,ms);
+                            applyMode(this_mitr->first,new_value,ms);
                         }
                         else
                         {
                             // assume default of disabled.
-                            apply_mode(this_mitr->first,ms.global_default_value,ms);
+                            applyMode(this_mitr->first,ms.global_default_value,ms);
 
                         }
             
@@ -244,7 +244,7 @@ void State::apply(const StateSet* dstate)
                     ModeStack& ms = _modeMap[ds_mitr->first];
 
                     bool new_value = ds_mitr->second & StateAttribute::ON;
-                    apply_mode(ds_mitr->first,new_value,ms);
+                    applyMode(ds_mitr->first,new_value,ms);
 
                     // will need to disable this mode on next apply so set it to changed.
                     ms.changed = true;
@@ -267,7 +267,7 @@ void State::apply(const StateSet* dstate)
                         {
                             ms.changed = false;
                             bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                            apply_mode(this_mitr->first,new_value,ms);
+                            applyMode(this_mitr->first,new_value,ms);
         
                         }
                     }
@@ -275,7 +275,7 @@ void State::apply(const StateSet* dstate)
                     {
                         // no override on or no previous entry, therefore consider incomming mode.
                         bool new_value = ds_mitr->second & StateAttribute::ON;
-                        if (apply_mode(ds_mitr->first,new_value,ms))
+                        if (applyMode(ds_mitr->first,new_value,ms))
                         {
                             ms.changed = true;
                         }
@@ -299,12 +299,12 @@ void State::apply(const StateSet* dstate)
                     if (!ms.valueVec.empty())
                     {
                         bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                        apply_mode(this_mitr->first,new_value,ms);
+                        applyMode(this_mitr->first,new_value,ms);
                     }
                     else
                     {
                         // assume default of disabled.
-                        apply_mode(this_mitr->first,ms.global_default_value,ms);
+                        applyMode(this_mitr->first,ms.global_default_value,ms);
 
                     }
             
@@ -319,7 +319,7 @@ void State::apply(const StateSet* dstate)
                 ModeStack& ms = _modeMap[ds_mitr->first];
 
                 bool new_value = ds_mitr->second & StateAttribute::ON;
-                apply_mode(ds_mitr->first,new_value,ms);
+                applyMode(ds_mitr->first,new_value,ms);
 
                 // will need to disable this mode on next apply so set it to changed.
                 ms.changed = true;
@@ -348,11 +348,11 @@ void State::apply(const StateSet* dstate)
                         if (!as.attributeVec.empty())
                         {
                             const StateAttribute* new_attr = as.attributeVec.back().first;
-                            apply_attribute(new_attr,as);
+                            applyAttribute(new_attr,as);
                         }
                         else
                         {
-                            apply_global_default_attribute(as);
+                            applyGlobalDefaultAttribute(as);
                         }
                     }
 
@@ -367,7 +367,7 @@ void State::apply(const StateSet* dstate)
                     AttributeStack& as = _attributeMap[ds_aitr->first];
 
                     const StateAttribute* new_attr = ds_aitr->second.first.get();
-                    apply_attribute(new_attr,as);
+                    applyAttribute(new_attr,as);
 
                     // will need to disable this mode on next apply so set it to changed.
                     as.changed = true;
@@ -390,14 +390,14 @@ void State::apply(const StateSet* dstate)
                         {
                             as.changed = false;
                             const StateAttribute* new_attr = as.attributeVec.back().first;
-                            apply_attribute(new_attr,as);
+                            applyAttribute(new_attr,as);
                         }
                     }
                     else
                     {
                         // no override on or no previous entry, therefore consider incomming mode.
                         const StateAttribute* new_attr = ds_aitr->second.first.get();
-                        if (apply_attribute(new_attr,as))
+                        if (applyAttribute(new_attr,as))
                         {
                             as.changed = true;
                         }
@@ -421,11 +421,11 @@ void State::apply(const StateSet* dstate)
                     if (!as.attributeVec.empty())
                     {
                         const StateAttribute* new_attr = as.attributeVec.back().first;
-                        apply_attribute(new_attr,as);
+                        applyAttribute(new_attr,as);
                     }
                     else
                     {
-                        apply_global_default_attribute(as);
+                        applyGlobalDefaultAttribute(as);
                     }
                 }
             }        
@@ -440,7 +440,7 @@ void State::apply(const StateSet* dstate)
                 AttributeStack& as = _attributeMap[ds_aitr->first];
 
                 const StateAttribute* new_attr = ds_aitr->second.first.get();
-                apply_attribute(new_attr,as);
+                applyAttribute(new_attr,as);
 
                 // will need to update this attribute on next apply so set it to changed.
                 as.changed = true;
@@ -475,12 +475,12 @@ void State::apply()
             if (!ms.valueVec.empty())
             {
                 bool new_value = ms.valueVec.back() & StateAttribute::ON;
-                apply_mode(mitr->first,new_value,ms);
+                applyMode(mitr->first,new_value,ms);
             }
             else
             {
                 // assume default of disabled.
-                apply_mode(mitr->first,ms.global_default_value,ms);
+                applyMode(mitr->first,ms.global_default_value,ms);
             }
             
         }
@@ -499,11 +499,11 @@ void State::apply()
             if (!as.attributeVec.empty())
             {
                 const StateAttribute* new_attr = as.attributeVec.back().first;
-                apply_attribute(new_attr,as);
+                applyAttribute(new_attr,as);
             }
             else
             {
-                apply_global_default_attribute(as);
+                applyGlobalDefaultAttribute(as);
             }
             
         }
@@ -512,7 +512,7 @@ void State::apply()
 }
 
 /** mode has been set externally, update state to reflect this setting.*/
-void State::have_applied_mode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
+void State::haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value)
 {
     ModeStack& ms = _modeMap[mode];
 
@@ -523,7 +523,7 @@ void State::have_applied_mode(const StateAttribute::GLMode mode,const StateAttri
 }
 
 /** mode has been set externally, update state to reflect this setting.*/
-void State::have_applied_mode(const StateAttribute::GLMode mode)
+void State::haveAppliedMode(const StateAttribute::GLMode mode)
 {
     ModeStack& ms = _modeMap[mode];
 
@@ -536,7 +536,7 @@ void State::have_applied_mode(const StateAttribute::GLMode mode)
 }
 
 /** attribute has been applied externally, update state to reflect this setting.*/
-void State::have_applied_attribute(const StateAttribute* attribute)
+void State::haveAppliedAttribute(const StateAttribute* attribute)
 {
     if (attribute)
     {
@@ -549,7 +549,7 @@ void State::have_applied_attribute(const StateAttribute* attribute)
     }
 }
 
-void State::have_applied_attribute(const StateAttribute::Type type)
+void State::haveAppliedAttribute(const StateAttribute::Type type)
 {
     
     AttributeMap::iterator itr = _attributeMap.find(type);

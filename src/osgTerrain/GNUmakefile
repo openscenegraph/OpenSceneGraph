@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES = \
     CoordinateSystem.cpp\
+    DataSet.cpp\
     Terrain.cpp\
     Renderer.cpp\
     GeoMipMapRenderer.cpp\
@@ -11,7 +12,7 @@ CXXFILES = \
 
 DEF     += -DOSGTERRAIN_LIBRARY
 
-LIBS  +=  -losgDB -losg $(GL_LIBS) $(OTHER_LIBS)
+LIBS  +=  -losgDB -losg -lgdal $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgTerrain
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

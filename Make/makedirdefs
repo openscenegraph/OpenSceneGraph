@@ -16,11 +16,15 @@ SRC_DIRS = \
 	osgSim\
 	osgGL2\
 	osgFX\
-	osgTerrain\
 	osgProducer\
+
+ifeq ($(GDAL_INSTALLED),yes)
+SRC_DIRS += osgTerrain
+endif
+
+SRC_DIRS += \
 	osgPlugins\
 	../examples
-
 
 ################################################################
 # Directories traversed in the TOPDIR/src/osgPlugins directory

@@ -270,7 +270,7 @@ int *numComponents_ret)
                 }
             }
         }
-        delete [] imbuff; // free the on-disk storage
+        free(imbuff); // free the on-disk storage
         
         fclose(fp);
 

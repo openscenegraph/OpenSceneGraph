@@ -33,18 +33,22 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
 
         DatabasePager();
 
-        /** add a request to load a node file to end the the database request list.*/
+        /** Add a request to load a node file to end the the database request list.*/
         virtual void requestNodeFile(const std::string& fileName,osg::Group* group);
 
         /** run does the database paging.*/        
         virtual void run();
         
-        /** add the loaded data to the scene graph.*/
+
+        /** Add the loaded data to the scene graph.*/
         void addLoadedDataToSceneGraph();
 
-        /** find all PagedLOD nodes in a subgraph and register them with 
-          * the DatabasePager so it can keep track of expired nodes.*/
+
+        /** Find all PagedLOD nodes in a subgraph and register them with 
+          * the DatabasePager so it can keep track of expired nodes.
+          * note, should be only be called from the update thread. */
         void registerPagedLODs(osg::Node* subgraph);
+
 
         /** Set the amount of time that a subgraph will be kept without being visited in the cull traversal
           * before being removed.*/
@@ -54,10 +58,27 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
           * before being removed.*/
         double getExpiryDelay() const { return _expiryDelay; }
 
-        /** iterate through the active PagedLOD nodes children removing 
-          * children which havn't been visited since specified expiryTime.*/
+        /** set whether the removed subgraphs should be deleted in the database thread or not.*/
+        void setDeleteRemovedSubgraphsInDatabaseThread(bool flag) { _deleteRemovedSubgraphsInDatabaseThread = flag; }
+        
+        /** get whether the removed subgraphs should be deleted in the database thread or not.*/
+        bool getDeleteRemovedSubgraphsInDatabaseThread() const { return _deleteRemovedSubgraphsInDatabaseThread; }
+
+        /** Iterate through the active PagedLOD nodes children removing 
+          * children which havn't been visited since specified expiryTime.
+          * note, should be only be called from the update thread. */
         void removeExpiredSubgraphs(double currentFrameTime);
         
+        
+        /* Set the maximum amount of time available for compile rendering objects. */
+        void setMaximumTimeForCompilingRenderingObjects(double time) { _maximumTimeForCompiling = time; }
+        
+        /* Get the maximum amount of time available for compile rendering objects. */
+        double getMaximumTimeForCompilingRenderingObjects() const { return _maximumTimeForCompiling; }
+        
+        /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
+          * note, should only be called from the draw thread.*/
+        void compileRenderingObjects(osg::State& state);
 
     public:
 
@@ -66,6 +87,9 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
     protected :
 
         virtual ~DatabasePager() {}
+        
+        typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetList;
+        typedef std::vector< osg::ref_ptr<osg::Drawable> > DrawableList;
 
         struct DatabaseRequest : public osg::Referenced
         {
@@ -84,12 +108,22 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         DatabaseRequestList     _fileRequestList;
         Producer::Mutex         _fileRequestListMutex;
         
-        DatabaseRequestList     _fileLoadedList;
-        Producer::Mutex         _fileLoadedListMutex;
+        DatabaseRequestList     _dataLoadedList;
+        Producer::Mutex         _dataLoadedListMutex;
+        
+        bool                    _deleteRemovedSubgraphsInDatabaseThread;
+        osg::NodeList           _childrenToDeleteList;
+        Producer::Mutex         _childrenToDeleteListMutex;
+
+        DatabaseRequestList     _dataToMergeList;
+        Producer::Mutex         _dataToMergeMutex;
+        
         
         PagedLODList            _pagedLODList;
         
         double                  _expiryDelay;
+
+        double                  _maximumTimeForCompiling;
 
 };
 

@@ -413,24 +413,6 @@ bool OsgCameraGroup::realize()
             
         }
         
-        
-        if (sfsn._foundPagedLOD)
-        {
-            std::cout << "setting up paged LOD"<<std::endl;
-        
-            _databasePager = new DatabasePager;
-            
-            _databasePager->registerPagedLODs(getTopMostSceneData());
-            
-            for(SceneHandlerList::iterator p=_shvec.begin();
-                p!=_shvec.end();
-                ++p)
-            {
-                (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
-            }
-            
-        }
-        
     }
     
 

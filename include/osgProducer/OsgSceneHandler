@@ -45,7 +45,7 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         {
         public:
                virtual ~Callback() {}
-               virtual void operator()(OsgSceneHandler&, const Producer::Camera &) = 0;             
+               virtual void operator()(OsgSceneHandler&, Producer::Camera &) = 0;             
         };
         
         virtual void clear(Producer::Camera& camera)

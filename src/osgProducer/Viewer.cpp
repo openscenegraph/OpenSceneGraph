@@ -296,11 +296,44 @@ bool Viewer::realize( ThreadingModel thread_model )
     return realize();
 }
 
+class DatabasePagerCompileCallback : public OsgSceneHandler::Callback
+{
+public:
+
+        DatabasePagerCompileCallback(DatabasePager* databasePager):
+            _databasePager(databasePager)
+        {}
+
+       virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
+       {
+            _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()));
+            
+            sh.drawImplementation(camera);
+       }
+       
+       osg::ref_ptr<DatabasePager> _databasePager;
+};
+
 bool Viewer::realize()
 {
     if (_realized) return _realized;
 
     OsgCameraGroup::realize();
+
+
+    // by default set up the DatabasePager.
+    {    
+        _databasePager = new DatabasePager;
+        _databasePager->registerPagedLODs(getTopMostSceneData());
+
+        for(SceneHandlerList::iterator p=_shvec.begin();
+            p!=_shvec.end();
+            ++p)
+        {
+            (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+            (*p)->setDrawCallback(new DatabasePagerCompileCallback(_databasePager.get()));
+        }
+    }
     
     // force a sync before we intialize the keyswitch manipulator to home
     // so that Producer has a chance to set up the windows before we do

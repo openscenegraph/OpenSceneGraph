@@ -14,8 +14,20 @@ class SG_EXPORT Referenced
 {
 
     public:
-        Referenced() { _refCount=0; }
-        Referenced(const Referenced&) { _refCount=0; }
+        Referenced() 
+        {
+           
+           _refCount=0;
+#ifdef OSG_COMPILE_UNIT_TESTS
+            _createdCount ++;
+#endif
+        }
+        Referenced(const Referenced&) {
+            _refCount=0;
+#ifdef OSG_COMPILE_UNIT_TESTS
+            _createdCount ++;
+#endif
+        }
 
         inline Referenced& operator = (Referenced&) { return *this; }
 
@@ -40,9 +52,21 @@ class SG_EXPORT Referenced
         /** return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
 
+#ifdef OSG_COMPILE_UNIT_TESTS
+        /** return the total number of created referenced objects */
+        inline static int createdCount() { return _createdCount; }
+
+        /** return the total number of deleted referenced objects */
+        inline static int deletedCount() { return _deletedCount; }
+#endif
+
     protected:
         virtual ~Referenced();
         mutable int _refCount;
+#ifdef OSG_COMPILE_UNIT_TESTS
+        static int  _createdCount;  // incremented in the constructor
+        static int  _deletedCount;  // incremented in the destructor
+#endif
 
 };
 

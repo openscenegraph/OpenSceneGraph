@@ -456,6 +456,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         struct ReadHeightFieldFunctor;
         struct ReadNodeFunctor;
         struct ReadArchiveFunctor;
+        
+        // make helper classes friends to get round VS6.0 "issues"
+        friend struct RegReadObjectFunctor;
+        friend struct ReadImageFunctor;
+        friend struct ReadHeightFieldFunctor;
+        friend struct ReadNodeFunctor;
+        friend struct ReadArchiveFunctor;
 
         ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
         ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,bool useObjectCache);
@@ -463,6 +470,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         // forward declar helper class
         class AvailableReaderWriterIterator;
+        friend class AvailableReaderWriterIterator;
 
 
         osg::ref_ptr<ReadFileCallback>      _readFileCallback;

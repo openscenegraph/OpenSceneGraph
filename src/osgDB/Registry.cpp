@@ -1116,7 +1116,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 
 
 
-struct ReadObjectFunctor : public Registry::ReadFunctor
+struct Registry::ReadObjectFunctor : public Registry::ReadFunctor
 {
     ReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
@@ -1125,7 +1125,7 @@ struct ReadObjectFunctor : public Registry::ReadFunctor
     virtual bool isValid(osg::Object* object) const { return object!=0;  }
 };
 
-struct ReadImageFunctor : public Registry::ReadFunctor
+struct Registry::ReadImageFunctor : public Registry::ReadFunctor
 {
     ReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
@@ -1134,7 +1134,7 @@ struct ReadImageFunctor : public Registry::ReadFunctor
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Image*>(object)!=0;  }
 };
 
-struct ReadHeightFieldFunctor : public Registry::ReadFunctor
+struct Registry::ReadHeightFieldFunctor : public Registry::ReadFunctor
 {
     ReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
@@ -1143,7 +1143,7 @@ struct ReadHeightFieldFunctor : public Registry::ReadFunctor
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::HeightField*>(object)!=0;  }
 };
 
-struct ReadNodeFunctor : public Registry::ReadFunctor
+struct Registry::ReadNodeFunctor : public Registry::ReadFunctor
 {
     ReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
@@ -1153,7 +1153,7 @@ struct ReadNodeFunctor : public Registry::ReadFunctor
 
 };
 
-struct ReadArchiveFunctor : public Registry::ReadFunctor
+struct Registry::ReadArchiveFunctor : public Registry::ReadFunctor
 {
     ReadArchiveFunctor(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const ReaderWriter::Options* options):
         ReadFunctor(filename,options),

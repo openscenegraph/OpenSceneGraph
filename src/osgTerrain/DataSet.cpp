@@ -2173,6 +2173,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     float min_dot_product = 1.0f;
     float max_cluster_culling_height = 0.0f;
+    float max_cluster_culling_radius = 0.0f;
 
     for(r=0;r<numRows;++r)
     {
@@ -2215,6 +2216,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
                     float local_m = globe_radius*( 1.0/ cos(theta+phi) - 1.0);
                     min_dot_product = osg::minimum(min_dot_product, local_dot_product);
                     max_cluster_culling_height = osg::maximum(max_cluster_culling_height,local_m);      
+                    max_cluster_culling_radius = osg::maximum(max_cluster_culling_radius,static_cast<float>(beta*globe_radius));
                 }
                 else
                 {
@@ -2305,7 +2307,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
         ccc->set(center_position + transformed_center_normal*max_cluster_culling_height ,
                  transformed_center_normal, 
-                 min_dot_product);
+                 min_dot_product,
+                 max_cluster_culling_radius);
         geometry->setCullCallback(ccc);
     }
     

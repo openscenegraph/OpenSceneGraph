@@ -33,7 +33,6 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
         _numChildrenWithOccluderNodes(0),
-        _userData(copyop(node._userData.get())),
         _nodeMask(node._nodeMask), 
         _descriptions(node._descriptions),
         _dstate(copyop(node._dstate.get()))

@@ -9,7 +9,6 @@
 #include <osg/StateSet>
 #include <osg/BoundingSphere>
 #include <osg/NodeCallback>
-#include <osg/ref_ptr>
 
 #include <string>
 #include <vector>
@@ -148,20 +147,6 @@ class SG_EXPORT Node : public Object
         /** return true if this node is an OccluderNode or the subgraph below this node are OccluderNodes.*/
         const bool containsOccluderNodes() const;
 
-        /**
-         * Set user data, data must be subclased from Referenced to allow
-         * automatic memory handling.  If you own data isn't directly 
-         * subclassed from Referenced then create and adapter object
-         * which points to your own objects and handles the memory addressing.
-         */
-        inline void setUserData(osg::Referenced* obj) { _userData = obj; }
-        /** Get user data.*/
-        inline Referenced* getUserData() { return _userData.get(); }
-        
-        /** Get const user data.*/
-        inline const Referenced* getUserData() const { return _userData.get(); }
-
-
 
         typedef unsigned int NodeMask;
         /** Set the node mask. Note, node mask is will be replaced by TraversalMask.*/
@@ -257,8 +242,6 @@ class SG_EXPORT Node : public Object
 
         int _numChildrenWithOccluderNodes;        
         void setNumChildrenWithOccluderNodes(const int num);
-
-        osg::ref_ptr<Referenced> _userData;
 
         NodeMask _nodeMask;
         

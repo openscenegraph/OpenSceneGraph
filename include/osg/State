@@ -87,7 +87,7 @@ class SG_EXPORT State : public Referenced
         }
         
 
-        inline void setInitialViewMatrix(const osg::RefMatrix* matrix);
+        void setInitialViewMatrix(const osg::RefMatrix* matrix);
 
         inline const osg::Matrix& getInitialViewMatrix() const { return *_initialViewMatrix; }
         inline const osg::Matrix& getInitialInverseViewMatrix() const { return _initialInverseViewMatrix; }

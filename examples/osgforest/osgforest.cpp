@@ -744,7 +744,7 @@ osg::Node* ForestTechniqueManager::createHUDWithText(const std::string& str)
    
     // create the hud.
     osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-    modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+    modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE);
     modelview_abs->setMatrix(osg::Matrix::identity());
     modelview_abs->addChild(geode);
 

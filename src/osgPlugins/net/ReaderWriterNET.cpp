@@ -13,6 +13,7 @@
 #include <osgDB/FileUtils>
 #include <osg/MatrixTransform>
 #include <osg/Group>
+#include <osg/Timer>
 #include "sockinet.h"
 
  /*
@@ -122,6 +123,10 @@ class NetReader : public osgDB::ReaderWriter
 
         virtual ReadResult readFile(ObjectType objectType, const std::string& inFileName, const Options *options)
         {
+            osg::Timer_t start = osg::Timer::instance()->tick();
+
+            osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: start load" << inFileName << std::endl;
+
             std::string hostname;
             std::string serverPrefix;
             std::string localCacheDir;
@@ -320,11 +325,14 @@ class NetReader : public osgDB::ReaderWriter
             
             
 
-            osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
-                                         " fetched from server." << std::endl;
 
             if( reader != 0L )
                 readResult = readFile(objectType, reader, sio, local_opt.get() );
+
+            double ms = osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick());
+
+            osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
+                                         " fetched from server. in" << ms <<" ms"<< std::endl;
 
             if( !localCacheDir.empty() && cacheMode & Write )
             {

@@ -45,7 +45,7 @@ bool AutoTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_matrixDirty) computeMatrix();
     
-    if (_referenceFrame==RELATIVE_TO_PARENTS)
+    if (_referenceFrame==RELATIVE)
     {
         matrix.preMult(_cachedMatrix);
     }
@@ -59,7 +59,7 @@ bool AutoTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 
 bool AutoTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
-    if (_referenceFrame==RELATIVE_TO_PARENTS)
+    if (_referenceFrame==RELATIVE)
     {
         matrix.postMult(osg::Matrix::translate(-_position)*
                         osg::Matrix::rotate(_rotation.inverse())*

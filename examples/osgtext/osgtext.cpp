@@ -501,7 +501,7 @@ int main( int argc, char **argv )
             projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
 
             osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
-            modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+            modelview_abs->setReferenceFrame(osg::Transform::ABSOLUTE);
             modelview_abs->setMatrix(osg::Matrix::identity());
 
             modelview_abs->addChild(createHUDText());

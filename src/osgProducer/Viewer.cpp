@@ -468,11 +468,11 @@ void Viewer::setUpViewer(unsigned int options)
             lightsource->setLight(light);
             if (options & HEAD_LIGHT_SOURCE)
             {
-                lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE); // headlight.
+                lightsource->setReferenceFrame(osg::LightSource::ABSOLUTE); // headlight.
             }
             else
             {
-                lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_PARENTS); // skylight
+                lightsource->setReferenceFrame(osg::LightSource::RELATIVE); // skylight
             }
             lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
         }

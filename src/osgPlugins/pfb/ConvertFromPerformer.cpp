@@ -77,7 +77,6 @@ ConvertFromPerformer::ConvertFromPerformer()
 
     _saveImagesAsRGB = false;
     _saveAbsoluteImagePath = false;
-
 }
 
 
@@ -287,6 +286,7 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,
     // add children
     for(int i=0;i<sequence->getNumChildren();++i)
     {
+        //cerr << "child " << i << " time " << sequence->getTime(i) << endl;
         osgSequence->setTime(i, sequence->getTime(i));
         visitNode(osgSequence,sequence->getChild(i));
     }
@@ -295,6 +295,7 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,
     int mode, begin, end;
     sequence->getInterval(&mode, &begin, &end);
 
+    //cerr << "loop " << mode << endl;
     osg::Sequence::LoopMode loopMode = osg::Sequence::LOOP;
     if (mode == PFSEQ_SWING)
         loopMode = osg::Sequence::SWING;
@@ -1164,7 +1165,6 @@ osg::Texture2D* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pf
 
     osgTexture = new osg::Texture2D;
     registerPfObjectForOsgObject(tex, osgTexture);
-    //_pfToOsgMap[tex] = osgTexture;
 
     if (osgStateSet) osgStateSet->setTextureAttribute(0,osgTexture);
 
@@ -1200,11 +1200,27 @@ osg::Texture2D* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pf
     // image
     std::string texName = tex->getName();
 
-    if (_saveImagesAsRGB)
-    {
+    if (_saveImagesAsRGB) {
         std::string strippedName = osgDB::getStrippedName(texName);
-        texName = _saveImageDirectory+strippedName+".rgb";
-        tex->saveFile(texName.c_str());
+
+        pfList* imgList = tex->getList();
+        if (imgList) {
+            // save image list
+            char buf[8];
+            for (int i = 0; i < imgList->getNum(); i++) {
+                pfTexture* t = (pfTexture*) imgList->get(i);
+                if (t) {
+                    snprintf(buf, sizeof(buf)-1, "_%04d", i);
+                    texName = _saveImageDirectory+strippedName+buf+".rgb";
+                    t->saveFile(texName.c_str());
+                }
+            }
+        }
+        else {
+            // save single image
+            texName = _saveImageDirectory+strippedName+".rgb";
+            tex->saveFile(texName.c_str());
+        }
     }
 
     if (!_saveAbsoluteImagePath) texName = osgDB::getSimpleFileName(texName);

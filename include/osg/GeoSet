@@ -169,7 +169,7 @@ class SG_EXPORT GeoSet : public Drawable
 
 
         // data access methods.
-        inline void setNumPrims( int n )                   { _numprims = n; }
+        inline void setNumPrims( int n )                   { _numprims = n; _numcoords=0;}
         inline int getNumPrims() const                    { return _numprims; }
 
         void setPrimType( PrimitiveType type );

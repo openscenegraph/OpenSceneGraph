@@ -6,6 +6,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/ReaderWriter>
 
 #include "OrientationConverter.h"
 
@@ -23,6 +24,7 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"    " << prog << " [options] infile1 [infile2 ...] outfile"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"options:"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    -O option          - ReaderWriter option"<< std::endl;
     osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;
@@ -66,9 +68,11 @@ static void usage( const char *prog, const char *msg )
 }
 
 static bool 
-parse_args( int argc, char **argv, FileNameList &fileNames, OrientationConverter &oc )
+parse_args( int argc, char **argv, FileNameList &fileNames,
+            OrientationConverter &oc, osgDB::ReaderWriter::Options* options )
 {
     int nexti;
+    string opt = "";
 
     for(int i = 1; i < argc; i=nexti )
     {
@@ -80,6 +84,19 @@ parse_args( int argc, char **argv, FileNameList &fileNames, OrientationConverter
 	    {
                 switch(argv[i][j])
                 {
+                    case 'O':
+                        if (nexti<argc) {
+                            if (opt.size() == 0)
+                                opt = argv[nexti++];
+                            else
+                                opt = opt+" "+argv[nexti++];
+                        }
+                        else {
+			    usage( argv[0], "ReaderWriter option requires an argument." );
+			    return false;
+                        }
+                        break;
+
                     case('e'):
                         if (nexti<argc)
                         {
@@ -188,6 +205,9 @@ parse_args( int argc, char **argv, FileNameList &fileNames, OrientationConverter
 	usage( argv[0], "No files specified." );
         return false;
     }
+
+    options->setOptionString(opt);
+
     return true;
 }
 
@@ -196,7 +216,10 @@ int main( int argc, char **argv )
     FileNameList fileNames;
     OrientationConverter oc;
 
-    if( parse_args( argc, argv, fileNames, oc ) == false )
+    osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
+    osgDB::Registry::instance()->setOptions(options);
+
+    if( parse_args( argc, argv, fileNames, oc, options ) == false )
         return -1;
      
     std::string fileNameOut("converted.osg");

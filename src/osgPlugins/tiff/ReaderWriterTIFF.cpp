@@ -105,12 +105,26 @@ checkcmap(int n, uint16* r, uint16* g, uint16* b)
 
 
 static void
-invert_row(unsigned char *ptr, unsigned char *data, int n, int invert)
+invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bitspersample)
 {
-    while (n--)
+    if (bitspersample == 8)
     {
-        if (invert) *ptr++ = 255 - *data++;
-        else *ptr++ = *data++;
+        while (n--)
+        {
+            if (invert) *ptr++ = 255 - *data++;
+            else *ptr++ = *data++;
+        }
+    }
+    else
+    {
+        unsigned short *ptr1 = (unsigned short *)ptr;
+        unsigned short *data1 = (unsigned short *)data;
+        
+        while (n--)
+        {
+            if (invert) *ptr1++ = 65535 - *data1++;
+            else *ptr1++ = *data1++;
+        }
     }
 }
 
@@ -250,9 +264,9 @@ int *numComponents_ret)
 
     if (TIFFGetField(in, TIFFTAG_BITSPERSAMPLE, &bitspersample) == 1)
     {
-        if (bitspersample != 8)
+         if (bitspersample != 8 && bitspersample != 16)
         {
-            /* can only handle 8-bit samples. */
+            /* can only handle 8 and 16 bit samples. */
             TIFFClose(in);
             tifferror = ERR_UNSUPPORTED;
             return NULL;
@@ -281,7 +295,7 @@ int *numComponents_ret)
     else
         format = 3;
     */
-    format = samplesperpixel;
+    format = samplesperpixel * bitspersample / 8;
 
     buffer = new unsigned char [w*h*format];
     for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;
@@ -314,7 +328,8 @@ int *numComponents_ret)
                     tifferror = ERR_READ;
                     break;
                 }
-                invert_row(currPtr, inbuf, w, photometric == PHOTOMETRIC_MINISWHITE);
+                invert_row(currPtr, inbuf, w, photometric == PHOTOMETRIC_MINISWHITE, bitspersample);
+                //invert_row(currPtr, inbuf, w, photometric == PHOTOMETRIC_MINISWHITE);
                 currPtr -= format*w;
             }
             break;

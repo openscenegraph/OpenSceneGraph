@@ -245,6 +245,7 @@ public:
     struct OSGTEXT_EXPORT GlyphQuads
     {
         typedef std::vector<Font::Glyph*> Glyphs;
+        typedef std::vector<unsigned int> LineNumbers;
         typedef std::vector<osg::Vec2> Coords2;
         typedef std::vector<osg::Vec3> Coords3;
         typedef std::vector<osg::Vec2> TexCoords;
@@ -253,10 +254,10 @@ public:
         Coords2                         _coords;
         osg::buffered_object<Coords3>   _transformedCoords;
         TexCoords                       _texcoords;
+        LineNumbers                     _lineNumbers;
 
         Glyphs getGlyphs() { return _glyphs; }
         const Glyphs getGlyphs() const { return _glyphs; }
-        
 
         Coords2& getCoords() { return _coords; }
         const Coords2& getCoords() const { return _coords; }
@@ -266,6 +267,9 @@ public:
 
         TexCoords& getTexCoords() { return _texcoords; }
         const TexCoords& getTexCoords() const { return _texcoords; }
+        
+        LineNumbers& getLineNumbers() { return _lineNumbers; }
+        const LineNumbers& getLineNumbers() const { return _lineNumbers; }
     };
     
     typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;

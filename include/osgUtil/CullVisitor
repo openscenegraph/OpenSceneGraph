@@ -218,6 +218,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return _cvs->_eyePoint;
         }
 
+        inline const osg::Vec3& getUpLocal() const
+        {
+            return _cvs->_upVector;
+        }
 
         inline const osg::Vec3& getCenterLocal() const
         {

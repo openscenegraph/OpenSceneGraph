@@ -65,7 +65,7 @@ Registry::~Registry()
 
 Registry* Registry::instance()
 {
-    static RegistryPtr s_nodeFactory = new Registry();
+    static RegistryPtr s_nodeFactory = new Registry;
     return s_nodeFactory.get();
 }
 

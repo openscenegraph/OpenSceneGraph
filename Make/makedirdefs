@@ -75,6 +75,7 @@ DEMOS_DIRS = \
 	osgcube\
 	osghud\
 	osgimpostor\
+	osgoccluder\
 	osgparticle\
 	osgreflect\
 	osgscribe\

@@ -8,6 +8,7 @@
 #include <osg/ref_ptr>
 #include <osg/Polytope>
 #include <osg/ConvexPlanerOccluder>
+#include <osg/Node>
 
 namespace osg {
 
@@ -21,6 +22,7 @@ class SG_EXPORT ShadowOccluderVolume
         typedef std::vector<Polytope> HoleList;
 
         ShadowOccluderVolume(const ShadowOccluderVolume& soc):
+            _nodePath(soc._nodePath),
             _occluderVolume(soc._occluderVolume),
             _holeList(soc._holeList) {}
 
@@ -28,8 +30,17 @@ class SG_EXPORT ShadowOccluderVolume
         
         ShadowOccluderVolume(const ConvexPlanerOccluder& occluder,Matrix& MVP);
         
+        inline void disableResultMasks();
+        
         inline void pushCurrentMask();
         inline void popCurrentMask();
+
+        /** Set the NodePath which describes the which node in the scene graph
+          * that this occluder was attached to.*/
+        inline void setNodePath(NodePath& nodePath) { _nodePath = nodePath; }
+        inline NodePath& getNodePath() { return _nodePath; }
+        inline const NodePath& getNodePath() const { return _nodePath; }
+
 
         /** Convert shadow occluder into local coords by multiplying the
           * clip space occluder by the ModelViewProjectionMatrix.*/
@@ -60,10 +71,22 @@ class SG_EXPORT ShadowOccluderVolume
         
 
     protected:
-    
+
+        NodePath    _nodePath;
         Polytope    _occluderVolume;
         HoleList    _holeList;
 };
+
+inline void ShadowOccluderVolume::disableResultMasks()
+{
+    _occluderVolume.setResultMask(0);
+    for(HoleList::iterator itr=_holeList.begin();
+        itr!=_holeList.end();
+        ++itr)
+    {
+        itr->setResultMask(0);
+    }
+}
 
 inline void ShadowOccluderVolume::pushCurrentMask()
 {

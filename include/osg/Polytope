@@ -25,7 +25,7 @@ class SG_EXPORT Polytope
 
         inline Polytope(const Polytope& cv) : 
             _maskStack(cv._maskStack),
-            _resultsMask(cv._resultsMask),
+            _resultMask(cv._resultMask),
             _planeList(cv._planeList) {}
         
         inline Polytope(const PlaneList& pl) : _planeList(pl) {setupMask();}
@@ -38,7 +38,7 @@ class SG_EXPORT Polytope
         {
             if (&cv==this) return *this;
             _maskStack = cv._maskStack;
-            _resultsMask = cv._resultsMask;
+            _resultMask = cv._resultMask;
             _planeList = cv._planeList;
             return *this;
         }
@@ -76,26 +76,27 @@ class SG_EXPORT Polytope
 
         inline void setupMask()
         {
-            _resultsMask = 0;
+            _resultMask = 0;
             for(unsigned int i=0;i<_planeList.size();++i)
             {
-                _resultsMask = (_resultsMask<<1) | 1;
+                _resultMask = (_resultMask<<1) | 1;
             }
-            _maskStack.back() = _resultsMask;
+            _maskStack.back() = _resultMask;
         }
 
         inline ClippingMask& getCurrentMask() { return _maskStack.back(); }
 
         inline ClippingMask getCurrentMask() const { return _maskStack.back(); }
 
-        inline ClippingMask getResultsMask() const
-        {
-            return _resultsMask;
-        }       
+        inline void setResultMask(ClippingMask mask) { _resultMask=mask; }
+
+        inline ClippingMask getResultMask() const { return _resultMask; }
+        
+        
         
         inline void pushCurrentMask()
         {
-            _maskStack.push_back(_resultsMask);
+            _maskStack.push_back(_resultMask);
         }
 
         inline void popCurrentMask()
@@ -128,18 +129,18 @@ class SG_EXPORT Polytope
         {
             if (!_maskStack.back()) return true;
 
-            _resultsMask = _maskStack.back();
+            _resultMask = _maskStack.back();
             ClippingMask selector_mask = 0x1;
 
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (_resultsMask&selector_mask)
+                if (_resultMask&selector_mask)
                 {
                     int res=itr->intersect(bs);
                     if (res<0) return false; // outside clipping set.
-                    else if (res>0) _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
+                    else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }
@@ -155,18 +156,18 @@ class SG_EXPORT Polytope
         {
             if (!_maskStack.back()) return true;
 
-            _resultsMask = _maskStack.back();
+            _resultMask = _maskStack.back();
             ClippingMask selector_mask = 0x1;
 
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (_resultsMask&selector_mask)
+                if (_resultMask&selector_mask)
                 {
                     int res=itr->intersect(bb);
                     if (res<0) return false; // outside clipping set.
-                    else if (res>0) _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
+                    else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }
@@ -178,18 +179,18 @@ class SG_EXPORT Polytope
         {
             if (!_maskStack.back()) return false;
 
-            _resultsMask = _maskStack.back();
+            _resultMask = _maskStack.back();
             ClippingMask selector_mask = 0x1;
             
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (_resultsMask&selector_mask)
+                if (_resultMask&selector_mask)
                 {
                     int res=itr->intersect(bs);
                     if (res<1) return false;  // intersects, or is below plane.
-                    _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
+                    _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }
@@ -201,18 +202,18 @@ class SG_EXPORT Polytope
         {
             if (!_maskStack.back()) return false;
 
-            _resultsMask = _maskStack.back();
+            _resultMask = _maskStack.back();
             ClippingMask selector_mask = 0x1;
 
             for(PlaneList::const_iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (_resultsMask&selector_mask)
+                if (_resultMask&selector_mask)
                 {
                     int res=itr->intersect(bb);
                     if (res<1) return false;  // intersects, or is below plane.
-                    _resultsMask ^= selector_mask; // subsequent checks against this plane not required.
+                    _resultMask ^= selector_mask; // subsequent checks against this plane not required.
                 }
                 selector_mask <<= 1; 
             }
@@ -239,13 +240,13 @@ class SG_EXPORT Polytope
         {
             if (!_maskStack.back()) return;
 
-            _resultsMask = _maskStack.back();
+            _resultMask = _maskStack.back();
             ClippingMask selector_mask = 0x1;
             for(PlaneList::iterator itr=_planeList.begin();
                 itr!=_planeList.end();
                 ++itr)
             {
-                if (_resultsMask&selector_mask)
+                if (_resultMask&selector_mask)
                 {
                     itr->transformProvidingInverse(matrix);
                     selector_mask <<= 1; 
@@ -257,7 +258,7 @@ class SG_EXPORT Polytope
 
 
         fast_back_stack<ClippingMask>       _maskStack;
-        ClippingMask                        _resultsMask;
+        ClippingMask                        _resultMask;
         PlaneList                           _planeList;
 
 };

@@ -50,6 +50,11 @@ static bool isNodeEmpty(const osg::Node& node)
     return true;
 }
 
+void Optimizer::reset()
+{
+    _permissableOptionsMap.clear();
+}
+
 static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY");
 
 void Optimizer::optimize(osg::Node* node)
@@ -105,7 +110,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing COMBINE_ADJACENT_LODS"<<std::endl;
 
-        CombineLODsVisitor clv;
+        CombineLODsVisitor clv(this);
         node->accept(clv);        
         clv.combineLODs();
     }
@@ -114,7 +119,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SHARE_DUPLICATE_STATE"<<std::endl;
 
-        StateVisitor osv;
+        StateVisitor osv(this);
         node->accept(osv);
         osv.optimize();
     }
@@ -123,7 +128,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing COPY_SHARED_NODES"<<std::endl;
 
-        CopySharedSubgraphsVisitor cssv;
+        CopySharedSubgraphsVisitor cssv(this);
         node->accept(cssv);
         cssv.copySharedNodes();
     }
@@ -137,14 +142,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         do
         {
             osg::notify(osg::DEBUG_INFO) << "** RemoveStaticTransformsVisitor *** Pass "<<i<<std::endl;
-            FlattenStaticTransformsVisitor fstv;
+            FlattenStaticTransformsVisitor fstv(this);
             node->accept(fstv);
             result = fstv.removeTransforms(node);
             ++i;
         } while (result);
 
         // no combine any adjacent static transforms.
-        CombineStaticTransformsVisitor cstv;
+        CombineStaticTransformsVisitor cstv(this);
         node->accept(cstv);
         cstv.removeTransforms(node);
 
@@ -155,11 +160,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
 
-        RemoveEmptyNodesVisitor renv;
+        RemoveEmptyNodesVisitor renv(this);
         node->accept(renv);
         renv.removeEmptyNodes();
 
-        RemoveRedundantNodesVisitor rrnv;
+        RemoveRedundantNodesVisitor rrnv(this);
         node->accept(rrnv);
         rrnv.removeRedundantNodes();
 
@@ -169,7 +174,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
 
-        SpatializeGroupsVisitor sv;
+        SpatializeGroupsVisitor sv(this);
         node->accept(sv);
         sv.divide();
     }
@@ -178,7 +183,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
 
-        CheckGeometryVisitor mgv;
+        CheckGeometryVisitor mgv(this);
         node->accept(mgv);
     }
 
@@ -186,18 +191,23 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing TRISTRIP_GEOMETRY"<<std::endl;
 
-        TriStripVisitor tsv;
+        TriStripVisitor tsv(this);
         node->accept(tsv);
         tsv.stripify();
     }
 
     if (options & MERGE_GEOMETRY)
     {
+#if 0
+// temporary compile out while debugging it.    
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
 
-        MergeGeometryVisitor mgv;
+        MergeGeometryVisitor mgv(this);
         node->accept(mgv);
+#endif
     }
+
+
 
 }
 
@@ -236,23 +246,48 @@ void Optimizer::StateVisitor::addStateSet(osg::StateSet* stateset,osg::Object* o
 
 void Optimizer::StateVisitor::apply(osg::Node& node)
 {
+    
     osg::StateSet* ss = node.getStateSet();
-    if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,&node);
+    if (ss && ss->getDataVariance()==osg::Object::STATIC) 
+    {
+        if (isOperationPermissableForObject(&node) &&
+            isOperationPermissableForObject(ss))
+        {
+            addStateSet(ss,&node);
+        }
+    }
 
     traverse(node);
 }
 
 void Optimizer::StateVisitor::apply(osg::Geode& geode)
 {
+    if (!isOperationPermissableForObject(&geode)) return;
+
     osg::StateSet* ss = geode.getStateSet();
-    if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,&geode);
+    
+    
+    if (ss && ss->getDataVariance()==osg::Object::STATIC)
+    {
+        if (isOperationPermissableForObject(ss))
+        {
+            addStateSet(ss,&geode);
+        }
+    }
     for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         osg::Drawable* drawable = geode.getDrawable(i);
         if (drawable)
         {
             ss = drawable->getStateSet();
-            if (ss && ss->getDataVariance()==osg::Object::STATIC) addStateSet(ss,drawable);
+            if (ss && ss->getDataVariance()==osg::Object::STATIC)
+            {
+                if (isOperationPermissableForObject(drawable) &&
+                    isOperationPermissableForObject(ss))
+                {
+                    addStateSet(ss,drawable);
+                }
+            }
         }
     }
 }
@@ -426,9 +461,9 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
     public:
 
 
-        CollectLowestTransformsVisitor():
-            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-
+        CollectLowestTransformsVisitor(Optimizer* optimizer=0):
+                    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+                    _optimizer(optimizer) {}
 
         virtual void apply(osg::Node& node)
         {
@@ -496,6 +531,11 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void setUpMaps();
         void disableTransform(osg::Transform* transform);
         bool removeTransforms(osg::Node* nodeWeCannotRemove);
+
+        inline bool isOperationPermissableForObject(const osg::Object* object) const
+        {
+            return _optimizer ? _optimizer->isOperationPermissableForObject(object,Optimizer::FLATTEN_STATIC_TRANSFORMS) :  true; 
+        }
 
     protected:        
 
@@ -579,6 +619,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
         void doTransform(osg::Object* obj,osg::Matrix& matrix);
         
 
+        Optimizer*      _optimizer;
         TransformMap    _transformMap;
         ObjectMap       _objectMap;
         ObjectList      _currentObjectList;
@@ -715,20 +756,21 @@ void CollectLowestTransformsVisitor::setUpMaps()
     // them that can't be applied, and then disable all objects which have
     // disabled transforms associated, recursing until all disabled 
     // associativity.
+    // and disable all objects that the operation is not permisable for)
     for(oitr=_objectMap.begin();
         oitr!=_objectMap.end();
         ++oitr)
     {
+        osg::Object* object = oitr->first;
         ObjectStruct& os = oitr->second;
         if (os._canBeApplied)
         {
-            if (os._moreThanOneMatrixRequired)
+            if (os._moreThanOneMatrixRequired || isOperationPermissableForObject(object))
             {
                 disableObject(oitr);
             }
         }
     }
-
 }
 
 bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
@@ -847,7 +889,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 
 bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
 {
-    CollectLowestTransformsVisitor cltv;
+    CollectLowestTransformsVisitor cltv(_optimizer);
 
     for(DrawableSet::iterator ditr=_drawableSet.begin();
         ditr!=_drawableSet.end();
@@ -1016,7 +1058,7 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
         {
             if (group.getNumParents()>0 && group.getNumChildren()<=1)
             {
-                if (isNodeEmpty(group))
+                if (isNodeEmpty(group) && isOperationPermissableForObject(&group))
                 {
                     _redundantNodeList.insert(&group);
                 }
@@ -1028,7 +1070,9 @@ void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
 
 void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Transform& transform)
 {
-    if (transform.getNumParents()>0 && transform.getDataVariance()==osg::Object::STATIC)
+    if (transform.getNumParents()>0 && 
+        transform.getDataVariance()==osg::Object::STATIC &&
+        isOperationPermissableForObject(&transform))
     {
         static osg::Matrix identity;
         osg::Matrix matrix;
@@ -1087,7 +1131,10 @@ void Optimizer::CombineLODsVisitor::apply(osg::LOD& lod)
     {
         if (typeid(*lod.getParent(i))==typeid(osg::Group))
         {
-            _groupList.insert(lod.getParent(i));
+            if (isOperationPermissableForObject(&lod))
+            {
+                _groupList.insert(lod.getParent(i));
+            }
         }
     }
     traverse(lod);
@@ -1234,6 +1281,17 @@ struct LessGeometry
             else if (lhs->getTexCoordIndices(i)) return false;
         }
         
+        for(unsigned int i=0;i<lhs->getNumVertexAttribArrays();++i)
+        {
+            if (rhs->getVertexAttribArray(i)) 
+            {
+                if (!lhs->getVertexAttribArray(i)) return true;
+            }
+            else if (lhs->getVertexAttribArray(i)) return false;
+
+            if (rhs->getVertexAttribIndices(i)) { if (!lhs->getVertexAttribIndices(i)) return true; }
+            else if (lhs->getVertexAttribIndices(i)) return false;
+        }
         
         
         if (lhs->getNormalBinding()==osg::Geometry::BIND_OVERALL)
@@ -1296,18 +1354,25 @@ struct LessGeometryPrimitiveType
 
 void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
 {
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
+    if (isOperationPermissableForObject(&geode))
     {
-        osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-        if (geom)
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
         {
-            geom->computeCorrectBindingsAndArraySizes();
+            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+            if (geom && isOperationPermissableForObject(geom))
+            {
+                geom->computeCorrectBindingsAndArraySizes();
+            }
         }
     }
 }
 
 bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
+    if (!isOperationPermissableForObject(&geode)) return false;
+
+#if 1
+
     if (geode.getNumDrawables()>=2)
     {
     
@@ -1330,6 +1395,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 }
             }
         }
+
 
         // don't merge geometry if its above a maximum number of vertices.
         unsigned int _maximumNumber = 10000;
@@ -1378,6 +1444,8 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         }
     }
 
+
+#endif
     // convert all polygon primitives which has 3 indices into TRIANGLES, 4 indices into QUADS.
     unsigned int i;
     for(i=0;i<geode.getNumDrawables();++i)
@@ -1574,9 +1642,24 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
     else if (rhs.getVertexArray())
     {
+        base = 0;
         lhs.setVertexArray(rhs.getVertexArray());
     }
     
+    if (lhs.getVertexIndices() && rhs.getVertexIndices())
+    {
+
+        base = lhs.getVertexIndices()->getNumElements();
+        merger.merge(lhs.getVertexIndices(),rhs.getVertexIndices());
+
+    }
+    else if (rhs.getVertexIndices())
+    {
+        base = 0;
+        lhs.setVertexIndices(rhs.getVertexIndices());
+    }
+    
+
     if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getNormalArray(),rhs.getNormalArray());
@@ -1585,6 +1668,16 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     {
         lhs.setNormalArray(rhs.getNormalArray());
     }
+
+    if (lhs.getNormalIndices() && rhs.getNormalIndices() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        merger.merge(lhs.getNormalIndices(),rhs.getNormalIndices());
+    }
+    else if (rhs.getNormalIndices())
+    {
+        lhs.setNormalIndices(rhs.getNormalIndices());
+    }
+
 
     if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
@@ -1595,36 +1688,148 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         lhs.setColorArray(rhs.getColorArray());
     }
     
+    if (lhs.getColorIndices() && rhs.getColorIndices() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        merger.merge(lhs.getColorIndices(),rhs.getColorIndices());
+    }
+    else if (rhs.getColorIndices())
+    {
+        lhs.setColorIndices(rhs.getColorIndices());
+    }
+
     if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray());
     }
-    else if (rhs.getColorArray())
+    else if (rhs.getSecondaryColorArray())
     {
         lhs.setSecondaryColorArray(rhs.getSecondaryColorArray());
     }
     
+    if (lhs.getSecondaryColorIndices() && rhs.getSecondaryColorIndices() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        merger.merge(lhs.getSecondaryColorIndices(),rhs.getSecondaryColorIndices());
+    }
+    else if (rhs.getSecondaryColorIndices())
+    {
+        lhs.setSecondaryColorIndices(rhs.getSecondaryColorIndices());
+    }
+
     if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray());
     }
-    else if (rhs.getColorArray())
+    else if (rhs.getFogCoordArray())
     {
         lhs.setFogCoordArray(rhs.getFogCoordArray());
     }
 
+    if (lhs.getFogCoordIndices() && rhs.getFogCoordIndices() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        merger.merge(lhs.getFogCoordIndices(),rhs.getFogCoordIndices());
+    }
+    else if (rhs.getFogCoordIndices())
+    {
+        lhs.setFogCoordIndices(rhs.getFogCoordIndices());
+    }
+
+
     for(unsigned int unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
         merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit));
+        if (lhs.getTexCoordIndices(unit) && rhs.getTexCoordIndices(unit))
+        {
+            merger.merge(lhs.getTexCoordIndices(unit),rhs.getTexCoordIndices(unit));
+        }
     }
     
+    for(unsigned int unit=0;unit<lhs.getNumVertexAttribArrays();++unit)
+    {
+        merger.merge(lhs.getVertexAttribArray(unit),rhs.getVertexAttribArray(unit));
+        if (lhs.getVertexAttribIndices(unit) && rhs.getVertexAttribIndices(unit))
+        {
+            merger.merge(lhs.getVertexAttribIndices(unit),rhs.getVertexAttribIndices(unit));
+        }
+    }
+
+
     // shift the indices of the incomming primitives to account for the pre exisiting geometry.
     for(osg::Geometry::PrimitiveSetList::iterator primItr=rhs.getPrimitiveSetList().begin();
         primItr!=rhs.getPrimitiveSetList().end();
         ++primItr)
     {
         osg::PrimitiveSet* primitive = primItr->get();
-        primitive->offsetIndices(base);
+        switch(primitive->getType())
+        {
+        case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
+            {
+                osg::DrawElementsUByte* primitiveUByte = static_cast<osg::DrawElementsUByte*>(primitive);
+                unsigned int currentMaximum = 0;
+                for(osg::DrawElementsUByte::iterator eitr=primitiveUByte->begin();
+                    eitr!=primitiveUByte->end();
+                    ++eitr)
+                {
+                    currentMaximum = osg::maximum(currentMaximum,(unsigned int)*eitr);
+                }
+                if ((base+currentMaximum)>=65536)
+                {
+                    // must promote to a DrawElementsUInt
+                    osg::DrawElementsUInt* new_primitive = new osg::DrawElementsUInt();
+                    std::copy(primitiveUByte->begin(),primitiveUByte->end(),std::back_inserter(*new_primitive));
+                    new_primitive->offsetIndices(base);
+                    (*primItr) = new_primitive;
+                    std::cout<<"Remapping to a UInt "<<(*primItr)->className()<<std::endl;
+                } else if ((base+currentMaximum)>=0)
+                {
+                    // must promote to a DrawElementsUShort
+                    osg::DrawElementsUShort* new_primitive = new osg::DrawElementsUShort();
+                    std::copy(primitiveUByte->begin(),primitiveUByte->end(),std::back_inserter(*new_primitive));
+                    new_primitive->offsetIndices(base);
+                    (*primItr) = new_primitive;
+                    std::cout<<"Remapped to a UShort"<<(*primItr)->className()<<std::endl;
+                }
+                else
+                {
+                    std::cout<<"Not Remapping to a UShort"<<std::endl;
+                    primitive->offsetIndices(base);
+                }
+            }
+            break;
+
+        case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
+            {
+                osg::DrawElementsUShort* primitiveUShort = static_cast<osg::DrawElementsUShort*>(primitive);
+                unsigned int currentMaximum = 0;
+                for(osg::DrawElementsUShort::iterator eitr=primitiveUShort->begin();
+                    eitr!=primitiveUShort->end();
+                    ++eitr)
+                {
+                    currentMaximum = osg::maximum(currentMaximum,(unsigned int)*eitr);
+                }
+                if ((base+currentMaximum)>=65536)
+                {
+                    // must promote to a DrawElementsUInt
+                    osg::DrawElementsUInt* new_primitive = new osg::DrawElementsUInt();
+                    std::copy(primitiveUShort->begin(),primitiveUShort->end(),std::back_inserter(*new_primitive));
+                    new_primitive->offsetIndices(base);
+                    (*primItr) = new_primitive;
+                }
+                else
+                {
+                    primitive->offsetIndices(base);
+                }
+            }
+            break;
+
+        case(osg::PrimitiveSet::DrawArraysPrimitiveType):
+        case(osg::PrimitiveSet::DrawArrayLengthsPrimitiveType):
+        case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
+        default:
+            primitive->offsetIndices(base);
+            break;
+        }
+
+        
     }
     
     lhs.getPrimitiveSetList().insert(lhs.getPrimitiveSetList().end(),
@@ -1686,7 +1891,10 @@ void Optimizer::SpatializeGroupsVisitor::apply(osg::Group& group)
 {
     if (typeid(group)==typeid(osg::Group) || group.asTransform())
     {
-        _groupsToDivideList.insert(&group);
+        if (isOperationPermissableForObject(&group))
+        {
+            _groupsToDivideList.insert(&group);
+        }
     }
     traverse(group);
 }
@@ -1872,7 +2080,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
 void Optimizer::CopySharedSubgraphsVisitor::apply(osg::Node& node)
 {
-    if (node.getNumParents()>1)
+    if (node.getNumParents()>1 && !isOperationPermissableForObject(&node))
     {
         _sharedNodeList.insert(&node);
     }

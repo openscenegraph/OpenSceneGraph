@@ -18,7 +18,7 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 
-#include <osgUtil/Export>
+#include <osgUtil/Optimizer>
 
 #include <set>
 
@@ -32,7 +32,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
     public:
 
         /// default to traversing all children.
-        TriStripVisitor() : 
+        TriStripVisitor(Optimizer* optimizer=0) : 
                 osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ), 
                 _cacheSize( 16 ),
                 _minStripSize( 2 )
@@ -80,10 +80,16 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
             return _minStripSize;
         }
         
+        inline bool isOperationPermissableForObject(const osg::Object* object) const
+        {
+            return _optimizer ? _optimizer->isOperationPermissableForObject(object,osgUtil::Optimizer::TRISTRIP_GEOMETRY) : true; 
+        }
+
     private:
     
         typedef std::set<osg::Geometry*> GeometryList;
 
+        Optimizer*   _optimizer;
         unsigned int _cacheSize;
         unsigned int _minStripSize;
         GeometryList _geometryList;

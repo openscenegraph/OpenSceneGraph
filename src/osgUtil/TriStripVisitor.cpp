@@ -527,7 +527,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     if (geom.suitableForOptimization())
     {
         // removing coord indices
-        std::cout<<"Removing attribute indices"<<std::endl;
+        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
         geom.copyToAndOptimize(geom);
     }
 
@@ -685,13 +685,13 @@ void TriStripVisitor::stripify(Geometry& geom)
     float minimum_ratio_of_indices_to_unique_vertices = 1;
     float ratio_of_indices_to_unique_vertices = ((float)taf._in_indices.size()/(float)numUnique);
 
-    std::cout<<"Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
-    std::cout<<"    ratio indices/numUnique"<< ratio_of_indices_to_unique_vertices << std::endl;
+    osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&): Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
+    osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     ratio indices/numUnique"<< ratio_of_indices_to_unique_vertices << std::endl;
     
     // only tri strip if there is point in doing so.
     if (!taf._in_indices.empty() && ratio_of_indices_to_unique_vertices>=minimum_ratio_of_indices_to_unique_vertices)
     {
-        std::cout<<"    doing tri strip"<< std::endl;
+        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     doing tri strip"<< std::endl;
 
         unsigned int in_numVertices = 0;
         for(triangle_stripper::tri_stripper::indices::iterator itr=taf._in_indices.begin();
@@ -872,7 +872,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     }
     else
     {
-        std::cout<<"    not doing tri strip *****************"<< std::endl;
+        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     not doing tri strip *****************"<< std::endl;
     }
 
 }

@@ -29,9 +29,6 @@ MultiTextureRecord::~MultiTextureRecord()
 // virtual
 void MultiTextureRecord::endian()
 {
-
-    int flightVersion = getFlightVersion();
-
     SMultiTexture *pSMultiTexture = (SMultiTexture*)getData();
 
     ENDIAN( pSMultiTexture->layers );

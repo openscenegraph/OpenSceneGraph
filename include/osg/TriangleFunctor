@@ -33,7 +33,7 @@ public:
     
     virtual ~TriangleFunctor() {}
 
-    virtual void setVertexArray(unsigned int count,const Vec2* vertices) 
+    virtual void setVertexArray(unsigned int,const Vec2*) 
     {
         notify(WARN)<<"Triangle Functor does not support Vec2* vertex arrays"<<std::endl;
     }
@@ -44,7 +44,7 @@ public:
         _vertexArrayPtr = vertices;
     }
 
-    virtual void setVertexArray(unsigned int count,const Vec4* vertices) 
+    virtual void setVertexArray(unsigned int,const Vec4* ) 
     {
         notify(WARN)<<"Triangle Functor does not support Vec4* vertex arrays"<<std::endl;
     }

@@ -114,6 +114,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _maxDistance(FLT_MAX) {}
         
             
+            typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
             typedef std::vector< osg::ref_ptr<osg::Node> > ModelList;
             
             DataSet*                                    _dataSet;
@@ -121,6 +122,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             float                                       _minDistance;
             float                                       _maxDistance;
 
+            
             osg::ref_ptr<osg::Image>                    _image;
             osg::ref_ptr<osg::HeightField>              _heightField;
             ModelList                                   _models;
@@ -725,7 +727,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             
             void computeMaximumSourceResolution(CompositeSource* sourceGraph);
 
-            bool computeImageResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY);
+            bool computeImageResolution(unsigned int layer, unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY);
             bool computeTerrainResolution(unsigned int& numColumns, unsigned int& numRows, double& resX, double& resY);
             
             void allocate();
@@ -759,7 +761,27 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             unsigned int                                _tileX;
             unsigned int                                _tileY;
             
-            osg::ref_ptr<DestinationData>               _imagery;
+            struct ImageData
+            {
+                ImageData():
+                    _imagery_maxSourceResolutionX(0.0f),
+                    _imagery_maxSourceResolutionY(0.0f) {}
+
+            
+                float                                  _imagery_maxSourceResolutionX;
+                float                                  _imagery_maxSourceResolutionY;
+
+                osg::ref_ptr<DestinationData>          _imagery;
+            };
+
+            std::vector<ImageData>                      _imagery;
+            
+            inline ImageData& getImageData(unsigned int layer)
+            {
+                if (layer>=_imagery.size()) _imagery.resize(layer+1);
+                return _imagery[layer];
+            }
+            
             osg::ref_ptr<DestinationData>               _terrain;
             osg::ref_ptr<DestinationData>               _models;
             
@@ -771,9 +793,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             unsigned int                                _imagery_maxNumColumns;
             unsigned int                                _imagery_maxNumRows;
-            float                                       _imagery_maxSourceResolutionX;
-            float                                       _imagery_maxSourceResolutionY;
-            
+                        
             unsigned int                                _terrain_maxNumColumns;
             unsigned int                                _terrain_maxNumRows;
             float                                       _terrain_maxSourceResolutionX;

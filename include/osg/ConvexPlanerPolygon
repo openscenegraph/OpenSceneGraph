@@ -21,14 +21,8 @@ class SG_EXPORT ConvexPlanerPolygon
 
     public:
 
-        inline ConvexPlanerPolygon() {}
+        ConvexPlanerPolygon();
                 
-        float area() { return _area; }
-        
-        const Vec3& center() { return _center; }
-        
-        const Vec3& normal() { return _normal; }
-
         typedef std::vector<osg::Vec3> VertexList;
 
         void add(const Vec3& v) { _vertexList.push_back(v); }
@@ -37,17 +31,8 @@ class SG_EXPORT ConvexPlanerPolygon
         
         const VertexList& getVertexList() const { return _vertexList; }
       
-        void computeAttributes();
-        
-        void computeBound(BoundingBox& bb) const;
-
-        void computeBound(BoundingSphere& bs) const;
-        
     protected:
 
-        float       _area;
-        Vec3        _center;
-        Vec3        _normal;
         VertexList _vertexList;
 
 };

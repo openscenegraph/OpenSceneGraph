@@ -2,3 +2,6 @@
 
 using namespace osg;
 
+ConvexPlanerPolygon::ConvexPlanerPolygon()
+{
+}

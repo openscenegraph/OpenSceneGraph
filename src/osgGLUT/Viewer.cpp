@@ -290,7 +290,7 @@ unsigned int Viewer::registerCameraManipulator(osgGA::CameraManipulator* cm,
     return pos;
 }
 
-void Viewer::setEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0)
+void Viewer::setEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport)
 {
     ViewportDef &viewp = _viewportList[viewport];
     viewp._eventHandler = handler;

@@ -44,7 +44,7 @@ MTL=midl.exe
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /GZ /Zm200 /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -73,7 +73,7 @@ MTL=midl.exe
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /GF /c
-# ADD CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /GF /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /GF /Zm200 /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe

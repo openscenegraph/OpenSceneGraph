@@ -12,8 +12,6 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
 {
     if (_timeControlPointMap.empty()) return false;
     
-    
-    
     switch(_loopMode)
     {
         case(SWING):

@@ -28,7 +28,13 @@ class SG_EXPORT Switch : public Group
 
         virtual void traverse(NodeVisitor& nv);
         
+        void setNewChildDefaultValue(bool value) { _newChildDefaultValue = value; }
+        
+        bool getNewChildDefaultValue() const { return _newChildDefaultValue; }
+
         virtual bool addChild( Node *child );
+
+        virtual bool addChild( Node *child, bool value );
 
         virtual bool removeChild( Node *child );
 
@@ -73,7 +79,8 @@ class SG_EXPORT Switch : public Group
         virtual ~Switch() {}
 
         // this is effectively a bit mask.
-        ValueList             _values;
+        bool        _newChildDefaultValue;
+        ValueList   _values;
 };
 
 }

@@ -4,16 +4,14 @@
 
 using namespace osg;
 
-/**
- * Switch constructor. The default setting of _value is
- * ALL_CHILDREN_OFF.
- */
-Switch::Switch()
+Switch::Switch():
+    _newChildDefaultValue(true)
 {
 }
 
 Switch::Switch(const Switch& sw,const CopyOp& copyop):
     Group(sw,copyop),
+    _newChildDefaultValue(sw._newChildDefaultValue),
     _values(sw._values)
 {
 }
@@ -42,9 +40,14 @@ void Switch::traverse(NodeVisitor& nv)
 
 bool Switch::addChild( Node *child )
 {
+    return addChild(child,_newChildDefaultValue);
+}
+
+bool Switch::addChild( Node *child, bool value )
+{
     if (Group::addChild(child))
     {
-        if (_children.size()>_values.size()) _values.resize(_children.size(),false);
+        if (_children.size()>_values.size()) _values.resize(_children.size(),value);
         return true;
     }
     return false;
@@ -63,7 +66,7 @@ bool Switch::removeChild( Node *child )
 
 void Switch::setValue(unsigned int pos,bool value)
 {
-    if (pos>=_values.size()) _values.resize(pos+1,false);
+    if (pos>=_values.size()) _values.resize(pos+1,_newChildDefaultValue);
     _values[pos]=value;
 }
 
@@ -100,6 +103,7 @@ void Switch::setValue(int value)
             break;
         case(ALL_CHILDREN_OFF):
         {
+            _newChildDefaultValue = false;
             for(ValueList::iterator itr=_values.begin();
                 itr!=_values.end();
                 ++itr)
@@ -110,6 +114,7 @@ void Switch::setValue(int value)
         }
         case(ALL_CHILDREN_ON):
         {
+            _newChildDefaultValue = true;
             for(ValueList::iterator itr=_values.begin();
                 itr!=_values.end();
                 ++itr)

@@ -65,7 +65,6 @@ PLUGIN_DIRS += tiff
 # Directories traversed in the TOPDIR/src/Demos directory
 
 DEMOS_DIRS = \
-	hangglide\
 	osgbillboard\
 	osgcallback\
 	osgclip\
@@ -74,6 +73,7 @@ DEMOS_DIRS = \
 	osgcopy\
 	osgcube\
 	osggeometry\
+	osghangglide\
 	osghud\
 	osgimpostor\
 	osgmultitexture\

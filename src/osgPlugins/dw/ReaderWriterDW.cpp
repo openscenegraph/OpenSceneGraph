@@ -879,7 +879,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"dw");
         }
 
-        virtual Node* readNode(const std::string& fileName)
+        virtual Node* readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
         {   
 			_dwobj obj;
 			enum reading {NONE, MATERIAL, OBJECT};

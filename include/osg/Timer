@@ -132,7 +132,7 @@ namespace osg{
         }
         else
         {
-            return *_sgiClockAddress;
+            return *_clockAddress;
         }
     }
 };

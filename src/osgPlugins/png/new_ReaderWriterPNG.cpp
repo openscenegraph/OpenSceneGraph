@@ -286,7 +286,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"png");
         }
 
-        virtual osg::Image* readImage(const std::string& fileName)
+        virtual osg::Image* readImage(const std::string& fileName,const osgDB::ReaderWriter::Options*)
         {
 
             unsigned char *imageData = NULL;

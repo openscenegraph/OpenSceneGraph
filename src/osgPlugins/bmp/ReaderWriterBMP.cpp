@@ -186,7 +186,7 @@ int *numComponents_ret)
                 inf.height=ht;
                 inf.planes=npln;
                 inf.Colorbits=cbits;
-                inf.ColorUsed=pow(2,inf.Colorbits); // infer the colours
+                inf.ColorUsed=pow(2.0,inf.Colorbits); // infer the colours
             }
             long size = hd.siz[1]*65536+hd.siz[0];
             int ncpal=4; // default number of colours per palette entry

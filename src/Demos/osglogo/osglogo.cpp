@@ -210,9 +210,13 @@ osg:: Node* createBoxNo5No2(const osg::BoundingBox& bb,float chordRatio)
 {
     osg::Geode* geode = new osg::Geode();
 
-    osg::Vec4 red(1.0f,0.0f,0.0f,1.0f);
-    osg::Vec4 green(0.0f,1.0f,0.0f,1.0f);
-    osg::Vec4 blue(0.0f,0.0f,1.0f,1.0f);
+//    osg::Vec4 red(1.0f,0.0f,0.0f,1.0f);
+//    osg::Vec4 green(0.0f,1.0f,0.0f,1.0f);
+//    osg::Vec4 blue(0.0f,0.0f,1.0f,1.0f);
+
+    osg::Vec4 red(1.0f,0.12f,0.06f,1.0f);
+    osg::Vec4 green(0.21f,0.48f,0.03f,1.0f);
+    osg::Vec4 blue(0.20f,0.45f,0.60f,1.0f);
 
     // front faces.
     geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio,red));
@@ -237,6 +241,7 @@ osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const os
     osg::Vec3Array* vertices = new osg::Vec3Array;
     vertices->push_back(top);
     vertices->push_back(corner);
+
     vertices->push_back(right);
     vertices->push_back(right+(top-corner));
 

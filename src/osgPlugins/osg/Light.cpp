@@ -60,7 +60,7 @@ bool Light_readLocalData(Object& obj, Input& fr)
     if (fr[0].matchWord(B) && \
         fr[1].getFloat(vec3[0]) && \
         fr[2].getFloat(vec3[1]) && \
-        fr[3].getFloat(vec4[2])) \
+        fr[3].getFloat(vec3[2])) \
     { \
         light.A(vec3); \
         fr+=4; \
@@ -73,7 +73,7 @@ bool Light_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(value)) \
     { \
         light.A(value); \
-        fr+=4; \
+        fr+=2; \
         iteratorAdvanced = true; \
     } \
 } 

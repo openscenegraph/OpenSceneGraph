@@ -24,29 +24,29 @@ using namespace std;
 
 std::string osgDB::getFilePath(const std::string& fileName)
 {
-    // try unix directory slash first.
-    std::string::size_type slash = fileName.find_last_of('/');
-    if (slash==std::string::npos) 
+    std::string::size_type slash1 = fileName.find_last_of('/');
+    std::string::size_type slash2 = fileName.find_last_of('\\');
+    if (slash1==std::string::npos) 
     {
-        // then try windows directory slash.
-        slash = fileName.find_last_of('\\');
-        if (slash==std::string::npos) return std::string();
+        if (slash2==std::string::npos) return std::string();
+        return std::string(fileName,0,slash2);
     }
-    return std::string(fileName,0,slash);
+    if (slash2==std::string::npos) return std::string(fileName,0,slash1);
+    return std::string(fileName, 0, slash1>slash2 ?  slash1 : slash2);
 }
 
 
 std::string osgDB::getSimpleFileName(const std::string& fileName)
 {
-    // try unix directory slash first.
-    std::string::size_type slash = fileName.find_last_of('/');
-    if (slash==std::string::npos)
+    std::string::size_type slash1 = fileName.find_last_of('/');
+    std::string::size_type slash2 = fileName.find_last_of('\\');
+    if (slash1==std::string::npos) 
     {
-        // then try windows directory slash.
-        slash = fileName.find_last_of('\\');
-        if (slash==std::string::npos) return fileName;
+        if (slash2==std::string::npos) return fileName;
+	    return std::string(fileName.begin()+slash2+1,fileName.end());
     }
-    return std::string(fileName.begin()+slash+1,fileName.end());
+    if (slash2==std::string::npos) return std::string(fileName.begin()+slash1+1,fileName.end());
+    return std::string(fileName.begin()+(slash1>slash2?slash1:slash2)+1,fileName.end());
 }
 
 

@@ -62,6 +62,22 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         virtual void reset();
         
+        RenderBin* getParent() { return _parent; }
+        const RenderBin* getParent() const { return _parent; }
+
+        RenderStage* getStage() { return _stage; }
+        const RenderStage* getStage() const { return _stage; }
+
+        RenderGraphList& getRenderGraphList() { return _renderGraphList; }
+        const RenderGraphList& getRenderGraphList() const { return _renderGraphList; }
+
+        RenderBinList& getRenderBinList() { return _bins; }
+        const RenderBinList& getRenderBinList() const { return _bins; }
+
+        RenderLeafList& getRenderLeafList() { return _renderLeafList; }
+        const RenderLeafList& getRenderLeafList() const { return _renderLeafList; }
+
+
         RenderBin* find_or_insert(int binNum,const std::string& binName);
 
         void addRenderGraph(RenderGraph* rg)
@@ -104,16 +120,16 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
-
-
         /** extract stats for current draw list. */
         bool getStats(Statistics* primStats);
         void getPrims(Statistics* primStats);
         bool getPrims(Statistics* primStats, int nbin);
 
+#ifndef USE_DEPRECATED_API
+    protected:
+#endif
 
-    public:
-
+        virtual ~RenderBin();
 
         void copyLeavesFromRenderGraphListToRenderLeafList();
    
@@ -130,9 +146,6 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         osg::ref_ptr<DrawCallback>      _drawCallback;
 
-    protected:
-    
-        virtual ~RenderBin();
 
 };
 

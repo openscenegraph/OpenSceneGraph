@@ -134,8 +134,8 @@ public:
   virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
   {
 
-    osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
-    if (cullVisitor && _texture.valid() && _subgraph.valid())
+     osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
+     if (cullVisitor && _texture.valid() && _subgraph.valid())
       {            
         _request_render_to_depth_texture(*node, *cullVisitor);
       }
@@ -163,11 +163,11 @@ void RenderToTextureCallback::_request_render_to_depth_texture(osg::Node&, osgUt
   // set up lighting.
   // currently ignore lights in the scene graph itself..
   // will do later.
-  osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
+  osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->getStage();
 
   // set up the background color and clear mask.
   rtts->setClearMask(GL_DEPTH_BUFFER_BIT);
-  rtts->_colorMask = new ColorMask(false, false, false, false);
+  rtts->setColorMask(new ColorMask(false, false, false, false));
 
   // set up to charge the same RenderStageLighting is the parent previous stage.
   rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
@@ -219,7 +219,7 @@ void RenderToTextureCallback::_request_render_to_depth_texture(osg::Node&, osgUt
   // restore the previous renderbin.
   cv.setCurrentRenderBin(previousRenderBin);
 
-  if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
+  if (rtts->getRenderGraphList().size()==0 && rtts->getRenderBinList().size()==0)
     {
       // getting to this point means that all the subgraph has been
       // culled by small feature culling or is beyond LOD ranges.
@@ -230,7 +230,7 @@ void RenderToTextureCallback::_request_render_to_depth_texture(osg::Node&, osgUt
     
   // and the render to texture stage to the current stages
   // dependancy list.
-  cv.getCurrentRenderBin()->_stage->addToDependencyList(rtts.get());
+  cv.getCurrentRenderBin()->getStage()->addToDependencyList(rtts.get());
 
   // if one exist attach texture to the RenderToTextureStage.
   rtts->setTexture(_texture.get());

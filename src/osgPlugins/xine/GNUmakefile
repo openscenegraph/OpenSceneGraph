@@ -1,6 +1,9 @@
 TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
+CFILES =\
+        video_out_rgb.c\
+
 CXXFILES =\
         ReaderWriterXine.cpp\
 

@@ -61,15 +61,30 @@ bool LOD::addChild( Node *child )
 {
     if (Group::addChild(child))
     {
-        float maxRange = 0.0f;
-        if (!_rangeList.empty()) maxRange=_rangeList.back().second;
 
-        if (_children.size()>_rangeList.size()) _rangeList.resize(_children.size(),MinMaxPair(maxRange,maxRange));
+        if (_children.size()>_rangeList.size()) 
+        {
+            float maxRange = !_rangeList.empty()?
+                 maxRange=_rangeList.back().second : 0.0f;
+
+            _rangeList.resize(_children.size(),MinMaxPair(maxRange,maxRange));
+        }
 
         return true;
     }
     return false;
 }
+
+void LOD::childRemoved(unsigned int /*pos*/, unsigned int /*numChildrenToRemove*/)
+{
+    //std::cout<<"LOD::childRemoved("<<pos<<","<<numChildrenToRemove<<")"<<std::endl;
+}
+
+void LOD::childInserted(unsigned int /*pos*/)
+{
+    //std::cout<<"LOD::childInserted("<<pos<<")"<<std::endl;
+}
+
 
 bool LOD::addChild(Node *child, float min, float max)
 {

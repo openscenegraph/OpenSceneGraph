@@ -402,11 +402,11 @@ public:
             
             double availableTime = 0.0025; //  5 ms
 
-            // compile any GL objects that are required.
-            _databasePager->compileRenderingObjects(*(_sceneView->getState()),availableTime);
-
             // flush deleted GL objects.
             _sceneView->flushDeletedGLObjects(availableTime);
+
+            // compile any GL objects that are required.
+            _databasePager->compileRenderingObjects(*(_sceneView->getState()),availableTime);
 
 
        }

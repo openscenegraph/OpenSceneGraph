@@ -123,6 +123,9 @@ class SG_EXPORT Group : public Node
         virtual ~Group();
 
         virtual bool computeBound() const;
+        
+        virtual void childRemoved(unsigned int /*pos*/, unsigned int /*numChildrenToRemove*/) {}
+        virtual void childInserted(unsigned int /*pos*/) {}
 
         NodeList _children;
 

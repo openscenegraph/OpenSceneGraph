@@ -13,8 +13,7 @@ PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
     LOD(plod,copyop),
     _radius(plod._radius),
     _numChildrenThatCannotBeExpired(plod._numChildrenThatCannotBeExpired),
-    _fileNameList(plod._fileNameList),
-    _timeStampList(plod._timeStampList)
+    _perRangeDataList(plod._perRangeDataList)
 {
 }
 
@@ -42,7 +41,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 {
                     if (i<_children.size())
                     {
-                        if (updateTimeStamp) _timeStampList[i]=timeStamp;
+                        if (updateTimeStamp) _perRangeDataList[i]._timeStamp=timeStamp;
 
                         //std::cout<<"PagedLOD::traverse() - Selecting child "<<i<<std::endl;
                         _children[i]->accept(nv);
@@ -64,16 +63,16 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 if (numChildren>0 && ((int)numChildren-1)!=lastChildTraversed)
                 {
                     //std::cout<<"    to child "<<numChildren-1<<std::endl;
-                    if (updateTimeStamp) _timeStampList[numChildren-1]=timeStamp;
+                    if (updateTimeStamp) _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
                     _children[numChildren-1]->accept(nv);
                 }
                 
                 // now request the loading of the next unload child.
-                if (nv.getDatabaseRequestHandler() && numChildren<_fileNameList.size())
+                if (nv.getDatabaseRequestHandler() && numChildren<_perRangeDataList.size())
                 {
                     float priority = (_rangeList[numChildren].second-distance)/(_rangeList[numChildren].second-_rangeList[numChildren].first);
                     //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priotity = "<<priority<<std::endl;
-                    nv.getDatabaseRequestHandler()->requestNodeFile(_fileNameList[numChildren],this,priority,nv.getFrameStamp());
+                    nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
                 }
                 
                 
@@ -103,12 +102,41 @@ bool PagedLOD::computeBound() const
     }
 }
 
+void PagedLOD::childRemoved(unsigned int pos, unsigned int numChildrenToRemove)
+{
+    LOD::childRemoved(pos, numChildrenToRemove);
+    //std::cout<<"PagedLOD::childRemoved("<<pos<<","<<numChildrenToRemove<<")"<<std::endl;
+}
+
+void PagedLOD::childInserted(unsigned int pos)
+{
+    LOD::childInserted(pos);
+    //std::cout<<"PagedLOD::childInserted("<<pos<<")"<<std::endl;
+}
+
+void PagedLOD::rangeRemoved(unsigned int pos, unsigned int numChildrenToRemove)
+{
+    LOD::rangeRemoved(pos, numChildrenToRemove);
+    std::cout<<"PagedLOD::rangeRemoved("<<pos<<","<<numChildrenToRemove<<")"<<std::endl;
+}
+
+void PagedLOD::rangeInserted(unsigned int pos)
+{
+    LOD::rangeInserted(pos);
+    std::cout<<"PagedLOD::rangeInserted("<<pos<<")"<<std::endl;
+    expandPerRangeDataTo(pos);
+}
+
+void PagedLOD::expandPerRangeDataTo(unsigned int pos)
+{
+    if (pos>=_perRangeDataList.size()) _perRangeDataList.resize(pos+1);
+}
+
 bool PagedLOD::addChild( Node *child )
 {
     if (LOD::addChild(child))
     {
-        if (_children.size()>_fileNameList.size()) _fileNameList.resize(_children.size());
-        if (_children.size()>_timeStampList.size()) _timeStampList.resize(_children.size(),0);
+        expandPerRangeDataTo(_children.size());
         return true;
     }
     return false;
@@ -118,24 +146,20 @@ bool PagedLOD::addChild(Node *child, float min, float max)
 {
     if (LOD::addChild(child,min,max))
     {
-        if (_children.size()>_fileNameList.size()) _fileNameList.resize(_children.size());
-        if (_children.size()>_timeStampList.size()) _timeStampList.resize(_children.size(),0.0);
-
+        expandPerRangeDataTo(_children.size());
         return true;
     }
     return false;
 }
 
 
-bool PagedLOD::addChild(Node *child, float min, float max,const std::string& filename)
+bool PagedLOD::addChild(Node *child, float min, float max,const std::string& filename, float priorityOffset, float priorityScale)
 {
     if (LOD::addChild(child,min,max))
     {
-        if (_children.size()>_fileNameList.size()) _fileNameList.resize(_children.size());
-        if (_children.size()>_timeStampList.size()) _timeStampList.resize(_children.size(),0.0);
-
-        _fileNameList[_children.size()-1] = filename;
-
+        setFileName(_children.size()-1,filename);
+        setPriorityOffset(_children.size()-1,priorityOffset);
+        setPriorityScale(_children.size()-1,priorityScale);
         return true;
     }
     return false;
@@ -147,23 +171,10 @@ bool PagedLOD::removeChild( Node *child )
     unsigned int pos=getChildIndex(child);
     if (pos==_children.size()) return false;
     
-    _rangeList.erase(_rangeList.begin()+pos);
-    _fileNameList.erase(_fileNameList.begin()+pos);
-    _timeStampList.erase(_timeStampList.begin()+pos);
+    if (pos<_rangeList.size()) _rangeList.erase(_rangeList.begin()+pos);
+    if (pos<_perRangeDataList.size()) _perRangeDataList.erase(_perRangeDataList.begin()+pos);
     
     return Group::removeChild(child);    
-}
-
-void PagedLOD::setFileName(unsigned int childNo, const std::string& filename)
-{
-    if (childNo>=_fileNameList.size()) _fileNameList.resize(childNo+1);
-    _fileNameList[childNo] = filename;
-}
-
-void PagedLOD::setTimeStamp(unsigned int childNo, double timeStamp)
-{
-    if (childNo>=_timeStampList.size()) _timeStampList.resize(childNo+1,0.0);
-    _timeStampList[childNo] = timeStamp;
 }
 
 void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
@@ -171,7 +182,7 @@ void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren
     for(unsigned int i=_children.size();i>_numChildrenThatCannotBeExpired;)
     {
         --i;
-        if (!_fileNameList[i].empty() && _timeStampList[i]<expiryTime)
+        if (!_perRangeDataList[i]._filename.empty() && _perRangeDataList[i]._timeStamp<expiryTime)
         {
             //std::cout<<"Removing child "<<_children[i].get()<<std::endl;
             removedChildren.push_back(_children[i]);

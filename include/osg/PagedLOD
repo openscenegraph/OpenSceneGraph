@@ -39,40 +39,59 @@ class SG_EXPORT PagedLOD : public LOD
 
         virtual bool addChild(Node *child, float min, float max);
 
-        virtual bool addChild(Node *child, float min, float max,const std::string& filename);
+        virtual bool addChild(Node *child, float min, float max,const std::string& filename, float priorityOffset=0.0f, float priorityScale=1.0f);
 
         virtual bool removeChild(Node *child);
-
-        typedef std::vector<std::string> FileNameList;
-
-        void setFileName(unsigned int childNo, const std::string& filename);
         
-        const std::string& getFileName(unsigned int childNo) const { return _fileNameList[childNo]; }
         
-        /** returns the number of filenames currently set. */
-        inline unsigned int getNumFileNames() const { return _fileNameList.size(); }
-
-        /** return the list of filename.*/
-        inline FileNameList& getFileNameList() { return _fileNameList; }
+        struct PerRangeData
+        {
+            PerRangeData():
+                _priorityOffset(0.0f),
+                _priorityScale(0.0f),
+                _timeStamp(0.0f) {}
         
-        /** return the list of filename.*/
-        inline const FileNameList& getFileNameList() const { return _fileNameList; }
+            PerRangeData(const PerRangeData& prd):
+                _filename(prd._filename),
+                _priorityOffset(prd._priorityOffset),
+                _priorityScale(prd._priorityScale),
+                _timeStamp(prd._timeStamp) {}
+
+            PerRangeData& operator = (const PerRangeData& prd)
+            {
+                if (this==&prd) return *this;
+                _filename = prd._filename;
+                _priorityOffset = prd._priorityOffset;
+                _priorityScale = prd._priorityScale;
+                _timeStamp = prd._timeStamp;
+            }
 
 
-        typedef std::vector<double> TimeStampList;
+            std::string _filename;
+            float       _priorityOffset;
+            float       _priorityScale;
+            double      _timeStamp;
+        };
 
-        void setTimeStamp(unsigned int childNo, double timeStamp);
-        
-        double getTimeStamp(unsigned int childNo) const { return _timeStampList[childNo]; }
+        typedef std::vector<PerRangeData> PerRangeDataList;
 
-        /** returns the number of filenames currently set. */
-        inline unsigned int getNumTimeStamps() const { return _fileNameList.size(); }
+        void setFileName(unsigned int childNo, const std::string& filename) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._filename=filename; }
+        const std::string& getFileName(unsigned int childNo) const { return _perRangeDataList[childNo]._filename; }
+        unsigned int getNumFileNames() const { return _perRangeDataList.size(); }
 
-        /** return the list of time stamps.*/
-        inline TimeStampList& getTimeStampList() { return _timeStampList; }
-        
-        /** return the list of time stamps.*/
-        inline const TimeStampList& getTimeStampList() const { return _timeStampList; }
+
+        void setPriorityOffset(unsigned int childNo, float priorityOffset) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._priorityOffset=priorityOffset; }
+        float getPriorityOffset(unsigned int childNo) const { return _perRangeDataList[childNo]._priorityOffset; }
+        unsigned int getNumPriorityOffsets() const { return _perRangeDataList.size(); }
+
+        void setPriorityScale(unsigned int childNo, float priorityScale) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._priorityScale=priorityScale; }
+        float getPriorityScale(unsigned int childNo) const { return _perRangeDataList[childNo]._priorityScale; }
+        unsigned int getNumPriorityScales() const { return _perRangeDataList.size(); }
+
+
+        void setTimeStamp(unsigned int childNo, double timeStamp) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._timeStamp=timeStamp; }
+        double getTimeStamp(unsigned int childNo) const { return _perRangeDataList[childNo]._timeStamp; }
+        unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
 
 
         /** Set the object-space reference radius of the volume enclosed by the PagedLOD. 
@@ -100,10 +119,18 @@ class SG_EXPORT PagedLOD : public LOD
 
         virtual bool computeBound() const;
 
+        virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
+        virtual void childInserted(unsigned int pos);
+
+        virtual void rangeRemoved(unsigned int pos, unsigned int numChildrenToRemove);
+        virtual void rangeInserted(unsigned int pos);
+        
+        void expandPerRangeDataTo(unsigned int pos);
+
         float           _radius;
         unsigned int    _numChildrenThatCannotBeExpired;
-        FileNameList    _fileNameList;
-        TimeStampList   _timeStampList;
+
+        PerRangeDataList    _perRangeDataList;
 };
 
 }

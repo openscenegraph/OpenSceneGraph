@@ -95,6 +95,9 @@ bool Group::insertChild( unsigned int index, Node *child )
 
         // register as parent of child.
         child->addParent(this);
+        
+        // tell any subclasses that a child has been inserted so that they can update themselves.
+        childInserted(index);
 
         dirtyBound();
 
@@ -167,6 +170,8 @@ bool Group::removeChild(unsigned int pos,unsigned int numChildrenToRemove)
         }
 
         _children.erase(_children.begin()+pos,_children.begin()+endOfRemoveRange);
+
+        childRemoved(pos,endOfRemoveRange-pos);
 
         if (appCallbackRemoved)
         {

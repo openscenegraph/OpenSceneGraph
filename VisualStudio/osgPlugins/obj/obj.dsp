@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\obj\glm.cpp
+SOURCE=..\..\..\src\osgPlugins\obj\obj.cpp
 # End Source File
 # Begin Source File
 
@@ -108,7 +108,7 @@ SOURCE=..\..\..\src\osgPlugins\obj\ReaderWriterOBJ.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\obj\glm.h
+SOURCE=..\..\..\Src\osgPlugins\obj\obj.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

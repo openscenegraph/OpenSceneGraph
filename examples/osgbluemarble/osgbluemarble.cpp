@@ -96,7 +96,7 @@ osg::Node* createTile(const std::string& filename, bool leftHemisphere, double x
             osg::ref_ptr<osg::State> state = new osg::State;
             texture->apply(*state);
 
-            image->readImageFromCurrentTexture();
+            image->readImageFromCurrentTexture(0,true);
 
             texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
             

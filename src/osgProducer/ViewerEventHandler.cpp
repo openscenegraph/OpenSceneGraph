@@ -70,6 +70,7 @@ public:
         _stateset->setAttribute(_viewport.get());
         _stateset->setAttribute(new osg::BlendFunc());
         _stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+        _stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         
         _projection = new osg::RefMatrix(osg::Matrix::ortho2D(0.0,1280,0,1024));
         _modelview = new osg::RefMatrix();
@@ -167,7 +168,6 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
         displayHelp();
     }
        
-
     state.popStateSet();
 
 }

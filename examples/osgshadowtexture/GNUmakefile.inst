@@ -5,7 +5,7 @@ CXXFILES =\
 	CreateShadowedScene.cpp\
 	osgshadowtexture.cpp\
 
-LIBS     += -losgProducer -lProducer -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgshadowtexture
 

@@ -95,14 +95,10 @@ class SG_EXPORT Matrix : public Object
         void makeRotate( float angle, const Vec3& axis );
         void makeRotate( float angle, float x, float y, float z );
         void makeRotate( const Quat& );
+        void makeRotate( float angle1, const Vec3& axis1, 
+                         float angle2, const Vec3& axis2,
+                         float angle3, const Vec3& axis3);
 
-        /** make a rotation Matrix from euler angles.
-          * assume Z up, Y north, X east and euler convention
-          * as per Open Flight & Performer.
-          * Applies a positive rotation about Y axis for roll,
-          * then applies a positive roation about X for pitch,
-          * and finally a negative rotation about the Z axis.*/
-        void makeRotate( float heading, float pitch, float roll); //Euler angles
         
         
         /** Set to a orthographic projection. See glOrtho for further details.*/
@@ -140,10 +136,11 @@ class SG_EXPORT Matrix : public Object
         inline static Matrix translate( const Vec3& dv);
         inline static Matrix translate( float x, float y, float z);
         inline static Matrix rotate( const Vec3& from, const Vec3& to);
-        inline static Matrix rotate( float angle, float x, float y, float z);        
+        inline static Matrix rotate( float angle, float x, float y, float z);
         inline static Matrix rotate( float angle, const Vec3& axis);
-        /** construct rotation matrix from euler angles, for conventions see makeRotate().*/
-        inline static Matrix rotate( float heading, float pitch, float roll);
+        inline static Matrix rotate( float angle1, const Vec3& axis1, 
+                                     float angle2, const Vec3& axis2,
+                                     float angle3, const Vec3& axis3);
         inline static Matrix rotate( const Quat& quat);
         inline static Matrix inverse( const Matrix& matrix);
         
@@ -168,6 +165,19 @@ class SG_EXPORT Matrix : public Object
 
         /** Create the position and orientation as per a camera, using the same convention as gluLookAt. */
         inline static Matrix lookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
+
+
+#ifdef USE_DEPRECATED_API        
+        /** make a rotation Matrix from euler angles.
+          * assume Z up, Y north, X east and euler convention
+          * as per Open Flight & Performer.
+          * Applies a positive rotation about Y axis for roll,
+          * then applies a positive roation about X for pitch,
+          * and finally a negative rotation about the Z axis.*/
+        void makeRotate( float heading, float pitch, float roll); //Euler angles
+
+        inline static Matrix rotate( float heading, float pitch, float roll);
+#endif    
 
 
         inline Vec3 preMult( const Vec3& v ) const;
@@ -289,10 +299,20 @@ inline Matrix Matrix::rotate(float angle, const Vec3& axis )
     m.makeRotate(angle,axis);
     return m;
 }
+#ifdef USE_DEPRECATED_API        
 inline Matrix Matrix::rotate(float heading, float pitch, float roll)
 {
     Matrix m;
     m.makeRotate(heading,pitch,roll);
+    return m;
+}
+#endif
+inline Matrix Matrix::rotate( float angle1, const Vec3& axis1, 
+                              float angle2, const Vec3& axis2,
+                              float angle3, const Vec3& axis3)
+{
+    Matrix m;
+    m.makeRotate(angle1,axis1,angle2,axis2,angle3,axis3);
     return m;
 }
 inline Matrix Matrix::rotate(const Vec3& from, const Vec3& to )

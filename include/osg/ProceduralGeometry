@@ -1,0 +1,150 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_ProceduralGeometry
+#define OSG_ProceduralGeometry 1
+
+#include <osg/Drawable>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Array>
+#include <osg/PrimitiveSet>
+
+namespace osg {
+
+class TessellationHints : public Object
+{
+    public:
+
+	TessellationHints():
+	    _TessellationMode(USE_SHAPE_DEFAULTS),
+	    _targetNumFaces(100),
+	    _createFrontFace(true),
+	    _createBackFace(false),
+	    _createNormals(true),
+	    _createTextureCoords(false),
+	    _createTop(true),
+	    _createBody(true),
+	    _createBottom(true) {}
+	    
+
+	TessellationHints(const TessellationHints& tess, const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+    	    Object(tess,copyop),
+	    _TessellationMode(tess._TessellationMode),
+	    _targetNumFaces(tess._targetNumFaces),
+	    _createFrontFace(tess._createFrontFace),
+	    _createBackFace(tess._createBackFace),
+	    _createNormals(tess._createNormals),
+	    _createTextureCoords(tess._createTextureCoords),
+	    _createTop(tess._createTop),
+	    _createBody(tess._createBody),
+	    _createBottom(tess._createBottom) {}
+
+	META_Object(osg,TessellationHints)
+	
+	
+	enum TessellationMode
+	{
+	    USE_SHAPE_DEFAULTS,
+    	    USE_TARGET_NUM_FACES
+	};
+
+    	inline void setTessellationMode(TessellationMode mode) { _TessellationMode=mode; }
+    	inline TessellationMode getTessellationMode() const { return _TessellationMode; }
+
+	inline void setTargetNumFaces(unsigned int target) { _targetNumFaces=target; }
+	inline unsigned int getTargetNumFaces() const { return _targetNumFaces; }
+
+    	inline void setCreateFrontFace(bool on) { _createFrontFace=on; }
+    	inline bool getCreateFrontFace() const { return _createFrontFace; }
+
+    	inline void setCreateBackFace(bool on) { _createFrontFace=on; }
+    	inline bool getCreateBackFace() const { return _createFrontFace; }
+
+    	inline void setCreateNormals(bool on) { _createNormals=on; }
+    	inline bool getCreateNormals() const { return _createNormals; }
+
+    	inline void setCreateTextureCoords(bool on) { _createTextureCoords=on; }
+    	inline bool getCreateTextureCoords() const { return _createTextureCoords; }
+
+    	inline void setCreateTop(bool on) { _createTop=on; }
+    	inline bool getCreateTop() const { return _createTop; }
+
+    	inline void setCreateBody(bool on) { _createBody=on; }
+    	inline bool getCreateBody() const { return _createBody; }
+
+    	inline void setCreateBottom(bool on) { _createBottom=on; }
+    	inline bool getCreateBottom() const { return _createBottom; }
+
+    protected:
+    
+    	~TessellationHints() {}
+
+    	
+    	TessellationMode _TessellationMode;
+    	unsigned int 	_targetNumFaces;
+
+	bool 	    	_createFrontFace;
+	bool 	    	_createBackFace;
+	bool 	    	_createNormals;
+	bool 	    	_createTextureCoords;
+
+	bool 	    	_createTop;
+	bool 	    	_createBody;
+	bool 	    	_createBottom;
+
+};
+
+class SG_EXPORT ProceduralGeometry : public Drawable
+{
+    public:
+
+        ProceduralGeometry();
+
+        ProceduralGeometry(Shape* shape);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ProceduralGeometry(const ProceduralGeometry& pg,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+            
+        virtual Object* cloneType() const { return osgNew ProceduralGeometry(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew ProceduralGeometry(*this,copyop); }        
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ProceduralGeometry*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "ProceduralGeometry"; }
+
+
+    	void setTessellationHints(TessellationHints* hints) { _tessellationHints = hints; }
+    	TessellationHints* getTessellationHints() { return _tessellationHints.get(); }
+    	const TessellationHints* getTessellationHints() const { return _tessellationHints.get(); }
+
+
+        /** draw ProceduralGeometry directly ignoring an OpenGL display list which could be attached.
+          * This is the internal draw method which does the drawing itself,
+          * and is the method to override when deriving from ProceduralGeometry for user-drawn objects.
+          */
+        virtual void drawImmediateMode(State& state);
+
+        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(AttributeFunctor& af);
+
+        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
+        virtual void accept(PrimitiveFunctor& pf);
+
+    protected:
+
+        ProceduralGeometry& operator = (const ProceduralGeometry&) { return *this;}
+
+        virtual ~ProceduralGeometry();
+       
+        virtual bool computeBound() const;
+	
+	ref_ptr<TessellationHints> _tessellationHints;
+
+};
+
+
+}
+
+#endif

@@ -5,6 +5,7 @@
 #include <osg/Drawable>
 #include <osg/Array>
 #include <osg/PrimitiveSet>
+#include <osg/Shape>
 
 using namespace osg;
 
@@ -92,3 +93,12 @@ PrimitiveSet* CopyOp::operator() (const PrimitiveSet* primitive) const
     else
         return const_cast<PrimitiveSet*>(primitive);
 }
+
+Shape* CopyOp::operator() (const Shape* shape) const
+{
+    if (shape && _flags&DEEP_COPY_SHAPES)
+        return dynamic_cast<Shape*>(shape->clone(*this));
+    else
+        return const_cast<Shape*>(shape);
+}
+

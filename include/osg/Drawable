@@ -9,6 +9,7 @@
 #include <osg/State>
 #include <osg/Types>
 #include <osg/NodeVisitor>
+#include <osg/Shape>
 
 #include <vector>
 #include <map>
@@ -20,7 +21,6 @@ class Vec2;
 class Vec3;
 class Vec4;
 class UByte4;
-class Node;
 class Geometry;
 
 // this is define to alter the way display lists are compiled inside the
@@ -56,6 +56,7 @@ class SG_EXPORT Drawable : public Object
         /** convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0.
           * Equivalent to dynamic_cast<const Geometry*>(this).*/
         virtual const Geometry* asGeometry() const { return 0; }
+
 
         /** A vector of osg::Node pointers which is used to store the parent(s) of drawable.*/
         typedef std::vector<Node*> ParentList;
@@ -103,6 +104,36 @@ class SG_EXPORT Drawable : public Object
         StateSet* getOrCreateStateSet();
 
 
+        /** Dirty the bounding box, forcing a computeBound() on the next call
+          * to getBound(). Should be called in the internal geometry of the Drawable
+          * is modified.*/        
+        void dirtyBound();
+
+        /** get bounding box of geoset. 
+          * Note, now made virtual to make it possible to implement user-drawn
+          * objects albeit so what crudely, to be improved later.
+          */
+        inline const BoundingBox& getBound() const
+        {
+            if( !_bbox_computed)
+                computeBound();
+            return _bbox;
+        }
+
+
+    	/** Set the Shape of the drawable. The shape can be used to
+	  * speed up collision detection or as a guide for produral
+	  * geometry generation - see osg::ProduralGeometry.*/
+    	inline void setShape(Shape* shape) { _shape = shape; }
+
+    	/** Get the Shape of the Drawable.*/
+    	inline Shape* getShape() { return _shape.get(); }
+	
+    	/** Get the const Shape of the const Drawable.*/
+    	inline const Shape* getShape() const { return _shape.get(); }
+
+
+
         /** Set the drawable to it can or cannot be used in conjunction with OpenGL
           * display lists.  With set to true, calls to Drawable::setUseDisplayList,
           * whereas when set to false, no display lists can be created and calls
@@ -126,23 +157,8 @@ class SG_EXPORT Drawable : public Object
 
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
         void dirtyDisplayList();
-        
-        
-        /** Dirty the bounding box, forcing a computeBound() on the next call
-          * to getBound(). Should be called in the internal geometry of the Drawable
-          * is modified.*/        
-        void dirtyBound();
 
-        /** get bounding box of geoset. 
-          * Note, now made virtual to make it possible to implement user-drawn
-          * objects albeit so what crudely, to be improved later.
-          */
-        inline const BoundingBox& getBound() const
-        {
-            if( !_bbox_computed)
-                computeBound();
-            return _bbox;
-        }
+
 
         /** draw OpenGL primitives. 
           * If the drawable has _useDisplayList set to true then use an OpenGL display
@@ -315,15 +331,17 @@ class SG_EXPORT Drawable : public Object
 
         ref_ptr<StateSet>       _stateset;
 
+        mutable BoundingBox     _bbox;
+        mutable bool            _bbox_computed;
+        
+        ref_ptr<Shape>       	_shape;
+
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;
 
         typedef std::vector<uint> GLObjectList;
         mutable GLObjectList _globjList;
 
-        mutable BoundingBox     _bbox;
-        mutable bool            _bbox_computed;
-        
         ref_ptr<AppCallback>    _appCallback;
         ref_ptr<DrawCallback>   _drawCallback;
         ref_ptr<CullCallback>   _cullCallback;

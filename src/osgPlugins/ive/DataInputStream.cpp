@@ -38,6 +38,7 @@
 #include "VertexProgram.h"
 #include "LightModel.h"
 #include "ProxyNode.h"
+#include "FrontFace.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -745,12 +746,14 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::VertexProgram();
         ((ive::VertexProgram*)(attribute))->read(this);
     }
-
     else if(attributeID == IVELIGHTMODEL){
         attribute = new osg::LightModel();
         ((ive::LightModel*)(attribute))->read(this);
     }
-
+	else if(attributeID == IVEFRONTFACE){
+        attribute = new osg::FrontFace();
+        ((ive::FrontFace*)(attribute))->read(this);
+    }
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");
     }

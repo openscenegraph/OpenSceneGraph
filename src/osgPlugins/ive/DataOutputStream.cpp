@@ -39,7 +39,7 @@
 #include "VertexProgram.h"
 #include "LightModel.h"
 #include "ProxyNode.h"
-
+#include "FrontFace.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -561,10 +561,13 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::VertexProgram*>(attribute)){
             ((ive::VertexProgram*)(attribute))->write(this);
         }
-
         // This is a LightModel
         else if(dynamic_cast<const osg::LightModel*>(attribute)){
             ((ive::LightModel*)(attribute))->write(this);
+        }
+		// This is a FrontFace
+		else if(dynamic_cast<const osg::FrontFace*>(attribute)){
+            ((ive::FrontFace*)(attribute))->write(this);
         }
 
         else{

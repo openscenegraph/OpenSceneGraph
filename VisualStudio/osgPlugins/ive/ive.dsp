@@ -216,6 +216,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\FragmentProgram.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\FrontFace.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Geode.cpp
 # End Source File
 # Begin Source File
@@ -521,6 +525,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Exception.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\FragmentProgram.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\FrontFace.h
 # End Source File
 # Begin Source File
 

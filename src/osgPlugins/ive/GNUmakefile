@@ -32,6 +32,7 @@ CXXFILES =\
 	EllipsoidModel.cpp\
 	Exception.cpp\
 	FragmentProgram.cpp\
+	FrontFace.cpp\
 	Geode.cpp\
 	Geometry.cpp\
 	Group.cpp\

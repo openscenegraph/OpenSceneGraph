@@ -169,18 +169,6 @@ SOURCE=..\..\src\osgText\FTVectoriser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgText\IO_Font.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\IO_Paragraph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\IO_Text.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgText\Paragraph.cpp
 # End Source File
 # Begin Source File

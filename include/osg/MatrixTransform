@@ -28,6 +28,8 @@ class SG_EXPORT MatrixTransform : public Transform
 
         META_Node(osg, MatrixTransform);
 
+        virtual void traverse(NodeVisitor& nv);
+
         /** Set the transform's matrix.*/
         void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; dirtyBound(); }
         
@@ -79,8 +81,22 @@ class SG_EXPORT MatrixTransform : public Transform
             return true;
         }
 
+
+
+        /** Set an optional animation path. */
+        void setAnimationPath(AnimationPath* ap) { _animationPath = ap; }
+
+        /** Get a read only version of the AnimationPath object*/
+        AnimationPath* getAnimationPath() { return _animationPath.get(); }
+
+        /** Get a read only version of the AnimationPath object*/
+        const AnimationPath* getAnimationPath() const { return _animationPath.get(); }
+
+
+
         /** Callback which can be attached to a MatrixTransform as an app 
-          * callback to allow it to follow the path defined by a AnimationPath.*/
+          * callback to allow it to follow the path defined by a AnimationPath.
+          * note, now deprecated by attaching an AnimationPath directly to MatrixTransform.*/
         class SG_EXPORT AnimationPathCallback : public NodeCallback
         {
             public:
@@ -107,6 +123,9 @@ class SG_EXPORT MatrixTransform : public Transform
         ref_ptr<Matrix>                     _matrix;
         mutable ref_ptr<Matrix>             _inverse;
         mutable bool                        _inverseDirty;
+        
+        osg::ref_ptr<AnimationPath>         _animationPath;
+
 
 };
 

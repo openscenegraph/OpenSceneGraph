@@ -16,11 +16,18 @@ namespace osg {
   * Subclassed from Transform::ComputeTransformCallback allows AnimationPath to
   * be attached directly to Transform nodes to move subgraphs around the scene.
 */
-class SG_EXPORT AnimationPath : public osg::Referenced
+class SG_EXPORT AnimationPath : public virtual osg::Object
 {
     public:
     
         AnimationPath():_loopMode(LOOP) {}
+
+        AnimationPath(const AnimationPath& ap, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(ap,copyop),
+            _timeControlPointMap(ap._timeControlPointMap),
+            _loopMode(ap._loopMode) {}
+
+        META_Object(osg,AnimationPath)
 
         struct ControlPoint
         {

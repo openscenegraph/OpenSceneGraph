@@ -13,8 +13,10 @@ MatrixTransform::MatrixTransform(const MatrixTransform& transform,const CopyOp& 
     Transform(transform,copyop),
     _matrix(osgNew Matrix(*transform._matrix)),
     _inverse(osgNew Matrix(*transform._inverse)),
-    _inverseDirty(transform._inverseDirty)
+    _inverseDirty(transform._inverseDirty),
+    _animationPath(dynamic_cast<AnimationPath*>(copyop(transform._animationPath.get())))
 {    
+    if (_animationPath.valid()) setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);            
 }
 
 MatrixTransform::MatrixTransform(const Matrix& mat )
@@ -29,6 +31,22 @@ MatrixTransform::MatrixTransform(const Matrix& mat )
 
 MatrixTransform::~MatrixTransform()
 {
+}
+
+
+void MatrixTransform::traverse(NodeVisitor& nv)
+{
+    // if app traversal update the frame count.
+    if (_animationPath.valid() && 
+        nv.getVisitorType()==NodeVisitor::APP_VISITOR && 
+        nv.getFrameStamp())
+    {
+        double time = nv.getFrameStamp()->getReferenceTime();
+        _animationPath->getMatrix(time,*_matrix);
+    }
+    
+    // must call any nested node callbacks and continue subgraph traversal.
+    MatrixTransform::traverse(nv);
 }
 
 void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)

@@ -61,7 +61,7 @@ class SG_EXPORT BoundingBox
                       
         inline bool valid() const
         {
-            return _max.x()>=_min.x();
+            return _max.x()>=_min.x() &&  _max.y()>=_min.y() &&  _max.z()>=_min.z();
         }
 
         inline void set (float xmin,float ymin,float zmin,
@@ -161,6 +161,14 @@ class SG_EXPORT BoundingBox
         /** If incoming sphere is out-with the box expand to encompass incoming sphere.
             If this box is empty then move set this box to encompass the sphere. */
         void expandBy(const BoundingSphere& sh);
+        
+
+        /** Compute the intesection of this bounding box with the specified bounding box.*/
+        BoundingBox intersect(const BoundingBox& bb) const
+        {    return osg::BoundingBox(osg::maximum(xMin(),bb.xMin()),osg::maximum(yMin(),bb.yMin()),osg::maximum(zMin(),bb.zMin()),
+                                     osg::minimum(xMax(),bb.xMax()),osg::minimum(yMax(),bb.yMax()),osg::minimum(zMax(),bb.zMax()));
+
+        }
 
         /** return true is vertex v is within the box.*/
         inline bool contains(const Vec3& v) const

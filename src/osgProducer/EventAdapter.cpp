@@ -232,7 +232,7 @@ bool EventAdapter::initKeySymbolMap()
 
     s_keySymbolMap[VK_MODECHANGE] = KEY_Mode_switch;
 
-    s_keySymbolMap[VK_SPACE] = 0x20
+    s_keySymbolMap[VK_SPACE] = KEY_Space;
     s_keySymbolMap[VK_PRIOR] = KEY_Prior;
     s_keySymbolMap[VK_NEXT] = KEY_Next;
     s_keySymbolMap[VK_END] = KEY_End;

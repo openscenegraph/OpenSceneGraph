@@ -170,6 +170,57 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
         virtual void apply(State& state) const;
 
+        virtual void compile(State& state) const { apply(state); }
+
+        /** Extensions class which encapsulates the querring of extensions and
+          * associated function pointers, and provide convinience wrappers to 
+          * check for the extensions or use the associated functions.*/        
+        class SG_EXPORT Extensions : public osg::Referenced
+        {
+            public:
+                Extensions();
+
+                Extensions(const Extensions& rhs);
+                
+                void lowestCommonDenominator(const Extensions& rhs);
+                
+                void setupGLExtenions();
+
+                void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
+                bool isVertexProgramSupported() const { return _isVertexProgramSupported; }
+
+                void glBindProgram(GLenum target, GLuint id) const;
+                void glGenPrograms(GLsizei n, GLuint *programs) const;
+                void glProgramString(GLenum target, GLenum format, GLsizei len, const void *string) const; 
+                void glProgramLocalParameter4fv(GLenum target, GLuint index, const GLfloat *params) const;
+
+            protected:
+
+                ~Extensions() {}
+                
+                bool _isVertexProgramSupported;
+                
+                void* _glBindProgram;
+                void* _glGenPrograms;
+                void* _glProgramString;
+                void* _glProgramLocalParameter4fv;
+ 
+        };
+        
+        /** Function to call to get the extension of a specified context.
+          * If the Exentsion object for that context has not yet been created then 
+          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+          * If 'createIfNotInitalized' is true then the Extensions object is 
+          * automatically created.  However, in this case the extension object 
+          * only be created with the graphics context associated with ContextID..*/
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+          * typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+
     protected:
 
 

@@ -251,6 +251,9 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 
                 void setupGLExtenions();
 
+                void setMultiTexturingSupported(bool flag) { _isMultiTexturingSupported=flag; }
+                bool isMultiTexturingSupported() const { return _isMultiTexturingSupported; }
+
                 void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
                 
@@ -290,6 +293,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
                 ~Extensions() {}
                 
+                bool    _isMultiTexturingSupported;
                 bool    _isTextureFilterAnisotropicSupported;
                 bool    _isTextureCompressionARBSupported;
                 bool    _isTextureCompressionS3TCSupported;

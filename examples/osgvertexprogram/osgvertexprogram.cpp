@@ -405,6 +405,22 @@ int main(int argc, char *argv[])
     // create the windows and run the threads.
     viewer.realize();
 
+    // now check to see if vertex program is supported.
+    for(unsigned int contextID = 0; 
+        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
+        ++contextID)
+    {
+        osg::VertexProgram::Extensions* vpExt = osg::VertexProgram::getExtensions(contextID,false);
+        if (vpExt)
+        {
+            if (!vpExt->isVertexProgramSupported())
+            {
+                cout<<"Warning: ARB_vertex_program not supported by OpenGL drivers, unable to run application."<<std::endl;
+                return 1;
+            }
+        }
+    }
+
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.

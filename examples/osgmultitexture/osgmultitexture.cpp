@@ -101,6 +101,21 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
+    for(unsigned int contextID = 0; 
+        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
+        ++contextID)
+    {
+        osg::Texture::Extensions* textExt = osg::Texture::getExtensions(contextID,false);
+        if (textExt)
+        {
+            if (!textExt->isMultiTexturingSupported())
+            {
+                cout<<"Warning: texture_cube_map not supported by OpenGL drivers, unable to run application."<<std::endl;
+                return 1;
+            }
+        }
+    }
+
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.

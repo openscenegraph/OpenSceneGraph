@@ -1102,6 +1102,7 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isGenerateMipMapSupported) _isGenerateMipMapSupported = false;
 
     if (rhs._maxTextureSize<_maxTextureSize) _maxTextureSize = rhs._maxTextureSize;
+    if (rhs._numTextureUnits<_numTextureUnits) _numTextureUnits = rhs._numTextureUnits;
 
     if (!rhs._glCompressedTexImage2D) _glCompressedTexImage2D = 0;
     if (!rhs._glCompressedTexSubImage2D) _glCompressedTexSubImage2D = 0;
@@ -1147,8 +1148,9 @@ void Texture::Extensions::setupGLExtensions()
 
             _maxTextureSize = osg_max_size;
         }
+    }
 
-    }      
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS,&_numTextureUnits);
 
     _glCompressedTexImage2D = getGLExtensionFuncPtr("glCompressedTexImage2D","glCompressedTexImage2DARB");
     _glCompressedTexSubImage2D = getGLExtensionFuncPtr("glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");

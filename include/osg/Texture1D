@@ -87,10 +87,10 @@ class SG_EXPORT Texture1D : public Texture
 
         /** Set the number of mip map levels the the texture has been created with,
             should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
-        void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
+        void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
         /** Get the number of mip map levels the the texture has been created with.*/
-        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
+        unsigned int getNumMipmapLevels() const { return _numMipmapLevels; }
         
 
         /** Copy pixels into a 1D texture image.As per glCopyTexImage1D.
@@ -118,7 +118,7 @@ class SG_EXPORT Texture1D : public Texture
 
         /** Helper method which does the creation of the texture itself, and
           * does not set or use texture binding. */
-        void applyTexImage1D(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& numMimpmapLevels) const;
+        void applyTexImage1D(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& numMipmapLevels) const;
 
 
         // not ideal that _image is mutable, but its required since
@@ -131,7 +131,7 @@ class SG_EXPORT Texture1D : public Texture
         mutable GLsizei _textureWidth;
         
         // number of mip map levels the the texture has been created with,        
-        mutable GLsizei _numMimpmapLevels;
+        mutable GLsizei _numMipmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;
 

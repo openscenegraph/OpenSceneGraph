@@ -23,42 +23,126 @@ using namespace osg;
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
 
-// static cache of deleted display lists which can only 
-// by completely deleted once the appropriate OpenGL context
-// is set.
-typedef std::vector<GLuint> TextureObjectVector;
-typedef std::map<unsigned int,TextureObjectVector> DeletedTextureObjectCache;
-static DeletedTextureObjectCache s_deletedTextureObjectCache;
 
-
-void Texture::deleteTextureObject(unsigned int contextID,GLuint handle)
+Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,GLenum target)
 {
-    if (handle!=0)
+    GLuint id;
+    glGenTextures( 1L, &id );
+
+    return new Texture::TextureObject(id,target);
+}
+
+Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,
+                                                                             GLenum    target,
+                                                                             GLint     numMipmapLevels,
+                                                                             GLenum    internalFormat,
+                                                                             GLsizei   width,
+                                                                             GLsizei   height,
+                                                                             GLsizei   depth,
+                                                                             GLint     border)
+{
+    // no useable texture object found so return 0
+    GLuint id;
+    glGenTextures( 1L, &id );
+
+    return new Texture::TextureObject(id,target,numMipmapLevels,internalFormat,width,height,depth,border);
+}
+
+Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsigned int contextID,
+                                                                             GLenum    target,
+                                                                             GLint     numMipmapLevels,
+                                                                             GLenum    internalFormat,
+                                                                             GLsizei   width,
+                                                                             GLsizei   height,
+                                                                             GLsizei   depth,
+                                                                             GLint     border)
+{
+    TextureObjectList& tol = _textureObjectListMap[contextID];
+    for(TextureObjectList::iterator itr = tol.begin();
+        itr != tol.end();
+        ++itr)
     {
-        // insert the handle into the cache for the appropriate context.
-        s_deletedTextureObjectCache[contextID].push_back(handle);
+        if ((*itr)->match(target,numMipmapLevels,internalFormat,width,height,depth,border))
+        {
+            // found usable texture object.
+            Texture::TextureObject* textureObject = (*itr).release();
+            tol.erase(itr);
+            
+            //std::cout<<"reusing texture object "<<textureObject<<std::endl;
+            
+            return textureObject;
+        }
+    }
+    
+    return 0;
+}
+
+    
+
+void Texture::TextureObjectManager::addTextureObjects(Texture::TextureObjectListMap& toblm)
+{
+    for(TextureObjectListMap::iterator itr = toblm.begin();
+        itr != toblm.end();
+        ++itr)
+    {
+        TextureObjectList& tol = _textureObjectListMap[itr->first];
+        tol.insert(tol.end(),itr->second.begin(),itr->second.end());
     }
 }
 
-
-void Texture::flushDeletedTextureObjects(unsigned int contextID)
+void Texture::TextureObjectManager::addTextureObjectsFrom(Texture& texture)
 {
-    DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
-    if (citr!=s_deletedTextureObjectCache.end())
+    texture.takeTextureObjects(_textureObjectListMap);
+}
+
+void Texture::TextureObjectManager::deleteTextureObjects(unsigned int contextID,double currentTime)
+{
+
+    TextureObjectList& tol = _textureObjectListMap[contextID];
+    
+    // reset the time of any uninitialized objects.
+    TextureObjectList::iterator itr;
+    for(itr=tol.begin();
+        itr!=tol.end();
+        ++itr)
     {
-        TextureObjectVector textureObjectSet;
-        textureObjectSet.reserve(1000);
-        
-        // this swap will transfer the content of and empty citr->second
-        // in one quick pointer change.
-        textureObjectSet.swap(citr->second);
-        for(TextureObjectVector::iterator titr=textureObjectSet.begin();
-                                     titr!=textureObjectSet.end();
-                                     ++titr)
+        if ((*itr)->_timeStamp==0.0) (*itr)->_timeStamp=currentTime;
+    }
+    
+    _expiryDelay = 10.0;
+    
+    double expiryTime = currentTime-_expiryDelay;
+
+    //unsigned int numTexturesDeleted = 0;
+    for(itr=tol.begin();
+        itr!=tol.end();
+        )
+    {
+        if ((*itr)->_timeStamp<expiryTime)
         {
-            glDeleteTextures( 1L, &(*titr ));
+            glDeleteTextures( 1L, &((*itr)->_id));
+            itr = tol.erase(itr);
+            //++numTexturesDeleted;
+        }
+        else
+        {
+            ++itr;
         }
     }
+    //if (numTexturesDeleted) std::cout<<"    deleted "<<numTexturesDeleted<<" textures"<<std::endl;
+}
+
+static ref_ptr<Texture::TextureObjectManager> s_textureObjectManager;
+
+void Texture::setTextureObjectManager(Texture::TextureObjectManager* tom)
+{
+    s_textureObjectManager = tom;
+}
+
+Texture::TextureObjectManager* Texture::getTextureObjectManager()
+{
+    if (!s_textureObjectManager) s_textureObjectManager = new Texture::TextureObjectManager;
+    return s_textureObjectManager.get();
 }
 
 
@@ -173,14 +257,20 @@ void Texture::setMaxAnisotropy(float anis)
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
 {
-    for(unsigned int i=0;i<_handleList.size();++i)
+    getTextureObjectManager()->addTextureObjectsFrom(*this);
+}
+
+void Texture::takeTextureObjects(Texture::TextureObjectListMap& toblm)
+{
+    for(unsigned int i = 0; i<_textureObjectBuffer.size();++i)
     {
-        if (_handleList[i] != 0)
+        if (_textureObjectBuffer[i].valid()) 
         {
-            Texture::deleteTextureObject(i,_handleList[i]);
-            _handleList[i] = 0;
+            //std::cout << "releasing texure "<<toblm[i].size()<<std::endl;
+            toblm[i].push_back(_textureObjectBuffer[i]);
         }
     }
+    _textureObjectBuffer.setAllElementsTo(0);
 }
 
 void Texture::dirtyTextureParameters()
@@ -369,7 +459,47 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 
 }
 
-void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& state, GLsizei& inwidth, GLsizei& inheight,GLsizei& numMimpmapLevels) const
+void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& inwidth, GLsizei& inheight,GLsizei& numMipmapLevels) const
+{
+    const unsigned int contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
+
+    int width = Image::computeNearestPowerOfTwo(image.s());
+    int height = Image::computeNearestPowerOfTwo(image.t());
+
+    // cap the size to what the graphics hardware can handle.
+    if (width>extensions->maxTextureSize()) width = extensions->maxTextureSize();
+    if (height>extensions->maxTextureSize()) height = extensions->maxTextureSize();
+    
+    inwidth = width;
+    inheight = height;
+    
+    numMipmapLevels = 0;
+    
+    for( ; (width || height) ;++numMipmapLevels)
+    {
+
+        if (width == 0)
+            width = 1;
+        if (height == 0)
+            height = 1;
+
+
+        width >>= 1;
+        height >>= 1;
+    }    
+}
+
+bool Texture::areAllTextureObjectsLoaded() const
+{
+    for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
+    {
+        if (_textureObjectBuffer[i]==0) return true;
+    }
+    return false;
+}
+
+void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
@@ -382,24 +512,15 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
     
     bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
 
-    // compute the internal texture format, this set the _internalFormat to an appropriate value.
-    computeInternalFormat();
-
     // select the internalFormat required for the texture.
-;    bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
+    bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     
     unsigned char* data = (unsigned char*)image->data();
  
-    int s_powerOfTwo = Image::computeNearestPowerOfTwo(image->s());
-    int t_powerOfTwo = Image::computeNearestPowerOfTwo(image->t());
 
-    // cap the size to what the graphics hardware can handle.
-    if (s_powerOfTwo>extensions->maxTextureSize()) s_powerOfTwo = extensions->maxTextureSize();
-    if (t_powerOfTwo>extensions->maxTextureSize()) t_powerOfTwo = extensions->maxTextureSize();
-
-    bool needImageRescale = s_powerOfTwo!=image->s() || t_powerOfTwo!=image->t();
+    bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
     {
 
@@ -416,7 +537,7 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
             return;
         }
         
-        unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(s_powerOfTwo,image->getPixelFormat(),image->getDataType(),image->getPacking())*t_powerOfTwo;
+        unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(inwidth,image->getPixelFormat(),image->getDataType(),image->getPacking())*inheight;
         data = new unsigned char [newTotalSize];
         
         if (!data)
@@ -425,14 +546,14 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
             return;
         }
 
-        if (!image->getFileName().empty()) notify(NOTICE) << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<s_powerOfTwo<<","<<t_powerOfTwo<<")"<<std::endl;
-        else notify(NOTICE) << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<s_powerOfTwo<<","<<t_powerOfTwo<<")"<<std::endl;
+        if (!image->getFileName().empty()) notify(NOTICE) << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
+        else notify(NOTICE) << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
 
         // rescale the image to the correct size.
         glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
         gluScaleImage(image->getPixelFormat(),
                       image->s(),image->t(),image->getDataType(),image->data(),
-                      s_powerOfTwo,t_powerOfTwo,image->getDataType(),data);
+                      inwidth,inheight,image->getDataType(),data);
         
     }    
 
@@ -449,10 +570,10 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
 
         if ( !compressed_image)
         {
-            numMimpmapLevels = 1;
+            numMipmapLevels = 1;
 
             glTexImage2D( target, 0, _internalFormat,
-                s_powerOfTwo, t_powerOfTwo, 0,
+                inwidth, inheight, 0,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
                 data );
@@ -460,13 +581,13 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
         }
         else if (extensions->isCompressedTexImage2DSupported())
         {
-            numMimpmapLevels = 1;
+            numMipmapLevels = 1;
 
             GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
-            GLint size = ((s_powerOfTwo+3)/4)*((t_powerOfTwo+3)/4)*blockSize;
+            GLint size = ((inwidth+3)/4)*((inheight+3)/4)*blockSize;
 
             extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
-                s_powerOfTwo, t_powerOfTwo,0, 
+                inwidth, inheight,0, 
                 size, 
                 data);                
         }
@@ -480,14 +601,14 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
         {
             // image is mip mapped so we take the mip map levels from the image.
         
-            numMimpmapLevels = image->getNumMipmapLevels();
+            numMipmapLevels = image->getNumMipmapLevels();
 
-            int width  = s_powerOfTwo;
-            int height = t_powerOfTwo;
+            int width  = inwidth;
+            int height = inheight;
 
             if( !compressed_image )
             {
-                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height) ;k++)
                 {
 
                     if (width == 0)
@@ -509,7 +630,7 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
             {
                 GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
                 GLint size = 0; 
-                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height) ;k++)
                 {
                     if (width == 0)
                         width = 1;
@@ -531,16 +652,16 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
         
             if ( !compressed_image)
             {
-                numMimpmapLevels = 0;
+                numMipmapLevels = 0;
 
                 gluBuild2DMipmaps( target, _internalFormat,
-                    s_powerOfTwo,t_powerOfTwo,
+                    inwidth,inheight,
                     (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                     data );
 
                 int width  = image->s();
                 int height = image->t();
-                for( numMimpmapLevels = 0 ; (width || height) ; ++numMimpmapLevels)
+                for( numMipmapLevels = 0 ; (width || height) ; ++numMipmapLevels)
                 {
                     width >>= 1;
                     height >>= 1;
@@ -555,9 +676,6 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
 
     }
 
-    inwidth = s_powerOfTwo;
-    inheight = t_powerOfTwo;
-
     if (needImageRescale)
     {
         // clean up the resized image.
@@ -566,7 +684,9 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
     
 }
 
-void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& state, GLsizei& inwidth, GLsizei& inheight,GLsizei& numMimpmapLevels) const
+
+
+void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei inwidth, GLsizei inheight,GLsizei numMipmapLevels) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
@@ -576,7 +696,7 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
     if (image->s()!=inwidth || image->t()!=inheight) 
     {
 
-        applyTexImage2D_load(target, image, state, inwidth, inheight,numMimpmapLevels); 
+        applyTexImage2D_load(state, target, image, inwidth, inheight,numMipmapLevels); 
         return;
     }
     // else image size the same as when loaded so we can go ahead and subload
@@ -590,9 +710,6 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
     
     bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
 
-    // compute the internal texture format, this set the _internalFormat to an appropriate value.
-    computeInternalFormat();
-
     // select the internalFormat required for the texture.
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
     
@@ -600,14 +717,8 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
     
     unsigned char* data = (unsigned char*)image->data();
  
-    int s_powerOfTwo = Image::computeNearestPowerOfTwo(image->s());
-    int t_powerOfTwo = Image::computeNearestPowerOfTwo(image->t());
 
-    // cap the size to what the graphics hardware can handle.
-    if (s_powerOfTwo>extensions->maxTextureSize()) s_powerOfTwo = extensions->maxTextureSize();
-    if (t_powerOfTwo>extensions->maxTextureSize()) t_powerOfTwo = extensions->maxTextureSize();
-
-    bool needImageRescale = s_powerOfTwo!=image->s() || t_powerOfTwo!=image->t();
+    bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
     {
 
@@ -624,7 +735,7 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
             return;
         }
         
-        unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(s_powerOfTwo,image->getPixelFormat(),image->getDataType(),image->getPacking())*t_powerOfTwo;
+        unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(inwidth,image->getPixelFormat(),image->getDataType(),image->getPacking())*inheight;
         data = new unsigned char [newTotalSize];
         
         if (!data)
@@ -633,14 +744,14 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
             return;
         }
 
-        if (!image->getFileName().empty()) notify(NOTICE) << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<s_powerOfTwo<<","<<t_powerOfTwo<<")"<<std::endl;
-        else notify(NOTICE) << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<s_powerOfTwo<<","<<t_powerOfTwo<<")"<<std::endl;
+        if (!image->getFileName().empty()) notify(NOTICE) << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
+        else notify(NOTICE) << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
 
         // rescale the image to the correct size.
         glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
         gluScaleImage(image->getPixelFormat(),
                       image->s(),image->t(),image->getDataType(),image->data(),
-                      s_powerOfTwo,t_powerOfTwo,image->getDataType(),data);
+                      inwidth,inheight,image->getDataType(),data);
         
     }    
 
@@ -661,7 +772,7 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
         {
             glTexSubImage2D( target, 0, 
                 0, 0,
-                s_powerOfTwo, t_powerOfTwo,
+                inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
                 data );
@@ -669,11 +780,14 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
         }
         else if (extensions->isCompressedTexImage2DSupported())
         {        
+            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+            GLint size = ((inwidth+3)/4)*((inheight+3)/4)*blockSize;
+
             extensions->glCompressedTexSubImage2D(target, 0, 
                 0,0,
-                s_powerOfTwo, t_powerOfTwo,
+                inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
-                (GLenum)image->getDataType(),
+                size,
                 data );                
         }
 
@@ -683,14 +797,14 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
     {
         if (image->isMipmap())
         {
-            numMimpmapLevels = image->getNumMipmapLevels();
+            numMipmapLevels = image->getNumMipmapLevels();
 
-            int width  = s_powerOfTwo;
-            int height = t_powerOfTwo;
+            int width  = inwidth;
+            int height = inheight;
 
             if( !compressed_image )
             {
-                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height) ;k++)
                 {
 
                     if (width == 0)
@@ -713,7 +827,7 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
             {
                 GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
                 GLint size = 0; 
-                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height) ;k++)
                 {
                     if (width == 0)
                         width = 1;
@@ -722,16 +836,21 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
 
                     size = ((width+3)/4)*((height+3)/4)*blockSize;
 
+                    state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
+
                     extensions->glCompressedTexSubImage2D(target, k,  
                                                        0, 0,
                                                        width, height, 
                                                        (GLenum)image->getPixelFormat(),
-                                                       (GLenum)image->getDataType(),
+                                                       size,
                                                         image->getMipmapData(k));                
+
+                    state.checkGLErrors("after extensions->glCompressedTexSubImage2D(");
 
                     width >>= 1;
                     height >>= 1;
                 }
+
             }
         }
         else
@@ -739,10 +858,10 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
             if (!compressed_image)
             {
 
-                 numMimpmapLevels = 0;
+                 numMipmapLevels = 0;
 
-                int width  = s_powerOfTwo;
-                int height = t_powerOfTwo;
+                int width  = inwidth;
+                int height = inheight;
 
                 glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
 
@@ -918,7 +1037,7 @@ void Texture::Extensions::setupGLExtenions()
     }      
 
     _glCompressedTexImage2D = getGLExtensionFuncPtr("glCompressedTexImage2D","glCompressedTexImage2DARB");
-    _glCompressedTexSubImage2D = getGLExtensionFuncPtr("glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");;
+    _glCompressedTexSubImage2D = getGLExtensionFuncPtr("glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
     _glGetCompressedTexImage = getGLExtensionFuncPtr("glGetCompressedTexImage","glGetCompressedTexImageARB");;
 }
 
@@ -936,12 +1055,12 @@ void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLe
     
 }
 
-void Texture::Extensions::glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data) const
+void Texture::Extensions::glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data) const
 {
     if (_glCompressedTexImage2D)
     {
-        typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data);
-        ((CompressedTexSubImage2DArbProc)_glCompressedTexSubImage2D)(target, level, xoffset, yoffset, width, height, format, type, data);
+        typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
+        ((CompressedTexSubImage2DArbProc)_glCompressedTexSubImage2D)(target, level, xoffset, yoffset, width, height, format, imageSize, data);
     }
     else
     {

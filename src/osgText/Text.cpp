@@ -207,20 +207,7 @@ void Text::setDrawMode(unsigned int mode)
 { 
     if (_drawMode==mode) return;
 
-    if ((_drawMode&3) != (mode&3))
-    {
-        _drawMode=mode;
-        if (_drawMode&TEXT_PIXMAP)
-        {
-            setCharacterSizeMode(SCREEN_COORDS);
-            setAutoRotateToScreen(true);
-        }
-        computeGlyphRepresentation();
-    }
-    else
-    {
-        _drawMode=mode;
-    }
+    _drawMode=mode;
 }
 
 
@@ -660,7 +647,7 @@ void Text::drawImplementation(osg::State& state) const
     glNormal3fv(_normal.ptr());
     glColor4fv(_color.ptr());
 
-    if (_drawMode & TEXT && !(_drawMode & TEXT_PIXMAP))
+    if (_drawMode & TEXT)
     {
 
         state.disableAllVertexArrays();
@@ -678,36 +665,6 @@ void Text::drawImplementation(osg::State& state) const
             state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
 
             glDrawArrays(GL_QUADS,0,glyphquad._coords.size());
-
-        }
-    }
-    
-    if (_drawMode & TEXT_PIXMAP)
-    {
-
-        state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-
-        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
-            titr!=_textureGlyphQuadMap.end();
-            ++titr)
-        {
-            const GlyphQuads& glyphquad = titr->second;
-
-            int ci=1;
-
-            for(GlyphQuads::Glyphs::const_iterator gitr=glyphquad._glyphs.begin();
-                gitr!=glyphquad._glyphs.end();
-                ++gitr, ci+=4)
-            {
-            
-                Font::Glyph* glyph = *gitr;
-                
-
-                glRasterPos3fv(glyphquad._transformedCoords[contextID][ci].ptr());
-
-                glyph->draw(state);
-
-            }
 
         }
     }

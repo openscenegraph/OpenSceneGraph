@@ -79,8 +79,8 @@ CXXFILES =\
 	TexGen.cpp\
 	TexMat.cpp\
 	Texture.cpp\
-	Texture1D.cpp\
 	Texture2D.cpp\
+	Texture1D.cpp\
 	Texture3D.cpp\
 	TextureCubeMap.cpp\
 	TextureRectangle.cpp\

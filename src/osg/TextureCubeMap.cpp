@@ -205,12 +205,13 @@ void TextureCubeMap::apply(State& state) const
     if (!extensions->isCubeMapSupported())
         return;
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
 
-    if (handle != 0)
+    if (textureObject != 0)
     {
-        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        textureObject->bind();
+
         if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
         if (_subloadCallback.valid())
@@ -224,7 +225,7 @@ void TextureCubeMap::apply(State& state) const
                 const osg::Image* image = _images[n].get();
                 if (image && getModifiedTag((Face)n,contextID) != image->getModifiedTag())
                 {
-                    applyTexImage2D_subload( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMipmapLevels);
+                    applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _numMipmapLevels);
                     getModifiedTag((Face)n,contextID) = image->getModifiedTag();
                 }
             }
@@ -233,8 +234,9 @@ void TextureCubeMap::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_CUBE_MAP);
+
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
@@ -244,14 +246,22 @@ void TextureCubeMap::apply(State& state) const
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        //glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
 
     }
     else if (imagesValid())
     {
 
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        // compute the internal texture format, this set the _internalFormat to an appropriate value.
+        computeInternalFormat();
+
+        // compute the dimensions of the texture.
+        computeRequiredTextureDimensions(state,*_images[0],_textureWidth, _textureHeight, _numMipmapLevels);
+
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
+                contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
@@ -260,28 +270,26 @@ void TextureCubeMap::apply(State& state) const
             const osg::Image* image = _images[n].get();
             if (image)
             {
-                applyTexImage2D_load( faceTarget[n], image, state, _textureWidth, _textureHeight, _numMipmapLevels);
+                if (textureObject->isAllocated())
+                {
+                    applyTexImage2D_subload( state, faceTarget[n], image, _textureWidth, _textureHeight, _numMipmapLevels);
+                }
+                else
+                {
+                    applyTexImage2D_load( state, faceTarget[n], image, _textureWidth, _textureHeight, _numMipmapLevels);
+                }
                 getModifiedTag((Face)n,contextID) = image->getModifiedTag();
             }
 
 
         }
 
-        if (_unrefImageDataAfterApply)
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {
-            // only unref image once all the graphics contexts has been set up.
-            unsigned int numLeftToBind=0;
-            for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
+            TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
+            for (int n=0; n<6; n++)
             {
-                if (_handleList[i]==0) ++numLeftToBind;
-            }
-            if (numLeftToBind==0)
-            {
-                TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
-                for (int n=0; n<6; n++)
-                {
-                    non_const_this->_images[n] = 0;
-                }
+                non_const_this->_images[n] = 0;
             }
         }
 
@@ -289,7 +297,7 @@ void TextureCubeMap::apply(State& state) const
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        //glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
         
     }
     else

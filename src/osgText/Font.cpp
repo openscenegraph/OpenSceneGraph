@@ -387,16 +387,19 @@ void Font::GlyphTexture::apply(osg::State& state) const
     const Extensions* extensions = getExtensions(contextID,true);
     bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
 
-    bool generateMipMapOn = false;
-
-    if (handle == 0)
+    if (textureObject == 0)
     {
+        
         // being bound for the first time, need to allocate the texture
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_2D, handle );
+
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
+                contextID,GL_TEXTURE_2D,1,GL_LUMINANCE_ALPHA,getTextureWidth(), getTextureHeight(),1,0);
+
+        textureObject->bind();
+
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -411,7 +414,6 @@ void Font::GlyphTexture::apply(osg::State& state) const
             if (generateMipMapSupported)
             {
                 glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-                generateMipMapOn = true;
             }
             else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
             break;
@@ -432,31 +434,31 @@ void Font::GlyphTexture::apply(osg::State& state) const
     else
     {
         // reuse texture by binding.
-        glBindTexture( GL_TEXTURE_2D, handle );
+        textureObject->bind();
+        
         if (getTextureParameterDirty(contextID))
         {
             applyTexParameters(GL_TEXTURE_2D,state);
         }
-        bool generateMipMapOn = false;
 
-        // need to look at generate mip map extension if mip mapping required.
-        switch(_min_filter)
-        {
-        case NEAREST_MIPMAP_NEAREST:
-        case NEAREST_MIPMAP_LINEAR:
-        case LINEAR_MIPMAP_NEAREST:
-        case LINEAR_MIPMAP_LINEAR:
-            if (generateMipMapSupported)
-            {
-                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-                generateMipMapOn = true;
-            }
-            else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
-            break;
-        default:
-            // not mip mapping so no problems.
-            break;
-        }
+//         // need to look at generate mip map extension if mip mapping required.
+//         switch(_min_filter)
+//         {
+//         case NEAREST_MIPMAP_NEAREST:
+//         case NEAREST_MIPMAP_LINEAR:
+//         case LINEAR_MIPMAP_NEAREST:
+//         case LINEAR_MIPMAP_LINEAR:
+//             if (generateMipMapSupported)
+//             {
+//                 glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+//                 generateMipMapOn = true;
+//             }
+//             else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
+//             break;
+//         default:
+//             // not mip mapping so no problems.
+//             break;
+//         }
 
     }
     
@@ -557,10 +559,10 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
 
 
-    if (generateMipMapOn)
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
-    }
+//     if (generateMipMapTurnedOn)
+//     {
+//         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+//     }
 
 
 }

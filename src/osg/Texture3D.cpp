@@ -26,7 +26,7 @@ Texture3D::Texture3D():
             _textureWidth(0),
             _textureHeight(0),
             _textureDepth(0),
-            _numMimpmapLevels(0)
+            _numMipmapLevels(0)
 {
 }
 
@@ -36,7 +36,7 @@ Texture3D::Texture3D(const Texture3D& text,const CopyOp& copyop):
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
             _textureDepth(text._textureDepth),
-            _numMimpmapLevels(text._numMimpmapLevels),
+            _numMipmapLevels(text._numMipmapLevels),
             _subloadCallback(text._subloadCallback)
 {
 }
@@ -109,13 +109,14 @@ void Texture3D::apply(State& state) const
         return;
     }
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
-
-    if (handle != 0)
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject)
     {
+        // we have a valid image
+        textureObject->bind();
 
-        glBindTexture( GL_TEXTURE_3D, handle );
         if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_3D,state);
 
         if (_subloadCallback.valid())
@@ -124,7 +125,7 @@ void Texture3D::apply(State& state) const
         }
         else if (_image.get() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
-            applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMimpmapLevels);
+            applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
             // update the modified tag to show that it is upto date.
             getModifiedTag(contextID) = _image->getModifiedTag();
@@ -134,53 +135,50 @@ void Texture3D::apply(State& state) const
     else if (_subloadCallback.valid())
     {
 
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_3D, handle );
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_3D,state);
 
         _subloadCallback->load(*this,state);
 
+        textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
+
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_3D, handle );
+        //glBindTexture( GL_TEXTURE_3D, handle );
 
     }
     else if (_image.valid() && _image->data())
     {
 
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_3D, handle );
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_3D,state);
 
-        applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMimpmapLevels);
+        applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
+
+        textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
 
         // update the modified tag to show that it is upto date.
         getModifiedTag(contextID) = _image->getModifiedTag();
 
-        if (_unrefImageDataAfterApply)
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {
-            // only unref image once all the graphics contexts has been set up.
-            unsigned int numLeftToBind=0;
-            for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
-            {
-                if (_handleList[i]==0) ++numLeftToBind;
-            }
-            if (numLeftToBind==0)
-            {
-                Texture3D* non_const_this = const_cast<Texture3D*>(this);
-                non_const_this->_image = 0;
-            }
+            Texture3D* non_const_this = const_cast<Texture3D*>(this);
+            non_const_this->_image = 0;
         }
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_3D, handle );
+        //glBindTexture( GL_TEXTURE_3D, handle );
         
     }
     else
@@ -194,7 +192,7 @@ void Texture3D::computeInternalFormat() const
     if (_image.valid()) computeInternalFormatWithImage(*_image); 
 }
 
-void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMimpmapLevels) const
+void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMipmapLevels) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
@@ -223,7 +221,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
-        numMimpmapLevels = 1;
+        numMipmapLevels = 1;
         extensions->glTexImage3D( target, 0, _internalFormat,
                                   image->s(), image->t(), image->r(), 0,
                                   (GLenum)image->getPixelFormat(),
@@ -235,7 +233,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         if(!image->isMipmap())
         {
 
-            numMimpmapLevels = 1;
+            numMipmapLevels = 1;
 
             extensions->gluBuild3DMipmaps( target, _internalFormat,
                                            image->s(),image->t(),image->r(),
@@ -245,13 +243,13 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         }
         else
         {
-            numMimpmapLevels = image->getNumMipmapLevels();
+            numMipmapLevels = image->getNumMipmapLevels();
 
             int width  = image->s();
             int height = image->t();
             int depth = image->r();
 
-            for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height || depth) ;k++)
+            for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height || depth) ;k++)
             {
 
                 if (width == 0)
@@ -284,21 +282,20 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
-
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
     const Extensions* extensions = getExtensions(contextID,true);
-    
-    if (handle)
-    {
 
-        // we have a valid image
-        glBindTexture( GL_TEXTURE_3D, handle );
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+
+    if (textureObject != 0)
+    {
+        textureObject->bind();
+
         applyTexParameters(GL_TEXTURE_3D,state);
         extensions->glCopyTexSubImage3D( GL_TEXTURE_3D, 0, xoffset,yoffset,zoffset, x, y, width, height);
 
         /* Redundant, delete later */
-        glBindTexture( GL_TEXTURE_3D, handle );
+        //glBindTexture( GL_TEXTURE_3D, handle );
 
         // inform state that this texture is the current one bound.
         state.haveAppliedAttribute(this);

@@ -110,6 +110,28 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         bool hits();
 
+        enum LODSelectionMode
+        {
+            USE_HEIGHEST_LEVEL_OF_DETAIL,
+            USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION
+        };
+        
+        void setLODSelectionMode(LODSelectionMode mode) { _lodSelectionMode = mode; }
+        LODSelectionMode getLODSelectionMode() const { return _lodSelectionMode; }
+
+        /** Set the eye point in local coordinates.
+          * This is a pseudo-EyePoint for billboarding and LOD purposes.
+          * It is copied from the Start point of the most-recently-added segment
+          * of the intersection ray set (IntersectState::_segList). */
+        void setEyePoint(const osg::Vec3& eye) { _pseudoEyePoint = eye; }
+
+        virtual osg::Vec3 getEyePoint() const { return _pseudoEyePoint; }
+
+
+        /** Get the distance from a point to the eye point, distance value in local coordinate system.
+          * This is calculated using the pseudo-EyePoint (above) when doing LOD calculcations. */
+        virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const;
+
         virtual void apply(osg::Node&);
         virtual void apply(osg::Geode& node);
         virtual void apply(osg::Billboard& node);
@@ -166,6 +188,9 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 
         osg::NodePath               _nodePath;
         LineSegmentHitListMap       _segHitList;
+        
+        LODSelectionMode            _lodSelectionMode;
+        osg::Vec3                   _pseudoEyePoint;
 };
 
 }

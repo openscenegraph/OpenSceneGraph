@@ -139,6 +139,7 @@ osg::Group *SceneLoader::load(const std::string &filename, bool search)
                 osg::Vec3 pos(options_.csf->fix_point(j->second.position));
                 //const osg::Vec3 &ypr = j->second.ypr;
                 osg::AnimationPath::ControlPoint cp(pos, osg::Quat(osg::PI_2, osg::Vec3(1, 0, 0)) * rotate_ypr(j->second.ypr), j->second.scale);
+                osg::notify(osg::NOTICE)<<"scale = "<<j->second.scale<<std::endl;
                 ap->insert(j->first, cp);
             }
             camera_animations_.push_back(ap.get());
@@ -174,6 +175,7 @@ osg::Group *SceneLoader::load(const std::string &filename, bool search)
                 ap->insert(j->first, cp);
             }
             osg::ref_ptr<osg::AnimationPathCallback> apc = new osg::AnimationPathCallback(ap.get());
+            apc->setPivotPoint(options_.csf->fix_point(i->pivot));
             pat->setUpdateCallback(apc.get());
         }
 

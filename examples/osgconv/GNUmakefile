@@ -17,5 +17,4 @@ INSTFILES = \
 
 EXEC = osgconv
 
-
 include $(TOPDIR)/Make/makerules 

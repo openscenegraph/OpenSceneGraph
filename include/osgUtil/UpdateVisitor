@@ -79,17 +79,20 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         {
             osg::NodeCallback* callback = node.getUpdateCallback();
             if (callback) (*callback)(&node,this);
-            else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverse(node);
-            
-            // call the app callbacks on the drawables.
-            for(unsigned int i=0;i<node.getNumDrawables();++i)
-            {
-                osg::Drawable::UpdateCallback* callback = node.getDrawable(i)->getUpdateCallback();
-                if (callback) callback->update(this,node.getDrawable(i));
-            }
-            
+            else if (node.getNumChildrenRequiringUpdateTraversal()>0) traverseGeode(node);
         }
         
+        inline void traverseGeode(osg::Geode& geode)
+        {
+            traverse((osg::Node&)geode);
+            
+            // call the app callbacks on the drawables.
+            for(unsigned int i=0;i<geode.getNumDrawables();++i)
+            {
+                osg::Drawable::UpdateCallback* callback = geode.getDrawable(i)->getUpdateCallback();
+                if (callback) callback->update(this,geode.getDrawable(i));
+            }
+        }
 	
 };
 

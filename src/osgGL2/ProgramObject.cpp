@@ -1,5 +1,5 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- * Copyright (C) 2003 3Dlabs Inc. Ltd.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+ * Copyright (C) 2003-2004 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -12,7 +12,7 @@
 */
 
 /* file:	src/osgGL2/ProgramObject.cpp
- * author:	Mike Weiblen 2004-02-04
+ * author:	Mike Weiblen 2004-07-08
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -100,7 +100,7 @@ void ProgramObject::flushDeletedGL2Objects(unsigned int contextID,double /*curre
     {
         const Extensions* extensions = Extensions::Get(contextID,true);
 
-	if (!extensions->isShaderObjectsSupported())
+	if (!extensions->isGlslSupported())
 	{
 	    // can we really get here?
 	    osg::notify(osg::WARN) << "flushDeletedGL2Objects not supported by OpenGL driver" << std::endl;
@@ -227,16 +227,16 @@ void ProgramObject::apply(osg::State& state) const
     // use GL 1.x "fixed functionality" rendering.
     if( !_enabled || _shaderObjectList.empty() )
     {
-	if( extensions->isShaderObjectsSupported() )
+	if( extensions->isGlslSupported() )
 	{
 	    extensions->glUseProgramObject( 0 );
 	}
 	return;
     }
 
-    if( ! extensions->isShaderObjectsSupported() )
+    if( ! extensions->isGlslSupported() )
     {
-	osg::notify(osg::WARN) << "ARB_shader_objects not supported by OpenGL driver" << std::endl;
+	osg::notify(osg::WARN) << "GLSL not supported by OpenGL driver" << std::endl;
         return;
     }
 

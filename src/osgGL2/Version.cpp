@@ -2,7 +2,7 @@
 
 const char* osgGL2GetVersion()
 {
-    return "0.2.6";
+    return "0.3.0";
 }
 
 

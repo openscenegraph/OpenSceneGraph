@@ -93,7 +93,7 @@ ifeq ($(COMPILER),gnu)
   INC               += -I/usr/local/glut-3.7/include
   DEF               += -W -Wall -fPIC -fpermissive
   OPTF              = -O2
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -fPIC 
 ifeq ($(ARCH),64)
     ARCHARGS          = -m64
@@ -127,7 +127,7 @@ else
   INC               += 
   DEF               += -features=extensions 
   OPTF              = -xO4
-  DBGF              = -g 
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -G
 ifeq ($(ARCH),64)
     ARCHARGS          = -xarch=v9
@@ -166,7 +166,7 @@ ifeq ($(OS),IRIX)
 	 	       -DEBUG:woff=1682 -DEBUG:woff=3303\
 		       -MDupdate $(MAKEDEPEND)
   OPTF              = -O2 
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared
   ARCH              = 32
 ifeq ($(ARCH),64)
@@ -216,7 +216,7 @@ endif
   INC               += 
   DEF               += -W -Wall
   OPTF              = -O2 
-  DBGF              = -g -DOSG_USE_MEMORY_MANAGER
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS -DOSG_USE_MEMORY_MANAGER
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
@@ -250,7 +250,7 @@ ifeq ($(OS),FreeBSD)
   INC               +=  -I/usr/local/include -I/usr/X11R6/include
   DEF               += -W -Wall
   OPTF              = -O2 
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
@@ -274,7 +274,7 @@ ifeq ($(OS),Darwin)
   INC               +=  -I/usr/include
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   DEPARG            = -M $(DEF)
   SHARED            = -shared
   ARCHARGS          = 
@@ -316,7 +316,7 @@ ifeq ($(OS),CYGWIN)
   INC               += 
   DEF               += -DWIN32 -W -Wall
   OPTF              = -O2 
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared\
 		      -Wl,--export-all-symbols  \
 		      -Wl,--output-def,lib$(TARGET_BASENAME).def \
@@ -381,7 +381,7 @@ ifeq ($(OS),MINGW)
   DEF               += -DWIN32 -Wall
 # -W
   OPTF              = -O2 
-  DBGF              = -g
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared\
 		      -Wl,--export-all-symbols  \
 		      -Wl,--output-def,lib$(TARGET_BASENAME).def \
@@ -457,7 +457,7 @@ ifeq ($(OS),HP-UX)
   OPTF              = -O2 
   # gcc 3.1 uses DWARF as default, my GDB might not yet support this...
   # at least I've got problems everywhere
-  DBGF              = -g -gstabs+
+  DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -fPIC
   ARCH              = 32
 ifeq ($(ARCH),64)

@@ -431,9 +431,24 @@ void Image::ensureValidSizeForTexturing()
     {
         init = false;
         glGetIntegerv(GL_MAX_TEXTURE_SIZE,&max_size);
-        notify(INFO) << "Max texture size "<<max_size<<std::endl;
+        notify(INFO) << "GL_MAX_TEXTURE_SIZE "<<max_size<<std::endl;
+        
+        char *ptr;
+        if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+        {
+            GLint osg_max_size = atoi(ptr);
+            
+            notify(INFO) << "OSG_MAX_TEXTURE_SIZE "<<osg_max_size<<std::endl;
+            
+            if (osg_max_size<max_size)
+            {
+                
+                max_size = osg_max_size;
+            }
+            
+        }      
+        notify(INFO) << "Selected max texture size "<<max_size<<std::endl;
     }
-    
     //max_size = 64;
     
     if (new_s>max_size) new_s = max_size;

@@ -215,9 +215,7 @@ class SG_EXPORT Camera: public osg::Referenced
           * If modelTransfor is NULL then do not use any model transform - just use the
           * basic LookAt values.
           * note: Camera internals maintains the both EYE_TO_MODEL and MODEL_TO_EYE
-          * internally and ensures that they are the inverse of one another.  However,
-          * if you modify the attached transform then you must call dirtyTransform, to
-          * allow the OSG to update matrices accordingly.*/
+          * internally and ensures that they are the inverse of one another.*/
         void attachTransform(const TransformMode mode, Matrix* modelTransform=0);
 
         Matrix* getTransform(const TransformMode mode);

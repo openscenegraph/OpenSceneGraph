@@ -306,9 +306,10 @@ public:
 
        virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
        {
-            _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()));
             
             sh.drawImplementation(camera);
+
+            _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()));
        }
        
        osg::ref_ptr<DatabasePager> _databasePager;
@@ -330,8 +331,15 @@ bool Viewer::realize()
             p!=_shvec.end();
             ++p)
         {
+            // pass the database pager to the cull visitor so node can send requests to the pager.
             (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+            
+            // set up a draw callback to pre compile any rendering object of database has loaded, 
+            // but not yet merged with the main scene graph.
             (*p)->setDrawCallback(new DatabasePagerCompileCallback(_databasePager.get()));
+            
+            // tell the database pager which graphic context the compile of rendering objexts is needed.
+            _databasePager->setCompileRenderingObjectsForContexID((*p)->getSceneView()->getState()->getContextID(),true);
         }
     }
     

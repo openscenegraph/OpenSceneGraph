@@ -25,6 +25,7 @@
 #include <osgProducer/Export>
 
 #include <map>
+#include <set>
 
 namespace osgProducer {
 
@@ -73,6 +74,12 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         void removeExpiredSubgraphs(double currentFrameTime);
         
         
+        /** Turn the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
+        void setCompileRenderingObjectsForContexID(unsigned int contextID, bool on);
+        
+        /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
+        bool getCompileRenderingObjectsForContexID(unsigned int contextID);
+
         /* Set the maximum amount of time available for compile rendering objects. */
         void setMaximumTimeForCompilingRenderingObjects(double time) { _maximumTimeForCompiling = time; }
         
@@ -89,7 +96,7 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         virtual ~DatabasePager() {}
         
         // make friends with helper classes defined in DatabasePager.cpp.
-        class FindRenderingObjectsVisitor;
+        class FindCompileableRenderingObjectsVisitor;
         class FindPagedLODsVisitor;
 
         typedef std::vector< osg::ref_ptr<osg::PagedLOD> > PagedLODList;
@@ -99,6 +106,8 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         typedef std::pair<StateSetList,DrawableList>       DataToCompile;
         typedef std::map< unsigned int, DataToCompile >    DataToCompileMap; 
 
+        typedef std::set<unsigned int>                     ActiveGraphicsContexts;
+        
         struct DatabaseRequest : public osg::Referenced
         {
             DatabaseRequest():
@@ -118,15 +127,15 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         DatabaseRequestList     _fileRequestList;
         Producer::Mutex         _fileRequestListMutex;
         
-        DatabaseRequestList     _dataLoadedList;
-        Producer::Mutex         _dataLoadedListMutex;
+        DatabaseRequestList     _dataToCompileList;
+        Producer::Mutex         _dataToCompileListMutex;
         
         bool                    _deleteRemovedSubgraphsInDatabaseThread;
         osg::NodeList           _childrenToDeleteList;
         Producer::Mutex         _childrenToDeleteListMutex;
 
         DatabaseRequestList     _dataToMergeList;
-        Producer::Mutex         _dataToMergeMutex;
+        Producer::Mutex         _dataToMergeListMutex;
         
         
         PagedLODList            _pagedLODList;
@@ -134,6 +143,7 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         double                  _expiryDelay;
 
         double                  _maximumTimeForCompiling;
+        ActiveGraphicsContexts  _activeGraphicsContexts;
 
 };
 

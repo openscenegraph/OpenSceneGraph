@@ -90,6 +90,7 @@ ConvertFromFLT::ConvertFromFLT() :
     _unitScale = 1.0;
     _useTextureAlphaForTranspancyBinning = true;
     _bHdrRgbMode = false;
+    _currentLocalVertexPool = 0;
 }
 
 
@@ -1891,7 +1892,7 @@ int ConvertFromFLT::addMeshPrimitives ( osg::Group &parent, GeoSetBuilder *, Mes
 int ConvertFromFLT::visitLocalVertexPool ( GeoSetBuilder *, LocalVertexPoolRecord *rec )
 {
     // Make the given instance the current one.
-    rec->makeCurrent();
+    _currentLocalVertexPool = rec;
 
     // We didn't add any vertices.
     return 0;
@@ -1900,11 +1901,22 @@ int ConvertFromFLT::visitLocalVertexPool ( GeoSetBuilder *, LocalVertexPoolRecor
 
 void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecord *mesh )
 {
-    assert ( mesh );
+    if ( !mesh )
+    {
+        osg::notify(osg::NOTICE)<<"Warning:ConvertFromFLT::visitMeshPrimitive () mesh is 0, unable to process."<<std::endl;
+        return;
+    }
 
     osg::Geode *geode = new osg::Geode();
     osg::Geometry *geometry = new osg::Geometry();
-    LocalVertexPoolRecord *pool = LocalVertexPoolRecord::getCurrent();
+    LocalVertexPoolRecord *pool = _currentLocalVertexPool;
+    
+    if (!pool)
+    {
+        osg::notify(osg::NOTICE)<<"Warning:ConvertFromFLT::visitMeshPrimitive () pool is 0, unable to process."<<std::endl;
+        return;
+    }
+    
     assert ( pool );
 
     // Set the correct primitive type.

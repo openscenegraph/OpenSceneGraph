@@ -26,7 +26,7 @@ public:
     /** get the singleton instance.*/
     static FreeTypeLibrary* instance();
 
-    FreeTypeFont* getFont(const std::string& fontfile,unsigned int index=0);
+    osgText::Font* getFont(const std::string& fontfile,unsigned int index=0);
 
 protected:
 

@@ -45,8 +45,9 @@ public:
     // forward declare nested classes.
     class Glyph;
     class GlyphTexture;
+    class FontImplementation;
 
-    Font();
+    Font(FontImplementation* implementation=0);
 
     virtual osg::Object* cloneType() const { return 0; } // cloneType() not appropriate
     virtual osg::Object* clone(const osg::CopyOp&) const { return 0; } // clone() not appropriate
@@ -54,22 +55,55 @@ public:
     virtual const char* className() const { return "Font"; }
     virtual const char* libraryName() const { return "osgText"; }
 
-    virtual std::string getFileName() const = 0;
+    virtual std::string getFileName() const;
 
-    /** Set the pixel width and height */
-    virtual void setSize(unsigned int width, unsigned int height) = 0;
+    /** Set the pixel width and height hint.*/
+    virtual void setSize(unsigned int width, unsigned int height);
     
     unsigned int getWidth() { return _width; }
     unsigned int getHeight() { return _height; }
 
-    virtual Glyph* getGlyph(unsigned int charcode) = 0;
+    /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
+    virtual Glyph* getGlyph(unsigned int charcode);
     
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode) = 0;
+    /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
+    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode);
     
-    virtual bool hasVertical() const = 0;
+    /** Return true if this font provides vertical alignments and spacing or glyphs.*/
+    virtual bool hasVertical() const;
+
+
+    /** Set the margin around each glyph, 
+      * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
+      * Default margin is 2 texels.*/    
+    void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
+    unsigned int getGlyphImageMargin() const { return _margin; }
+
+    /** Set the size of texture to create to store the glyph images when rendering.
+      * Note, this doesn't affect already created Texture Glhph's.*/
+    void setTextureSizeHint(unsigned int width,unsigned int height);
+    
+    unsigned int getTextureWidthHint() const { return _textureWidthHint; }
+    unsigned int getTextureHeightHint() const { return _textureWidthHint; }    
+
+    /** Set the minification texture filter to use when creating the texture to store the glyph images when rendering.
+      * Note, this doesn't affect already created Texture Glhph's.*/
+    void setMinFilterHint(osg::Texture::FilterMode mode);
+    osg::Texture::FilterMode getMinFilterHint() const { return _minFilterHint; }
+    
+    /** Set the magnification texture filter to use when creating the texture to store the glyph images when rendering.
+      * Note, this doesn't affect already created Texture Glhph's.*/
+    void setMagFilterHint(osg::Texture::FilterMode mode);
+    osg::Texture::FilterMode getMagFilterHint() const { return _magFilterHint; }
 
     // make Text a friend to allow it add and remove its entry in the Font's _textList.
-    friend class Text;
+    friend class FontImplementation;
+
+    void setImplementation(FontImplementation* implementation);
+
+    FontImplementation* getImplementation() { return _implementation.get(); }
+    const FontImplementation* getImplementation() const { return _implementation.get(); }
+
 
 protected:
 
@@ -85,20 +119,56 @@ protected:
     typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
     typedef std::set< Text* >                               TextList;
     
-    SizeGlyphMap        _sizeGlyphMap;
-    GlyphTextureList    _glyphTextureList;
-    StateSetList        _stateSetList;
-    
-    // list of text object to contact when Font is forcebly removed.
-    TextList            _textList;
+    SizeGlyphMap                    _sizeGlyphMap;
+    GlyphTextureList                _glyphTextureList;
+    StateSetList                    _stateSetList;
     
     // current active size of font
-    unsigned int _width;
-    unsigned int _height;
+    unsigned int                    _width;
+    unsigned int                    _height;
+    unsigned int                    _margin;
+
+    unsigned int                    _textureWidthHint;
+    unsigned int                    _textureHeightHint;   
+    osg::Texture::FilterMode        _minFilterHint;
+    osg::Texture::FilterMode        _magFilterHint;
+    
+    osg::ref_ptr<FontImplementation> _implementation;
 
     
 // declare the nested classes.
 public:
+
+    class OSGTEXT_EXPORT FontImplementation : public osg::Referenced
+    {
+    public:
+    
+        virtual std::string getFileName() const = 0;
+
+        /** Set the pixel width and height hint.*/
+        virtual void setSize(unsigned int width, unsigned int height) = 0;
+
+        /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
+        virtual Glyph* getGlyph(unsigned int charcode) = 0;
+
+        /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
+        virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode) = 0;
+
+        /** Return true if this font provides vertical alignments and spacing or glyphs.*/
+        virtual bool hasVertical() const = 0;
+        
+        void setWidth(unsigned int width) { _facade->_width = width; }
+
+        void setHeight(unsigned int height) { _facade->_height = height; }
+        
+        void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
+        {
+            _facade->addGlyph(width, height, charcode, glyph);
+        }
+
+        Font* _facade;
+    };
+
 
     class OSGTEXT_EXPORT GlyphTexture : public osg::Texture2D
     {
@@ -109,6 +179,10 @@ public:
         void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
         osg::StateSet* getStateSet() { return _stateset; }
         const osg::StateSet* getStateSet() const { return _stateset; }
+
+        /** Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other.*/    
+        void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
+        unsigned int getGlyphImageMargin() const { return _margin; }
 
         bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
         
@@ -124,6 +198,7 @@ public:
         
         // parameter used to compute the size and position of empty space
         // in the texture which could accomodate new glyphs.
+        int _margin;
         int _usedY;
         int _partUsedX;
         int _partUsedY;

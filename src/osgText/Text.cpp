@@ -51,25 +51,17 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _color(text._color),
     _drawMode(text._drawMode)
 {
-    if (_font.valid()) _font->_textList.insert(this);
 }
 
 Text::~Text()
 {
-    if (_font.valid()) _font->_textList.erase(this);
 }
 
 void Text::setFont(Font* font)
 {
     if (_font==font) return;
-
-    // unregister from the old font.    
-    if (_font.valid()) _font->_textList.erase(this);
     
     _font = font;
-
-    // register with the new font.    
-    if (_font.valid()) _font->_textList.insert(this);
     
     computeGlyphRepresentation();
 }
@@ -244,8 +236,8 @@ void Text::computeGlyphRepresentation()
         if (glyph)
         {
 
-            float width = (float)glyph->s() * wr;
-            float height = (float)glyph->t() * hr;
+            float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
+            float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
 
             if (_layout==RIGHT_TO_LEFT)
             {

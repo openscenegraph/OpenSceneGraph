@@ -19,7 +19,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-class FreeTypeFont : public osgText::Font
+class FreeTypeFont : public osgText::Font::FontImplementation
 {
 // declare the interface to a font.
 public:

@@ -29,7 +29,7 @@ Node *makeBase( void )
     c = 0;
     for( i = 0; i <= 18; i++ )
     {
-        theta = (float)i * 20.0 * M_PI/180.0;
+        theta = osg::DegreesToRadians((float)i * 20.0);
 
         coords[c][0] = ir * cosf( theta );
         coords[c][1] = ir * sinf( theta );

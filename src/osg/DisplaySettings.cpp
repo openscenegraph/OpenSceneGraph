@@ -11,7 +11,7 @@ class DisplaySettingsPtr
         DisplaySettingsPtr() : _ptr(0L) {}
         DisplaySettingsPtr(DisplaySettings* t): _ptr(t) {}
         DisplaySettingsPtr(const DisplaySettingsPtr& rp):_ptr(rp._ptr) { }
-        ~DisplaySettingsPtr() { if (_ptr) delete _ptr; _ptr=0L; }
+        ~DisplaySettingsPtr() { if (_ptr) osgDelete _ptr; _ptr=0L; }
 
         inline DisplaySettings* get() { return _ptr; }
 

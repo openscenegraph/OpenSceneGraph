@@ -64,7 +64,7 @@ FTPixmapGlyph::FTPixmapGlyph( FT_Glyph glyph)
 
 FTPixmapGlyph::~FTPixmapGlyph()
 {
-    delete[] data;
+    osgDelete [] data;
 }
 
 

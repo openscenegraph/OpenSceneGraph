@@ -294,7 +294,7 @@ char *osgDB::findDSO( const char *name )
     strcat(prependosgPlugins,name);
 
     fileFound = findFileInPath( prependosgPlugins , path );
-    delete [] prependosgPlugins;
+    osgDelete [] prependosgPlugins;
 
     return fileFound;
 #else // defined macintosh

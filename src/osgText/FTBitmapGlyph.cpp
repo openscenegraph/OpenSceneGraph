@@ -52,7 +52,7 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
 
 FTBitmapGlyph::~FTBitmapGlyph()
 {
-    delete[] data;
+    osgDelete [] data;
 }
 
 

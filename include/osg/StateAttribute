@@ -19,6 +19,7 @@
 #include <osg/GL>
 
 #include <typeinfo>
+#include <utility>
 
 namespace osg {
 
@@ -128,14 +129,6 @@ class SG_EXPORT StateAttribute : public Object
             FRONTFACE,
             
             LIGHT,
-            LIGHT_0         =LIGHT,
-            LIGHT_1,
-            LIGHT_2,
-            LIGHT_3,
-            LIGHT_4,
-            LIGHT_5,
-            LIGHT_6,
-            LIGHT_7,
 
             POINT,
             LINEWIDTH,
@@ -156,12 +149,6 @@ class SG_EXPORT StateAttribute : public Object
 
             
             CLIPPLANE,
-            CLIPPLANE_0     =CLIPPLANE,
-            CLIPPLANE_1,
-            CLIPPLANE_2,
-            CLIPPLANE_3,
-            CLIPPLANE_4,
-            CLIPPLANE_5,
             
             COLORMATRIX,
             
@@ -178,6 +165,26 @@ class SG_EXPORT StateAttribute : public Object
             VALIDATOR,
             VIEWMATRIXEXTRACTOR,
         };
+        
+        /** Simple pairing between an attribute type and the member within that attribute type group.*/
+        typedef std::pair<Type,unsigned int> TypeMemberPair;
+
+/*        
+        struct TypeMember
+        {
+            inline TypeMember(Type type, unsigned int member=0):
+                _type(type),
+                _member(member) {}
+                
+            inline bool operator < (const TypeMember& tm) const
+            {
+                return (_type<tm._type) ? true : ( (tm._type<_type) ? false : (_member<tm._member) );
+            }
+        
+            Type            _type;
+            unsigned int    _member;
+        };
+*/        
 
 
         StateAttribute() { setDataVariance(STATIC); }
@@ -194,22 +201,28 @@ class SG_EXPORT StateAttribute : public Object
             Must be defined by derived classes.*/
         virtual Object* clone(const CopyOp&) const = 0;
 
-        /** return true if this and obj are of the same kind of object.*/
+        /** Return true if this and obj are of the same kind of object.*/
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateAttribute*>(obj)!=NULL; }
 
-        /** return the name of the attribute's library.*/
+        /** Return the name of the attribute's library.*/
         virtual const char* libraryName() const { return "osg"; }
 
-        /** return the name of the attribute's class type.*/
+        /** Return the name of the attribute's class type.*/
         virtual const char* className() const { return "StateAttribute"; }
         
-        /** return the Type identifier of the attribute's class type.*/
+        /** Return the Type identifier of the attribute's class type.*/
         virtual Type getType() const = 0;
 
-        /** return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit.*/
+        /** Return the member identifier within the attribute's class type. Used for light number/clip plane number etc.*/
+        virtual unsigned int getMember() const { return 0; }
+
+        /** Return the TypeMemberPair that uniquely identifies this type member.*/
+        inline TypeMemberPair getTypeMemberPair() const { return TypeMemberPair(getType(),getMember()); }
+
+        /** Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit.*/
         virtual bool isTextureAttribute() const { return false; }
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const = 0;
         
         bool operator <  (const StateAttribute& rhs) const { return compare(rhs)<0; }
@@ -223,7 +236,7 @@ class SG_EXPORT StateAttribute : public Object
             virtual void usesTextureMode(GLMode mode) = 0;
         };
 
-        /** return the modes associated with this StateAttribute.*/        
+        /** Return the modes associated with this StateAttribute.*/        
         virtual bool getModeUsage(ModeUsage&) const
         {
             // default to no GLMode's associated with use of the StateAttribute.

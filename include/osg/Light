@@ -42,7 +42,7 @@ class SG_EXPORT Light : public StateAttribute
             _spot_exponent(light._spot_exponent),
             _spot_cutoff(light._spot_cutoff) {}
         
-        META_StateAttribute(osg, Light, (Type)(LIGHT_0+_lightnum));
+        META_StateAttribute(osg, Light, LIGHT);
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
@@ -67,11 +67,15 @@ class SG_EXPORT Light : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
+        virtual unsigned int getMember() { return _lightnum; }
+
         virtual bool getModeUsage(ModeUsage& usage) const
         {
             usage.usesMode(GL_LIGHT0+_lightnum);
             return true;
         }
+        
+        
 
         /** Set which OpenGL light to operate on. */
         void setLightNum(int num) { _lightnum = num; }

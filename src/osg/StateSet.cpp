@@ -85,10 +85,10 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
         itr!=rhs._attributeList.end();
         ++itr)
     {
-        StateAttribute::Type type = itr->first;
+        const StateAttribute::TypeMemberPair& typemember = itr->first;
         const RefAttributePair& rap = itr->second;
         StateAttribute* attr = copyop(rap.first.get());
-        if (attr) _attributeList[type]=RefAttributePair(attr,rap.second);
+        if (attr) _attributeList[typemember]=RefAttributePair(attr,rap.second);
     }
     
     // copy texture related modes.
@@ -107,10 +107,10 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
             itr!=rhs_attributeList.end();
             ++itr)
         {
-            StateAttribute::Type type = itr->first;
+            const StateAttribute::TypeMemberPair& typemember = itr->first;
             const RefAttributePair& rap = itr->second;
             StateAttribute* attr = copyop(rap.first.get());
-            if (attr) lhs_attributeList[type]=RefAttributePair(attr,rap.second);
+            if (attr) lhs_attributeList[typemember]=RefAttributePair(attr,rap.second);
         }
     }
     
@@ -592,9 +592,9 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, StateAttribute::G
     }
 }
 
-void StateSet::removeAttribute(StateAttribute::Type type)
+void StateSet::removeAttribute(StateAttribute::Type type, unsigned int member)
 {
-    AttributeList::iterator itr = _attributeList.find(type);
+    AttributeList::iterator itr = _attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=_attributeList.end())
     {
         setAssociatedModes(itr->second.first.get(),StateAttribute::INHERIT);
@@ -606,7 +606,7 @@ void StateSet::removeAttribute(StateAttribute* attribute)
 {
     if (!attribute) return;
     
-    AttributeList::iterator itr = _attributeList.find(attribute->getType());
+    AttributeList::iterator itr = _attributeList.find(attribute->getTypeMemberPair());
     if (itr!=_attributeList.end())
     {
         if (itr->second.first != attribute) return;
@@ -616,19 +616,19 @@ void StateSet::removeAttribute(StateAttribute* attribute)
     }
 }
 
-StateAttribute* StateSet::getAttribute(StateAttribute::Type type)
+StateAttribute* StateSet::getAttribute(StateAttribute::Type type, unsigned int member)
 {
-    return getAttribute(_attributeList,type);
+    return getAttribute(_attributeList,type,member);
 }
 
-const StateAttribute* StateSet::getAttribute(StateAttribute::Type type) const
+const StateAttribute* StateSet::getAttribute(StateAttribute::Type type, unsigned int member) const
 {
-    return getAttribute(_attributeList,type);
+    return getAttribute(_attributeList,type,member);
 }
 
-const StateSet::RefAttributePair* StateSet::getAttributePair(StateAttribute::Type type) const
+const StateSet::RefAttributePair* StateSet::getAttributePair(StateAttribute::Type type, unsigned int member) const
 {
-    return getAttributePair(_attributeList,type);
+    return getAttributePair(_attributeList,type,member);
 }
 
 void StateSet::setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value)
@@ -733,7 +733,7 @@ void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type typ
 {
     if (unit>=_textureAttributeList.size()) return;
     AttributeList& attributeList = _textureAttributeList[unit];
-    AttributeList::iterator itr = attributeList.find(type);
+    AttributeList::iterator itr = attributeList.find(StateAttribute::TypeMemberPair(type,0));
     if (itr!=attributeList.end())
     {
         if (unit<_textureModeList.size())
@@ -748,21 +748,21 @@ void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type typ
 StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttribute(_textureAttributeList[unit],type);
+    return getAttribute(_textureAttributeList[unit],type,0);
 }
 
 
 const StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttribute(_textureAttributeList[unit],type);
+    return getAttribute(_textureAttributeList[unit],type,0);
 }
 
 
 const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const
 {
     if (unit>=_textureAttributeList.size()) return 0;
-    return getAttributePair(_textureAttributeList[unit],type);
+    return getAttributePair(_textureAttributeList[unit],type,0);
 }
 
 
@@ -921,14 +921,14 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
 {
     if (attribute)
     {
-        attributeList[attribute->getType()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
+        attributeList[attribute->getTypeMemberPair()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
     }
 }
 
 
-StateAttribute* StateSet::getAttribute(AttributeList& attributeList,StateAttribute::Type type)
+StateAttribute* StateSet::getAttribute(AttributeList& attributeList,StateAttribute::Type type, unsigned int member)
 {
-    AttributeList::iterator itr = attributeList.find(type);
+    AttributeList::iterator itr = attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=attributeList.end())
     {
         return itr->second.first.get();
@@ -937,9 +937,9 @@ StateAttribute* StateSet::getAttribute(AttributeList& attributeList,StateAttribu
         return NULL;
 }
 
-const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,StateAttribute::Type type) const
+const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,StateAttribute::Type type, unsigned int member) const
 {
-    AttributeList::const_iterator itr = attributeList.find(type);
+    AttributeList::const_iterator itr = attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=attributeList.end())
     {
         return itr->second.first.get();
@@ -948,9 +948,9 @@ const StateAttribute* StateSet::getAttribute(const AttributeList& attributeList,
         return NULL;
 }
 
-const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList& attributeList,StateAttribute::Type type) const
+const StateSet::RefAttributePair* StateSet::getAttributePair(const AttributeList& attributeList,StateAttribute::Type type, unsigned int member) const
 {
-    AttributeList::const_iterator itr = attributeList.find(type);
+    AttributeList::const_iterator itr = attributeList.find(StateAttribute::TypeMemberPair(type,member));
     if (itr!=attributeList.end())
     {
         return &(itr->second);

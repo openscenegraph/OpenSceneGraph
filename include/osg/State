@@ -202,20 +202,20 @@ class SG_EXPORT State : public Referenced
 
         inline void setGlobalDefaultAttribute(const StateAttribute* attribute)
         {
-            AttributeStack& as = _attributeMap[attribute->getType()];
+            AttributeStack& as = _attributeMap[attribute->getTypeMemberPair()];
             as.global_default_attribute = attribute;
         }
 
-        inline const StateAttribute* getGlobalDefaultAttribute(StateAttribute::Type type)
+        inline const StateAttribute* getGlobalDefaultAttribute(StateAttribute::Type type, unsigned int member=0)
         {
-            AttributeStack& as = _attributeMap[type];
+            AttributeStack& as = _attributeMap[StateAttribute::TypeMemberPair(type,member)];
             return as.global_default_attribute.get();
         }
 
         /** Apply an attribute if required. */
         inline bool applyAttribute(const StateAttribute* attribute)
         {
-            AttributeStack& as = _attributeMap[attribute->getType()];
+            AttributeStack& as = _attributeMap[attribute->getTypeMemberPair()];
             as.changed = true;
             return applyAttribute(attribute,as);
         }
@@ -223,14 +223,14 @@ class SG_EXPORT State : public Referenced
         inline void setGlobalDefaultTextureAttribute(unsigned int unit, const StateAttribute* attribute)
         {
             AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
-            AttributeStack& as = attributeMap[attribute->getType()];
+            AttributeStack& as = attributeMap[attribute->getTypeMemberPair()];
             as.global_default_attribute = attribute;
         }
 
-        inline const StateAttribute* getGlobalDefaultTextureAttribute(unsigned int unit, StateAttribute::Type type)
+        inline const StateAttribute* getGlobalDefaultTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member = 0)
         {
             AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
-            AttributeStack& as = attributeMap[type];
+            AttributeStack& as = attributeMap[StateAttribute::TypeMemberPair(type,member)];
             return as.global_default_attribute.get();
         }
 
@@ -240,7 +240,7 @@ class SG_EXPORT State : public Referenced
             if (setActiveTextureUnit(unit))
             {
                 AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
-                AttributeStack& as = attributeMap[attribute->getType()];
+                AttributeStack& as = attributeMap[attribute->getTypeMemberPair()];
                 as.changed = true;
                 return applyAttribute(attribute,as);
             }
@@ -265,13 +265,13 @@ class SG_EXPORT State : public Referenced
           * then use the have_applied(attribute) method as this will cause the osg::State to
           * track the current state more accurately and enable lazy state updating such
           * that only changed state will be applied.*/
-        void haveAppliedAttribute(StateAttribute::Type type);
+        void haveAppliedAttribute(StateAttribute::Type type, unsigned int member=0);
 
         /** Get whether the current specified mode is enabled (true) or disabled (false).*/ 
         bool getLastAppliedMode(StateAttribute::GLMode mode) const;
         
         /** Get the current specified attribute, return NULL if one has not yet been applied.*/ 
-        const StateAttribute* getLastAppliedAttribute(StateAttribute::Type type) const;
+        const StateAttribute* getLastAppliedAttribute(StateAttribute::Type type, unsigned int member=0) const;
         
         /** texture Mode has been set externally, update state to reflect this setting.*/
         void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
@@ -290,13 +290,13 @@ class SG_EXPORT State : public Referenced
           * then use the have_applied(attribute) method as this will the osg::State to
           * track the current state more accurately and enable lazy state updating such
           * that only changed state will be applied.*/
-        void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type);
+        void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member=0);
 
         /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/ 
         bool getLastAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode) const;
         
         /** Get the current specified texture attribute, return NULL if one has not yet been applied.*/ 
-        const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type) const;
+        const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member=0) const;
 
 
         /** Dirty the modes previously applied in osg::State.*/
@@ -788,22 +788,22 @@ class SG_EXPORT State : public Referenced
         }
         
 
-        typedef std::map<StateAttribute::GLMode,ModeStack>      ModeMap;
-        typedef std::vector<ModeMap>                            TextureModeMapList;
+        typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
+        typedef std::vector<ModeMap>                                    TextureModeMapList;
 
-        typedef std::map<StateAttribute::Type,AttributeStack>   AttributeMap;
-        typedef std::vector<AttributeMap>                       TextureAttributeMapList;
+        typedef std::map<StateAttribute::TypeMemberPair,AttributeStack> AttributeMap;
+        typedef std::vector<AttributeMap>                               TextureAttributeMapList;
 
-        typedef std::vector<const StateSet*>                    StateSetStack;
-        typedef std::vector<ref_ptr<const Matrix> >             MatrixStack;
+        typedef std::vector<const StateSet*>                            StateSetStack;
+        typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
 
-        ModeMap                                                 _modeMap;
-        AttributeMap                                            _attributeMap;
+        ModeMap                                                         _modeMap;
+        AttributeMap                                                    _attributeMap;
 
-        TextureModeMapList                                      _textureModeMapList;
-        TextureAttributeMapList                                 _textureAttributeMapList;
+        TextureModeMapList                                              _textureModeMapList;
+        TextureAttributeMapList                                         _textureAttributeMapList;
        
-        StateSetStack                                           _drawStateStack;
+        StateSetStack                                                   _drawStateStack;
         
         struct EnabledArrayPair
         {
@@ -860,9 +860,9 @@ class SG_EXPORT State : public Referenced
         void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
         void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode);
         void haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute* attribute);
-        void haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type);
+        void haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member);
         bool getLastAppliedMode(const ModeMap& modeMap,StateAttribute::GLMode mode) const;
-        const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type) const;
+        const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member) const;
 
 
         mutable bool _isSecondaryColorSupportResolved;

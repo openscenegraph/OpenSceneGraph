@@ -101,12 +101,14 @@ class SG_EXPORT StateSet : public Object
 
 
         /** Simple pairing between an attribute and its override flag.*/
-        typedef std::pair<ref_ptr<StateAttribute>,StateAttribute::OverrideValue> RefAttributePair;
-        /** a container to map StateAttribyte::Types to their respective RefAttributePair.*/
-        typedef std::map<StateAttribute::Type,RefAttributePair>                  AttributeList;
+        typedef std::pair<ref_ptr<StateAttribute>,StateAttribute::OverrideValue>    RefAttributePair;
+        
+        /** a container to map <StateAttribyte::Types,Member> to their respective RefAttributePair.*/
+        typedef std::map<StateAttribute::TypeMemberPair,RefAttributePair>           AttributeList;
 
         /** Set this StateSet to contain specified attribute and override flag.*/
         void setAttribute(StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
+
         /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
 
@@ -116,22 +118,22 @@ class SG_EXPORT StateSet : public Object
         void setAttributeToInherit(StateAttribute::Type type) { removeAttribute(type); }
 #endif
         /** remove attribute of specified type from StateSet.*/
-        void removeAttribute(StateAttribute::Type type);
+        void removeAttribute(StateAttribute::Type type, unsigned int member=0);
 
         /** remove attribute from StateSet.*/
         void removeAttribute(StateAttribute *attribute);
 
         /** Get specified StateAttribute for specified type.
           * Returns NULL if no type is contained within StateSet.*/
-        StateAttribute* getAttribute(StateAttribute::Type type);
+        StateAttribute* getAttribute(StateAttribute::Type type, unsigned int member = 0);
 
         /** Get specified const StateAttribute for specified type.
           * Returns NULL if no type is contained within const StateSet.*/
-        const StateAttribute* getAttribute(StateAttribute::Type type) const;
+        const StateAttribute* getAttribute(StateAttribute::Type type, unsigned int member = 0) const;
 
         /** Get specified RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
-        const RefAttributePair* getAttributePair(StateAttribute::Type type) const;
+        const RefAttributePair* getAttributePair(StateAttribute::Type type, unsigned int member = 0) const;
         
         /** return the list of all StateAttributes contained in this StateSet.*/
         inline AttributeList& getAttributeList() { return _attributeList; }
@@ -292,9 +294,9 @@ class SG_EXPORT StateSet : public Object
 
         void setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
 
-        StateAttribute* getAttribute(AttributeList& attributeList,const StateAttribute::Type type);
-        const StateAttribute* getAttribute(const AttributeList& attributeList,const StateAttribute::Type type) const;
-        const RefAttributePair* getAttributePair(const AttributeList& attributeList,const StateAttribute::Type type) const;
+        StateAttribute* getAttribute(AttributeList& attributeList,const StateAttribute::Type type, unsigned int member);
+        const StateAttribute* getAttribute(const AttributeList& attributeList,const StateAttribute::Type type, unsigned int member) const;
+        const RefAttributePair* getAttributePair(const AttributeList& attributeList,const StateAttribute::Type type, unsigned int member) const;
 
         int                                 _renderingHint;
 

@@ -40,15 +40,15 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
           * only available for backwards compatibility.*/
         virtual void init(osg::Node* rootnode);
 
-        virtual void addViewport(osgUtil::SceneView* sv,
+        virtual unsigned int addViewport(osgUtil::SceneView* sv,
                                  float x     = 0.0, float y      = 0.0,        
                                  float width = 1.0, float height = 1.0);
 
-        virtual void addViewport(osg::Node*,
+        virtual unsigned int addViewport(osg::Node*,
                                  float x     = 0.0, float y      = 0.0,        
                                  float width = 1.0, float height = 1.0);
 
-        const int getNumViewports() const { return _viewportList.size(); }
+        const unsigned int getNumViewports() const { return _viewportList.size(); }
 
         osgUtil::SceneView* getViewportSceneView(unsigned int pos) 
             { return _viewportList[pos].sceneView.get(); }

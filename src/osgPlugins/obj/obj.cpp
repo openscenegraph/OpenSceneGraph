@@ -17,6 +17,9 @@
 
 #include <osg/Notify>
 
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+
 using namespace obj;
 
 bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
@@ -241,6 +244,10 @@ bool Model::readMTL(std::istream& fin)
                 std::string filename(line+7);
                 material->map_Ks = filename;
             }
+            else if (strcmp(line,"refl")==0 || strncmp(line,"refl ",5)==0)
+            {
+                material->textureReflection = true;
+            }
             else
             {
                 osg::notify(osg::NOTICE) <<"*** line not handled *** :"<<line<<std::endl;
@@ -382,10 +389,15 @@ bool Model::readOBJ(std::istream& fin)
             }
             else if (strncmp(line,"mtllib ",7)==0)
             {
-                std::ifstream mfin(line+7);
-                if (mfin)
+            
+                std::string fileName = osgDB::findDataFile( line+7 );
+                if (!fileName.empty())
                 {
-                    readMTL(mfin);
+                    std::ifstream mfin(fileName.c_str());
+                    if (mfin)
+                    {
+                        readMTL(mfin);
+                    }
                 }
             }
             else if (strncmp(line,"o ",2)==0)

@@ -108,6 +108,13 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             {
                 osg::Texture2D* texture = new osg::Texture2D(image);
                 stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+                
+                if (material.textureReflection)
+                {
+                    osg::TexGen* texgen = new osg::TexGen;
+                    texgen->setMode(osg::TexGen::SPHERE_MAP);
+                    stateset->setTextureAttributeAndModes(0,texgen,osg::StateAttribute::ON);
+                }
             }
         }
 
@@ -439,6 +446,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     std::ifstream fin(fileName.c_str());
     if (fin)
     {
+    
+        osgDB::PushAndPopDataPath papdp( osgDB::getFilePath(fileName.c_str()) );
+    
         obj::Model model;
         model.readOBJ(fin);
         

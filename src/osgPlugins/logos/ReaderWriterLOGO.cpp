@@ -70,6 +70,7 @@ class Logos: public osg::Drawable
 	    setStateSet( sset );
 	    viewport = new osg::Viewport;
 	    setCullCallback( new logosCullCallback );
+	    _contextID = 0;
 	}
 
         Logos(const Logos& logo, const CopyOp& copyop=CopyOp::SHALLOW_COPY) :Drawable( logo, copyop ) {}
@@ -80,6 +81,8 @@ class Logos: public osg::Drawable
 
         virtual void drawImmediateMode( osg::State &state )
 	{
+	    if( state.getContextID() != _contextID ) return;
+
 	    int x = 0, y = 0, w = 1, h = 1;
 	    if( viewport != NULL )
 		    viewport->getViewport( x, y, w, h );
@@ -97,7 +100,7 @@ class Logos: public osg::Drawable
     	    glPushMatrix();
     	    glLoadIdentity();
 
-	    vector <osg::Image *>::iterator p;
+	    std::vector <osg::Image *>::iterator p;
 	    float th = 0.0;
 	    for( p = logos[Center].begin(); p != logos[Center].end(); p++ )
 		th += (*p)->t();
@@ -148,6 +151,15 @@ class Logos: public osg::Drawable
 	}
 
 	osg::Viewport *getViewport() { return viewport; }
+	void setContextID( unsigned int id ) { _contextID = id; }
+
+	bool hasLogos()
+	{
+	    int n = 0;
+	    for( int i = Center; i <= last_position; i++ )
+		n += logos[i].size();
+	    return (n != 0);
+	}
 
     protected:
         Logos(const Logos&):Drawable() {}
@@ -156,12 +168,13 @@ class Logos: public osg::Drawable
         virtual ~Logos() {}
         virtual const bool computeBound() const 
 	{
-	    _bbox.set( -1, -1, -1, 1, 1, 1 );
+	    _bbox.set( -1, -1, -1, 1, 1, 1);
             return true;
         }
     private :
- 	vector <osg::Image *> logos[last_position];
+ 	std::vector <osg::Image *> logos[last_position];
 	osg::Viewport *viewport;
+	unsigned int _contextID;
 };
 
 
@@ -182,18 +195,25 @@ public:
             osg::notify(osg::INFO)<<   "ReaderWriterLOGO::readNode( "<<fileName.c_str()<<" )\n";
 
 	    osg::Geode *geode = new osg::Geode;
+
+	    unsigned int screen = 0;
+
 	    Logos* ld = new Logos;
-	    geode->addDrawable( ld );
+	    ld->setContextID( screen );
 
 	    Logos::RelativePosition pos = Logos::LowerRight;
 
-	    filebuf fb;
-	    fb.open( fileName.c_str(), "r");
-	    istream in(&fb);
-	    while( !in.eof() )
+	    FILE *fp;
+	    if( (fp = fopen( fileName.c_str(), "r")) == NULL )
+		return NULL;
+	    while( !feof(fp))
 	    {
-		std::string str;
-		in>> str;
+		char buff[128];
+
+		if( fscanf( fp, "%s", buff ) != 1 )
+		    break;
+
+		std::string str(buff);
 
 		if( str == "Center" )
 		    pos = Logos::Center;
@@ -209,9 +229,39 @@ public:
 		    pos = Logos::UpperCenter;
 		else if( str == "LowerCenter" )
 		    pos = Logos::LowerCenter;
+		else if( str == "Camera" )
+		{
+		    unsigned int n;
+		    if( (fscanf( fp, "%d", &n )) != 1 )
+		    {
+			std::cerr << "Error... Camera requires an integer argument\n";
+			break;
+		    }
+		    if( screen != n )
+		    {
+			screen = n;
+			if( ld->hasLogos() )
+			{
+			    geode->addDrawable( ld );
+			    ld = new Logos;
+			    ld->setContextID( screen );
+			}
+			else
+			    ld->setContextID( screen );
+		    }
+		}
 		else
+		{
+		    if( str.length() )
 		    ld->addLogo( pos, str );
+		}
 	    }
+	    fclose( fp );
+
+	    if( ld->hasLogos() )
+	        geode->addDrawable( ld );
+
+	    geode->setCullingActive(false);
 	    return geode;
   	}
 };

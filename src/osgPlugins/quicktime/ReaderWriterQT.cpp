@@ -42,7 +42,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"tga");
         }
 
-        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
         {                    
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

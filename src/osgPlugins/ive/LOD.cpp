@@ -63,15 +63,15 @@ void LOD::read(DataInputStream* in){
 			throw Exception("LOD::read(): Could not cast this osg::LOD to an osg::Group.");
 		// Read LOD's properties
 
-        if ( in->getVersion() > VERSION_0002 )
-                setRadius(in->readFloat());
+                if ( in->getVersion() > VERSION_0002 )
+                    setRadius(in->readFloat());
 
 		// Read centermode
 		setCenterMode((osg::LOD::CenterMode)in->readInt());
 		setCenter(in->readVec3());
 
-        if ( in->getVersion() > VERSION_0002 )
-            setRangeMode((RangeMode)in->readInt());
+                if ( in->getVersion() > VERSION_0002 )
+                    setRangeMode((RangeMode)in->readInt());
 
 		// Read rangelist
 		int size = in->readInt();;

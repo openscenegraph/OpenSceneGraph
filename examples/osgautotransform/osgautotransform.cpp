@@ -71,7 +71,7 @@ osg::Node* createLabel3(const osg::Vec3& pos, float size, const std::string& lab
     return geode;    
 }
 
-osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps)
+osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::AutoTransform::AutoRotateMode autoRotateMode, const std::string& str)
 {
     osg::Group* group = new osg::Group;
 
@@ -80,7 +80,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps)
 
     osg::Vec3 pos = s;
 
-    bool useAuto = false;
+    bool useAuto = true;
     if (useAuto)
     {
         osg::Vec3Array* vertices = new osg::Vec3Array;
@@ -89,9 +89,8 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps)
         {
             osg::AutoTransform* at = new osg::AutoTransform;
             at->setPosition(pos);
-            at->setAutoRotateToScreen(true);
-            at->setAutoScaleToScreen(true);
-            at->addChild(createLabel(osg::Vec3(0.0f,0.0f,0.0f),40.0f,"Test 2"));
+            at->setAutoRotateMode(autoRotateMode);
+            at->addChild(createLabel(osg::Vec3(0.0f,0.0f,0.0f),dv.length()*0.2f,str));
             vertices->push_back(pos);
             pos += dv;
 
@@ -118,7 +117,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps)
 
         for(int i=0;i<numReps;++i)
         {
-            group->addChild(createLabel3(osg::Vec3(pos),dv.length()*0.5f,"Test 2"));
+            group->addChild(createLabel3(osg::Vec3(pos),dv.length()*0.5f,str));
             vertices->push_back(pos);
             pos += dv;
 
@@ -146,11 +145,11 @@ osg::Node* createScene()
 {
     osg::Group* root = new osg::Group;
     
-    int numReps = 3333;
-//    int numReps = 10;
-    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(1000.0,0.0,0.0),numReps));
-    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1000.0,0.0),numReps));
-    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,0.0,1000.0),numReps));    
+//    int numReps = 3333;
+    int numReps = 10;
+    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(1000.0,0.0,0.0),numReps,osg::AutoTransform::ROTATE_TO_CAMERA,"ROTATE_TO_CAMERA"));
+    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1000.0,0.0),numReps,osg::AutoTransform::ROTATE_TO_SCREEN,"ROTATE_TO_SCREEN"));
+    root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,0.0,1000.0),numReps,osg::AutoTransform::NO_ROTATION,"NO_ROTATION"));    
     
     return root;
 }

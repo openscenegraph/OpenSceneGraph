@@ -93,7 +93,18 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
 	if (fr.matchSequence("autoRotateToScreen %w"))
 	{
 		std::string w(fr[1].getStr());
-		transform.setAutoRotateToScreen(w == "TRUE");
+		transform.setAutoRotateMode((w == "TRUE") ? osg::AutoTransform::ROTATE_TO_SCREEN : osg::AutoTransform::NO_ROTATION);
+		fr += 2;
+		iteratorAdvanced = true;
+	}
+
+	if (fr.matchSequence("autoRotateMode %w"))
+	{
+		std::string w(fr[1].getStr());
+                if (w=="ROTATE_TO_SCREEN") transform.setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
+                else if (w=="ROTATE_TO_CAMERA") transform.setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
+                else if (w=="NO_ROTATION") transform.setAutoRotateMode(osg::AutoTransform::NO_ROTATION);
+                
 		fr += 2;
 		iteratorAdvanced = true;
 	}
@@ -118,9 +129,18 @@ bool AutoTransform_writeLocalData(const Object& obj, Output& fw)
     fw.indent()<<"rotation "<<transform.getRotation()<<std::endl;
     fw.indent()<<"scale "<<transform.getScale()<<std::endl;
     fw.indent()<<"pivotPoint "<<transform.getPivotPoint()<<std::endl;
-	fw.indent()<<"autoUpdateEyeMovementTolerance "<<transform.getAutoUpdateEyeMovementTolerance()<<std::endl;
-	fw.indent()<<"autoRotateToScreen "<<(transform.getAutoRotateToScreen()?"TRUE":"FALSE")<<std::endl;
-	fw.indent()<<"autoScaleToScreen "<<(transform.getAutoScaleToScreen()?"TRUE":"FALSE")<<std::endl;
+    fw.indent()<<"autoUpdateEyeMovementTolerance "<<transform.getAutoUpdateEyeMovementTolerance()<<std::endl;
+    fw.indent()<<"autoRotateMode ";
+    switch(transform.getAutoRotateMode())
+    {
+      case(osg::AutoTransform::ROTATE_TO_SCREEN): fw<<"ROTATE_TO_SCREEN"<<std::endl; break;
+      case(osg::AutoTransform::ROTATE_TO_CAMERA): fw<<"ROTATE_TO_CAMERA"<<std::endl; break;
+      case(osg::AutoTransform::NO_ROTATION):
+      default: fw<<"NO_ROTATION"<<std::endl; break;
+    }
+
+
+    fw.indent()<<"autoScaleToScreen "<<(transform.getAutoScaleToScreen()?"TRUE":"FALSE")<<std::endl;
 
     return true;
 }

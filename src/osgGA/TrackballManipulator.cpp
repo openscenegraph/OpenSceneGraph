@@ -28,6 +28,7 @@ void TrackballManipulator::setNode(osg::Node* node)
         const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
     }
+    if (getAutoComputeHomePosition()) computeHomePosition();
 }
 
 
@@ -43,21 +44,12 @@ osg::Node* TrackballManipulator::getNode()
 }
 
 
-                                 /*ea*/
 void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 {
-    if(_node.get())
-    {
+    if (getAutoComputeHomePosition()) computeHomePosition();
 
-        const osg::BoundingSphere& boundingSphere=_node->getBound();
-
-        computePosition(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
-                        boundingSphere._center,
-                        osg::Vec3(0.0f,0.0f,1.0f));
-
-        us.requestRedraw();
-    }
-
+    computePosition(_homeEye, _homeCenter, _homeUp);
+    us.requestRedraw();
 }
 
 

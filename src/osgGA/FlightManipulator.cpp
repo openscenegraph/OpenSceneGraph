@@ -28,6 +28,8 @@ void FlightManipulator::setNode(osg::Node* node)
         const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
     }
+
+    if (getAutoComputeHomePosition()) computeHomePosition();    
 }
 
 
@@ -45,26 +47,17 @@ osg::Node* FlightManipulator::getNode()
 
 void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(_node.get())
-    {
+    if (getAutoComputeHomePosition()) computeHomePosition();
 
-        const osg::BoundingSphere& boundingSphere=_node->getBound();
+    computePosition(_homeEye, _homeCenter, _homeUp);
+    
+    _velocity = 0.0;
 
-        computePosition(
-            boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
-            osg::Vec3(0.0f,1.0f,0.0f),
-            osg::Vec3(0.0f,0.0f,1.0f));
+    us.requestRedraw();
 
-        _velocity = 0.0f;
+    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
-        us.requestRedraw();
-
-        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
-
-        flushMouseEventStack();
-
-    }
-
+    flushMouseEventStack();
 }
 
 
@@ -198,8 +191,10 @@ osg::Matrixd FlightManipulator::getInverseMatrix() const
     return osg::Matrixd::translate(-_eye)*osg::Matrixd::rotate(_rotation.inverse());
 }
 
-void FlightManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)
+void FlightManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up)
 {
+    osg::Vec3d lv = center-eye;
+
     osg::Vec3 f(lv);
     f.normalize();
     osg::Vec3 s(f^up);

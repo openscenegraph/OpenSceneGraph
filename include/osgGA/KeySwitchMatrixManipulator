@@ -109,6 +109,12 @@ public:
 
         virtual osg::Node* getNode()                    { return _current->getNode(); }
 
+        virtual void setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up);
+
+        virtual void setAutoComputeHomePosition(bool flag);
+
+        virtual void computeHomePosition();
+
         virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->home(ee,aa); }
 
         virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->init(ee,aa); }

@@ -375,8 +375,6 @@ void Viewer::setUpViewer(unsigned int options)
         // enable depth testing by default.
         globalStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
-        // enable lighting by default
-        globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
         // set up an alphafunc by default to speed up blending operations.
         osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
@@ -384,18 +382,29 @@ void Viewer::setUpViewer(unsigned int options)
         globalStateSet->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
     }
     
-    
-    // add either a headlight or sun light to the scene.
-    osg::LightSource* lightsource = new osg::LightSource;
-    setSceneDecorator(lightsource);
+    if (options & HEAD_LIGHT_SOURCE || options & SKY_LIGHT_SOURCE)
     {
-        osg::Light* light = new osg::Light;
-        lightsource->setLight(light);
-        lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE); // headlight.
-        lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
+        // enable lighting by default
+        globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+        
+        // add either a headlight or sun light to the scene.
+        osg::LightSource* lightsource = new osg::LightSource;
+        setSceneDecorator(lightsource);
+        {
+            osg::Light* light = new osg::Light;
+            lightsource->setLight(light);
+            if (options & HEAD_LIGHT_SOURCE)
+            {
+                lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_ABSOLUTE); // headlight.
+            }
+            else
+            {
+                lightsource->setReferenceFrame(osg::LightSource::RELATIVE_TO_PARENTS); // skylight
+            }
+            lightsource->setLocalStateSetModes(osg::StateAttribute::ON);
+        }
     }
-
-    
+        
     if (!_updateVisitor) _updateVisitor = new osgUtil::UpdateVisitor;
     
     _updateVisitor->setFrameStamp(_frameStamp.get());
@@ -585,7 +594,7 @@ bool Viewer::realize()
         osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
         init_event->adaptFrame(0.0);
     
-        _keyswitchManipulator->setNode(getSceneDecorator());
+        _keyswitchManipulator->setNode(getTopMostSceneData());
         _keyswitchManipulator->home(*init_event,*this);
     }
     

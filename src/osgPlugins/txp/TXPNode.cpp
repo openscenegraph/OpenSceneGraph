@@ -56,11 +56,15 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (cv)
         {
-            //const osg::Timer& timer = *osg::Timer::instance();
-            //osg::Timer_t start = timer.tick();
-            //std::cout<<"Doing visible tile search"<<std::endl;
+//#define PRINT_TILEMAPP_TIMEINFO        
+#ifdef PRINT_TILEMAPP_TIMEINFO        
+            const osg::Timer& timer = *osg::Timer::instance();
+            osg::Timer_t start = timer.tick();
+            std::cout<<"Doing visible tile search"<<std::endl;
+#endif // PRINT_TILEMAPP_TIMEINFO        
         
             osg::ref_ptr<TileMapper> tileMapper = new TileMapper;
+            tileMapper->setLODScale(cv->getLODScale());
             tileMapper->pushViewport(cv->getViewport());
             tileMapper->pushProjectionMatrix(&(cv->getProjectionMatrix()));
             tileMapper->pushModelViewMatrix(&(cv->getModelViewMatrix()));
@@ -78,7 +82,9 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
             
             cv->setUserData(tileMapper.get());
 
-            //std::cout<<"Completed visible tile search in "<<timer.delta_m(start,timer.tick())<<std::endl;
+#ifdef PRINT_TILEMAPP_TIMEINFO        
+            std::cout<<"Completed visible tile search in "<<timer.delta_m(start,timer.tick())<<std::endl;
+#endif // PRINT_TILEMAPP_TIMEINFO        
 
         }        
     

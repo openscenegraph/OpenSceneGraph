@@ -360,7 +360,21 @@ void TileMapper::checkValidityOfAllVisibleTiles()
         
     } while (!toRemoveList.empty());
     
-//    if (!_blackListedNodeSet.empty()) std::cout<<"********** We have blacked list "<<_blackListedNodeSet.size()<<std::endl;
+
+#if 0
+    if (!_blackListedNodeSet.empty()) std::cout<<"********** We have blacked list "<<_blackListedNodeSet.size()<<std::endl;
+
+    std::cout<<"TileMap contains "<<_tileMap.size()<<std::endl;
+    for(TileMap::iterator itr=_tileMap.begin();
+        itr!=_tileMap.end();
+        ++itr)
+    {
+            std::cout<<"    tile="<<itr->first.lod
+                          <<"  X="<<itr->first.x
+                          <<"  Y="<<itr->first.y<<std::endl;  
+        
+    }
+#endif
     
 }
 
@@ -379,8 +393,9 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
     {
         // not found tile in _tileMap, what should we do??
         // return true as a fallback right now.
-        std::cout<<"TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map"<<std::endl;
-        return false;
+        std::cout<<"TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map,"<<std::endl;
+        std::cout<<"    LOD="<<tid.lod<<"  X="<<tid.x<<"  Y="<<tid.y<<std::endl;  
+        return true;
     }
 
     const TileStack& ts = itr->second;

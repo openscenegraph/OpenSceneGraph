@@ -221,7 +221,7 @@ std::string Registry::createLibraryNameForExt(const std::string& ext)
     ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
     if (itr!=_extAliasMap.end()) return createLibraryNameForExt(itr->second);
 
-#ifdef WIN32
+#if defined(WIN32)
 #   ifdef _DEBUG
     return "osgdb_"+ext+"d.dll";
 #   else

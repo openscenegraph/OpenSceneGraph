@@ -19,12 +19,17 @@ public:
 
     virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* = NULL)
     {
+        
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
         std::string fileName = osgDB::findDataFile( file );
-        if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-    
+        if (fileName.empty()) 
+        {
+            if (status==READ) return ReadResult::FILE_NOT_FOUND;
+            fileName = file;
+        }
+            
         osg::ref_ptr<OSGA_Archive> archive = new OSGA_Archive;
         if (!archive->open(fileName, status, indexBlockSize))
         {

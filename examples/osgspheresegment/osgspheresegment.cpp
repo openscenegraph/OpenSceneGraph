@@ -83,7 +83,7 @@ osg::Node* createSphereSegment()
 					osg::DegreesToRadians(45.0f),
 					60);
 	ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-	ss->setPlaneColor(osg::Vec4(0.0f,0.0f,1.0f,0.1f));
+	ss->setSideColor(osg::Vec4(0.0f,0.0f,1.0f,0.1f));
 	//ss->setDrawMask(SphereSegment::DrawMask(SphereSegment::SPOKES | SphereSegment::EDGELINE));
 
     //ss->setUpdateCallback(new MyNodeCallback);

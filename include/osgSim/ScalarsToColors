@@ -32,16 +32,16 @@ class OSGSIM_EXPORT ScalarsToColors: public osg::Referenced
 public:
 
     ScalarsToColors(float scalarMin, float scalarMax);
-	virtual ~ScalarsToColors() {}
+    virtual ~ScalarsToColors() {}
 
-	/** Get the color for a given scalar value. */
+    /** Get the color for a given scalar value. */
     virtual osg::Vec4 getColor(float scalar) const;
 
-	/** Get the minimum scalar value. */
+    /** Get the minimum scalar value. */
     float getMin() const;
 
-	/** Get the maximum scalar value. */
-	float getMax() const;
+    /** Get the maximum scalar value. */
+    float getMax() const;
 
 private:
 

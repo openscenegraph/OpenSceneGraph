@@ -49,13 +49,13 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
 
 
         unsigned int addLightPoint(const LightPoint& lp);
-	
+    
         void removeLightPoint(unsigned int pos);
 
 
-	LightPoint& getLightPoint(unsigned int pos) { return _lightPointList[pos]; }
+    LightPoint& getLightPoint(unsigned int pos) { return _lightPointList[pos]; }
 
-	const LightPoint& getLightPoint(unsigned int pos) const { return _lightPointList[pos]; }
+    const LightPoint& getLightPoint(unsigned int pos) const { return _lightPointList[pos]; }
         
 
         void setLightPointList(const LightPointList& lpl) { _lightPointList=lpl; }

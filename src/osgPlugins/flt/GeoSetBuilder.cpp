@@ -13,7 +13,6 @@
 #include "Pool.h"
 #include "opcodes.h"
 #include "GeoSetBuilder.h"
-#include "AttrData.h"
 
 #include <osg/Object>
 #include <osg/LOD>
@@ -55,7 +54,23 @@ void DynGeoSet::append(DynGeoSet* source)
     APPEND_DynGeoSet_List(_coordList)
     if (_normal_binding==osg::Geometry::BIND_PER_VERTEX || _normal_binding==osg::Geometry::BIND_PER_PRIMITIVE) APPEND_DynGeoSet_List(_normalList)
     if (_color_binding==osg::Geometry::BIND_PER_VERTEX || _color_binding==osg::Geometry::BIND_PER_PRIMITIVE) APPEND_DynGeoSet_List(_colorList)
-    if (_texture_binding==osg::Geometry::BIND_PER_VERTEX || _texture_binding==osg::Geometry::BIND_PER_PRIMITIVE) APPEND_DynGeoSet_List(_tcoordList)
+
+    for (unsigned int i = 0; i < source->_tcoordLists.size(); i++)
+    {
+       if ((getTextureBinding(i)==osg::Geometry::BIND_PER_VERTEX) || 
+           (getTextureBinding(i)==osg::Geometry::BIND_PER_PRIMITIVE)) 
+       {
+          if (source->_tcoordLists.size() > 0)
+          {
+             if (_tcoordLists.size() <= i)
+                _tcoordLists.resize(i+1);
+
+             _tcoordLists[i].insert(_tcoordLists[i].end(),
+                                    source->_tcoordLists[i].begin(),
+                                    source->_tcoordLists[i].end());
+          }
+       }
+    }
 }
 
 
@@ -88,21 +103,28 @@ DynGeoSet::DynGeoSet()
     _primtype = NO_PRIMITIVE_TYPE;
     _normal_binding = osg::Geometry::BIND_OFF;
     _color_binding = osg::Geometry::BIND_OFF;
-    _texture_binding = osg::Geometry::BIND_OFF;
+
+    _detailTextureEnabled = false;
 
     _geom = new osg::Geometry;
 }
 
 void DynGeoSet::setBinding()
 {
+    unsigned int i;
+
     VERIFY_DynGeoSet_Binding(_normal_binding, _normalList)
     VERIFY_DynGeoSet_Binding(_color_binding, _colorList)
-    VERIFY_DynGeoSet_Binding(_texture_binding, _tcoordList)
+
+    for (i = 0; i < _tcoordLists.size(); i++)
+       VERIFY_DynGeoSet_Binding(_texture_bindings[i], _tcoordLists[i])
 
     // Set bindings
     setNormalBinding(_normal_binding);
     setColorBinding(_color_binding);
-    setTextureBinding(_texture_binding);
+
+    for (i = 0; i < _tcoordLists.size(); i++)
+       setTextureBinding(i, _texture_bindings[i]);
 
     osg::StateSet* stateset = getStateSet();
     if (stateset)
@@ -153,37 +175,58 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
         }
     }
 
-    if (!_tcoordList.empty())
+    for (unsigned int i = 0; i < _tcoordLists.size(); i++)
     {
-        osg::Vec2Array* texcoords = dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(0));
-        if (texcoords)
-        {
-            texcoords->insert(texcoords->end(),_tcoordList.begin(),_tcoordList.end());
-        }
-        else
-        {
-            texcoords = new osg::Vec2Array(_tcoordList.begin(),_tcoordList.end());
-            geom->setTexCoordArray(0,texcoords);
+       if (!_tcoordLists[i].empty())
+       {
+           // Grab the current layer's texture coordinate array from the 
+           // geometry
+           osg::Vec2Array* texcoords = 
+              dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(i));
 
-            // If we got detail texture defined for this geometry, we need to setup new texcoord 
-            // related on base texture ones. Using txDetail_m and  txDetail_n values we read in 
-            // ReaderWriterATTR and we got in AttrData class.
-            // 
-            // We apply those values multiplying original texcoord.x by txDetail_m and texcoord.y 
-            // by txDetail_n to get detail texture repeated.
-            //
-            // Julian Ortiz, June 18th 2003.
-
-            if ( (_attrdata != NULL) && (_attrdata->useDetail > 0) ) {
-                osg::Vec2Array *texcoords2 = new osg::Vec2Array(_tcoordList.begin(),_tcoordList.end());
-                for(unsigned int index=0;index<texcoords2->size();index++) {
-                    (*texcoords2)[index][0]=(*texcoords)[index][0]*_attrdata->txDetail_m;
-                    (*texcoords2)[index][1]=(*texcoords)[index][1]*_attrdata->txDetail_n;
-                }                
-                geom->setTexCoordArray(1,texcoords2);
-            }                                                    
-        }
+           // See if we need to create the texture coordinate array or add to
+           // it
+           if (texcoords)
+           {
+               // Append the new texture coordinates to the end of the existing
+               // list
+               texcoords->insert(texcoords->end(),_tcoordLists[i].begin(),
+                                 _tcoordLists[i].end());
+           }
+           else
+           {
+               // Create a new texture coordinate array
+               texcoords = new osg::Vec2Array(_tcoordLists[i].begin(),
+                                              _tcoordLists[i].end());
+               geom->setTexCoordArray(i,texcoords);
+           }
+       }
     }
+   
+    // If this geometry uses a detail texture, we apply the detail texture
+    // scalars to the texture coordinates on layer 0 to get the detail texture
+    // coordinates, which we put on layer 1.  Note that this assumes that
+    // layer 1 is not in use for multitexturing.  This means that 
+    // multitexturing and detail texturing are not supported at the same time.
+    if ((_detailTextureEnabled) && (!_tcoordLists.empty()) &&
+        (!_tcoordLists[0].empty()))
+    {                
+       // Create a new texture coordinate array for the detail texture
+       // coordinates
+       osg::Vec2Array *texcoords2 = new osg::Vec2Array(_tcoordLists[0].begin(),
+                                                       _tcoordLists[0].end());
+
+       // Scale the texture coordinates from layer 0
+       for(unsigned int index=0;index<texcoords2->size();index++) 
+       {
+           (*texcoords2)[index][0] *= _detailTexCoord_m;
+           (*texcoords2)[index][1] *= _detailTexCoord_n;
+       }                
+
+       // Set the new texcoord array on layer 1 (this wipes out any existing
+       // texture coordinates there)
+       geom->setTexCoordArray(1,texcoords2);
+    }                                                    
     
     if (!_colorList.empty())
     {
@@ -222,7 +265,6 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
             indexBase += *itr;
         }
     }    
-
 }
 
 

@@ -44,12 +44,14 @@ class OSGUTIL_EXPORT Optimizer
             SHARE_DUPLICATE_STATE = 0x8,
             MERGE_GEOMETRY = 0x10,
             CHECK_GEOMETRY = 0x20,
+            SPATIALIZE_GROUPS = 0x40,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
-                                CHECK_GEOMETRY
+                                CHECK_GEOMETRY |
+                                SPATIALIZE_GROUPS
         };
 
         /** traverse the node and its subgraph with a series of optimization
@@ -211,6 +213,24 @@ class OSGUTIL_EXPORT Optimizer
                 static bool mergePrimitive(osg::DrawElementsUByte& lhs,osg::DrawElementsUByte& rhs);
                 static bool mergePrimitive(osg::DrawElementsUShort& lhs,osg::DrawElementsUShort& rhs);
                 static bool mergePrimitive(osg::DrawElementsUInt& lhs,osg::DrawElementsUInt& rhs);
+
+        };
+
+        /** Spatialize scene into a balanced quad/oct tree.*/
+        class OSGUTIL_EXPORT SpatializeGroupsVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                SpatializeGroupsVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+                
+                virtual void apply(osg::Group& group);
+                
+                bool divide(unsigned int maxNumTreesPerCell=8);
+                
+                bool divide(osg::Group* group, unsigned int maxNumTreesPerCell);
+                
+                typedef std::set<osg::Group*> GroupsToDivideList;
+                GroupsToDivideList _groupsToDivideList;
 
         };
 };

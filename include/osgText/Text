@@ -276,6 +276,11 @@ public:
         return &itGlyphQuad->second;
     }
 
+    const TextureGlyphQuadMap& getTextureGlyphQuadMap() const 
+    {
+        return _textureGlyphQuadMap;
+    }
+
 protected:
 
     virtual ~Text();

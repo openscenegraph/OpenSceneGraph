@@ -53,9 +53,6 @@ Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.
         - warning fixes to IRIX compilation.
 
-Phil Akin <Phil Atkin <philatkin@philatkin.com>
-        - port to OSX.
-
 Ulrich Hertlein <u.hertlein@bit-side.com>
         - support for IBM Mirror Repeat extension in osg::Texture
         - support for texture subloading in osg::Texture

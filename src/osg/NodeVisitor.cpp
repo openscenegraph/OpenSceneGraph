@@ -1,4 +1,5 @@
 #include <osg/NodeVisitor>
+#include <osg/Transform>
 #include <stdlib.h>
 
 using namespace osg;
@@ -44,12 +45,81 @@ void NodeVisitor::setTraversalVisitor(NodeVisitor* nv)
     else _traversalMode = TRAVERSE_NONE;
 }
 
-const bool NodeVisitor::getLocalToWorldMatrix(Matrix& /*matrix*/, MatrixMode /*mode*/)
+
+class TransformVisitor : public NodeVisitor
 {
-    return false;
+    public:
+    
+        enum CoordMode
+        {
+            WORLD_TO_LOCAL,
+            LOCAL_TO_WORLD
+        };
+        
+
+        MatrixMode      _matrixMode;
+        CoordMode       _coordMode;
+        Matrix&         _matrix;
+        NodeVisitor*    _nodeVisitor;
+
+        TransformVisitor(Matrix& matrix,MatrixMode matrixMode,CoordMode coordMode,NodeVisitor* nv):
+            NodeVisitor(),
+            _matrixMode(matrixMode),
+            _coordMode(coordMode),
+            _matrix(matrix),
+            _nodeVisitor(nv)
+            {}
+
+        virtual void apply(Transform& transform)
+        {
+            bool applyTransform = 
+                (_matrixMode==transform.getMatrixMode()) ||
+                (_matrixMode==MODELVIEW && (transform.getMatrixMode()==MODEL || transform.getMatrixMode()==VIEW));
+            
+            if (applyTransform)
+            {
+                if (_coordMode==LOCAL_TO_WORLD)
+                {
+                    osg::Matrix localToWorldMat;
+                    transform.getLocalToWorldMatrix(localToWorldMat,_nodeVisitor);
+                    _matrix.preMult(localToWorldMat);
+                }
+                else // worldToLocal
+                {
+                    osg::Matrix worldToLocalMat;
+                    transform.getWorldToLocalMatrix(worldToLocalMat,_nodeVisitor);
+                    _matrix.postMult(worldToLocalMat);
+                }
+            }
+        }
+    
+};
+
+
+const bool NodeVisitor::getLocalToWorldMatrix(Matrix& matrix, MatrixMode mode, Node* node)
+{
+    matrix.makeIdentity();
+    TransformVisitor tv(matrix,mode,TransformVisitor::LOCAL_TO_WORLD,this);
+    for(NodePath::iterator itr=_nodePath.begin();
+        itr!=_nodePath.end();
+        ++itr)
+    {
+        if (*itr==node) return true; // don't account for matrix attached to specofied node
+        (*itr)->accept(tv);
+    }
+    return true;
 }
 
-const bool NodeVisitor::getWorldToLocalMatrix(Matrix& /*matrix*/, MatrixMode /*mode*/)
+const bool NodeVisitor::getWorldToLocalMatrix(Matrix& matrix, MatrixMode mode, Node* node)
 {
-    return false;
+    matrix.makeIdentity();
+    TransformVisitor tv(matrix,mode,TransformVisitor::WORLD_TO_LOCAL,this);
+    for(NodePath::iterator itr=_nodePath.begin();
+        itr!=_nodePath.end();
+        ++itr)
+    {
+        if (*itr==node) return true; // don't account for matrix attached to specofied node
+        (*itr)->accept(tv);
+    }
+    return true;
 }

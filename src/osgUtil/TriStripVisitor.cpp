@@ -472,15 +472,9 @@ void TriStripVisitor::stripify(Geometry& geom)
                         std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);
                     }
-                    else if (maxValue>=256)
+                    else
                     {
                         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_QUADS);
-                        std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
-                        new_primitives.push_back(elements);
-                    }
-                    else 
-                    {
-                        osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(GL_QUADS);
                         std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);
                     }
@@ -519,16 +513,9 @@ void TriStripVisitor::stripify(Geometry& geom)
                         std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);
                     }
-                    else if (maxValue>=256)
-                    {
-                        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
-                        elements->reserve(pitr->m_Indices.size());
-                        std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
-                        new_primitives.push_back(elements);
-                    }
                     else
                     {
-                        osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(pitr->m_Type);
+                        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
                         elements->reserve(pitr->m_Indices.size());
                         std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);

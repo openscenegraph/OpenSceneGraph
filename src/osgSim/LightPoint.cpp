@@ -1,10 +1,15 @@
-//C++ header - Open Scene Graph Simulation - Copyright (C) 1998-2002 Robert Osfield
-// Distributed under the terms of the GNU General Public License (GPL)
-// as published by the Free Software Foundation.
-//
-// All software using osgSim must be GPL'd or excempted via the 
-// purchase of the Open Scene Graph Professional License (OSGPL)
-// for further information contact robert@openscenegraph.com.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 
 #include <osgSim/LightPoint>
 

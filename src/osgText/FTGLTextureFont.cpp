@@ -50,8 +50,11 @@ FTGLTextureFont::~FTGLTextureFont()
     ContextTextureId::iterator itr;
     for(itr=glContextTextureID.begin();itr != glContextTextureID.end(); itr++)
     {
-        glDeleteTextures( numTextures, (const GLuint*)*itr);
-        osgDelete [] *itr;
+        if (*itr)
+        {
+            glDeleteTextures( numTextures, (const GLuint*)*itr);
+            osgDelete [] *itr;
+        }
     }
 }
 

@@ -1,6 +1,3 @@
-#include <osg/GL>
-#include <osgProducer/Viewer>
-
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Quat>
@@ -26,6 +23,9 @@
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Optimizer>
+
+#include <osgProducer/Viewer>
+
 
 float refract = 1.01;          // ratio of indicies of refraction
 float fresnel = 1.1;           // Fresnel multiplier

@@ -122,4 +122,4 @@ EXAMPLE_DIRS = \
 	osgviewer\
 
 # comment in you want to compile the cluster demo.
-# EXAMPLE_DIRS += osgcluster
+EXAMPLE_DIRS += osgcluster

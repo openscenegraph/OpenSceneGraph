@@ -7,11 +7,11 @@ instbin instdev :
 	@$(MAKE) __$@
 
 __instbin:
-	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH) INSTDEST=$(INST_DEMOS) \
 		INSTALL?="$(INSTBINCMD)" __install
-	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH) INSTDEST=$(INST_LIBS) \
 		INSTALL?="$(INSTBINCMD)" __install
-	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH)/osgPlugins INSTDEST=$(INST_PLUGINS)\
 		INSTALL?="$(INSTBINCMD)" __install
 	@echo  >> $(INSTLOGFILE)
 	@echo "    Run-time environment installation successful.  Add "\
@@ -69,9 +69,6 @@ __instdev:
 	  >> $(INSTLOGFILE)
 	@echo  >> $(INSTLOGFILE)
 	  
-	  
-	
-
 instlinks : 
 	@rm -f $(INSTLOGFILE)
 	$(MAKE) INSTBINCMD="$(INSTLINKBINCMD)" __instbin
@@ -92,11 +89,11 @@ instlinksdev :
 instclean : instcleanbin instcleandev
 
 instcleanbin :
-	@$(MAKE) INSTSRC=$(TOPDIR)/bin INSTDEST=$(INST_DEMOS) \
+	@$(MAKE) INSTSRC=$(TOPDIR)/bin/$(OS)$(ARCH) INSTDEST=$(INST_DEMOS) \
 		INSTALL?="$(INSTBINCMD)" __instclean
-	@$(MAKE) INSTSRC=$(TOPDIR)/lib INSTDEST=$(INST_LIBS) \
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH) INSTDEST=$(INST_LIBS) \
 		INSTALL?="$(INSTBINCMD)" __instclean
-	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
+	@$(MAKE) INSTSRC=$(TOPDIR)/lib/$(OS)$(ARCH)/osgPlugins INSTDEST=$(INST_PLUGINS)\
 		INSTALL?="$(INSTBINCMD)" __instclean
 
 instcleandev :
@@ -131,26 +128,10 @@ __install :
 	    if [ -f $$f ] ; \
 	    then \
 	        INSTPATH=$$THISDIR/$$f; \
-	        echo $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
 	        $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
 	    fi\
 	  done\
 	fi
-
-# These lines cause instlinks to install links pointing to the actual files
-# rather than the links in $(TOPDIR)/{bin,lib,include}.  Advantage of this
-# is for systems that hold multiple platforms  in the same nfs mounted source
-# but install different executables.  Disadvantage is that it is not trivial
-# to change to debug version by simply doing a 'make debug'.
-#		while [ -L $$INSTPATH ]; \
-#		while `csh -f -c "test -L $$INSTPATH"` ;\
-#		do \
-#		    ll=`ls -l $$INSTPATH | cut -f2 -d">"`;\
-#		    cd `dirname $$ll`;\
-#		    INSTPATH="`pwd`"/"`basename $$ll`";\
-#		    cd $$THISDIR;\
-#		done;\
-
 
 __instclean :
 	@[ -n "$(INSTSRC)" ] || echo "Internal error (INSTSRC definition)"

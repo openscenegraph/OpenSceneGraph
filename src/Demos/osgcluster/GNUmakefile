@@ -16,7 +16,7 @@ LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(SOCKET_LIBS) $(OTHER_
 INSTFILES = \
 	$(CXXFILES)\
 	$(HEADERFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osgcluster
 

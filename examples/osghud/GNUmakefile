@@ -8,7 +8,7 @@ LIBS     += -losgProducer -lProducer -losgText $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osghud
 

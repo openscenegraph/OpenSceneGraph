@@ -8,7 +8,7 @@ LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) -losgPart
 
 INSTFILES = \
 	$(CXXFILES)\
-	Makefile.inst=Makefile
+	GNUmakefile.inst=GNUmakefile
 
 EXEC = osgparticle
 

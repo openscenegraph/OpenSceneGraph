@@ -163,7 +163,7 @@ void OSGVisitor::applySeparator(Separator *sep)
     }
 }
 
-osg::PrimitiveSet *generatePrimitive(PolygonList &polys, unsigned primsize) {
+osg::PrimitiveSet *generatePrimitive(PolygonList &polys, unsigned primsize, unsigned numvertices) {
     unsigned i,j;
     osg::PrimitiveSet *p=0;
     // Fisrt of all count the number of polygons
@@ -186,7 +186,7 @@ osg::PrimitiveSet *generatePrimitive(PolygonList &polys, unsigned primsize) {
     default: mode=osg::PrimitiveSet::QUADS;
     }
     // Now will generate the indices and the primitive
-    if (count < 65536) {
+    if (numvertices < 65536) {
 	unsigned short *indices=new unsigned short[count*primsize];
         unsigned count2=0;
 	for (i=0;i<polys.size();i++) {
@@ -289,7 +289,7 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
     /* Converting list of polys */
     PolygonList polys=ifs->getPolygons();
     for (i=1;i<=4;i++) {
-	osg::PrimitiveSet *p=generatePrimitive(polys,i);
+	osg::PrimitiveSet *p=generatePrimitive(polys,i,vertices.size());
 	if (p!=0) {
             geometry->addPrimitiveSet(p);
 	}

@@ -215,7 +215,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         virtual ~SceneView();
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
-        virtual void cullStage(osg::Camera* camera,osgUtil::RenderStage* renderStage);
+        virtual void cullStage(osg::Camera* camera,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
         virtual void drawStage(osgUtil::RenderStage* renderStage);
 
         osg::ref_ptr<osg::Node>                     _sceneData;
@@ -233,8 +233,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
 
         osg::ref_ptr<osg::Camera>                   _cameraLeft;
-        osg::ref_ptr<osg::Camera>                   _cameraRight;
+        osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;
+        osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphLeft;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageLeft;
+
+        osg::ref_ptr<osg::Camera>                   _cameraRight;
+        osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorRight;
+        osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
 
 

@@ -52,6 +52,8 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             
         ~RenderGraph() {}
         
+        RenderGraph* cloneType() const { return new RenderGraph; }
+        
 
         /** return true if all of drawables, lights and children are empty.*/
         inline const bool empty() const

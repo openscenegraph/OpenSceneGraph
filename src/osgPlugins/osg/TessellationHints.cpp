@@ -7,6 +7,7 @@
 using namespace osg;
 using namespace osgDB;
 
+
 // forward declare functions to use later.
 bool TessellationHints_readLocalData(Object& obj, Input& fr);
 bool TessellationHints_writeLocalData(const Object& obj, Output& fw);

@@ -62,37 +62,72 @@ DynamicLibrary::~DynamicLibrary()
 DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 {
 
+    HANDLE handle = NULL;
+
+
+/*
+// Daniel's proposed version.
+    // try letting the OS find the library first
+    handle = getLibraryHandle( libraryName );
+    if (handle) return new DynamicLibrary(libraryName,handle);
+
+    // else try to locate it ourselves
     std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
     if (fullLibraryName.empty()) return NULL;
+    handle = getLibraryHandle( fullLibraryName );
+    if (handle) return new DynamicLibrary(libraryName,handle);
+
+    notify(WARN)
+        << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+*/
+
+// Robert's version of above reordering of findLibraryFile path.
+
+    std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
+    if (!fullLibraryName.empty()) handle = getLibraryHandle( fullLibraryName ); // try the lib we have found
+    else handle = getLibraryHandle( libraryName ); // havn't found a lib ourselves, see if the OS can find it simply from the library name.
+    
+    if (handle) return new DynamicLibrary(libraryName,handle);
+
+    // else no lib found so report errors.
+    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
 
 #if defined(WIN32) && !defined(__CYGWIN__)
-    HANDLE handle = LoadLibrary( fullLibraryName.c_str() );
-    if (handle) return new DynamicLibrary(libraryName,handle);
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+    // nothing more
 #elif defined(__DARWIN_OSX__)
-    NSObjectFileImage image;
-    // NSModule os_handle = NULL;
-    if (NSCreateObjectFileImageFromFile(fullLibraryName.c_str(), &image) == NSObjectFileImageSuccess) {
-        // os_handle = NSLinkModule(image, fullLibraryName.c_str(), TRUE);
-        HANDLE handle = NSLinkModule(image, fullLibraryName.c_str(), TRUE);
-        NSDestroyObjectFileImage(image);
-        if (handle) return new DynamicLibrary(libraryName,handle);
-    }
-    // if (os_handle) return new DynamicLibrary(libraryName,os_handle);
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+    // nothing more
 #elif defined(__hpux__)
-    // BIND_FIRST is neccessary for some reason
-    HANDLE handle = shl_load ( fullLibraryName.c_str(), BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
-    if (handle) return new DynamicLibrary(libraryName,handle);
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
     notify(WARN) << "DynamicLibrary::error "<<strerror(errno)<<std::endl;
 #else // other unix
-    HANDLE handle = dlopen( fullLibraryName.c_str(), RTLD_LAZY );
-    if (handle) return new DynamicLibrary(libraryName,handle);
-    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
     notify(WARN) << "DynamicLibrary::error "<<dlerror()<<std::endl;
 #endif
     return NULL;
+}
+
+DynamicLibrary::HANDLE
+DynamicLibrary::getLibraryHandle( const std::string& libraryName)
+{
+    HANDLE handle = NULL;
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+    handle = LoadLibrary( libraryName.c_str() );
+#elif defined(__DARWIN_OSX__)
+    NSObjectFileImage image;
+    // NSModule os_handle = NULL;
+    if (NSCreateObjectFileImageFromFile(libraryName.c_str(), &image) == NSObjectFileImageSuccess) {
+        // os_handle = NSLinkModule(image, libraryName.c_str(), TRUE);
+        handle = NSLinkModule(image, libraryName.c_str(), TRUE);
+        NSDestroyObjectFileImage(image);
+    }
+#elif defined(__hpux__)
+    // BIND_FIRST is neccessary for some reason
+    handle = shl_load ( libraryName.c_str(),
+            BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
+    return handle;
+#else // other unix
+    handle = dlopen( libraryName.c_str(), RTLD_LAZY );
+#endif
+    return handle;
 }
 
 DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& procName)

@@ -23,45 +23,45 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.1">DelaunayTriangulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.1">DelaunayTriangulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>explicit <B><A HREF="#DOC.2.2.2">DelaunayTriangulator</A></B>(osg::Vec3Array* points, osg::Vec3Array* normals = 0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>explicit <B><A HREF="#DOC.2.3.2">DelaunayTriangulator</A></B>(osg::Vec3Array* points, osg::Vec3Array* normals = 0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.3">DelaunayTriangulator</A></B>(const <!1><A HREF="DelaunayTriangulator.html#DOC.2.2.3">DelaunayTriangulator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">DelaunayTriangulator</A></B>(const <!1><A HREF="DelaunayTriangulator.html#DOC.2.3.3">DelaunayTriangulator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.4">triangulate</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.4">triangulate</A></B>()
 <DD><I>Start triangulation</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3Array* <B><A HREF="#DOC.2.2.10">getInputPointArray</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3Array* <B><A HREF="#DOC.2.3.10">getInputPointArray</A></B>() const 
 <DD><I>Get the const input point array</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3Array* <B><A HREF="#DOC.2.2.11">getInputPointArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3Array* <B><A HREF="#DOC.2.3.11">getInputPointArray</A></B>()
 <DD><I>Get the input point array</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.12">setInputPointArray</A></B>(osg::Vec3Array* points)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.3.12">setInputPointArray</A></B>(osg::Vec3Array* points)
 <DD><I>Set the input point array</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3Array* <B><A HREF="#DOC.2.2.13">getOutputNormalArray</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3Array* <B><A HREF="#DOC.2.3.13">getOutputNormalArray</A></B>() const 
 <DD><I>Get the const output normal array (optional)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3Array* <B><A HREF="#DOC.2.2.14">getOutputNormalArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3Array* <B><A HREF="#DOC.2.3.14">getOutputNormalArray</A></B>()
 <DD><I>Get the output normal array (optional)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.15">setOutputNormalArray</A></B>(osg::Vec3Array* normals)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.3.15">setOutputNormalArray</A></B>(osg::Vec3Array* normals)
 <DD><I>Set the output normal array (optional)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::DrawElementsUInt* <B><A HREF="#DOC.2.2.16">getTriangles</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::DrawElementsUInt* <B><A HREF="#DOC.2.3.16">getTriangles</A></B>() const 
 <DD><I>Get the generated primitive (call triangulate() first)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::DrawElementsUInt* <B><A HREF="#DOC.2.2.17">getTriangles</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::DrawElementsUInt* <B><A HREF="#DOC.2.3.17">getTriangles</A></B>()
 <DD><I>Get the generated primitive (call triangulate() first)</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.5">~DelaunayTriangulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.5">~DelaunayTriangulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A>&amp; <B><A HREF="#DOC.2.2.6">operator=</A></B>(const <!1><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A> &amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A>&amp; <B><A HREF="#DOC.2.3.6">operator=</A></B>(const <!1><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A> &amp;)
 </DL></P>
 
 </DL>
@@ -76,67 +76,67 @@ generated primitive by calling the getTriangles() method.</BLOCKQUOTE>
 <DL>
 
 <A NAME="DelaunayTriangulator"></A>
-<A NAME="DOC.2.2.1"></A>
+<A NAME="DOC.2.3.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DelaunayTriangulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DelaunayTriangulator"></A>
-<A NAME="DOC.2.2.2"></A>
+<A NAME="DOC.2.3.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>explicit DelaunayTriangulator(osg::Vec3Array* points, osg::Vec3Array* normals = 0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DelaunayTriangulator"></A>
-<A NAME="DOC.2.2.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DelaunayTriangulator(const <!1><A HREF="DelaunayTriangulator.html#DOC.2.2.3">DelaunayTriangulator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DelaunayTriangulator(const <!1><A HREF="DelaunayTriangulator.html#DOC.2.3.3">DelaunayTriangulator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="triangulate"></A>
-<A NAME="DOC.2.2.4"></A>
+<A NAME="DOC.2.3.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool triangulate()</B></TT>
 <DD>Start triangulation
 <DL><DT><DD></DL><P>
 <A NAME="~DelaunayTriangulator"></A>
-<A NAME="DOC.2.2.5"></A>
+<A NAME="DOC.2.3.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DelaunayTriangulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator="></A>
-<A NAME="DOC.2.2.6"></A>
+<A NAME="DOC.2.3.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A>&amp; operator=(const <!1><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInputPointArray"></A>
-<A NAME="DOC.2.2.10"></A>
+<A NAME="DOC.2.3.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3Array* getInputPointArray() const </B></TT>
 <DD>Get the const input point array
 <DL><DT><DD></DL><P>
 <A NAME="getInputPointArray"></A>
-<A NAME="DOC.2.2.11"></A>
+<A NAME="DOC.2.3.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec3Array* getInputPointArray()</B></TT>
 <DD>Get the input point array
 <DL><DT><DD></DL><P>
 <A NAME="setInputPointArray"></A>
-<A NAME="DOC.2.2.12"></A>
+<A NAME="DOC.2.3.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setInputPointArray(osg::Vec3Array* points)</B></TT>
 <DD>Set the input point array
 <DL><DT><DD></DL><P>
 <A NAME="getOutputNormalArray"></A>
-<A NAME="DOC.2.2.13"></A>
+<A NAME="DOC.2.3.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3Array* getOutputNormalArray() const </B></TT>
 <DD>Get the const output normal array (optional)
 <DL><DT><DD></DL><P>
 <A NAME="getOutputNormalArray"></A>
-<A NAME="DOC.2.2.14"></A>
+<A NAME="DOC.2.3.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec3Array* getOutputNormalArray()</B></TT>
 <DD>Get the output normal array (optional)
 <DL><DT><DD></DL><P>
 <A NAME="setOutputNormalArray"></A>
-<A NAME="DOC.2.2.15"></A>
+<A NAME="DOC.2.3.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOutputNormalArray(osg::Vec3Array* normals)</B></TT>
 <DD>Set the output normal array (optional)
 <DL><DT><DD></DL><P>
 <A NAME="getTriangles"></A>
-<A NAME="DOC.2.2.16"></A>
+<A NAME="DOC.2.3.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::DrawElementsUInt* getTriangles() const </B></TT>
 <DD>Get the generated primitive (call triangulate() first)
 <DL><DT><DD></DL><P>
 <A NAME="getTriangles"></A>
-<A NAME="DOC.2.2.17"></A>
+<A NAME="DOC.2.3.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::DrawElementsUInt* getTriangles()</B></TT>
 <DD>Get the generated primitive (call triangulate() first)
 <DL><DT><DD></DL><P></DL>

@@ -23,194 +23,205 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Registry.html">Registry</A>* <B><A HREF="#DOC.2.42.1">instance</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Registry.html">Registry</A>* <B><A HREF="#DOC.2.47.1">instance</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.2">readCommandLine</A></B>(osg::ArgumentParser&amp; commandLine)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.2">readCommandLine</A></B>(osg::ArgumentParser&amp; commandLine)
 <DD><I>read the command line arguments</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.3">addFileExtensionAlias</A></B>(const std::string mapExt, const std::string toExt)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.3">addFileExtensionAlias</A></B>(const std::string mapExt, const std::string toExt)
 <DD><I>register an fileextension alias to mapExt toExt, the later should the the extension name of the readerwriter plugin library.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.4">addDotOsgWrapper</A></B>(<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.4">addDotOsgWrapper</A></B>(<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.5">removeDotOsgWrapper</A></B>(<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.5">removeDotOsgWrapper</A></B>(<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.6">addReaderWriter</A></B>(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.6">addReaderWriter</A></B>(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.7">removeReaderWriter</A></B>(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.7">removeReaderWriter</A></B>(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.42.8">createLibraryNameForFile</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.47.8">createLibraryNameForFile</A></B>(const std::string&amp; fileName)
 <DD><I>create the platform specific library name associated with file</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.42.9">createLibraryNameForExtension</A></B>(const std::string&amp; ext)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.47.9">createLibraryNameForExtension</A></B>(const std::string&amp; ext)
 <DD><I>create the platform specific library name associated with file extension</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.42.10">createLibraryNameForNodeKit</A></B>(const std::string&amp; name)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.47.10">createLibraryNameForNodeKit</A></B>(const std::string&amp; name)
 <DD><I>create the platform specific library name associated with nodekit library name</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.11">loadLibrary</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.11">loadLibrary</A></B>(const std::string&amp; fileName)
 <DD><I>find the library in the SG_LIBRARY_PATH and load it</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.12">closeLibrary</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.12">closeLibrary</A></B>(const std::string&amp; fileName)
 <DD><I>close the attached library with specified name</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ReaderWriter.html">ReaderWriter</A>* <B><A HREF="#DOC.2.42.13">getReaderWriterForExtension</A></B>(const std::string&amp; ext)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ReaderWriter.html">ReaderWriter</A>* <B><A HREF="#DOC.2.47.13">getReaderWriterForExtension</A></B>(const std::string&amp; ext)
 <DD><I>get a reader writer which handles specified extension</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.42.14">readObjectOfType</A></B>(const osg::Object&amp; compObj, <!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.47.14">readObjectOfType</A></B>(const osg::Object&amp; compObj, <!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.42.15">readObjectOfType</A></B>(const <!1><A HREF="basic_type_wrapper.html">basic_type_wrapper</A> &amp;btw, <!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.47.15">readObjectOfType</A></B>(const <!1><A HREF="basic_type_wrapper.html">basic_type_wrapper</A> &amp;btw, <!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.42.16">readObject</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.47.16">readObject</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.42.17">readImage</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.47.17">readImage</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Drawable* <B><A HREF="#DOC.2.42.18">readDrawable</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Drawable* <B><A HREF="#DOC.2.47.18">readDrawable</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateAttribute* <B><A HREF="#DOC.2.42.19">readStateAttribute</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateAttribute* <B><A HREF="#DOC.2.47.19">readStateAttribute</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.42.20">readNode</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.47.20">readNode</A></B>(<!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.21">writeObject</A></B>(const osg::Object&amp; obj, <!1><A HREF="Output.html">Output</A>&amp; fw)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.21">writeObject</A></B>(const osg::Object&amp; obj, <!1><A HREF="Output.html">Output</A>&amp; fw)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.22">readObject</A></B>(const std::string&amp; fileName, bool useObjectCache)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.47.22">readObject</A></B>(const std::string&amp; fileName, bool useObjectCache)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::WriteResult <B><A HREF="#DOC.2.42.23">writeObject</A></B>(const osg::Object&amp; obj, const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::WriteResult <B><A HREF="#DOC.2.47.23">writeObject</A></B>(const osg::Object&amp; obj, const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.24">readImage</A></B>(const std::string&amp; fileName, bool useObjectCache)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.47.24">readImage</A></B>(const std::string&amp; fileName, bool useObjectCache)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::WriteResult <B><A HREF="#DOC.2.42.25">writeImage</A></B>(const osg::Image&amp; obj, const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::WriteResult <B><A HREF="#DOC.2.47.25">writeImage</A></B>(const osg::Image&amp; obj, const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.26">readNode</A></B>(const std::string&amp; fileName, bool useObjectCache)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.47.26">readNode</A></B>(const std::string&amp; fileName, bool useObjectCache)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::WriteResult <B><A HREF="#DOC.2.42.27">writeNode</A></B>(const osg::Node&amp; node, const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::WriteResult <B><A HREF="#DOC.2.47.27">writeNode</A></B>(const osg::Node&amp; node, const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.28">setCreateNodeFromImage</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.28">setCreateNodeFromImage</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.29">getCreateNodeFromImage</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.29">getCreateNodeFromImage</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.30">setOptions</A></B>(ReaderWriter::Options* opt)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.30">setOptions</A></B>(ReaderWriter::Options* opt)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::Options* <B><A HREF="#DOC.2.42.31">getOptions</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::Options* <B><A HREF="#DOC.2.47.31">getOptions</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const ReaderWriter::Options* <B><A HREF="#DOC.2.42.32">getOptions</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const ReaderWriter::Options* <B><A HREF="#DOC.2.47.32">getOptions</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.33">initFilePathLists</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.33">initFilePathLists</A></B>()
 <DD><I>initilize both the Data and Library FilePaths, by default called by the  constructor, so it should only be required if you want to force the re-reading of environmental variables</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.34">initDataFilePathList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.34">initDataFilePathList</A></B>()
 <DD><I>initilize the Data FilePath by reading the OSG_FILE_PATH environmental variable</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.35">setDataFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.35">setDataFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
 <DD><I>Set the data file path using a list of paths stored in a FilePath, which is used when search for data files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.36">setDataFilePathList</A></B>(const std::string&amp; paths)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.36">setDataFilePathList</A></B>(const std::string&amp; paths)
 <DD><I>Set the data file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.42.37">getDataFilePathList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.47.37">getDataFilePathList</A></B>()
 <DD><I>get the data file path which is used when search for data files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.42.38">getDataFilePathList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.47.38">getDataFilePathList</A></B>() const 
 <DD><I>get the const data file path which is used when search for data files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.39">initLibraryFilePathList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.39">initLibraryFilePathList</A></B>()
 <DD><I>initilize the Library FilePath by reading the OSG_LIBRARY_PATH  and the appropriate system environmental variables</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.40">setLibraryFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.40">setLibraryFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
 <DD><I>Set the library file path using a list of paths stored in a FilePath, which is used when search for data files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.41">setLibraryFilePathList</A></B>(const std::string&amp; paths)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.41">setLibraryFilePathList</A></B>(const std::string&amp; paths)
 <DD><I>Set the library file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.42.42">getLibraryFilePathList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.47.42">getLibraryFilePathList</A></B>()
 <DD><I>get the library file path which is used when search for library (dso/dll's) files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.42.43">getLibraryFilePathList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.47.43">getLibraryFilePathList</A></B>() const 
 <DD><I>get the const library file path which is used when search for library (dso/dll's) files</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.42.44">convertStringPathIntoFilePathList</A></B>(const std::string&amp; paths, <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.47.44">convertStringPathIntoFilePathList</A></B>(const std::string&amp; paths, <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
 <DD><I>convert a string containing a list of paths  deliminated either with ';' (Windows) or ':' (All other platforms) into FilePath represetation</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.45">updateTimeStampOfObjectsInCacheWithExtenalReferences</A></B>(double currentTime)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.45">updateTimeStampOfObjectsInCacheWithExtenalReferences</A></B>(double currentTime)
 <DD><I>For each object in the cache which has an reference count greater than 1  (and therefore referenced by elsewhere in the application) set the time stamp for that object in the cache to specified time.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.46">removeExpiredObjectsInCache</A></B>(double expiryTime)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.46">removeExpiredObjectsInCache</A></B>(double expiryTime)
 <DD><I>Removed object in the cache which have a time stamp at or before the specified expiry time.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.47">clearObjectCache</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.47">clearObjectCache</A></B>()
 <DD><I>Remove all objects in the cache regardless of having external references or expiry times</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* <B><A HREF="#DOC.2.42.48">getLibrary</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.48">addEntryToObjectCache</A></B>(const std::string&amp; filename, osg::Object* object, double timestamp = 0.0)
+<DD><I>Add a filename,object,timestamp tripple to the Registry::ObjectCache</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.49">setUseObjectCacheHint</A></B>(bool useObjectCache)
+<DD><I>Set whether the Registry::ObjectCache should be used by default</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.50">getUseObjectCacheHint</A></B>() const 
+<DD><I>Get whether the Registry::ObjectCache should be used by default</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* <B><A HREF="#DOC.2.47.51">getLibrary</A></B>(const std::string&amp; fileName)
 <DD><I>get the attached library with specified name</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.58">_createNodeFromImage</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.61">_createNodeFromImage</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.64">_objectWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.47.67">_objectWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.65">_imageWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.47.68">_imageWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.66">_drawableWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.47.69">_drawableWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.67">_stateAttrWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.47.70">_stateAttrWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.68">_nodeWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.47.71">_nodeWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.42.69">_classNameWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> <B><A HREF="#DOC.2.47.72">_classNameWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.51">ReaderWriterList</A> <B><A HREF="#DOC.2.42.70">_rwList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.54">ReaderWriterList</A> <B><A HREF="#DOC.2.47.73">_rwList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.52">DynamicLibraryList</A> <B><A HREF="#DOC.2.42.71">_dlList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.55">DynamicLibraryList</A> <B><A HREF="#DOC.2.47.74">_dlList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.42.72">_openingLibrary</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.75">_openingLibrary</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.53">ExtensionAliasMap</A> <B><A HREF="#DOC.2.42.73">_extAliasMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.56">ExtensionAliasMap</A> <B><A HREF="#DOC.2.47.76">_extAliasMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;ReaderWriter::Options&gt;  <B><A HREF="#DOC.2.42.74">_options</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;ReaderWriter::Options&gt;  <B><A HREF="#DOC.2.47.77">_options</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A> <B><A HREF="#DOC.2.42.75">_dataFilePath</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A> <B><A HREF="#DOC.2.47.78">_dataFilePath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A> <B><A HREF="#DOC.2.42.76">_libraryFilePath</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FilePathList.html">FilePathList</A> <B><A HREF="#DOC.2.47.79">_libraryFilePath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.42.55">ObjectCache</A> <B><A HREF="#DOC.2.42.77">_objectCache</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.47.80">_useObjectCacheHint</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Registry.html#DOC.2.47.58">ObjectCache</A> <B><A HREF="#DOC.2.47.81">_objectCache</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.42.49">~Registry</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.47.52">~Registry</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.42.56">Registry</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.47.59">Registry</A></B>()
 <DD><I>constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DynamicLibraryList::iterator <B><A HREF="#DOC.2.42.57">getLibraryItr</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DynamicLibraryList::iterator <B><A HREF="#DOC.2.47.60">getLibraryItr</A></B>(const std::string&amp; fileName)
 <DD><I>get the attached library with specified name</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.42.59">readObject</A></B>(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Object* <B><A HREF="#DOC.2.47.62">readObject</A></B>(<!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.42.60">eraseWrapper</A></B>(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.47.63">eraseWrapper</A></B>(<!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.61">readObject</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.47.64">readObject</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.62">readImage</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.47.65">readImage</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.42.63">readNode</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReaderWriter::ReadResult <B><A HREF="#DOC.2.47.66">readNode</A></B>(const std::string&amp; fileName)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>&gt; &gt; <B><A HREF="#DOC.2.42.50">DotOsgWrapperMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>&gt; &gt; <B><A HREF="#DOC.2.47.53">DotOsgWrapperMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ReaderWriter.html">ReaderWriter</A>&gt; &gt; <B><A HREF="#DOC.2.42.51">ReaderWriterList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ReaderWriter.html">ReaderWriter</A>&gt; &gt; <B><A HREF="#DOC.2.47.54">ReaderWriterList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&gt; &gt; <B><A HREF="#DOC.2.42.52">DynamicLibraryList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&gt; &gt; <B><A HREF="#DOC.2.47.55">DynamicLibraryList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, std::string&gt; <B><A HREF="#DOC.2.42.53">ExtensionAliasMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; std::string, std::string&gt; <B><A HREF="#DOC.2.47.56">ExtensionAliasMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;osg::ref_ptr&lt;osg::Object&gt;, double &gt; <B><A HREF="#DOC.2.42.54">ObjectTimeStampPair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;osg::ref_ptr&lt;osg::Object&gt;, double &gt; <B><A HREF="#DOC.2.47.57">ObjectTimeStampPair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.42.54">ObjectTimeStampPair</A> &gt; <B><A HREF="#DOC.2.42.55">ObjectCache</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.47.57">ObjectTimeStampPair</A> &gt; <B><A HREF="#DOC.2.47.58">ObjectCache</A></B>
 </DL></P>
 
 </DL>
@@ -232,16 +243,16 @@ register at runtime a reader/writer with the Registry.</BLOCKQUOTE>
 <DL>
 
 <A NAME="instance"></A>
-<A NAME="DOC.2.42.1"></A>
+<A NAME="DOC.2.47.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Registry.html">Registry</A>* instance()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readCommandLine"></A>
-<A NAME="DOC.2.42.2"></A>
+<A NAME="DOC.2.47.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readCommandLine(osg::ArgumentParser&amp; commandLine)</B></TT>
 <DD>read the command line arguments
 <DL><DT><DD></DL><P>
 <A NAME="addFileExtensionAlias"></A>
-<A NAME="DOC.2.42.3"></A>
+<A NAME="DOC.2.47.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addFileExtensionAlias(const std::string mapExt, const std::string toExt)</B></TT>
 <DD>register an fileextension alias to mapExt toExt, the later
 should the the extension name of the readerwriter plugin library.
@@ -250,192 +261,192 @@ addExtAlias("tif","tiff") which will enable .tif to be read
 by the libdb_tiff readerwriter plugin.
 <DL><DT><DD></DL><P>
 <A NAME="addDotOsgWrapper"></A>
-<A NAME="DOC.2.42.4"></A>
+<A NAME="DOC.2.47.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addDotOsgWrapper(<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeDotOsgWrapper"></A>
-<A NAME="DOC.2.42.5"></A>
+<A NAME="DOC.2.47.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeDotOsgWrapper(<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addReaderWriter"></A>
-<A NAME="DOC.2.42.6"></A>
+<A NAME="DOC.2.47.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addReaderWriter(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeReaderWriter"></A>
-<A NAME="DOC.2.42.7"></A>
+<A NAME="DOC.2.47.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeReaderWriter(<!1><A HREF="ReaderWriter.html">ReaderWriter</A>* rw)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="createLibraryNameForFile"></A>
-<A NAME="DOC.2.42.8"></A>
+<A NAME="DOC.2.47.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string createLibraryNameForFile(const std::string&amp; fileName)</B></TT>
 <DD>create the platform specific library name associated with file
 <DL><DT><DD></DL><P>
 <A NAME="createLibraryNameForExtension"></A>
-<A NAME="DOC.2.42.9"></A>
+<A NAME="DOC.2.47.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string createLibraryNameForExtension(const std::string&amp; ext)</B></TT>
 <DD>create the platform specific library name associated with file extension
 <DL><DT><DD></DL><P>
 <A NAME="createLibraryNameForNodeKit"></A>
-<A NAME="DOC.2.42.10"></A>
+<A NAME="DOC.2.47.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string createLibraryNameForNodeKit(const std::string&amp; name)</B></TT>
 <DD>create the platform specific library name associated with nodekit library name
 <DL><DT><DD></DL><P>
 <A NAME="loadLibrary"></A>
-<A NAME="DOC.2.42.11"></A>
+<A NAME="DOC.2.47.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool loadLibrary(const std::string&amp; fileName)</B></TT>
 <DD>find the library in the SG_LIBRARY_PATH and load it
 <DL><DT><DD></DL><P>
 <A NAME="closeLibrary"></A>
-<A NAME="DOC.2.42.12"></A>
+<A NAME="DOC.2.47.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool closeLibrary(const std::string&amp; fileName)</B></TT>
 <DD>close the attached library with specified name
 <DL><DT><DD></DL><P>
 <A NAME="getReaderWriterForExtension"></A>
-<A NAME="DOC.2.42.13"></A>
+<A NAME="DOC.2.47.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ReaderWriter.html">ReaderWriter</A>* getReaderWriterForExtension(const std::string&amp; ext)</B></TT>
 <DD>get a reader writer which handles specified extension
 <DL><DT><DD></DL><P>
 <A NAME="readObjectOfType"></A>
-<A NAME="DOC.2.42.14"></A>
+<A NAME="DOC.2.47.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObjectOfType(const osg::Object&amp; compObj, <!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObjectOfType"></A>
-<A NAME="DOC.2.42.15"></A>
+<A NAME="DOC.2.47.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObjectOfType(const <!1><A HREF="basic_type_wrapper.html">basic_type_wrapper</A> &amp;btw, <!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.42.16"></A>
+<A NAME="DOC.2.47.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObject(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.42.17"></A>
+<A NAME="DOC.2.47.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Image* readImage(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readDrawable"></A>
-<A NAME="DOC.2.42.18"></A>
+<A NAME="DOC.2.47.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Drawable* readDrawable(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readStateAttribute"></A>
-<A NAME="DOC.2.42.19"></A>
+<A NAME="DOC.2.47.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::StateAttribute* readStateAttribute(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.42.20"></A>
+<A NAME="DOC.2.47.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* readNode(<!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeObject"></A>
-<A NAME="DOC.2.42.21"></A>
+<A NAME="DOC.2.47.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool writeObject(const osg::Object&amp; obj, <!1><A HREF="Output.html">Output</A>&amp; fw)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.42.22"></A>
+<A NAME="DOC.2.47.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::ReadResult readObject(const std::string&amp; fileName, bool useObjectCache)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeObject"></A>
-<A NAME="DOC.2.42.23"></A>
+<A NAME="DOC.2.47.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::WriteResult writeObject(const osg::Object&amp; obj, const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.42.24"></A>
+<A NAME="DOC.2.47.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::ReadResult readImage(const std::string&amp; fileName, bool useObjectCache)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeImage"></A>
-<A NAME="DOC.2.42.25"></A>
+<A NAME="DOC.2.47.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::WriteResult writeImage(const osg::Image&amp; obj, const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.42.26"></A>
+<A NAME="DOC.2.47.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::ReadResult readNode(const std::string&amp; fileName, bool useObjectCache)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeNode"></A>
-<A NAME="DOC.2.42.27"></A>
+<A NAME="DOC.2.47.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::WriteResult writeNode(const osg::Node&amp; node, const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCreateNodeFromImage"></A>
-<A NAME="DOC.2.42.28"></A>
+<A NAME="DOC.2.47.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCreateNodeFromImage(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCreateNodeFromImage"></A>
-<A NAME="DOC.2.42.29"></A>
+<A NAME="DOC.2.47.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getCreateNodeFromImage() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setOptions"></A>
-<A NAME="DOC.2.42.30"></A>
+<A NAME="DOC.2.47.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOptions(ReaderWriter::Options* opt)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getOptions"></A>
-<A NAME="DOC.2.42.31"></A>
+<A NAME="DOC.2.47.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::Options* getOptions()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getOptions"></A>
-<A NAME="DOC.2.42.32"></A>
+<A NAME="DOC.2.47.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const ReaderWriter::Options* getOptions() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="initFilePathLists"></A>
-<A NAME="DOC.2.42.33"></A>
+<A NAME="DOC.2.47.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void initFilePathLists()</B></TT>
 <DD>initilize both the Data and Library FilePaths, by default called by the 
 constructor, so it should only be required if you want to force
 the re-reading of environmental variables
 <DL><DT><DD></DL><P>
 <A NAME="initDataFilePathList"></A>
-<A NAME="DOC.2.42.34"></A>
+<A NAME="DOC.2.47.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void initDataFilePathList()</B></TT>
 <DD>initilize the Data FilePath by reading the OSG_FILE_PATH environmental variable
 <DL><DT><DD></DL><P>
 <A NAME="setDataFilePathList"></A>
-<A NAME="DOC.2.42.35"></A>
+<A NAME="DOC.2.47.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDataFilePathList(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)</B></TT>
 <DD>Set the data file path using a list of paths stored in a FilePath, which is used when search for data files
 <DL><DT><DD></DL><P>
 <A NAME="setDataFilePathList"></A>
-<A NAME="DOC.2.42.36"></A>
+<A NAME="DOC.2.47.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDataFilePathList(const std::string&amp; paths)</B></TT>
 <DD>Set the data file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files
 <DL><DT><DD></DL><P>
 <A NAME="getDataFilePathList"></A>
-<A NAME="DOC.2.42.37"></A>
+<A NAME="DOC.2.47.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FilePathList.html">FilePathList</A>&amp; getDataFilePathList()</B></TT>
 <DD>get the data file path which is used when search for data files
 <DL><DT><DD></DL><P>
 <A NAME="getDataFilePathList"></A>
-<A NAME="DOC.2.42.38"></A>
+<A NAME="DOC.2.47.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; getDataFilePathList() const </B></TT>
 <DD>get the const data file path which is used when search for data files
 <DL><DT><DD></DL><P>
 <A NAME="initLibraryFilePathList"></A>
-<A NAME="DOC.2.42.39"></A>
+<A NAME="DOC.2.47.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void initLibraryFilePathList()</B></TT>
 <DD>initilize the Library FilePath by reading the OSG_LIBRARY_PATH 
 and the appropriate system environmental variables
 <DL><DT><DD></DL><P>
 <A NAME="setLibraryFilePathList"></A>
-<A NAME="DOC.2.42.40"></A>
+<A NAME="DOC.2.47.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLibraryFilePathList(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)</B></TT>
 <DD>Set the library file path using a list of paths stored in a FilePath, which is used when search for data files
 <DL><DT><DD></DL><P>
 <A NAME="setLibraryFilePathList"></A>
-<A NAME="DOC.2.42.41"></A>
+<A NAME="DOC.2.47.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLibraryFilePathList(const std::string&amp; paths)</B></TT>
 <DD>Set the library file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files
 <DL><DT><DD></DL><P>
 <A NAME="getLibraryFilePathList"></A>
-<A NAME="DOC.2.42.42"></A>
+<A NAME="DOC.2.47.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FilePathList.html">FilePathList</A>&amp; getLibraryFilePathList()</B></TT>
 <DD>get the library file path which is used when search for library (dso/dll's) files
 <DL><DT><DD></DL><P>
 <A NAME="getLibraryFilePathList"></A>
-<A NAME="DOC.2.42.43"></A>
+<A NAME="DOC.2.47.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; getLibraryFilePathList() const </B></TT>
 <DD>get the const library file path which is used when search for library (dso/dll's) files
 <DL><DT><DD></DL><P>
 <A NAME="convertStringPathIntoFilePathList"></A>
-<A NAME="DOC.2.42.44"></A>
+<A NAME="DOC.2.47.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void convertStringPathIntoFilePathList(const std::string&amp; paths, <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)</B></TT>
 <DD>convert a string containing a list of paths  deliminated either with ';' (Windows) or ':' (All other platforms) into FilePath represetation
 <DL><DT><DD></DL><P>
 <A NAME="updateTimeStampOfObjectsInCacheWithExtenalReferences"></A>
-<A NAME="DOC.2.42.45"></A>
+<A NAME="DOC.2.47.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime)</B></TT>
 <DD>For each object in the cache which has an reference count greater than 1 
 (and therefore referenced by elsewhere in the application) set the time stamp
@@ -445,7 +456,7 @@ and need to prune objects that are no longer required.
 Time value is time in sceonds.
 <DL><DT><DD></DL><P>
 <A NAME="removeExpiredObjectsInCache"></A>
-<A NAME="DOC.2.42.46"></A>
+<A NAME="DOC.2.47.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeExpiredObjectsInCache(double expiryTime)</B></TT>
 <DD>Removed object in the cache which have a time stamp at or before the specified expiry time.
 This would typically be called once per frame by applications which are doing database paging,
@@ -456,134 +467,153 @@ to a fixed amount of time before currentTime, such as expiryTime = currentTime-1
 Time value is time in sceonds.
 <DL><DT><DD></DL><P>
 <A NAME="clearObjectCache"></A>
-<A NAME="DOC.2.42.47"></A>
+<A NAME="DOC.2.47.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void clearObjectCache()</B></TT>
 <DD>Remove all objects in the cache regardless of having external references or expiry times
 <DL><DT><DD></DL><P>
+<A NAME="addEntryToObjectCache"></A>
+<A NAME="DOC.2.47.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addEntryToObjectCache(const std::string&amp; filename, osg::Object* object, double timestamp = 0.0)</B></TT>
+<DD>Add a filename,object,timestamp tripple to the Registry::ObjectCache
+<DL><DT><DD></DL><P>
+<A NAME="setUseObjectCacheHint"></A>
+<A NAME="DOC.2.47.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseObjectCacheHint(bool useObjectCache)</B></TT>
+<DD>Set whether the Registry::ObjectCache should be used by default
+<DL><DT><DD></DL><P>
+<A NAME="getUseObjectCacheHint"></A>
+<A NAME="DOC.2.47.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getUseObjectCacheHint() const </B></TT>
+<DD>Get whether the Registry::ObjectCache should be used by default
+<DL><DT><DD></DL><P>
 <A NAME="getLibrary"></A>
-<A NAME="DOC.2.42.48"></A>
+<A NAME="DOC.2.47.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* getLibrary(const std::string&amp; fileName)</B></TT>
 <DD>get the attached library with specified name
 <DL><DT><DD></DL><P>
 <A NAME="~Registry"></A>
-<A NAME="DOC.2.42.49"></A>
+<A NAME="DOC.2.47.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Registry()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DotOsgWrapperMap"></A>
-<A NAME="DOC.2.42.50"></A>
+<A NAME="DOC.2.47.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>&gt; &gt; DotOsgWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ReaderWriterList"></A>
-<A NAME="DOC.2.42.51"></A>
+<A NAME="DOC.2.47.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ReaderWriter.html">ReaderWriter</A>&gt; &gt; ReaderWriterList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DynamicLibraryList"></A>
-<A NAME="DOC.2.42.52"></A>
+<A NAME="DOC.2.47.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&gt; &gt; DynamicLibraryList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ExtensionAliasMap"></A>
-<A NAME="DOC.2.42.53"></A>
+<A NAME="DOC.2.47.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; std::string, std::string&gt; ExtensionAliasMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ObjectTimeStampPair"></A>
-<A NAME="DOC.2.42.54"></A>
+<A NAME="DOC.2.47.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;osg::ref_ptr&lt;osg::Object&gt;, double &gt; ObjectTimeStampPair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ObjectCache"></A>
-<A NAME="DOC.2.42.55"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.42.54">ObjectTimeStampPair</A> &gt; ObjectCache</B></TT>
+<A NAME="DOC.2.47.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string, <!1><A HREF="Registry.html#DOC.2.47.57">ObjectTimeStampPair</A> &gt; ObjectCache</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Registry"></A>
-<A NAME="DOC.2.42.56"></A>
+<A NAME="DOC.2.47.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Registry()</B></TT>
 <DD>constructor is private, as its a singleton, preventing
 construction other than via the instance() method and
 therefore ensuring only one copy is ever constructed
 <DL><DT><DD></DL><P>
 <A NAME="getLibraryItr"></A>
-<A NAME="DOC.2.42.57"></A>
+<A NAME="DOC.2.47.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>DynamicLibraryList::iterator getLibraryItr(const std::string&amp; fileName)</B></TT>
 <DD>get the attached library with specified name
 <DL><DT><DD></DL><P>
 <A NAME="_createNodeFromImage"></A>
-<A NAME="DOC.2.42.58"></A>
+<A NAME="DOC.2.47.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _createNodeFromImage</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.42.59"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObject(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
+<A NAME="DOC.2.47.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Object* readObject(<!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A>&amp; dowMap, <!1><A HREF="Input.html">Input</A>&amp; fr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="eraseWrapper"></A>
-<A NAME="DOC.2.42.60"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void eraseWrapper(<!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)</B></TT>
+<A NAME="DOC.2.47.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void eraseWrapper(<!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A>&amp; wrappermap, <!1><A HREF="DotOsgWrapper.html">DotOsgWrapper</A>* wrapper)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.42.61"></A>
+<A NAME="DOC.2.47.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::ReadResult readObject(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.42.62"></A>
+<A NAME="DOC.2.47.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::ReadResult readImage(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.42.63"></A>
+<A NAME="DOC.2.47.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReaderWriter::ReadResult readNode(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_objectWrapperMap"></A>
-<A NAME="DOC.2.42.64"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _objectWrapperMap</B></TT>
+<A NAME="DOC.2.47.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> _objectWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_imageWrapperMap"></A>
-<A NAME="DOC.2.42.65"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _imageWrapperMap</B></TT>
+<A NAME="DOC.2.47.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> _imageWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawableWrapperMap"></A>
-<A NAME="DOC.2.42.66"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _drawableWrapperMap</B></TT>
+<A NAME="DOC.2.47.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> _drawableWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stateAttrWrapperMap"></A>
-<A NAME="DOC.2.42.67"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _stateAttrWrapperMap</B></TT>
+<A NAME="DOC.2.47.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> _stateAttrWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nodeWrapperMap"></A>
-<A NAME="DOC.2.42.68"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _nodeWrapperMap</B></TT>
+<A NAME="DOC.2.47.71"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> _nodeWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_classNameWrapperMap"></A>
-<A NAME="DOC.2.42.69"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.50">DotOsgWrapperMap</A> _classNameWrapperMap</B></TT>
+<A NAME="DOC.2.47.72"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.53">DotOsgWrapperMap</A> _classNameWrapperMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rwList"></A>
-<A NAME="DOC.2.42.70"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.51">ReaderWriterList</A> _rwList</B></TT>
+<A NAME="DOC.2.47.73"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.54">ReaderWriterList</A> _rwList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dlList"></A>
-<A NAME="DOC.2.42.71"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.52">DynamicLibraryList</A> _dlList</B></TT>
+<A NAME="DOC.2.47.74"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.55">DynamicLibraryList</A> _dlList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_openingLibrary"></A>
-<A NAME="DOC.2.42.72"></A>
+<A NAME="DOC.2.47.75"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _openingLibrary</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_extAliasMap"></A>
-<A NAME="DOC.2.42.73"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.53">ExtensionAliasMap</A> _extAliasMap</B></TT>
+<A NAME="DOC.2.47.76"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.56">ExtensionAliasMap</A> _extAliasMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_options"></A>
-<A NAME="DOC.2.42.74"></A>
+<A NAME="DOC.2.47.77"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;ReaderWriter::Options&gt;  _options</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dataFilePath"></A>
-<A NAME="DOC.2.42.75"></A>
+<A NAME="DOC.2.47.78"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FilePathList.html">FilePathList</A> _dataFilePath</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_libraryFilePath"></A>
-<A NAME="DOC.2.42.76"></A>
+<A NAME="DOC.2.47.79"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FilePathList.html">FilePathList</A> _libraryFilePath</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_useObjectCacheHint"></A>
+<A NAME="DOC.2.47.80"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useObjectCacheHint</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_objectCache"></A>
-<A NAME="DOC.2.42.77"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.42.55">ObjectCache</A> _objectCache</B></TT>
+<A NAME="DOC.2.47.81"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Registry.html#DOC.2.47.58">ObjectCache</A> _objectCache</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -23,85 +23,85 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.231.1">VertexProgram</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.232.1">VertexProgram</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.231.2">VertexProgram</A></B>(const <!1><A HREF="VertexProgram.html#DOC.2.231.2">VertexProgram</A>&amp; vp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.232.2">VertexProgram</A></B>(const <!1><A HREF="VertexProgram.html#DOC.2.232.2">VertexProgram</A>&amp; vp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.231.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="VertexProgram.html">VertexProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.194.6.42">VERTEXPROGRAM</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.232.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="VertexProgram.html">VertexProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.44">VERTEXPROGRAM</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.231.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">osg::StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.232.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">osg::StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.231.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.194.1">GLMode</A>&gt;&amp; modes) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.232.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLuint&amp; <B><A HREF="#DOC.2.231.6">getVertexProgramID</A></B>(unsigned int contextID) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLuint&amp; <B><A HREF="#DOC.2.232.6">getVertexProgramID</A></B>(unsigned int contextID) const 
 <DD><I>Get the handle to the vertex program id for the current context</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.231.7">setVertexProgram</A></B>( const std::string&amp; program )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.232.7">setVertexProgram</A></B>( const std::string&amp; program )
 <DD><I>Set the vertex program using C++ style string</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.231.8">setVertexProgram</A></B>( const char* program )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.232.8">setVertexProgram</A></B>( const char* program )
 <DD><I>Set the vertex program using a C style string</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.231.9">getVertexProgram</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.232.9">getVertexProgram</A></B>() const 
 <DD><I>Get the vertex program</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.231.10">setProgramLocalParameter</A></B>(const GLuint <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const <!1><A HREF="Vec4.html">Vec4</A>&amp; p)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.232.10">setProgramLocalParameter</A></B>(const GLuint <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const <!1><A HREF="Vec4.html">Vec4</A>&amp; p)
 <DD><I>Program Parameters </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.231.11">setMatrix</A></B>(const GLenum mode, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.232.11">setMatrix</A></B>(const GLenum mode, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix)
 <DD><I>Matrix </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.231.12">dirtyVertexProgramObject</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.232.12">dirtyVertexProgramObject</A></B>()
 <DD><I>Force a recompile on next apply() of associated OpenGL vertex program objects</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.231.13">deleteVertexProgramObject</A></B>(unsigned int contextID, GLuint handle)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.232.13">deleteVertexProgramObject</A></B>(unsigned int contextID, GLuint handle)
 <DD><I>use deleteVertexProgramObject instead of glDeletePrograms to allow OpenGL Vertex Program objects to cached until they can be deleted by the OpenGL context in which they were created, specified by contextID</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.231.14">flushDeletedVertexProgramObjects</A></B>(unsigned int contextID, double currentTime, double&amp; availableTime)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.232.14">flushDeletedVertexProgramObjects</A></B>(unsigned int contextID, double currentTime, double&amp; availableTime)
 <DD><I>flush all the cached vertex programs which need to be deleted in the OpenGL context related to contextID</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.231.15">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.232.15">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.231.16">compile</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.232.16">compile</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Extensions.6.html">Extensions</A>* <B><A HREF="#DOC.2.231.18">getExtensions</A></B>(unsigned int contextID, bool createIfNotInitalized)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Extensions.8.html">Extensions</A>* <B><A HREF="#DOC.2.232.18">getExtensions</A></B>(unsigned int contextID, bool createIfNotInitalized)
 <DD><I>Function to call to get the extension of a specified context.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.231.19">setExtensions</A></B>(unsigned int contextID, <!1><A HREF="Extensions.6.html">Extensions</A>* extensions)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.232.19">setExtensions</A></B>(unsigned int contextID, <!1><A HREF="Extensions.8.html">Extensions</A>* extensions)
 <DD><I>setExtensions allows users to override the extensions across graphics contexts.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-class  SG_EXPORT <B><A HREF="Extensions.6.html">Extensions</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+class  SG_EXPORT <B><A HREF="Extensions.8.html">Extensions</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DD><I>Extensions class which encapsulates the querring of extensions and associated function pointers, and provide convinience wrappers to  check for the extensions or use the associated functions</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="VertexProgram.html#DOC.2.231.21">VertexProgramIDList</A> <B><A HREF="#DOC.2.231.22">_vertexProgramIDList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="VertexProgram.html#DOC.2.232.21">VertexProgramIDList</A> <B><A HREF="#DOC.2.232.22">_vertexProgramIDList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.231.23">_vertexProgram</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.232.23">_vertexProgram</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="VertexProgram.html#DOC.2.231.24">LocalParamList</A> <B><A HREF="#DOC.2.231.25">_programLocalParameters</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="VertexProgram.html#DOC.2.232.24">LocalParamList</A> <B><A HREF="#DOC.2.232.25">_programLocalParameters</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="VertexProgram.html#DOC.2.231.26">MatrixList</A> <B><A HREF="#DOC.2.231.27">_matrixList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="VertexProgram.html#DOC.2.232.26">MatrixList</A> <B><A HREF="#DOC.2.232.27">_matrixList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.231.20">~VertexProgram</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.232.20">~VertexProgram</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;GLuint&gt; <B><A HREF="#DOC.2.231.21">VertexProgramIDList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;GLuint&gt; <B><A HREF="#DOC.2.232.21">VertexProgramIDList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;GLuint,<!1><A HREF="Vec4.html">Vec4</A>&gt; <B><A HREF="#DOC.2.231.24">LocalParamList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;GLuint,<!1><A HREF="Vec4.html">Vec4</A>&gt; <B><A HREF="#DOC.2.232.24">LocalParamList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;GLenum,<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&gt; <B><A HREF="#DOC.2.231.26">MatrixList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;GLenum,<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&gt; <B><A HREF="#DOC.2.232.26">MatrixList</A></B>
 </DL></P>
 
 </DL>
@@ -119,7 +119,7 @@ class  SG_EXPORT <B><A HREF="Extensions.6.html">Extensions</A></B>: public <!1><
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.194.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.195.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -150,9 +150,9 @@ class  SG_EXPORT <B><A HREF="Extensions.6.html">Extensions</A></B>: public <!1><
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -168,7 +168,7 @@ class  SG_EXPORT <B><A HREF="Extensions.6.html">Extensions</A></B>: public <!1><
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -207,64 +207,64 @@ class  SG_EXPORT <B><A HREF="Extensions.6.html">Extensions</A></B>: public <!1><
 <DL>
 
 <A NAME="VertexProgram"></A>
-<A NAME="DOC.2.231.1"></A>
+<A NAME="DOC.2.232.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VertexProgram()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VertexProgram"></A>
-<A NAME="DOC.2.231.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VertexProgram(const <!1><A HREF="VertexProgram.html#DOC.2.231.2">VertexProgram</A>&amp; vp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.232.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VertexProgram(const <!1><A HREF="VertexProgram.html#DOC.2.232.2">VertexProgram</A>&amp; vp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.231.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="VertexProgram.html">VertexProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.194.6.42">VERTEXPROGRAM</A>)</B></TT>
+<A NAME="DOC.2.232.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="VertexProgram.html">VertexProgram</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.44">VERTEXPROGRAM</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.231.4"></A>
+<A NAME="DOC.2.232.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">osg::StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.231.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.194.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<A NAME="DOC.2.232.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getVertexProgramID"></A>
-<A NAME="DOC.2.231.6"></A>
+<A NAME="DOC.2.232.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   GLuint&amp; getVertexProgramID(unsigned int contextID) const </B></TT>
 <DD>Get the handle to the vertex program id for the current context
 <DL><DT><DD></DL><P>
 <A NAME="setVertexProgram"></A>
-<A NAME="DOC.2.231.7"></A>
+<A NAME="DOC.2.232.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexProgram( const std::string&amp; program )</B></TT>
 <DD>Set the vertex program using C++ style string
 <DL><DT><DD></DL><P>
 <A NAME="setVertexProgram"></A>
-<A NAME="DOC.2.231.8"></A>
+<A NAME="DOC.2.232.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexProgram( const char* program )</B></TT>
 <DD>Set the vertex program using a C style string
 <DL><DT><DD></DL><P>
 <A NAME="getVertexProgram"></A>
-<A NAME="DOC.2.231.9"></A>
+<A NAME="DOC.2.232.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const std::string&amp; getVertexProgram() const </B></TT>
 <DD>Get the vertex program
 <DL><DT><DD></DL><P>
 <A NAME="setProgramLocalParameter"></A>
-<A NAME="DOC.2.231.10"></A>
+<A NAME="DOC.2.232.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setProgramLocalParameter(const GLuint <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const <!1><A HREF="Vec4.html">Vec4</A>&amp; p)</B></TT>
 <DD>Program Parameters 
 <DL><DT><DD></DL><P>
 <A NAME="setMatrix"></A>
-<A NAME="DOC.2.231.11"></A>
+<A NAME="DOC.2.232.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMatrix(const GLenum mode, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix)</B></TT>
 <DD>Matrix 
 <DL><DT><DD></DL><P>
 <A NAME="dirtyVertexProgramObject"></A>
-<A NAME="DOC.2.231.12"></A>
+<A NAME="DOC.2.232.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyVertexProgramObject()</B></TT>
 <DD>Force a recompile on next apply() of associated OpenGL vertex program objects
 <DL><DT><DD></DL><P>
 <A NAME="deleteVertexProgramObject"></A>
-<A NAME="DOC.2.231.13"></A>
+<A NAME="DOC.2.232.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void deleteVertexProgramObject(unsigned int contextID, GLuint handle)</B></TT>
 <DD>use deleteVertexProgramObject instead of glDeletePrograms to allow
 OpenGL Vertex Program objects to cached until they can be deleted
@@ -272,22 +272,22 @@ by the OpenGL context in which they were created, specified
 by contextID
 <DL><DT><DD></DL><P>
 <A NAME="flushDeletedVertexProgramObjects"></A>
-<A NAME="DOC.2.231.14"></A>
+<A NAME="DOC.2.232.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void flushDeletedVertexProgramObjects(unsigned int contextID, double currentTime, double&amp; availableTime)</B></TT>
 <DD>flush all the cached vertex programs which need to be deleted
 in the OpenGL context related to contextID
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.231.15"></A>
+<A NAME="DOC.2.232.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compile"></A>
-<A NAME="DOC.2.231.16"></A>
+<A NAME="DOC.2.232.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void compile(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getExtensions"></A>
-<A NAME="DOC.2.231.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Extensions.6.html">Extensions</A>* getExtensions(unsigned int contextID, bool createIfNotInitalized)</B></TT>
+<A NAME="DOC.2.232.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Extensions.8.html">Extensions</A>* getExtensions(unsigned int contextID, bool createIfNotInitalized)</B></TT>
 <DD>Function to call to get the extension of a specified context.
 If the Exentsion object for that context has not yet been created then 
 and the 'createIfNotInitalized' flag been set to false then returns NULL.
@@ -296,43 +296,43 @@ automatically created.  However, in this case the extension object
 only be created with the graphics context associated with ContextID..
 <DL><DT><DD></DL><P>
 <A NAME="setExtensions"></A>
-<A NAME="DOC.2.231.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void setExtensions(unsigned int contextID, <!1><A HREF="Extensions.6.html">Extensions</A>* extensions)</B></TT>
+<A NAME="DOC.2.232.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void setExtensions(unsigned int contextID, <!1><A HREF="Extensions.8.html">Extensions</A>* extensions)</B></TT>
 <DD>setExtensions allows users to override the extensions across graphics contexts.
 typically used when you have different extensions supported across graphics pipes
 but need to ensure that they all use the same low common denominator extensions.
 <DL><DT><DD></DL><P>
 <A NAME="~VertexProgram"></A>
-<A NAME="DOC.2.231.20"></A>
+<A NAME="DOC.2.232.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~VertexProgram()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VertexProgramIDList"></A>
-<A NAME="DOC.2.231.21"></A>
+<A NAME="DOC.2.232.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;GLuint&gt; VertexProgramIDList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_vertexProgramIDList"></A>
-<A NAME="DOC.2.231.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="VertexProgram.html#DOC.2.231.21">VertexProgramIDList</A> _vertexProgramIDList</B></TT>
+<A NAME="DOC.2.232.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="VertexProgram.html#DOC.2.232.21">VertexProgramIDList</A> _vertexProgramIDList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_vertexProgram"></A>
-<A NAME="DOC.2.231.23"></A>
+<A NAME="DOC.2.232.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _vertexProgram</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LocalParamList"></A>
-<A NAME="DOC.2.231.24"></A>
+<A NAME="DOC.2.232.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;GLuint,<!1><A HREF="Vec4.html">Vec4</A>&gt; LocalParamList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_programLocalParameters"></A>
-<A NAME="DOC.2.231.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="VertexProgram.html#DOC.2.231.24">LocalParamList</A> _programLocalParameters</B></TT>
+<A NAME="DOC.2.232.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="VertexProgram.html#DOC.2.232.24">LocalParamList</A> _programLocalParameters</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MatrixList"></A>
-<A NAME="DOC.2.231.26"></A>
+<A NAME="DOC.2.232.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;GLenum,<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&gt; MatrixList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrixList"></A>
-<A NAME="DOC.2.231.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="VertexProgram.html#DOC.2.231.26">MatrixList</A> _matrixList</B></TT>
+<A NAME="DOC.2.232.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="VertexProgram.html#DOC.2.232.26">MatrixList</A> _matrixList</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

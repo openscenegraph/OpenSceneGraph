@@ -7,13 +7,14 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>extern OSGDB_EXPORT osg::Node* <A HREF="#DOC.DOCU">osgDB::readNodeFiles</A></H2><H2>(std::vector&lt;std::string&gt;&amp; commandLine,<BR>&nbsp; bool useObjectCache=false)</H2><BLOCKQUOTE>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded</BLOCKQUOTE>
+<H2>extern OSGDB_EXPORT osg::Node* <A HREF="#DOC.DOCU">osgDB::readNodeFiles</A></H2><H2>(std::vector&lt;std::string&gt;&amp; commandLine,<BR>&nbsp; bool useObjectCache)</H2><BLOCKQUOTE>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded.</BLOCKQUOTE>
 
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
-than one subgraph has been loaded</BLOCKQUOTE>
+than one subgraph has been loaded.
+Use the useObjectCache flag to override the osgDB::Regisytr::getUseObjectCacheHint().</BLOCKQUOTE>
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
 This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.

@@ -48,19 +48,19 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.12">setAllocationMode</A></B>(<!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode)
 <DD><I>Set the method used for deleting data once it goes out of scope</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> <B><A HREF="#DOC.2.88.13">setAllocationMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> <B><A HREF="#DOC.2.88.13">getAllocationMode</A></B>() const 
 <DD><I>Get the method used for deleting data once it goes out of scope</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.14">allocateImage</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLenum format, GLenum type, int packing=1)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.14">allocateImage</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLenum pixelFormat, GLenum type, int packing=1)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.15">setImage</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.88.34">data</A>, <!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode, int packing=1)
-<DD><I>set the image data and format.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.15">setImage</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLint internalTextureformat, GLenum pixelFormat, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.88.34">data</A>, <!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode, int packing=1)
+<DD><I>set the image data and pixelFormat.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.16">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.232.11">height</A>, GLenum format, GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.16">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.233.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.233.11">height</A>, GLenum pixelFormat, GLenum type)
 <DD><I>readPixels from screen at specified position and size, using glReadPixels.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.17">readImageFromCurrentTexture</A></B>(unsigned int contextID=0)
-<DD><I>read the contents of the current bound texture, handling compressed formats if present.</I>
+<DD><I>read the contents of the current bound texture, handling compressed pixelFormats if present.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.18">scaleImage</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>)
 <DD><I>Scale image to specified size.</I>
@@ -81,7 +81,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLint <B><A HREF="#DOC.2.88.24">getInternalTextureFormat</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.25">setPixelFormat</A></B>(GLenum format)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.25">setPixelFormat</A></B>(GLenum pixelFormat)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLenum <B><A HREF="#DOC.2.88.26">getPixelFormat</A></B>() const 
 <DT>
@@ -118,7 +118,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.38">flipVertical</A></B>(int image=0)
 <DD><I>Flip the image vertically</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.39">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.3.html#DOC.2.204.39.22">maxTextureSize</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.88.39">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.5.html#DOC.2.205.39.22">maxTextureSize</A>)
 <DD><I>Ensure image dimensions are a power of two.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.88.40">dirty</A></B>()
@@ -132,11 +132,11 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   bool <B><A HREF="#DOC.2.88.43">isPackedType</A></B>(GLenum type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.44">computeNumComponents</A></B>(GLenum format)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.44">computeNumComponents</A></B>(GLenum pixelFormat)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.45">computePixelSizeInBits</A></B>(GLenum format, GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.45">computePixelSizeInBits</A></B>(GLenum pixelFormat, GLenum type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.46">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, GLenum format, GLenum type, int packing)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.88.46">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.233.10">width</A>, GLenum pixelFormat, GLenum type, int packing)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.88.47">computeNearestPowerOfTwo</A></B>(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, float bias=0.5f)
 <DT>
@@ -205,9 +205,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -223,7 +223,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -324,19 +324,19 @@
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAllocationMode(<!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode)</B></TT>
 <DD>Set the method used for deleting data once it goes out of scope
 <DL><DT><DD></DL><P>
-<A NAME="setAllocationMode"></A>
+<A NAME="getAllocationMode"></A>
 <A NAME="DOC.2.88.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> setAllocationMode() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> getAllocationMode() const </B></TT>
 <DD>Get the method used for deleting data once it goes out of scope
 <DL><DT><DD></DL><P>
 <A NAME="allocateImage"></A>
 <A NAME="DOC.2.88.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void allocateImage(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLenum format, GLenum type, int packing=1)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void allocateImage(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLenum pixelFormat, GLenum type, int packing=1)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setImage"></A>
 <A NAME="DOC.2.88.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.88.34">data</A>, <!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode, int packing=1)</B></TT>
-<DD>set the image data and format.
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(int <!1><A HREF="Image.html#DOC.2.88.20">s</A>, int <!1><A HREF="Image.html#DOC.2.88.21">t</A>, int <!1><A HREF="Image.html#DOC.2.88.22">r</A>, GLint internalTextureformat, GLenum pixelFormat, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.88.34">data</A>, <!1><A HREF="Image.html#DOC.2.88.11">AllocationMode</A> mode, int packing=1)</B></TT>
+<DD>set the image data and pixelFormat.
 note, when the packing value is negative (the default is -1) this method assumes
 a _packing width of 1 if the width is not a multiple of 4,
 otherwise automatically sets to _packing to 4. If a positive
@@ -344,14 +344,14 @@ value of packing is supplied than _packing is simply set to that value.
 <DL><DT><DD></DL><P>
 <A NAME="readPixels"></A>
 <A NAME="DOC.2.88.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.232.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.232.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.232.11">height</A>, GLenum format, GLenum type)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.233.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.233.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.233.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.233.11">height</A>, GLenum pixelFormat, GLenum type)</B></TT>
 <DD>readPixels from screen at specified position and size, using glReadPixels.
 Create memory for storage if required, reuse existing pixel coords if possible.
 <DL><DT><DD></DL><P>
 <A NAME="readImageFromCurrentTexture"></A>
 <A NAME="DOC.2.88.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readImageFromCurrentTexture(unsigned int contextID=0)</B></TT>
-<DD>read the contents of the current bound texture, handling compressed formats if present.
+<DD>read the contents of the current bound texture, handling compressed pixelFormats if present.
 Create memory for storage if required, reuse existing pixel coords if possible.
 <DL><DT><DD></DL><P>
 <A NAME="scaleImage"></A>
@@ -394,7 +394,7 @@ If source is NULL then no operation happens, this Image is left unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="setPixelFormat"></A>
 <A NAME="DOC.2.88.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPixelFormat(GLenum format)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPixelFormat(GLenum pixelFormat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPixelFormat"></A>
 <A NAME="DOC.2.88.26"></A>
@@ -459,7 +459,7 @@ If source is NULL then no operation happens, this Image is left unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="ensureValidSizeForTexturing"></A>
 <A NAME="DOC.2.88.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureValidSizeForTexturing(GLint <!1><A HREF="Extensions.3.html#DOC.2.204.39.22">maxTextureSize</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureValidSizeForTexturing(GLint <!1><A HREF="Extensions.5.html#DOC.2.205.39.22">maxTextureSize</A>)</B></TT>
 <DD>Ensure image dimensions are a power of two.
 Mip Mapped texture require the image dimensions to be
 power of two and are within the maxiumum texture size for
@@ -486,15 +486,15 @@ the host machine.
 <DL><DT><DD></DL><P>
 <A NAME="computeNumComponents"></A>
 <A NAME="DOC.2.88.44"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeNumComponents(GLenum format)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeNumComponents(GLenum pixelFormat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computePixelSizeInBits"></A>
 <A NAME="DOC.2.88.45"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computePixelSizeInBits(GLenum format, GLenum type)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computePixelSizeInBits(GLenum pixelFormat, GLenum type)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeRowWidthInBytes"></A>
 <A NAME="DOC.2.88.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.232.10">width</A>, GLenum format, GLenum type, int packing)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.233.10">width</A>, GLenum pixelFormat, GLenum type, int packing)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeNearestPowerOfTwo"></A>
 <A NAME="DOC.2.88.47"></A>

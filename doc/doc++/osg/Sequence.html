@@ -23,81 +23,81 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.1">Sequence</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.166.1">Sequence</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.2">Sequence</A></B>(const <!1><A HREF="Sequence.html#DOC.2.165.2">Sequence</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.166.2">Sequence</A></B>(const <!1><A HREF="Sequence.html#DOC.2.166.2">Sequence</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Sequence.html">Sequence</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.166.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Sequence.html">Sequence</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.165.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.166.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.165.5">setValue</A></B>(int value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.166.5">setValue</A></B>(int value)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.165.6">getValue</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.166.6">getValue</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.165.7">setTime</A></B>(int frame, float <!1><A HREF="ImpostorSprite.html#DOC.2.92.25">t</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.166.7">setTime</A></B>(int frame, float <!1><A HREF="ImpostorSprite.html#DOC.2.92.25">t</A>)
 <DD><I>Set time in seconds for child </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.165.8">getTime</A></B>(int frame) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.166.8">getTime</A></B>(int frame) const 
 <DD><I>Get time for child </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.165.10">setInterval</A></B>(<!1><A HREF="Sequence.html#DOC.2.165.9">LoopMode</A> mode, int <!1><A HREF="TriangleFunctor.html#DOC.2.220.9">begin</A>, int <!1><A HREF="TriangleFunctor.html#DOC.2.220.16">end</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.166.10">setInterval</A></B>(<!1><A HREF="Sequence.html#DOC.2.166.9">LoopMode</A> mode, int <!1><A HREF="TriangleFunctor.html#DOC.2.221.11">begin</A>, int <!1><A HREF="TriangleFunctor.html#DOC.2.221.18">end</A>)
 <DD><I>Set sequence mode & interval.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.11">getInterval</A></B>(<!1><A HREF="Sequence.html#DOC.2.165.9">LoopMode</A>&amp; mode, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.220.9">begin</A>, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.220.16">end</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.166.11">getInterval</A></B>(<!1><A HREF="Sequence.html#DOC.2.166.9">LoopMode</A>&amp; mode, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.221.11">begin</A>, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.221.18">end</A>) const 
 <DD><I>Get sequence mode & interval.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.165.12">setDuration</A></B>(float speed, int nreps = -1)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.166.12">setDuration</A></B>(float speed, int nreps = -1)
 <DD><I>Set duration: speed-up & number of repeats </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.13">getDuration</A></B>(float&amp; speed, int&amp; nreps) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.166.13">getDuration</A></B>(float&amp; speed, int&amp; nreps) const 
 <DD><I>Get duration </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.165.15">setMode</A></B>(<!1><A HREF="Sequence.html#DOC.2.165.14">SequenceMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.166.15">setMode</A></B>(<!1><A HREF="Sequence.html#DOC.2.166.14">SequenceMode</A> mode)
 <DD><I>Set sequence mode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Sequence.html#DOC.2.165.14">SequenceMode</A> <B><A HREF="#DOC.2.165.16">getMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Sequence.html#DOC.2.166.14">SequenceMode</A> <B><A HREF="#DOC.2.166.16">getMode</A></B>() const 
 <DD><I>Get sequence mode.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.165.9">LoopMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.166.9">LoopMode</A></B>
 <DD><I>Interval modes </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.165.14">SequenceMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.166.14">SequenceMode</A></B>
 <DD><I>Sequence modes </I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.165.18">_value</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.166.18">_value</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.165.19">_last</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.166.19">_last</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::vector&lt;float&gt;  <B><A HREF="#DOC.2.165.20">_frameTime</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::vector&lt;float&gt;  <B><A HREF="#DOC.2.166.20">_frameTime</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.165.21">_step</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.166.21">_step</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Sequence.html#DOC.2.165.9">LoopMode</A> <B><A HREF="#DOC.2.165.22">_loopMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Sequence.html#DOC.2.166.9">LoopMode</A> <B><A HREF="#DOC.2.166.22">_loopMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.165.23">_begin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.166.23">_begin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.165.24">_end</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.166.24">_end</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.165.25">_speed</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.166.25">_speed</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.165.26">_nreps</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.166.26">_nreps</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.165.27">_nrepsremain</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.166.27">_nrepsremain</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Sequence.html#DOC.2.165.14">SequenceMode</A> <B><A HREF="#DOC.2.165.28">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Sequence.html#DOC.2.166.14">SequenceMode</A> <B><A HREF="#DOC.2.166.28">_mode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.165.17">~Sequence</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.166.17">~Sequence</A></B>()
 </DL></P>
 
 </DL>
@@ -165,15 +165,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.186.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.202.1.3">name</A> )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.186.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.202.1.3">name</A> )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.118.18">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.119.18">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.118.18">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.119.18">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -207,13 +207,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.118.37">NodeMask</A> nm)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.119.37">NodeMask</A> nm)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.118.37">NodeMask</A> <B>getNodeMask</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.119.37">NodeMask</A> <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.118.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.119.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.118.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.119.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
 <DT>
@@ -253,7 +253,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.118.18">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.119.18">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
@@ -267,9 +267,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.118.37">NodeMask</A> <B>_nodeMask</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.119.37">NodeMask</A> <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.118.40">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.119.40">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 </DL></P>
@@ -292,9 +292,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -310,7 +310,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.135.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -350,155 +350,155 @@ switching between children</BLOCKQUOTE>
 <DL>
 
 <A NAME="Sequence"></A>
-<A NAME="DOC.2.165.1"></A>
+<A NAME="DOC.2.166.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Sequence()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Sequence"></A>
-<A NAME="DOC.2.165.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Sequence(const <!1><A HREF="Sequence.html#DOC.2.165.2">Sequence</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.166.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Sequence(const <!1><A HREF="Sequence.html#DOC.2.166.2">Sequence</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.165.3"></A>
+<A NAME="DOC.2.166.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Sequence.html">Sequence</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.165.4"></A>
+<A NAME="DOC.2.166.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setValue"></A>
-<A NAME="DOC.2.165.5"></A>
+<A NAME="DOC.2.166.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setValue(int value)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getValue"></A>
-<A NAME="DOC.2.165.6"></A>
+<A NAME="DOC.2.166.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getValue() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTime"></A>
-<A NAME="DOC.2.165.7"></A>
+<A NAME="DOC.2.166.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTime(int frame, float <!1><A HREF="ImpostorSprite.html#DOC.2.92.25">t</A>)</B></TT>
 <DD>Set time in seconds for child 
 <DL><DT><DD></DL><P>
 <A NAME="getTime"></A>
-<A NAME="DOC.2.165.8"></A>
+<A NAME="DOC.2.166.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getTime(int frame) const </B></TT>
 <DD>Get time for child 
 <DL><DT><DD></DL><P>
 <A NAME="LoopMode"></A>
-<A NAME="DOC.2.165.9"></A>
+<A NAME="DOC.2.166.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  LoopMode</B></TT>
 <DD>Interval modes 
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="LOOP"></A>
-<A NAME="DOC.2.165.9.1"></A>
+<A NAME="DOC.2.166.9.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOOP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SWING"></A>
-<A NAME="DOC.2.165.9.2"></A>
+<A NAME="DOC.2.166.9.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWING</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setInterval"></A>
-<A NAME="DOC.2.165.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterval(<!1><A HREF="Sequence.html#DOC.2.165.9">LoopMode</A> mode, int <!1><A HREF="TriangleFunctor.html#DOC.2.220.9">begin</A>, int <!1><A HREF="TriangleFunctor.html#DOC.2.220.16">end</A>)</B></TT>
+<A NAME="DOC.2.166.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInterval(<!1><A HREF="Sequence.html#DOC.2.166.9">LoopMode</A> mode, int <!1><A HREF="TriangleFunctor.html#DOC.2.221.11">begin</A>, int <!1><A HREF="TriangleFunctor.html#DOC.2.221.18">end</A>)</B></TT>
 <DD>Set sequence mode & interval. 
 <DL><DT><DD></DL><P>
 <A NAME="getInterval"></A>
-<A NAME="DOC.2.165.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getInterval(<!1><A HREF="Sequence.html#DOC.2.165.9">LoopMode</A>&amp; mode, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.220.9">begin</A>, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.220.16">end</A>) const </B></TT>
+<A NAME="DOC.2.166.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getInterval(<!1><A HREF="Sequence.html#DOC.2.166.9">LoopMode</A>&amp; mode, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.221.11">begin</A>, int&amp; <!1><A HREF="TriangleFunctor.html#DOC.2.221.18">end</A>) const </B></TT>
 <DD>Get sequence mode & interval. 
 <DL><DT><DD></DL><P>
 <A NAME="setDuration"></A>
-<A NAME="DOC.2.165.12"></A>
+<A NAME="DOC.2.166.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDuration(float speed, int nreps = -1)</B></TT>
 <DD>Set duration: speed-up & number of repeats 
 <DL><DT><DD></DL><P>
 <A NAME="getDuration"></A>
-<A NAME="DOC.2.165.13"></A>
+<A NAME="DOC.2.166.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getDuration(float&amp; speed, int&amp; nreps) const </B></TT>
 <DD>Get duration 
 <DL><DT><DD></DL><P>
 <A NAME="SequenceMode"></A>
-<A NAME="DOC.2.165.14"></A>
+<A NAME="DOC.2.166.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SequenceMode</B></TT>
 <DD>Sequence modes 
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="START"></A>
-<A NAME="DOC.2.165.14.1"></A>
+<A NAME="DOC.2.166.14.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> START</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="STOP"></A>
-<A NAME="DOC.2.165.14.2"></A>
+<A NAME="DOC.2.166.14.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STOP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PAUSE"></A>
-<A NAME="DOC.2.165.14.3"></A>
+<A NAME="DOC.2.166.14.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PAUSE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RESUME"></A>
-<A NAME="DOC.2.165.14.4"></A>
+<A NAME="DOC.2.166.14.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RESUME</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setMode"></A>
-<A NAME="DOC.2.165.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="Sequence.html#DOC.2.165.14">SequenceMode</A> mode)</B></TT>
+<A NAME="DOC.2.166.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="Sequence.html#DOC.2.166.14">SequenceMode</A> mode)</B></TT>
 <DD>Set sequence mode. Start/stop & pause/resume. 
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
-<A NAME="DOC.2.165.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Sequence.html#DOC.2.165.14">SequenceMode</A> getMode() const </B></TT>
+<A NAME="DOC.2.166.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Sequence.html#DOC.2.166.14">SequenceMode</A> getMode() const </B></TT>
 <DD>Get sequence mode. 
 <DL><DT><DD></DL><P>
 <A NAME="~Sequence"></A>
-<A NAME="DOC.2.165.17"></A>
+<A NAME="DOC.2.166.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Sequence()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_value"></A>
-<A NAME="DOC.2.165.18"></A>
+<A NAME="DOC.2.166.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _value</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_last"></A>
-<A NAME="DOC.2.165.19"></A>
+<A NAME="DOC.2.166.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _last</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameTime"></A>
-<A NAME="DOC.2.165.20"></A>
+<A NAME="DOC.2.166.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::vector&lt;float&gt;  _frameTime</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_step"></A>
-<A NAME="DOC.2.165.21"></A>
+<A NAME="DOC.2.166.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _step</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_loopMode"></A>
-<A NAME="DOC.2.165.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Sequence.html#DOC.2.165.9">LoopMode</A> _loopMode</B></TT>
+<A NAME="DOC.2.166.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Sequence.html#DOC.2.166.9">LoopMode</A> _loopMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_begin"></A>
-<A NAME="DOC.2.165.23"></A>
+<A NAME="DOC.2.166.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _begin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_end"></A>
-<A NAME="DOC.2.165.24"></A>
+<A NAME="DOC.2.166.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _end</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_speed"></A>
-<A NAME="DOC.2.165.25"></A>
+<A NAME="DOC.2.166.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _speed</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nreps"></A>
-<A NAME="DOC.2.165.26"></A>
+<A NAME="DOC.2.166.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _nreps</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nrepsremain"></A>
-<A NAME="DOC.2.165.27"></A>
+<A NAME="DOC.2.166.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _nrepsremain</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mode"></A>
-<A NAME="DOC.2.165.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Sequence.html#DOC.2.165.14">SequenceMode</A> _mode</B></TT>
+<A NAME="DOC.2.166.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Sequence.html#DOC.2.166.14">SequenceMode</A> _mode</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

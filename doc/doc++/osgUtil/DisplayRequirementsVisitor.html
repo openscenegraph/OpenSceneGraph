@@ -23,27 +23,27 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.1">DisplayRequirementsVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.1">DisplayRequirementsVisitor</A></B>()
 <DD><I>Default to traversing all children, and reqiresDoubleBuffer, requiresRGB and requiresDepthBuffer to true and with alpha and stencil off</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.2">setDisplaySettings</A></B>(osg::DisplaySettings* ds)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.5.2">setDisplaySettings</A></B>(osg::DisplaySettings* ds)
 <DD><I>Set the DisplaySettings.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::DisplaySettings* <B><A HREF="#DOC.2.4.3">getDisplaySettings</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::DisplaySettings* <B><A HREF="#DOC.2.5.3">getDisplaySettings</A></B>() const 
 <DD><I>Get the DisplaySettings </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.4">applyStateSet</A></B>(osg::StateSet&amp; stateset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.4">applyStateSet</A></B>(osg::StateSet&amp; stateset)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.5">apply</A></B>(osg::Node&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.5">apply</A></B>(osg::Node&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.6">apply</A></B>(osg::Geode&amp; geode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.6">apply</A></B>(osg::Geode&amp; geode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.7">apply</A></B>(osg::Impostor&amp; impostor)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.7">apply</A></B>(osg::Impostor&amp; impostor)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.2.4.8">_ds</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.2.5.8">_ds</A></B>
 </DL></P>
 
 </DL>
@@ -58,40 +58,40 @@ src/osgGLUT/Viewer.cpp's Viewer::open() method for an example how to use it.</BL
 <DL>
 
 <A NAME="DisplayRequirementsVisitor"></A>
-<A NAME="DOC.2.4.1"></A>
+<A NAME="DOC.2.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplayRequirementsVisitor()</B></TT>
 <DD>Default to traversing all children, and reqiresDoubleBuffer,
 requiresRGB and requiresDepthBuffer to true and with
 alpha and stencil off
 <DL><DT><DD></DL><P>
 <A NAME="setDisplaySettings"></A>
-<A NAME="DOC.2.4.2"></A>
+<A NAME="DOC.2.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDisplaySettings(osg::DisplaySettings* ds)</B></TT>
 <DD>Set the DisplaySettings. 
 <DL><DT><DD></DL><P>
 <A NAME="getDisplaySettings"></A>
-<A NAME="DOC.2.4.3"></A>
+<A NAME="DOC.2.5.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::DisplaySettings* getDisplaySettings() const </B></TT>
 <DD>Get the DisplaySettings 
 <DL><DT><DD></DL><P>
 <A NAME="applyStateSet"></A>
-<A NAME="DOC.2.4.4"></A>
+<A NAME="DOC.2.5.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void applyStateSet(osg::StateSet&amp; stateset)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.4.5"></A>
+<A NAME="DOC.2.5.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.4.6"></A>
+<A NAME="DOC.2.5.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; geode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.4.7"></A>
+<A NAME="DOC.2.5.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Impostor&amp; impostor)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ds"></A>
-<A NAME="DOC.2.4.8"></A>
+<A NAME="DOC.2.5.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::DisplaySettings&gt;  _ds</B></TT>
 <DL><DT><DD></DL><P></DL>
 

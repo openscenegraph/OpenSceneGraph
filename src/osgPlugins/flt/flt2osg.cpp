@@ -753,7 +753,7 @@ void ConvertFromFLT::visitLtPtAppearancePalette(osg::Group& osgParent, LtPtAppea
         LtPtAppearancePool::PoolLtPtAppearance* entry = new LtPtAppearancePool::PoolLtPtAppearance;
 
         entry->_iBackColorIdx = ltPtApp->backColor;
-        entry->_bIntensity = ltPtApp->intensity;
+        entry->_sfIntensity = ltPtApp->intensity;
         entry->_sfMinPixelSize = ltPtApp->minPixelSize;
         entry->_sfMaxPixelSize = ltPtApp->maxPixelSize;
         entry->_sfActualSize = ltPtApp->actualSize;
@@ -2186,7 +2186,7 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
        osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f);
        if( nl < colors.size())  color = colors[nl];
 
-       osgSim::LightPoint lp( true, coords[ nl], color, 1.0f, pointRadius);
+       osgSim::LightPoint lp( true, coords[ nl], color, pSLightPoint->sfIntensityFront, pointRadius);
 
        if( pSLightPoint->diDirection )
        {
@@ -2303,7 +2303,7 @@ void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndex
                 color = pColorPool->getColor( ltPtApp->_iBackColorIdx );
             }
 
-            osgSim::LightPoint lp( true, coords[nl], color, 1.0f, pointRadius);
+            osgSim::LightPoint lp( true, coords[nl], color, ltPtApp->_sfIntensity, pointRadius);
 
             if (directional)
             {

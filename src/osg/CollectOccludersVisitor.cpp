@@ -32,6 +32,21 @@ void CollectOccludersVisitor::reset()
     CullStack::reset();
 }
 
+float CollectOccludersVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODBias) const
+{
+    if (withLODBias) return (pos-getEyeLocal()).length()*getLODBias();
+    else return (pos-getEyeLocal()).length();
+}
+
+float CollectOccludersVisitor::getDistanceFromEyePoint(const Vec3& pos, bool withLODBias) const
+{
+    const Matrix& matrix = *_modelviewStack.back();
+    float dist = -(pos[0]*matrix(0,2)+pos[1]*matrix(1,2)+pos[2]*matrix(2,2)+matrix(3,2));
+    
+    if (withLODBias) return dist*getLODBias();
+    else return dist*getLODBias();
+}
+
 void CollectOccludersVisitor::apply(osg::Node& node)
 {
     if (isCulled(node)) return;
@@ -91,14 +106,10 @@ void CollectOccludersVisitor::apply(osg::LOD& node)
 {
     if (isCulled(node)) return;
 
-    int eval = node.evaluate(getEyeLocal(),_LODBias);
-    if (eval<0) return;
-
     // push the culling mode.
     pushCurrentMask();
 
-    //notify(INFO) << "selecting child "<<eval<< std::endl;
-    handle_cull_callbacks_and_accept(node,node.getChild(eval));
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the culling mode.
     popCurrentMask();

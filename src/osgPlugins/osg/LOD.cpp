@@ -39,32 +39,36 @@ bool LOD_readLocalData(Object& obj, Input& fr)
         fr+=4;
     }
 
+    // For backwards compatibility with old style LOD's (pre October 2002).
     bool matchFirst = false;
     if ((matchFirst=fr.matchSequence("Ranges {")) || fr.matchSequence("Ranges %i {"))
     {
 
         // set up coordinates.
         int entry = fr[0].getNoNestedBrackets();
+        int capacity;
 
         if (matchFirst)
         {
             fr += 2;
         }
-        else
+        else if (fr[1].getInt(capacity))
         {
-            //_rangeList.(capacity);
+            lod.getRangeList().reserve(capacity);
             fr += 3;
         }
 
-        float range;
-        int i=0;
+        float minRange=0.0;
+        float maxRange=0.0;
+        unsigned int i=0;
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
-            if (fr[0].getFloat(range))
+            if (fr[0].getFloat(maxRange))
             {
-                lod.setRange(i,range);
+                if (i>0) lod.setRange(i-1,minRange,maxRange);
                 ++fr;
                 ++i;
+                minRange = maxRange;
             }
             else
             {
@@ -77,6 +81,44 @@ bool LOD_readLocalData(Object& obj, Input& fr)
 
     }
 
+    if ((matchFirst=fr.matchSequence("RangeList {")) || fr.matchSequence("RangeList %i {"))
+    {
+
+        // set up coordinates.
+        int entry = fr[0].getNoNestedBrackets();
+        int capacity;
+
+        if (matchFirst)
+        {
+            fr += 2;
+        }
+        else if (fr[1].getInt(capacity))
+        {
+            lod.getRangeList().reserve(capacity);
+            fr += 3;
+        }
+
+        float minRange=0.0;
+        float maxRange=0.0;
+        unsigned int i=0;
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            if (fr[0].getFloat(minRange) && fr[1].getFloat(maxRange) )
+            {
+                lod.setRange(i,minRange,maxRange);
+                fr+=2;
+                ++i;
+            }
+            else
+            {
+                ++fr;
+            }
+        }
+
+        iteratorAdvanced = true;
+        ++fr;
+
+    }
     return iteratorAdvanced;
 }
 
@@ -85,14 +127,14 @@ bool LOD_writeLocalData(const Object& obj, Output& fw)
 {
     const LOD& lod = static_cast<const LOD&>(obj);
 
-    fw.indent() << "Center "<< lod.getCenter() << std::endl;
+    if (lod.getCenterMode()==osg::LOD::USER_DEFINED_CENTER) fw.indent() << "Center "<< lod.getCenter() << std::endl;
 
-    fw.indent() << "Ranges {"<< std::endl;
+    fw.indent() << "RangeList "<<lod.getNumRanges()<<" {"<< std::endl;
     fw.moveIn();
     
     for(unsigned int i=0; i<lod.getNumRanges();++i)
     {
-        fw.indent() << lod.getRange(i) << std::endl;
+        fw.indent() << lod.getMinRange(i) << " "<<lod.getMaxRange(i)<<std::endl;
     }
     fw.moveOut();
     fw.indent() << "}"<< std::endl;

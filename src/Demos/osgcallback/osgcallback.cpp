@@ -6,7 +6,6 @@
 #include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Group>
-#include <osg/LOD>
 #include <osg/Notify>
 
 #include <osgDB/Registry>
@@ -78,18 +77,6 @@ class DrawableDrawCallback : public osg::Drawable::DrawCallback
             drawable->drawImmediateMode(state);
             std::cout<<"draw call back - post drawImmediateMode"<<drawable<<std::endl;
         }
-};
-
-struct LODCallback : public osg::LOD::EvaluateLODCallback
-{
-    /** Compute the child to select.*/
-    virtual int evaluateLODChild(const osg::LOD* lod, const osg::Vec3& eye_local, float bias) const
-    {
-        std::cout<<"evaluateLODChild callback - pre lod->evaluateLODChild"<<std::endl;
-        int result = lod->evaluateLODChild(eye_local,bias);
-        std::cout<<"evaluateLODChild callback - post lod->evaluateLODChild"<<std::endl;
-        return result;
-    }
 };
 
 struct TransformCallback : public osg::Transform::ComputeTransformCallback
@@ -168,12 +155,6 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
         virtual void apply(osg::Transform& node)
         {
             node.setComputeTransformCallback(new TransformCallback());
-            apply((osg::Node&)node);
-        }
-
-        virtual void apply(osg::LOD& node)
-        {
-            node.setEvaluateLODCallback(new LODCallback());
             apply((osg::Node&)node);
         }
 };

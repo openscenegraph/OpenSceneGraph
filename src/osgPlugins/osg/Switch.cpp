@@ -16,7 +16,7 @@ RegisterDotOsgWrapperProxy g_SwitchProxy
 (
     osgNew osg::Switch,
     "Switch",
-    "Object Node Group Switch",
+    "Object Node Switch Group",
     &Switch_readLocalData,
     &Switch_writeLocalData
 );
@@ -51,7 +51,7 @@ bool Switch_readLocalData(Object& obj, Input& fr)
         }
     }
 
-    if (fr.matchSequence("values {"))
+    if (fr.matchSequence("ValueList {"))
     {
         int entry = fr[0].getNoNestedBrackets();
 
@@ -89,7 +89,7 @@ bool Switch_writeLocalData(const Object& obj, Output& fw)
     {
         case(Switch::MULTIPLE_CHILDREN_ON):
         {
-            fw.indent()<<"values {"<< std::endl;
+            fw.indent()<<"ValueList {"<< std::endl;
             fw.moveIn();
             const Switch::ValueList& values = sw.getValueList();
             for(Switch::ValueList::const_iterator itr=values.begin();

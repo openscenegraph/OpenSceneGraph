@@ -36,68 +36,58 @@ class SG_EXPORT LOD : public Group
 
         virtual void traverse(NodeVisitor& nv);
         
-        /** Sets the value of range list element index to range which
-            is a floating point distance specified in world coordinates.
-            Range list automatically expands to accommodate values beyond
-            the current getNumRanges().*/
-        void setRange(unsigned int index, float range);
-        
-        /** returns the range for specified index.*/
-        inline float getRange(unsigned int index) const { return _rangeList[index]; }
-        
-        /** returns the number of ranges currently set.*/
-        inline unsigned int getNumRanges() const { return _rangeList.size(); }
+        virtual bool addChild( Node *child );
+
+        virtual bool removeChild( Node *child );
+
+
+        typedef std::pair<float,float>  MinMaxPair;
+        typedef std::vector<MinMaxPair> RangeList;
+      
+        enum CenterMode
+        {
+            USE_BOUNDING_SPHERE_CENTER,
+            USER_DEFINED_CENTER
+        };
+
+        void setCenterMode(CenterMode mode) { _centerMode=mode; }
+
+        CenterMode getCenterMode() const { return _centerMode; }
 
         /** Sets the object-space point which defines the center of the osg::LOD.  
             center is affected by any transforms in the hierarchy above the osg::LOD.*/
-        inline void setCenter(const Vec3& center) { _center = center; }
+        inline void setCenter(const Vec3& center) { _centerMode=USER_DEFINED_CENTER; _userDefinedCenter = center; }
         
         /** return the LOD center point. */
-        inline const Vec3& getCenter() const { return _center; }
+        inline const Vec3& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
 
-
-        /** Callback attached to an LOD which allows the users to customize the selection of LOD children.*/
-        struct EvaluateLODCallback : public osg::Referenced
-        {
-            /** Compute the child to select.*/
-            virtual int evaluateLODChild(const osg::LOD* lod, const Vec3& eye_local, float bias) const = 0;
-        };
-
-        /** Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children.*/
-        void setEvaluateLODCallback(EvaluateLODCallback* cbc) { _evaluateLODCallback=cbc; }
+        /** Sets the min and max visible ranges of range of specifiec child.
+            Values are floating point distance specified in local objects coordinates.*/
+        void setRange(unsigned int childNo, float min,float max);
         
-        /** Get the non const ComputeBillboardCallback.*/
-        EvaluateLODCallback* getEvaluateLODCallback() { return _evaluateLODCallback.get(); }
+        /** returns the min visible range for specified child.*/
+        inline float getMinRange(unsigned int childNo) const { return _rangeList[childNo].first; }
+
+        /** returns the max visible range for specified child.*/
+        inline float getMaxRange(unsigned int childNo) const { return _rangeList[childNo].second; }
         
-        /** Get the const ComputeBillboardCallback.*/
-        const EvaluateLODCallback* getEvaluateLODCallback() const { return _evaluateLODCallback.get(); }        
+        /** returns the number of ranges currently set. 
+          * An LOD which has been fully set up will have getNumChildren()==getNumRanges(). */
+        inline unsigned int getNumRanges() const { return _rangeList.size(); }
 
-        /** return the child to traverse.
-            Selected by the distance between the eye point in local
-            coordinates and the LOD center, multiplied by the bias.*/ 
-        inline int evaluate(const Vec3& eye_local,float bias=1.0f) const
-        {
-            if (_evaluateLODCallback.valid())
-                return _evaluateLODCallback->evaluateLODChild(this,eye_local,bias);
-            else
-                return evaluateLODChild(eye_local,bias);
-        }
-
-
-        virtual int evaluateLODChild(const Vec3& eye_local,float bias) const;
+        /** return the list of MinMax ranges for each child.*/
+        inline RangeList& getRangeList() { return _rangeList; }
+        
+        /** return the list of MinMax ranges for each child.*/
+        inline const RangeList& getRangeList() const { return _rangeList; }
 
     protected :
         virtual ~LOD() {}
 
+        CenterMode                      _centerMode;
+        Vec3                            _userDefinedCenter;
 
-        typedef std::vector<float> RangeList;
-        RangeList _rangeList;
-        RangeList _rangeList2;
-        
-        ref_ptr<EvaluateLODCallback>   _evaluateLODCallback;
-
-        Vec3 _center;
-
+        RangeList                       _rangeList;
 
 };
 

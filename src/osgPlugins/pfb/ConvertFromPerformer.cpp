@@ -202,9 +202,9 @@ osg::Node* ConvertFromPerformer::visitLOD(osg::Group* osgParent,pfLOD* lod)
     osgLOD->setCenter(osgCenter);
 
     int i;
-    for(i=0;i<lod->getNumRanges();++i)
+    for(i=0;i<lod->getNumRanges()-1;++i)
     {
-        osgLOD->setRange(i,lod->getRange(i));
+        osgLOD->setRange(i,lod->getRange(i),lod->getRange(i+1));
     }
 
     for(i=0;i<lod->getNumChildren();++i)

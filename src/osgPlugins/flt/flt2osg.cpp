@@ -646,9 +646,12 @@ osg::Group* ConvertFromFLT::visitLOD(osg::Group& osgParent, LodRecord* rec)
 
     float64x3* pCenter = &pSLOD->Center;
     lod->setCenter(osg::Vec3(pCenter->x(), pCenter->y(), pCenter->z())*_unitScale);
-    lod->setRange(0, pSLOD->dfSwitchOutDist*_unitScale);
-    lod->setRange(1, pSLOD->dfSwitchInDist*_unitScale);
+    
+    lod->setRange(0, pSLOD->dfSwitchOutDist*_unitScale,
+                     pSLOD->dfSwitchInDist*_unitScale);
+                     
     lod->setName(pSLOD->szIdent);
+    
     visitAncillary(osgParent, *lod, rec)->addChild( lod );
 
     osg::Group* group = new osg::Group;
@@ -668,9 +671,12 @@ osg::Group* ConvertFromFLT::visitOldLOD(osg::Group& osgParent, OldLodRecord* rec
         (float)pSLOD->Center[0],
         (float)pSLOD->Center[1],
         (float)pSLOD->Center[2])*_unitScale);
-    lod->setRange(0, ((float)pSLOD->dwSwitchOutDist)*_unitScale);
-    lod->setRange(1, ((float)pSLOD->dwSwitchInDist)*_unitScale);
+        
+    lod->setRange(0, ((float)pSLOD->dwSwitchOutDist)*_unitScale,
+                     ((float)pSLOD->dwSwitchInDist)*_unitScale);
+                     
     lod->setName(pSLOD->szIdent);
+    
     visitAncillary(osgParent, *lod, rec)->addChild( lod );
 
     osg::Group* group = new osg::Group;

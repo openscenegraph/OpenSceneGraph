@@ -184,11 +184,20 @@ class SG_EXPORT NodeVisitor : public Referenced
         const NodePath& getNodePath() const { return _nodePath; }
         
         /** Get the Local To World Matrix from the NodePath for specified Transform::Mode, and u.*/
-        bool getLocalToWorldMatrix(Matrix& matrix, Node* node);
+        virtual bool getLocalToWorldMatrix(Matrix& matrix, Node* node);
         
         /** Get the World To Local Matrix from the NodePath for specified Transform::Mode.*/
-        bool getWorldToLocalMatrix(Matrix& matrix, Node* node);
+        virtual bool getWorldToLocalMatrix(Matrix& matrix, Node* node);
 
+        /** Get the distance from a point to the eye point, distance value in local coordinate system.
+          * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
+          * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/
+        virtual float getDistanceToEyePoint(const Vec3& /*pos*/, bool /*useLODBias*/) const { return 0.0f; }
+
+        /** Get the distance of a point from the eye point, distance value in the eye coordinate system.
+          * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
+          * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/
+        virtual float getDistanceFromEyePoint(const Vec3& /*pos*/, bool /*useLODBias*/) const { return 0.0f; }
 
         virtual void apply(Node& node)                      { traverse(node);}
         

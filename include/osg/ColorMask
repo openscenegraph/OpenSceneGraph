@@ -5,6 +5,7 @@
 #ifndef OSG_COLORMASK
 #define OSG_COLORMASK 1
 
+#include <osg/Export>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
 #include <osg/Types>

@@ -65,6 +65,8 @@
 
 #include <vector>
 
+#include <assert.h>
+
 // namespace triangle_stripper
 namespace triangle_stripper {
 

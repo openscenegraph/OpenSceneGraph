@@ -14,7 +14,7 @@
 
 using namespace osg;
 
-void DrawArrays::draw() const 
+void DrawArrays::draw(State&, bool) const 
 {
     glDrawArrays(_mode,_first,_count);
 }
@@ -29,7 +29,7 @@ void DrawArrays::accept(Drawable::PrimitiveIndexFunctor& functor) const
     functor.drawArrays(_mode,_first,_count);
 }
 
-void DrawArrayLengths::draw() const
+void DrawArrayLengths::draw(State&, bool) const
 {
     GLint first = _first;
     for(VectorSizei::const_iterator itr=begin();
@@ -77,9 +77,31 @@ unsigned int DrawArrayLengths::getNumIndices() const
     return count;
 }
 
-void DrawElementsUByte::draw() const 
+void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const 
 {
-    glDrawElements(_mode,size(),GL_UNSIGNED_BYTE,&front());
+    if (useVertexBufferObjects)
+    {
+        const Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(), true);
+
+        GLuint& buffer = _vboList[state.getContextID()];
+        if (!buffer)
+        {
+            extensions->glGenBuffers(1, &buffer);
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * sizeof(GL_UNSIGNED_BYTE), &front(), GL_STATIC_DRAW_ARB);
+        }
+        else
+        {
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+        }
+    
+        glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, 0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    }
+    else 
+    {
+        glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, &front());
+    }
 }
 
 void DrawElementsUByte::accept(Drawable::PrimitiveFunctor& functor) const
@@ -103,9 +125,31 @@ void DrawElementsUByte::offsetIndices(int offset)
 }
 
 
-void DrawElementsUShort::draw() const 
+void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const 
 {
-    glDrawElements(_mode,size(),GL_UNSIGNED_SHORT,&front());
+    if (useVertexBufferObjects)
+    {
+        const Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(), true);
+
+        GLuint& buffer = _vboList[state.getContextID()];
+        if (!buffer)
+        {
+            extensions->glGenBuffers(1, &buffer);
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * sizeof(GL_UNSIGNED_SHORT), &front(), GL_STATIC_DRAW_ARB);
+        }
+        else
+        {
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+        }
+    
+        glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, 0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    }
+    else 
+    {
+        glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, &front());
+    }
 }
 
 void DrawElementsUShort::accept(Drawable::PrimitiveFunctor& functor) const
@@ -129,9 +173,31 @@ void DrawElementsUShort::offsetIndices(int offset)
 }
 
 
-void DrawElementsUInt::draw() const 
+void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const 
 {
-    glDrawElements(_mode,size(),GL_UNSIGNED_INT,&front());
+    if (useVertexBufferObjects)
+    {
+        const Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(), true);
+
+        GLuint& buffer = _vboList[state.getContextID()];
+        if (!buffer)
+        {
+            extensions->glGenBuffers(1, &buffer);
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * sizeof(GL_UNSIGNED_INT), &front(), GL_STATIC_DRAW_ARB);
+        }
+        else
+        {
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
+        }
+    
+        glDrawElements(_mode, size(), GL_UNSIGNED_INT, 0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    }
+    else 
+    {
+        glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
+    }
 }
 
 void DrawElementsUInt::accept(Drawable::PrimitiveFunctor& functor) const

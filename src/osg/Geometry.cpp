@@ -1148,7 +1148,7 @@ void Geometry::drawImplementation(State& state) const
                 }
             }
 
-            (*itr)->draw();
+            (*itr)->draw(state, usingVertexBufferObjects);
 
         }
 

@@ -33,11 +33,11 @@ class SG_EXPORT Quat
 
         typedef double value_type;
 
-	value_type  _v[4];	// a four-vector
+    value_type  _v[4];    // a four-vector
 
-	inline Quat() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=1.0; }
+    inline Quat() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=1.0; }
         
-	inline Quat( value_type x, value_type y, value_type z, value_type w )
+    inline Quat( value_type x, value_type y, value_type z, value_type w )
         {
             _v[0]=x;
             _v[1]=y;
@@ -45,7 +45,7 @@ class SG_EXPORT Quat
             _v[3]=w;
         }
 
-	inline Quat( const Vec4f& v )
+    inline Quat( const Vec4f& v )
         {
             _v[0]=v.x();
             _v[1]=v.y();
@@ -53,7 +53,7 @@ class SG_EXPORT Quat
             _v[3]=v.w();
         }
 
-	inline Quat( const Vec4d& v )
+    inline Quat( const Vec4d& v )
         {
             _v[0]=v.x();
             _v[1]=v.y();
@@ -100,18 +100,18 @@ class SG_EXPORT Quat
         }
 
         /* ----------------------------------
-	   Methods to access data members
-	---------------------------------- */
+       Methods to access data members
+    ---------------------------------- */
 
-	inline Vec4d asVec4() const
-	{
-	    return Vec4d(_v[0], _v[1], _v[2], _v[3]);
-	}
+    inline Vec4d asVec4() const
+    {
+        return Vec4d(_v[0], _v[1], _v[2], _v[3]);
+    }
 
-	inline Vec3d asVec3() const
-	{
-	    return Vec3d(_v[0], _v[1], _v[2]);
-	}
+    inline Vec3d asVec3() const
+    {
+        return Vec3d(_v[0], _v[1], _v[2]);
+    }
 
         inline void set(value_type x, value_type y, value_type z, value_type w)
         {
@@ -159,65 +159,65 @@ class SG_EXPORT Quat
         inline value_type z() const { return _v[2]; }
         inline value_type w() const { return _v[3]; }
 
-    	/** return true if the Quat represents a zero rotation, and therefore can be ignored in computations.*/
-    	bool zeroRotation() const { return _v[0]==0.0 && _v[1]==0.0 && _v[2]==0.0 && _v[3]==1.0; } 
+        /** return true if the Quat represents a zero rotation, and therefore can be ignored in computations.*/
+        bool zeroRotation() const { return _v[0]==0.0 && _v[1]==0.0 && _v[2]==0.0 && _v[3]==1.0; } 
 
 
      /* ------------------------------------------------------------- 
-	 		  BASIC ARITHMETIC METHODS		    
-	Implemented in terms of Vec4s.  Some Vec4 operators, e.g.
-	operator* are not appropriate for quaternions (as
-	mathematical objects) so they are implemented differently.
-	Also define methods for conjugate and the multiplicative inverse.		    
-	------------------------------------------------------------- */
-	/// Multiply by scalar 
+               BASIC ARITHMETIC METHODS            
+    Implemented in terms of Vec4s.  Some Vec4 operators, e.g.
+    operator* are not appropriate for quaternions (as
+    mathematical objects) so they are implemented differently.
+    Also define methods for conjugate and the multiplicative inverse.            
+    ------------------------------------------------------------- */
+    /// Multiply by scalar 
         inline const Quat operator * (value_type rhs) const
         {
             return Quat(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs, _v[3]*rhs);
         }
 
-	/// Unary multiply by scalar 
+    /// Unary multiply by scalar 
         inline Quat& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
             _v[1]*=rhs;
             _v[2]*=rhs;
             _v[3]*=rhs;
-            return *this;		// enable nesting
+            return *this;        // enable nesting
         }
 
-	/// Binary multiply 
-	inline const Quat operator*(const Quat& rhs) const
-	{
-	    return Quat( rhs._v[3]*_v[0] + rhs._v[0]*_v[3] + rhs._v[1]*_v[2] - rhs._v[2]*_v[1],
-			 rhs._v[3]*_v[1] - rhs._v[0]*_v[2] + rhs._v[1]*_v[3] + rhs._v[2]*_v[0],
-			 rhs._v[3]*_v[2] + rhs._v[0]*_v[1] - rhs._v[1]*_v[0] + rhs._v[2]*_v[3],
-			 rhs._v[3]*_v[3] - rhs._v[0]*_v[0] - rhs._v[1]*_v[1] - rhs._v[2]*_v[2] );
-	}
+    /// Binary multiply 
+    inline const Quat operator*(const Quat& rhs) const
+    {
+        return Quat( rhs._v[3]*_v[0] + rhs._v[0]*_v[3] + rhs._v[1]*_v[2] - rhs._v[2]*_v[1],
+             rhs._v[3]*_v[1] - rhs._v[0]*_v[2] + rhs._v[1]*_v[3] + rhs._v[2]*_v[0],
+             rhs._v[3]*_v[2] + rhs._v[0]*_v[1] - rhs._v[1]*_v[0] + rhs._v[2]*_v[3],
+             rhs._v[3]*_v[3] - rhs._v[0]*_v[0] - rhs._v[1]*_v[1] - rhs._v[2]*_v[2] );
+    }
 
-	/// Unary multiply 
-	inline Quat& operator*=(const Quat& rhs)
-	{
-	    value_type x = rhs._v[3]*_v[0] + rhs._v[0]*_v[3] + rhs._v[1]*_v[2] - rhs._v[2]*_v[1];
-	    value_type y = rhs._v[3]*_v[1] - rhs._v[0]*_v[2] + rhs._v[1]*_v[3] + rhs._v[2]*_v[0];
-	    value_type z = rhs._v[3]*_v[2] + rhs._v[0]*_v[1] - rhs._v[1]*_v[0] + rhs._v[2]*_v[3];
-	    _v[3]   = rhs._v[3]*_v[3] - rhs._v[0]*_v[0] - rhs._v[1]*_v[1] - rhs._v[2]*_v[2];
+    /// Unary multiply 
+    inline Quat& operator*=(const Quat& rhs)
+    {
+        value_type x = rhs._v[3]*_v[0] + rhs._v[0]*_v[3] + rhs._v[1]*_v[2] - rhs._v[2]*_v[1];
+        value_type y = rhs._v[3]*_v[1] - rhs._v[0]*_v[2] + rhs._v[1]*_v[3] + rhs._v[2]*_v[0];
+        value_type z = rhs._v[3]*_v[2] + rhs._v[0]*_v[1] - rhs._v[1]*_v[0] + rhs._v[2]*_v[3];
+        _v[3]   = rhs._v[3]*_v[3] - rhs._v[0]*_v[0] - rhs._v[1]*_v[1] - rhs._v[2]*_v[2];
 
-	    _v[2] = z;
-	    _v[1] = y;
-	    _v[0] = x;
+        _v[2] = z;
+        _v[1] = y;
+        _v[0] = x;
 
-	    return (*this);			// enable nesting
-	}
+        return (*this);            // enable nesting
+    }
 
-	/// Divide by scalar 
+    /// Divide by scalar 
         inline Quat operator / (value_type rhs) const
         {
             value_type div = 1.0/rhs;
             return Quat(_v[0]*div, _v[1]*div, _v[2]*div, _v[3]*div);
         }
 
-	/// Unary divide by scalar 
+    /// Unary divide by scalar 
         inline Quat& operator /= (value_type rhs)
         {
             value_type div = 1.0/rhs;
@@ -228,41 +228,41 @@ class SG_EXPORT Quat
             return *this;
         }
 
-	/// Binary divide 
-	inline const Quat operator/(const Quat& denom) const
-	{
-	    return ( (*this) * denom.inverse() );
-	}
+    /// Binary divide 
+    inline const Quat operator/(const Quat& denom) const
+    {
+        return ( (*this) * denom.inverse() );
+    }
 
-	/// Unary divide 
-	inline Quat& operator/=(const Quat& denom)
-	{
-	    (*this) = (*this) * denom.inverse();
-	    return (*this);			// enable nesting
-	}
+    /// Unary divide 
+    inline Quat& operator/=(const Quat& denom)
+    {
+        (*this) = (*this) * denom.inverse();
+        return (*this);            // enable nesting
+    }
 
-	/// Binary addition 
+    /// Binary addition 
         inline const Quat operator + (const Quat& rhs) const
         {
             return Quat(_v[0]+rhs._v[0], _v[1]+rhs._v[1],
-		        _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
+                _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
         }
 
-	/// Unary addition
+    /// Unary addition
         inline Quat& operator += (const Quat& rhs)
         {
             _v[0] += rhs._v[0];
             _v[1] += rhs._v[1];
             _v[2] += rhs._v[2];
             _v[3] += rhs._v[3];
-            return *this;			// enable nesting
+            return *this;            // enable nesting
         }
 
         /// Binary subtraction 
         inline const Quat operator - (const Quat& rhs) const
         {
             return Quat(_v[0]-rhs._v[0], _v[1]-rhs._v[1],
-		        _v[2]-rhs._v[2], _v[3]-rhs._v[3] );
+                _v[2]-rhs._v[2], _v[3]-rhs._v[3] );
         }
 
         /// Unary subtraction 
@@ -272,11 +272,11 @@ class SG_EXPORT Quat
             _v[1]-=rhs._v[1];
             _v[2]-=rhs._v[2];
             _v[3]-=rhs._v[3];
-            return *this;			// enable nesting
+            return *this;            // enable nesting
         }
 
         /** Negation operator - returns the negative of the quaternion.
-	    Basically just calls operator - () on the Vec4 */
+        Basically just calls operator - () on the Vec4 */
         inline const Quat operator - () const
         {
             return Quat (-_v[0], -_v[1], -_v[2], -_v[3]);
@@ -307,15 +307,15 @@ class SG_EXPORT Quat
          }
 
       /* -------------------------------------------------------- 
-	 		  METHODS RELATED TO ROTATIONS
-	Set a quaternion which will perform a rotation of an
-	angle around the axis given by the vector (x,y,z).
-	Should be written to also accept an angle and a Vec3?
+               METHODS RELATED TO ROTATIONS
+    Set a quaternion which will perform a rotation of an
+    angle around the axis given by the vector (x,y,z).
+    Should be written to also accept an angle and a Vec3?
 
-	Define Spherical Linear interpolation method also
+    Define Spherical Linear interpolation method also
 
-	Not inlined - see the Quat.cpp file for implementation
-	-------------------------------------------------------- */
+    Not inlined - see the Quat.cpp file for implementation
+    -------------------------------------------------------- */
         void makeRotate( value_type  angle, 
                           value_type  x, value_type  y, value_type  z );
         void makeRotate ( value_type  angle, const Vec3f& vec );
@@ -351,24 +351,50 @@ class SG_EXPORT Quat
         void getRotate ( value_type & angle, Vec3d& vec ) const;
 
         /** Spherical Linear Interpolation.
-	    As t goes from 0 to 1, the Quat object goes from "from" to "to". */
+        As t goes from 0 to 1, the Quat object goes from "from" to "to". */
         void slerp   ( value_type  t, const Quat& from, const Quat& to);
+               
+        /** Rotate a vector by this quaternion.*/
+        Vec3f operator* (const Vec3f& v) const
+        {
+            // nVidia SDK implementation
+            Vec3f uv, uuv; 
+            Vec3f qvec(_v[0], _v[1], _v[2]);
+            uv = qvec ^ v;
+            uuv = qvec ^ uv; 
+            uv *= ( 2.0f * _v[3] ); 
+            uuv *= 2.0f; 
+            return v + uv + uuv;
+        }
+               
+        /** Rotate a vector by this quaternion.*/
+        Vec3d operator* (const Vec3d& v) const
+        {
+            // nVidia SDK implementation
+            Vec3d uv, uuv; 
+            Vec3d qvec(_v[0], _v[1], _v[2]);
+            uv = qvec ^ v;
+            uuv = qvec ^ uv; 
+            uv *= ( 2.0f * _v[3] ); 
+            uuv *= 2.0f; 
+            return v + uv + uuv;
+        }
                
         friend inline std::ostream& operator << (std::ostream& output, const Quat& vec);
         
     protected:
     
-};	// end of class prototype
+};    // end of class prototype
 
 inline std::ostream& operator << (std::ostream& output, const Quat& vec)
 {
     output << vec._v[0] << " "
-	   << vec._v[1] << " "
-	   << vec._v[2] << " "
-	   << vec._v[3];
-    return output; 	// to enable cascading
+       << vec._v[1] << " "
+       << vec._v[2] << " "
+       << vec._v[3];
+    return output;     // to enable cascading
 }
 
-}	// end of namespace
+}    // end of namespace
 
 #endif 

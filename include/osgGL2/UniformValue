@@ -48,6 +48,8 @@ class UniformValue : public osg::Referenced
     public:
 	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const = 0;
 
+        virtual int compare(const UniformValue& uv) const;
+
     protected:
 	UniformValue( const char* uniformName ) : _name( uniformName ) {};
 	virtual ~UniformValue() {};
@@ -73,7 +75,26 @@ class UniformValueTemplate: public UniformValue
     public:
 	UniformValueTemplate( const char* uniformName, T value ) :
 		UniformValue( uniformName ), _value( value ) {}
+
 	virtual void apply( Extensions *ext, const GLhandleARB progObj ) const;
+
+        virtual int compare(const UniformValue& uv) const 
+        {
+            if (this==&uv) return 0;
+            const std::type_info* type_lhs = &typeid(*this);
+            const std::type_info* type_rhs = &typeid(uv);
+            if (type_lhs->before(*type_rhs)) return -1;
+            if (*type_lhs != *type_rhs) return 1;
+            const UniformValueTemplate& rhs = static_cast<const UniformValueTemplate&>(uv);
+
+            if (_name<rhs._name) return -1;
+            if (rhs._name<_name) return 1;
+
+            if (_value<rhs._value) return -1;
+            if (rhs._value<_value) return 1;
+
+            return 0;
+        }
 
     protected:
 	UniformValueTemplate();

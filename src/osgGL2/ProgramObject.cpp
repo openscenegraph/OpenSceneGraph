@@ -171,6 +171,42 @@ ProgramObject::~ProgramObject()
     }
 }
 
+int ProgramObject::compare(const osg::StateAttribute& sa) const
+{
+    // check the types are equal and then create the rhs variable
+    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    COMPARE_StateAttribute_Types(ProgramObject,sa)
+    
+    if (_shaderObjectList.size()<rhs._shaderObjectList.size()) return -1;
+    if (_shaderObjectList.size()>rhs._shaderObjectList.size()) return 1;
+    
+    ShaderObjectList::const_iterator litr=_shaderObjectList.begin();
+    ShaderObjectList::const_iterator ritr=rhs._shaderObjectList.begin();
+    for(;
+        litr!=_shaderObjectList.end();
+        ++litr,++ritr)
+    {
+        int result = (*litr)->compare(*(*ritr));
+        if (result!=0) return result;
+    }
+    
+
+    if (_univalList.size()<rhs._univalList.size()) return -1;
+    if (_univalList.size()>rhs._univalList.size()) return 1;
+
+    UniformValueList::const_iterator luitr=_univalList.begin();
+    UniformValueList::const_iterator ruitr=rhs._univalList.begin();
+    for(;
+        luitr!=_univalList.end();
+        ++luitr,++ruitr)
+    {
+        int result = (*luitr)->compare(*(*ruitr));
+        if (result!=0) return result;
+    }
+
+    return 0; // passed all the above comparison macro's, must be equal.
+}
+
 
 // mark all PCPOs as needing a relink
 void ProgramObject::dirtyProgramObject()
@@ -413,6 +449,13 @@ ShaderObject::ShaderObject(const ShaderObject& rhs, const osg::CopyOp& copyop):
 ShaderObject::~ShaderObject()
 {
     /*TODO*/
+}
+
+int ShaderObject::compare(const ShaderObject& so) const
+{
+    if (getShaderSource()<so.getShaderSource()) return -1;
+    if (so.getShaderSource()<getShaderSource()) return 1;
+    return 0;
 }
 
 // mark each PCSO (per-context Shader Object) as needing a recompile

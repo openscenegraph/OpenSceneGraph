@@ -68,18 +68,7 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
         META_StateAttribute(osgGL2, ProgramObject, PROGRAMOBJECT);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const osg::StateAttribute& sa) const
-        {
-            // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
-            COMPARE_StateAttribute_Types(ProgramObject,sa)
-
-            // compare each parameter in turn against the rhs.
-            COMPARE_StateAttribute_Parameter(_shaderObjectList);
-            // COMPARE_StateAttribute_Parameter(_pcpoList);
-
-            return 0; // passed all the above comparison macro's, must be equal.
-        }
+        virtual int compare(const osg::StateAttribute& sa) const;
 
 	/** If enabled, install our shader program in the GL pipeline,
 	  * performing any shader program rebuild operations that might
@@ -182,7 +171,9 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
 
     protected:	/*data*/
 	bool _enabled;
-	std::vector< ShaderObjectPtr > _shaderObjectList;
+        
+        typedef std::vector< ShaderObjectPtr > ShaderObjectList;
+	ShaderObjectList _shaderObjectList;
         mutable osg::buffered_value< osg::ref_ptr<PerContextProgObj> > _pcpoList;
 	mutable int _frameNumberOfLastPCPOUpdate;
 	mutable UniformValueList _univalList;
@@ -218,6 +209,8 @@ class OSGGL2_EXPORT ShaderObject : public osg::Object
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ShaderObject(const ShaderObject& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         META_Object(osgGL2, ShaderObject);
+
+        int compare(const ShaderObject& sa) const;
 
         // data access methods.
 

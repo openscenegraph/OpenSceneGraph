@@ -25,6 +25,13 @@
 using namespace osgGL2;
 using namespace osg;
 
+int UniformValue::compare(const UniformValue& uv) const
+{
+    if (_name<uv._name) return -1;
+    if (uv._name<_name) return 1;
+    return 0;
+}
+
 int UniformValue::getLocation( Extensions *ext, const GLhandleARB progObj ) const
 {
     GLint loc = ext->glGetUniformLocation( progObj, _name.c_str() );

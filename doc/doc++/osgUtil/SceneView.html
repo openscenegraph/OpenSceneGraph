@@ -153,10 +153,10 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Node::NodeMask <B><A HREF="#DOC.2.21.57">getCullMaskRight</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.58">setLODBias</A></B>(float bias)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.58">setLODScale</A></B>(float bias)
 <DD><I>Set the LOD bias for the CullVisitor to use</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.59">getLODBias</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.59">getLODScale</A></B>() const 
 <DD><I>Get the LOD bias</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.60">setSmallFeatureCullingPixelSize</A></B>(float value)
@@ -284,7 +284,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CullStack::CullingMode <B><A HREF="#DOC.2.21.111">_cullingMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.112">_LODBias</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.112">_LODScale</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.113">_smallFeatureCullingPixelSize</A></B>
 <DT>
@@ -591,14 +591,14 @@ via setModelViewMatrix(..), see below.
 <A NAME="DOC.2.21.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Node::NodeMask getCullMaskRight() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setLODBias"></A>
+<A NAME="setLODScale"></A>
 <A NAME="DOC.2.21.58"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODBias(float bias)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODScale(float bias)</B></TT>
 <DD>Set the LOD bias for the CullVisitor to use
 <DL><DT><DD></DL><P>
-<A NAME="getLODBias"></A>
+<A NAME="getLODScale"></A>
 <A NAME="DOC.2.21.59"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODBias() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODScale() const </B></TT>
 <DD>Get the LOD bias
 <DL><DT><DD></DL><P>
 <A NAME="setSmallFeatureCullingPixelSize"></A>
@@ -869,9 +869,9 @@ graphics context.
 <A NAME="DOC.2.21.111"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CullStack::CullingMode _cullingMode</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_LODBias"></A>
+<A NAME="_LODScale"></A>
 <A NAME="DOC.2.21.112"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODBias</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODScale</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_smallFeatureCullingPixelSize"></A>
 <A NAME="DOC.2.21.113"></A>

@@ -55,9 +55,9 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> <B><A HREF="#DOC.2.54.18">getCullingMode</A></B>() const 
 <DD><I>Returns the current CullingMode</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.54.19">setLODBias</A></B>(float bias)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.54.19">setLODScale</A></B>(float bias)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.54.20">getLODBias</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.54.20">getLODScale</A></B>() const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.54.21">setSmallFeatureCullingPixelSize</A></B>(float value)
 <DT>
@@ -137,7 +137,7 @@
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> <B><A HREF="#DOC.2.54.48">_cullingMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.54.49">_LODBias</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.54.49">_LODScale</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.54.50">_smallFeatureCullingPixelSize</A></B>
 <DT>
@@ -307,13 +307,13 @@ and the CullingSet. </BLOCKQUOTE>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> getCullingMode() const </B></TT>
 <DD>Returns the current CullingMode
 <DL><DT><DD></DL><P>
-<A NAME="setLODBias"></A>
+<A NAME="setLODScale"></A>
 <A NAME="DOC.2.54.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODBias(float bias)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODScale(float bias)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getLODBias"></A>
+<A NAME="getLODScale"></A>
 <A NAME="DOC.2.54.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODBias() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODScale() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSmallFeatureCullingPixelSize"></A>
 <A NAME="DOC.2.54.21"></A>
@@ -429,9 +429,9 @@ and the CullingSet. </BLOCKQUOTE>
 <A NAME="DOC.2.54.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullStack.html#DOC.2.54.5">CullingMode</A> _cullingMode</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_LODBias"></A>
+<A NAME="_LODScale"></A>
 <A NAME="DOC.2.54.49"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODBias</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODScale</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_smallFeatureCullingPixelSize"></A>
 <A NAME="DOC.2.54.50"></A>

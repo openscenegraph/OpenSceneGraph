@@ -86,6 +86,40 @@
 #define GL_SIGNED_RGB8_UNSIGNED_ALPHA8_NV       0x870D
 #endif
 
+#ifndef GL_NV_float_buffer
+#define GL_FLOAT_R_NV                           0x8880
+#define GL_FLOAT_RG_NV                          0x8881
+#define GL_FLOAT_RGB_NV                         0x8882
+#define GL_FLOAT_RGBA_NV                        0x8883
+#define GL_FLOAT_R16_NV                         0x8884
+#define GL_FLOAT_R32_NV                         0x8885
+#define GL_FLOAT_RG16_NV                        0x8886
+#define GL_FLOAT_RG32_NV                        0x8887
+#define GL_FLOAT_RGB16_NV                       0x8888
+#define GL_FLOAT_RGB32_NV                       0x8889
+#define GL_FLOAT_RGBA16_NV                      0x888A
+#define GL_FLOAT_RGBA32_NV                      0x888B
+#endif
+
+#ifndef GL_NV_half_float
+#define GL_HALF_FLOAT_NV                        0x140B
+#endif
+
+#ifndef GL_ATI_texture_float
+#define GL_RGBA_FLOAT32_ATI                     0x8814
+#define GL_RGB_FLOAT32_ATI                      0x8815
+#define GL_ALPHA_FLOAT32_ATI                    0x8816
+#define GL_INTENSITY_FLOAT32_ATI                0x8817
+#define GL_LUMINANCE_FLOAT32_ATI                0x8818
+#define GL_LUMINANCE_ALPHA_FLOAT32_ATI          0x8819
+#define GL_RGBA_FLOAT16_ATI                     0x881A
+#define GL_RGB_FLOAT16_ATI                      0x881B
+#define GL_ALPHA_FLOAT16_ATI                    0x881C
+#define GL_INTENSITY_FLOAT16_ATI                0x881D
+#define GL_LUMINANCE_FLOAT16_ATI                0x881E
+#define GL_LUMINANCE_ALPHA_FLOAT16_ATI          0x881F
+#endif
+
 #ifndef GL_MIRRORED_REPEAT_IBM
 #define GL_MIRRORED_REPEAT_IBM            0x8370
 #endif

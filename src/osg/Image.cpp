@@ -199,6 +199,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_BYTE):
         case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(format);
         
+        case(GL_HALF_FLOAT_NV):
         case(GL_SHORT):
         case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(format);
         

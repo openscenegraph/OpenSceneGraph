@@ -373,8 +373,8 @@ ifeq ($(OS),FreeBSD)
   ARCH              = 
   ARCHINST          = 
   ARCHARGS          = 
-  LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
-  DYNAMICLIBRARYLIB = 
+  LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib -pthread
+ DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GL_LIBS           = -lGLU -lGL 
@@ -382,8 +382,10 @@ ifeq ($(OS),FreeBSD)
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lOpenThreads
-  INST_LOCATION     = /opt/X11R6
-  INST_SHARE        = /usr/share/OpenSceneGraph
+  PNG_LIBS          = -lpng
+  JPEG_LIBS         = -ljpeg
+  TIFF_LIB          = -ltiff
+  GIF_LIBS          = -lungif
 endif
 
 #### MacOS X specific definitions

@@ -1994,6 +1994,9 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
         texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
 
+        
+        texture->dirtyTextureObject();
+        
         osg::notify(osg::INFO)<<">>>>>>>>>>>>>>>compressed image.<<<<<<<<<<<<<<"<<std::endl;
 
     }
@@ -2006,7 +2009,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         
         if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
         {
-            osg::notify(osg::NOTICE)<<"Non compressress mipmapped not yet supported yet"<<std::endl;        
+            osg::notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
         }
     }
 
@@ -3739,7 +3742,7 @@ void DataSet::_buildDestination(bool writeToDisk)
                     _readRow(curr_itr->second);
                     
                     _equalizeRow(prev_itr->second);
-                    _writeRow(prev_itr->second);
+                    if (writeToDisk) _writeRow(prev_itr->second);
                     
                     prev_itr = curr_itr;
                 }

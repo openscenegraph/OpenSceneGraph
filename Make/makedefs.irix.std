@@ -13,6 +13,8 @@ CFLAGS   = -O2 -n32 -LANG:std -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 
+SO_EXT = so
+
 LDFLAGS = -O2 -n32 -LANG:std -OPT:Olimit=0
 
 .SUFFIXES: .cpp .o
@@ -23,6 +25,8 @@ LINKERARGS =
 DYNAMICLIBRARYLIB = 
 PFLOADERPATH = /usr/lib32/libpfdb
 GLUTLIB = -lglut
+GL_LIBS = -lGLU -lGL -lm
+X_LIBS  = -lXmu  -lX11 -lXi
 
 #
 # TARGET_DIRS are directories that would not exist on the system except

@@ -10,6 +10,7 @@ endif
 ## Make CYGWIN_XXXX CYGWIN so it's "Windows cross platform" :)
 ifeq ($(findstring CYGWIN,$(OS)),CYGWIN)
 OS := CYGWIN
+#OS := MINGW
 endif
 
 ## Make MINGW_XXXX MINGW so it's "Windows cross platform" :)
@@ -461,14 +462,14 @@ endif
 
 #### Cygwin/Mingw specific definitions
 ifeq ($(OS),MINGW)
-  C++               = c++
+  C++               = c++ -mthreads
   DEPARG            = -M
   INC               += 
   DEF               += -DWIN32 -Wall
 # -W
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
-  SHARED            = -shared\
+  SHARED            = -shared -mthreads \
                       -Wl,--export-all-symbols  \
                       -Wl,--output-def,lib$(TARGET_BASENAME).def \
                       -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a 
@@ -481,7 +482,7 @@ ifeq ($(OS),MINGW)
   GL_LIBS           = -lglu32 -lopengl32
   X_INC             = 
   X_LIBS            = -lgdi32 -luser32
-  SOCKET_LIBS       = 
+  SOCKET_LIBS       = -lws2_32
   OTHER_LIBS        = -lOpenThreads
   PNG_LIBS          = -lpng -lz
   JPEG_LIBS         = -ljpeg
@@ -489,7 +490,8 @@ ifeq ($(OS),MINGW)
   TIFF_LIB          = -ltiff -lz -ljpeg
   FREETYPE_LIB      = -lfreetype
 
-#  LIB_PREFIX        = cyg
+  LIBXML2_INCLUDE = -I/usr/mingw/include/libxml2
+
   LIB_PREFIX        = lib
   LIB_EXT           = dll
   PLUGIN_EXT        = dll

@@ -45,6 +45,9 @@ class SG_EXPORT Transform : public Group
 
         META_Node(osg, Transform);
 
+        virtual Transform* asTransform() { return this; }
+        virtual const Transform* asTransform() const { return this; }
+
         enum ReferenceFrame
         {
             RELATIVE_TO_PARENTS,

@@ -30,6 +30,9 @@ class SG_EXPORT Geometry : public Drawable
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Geometry"; }
 
+        virtual Geometry* asGeometry() { return this; }
+        virtual const Geometry* asGeometry() const { return this; }
+
         enum AttributeBinding
         {
             BIND_OFF=0,

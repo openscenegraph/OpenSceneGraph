@@ -11,9 +11,6 @@
 
 #include <osgProducer/Viewer>
 
-#include "FrameStatsHandler"
-#include "StatsEventHandler"
-
 
 int main( int argc, char **argv )
 {
@@ -66,11 +63,6 @@ int main( int argc, char **argv )
     // set up the value with sensible defaults.
     viewer->setUpViewer();
 
-    Producer::FrameStatsHandler* fsh = new Producer::FrameStatsHandler;
-    viewer->setStatsHandler(fsh);
-    viewer->getCamera(0)->addPostDrawCallback(fsh);
-    
-
     if( !pathfile.empty() ) {
 	osg::ref_ptr<osgGA::AnimationPathManipulator> apm = new osgGA::AnimationPathManipulator(pathfile);
 	if( apm.valid() && apm->valid() ) 
@@ -82,13 +74,6 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer->setSceneData(loadedModel.get());
-
-    // set up the pthread stack size to large enough to run into problems.
-    viewer->setStackSize( 20*1024*1024);
-
-    // add the stats event handler to handler keyboard events for
-    // setting set block on vsync, instrumentation etc.
-    viewer->getEventHandlerList().push_back(new StatsEventHandler(viewer));
 
     // create the windows and run the threads.
     viewer->realize(Producer::CameraGroup::ThreadPerCamera);

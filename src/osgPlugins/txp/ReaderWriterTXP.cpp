@@ -19,10 +19,8 @@ using namespace txp;
 
 int ReaderWriterTXP::_archiveId = 0;
 
-osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
 {
-    if( !acceptsExtension(osgDB::getFileExtension(file) ))
-        return ReadResult::FILE_NOT_HANDLED;
 
     std::string name = osgDB::getSimpleFileName(file);
 

@@ -1352,7 +1352,7 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 
 ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const ReaderWriter::Options* options)
 {
-    if (options && (options->getUseObjectCacheHint() & ReaderWriter::Options::CACHE_ARCHIVES))
+    if (options && (options->getObjectCacheHint() & ReaderWriter::Options::CACHE_ARCHIVES))
     {
         osgDB::Archive* archive = getFromArchiveCache(fileName);
         if (archive) return archive;
@@ -1374,7 +1374,7 @@ ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& 
 ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
     return readImplementation(ReadObjectFunctor(fileName, options),
-                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_OBJECTS): false);
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_OBJECTS): false);
 }
 
 ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName)
@@ -1417,7 +1417,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
 ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
     return readImplementation(ReadImageFunctor(fileName, options),
-                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_IMAGES): false);
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_IMAGES): false);
 }
 
 ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName)
@@ -1459,7 +1459,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
 ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
     return readImplementation(ReadHeightFieldFunctor(fileName, options),
-                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_HEIGHTFIELDS): false);
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_HEIGHTFIELDS): false);
 }
 
 ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName)
@@ -1501,7 +1501,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
     return readImplementation(ReadNodeFunctor(fileName, options),
-                              options ? (options->getUseObjectCacheHint()&ReaderWriter::Options::CACHE_NODES): false);
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_NODES): false);
 }
 
 ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName)

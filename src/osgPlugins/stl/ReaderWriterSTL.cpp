@@ -43,33 +43,38 @@
 class ReaderWriterSTL : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterSTL() : _generateNormal(true),
-                        _numFacets(0) {
-    }
+    ReaderWriterSTL() {}
 
     virtual const char* className() const {
         return "STL Reader/Writer";
     }
 
-    virtual bool acceptsExtension(const std::string& extension) { 
+    virtual bool acceptsExtension(const std::string& extension) const { 
         return
             osgDB::equalCaseInsensitive(extension,"stl") ? true :
             osgDB::equalCaseInsensitive(extension,"sta") ? true : false;
     }
 
-    virtual ReadResult readNode(const std::string& fileName,
-                                const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 
 private:
-    bool _generateNormal;
-    unsigned int _numFacets;
 
-    osg::ref_ptr<osg::Vec3Array> _vertex;
-    osg::ref_ptr<osg::Vec3Array> _normal;
-    osg::ref_ptr<osg::Vec4Array> _color;
+    struct ReaderObject
+    {
+        ReaderObject():
+            _generateNormal(true),
+            _numFacets(0) {}
 
-    bool readStlAscii(FILE* fp);
-    bool readStlBinary(FILE* fp);
+        bool _generateNormal;
+        unsigned int _numFacets;
+
+        osg::ref_ptr<osg::Vec3Array> _vertex;
+        osg::ref_ptr<osg::Vec3Array> _normal;
+        osg::ref_ptr<osg::Vec4Array> _color;
+
+        bool readStlAscii(FILE* fp);
+        bool readStlBinary(FILE* fp);
+    };
 };
 
 
@@ -102,8 +107,7 @@ const float StlColorDepth = float(StlColorSize); // 2^5 - 1
 
 
 // Read node
-osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& file,
-                                                          const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -118,6 +122,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     if (!fp) {
         return ReadResult::FILE_NOT_HANDLED;
     }
+
+    ReaderObject readerObject;
 
     // assumes "unsigned int" is 4 bytes...
     StlHeader header;
@@ -142,7 +148,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     }
     if (stb.st_size == expectLen) {
         // assume binary
-        _numFacets = expectFacets;
+        readerObject._numFacets = expectFacets;
         isBinary = true;
     }
     else if (strstr(header.text, "solid") != 0) {
@@ -157,30 +163,30 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     // read
     rewind(fp);
-    bool ok = (isBinary ? readStlBinary(fp) : readStlAscii(fp));
+    bool ok = (isBinary ? readerObject.readStlBinary(fp) : readerObject.readStlAscii(fp));
     fclose(fp);
 
     if (!ok) {
         return ReadResult::FILE_NOT_HANDLED;
     }
-    osg::notify(osg::NOTICE) << "### found " << _numFacets << " facets" << std::endl;
+    osg::notify(osg::NOTICE) << "### found " << readerObject._numFacets << " facets" << std::endl;
 
     /*
      * setup geometry
      */
     osg::Geometry* geom = new osg::Geometry;
-    geom->setVertexArray(_vertex.get());
+    geom->setVertexArray(readerObject._vertex.get());
 
-    geom->setNormalArray(_normal.get());
+    geom->setNormalArray(readerObject._normal.get());
     geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
 
-    if (_color.valid()) {
+    if (readerObject._color.valid()) {
         osg::notify(osg::NOTICE) << "### with color" << std::endl;
-        geom->setColorArray(_color.get());
+        geom->setColorArray(readerObject._color.get());
         geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
 
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, _numFacets*3));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, readerObject._numFacets*3));
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
@@ -195,7 +201,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
  *
  **********************************************************************/
 
-bool ReaderWriterSTL::readStlAscii(FILE* fp)
+bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
 {
     unsigned int vertexCount = 0;
     unsigned int facetIndex[] = { 0,0,0 };
@@ -272,7 +278,7 @@ bool ReaderWriterSTL::readStlAscii(FILE* fp)
     return true;
 }
 
-bool ReaderWriterSTL::readStlBinary(FILE* fp)
+bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
 {
     // seek to beginning of facets
     ::fseek(fp, sizeof_StlHeader, SEEK_SET);

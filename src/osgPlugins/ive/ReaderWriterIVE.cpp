@@ -15,17 +15,17 @@ class IVEReaderWriter : public ReaderWriter
     public:
         virtual const char* className() const { return "IVE Reader/Writer"; }
 
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return equalCaseInsensitive(extension,"ive");
         }
 
-        virtual ReadResult readObject(const std::string& file, const Options* options)
+        virtual ReadResult readObject(const std::string& file, const Options* options) const
         {
             return readNode(file, options);
         }
         
-        virtual ReadResult readNode(const std::string& file, const Options* options)
+        virtual ReadResult readNode(const std::string& file, const Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -41,12 +41,12 @@ class IVEReaderWriter : public ReaderWriter
             return readNode(istream,local_opt.get());
         }
         
-        virtual ReadResult readObject(std::istream& fin, const Options* options)
+        virtual ReadResult readObject(std::istream& fin, const Options* options) const
         {
             return readNode(fin, options);
         }
         
-        virtual ReadResult readNode(std::istream& fin, const Options* options)
+        virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
         #define IVE_CATCH_EXCEPTIONS
         #ifdef IVE_CATCH_EXCEPTIONS
@@ -70,14 +70,14 @@ class IVEReaderWriter : public ReaderWriter
 
         
 
-        virtual WriteResult writeObject(const Object& object,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeObject(const Object& object,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             const Node* node = dynamic_cast<const Node*>(&object);
             if (node) return writeNode( *node, fileName, options );
             return WriteResult::FILE_NOT_HANDLED;
         }
 
-        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -88,14 +88,14 @@ class IVEReaderWriter : public ReaderWriter
             return result;
         }
         
-        virtual WriteResult writeObject(const Object& object,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeObject(const Object& object,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             const Node* node = dynamic_cast<const Node*>(&object);
             if (node) return writeNode( *node, fout, options );
             return WriteResult::FILE_NOT_HANDLED;
         }
 
-        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             try
             {

@@ -56,13 +56,12 @@ public:
     
     virtual const char* className() const { return "scaling pseudo-loader"; }
 
-    virtual bool acceptsExtension(const std::string& extension)
+    virtual bool acceptsExtension(const std::string& extension) const
     { 
 	return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 
-    virtual ReadResult readNode(const std::string& fileName,
-		const osgDB::ReaderWriter::Options* /*options*/)
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {
 	std::string ext = osgDB::getLowerCaseFileExtension(fileName);
 	if( !acceptsExtension(ext) )
@@ -106,7 +105,7 @@ public:
 	}
 
 	// recursively load the subfile.
-	osg::Node *node = osgDB::readNodeFile( subFileName );
+	osg::Node *node = osgDB::readNodeFile( subFileName, options );
 	if( !node )
 	{
 	    // propagate the read failure upwards

@@ -22,7 +22,7 @@ ReaderWriterIV::ReaderWriterIV()
 // Read file and convert to OSG
 osgDB::ReaderWriter::ReadResult 
 ReaderWriterIV::readNode(const std::string& file,
-                         const osgDB::ReaderWriter::Options* options)
+                         const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

@@ -68,7 +68,7 @@ osgText::Font* osgText::readFontFile(const std::string& filename)
     if (foundFile.empty()) return 0;
     
     osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
-    options->setUseObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+    options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
 
     osg::Object* object = osgDB::readObjectFile(foundFile, options.get());
 

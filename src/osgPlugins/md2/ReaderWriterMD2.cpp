@@ -49,19 +49,17 @@ public:
 	return "Quake MD2 Reader";
     }
 
-    virtual bool acceptsExtension (const std::string& extension) {
+    virtual bool acceptsExtension (const std::string& extension) const {
 	return osgDB::equalCaseInsensitive (extension, "md2") ? true : false;
     }
 
-    virtual ReadResult readNode (const std::string& filename,
-				 const osgDB::ReaderWriter::Options* options);
+    virtual ReadResult readNode (const std::string& filename, const osgDB::ReaderWriter::Options* options) const;
 };
 
 osgDB::RegisterReaderWriterProxy<ReaderWriterMD2> g_readerWriter_MD2_Proxy;
 
 osgDB::ReaderWriter::ReadResult
-ReaderWriterMD2::readNode (const std::string& file,
-			   const osgDB::ReaderWriter::Options* options)
+ReaderWriterMD2::readNode (const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

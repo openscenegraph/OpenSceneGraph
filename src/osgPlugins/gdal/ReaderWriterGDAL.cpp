@@ -8,18 +8,35 @@
 #include <osgDB/FileUtils>
 #include <osgDB/ImageOptions>
 
+#include <OpenThreads/ScopedLock>
+#include <osgDB/ReentrantMutex>
+
 #include <gdal_priv.h>
+
+#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
 
 class ReaderWriterGDAL : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "GDAL Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"gdal") || osgDB::equalCaseInsensitive(extension,"gdal");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+            return const_cast<ReaderWriterGDAL*>(this)->local_readImage(fileName, options);
+        }
+        
+        virtual ReadResult readHeightField(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+            return const_cast<ReaderWriterGDAL*>(this)->local_readHeightField(fileName, options);
+        }
+
+        virtual ReadResult local_readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
             // Looks like gdal's GDALRasterBand::GetColorInterpretation()
             // is not giving proper values for ecw images. There is small
@@ -377,7 +394,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
         }
         
-        virtual ReadResult readHeightField(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+
+        ReadResult local_readHeightField(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
             //std::string ext = osgDB::getFileExtension(fileName);
             //if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -596,6 +614,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             }
         }
         
+        mutable osgDB::ReentrantMutex _serializerMutex;
         
 };
 

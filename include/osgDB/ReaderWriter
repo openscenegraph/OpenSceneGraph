@@ -43,7 +43,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         META_Object(osgDB,ReaderWriter);
 
-        virtual bool acceptsExtension(const std::string& /*extension*/) { return false; }
+        virtual bool acceptsExtension(const std::string& /*extension*/) const { return false; }
 
         /** Options base class used for passing options into plugins to control their operation.*/
         class Options : public osg::Object
@@ -80,14 +80,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 };
             
 
-                Options():_useObjectCacheHint(CACHE_ARCHIVES) {}
+                Options():_objectCacheHint(CACHE_ARCHIVES) {}
                 Options(const std::string& str):_str(str) {}
                 
                 Options(const Options& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
                     Object(options,copyop),
                     _str(options._str),
                     _databasePaths(options._databasePaths),
-                    _useObjectCacheHint(options._useObjectCacheHint) {}
+                    _objectCacheHint(options._objectCacheHint) {}
 
                 META_Object(osgDB,Options);
 
@@ -107,10 +107,10 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 const FilePathList& getDatabasePathList() const { return _databasePaths; }
 
                 /** Set whether the Registry::ObjectCache should be used by default.*/
-                void setUseObjectCacheHint(CacheHintOptions useObjectCache) { _useObjectCacheHint = useObjectCache; }
+                void setObjectCacheHint(CacheHintOptions useObjectCache) { _objectCacheHint = useObjectCache; }
 
                 /** Get whether the Registry::ObjectCache should be used by default.*/
-                CacheHintOptions getUseObjectCacheHint() const { return _useObjectCacheHint; }
+                CacheHintOptions getObjectCacheHint() const { return _objectCacheHint; }
 
 
             protected:
@@ -119,7 +119,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 std::string         _str;
                 FilePathList        _databasePaths;
-                CacheHintOptions    _useObjectCacheHint;
+                CacheHintOptions    _objectCacheHint;
 
         };
 
@@ -216,30 +216,30 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         };
 
         /** open an archive for reading, writing or or to create an empty archive for writing to.*/ 
-        virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
         /** open an archive for reading.*/ 
-        virtual ReadResult openArchive(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult openArchive(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
-        virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
-        virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 
-        virtual ReadResult readObject(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readImage(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readHeightField(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
-        virtual ReadResult readNode(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readObject(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readImage(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readHeightField(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readNode(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
-        virtual WriteResult writeObject(const osg::Object& /*obj*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
-        virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeObject(const osg::Object& /*obj*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 
 };
 

@@ -172,24 +172,24 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
     public:
         virtual const char* className() const { return "RGB Image Reader/Writer"; }
         
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"jp2") ||
                 osgDB::equalCaseInsensitive(extension,"jpc");
         }
 
-        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             return readImage(file,options);
         }
 
-        virtual ReadResult readObject(std::istream& fin, const Options* options)
+        virtual ReadResult readObject(std::istream& fin, const Options* options) const
         {
             return readImage(fin,options);
         }
 
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -256,7 +256,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
         }
 
-        virtual ReadResult readImage(std::istream& fin,const Options* options)
+        virtual ReadResult readImage(std::istream& fin,const Options* options) const
         {
             char c;
             char * sdata;
@@ -325,7 +325,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             return image;
         }
 
-        virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
             if (!image) return WriteResult::FILE_NOT_HANDLED;
@@ -333,7 +333,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             return writeImage(*image,file,options);
         }
 
-        virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options)
+        virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options) const
         {
             const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
             if (!image) return WriteResult::FILE_NOT_HANDLED;
@@ -341,7 +341,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             return writeImage(*image,fout,options);
         }
 
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -423,7 +423,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             return WriteResult::FILE_SAVED;
         }
 
-        WriteResult writeImage(const osg::Image& img, std::ostream& fout, const Options* options)
+        WriteResult writeImage(const osg::Image& img, std::ostream& fout, const Options* options) const
         {
             jas_init();
 

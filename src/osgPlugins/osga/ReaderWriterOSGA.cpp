@@ -12,12 +12,12 @@ public:
     ReaderWriterOSGA() { }
 
     virtual const char* className() const { return "OpenSceneGraph Archive Reader/Writer"; }
-    virtual bool acceptsExtension(const std::string& extension)
+    virtual bool acceptsExtension(const std::string& extension) const
     {
         return osgDB::equalCaseInsensitive(extension,"osga");
     }
 
-    virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* options=NULL)
+    virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* options=NULL) const
     {
         
         std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -40,7 +40,7 @@ public:
     }
 
     /** open an archive for reading.*/ 
-    virtual ReadResult openArchive(std::istream& fin,const Options*)
+    virtual ReadResult openArchive(std::istream& fin,const Options*) const
     {
         osg::ref_ptr<OSGA_Archive> archive = new OSGA_Archive;
         if (!archive->open(fin))
@@ -51,7 +51,7 @@ public:
         return archive.get();
     }
 
-    virtual ReadResult readImage(const std::string& file,const Options*)
+    virtual ReadResult readImage(const std::string& file,const Options*) const
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
         
@@ -71,7 +71,7 @@ public:
         return result_2;
     }
 
-    virtual ReadResult readNode(const std::string& file,const Options*)
+    virtual ReadResult readNode(const std::string& file,const Options*) const
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
         

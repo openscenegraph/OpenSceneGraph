@@ -49,13 +49,13 @@ class ReaderWriterFLT : public osgDB::ReaderWriter
 public:
 
     virtual const char* className() const { return "FLT Reader/Writer"; }
-    virtual bool acceptsExtension(const std::string& extension)
+    virtual bool acceptsExtension(const std::string& extension) const
     {
         return osgDB::equalCaseInsensitive(extension,"flt");
     }
 
-    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*);
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 };
 
 

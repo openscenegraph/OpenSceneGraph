@@ -17,13 +17,13 @@
 
 using namespace flt;
 
-osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* opt)
+osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* opt) const
 {
     return readNode(fileName,opt);
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

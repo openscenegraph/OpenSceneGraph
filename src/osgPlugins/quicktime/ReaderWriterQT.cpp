@@ -27,7 +27,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
     public:
         virtual const char* className() const { return "Default Quicktime Image Reader/Writer"; }
         
-        virtual bool acceptsMovieExtension(const std::string& extension)
+        virtual bool acceptsMovieExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"mov") ||
                    osgDB::equalCaseInsensitive(extension,"mpg") ||
@@ -35,7 +35,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                    osgDB::equalCaseInsensitive(extension,"dv");
         }
         
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             // this should be the only image importer required on the Mac
             // dont know what else it supports, but these will do
@@ -54,7 +54,7 @@ class ReaderWriterQT : public osgDB::ReaderWriter
                 acceptsMovieExtension(extension);
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*) const
         {                    
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

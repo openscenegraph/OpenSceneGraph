@@ -24,12 +24,12 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
     public:
         virtual const char* className() const { return "ZIP Database Reader/Writer"; }
 
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"zip");
         }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
 
             std::string ext = osgDB::getLowerCaseFileExtension(file);

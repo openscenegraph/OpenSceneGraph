@@ -32,6 +32,8 @@
 #include "TexEnvCombine.h"
 #include "TexGen.h"
 #include "TexMat.h"
+#include "FragmentProgram.h"
+#include "VertexProgram.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -465,6 +467,14 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a TexMat
         else if(dynamic_cast<const osg::TexMat*>(attribute)){
             ((ive::TexMat*)(attribute))->write(this);
+        }
+        // This is a FragmentProgram
+        else if(dynamic_cast<const osg::FragmentProgram*>(attribute)){
+            ((ive::FragmentProgram*)(attribute))->write(this);
+        }
+        // This is a VertexProgram
+        else if(dynamic_cast<const osg::VertexProgram*>(attribute)){
+            ((ive::VertexProgram*)(attribute))->write(this);
         }
         else{
             std::string className = attribute->className();

@@ -81,7 +81,7 @@ class IVEReaderWriter : public ReaderWriter
             }
             catch(ive::Exception e)
             {
-            osg::notify(osg::WARN)<<"Error parsing OSG file: "<< e.getError() << std::endl;
+            osg::notify(osg::WARN)<<"Error writing IVE file: "<< e.getError() << std::endl;
             }
             return WriteResult::FILE_NOT_HANDLED;
 

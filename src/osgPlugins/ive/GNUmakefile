@@ -52,6 +52,8 @@ CXXFILES =\
 	Texture.cpp\
 	Texture1D.cpp\
 	Texture2D.cpp\
+	FragmentProgram.cpp\
+	VertexProgram.cpp\
 	TextureCubeMap.cpp\
 	Transform.cpp\
 	ReaderWriterIVE.cpp\

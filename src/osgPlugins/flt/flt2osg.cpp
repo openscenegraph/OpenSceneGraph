@@ -1609,7 +1609,7 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
                 return;
             }
             
-            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
+            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *> ((pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()))->stateset);
 
             CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()) << "\n";
             CERR << "textureStateSet: " << textureStateSet << "\n";

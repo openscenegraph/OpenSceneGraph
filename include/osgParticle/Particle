@@ -212,6 +212,9 @@ namespace osgParticle
         
         /// Get the current (interpolated) polygon size. Valid only after the first call to update().
         inline float getCurrentSize() const;
+        
+        // Specify how the particle texture is tiled
+        inline void setTextureTile(int sTile, int tTile, int numTiles = 0);
 
     private:
         Shape shape_;
@@ -244,6 +247,13 @@ namespace osgParticle
         float current_size_;
         float current_alpha_;
         osg::Vec4 current_color_;
+        
+        float s_tile_;
+        float t_tile_;
+        int num_tile_;
+        int cur_tile_;
+        float s_coord_;
+        float t_coord_;
     };
 
     // INLINE FUNCTIONS
@@ -487,6 +497,20 @@ namespace osgParticle
     {
         return current_size_;
     }
+    
+    inline void Particle::setTextureTile(int sTile, int tTile, int numTiles)
+	{
+		s_tile_ = 1.0f / static_cast<float>(sTile);
+		t_tile_ = 1.0f / static_cast<float>(tTile);
+		if (numTiles <= 0)
+		{
+			num_tile_ = sTile * tTile;
+		}
+		else
+		{
+			num_tile_ = numTiles;
+		}
+	}
 
 
 }

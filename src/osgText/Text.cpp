@@ -22,6 +22,8 @@
 
 using namespace osgText;
 
+//#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
+
 
 Text::Text():
     _fontWidth(32),
@@ -120,23 +122,17 @@ void Text::setText(const String& text)
 void Text::setText(const std::string& text)
 {
     setText(String(text));
-//     _text.set(text);
-//     computeGlyphRepresentation();
 }
 
 void Text::setText(const std::string& text,String::Encoding encoding)
 {
     setText(String(text,encoding));
-//     _text.set(text,encoding);
-//     computeGlyphRepresentation();
 }
     
 
 void Text::setText(const wchar_t* text)
 {
     setText(String(text));
-//     _text.set(text);
-//     computeGlyphRepresentation();
 }
 
 void Text::setPosition(const osg::Vec3& pos)
@@ -242,60 +238,36 @@ const Font* Text::getActiveFont() const
     return _font.valid() ? _font.get() : DefaultFont::instance();
 }
 
-void Text::computeGlyphRepresentation()
+String::iterator Text::computeLastCharacterOnLine(osg::Vec2 cursor, String::iterator first,String::iterator last)
 {
     Font* activefont = getActiveFont();
-    if (!activefont) return;
-    
-    _textureGlyphQuadMap.clear();
-    
-    if (_text.empty()) 
-	{
-	    _textBB.set(0,0,0,0,0,0);//no size text
-	    computePositions(); //to reset the origin
-		return;
-	}
-    
-    osg::Vec2 startOfLine(0.0f,0.0f);
-    osg::Vec2 cursor(startOfLine);
-    osg::Vec2 local(0.0f,0.0f);
-    
-    unsigned int previous_charcode = 0;
-    bool horizontal = _layout!=VERTICAL;
-    bool kerning = true;
+    if (!activefont) return last;
 
-    activefont->setSize(_fontWidth,_fontHeight);
-    
     float hr = _characterHeight/(float)activefont->getHeight();
     float wr = hr/_characterAspectRatio;
 
-    for(String::iterator itr=_text.begin();
-        itr!=_text.end();
-        ++itr)
+    bool horizontal = _layout!=VERTICAL;
+    bool kerning = true;
+    unsigned int previous_charcode = 0;
+
+    for(String::iterator itr=first;itr!=last;++itr)
     {
         unsigned int charcode = *itr;
         
         if (charcode=='\n')
         {
-            if (horizontal) startOfLine.y() -= _characterHeight;
-            else startOfLine.x() += _characterHeight;
-            cursor = startOfLine;
-            previous_charcode = 0;
-            continue;
+            return itr;
         }
-        
-        
+
         Font::Glyph* glyph = activefont->getGlyph(charcode);
         if (glyph)
         {
 
             float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
-            float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
-            //#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
             #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
 	        if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
-	        if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
             #endif
+
             if (_layout==RIGHT_TO_LEFT)
             {
                 cursor.x() -= glyph->getHorizontalAdvance() * wr;
@@ -323,98 +295,232 @@ void Text::computeGlyphRepresentation()
                   case VERTICAL:
                     break; // no kerning when vertical.
                 }
-            }
-        
-            local = cursor;
-        
+            }        
 
             osg::Vec2 bearing(horizontal?glyph->getHorizontalBearing():glyph->getVerticalBearing());
-            local.x() += bearing.x() * wr;
-            local.y() += bearing.y() * hr;
+            cursor.x() += bearing.x() * wr;
+            cursor.y() += bearing.y() * hr;
 
             // check to see if we are still within line if not move to next line.
             switch(_layout)
             {
               case LEFT_TO_RIGHT:
               {
-                if (_maximumWidth>0.0f)
-                {
-                    if (local.x()+width>_maximumWidth)
-                    {
-                        startOfLine.y() -= _characterHeight;
-                        cursor = startOfLine;
-                        previous_charcode = 0;
-
-                        local = cursor;
-                        local.x() += bearing.x() * wr;
-                        local.y() += bearing.y() * hr;
-                    }
-                }
+                if (_maximumWidth>0.0f && cursor.x()+width>_maximumWidth) return itr;
                 break;
               }
               case RIGHT_TO_LEFT:
               {
-                if (_maximumWidth>0.0f)
-                {
-                    if (local.x()<-_maximumWidth)
-                    {
-                        startOfLine.y() -= _characterHeight;
-                        cursor = startOfLine;
-                        previous_charcode = 0;
-
-                        local = cursor;
-                        local.x() += bearing.x() * wr;
-                        local.y() += bearing.y() * hr;
-                    }
-;                }
+                if (_maximumWidth>0.0f && cursor.x()<-_maximumWidth) return itr;
                 break;
               }
               case VERTICAL:
-                if (_maximumHeight>0.0f)
-                {
-                    if (local.y()<-_maximumHeight)
-                    {
-                        startOfLine.x() += _characterHeight/_characterAspectRatio;
-                        cursor = startOfLine;
-                        previous_charcode = 0;
-
-                        local = cursor;
-                        local.x() += bearing.x() * wr;
-                        local.y() += bearing.y() * hr;
-                    }
-                }
+                if (_maximumHeight>0.0f && cursor.y()<-_maximumHeight) return itr;
                 break;
             }
-        
-            GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
             
-            glyphquad._glyphs.push_back(glyph);
 
-            // set up the coords of the quad
-            glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
-            glyphquad._coords.push_back(local+osg::Vec2(0.0f,0.0f));
-            glyphquad._coords.push_back(local+osg::Vec2(width,0.0f));
-            glyphquad._coords.push_back(local+osg::Vec2(width,height));
-            
-            // set up the tex coords of the quad
-            const osg::Vec2& mintc = glyph->getMinTexCoord();
-            const osg::Vec2& maxtc = glyph->getMaxTexCoord();
-            
-            glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),maxtc.y()));
-            glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),mintc.y()));
-            glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),mintc.y()));
-            glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),maxtc.y()));
-            
             // move the cursor onto the next character.
             switch(_layout)
             {
               case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
               case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance() *hr; break;
               case RIGHT_TO_LEFT: break; // nop.
-            }            
+            }
         }
-        
-        previous_charcode = charcode;
+
+    }
+    return last;
+}
+
+
+#if 1
+void Text::computeGlyphRepresentation()
+{
+    Font* activefont = getActiveFont();
+    if (!activefont) return;
+    
+    _textureGlyphQuadMap.clear();
+    
+    if (_text.empty()) 
+	{
+	    _textBB.set(0,0,0,0,0,0);//no size text
+	    computePositions(); //to reset the origin
+		return;
+	}
+    
+    osg::Vec2 startOfLine(0.0f,0.0f);
+    osg::Vec2 cursor(startOfLine);
+    osg::Vec2 local(0.0f,0.0f);
+    
+    unsigned int previous_charcode = 0;
+    bool horizontal = _layout!=VERTICAL;
+    bool kerning = true;
+
+    activefont->setSize(_fontWidth,_fontHeight);
+    
+    float hr = _characterHeight/(float)activefont->getHeight();
+    float wr = hr/_characterAspectRatio;
+
+    std::set<unsigned int> deliminatorSet;
+    deliminatorSet.insert(' ');
+    deliminatorSet.insert('\n');
+    deliminatorSet.insert(':');
+    deliminatorSet.insert('/');
+    deliminatorSet.insert(',');
+    deliminatorSet.insert(';');
+    deliminatorSet.insert(':');
+    deliminatorSet.insert('.');
+
+    for(String::iterator itr=_text.begin();
+        itr!=_text.end();
+        )
+    {
+
+        // find the end of the current line.
+        String::iterator endOfLine = computeLastCharacterOnLine(cursor, itr,_text.end());
+
+
+        if (itr!=endOfLine)
+        {
+            if (endOfLine!=_text.end())
+            {
+                if (deliminatorSet.count(*endOfLine)==0) 
+                {
+                    String::iterator lastValidChar = endOfLine;
+                    while (lastValidChar!=itr && deliminatorSet.count(*lastValidChar)==0)
+                    {
+                        --lastValidChar;
+                    }
+                    if (itr!=lastValidChar)
+                    {
+                        ++lastValidChar;
+                        endOfLine = lastValidChar;
+                    }
+                }
+            }
+
+            for(;itr!=endOfLine;++itr)
+            {
+
+                unsigned int charcode = *itr;
+
+                Font::Glyph* glyph = activefont->getGlyph(charcode);
+                if (glyph)
+                {
+
+                    float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
+                    float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
+                    #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
+	                if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
+	                if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
+                    #endif
+                    if (_layout==RIGHT_TO_LEFT)
+                    {
+                        cursor.x() -= glyph->getHorizontalAdvance() * wr;
+                    }
+
+                    // adjust cursor position w.r.t any kerning.
+                    if (kerning && previous_charcode)
+                    {
+                        switch(_layout)
+                        {
+                          case LEFT_TO_RIGHT:
+                          {
+                            osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
+                            cursor.x() += delta.x() * wr;
+                            cursor.y() += delta.y() * hr;
+                            break;
+                          }
+                          case RIGHT_TO_LEFT:
+                          {
+                            osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
+                            cursor.x() -= delta.x() * wr;
+                            cursor.y() -= delta.y() * hr;
+                            break;
+                          }
+                          case VERTICAL:
+                            break; // no kerning when vertical.
+                        }
+                    }
+
+                    local = cursor;
+
+
+                    osg::Vec2 bearing(horizontal?glyph->getHorizontalBearing():glyph->getVerticalBearing());
+                    local.x() += bearing.x() * wr;
+                    local.y() += bearing.y() * hr;
+
+
+                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
+
+                    glyphquad._glyphs.push_back(glyph);
+
+                    // set up the coords of the quad
+                    glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
+                    glyphquad._coords.push_back(local+osg::Vec2(0.0f,0.0f));
+                    glyphquad._coords.push_back(local+osg::Vec2(width,0.0f));
+                    glyphquad._coords.push_back(local+osg::Vec2(width,height));
+
+                    // set up the tex coords of the quad
+                    const osg::Vec2& mintc = glyph->getMinTexCoord();
+                    const osg::Vec2& maxtc = glyph->getMaxTexCoord();
+
+                    glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),maxtc.y()));
+                    glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),mintc.y()));
+                    glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),mintc.y()));
+                    glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),maxtc.y()));
+
+                    // move the cursor onto the next character.
+                    switch(_layout)
+                    {
+                      case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
+                      case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance() *hr; break;
+                      case RIGHT_TO_LEFT: break; // nop.
+                    }
+
+                    previous_charcode = charcode;
+
+                }
+            }
+        }
+        else
+        {
+            ++itr;
+        }
+                                
+        if (itr!=_text.end())
+        {
+            // skip over return.
+            if (*itr=='\n') ++itr;
+        }
+                
+        // move to new line.
+        switch(_layout)
+        {
+          case LEFT_TO_RIGHT:
+          {
+            startOfLine.y() -= _characterHeight;
+            cursor = startOfLine;
+            previous_charcode = 0;
+            break;
+          }
+          case RIGHT_TO_LEFT:
+          {
+            startOfLine.y() -= _characterHeight;
+            cursor = startOfLine;
+            previous_charcode = 0;
+            break;
+          }
+          case VERTICAL:
+          {
+            startOfLine.x() += _characterHeight/_characterAspectRatio;
+            cursor = startOfLine;
+            previous_charcode = 0;
+          }
+          break;
+        }
+
     }
 
     _textBB.init();
@@ -441,7 +547,207 @@ void Text::computeGlyphRepresentation()
     computePositions();
 }
 
+#else
 
+        void Text::computeGlyphRepresentation()
+        {
+            Font* activefont = getActiveFont();
+            if (!activefont) return;
+
+            _textureGlyphQuadMap.clear();
+
+            if (_text.empty()) 
+	        {
+	            _textBB.set(0,0,0,0,0,0);//no size text
+	            computePositions(); //to reset the origin
+		        return;
+	        }
+
+            osg::Vec2 startOfLine(0.0f,0.0f);
+            osg::Vec2 cursor(startOfLine);
+            osg::Vec2 local(0.0f,0.0f);
+
+            unsigned int previous_charcode = 0;
+            bool horizontal = _layout!=VERTICAL;
+            bool kerning = true;
+
+            activefont->setSize(_fontWidth,_fontHeight);
+
+            float hr = _characterHeight/(float)activefont->getHeight();
+            float wr = hr/_characterAspectRatio;
+
+            for(String::iterator itr=_text.begin();
+                itr!=_text.end();
+                ++itr)
+            {
+                unsigned int charcode = *itr;
+
+                if (charcode=='\n')
+                {
+                    if (horizontal) startOfLine.y() -= _characterHeight;
+                    else startOfLine.x() += _characterHeight;
+                    cursor = startOfLine;
+                    previous_charcode = 0;
+                    continue;
+                }
+
+
+                Font::Glyph* glyph = activefont->getGlyph(charcode);
+                if (glyph)
+                {
+
+                    float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
+                    float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
+                    #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
+	                if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
+	                if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
+                    #endif
+                    if (_layout==RIGHT_TO_LEFT)
+                    {
+                        cursor.x() -= glyph->getHorizontalAdvance() * wr;
+                    }
+
+                    // adjust cursor position w.r.t any kerning.
+                    if (kerning && previous_charcode)
+                    {
+                        switch(_layout)
+                        {
+                          case LEFT_TO_RIGHT:
+                          {
+                            osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
+                            cursor.x() += delta.x() * wr;
+                            cursor.y() += delta.y() * hr;
+                            break;
+                          }
+                          case RIGHT_TO_LEFT:
+                          {
+                            osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
+                            cursor.x() -= delta.x() * wr;
+                            cursor.y() -= delta.y() * hr;
+                            break;
+                          }
+                          case VERTICAL:
+                            break; // no kerning when vertical.
+                        }
+                    }
+
+                    local = cursor;
+
+
+                    osg::Vec2 bearing(horizontal?glyph->getHorizontalBearing():glyph->getVerticalBearing());
+                    local.x() += bearing.x() * wr;
+                    local.y() += bearing.y() * hr;
+
+                    // check to see if we are still within line if not move to next line.
+                    switch(_layout)
+                    {
+                      case LEFT_TO_RIGHT:
+                      {
+                        if (_maximumWidth>0.0f)
+                        {
+                            if (local.x()+width>_maximumWidth)
+                            {
+                                startOfLine.y() -= _characterHeight;
+                                cursor = startOfLine;
+                                previous_charcode = 0;
+
+                                local = cursor;
+                                local.x() += bearing.x() * wr;
+                                local.y() += bearing.y() * hr;
+                            }
+                        }
+                        break;
+                      }
+                      case RIGHT_TO_LEFT:
+                      {
+                        if (_maximumWidth>0.0f)
+                        {
+                            if (local.x()<-_maximumWidth)
+                            {
+                                startOfLine.y() -= _characterHeight;
+                                cursor = startOfLine;
+                                previous_charcode = 0;
+
+                                local = cursor;
+                                local.x() += bearing.x() * wr;
+                                local.y() += bearing.y() * hr;
+                            }
+        ;                }
+                        break;
+                      }
+                      case VERTICAL:
+                        if (_maximumHeight>0.0f)
+                        {
+                            if (local.y()<-_maximumHeight)
+                            {
+                                startOfLine.x() += _characterHeight/_characterAspectRatio;
+                                cursor = startOfLine;
+                                previous_charcode = 0;
+
+                                local = cursor;
+                                local.x() += bearing.x() * wr;
+                                local.y() += bearing.y() * hr;
+                            }
+                        }
+                        break;
+                    }
+
+                    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
+
+                    glyphquad._glyphs.push_back(glyph);
+
+                    // set up the coords of the quad
+                    glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
+                    glyphquad._coords.push_back(local+osg::Vec2(0.0f,0.0f));
+                    glyphquad._coords.push_back(local+osg::Vec2(width,0.0f));
+                    glyphquad._coords.push_back(local+osg::Vec2(width,height));
+
+                    // set up the tex coords of the quad
+                    const osg::Vec2& mintc = glyph->getMinTexCoord();
+                    const osg::Vec2& maxtc = glyph->getMaxTexCoord();
+
+                    glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),maxtc.y()));
+                    glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),mintc.y()));
+                    glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),mintc.y()));
+                    glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),maxtc.y()));
+
+                    // move the cursor onto the next character.
+                    switch(_layout)
+                    {
+                      case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
+                      case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance() *hr; break;
+                      case RIGHT_TO_LEFT: break; // nop.
+                    }            
+                }
+
+                previous_charcode = charcode;
+            }
+
+            _textBB.init();
+
+            for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+                titr!=_textureGlyphQuadMap.end();
+                ++titr)
+            {
+                const GlyphQuads& glyphquad = titr->second;
+
+                for(GlyphQuads::Coords2::const_iterator citr = glyphquad._coords.begin();
+                    citr != glyphquad._coords.end();
+                    ++citr)
+                {
+                    _textBB.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f));
+                }
+            }
+
+            if (!_textureGlyphQuadMap.empty()) 
+            {
+                setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
+            }
+
+            computePositions();
+        }
+
+#endif
 void Text::computePositions()
 {
     for(unsigned int i=0;i<_autoTransformCache.size();++i)

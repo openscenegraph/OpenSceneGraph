@@ -203,7 +203,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             void setCoordinateSystemPolicy(ParameterPolicy policy) { _coordinateSystemPolicy = policy; }
             ParameterPolicy getCoordinateSystemPolicy() const { return _coordinateSystemPolicy; }
 
-            void setCoordinateSystem(const std::string& wellKnownText) { _cs = new osg::CoordinateSystemNode(wellKnownText); }
+            void setCoordinateSystem(const std::string& wellKnownText) { _cs = new osg::CoordinateSystemNode("WKT",wellKnownText); }
             void setCoordinateSystem(osg::CoordinateSystemNode* cs) { _cs = cs; }
             osg::CoordinateSystemNode* getCoordinateSystem() { return  _cs.get(); }
 
@@ -859,11 +859,11 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void setDefaultColor(const osg::Vec4& defaultColor) { _defaultColor = defaultColor; }
         const osg::Vec4& getDefaultColor() const { return _defaultColor; }
 
-        void setDestinationCoordinateSystem(const std::string& wellKnownText) { setDestinationCoordinateSystem(new osg::CoordinateSystemNode(wellKnownText)); }
+        void setDestinationCoordinateSystem(const std::string& wellKnownText) { setDestinationCoordinateSystem(new osg::CoordinateSystemNode("WKT",wellKnownText)); }
         void setDestinationCoordinateSystem(osg::CoordinateSystemNode* cs) { _destinationCoordinateSystem = cs; }
         osg::CoordinateSystemNode* getDestinationCoordinateSystem() { return _destinationCoordinateSystem .get(); }
         
-        void setIntermediateCoordinateSystem(const std::string& wellKnownText) { setIntermediateCoordinateSystem(new osg::CoordinateSystemNode(wellKnownText)); }
+        void setIntermediateCoordinateSystem(const std::string& wellKnownText) { setIntermediateCoordinateSystem(new osg::CoordinateSystemNode("WKT",wellKnownText)); }
         void setIntermediateCoordinateSystem(osg::CoordinateSystemNode* cs) { _intermediateCoordinateSystem = cs; }
         osg::CoordinateSystemNode* getIntermediateCoordinateSystem() { return _intermediateCoordinateSystem.get(); }
 

@@ -161,6 +161,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     flushMouseEventStack();
 
+    computeLocalDataFromCamera();
 }
 
 
@@ -258,6 +259,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
 
+    computeLocalDataFromCamera();
 }
 
 
@@ -369,6 +371,59 @@ void DriveManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
+void DriveManipulator::computeLocalDataFromCamera()
+{
+    // maths from gluLookAt/osg::Matrix::makeLookAt
+    osg::Vec3 f(_camera->getCenterPoint()-_camera->getEyePoint());
+    f.normalize();
+    osg::Vec3 s(f^_camera->getUpVector());
+    s.normalize();
+    osg::Vec3 u(s^f);
+    u.normalize();
+
+    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+                                s[1],     u[1],     -f[1],     0.0f,
+                                s[2],     u[2],     -f[2],     0.0f,
+                                0.0f,     0.0f,     0.0f,      1.0f);
+                   
+    _eye = _camera->getEyePoint();
+    _distance = _camera->getLookDistance();
+    _rotation.set(rotation_matrix);
+    _rotation = _rotation.inverse();
+     
+}
+
+void DriveManipulator::computeCameraFromLocalData()
+{
+    osg::Matrix new_rotation;
+    new_rotation.makeRotate(_rotation);
+    
+    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * new_rotation;
+    osg::Vec3 center = (osg::Vec3(0.0f,0.0f,-_distance) * new_rotation) + _eye;
+
+    _camera->setLookAt(_eye,center,up);
+}
+
+void DriveManipulator::computeCameraFromLocalData(const osg::Vec3& lv,const osg::Vec3& up)
+{
+    osg::Vec3 f(lv);
+    f.normalize();
+    osg::Vec3 s(f^up);
+    s.normalize();
+    osg::Vec3 u(s^f);
+    u.normalize();
+    
+    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+                                s[1],     u[1],     -f[1],     0.0f,
+                                s[2],     u[2],     -f[2],     0.0f,
+                                0.0f,     0.0f,     0.0f,      1.0f);
+                   
+    _rotation.set(rotation_matrix);
+    _rotation = _rotation.inverse();
+    
+    computeCameraFromLocalData();
+}
+
 
 bool DriveManipulator::calcMovement()
 {
@@ -421,36 +476,29 @@ bool DriveManipulator::calcMovement()
         }
     }
 
-    // rotate the camera.
-    osg::Vec3 center = _camera->getEyePoint();
-    osg::Vec3 uv = _camera->getUpVector();
+    osg::Matrix rotation_matrix;
+    rotation_matrix.makeRotate(_rotation);
+    
+    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * rotation_matrix;
+    osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f) * rotation_matrix;
 
+    // rotate the camera.
     float mx = (_ga_t0->getXmin()+_ga_t0->getXmax())/2.0f;
 
     float dx = _ga_t0->getX()-mx;
 
     float yaw = -inDegrees(dx*0.1f*dt);
 
-    osg::Matrix mat;
-    mat.makeTranslate(-center.x(),-center.y(),-center.z());
-    mat *= Matrix::rotate(yaw,uv.x(),uv.y(),uv.z());
-    mat *= Matrix::translate(center.x(),center.y(),center.z());
+    osg::Quat yaw_rotation;
+    yaw_rotation.makeRotate(yaw,up);
 
-    center = _camera->getEyePoint();
-    uv = _camera->getUpVector();
-
-    _camera->transformLookAt(mat);
-
-    // get the new forward (look) vector.
-    osg::Vec3 sv = _camera->getSideVector();
-    osg::Vec3 lv = _camera->getCenterPoint()-_camera->getEyePoint();
-    float lookDistance = lv.length();
-    lv.normalize();
+    _rotation *= yaw_rotation;
+    rotation_matrix.makeRotate(_rotation);
+    osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f) * rotation_matrix;
 
     // movement is big enough the move the eye point along the look vector.
     if (fabsf(_velocity*dt)>1e-8)
     {
-        osg::Vec3 ep = _camera->getEyePoint();
         float distanceToMove = _velocity*dt;
 
         float signedBuffer;
@@ -460,7 +508,7 @@ bool DriveManipulator::calcMovement()
         // check to see if any obstruction in front.
         osgUtil::IntersectVisitor iv;
         osg::ref_ptr<osg::LineSegment> segForward = osgNew osg::LineSegment;
-        segForward->set(ep,ep+lv*(signedBuffer+distanceToMove));
+        segForward->set(_eye,_eye+lv*(signedBuffer+distanceToMove));
         iv.addLineSegment(segForward.get());
 
         _node->accept(iv);
@@ -472,15 +520,15 @@ bool DriveManipulator::calcMovement()
             {
                 //                notify(INFO) << "Hit obstruction"<< std::endl;
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-                distanceToMove = (ip-ep).length()-_buffer;
+                distanceToMove = (ip-_eye).length()-_buffer;
                 _velocity = 0.0f;
             }
 
         }
 
         // check to see if forward point is correct height above terrain.
-        osg::Vec3 fp = ep+lv*distanceToMove;
-        osg::Vec3 lfp = fp-uv*_height*5;
+        osg::Vec3 fp = _eye+lv*distanceToMove;
+        osg::Vec3 lfp = fp-up*_height*5;
 
         iv.reset();
 
@@ -499,15 +547,13 @@ bool DriveManipulator::calcMovement()
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
                 osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
-                if (uv*np>0.0f) uv = np;
-                else uv = -np;
+                if (up*np>0.0f) up = np;
+                else up = -np;
 
-                ep = ip+uv*_height;
-                lv = uv^sv;
-                osg::Vec3 lp = ep+lv*lookDistance;
+                _eye = ip+up*_height;
+                lv = up^sv;
 
-                _camera->setLookAt(ep,lp,uv);
-                _camera->ensureOrthogonalUpVector();
+                computeCameraFromLocalData(lv,up);
 
                 return true;
 
@@ -538,15 +584,13 @@ bool DriveManipulator::calcMovement()
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
                 osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
-                if (uv*np>0.0f) uv = np;
-                else uv = -np;
+                if (up*np>0.0f) up = np;
+                else up = -np;
 
-                ep = ip+uv*_height;
-                lv = uv^sv;
-                osg::Vec3 lp = ep+lv*lookDistance;
+                _eye = ip+up*_height;
+                lv = up^sv;
 
-                _camera->setLookAt(ep,lp,uv);
-                _camera->ensureOrthogonalUpVector();
+                computeCameraFromLocalData(lv,up);
 
                 return true;
             }
@@ -555,13 +599,13 @@ bool DriveManipulator::calcMovement()
         // no collision with terrain has been found therefore track horizontally.
 
         lv *= (_velocity*dt);
-        ep += lv;
-        osg::Vec3 lp = _camera->getCenterPoint()+lv;
+        
+        _eye += lv;
 
-        _camera->setLookAt(ep,lp,uv);
-        _camera->ensureOrthogonalUpVector();
 
     }
+
+    computeCameraFromLocalData();
 
     return true;
 }

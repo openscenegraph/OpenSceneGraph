@@ -46,14 +46,14 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
+        void computeLocalDataFromCamera();
+
+        void computeCameraFromLocalData();
+
         /** For the give mouse movement calculate the movement of the camera.
             Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
         
-        void computeLocalDataFromCamera();
-        
-        void computeCameraFromLocalData();
-
         void trackball(osg::Vec3& axis,float& angle, float p1x, float p1y, float p2x, float p2y);
         float tb_project_to_sphere(float r, float x, float y);
 

@@ -1176,7 +1176,9 @@ Geometry* GeoSet::convertToGeometry()
 
     if (_needprimlen)
     {
-        geom->addPrimitiveSet(new DrawArrayLengths((GLenum)_oglprimtype,0, _primLengths, _primLengths+_numprims ));
+        DrawArrayLengths* primitives = new DrawArrayLengths((GLenum)_oglprimtype);
+        primitives->insert(primitives->end(), _primLengths, _primLengths+_numprims );
+        geom->addPrimitiveSet(primitives);
     }
     else
     {

@@ -37,6 +37,21 @@ struct TriangleAcumulatorFunctor
 void TriStripVisitor::stripify(Geometry& geom)
 {
 
+
+    if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+        geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+
+    if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+        geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+    
+    if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+        geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+
+    if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+        geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
+
+
+
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;
 
@@ -118,7 +133,8 @@ void TriStripVisitor::stripify(Geometry& geom)
             itr!=outPrimitives.end();
             ++itr)
         {
-            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(itr->m_Type,itr->m_Indices.begin(),itr->m_Indices.end());
+            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(itr->m_Type);
+            elements->insert(elements->end(),itr->m_Indices.begin(),itr->m_Indices.end());
             new_primitives.push_back(elements);
         }
 

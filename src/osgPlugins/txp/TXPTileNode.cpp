@@ -125,10 +125,31 @@ osg::Node* TXPTileNode::seamReplacement(osg::Node* child,int x, int y, int level
                     }
                 }
             
-                TXPSeamLOD* seam = new TXPSeamLOD(x,y,level,lod1->getCenter(),lod2->getMinRange(0),lod2->getMaxRange(0),lod1->getMaxRange(0));
+ //                std::cout<<"seamReplacement lod1 min="<<lod1->getMinRange(0)<<" max="<<lod1->getMaxRange(0)<<std::endl;
+//                 std::cout<<"                lod2 min="<<lod2->getMinRange(0)<<" max="<<lod2->getMaxRange(0)<<std::endl;
+                
+                if (lod1->getMaxRange(0)<lod2->getMaxRange(0))
+                {
+//                     std::cout<<"   lod1 is high res, lod2 is low res."<<std::endl;
+                }
+                else if (lod1->getMaxRange(0)==lod2->getMaxRange(0))
+                {
+//                     std::cout<<"   lod1 and lod2 range equal. ****************"<<std::endl;
+                    // don't replace with seam LOD node, leave as a standard LOD.
+                    return 0;
+                }
+                else
+                {
+//                     std::cout<<"   lod1 is low res, lod2 is high res. --------------"<<std::endl;
+                    // don't replace with seam LOD node, leave as a standard LOD
+                    return 0;
+                }
+                
+            
+                TXPSeamLOD* seam = new TXPSeamLOD(x,y,level,lod1->getCenter(),lod1->getMinRange(0),lod1->getMaxRange(0),lod2->getMaxRange(0));
                 seam->setArchive(_archive);
-                seam->addChild(lod1->getChild(0));
-                seam->addChild(lod2->getChild(0));
+                seam->addChild(lod1->getChild(0)); // high res
+                seam->addChild(lod2->getChild(0)); // low res
                 return seam;
             }
         }

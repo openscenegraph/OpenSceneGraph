@@ -24,7 +24,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
 }}}
 
@@ -40,7 +40,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
 }}}
 
@@ -55,10 +55,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -73,13 +73,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -94,16 +94,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -118,16 +118,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -142,16 +142,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -166,16 +166,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -190,16 +190,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -214,16 +214,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -238,19 +238,19 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgText
+    Project_Dep_Name Core osgText
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
 }}}
 ###############################################################################
@@ -264,16 +264,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -288,13 +288,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -309,16 +309,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -333,16 +333,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -357,16 +357,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -381,16 +381,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -405,16 +405,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgGLUT
+    Project_Dep_Name Core osgGLUT
     End Project Dependency
 }}}
 
@@ -429,10 +429,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -447,10 +447,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -465,10 +465,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -483,13 +483,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
 }}}
 
@@ -504,10 +504,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -522,10 +522,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -540,10 +540,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -558,10 +558,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -576,13 +576,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgUtil
+    Project_Dep_Name Core osgUtil
     End Project Dependency
 }}}
 
@@ -597,10 +597,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -615,10 +615,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -633,10 +633,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -651,10 +651,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -669,10 +669,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -687,10 +687,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -705,10 +705,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -723,10 +723,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -741,10 +741,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 
@@ -759,10 +759,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name osg
+    Project_Dep_Name Core osg
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name osgDB
+    Project_Dep_Name Core osgDB
     End Project Dependency
 }}}
 

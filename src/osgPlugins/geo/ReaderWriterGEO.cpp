@@ -1923,4 +1923,3 @@ void internalVars::update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp) {
 // now register with Registry to instantiate the above
 // reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterGEO> gReaderWriter_GEO_Proxy;
-ÿÿ

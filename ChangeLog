@@ -1,3 +1,296 @@
+2002-04-25 07:30  robert
+
+	* src/osgPlugins/obj/: ReaderWriterOBJ.cpp, glm.cpp, glm.h: Fixes
+	to .obj plugin from gideon.
+
+2002-04-25 07:29  robert
+
+	* AUTHORS: Added Bob to the AUTHORS list for his efforts on MacOSX.
+
+2002-04-25 06:46  robert
+
+	* Make/debugtests.bat, src/Demos/osgtexture/osgtexture.cpp: A more
+	verbose version of the test script, using each and more
+	memleaks.log to print out progress and report any memory leaks
+	which have been logged.  The later will only occur with a debug
+	build.	The use of echo and more makes this version osgtest.bat not
+	portable to windows unfortuntately.
+
+2002-04-25 06:14  robert
+
+	* doc/plan.html: Added another bullet point to the plan.
+
+2002-04-25 06:10  robert
+
+	* ChangeLog.preCVS, FAQ, TODO: Removed these old files that do
+	little in the context of the current OpenSceneGraph disitribution
+	apart from clogs things up!
+
+2002-04-25 06:07  robert
+
+	* index.html, doc/contents.html, doc/data.html, doc/demos.html,
+	doc/dependencies.html, doc/documentation.html, doc/index.html,
+	doc/install.html, doc/introduction.html, doc/plan.html,
+	doc/sgv.html, doc/stereo.html: Add doc/plan.html and links to it
+	from the rest of the docs.
+
+2002-04-25 04:54  robert
+
+	* src/osg/Texture.cpp: Fixed compile problem under VisualStudio.
+
+2002-04-25 03:47  robert
+
+	* doc/introduction.html: Fixed relative path for image.
+
+2002-04-25 03:29  robert
+
+	* doc/demos.html: Updated demos documentation.
+
+2002-04-25 02:27  robert
+
+	* doc/: introduction.html, images/osgtext.jpg, images/osgviews.jpg:
+	Fixed spellings in introduction.html, and update osgtext and
+	osgviews images.
+
+2002-04-25 01:43  robert
+
+	* doc/images/OpenSceneGraphBanner_Distribution.jpg: Added back in
+	as binary file.
+
+2002-04-25 01:42  robert
+
+	* doc/images/OpenSceneGraphBanner_Distribution.jpg: Temporily
+	removing to change it to a binary file.
+
+2002-04-24 16:57  robert
+
+	* src/osgPlugins/dx/Makefile: Merged Bob's changes for MacOSX
+	build. This change is simply the addition of GLUT_LIB to the link
+	line.  This change should be removed once we fixed the OSG_LIBS so
+	that it doens't include osgGLUT, however, I'll leave this for
+	another day...
+
+2002-04-24 16:36  robert
+
+	* src/osg/Texture.cpp: Fix for MacOSX build, making sure that the
+	compresed tex image is defined on all builds by removing the
+	#ifdef's but then changing the name used in the typedef so it
+	doesn't collide with local implementations.
+
+2002-04-24 16:32  robert
+
+	* doc/doc++/: osgText/META_Font.html,
+	osgUtil/CombineLODsVisitor.html, osgUtil/CullViewState.html,
+	osgUtil/CullVisitor.html, osgUtil/DepthSortedBin.html,
+	osgUtil/DisplayListVisitor.html,
+	osgUtil/DisplayRequirementsVisitor.html,
+	osgUtil/DriveManipulator.html,
+	osgUtil/FlattenStaticTransformsVisitor.html,
+	osgUtil/FlightManipulator.html, osgUtil/GUIActionAdapter.html,
+	osgUtil/GUIEventAdapter.html, osgUtil/GUIEventHandler.html,
+	osgUtil/General.html, osgUtil/HIER.html, osgUtil/HIERjava.html,
+	osgUtil/Hit.html, osgUtil/InsertImpostorsVisitor.html,
+	osgUtil/IntersectState.html, osgUtil/IntersectVisitor.html,
+	osgUtil/Optimizer.html, osgUtil/RegisterRenderBinProxy.html,
+	osgUtil/RemoveRedundentNodesVisitor.html, osgUtil/RenderBin.html,
+	osgUtil/RenderGraph.html, osgUtil/RenderLeaf.html,
+	osgUtil/RenderStage.html, osgUtil/RenderStageLighting.html,
+	osgUtil/RenderToTextureStage.html, osgUtil/SceneView.html,
+	osgUtil/SceneViewManipulator.html, osgUtil/SmoothingVisitor.html,
+	osgUtil/StateSetManipulator.html, osgUtil/StateVisitor.html,
+	osgUtil/Tesselator.html, osgUtil/TrackballManipulator.html,
+	osgUtil/TransformCallback.html, osgUtil/TriStripVisitor.html,
+	osgUtil/index.html, osgUtil/osgUtil.html: Updated doc++ docs once
+	more.
+
+2002-04-24 16:24  robert
+
+	* include/osgUtil/CullViewState, include/osgUtil/CullVisitor,
+	src/Demos/osgtext/main.cpp, src/osgGLUT/Viewer.cpp,
+	src/osgUtil/CullViewState.cpp, src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/Makefile, VisualStudio/osgUtil/osgUtil.dsp: Removed
+	CullViewState from the distribution, moved
+	CullViewState::CullingMode into CullVisitor, and then removed all
+	references to CullViewState from other parts of the scene graph.
+
+2002-04-24 16:13  robert
+
+	* doc/doc++/osg/: AlphaFunc.html, AnimationPath.html, Camera.html,
+	ClipPlane.html, ClippingVolume.html, ColorMask.html,
+	ColorMatrix.html, CopyOp.html, CullFace.html, Depth.html,
+	DisplaySettings.html, DrawPixels.html, Drawable.html, Fog.html,
+	FrontFace.html, General.html, GeoSet.html, HIER.html,
+	HIERjava.html, Image.html, Impostor.html, ImpostorSprite.html,
+	Light.html, LightModel.html, LineStipple.html, LineWidth.html,
+	META_Object.html, Material.html, Matrix.html, NodeAcceptOp.html,
+	NodeCallback.html, NodeVisitor.html, NotifySeverity.html,
+	Object.html, Plane.html, Point.html, PolygonMode.html,
+	PolygonOffset.html, PositionAttitudeTransform.html,
+	Projection.html, Quat.html, Referenced.html, ShadeModel.html,
+	State.html, StateAttribute.html, StateSet.html, Statistics.html,
+	Stencil.html, Switch.html, TexEnv.html, TexGen.html, TexMat.html,
+	Texture.html, TextureCubeMap.html, Timer.html, Transform.html,
+	Transparency.html, Vec2.html, Vec3.html, Vec4.html, Viewport.html,
+	clampArray3BetweenRange.html, clampArray3GEQUAL.html,
+	clampArray3LEQUAL.html, clampArray4BetweenRange.html,
+	clampArray4GEQUAL.html, clampArray4LEQUAL.html,
+	clampArrayElementBetweenRange.html, clampArrayElementGEQUAL.html,
+	clampArrayElementLEQUAL.html, clampArrayElementsBetweenRange.html,
+	clampArrayElementsGEQUAL.html, clampArrayElementsLEQUAL.html,
+	clampBetweenRange.html, clampGEQUAL.html, clampLEQUAL.html,
+	for_each_triangle.html, index.html, osg.html,
+	osgGetLibraryName.html, osgGetVersion.html, ref_ptr.html,
+	tag_au.html: Updateds doc++ documention.
+
+2002-04-24 16:04  robert
+
+	* Make/makedefs, src/osg/GLExtensions.cpp,
+	src/osgPlugins/quicktime/Makefile: Changes for Mac OSX build, sent
+	in by Bob Kuehne
+
+2002-04-24 10:52  robert
+
+	* include/osg/MemoryManager, src/osg/MemoryManager.cpp,
+	src/osg/Notify.cpp, src/osgDB/FileUtils_Mac.cpp,
+	src/osgDB/FileUtils_Unix.cpp, src/osgDB/FileUtils_Windows.cpp:
+	Removed the use of __FUNCTION__ from MemoryManager to remove
+	problems with VisualStudio .NET compile.
+	
+	Added support for OSG_NOTIFY_LEVEL and OSG_FILE_PATH into the
+	relevant getenv routines.  This compliments the exisiting
+	OSGNOTIFYLEVEL & OSGFILEPATH which are deprecated but still
+	supported.  The OSG_ version are more consistent with the rest of
+	the env variables used in the OSG.
+
+2002-04-24 10:14  robert
+
+	* README, index.html, doc/contents.html, doc/data.html,
+	doc/demos.html, doc/dependencies.html, doc/documentation.html,
+	doc/index.html, doc/install.html, doc/introduction.html,
+	doc/sgv.html, doc/stereo.html: Updates to the documentation.
+
+2002-04-24 09:08  robert
+
+	* doc/: OpenSceneGraphBanner_Distribution.jpg, contents.html,
+	data.html, demos.html, dependencies.html, documentation.html,
+	index.html, install.html, introduction.html, stereo.html,
+	images/OpenSceneGraphBanner_Distribution.jpg: Moved
+	doc/OpenSceneGraphBanner_Distribution.jpg to doc/images/ to tidy up
+	the doc directory.
+
+2002-04-24 09:04  robert
+
+	* doc/: contents.html, demos.html, documentation.html,
+	introduction.html, images/hangglide.jpg, images/osgbillboard.jpg,
+	images/osgcube.jpg, images/osghud.jpg, images/osgimpostor.jpg,
+	images/osgreflect.jpg, images/osgscribe.jpg,
+	images/osgstereoimage.jpg, images/osgtext.jpg,
+	images/osgtexture.jpg, images/osgviews.jpg, images/sgv_cow.jpg,
+	images/sgv_stereo.jpg: Futher work on documentation - added
+	seperate context.html, a new demos.html directory and moved the
+	previous doc/index.html to doc/documentation.html.
+
+2002-04-24 04:49  robert
+
+	* Makefile, include/osg/Version, src/Makefile, src/Demos/Makefile,
+	src/osgDB/FileUtils_Unix.cpp, src/osgPlugins/Makefile: Fix for the
+	Cygwin build related to the new FileUtils_Unix not using the
+	Windows PATH environmental variable for searching for libraries. 
+	Sent in by Norman Vine.
+	
+	Reoder of the makedefs/makedirdefs to fix Mac OSX compilation. Sent
+	in by Bob Kuehne.
+
+2002-04-23 18:04  robert
+
+	* doc/install.html: Updated the docs on compiling under Windows.
+
+2002-04-23 11:04  robert
+
+	* VisualStudio/: Demos/hangglide/hangglide.dsp,
+	Demos/osgbillboard/osgbillboard.dsp, Demos/osgconv/osgconv.dsp,
+	Demos/osgcopy/osgcopy.dsp, Demos/osgcube/osgcube.dsp,
+	Demos/osghud/osghud.dsp, Demos/osgimpostor/osgimpostor.dsp,
+	Demos/osgreflect/osgreflect.dsp, Demos/osgscribe/osgscribe.dsp,
+	Demos/osgstereoimage/osgstereoimage.dsp,
+	Demos/osgtext/osgtextdemo.dsp, Demos/osgtexture/osgtexture.dsp,
+	Demos/osgversion/osgversion.dsp, Demos/osgviews/osgviews.dsp,
+	Demos/sgv/sgv.dsp, osg/osg.dsp, osgDB/osgDB.dsp,
+	osgGLUT/osgGLUT.dsp, osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp,
+	osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
+	osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
+	osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
+	osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
+	osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
+	osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
+	osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
+	osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
+	Added OSG_USE_MEMORY_MANAGER to Windows debug build
+
+2002-04-23 11:01  robert
+
+	* src/osgDB/FileUtils_Windows.cpp: Fixed compilation problem
+	associated wirh moving FileUtils source out into seperate files.
+
+2002-04-23 10:58  robert
+
+	* src/osg/Image.cpp: Fixed ordering of paramters in osg::Image
+	constructor to remove warning.
+
+2002-04-23 09:59  robert
+
+	* src/osgDB/: FileUtils.cpp, FileUtils_Mac.cpp, FileUtils_Unix.cpp,
+	FileUtils_Windows.cpp: Seperated out the platform specific
+	implementions of the file search/access routines - we now have
+	FileUtils_Windows.cpp, FileUtils_Mac.cpp and FileUtils_Unix.cpp. 
+	The FileUtils_Mac.cpp is based on code submitted by Josh Portway
+	and add uses the carbon API for searching for files.
+
+2002-04-23 09:12  robert
+
+	* doc/introduction.html: Addtional details on the OpenSceneGraph
+	and support.
+
+2002-04-23 07:03  robert
+
+	* src/osg/Notify.cpp: Changed the Windows gauard around so that it
+	only works for VisualStudio and not Cygwin/Mingw.
+
+2002-04-23 07:02  robert
+
+	* src/osgPlugins/txp/TrPageArchive.cpp: Added a pragma to get round
+	a VisualStudio warning that I couldn't fix in any easy way.
+
+2002-04-23 06:55  robert
+
+	* src/: Demos/osgbillboard/osgbillboard.cpp,
+	osgPlugins/rgb/ReaderWriterRGB.cpp: Added an imageList.clear() to
+	osgbillboard so that its memory would be cleared before entering
+	the viewer main loop, this removes memorymanager a reported memory
+	leak due to the viewer using exit() which bypasses the clean up on
+	main itself.
+	
+	Added an osgNew to the ReaderWriterRGB.cpp to aid detected of
+	tracking of memory leaks.
+
+2002-04-23 06:34  robert
+
+	* include/osg/Image: Fixed compile problems under VisualStudio
+	w.r.t  the new additions for precompiled mipmaps.  Changed
+	std::size_t to unsigned int.
+
+2002-04-23 05:06  robert
+
+	* src/osg/Texture.cpp: Replaced texture compression extension
+	define so that its #ifndef guard used GL_ARB_texture_compression as
+	natured intended.
+
+2002-04-23 04:40  robert
+
+	* ChangeLog: Updated ChangeLog in preperation for the 0.8.45
+	release.
+
 2002-04-23 04:34  robert
 
 	* NEWS: Added to the NEWS file.

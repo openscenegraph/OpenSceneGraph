@@ -333,19 +333,24 @@ void Texture::dirtyTextureParameters()
 
 void Texture::computeInternalFormatWithImage(const osg::Image& image) const
 {
-    const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same paramters for each graphics context...
-    const Extensions* extensions = getExtensions(contextID,true);
-
-//    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
-//    static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
-
     GLint internalFormat = image.getInternalTextureFormat();
-    switch(_internalFormatMode)
-    {
-        case(USE_IMAGE_DATA_FORMAT):
-            internalFormat = image.getInternalTextureFormat();
-            break;
 
+    if (_internalFormatMode==USE_IMAGE_DATA_FORMAT)
+    {
+        internalFormat = image.getInternalTextureFormat();
+    }
+    else if (_internalFormatMode==USE_USER_DEFINED_FORMAT)
+    {
+        internalFormat = _internalFormat;
+    }
+    else
+    {
+
+        const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same paramters for each graphics context...
+        const Extensions* extensions = getExtensions(contextID,true);
+
+        switch(_internalFormatMode)
+        {
         case(USE_ARB_COMPRESSION):
             if (extensions->isTextureCompressionARBSupported())
             {
@@ -411,10 +416,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
             else internalFormat = image.getInternalTextureFormat();
             break;
 
-        case(USE_USER_DEFINED_FORMAT):
-            internalFormat = _internalFormat;
-            break;
-
+        }
     }
     
     _internalFormat = internalFormat;

@@ -267,7 +267,11 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
             case EXTERNAL_REFERENCE_OP:
                 osgPrim = visitExternal(osgParent, (ExternalRecord*)child);
                 break;
-
+            case ROAD_CONSTRUCTION_OP:
+                // treat road construction record as a group record for now
+                osgPrim = visitRoadConstruction(osgParent, (GroupRecord*)child);
+                break;
+        
             #ifdef _DEBUG
             
             default:

@@ -32,10 +32,6 @@ Output::Output(const char* name) : ofstream(name)
     _filename = name;
 }
 
-Output::Output(const Output&) : ofstream() {}
-
-Output& Output::operator = (const Output&) { return *this; }
-
 Output::~Output()
 {
 }

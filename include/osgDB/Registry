@@ -71,7 +71,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         std::string createLibraryNameForFile(const std::string& fileName);
 
         /** create the platform specific library name associated with file extension.*/
-        std::string createLibraryNameForExt(const std::string& ext);
+        std::string createLibraryNameForExtension(const std::string& ext);
 
         /** create the platform specific library name associated with nodekit library name.*/
         std::string createLibraryNameForNodeKit(const std::string& name);
@@ -81,6 +81,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** close the attached library with specified name.*/
         bool closeLibrary(const std::string& fileName);
 
+        /** get a reader writer which handles specified extension.*/
+        ReaderWriter* getReaderWriterForExtension(const std::string& ext);
+ 
         osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);
 
         osg::Object*         readObject(Input& fr);

@@ -10,6 +10,7 @@ INC     += -I/usr/local/include
 LDFLAGS += -L/usr/local/lib
 
 TARGET_BASENAME = tiff
+include $(TOPDIR)/Make/cygwin_plugin_def
 PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

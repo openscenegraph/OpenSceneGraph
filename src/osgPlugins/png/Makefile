@@ -11,6 +11,7 @@ INC  += -I/usr/local/include\
 LINKARGS += -L/usr/freeware/lib$(ARCH)
 
 TARGET_BASENAME = png
+include $(TOPDIR)/Make/cygwin_plugin_def
 PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

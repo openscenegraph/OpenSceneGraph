@@ -130,24 +130,14 @@ int EncodedText::getNextCharacter(const unsigned char*& charString) const
             }
             break;
         }
-        case(ENCODING_UTF16):
+        default:
         {
-            osg::notify(osg::WARN)<<"Warning: ENCODING_UTF16 not supported yet."<<std::endl;
+            // Should not reach this point unless the encoding is unhandled
+            // ENCODING_UTF16, ENCODING_UTF32 and ENCODING_SIGNATURE should never enter this method
+            osg::notify(osg::FATAL)<<"Error: Invalid string encoding"<<std::endl;    
             break;
         }
-        case(ENCODING_UTF32):
-        {
-            osg::notify(osg::WARN)<<"Warning: ENCODING_UTF32 not supported yet."<<std::endl;
-            break;
-        }
-        case(ENCODING_SIGNATURE):
-        {
-            osg::notify(osg::WARN)<<"Warning: ENCODING_SIGNATURE not supported yet."<<std::endl;
-            break;
-        }
-        
     }
-    osg::notify(osg::FATAL)<<"Error: Invalid string encoding"<<std::endl;    
     return 0;
 }
 

@@ -511,7 +511,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                         for(int j = 3; j < primLength; j+=2 )
                         {
                             op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                            op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                            op(vptr[*(iptr+1)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
                             iptr+=2;
                         }
                         iptr=iend;
@@ -529,7 +529,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                         for(int j = 3; j < primLength; j+=2 )
                         {
                             op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                            op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                            op(vptr[*(iptr+1)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
                             iptr+=2;
                         }
                         iptr=iend;
@@ -547,7 +547,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                     for(int j = 3; j < primLength; j+=2 )
                     {
                         op(*(vptr),*(vptr+1),*(vptr+2));
-                        op(*(vptr),*(vptr+3),*(vptr+2));
+                        op(*(vptr+1),*(vptr+3),*(vptr+2));
                         vptr+=2;
                     }
                     vptr=vend;
@@ -567,7 +567,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                     for(int i=0; i<numPrim; ++i )
                     {
                         op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                        op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                        op(vptr[*(iptr)],vptr[*(iptr+2)],vptr[*(iptr+3)]);
                         iptr+=4;
                     }
                 }
@@ -579,7 +579,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                     for(int i=0; i<numPrim; ++i )
                     {
                         op(vptr[*(iptr)],vptr[*(iptr+1)],vptr[*(iptr+2)]);
-                        op(vptr[*(iptr)],vptr[*(iptr+3)],vptr[*(iptr+2)]);
+                        op(vptr[*(iptr)],vptr[*(iptr+2)],vptr[*(iptr+3)]);
                         iptr+=4;
                     }
                 }
@@ -591,7 +591,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                 for(int i=0; i<numPrim; ++i )
                 {
                     op(*(vptr),*(vptr+1),*(vptr+2));
-                    op(*(vptr),*(vptr+3),*(vptr+2));
+                    op(*(vptr),*(vptr+2),*(vptr+3));
                     vptr+=4;
                 }
             }

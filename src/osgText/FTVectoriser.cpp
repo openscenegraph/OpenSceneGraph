@@ -36,8 +36,20 @@ FTVectoriser::FTVectoriser( FT_Glyph glyph)
     ftOutline = outline->outline;
     
     contourList.reserve( ftOutline.n_contours);
+    
+    
+    for(int i=0;i<4;++i)
+    {
+        for(int j=0;j<4;++j)
+        {
+            bValues[i][j][0]=0.0f;
+            bValues[i][j][1]=0.0f;
+        }
+        ctrlPtArray[i][0]=0.0f;
+        ctrlPtArray[i][1]=0.0f;
+    }
+    
 }
-
 
 FTVectoriser::~FTVectoriser()
 {

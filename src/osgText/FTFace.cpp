@@ -4,13 +4,16 @@
 #include    "FTGL.h"
 
 
-FTFace::FTFace()
-:    charMap(0),
+FTFace::FTFace():
+    charMap(0),
     ftFace(0),
     numCharMaps(0),
     numGlyphs(0),
     err(0)
-{}
+{
+    kernAdvance.x = 0;
+    kernAdvance.y = 0;
+}
 
 
 FTFace::~FTFace()

@@ -7,7 +7,7 @@ CXXFILES =\
 	OrientationConverter.cpp\
 	osgconv.cpp\
 
-LIBS     += -losg -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgProducer -lProducer -losgText -losg -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgconv
 

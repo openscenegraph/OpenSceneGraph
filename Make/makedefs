@@ -132,22 +132,29 @@ ifeq ($(OS),IRIX)
   ARCH              = 32
 ifeq ($(ARCH),64)
     ARCHARGS          = -64
-else
-    ARCHARGS          = -n32
-endif
-  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0 
-  DYNAMICLIBRARYLIB = 
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-  FREETYPE_LIB      = -L/usr/freeware/lib32 -lfreetype
-  GLUT_LIB          = -lglut
-  GL_LIBS           = -lGLU -lGL 
-  X_LIBS            = -lXext -lXi -lXmu -lX11
-  PF_XTRA_LIBS      = -L/usr/lib32/libpfdb   -rpath /usr/lib32/libpfdb \
+    FREETYPE_LIB      = -L/usr/freeware/lib32 -lfreetype
+    PF_XTRA_LIBS      = -L/usr/lib64/libpfdb   -rpath /usr/lib64/libpfdb \
                       -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
                       -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
                       -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
                       -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
                       -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
+else
+    ARCHARGS          = -n32
+    FREETYPE_LIB      = -L/usr/freeware/lib64 -lfreetype
+    PF_XTRA_LIBS      = -L/usr/lib32/libpfdb   -rpath /usr/lib32/libpfdb \
+                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
+endif
+  LINKARGS          = -L${TOPDIR}/lib -LANG:std -OPT:Olimit=0 
+  DYNAMICLIBRARYLIB = 
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  GLUT_LIB          = -lglut
+  GL_LIBS           = -lGLU -lGL 
+  X_LIBS            = -lXext -lXi -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm
   PNG_LIBS          = -lpng

@@ -323,6 +323,8 @@ class RegisterReaderWriterProxy
             }
         }
         
+        T* get() { return _rw.get(); }
+        
     protected:
         osg::ref_ptr<T> _rw;
 };

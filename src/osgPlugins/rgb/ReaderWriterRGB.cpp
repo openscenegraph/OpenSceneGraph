@@ -304,17 +304,16 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"bw");
         }
 
-        virtual Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             std::string ext = osgDB::getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return NULL;
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
             
             rawImageRec *raw;
 
             if( (raw = RawImageOpen(fileName.c_str())) == NULL )
             {
-                notify(FATAL)<< "Unable to open \""<<fileName<<"\""<<endl;
-                return NULL;
+                return "Unable to open \""+fileName+"\"";
             }
 
             int s = raw->sizeX;

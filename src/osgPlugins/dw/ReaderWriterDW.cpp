@@ -879,19 +879,19 @@ class ReaderWriterDW : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"dw");
         }
 
-        virtual Node* readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName,const osgDB::ReaderWriter::Options*)
         {   
-			_dwobj obj;
-			enum reading {NONE, MATERIAL, OBJECT};
-			//osg::ushort nrecs=0; // number of records read after a divider (numVerts, numFaces, numOpenings...)
-			int nexpected=0; // number of records to be read in a block
-			dwmaterial *matpalet=NULL;
-			int nmat=-1; // current element of matpalet being modified
-			int nmn=0; // number of materials found
-			reading rdg=NONE;
+	    _dwobj obj;
+	    enum reading {NONE, MATERIAL, OBJECT};
+	    //osg::ushort nrecs=0; // number of records read after a divider (numVerts, numFaces, numOpenings...)
+	    int nexpected=0; // number of records to be read in a block
+	    dwmaterial *matpalet=NULL;
+	    int nmat=-1; // current element of matpalet being modified
+	    int nmn=0; // number of materials found
+	    reading rdg=NONE;
 
             std::string ext = osgDB::getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return NULL;
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             char buff[256];
 

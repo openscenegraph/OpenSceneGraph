@@ -14,19 +14,23 @@
 
 using namespace flt;
 
-osg::Object* ReaderWriterFLT::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     FltFile read;
 
-    return read.readObject(fileName);
+    osg::Object* obj=read.readObject(fileName);
+    if (obj) return obj;
+    else return ReadResult::FILE_NOT_HANDLED;
 }
 
 
-osg::Node* ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     FltFile read;
 
-    return read.readNode(fileName);
+    osg::Node* obj=read.readNode(fileName);
+    if (obj) return obj;
+    else return ReadResult::FILE_NOT_HANDLED;
 }
 
 

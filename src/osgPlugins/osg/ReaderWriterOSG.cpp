@@ -19,12 +19,12 @@ class OSGReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"osg");
         }
 
-        virtual Object* readObject(const std::string& fileName, const osgDB::ReaderWriter::Options* opt) { return readNode(fileName,opt); }
+        virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName,opt); }
 
-        virtual Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName, const Options*)
         {
             std::string ext = getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return NULL;
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             ifstream fin(fileName.c_str());
             if (fin)
@@ -60,7 +60,7 @@ class OSGReaderWriter : public ReaderWriter
                 }                // group->getNumChildren()==0
                 else
                 {
-                    return 0L;
+                    return ReadResult("No data loaded from "+fileName);
                 }
 
             }
@@ -70,7 +70,7 @@ class OSGReaderWriter : public ReaderWriter
             }
         }
 
-        virtual bool writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             Output fout;
             fout.open(fileName.c_str());
@@ -78,12 +78,12 @@ class OSGReaderWriter : public ReaderWriter
             {
                 fout.writeObject(obj);
                 fout.close();
-                return true;
+                return WriteResult::FILE_SAVED;
             }
-            return false;
+            return WriteResult("Unable to open file for output");
         }
 
-        virtual bool writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             Output fout;
             fout.open(fileName.c_str());
@@ -91,9 +91,9 @@ class OSGReaderWriter : public ReaderWriter
             {
                 fout.writeObject(node);
                 fout.close();
-                return true;
+                return WriteResult::FILE_SAVED;
             }
-            return false;
+            return WriteResult("Unable to open file for output");
         }
 
 };

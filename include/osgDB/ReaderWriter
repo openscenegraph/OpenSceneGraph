@@ -41,13 +41,87 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         };
 
 
-        virtual osg::Object* readObject(const std::string& /*fileName*/,const Options* =NULL) { return NULL; }
-        virtual osg::Image* readImage(const std::string& /*fileName*/,const Options* =NULL) { return NULL; }
-        virtual osg::Node* readNode(const std::string& /*fileName*/,const Options* =NULL) { return NULL; }
+        class ReadResult
+        {
+            public:
 
-        virtual bool writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) {return false; }
-        virtual bool writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) {return false; }
-        virtual bool writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return false; }
+                enum Status
+                {
+                    FILE_NOT_HANDLED,
+                    FILE_LOADED,
+                    ERROR_IN_READING_FILE
+                };
+
+                ReadResult(Status status=FILE_NOT_HANDLED):_status(status) {}
+                ReadResult(const std::string& m):_status(ERROR_IN_READING_FILE),_message(m) {}
+                ReadResult(osg::Object* obj):_status(FILE_LOADED),_object(obj) {}
+                
+                ReadResult(const ReadResult& rr):_status(rr._status),_message(rr._message),_object(rr._object) {}
+                ReadResult& operator = (const ReadResult& rr) { if (this==&rr) return *this; _status=rr._status; _message=rr._message;_object=rr._object; return *this; }
+                
+                osg::Object* getObject() { return _object.get(); }
+                osg::Image* getImage() { return dynamic_cast<osg::Image*>(_object.get()); }
+                osg::Node* getNode() { return dynamic_cast<osg::Node*>(_object.get()); }
+                
+                const bool validObject() { return _object.valid(); }
+                const bool validImage() { return getImage()!=0; }
+                const bool validNode() { return getNode()!=0; }
+
+                osg::Object* takeObject() { osg::Object* obj = _object.get(); if (obj) { obj->ref(); _object=NULL; } return obj; }
+                osg::Image* takeImage() { osg::Image* image=dynamic_cast<osg::Image*>(_object.get()); if (image) { image->ref(); _object==NULL; } return image; }
+                osg::Node* takeNode() { osg::Node* node=dynamic_cast<osg::Node*>(_object.get()); if (node) { node->ref(); _object==NULL; } return node; }
+
+                const std::string& message() const { return _message; }
+
+                const Status status() const { return _status; }
+                const bool success() const { return _status==FILE_LOADED; }
+                const bool error() const { return _status==ERROR_IN_READING_FILE; }
+                const bool notHandled() const { return _status==FILE_NOT_HANDLED; }
+
+            protected:
+            
+                Status                      _status;
+                std::string                 _message;
+                osg::ref_ptr<osg::Object>   _object;
+        };
+
+        class WriteResult
+        {
+            public:
+
+                enum Status
+                {
+                    FILE_NOT_HANDLED,
+                    FILE_SAVED,
+                    ERROR_IN_WRITING_FILE
+                };
+
+                WriteResult(Status status=FILE_NOT_HANDLED):_status(status) {}
+                WriteResult(const std::string& m):_status(ERROR_IN_WRITING_FILE),_message(m) {}
+                
+                WriteResult(const WriteResult& rr):_status(rr._status),_message(rr._message) {}
+                WriteResult& operator = (const WriteResult& rr) { if (this==&rr) return *this; _status=rr._status; _message=rr._message; return *this; }
+                
+                const std::string& message() const { return _message; }
+
+                const Status status() const { return _status; }
+                const bool success() const { return _status==FILE_SAVED; }
+                const bool error() const { return _status==ERROR_IN_WRITING_FILE; }
+                const bool notHandled() const { return _status==FILE_NOT_HANDLED; }
+
+            protected:
+            
+                Status                      _status;
+                std::string                 _message;
+        };
+
+        virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+
+        virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 };
 
 

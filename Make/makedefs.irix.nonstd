@@ -8,8 +8,8 @@ DEPFILES = $(OBJS:.o=.d)
 
 C++ = CC
 YFLAGS   = -d
-#CFLAGS   = -O2 -n32 -MDupdate $(MAKEDEPEND) -DOSG_USE_IO_DOT_H -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
-CFLAGS   = -O2  -n32 -DOSG_USE_IO_DOT_H -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
+#CFLAGS   = -O2 -n32 -MDupdate $(MAKEDEPEND) -OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
+CFLAGS   = -O2  -n32 --OPT:Olimit=0 -DEBUG:woff=1682 -DEBUG:woff=3303
 C++FLAGS = ${CFLAGS}
 CPPFLAGS = ${CFLAGS}
 

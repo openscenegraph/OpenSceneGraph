@@ -9,12 +9,7 @@
 #include "Record.h"
 #include "RecordVisitor.h"
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using namespace std;
-#endif
 
 namespace flt {
 
@@ -48,7 +43,7 @@ class VertexPaletteRecord : public AncillaryRecord
         virtual size_t sizeofData() const { return sizeof(SVertexTableHeader); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
-        friend ostream& operator << (ostream& output, const VertexPaletteRecord& rec);
+        friend std::ostream& operator << (std::ostream& output, const VertexPaletteRecord& rec);
 
     protected:
         virtual ~VertexPaletteRecord();

@@ -115,6 +115,10 @@ Compiling under IRIX
     has been tested under MIPSPro7.3 & MIPSPro7.2.1, and *may* compile
     under previous versions but has yet to be tested.  It is recommended
     to use MIPSPro7.3.1.1m.
+    
+    When compiling with MIPSPro7.2.1 you will need to use STLport for its
+    proper implementation of Standard C++ iostreams which are missing 
+    from compiler own implementation.
 
     To compile, from the OSG root directory, type :
 

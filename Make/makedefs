@@ -496,17 +496,17 @@ endif
 #### Cygwin specific definitions
 ifeq ($(OS),CYGWIN)
   C++               = c++
-  DEPARG            = -M
+  DEPARG            = -M -DWIN32
   INC               += 
   DEF               += -DWIN32 -W -Wall -DNOMINMAX
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared \
-                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a \
+                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)$(ARCH)/lib$(TARGET_BASENAME).dll.a \
                       -Wl,--export-all-symbols
 
   EXE_EXT           =.exe
-  ARCH              = 
+  ARCH              = 32
   ARCHINST          =
   ARCHARGS          = 
   LINKARGS          = -W -Wall
@@ -529,7 +529,7 @@ ifeq ($(OS),CYGWIN)
   GDAL_LIBS         = `gdal-config --dep-libs`
   GDAL_LIBS         += `gdal-config --libs`
 
-  LIBINST    = bin
+  LIBINST    = bin/$(OS)$(ARCH)
   PLUGININST = bin/$(OS)$(ARCH)
 
   LIB_PREFIX        = cyg

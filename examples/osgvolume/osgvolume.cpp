@@ -442,6 +442,11 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices)
         (*coords)[i*4+3].set(halfSize,y,halfSize);
     }
     
+    osg::Vec3Array* normals = new osg::Vec3Array(1);
+    (*normals)[0].set(0.0f,-1.0f,0.0f);
+    geom->setNormalArray(normals);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
     osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,alpha);
     geom->setColorArray(colors);

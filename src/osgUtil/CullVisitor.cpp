@@ -187,7 +187,7 @@ void CullVisitor::popProjectionMatrix()
 }
 
 template<class matrix_type, class value_type>
-bool _clampProjectionMatrix(matrix_type& projection, value_type& znear, value_type& zfar, value_type nearFarRatio)
+bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar, value_type nearFarRatio)
 {
     if (zfar>0.0f)
     {

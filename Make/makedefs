@@ -465,8 +465,11 @@ ifeq ($(OS),Darwin)
   GIF_LIBS        = -lungif
   TIFF_LIBS       = -ltiff -lz -ljpeg
 
-  FREETYPE_INCLUDE  = `freetype-config --cflags`
-  FREETYPE_LIB      = `freetype-config --libs`
+#  FREETYPE_INCLUDE  = `freetype-config --cflags`
+#  FREETYPE_LIB      = `freetype-config --libs`
+  
+  FREETYPE_INCLUDE  = -I$(SDKPATH)/usr/X11R6/include/freetype2
+  FREETYPE_LIB      = -lfreetype
 
   GDAL_INCLUDES     = `gdal-config --cflags`
   GDAL_LIBS         = `gdal-config --libs`

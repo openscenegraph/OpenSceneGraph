@@ -327,7 +327,7 @@ int main( int argc, char **argv )
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
-        arguments.getApplicationUsage()->write(std::cout);
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
 

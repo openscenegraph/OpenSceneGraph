@@ -1309,36 +1309,14 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     }
 
 
+    Vec3 eye_world = _tvs->_eyePoint;
+    Vec3 center_world = bs.center()*(*matrix);
+
     // no appropriate sprite has been found therefore need to create
     // one for use.
 
     // create the render to texture stage.
     ref_ptr<RenderToTextureStage> rtts = new RenderToTextureStage;
-
-
-    // set up the camera, note, in world coordinates, as if
-    // at the root of the scene graph as in the cullvisitor's original.
-    // this is required since we are simply inheriting all the
-    // transforms above this impostor node, rather than creating
-    // a local version and starting with a clean slate. We could
-    // do this, but then lights and clipping planes would need to
-    // transformed accordingly.  This way we avoid this.
-    Vec3 eye_world = _tvs->_eyePoint;
-
-    Vec3 center_world = bs.center();
-    if (matrix) center_world = center_world*(*matrix);
-
-    Vec3 lv_world = center_world-eye_world;
-
-    Vec3 side_world = lv_world ^ _tvs->_upVector;
-    Vec3 up_world = side_world ^ lv_world;
-    up_world.normalize();
-
-    ref_ptr<Camera> camera = new Camera;
-    camera->setLookAt(eye_world,center_world,up_world);
-
-    rtts->setCamera(camera.get());
-
 
     // set up lighting.
     // currently ignore lights in the scene graph itself..
@@ -1353,6 +1331,10 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     
     // set up to charge the same RenderStageLighting is the parent previous stage.
     rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
+    
+    
+    osg::Camera* camera = new osg::Camera(*_camera);
+    rtts->setCamera(camera);
 
     // record the render bin, to be restored after creation
     // of the render to text
@@ -1361,24 +1343,19 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // set the current renderbin to be the newly created stage.
     _currentRenderBin = rtts.get();
 
-    // what shall we do about the cull view stack?
-    // need to craete a new _tvs and save the previous one.
-    // need to create a push a new _cvs to set up for new camera position.
-
-    ref_ptr<CullViewState> previous_tvs = _tvs;
-
-    _tvs = new CullViewState;
-
     // store the previous camera setting
 
-    ref_ptr<const Camera> previous_camera = _camera;
+    Vec3 rotate_from = bs.center()-eye_local;
+    Vec3 rotate_to   = getLookVectorLocal();
 
-    // sets up the _tvs to reflect the new camera.
-    setCamera(*camera);
+    osg::Matrix* rotate_matrix = new osg::Matrix(
+        osg::Matrix::translate(-eye_local)*        
+        osg::Matrix::rotate(rotate_from,rotate_to)*
+        osg::Matrix::translate(eye_local));
 
     // pushing the cull view state will update it so it takes
     // into account the new camera orientation.
-    pushCullViewState();
+    pushCullViewState(rotate_matrix);
 
     // what shall we do about the near far?
     // we could need to save the near and far, or switch it off.
@@ -1425,12 +1402,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     _currentRenderBin = previousRenderBin;
 
     // restore the previous _tvs and _cvs;
-    _tvs = previous_tvs;
     popCullViewState();
-
-
-    // restore the previous camera.
-    _camera = previous_camera;
 
 
     if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
@@ -1482,7 +1454,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     
 // adjust camera left,right,up,down to fit (in world coords)
 
-#define USE_SPHERE_NEAR_FAR    
+//#define USE_SPHERE_NEAR_FAR    
 
 #ifdef USE_SPHERE_NEAR_FAR    
     Vec3 near_local  ( center_local-lv_local*width );
@@ -1531,9 +1503,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
         zfar = local_zfar;
     }
     
-    
-
-    
+        
     float top   = (top_world-center_world).length();
     float right = (right_world-center_world).length();
 

@@ -63,11 +63,12 @@ namespace osgFX
 
     inline int Validator::compare(const osg::StateAttribute &sa) const
     {
-        const Validator *v = dynamic_cast<const Validator *>(&sa);
-        if (!v) return -1;
-
-        if (effect_ < v->effect_) return -1;
-        if (effect_ > v->effect_) return 1;
+        // check the types are equal and then create the rhs variable
+        //used by the COMPARE_StateAttribute_Paramter macro's below.
+        COMPARE_StateAttribute_Types(Validator,sa)
+        
+        // compare parameters
+        COMPARE_StateAttribute_Parameter(effect_)
 
         return 0;
     }

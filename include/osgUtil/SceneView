@@ -19,6 +19,7 @@
 #include <osg/Light>
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
+#include <osg/CollectOccludersVisitor>
 
 
 #include <osgUtil/CullVisitor>
@@ -234,6 +235,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         void setCullVisitorRight(osgUtil::CullVisitor* cv) { _cullVisitorRight = cv; }
         osgUtil::CullVisitor* getCullVisitorRight() { return _cullVisitorRight.get(); }
         const osgUtil::CullVisitor* getCullVisitorRight() const { return _cullVisitorRight.get(); }
+        
+        void setCollectOccludersVisitor(osg::CollectOccludersVisitor* cov) { _collectOccludersVisistor = cov; }
+        osg::CollectOccludersVisitor* getCollectOccludersVisitor() { return _collectOccludersVisistor.get(); }
+        const osg::CollectOccludersVisitor* getCollectOccludersVisitor() const { return _collectOccludersVisistor.get(); }
 
 
         void setRenderGraph(osgUtil::RenderGraph* rg) { _rendergraph = rg; }
@@ -465,7 +470,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
 
+        osg::ref_ptr<osg::CollectOccludersVisitor>  _collectOccludersVisistor;
+        
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
+
 
         osg::Vec4                                   _backgroundColor;
 

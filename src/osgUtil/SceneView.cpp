@@ -449,35 +449,38 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     {
         //std::cout << "Scene graph contains occluder nodes, searching for them"<<std::endl;
         
-        osg::CollectOccludersVisitor cov;
         
-        cov.setFrameStamp(_frameStamp.get());
+        if (!_collectOccludersVisistor) _collectOccludersVisistor = new osg::CollectOccludersVisitor;
+        
+        _collectOccludersVisistor->reset();
+        
+        _collectOccludersVisistor->setFrameStamp(_frameStamp.get());
 
         // use the frame number for the traversal number.
         if (_frameStamp.valid())
         {
-             cov.setTraversalNumber(_frameStamp->getFrameNumber());
+             _collectOccludersVisistor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
 
-        cov.pushViewport(_viewport.get());
-        cov.pushProjectionMatrix(proj.get());
-        cov.pushModelViewMatrix(mv.get());
+        _collectOccludersVisistor->pushViewport(_viewport.get());
+        _collectOccludersVisistor->pushProjectionMatrix(proj.get());
+        _collectOccludersVisistor->pushModelViewMatrix(mv.get());
 
         // traverse the scene graph to search for occluder in there new positions.
-        _sceneData->accept(cov);
+        _sceneData->accept(*_collectOccludersVisistor);
 
-        cov.popModelViewMatrix();
-        cov.popProjectionMatrix();
-        cov.popViewport();
+        _collectOccludersVisistor->popModelViewMatrix();
+        _collectOccludersVisistor->popProjectionMatrix();
+        _collectOccludersVisistor->popViewport();
         
         // sort the occluder from largest occluder volume to smallest.
-        cov.removeOccludedOccluders();
+        _collectOccludersVisistor->removeOccludedOccluders();
         
         
-        //std::cout << "finished searching for occluder - found "<<cov.getCollectedOccluderSet().size()<<std::endl;
+        osg::notify(osg::INFO) << "finished searching for occluder - found "<<_collectOccludersVisistor->getCollectedOccluderSet().size()<<std::endl;
            
         cullVisitor->getOccluderList().clear();
-        std::copy(cov.getCollectedOccluderSet().begin(),cov.getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
+        std::copy(_collectOccludersVisistor->getCollectedOccluderSet().begin(),_collectOccludersVisistor->getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
     }
     
 

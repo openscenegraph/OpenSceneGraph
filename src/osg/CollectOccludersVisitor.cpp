@@ -31,6 +31,7 @@ CollectOccludersVisitor::CollectOccludersVisitor():
                    SMALL_FEATURE_CULLING);
     
     _minimumShadowOccluderVolume = 0.005f;
+    _maximumNumberOfActiveOccluders = 10;
     _createDrawables = false;
     
 }
@@ -42,6 +43,7 @@ CollectOccludersVisitor::~CollectOccludersVisitor()
 void CollectOccludersVisitor::reset()
 {
     CullStack::reset();
+    _occluderSet.clear();
 }
 
 float CollectOccludersVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) const
@@ -236,4 +238,16 @@ void CollectOccludersVisitor::removeOccludedOccluders()
             
         }
     }
+    
+
+    if (_occluderSet.size()<=_maximumNumberOfActiveOccluders) return;
+    
+    // move the iterator to the _maximumNumberOfActiveOccluders th occluder.
+    occludeeItr = _occluderSet.begin();
+    for(unsigned int i=0;i<_maximumNumberOfActiveOccluders;++i)
+        ++occludeeItr;
+        
+    // discard last occluders.
+    _occluderSet.erase(occludeeItr,_occluderSet.end());
+    
 }

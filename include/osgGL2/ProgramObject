@@ -81,8 +81,6 @@ class OSGGL2_EXPORT ProgramObject : public osg::StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& ) const {}
-
 	/** If enabled, install our shader program in the GL pipeline,
 	  * performing any shader program rebuild operations that might
 	  * be pending. */

@@ -7,6 +7,13 @@ instbin :
 		INSTALL?="$(INSTBINCMD)" __install
 	@$(MAKE) INSTSRC=$(TOPDIR)/lib/osgPlugins INSTDEST=$(INST_PLUGINS)\
 		INSTALL?="$(INSTBINCMD)" __install
+	@echo
+	@echo "    Execution environment installation successful.  Add"
+	@echo "        $(INST_DEMOS)"
+	@echo "    to your PATH environmental variable, and "
+	@echo "        $(INST_LIBS) and $(INST_PLUGINS)"
+	@echo "    to your LD_LIBRARY_PATH if not already present."
+	@echo
 
 
 instdev :
@@ -26,6 +33,12 @@ instdev :
 		   INSTALL?="$(INSTDEVCMD)" __install;\
 	  fi\
 	done
+	@echo
+	@echo "    Development environment installation successful.  Add"
+	@echo "        -I/$(INST_INCLUDE)"
+	@echo "    compile flag when compiling with OSG header files."
+	@echo "    Example programs can be found at $(INST_DEMOS_SRC)."
+	@echo
 
 instlinks : instlinksbin instlinksdev
 

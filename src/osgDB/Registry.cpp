@@ -225,18 +225,26 @@ std::string Registry::createLibraryNameForExt(const std::string& ext)
     ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
     if (itr!=_extAliasMap.end()) return createLibraryNameForExt(itr->second);
 
-#if defined(WIN32)
+#if defined(WIN32) // [
 // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
-#   ifdef _DEBUG
+ #ifdef __CYGWIN__ // [
+#   ifdef _DEBUG   // [
+	return "cygosgdb_"+ext+"d.dll";
+#   else           // ][
+	return "cygosgdb_"+ext+".dll";
+#   endif          // ]
+ #else             // ][
+#   ifdef _DEBUG   // [
     return "osgdb_"+ext+"d.dll";
-#   else
+#   else           // ][
     return "osgdb_"+ext+".dll";
-#   endif
-#elif macintosh
+#   endif          // ]
+ #endif            // ]
+#elif macintosh    // ][
     return "osgdb_"+ext;
-#else
+#else              // ][
     return "osgdb_"+ext+".so";
-#endif
+#endif             // ]
 
 }
 

@@ -41,7 +41,7 @@ INST_INCLUDE       = $(INST_SYS_PREFIX)/include
 INST_SHARE_PREFIX  = /usr/share
 INST_DEMOS         = $(INST_SHARE_PREFIX)/OpenSceneGraph/bin
 INST_DEMO_SRC      = $(INST_SHARE_PREFIX)/OpenSceneGraph/src/demos
-INST_DOC           = $(INST_SHARE_REFIX)/OpenSceneGraph/doc
+INST_DOC           = $(INST_SHARE_PREFIX)/OpenSceneGraph/doc
 INST_DATA          = $(INST_SHARE_PREFIX)/OpenSceneGraph/data
 
 LINK          = ln -sf
@@ -57,7 +57,7 @@ PLUGIN_EXT     = so
 
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 
-ALL_TARGETS = \
+RECURSIVE_TARGETS = \
 	  opt\
 	  debug\
 	  clean\
@@ -67,6 +67,8 @@ ALL_TARGETS = \
 	  cleanliteopt\
 	  cleanlitedbg\
 	  clobber\
+	  clobberdbg\
+	  clobberopt\
 	  beautify\
 	  docs\
 	  depend\
@@ -185,7 +187,7 @@ ifeq ($(OS),FreeBSD)
 
 endif
 
-#### Mac OSX specific definitions
+#### MacOS X specific definitions
 ifeq ($(OS),Darwin)
   C++               = cc
   INC               +=  -I/usr/include -I/sw/include
@@ -258,12 +260,22 @@ ifeq ($(OS),CYGWIN)
   FREETYPE_LIB      = -lfreetype2
 
 
-  LIB_PREFIX     = cyg
-  LIB_EXT        = dll
-  PLUGIN_PREFIX  = cygosgdb_
-  PLUGIN_EXT     = dll
+  LIB_PREFIX        = cyg
+  LIB_EXT           = dll
+  PLUGIN_PREFIX     = cygosgdb_
+  PLUGIN_EXT        = dll
 
-  LINK          = cp -f
+  LINK              = cp -f
+
+  INST_SYS_PREFIX   = /usr/local/OpenSceneGraph
+  INST_LIBS         = $(INST_SYS_PREFIX)/bin
+  INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
+  INST_INCLUDE      = $(INST_SYS_PREFIX)/include
+  INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
+  INST_DEMOS        = $(INST_SHARE_PREFIX)/bin
+  INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
+  INST_DOC          = $(INST_SHARE_PREFIX)/doc
+  INST_DATA         = $(INST_SHARE_PREFIX)/data
 
 endif
 

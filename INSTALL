@@ -38,6 +38,15 @@ eventually need them.
 If you haven't already checked it out, for a list of distribution contents,
 contacts and links to documentation check out index.html.
 
+Compiling under all (UNIX - including CYGWIN) Platforms
+-------------------------------------------------------
+
+Building the OSG requires 'gmake', due to the extensive use of gmake 
+directives in the Makefiles.  You can get gmake from here if you don't
+already have it installed:
+
+     http://www.gnu.org/software/make/
+
 
 Compiling under Linux
 ---------------------
@@ -46,23 +55,22 @@ Compiling under Linux
 
         make
         
-    Note, make should automatically detect linux and copy the 
-    Make/makerules.linux and Make/makedefs.linux over the 
-    default Make/makerules and Make/makedefs.  If autodetection
-    does not work type 'make linux'.
+    Note, make should automatically detect linux and build
+    optimized targets for your system.
 
-    And if you wish to install the OSG to /usr/include/ &
-    /usr/lib then su root, and type:
+    And if you wish to install the OSG type:
     
         make install
         
           or
           
         make instlinks
-         
+
     To get full details of make options, type:
     
         make help
+
+    (highly recommended)
         
         
     The osgText library now depends upon GLU1.3 functionality, and only
@@ -76,12 +84,14 @@ Compiling under Linux
 Compiling under FreeBSD
 -----------------------
 
-   To compile, from the OSG root directory, type :
+    To compile, from the OSG root directory, type:
 
-        make freebsd
+        make
+        
+    Note, make should automatically detect your system and build
+    optimized targets for your system.
 
-    And if you wish to install the OSG to /usr/include/ &
-    /usr/lib then su root, and type:
+    And if you wish to install the OSG type:
     
         make install
         
@@ -92,6 +102,9 @@ Compiling under FreeBSD
     To get full details of make options, type:
     
         make help
+
+    (highly recommended)
+
 
 
 Compiling under IRIX
@@ -103,17 +116,14 @@ Compiling under IRIX
     unwildy to support and is very rarely used in the OSG commiunity.
     It is recommended to use MIPSPro7.3.1.1m.
     
-    To compile, from the OSG root directory, type :
+    To compile, from the OSG root directory, type:
 
         make
+        
+    Note, make should automatically detect your system and build
+    optimized targets for your system.
 
-    Note, make should automatically detect IRIX and copy the 
-    Make/makerules.irix.std and Make/makedefs.irix.std over the 
-    default Make/makerules and Make/makedefs.  If autodetection
-    does not work type 'make irix'.
-
-    And if you wish to install the OSG to /usr/include/ &
-    /usr/lib then su root, and type:
+    And if you wish to install the OSG type:
     
         make install
         
@@ -124,6 +134,32 @@ Compiling under IRIX
     To get full details of make options, type:
     
         make help
+
+    (highly recommended)
+
+Compiling under Solaris
+-----------------------
+
+    To compile, from the OSG root directory, type:
+
+        make
+        
+    Note, make should automatically detect your system and build
+    optimized targets for your system.
+
+    And if you wish to install the OSG type:
+    
+        make install
+        
+          or
+          
+        make instlinks
+         
+    To get full details of make options, type:
+    
+        make help
+
+    (highly recommended)
 
 
 Compiling under Windows
@@ -246,6 +282,30 @@ Compiling under MacOS X (instructions written by Phil Atkin)
     forewarned is forearmed.
 
 
+Compiling under Cygwin
+----------------------
+
+    To compile, from the OSG root directory, type:
+
+        make
+        
+    Note, make should automatically detect your system and build
+    optimized targets for your system.
+
+    And if you wish to install the OSG type:
+    
+        make install
+        
+    Note that make symbolic links don't seem to work under
+    cygwin, so a make instlinks will simply copy files just like
+    make install.  'make install' places all files in 
+    /usr/local/OpenSceneGraph under appropriate subdirectories.
+
+    To get full details of make options, type:
+    
+        make help
+
+    (highly recommended)
 
 OSGFILEPATH environmental variable
 ----------------------------------

@@ -58,8 +58,9 @@ void Image::write(DataOutputStream* out)
         out->writeInt(_mipmapData[i]);
 
     // Write image data if any
-    out->writeLong((long)data());
-    if(data()){
+    out->writeBool(data()!=0);
+    if(data())
+    {
         // Compute the size of image data and write this.
         unsigned int size = getTotalSizeInBytesIncludingMipmaps();
         out->writeInt(size);
@@ -117,7 +118,8 @@ void Image::read(DataInputStream* in)
             
 
         // Read image data if any
-        if(in->readInt()){
+        if(in->readBool())
+        {
             unsigned int dataSize = (unsigned int)in->readInt();
             
             //static int totalSize = 0;

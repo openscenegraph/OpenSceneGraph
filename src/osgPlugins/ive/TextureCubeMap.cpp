@@ -41,27 +41,27 @@ void TextureCubeMap::write(DataOutputStream* out){
 	out->writeInt(getNumMipmapLevels());
 
 	// Write images if any
-	out->writeLong((long)getImage(osg::TextureCubeMap::POSITIVE_X));
+	out->writeBool(getImage(osg::TextureCubeMap::POSITIVE_X)!=0);
 	if(getImage(osg::TextureCubeMap::POSITIVE_X))
 		((ive::Image*)(getImage(osg::TextureCubeMap::POSITIVE_X)))->write(out);
 
-	out->writeLong((long)getImage(osg::TextureCubeMap::NEGATIVE_X));
+	out->writeBool(getImage(osg::TextureCubeMap::NEGATIVE_X)!=0);
 	if(getImage(osg::TextureCubeMap::NEGATIVE_X))
 		((ive::Image*)(getImage(osg::TextureCubeMap::NEGATIVE_X)))->write(out);
 
-	out->writeLong((long)getImage(osg::TextureCubeMap::POSITIVE_Y));
+	out->writeBool(getImage(osg::TextureCubeMap::POSITIVE_Y)!=0);
 	if(getImage(osg::TextureCubeMap::POSITIVE_Y))
 		((ive::Image*)(getImage(osg::TextureCubeMap::POSITIVE_Y)))->write(out);
 
-	out->writeLong((long)getImage(osg::TextureCubeMap::NEGATIVE_Y));
+	out->writeBool(getImage(osg::TextureCubeMap::NEGATIVE_Y)!=0);
 	if(getImage(osg::TextureCubeMap::NEGATIVE_Y))
 		((ive::Image*)(getImage(osg::TextureCubeMap::NEGATIVE_Y)))->write(out);
 
-	out->writeLong((long)getImage(osg::TextureCubeMap::POSITIVE_Z));
+	out->writeBool(getImage(osg::TextureCubeMap::POSITIVE_Z)!=0);
 	if(getImage(osg::TextureCubeMap::POSITIVE_Z))
 		((ive::Image*)(getImage(osg::TextureCubeMap::POSITIVE_Z)))->write(out);
 
-	out->writeLong((long)getImage(osg::TextureCubeMap::NEGATIVE_Z));
+	out->writeBool(getImage(osg::TextureCubeMap::NEGATIVE_Z)!=0);
 	if(getImage(osg::TextureCubeMap::NEGATIVE_Z))
 		((ive::Image*)(getImage(osg::TextureCubeMap::NEGATIVE_Z)))->write(out);
 
@@ -91,32 +91,32 @@ void TextureCubeMap::read(DataInputStream* in){
 		setNumMipmapLevels((unsigned int)in->readInt());
 
 		// Read images if any
-		if(in->readInt()){
+		if(in->readBool()){
 			osg::Image* image = new osg::Image();
 			((ive::Image*)(image))->read(in);
 			setImage(osg::TextureCubeMap::POSITIVE_X, image);
 		}
-		if(in->readInt()){
+		if(in->readBool()){
 			osg::Image* image = new osg::Image();
 			((ive::Image*)(image))->read(in);
 			setImage(osg::TextureCubeMap::NEGATIVE_X, image);
 		}
-		if(in->readInt()){
+		if(in->readBool()){
 			osg::Image* image = new osg::Image();
 			((ive::Image*)(image))->read(in);
 			setImage(osg::TextureCubeMap::POSITIVE_Y, image);
 		}
-		if(in->readInt()){
+		if(in->readBool()){
 			osg::Image* image = new osg::Image();
 			((ive::Image*)(image))->read(in);
 			setImage(osg::TextureCubeMap::NEGATIVE_Y, image);
 		}
-		if(in->readInt()){
+		if(in->readBool()){
 			osg::Image* image = new osg::Image();
 			((ive::Image*)(image))->read(in);
 			setImage(osg::TextureCubeMap::POSITIVE_Z, image);
 		}
-		if(in->readInt()){
+		if(in->readBool()){
 			osg::Image* image = new osg::Image();
 			((ive::Image*)(image))->read(in);
 			setImage(osg::TextureCubeMap::NEGATIVE_Z, image);

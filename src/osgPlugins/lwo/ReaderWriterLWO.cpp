@@ -59,15 +59,19 @@ public:
         std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-        ReadResult result = readNode_LWO1(fileName,options);
+        // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+        ReadResult result = readNode_LWO1(fileName,local_opt.get());
         if (result.success()) return result;
         
         if (!options || options->getOptionString() != "USE_OLD_READER") {
-            ReadResult result = readNode_LWO2(fileName, options);
+            ReadResult result = readNode_LWO2(fileName, local_opt.get());
             if (result.success()) return result;
         }
 
-        return readNode_old_LWO2(fileName, options);        
+        return readNode_old_LWO2(fileName, local_opt.get());
     }
 
     lwosg::Converter::Options parse_options(const Options *options) const;

@@ -38,7 +38,7 @@
 
 #include <assert.h>
 
-static osg::Node* load_md2 (const char *filename);
+static osg::Node* load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options);
 
 class ReaderWriterMD2 : public osgDB::ReaderWriter
 {
@@ -66,10 +66,14 @@ ReaderWriterMD2::readNode (const std::string& file,
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    std::string filename = osgDB::findDataFile( file, options );
-    if (filename.empty()) return ReadResult::FILE_NOT_FOUND;
+    std::string fileName = osgDB::findDataFile( file, options );
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    return load_md2 (filename.data());
+    // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+    osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+    local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+    return load_md2 (fileName.c_str(), options);
 }
 
 
@@ -147,7 +151,7 @@ osg::Vec3Array *g_md2NormalsArray = NULL;
 // this is also quite non-portable to non-little-endian architectures
 
 static osg::Node*
-load_md2 (const char *filename)
+load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 {
     struct stat st;
     void *mapbase;
@@ -224,7 +228,7 @@ load_md2 (const char *filename)
 	std::string imgname (md2_skins[si].name);
 
 	// first try loading the imgname straight
-	img = osgDB::readImageFile (imgname);
+	img = osgDB::readImageFile (imgname, options);
 	if (img) {
 	    tex = new osg::Texture2D;
 	    tex->setImage (img);
@@ -238,7 +242,7 @@ load_md2 (const char *filename)
 	{
 	    // it's a pcx, so try bmp and tga, since pcx sucks
 	    std::string basename = imgname.substr (0, imgname.size() - 3);
-	    img = osgDB::readImageFile (basename + "bmp");
+	    img = osgDB::readImageFile (basename + "bmp", options);
 	    if (img) {
 		tex = new osg::Texture2D;
 		tex->setImage (img);
@@ -246,7 +250,7 @@ load_md2 (const char *filename)
 		continue;
 	    }
 
-	    img = osgDB::readImageFile (basename + "tga");
+	    img = osgDB::readImageFile (basename + "tga", options);
 	    if (img) {
 		tex = new osg::Texture2D;
 		tex->setImage (img);
@@ -269,7 +273,7 @@ load_md2 (const char *filename)
 
 	do {
 	    // first try loading the imgname straight
-	    skin_image = osgDB::readImageFile (imgname);
+	    skin_image = osgDB::readImageFile (imgname, options);
 	    if (skin_image) break;
 
 	    // we failed, so check if it's a PCX image
@@ -278,10 +282,10 @@ load_md2 (const char *filename)
 		{
 		// it's a pcx, so try bmp and tga, since pcx sucks
 		std::string basename = imgname.substr (0, imgname.size() - 3);
-		skin_image = osgDB::readImageFile (basename + "bmp");
+		skin_image = osgDB::readImageFile (basename + "bmp", options);
 		if (skin_image) break;
 
-		skin_image = osgDB::readImageFile (basename + "tga");
+		skin_image = osgDB::readImageFile (basename + "tga", options);
 		if (skin_image) break;
 	    }
 	} while (0);

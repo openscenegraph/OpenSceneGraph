@@ -48,12 +48,12 @@ public:
         _lightnum=1;
     }
     ~dwmaterial() { }
-    void settexture() {
+    void settexture(const osgDB::ReaderWriter::Options *options) {
         if (!dstate) dstate = new StateSet;
         if (isTextured()) { // shares common textures
             if (!ctx || !tx) { // new texture needed
                 if (fname.length()>0) { 
-                    ctx=osgDB::readImageFile(fname.c_str());
+                    ctx=osgDB::readImageFile(fname.c_str(),options);
                     if (ctx) {
                         ctx->setFileName(fname);
                         tx=new Texture2D;
@@ -71,7 +71,7 @@ public:
             }
         }
     }
-    StateSet *make() { // returns the OSG material
+    StateSet *make(const osgDB::ReaderWriter::Options *options) { // returns the OSG material
         if (!dstate) { // if it does not exist, then make it
             dstate = new StateSet;
             osg::Material* osgMaterial = new osg::Material;
@@ -98,7 +98,7 @@ public:
             dstate->setAttribute(cf);
 
             dstate->setTextureMode(0,GL_TEXTURE_2D,StateAttribute::OFF);
-            settexture();
+            settexture(options);
         }
         return dstate;
     }
@@ -607,7 +607,7 @@ public:
         }
         return nfaces;
     }
-    void buildDrawable(Group *grp);  // convert dwobj into osg geosets
+    void buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *options);  // convert dwobj into osg geosets
     void setcolour(const float rgb[3]) {
         colour[0]=rgb[0]; colour[1]=rgb[1]; colour[2]=rgb[2];
     }
@@ -728,7 +728,7 @@ void prims::combine( GLdouble coords[3], avertex *d[4],
 	newv->idx=dwob->addvtx(coords[0], coords[1], coords[2]);
 	*dataOut = newv;
 }
-void _dwobj::buildDrawable(Group *grp)
+void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *options)
 {  // current DWobject complete; make a drawable, and add it to a osg::Group
     if (nfaces>0) {
         if (themat->isType(dwmaterial::PointLight) || themat->isType(dwmaterial::SpotLight)) {
@@ -766,7 +766,7 @@ void _dwobj::buildDrawable(Group *grp)
 			prd->settmat(tmat);
 			osg::Geometry *gset = new osg::Geometry;
 			prd->setGeometry(gset);
-			StateSet *dstate=themat->make();            
+			StateSet *dstate=themat->make(options);            
 			gset->setStateSet( dstate );
 			grp->addChild( geode ); // add to the world outside
 			geode->addDrawable(gset);
@@ -833,6 +833,11 @@ class ReaderWriterDW : public osgDB::ReaderWriter
             }
             Group *grp = new Group;
 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+            local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+
             while( !feof( fp ) )
             { // reads the Design Workshop format in ASCII
                 if (dwfgets( buff, sizeof( buff ), fp )) {
@@ -889,7 +894,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                         strncmp(buff,"Polyline:",9)==0 || 
                         strncmp(buff,"Polyhedron:",11)==0) {
                         rdg=OBJECT;
-                        obj.buildDrawable(grp);
+                        obj.buildDrawable(grp, options);
                         obj.reset();
                     } else if( strncmp(buff,"Mat:",4)==0) {
                         int mt=atoi(buff+4);
@@ -942,7 +947,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
 
             }
             fclose( fp );
-            obj.buildDrawable(grp); // tidy up any remaining objects
+            obj.buildDrawable(grp, options); // tidy up any remaining objects
 
             return grp;
 

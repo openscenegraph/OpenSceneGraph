@@ -7,6 +7,12 @@
 //   use can be picked up in hours rather than weeks.
 //  Other loaders and modellers are available for OSG.
 
+#ifndef OSGAC3D_H
+#define OSGAC3D_H
+
+#include <osgDB/ReaderWriter>
+
+
 typedef struct ACSurface_t
 {
 	int num_vertref;
@@ -64,22 +70,8 @@ typedef struct ACObject_t
 #define myfree free
 
 
-Prototype osg::Group *ac_load_ac3d(const char *filename);
+Prototype osg::Group *ac_load_ac3d(const char *filename,const osgDB::ReaderWriter::Options* options);
 Prototype osg::Material *ac_palette_get_material(const unsigned int index);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif

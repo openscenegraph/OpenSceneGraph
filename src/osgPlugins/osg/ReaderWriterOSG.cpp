@@ -35,10 +35,8 @@ class OSGReaderWriter : public ReaderWriter
             std::string fileName = osgDB::findDataFile( file, opt );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that any paged
-            // databases can be automatically located. 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
             std::ifstream fin(fileName.c_str());

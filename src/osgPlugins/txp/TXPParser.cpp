@@ -1176,6 +1176,9 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
     {
         osg_texture = new osg::Texture2D();
 
+        // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+        osg_texture->setUnRefImageDataAfterApply(true);
+
         osg::Image* image = new osg::Image;
         char* data = 0L;
 
@@ -1245,6 +1248,9 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
     if(pixelFormat!=(GLenum)-1)
     {
         osg_texture = new osg::Texture2D();
+
+        // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+        osg_texture->setUnRefImageDataAfterApply(true);
 
         osg::Image* image = new osg::Image;
         char* data = 0L;

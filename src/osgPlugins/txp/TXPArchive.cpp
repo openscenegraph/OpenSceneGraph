@@ -130,6 +130,9 @@ bool TXPArchive::loadMaterials()
 
                 // Create a texture by name.
                 osg::ref_ptr<osg::Texture2D> osg_texture = new osg::Texture2D();
+
+                // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+                osg_texture->setUnRefImageDataAfterApply(true);
                 
                 // Load Texture and Create Texture State
                 std::string filename = osgDB::getSimpleFileName(texName);

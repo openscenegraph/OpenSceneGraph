@@ -191,6 +191,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Remove all objects in the cache regardless of having external references or expiry times.*/ 
         void clearObjectCache();
 
+        void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
+
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
 

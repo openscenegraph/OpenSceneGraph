@@ -1165,7 +1165,7 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName,bool u
         {
             // update cache with new entry.
             notify(INFO)<<"Adding to cache object "<<file<<std::endl;
-            _objectCache[file]=ObjectTimeStampPair(rr.getObject(),0.0f);
+            addEntryToObjectCache(file,rr.getObject());
         }
         
         return rr;
@@ -1303,7 +1303,7 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName,bool us
         {
             // update cache with new entry.
             notify(INFO)<<"Adding to cache image "<<file<<std::endl;
-            _objectCache[file]=ObjectTimeStampPair(rr.getObject(),0.0f);
+            addEntryToObjectCache(file,rr.getObject());
         }
         
         return rr;
@@ -1456,7 +1456,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName,bool use
         {
             // update cache with new entry.
             notify(INFO)<<"Adding to cache node "<<file<<std::endl;
-            _objectCache[file]=ObjectTimeStampPair(rr.getObject(),0.0f);
+            addEntryToObjectCache(file,rr.getObject());
         }
         
         return rr;
@@ -1545,6 +1545,11 @@ void Registry::convertStringPathIntoFilePathList(const std::string& paths,FilePa
         filepath.push_back(std::string(paths,start,std::string::npos));
     }
  
+}
+
+void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
+{
+     _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
 }
 
 void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime)

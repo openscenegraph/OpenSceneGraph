@@ -33,8 +33,7 @@ DatabasePager::~DatabasePager()
         while(isRunning())
         {
             std::cout<<"Waiting for RenderSurface to cancel"<<std::endl;
-            //OpenThreads::Thread::YieldCurrentThread();
-            OpenThreads::Thread::Yield();
+            OpenThreads::Thread::YieldCurrentThread();
         }
         
     }
@@ -285,7 +284,7 @@ void DatabasePager::run()
         }
         
         // go to sleep till our the next time our thread gets scheduled.
-        Yield();
+        YieldCurrentThread();
 
     }
     

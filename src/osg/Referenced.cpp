@@ -25,6 +25,7 @@ namespace osg
 {
 
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
+static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 
 void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting)
 {
@@ -37,9 +38,6 @@ bool Referenced::getThreadSafeReferenceCounting()
 }
 
 
-
-static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
-
 void Referenced::setDeleteHandler(DeleteHandler* handler)
 {
     s_deleteHandler.reset(handler);
@@ -50,6 +48,19 @@ DeleteHandler* Referenced::getDeleteHandler()
     return s_deleteHandler.get();
 }
 
+Referenced::Referenced()
+{
+    if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
+    else _refMutex = 0;
+   _refCount=0;
+}
+
+Referenced::Referenced(const Referenced&)
+{
+    if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
+    else _refMutex = 0;
+    _refCount=0;
+}
 
 Referenced::~Referenced()
 {
@@ -58,13 +69,43 @@ Referenced::~Referenced()
         notify(WARN)<<"Warning: deleting still referenced object "<<this<<" of type '"<<typeid(this).name()<<"'"<<std::endl;
         notify(WARN)<<"         the final reference count was "<<_refCount<<", memory corruption possible."<<std::endl;
     }
+
+    if (_refMutex)
+    {
+        OpenThreads::Mutex* tmpMutexPtr = _refMutex;
+        _refMutex = 0;
+        delete tmpMutexPtr;
+    }
 }
+
+void Referenced::setThreadSafeRefUnref(bool threadSafe)
+{
+    if (threadSafe)
+    {
+        if (!_refMutex)
+        {
+            // we want thread safe ref()/unref() so assing a mutex
+            _refMutex = new OpenThreads::Mutex;
+        }
+    }
+    else
+    {
+        if (_refMutex)
+        {
+            // we don't want thread safe ref()/unref() so remove any assigned mutex
+            OpenThreads::Mutex* tmpMutexPtr = _refMutex;
+            _refMutex = 0;
+            delete tmpMutexPtr;
+        }
+    }
+}
+
 
 void Referenced::ref() const
 { 
-    if (s_useThreadSafeReferenceCounting)
+    if (_refMutex)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
         ++_refCount;
     }
     else
@@ -77,9 +118,9 @@ void Referenced::ref() const
 void Referenced::unref() const
 {
     bool needDelete = false;
-    if (s_useThreadSafeReferenceCounting)
+    if (_refMutex)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
         --_refCount;
         needDelete = _refCount<=0;
     }
@@ -98,9 +139,9 @@ void Referenced::unref() const
 
 void Referenced::unref_nodelete() const
 {
-    if (s_useThreadSafeReferenceCounting)
+    if (_refMutex)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
         --_refCount;
     }
     else

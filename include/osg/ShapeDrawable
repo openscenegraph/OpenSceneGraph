@@ -74,8 +74,8 @@ class TessellationHints : public Object
     	inline void setCreateFrontFace(bool on) { _createFrontFace=on; }
     	inline bool getCreateFrontFace() const { return _createFrontFace; }
 
-    	inline void setCreateBackFace(bool on) { _createFrontFace=on; }
-    	inline bool getCreateBackFace() const { return _createFrontFace; }
+    	inline void setCreateBackFace(bool on) { _createBackFace=on; }
+    	inline bool getCreateBackFace() const { return _createBackFace; }
 
     	inline void setCreateNormals(bool on) { _createNormals=on; }
     	inline bool getCreateNormals() const { return _createNormals; }

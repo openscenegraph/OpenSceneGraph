@@ -26,8 +26,10 @@ PLUGIN_DIRS = \
 	osgParticle\
 	osgText\
 	rgb\
+    	ac3d\
 	lib3ds\
 	flt\
+	geo\
         iv\
 	obj\
 	lwo\

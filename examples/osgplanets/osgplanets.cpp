@@ -219,14 +219,14 @@ public:
         _tiltEarth                  = 18.0; // degrees
         
         _mapSpace       = "Images/spacemap2.jpg";
-        _mapSun         = "Images/Solarsystem/sun256128.jpg";
-        _mapMercury     = "Images/Solarsystem/mercury256128.jpg";
-        _mapVenus       = "Images/Solarsystem/venus256128.jpg";
+        _mapSun         = "Solarsystem/sun256128.jpg";
+        _mapMercury     = "Solarsystem/mercury256128.jpg";
+        _mapVenus       = "Solarsystem/venus256128.jpg";
         _mapEarth       = "Images/land_shallow_topo_2048.jpg";
         _mapEarthNight  = "Images/land_ocean_ice_lights_2048.jpg";
-        _mapMoon        = "Images/Solarsystem/moon256128.jpg";
-        _mapMars        = "Images/Solarsystem/mars256128.jpg";
-        _mapJupiter     = "Images/Solarsystem/jupiter256128.jpg";
+        _mapMoon        = "Solarsystem/moon256128.jpg";
+        _mapMars        = "Solarsystem/mars256128.jpg";
+        _mapJupiter     = "Solarsystem/jupiter256128.jpg";
     }
     
     osg::MatrixTransform* createTranslationAndTilt( double translation, double tilt );
@@ -633,7 +633,7 @@ osg::MatrixTransform* SolarSystem::createRotation( double orbit, double speed )
 }// end SolarSystem::createEarthRotation
 
 
-osg::MatrixTransform* SolarSystem::createTranslationAndTilt( double translation, double tilt )
+osg::MatrixTransform* SolarSystem::createTranslationAndTilt( double /*translation*/, double tilt )
 {
     osg::MatrixTransform* moonPositioned = new osg::MatrixTransform;
     moonPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, _RorbitMoon, 0.0 ) )*

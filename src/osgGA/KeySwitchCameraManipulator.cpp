@@ -42,6 +42,20 @@ void KeySwitchCameraManipulator::selectCameraManipulator(unsigned int num)
     }
 }
 
+CameraManipulator* KeySwitchCameraManipulator::getCameraManipulator(unsigned int num)
+{
+    KeyManipMap::iterator itr = _manips.find(num); 
+    if (itr!=_manips.end()) return itr->second.second.get(); 
+    else return 0;
+}
+
+const CameraManipulator* KeySwitchCameraManipulator::getCameraManipulator(unsigned int num) const
+{
+    KeyManipMap::const_iterator itr = _manips.find(num); 
+    if (itr!=_manips.end()) return itr->second.second.get(); 
+    else return 0;
+}
+
 bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
     if(ea.getEventType()==GUIEventAdapter::KEYDOWN){

@@ -1,8 +1,11 @@
 #include <osg/Notify>
 #include <osg/MatrixTransform>
+#include <osg/ShapeDrawable>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
 #include <osg/Texture2D>
+#include <osg/TexGen>
+#include <osg/Material>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/RenderToTextureStage>
@@ -19,28 +22,26 @@
 #include <osgGLUT/Viewer>
 
 
+// for the grid data..
+#include "../osghangglide/terrain_coords.h"
+
+
 class MyCullCallback : public osg::NodeCallback
 {
     public:
     
-        MyCullCallback(osg::Node* subgraph,osg::Texture2D* texture):
+        MyCullCallback(osg::Node* subgraph,osg::Texture2D* texture,const osg::Vec3& position):
             _subgraph(subgraph),
-            _texture(texture) {}
-
-        MyCullCallback(osg::Node* subgraph,osg::Image* image):
-            _subgraph(subgraph),
-            _image(image) {}
-        
+            _texture(texture),
+            _position(position) {}
+       
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
 
             osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
-            if (cullVisitor && (_texture.valid()|| _image.valid()) && _subgraph.valid())
+            if (cullVisitor && (_texture.valid() && _subgraph.valid()))
             {            
                 doPreRender(*node,*cullVisitor);
-
-                // must traverse the subgraph            
-                traverse(node,nv);
 
             }
             else
@@ -54,12 +55,12 @@ class MyCullCallback : public osg::NodeCallback
         
         osg::ref_ptr<osg::Node>      _subgraph;
         osg::ref_ptr<osg::Texture2D> _texture;
-        osg::ref_ptr<osg::Image>     _image;
+        osg::Vec3                    _position;
 
     
 };
 
-void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
+void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
 {   
 
     const osg::BoundingSphere& bs = _subgraph->getBound();
@@ -79,7 +80,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
 
     // set up the background color and clear mask.
-    rtts->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,0.0f));
+    rtts->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,0.0f));
     rtts->setClearMask(previous_stage->getClearMask());
 
     // set up to charge the same RenderStageLighting is the parent previous stage.
@@ -94,15 +95,17 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     cv.setCurrentRenderBin(rtts.get());
 
 
-    float znear = 1.0f*bs.radius();
-    float zfar  = 3.0f*bs.radius();
+    float centerDistance = (_position-bs.center()).length();
+
+    float znear = centerDistance+bs.radius();
+    float zfar  = centerDistance-bs.radius();
+    float zNearRatio = 0.001f;
+    if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+    
         
     // 2:1 aspect ratio as per flag geomtry below.
-    float top   = 0.25f*znear;
-    float right = 0.5f*znear;
-
-    znear *= 0.9f;
-    zfar *= 1.1f;
+    float top   = (bs.radius()/centerDistance)*znear;
+    float right = top;
 
     // set up projection.
     osg::Matrix* projection = osgNew osg::Matrix;
@@ -111,13 +114,33 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     cv.pushProjectionMatrix(projection);
 
     osg::Matrix* matrix = new osg::Matrix;
-    matrix->makeLookAt(bs.center()+osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+    matrix->makeLookAt(_position,bs.center(),osg::Vec3(0.0f,1.0f,0.0f));
+
+
+    osg::Matrix inverseMV;
+    inverseMV.invert(cv.getModelViewMatrix());
+
+    // compute the matrix which takes a vertex from local coords into tex coords
+    // will use this later to specify osg::TexGen..
+    osg::Matrix MVPT = 
+                       *matrix * 
+                       *projection *
+                       osg::Matrix::translate(1.0,1.0,1.0) *
+                       osg::Matrix::scale(0.5f,0.5f,0.5f);
 
     cv.pushModelViewMatrix(matrix);
 
-    osg::ref_ptr<osg::StateSet> dummyState = osgNew osg::StateSet;
+    osg::ref_ptr<osg::StateSet> shadowState = osgNew osg::StateSet;
 
-    cv.pushStateSet(dummyState.get());
+    // make the material black for a shadow.
+    osg::Material* material = new osg::Material;
+    material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    material->setShininess(osg::Material::FRONT_AND_BACK,0.0f);
+    shadowState->setAttribute(material,osg::StateAttribute::OVERRIDE);
+
+    cv.pushStateSet(shadowState.get());
 
     {
 
@@ -130,6 +153,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
     // restore the previous model view matrix.
     cv.popModelViewMatrix();
+
 
     // restore the previous model view matrix.
     cv.popProjectionMatrix();
@@ -147,7 +171,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
 
 
     int height = 256;
-    int width  = 512;
+    int width  = 256;
 
 
     const osg::Viewport& viewport = *cv.getViewport();
@@ -162,7 +186,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     new_viewport->setViewport(center_x-width/2,center_y-height/2,width,height);
     rtts->setViewport(new_viewport);
     
-    dummyState->setAttribute(new_viewport);
+    shadowState->setAttribute(new_viewport);
 
     // and the render to texture stage to the current stages
     // dependancy list.
@@ -171,8 +195,33 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     // if one exist attach texture to the RenderToTextureStage.
     if (_texture.valid()) rtts->setTexture(_texture.get());
 
-    // if one exist attach image to the RenderToTextureStage.
-    if (_image.valid()) rtts->setImage(_image.get());
+
+    // set up the stateset to decorate the subgraph with the shadow texture
+    // with the appropriate tex gen coords.
+    osg::StateSet* stateset = new osg::StateSet;
+
+    osg::TexGen* texgen = new osg::TexGen;
+    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+    texgen->setPlane(osg::TexGen::S,osg::Vec4(MVPT(0,0),MVPT(1,0),MVPT(2,0),MVPT(3,0)));
+    texgen->setPlane(osg::TexGen::T,osg::Vec4(MVPT(0,1),MVPT(1,1),MVPT(2,1),MVPT(3,1)));
+    texgen->setPlane(osg::TexGen::R,osg::Vec4(MVPT(0,2),MVPT(1,2),MVPT(2,2),MVPT(3,2)));
+    texgen->setPlane(osg::TexGen::Q,osg::Vec4(MVPT(0,3),MVPT(1,3),MVPT(2,3),MVPT(3,3)));
+
+    int _unit = 1;
+
+    stateset->setTextureAttributeAndModes(_unit,_texture.get(),osg::StateAttribute::ON);
+    stateset->setTextureAttribute(_unit,texgen);
+    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+    stateset->setTextureMode(_unit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
+
+    cv.pushStateSet(stateset);
+
+        // must traverse the subgraph            
+        traverse(&node,&cv);
+
+    cv.popStateSet();    
 
 }
 
@@ -210,8 +259,63 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
 
 osg::Node* createBase(const osg::Vec3& center,float radius)
 {
-
-    
+// 
+//     osg::Geode* geode = osgNew osg::Geode;
+//     
+//     // set up the texture of the base.
+//     osg::StateSet* stateset = osgNew osg::StateSet();
+//     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+//     if (image)
+//     {
+// 	osg::Texture2D* texture = osgNew osg::Texture2D;
+// 	texture->setImage(image);
+// 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+//     }
+//     
+//     geode->setStateSet( stateset );
+// 
+// 
+//     osg::Grid* grid = new osg::Grid;
+//     grid->allocateGrid(38,39);
+//     grid->setOrigin(center+osg::Vec3(-radius,-radius,0.0f));
+//     grid->setXInterval(radius*2.0f/(float)(38-1));
+//     grid->setYInterval(radius*2.0f/(float)(39-1));
+//     
+//     float minHeight = FLT_MAX;
+//     float maxHeight = -FLT_MAX;
+// 
+// 
+//     unsigned int r;
+//     for(r=0;r<39;++r)
+//     {
+// 	for(unsigned int c=0;c<38;++c)
+// 	{
+//             float h = vertex[r+c*39][2];
+//             if (h>maxHeight) maxHeight=h;
+//             if (h<minHeight) minHeight=h;
+//         }
+//     }
+//     
+//     float hieghtScale = radius*0.5f/(maxHeight-minHeight);
+//     float hieghtOffset = -(minHeight+maxHeight)*0.5f;
+// 
+//     for(r=0;r<39;++r)
+//     {
+// 	for(unsigned int c=0;c<38;++c)
+// 	{
+//             float h = vertex[r+c*39][2];
+// 	    grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
+// 	}
+//     }
+// 
+//     
+//     geode->addDrawable(new osg::ShapeDrawable(grid));
+//      
+//     osg::Group* group = osgNew osg::Group;
+//     group->addChild(geode);
+//      
+//     return group;
+// 
 
     int numTilesX = 10;
     int numTilesY = 10;
@@ -237,7 +341,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     //Just two colours - black and white.
     osg::Vec4Array* colors = osgNew osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f)); // white
-    colors->push_back(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
+    colors->push_back(osg::Vec4(0.0f,1.0f,1.0f,1.0f)); // black
     int numColors=colors->size();
     
     
@@ -295,27 +399,27 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
     osg::Group* model = new osg::Group;
 
-    osg::Node* glider = osgDB::readNodeFile("glider.osg");
-    if (glider)
-    {
-        const osg::BoundingSphere& bs = glider->getBound();
-
-        float size = radius/bs.radius()*0.3f;
-        osg::MatrixTransform* positioned = osgNew osg::MatrixTransform;
-        positioned->setDataVariance(osg::Object::STATIC);
-        positioned->setMatrix(osg::Matrix::translate(-bs.center())*
-                                     osg::Matrix::scale(size,size,size)*
-                                     osg::Matrix::rotate(osg::inDegrees(-90.0f),0.0f,0.0f,1.0f));
-    
-        positioned->addChild(glider);
-    
-        osg::PositionAttitudeTransform* xform = osgNew osg::PositionAttitudeTransform;    
-        xform->setAppCallback(new osg::PositionAttitudeTransform::AnimationPathCallback(animationPath,0.0,1.0));
-        xform->addChild(positioned);
-
-        model->addChild(xform);
-    }
- 
+//     osg::Node* glider = osgDB::readNodeFile("glider.osg");
+//     if (glider)
+//     {
+//         const osg::BoundingSphere& bs = glider->getBound();
+// 
+//         float size = radius/bs.radius()*0.3f;
+//         osg::MatrixTransform* positioned = osgNew osg::MatrixTransform;
+//         positioned->setDataVariance(osg::Object::STATIC);
+//         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
+//                                      osg::Matrix::scale(size,size,size)*
+//                                      osg::Matrix::rotate(osg::inDegrees(-90.0f),0.0f,0.0f,1.0f));
+//     
+//         positioned->addChild(glider);
+//     
+//         osg::PositionAttitudeTransform* xform = osgNew osg::PositionAttitudeTransform;    
+//         xform->setAppCallback(new osg::PositionAttitudeTransform::AnimationPathCallback(animationPath,0.0,1.0));
+//         xform->addChild(positioned);
+// 
+//         model->addChild(xform);
+//     }
+//  
     osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
     if (cessna)
     {
@@ -325,8 +429,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         osg::MatrixTransform* positioned = osgNew osg::MatrixTransform;
         positioned->setDataVariance(osg::Object::STATIC);
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
-                                     osg::Matrix::scale(size,size,size)*
-                                     osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,1.0f));
+                              osg::Matrix::scale(size,size,size)*
+                              osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,1.0f));
     
         positioned->addChild(cessna);
     
@@ -348,20 +452,24 @@ osg::Node* createModel()
     osg::Group* root = osgNew osg::Group;
 
     // the occluder subgraph
-    osg::Node* occluder = createMovingModel(center,radius*0.8f);
+    osg::Node* occluder = createMovingModel(center,radius*0.5f);
 
     // the occludee subgraph
-    osg::Node* occludee = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius);
+    osg::Node* occludee = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
     
     // now add a state with a texture for the shadow
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
-    osg::StateSet* stateset = occludee->getOrCreateStateSet();
-//    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-    occludee->setCullCallback(new MyCullCallback(occluder,texture));
+    osg::Vec3 lightPosition(center+osg::Vec3(0.0f,0.0f,radius));
 
+    osg::Geode* lightgeode = new osg::Geode;
+    lightgeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(lightPosition,radius/100.0f)));
+
+    occludee->setCullCallback(new MyCullCallback(occluder,texture,lightPosition));
+
+    root->addChild(lightgeode);
     root->addChild(occluder);
     root->addChild(occludee);
 
@@ -402,12 +510,12 @@ int main( int argc, char **argv )
     
     // tilt the scene so the default eye position is looking down on the model.
     osg::MatrixTransform* rootnode = new osg::MatrixTransform;
-    rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
+//    rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
     rootnode->addChild(model);
 
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
-    optimzer.optimize(rootnode);
+    //optimzer.optimize(rootnode);
      
     // add a viewport to the viewer and attach the scene graph.
     viewer.addViewport( rootnode );

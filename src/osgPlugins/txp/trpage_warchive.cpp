@@ -1368,7 +1368,7 @@ bool trpgwImageHelper::WriteToArchive(const trpgTexture &tex,char *data,trpgwApp
 
 	// Get the current address
 	addr.file = texFileIDs[texFileIDs.size()-1];
-	addr.offset = texFile->Pos();
+	addr.offset = static_cast<int32>(texFile->Pos());
 
 	// Write the data out to the archive.
 	int totSize = tex.CalcTotalSize();

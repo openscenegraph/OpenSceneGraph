@@ -64,16 +64,6 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         virtual WriteResult writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL);
         virtual WriteResult writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL);
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL);
-
-        virtual ReadResult readObject(std::istream& fin,const Options* options=NULL);
-        virtual ReadResult readImage(std::istream& fin,const Options* options=NULL);
-        virtual ReadResult readHeightField(std::istream& fin,const Options* options=NULL);
-        virtual ReadResult readNode(std::istream& fin,const Options* options=NULL);
-
-        virtual WriteResult writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL);
-        virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options* options=NULL);
-        virtual WriteResult writeHeightField(const osg::HeightField& heightField,std::ostream& fout,const Options* options=NULL);
-        virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* options=NULL);
         
     protected:
     

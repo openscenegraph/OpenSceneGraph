@@ -73,10 +73,15 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Text*>(obj)!=NULL; }
         virtual const char* className() const { return "Text"; }
 
-
         void setPosition(const osg::Vec2& pos);
         void setPosition(const osg::Vec3& pos);
         const osg::Vec3& getPosition() const { return _pos; }
+
+
+        void setColor(const osg::Vec4& color) { _color = color; }
+        osg::Vec4& getColor() { return _color; }
+        const osg::Vec4& getColor() const { return _color; }
+
 
         void setDrawMode(int mode) { _drawMode=mode; }
         int getDrawMode() const { return _drawMode; }
@@ -132,8 +137,9 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         int                 _drawMode;
         int                 _boundingBoxType;
 
-        osg::Vec3        _pos;
-        osg::Vec3        _alignmentPos;
+        osg::Vec3           _pos;        
+        osg::Vec3           _alignmentPos;
+        osg::Vec4           _color;
 };
 
 }

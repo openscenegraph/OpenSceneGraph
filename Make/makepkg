@@ -63,6 +63,35 @@ print_prototype()
 
 }
 
+make_installable()
+{
+    PKGNAME=$1
+    PKGDIR=$PKGNAME.pkg
+    DISTNAME="$PKGNAME"-"`$TOPDIR/bin/osgversion`"-"$OS".shar
+
+    THISDIR=`pwd`
+    cd $PKGSUBDIR
+
+    cat << INSTALL_EOF > $DISTNAME
+
+#!/bin/sh
+cat <<-	 'LEOF' | uudecode -p | gzip -d -c | tar xvf -
+`tar cvf - $PKGDIR | gzip | uuencode .tmpuu`
+LEOF
+
+/bin/sh << EOF
+echo =========== INSTALLING  $DISTNAME =================
+pkgadd -d $PKGNAME.pkg $PKGNAME
+rm -rf $PKGDIR
+EOF
+
+
+INSTALL_EOF
+
+    chmod +x $DISTNAME
+    cd $THISDIR
+}
+
 
 make_package()
 {
@@ -80,14 +109,15 @@ make_package()
 
     print_prototype  $*  > $PKGDIR/prototype
 
-    DISTNAME="$PKGNAME"-"`$TOPDIR/bin/osgversion`"-"$OS"-"local"
+#    DISTNAME="$PKGNAME"-"`$TOPDIR/bin/osgversion`"-"$OS"-"local"
 
     THISDIR=`pwd`
     x cd $PKGDIR
     x pkgmk -d .
     x cd $THISDIR
-    x pkgtrans -s $PKGDIR $DISTNAME $PKGNAME
-    x mv "$PKGDIR"/"$DISTNAME" "$PKGDIR"/..
+#    make_installable $PKGNAME $PKGDIR $DISTNAME 
+#    x pkgtrans -s $PKGDIR $DISTNAME $PKGNAME
+#    x mv "$PKGDIR"/"$DISTNAME" "$PKGDIR"/..
 }
 
 
@@ -105,11 +135,15 @@ INST_DATA=$9
 PKGSUBDIR=dist/PKG
 
 
+
+
 make_package\
 	"OpenSceneGraph" \
 	"Open Scene Graph - Run-time environment"\
 	"An OpenGL based scene graph. This installation includes a set of run-time libraries, and demo programs"\
         $INST_LIBS $INST_PLUGINS $INST_DEMOS\
+
+make_installable "OpenSceneGraph"
 
 SUBDIRS=`ls $TOPDIR/include | grep -v CVS`
 INSTARG=""
@@ -131,6 +165,7 @@ make_package\
 	"Open Scene Graph - Development environment"\
 	"An OpenGL based scene graph. This installation includes header files and demo program source files"\
 	$INSTARG
+make_installable "OpenSceneGraph-dev"
 
 
 exit 0

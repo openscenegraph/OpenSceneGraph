@@ -49,7 +49,7 @@
 #endif
 
 #ifndef fabsf
-#define fabs (float)sqrt
+#define fabsf (float)fabs
 #endif
 
 

@@ -115,6 +115,50 @@ bool osgDB::equalCaseInsensitive(const std::string& lhs,const char* rhs)
     return true;
 }
 
+bool osgDB::containsServerAddress(const std::string& filename)
+{
+    // need to check for http://
+    if (filename.size()<7) return false;
+    if (filename.compare(0,7,"http://")==0) return true;
+    return false;
+}
+
+std::string osgDB::getServerAddress(const std::string& filename)
+{
+    if (filename.size()>=7 && filename.compare(0,7,"http://")==0)
+    {
+        std::string::size_type pos_slash = filename.find_first_of('/',7);
+        if (pos_slash!=std::string::npos)
+        {
+            return filename.substr(7,pos_slash-7);
+        }
+        else
+        {
+            return filename.substr(7,std::string::npos);
+        }
+    }
+    return "";
+}
+
+std::string osgDB::getServerFileName(const std::string& filename)
+{
+    if (filename.size()>=7 && filename.compare(0,7,"http://")==0)
+    {
+        std::string::size_type pos_slash = filename.find_first_of('/',7);
+        if (pos_slash!=std::string::npos)
+        {
+            return filename.substr(pos_slash+1,std::string::npos);
+        }
+        else
+        {
+            return "";
+        }
+    
+    }
+    return filename;
+}
+
+
 // // here a little test I wrote to make sure a couple of the above methods are
 // // working fine.
 // void test()

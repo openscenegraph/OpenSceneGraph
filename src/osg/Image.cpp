@@ -36,8 +36,8 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _dataType(image._dataType),
     _packing(image._packing),
     _data(0L),
-    _mipmapData(image._mipmapData),
-    _modifiedTag(image._modifiedTag)
+    _modifiedTag(image._modifiedTag),
+    _mipmapData(image._mipmapData)
 {
     if (image._data)
     {

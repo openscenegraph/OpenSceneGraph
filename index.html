@@ -226,6 +226,35 @@ CodeWarroir's</tt> Make/Workspace files for Mac.
 <br>
 <hr WIDTH="100%">
 <h3>
+<a NAME="Scene graph dependencies"></a><u>Scene graph dependencies</u></h3>
+Currently the only dependancy of the core scene graph libraries (osg,osgUtil
+and osgDB) is Standard C++ and OpenGL. The osgText library, osgGLUT and osgWX 
+have the following dependancies, these arn't core libraries so arn't needed
+to be compiled unless you need that feature.  The demos do however require 
+osgGLUT so its likely that you will typically need it when trying out the osg.
+The osgtext and wxsgv demos add osgText and osgWX dependancies as well, you 
+only need to compile them if you need to a demo of those features.
+
+<ul>
+<li>
+src/osgText</li>
+
+<br>The osgText library supports true type fonts via the freetype library :
+<ul><i><a href="http://www.freetype.org/">http://www.freetype.org/</a></i>
+</ul>
+
+<li>
+src/osgGLUT</li>
+
+<br>The osgGLUT library depends upon, you guessed it, glut :
+<ul><i><a href="http://www.opengl.org/developers/documentation/glut/index.html">http://www.opengl.org/developers/documentation/glut/index.html</a></i>
+</ul>
+</ul>
+
+<br>
+<br>
+<hr WIDTH="100%">
+<h3>
 <a NAME="Plug-in dependencies"></a><u>Plug-in dependencies</u></h3>
 Follows is the list of depedencies which some of the osgPlugins require,
 note the core osg and viewer do not need the following dependencies, you

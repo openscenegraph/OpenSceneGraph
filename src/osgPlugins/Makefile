@@ -2,8 +2,7 @@
 SHELL=/bin/sh
 
 #DIRS = osg rgb lib3ds flt pfb obj lwo dw bmp pic png jpeg tga tiff gif osgtgz tgz zip  
-DIRS = osg rgb lib3ds flt obj lwo dw bmp pic jpeg tga tiff osgtgz tgz zip
-
+DIRS = osg rgb lib3ds flt obj lwo dw bmp pic png jpeg tga tiff gif osgtgz tgz zip  
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
 

@@ -1120,7 +1120,7 @@ struct Registry::ReadObjectFunctor : public Registry::ReadFunctor
 {
     ReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.threadSafe_readObject(_filename, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readObject(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validObject(); }
     virtual bool isValid(osg::Object* object) const { return object!=0;  }
 };
@@ -1129,7 +1129,7 @@ struct Registry::ReadImageFunctor : public Registry::ReadFunctor
 {
     ReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw)const  { return rw.threadSafe_readImage(_filename, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw)const  { return rw.readImage(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validImage(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Image*>(object)!=0;  }
 };
@@ -1138,7 +1138,7 @@ struct Registry::ReadHeightFieldFunctor : public Registry::ReadFunctor
 {
     ReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.threadSafe_readHeightField(_filename, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readHeightField(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validHeightField(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::HeightField*>(object)!=0;  }
 };
@@ -1147,7 +1147,7 @@ struct Registry::ReadNodeFunctor : public Registry::ReadFunctor
 {
     ReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
 
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.threadSafe_readNode(_filename, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.readNode(_filename, _options); }    
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validNode(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Node*>(object)!=0;  }
 
@@ -1163,7 +1163,7 @@ struct Registry::ReadArchiveFunctor : public Registry::ReadFunctor
     ReaderWriter::ArchiveStatus _status;
     unsigned int _indexBlockSizeHint;
 
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.threadSafe_openArchive(_filename, _status, _indexBlockSizeHint, _options); }
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw) const { return rw.openArchive(_filename, _status, _indexBlockSizeHint, _options); }
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validArchive(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osgDB::Archive*>(object)!=0;  }
 
@@ -1192,7 +1192,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         osg::ref_ptr<ReaderWriter::Options> options = new ReaderWriter::Options;
         options->setDatabasePath(archiveName);
 
-        return archive->threadSafe_readObject(fileName,options.get());
+        return archive->readObject(fileName,options.get());
     }
 
     // if filename contains archive
@@ -1387,7 +1387,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->threadSafe_writeObject(obj,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1398,7 +1398,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->threadSafe_writeObject(obj,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,_options.get());
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1430,7 +1430,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->threadSafe_writeImage(image,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1441,7 +1441,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->threadSafe_writeImage(image,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,_options.get());
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1472,7 +1472,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->threadSafe_writeHeightField(HeightField,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1483,7 +1483,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->threadSafe_writeHeightField(HeightField,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,_options.get());
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1514,7 +1514,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->threadSafe_writeNode(node,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1525,7 +1525,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->threadSafe_writeNode(node,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
             if (rr.success()) return rr;
             else results.push_back(rr);
         }

@@ -15,6 +15,11 @@
 #include <osgDB/Archive>
 #include <osgDB/FileNameUtils>
 
+#include <OpenThreads/ScopedLock>
+#include <osgDB/ReentrantMutex>
+
+#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
+
 class OSGA_Archive : public osgDB::Archive
 {
     public:
@@ -78,6 +83,8 @@ class OSGA_Archive : public osgDB::Archive
         
     protected:
   
+        mutable osgDB::ReentrantMutex _serializerMutex;
+
         #if defined(_MSC_VER)
         typedef __int64 pos_type;
         typedef __int64 size_type;

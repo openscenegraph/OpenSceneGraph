@@ -306,9 +306,13 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)
     if (!_matrixStack.empty())
     {
         osg::Matrix& matrix = _matrixStack.back();
-        TransformFunctor tf(matrix);
+        osg::Matrix matrix_no_trans = matrix;
+        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
+  
+        TransformFunctor tf(matrix_no_trans);
 
         osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard.getAxis());
+        axis.normalize();
         billboard.setAxis(axis);
 
         for(int i=0;i<billboard.getNumDrawables();++i)
@@ -316,6 +320,8 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)
             billboard.setPos(i,billboard.getPos(i)*matrix);
             billboard.getDrawable(i)->applyAttributeOperation(tf);
         }
+        
+        billboard.dirtyBound();
     }
 }
 
@@ -324,6 +330,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::LOD& lod)
     if (!_matrixStack.empty())
     {
         lod.setCenter(lod.getCenter()*_matrixStack.back());
+        lod.dirtyBound();
     }
     traverse(lod);
 }
@@ -345,6 +352,8 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 
     // reset the matrix to identity.
     transform.getMatrix().makeIdent();
+    
+    transform.dirtyBound();
 
     _matrixStack.pop_back();
 }

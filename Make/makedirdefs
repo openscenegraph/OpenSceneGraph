@@ -183,6 +183,7 @@ EXAMPLE_DIRS = \
 	osgspheresegment\
 	osgstereoimage\
 	osgteapot\
+	osgtesselate\
 	osgtext\
 	osgtexture1D\
 	osgtexture2D\

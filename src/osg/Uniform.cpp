@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osg/Uniform.cpp
- * author:	Mike Weiblen 2005-03-23
+ * author:	Mike Weiblen 2005-03-30
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -23,27 +23,241 @@
 
 #include <osg/Notify>
 #include <osg/Uniform>
+#include <osg/Program>
 
 using namespace osg;
 
-
 ///////////////////////////////////////////////////////////////////////////
-// osg::Uniform::Value
+// osg::Uniform
 ///////////////////////////////////////////////////////////////////////////
 
-Uniform::Value::Value( const char* name, Type type ) :
-    _name(name), _type(type), _isValid(false)
-{}
-
-
-Uniform::Value::Value( const Value& rhs ) :
-    _name(rhs._name), _type(rhs._type), _isValid(false)
+Uniform::Uniform() :
+	_name(""), _type(UNDEFINED)
 {
-    if( rhs._isValid ) copyData(rhs);
+    // do not use this constructor in application code.
+    // it exists only because META_Object requires a trivial
+    // default constructor, but that is concept is meaningless for Uniform.
+    osg::notify(osg::FATAL) << "how got here?" << std::endl;
 }
 
 
-const char* Uniform::Value::getTypename( Type t )
+Uniform::Uniform( const char* name, Type type ) :
+	_name(name), _type(type)
+{
+    switch( _type )
+    {
+	case FLOAT:		set( 0.0f ); break;
+	case FLOAT_VEC2:	set( osg::Vec2() ); break;
+	case FLOAT_VEC3:	set( osg::Vec3() ); break;
+	case FLOAT_VEC4:	set( osg::Vec4() ); break;
+	case INT:		set( 0 ); break;
+	case INT_VEC2:		set( 0, 0 ); break;
+	case INT_VEC3:		set( 0, 0, 0 ); break;
+	case INT_VEC4:		set( 0, 0, 0, 0 ); break;
+	case BOOL:		set( false ); break;
+	case BOOL_VEC2:		set( false, false ); break;
+	case BOOL_VEC3:		set( false, false, false ); break;
+	case BOOL_VEC4:		set( false, false, false, false ); break;
+	// TODO case FLOAT_MAT2:	
+	// TODO case FLOAT_MAT3:	
+	case FLOAT_MAT4:	set( osg::Matrix() ); break;
+	case SAMPLER_1D:	set( 0 ); break;
+	case SAMPLER_2D:	set( 0 ); break;
+	case SAMPLER_3D:	set( 0 ); break;
+	case SAMPLER_CUBE:	set( 0 ); break;
+	case SAMPLER_1D_SHADOW:	set( 0 ); break;
+	case SAMPLER_2D_SHADOW:	set( 0 ); break;
+	default:
+	    osg::notify(osg::WARN) << "unhandled Uniform type" << std::endl;
+	    break;
+    }
+}
+
+Uniform::Uniform( const Uniform& rhs, const CopyOp& copyop ) :
+	Object(rhs,copyop), _name(rhs._name), _type(rhs._type)
+{
+    copyData( rhs );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+int Uniform::compare(const Uniform& rhs) const
+{
+    if( this == &rhs ) return 0;
+
+    if( _type < rhs._type ) return -1;
+    if( rhs._type < _type ) return 1;
+
+    if( _name < rhs._name ) return -1;
+    if( rhs._name < _name ) return 1;
+
+    return compareData( rhs );
+}
+
+int Uniform::compareData(const Uniform& rhs) const
+{
+    // caller must ensure that _type==rhs._type
+
+    switch( repType(getType()) )
+    {
+	case FLOAT:
+	    if( _data.f1 < rhs._data.f1 ) return -1;
+	    if( _data.f1 > rhs._data.f1 ) return  1;
+	    return 0;
+
+	case FLOAT_VEC2:
+	    if( _data.f2[0] < rhs._data.f2[0] ) return -1;
+	    if( _data.f2[0] > rhs._data.f2[0] ) return  1;
+	    if( _data.f2[1] < rhs._data.f2[1] ) return -1;
+	    if( _data.f2[1] > rhs._data.f2[1] ) return  1;
+	    return 0;
+
+	case FLOAT_VEC3:
+	    if( _data.f3[0] < rhs._data.f3[0] ) return -1;
+	    if( _data.f3[0] > rhs._data.f3[0] ) return  1;
+	    if( _data.f3[1] < rhs._data.f3[1] ) return -1;
+	    if( _data.f3[1] > rhs._data.f3[1] ) return  1;
+	    if( _data.f3[2] < rhs._data.f3[2] ) return -1;
+	    if( _data.f3[2] > rhs._data.f3[2] ) return  1;
+	    return 0;
+
+	case FLOAT_VEC4:
+	case FLOAT_MAT2:
+	    if( _data.f4[0] < rhs._data.f4[0] ) return -1;
+	    if( _data.f4[0] > rhs._data.f4[0] ) return  1;
+	    if( _data.f4[1] < rhs._data.f4[1] ) return -1;
+	    if( _data.f4[1] > rhs._data.f4[1] ) return  1;
+	    if( _data.f4[2] < rhs._data.f4[2] ) return -1;
+	    if( _data.f4[2] > rhs._data.f4[2] ) return  1;
+	    if( _data.f4[3] < rhs._data.f4[3] ) return -1;
+	    if( _data.f4[3] > rhs._data.f4[3] ) return  1;
+	    return 0;
+
+	case FLOAT_MAT3:
+	    return memcmp(_data.f9, rhs._data.f9, sizeof(_data.f9));
+
+	case FLOAT_MAT4:
+    	    return memcmp(_data.f16, rhs._data.f16, sizeof(_data.f16));
+
+	case INT:
+	    if( _data.i1 < rhs._data.i1 ) return -1;
+	    if( _data.i1 > rhs._data.i1 ) return  1;
+	    return 0;
+
+	case INT_VEC2:
+	    if( _data.i2[0] < rhs._data.i2[0] ) return -1;
+	    if( _data.i2[0] > rhs._data.i2[0] ) return  1;
+	    if( _data.i2[1] < rhs._data.i2[1] ) return -1;
+	    if( _data.i2[1] > rhs._data.i2[1] ) return  1;
+	    return 0;
+
+	case INT_VEC3:
+	    if( _data.i3[0] < rhs._data.i3[0] ) return -1;
+	    if( _data.i3[0] > rhs._data.i3[0] ) return  1;
+	    if( _data.i3[1] < rhs._data.i3[1] ) return -1;
+	    if( _data.i3[1] > rhs._data.i3[1] ) return  1;
+	    if( _data.i3[2] < rhs._data.i3[2] ) return -1;
+	    if( _data.i3[2] > rhs._data.i3[2] ) return  1;
+	    return 0;
+
+	case INT_VEC4:
+	    if( _data.i4[0] < rhs._data.i4[0] ) return -1;
+	    if( _data.i4[0] > rhs._data.i4[0] ) return  1;
+	    if( _data.i4[1] < rhs._data.i4[1] ) return -1;
+	    if( _data.i4[1] > rhs._data.i4[1] ) return  1;
+	    if( _data.i4[2] < rhs._data.i4[2] ) return -1;
+	    if( _data.i4[2] > rhs._data.i4[2] ) return  1;
+	    if( _data.i4[3] < rhs._data.i4[3] ) return -1;
+	    if( _data.i4[3] > rhs._data.i4[3] ) return  1;
+	    return 0;
+
+	default:
+	    osg::notify(osg::FATAL) << "how got here?" << std::endl;
+	    return 0;
+    }
+}
+
+void Uniform::copyData(const Uniform& rhs)
+{
+    // caller must ensure that _type==rhs._type
+
+    int i;
+    switch( repType(getType()) )
+    {
+	case FLOAT:
+	    _data.f1 = rhs._data.f1;
+	    break;
+
+	case FLOAT_VEC2:
+	    _data.f2[0] = rhs._data.f2[0];
+	    _data.f2[1] = rhs._data.f2[1];
+	    break;
+
+	case FLOAT_VEC3:
+	    _data.f3[0] = rhs._data.f3[0];
+	    _data.f3[1] = rhs._data.f3[1];
+	    _data.f3[2] = rhs._data.f3[2];
+	    break;
+
+	case FLOAT_VEC4:
+	case FLOAT_MAT2:
+	    _data.f4[0] = rhs._data.f4[0];
+	    _data.f4[1] = rhs._data.f4[1];
+	    _data.f4[2] = rhs._data.f4[2];
+	    _data.f4[3] = rhs._data.f4[3];
+	    break;
+
+	case FLOAT_MAT3:
+	    for(i=0;i<9;++i) _data.f9[i]=rhs._data.f9[i];
+	    break;
+
+	case FLOAT_MAT4:
+	    for(i=0;i<16;++i) _data.f16[i]=rhs._data.f16[i];
+	    break;
+
+	case INT:
+	    _data.i1 = rhs._data.i1;
+	    break;
+
+	case INT_VEC2:
+	    _data.i2[0] = rhs._data.i2[0];
+	    _data.i2[1] = rhs._data.i2[1];
+	    break;
+
+	case INT_VEC3:
+	    _data.i3[0] = rhs._data.i3[0];
+	    _data.i3[1] = rhs._data.i3[1];
+	    _data.i3[2] = rhs._data.i3[2];
+	    break;
+
+	case INT_VEC4:
+	    _data.i4[0] = rhs._data.i4[0];
+	    _data.i4[1] = rhs._data.i4[1];
+	    _data.i4[2] = rhs._data.i4[2];
+	    _data.i4[3] = rhs._data.i4[3];
+	    break;
+
+	default:
+	    osg::notify(osg::FATAL) << "how got here?" << std::endl;
+	    break;
+    }
+}
+
+bool Uniform::isCompatibleType( Type t ) const
+{
+    if( t == getType() ) return true;
+    if( repType(t) == repType(getType()) ) return true;
+
+    osg::notify(osg::WARN)
+	<< "Cannot assign between Uniform types " << getTypename(t)
+	<< " and " << getTypename(getType()) << std::endl;
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// static methods
+
+const char* Uniform::getTypename( Type t )
 {
     switch( t )
     {
@@ -72,150 +286,10 @@ const char* Uniform::Value::getTypename( Type t )
     }
 }
 
-
-int Uniform::Value::compare(const Value& rhs) const
+Uniform::Type Uniform::repType( Type t )
 {
-    if( this == &rhs ) return 0;
-
-    if( _type < rhs._type ) return -1;
-    if( rhs._type < _type ) return 1;
-
-    // consider invalid values "less than" valid values
-    if( !_isValid && rhs._isValid ) return -1;
-    if( _isValid && !rhs._isValid ) return 1;
-
-    if( _name < rhs._name ) return -1;
-    if( rhs._name < _name ) return 1;
-
-    if( isValid() ) return compareData( rhs );
-
-    return 0;
-}
-
-
-
-void Uniform::Value:: set( float f )
-{
-    _data.f1 = f;
-    _isValid = true;
-}
-
-void Uniform::Value:: set( const osg::Vec2& v2 )
-{
-    _data.f2[0] = v2.x();
-    _data.f2[1] = v2.y();
-    _isValid = true;
-}
-
-void Uniform::Value:: set( const osg::Vec3& v3 )
-{
-    _data.f3[0] = v3.x();
-    _data.f3[1] = v3.y();
-    _data.f3[2] = v3.z();
-    _isValid = true;
-}
-
-void Uniform::Value:: set( const osg::Vec4& v4 )
-{
-    _data.f4[0] = v4.x();
-    _data.f4[1] = v4.y();
-    _data.f4[2] = v4.z();
-    _data.f4[3] = v4.w();
-    _isValid = true;
-}
-
-//TODO void Uniform::Value:: set( const osg::Matrix2& m2 )
-
-//TODO void Uniform::Value:: set( const osg::Matrix3& m3 )
-
-void Uniform::Value:: set( const osg::Matrix& m4 )
-{	// TODO verify if needs to be transposed
-    int n = 0;
-    for(int row=0; row<4; ++row)
+    switch( t )
     {
-	for(int col=0; col<4; ++col)
-	{
-	    _data.f16[n++] = m4(row,col);
-	}
-    }
-    _isValid = true;
-}
-
-void Uniform::Value:: set( int i )
-{
-    _data.i1 = i;
-    _isValid = true;
-}
-
-//TODO void Uniform::Value:: set( int i0, int i1 )
-
-//TODO void Uniform::Value:: set( int i0, int i1, int i2 )
-
-//TODO void Uniform::Value:: set( int i0, int i1, int i2, int i3 )
-
-//TODO void Uniform::Value:: set( bool b )
-
-//TODO void Uniform::Value:: set( bool b0, bool b1 )
-
-//TODO void Uniform::Value:: set( bool b0, bool b1, bool b2 )
-
-//TODO void Uniform::Value:: set( bool b0, bool b1, bool b2, bool b3 )
-
-
-
-int Uniform::Value::compareData(const Value& rhs) const
-{
-    // caller is responsible for ensuring that
-    // _type==rhs._type && _isValid && rhs._isValid
-
-    switch( getType() )
-    {
-	case FLOAT:
-	{
-	    if( _data.f1 < rhs._data.f1 ) return -1;
-	    if( _data.f1 > rhs._data.f1 ) return  1;
-	    return 0;
-	}
-
-	case FLOAT_VEC2:
-	{
-	    if( _data.f2[0] < rhs._data.f2[0] ) return -1;
-	    if( _data.f2[0] > rhs._data.f2[0] ) return  1;
-	    if( _data.f2[1] < rhs._data.f2[1] ) return -1;
-	    if( _data.f2[1] > rhs._data.f2[1] ) return  1;
-	    return 0;
-	}
-
-	case FLOAT_VEC3:
-	{
-	    if( _data.f3[0] < rhs._data.f3[0] ) return -1;
-	    if( _data.f3[0] > rhs._data.f3[0] ) return  1;
-	    if( _data.f3[1] < rhs._data.f3[1] ) return -1;
-	    if( _data.f3[1] > rhs._data.f3[1] ) return  1;
-	    if( _data.f3[2] < rhs._data.f3[2] ) return -1;
-	    if( _data.f3[2] > rhs._data.f3[2] ) return  1;
-	    return 0;
-	}
-
-	case FLOAT_VEC4:
-	case FLOAT_MAT2:
-	{
-	    if( _data.f4[0] < rhs._data.f4[0] ) return -1;
-	    if( _data.f4[0] > rhs._data.f4[0] ) return  1;
-	    if( _data.f4[1] < rhs._data.f4[1] ) return -1;
-	    if( _data.f4[1] > rhs._data.f4[1] ) return  1;
-	    if( _data.f4[2] < rhs._data.f4[2] ) return -1;
-	    if( _data.f4[2] > rhs._data.f4[2] ) return  1;
-	    if( _data.f4[3] < rhs._data.f4[3] ) return -1;
-	    if( _data.f4[3] > rhs._data.f4[3] ) return  1;
-	    return 0;
-	}
-
-	case FLOAT_MAT3:	return memcmp(_data.f9, rhs._data.f9, sizeof(_data.f9));
-
-	case FLOAT_MAT4:	return memcmp(_data.f16, rhs._data.f16, sizeof(_data.f16));
-
-	case INT:
 	case BOOL:
 	case SAMPLER_1D:
 	case SAMPLER_2D:
@@ -223,238 +297,142 @@ int Uniform::Value::compareData(const Value& rhs) const
 	case SAMPLER_CUBE:
 	case SAMPLER_1D_SHADOW:
 	case SAMPLER_2D_SHADOW:
-	{
-	    if( _data.i1 < rhs._data.i1 ) return -1;
-	    if( _data.i1 > rhs._data.i1 ) return  1;
-	    return 0;
-	}
+	    return INT;
 
-	case INT_VEC2:
 	case BOOL_VEC2:
-	{
-	    if( _data.i2[0] < rhs._data.i2[0] ) return -1;
-	    if( _data.i2[0] > rhs._data.i2[0] ) return  1;
-	    if( _data.i2[1] < rhs._data.i2[1] ) return -1;
-	    if( _data.i2[1] > rhs._data.i2[1] ) return  1;
-	    return 0;
-	}
+	    return INT_VEC2;
 
-	case INT_VEC3:
 	case BOOL_VEC3:
-	{
-	    if( _data.i3[0] < rhs._data.i3[0] ) return -1;
-	    if( _data.i3[0] > rhs._data.i3[0] ) return  1;
-	    if( _data.i3[1] < rhs._data.i3[1] ) return -1;
-	    if( _data.i3[1] > rhs._data.i3[1] ) return  1;
-	    if( _data.i3[2] < rhs._data.i3[2] ) return -1;
-	    if( _data.i3[2] > rhs._data.i3[2] ) return  1;
-	    return 0;
-	}
+	    return INT_VEC3;
 
-	case INT_VEC4:
 	case BOOL_VEC4:
-	{
-	    if( _data.i4[0] < rhs._data.i4[0] ) return -1;
-	    if( _data.i4[0] > rhs._data.i4[0] ) return  1;
-	    if( _data.i4[1] < rhs._data.i4[1] ) return -1;
-	    if( _data.i4[1] > rhs._data.i4[1] ) return  1;
-	    if( _data.i4[2] < rhs._data.i4[2] ) return -1;
-	    if( _data.i4[2] > rhs._data.i4[2] ) return  1;
-	    if( _data.i4[3] < rhs._data.i4[3] ) return -1;
-	    if( _data.i4[3] > rhs._data.i4[3] ) return  1;
-	    return 0;
-	}
+	    return INT_VEC4;
 
 	default:
-	    osg::notify(osg::INFO) << "how got here?" << std::endl;
-	    return 0;
-    }
-}
-
-
-void Uniform::Value::copyData(const Value& rhs)
-{
-    // caller is responsible for ensuring that
-    // _type==rhs._type && rhs._isValid
-
-    _isValid = true;
-    switch( getType() )
-    {
-	case FLOAT:
-	    _data.f1 = rhs._data.f1;
-	    break;
-
-	case FLOAT_VEC2:
-	    _data.f2[0] = rhs._data.f2[0];
-	    _data.f2[1] = rhs._data.f2[1];
-	    break;
-
-	case FLOAT_VEC3:
-	    _data.f3[0] = rhs._data.f3[0];
-	    _data.f3[1] = rhs._data.f3[1];
-	    _data.f3[2] = rhs._data.f3[2];
-	    break;
-
-	case FLOAT_VEC4:
-	case FLOAT_MAT2:
-	    _data.f4[0] = rhs._data.f4[0];
-	    _data.f4[1] = rhs._data.f4[1];
-	    _data.f4[2] = rhs._data.f4[2];
-	    _data.f4[3] = rhs._data.f4[3];
-	    break;
-
-	case FLOAT_MAT3:
-	    for(int i=0;i<9;++i) _data.f9[i]=rhs._data.f9[i];
-	    break;
-
-	case FLOAT_MAT4:
-	    for(int i=0;i<16;++i) _data.f16[i]=rhs._data.f16[i];
-	    break;
-
-	case INT:
-	case BOOL:
-	case SAMPLER_1D:
-	case SAMPLER_2D:
-	case SAMPLER_3D:
-	case SAMPLER_CUBE:
-	case SAMPLER_1D_SHADOW:
-	case SAMPLER_2D_SHADOW:
-	    _data.i1 = rhs._data.i1;
-	    break;
-
-	case INT_VEC2:
-	case BOOL_VEC2:
-	    _data.i2[0] = rhs._data.i2[0];
-	    _data.i2[1] = rhs._data.i2[1];
-	    break;
-
-	case INT_VEC3:
-	case BOOL_VEC3:
-	    _data.i3[0] = rhs._data.i3[0];
-	    _data.i3[1] = rhs._data.i3[1];
-	    _data.i3[2] = rhs._data.i3[2];
-	    break;
-
-	case INT_VEC4:
-	case BOOL_VEC4:
-	    _data.i4[0] = rhs._data.i4[0];
-	    _data.i4[1] = rhs._data.i4[1];
-	    _data.i4[2] = rhs._data.i4[2];
-	    _data.i4[3] = rhs._data.i4[3];
-	    break;
-
-	default:
-	    osg::notify(osg::INFO) << "how got here?" << std::endl;
-	    break;
+	    return t;
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
-// osg::Uniform
-///////////////////////////////////////////////////////////////////////////
-
-Uniform::Uniform() :
-    _value( "", Value::UNDEFINED )
-{
-    // do not use this constructor in application code!
-    // it exists only because StateAttribute _requires_ a trivial default
-    // constructor, but that is concept is meaningless for Uniform.
-}
-
-
-Uniform::Uniform( const char* name, Value::Type type ) :
-    _value( name, type )
-{}
-
-
-Uniform::Uniform( const Uniform& gu, const CopyOp& copyop ) :
-    Object(gu,copyop),
-    _value( gu._value )
-{
-}
-
+// value constructors
 
 Uniform::Uniform( const char* name, float f ) :
-    _value( name, Value::FLOAT )
+	_name(name), _type(FLOAT)
 {
-    _value.set( f );
+    set( f );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec2& v2 ) :
-    _value( name, Value::FLOAT_VEC2 )
+	_name(name), _type(FLOAT_VEC2)
 {
-    _value.set( v2 );
+    set( v2 );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec3& v3 ) :
-    _value( name, Value::FLOAT_VEC3 )
+	_name(name), _type(FLOAT_VEC3)
 {
-    _value.set( v3 );
+    set( v3 );
 }
 
 Uniform::Uniform( const char* name, const osg::Vec4& v4 ) :
-    _value( name, Value::FLOAT_VEC4 )
+	_name(name), _type(FLOAT_VEC4)
 {
-    _value.set( v4 );
+    set( v4 );
 }
 
-//TODO Uniform::Uniform( const char* name, const osg::Matrix2& m2 )
+//Uniform::Uniform( const char* name, const osg::Matrix2& m2 )
 
-//TODO Uniform::Uniform( const char* name, const osg::Matrix3& m3 )
+//Uniform::Uniform( const char* name, const osg::Matrix3& m3 )
 
 Uniform::Uniform( const char* name, const osg::Matrix& m4 ) :
-    _value( name, Value::FLOAT_MAT4 )
+	_name(name), _type(FLOAT_MAT4)
 {
-    _value.set( m4 );
+    set( m4 );
 }
 
 Uniform::Uniform( const char* name, int i ) :
-    _value( name, Value::INT )
+	_name(name), _type(INT)
 {
-    _value.set( i );
+    set( i );
 }
 
-//TODO Uniform::Uniform( const char* name, int i0, int i1 )
+Uniform::Uniform( const char* name, int i0, int i1 ) :
+	_name(name), _type(INT_VEC2)
+{
+    set( i0, i1 );
+}
 
-//TODO Uniform::Uniform( const char* name, int i0, int i1, int i2 )
+Uniform::Uniform( const char* name, int i0, int i1, int i2 ) :
+	_name(name), _type(INT_VEC3)
+{
+    set( i0, i1, i2 );
+}
 
-//TODO Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 )
+Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 ) :
+	_name(name), _type(INT_VEC4)
+{
+    set( i0, i1, i2, i3 );
+}
 
-//TODO Uniform::Uniform( const char* name, bool b )
+Uniform::Uniform( const char* name, bool b ) :
+	_name(name), _type(BOOL)
+{
+    set( b );
+}
 
-//TODO Uniform::Uniform( const char* name, bool b0, bool b1 )
+Uniform::Uniform( const char* name, bool b0, bool b1 ) :
+	_name(name), _type(BOOL_VEC2)
+{
+    set( b0, b1 );
+}
 
-//TODO Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 )
+Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 ) :
+	_name(name), _type(BOOL_VEC3)
+{
+    set( b0, b1, b2 );
+}
 
-//TODO Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 )
+Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 ) :
+	_name(name), _type(BOOL_VEC4)
+{
+    set( b0, b1, b2, b3 );
+}
 
+///////////////////////////////////////////////////////////////////////////
+// value assignment
 
 bool Uniform::set( float f )
 {
-    if( ! isCompatibleType( Value::FLOAT ) ) return false;
-    _value.set( f );
+    if( ! isCompatibleType(FLOAT) ) return false;
+    _data.f1 = f;
     return true;
 }
 
 bool Uniform::set( const osg::Vec2& v2 )
 {
-    if( ! isCompatibleType( Value::FLOAT_VEC2 ) ) return false;
-    _value.set( v2 );
+    if( ! isCompatibleType(FLOAT_VEC2) ) return false;
+    _data.f2[0] = v2.x();
+    _data.f2[1] = v2.y();
     return true;
 }
 
 bool Uniform::set( const osg::Vec3& v3 )
 {
-    if( ! isCompatibleType( Value::FLOAT_VEC3 ) ) return false;
-    _value.set( v3 );
+    if( ! isCompatibleType(FLOAT_VEC3) ) return false;
+    _data.f3[0] = v3.x();
+    _data.f3[1] = v3.y();
+    _data.f3[2] = v3.z();
     return true;
 }
 
 bool Uniform::set( const osg::Vec4& v4 )
 {
-    if( ! isCompatibleType( Value::FLOAT_VEC4 ) ) return false;
-    _value.set( v4 );
+    if( ! isCompatibleType(FLOAT_VEC4) ) return false;
+    _data.f4[0] = v4.x();
+    _data.f4[1] = v4.y();
+    _data.f4[2] = v4.z();
+    _data.f4[3] = v4.w();
     return true;
 }
 
@@ -464,43 +442,207 @@ bool Uniform::set( const osg::Vec4& v4 )
 
 bool Uniform::set( const osg::Matrix& m4 )
 {
-    if( ! isCompatibleType( Value::FLOAT_MAT4 ) ) return false;
-    _value.set( m4 );
+    if( ! isCompatibleType(FLOAT_MAT4) ) return false;
+    int n = 0;
+    for(int row=0; row<4; ++row)
+    {
+	for(int col=0; col<4; ++col)
+	{
+	    _data.f16[n++] = m4(row,col);
+	}
+    }
     return true;
 }
 
 bool Uniform::set( int i )
 {
-    if( ! isCompatibleType( Value::INT ) ) return false;
-    _value.set( i );
+    if( ! isCompatibleType(INT) ) return false;
+    _data.i1 = i;
     return true;
 }
 
-//TODO bool Uniform::set( int i0, int i1 )
-
-//TODO bool Uniform::set( int i0, int i1, int i2 )
-
-//TODO bool Uniform::set( int i0, int i1, int i2, int i3 )
-
-//TODO bool Uniform::set( bool b )
-
-//TODO bool Uniform::set( bool b0, bool b1 ); 
-
-//TODO bool Uniform::set( bool b0, bool b1, bool b2 )
-
-//TODO bool Uniform::set( bool b0, bool b1, bool b2, bool b3 )
-
-
-bool Uniform::isCompatibleType( Value::Type t ) const
+bool Uniform::set( int i0, int i1 )
 {
-    if( t == _value.getType() ) return true;
+    if( ! isCompatibleType(INT_VEC2) ) return false;
+    _data.i2[0] = i0;
+    _data.i2[1] = i1;
+    return true;
+}
 
-    osg::notify(osg::WARN) <<
-	"Cannot assign " << _value.getTypename(t) <<
-	" to Uniform \"" << _value.getName() <<
-	"\" of type " << _value.getTypename( _value.getType() ) <<
-	std::endl;
-    return false;
+bool Uniform::set( int i0, int i1, int i2 )
+{
+    if( ! isCompatibleType(INT_VEC3) ) return false;
+    _data.i3[0] = i0;
+    _data.i3[1] = i1;
+    _data.i3[2] = i2;
+    return true;
+}
+
+bool Uniform::set( int i0, int i1, int i2, int i3 )
+{
+    if( ! isCompatibleType(INT_VEC4) ) return false;
+    _data.i4[0] = i0;
+    _data.i4[1] = i1;
+    _data.i4[2] = i2;
+    _data.i4[3] = i3;
+    return true;
+}
+
+bool Uniform::set( bool b )
+{
+    if( ! isCompatibleType(BOOL) ) return false;
+    _data.i1 = b;
+    return true;
+}
+
+bool Uniform::set( bool b0, bool b1 )
+{
+    if( ! isCompatibleType(BOOL_VEC2) ) return false;
+    _data.i2[0] = b0;
+    _data.i2[1] = b1;
+    return true;
+}
+
+bool Uniform::set( bool b0, bool b1, bool b2 )
+{
+    if( ! isCompatibleType(BOOL_VEC3) ) return false;
+    _data.i3[0] = b0;
+    _data.i3[1] = b1;
+    _data.i3[2] = b2;
+    return true;
+}
+
+bool Uniform::set( bool b0, bool b1, bool b2, bool b3 )
+{
+    if( ! isCompatibleType(BOOL_VEC4) ) return false;
+    _data.i4[0] = b0;
+    _data.i4[1] = b1;
+    _data.i4[2] = b2;
+    _data.i4[3] = b3;
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// value query
+
+bool Uniform::get( float& f ) const
+{
+    if( ! isCompatibleType(FLOAT) ) return false;
+    f = _data.f1;
+    return true;
+}
+
+bool Uniform::get( osg::Vec2& v2 ) const
+{
+    if( ! isCompatibleType(FLOAT_VEC2) ) return false;
+    v2.x() = _data.f2[0];
+    v2.y() = _data.f2[1];
+    return true;
+}
+
+bool Uniform::get( osg::Vec3& v3 ) const
+{
+    if( ! isCompatibleType(FLOAT_VEC3) ) return false;
+    v3.x() = _data.f3[0];
+    v3.y() = _data.f3[1];
+    v3.z() = _data.f3[2];
+    return true;
+}
+
+bool Uniform::get( osg::Vec4& v4 ) const
+{
+    if( ! isCompatibleType(FLOAT_VEC4) ) return false;
+    v4.x() = _data.f4[0];
+    v4.y() = _data.f4[1];
+    v4.z() = _data.f4[2];
+    v4.w() = _data.f4[3];
+    return true;
+}
+
+//TODO bool Uniform::get( osg::Matrix2& m2 ) const
+
+//TODO bool Uniform::get( osg::Matrix3& m3 ) const
+
+bool Uniform::get( osg::Matrix& m4 ) const
+{
+    if( ! isCompatibleType(FLOAT_MAT4) ) return false;
+    int n = 0;
+    for(int row=0; row<4; ++row)
+    {
+	for(int col=0; col<4; ++col)
+	{
+	    m4(row,col) = _data.f16[n++];
+	}
+    }
+    return true;
+}
+
+bool Uniform::get( int& i ) const
+{
+    if( ! isCompatibleType(INT) ) return false;
+    i = _data.i1;
+    return true;
+}
+
+bool Uniform::get( int& i0, int& i1 ) const
+{
+    if( ! isCompatibleType(INT_VEC2) ) return false;
+    i0 = _data.i2[0];
+    i1 = _data.i2[1];
+    return true;
+}
+
+bool Uniform::get( int& i0, int& i1, int& i2 ) const
+{
+    if( ! isCompatibleType(INT_VEC3) ) return false;
+    i0 = _data.i3[0];
+    i1 = _data.i3[1];
+    i2 = _data.i3[2];
+    return true;
+}
+
+bool Uniform::get( int& i0, int& i1, int& i2, int& i3 ) const
+{
+    if( ! isCompatibleType(INT_VEC4) ) return false;
+    i0 = _data.i4[0];
+    i1 = _data.i4[1];
+    i2 = _data.i4[2];
+    i3 = _data.i4[3];
+    return true;
+}
+
+bool Uniform::get( bool& b ) const
+{
+    if( ! isCompatibleType(BOOL) ) return false;
+    b = (_data.i1 != 0);
+    return true;
+}
+
+bool Uniform::get( bool& b0, bool& b1 ) const
+{
+    if( ! isCompatibleType(BOOL_VEC2) ) return false;
+    b0 = (_data.i2[0] != 0);
+    b1 = (_data.i2[1] != 0);
+    return true;
+}
+
+bool Uniform::get( bool& b0, bool& b1, bool& b2 ) const
+{
+    if( ! isCompatibleType(BOOL_VEC3) ) return false;
+    b0 = (_data.i3[0] != 0);
+    b1 = (_data.i3[1] != 0);
+    b2 = (_data.i3[2] != 0);
+    return true;
+}
+
+bool Uniform::get( bool& b0, bool& b1, bool& b2, bool& b3 ) const
+{
+    if( ! isCompatibleType(BOOL_VEC4) ) return false;
+    b0 = (_data.i4[0] != 0);
+    b1 = (_data.i4[1] != 0);
+    b2 = (_data.i4[2] != 0);
+    b3 = (_data.i4[3] != 0);
+    return true;
 }
 
 /*EOF*/

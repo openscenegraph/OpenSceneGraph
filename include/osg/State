@@ -17,6 +17,7 @@
 #include <osg/Export>
 #include <osg/StateSet>
 #include <osg/Matrix>
+#include <osg/Uniform>
 
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
@@ -25,6 +26,7 @@
 
 #include <vector>
 #include <map>
+#include <string>
 
 #ifndef GL_TEXTURE0
 #define GL_TEXTURE0 0x84C0
@@ -710,6 +712,13 @@ class SG_EXPORT State : public Referenced
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
 
+        typedef std::map< std::string,ref_ptr<Uniform> >  UniformMap;
+        const Uniform* findUniform( const std::string& name )
+        {
+            UniformMap::const_iterator itr = _uniformMap.find( name );
+            return (itr != _uniformMap.end()) ? itr->second.get() : 0;
+        }
+
     protected:
 
         virtual ~State();
@@ -839,6 +848,8 @@ class SG_EXPORT State : public Referenced
 
         TextureModeMapList                                              _textureModeMapList;
         TextureAttributeMapList                                         _textureAttributeMapList;
+
+        UniformMap                                                      _uniformMap;
 
         StateSetStack                                                   _drawStateStack;
 

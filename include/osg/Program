@@ -12,21 +12,15 @@
 */
 
 /* file:	include/osg/Program
- * author:	Mike Weiblen 2005-03-23
+ * author:	Mike Weiblen 2005-03-30
 */
-
-// NOTICE: This code is CLOSED during construction and/or renovation!
-// It is in active development, so DO NOT yet use in application code.
-// This notice will be removed when the code is open for business.
-// For development plan and status see:
-// http://www.openscenegraph.org/index.php?page=Community.DevelopmentWork
-
 
 #ifndef OSG_PROGRAM
 #define OSG_PROGRAM 1
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <osg/buffered_value>
 #include <osg/ref_ptr>
@@ -180,6 +174,7 @@ class SG_EXPORT GL2Extensions : public osg::Referenced
 	GLuint getCurrentProgram() const;
 	bool getProgramInfoLog( GLuint program, std::string& result ) const;
 	bool getShaderInfoLog( GLuint shader, std::string& result ) const;
+	bool getAttribLocation( const char* attribName, GLuint& slot ) const;
 
     protected:
 	~GL2Extensions() {}
@@ -339,8 +334,10 @@ class SG_EXPORT Program : public osg::StateAttribute
 	  * Mark Program as needing relink.  Return true for success */
 	bool removeShader( Shader* shader );
 
-	/** */
+	/** Add an attribute location binding. */
 	void bindAttribLocation( GLuint index, const char* name );
+	typedef std::map<std::string,GLuint> AttribBindingList;
+	const AttribBindingList& getAttribBindingList() const { return _attribBindingList; }
 
 	/** Return true if this Program represents "fixed-functionality" rendering */
 	bool isFixedFunction() const;
@@ -353,12 +350,6 @@ class SG_EXPORT Program : public osg::StateAttribute
 	void setName( const char* name ) { _name = name; }
 	const std::string& getName() const { return _name; }
 
-	/** should Uniform values be tested to avoid redundant setting? */
-	void setAvoidRedundantUniformSetting( bool flag ) { _avoidRedundantUniformSetting = flag; }
-	bool getAvoidRedundantUniformSetting() const { return _avoidRedundantUniformSetting; }
-
-	// TODO glBindAttribLocation
-
         /** Mark internal glProgram for deletion.
 	  * Deletion requests are queued until they can be executed
 	  * in the proper GL context. */
@@ -370,23 +361,22 @@ class SG_EXPORT Program : public osg::StateAttribute
 
 
     protected:
-	/** An OSG-internal encapsulation of glProgram's active uniforms */
-	class ActiveUniform : public osg::Referenced
+	class ActiveUniform : public osg::Uniform
 	{
 	    public:
-		ActiveUniform( const GLchar* name, GLenum type );
+		ActiveUniform( const char* name, GLenum type, GLint loc );
+		void applyData( const GL2Extensions* ext, GLuint prog );
 
 	    protected:
 		virtual ~ActiveUniform() {}
-
-		Uniform::Value _value;
-		GLint _location;
+		const GLint _location;
 
 	    private:
 		ActiveUniform();	// disallowed
+		ActiveUniform(ActiveUniform&);	// disallowed
+		ActiveUniform& operator=(ActiveUniform&);	// disallowed
 	};
-	typedef osg::ref_ptr< ActiveUniform > ActiveUniformPtr;
-	typedef std::vector< ActiveUniformPtr > ActiveUniformList;
+	typedef std::vector< osg::ref_ptr<ActiveUniform> > ActiveUniformList;
 
 
     protected:
@@ -405,8 +395,10 @@ class SG_EXPORT Program : public osg::StateAttribute
 		void getInfoLog( std::string& infoLog ) const;
 
 		void useProgram() const;
-
 		void applyUniforms( osg::State& state ) const;
+
+		GLint getUniformLocation( const char* name ) const;
+		GLint getAttribLocation( const char* name ) const;
 
 	    protected:	/*methods*/
 		~PerContextProgram();
@@ -438,11 +430,13 @@ class SG_EXPORT Program : public osg::StateAttribute
         PerContextProgram* getPCP(unsigned int contextID) const;
 
     protected:	/*data*/
-	bool _avoidRedundantUniformSetting;
 	std::string _name;
+        mutable osg::buffered_value< osg::ref_ptr<PerContextProgram> > _pcpList;
+	AttribBindingList _attribBindingList;
+
 	typedef std::vector< ref_ptr<Shader> > ShaderList;
 	ShaderList _shaderList;
-        mutable osg::buffered_value< osg::ref_ptr<PerContextProgram> > _pcpList;
+
 
     private:
         Program& operator=(const Program&);	// disallowed

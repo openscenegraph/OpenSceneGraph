@@ -13,15 +13,8 @@
 */
 
 /* file:	src/osg/Shader.cpp
- * author:	Mike Weiblen 2005-03-23
+ * author:	Mike Weiblen 2005-03-30
 */
-
-// NOTICE: This code is CLOSED during construction and/or renovation!
-// It is in active development, so DO NOT yet use in application code.
-// This notice will be removed when the code is open for business.
-// For development plan and status see:
-// http://www.openscenegraph.org/index.php?page=Community.DevelopmentWork
-
 
 #include <fstream>
 #include <list>
@@ -290,7 +283,7 @@ void Shader::PerContextShader::compileShader()
     if( ! _needsCompile ) return;
     _needsCompile = false;
 
-    GLint compiled;
+    GLint compiled = GL_FALSE;
     const char* sourceText = _shader->getShaderSource().c_str();
     _extensions->glShaderSource( _glShaderHandle, 1, &sourceText, NULL );
     _extensions->glCompileShader( _glShaderHandle );

@@ -84,16 +84,32 @@ int main( int argc, char **argv )
     // is added to ensure that we see the wireframe itself, and turn off 
     // so texturing too.
     osg::StateSet* stateset = new osg::StateSet;
-    osg::Material* material = new osg::Material;
     osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
     polyoffset->setFactor(-1.0f);
     polyoffset->setUnits(-1.0f);
     osg::PolygonMode* polymode = new osg::PolygonMode;
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
-    stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     stateset->setAttributeAndModes(polyoffset,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+#if 1
+    osg::Material* material = new osg::Material;
+    stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+#else
+    // version which sets the color of the wireframe.
+    osg::Material* material = new osg::Material;
+    material->setColorMode(osg::Material::OFF); // switch glColor usage off
+    // turn all lighting off 
+    material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,0.0f,0.0f,1.0f));
+    material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,0.0f,0.0f,1.0f));
+    material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,0.0f,0.0f,1.0f));
+    // except emission... in which we set the color we desire
+    material->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0,1.0f,0.0f,1.0f));
+    stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+#endif
+
     stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
     
 //     osg::LineStipple* linestipple = new osg::LineStipple;

@@ -1,8 +1,12 @@
 #include <stdio.h>
+
+#include <osg/ArgumentParser>
+#include <osg/ApplicationUsage>
 #include <osg/Group>
 #include <osg/Notify>
 #include <osg/Vec3>
 #include <osg/Geometry>
+#include <osg/Texture2D>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -11,12 +15,15 @@
 
 #include <osgUtil/Optimizer>
 
+#include <osgProducer/Viewer>
+
+#include <iostream>
+
 #include "OrientationConverter.h"
 #include "GeoSet.h"
 
 typedef std::vector<std::string> FileNameList;
 
-static bool do_convert = false;
 
 ////////////////////////////////////////////////////////////////////////////
 // Convert GeoSet To Geometry Visitor.
@@ -55,16 +62,113 @@ public:
 
 };
 
+class GraphicsContext {
+    public:
+        GraphicsContext()
+        {
+            rs = new Producer::RenderSurface;
+            rs->setWindowRectangle(0,0,1,1);
+            rs->useBorder(false);
+            rs->useConfigEventThread(false);
+            rs->realize();
+            std::cout<<"Realized window"<<std::endl;
+        }
+
+        virtual ~GraphicsContext()
+        {
+        }
+        
+    private:
+        Producer::ref_ptr<Producer::RenderSurface> rs;
+};
+
+class CompressTexturesVisitor : public osg::NodeVisitor
+{
+public:
+
+    CompressTexturesVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    virtual void apply(osg::Node& node)
+    {
+        if (node.getStateSet()) apply(*node.getStateSet());
+        traverse(node);
+    }
+    
+    virtual void apply(osg::Geode& node)
+    {
+        if (node.getStateSet()) apply(*node.getStateSet());
+        
+        for(unsigned int i=0;i<node.getNumDrawables();++i)
+        {
+            osg::Drawable* drawable = node.getDrawable(i);
+            if (drawable && drawable->getStateSet()) apply(*drawable->getStateSet());
+        }
+        
+        traverse(node);
+    }
+    
+    virtual void apply(osg::StateSet& stateset)
+    {
+        // search for the existance of any texture object attributes
+        for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
+        {
+            osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+            if (texture)
+            {
+                _textureSet.insert(texture);
+            }
+        }
+    }
+    
+    void compress()
+    {
+        GraphicsContext context;
+
+        osg::ref_ptr<osg::State> state = new osg::State;
+
+        for(TextureSet::iterator itr=_textureSet.begin();
+            itr!=_textureSet.end();
+            ++itr)
+        {
+            osg::Texture2D* texture = const_cast<osg::Texture2D*>(itr->get());
+            osg::Image* image = texture->getImage();
+            if (image && 
+                (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA) &&
+                (image->s()>=32 && image->t()>=32))
+            {
+                texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+
+                // get OpenGL driver to create texture from image.
+                texture->apply(*state);
+
+                image->readImageFromCurrentTexture(0,true);
+
+                texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+            }
+        }
+    }
+    
+    typedef std::set< osg::ref_ptr<osg::Texture2D> > TextureSet;
+    TextureSet _textureSet;
+    
+
+};
+
+
 static void usage( const char *prog, const char *msg )
 {
-    osg::notify(osg::NOTICE)<< std::endl;
-    osg::notify(osg::NOTICE) << msg << std::endl;
+    if (msg)
+    {
+        osg::notify(osg::NOTICE)<< std::endl;
+        osg::notify(osg::NOTICE) << msg << std::endl;
+    }
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"usage:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    " << prog << " [options] infile1 [infile2 ...] outfile"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"options:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    -O option          - ReaderWriter option"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compress         - Compress textures."<< std::endl;
     osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;
@@ -112,177 +216,126 @@ static void usage( const char *prog, const char *msg )
                               << std::endl;
 }
 
-static bool 
-parse_args( int argc, char **argv, FileNameList &fileNames,
-            OrientationConverter &oc, osgDB::ReaderWriter::Options* options )
-{
-    int nexti;
-    std::string opt = "";
-
-    for(int i = 1; i < argc; i=nexti )
-    {
-        nexti = i+1;
-
-        if (argv[i][0]=='-')
-        {
-              for( unsigned int j = 1; j < strlen( argv[i] ); j++ )
-            {
-                switch(argv[i][j])
-                {
-                    case 'O':
-                        if (nexti<argc) {
-                            if (opt.size() == 0)
-                                opt = argv[nexti++];
-                            else
-                                opt = opt+" "+argv[nexti++];
-                        }
-                        else {
-                            usage( argv[0], "ReaderWriter option requires an argument." );
-                            return false;
-                        }
-                        break;
-
-                    case('e'):
-                        if (nexti<argc)
-                        {
-                            std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(argv[nexti++]);
-                            osgDB::Registry::instance()->loadLibrary(libName);
-                        }
-                        else
-                        {
-                            usage( argv[0], "Extension option requires an argument." );
-                            return false;
-                        }
-                        break;
-
-                    case('l'):
-                        if (nexti<argc)
-                        {
-                            osgDB::Registry::instance()->loadLibrary(argv[nexti++]);
-                        }
-                        else
-                        {
-                            usage( argv[0], "Library option requires an argument." );
-                            return false;
-                        }
-                        break;
-
-                    case 'o' :
-                        if( nexti < argc )
-                        {
-                            osg::Vec3 from, to;
-                            if( sscanf( argv[nexti], "%f,%f,%f-%f,%f,%f",
-                                    &from[0], &from[1], &from[2],
-                                    &to[0], &to[1], &to[2]  )
-                                != 6 )
-                            {
-                                float degrees;
-                                osg::Vec3 axis;
-                                // Try deg-axis format
-                                if( sscanf( argv[nexti], "%f-%f,%f,%f",
-                                        &degrees, &axis[0], &axis[1], &axis[2]  ) != 4 )
-                                {
-                                    usage( argv[0], "Orientation argument format incorrect." );
-                                    return false;
-                                }
-                                else
-                                {
-                                    oc.setRotation( degrees, axis );
-                                    do_convert = true;
-                                }
-                            }
-                            else
-                            {
-                                oc.setRotation( from, to );
-                                do_convert = true;
-                            }
-                        }
-                        else
-                        {
-                            usage( argv[0], "Orientation conversion option requires an argument." );
-                            return false;
-                        }
-                        nexti++;
-                        break;
-
-                    case 't' :
-                        if( nexti < argc )
-                        {
-                            osg::Vec3 trans(0,0,0);
-                            if( sscanf( argv[nexti++], "%f,%f,%f",
-                                    &trans[0], &trans[1], &trans[2] ) != 3 )
-                            {
-                                usage( argv[0], "Translation argument format incorrect." );
-                                return false;
-                            }
-                            oc.setTranslation( trans );
-                            do_convert = true;
-                        }
-                        else
-                        {
-                            usage( argv[0], "Translation conversion option requires an argument." );
-                            return false;
-                        }
-                        break;
-
-                    case 's' :
-                        if( nexti < argc )
-                        {
-                            osg::Vec3 scale(0,0,0);
-                            if( sscanf( argv[nexti++], "%f,%f,%f",
-                                    &scale[0], &scale[1], &scale[2] ) != 3 )
-                            {
-                                usage( argv[0], "Scale argument format incorrect." );
-                                return false;
-                            }
-                            oc.setScale( scale );
-                            do_convert = true;
-                        }
-                        else
-                        {
-                            usage( argv[0], "Scale conversion option requires an argument." );
-                            return false;
-                        }
-                        break;
-
-                    default :
-                        std::string a = "Invalid option " ;
-                        a += "'"; 
-                        a += argv[i][j] ;
-                        a += "'.";
-                        usage( argv[0], a.c_str() );
-                        return false;
-                        break;
-                }
-            }
-        } else
-        {
-            fileNames.push_back(argv[i]);
-        }
-    }
-
-    if (fileNames.empty())
-    {
-        usage( argv[0], "No files specified." );
-        return false;
-    }
-
-    options->setOptionString(opt);
-
-    return true;
-}
 
 int main( int argc, char **argv )
 {
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+    
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    { 
+        usage( arguments.getApplicationName().c_str(), 0 );
+        //arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
+
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
+
     FileNameList fileNames;
     OrientationConverter oc;
+    bool do_convert = false;
+    bool compressTextures = false;
 
-    osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
-    osgDB::Registry::instance()->setOptions(options);
+    std::string str;
+    while (arguments.read("-O",str))
+    {
+        osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
+        options->setOptionString(str);
+        osgDB::Registry::instance()->setOptions(options);
+    }
 
-    if( parse_args( argc, argv, fileNames, oc, options ) == false )
-        return -1;
-     
+    std::string ext;
+    while (arguments.read("-e",ext))
+    {
+        std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(ext);
+        osgDB::Registry::instance()->loadLibrary(libName);
+    }
+    
+    std::string libName;
+    while (arguments.read("-l",libName))
+    {
+        osgDB::Registry::instance()->loadLibrary(libName);
+    }
+
+    while (arguments.read("-t",str))
+    {
+        osg::Vec3 trans(0,0,0);
+        if( sscanf( str.c_str(), "%f,%f,%f",
+                &trans[0], &trans[1], &trans[2] ) != 3 )
+        {
+            usage( argv[0], "Translation argument format incorrect." );
+            return false;
+        }
+        oc.setTranslation( trans );
+        do_convert = true;
+    }
+
+    while (arguments.read("-o",str))
+    {
+        osg::Vec3 from, to;
+        if( sscanf( str.c_str(), "%f,%f,%f-%f,%f,%f",
+                &from[0], &from[1], &from[2],
+                &to[0], &to[1], &to[2]  )
+            != 6 )
+        {
+            float degrees;
+            osg::Vec3 axis;
+            // Try deg-axis format
+            if( sscanf( str.c_str(), "%f-%f,%f,%f",
+                    &degrees, &axis[0], &axis[1], &axis[2]  ) != 4 )
+            {
+                usage( argv[0], "Orientation argument format incorrect." );
+                return false;
+            }
+            else
+            {
+                oc.setRotation( degrees, axis );
+                do_convert = true;
+            }
+        }
+        else
+        {
+            oc.setRotation( from, to );
+            do_convert = true;
+        }
+
+    }    
+
+    while (arguments.read("--compressed"))
+    {
+        compressTextures = true;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+
+    for(int pos=1;pos<arguments.argc();++pos)
+    {
+        if (!arguments.isOption(pos))
+        {
+            fileNames.push_back(arguments[pos]);
+        }
+    }
+
+
     std::string fileNameOut("converted.osg");
     if (fileNames.size()>1)
     {
@@ -304,6 +357,16 @@ int main( int argc, char **argv )
         
         if( do_convert )
             root = oc.convert( root.get() );
+            
+        if (compressTextures)
+        {
+            osg::notify(osg::NOTICE)<<"Need to implement compressed textures."<< std::endl;
+            
+            CompressTexturesVisitor ctv;
+            root->accept(ctv);
+            ctv.compress();
+            
+        }
 
         if (osgDB::writeNodeFile(*root,fileNameOut))
         {

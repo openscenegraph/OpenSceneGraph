@@ -35,10 +35,10 @@ void PendulumCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
     if (nv->getTraversalNumber()!=_previousTraversalNumber)
     {
         double currentTime = fs->getReferenceTime();
-        _angle += (currentTime - _previousTime) * 2 * M_PI * _frequency;
+        _angle += (currentTime - _previousTime) * 2 * osg::PI * _frequency;
         
         double frac = 0.5 + 0.5 * sin(_angle);
-        double rotAngle = _endAngle  - _startAngle - M_PI 
+        double rotAngle = _endAngle  - _startAngle - osg::PI 
                 + (1.0 - frac) * _startAngle + frac * _endAngle;
 
         // update the specified transform

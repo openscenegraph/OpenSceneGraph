@@ -1,0 +1,58 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGSIM_VISIBILITYGROUP
+#define OSGSIM_VISIBILITYGROUP 1
+
+#include <osg/Node>
+#include <osg/Group>
+#include <osg/NodeVisitor>
+
+#include <osgSim/Export>
+
+namespace osgSim {
+
+class OSGSIM_EXPORT VisibilityGroup : public osg::Group
+{
+    public :
+    
+        VisibilityGroup();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        VisibilityGroup(const VisibilityGroup&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgSim, VisibilityGroup)
+
+        virtual void traverse(osg::NodeVisitor& nv);
+        
+        void setVisibilityVolume(osg::Node* node) { _visibilityVolume = node; }
+        osg::Node* getVisibilityVolume() { return _visibilityVolume.get(); }
+        const osg::Node* getVisibilityVolume() const { return _visibilityVolume.get(); }
+        
+        void setVolumeIntersectionMask(osg::Node::NodeMask mask) { _volumeIntersectionMask = mask; }
+        osg::Node::NodeMask getVolumeIntersectionMask() const { return _volumeIntersectionMask; }
+        
+        void setSegmentLength(float length) { _segmentLength = length; }
+        float getSegmentLength() const { return _segmentLength; }
+        
+    protected :
+    
+        virtual ~VisibilityGroup() {}
+
+        osg::ref_ptr<osg::Node> _visibilityVolume;
+        osg::Node::NodeMask _volumeIntersectionMask;
+        float _segmentLength;
+};
+
+}
+#endif

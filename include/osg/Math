@@ -71,26 +71,32 @@
 namespace osg {
 
 #ifdef USE_DEGREES_INTERNALLY
-inline double inDegrees(double angle) { return angle; } 
-inline double inRadians(double angle) { return angle*180.0/M_PI; }
+    inline double inDegrees(double angle) { return angle; } 
+    inline double inRadians(double angle) { return angle*180.0/M_PI; }
 #else
-inline double inDegrees(double angle) { return angle*M_PI/180.0; }
-inline double inRadians(double angle) { return angle; }
+    inline double inDegrees(double angle) { return angle*M_PI/180.0; }
+    inline double inRadians(double angle) { return angle; }
 #endif
 
 inline double DegreesToRadians(double angle) { return angle*M_PI/180.0; }
 inline double RadiansToDegrees(double angle) { return angle*180.0/M_PI; }
 
 #ifdef WIN32
-inline bool isNaN(float v) { return ::_isnan(v)!=0; }
-inline bool isNaN(double v) { return ::_isnan(v)!=0; }
-inline bool isInfinite(float v) { return !::_finite(v); }
-inline bool isInfinite(double v) { return !::_finite(v); }
+    inline bool isNaN(float v) { return ::_isnan(v)!=0; }
+    inline bool isNaN(double v) { return ::_isnan(v)!=0; }
+    inline bool isInfinite(float v) { return !::_finite(v); }
+    inline bool isInfinite(double v) { return !::_finite(v); }
+#elseif __sgi
+    inline bool isNaN(float v) { return ::isnan(v); }
+    inline bool isNaN(double v) { return ::isnan(v); }
+    // can't find a function to test for infiniting on sgi yet..
+    inline bool isInfinite(float v) { return false; }
+    inline bool isInfinite(double v) { return false; }
 #else
-inline bool isNaN(float v) { return ::isnan(v); }
-inline bool isNaN(double v) { return ::isnan(v); }
-inline bool isInfinite(float v) { return ::isinf(v); }
-inline bool isInfinite(double v) { return ::isinf(v); }
+    inline bool isNaN(float v) { return ::isnan(v); }
+    inline bool isNaN(double v) { return ::isnan(v); }
+    inline bool isInfinite(float v) { return ::isinf(v); }
+    inline bool isInfinite(double v) { return ::isinf(v); }
 #endif
 
 };

@@ -115,7 +115,7 @@ osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture* texture,osg:
     // place and also to add individual texture set to it, so that
     // that state is inherited down to its children.
     osg::Transform* local_transform = new osg::Transform;
-    local_transform->preTranslate(offset.x(),offset.y(),offset.z());
+    local_transform->postMult(osg::Matrix::trans(offset));
 
     // create the StateSet to store the texture data
     osg::StateSet* stateset = new osg::StateSet;
@@ -140,7 +140,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     if (image==NULL) return NULL;
     
     osg::Transform* top_transform = new osg::Transform;
-    top_transform->preTranslate(offset.x(),offset.y(),offset.z());
+    top_transform->postMult(osg::Matrix::trans(offset));
 
     osg::Vec3 local_offset(0.0f,0.0f,0.0f);
     osg::Vec3 local_delta(3.0f,0.0f,0.0f);

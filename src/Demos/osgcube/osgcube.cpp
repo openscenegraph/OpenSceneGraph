@@ -18,11 +18,11 @@
 // Global variables - this is basically the stuff which will be animated
 // ----------------------------------------------------------------------
 
-class TransformCallback : public osg::NodeCallback{
+class MyTransformCallback : public osg::NodeCallback{
 
     public:
 
-        TransformCallback(osg::Transform* node,float angularVelocity)
+        MyTransformCallback(osg::Transform* node,float angularVelocity)
         {
             _nodeToOperateOn = node;
             _angular_velocity = angularVelocity;
@@ -169,7 +169,7 @@ int main( int argc, char **argv )
     myTransform->addChild( createCube() );
     
     // move node in a circle at 90 degrees a sec.
-    myTransform->setAppCallback(new TransformCallback(myTransform,osg::inDegrees(90.0f)));
+    myTransform->setAppCallback(new MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
 
     // create the viewer and the model to it.
     osgGLUT::Viewer viewer;

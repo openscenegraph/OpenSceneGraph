@@ -18,7 +18,7 @@ void SceneViewManipulator::setSceneView(SceneView* sv)
     _sv=sv;
     _cm->setNode(sv->getSceneData());
     _cm->setCamera(sv->getCamera());
-    _gm->setStateSet(sv->getGlobalState());
+    _gm->setStateSet(sv->getGlobalStateSet());
 }
 
 SceneView *SceneViewManipulator::getSceneView()

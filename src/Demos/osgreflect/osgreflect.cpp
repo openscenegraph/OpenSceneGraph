@@ -12,6 +12,7 @@
 #include <osgUtil/TrackballManipulator>
 #include <osgUtil/FlightManipulator>
 #include <osgUtil/DriveManipulator>
+#include <osgUtil/TransformCallback>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -40,65 +41,6 @@
 // of these issues are mentioned in the Mark's paper, but trip us up when
 // we apply them. 
 
-
-class TransformCallback : public osg::NodeCallback{
-
-    public:
-
-        TransformCallback(osg::Transform* node,float angularVelocity)
-        {
-            _nodeToOperateOn = node;
-            if (node)
-            {
-                _pivotPoint = node->getBound().center();
-            }
-
-            _angular_velocity = angularVelocity;
-            _previousTraversalNumber = -1;
-            _previous_t = _timer.tick();
-        }
-
-        virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
-        {
-            if (nv)
-            {
-                if (_nodeToOperateOn && node==_nodeToOperateOn)
-                {
-                    // ensure that we do not operate on this node more than
-                    // once during this traversal.  This is an issue since node
-                    // can be shared between multiple parents.
-                    if (nv->getTraversalNumber()!=_previousTraversalNumber)
-                    {
-                        osg::Timer_t new_t = _timer.tick();
-                        float delta_angle = _angular_velocity*_timer.delta_s(_previous_t,new_t);
-                        _previous_t = new_t;
-
-                        // update the specified dcs.
-                        _nodeToOperateOn->preTranslate(_pivotPoint[0],_pivotPoint[1],_pivotPoint[2]);
-                        _nodeToOperateOn->preRotate(delta_angle,0.0f,0.0f,1.0f);
-                        _nodeToOperateOn->preTranslate(-_pivotPoint[0],-_pivotPoint[1],-_pivotPoint[2]);
-
-                        _previousTraversalNumber = nv->getTraversalNumber();
-                    }
-                }
-            }
-            
-            // must continue subgraph traversal.
-            traverse(node,nv);
-            
-        }
-        
-    protected:
-    
-        osg::Transform*     _nodeToOperateOn;
-        float               _angular_velocity;
-        osg::Vec3           _pivotPoint;
-
-        int                 _previousTraversalNumber;
-        osg::Timer          _timer;
-        osg::Timer_t        _previous_t;
-
-};
 
 /*
  * Function to read several files (typically one) as specified on the command
@@ -425,9 +367,9 @@ int main( int argc, char **argv )
 
         osg::Transform* dcs = new osg::Transform;
         dcs->setStateSet(dstate);
-        dcs->preTranslate(0.0f,0.0f,z);
-        dcs->preScale(1.0f,1.0f,-1.0f);
-        dcs->preTranslate(0.0f,0.0f,-z);
+        dcs->preMult(osg::Matrix::trans(0.0f,0.0f,-z)*
+                     osg::Matrix::scale(1.0f,1.0f,-1.0f)*
+                     osg::Matrix::trans(0.0f,0.0f,z));
 
         dcs->addChild(loadedModelTransform);
 
@@ -472,7 +414,8 @@ int main( int argc, char **argv )
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootNode );
 
-    loadedModelTransform->setAppCallback(new TransformCallback(loadedModelTransform,osg::inDegrees(45.0f)));
+    osg::NodeCallback* nc = new osgUtil::TransformCallback(loadedModelTransform->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
+    loadedModelTransform->setAppCallback(nc);
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);

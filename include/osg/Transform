@@ -41,15 +41,34 @@ class SG_EXPORT Transform : public Group
         /** Get the Transform Type.*/
         inline const Type getType() const { return _type; }
 
-        void setMatrix(const Matrix& mat );
         inline Matrix& getMatrix() { return *_matrix; }
         inline const Matrix& getMatrix() const { return *_matrix; }
 
-        void preMult( const Matrix& mat );
+        inline void setMatrix(const Matrix& mat )
+        {
+            (*_matrix) = mat;
+            dirtyBound();
+        }
+
+        /** preMult trasforms relative to the childrens coordinate system.*/
+        inline void preMult( const Matrix& mat )
+        {
+            (*_matrix) =  mat * (*_matrix);
+            dirtyBound();
+        }
+
+        /** postMult trasforms relative to the parents coordinate system.*/
+        inline void postMult( const Matrix& mat )
+        {
+            (*_matrix) =  (*_matrix) * mat;
+            dirtyBound();
+        }
+
+#ifdef USE_DEPRECATED_MATRIX_METHODS
         void preScale( const float sx, const float sy, const float sz );
         void preTranslate( const float tx, const float ty, const float tz );
         void preRotate( const float deg, const float x, const float y, const float z );
-
+#endif
     
     protected :
     

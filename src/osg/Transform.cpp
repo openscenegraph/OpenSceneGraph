@@ -21,20 +21,7 @@ Transform::~Transform()
 {
 }
 
-
-void Transform::setMatrix(const Matrix& mat )
-{
-    (*_matrix) = mat;
-    dirtyBound();
-}
-
-
-void Transform::preMult( const Matrix& mat )
-{
-    (*_matrix) =  mat * (*_matrix);
-    dirtyBound();
-}
-
+#ifdef USE_DEPRECATED_MATRIX_METHODS
 void Transform::preScale( const float sx, const float sy, const float sz )
 {
     (*_matrix) = Matrix::scale( sx, sy, sz ) * (*_matrix);
@@ -53,7 +40,7 @@ void Transform::preRotate( const float deg, const float x, const float y, const 
     (*_matrix) = Matrix::rotate( deg, x, y, z ) * (*_matrix);
     dirtyBound();
 }
-
+#endif
 const bool Transform::computeBound() const
 {
     if (!Group::computeBound()) return false;

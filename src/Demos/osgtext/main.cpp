@@ -416,7 +416,7 @@ public:
     virtual float app(unsigned int viewport)
     {
         float ret;
-        ret=Viewer::app(viewport);
+        ret=osgGLUT::Viewer::app(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
         {
             _hudSceneView->app();
@@ -427,7 +427,7 @@ public:
     virtual float cull(unsigned int viewport)
     {
         float ret;
-        ret=Viewer::cull(viewport);
+        ret=osgGLUT::Viewer::cull(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
             _hudSceneView->cull();
         return ret;
@@ -436,7 +436,7 @@ public:
     virtual float draw(unsigned int viewport)
     {
         float ret;
-        ret=Viewer::draw(viewport);
+        ret=osgGLUT::Viewer::draw(viewport);
         if(_hudSceneView.valid() && viewport>=_viewportList.size()-1)
             _hudSceneView->draw();
         return ret;
@@ -452,7 +452,7 @@ public:
     
     virtual void reshape(GLint w, GLint h)
     {
-        Viewer::reshape(w,h);
+        osgGLUT::Viewer::reshape(w,h);
         
         if(_hudSceneView.valid())
         {
@@ -463,7 +463,7 @@ public:
 
     virtual bool open()
     {
-        bool ret=Viewer::open();
+        bool ret=osgGLUT::Viewer::open();
 
         // set the clear flag / after the visualReq.Visitor
         if(_hudSceneView.valid())
@@ -536,7 +536,7 @@ protected:
                 }
                 return;
             default:
-                Viewer::keyboard(key,x,y);
+                osgGLUT::Viewer::keyboard(key,x,y);
         };
     }
 
@@ -583,7 +583,7 @@ int main( int argc, char **argv )
 
     // setup the sceneData
     setScene(textGroup);
-    textGroup->preRotate(osg::inDegrees(90),1,0,0);
+    textGroup->preMult(osg::Matrix::rotate(osg::inDegrees(90.0f),1.0f,0.0f,0.0f));
     rootNode->addChild(textGroup);
 
     // setup the 2dNode

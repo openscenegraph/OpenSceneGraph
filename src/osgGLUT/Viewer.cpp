@@ -954,18 +954,18 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
             backface = 1 - backface;
             if( backface )
-                sceneView->getGlobalState()->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
+                sceneView->getGlobalStateSet()->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
             else
-                sceneView->getGlobalState()->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
+                sceneView->getGlobalStateSet()->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
 
             break;
 
         case 'l' :
             lighting = 1  - lighting ;
             if( lighting )
-                sceneView->getGlobalState()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
+                sceneView->getGlobalStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
             else
-                sceneView->getGlobalState()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
+                sceneView->getGlobalStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
             break;
 
         case 'L' :
@@ -984,8 +984,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             texture = 1 - texture;
             if (texture)
             {
-                sceneView->getGlobalState()->setModeToInherit(GL_TEXTURE_2D);
-//                sceneView->getGlobalState()->setAttributeToInherit(osg::StateAttribute::TEXTURE);
+                sceneView->getGlobalStateSet()->setModeToInherit(GL_TEXTURE_2D);
+//                sceneView->getGlobalStateSet()->setAttributeToInherit(osg::StateAttribute::TEXTURE);
             }
             else
             {
@@ -993,8 +993,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // thus causing them to all use the same texture attribute, hence
                 // preventing a state attribute change due to unused textures.
                 static osg::ref_ptr<osg::Texture> blank_texture = new osg::Texture;
-                sceneView->getGlobalState()->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
-//                sceneView->getGlobalState()->setAttribute(blank_texture.get(),true);
+                sceneView->getGlobalStateSet()->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
+//                sceneView->getGlobalStateSet()->setAttribute(blank_texture.get(),true);
             }
             break;
 
@@ -1007,7 +1007,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 polymode = (polymode+1)%3;
                 osg::PolygonMode* polyModeObj = new osg::PolygonMode;
                 polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,polymodes[polymode]);
-                sceneView->getGlobalState()->setAttribute(polyModeObj);
+                sceneView->getGlobalStateSet()->setAttribute(polyModeObj);
             }
             break;
 

@@ -170,11 +170,11 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             if (root)
             {
                 if (pfdStoreFile(root,fileName.c_str())!=0) return WriteResult::FILE_SAVED;
-                else return "Unable to write file from performer.";
+                else return std::string("Unable to write file from performer.");
             }
             else
             {
-                return "Unable to convert scene to performer, cannot write file.";
+                return std::string("Unable to convert scene to performer, cannot write file.");
             }
         }
 

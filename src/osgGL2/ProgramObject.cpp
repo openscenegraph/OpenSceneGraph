@@ -43,8 +43,8 @@ class InfoLog
 public:
     InfoLog( Extensions* ext, const GLhandleARB handle )
     {
-	int blen = 0;	// length of buffer to allocate
-	int slen = 0;	// strlen GL actually wrote to buffer
+	GLint blen = 0;	// length of buffer to allocate
+	GLint slen = 0;	// strlen GL actually wrote to buffer
 
 	ext->glGetObjectParameteriv(handle, GL_OBJECT_INFO_LOG_LENGTH_ARB , &blen);
 	if (blen > 1)
@@ -328,7 +328,7 @@ ProgramObject::PerContextProgObj::~PerContextProgObj()
 
 void ProgramObject::PerContextProgObj::build()
 {
-    int linked;
+    GLint linked;
 
     _extensions->glLinkProgram( _glProgObjHandle );
     _extensions->glGetObjectParameteriv(_glProgObjHandle,
@@ -520,7 +520,7 @@ ShaderObject::PerContextShaderObj::~PerContextShaderObj()
 
 void ShaderObject::PerContextShaderObj::build()
 {
-    int compiled;
+    GLint compiled;
     const char* sourceText = _shadObj->getShaderSource().c_str();
 
     _extensions->glShaderSource( _glShaderObjHandle, 1, &sourceText, NULL );

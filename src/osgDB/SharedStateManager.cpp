@@ -51,8 +51,8 @@ void SharedStateManager::prune()
 //----------------------------------------------------------------
 void SharedStateManager::share(osg::Node *node, OpenThreads::Mutex *mt)
 {
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
+//    const osg::Timer& timer = *osg::Timer::instance();
+//    osg::Timer_t start_tick = timer.tick();
     
     mutex = mt;
     apply(*node);
@@ -60,7 +60,7 @@ void SharedStateManager::share(osg::Node *node, OpenThreads::Mutex *mt)
     tmpSharedStateSetList.clear();
     mutex = 0;
 
-    osg::Timer_t end_tick = timer.tick();
+//    osg::Timer_t end_tick = timer.tick();
 //     std::cout << "SHARING TIME = "<<timer.delta_m(start_tick,end_tick)<<"ms"<<std::endl;
 //     std::cout << "   _sharedStateSetList.size() = "<<_sharedStateSetList.size()<<std::endl;
 //     std::cout << "   _sharedTextureList.size() = "<<_sharedTextureList.size()<<std::endl;

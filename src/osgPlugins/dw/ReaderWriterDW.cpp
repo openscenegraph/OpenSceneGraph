@@ -227,7 +227,7 @@ public:
             printf("Invalid vertices %d of %d. I1-3 %d %d %d.\n", ic, nv, i1, i2, i3);
         }
         if(i1>=static_cast<int>(verts.size()) || i2>=static_cast<int>(verts.size()) || i3>=static_cast<int>(verts.size())) {
-            printf("Invalid indices %d, %d, %d max allowed %d.\n", i1,i2,i3,verts.size());//, errm
+            printf("Invalid indices %d, %d, %d max allowed %d.\n", i1,i2,i3,static_cast<int>(verts.size()));//, errm
         }
         s1=(verts[i2]-verts[i1]); // side 1 of face
         s2=(verts[i3]-verts[i2]); // side 2 of face
@@ -493,7 +493,7 @@ void CALLBACK combineCallback( GLdouble coords[3], avertex *d[4],
 void CALLBACK error (GLenum errno)
 { // tess error code
     const unsigned char *errm=gluErrorString(errno);
-    printf("tesselator error %d %s\n", errno,errm);//, errm
+    printf("tesselator error %d %s\n", static_cast<int>(errno),errm);//, errm
 }
     //==========
 void _face::linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const

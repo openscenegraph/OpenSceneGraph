@@ -88,7 +88,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
         {
             extensions->glGenBuffers(1, &buffer);
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
-            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * sizeof(GL_UNSIGNED_BYTE), &front(), GL_STATIC_DRAW_ARB);
+            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 1, &front(), GL_STATIC_DRAW_ARB);
         }
         else
         {
@@ -136,7 +136,7 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
         {
             extensions->glGenBuffers(1, &buffer);
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
-            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * sizeof(GL_UNSIGNED_SHORT), &front(), GL_STATIC_DRAW_ARB);
+            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 2, &front(), GL_STATIC_DRAW_ARB);
         }
         else
         {
@@ -184,7 +184,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
         {
             extensions->glGenBuffers(1, &buffer);
             extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, buffer);
-            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * sizeof(GL_UNSIGNED_INT), &front(), GL_STATIC_DRAW_ARB);
+            extensions->glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, size() * 4, &front(), GL_STATIC_DRAW_ARB);
         }
         else
         {

@@ -72,7 +72,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         
         struct SortCallback : public osg::Referenced    
         {
-            virtual void sort(RenderBin* bin) {};
+            virtual void sort(RenderBin*) {};
         };
 
         void setSortLocalCallback(SortCallback* sortCallback) { _sortLocalCallback = sortCallback; }

@@ -1196,9 +1196,11 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
     // for each mask in the FLT Switch node
     for (int itMask=0; itMask<pSSwitch->nMasks; ++itMask) 
     {
+        // I don't think we need to create a group node for each mask any more
         // create a osg group node
-        osg::ref_ptr<osg::Group> group = new osg::Group;
-        osgSwitch->addChild( group.get() );
+        //osg::ref_ptr<osg::Group> group = new osg::Group;
+        //osgSwitch->addChild( group.get() );
+
         // for each child in the FLT Switch node
         for (unsigned int itChild=0; itChild<totalNumChildren; ++itChild)
         {
@@ -1209,7 +1211,7 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
         }
         // now the group contain all the childrens that are active in the current mask (itMask)
     }
-    osgSwitch->setActiveSwitchSet(pSSwitch->nCurrentMask);   
+    osgSwitch->setActiveSwitchSet(pSSwitch->nCurrentMask);
     return osgSwitch;
 }
 
@@ -1227,6 +1229,18 @@ osg::Group* ConvertFromFLT::visitObject(osg::Group& osgParent, ObjectRecord* rec
     visitPrimaryNode(*object, (PrimNodeRecord*)rec);
     _wObjTransparency = wPrevTransparency;
 
+#if 0
+// submission from Yefei Hi, which alas doesn't compile due to missing
+// _ultoa(,,) function.  Will comment back in once flag is tracked down.
+    if ( pSObject->dwFlags & 0xFC000000) // some of the 6 defined flag bits are set
+    {
+        std::string desc("flt object flags: 0x");
+        char cflags[33];
+
+        desc = desc + _ultoa( pSObject->dwFlags, cflags, 16 );
+        object->getDescriptions().push_back( desc );
+    }
+#endif
 
     return object;
 }

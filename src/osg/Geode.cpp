@@ -161,19 +161,19 @@ bool Geode::computeBound() const
 {
     _bsphere.init();
 
-    BoundingBox bb;
+   _bbox.init();
 
     DrawableList::const_iterator itr;
     for(itr=_drawables.begin();
         itr!=_drawables.end();
         ++itr)
     {
-        bb.expandBy((*itr)->getBound());
+        _bbox.expandBy((*itr)->getBound());
     }
 
-    if (bb.valid())
+    if (_bbox.valid())
     {
-        _bsphere.expandBy(bb);
+        _bsphere.expandBy(_bbox);
         _bsphere_computed=true;
         return true;
     }

@@ -43,12 +43,12 @@ class SG_EXPORT Transform : public Group
         enum ReferenceFrame
         {
             RELATIVE_TO_PARENTS,
-            ABSOLUTE
+            RELATIVE_TO_ABSOLUTE
         };
         
         /** Set the transform's ReferenceFrame, either to be realtive to its parent reference frame, 
           * or relative to an absolute coordinate frame. RELATIVE_TO_PARENTS is the default.
-          * Note,  setting the RefrenceFrame to be ABSOLUTE will also set the CullingActive flag on the
+          * Note,  setting the RefrenceFrame to be RELATIVE_TO_ABSOLUTE will also set the CullingActive flag on the
           * transform, and hence all its parents, to false, therby disabling culling of it and all its
           * parents.  This is neccessary to prevent inappropriate culling, but may impact of cull times
           * if the absolute transform is deep in the scene graph, it is therefore recommend to only use

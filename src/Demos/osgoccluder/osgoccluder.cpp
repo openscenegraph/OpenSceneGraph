@@ -107,6 +107,8 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     
     geoset->setPrimType(osg::GeoSet::QUADS);
     geoset->setNumPrims(1);
+//     geoset->setPrimType(osg::GeoSet::POINTS);
+//     geoset->setNumPrims(4);
     
     osg::Geode* geode = osgNew osg::Geode;
     geode->addDrawable(geoset);

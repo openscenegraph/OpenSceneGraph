@@ -35,8 +35,8 @@ class SG_EXPORT ApplicationUsage
         typedef std::map<std::string,std::string> UsageMap;
         
 
-        void setApplicatonName(const std::string& name) { _applicationName = name; }
-        const std::string& getApplicatonName() const { return _applicationName; }
+        void setApplicationName(const std::string& name) { _applicationName = name; }
+        const std::string& getApplicationName() const { return _applicationName; }
 
         void setDescription(const std::string& desc) { _description = desc; }
         const std::string& getDescription() const { return _description; }

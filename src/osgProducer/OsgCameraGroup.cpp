@@ -89,18 +89,21 @@ std::string extractCameraConfigFile(osg::ArgumentParser& arguments)
 OsgCameraGroup::OsgCameraGroup() : Producer::CameraGroup() 
 {
     _init();
+    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 OsgCameraGroup::OsgCameraGroup(Producer::CameraConfig *cfg):
     Producer::CameraGroup(cfg) 
 {
     _init();
+    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 OsgCameraGroup::OsgCameraGroup(const std::string& configFile):
     Producer::CameraGroup(findCameraConfigFile(configFile)) 
 {
     _init();
+    _applicationUsage = osg::ApplicationUsage::instance();
 }
 
 OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):

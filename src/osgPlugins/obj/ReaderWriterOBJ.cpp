@@ -268,8 +268,6 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
 
     }
 
-    bool reverseWinding = true;
-
     if (numPolygonElements>0)
     {
         unsigned int startPos = vertices->size();
@@ -284,7 +282,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             {
                 drawArrayLengths->push_back(element.vertexIndices.size());
             
-                if (reverseWinding)
+                if (model.needReverse(element))
                 {
                     // need to reverse so add to OSG arrays in same order as in OBJ, as OSG assume anticlockwise ordering.
                     for(obj::Element::IndexList::reverse_iterator index_itr = element.vertexIndices.rbegin();
@@ -319,7 +317,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.vertexIndices.end();
                         ++index_itr)
                     {
-                        vertices->push_back(model.vertices[*index_itr]);
+                        vertices->push_back(transformVertex(model.vertices[*index_itr]));
                     }
                     if (numNormalIndices)
                     {
@@ -327,7 +325,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                             index_itr != element.normalIndices.end();
                             ++index_itr)
                         {
-                            normals->push_back(model.normals[*index_itr]);
+                            normals->push_back(transformNormal(model.normals[*index_itr]));
                         }
                     }
                     if (numTexCoordIndices)

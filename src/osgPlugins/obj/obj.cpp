@@ -462,3 +462,40 @@ void Model::addElement(Element* element)
     currentElementList->push_back(element);
     
 }
+
+osg::Vec3 Model::averageNormal(const Element& element) const
+{
+    osg::Vec3 normal;
+    for(Element::IndexList::const_iterator itr=element.normalIndices.begin();
+        itr!=element.normalIndices.end();
+        ++itr)
+    {
+        normal += normals[*itr];
+    }
+    normal.normalize();
+    
+    return normal;
+}
+
+osg::Vec3 Model::computeNormal(const Element& element) const
+{
+    osg::Vec3 normal;
+    for(unsigned int i=0;i<element.vertexIndices.size()-2;++i)
+    {
+        osg::Vec3 a = vertices[element.vertexIndices[i]];
+        osg::Vec3 b = vertices[element.vertexIndices[i+1]];
+        osg::Vec3 c = vertices[element.vertexIndices[i+2]];
+        osg::Vec3 localNormal = (b-a)   ^(c-b);
+        normal += localNormal;
+    }
+    normal.normalize();
+    
+    return normal;
+}
+
+bool Model::needReverse(const Element& element) const
+{
+    if (element.normalIndices.empty()) return true;
+    
+    return computeNormal(element)*averageNormal(element) < 0.0f;
+}

@@ -47,7 +47,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 {
     public:
 
-
+        static std::string coordinateSystemStringToWTK(const std::string& coordinateSystem);
 
         class Source;
 
@@ -232,6 +232,17 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             void setGeoTransform(osg::Matrixd& transform) { _geoTransform = transform; }
             osg::Matrixd& getGeoTransform() { return _geoTransform; }
             
+            void setGeoTransformFromRange(double xMin, double xMax, double yMin, double yMax)
+            {
+                _geoTransform.makeIdentity();
+                _geoTransform(0,0) = xMax-xMin;
+                _geoTransform(3,0) = xMin;
+
+                _geoTransform(1,1) = yMax-yMin;
+                _geoTransform(3,1) = yMin;
+             }
+
+
             void assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy();
             
 
@@ -914,7 +925,10 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void setDestinationExtents(const osg::BoundingBox& extents) { _extents = extents; }
         
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
-        
+
+        /** Set the DestinationTileBaseName and DestinationTileExtension from the passed in filename.*/
+        void setDestinationName(const std::string& filename);
+
         void setDestinationTileBaseName(const std::string& basename) { _tileBasename = basename; }
         const std::string& getDestinationTileBaseName() const { return _tileBasename; }
         
@@ -990,10 +1004,10 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void populateDestinationGraphFromSources();
         
         void createDestination(unsigned int numLevels);
-        void writeDestination();
         
-
-
+        void buildDestination() { _buildDestination(false); }
+        
+        void writeDestination() { _buildDestination(true); }
         
         osg::Node* getDestinationRootNode() { return _rootNode.get(); }
 
@@ -1005,10 +1019,12 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void _readRow(Row& row);
         void _equalizeRow(Row& row);
         void _writeRow(Row& row);
-        
-        osg::Node* decorateWithCoordinateSystemNode(osg::Node* subgraph);
+        void _buildDestination(bool writeToDisk);
         
         void init();
+
+        osg::Node* decorateWithCoordinateSystemNode(osg::Node* subgraph);
+
 
         osg::ref_ptr<CompositeSource>               _sourceGraph;
         

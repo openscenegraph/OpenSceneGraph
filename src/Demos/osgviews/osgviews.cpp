@@ -14,7 +14,7 @@
 
 #include <osg/Quat>
 
-void write_usage(ostream& out,const std::string& name)
+void write_usage(std::ostream& out,const std::string& name)
 {
     out << std::endl;
     out <<"usage:"<< std::endl;

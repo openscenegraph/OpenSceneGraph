@@ -31,6 +31,11 @@ struct Lwo2Surface
 
 struct Lwo2PolygonMapping
 {
+
+  Lwo2PolygonMapping(short s,const Vec2& v2):
+    polygon_index(s),
+    uv(v2) {}
+  
   short polygon_index;
   Vec2 uv;
 };

@@ -136,12 +136,12 @@ Lwo2::ReadFile( const string& filename )
 unsigned char 
 Lwo2::_read_char()
 {
-  unsigned char c;
+  char c;
   if (_fin.is_open())
     {
       _fin.read(&c, 1);
     }
-  return c;
+  return static_cast<unsigned char>(c);
 }
 
 unsigned long 
@@ -391,7 +391,7 @@ Lwo2::_read_polygons_mapping(unsigned long size)
 	  u = _read_float();
 	  v = _read_float();
 
-	  Lwo2PolygonMapping pm = {polygon_index, Vec2(u, v)};
+	  Lwo2PolygonMapping pm(polygon_index, Vec2(u, v));
 	  _current_layer->_polygons_map.insert(PairVMAD(point_index, pm));
 
 	}

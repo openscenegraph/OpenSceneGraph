@@ -114,7 +114,7 @@ class SG_EXPORT Billboard : public Geode
         PositionList                        _positionList;
         
         // used internally as cache of which what _axis is aligned to help
-        // deicde which method of rotation to use.
+        // decide which method of rotation to use.
         int                                 _cachedMode;
         Vec3                                _side;
         void updateCache();

@@ -10,8 +10,8 @@
 // Open Scene Graph includes.
 #include <osg/Node>
 #include <osg/Group>
-#include <osg/GeoSet>
 #include <osg/StateSet>
+#include <osg/Geometry>
 #include <osg/Texture2D>
 #include <osg/Material>
 
@@ -52,10 +52,8 @@ class ConvertFromPerformer {
         osg::Material* visitMaterial(osg::StateSet* osgStateSet,pfMaterial* front_mat,pfMaterial* back_mat);
         osg::Texture2D* visitTexture(osg::StateSet* osgStateSet,pfTexture* tex);
 
-        typedef std::map<int,osg::GeoSet::PrimitiveType> GSetPrimitiveMap;
-        typedef std::map<int,osg::GeoSet::BindingType> GSetBindingMap;
+        typedef std::map<int,osg::Geometry::AttributeBinding> GSetBindingMap;
 
-        GSetPrimitiveMap    _gsetPrimMap;
         GSetBindingMap      _gsetBindMap;
 
         bool _saveImagesAsRGB;

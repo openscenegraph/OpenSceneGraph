@@ -1,6 +1,13 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+13th August 2004 - OpenSceneGraph-0.9.7-2
+
+    Build fixes for VisualStudio6.0.  
+    Fixes for osgFX registry support. 
+    Added support in osgTerrain for reading imagery with color tables. 
+    
+
 9th August 2004 - OpenSceneGraph-0.9.7
 
     >>> support for and generation of large scale geospatial databases,

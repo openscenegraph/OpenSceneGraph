@@ -290,7 +290,11 @@ osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,L
     for (p=node->childs; p!=0; p=p->next) {
         if (!group) {
             group =new osg::Group;
-            group->setName(node->name);
+	    if (strcmp(node->name, "$$$DUMMY") == 0) {
+		group->setName(node->data.object.instance);
+	    } else {
+            	group->setName(node->name);
+	    }
         }
         group->addChild(processNode(drawStateMap,f,p));
     }

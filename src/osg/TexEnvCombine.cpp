@@ -3,11 +3,26 @@
 
 using namespace osg;
 
-TexEnvCombine::TexEnvCombine()
+TexEnvCombine::TexEnvCombine():
+            _combine_RGB(GL_MODULATE),
+            _combine_Alpha(GL_MODULATE),
+            _source0_RGB(GL_TEXTURE),
+            _source1_RGB(GL_PREVIOUS_ARB),
+            _source2_RGB(GL_CONSTANT_ARB),
+            _source0_Alpha(GL_TEXTURE),
+            _source1_Alpha(GL_PREVIOUS_ARB),
+            _source2_Alpha(GL_CONSTANT_ARB),
+            _operand0_RGB(GL_SRC_COLOR),
+            _operand1_RGB(GL_SRC_COLOR),
+            _operand2_RGB(GL_SRC_ALPHA),
+            _operand0_Alpha(GL_SRC_ALPHA),
+            _operand1_Alpha(GL_SRC_ALPHA),
+            _operand2_Alpha(GL_SRC_ALPHA),
+            _scale_RGB(1.0),
+            _scale_Alpha(1.0),
+            _constantColor(0.0f,0.0f,0.0f,0.0f)
 {
-    _constantColor.set(0.0f,0.0f,0.0f,0.0f);
 }
-
 
 TexEnvCombine::~TexEnvCombine()
 {

@@ -494,7 +494,7 @@ void DrawShapeVisitor::apply(const TriangleMesh& mesh)
      {
 	glBegin(GL_TRIANGLES);
 
-	for(unsigned int i=0;i<indices->getNumElements();i+=3)
+	for(unsigned int i=0;i+2<indices->getNumElements();i+=3)
 	{
     	    const osg::Vec3& v1=(*vertices)[indices->index(i)];
     	    const osg::Vec3& v2=(*vertices)[indices->index(i+1)];

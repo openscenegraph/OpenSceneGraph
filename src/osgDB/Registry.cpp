@@ -289,7 +289,7 @@ void Registry::readCommandLine(osg::ArgumentParser& arguments)
         
     while(arguments.read("-e",value))
     {
-        std::string libName = createLibraryNameForExt(value);
+        std::string libName = createLibraryNameForExtension(value);
         loadLibrary(libName);
     }
 
@@ -424,15 +424,15 @@ void Registry::addFileExtensionAlias(const std::string mapExt, const std::string
 std::string Registry::createLibraryNameForFile(const std::string& fileName)
 {
     std::string ext = getLowerCaseFileExtension(fileName);
-    return createLibraryNameForExt(ext);
+    return createLibraryNameForExtension(ext);
 }
 
 
-std::string Registry::createLibraryNameForExt(const std::string& ext)
+std::string Registry::createLibraryNameForExtension(const std::string& ext)
 {
 
     ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
-    if (itr!=_extAliasMap.end()) return createLibraryNameForExt(itr->second);
+    if (itr!=_extAliasMap.end()) return createLibraryNameForExtension(itr->second);
 
 #if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
@@ -532,6 +532,39 @@ DynamicLibrary* Registry::getLibrary(const std::string& fileName)
     else return NULL;
 }
 
+ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
+{
+    // record the existing reader writer.
+    std::set<ReaderWriter*> rwOriginal;
+
+    // first attemt one of the installed loaders
+    for(ReaderWriterList::iterator itr=_rwList.begin();
+        itr!=_rwList.end();
+        ++itr)
+    {
+        rwOriginal.insert(itr->get());
+        if((*itr)->acceptsExtension(ext)) return (*itr).get();
+    }
+
+    // now look for a plug-in to load the file.
+    std::string libraryName = createLibraryNameForExtension(ext);
+    notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
+    if (loadLibrary(libraryName))
+    {
+        for(ReaderWriterList::iterator itr=_rwList.begin();
+            itr!=_rwList.end();
+            ++itr)
+        {
+            if (rwOriginal.find(itr->get())==rwOriginal.end())
+          if((*itr)->acceptsExtension(ext)) return (*itr).get();
+        }
+    }
+
+    return NULL;
+
+}
+
+
 osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 {
     const char *str = fr[0].getStr();
@@ -572,7 +605,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
             if (loadLibrary(nodeKitLibraryName)) return readObjectOfType(compObj,fr);
             
             // otherwise try the osgdb_ plugin library.
-            std::string pluginLibraryName = createLibraryNameForExt(libraryName);
+            std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
             if (loadLibrary(pluginLibraryName)) return readObjectOfType(compObj,fr);
         }
     }
@@ -667,7 +700,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
             if (loadLibrary(nodeKitLibraryName)) return readObject(dowMap,fr);
             
             // otherwise try the osgdb_ plugin library.
-            std::string pluginLibraryName = createLibraryNameForExt(libraryName);
+            std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
             if (loadLibrary(pluginLibraryName)) return readObject(dowMap,fr);
         }
     }
@@ -873,7 +906,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         if (loadLibrary(nodeKitLibraryName)) return writeObject(obj,fw);
 
         // otherwise try the osgdb_ plugin library.
-        std::string pluginLibraryName = createLibraryNameForExt(obj.libraryName());
+        std::string pluginLibraryName = createLibraryNameForExtension(obj.libraryName());
         if (loadLibrary(pluginLibraryName)) return writeObject(obj,fw);
     }
     else

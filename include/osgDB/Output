@@ -81,9 +81,6 @@ class OSGDB_EXPORT Output : public std::ofstream
         
     protected:
 
-        // prevent copy construction and assignment.
-        Output(const Output&);
-        Output& operator = (const Output&);
 
         virtual void init();
 

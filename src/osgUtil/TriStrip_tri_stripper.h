@@ -57,6 +57,9 @@
 #ifndef TRISTRIP_TRI_STRIPPER_H
 #define TRISTRIP_TRI_STRIPPER_H
 
+// include this to supress daft VisualStudio warnings.
+#include <osg/Export>
+
 #include <algorithm>
 #include <deque>
 #include <list>

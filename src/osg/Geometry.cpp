@@ -242,17 +242,18 @@ void Geometry::drawImmediateMode(State& state)
     }
     
     
+    static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
+            (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
+    static SecondaryColor3fvProc s_glSecondaryColor3fv =
+            (SecondaryColor3fvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT");
+
     AttributeBinding secondaryColorBinding = _secondaryColorBinding;
-    if (secondaryColorBinding!=BIND_OFF && !secondaryColorPointer)
+    if (secondaryColorBinding!=BIND_OFF && (!secondaryColorPointer || !s_glSecondaryColor3ubv || !s_glSecondaryColor3fv))
     {
         // switch off if not supported or have a valid data.
         secondaryColorBinding = BIND_OFF;
     }
 
-    static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
-            (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
-    static SecondaryColor3fvProc s_glSecondaryColor3fv =
-            (SecondaryColor3fvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT");
 
     switch (secondaryColorBinding)
     {
@@ -297,7 +298,7 @@ void Geometry::drawImmediateMode(State& state)
 
 
     AttributeBinding fogCoordBinding = _fogCoordBinding;
-    if (fogCoordBinding!=BIND_OFF && (!s_glFogCoordfv || !fogCoordPointer))
+    if (fogCoordBinding!=BIND_OFF && (!fogCoordPointer || !s_glFogCoordfv))
     {
         // swithc off if not supported or have a valid data.
         fogCoordBinding = BIND_OFF;

@@ -51,6 +51,19 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
         
         transform.setAttitude(att);
         
+        fr += 5;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("pivot %f %f %f"))
+    {
+        osg::Vec3 pivot;
+        fr[1].getFloat(pivot[0]);
+        fr[2].getFloat(pivot[1]);
+        fr[3].getFloat(pivot[2]);
+        
+        transform.setPivotPoint(pivot);
+        
         fr += 4;
         iteratorAdvanced = true;
     }
@@ -65,6 +78,7 @@ bool PositionAttitudeTransform_writeLocalData(const Object& obj, Output& fw)
     
     fw.indent()<<"position "<<transform.getPosition()<<std::endl;
     fw.indent()<<"attitude "<<transform.getAttitude()<<std::endl;
+    fw.indent()<<"pivotPoint "<<transform.getPivotPoint()<<std::endl;
 
 
     return true;

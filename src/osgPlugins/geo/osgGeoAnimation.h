@@ -15,7 +15,7 @@
 //	User variables - may be a function of other variables, defined in the editor.
 //	External variables - the user written callback function extvarupdate sets these values on each frame of simulation.
 //	User & external variables may be defined as a mathematical or logical function of 
-// all teh variables (external variables, internal variables & user variables).
+// all the variables (external variables, internal variables & user variables).
 
 // as a design rule, you should not normally attach a function to uvarupdate
 // these variables should be considered as local variables within a function and not accessed by the program.
@@ -35,6 +35,12 @@ public:
 	geoHeader() { 
 		uvarupdate=NULL; extvarupdate=NULL;
 	};
+	geoHeader(const geoHeader &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) :
+		PositionAttitudeTransform(geo,copyop)
+	{ 
+	//	const geoHeaderGeo *ghg=static_cast<const geoHeaderGeo *> (&geo);
+	}
+
 	~geoHeader() {}
 	void setUserUpdate(double (*ufn)(const double time,const double val, const std::string name) )
 	{ // pass the address of a user written function in the Update phase.

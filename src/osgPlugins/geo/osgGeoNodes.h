@@ -49,6 +49,8 @@ private:
 class internalVars { // holds internal variables for whole model
 public:
 	internalVars() {   }
+	internalVars(const internalVars &iv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY ) {
+		vars=iv.vars; }
 	~internalVars() { 
 		}
 	void addInternalVars(const georecord &gr);
@@ -82,6 +84,8 @@ private:
 class userVars {
 public:
 	userVars() {}
+	userVars(const userVars &iv, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY ) {
+		vars=iv.vars; }
 	~userVars() {}
 	unsigned int number() { return vars.size();}
 	std::vector<geoValue> *getvars() { return &vars;}
@@ -125,6 +129,11 @@ class geoHeaderGeo: public geoHeader {
 public:
 	geoHeaderGeo();
 	~geoHeaderGeo() { color_palette->clear();	}
+	geoHeaderGeo(const geoHeaderGeo &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) :
+		geoHeader(geo,copyop){ 
+			intVars=new internalVars(*geo.intVars); useVars=new userVars(*geo.useVars);
+			extVars=new userVars(*geo.extVars);
+		}
 	void addInternalVars(const georecord &gr) { intVars->addInternalVars(gr);}
 	internalVars *getInternalVars(void) const { return intVars;}
 	const std::string getVarname(const unsigned fid) const {

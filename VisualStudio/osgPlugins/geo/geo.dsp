@@ -101,6 +101,10 @@ SOURCE=..\..\..\src\osgPlugins\geo\geoActions.cpp
 
 SOURCE=..\..\..\src\osgPlugins\geo\ReaderWriterGEO.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\geo\ClipRegion.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -132,6 +136,10 @@ SOURCE=..\..\..\src\osgPlugins\geo\osgGeoNodes.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\geo\osgGeoStructs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\geo\ClipRegion.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

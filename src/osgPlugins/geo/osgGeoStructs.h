@@ -132,7 +132,6 @@ public:
 			break;
 		}
 	}
-//<<<<<<< osgGeoStructs.h
 
 	void set(unsigned short id,unsigned int fid) { // to set values
 		TypeId=DB_UINT;
@@ -143,7 +142,6 @@ public:
 		memcpy(storage,&fid,SIZEOF_UINT);
 	}
 	void set(unsigned short id,float *cen,const int nsize) { // to set values
-//set(GEO_DB_ROTATE_ACTION_ORIGIN,ct,3);
 		if (nsize==3) {
 			TypeId=DB_VEC3F;
 			tokenId=id;
@@ -163,10 +161,6 @@ public:
 	}
 	void readfile(std::ifstream &fin, const unsigned int id); // is part of a record id 
 	void parseExt(std::ifstream &fin) const; // Feb 2003 parse node extension fields
-/*=======
-	void readfile(std::ifstream &fin, const uint id); // is part of a record id 
-	void parseExt(std::ifstream &fin) const; // Feb 2003 parse node extension fields
-//>>>>>>> 1.10 */
 	void writefile(std::ofstream &fout) { // write binary file
 		if (numItems<32767 && tokenId<256) {
 			unsigned char tokid=tokenId, type=TypeId;

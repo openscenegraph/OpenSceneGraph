@@ -62,6 +62,12 @@ public:
     }
     ~PickVisitor() {}
 
+    void setTraversalMask(osg::Node::NodeMask traversalMask)
+    {
+        NodeVisitor::setTraversalMask(traversalMask);
+        _piv.setTraversalMask(traversalMask);   
+    }
+
 	// Aug 2003 added to pass the nodemaskOverride to the PickIntersectVisitor
      //   may be used make the visitor override the nodemask to visit invisible actions
     inline void setNodeMaskOverride(osg::Node::NodeMask mask) {
@@ -588,7 +594,7 @@ bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Ve
 
 }
 
-bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits)
+bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
     float pixel_x,pixel_y;
     if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
@@ -621,6 +627,7 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
         }
 
         PickVisitor iv;
+        iv.setTraversalMask(traversalMask);
         
         osgUtil::IntersectVisitor::HitList localHits;        
         localHits = iv.getHits(node, vum, rx,ry);
@@ -634,26 +641,26 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
     return false;
 }
 
-bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits)
+bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
-    return computeIntersections(x,y,cameraNum,getSceneData(),hits);
+    return computeIntersections(x,y,cameraNum,getSceneData(),hits,traversalMask);
 }
 
-bool Viewer::computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits)
+bool Viewer::computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
     bool hitFound = false;
     osgUtil::IntersectVisitor::HitList hlist;
     for(unsigned int i=0;i<getNumberOfCameras();++i)
     {
-        if (computeIntersections(x,y,i,node,hits)) hitFound = true;
+        if (computeIntersections(x,y,i,node,hits,traversalMask)) hitFound = true;
     }
     return hitFound;
 }
 
 
-bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits)
+bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
-    return computeIntersections(x,y,getSceneData(),hits);
+    return computeIntersections(x,y,getSceneData(),hits,traversalMask);
 }
 
 void Viewer::selectCameraManipulator(unsigned int no)

@@ -115,16 +115,16 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         bool computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Vec3& near, osg::Vec3& far);
         
         /** compute, from normalized mouse coords, for all Cameras, intersections with the specified subgraph.*/
-        bool computeIntersections(float x,float y,unsigned int cameraNum,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits);
+        bool computeIntersections(float x,float y,unsigned int cameraNum,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask = 0xffffffff);
 
         /** compute, from normalized mouse coords, for sepecified Camera, intersections with the scene.*/
-        bool computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits);
+        bool computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask = 0xffffffff);
 
         /** compute, from normalized mouse coords, for all Cameras, intersections with specified subgraph.*/
-        bool computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits);
+        bool computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask = 0xffffffff);
 
         /** compute, from normalized mouse coords, for all Cameras, intersections with the scene.*/
-        bool computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits);
+        bool computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask = 0xffffffff);
 
         void setKeyboardMouse(Producer::KeyboardMouse* kbm);
         Producer::KeyboardMouse* getKeyboardMouse() { return _kbm.get(); }

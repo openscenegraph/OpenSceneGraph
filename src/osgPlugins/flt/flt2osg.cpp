@@ -60,6 +60,8 @@
 #include "LongIDRecord.h"
 #include "InstanceRecords.h"
 #include "LocalVertexPoolRecord.h"
+#include "MultiTextureRecord.h"
+#include "UVListRecord.h"
 
 
 
@@ -199,6 +201,9 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
         case VERTEX_CT_OP:
             visitTextureVertex(osgPrimary, (TextureVertexRecord*)child);
             break;
+	default:
+	    osg::notify( osg::INFO ) << "flt::ConvertFromFLT::visitAncillary: "
+		<< "Unknown opcode: " << child->getOpcode() << "\n";
         }
     }
     return parent;
@@ -465,6 +470,7 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
 
     if (!rec->getFltFile()->useInternalTexturePalette()) return;
 
+
     if (rec->getFlightVersion() > 13)
     {
         STexturePalette* pTexture = (STexturePalette*)rec->getData();
@@ -481,6 +487,7 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
     TexturePool* pTexturePool = rec->getFltFile()->getTexturePool();
     if (pTexturePool == NULL) return;
 
+
     // Get StateSet containing texture from registry pool.
     osg::StateSet *osgStateSet = Registry::instance()->getTexture(pFilename);
 
@@ -491,6 +498,7 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
         return;     // Texture already loaded
     }
     
+    CERR<<"visitTexturePalette attempting to load ("<<pFilename<<")"<<std::endl;
     
     unsigned int unit = 0;
 
@@ -541,6 +549,10 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
         // Also add to local pool to be able to get texture by index.
         // ( umm... should this have reference to the texture unit? RO. July2002)
         pTexturePool->addTexture(nIndex, osgStateSet);
+        
+        CERR<<"Registry::instance()->addTexture("<<pFilename<<", "<<osgStateSet<<")"<<std::endl;
+        CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<osgStateSet<<")"<<std::endl;
+        
     }
 }
 
@@ -1209,6 +1221,107 @@ void ConvertFromFLT::setTransparency ( osg::StateSet *osgStateSet, bool &bBlend 
     }
 }
 
+void
+ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
+{
+    osg::Geometry* geom = dgset->getGeometry();
+    assert( geom );
+    assert( mtr );
+    assert( mtr->isAncillaryRecord() );
+    SMultiTexture* mt =
+	reinterpret_cast<SMultiTexture*>(mtr->getData());
+    assert( mt );
+    CERR << "ConvertFromFLT::addMultiTexture\n";
+    int l = 0;
+    for ( int i = 0; i < 8; i++ ) {
+	if ( (1 << 32-i) & mt->layers ) {
+	    CERR << "Has layer " << i << "\n";
+	    mt->data[l].endian();
+	    CERR << "texture: " << mt->data[l].texture << "\n";
+	    CERR << "effect: " << mt->data[l].effect << "\n";
+	    CERR << "mapping: " << mt->data[l].mapping << "\n";
+	    CERR << "data: " << mt->data[l].data << "\n";
+
+	    TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
+	    assert( pTexturePool );
+            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *>
+                (pTexturePool->getTexture((int)mt->data[l].texture));
+	    
+            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture) << "\n";
+            CERR << "textureStateSet: " << textureStateSet << "\n";
+	    assert( textureStateSet );
+	    osg::Texture2D *texture =
+		dynamic_cast<osg::Texture2D*>(
+			textureStateSet->getTextureAttribute(
+			    0, osg::StateAttribute::TEXTURE));
+            CERR << "texture: " << texture << "\n";
+
+	    osg::StateSet* texture_stateset = new osg::StateSet;
+            CERR << "texture_stateset: " << texture_stateset << "\n";
+
+	    assert( texture );
+            texture_stateset->setTextureAttributeAndModes(
+		    i, texture,osg::StateAttribute::ON);
+
+            osg::TexEnv* osgTexEnv = new osg::TexEnv;
+            CERR << "osgTexEnv: " << osgTexEnv << "\n";
+            osgTexEnv->setMode(osg::TexEnv::MODULATE);
+            texture_stateset->setTextureAttribute( i, osgTexEnv );
+
+	    assert( geom );
+            CERR << "geom: " << geom << "\n";
+            CERR  << ", referenceCount: "
+                << geom->referenceCount() << "\n";
+	    osg::StateSet* geom_stateset = geom->getStateSet();
+            CERR << "geom_stateset: " << geom_stateset << "\n";
+	    if ( geom_stateset ) {
+		geom_stateset->merge( *texture_stateset );
+		CERR << "Merging layer " << i << "\n";
+	    } else {
+		geom->setStateSet( texture_stateset );
+		CERR << "Setting layer " << i << "\n";
+	    }
+
+	    l++;
+	}
+    }
+}
+
+void
+ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
+{
+    osg::Geometry* geom = dgset->getGeometry();
+    assert( geom );
+    assert( uvr );
+    assert( uvr->isAncillaryRecord() );
+    SUVList* uvl =
+	reinterpret_cast<SUVList*>(uvr->getData());
+    assert( uvl );
+    CERR << "ConvertFromFLT::addUVList\n";
+    int l = 0;
+    int num_coords = dgset->coordListSize();
+    for ( int i = 0; i < 8; i++ ) {
+	if ( (1 << 32-i) & uvl->layers ) {
+	    osg::Vec2Array* tcoords = new osg::Vec2Array;
+	    CERR << "Has layer " << i << "\n";
+	    // Assume we are working with vertex lists for now
+	    for ( int v = l*num_coords; v < (l+1)*num_coords; v++ ) {
+		uvl->coords.vertex[v].endian();
+		CERR << "( u: " << uvl->coords.vertex[v].coords[1] << ", "
+                    << "v: " << uvl->coords.vertex[v].coords[0] << ")\n";
+                /// FIXME: should be (x,y) instead of (y,x) - ENDIAN problem???
+		tcoords->push_back( osg::Vec2( uvl->coords.vertex[v].coords[1],
+			    uvl->coords.vertex[v].coords[0] ) );
+	    }
+	    if ( !tcoords->empty() ) {
+		CERR << "Setting tcoords " << i << ": " << tcoords << "\n";
+		geom->setTexCoordArray( i, tcoords );
+	    }
+
+	    l++;
+	}
+    }
+}
 
 void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 {
@@ -1256,6 +1369,30 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 
     // Add face to builder pool
     pBuilder->addPrimitive();
+
+    // Visit ancillary records
+    for(int i=0; i < rec->getNumChildren(); i++)
+    {
+        Record* child = rec->getChild(i);
+        if (!child->isAncillaryRecord())
+            break;
+
+	switch (child->getOpcode())
+	{
+	    case MULTI_TEXTURE_OP:
+		{
+		    MultiTextureRecord* mtr =
+			dynamic_cast<MultiTextureRecord*>(child);
+		    assert( mtr );
+		    addMultiTexture( dgset, mtr );
+		}
+		break;
+	    default:
+		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
+		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+		break;
+	}
+    }
 
     // Look for subfaces
     {
@@ -1320,7 +1457,7 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
 
 int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
 {
-    //DynGeoSet* dgset = pBuilder->getDynGeoSet();
+    DynGeoSet* dgset = pBuilder->getDynGeoSet();
     int vertices = rec->numberOfVertices();
 
     // Add vertices to GeoSetBuilder
@@ -1329,6 +1466,41 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
         Record* vertex = getVertexFromPool(rec->getVertexPoolOffset(i));
         if (vertex)
             addVertex(pBuilder, vertex);
+    }
+
+    // Visit ancillary records
+    for(int i=0; i < rec->getNumChildren(); i++)
+    {
+        Record* child = rec->getChild(i);
+	CERR << "OPCODE: " << child->getOpcode() << "\n";
+        if (!child->isAncillaryRecord())
+            break;
+
+	switch (child->getOpcode())
+	{
+	    case UV_LIST_OP:
+		{
+		    UVListRecord* uvr =
+			dynamic_cast<UVListRecord*>(child);
+		    assert( uvr );
+		    addUVList( dgset, uvr );
+		}
+		break;
+	    case MULTI_TEXTURE_OP:
+		{
+		    CERR2 << "MULTI_TEXTURE_OP in visitVertexList\n";
+		    MultiTextureRecord* mtr =
+			dynamic_cast<MultiTextureRecord*>(child);
+		    assert( mtr );
+		    addMultiTexture( dgset, mtr );
+		}
+		break;
+	    default:
+		osg::notify( osg::WARN )
+		    << "flt::ConvertFromFLT::visitVertexList: "
+		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+		break;
+	}
     }
 
     return vertices;
@@ -1547,6 +1719,32 @@ void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, Me
 
     // Add the mesh primitives.
     addMeshPrimitives ( parent, pBuilder, rec );
+
+    // Visit ancillary records
+    for(int i=0; i < rec->getNumChildren(); i++)
+    {
+        Record* child = rec->getChild(i);
+        if (!child->isAncillaryRecord())
+            break;
+
+	switch (child->getOpcode())
+	{
+	    case MULTI_TEXTURE_OP:
+		{
+		    CERR2 << "MULTI_TEXTURE_OP in visitMesh\n";
+		    MultiTextureRecord* mtr =
+			dynamic_cast<MultiTextureRecord*>(child);
+		    assert( mtr );
+		    addMultiTexture( dgset, mtr );
+		}
+		break;
+	    default:
+		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
+		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+		break;
+	}
+    }
+
 }
 
 

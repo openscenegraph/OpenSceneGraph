@@ -81,6 +81,7 @@ const osg::Primitive::Mode NO_PRIMITIVE_TYPE = (osg::Primitive::Mode)0xffff;
 DynGeoSet::DynGeoSet()
 {
     _primtype=NO_PRIMITIVE_TYPE;
+    _geom = new osg::Geometry;
 }
 
 void DynGeoSet::setBinding()
@@ -108,8 +109,6 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
 {
     int indexBase = 0;
     
-    geom->setStateSet(getStateSet());
-
     osg::Vec3Array* vertices = geom->getVertexArray();
     if (vertices)
     {
@@ -240,9 +239,13 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
         itr!=_dynGeoSetList.end();
         ++itr)
     {
-        osg::Geometry* geom = new osg::Geometry;
+	DynGeoSet* dgset = itr->get();
+	osg::Geometry* geom = dgset->getGeometry();
         geode->addDrawable(geom);
-        (*itr)->addToGeometry(geom);
+        dgset->addToGeometry(geom);
+
+	osg::StateSet* stateset = dgset->getStateSet();
+	assert( stateset == geom->getStateSet() );
     }
 
     osgUtil::Tesselator tesselator;

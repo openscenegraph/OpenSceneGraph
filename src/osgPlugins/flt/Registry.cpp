@@ -34,8 +34,11 @@ void Registry::addPrototype(Record* rec)
 Record* Registry::getPrototype(const int opcode)
 {
     RecordProtoMap::iterator itr = _recordProtoMap.find(opcode);
-    if (itr != _recordProtoMap.end())
+    if (itr != _recordProtoMap.end()) {
         return (*itr).second.get();
+    }
+    osg::notify( osg::WARN )
+	<< "flt::Registry::addPrototype: Unkown opcode: " << opcode << "\n";
 
     return NULL;
 

@@ -52,6 +52,8 @@ class LocalVertexPoolRecord;
 class LongIDRecord;
 class InstanceDefinitionRecord;
 class InstanceReferenceRecord;
+class MultiTextureRecord;
+class UVListRecord;
 struct SFace;
 
 //class GeoSetBuilder;
@@ -169,6 +171,10 @@ class ConvertFromFLT
         void setMaterial ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, bool &bBlend );
         void setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset, bool &bBlend );
         void setTransparency ( osg::StateSet *osgStateSet, bool &bBlend );
+
+	// multitexturing
+	void addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr );
+	void addUVList( DynGeoSet* dgset, UVListRecord* mtr );
 
         typedef std::map<int,Record*> VertexPaletteOffsetMap;
         VertexPaletteOffsetMap _VertexPaletteOffsetMap;

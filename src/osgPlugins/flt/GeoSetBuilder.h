@@ -96,7 +96,10 @@ class DynGeoSet : public osg::Referenced
         bool operator == (const DynGeoSet& rhs) const { return compare(rhs)==0; }
         bool operator != (const DynGeoSet& rhs) const { return compare(rhs)!=0; }
 
-        void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
+        void setStateSet(osg::StateSet* stateset) {
+	    _stateset = stateset;
+	    _geom->setStateSet( stateset );
+	}
         osg::StateSet* getStateSet() { return _stateset.get(); }
         const osg::StateSet* getStateSet() const { return _stateset.get(); }
         
@@ -128,6 +131,12 @@ class DynGeoSet : public osg::Referenced
         inline const int colorListSize() const { return _colorList.size(); }
         inline const int tcoordListSize() const { return _tcoordList.size(); }
 
+	osg::Geometry* getGeometry() {
+            CERR  << "_geom.get(): " << _geom.get()
+                << "; referenceCount: " << _geom.get()->referenceCount()<<"\n";
+            return _geom.get();
+        };
+
     private:
 
         typedef std::vector<int>        PrimLenList;
@@ -136,6 +145,7 @@ class DynGeoSet : public osg::Referenced
         typedef std::vector<osg::Vec4>  ColorList;
         typedef std::vector<osg::Vec2>  TcoordList;
 
+        osg::ref_ptr<osg::Geometry>  _geom;
 
         osg::ref_ptr<osg::StateSet> _stateset;
 

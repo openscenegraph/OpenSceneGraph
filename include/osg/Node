@@ -204,7 +204,7 @@ class SG_EXPORT Node : public Object
         std::string _name;
 
         ParentList _parents;
-        friend Group;
+        friend class osg::Group;
 
         ref_ptr<NodeCallback> _appCallback;
         int _numChildrenRequiringAppTraversal;

@@ -1993,6 +1993,23 @@ static osg::Vec3 computeLocalPosition(const osg::Matrixd& worldToLocal, double X
                      X*worldToLocal(0,2) + Y*worldToLocal(1,2) + Z*worldToLocal(2,2) + worldToLocal(3,2));
 }
 
+static inline osg::Vec3 computeLocalSkirtVector(const osg::EllipsoidModel* et, const osg::HeightField* grid, unsigned int i, unsigned int j, float length, bool useLocalToTileTransform, const osg::Matrixd& localToWorld)
+{ 
+    // no local to tile transform + mapping from lat+longs to XYZ so we need to use
+    // a rotatated skirt vector - use the gravity vector.
+    double longitude = grid->getOrigin().x()+grid->getXInterval()*((double)(i));
+    double latitude = grid->getOrigin().y()+grid->getYInterval()*((double)(j));
+    double midZ = grid->getOrigin().z();
+    double X,Y,Z;
+    et->convertLatLongHeightToXYZ(osg::DegreesToRadians(latitude),osg::DegreesToRadians(longitude),midZ,X,Y,Z);
+    osg::Vec3 gravitationVector = et->computeLocalUpVector(X,Y,Z);
+    gravitationVector.normalize();
+
+    if (useLocalToTileTransform) gravitationVector = osg::Matrixd::transform3x3(localToWorld,gravitationVector);
+
+    return gravitationVector * -length;
+}
+
 osg::Node* DataSet::DestinationTile::createPolygonal()
 {
     std::cout<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
@@ -2076,6 +2093,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     osg::Vec3 center_normal(0.0f,0.0f,1.0f);
     osg::Vec3 transformed_center_normal(0.0f,0.0f,1.0f);
     double globe_radius = et ? et->getRadiusPolar() : 1.0;
+    float skirtLength = _extents.radius()*skirtRatio;
 
     bool useClusterCullingCallback = mapLatLongsToXYZ;
 
@@ -2099,7 +2117,8 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             
             double length = sqrt((midX-minX)*(midX-minX) + (midY-minY)*(midY-minY)); 
             
-            skirtVector.set(0.0f,0.0f,-length*skirtRatio);
+            skirtLength = length*skirtRatio;
+            skirtVector.set(0.0f,0.0f,-skirtLength);
             
             center_normal.set(midX,midY,midZ);
             center_normal.normalize();
@@ -2118,7 +2137,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             localToWorld.makeTranslate(midX,midY,midZ);
             worldToLocal.invert(localToWorld);
             
-            skirtVector.set(0.0f,0.0f,-_extents.radius()*skirtRatio);
+            skirtVector.set(0.0f,0.0f,-skirtLength);
         }
         
     }
@@ -2133,12 +2152,13 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         et->convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,X,Y,Z);
         osg::Vec3 gravitationVector = et->computeLocalUpVector(X,Y,Z);
         gravitationVector.normalize();
-        skirtVector = gravitationVector * _extents.radius()* skirtRatio;
+        skirtVector = gravitationVector * skirtLength;
     }
     else
     {
-        skirtVector.set(0.0f,0.0f,-_extents.radius()*skirtRatio);
+        skirtVector.set(0.0f,0.0f,-skirtLength);
     }
+
 
 
     unsigned int vi=0;
@@ -2309,9 +2329,13 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             // mark these points as protected to prevent them from being removed during simplification
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
             pointsToProtectDuringSimplification.push_back(vi);
+               
+            osg::Vec3 localSkirtVector = !mapLatLongsToXYZ ? 
+                                            skirtVector :
+                                            computeLocalSkirtVector(et, grid.get(), c, r, skirtLength, useLocalToTileTransform, localToWorld);
             
             // add in the new point on the bottom of the skirt
-            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            v[vi] = v[(r)*numColumns+c]+localSkirtVector;
             if (n.valid()) (*n)[vi] = (*n)[r*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
@@ -2327,8 +2351,12 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
             pointsToProtectDuringSimplification.push_back(vi);
 
+            osg::Vec3 localSkirtVector = !mapLatLongsToXYZ ? 
+                                            skirtVector :
+                                            computeLocalSkirtVector(et, grid.get(), c, r, skirtLength, useLocalToTileTransform, localToWorld);
+            
             // add in the new point on the bottom of the skirt
-            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            v[vi] = v[(r)*numColumns+c]+localSkirtVector;
             if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
@@ -2344,8 +2372,12 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
             pointsToProtectDuringSimplification.push_back(vi);
 
+            osg::Vec3 localSkirtVector = !mapLatLongsToXYZ ? 
+                                            skirtVector :
+                                            computeLocalSkirtVector(et, grid.get(), c, r, skirtLength, useLocalToTileTransform, localToWorld);
+            
             // add in the new point on the bottom of the skirt
-            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            v[vi] = v[(r)*numColumns+c]+localSkirtVector;
             if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
@@ -2361,8 +2393,12 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             pointsToProtectDuringSimplification.push_back((r)*numColumns+c);
             pointsToProtectDuringSimplification.push_back(vi);
 
+            osg::Vec3 localSkirtVector = !mapLatLongsToXYZ ? 
+                                            skirtVector :
+                                            computeLocalSkirtVector(et, grid.get(), c, r, skirtLength, useLocalToTileTransform, localToWorld);
+            
             // add in the new point on the bottom of the skirt
-            v[vi] = v[(r)*numColumns+c]+skirtVector;
+            v[vi] = v[(r)*numColumns+c]+localSkirtVector;
             if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }

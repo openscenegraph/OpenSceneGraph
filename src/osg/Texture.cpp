@@ -1115,15 +1115,18 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Texture::Extensions::setupGLExtenions()
 {
- 
-    _isMultiTexturingSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0) ||
+    float glVersion = atof( (const char *)glGetString( GL_VERSION ) );
+    
+    _isMultiTexturingSupported = ( glVersion >= 1.3 ) ||
                                  isGLExtensionSupported("GL_ARB_multitexture") ||
                                  isGLExtensionSupported("GL_EXT_multitexture");
     _isTextureFilterAnisotropicSupported = isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
     _isTextureCompressionARBSupported = isGLExtensionSupported("GL_ARB_texture_compression");
     _isTextureCompressionS3TCSupported = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
     _isTextureMirroredRepeatSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
-    _isTextureEdgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
+    _isTextureEdgeClampSupported = ( glVersion >= 1.2 ) ||
+                                    isGLExtensionSupported("GL_EXT_texture_edge_clamp") || 
+                                    isGLExtensionSupported("GL_SGIS_texture_edge_clamp");
     _isTextureBorderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
     _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
                                   isGLExtensionSupported("GL_SGIS_generate_mipmap");

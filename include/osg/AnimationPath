@@ -167,6 +167,8 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         
         const TimeControlPointMap& getTimeControlPointMap() const { return _timeControlPointMap; }
         
+        bool empty() const { return _timeControlPointMap.empty(); }
+
         /** read the anumation path from a flat ascii file stream.*/
         void read(std::istream& in);
 

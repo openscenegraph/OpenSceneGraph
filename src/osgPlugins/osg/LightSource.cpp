@@ -14,7 +14,7 @@ bool LightSource_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_LightSourceProxy
 (
-    osgNew osg::LightSource,
+    new osg::LightSource,
     "LightSource",
     "Object Node LightSource",
     &LightSource_readLocalData,

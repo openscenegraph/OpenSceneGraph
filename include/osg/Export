@@ -39,19 +39,20 @@
 /* Define NULL pointer value */
 
 #ifndef NULL
-#ifdef  __cplusplus
-#define NULL    0
-#else
-#define NULL    ((void *)0)
-#endif
+    #ifdef  __cplusplus
+        #define NULL    0
+    #else
+        #define NULL    ((void *)0)
+    #endif
 #endif
 
-//#include <osg/MemoryManager>
-//#include <new>
-//#include <stdlib.h>
-#define osgNew new
-#define osgDelete delete
-#define osgFree free
-#define osgMalloc malloc
+#ifdef USE_DEPRECATED_API
+
+    #define osgNew new
+    #define osgDelete delete
+    #define osgFree free
+    #define osgMalloc malloc
+
+#endif
 
 #endif

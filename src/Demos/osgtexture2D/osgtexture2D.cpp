@@ -126,7 +126,7 @@ osg::Drawable* createSquare(float textureCoordMax=1.0f)
     (*tcoords)[3].set(textureCoordMax,textureCoordMax);
     geom->setTexCoordArray(0,tcoords);
     
-    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
 
     return geom;
 }
@@ -170,11 +170,11 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 //     // use DrawPixels drawable to draw a pixel image.
 //     {
 //     
-//         osg::DrawPixels* drawimage = osgNew osg::DrawPixels;
+//         osg::DrawPixels* drawimage = new osg::DrawPixels;
 //         drawimage->setPosition(local_offset);
 //         drawimage->setImage(image);
 //         
-//         osg::Geode* geode = osgNew osg::Geode;
+//         osg::Geode* geode = new osg::Geode;
 //         geode->addDrawable(drawimage);
 //     
 //         // add the transform node to root group node.

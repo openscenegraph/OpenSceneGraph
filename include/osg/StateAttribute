@@ -24,8 +24,8 @@ class StateSet;
   * the standard pure virtual methods which are required for all Object 
   * subclasses.*/
 #define META_StateAttribute(library,name,type) \
-        virtual osg::Object* cloneType() const { return osgNew name(); } \
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew name (*this,copyop); } \
+        virtual osg::Object* cloneType() const { return new name(); } \
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \

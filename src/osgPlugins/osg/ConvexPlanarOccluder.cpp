@@ -20,7 +20,7 @@ bool ConvexPlanarOccluder_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ConvexPlanarOccluderFuncProxy
 (
-    osgNew osg::ConvexPlanarOccluder,
+    new osg::ConvexPlanarOccluder,
     "ConvexPlanarOccluder",
     "Object ConvexPlanarOccluder",
     &ConvexPlanarOccluder_readLocalData,

@@ -16,7 +16,7 @@ const char* TexEnv_getModeStr(TexEnv::Mode mode);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TexEnvProxy
 (
-    osgNew osg::TexEnv,
+    new osg::TexEnv,
     "TexEnv",
     "Object StateAttribute TexEnv",
     &TexEnv_readLocalData,

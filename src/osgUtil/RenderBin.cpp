@@ -10,8 +10,8 @@ using namespace osg;
 using namespace osgUtil;
 
 // register a RenderStage prototype with the RenderBin prototype list.
-RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",osgNew RenderBin(RenderBin::SORT_BY_STATE));
-RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",osgNew RenderBin(RenderBin::SORT_BACK_TO_FRONT));
+RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",new RenderBin(RenderBin::SORT_BY_STATE));
+RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",new RenderBin(RenderBin::SORT_BACK_TO_FRONT));
 
 typedef std::map< std::string, osg::ref_ptr<RenderBin> > RenderBinPrototypeList;
 

@@ -70,10 +70,10 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
 
 osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
-    std::auto_ptr<Lwo2> lwo2(osgNew Lwo2());
+    std::auto_ptr<Lwo2> lwo2(new Lwo2());
     if (lwo2->ReadFile(fileName))
     {
-        osg::ref_ptr<Group> group = osgNew osg::Group();
+        osg::ref_ptr<Group> group = new osg::Group();
         if (lwo2->GenerateGroup(*group)) return group.take();
     }
     return ReadResult::FILE_NOT_HANDLED;
@@ -145,14 +145,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         {
             lwMaterial& lw_material = lw->material[itr->first];
 
-            gc._geom = osgNew osg::Geometry;
+            gc._geom = new osg::Geometry;
             
-            osg::Vec3Array* vertArray = osgNew osg::Vec3Array(gc._numPoints);
+            osg::Vec3Array* vertArray = new osg::Vec3Array(gc._numPoints);
             gc._vertices = vertArray->begin();
             gc._geom->setVertexArray(vertArray);
 
             // set up color.
-            osg::Vec4Array* colors = osgNew osg::Vec4Array(1);
+            osg::Vec4Array* colors = new osg::Vec4Array(1);
             (*colors)[0].set(lw_material.r,
                              lw_material.g,
                              lw_material.b,
@@ -171,10 +171,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                     if (image)
                     {
                         // create state
-                        osg::StateSet* stateset = osgNew osg::StateSet;
+                        osg::StateSet* stateset = new osg::StateSet;
 
                         // create texture
-                        osg::Texture2D* texture = osgNew osg::Texture2D;
+                        osg::Texture2D* texture = new osg::Texture2D;
                         texture->setImage(image);
 
                         // texture wrap mode
@@ -194,7 +194,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                         
                         gc._geom->setStateSet(stateset);
 
-                        osg::Vec2Array* texcoordArray = osgNew osg::Vec2Array(gc._numPoints);
+                        osg::Vec2Array* texcoordArray = new osg::Vec2Array(gc._numPoints);
                         gc._texcoords = texcoordArray->begin();
                         gc._geom->setTexCoordArray(0,texcoordArray);
                     }
@@ -234,7 +234,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                     break;
             }
                         
-            gc._geom->addPrimitiveSet(osgNew osg::DrawArrays(mode,gc._coordCount,face.index_cnt));
+            gc._geom->addPrimitiveSet(new osg::DrawArrays(mode,gc._coordCount,face.index_cnt));
             gc._coordCount += face.index_cnt;
 
             // From the spec_low.lxt :
@@ -261,7 +261,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         }
     }
 
-    osg::Geode* geode = osgNew osg::Geode;
+    osg::Geode* geode = new osg::Geode;
     
     osgUtil::Tesselator tesselator;
     

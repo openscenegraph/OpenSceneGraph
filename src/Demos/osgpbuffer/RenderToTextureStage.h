@@ -24,8 +24,8 @@ class /*OSGUTIL_EXPORT*/ MyRenderToTextureStage : public osgUtil::RenderStage
 
         MyRenderToTextureStage();
         
-        virtual osg::Object* cloneType() const { return osgNew MyRenderToTextureStage(); }
-        virtual osg::Object* clone(const osg::CopyOp&) const { return osgNew MyRenderToTextureStage(); } // note only implements a clone of type.
+        virtual osg::Object* cloneType() const { return new MyRenderToTextureStage(); }
+        virtual osg::Object* clone(const osg::CopyOp&) const { return new MyRenderToTextureStage(); } // note only implements a clone of type.
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const MyRenderToTextureStage*>(obj)!=0L; }
         virtual const char* libraryName() const { return ""; }
         virtual const char* className() const { return "MyRenderToTextureStage"; }

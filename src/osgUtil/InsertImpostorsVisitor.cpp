@@ -92,7 +92,7 @@ void InsertImpostorsVisitor::insertImpostors()
                     // to an impostor.
                     Node::ParentList parentList = group->getParents();
 
-                    Impostor* impostor = osgNew Impostor;
+                    Impostor* impostor = new Impostor;
 
                     // standard LOD settings
                     impostor->addChild(group);
@@ -139,7 +139,7 @@ void InsertImpostorsVisitor::insertImpostors()
                     // to an impostor.
                     Node::ParentList parentList = lod->getParents();
 
-                    osg::Impostor* impostor = osgNew Impostor;
+                    osg::Impostor* impostor = new Impostor;
 
                     // standard LOD settings
                     for(unsigned int ci=0;ci<lod->getNumChildren();++ci)

@@ -129,8 +129,8 @@ extern SG_EXPORT sMStats     m_getMemoryStatistics();
     // ---------------------------------------------------------------------------------------------------------------------------------
 
 
-    #define    osgNew              (m_setOwner  (__FILE__,__LINE__),false) ? NULL : new
-    #define    osgDelete           (m_setOwner  (__FILE__,__LINE__),false) ? m_setOwner("",0) : delete
+    #define    new              (m_setOwner  (__FILE__,__LINE__),false) ? NULL : new
+    #define    delete           (m_setOwner  (__FILE__,__LINE__),false) ? m_setOwner("",0) : delete
     #define    osgMalloc(sz)        m_allocator  (__FILE__,__LINE__,m_alloc_malloc,sz)
     #define    osgCalloc(sz)        m_allocator  (__FILE__,__LINE__,m_alloc_calloc,sz)
     #define    osgRealloc(ptr,sz)   m_reallocator(__FILE__,__LINE__,m_alloc_realloc,sz,ptr)
@@ -138,8 +138,8 @@ extern SG_EXPORT sMStats     m_getMemoryStatistics();
 
 #else // OSG_USE_MEMORY_MANAGER
 
-    #define    osgNew               new
-    #define    osgDelete            delete
+    #define    new               new
+    #define    delete            delete
     #define    osgMalloc(sz)        malloc(sz)
     #define    osgCalloc(sz)        calloc(sz)
     #define    osgRealloc(ptr,sz)   realloc(ptr,sz)

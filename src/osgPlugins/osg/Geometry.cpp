@@ -24,7 +24,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom);
 //register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_GeometryFuncProxy
 (
-    osgNew osg::Geometry,
+    new osg::Geometry,
     "Geometry",
     "Object Drawable Geometry",
     &Geometry_readLocalData,
@@ -71,7 +71,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         int capacity;
         fr[1].getInt(capacity);
         
-        Vec3Array* vertices = osgNew Vec3Array;
+        Vec3Array* vertices = new Vec3Array;
         vertices->reserve(capacity);
 
         fr += 3;
@@ -125,7 +125,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         int capacity;
         fr[1].getInt(capacity);
         
-        Vec3Array* normals = osgNew Vec3Array;
+        Vec3Array* normals = new Vec3Array;
         normals->reserve(capacity);
 
         fr += 3;
@@ -237,7 +237,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         int capacity;
         fr[1].getInt(capacity);
         
-        FloatArray* fogcoords = osgNew FloatArray;
+        FloatArray* fogcoords = new FloatArray;
         fogcoords->reserve(capacity);
 
         fr += 3;
@@ -321,7 +321,7 @@ Array* Array_readLocalData(Input& fr)
 
     if (strcmp(arrayName,"ByteArray")==0)
     {
-        ByteArray* array = osgNew ByteArray;
+        ByteArray* array = new ByteArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -338,7 +338,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"ShortArray")==0)
     {
-        ShortArray* array = osgNew ShortArray;
+        ShortArray* array = new ShortArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -355,7 +355,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"IntArray")==0)
     {
-        IntArray* array = osgNew IntArray;
+        IntArray* array = new IntArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -372,7 +372,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"UByteArray")==0)
     {
-        UByteArray* array = osgNew UByteArray;
+        UByteArray* array = new UByteArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -389,7 +389,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"UShortArray")==0)
     {
-        UShortArray* array = osgNew UShortArray;
+        UShortArray* array = new UShortArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -406,7 +406,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"UIntArray")==0)
     {
-        UIntArray* array = osgNew UIntArray;
+        UIntArray* array = new UIntArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -423,7 +423,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"UByte4Array")==0)
     {
-        UByte4Array* array = osgNew UByte4Array;
+        UByte4Array* array = new UByte4Array;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -443,7 +443,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"FloatArray")==0)
     {
-        FloatArray* array = osgNew FloatArray;
+        FloatArray* array = new FloatArray;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -460,7 +460,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"Vec2Array")==0)
     {
-        Vec2Array* array = osgNew Vec2Array;
+        Vec2Array* array = new Vec2Array;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -477,7 +477,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"Vec3Array")==0)
     {
-        Vec3Array* array = osgNew Vec3Array;
+        Vec3Array* array = new Vec3Array;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -494,7 +494,7 @@ Array* Array_readLocalData(Input& fr)
     }
     else if (strcmp(arrayName,"Vec4Array")==0)
     {
-        Vec4Array* array = osgNew Vec4Array;
+        Vec4Array* array = new Vec4Array;
         array->reserve(capacity);
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
@@ -696,7 +696,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int count;
         fr[3].getInt(count);
 
-        geom.addPrimitiveSet(osgNew DrawArrays(mode,first,count));
+        geom.addPrimitiveSet(new DrawArrays(mode,first,count));
 
         fr += 4;
         
@@ -718,7 +718,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 5;
         
-        DrawArrayLengths* prim = osgNew DrawArrayLengths;
+        DrawArrayLengths* prim = new DrawArrayLengths;
         prim->setMode(mode);
         prim->setFirst(first);
         prim->reserve(capacity);
@@ -750,7 +750,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 4;
         
-        DrawElementsUByte* prim = osgNew DrawElementsUByte;
+        DrawElementsUByte* prim = new DrawElementsUByte;
         prim->setMode(mode);
         prim->reserve(capacity);
 
@@ -781,7 +781,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 4;
         
-        DrawElementsUShort* prim = osgNew DrawElementsUShort;
+        DrawElementsUShort* prim = new DrawElementsUShort;
         prim->setMode(mode);
         prim->reserve(capacity);
 
@@ -812,7 +812,7 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         
         fr += 4;
         
-        DrawElementsUInt* prim = osgNew DrawElementsUInt;
+        DrawElementsUInt* prim = new DrawElementsUInt;
         prim->setMode(mode);
         prim->reserve(capacity);
 

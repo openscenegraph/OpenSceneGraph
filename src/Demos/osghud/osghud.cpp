@@ -90,9 +90,9 @@ void set2dScene(osg::Group* rootNode)
 
     ///////////////////////////////////////////////////////////////////////////
     // BitmapFont
-    osgText::BitmapFont*    bitmapFont= osgNew  osgText::BitmapFont(ttfPath,
+    osgText::BitmapFont*    bitmapFont= new  osgText::BitmapFont(ttfPath,
                                                                gFontSize1);
-    text= osgNew  osgText::Text(bitmapFont);
+    text= new  osgText::Text(bitmapFont);
     gTextList.push_back(text);
     text->setText(std::string("2d ")+std::string(TEXT_BITMAP));
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
@@ -100,14 +100,14 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
-    geode = osgNew osg::Geode();
+    geode = new osg::Geode();
     geode->setName("BitmapFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
+    textMaterial = new osg::Material();
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = osgNew osg::StateSet();
+    textState = new osg::StateSet();
     textState->setAttribute(textMaterial );
     geode->setStateSet( textState );
 
@@ -118,9 +118,9 @@ void set2dScene(osg::Group* rootNode)
 
     ///////////////////////////////////////////////////////////////////////////
     // PixmapFont
-    osgText::PixmapFont*    pixmapFont= osgNew  osgText::PixmapFont(ttfPath,
+    osgText::PixmapFont*    pixmapFont= new  osgText::PixmapFont(ttfPath,
                                                                gFontSize1);
-    text= osgNew  osgText::Text(pixmapFont);
+    text= new  osgText::Text(pixmapFont);
     gTextList.push_back(text);
     text->setText(std::string("2d ")+std::string(TEXT_PIXMAP));
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
@@ -128,21 +128,21 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
-    geode = osgNew osg::Geode();
+    geode = new osg::Geode();
     geode->setName("PixmapFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
+    textMaterial = new osg::Material();
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_2D);
     // to get antiaA pixmapFonts we have to draw them with blending
-    osg::BlendFunc    *transp= osgNew  osg::BlendFunc();
+    osg::BlendFunc    *transp= new  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 
 
 
-    textState = osgNew osg::StateSet();
+    textState = new osg::StateSet();
     textState->setAttribute(textMaterial );
     textState->setAttribute(transp);
     textState->setMode(GL_BLEND,osg::StateAttribute::ON);
@@ -158,9 +158,9 @@ void set2dScene(osg::Group* rootNode)
 
     ///////////////////////////////////////////////////////////////////////////
     // TextureFont
-    osgText::TextureFont*    textureFont= osgNew  osgText::TextureFont(ttfPath1,
+    osgText::TextureFont*    textureFont= new  osgText::TextureFont(ttfPath1,
                                                                  gFontSize1);
-    text= osgNew  osgText::Text(textureFont);
+    text= new  osgText::Text(textureFont);
     gTextList.push_back(text);
     text->setText(std::string("2d ")+std::string(TEXT_TEXTURE));
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
@@ -168,18 +168,18 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
-    geode = osgNew osg::Geode();
+    geode = new osg::Geode();
     geode->setName("TextureFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
+    textMaterial = new osg::Material();
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
     // to get antiaA pixmapFonts we have to draw them with blending
-    transp= osgNew  osg::BlendFunc();
+    transp= new  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    textState = osgNew osg::StateSet();
+    textState = new osg::StateSet();
     textState->setAttribute(textMaterial );
     textState->setAttribute(transp);
 
@@ -194,10 +194,10 @@ void set2dScene(osg::Group* rootNode)
 
     ///////////////////////////////////////////////////////////////////////////
     // PolygonFont
-    osgText::PolygonFont*    polygonFont= osgNew  osgText::PolygonFont(ttfPath,
+    osgText::PolygonFont*    polygonFont= new  osgText::PolygonFont(ttfPath,
                                                                  gFontSize1,
                                                                  3);
-    text= osgNew  osgText::Text(polygonFont);
+    text= new  osgText::Text(polygonFont);
     gTextList.push_back(text);
     text->setText(std::string("2d ")+std::string("TEXT_POLYGON"));
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
@@ -205,14 +205,14 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
-    geode = osgNew osg::Geode();
+    geode = new osg::Geode();
     geode->setName("PolygonFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
+    textMaterial = new osg::Material();
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = osgNew osg::StateSet();
+    textState = new osg::StateSet();
     textState->setAttribute(textMaterial );
     geode->setStateSet( textState );
 
@@ -223,11 +223,11 @@ void set2dScene(osg::Group* rootNode)
 
     ///////////////////////////////////////////////////////////////////////////
     // OutlineFont
-    osgText::OutlineFont*    outlineFont= osgNew  osgText::OutlineFont(ttfPath,
+    osgText::OutlineFont*    outlineFont= new  osgText::OutlineFont(ttfPath,
                                                                  gFontSize1,
                                                                  3);
 
-    text= osgNew  osgText::Text(outlineFont);
+    text= new  osgText::Text(outlineFont);
     gTextList.push_back(text);
     text->setText(std::string("2d ")+std::string(TEXT_OUTLINE));
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
@@ -235,14 +235,14 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
-    geode = osgNew osg::Geode();
+    geode = new osg::Geode();
     geode->setName("OutlineFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
+    textMaterial = new osg::Material();
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = osgNew osg::StateSet();
+    textState = new osg::StateSet();
     textState->setAttribute(textMaterial );
     geode->setStateSet( textState );
 
@@ -250,10 +250,10 @@ void set2dScene(osg::Group* rootNode)
     
     
     // now add a depth attribute to the scene to force it to draw on top.
-    osg::Depth* depth = osgNew osg::Depth;
+    osg::Depth* depth = new osg::Depth;
     depth->setRange(0.0,0.0);
     
-    osg::StateSet* rootState = osgNew osg::StateSet();
+    osg::StateSet* rootState = new osg::StateSet();
     rootState->setAttribute(depth);
     rootState->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     
@@ -323,16 +323,16 @@ int main( int argc, char **argv )
     osg::Group* group = dynamic_cast<osg::Group*>(rootnode);
     if (!group)
     {
-        group = osgNew osg::Group;
+        group = new osg::Group;
         group->addChild(rootnode);
         rootnode = group;
     }
     
     // create the hud.
-    osg::Projection* projection = osgNew osg::Projection;
+    osg::Projection* projection = new osg::Projection;
     projection->setMatrix(osg::Matrix::ortho2D(0,1024,0,768));
     
-    osg::MatrixTransform* modelview_abs = osgNew osg::MatrixTransform;
+    osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
     modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
     modelview_abs->setMatrix(osg::Matrix::identity());
     
@@ -340,8 +340,8 @@ int main( int argc, char **argv )
     set2dScene(modelview_abs);
 
     projection->addChild(modelview_abs);
-//     projection->setAppCallback(osgNew MyCallback("App callback"));
-//     projection->setCullCallback(osgNew MyCallback("Cull callback"));
+//     projection->setAppCallback(new MyCallback("App callback"));
+//     projection->setCullCallback(new MyCallback("Cull callback"));
 
     group->addChild(projection);
     

@@ -14,7 +14,7 @@ bool OccluderNode_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_OccluderNodeProxy
 (
-    osgNew osg::OccluderNode,
+    new osg::OccluderNode,
     "OccluderNode",
     "Object Node OccluderNode Group",
     &OccluderNode_readLocalData,
@@ -27,7 +27,7 @@ bool OccluderNode_readLocalData(Object& obj, Input& fr)
 
     OccluderNode& occludernode = static_cast<OccluderNode&>(obj);
     
-    static ref_ptr<ConvexPlanarOccluder> s_occluder = osgNew ConvexPlanarOccluder;
+    static ref_ptr<ConvexPlanarOccluder> s_occluder = new ConvexPlanarOccluder;
     
     ConvexPlanarOccluder* tmpOccluder = static_cast<ConvexPlanarOccluder*>(fr.readObjectOfType(*s_occluder));
     

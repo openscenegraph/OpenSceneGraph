@@ -73,25 +73,25 @@ class MyTransformCallback : public osg::NodeCallback{
 
 osg::Geode* createGeometryCube()
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     // -------------------------------------------
     // Set up a new Geometry which will be our cube
     // -------------------------------------------
-    osg::Geometry* cube = osgNew osg::Geometry();
+    osg::Geometry* cube = new osg::Geometry();
 
     // set up the primitives
     
-    cube->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,4));
-    cube->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,4,4));
-    cube->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,8,4));
-    cube->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,12,4));
-    cube->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,16,4));
-    cube->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,20,4));
+    cube->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,4));
+    cube->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,4,4));
+    cube->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,8,4));
+    cube->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,12,4));
+    cube->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,16,4));
+    cube->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,20,4));
     
 
     // set up coords.
-    osg::Vec3Array* coords = osgNew osg::Vec3Array;
+    osg::Vec3Array* coords = new osg::Vec3Array;
     coords->resize(24);
     
     (*coords)[0].set( -1.0000f,   1.0000f,  -1.000f );
@@ -129,7 +129,7 @@ osg::Geode* createGeometryCube()
     
     
     // set up the normals.
-    osg::Vec3Array* cubeNormals = osgNew osg::Vec3Array;
+    osg::Vec3Array* cubeNormals = new osg::Vec3Array;
     cubeNormals->resize(6);
     
     (*cubeNormals)[0].set(0.0f,0.0f,-1.0f);
@@ -145,8 +145,8 @@ osg::Geode* createGeometryCube()
     // ---------------------------------------
     // Set up a StateSet to make the cube red
     // ---------------------------------------
-    osg::StateSet* cubeState = osgNew osg::StateSet();
-    osg::Material* redMaterial = osgNew osg::Material();
+    osg::StateSet* cubeState = new osg::StateSet();
+    osg::Material* redMaterial = new osg::Material();
     osg::Vec4 red( 1.0f, 0.0f, 0.0f, 1.0f );
     redMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, red );
     cubeState->setAttribute( redMaterial );
@@ -177,17 +177,17 @@ int main( int argc, char **argv )
     // parameters that have been matched.
     viewer.readCommandLine(commandLine);
     
-    osg::MatrixTransform* myTransform = osgNew osg::MatrixTransform();
+    osg::MatrixTransform* myTransform = new osg::MatrixTransform();
     myTransform->addChild( createGeometryCube() );
 
     // move node in a circle at 90 degrees a sec.
-    myTransform->setAppCallback(osgNew MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
+    myTransform->setAppCallback(new MyTransformCallback(myTransform,osg::inDegrees(90.0f)));
 
     // add model to viewer.
     viewer.addViewport( myTransform );
 
     // register trackball maniupulators.
-    viewer.registerCameraManipulator(osgNew osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     
     viewer.open();
 

@@ -98,7 +98,7 @@ void SmoothingVisitor::smooth(osg::Geometry& geom)
     osg::Vec3Array *coords = geom.getVertexArray();
     if (!coords || !coords->size()) return;
     
-    osg::Vec3Array *normals = osgNew osg::Vec3Array(coords->size());
+    osg::Vec3Array *normals = new osg::Vec3Array(coords->size());
 
     osg::Vec3Array::iterator nitr;
     for(nitr = normals->begin();

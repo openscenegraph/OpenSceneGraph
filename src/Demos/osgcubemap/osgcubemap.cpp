@@ -60,7 +60,7 @@ void create_specular_highlights(osg::Node *node)
     osg::StateSet *ss = node->getOrCreateStateSet();
     
     // create and setup the texture object
-    osg::TextureCubeMap *tcm = osgNew osg::TextureCubeMap;
+    osg::TextureCubeMap *tcm = new osg::TextureCubeMap;
     tcm->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
     tcm->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
     tcm->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
@@ -68,7 +68,7 @@ void create_specular_highlights(osg::Node *node)
     tcm->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);    
 
     // generate the six highlight map images (light direction = [1, 1, -1])
-    osgUtil::HighlightMapGenerator *mapgen = osgNew osgUtil::HighlightMapGenerator(
+    osgUtil::HighlightMapGenerator *mapgen = new osgUtil::HighlightMapGenerator(
         osg::Vec3(1, 1, -1),            // light direction
         osg::Vec4(1, 0.9f, 0.8f, 1),    // light color
         8);                             // specular exponent
@@ -87,12 +87,12 @@ void create_specular_highlights(osg::Node *node)
     ss->setTextureAttributeAndModes(0, tcm, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
     // texture coordinate generation
-    osg::TexGen *tg = osgNew osg::TexGen;
+    osg::TexGen *tg = new osg::TexGen;
     tg->setMode(osg::TexGen::REFLECTION_MAP);
     ss->setTextureAttributeAndModes(0, tg, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
     // use TexEnvCombine to add the highlights to the original lighting
-    osg::TexEnvCombine *te = osgNew osg::TexEnvCombine;    
+    osg::TexEnvCombine *te = new osg::TexEnvCombine;    
     te->setCombine_RGB(osg::TexEnvCombine::ADD);
     te->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
     te->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);

@@ -54,7 +54,7 @@ osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const
     (*tcoords)[3].set(0.0f,1.0f);
     geom->setTexCoordArray(0,tcoords);
     
-    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
     
     if (image)
     {
@@ -98,7 +98,7 @@ osg::Drawable* createAxis(const osg::Vec3& corner,const osg::Vec3& xdir,const os
     geom->setColorArray(color);
     geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
     
-    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,6));
     
     osg::StateSet* stateset = new osg::StateSet;
     osg::LineWidth* linewidth = new osg::LineWidth();
@@ -114,17 +114,17 @@ osg::Node* createModel()
 {
 
     // create the root node which will hold the model.
-    osg::Group* root = osgNew osg::Group();
+    osg::Group* root = new osg::Group();
 
     // add the drawable into a single goede to be shared...
-    osg::Billboard* center = osgNew osg::Billboard();
+    osg::Billboard* center = new osg::Billboard();
     center->setMode(osg::Billboard::POINT_ROT_EYE);
     center->addDrawable(
        
 createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/reflect.rgb")),
         osg::Vec3(0.0f,0.0f,0.0f));
         
-    osg::Billboard* x_arrow = osgNew osg::Billboard();
+    osg::Billboard* x_arrow = new osg::Billboard();
     x_arrow->setMode(osg::Billboard::AXIAL_ROT);
     x_arrow->setAxis(osg::Vec3(1.0f,0.0f,0.0f));
     x_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
@@ -133,7 +133,7 @@ createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0
 createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posx.png")),
         osg::Vec3(5.0f,0.0f,0.0f));
 
-    osg::Billboard* y_arrow = osgNew osg::Billboard();
+    osg::Billboard* y_arrow = new osg::Billboard();
     y_arrow->setMode(osg::Billboard::AXIAL_ROT);
     y_arrow->setAxis(osg::Vec3(0.0f,1.0f,0.0f));
     y_arrow->setNormal(osg::Vec3(1.0f,0.0f,0.0f));
@@ -141,7 +141,7 @@ createSquare(osg::Vec3(-0.5f,0.0f,-0.5f),osg::Vec3(1.0f,0.0f,0.0f),osg::Vec3(0.0
         createSquare(osg::Vec3(0.0f,-0.5f,-0.5f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f),osgDB::readImageFile("Images/osg_posy.png")),
         osg::Vec3(0.0f,5.0f,0.0f));
 
-    osg::Billboard* z_arrow = osgNew osg::Billboard();
+    osg::Billboard* z_arrow = new osg::Billboard();
     z_arrow->setMode(osg::Billboard::AXIAL_ROT);
     z_arrow->setAxis(osg::Vec3(0.0f,0.0f,1.0f));
     z_arrow->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
@@ -194,9 +194,9 @@ int main( int argc, char **argv )
     viewer.addViewport( rootNode );
 
     // register trackball, flight and drive.
-    viewer.registerCameraManipulator(osgNew osgGA::TrackballManipulator);
-    viewer.registerCameraManipulator(osgNew osgGA::FlightManipulator);
-    viewer.registerCameraManipulator(osgNew osgGA::DriveManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::FlightManipulator);
+    viewer.registerCameraManipulator(new osgGA::DriveManipulator);
 
     viewer.open();
 

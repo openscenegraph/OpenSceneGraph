@@ -34,16 +34,16 @@ void FieldReaderIterator::_free()
     // free all data
     if (_previousField)
     {
-        osgDelete _previousField;
+        delete _previousField;
     }
     if (_fieldQueue)
     {
         for(int i=0;i<_fieldQueueCapacity;++i)
         {
-            if (_fieldQueue[i]) osgDelete _fieldQueue[i];
+            if (_fieldQueue[i]) delete _fieldQueue[i];
             _fieldQueue[i] = NULL;
         }
-        osgDelete [] _fieldQueue;
+        delete [] _fieldQueue;
     }
     _init();
 
@@ -66,17 +66,17 @@ void FieldReaderIterator::_copy(const FieldReaderIterator& ic)
 
     if (ic._previousField)
     {
-        _previousField = osgNew Field(*ic._previousField);
+        _previousField = new Field(*ic._previousField);
     }
 
     if (ic._fieldQueue && ic._fieldQueueCapacity>0)
     {
-        _fieldQueue = osgNew Field* [ic._fieldQueueCapacity];
+        _fieldQueue = new Field* [ic._fieldQueueCapacity];
         for(int i=0;i<ic._fieldQueueCapacity;++i)
         {
             if (ic._fieldQueue[i])
             {
-                _fieldQueue[i] = osgNew Field(*ic._fieldQueue[i]);
+                _fieldQueue[i] = new Field(*ic._fieldQueue[i]);
             }
             else
             {
@@ -128,7 +128,7 @@ void FieldReaderIterator::insert(int pos,Field* field)
         int newCapacity = _fieldQueueCapacity*2;
         if (newCapacity<MINIMUM_FIELD_READER_QUEUE_SIZE) newCapacity = MINIMUM_FIELD_READER_QUEUE_SIZE;
         while(_fieldQueueSize>=newCapacity) newCapacity*=2;
-        Field** newFieldStack = osgNew Field* [newCapacity];
+        Field** newFieldStack = new Field* [newCapacity];
         for(i=0;i<_fieldQueueCapacity;++i)
         {
             newFieldStack[i] = _fieldQueue[i];
@@ -139,7 +139,7 @@ void FieldReaderIterator::insert(int pos,Field* field)
         }
 
         // free the old memory.
-        osgDelete [] _fieldQueue;
+        delete [] _fieldQueue;
 
         _fieldQueue = newFieldStack;
         _fieldQueueCapacity = newCapacity;
@@ -158,7 +158,7 @@ void FieldReaderIterator::insert(int pos,const char* str)
 {
     if (str)
     {
-        Field* field = osgNew Field;
+        Field* field = new Field;
         while(*str!=0)
         {
             field->addChar(*str);
@@ -194,7 +194,7 @@ Field& FieldReaderIterator::field (int pos)
             int newCapacity = _fieldQueueCapacity*2;
             if (newCapacity<MINIMUM_FIELD_READER_QUEUE_SIZE) newCapacity = MINIMUM_FIELD_READER_QUEUE_SIZE;
             while(_fieldQueueSize>=newCapacity) newCapacity*=2;
-            Field** newFieldStack = osgNew Field* [newCapacity];
+            Field** newFieldStack = new Field* [newCapacity];
             int i;
             for(i=0;i<_fieldQueueCapacity;++i)
             {
@@ -205,14 +205,14 @@ Field& FieldReaderIterator::field (int pos)
                 newFieldStack[i] = NULL;
             }
             // free the old memory.
-            osgDelete [] _fieldQueue;
+            delete [] _fieldQueue;
 
             _fieldQueue = newFieldStack;
             _fieldQueueCapacity = newCapacity;
         }
         while(!_reader.eof() && pos>=_fieldQueueSize)
         {
-            if (_fieldQueue[_fieldQueueSize]==NULL) _fieldQueue[_fieldQueueSize] = osgNew Field;
+            if (_fieldQueue[_fieldQueueSize]==NULL) _fieldQueue[_fieldQueueSize] = new Field;
             if (_reader.readField(*_fieldQueue[_fieldQueueSize]))
             {
                 ++_fieldQueueSize;
@@ -250,7 +250,7 @@ FieldReaderIterator& FieldReaderIterator::operator += (int no)
     }
     else if (no>0)
     {
-        Field** tmpFields = osgNew Field* [no];
+        Field** tmpFields = new Field* [no];
         int i;
         for(i=0;i<no;++i)
         {
@@ -265,7 +265,7 @@ FieldReaderIterator& FieldReaderIterator::operator += (int no)
         {
             _fieldQueue[_fieldQueueSize+i] = tmpFields[i];
         }
-        osgDelete [] tmpFields;
+        delete [] tmpFields;
     }
     return *this;
 }

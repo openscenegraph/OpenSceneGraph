@@ -12,7 +12,7 @@ AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animation
 
 AnimationPathManipulator::AnimationPathManipulator( const std::string& filename ) 
 {
-    _animationPath = osgNew osg::AnimationPath;
+    _animationPath = new osg::AnimationPath;
     _animationPath->setLoopMode(osg::AnimationPath::LOOP);
     _timeOffset = 0.0f;
     _timeScale = 1.0f;

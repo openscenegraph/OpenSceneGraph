@@ -14,7 +14,7 @@ bool ColorMatrix_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_ColorMatrixProxy
 (
-    osgNew osg::ColorMatrix,
+    new osg::ColorMatrix,
     "ColorMatrix",
     "Object StateAttribute ColorMatrix",
     &ColorMatrix_readLocalData,

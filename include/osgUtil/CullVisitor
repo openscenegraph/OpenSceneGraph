@@ -44,7 +44,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         CullVisitor();
         virtual ~CullVisitor();
 
-        virtual CullVisitor* cloneType() const { return osgNew CullVisitor(); }
+        virtual CullVisitor* cloneType() const { return new CullVisitor(); }
 
         virtual void reset();
         
@@ -312,7 +312,7 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     }
 
     // otherwise need to create new renderleaf.
-    RenderLeaf* renderleaf = osgNew RenderLeaf(drawable,projection,matrix,depth);
+    RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth);
     _reuseRenderLeafList.push_back(renderleaf);
     ++_currentReuseRenderLeafIndex;
     return renderleaf;

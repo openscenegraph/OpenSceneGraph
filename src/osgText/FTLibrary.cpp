@@ -14,7 +14,7 @@ FTLibrary::~FTLibrary()
 	{
 		FT_Done_FreeType( *lib);
 
-		osgDelete lib;
+		delete lib;
 		lib= 0;
 	}
 
@@ -22,7 +22,7 @@ FTLibrary::~FTLibrary()
 //	{
 //		FTC_Manager_Done( manager );
 //
-//		osgDelete manager;
+//		delete manager;
 //		manager= 0;
 //	}
 }
@@ -41,12 +41,12 @@ bool FTLibrary::Init()
 	if( lib != 0 )
 		return true;
 
-	lib = osgNew FT_Library;
+	lib = new FT_Library;
 	
 	err = FT_Init_FreeType( lib);
 	if( err)
 	{
-		osgDelete lib;
+		delete lib;
 		lib = 0;
 		return false;
 	}
@@ -55,7 +55,7 @@ bool FTLibrary::Init()
 // 	
 // 	if( FTC_Manager_New( lib, 0, 0, 0, my_face_requester, 0, manager )
 // 	{
-// 		osgDelete manager;
+// 		delete manager;
 // 		manager= 0;
 // 		return false;
 // 	}

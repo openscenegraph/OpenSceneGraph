@@ -23,7 +23,7 @@ const char* Texture3D_getInternalFormatStr(int value);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_Texture3DProxy
 (
-    osgNew osg::Texture3D,
+    new osg::Texture3D,
     "Texture3D",
     "Object StateAttribute Texture3D TextureBase",
     &Texture3D_readLocalData,

@@ -31,8 +31,8 @@ class SG_EXPORT Matrix : public Object
             float a20, float a21, float a22, float a23,
             float a30, float a31, float a32, float a33);
 
-        virtual Object* cloneType() const { return osgNew Matrix(); } \
-        virtual Object* clone(const CopyOp&) const { return osgNew Matrix(*this); } \
+        virtual Object* cloneType() const { return new Matrix(); } \
+        virtual Object* clone(const CopyOp&) const { return new Matrix(*this); } \
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Matrix*>(obj)!=NULL; } \
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Matrix"; }

@@ -7,8 +7,8 @@ LightSource::LightSource():
 {
     // switch off culling of light source nodes by default.
     setCullingActive(false);
-    _stateset = osgNew StateSet;
-    _light = osgNew Light;
+    _stateset = new StateSet;
+    _light = new Light;
 }
 
 
@@ -35,7 +35,7 @@ void LightSource::setStateSetModes(StateSet& stateset,StateAttribute::GLModeValu
 
 void LightSource::setLocalStateSetModes(StateAttribute::GLModeValue value)
 {
-    if (!_stateset) _stateset = osgNew StateSet;
+    if (!_stateset) _stateset = new StateSet;
     _stateset->setAllToInherit();
     setStateSetModes(*_stateset,value);
 }

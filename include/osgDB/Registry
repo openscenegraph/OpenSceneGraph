@@ -209,7 +209,7 @@ class RegisterDotOsgWrapperProxy
         {
             if (Registry::instance())
             {
-                _wrapper = osgNew DotOsgWrapper(proto,name,associates,readFunc,writeFunc,readWriteMode);
+                _wrapper = new DotOsgWrapper(proto,name,associates,readFunc,writeFunc,readWriteMode);
                 Registry::instance()->addDotOsgWrapper(_wrapper.get());
             }
         }
@@ -235,7 +235,7 @@ class RegisterReaderWriterProxy
         {
             if (Registry::instance())
             {
-                _rw = osgNew T;
+                _rw = new T;
                 Registry::instance()->addReaderWriter(_rw.get());
             }
         }

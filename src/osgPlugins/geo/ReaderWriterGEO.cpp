@@ -409,7 +409,7 @@ class ReaderWriterGEO : public ReaderWriter
                 }
                 else
                 {
-                    Group* group = osgNew Group;
+                    Group* group = new Group;
                     group->setName("import group");
                     for(NodeList::iterator itr=nodeList.begin();
                         itr!=nodeList.end();
@@ -698,10 +698,10 @@ class ReaderWriterGEO : public ReaderWriter
         osg::MatrixTransform *makeText(georecord *gr) { // make transform, geode & text
             std::string    ttfPath("fonts/times.ttf");
             int    gFontSize1=2;
-            osgText::PolygonFont*    polygonFont= osgNew  osgText::PolygonFont(ttfPath,
+            osgText::PolygonFont*    polygonFont= new  osgText::PolygonFont(ttfPath,
                                                                  gFontSize1,
                                                                  3);
-            osgText::Text *text= osgNew  osgText::Text(polygonFont);
+            osgText::Text *text= new  osgText::Text(polygonFont);
             const geoField *gfd=gr->getField(GEO_DB_TEXT_NAME);
             //const char *name=gfd ? gfd->getChar() : "a text";
             gfd=gr->getField(GEO_DB_TEXT_STRING);
@@ -735,7 +735,7 @@ class ReaderWriterGEO : public ReaderWriter
                 }
             }
             osg::Geode *geod=new osg::Geode;
-            osg::StateSet *textState = osgNew osg::StateSet();
+            osg::StateSet *textState = new osg::StateSet();
             textState->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
             geod->setStateSet( textState );
             osg::MatrixTransform *numt=new osg::MatrixTransform;

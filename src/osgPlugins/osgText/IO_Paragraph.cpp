@@ -15,7 +15,7 @@ bool Paragraph_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 // osgDB::RegisterDotOsgWrapperProxy Paragraph_Proxy
 // (
-//     osgNew osgText::Paragraph,
+//     new osgText::Paragraph,
 //     "Paragraph",
 //     "Object Node Geode Paragraph",
 //     Paragraph_readLocalData,

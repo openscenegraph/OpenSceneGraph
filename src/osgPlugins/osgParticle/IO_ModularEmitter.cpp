@@ -13,7 +13,7 @@ bool  ModularEmitter_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  ModularEmitter_Proxy
 (
-    osgNew osgParticle::ModularEmitter,
+    new osgParticle::ModularEmitter,
     "ModularEmitter",
     "Object Node ParticleProcessor Emitter ModularEmitter",
     ModularEmitter_readLocalData,

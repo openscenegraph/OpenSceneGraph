@@ -15,7 +15,7 @@ bool ClearNode_writeLocalData(const Object& obj, Output& fw);
 
 RegisterDotOsgWrapperProxy g_EarthSkyProxy
 (
-    osgNew osg::ClearNode,
+    new osg::ClearNode,
     "EarthSky",
     "Object Node EarthSky Group",
     &ClearNode_readLocalData,
@@ -24,7 +24,7 @@ RegisterDotOsgWrapperProxy g_EarthSkyProxy
 
 RegisterDotOsgWrapperProxy g_ClearNodeProxy
 (
-    osgNew osg::ClearNode,
+    new osg::ClearNode,
     "ClearNode",
     "Object Node ClearNode Group",
     &ClearNode_readLocalData,

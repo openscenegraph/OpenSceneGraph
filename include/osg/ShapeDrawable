@@ -108,8 +108,8 @@ class SG_EXPORT ShapeDrawable : public Drawable
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
             
-        virtual Object* cloneType() const { return osgNew ShapeDrawable(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew ShapeDrawable(*this,copyop); }        
+        virtual Object* cloneType() const { return new ShapeDrawable(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new ShapeDrawable(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ShapeDrawable*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "ShapeDrawable"; }

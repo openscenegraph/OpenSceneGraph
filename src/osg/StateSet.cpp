@@ -345,10 +345,10 @@ void StateSet::setGlobalDefaults()
 
 
     setMode(GL_DEPTH_TEST,StateAttribute::ON);
-    setAttributeAndModes(osgNew AlphaFunc,StateAttribute::OFF);
-    setAttributeAndModes(osgNew BlendFunc,StateAttribute::OFF);
+    setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
+    setAttributeAndModes(new BlendFunc,StateAttribute::OFF);
 
-    Material *material       = osgNew Material;
+    Material *material       = new Material;
     material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
     setAttributeAndModes(material,StateAttribute::ON);
 }

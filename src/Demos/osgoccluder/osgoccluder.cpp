@@ -105,7 +105,7 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
                      return true;
                 }
 
-                osg::ref_ptr<osg::LineSegment> lineSegment = osgNew osg::LineSegment;
+                osg::ref_ptr<osg::LineSegment> lineSegment = new osg::LineSegment;
                 lineSegment->set(near_point,far_point);
 
                 osgUtil::IntersectVisitor iv;
@@ -171,7 +171,7 @@ void OccluderEventHandler::endOccluder()
     {
         if (_convexPlanarOccluder->getOccluder().getVertexList().size()>=3)
         {
-            osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
+            osg::OccluderNode* occluderNode = new osg::OccluderNode;
             occluderNode->setOccluder(_convexPlanarOccluder.get());
 
             if (!_occluders.valid())
@@ -201,10 +201,10 @@ void OccluderEventHandler::endOccluder()
 osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3,const osg::Vec3& v4,float holeRatio=-1.0f)
 {
    // create and occluder which will site along side the loadmodel model.
-    osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
+    osg::OccluderNode* occluderNode = new osg::OccluderNode;
 
     // create the convex planer occluder 
-    osg::ConvexPlanarOccluder* cpo = osgNew osg::ConvexPlanarOccluder;
+    osg::ConvexPlanarOccluder* cpo = new osg::ConvexPlanarOccluder;
 
     // attach it to the occluder node.
     occluderNode->setOccluder(cpo);
@@ -240,22 +240,22 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     
 
    // create a drawable for occluder.
-    osg::Geometry* geom = osgNew osg::Geometry;
+    osg::Geometry* geom = new osg::Geometry;
     
-    osg::Vec3Array* coords = osgNew osg::Vec3Array(occluder.getVertexList().begin(),occluder.getVertexList().end());
+    osg::Vec3Array* coords = new osg::Vec3Array(occluder.getVertexList().begin(),occluder.getVertexList().end());
     geom->setVertexArray(coords);
     
-    osg::Vec4Array* colors = osgNew osg::Vec4Array(1);
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,0.5f);
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     
-    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
     
-    osg::Geode* geode = osgNew osg::Geode;
+    osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     
-    osg::StateSet* stateset = osgNew osg::StateSet;
+    osg::StateSet* stateset = new osg::StateSet;
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
@@ -273,7 +273,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
 
 osg::Group* createOccludersAroundModel(osg::Node* model)
 {
-    osg::Group* scene = osgNew osg::Group;
+    osg::Group* scene = new osg::Group;
     scene->setName("rootgroup");
 
 

@@ -22,13 +22,6 @@
 	#  endif /* OSGDBSG_LIBRARY */
 #else
 	#  define OSGDB_EXPORT
-#endif  
-
-//#include <osg/MemoryManager>
-#define osgNew new
-#define osgDelete delete
-#define osgFree free
-#define osgMalloc malloc
-
+#endif
 
 #endif

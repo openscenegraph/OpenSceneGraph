@@ -92,7 +92,7 @@ osg::Sequence* generateSeq(osg::Sequence::LoopMode mode,
                            float speed, int nreps,
                            std::vector<osg::Node*>& model)
 {
-    osg::Sequence* seqNode = osgNew osg::Sequence;
+    osg::Sequence* seqNode = new osg::Sequence;
 
     // add children, show each child for 1.0 seconds
     for (unsigned int i = 0; i < model.size(); i++) {
@@ -151,7 +151,7 @@ int main( int argc, char **argv )
     }
 
     // root
-    osg::Group* rootNode = osgNew osg::Group;
+    osg::Group* rootNode = new osg::Group;
 
     // create sequences
     std::vector<osg::Sequence*> seq;
@@ -174,7 +174,7 @@ int main( int argc, char **argv )
         osg::Matrix matrix;
         matrix.makeTranslate(x, 0.0, 0.0);
 
-        osg::MatrixTransform* xform = osgNew osg::MatrixTransform;
+        osg::MatrixTransform* xform = new osg::MatrixTransform;
         xform->setMatrix(matrix);
         xform->addChild(seqNode);
 
@@ -187,7 +187,7 @@ int main( int argc, char **argv )
     viewer.addViewport(rootNode);
 
     // register additional event handler
-    viewer.prependEventHandler(osgNew MyEventHandler(&seq), 0);
+    viewer.prependEventHandler(new MyEventHandler(&seq), 0);
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);

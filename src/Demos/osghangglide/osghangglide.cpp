@@ -86,11 +86,11 @@ int main( int argc, char **argv )
         // osg::Depth, and setting their bin numbers to less than 0,
         // to force them to draw before the rest of the scene.
   
-        osg::ClearNode* clearNode = osgNew osg::ClearNode;
+        osg::ClearNode* clearNode = new osg::ClearNode;
         clearNode->setRequiresClear(false); // we've got base and sky to do it.
         
         // use a transform to make the sky and base around with the eye point.
-        osg::Transform* transform = osgNew osg::Transform;
+        osg::Transform* transform = new osg::Transform;
         
         // transform's value isn't knowm until in the cull traversal so its bounding
         // volume is can't be determined, therefore culling will be invalid,
@@ -101,7 +101,7 @@ int main( int argc, char **argv )
         
         // set the compute transform callback to do all the work of
         // determining the transform according to the current eye point.
-        transform->setComputeTransformCallback(osgNew MoveEarthySkyWithEyePointCallback);
+        transform->setComputeTransformCallback(new MoveEarthySkyWithEyePointCallback);
         
         // add the sky and base layer.
         transform->addChild(makeSky());  // bin number -2 so drawn first.

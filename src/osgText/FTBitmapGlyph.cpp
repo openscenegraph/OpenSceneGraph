@@ -37,7 +37,7 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
     destWidth = srcWidth;
     destHeight = srcHeight;
     
-    data = osgNew unsigned char[srcPitch * destHeight];
+    data = new unsigned char[srcPitch * destHeight];
     
     // !!!! THIS assumes a positive Pitch value.  No allowance for negative pitch
     for(int y = 0; y < srcHeight; ++y)
@@ -59,7 +59,7 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
 
 FTBitmapGlyph::~FTBitmapGlyph()
 {
-    osgDelete [] data;
+    delete [] data;
 }
 
 

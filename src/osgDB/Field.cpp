@@ -33,7 +33,7 @@ Field& Field::operator = (const Field& ic)
 void Field::_free()
 {
     // free all data
-    if (_fieldCache) osgDelete [] _fieldCache;
+    if (_fieldCache) delete [] _fieldCache;
 
     _init();
 
@@ -64,7 +64,7 @@ void Field::_copy(const Field& ic)
     {
         _fieldCacheCapacity = ic._fieldCacheCapacity;
         _fieldCacheSize = ic._fieldCacheSize;
-        _fieldCache = osgNew char [_fieldCacheCapacity];
+        _fieldCache = new char [_fieldCacheCapacity];
         strncpy(_fieldCache,ic._fieldCache,_fieldCacheCapacity);
     }
     else
@@ -146,7 +146,7 @@ void Field::addChar(char c)
     if (_fieldCache==NULL)
     {
         if (_fieldCacheCapacity<MIN_CACHE_SIZE) _fieldCacheCapacity=MIN_CACHE_SIZE;
-        _fieldCache = osgNew char[_fieldCacheCapacity];
+        _fieldCache = new char[_fieldCacheCapacity];
         memset(_fieldCache,0,_fieldCacheCapacity);
         _fieldCacheSize = 0;
     }
@@ -155,10 +155,10 @@ void Field::addChar(char c)
         if (_fieldCacheCapacity<MIN_CACHE_SIZE) _fieldCacheCapacity=MIN_CACHE_SIZE;
         while (_fieldCacheSize>=_fieldCacheCapacity-1) _fieldCacheCapacity *= 2;
         char* tmp_str = _fieldCache;
-        _fieldCache = osgNew char[_fieldCacheCapacity];
+        _fieldCache = new char[_fieldCacheCapacity];
         memset(_fieldCache,0,_fieldCacheCapacity);
         strncpy(_fieldCache,tmp_str,_fieldCacheSize);
-        osgDelete [] tmp_str;
+        delete [] tmp_str;
 
     }
     _fieldCache[_fieldCacheSize++] = c;

@@ -103,8 +103,8 @@ class TemplateArray : public Array, public std::vector<T>
             Array(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(first,last) {}        
 
-        virtual Object* cloneType() const { return osgNew TemplateArray(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
+        virtual Object* cloneType() const { return new TemplateArray(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new TemplateArray(*this,copyop); }        
 
         virtual void accept(ArrayVisitor& av) { av.apply(*this); }
         virtual void accept(ConstArrayVisitor& av) const { av.apply(*this); }
@@ -164,8 +164,8 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
             IndexArray(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(first,last) {}        
 
-        virtual Object* cloneType() const { return osgNew TemplateIndexArray(); }
-        virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateIndexArray(*this,copyop); }        
+        virtual Object* cloneType() const { return new TemplateIndexArray(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new TemplateIndexArray(*this,copyop); }        
 
         virtual void accept(ArrayVisitor& av) { av.apply(*this); }
         virtual void accept(ConstArrayVisitor& av) const { av.apply(*this); }

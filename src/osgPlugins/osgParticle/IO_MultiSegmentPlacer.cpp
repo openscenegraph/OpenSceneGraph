@@ -14,7 +14,7 @@ bool  MultiSegmentPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &f
 
 osgDB::RegisterDotOsgWrapperProxy  MultiSegmentPlacer_Proxy
 (
-    osgNew osgParticle::MultiSegmentPlacer,
+    new osgParticle::MultiSegmentPlacer,
     "MultiSegmentPlacer",
     "Object Placer MultiSegmentPlacer",
     MultiSegmentPlacer_readLocalData,

@@ -264,7 +264,7 @@ Lwo2::_read_layer(unsigned long size)
   unsigned short number = _read_short();
   size -= 2;
 
-  Lwo2Layer* layer = osgNew Lwo2Layer();
+  Lwo2Layer* layer = new Lwo2Layer();
   _layers[number] = layer;
   _current_layer = layer;
   layer->_number = number;
@@ -540,7 +540,7 @@ Lwo2::_read_image_definition(unsigned long size)
 void 
 Lwo2::_read_surface(unsigned long size)
 {
-  Lwo2Surface* surface = osgNew Lwo2Surface();
+  Lwo2Surface* surface = new Lwo2Surface();
   surface->image_index = -1;
   surface->state_set = NULL;
 
@@ -658,7 +658,7 @@ Lwo2::GenerateGroup( Group& group )
   //  itr++;
   //  itr++;
     {
-      osg::Geode* geode = osgNew osg::Geode();
+      osg::Geode* geode = new osg::Geode();
 
       notify(DEBUG_INFO) << "Generate geode for layer " << (*itr).first << std::endl;
       DrawableToTagMapping tag_mapping;
@@ -684,7 +684,7 @@ Lwo2::_generate_statesets_from_surfaces()
   for (IteratorSurfaces itr_surf = _surfaces.begin(); itr_surf != _surfaces.end(); itr_surf++)
     {
       Lwo2Surface* surface = (*itr_surf).second;
-      StateSet* state_set = osgNew osg::StateSet;
+      StateSet* state_set = new osg::StateSet;
 
       notify(DEBUG_INFO) << "\tcreating surface " << (*itr_surf).first << std::endl;
 
@@ -696,14 +696,14 @@ Lwo2::_generate_statesets_from_surfaces()
 	  notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
 	  if (image)
 	    {
-	      Texture2D* texture = osgNew osg::Texture2D;
+	      Texture2D* texture = new osg::Texture2D;
 	      texture->setImage(image);
 	      state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
 	    }
 	}
 
       // set color
-      Material* material = osgNew Material();
+      Material* material = new Material();
       Vec4 color(surface->color[0], 
 		 surface->color[1], 
 		 surface->color[2], 
@@ -712,7 +712,7 @@ Lwo2::_generate_statesets_from_surfaces()
       state_set->setAttribute(material);
 
       // setup culling
-      CullFace* cull = osgNew CullFace();
+      CullFace* cull = new CullFace();
       cull->setMode(CullFace::BACK);
       state_set->setAttribute(cull);
       state_set->setMode(GL_CULL_FACE, StateAttribute::ON);

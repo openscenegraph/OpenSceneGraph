@@ -20,7 +20,7 @@ const char* Fog_getModeStr(Fog::Mode mode);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_FogProxy
 (
-    osgNew osg::Fog,
+    new osg::Fog,
     "Fog",
     "Object StateAttribute Fog",
     &Fog_readLocalData,

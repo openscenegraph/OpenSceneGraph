@@ -14,7 +14,7 @@ bool MatrixTransform_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_MatrixTransformProxy
 (
-    osgNew osg::MatrixTransform,
+    new osg::MatrixTransform,
     "MatrixTransform",
     "Object Node Transform MatrixTransform Group",
     &MatrixTransform_readLocalData,
@@ -25,7 +25,7 @@ RegisterDotOsgWrapperProxy g_MatrixTransformProxy
 // register old style 'DCS' read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_DCSProxy
 (
-    osgNew osg::MatrixTransform,
+    new osg::MatrixTransform,
     "DCS",
     "Object Node Group DCS",
     &MatrixTransform_readLocalData,
@@ -63,7 +63,7 @@ bool MatrixTransform_readLocalData(Object& obj, Input& fr)
 
         transform.setMatrix(*tmpMatrix);
 
-        osgDelete tmpMatrix;
+        delete tmpMatrix;
 
         iteratorAdvanced = true;
     }

@@ -53,7 +53,7 @@ FTGLTextureFont::~FTGLTextureFont()
         if (*itr)
         {
             glDeleteTextures( numTextures, (const GLuint*)*itr);
-            osgDelete [] *itr;
+            delete [] *itr;
         }
     }
 }
@@ -73,7 +73,7 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
         return true;
     else
     {
-        glTextureID= osgNew unsigned long[16];
+        glTextureID= new unsigned long[16];
         memset(glTextureID,0,sizeof(unsigned long)*16);
         glContextTextureID[renderContext]=glTextureID;
     }
@@ -98,7 +98,7 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
 
         glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
 
-        textMem = osgNew unsigned char[totalMem]; // GL_ALPHA texture;
+        textMem = new unsigned char[totalMem]; // GL_ALPHA texture;
         memset( textMem, 0, totalMem);
             
         unsigned int glyphNum = 0;
@@ -125,14 +125,14 @@ bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
         
         glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
 
-        textMem = osgNew unsigned char[totalMem]; // GL_ALPHA texture;
+        textMem = new unsigned char[totalMem]; // GL_ALPHA texture;
         memset( textMem, 0, totalMem);
 
         FillGlyphs( 0, glTextureID[0], textureWidth, textureHeight, textMem,renderContext);
         CreateTexture( glTextureID[0], textureWidth, textureHeight, textMem);
     }
 
-    osgDelete [] textMem;
+    delete [] textMem;
     return !err;
 }
 
@@ -159,7 +159,7 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GL
             
             currTextU = (float)currentTextX / (float)width;
             
-            FTTextureGlyph* tempGlyph = osgNew FTTextureGlyph( *ftGlyph, id, data, width, height, currTextU, currTextV);
+            FTTextureGlyph* tempGlyph = new FTTextureGlyph( *ftGlyph, id, data, width, height, currTextU, currTextV);
             glyphList->Add( tempGlyph);
 
             currentTextX += glyphWidth;

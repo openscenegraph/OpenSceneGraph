@@ -18,7 +18,7 @@ bool  ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  ParticleSystem_Proxy
 (
-    osgNew osgParticle::ParticleSystem,
+    new osgParticle::ParticleSystem,
     "ParticleSystem",
     "Object Drawable ParticleSystem",
     ParticleSystem_readLocalData,

@@ -290,7 +290,7 @@ class Teapot : public osg::Drawable
 
 osg::Geode* createTeapot()
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     // add the teapot to the geode.
     geode->addDrawable( new Teapot );
@@ -339,7 +339,7 @@ int main( int argc, char **argv )
     viewer.addViewport( createTeapot() );
 
     // register trackball maniupulators.
-    viewer.registerCameraManipulator(osgNew osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     
     viewer.open();
 

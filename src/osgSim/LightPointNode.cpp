@@ -149,7 +149,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         if (!drawable)
         {
             // set it for the frst time.
-            drawable = osgNew LightPointDrawable;
+            drawable = new LightPointDrawable;
             rg->setUserData(drawable);
             
             if (cv->getFrameStamp())
@@ -173,7 +173,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // and update its time signatures.
 
             drawable->reset();
-            rg->addLeaf(osgNew osgUtil::RenderLeaf(drawable,&projection,NULL,FLT_MAX));
+            rg->addLeaf(new osgUtil::RenderLeaf(drawable,&projection,NULL,FLT_MAX));
 
             // need to update the drawable's frame count.
             if (cv->getFrameStamp())

@@ -55,7 +55,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     HANDLE handle = LoadLibrary( fullLibraryName.c_str() );
-    if (handle) return osgNew DynamicLibrary(libraryName,handle);
+    if (handle) return new DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
 #elif defined(__DARWIN_OSX__)
     NSObjectFileImage image;
@@ -64,19 +64,19 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
         // os_handle = NSLinkModule(image, fullLibraryName.c_str(), TRUE);
         HANDLE handle = NSLinkModule(image, fullLibraryName.c_str(), TRUE);
         NSDestroyObjectFileImage(image);
-        if (handle) return osgNew DynamicLibrary(libraryName,handle);
+        if (handle) return new DynamicLibrary(libraryName,handle);
     }
-    // if (os_handle) return osgNew DynamicLibrary(libraryName,os_handle);
+    // if (os_handle) return new DynamicLibrary(libraryName,os_handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
 #elif defined(__hpux__)
     // BIND_FIRST is neccessary for some reason
     HANDLE handle = shl_load ( fullLibraryName.c_str(), BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
-    if (handle) return osgNew DynamicLibrary(libraryName,handle);
+    if (handle) return new DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
     notify(WARN) << "DynamicLibrary::error "<<strerror(errno)<<std::endl;
 #else // other unix
     HANDLE handle = dlopen( fullLibraryName.c_str(), RTLD_LAZY );
-    if (handle) return osgNew DynamicLibrary(libraryName,handle);
+    if (handle) return new DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
     notify(WARN) << "DynamicLibrary::error "<<dlerror()<<std::endl;
 #endif

@@ -96,7 +96,7 @@ osg::Node* createLightPointsDatabase()
     end._position.set(1000.0f,0.0f,0.0f);
     end._color.set(1.0f,1.0f,1.0f,1.0f);
     
-    osg::Transform* transform = osgNew osg::Transform;
+    osg::Transform* transform = new osg::Transform;
 
     osg::Vec3 start_delta(0.0f,10.0f,0.0f);
     osg::Vec3 end_delta(0.0f,10.0f,1.0f);
@@ -104,7 +104,7 @@ osg::Node* createLightPointsDatabase()
     int noStepsX = 100;
     int noStepsY = 100;
 
-//     osgSim::BlinkSequence* bs = osgNew osgSim::BlinkSequence;
+//     osgSim::BlinkSequence* bs = new osgSim::BlinkSequence;
 //     bs->addPulse(1.0,osg::Vec4(1.0f,0.0f,0.0f,1.0f));
 //     bs->addPulse(0.5,osg::Vec4(0.0f,0.0f,0.0f,0.0f)); // off
 //     bs->addPulse(1.5,osg::Vec4(1.0f,1.0f,0.0f,1.0f));
@@ -113,23 +113,23 @@ osg::Node* createLightPointsDatabase()
 //     bs->addPulse(0.5,osg::Vec4(0.0f,0.0f,0.0f,0.0f)); // off
     
 
-//    osgSim::Sector* sector = osgNew osgSim::ConeSector(osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0),osg::inDegrees(45.0));
-//    osgSim::Sector* sector = osgNew osgSim::ElevationSector(-osg::inDegrees(45.0),osg::inDegrees(45.0),osg::inDegrees(45.0));
-//    osgSim::Sector* sector = osgNew osgSim::AzimSector(-osg::inDegrees(45.0),osg::inDegrees(45.0),osg::inDegrees(90.0));
-//     osgSim::Sector* sector = osgNew osgSim::AzimElevationSector(osg::inDegrees(180),osg::inDegrees(90), // azim range
+//    osgSim::Sector* sector = new osgSim::ConeSector(osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0),osg::inDegrees(45.0));
+//    osgSim::Sector* sector = new osgSim::ElevationSector(-osg::inDegrees(45.0),osg::inDegrees(45.0),osg::inDegrees(45.0));
+//    osgSim::Sector* sector = new osgSim::AzimSector(-osg::inDegrees(45.0),osg::inDegrees(45.0),osg::inDegrees(90.0));
+//     osgSim::Sector* sector = new osgSim::AzimElevationSector(osg::inDegrees(180),osg::inDegrees(90), // azim range
 //                                                                 osg::inDegrees(0.0),osg::inDegrees(90.0), // elevation range
 //                                                                 osg::inDegrees(5.0));
 
     for(int i=0;i<noStepsY;++i)
     {
 
-//         osgSim::BlinkSequence* local_bs = osgNew osgSim::BlinkSequence(*bs);
-//         local_bs->setSequenceGroup(osgNew osgSim::BlinkSequence::SequenceGroup((double)i*0.1));        
+//         osgSim::BlinkSequence* local_bs = new osgSim::BlinkSequence(*bs);
+//         local_bs->setSequenceGroup(new osgSim::BlinkSequence::SequenceGroup((double)i*0.1));        
 //         start._blinkSequence = local_bs;
 
 //        start._sector = sector;
 
-        osgSim::LightPointNode* lpn = osgNew osgSim::LightPointNode;
+        osgSim::LightPointNode* lpn = new osgSim::LightPointNode;
         addToLightPointNode(*lpn,start,end,noStepsX);
         
         start._position += start_delta;
@@ -138,7 +138,7 @@ osg::Node* createLightPointsDatabase()
         transform->addChild(lpn);    
     }
         
-    osg::Group* group = osgNew osg::Group;
+    osg::Group* group = new osg::Group;
     group->addChild(transform);
     
     
@@ -169,7 +169,7 @@ int main( int argc, char **argv )
     // eat any parameters that have been matched.
     osgDB::readCommandLine(commandLine);
 
-    osg::Group* rootnode = osgNew osg::Group;
+    osg::Group* rootnode = new osg::Group;
 
     // load the nodes from the commandline arguments.
     rootnode->addChild(osgDB::readNodeFiles(commandLine));

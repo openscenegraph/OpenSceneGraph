@@ -60,7 +60,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     osg::Vec3 dy(osg::Vec3(0.0f,height/((float)numTilesY),0.0f));
     
     // fill in vertices for grid, note numTilesX+1 * numTilesY+1...
-    osg::Vec3Array* coords = osgNew osg::Vec3Array;
+    osg::Vec3Array* coords = new osg::Vec3Array;
     int iy;
     for(iy=0;iy<=numTilesY;++iy)
     {
@@ -71,15 +71,15 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     }
     
     //Just two colours - black and white.
-    osg::Vec4Array* colors = osgNew osg::Vec4Array;
+    osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f)); // white
     colors->push_back(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
     int numColors=colors->size();
     
     
     int numIndicesPerRow=numTilesX+1;
-    osg::UByteArray* coordIndices = osgNew osg::UByteArray; // assumes we are using less than 256 points...
-    osg::UByteArray* colorIndices = osgNew osg::UByteArray;
+    osg::UByteArray* coordIndices = new osg::UByteArray; // assumes we are using less than 256 points...
+    osg::UByteArray* colorIndices = new osg::UByteArray;
     for(iy=0;iy<numTilesY;++iy)
     {
         for(int ix=0;ix<numTilesX;++ix)
@@ -97,11 +97,11 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     
 
     // set up a single normal
-    osg::Vec3Array* normals = osgNew osg::Vec3Array;
+    osg::Vec3Array* normals = new osg::Vec3Array;
     normals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
     
 
-    osg::Geometry* geom = osgNew osg::Geometry;
+    osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(coords);
     geom->setVertexIndices(coordIndices);
     
@@ -112,9 +112,9 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
-    geom->addPrimitiveSet(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,coordIndices->size()));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,coordIndices->size()));
     
-    osg::Geode* geode = osgNew osg::Geode;
+    osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     
     return geode;
@@ -134,7 +134,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         const osg::BoundingSphere& bs = glider->getBound();
 
         float size = radius/bs.radius()*0.3f;
-        osg::MatrixTransform* positioned = osgNew osg::MatrixTransform;
+        osg::MatrixTransform* positioned = new osg::MatrixTransform;
         positioned->setDataVariance(osg::Object::STATIC);
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                                      osg::Matrix::scale(size,size,size)*
@@ -142,7 +142,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     
         positioned->addChild(glider);
     
-        osg::PositionAttitudeTransform* xform = osgNew osg::PositionAttitudeTransform;    
+        osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform;    
         xform->setAppCallback(new osg::PositionAttitudeTransform::AnimationPathCallback(animationPath,0.0,1.0));
         xform->addChild(positioned);
 
@@ -155,7 +155,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         const osg::BoundingSphere& bs = cessna->getBound();
 
         float size = radius/bs.radius()*0.3f;
-        osg::MatrixTransform* positioned = osgNew osg::MatrixTransform;
+        osg::MatrixTransform* positioned = new osg::MatrixTransform;
         positioned->setDataVariance(osg::Object::STATIC);
         positioned->setMatrix(osg::Matrix::translate(-bs.center())*
                                      osg::Matrix::scale(size,size,size)*
@@ -163,7 +163,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     
         positioned->addChild(cessna);
     
-        osg::MatrixTransform* xform = osgNew osg::MatrixTransform;
+        osg::MatrixTransform* xform = new osg::MatrixTransform;
         xform->setAppCallback(new osg::MatrixTransform::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
 
@@ -178,7 +178,7 @@ osg::Node* createModel()
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 100.0f;
 
-    osg::Group* root = osgNew osg::Group;
+    osg::Group* root = new osg::Group;
 
     root->addChild(createMovingModel(center,radius*0.8f));
 

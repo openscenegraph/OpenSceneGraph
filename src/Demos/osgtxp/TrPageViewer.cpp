@@ -103,7 +103,7 @@ float PagingViewer::app(unsigned int viewport)
     osg::Timer_t beforeApp = _timer.tick();
 
     // update the camera manipulator.
-    osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
+    osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
     ea->adaptFrame(_frameStamp->getReferenceTime());
 
     bool handled = false;

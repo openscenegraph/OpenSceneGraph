@@ -14,7 +14,7 @@ bool  SegmentPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
 osgDB::RegisterDotOsgWrapperProxy  SegmentPlacer_Proxy
 (
-    osgNew osgParticle::SegmentPlacer,
+    new osgParticle::SegmentPlacer,
     "SegmentPlacer",
     "Object Placer SegmentPlacer",
     SegmentPlacer_readLocalData,

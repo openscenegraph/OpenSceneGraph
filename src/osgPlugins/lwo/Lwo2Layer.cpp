@@ -95,13 +95,13 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
       have_texture_coords = false;
 
       // new geometry
-      ref_ptr<Geometry> geometry = osgNew Geometry;
+      ref_ptr<Geometry> geometry = new Geometry;
 
       // create coords array
-      ref_ptr<Vec3Array> coords = osgNew Vec3Array;
+      ref_ptr<Vec3Array> coords = new Vec3Array;
 
       // create texture array
-      ref_ptr<Vec2Array> texcoords = osgNew Vec2Array;
+      ref_ptr<Vec2Array> texcoords = new Vec2Array;
 
       // selecting polygons for current layer only
       int polygon_index = 0;
@@ -159,15 +159,15 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 	      unsigned int points_count = (*polygon_iterator).size();
 	      if (points_count == 3)
 		{
-		  geometry->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::TRIANGLES, points_start, points_count));
+		  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, points_start, points_count));
 		}
 	      else if (points_count == 4)
 		{
-		  geometry->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::QUADS, points_start, points_count));
+		  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS, points_start, points_count));
 		}
 	      else 
 		{
-		  geometry->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::POLYGON, points_start, points_count));
+		  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::POLYGON, points_start, points_count));
 		}
 	    }
 	}
@@ -194,7 +194,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 	  
 	  unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
 	  unsigned int points_count = (*polygon_iterator).size();
-	  geometry->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::TRIANGLE_FAN, points_start, points_count));
+	  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN, points_start, points_count));
 	}
 
       // triangle strips of current layer
@@ -219,7 +219,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 	  
 	  unsigned int points_start = (*coords).size() - (*polygon_iterator).size();
 	  unsigned int points_count = (*polygon_iterator).size();
-	  geometry->addPrimitiveSet(osgNew DrawArrays(PrimitiveSet::TRIANGLE_STRIP, points_start, points_count));
+	  geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_STRIP, points_start, points_count));
 	}
 
       // add geometry if it contains any points

@@ -22,7 +22,7 @@ const char* Texture2D_getInternalFormatStr(int value);
 
 RegisterDotOsgWrapperProxy g_OldTextureProxy
 (
-    osgNew osg::Texture2D,
+    new osg::Texture2D,
     "Texture",
     "Object StateAttribute Texture2D TextureBase",
     0,
@@ -32,7 +32,7 @@ RegisterDotOsgWrapperProxy g_OldTextureProxy
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_Texture2DProxy
 (
-    osgNew osg::Texture2D,
+    new osg::Texture2D,
     "Texture2D",
     "Object StateAttribute Texture2D TextureBase",
     &Texture2D_readLocalData,

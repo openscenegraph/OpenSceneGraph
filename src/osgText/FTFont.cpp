@@ -49,7 +49,7 @@ void FTFont::Close()
 {
     GlyphContextContainer::iterator    itr;
     for(itr=_contextGlyphList.begin();itr!=_contextGlyphList.end();itr++)
-        osgDelete *itr;
+        delete *itr;
     _contextGlyphList.clear();
 }
 
@@ -65,9 +65,9 @@ bool FTFont::FaceSize( const unsigned int size, const unsigned int res , unsigne
     FTGlyphContainer*& glyphList=_contextGlyphList[renderContext];
     
     if( glyphList)
-        osgDelete glyphList;
+        delete glyphList;
     
-    glyphList = osgNew FTGlyphContainer( &face, numGlyphs);
+    glyphList = new FTGlyphContainer( &face, numGlyphs);
     
     if( MakeGlyphList(renderContext))
     {

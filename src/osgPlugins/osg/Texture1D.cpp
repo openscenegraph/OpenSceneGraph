@@ -23,7 +23,7 @@ const char* Texture1D_getInternalFormatStr(int value);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_Texture1DProxy
 (
-    osgNew osg::Texture1D,
+    new osg::Texture1D,
     "Texture1D",
     "Object StateAttribute Texture1D TextureBase",
     &Texture1D_readLocalData,

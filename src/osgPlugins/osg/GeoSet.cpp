@@ -27,7 +27,7 @@ int GeoSet_getInterleavedRowLength(GeoSet::InterleaveArrayType at);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_GeoSetFuncProxy
 (
-    osgNew osg::GeoSet,
+    new osg::GeoSet,
     "GeoSet",
     "Object Drawable GeoSet",
     &GeoSet_readLocalData,
@@ -38,7 +38,7 @@ RegisterDotOsgWrapperProxy g_GeoSetFuncProxy
 // register the old style 'Geoset' keyword read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_GeosetFuncProxy
 (
-    osgNew osg::GeoSet,
+    new osg::GeoSet,
     "Geoset",
     "Object Drawable Geoset",
     &GeoSet_readLocalData,
@@ -136,7 +136,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             int capacity;
             if (!fr[1].getInt(capacity)) capacity=100;
             int size = 0;
-            int* list = osgNew int [capacity];
+            int* list = new int [capacity];
             memset(list,0,capacity*sizeof(int));
             while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
@@ -150,13 +150,13 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                         int oldCapacity = capacity;
                         while(capacity<=size) capacity *= 2;
                         int* oldList = list;
-                        list = osgNew int[capacity];
+                        list = new int[capacity];
                         memset(list,0,capacity*sizeof(int));
                         for(int i=0;i<oldCapacity;++i)
                         {
                             list[i] = oldList[i];
                         }
-                        osgDelete [] oldList;
+                        delete [] oldList;
                     }
                     list[size] = primLength;
                     ++size;
@@ -227,7 +227,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             }
 
             int size = 0;
-            coordList = osgNew Vec3[capacity];
+            coordList = new Vec3[capacity];
 
             while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
@@ -241,14 +241,14 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                         int oldCapacity = capacity;
                         while(capacity<=size) capacity *= 2;
                         Vec3* oldList = coordList;
-                        coordList = osgNew Vec3[capacity];
+                        coordList = new Vec3[capacity];
                         for(int i=0;i<oldCapacity;++i)
                         {
                             coordList[i][0] = oldList[i][0];
                             coordList[i][1] = oldList[i][1];
                             coordList[i][2] = oldList[i][2];
                         }
-                        osgDelete [] oldList;
+                        delete [] oldList;
                     }
                     coordList[size][0] = x;
                     coordList[size][1] = y;
@@ -297,7 +297,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             }
 
             int size = 0;
-            normalList = osgNew Vec3[capacity];
+            normalList = new Vec3[capacity];
 
             while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
@@ -311,14 +311,14 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                         int oldCapacity = capacity;
                         while(capacity<=size) capacity *= 2;
                         Vec3* oldList = normalList;
-                        normalList = osgNew Vec3[capacity];
+                        normalList = new Vec3[capacity];
                         for(int i=0;i<oldCapacity;++i)
                         {
                             normalList[i][0] = oldList[i][0];
                             normalList[i][1] = oldList[i][1];
                             normalList[i][2] = oldList[i][2];
                         }
-                        osgDelete [] oldList;
+                        delete [] oldList;
                     }
                     normalList[size][0] = x;
                     normalList[size][1] = y;
@@ -366,7 +366,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             }
 
             int size = 0;
-            colorList = osgNew Vec4[capacity];
+            colorList = new Vec4[capacity];
 
             while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
@@ -381,7 +381,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                         int oldCapacity = capacity;
                         while(capacity<=size) capacity *= 2;
                         Vec4* oldList = colorList;
-                        colorList = osgNew Vec4[capacity];
+                        colorList = new Vec4[capacity];
                         for(int i=0;i<oldCapacity;++i)
                         {
                             colorList[i][0] = oldList[i][0];
@@ -389,7 +389,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                             colorList[i][2] = oldList[i][2];
                             colorList[i][3] = oldList[i][3];
                         }
-                        osgDelete [] oldList;
+                        delete [] oldList;
                     }
 
                     colorList[size][0] = r;
@@ -440,7 +440,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             }
 
             int size = 0;
-            textureList = osgNew Vec2[capacity];
+            textureList = new Vec2[capacity];
 
             while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
@@ -453,13 +453,13 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                         int oldCapacity = capacity;
                         while(capacity<=size) capacity *= 2;
                         Vec2* oldList = textureList;
-                        textureList = osgNew Vec2[capacity];
+                        textureList = new Vec2[capacity];
                         for(int i=0;i<oldCapacity;++i)
                         {
                             textureList[i][0] = oldList[i][0];
                             textureList[i][1] = oldList[i][1];
                         }
-                        osgDelete [] oldList;
+                        delete [] oldList;
                     }
                     textureList[size][0] = r;
                     textureList[size][1] = s;
@@ -534,9 +534,9 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                 int rowLength = GeoSet_getInterleavedRowLength(iaType);
                 
                 int size = 0;
-                unsigned char* dataList = osgNew unsigned char[capacity*rowLength];
+                unsigned char* dataList = new unsigned char[capacity*rowLength];
 
-                unsigned char* rowData = osgNew unsigned char [rowLength];
+                unsigned char* rowData = new unsigned char [rowLength];
 
                 float floatData;
                 int intData;
@@ -571,9 +571,9 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                             int oldCapacity = capacity;
                             while(capacity<=size) capacity *= 2;
                             unsigned char* oldList = dataList;
-                            dataList = osgNew unsigned char[capacity*rowLength];
+                            dataList = new unsigned char[capacity*rowLength];
                             memcpy(dataList,oldList,oldCapacity*rowLength);
-                            osgDelete [] oldList;
+                            delete [] oldList;
                         }
                         memcpy(dataList+size*rowLength,rowData,rowLength);
                         ++size;
@@ -585,7 +585,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                     }
                 }
 
-                osgDelete [] rowData;
+                delete [] rowData;
 
                 interleavedArray = (float*)dataList;
             }
@@ -928,7 +928,7 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
             if (is_ushort)
             {
                 // read ushorts...
-                GLushort* coordIndexList = osgNew GLushort[capacity];
+                GLushort* coordIndexList = new GLushort[capacity];
 
                 while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
                 {
@@ -941,12 +941,12 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
                             int oldCapacity = capacity;
                             while(capacity<=size) capacity *= 2;
                             GLushort* oldList = coordIndexList;
-                            coordIndexList = osgNew GLushort[capacity];
+                            coordIndexList = new GLushort[capacity];
                             for(int i=0;i<oldCapacity;++i)
                             {
                                 coordIndexList[i] = oldList[i];
                             }
-                            osgDelete [] oldList;
+                            delete [] oldList;
                         }
                         coordIndexList[size] = index;
                         ++size;
@@ -964,7 +964,7 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
             else
             {
                 // read uints...
-                GLuint* coordIndexList = osgNew GLuint[capacity];
+                GLuint* coordIndexList = new GLuint[capacity];
 
                 while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
                 {
@@ -977,12 +977,12 @@ bool GeoSet_readIndexData(Input& fr, const char* IndexName, GeoSet::IndexPointer
                             int oldCapacity = capacity;
                             while(capacity<=size) capacity *= 2;
                             GLuint* oldList = coordIndexList;
-                            coordIndexList = osgNew GLuint[capacity];
+                            coordIndexList = new GLuint[capacity];
                             for(int i=0;i<oldCapacity;++i)
                             {
                                 coordIndexList[i] = oldList[i];
                             }
-                            osgDelete [] oldList;
+                            delete [] oldList;
                         }
                         coordIndexList[size] = index;
                         ++size;

@@ -89,7 +89,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
     
 
     // create the render to texture stage.
-    osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = osgNew osgUtil::RenderToTextureStage;
+    osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = new osgUtil::RenderToTextureStage;
 
     // set up lighting.
     // currently ignore lights in the scene graph itself..
@@ -125,7 +125,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
     float right = top;
 
     // set up projection.
-    osg::Matrix* projection = osgNew osg::Matrix;
+    osg::Matrix* projection = new osg::Matrix;
     projection->makeFrustum(-right,right,-top,top,znear,zfar);
 
     cv.pushProjectionMatrix(projection);
@@ -146,7 +146,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
 
     cv.pushModelViewMatrix(matrix);
 
-    osg::ref_ptr<osg::StateSet> shadowState = osgNew osg::StateSet;
+    osg::ref_ptr<osg::StateSet> shadowState = new osg::StateSet;
 
     // make the material black for a shadow.
     osg::Material* material = new osg::Material;

@@ -45,7 +45,7 @@ bool BitmapFont_readLocalData(osg::Object &obj, osgDB::Input &fr);
 
 osgDB::RegisterDotOsgWrapperProxy BitmapFont_Proxy
 (
-    osgNew osgText::BitmapFont,
+    new osgText::BitmapFont,
     "BitmapFont",
     "Object Font RasterFont BitmapFont",
     BitmapFont_readLocalData,
@@ -60,7 +60,7 @@ bool BitmapFont_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("parameters")) {
         int psize;
         if (fr[1].getInt(psize) && fr[2].isInt() && fr[3].isString()) {
-            osgText::BitmapFont *temp = osgNew osgText::BitmapFont(std::string(fr[3].getStr()), psize);
+            osgText::BitmapFont *temp = new osgText::BitmapFont(std::string(fr[3].getStr()), psize);
             temp->copyAndInvalidate(myobj);
             fr += 4;
             itAdvanced = true;
@@ -79,7 +79,7 @@ bool PixmapFont_readLocalData(osg::Object &obj, osgDB::Input &fr);
 
 osgDB::RegisterDotOsgWrapperProxy PixmapFont_Proxy
 (
-    osgNew osgText::PixmapFont,
+    new osgText::PixmapFont,
     "PixmapFont",
     "Object Font RasterFont PixmapFont",
     PixmapFont_readLocalData,
@@ -94,7 +94,7 @@ bool PixmapFont_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("parameters")) {
         int psize;
         if (fr[1].getInt(psize) && fr[2].isInt() && fr[3].isString()) {
-            osgText::PixmapFont *temp = osgNew osgText::PixmapFont(std::string(fr[3].getStr()), psize);
+            osgText::PixmapFont *temp = new osgText::PixmapFont(std::string(fr[3].getStr()), psize);
             temp->copyAndInvalidate(myobj);            
             fr += 4;
             itAdvanced = true;
@@ -112,7 +112,7 @@ bool TextureFont_readLocalData(osg::Object &obj, osgDB::Input &fr);
 
 osgDB::RegisterDotOsgWrapperProxy TextureFont_Proxy
 (
-    osgNew osgText::TextureFont,
+    new osgText::TextureFont,
     "TextureFont",
     "Object Font RasterFont TextureFont",
     TextureFont_readLocalData,
@@ -127,7 +127,7 @@ bool TextureFont_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("parameters")) {
         int psize, txsize;
         if (fr[1].getInt(psize) && fr[2].getInt(txsize) && fr[3].isString()) {
-            osgText::TextureFont *temp = osgNew osgText::TextureFont(std::string(fr[3].getStr()), psize, txsize);
+            osgText::TextureFont *temp = new osgText::TextureFont(std::string(fr[3].getStr()), psize, txsize);
             temp->copyAndInvalidate(myobj);            
             fr += 4;
             itAdvanced = true;
@@ -146,7 +146,7 @@ bool OutlineFont_readLocalData(osg::Object &obj, osgDB::Input &fr);
 
 osgDB::RegisterDotOsgWrapperProxy OutlineFont_Proxy
 (
-    osgNew osgText::OutlineFont,
+    new osgText::OutlineFont,
     "OutlineFont",
     "Object Font VectorFont OutlineFont",
     OutlineFont_readLocalData,
@@ -161,7 +161,7 @@ bool OutlineFont_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("parameters")) {
         int psize;
         if (fr[1].getInt(psize) && fr[2].isInt() && fr[3].isString()) {
-            osgText::OutlineFont *temp = osgNew osgText::OutlineFont(std::string(fr[3].getStr()), psize, 1);
+            osgText::OutlineFont *temp = new osgText::OutlineFont(std::string(fr[3].getStr()), psize, 1);
             temp->copyAndInvalidate(myobj);            
             fr += 4;
             itAdvanced = true;
@@ -179,7 +179,7 @@ bool PolygonFont_readLocalData(osg::Object &obj, osgDB::Input &fr);
 
 osgDB::RegisterDotOsgWrapperProxy PolygonFont_Proxy
 (
-    osgNew osgText::PolygonFont,
+    new osgText::PolygonFont,
     "PolygonFont",
     "Object Font VectorFont PolygonFont",
     PolygonFont_readLocalData,
@@ -194,7 +194,7 @@ bool PolygonFont_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr[0].matchWord("parameters")) {
         int psize;
         if (fr[1].getInt(psize) && fr[2].isInt() && fr[3].isString()) {
-            osgText::PolygonFont *temp = osgNew osgText::PolygonFont(std::string(fr[3].getStr()), psize, 1);
+            osgText::PolygonFont *temp = new osgText::PolygonFont(std::string(fr[3].getStr()), psize, 1);
             temp->copyAndInvalidate(myobj);
             fr += 4;
             itAdvanced = true;

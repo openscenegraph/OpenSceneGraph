@@ -17,17 +17,17 @@
 
 osg::Geode* createShapes()
 {
-    osg::Geode* geode = osgNew osg::Geode();
+    osg::Geode* geode = new osg::Geode();
 
     // ---------------------------------------
     // Set up a StateSet to texture the objects
     // ---------------------------------------
-    osg::StateSet* stateset = osgNew osg::StateSet();
+    osg::StateSet* stateset = new osg::StateSet();
 
     osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {
-	osg::Texture2D* texture = osgNew osg::Texture2D;
+	osg::Texture2D* texture = new osg::Texture2D;
 	texture->setImage(image);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
@@ -37,10 +37,10 @@ osg::Geode* createShapes()
     float radius = 0.8f;
     float height = 1.0f;
     
-    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),radius)));
-    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Box(osg::Vec3(2.0f,0.0f,0.0f),2*radius)));
-    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height)));
-    geode->addDrawable(new osg::ShapeDrawable(osgNew osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height)));
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),radius)));
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(2.0f,0.0f,0.0f),2*radius)));
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Cone(osg::Vec3(4.0f,0.0f,0.0f),radius,height)));
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(6.0f,0.0f,0.0f),radius,height)));
 
     osg::Grid* grid = new osg::Grid;
     grid->allocateGrid(38,39);
@@ -107,7 +107,7 @@ int main( int argc, char **argv )
     viewer.addViewport( node );
 
     // register trackball maniupulators.
-    viewer.registerCameraManipulator(osgNew osgGA::TrackballManipulator);
+    viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     
     viewer.open();
 

@@ -191,7 +191,7 @@ void TextureCubeMap::apply(State& state) const
 {
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
     if (!extensions->isCubeMapSupported())
@@ -258,13 +258,13 @@ void TextureCubeMap::apply(State& state) const
 typedef buffered_value< ref_ptr<TextureCubeMap::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-const TextureCubeMap::Extensions* TextureCubeMap::getExtensions(uint contextID,bool createIfNotInitalized)
+const TextureCubeMap::Extensions* TextureCubeMap::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     return s_extensions[contextID].get();
 }
 
-void TextureCubeMap::setExtensions(uint contextID,Extensions* extensions)
+void TextureCubeMap::setExtensions(unsigned int contextID,Extensions* extensions)
 {
     s_extensions[contextID] = extensions;
 }

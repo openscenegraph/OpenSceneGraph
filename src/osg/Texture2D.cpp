@@ -91,7 +91,7 @@ void Texture2D::apply(State& state) const
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -162,7 +162,7 @@ void Texture2D::computeInternalFormat() const
 
 void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height )
 {
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -212,7 +212,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
 void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
 {
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);

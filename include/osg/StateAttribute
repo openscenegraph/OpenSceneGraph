@@ -103,7 +103,7 @@ class SG_EXPORT StateAttribute : public Object
         };
         
         /** Type identifier to differentiate between different state types. */
-        typedef unsigned int Type;
+        // typedef unsigned int Type;
 
         /** Values of StateAttribute::Type used to aid identification
           * of different StateAttribute subclasses. Each subclass defines
@@ -113,7 +113,7 @@ class SG_EXPORT StateAttribute : public Object
           * enum as a guide of what values to use.  If your new subclass
           * needs to override a standard StateAttriubte then simply use 
           * that type's value. */
-        enum Types
+        enum Type
         {
             TEXTURE,
             
@@ -168,7 +168,15 @@ class SG_EXPORT StateAttribute : public Object
             VERTEXPROGRAM,
             FRAGMENTPROGRAM,
             
-            PROGRAMOBJECT // utilised in osgGL2/ProgramObject
+            
+            POINTSPRITE,
+
+            /// osgGL2 namespace            
+            PROGRAMOBJECT,
+            
+            /// osgFX namespace
+            VALIDATOR,
+            VIEWMATRIXEXTRACTOR,
         };
 
 

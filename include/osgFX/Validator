@@ -34,9 +34,6 @@ namespace osgFX
      */
     class OSGFX_EXPORT Validator: public osg::StateAttribute {
     public:
-        enum {
-            VALIDATOR = 0x56616C69
-        };
         
         Validator();
         Validator(Effect *effect);

@@ -323,10 +323,12 @@ public:
 
 
 
-    /** begin(..),vertex(..) & end() are convinience methods for adapting 
-     *  non vertex array primitives to vertex array based primitives.
-     * this is done to simplify the implementation of primtive functor
-     * subclasses - users only need override drawArray and drawElements.*/
+    /** Note:
+      * begin(..),vertex(..) & end() are convenience methods for adapting
+      * non vertex array primitives to vertex array based primitives.
+      * This is done to simplify the implementation of primtive functor
+      * subclasses - users only need override drawArray and drawElements.
+	*/
     virtual void begin(GLenum mode)
     {
         _modeCache = mode;

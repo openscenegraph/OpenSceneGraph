@@ -119,7 +119,7 @@ class TestCase;
 
 /**
 Visits while maintaining the current hierarchical context. Also allows
-the traversal to be short-cicuited at any point during the visitation.
+the traversal to be short-circuited at any point during the visitation.
 */
 class TestVisitor
 {
@@ -142,7 +142,7 @@ class TestVisitor
 };
 
 /**
-TestCase, is the supplies the interface for a Composite pattern's
+TestCase, supplies the interface for a Composite pattern's
 \em leaf class, though it is not a leaf in itself.
 */
 class TestCase : public Test
@@ -163,7 +163,7 @@ class TestCase : public Test
 };
 
 /**
-Base class catchable for the exception's which may be thrown to
+Base class catchable for the exceptions which may be thrown to
 indicate problems during the run of a TestCase.
 */
 class TestX
@@ -190,7 +190,7 @@ class TestFailureX: public TestX
 
 /**
 A TestErrorX indicates an error while testing a component,
-which prevents the test from being run; it does not indicate
+which prevents the test from being run. It does not indicate
 a problem with the component, but rather a problem during the
 run which prevents the component from being tested.
 */
@@ -204,7 +204,7 @@ class TestErrorX: public TestX
 TestCase_ is a class template for a leaf TestCase, which allows TestFixture
 classes to be easily collected into the tree of tests, and have their public
 test methods called. It is worth noting that, for a given TestCase_, an
-instance of the test fixture class will be constructed pior to the
+instance of the test fixture class will be constructed prior to the
 test method being called, and destructed afterwards. This prevents 'leakage'
 of information from one test case to the next.
 */
@@ -280,7 +280,7 @@ class SG_EXPORT TestGraph
     TestSuite* root();
 
     /**
-        A utility function for accessing an arbitrary quite by pathname, relative to
+        A utility function for accessing an arbitrary suite by pathname, relative to
         the suite 'tsuite' (defaults to root if null), and with the option of creating
         the \em TestSuite designated by \em path, if it does not already exist.
 

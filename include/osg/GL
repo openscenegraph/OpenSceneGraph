@@ -16,7 +16,7 @@
 
 #ifndef WIN32
 
-    // non windows, doesn't require nonsense as seen below :-)    
+    // Non Windows, doesn't require nonsense as seen below :-)    
     #ifndef __gl_h_
         #ifdef __APPLE__
             #include <OpenGL/gl.h>
@@ -25,7 +25,7 @@
         #endif
     #endif
 
-    // required for compatibility with glext.h sytle function definitions of 
+    // Required for compatibility with glext.h sytle function definitions of 
     // OpenGL extensions, such as in src/osg/Point.cpp.
     #ifndef APIENTRY
         #define APIENTRY
@@ -46,7 +46,7 @@
 
     #else // ! __CYGWIN__
 
-        // Under windows avoid including <windows.h>
+        // Under Windows avoid including <windows.h>
         // to avoid name space pollution, but Win32's <GL/gl.h> 
         // needs APIENTRY and WINGDIAPI defined properly. 
            // XXX This is from Win32's <windef.h> 

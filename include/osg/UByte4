@@ -20,11 +20,11 @@
 
 namespace osg {
 
-/** General purpose float quad, uses include representation
-    of colour coordinates.
-    No support yet added for float * UByte4 - is it necessary?
-    Need to define a non-member non-friend operator*  etc.
-   			     UByte4 * float is okay
+/** General purpose float quad.
+  * Uses include representation of color coordinates.
+  * No support yet added for float * UByte4 - is it necessary?
+  * Need to define a non-member non-friend operator*  etc.
+  * UByte4 * float is okay
 */
 class UByte4
 {
@@ -77,7 +77,7 @@ class UByte4
         inline unsigned char b() const { return _v[2]; }
         inline unsigned char a() const { return _v[3]; }
 
-        /// multiply by scalar
+        /** Multiply by scalar. */
         inline UByte4 operator * (float rhs) const
         {
             UByte4 col(*this);
@@ -85,7 +85,7 @@ class UByte4
             return col;
         }
 
-        /// unary multiply by scalar
+        /** Unary multiply by scalar. */
         inline UByte4& operator *= (float rhs)
         {
             _v[0]=(unsigned char)((float)_v[0]*rhs);
@@ -95,7 +95,7 @@ class UByte4
             return *this;
         }
 
-        /// divide by scalar
+        /** Divide by scalar. */
         inline UByte4 operator / (float rhs) const
         {
             UByte4 col(*this);
@@ -103,7 +103,7 @@ class UByte4
             return col;
         }
 
-        /// unary divide by scalar
+        /** Unary divide by scalar. */
         inline UByte4& operator /= (float rhs)
         {
             float div = 1.0f/rhs;
@@ -111,15 +111,16 @@ class UByte4
             return *this;
         }
 
-        /// binary vector add
+        /** Binary vector add. */
         inline UByte4 operator + (const UByte4& rhs) const
         {
             return UByte4(_v[0]+rhs._v[0], _v[1]+rhs._v[1],
 		        _v[2]+rhs._v[2], _v[3]+rhs._v[3]);
         }
 
-        /** unary vector add.  Slightly more efficient because no temporary
-            intermediate object*/
+        /** Unary vector add. Slightly more efficient because no temporary
+          * intermediate object.
+		*/
         inline UByte4& operator += (const UByte4& rhs)
         {
             _v[0] += rhs._v[0];
@@ -129,14 +130,14 @@ class UByte4
             return *this;
         }
 
-        /// binary vector subtract
+        /** Binary vector subtract. */
         inline UByte4 operator - (const UByte4& rhs) const
         {
             return UByte4(_v[0]-rhs._v[0], _v[1]-rhs._v[1],
 		        _v[2]-rhs._v[2], _v[3]-rhs._v[3] );
         }
 
-        /// unary vector subtract
+        /** Unary vector subtract. */
         inline UByte4& operator -= (const UByte4& rhs)
         {
             _v[0]-=rhs._v[0];

@@ -26,7 +26,7 @@
 
 namespace osg {
 
-/** Texture state class which encapsulates OpenGL texture functionality.*/
+/** Texture state class which encapsulates OpenGL texture functionality. */
 class SG_EXPORT TextureRectangle : public Texture
 {
 
@@ -36,12 +36,12 @@ class SG_EXPORT TextureRectangle : public Texture
 
         TextureRectangle(Image* image);
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TextureRectangle(const TextureRectangle& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osg, TextureRectangle, TEXTURE);
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -66,13 +66,13 @@ class SG_EXPORT TextureRectangle : public Texture
         }
 
 
-        /** Set the texture image, ignoring face. as there is only one image*/
+        /** Set the texture image, ignoring face value as there is only one image. */
         virtual void setImage(unsigned int, Image* image) { setImage(image); }
 
         /** Get the texture image, ignoring face value as there is only one image. */
         virtual Image* getImage(unsigned int) { return _image.get(); }
 
-        /** Get the const texture image , ignoring face value as there is only one image. */
+        /** Get the const texture image, ignoring face value as there is only one image. */
         virtual const Image* getImage(unsigned int) const { return _image.get(); }
 
         /** Get the number of images that can be assigned to the Texture. */
@@ -80,7 +80,8 @@ class SG_EXPORT TextureRectangle : public Texture
 
 
         /** Set the texture width and height. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
+          * the repsective size value is calculated from the source image sizes.
+        */
         inline void setTextureSize(int width, int height) const
         {
             _textureWidth = width;
@@ -106,7 +107,8 @@ class SG_EXPORT TextureRectangle : public Texture
         const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
 
         /** On first apply (unless already compiled), create and bind the 
-          * texture, subsequent apply will simple bind to texture.*/
+          * texture, subsequent apply will simply bind to texture.
+        */
         virtual void apply(State& state) const;
 
     protected :
@@ -120,9 +122,9 @@ class SG_EXPORT TextureRectangle : public Texture
         void applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
         void applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLint& inInternalFormat) const;
 
-        // not ideal that _image is mutable, but its required since
+        // not ideal that _image is mutable, but it's required since
         // Image::ensureDimensionsArePowerOfTwo() can only be called
-        // in a valid OpenGL context, a therefore within an Texture::apply
+        // in a valid OpenGL context, and therefore within an Texture::apply
         // which is const...
         mutable ref_ptr<Image> _image;
 

@@ -22,7 +22,7 @@
 
 namespace osg {
 
-/** TextureCubeMap state class which encapsulates OpenGl texture cubemap functionality.*/
+/** TextureCubeMap state class which encapsulates OpenGL texture cubemap functionality. */
 class SG_EXPORT TextureCubeMap : public Texture
 {
 
@@ -30,12 +30,12 @@ class SG_EXPORT TextureCubeMap : public Texture
         
         TextureCubeMap();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TextureCubeMap(const TextureCubeMap& cm,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osg, TextureCubeMap,TEXTURE);
         
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& rhs) const;
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -72,7 +72,8 @@ class SG_EXPORT TextureCubeMap : public Texture
         }
 
         /** Set the texture width and height. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
+          * the repsective size value is calculated from the source image sizes.
+        */
         inline void setTextureSize(int width, int height) const
         {
             _textureWidth = width;
@@ -101,21 +102,24 @@ class SG_EXPORT TextureCubeMap : public Texture
         const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
 
 
-        /** Set the number of mip map levels the the texture has been created with,
-            should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
+        /** Set the number of mip map levels the the texture has been created with.
+          * Should only be called within an osg::Texuture::apply() and custom OpenGL texture load.
+        */
         void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
-        /** Get the number of mip map levels the the texture has been created with.*/
+        /** Get the number of mip map levels the the texture has been created with. */
         unsigned int getNumMipmapLevels() const { return _numMipmapLevels; }        
 
-        /** On first apply (unless already compiled), create the minmapped 
-          * texture and bind it, subsequent apply will simple bind to texture.*/
+        /** On first apply (unless already compiled), create the mipmapped
+          * texture and bind it. Subsequent apply will simple bind to texture.
+        */
         virtual void apply(State& state) const;
         
 
-        /** Extensions class which encapsulates the querring of extensions and
-          * associated function pointers, and provide convinience wrappers to 
-          * check for the extensions or use the associated functions.*/        
+        /** Extensions class which encapsulates the querying of extensions and
+          * associated function pointers, and provides convinience wrappers to 
+          * check for the extensions or use the associated functions.
+        */
         class SG_EXPORT Extensions : public osg::Referenced
         {
             public:
@@ -139,16 +143,18 @@ class SG_EXPORT TextureCubeMap : public Texture
         };
         
         /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created then 
+          * If the Exentsion object for that context has not yet been created
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
           * If 'createIfNotInitalized' is true then the Extensions object is 
-          * automatically created.  However, in this case the extension object 
-          * only be created with the graphics context associated with ContextID..*/
+          * automatically created. However, in this case the extension object will
+          * only be created with the graphics context associated with ContextID.
+        */
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
-        /** setExtensions allows users to override the extensions across graphics contexts.
-          * typically used when you have different extensions supported across graphics pipes
-          * but need to ensure that they all use the same low common denominator extensions.*/
+        /** The setExtensions method allows users to override the extensions across graphics contexts.
+          * Typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.
+        */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
 

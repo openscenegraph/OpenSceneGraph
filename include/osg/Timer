@@ -46,7 +46,7 @@
 
 namespace osg {
 
-/** A high resolution, low latency time stamper.*/
+/** A high resolution, low latency time stamper. */
 class SG_EXPORT Timer {
 
     public:

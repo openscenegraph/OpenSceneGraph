@@ -1,12 +1,7 @@
-Welcome to the Open Scene Graph (OSG).
+Welcome to the OpenSceneGraph (OSG).
 
-For compiling the OSG under all platforms (Linux, FreeBSD, IRIX, Windows
-and Mac) please read INSTALL.
-
-For general documentation, distribution contents, and plugin 
-dependancies please read index.html in your prefered browser.
-index.html also has links to INSTALL, making it easier for Windows 
-users which might find the lack of file extensions on text files awkward.
+Documention is located in doc/, this includes documention on compiling
+and installing, the OpenSceneGraph.
 
 Robert Osfield. 
 robert@openscenegraph.com

@@ -510,6 +510,7 @@ public:
 		case DB_DSK_EXTERNAL: output << "External" << std::endl; break;
 		case DB_DSK_PAGE: output << "Page" << std::endl; break;
 		case DB_DSK_COLOR_PALETTE: output << "Colour palette" << std::endl; break;
+		case DB_DSK_PERSPECTIVE_GRID_INFO: output << "Perspective Grid Info" << std::endl; break;
 		case DB_DSK_INTERNAL_VARS: output << "Internal vars" << std::endl; break;
 		case DB_DSK_LOCAL_VARS: output << "Local vars" << std::endl; break;
 		case DB_DSK_EXTERNAL_VARS: output << "External vars" << std::endl; break;

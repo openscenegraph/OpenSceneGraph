@@ -223,6 +223,10 @@ public:
 	inline float *getVec3Arr() const {warn("getVec3Arr", DB_VEC3F); return ( (float *)storage);	}
 	inline float *getMat44Arr() const {warn("getMat44Arr", DB_VEC16F); return ( (float *)storage);	}
 	inline double getDouble() const {warn("getDouble", DB_DOUBLE); return (*(double *)storage);	}
+	inline unsigned short getUShort() const {warn("getUShort", DB_USHORT); return (*(ushort *)storage);	}
+	inline unsigned short getShort() const {warn("getShort", DB_SHORT); return (*(short *)storage);	}
+	inline unsigned short getUShortPad() const {warn("getUShortPad", DB_USHORT_WITH_PADDING); return (*(ushort *)storage);	}
+	inline unsigned short getShortPad() const {warn("getShortPad", DB_SHORT_WITH_PADDING); return (*(short *)storage);	}
 	inline unsigned char *getUCh4Arr() const {warn("getUChArr", DB_VEC4UC); return ((unsigned char *)storage);	}
 	inline bool getBool() const {warn("getBool", DB_BOOL_WITH_PADDING); return (storage[0] != 0);	}
 	friend inline std::ostream& operator << (osgDB::Output& output, const geoField& gf)
@@ -257,10 +261,10 @@ public:
 						output.indent() << st.sh[0] << std::endl;
 						break;
 					case DB_INT:
-						output.indent() << gf.getInt() << std::endl;
+						output.indent() << *(st.in) << std::endl;
 						break;
 					case DB_FLOAT:
-						output.indent() << gf.getFloat() << std::endl;
+						output.indent() << *(st.ft) << std::endl;
 						break;
 					case DB_LONG:
 						output.indent() << st.ln[0] << std::endl;
@@ -343,16 +347,16 @@ public:
 						output.indent() << st.ch[0] << std::endl;
 						break;
 					case DB_SHORT_WITH_PADDING:
-						output.indent() << st.ch[0] << std::endl;
+						output.indent() << st.sh[0] << std::endl;
 						break;
 					case DB_CHAR_WITH_PADDING:
 						output.indent() << st.ch[0] << std::endl;
 						break;
 					case DB_USHORT_WITH_PADDING:
-						output.indent() << st.ch[0] << std::endl;
+						output.indent() << st.ush[0] << std::endl;
 						break;
 					case DB_UCHAR_WITH_PADDING:
-						output.indent() << (int)st.ch[0] << std::endl;
+						output.indent() << st.ush << std::endl;
 						break;
 					case DB_BOOL_WITH_PADDING:
 						output.indent() << (gf.getBool()?"True":"False") << std::endl;
@@ -378,6 +382,46 @@ public:
 		if (gf.TypeId==DB_CHAR) output << std::endl;
 	    return output; 	// to enable cascading, monkey copy from osg\plane or \quat, Ubyte4, vec2,3,4,... 
 	}
+	osg::Matrix getMatrix() const {
+		osg::Matrix mx;
+		switch (tokenId) {
+		case GEO_DB_GRP_TRANSLATE_TRANSFORM:
+				{
+					float * from=getVec3Arr();
+					float * to=from+3;
+
+					mx.makeTranslate(to[0]-from[0],to[1]-from[1],to[2]-from[2]); // uses same convention as OSG else will need to use set(m44[0],m44[1]...)
+				}
+				break;
+			case GEO_DB_GRP_ROTATE_TRANSFORM:
+				{
+					float *centre=getFloatArr();
+					float *axis=centre+3;
+					float *angle=centre+6;
+					mx=osg::Matrix::translate(-osg::Vec3(centre[0], centre[1], centre[2]))*
+						osg::Matrix::rotate(2*osg::inDegrees(*angle),axis[0], axis[1], axis[2])*
+						osg::Matrix::translate(osg::Vec3(centre[0], centre[1], centre[2]));
+				}
+				break;
+			case GEO_DB_GRP_SCALE_TRANSFORM:
+				{
+					float * centre=getVec3Arr();
+					float * scale=centre+3;
+					mx=osg::Matrix::translate(-osg::Vec3(centre[0], centre[1], centre[2]))*
+						osg::Matrix::scale(scale[0], scale[1], scale[2])*
+						osg::Matrix::translate( osg::Vec3(centre[0], centre[1], centre[2]));
+				}
+				break;
+			case GEO_DB_GRP_MATRIX_TRANSFORM:
+				{
+					float * m44=getMat44Arr();
+					mx.set(m44);
+				}
+				break;
+		}
+		return mx;
+	}
+
 private:
 	unsigned short tokenId, TypeId; // these are longer than standard field; are extended field length
 	unsigned int numItems;
@@ -594,6 +638,36 @@ public:
 			if (itr->getToken()==fieldid) return &(*itr);
 		}
 		return NULL;
+	}
+	const geoField *getFieldNumber(const unsigned int number) const { // return field number.
+		if (number<getNumFields()) return &(fields[number]);
+		else return NULL;
+	}
+	osg::MatrixTransform *getMatrix() const { // multiply up all matrix supported
+		// Dec 2003 a single record can have multiple matrices to be multiplied up!
+		osg::MatrixTransform *tr=NULL;
+		bool nonIdentity=false;
+		osg::Matrix total; // starts as identity matrix
+		for (geoFieldList::const_iterator itr=fields.begin();
+		itr!=fields.end();
+		++itr)
+		{
+			osg::Matrix mx=(*itr).getMatrix();
+			total.preMult(mx);
+			switch ((*itr).getToken()) {
+			case GEO_DB_GRP_TRANSLATE_TRANSFORM:
+			case GEO_DB_GRP_ROTATE_TRANSFORM:
+			case GEO_DB_GRP_SCALE_TRANSFORM:
+			case GEO_DB_GRP_MATRIX_TRANSFORM:
+				nonIdentity=true;
+				break;
+			}
+			if (nonIdentity) {
+				tr=new osg::MatrixTransform;
+				tr->setMatrix(total);
+			}
+		}
+		return tr;
 	}
 	void setMaterial(osg::Material *mt) const {
 		if (id == DB_DSK_MATERIAL) {

@@ -291,6 +291,13 @@ void GeoSet::draw_alternate_path( void )
             return;
         }
 
+        if( _flat_shaded_skip )
+        {
+            #ifdef DO_SHADING
+            glShadeModel( GL_FLAT );
+            #endif
+        }
+
         for( i = 0; i < _numprims; i++ )
         {
             if( _color_binding == BIND_PERPRIM )
@@ -310,9 +317,6 @@ void GeoSet::draw_alternate_path( void )
 
             if( _flat_shaded_skip )
             {
-                #ifdef DO_SHADING
-                glShadeModel( GL_FLAT );
-                #endif
                 glBegin( (GLenum)_oglprimtype );
                 for( j = 0; j < _primLengths[i]; j++ )
                 {
@@ -349,10 +353,6 @@ void GeoSet::draw_alternate_path( void )
                         glArrayElement( ai++ );
                 }
                 glEnd();
-
-                #ifdef DO_SHADING
-                glShadeModel( GL_SMOOTH );
-                #endif
             }
 
             else
@@ -393,6 +393,13 @@ void GeoSet::draw_alternate_path( void )
                     glDrawArrays( (GLenum)_oglprimtype, index, _primLengths[i] );
             }
             index += _primLengths[i];
+        }
+
+        if( _flat_shaded_skip )
+        {
+            #ifdef DO_SHADING
+            glShadeModel( GL_SMOOTH );
+            #endif
         }
     }
     else                         // POINTS, LINES, TRIANGLES, QUADS

@@ -26,7 +26,7 @@ FreeTypeFont::~FreeTypeFont()
 {
 }
 
-void FreeTypeFont::setSize(unsigned int width, unsigned int height)
+void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)
 {
     if (width+2*_facade->getGlyphImageMargin()>_facade->getTextureWidthHint() ||
         height+2*_facade->getGlyphImageMargin()>_facade->getTextureHeightHint())
@@ -49,8 +49,8 @@ void FreeTypeFont::setSize(unsigned int width, unsigned int height)
     }
     else
     {
-        setWidth(width);
-        setHeight(height);
+        setFontWidth(width);
+        setFontHeight(height);
     }
 
 }
@@ -155,7 +155,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX/64.0f,(float)(metrics->vertBearingY-metrics->height)/64.0f)); // top middle.
     glyph->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
 
-    addGlyph(_facade->getWidth(),_facade->getHeight(),charcode,glyph.get());
+    addGlyph(_facade->getFontWidth(),_facade->getFontHeight(),charcode,glyph.get());
     
 //    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
 

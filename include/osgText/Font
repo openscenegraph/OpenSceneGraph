@@ -64,11 +64,18 @@ public:
 
     virtual std::string getFileName() const;
 
-    /** Set the pixel width and height hint.*/
-    virtual void setSize(unsigned int width, unsigned int height);
+#ifdef USE_DEPRECATED_API
+    virtual void setSize(unsigned int width, unsigned int height) { setFontResolution(width,height); }
     
-    unsigned int getWidth() const;
-    unsigned int getHeight() const;
+    unsigned int getWidth() const { return getFontWidth(); }
+    unsigned int getHeight() const { return getFontHeight(); }
+#endif
+
+    /** Set the pixel width and height hint.*/
+    virtual void setFontResolution(unsigned int width, unsigned int height);
+    
+    unsigned int getFontWidth() const;
+    unsigned int getFontHeight() const;
 
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
@@ -153,7 +160,7 @@ public:
         virtual std::string getFileName() const = 0;
 
         /** Set the pixel width and height hint.*/
-        virtual void setSize(unsigned int width, unsigned int height) = 0;
+        virtual void setFontResolution(unsigned int width, unsigned int height) = 0;
 
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
         virtual Glyph* getGlyph(unsigned int charcode) = 0;
@@ -164,9 +171,9 @@ public:
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;
         
-        void setWidth(unsigned int width) { _facade->_width = width; }
+        void setFontWidth(unsigned int width) { _facade->_width = width; }
 
-        void setHeight(unsigned int height) { _facade->_height = height; }
+        void setFontHeight(unsigned int height) { _facade->_height = height; }
         
         void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
         {

@@ -30,7 +30,7 @@ public:
 
     virtual std::string getFileName() const { return _filename; }
 
-    virtual void setSize(unsigned int width, unsigned int height);
+    virtual void setFontResolution(unsigned int width, unsigned int height);
 
     virtual osgText::Font::Glyph* getGlyph(unsigned int charcode);
     

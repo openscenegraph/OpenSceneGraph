@@ -36,11 +36,11 @@ protected:
 
     static const int 	_ops_nb=16;
     int 		_ops_index;
-    static const unsigned int _operations[_ops_nb];
+    static const osg::LogicOp::Opcode _operations[_ops_nb];
     static const char* _ops_name[_ops_nb];
 
 };
-const unsigned int TechniqueEventHandler::_operations[_ops_nb]={	
+const osg::LogicOp::Opcode TechniqueEventHandler::_operations[_ops_nb]={	
 				osg::LogicOp::CLEAR,
 	    			osg::LogicOp::SET,
 	    			osg::LogicOp::COPY,

@@ -20,11 +20,11 @@
 using namespace osg;
 
 BlendEquation::BlendEquation():
-    _equation(FUNC_ADD_EXT)
+    _equation(FUNC_ADD)
 {
 }
 
-BlendEquation::BlendEquation(GLenum equation):
+BlendEquation::BlendEquation(Equation equation):
     _equation(equation)
 {
 }
@@ -48,7 +48,7 @@ void BlendEquation::apply(State& state) const
         return;
     }
 
-    extensions->glBlendEquation(_equation);
+    extensions->glBlendEquation(static_cast<GLenum>(_equation));
     
 }
 

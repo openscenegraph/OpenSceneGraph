@@ -44,7 +44,11 @@ const Timer* Timer::instance()
 
         if (_useStandardClock)
         {
+        #if defined(__CYGWIN__)
+            _secsPerTick = 1e-6; // gettimeofday()'s precision.
+        #else
             _secsPerTick = (1.0 / (double) CLOCKS_PER_SEC);
+        #endif
         }
         else
         {

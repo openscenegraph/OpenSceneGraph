@@ -31,6 +31,9 @@ public:
 NodeTrackerManipulator::NodeTrackerManipulator()
 {
     _trackerMode = NODE_CENTER_AND_ROTATION; 
+    _trackerMode = NODE_CENTER_AND_AZMIM_ROTATION;
+    _trackerMode = NODE_CENTER_AND_AZMIM_ELEVATION_ROTATION;
+
     _rotationMode = ELEVATION_AZIM; 
     _distance = 1.0;
 
@@ -361,7 +364,67 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
     double sz = 1.0/sqrt(localToWorld(0,2)*localToWorld(0,2) + localToWorld(1,2)*localToWorld(1,2) + localToWorld(2,2)*localToWorld(2,2));
     localToWorld = localToWorld*osg::Matrixd::scale(sx,sy,sz);
 
-    localToWorld.get(nodeRotation);
+
+/*
+    Euler Code not in correct coordinate frame, just an experiment here.
+
+    // Assuming the angles are in radians.
+    double heading, attitude, bank = 0;
+    if (localToWorld(0,1) > 0.998)
+    { // singularity at north pole
+        heading = atan2(localToWorld(2,0),localToWorld(2,2));
+        attitude = osg::PI_2;
+        bank = 0;
+    }
+    else if (localToWorld(0,1) < -0.998)
+    { // singularity at south pole
+        heading = atan2(localToWorld(2,0),localToWorld(2,2));
+        attitude = -osg::PI_2;
+        bank = 0;
+    }
+    else
+    {
+        heading = atan2(-localToWorld(0,2),localToWorld(0,0));
+        bank = atan2(-localToWorld(2,1),localToWorld(1,1));
+        attitude = asin(localToWorld(0,1));
+    }
+
+    osg::notify(osg::NOTICE)<<"heading = "<<heading<<" attitude="<<attitude<<" bank="<<bank<<std::endl;
+*/
+    switch(_trackerMode)
+    {
+        case(NODE_CENTER_AND_AZMIM_ROTATION):
+        {
+            double azim = atan2(-localToWorld(0,1),localToWorld(0,0));
+            nodeRotation.makeRotate(-azim,0.0,0.0,1.0);
+            break;
+        }
+        case(NODE_CENTER_AND_AZMIM_ELEVATION_ROTATION):
+        {
+            double azim = atan2(-localToWorld(0,1),localToWorld(0,0));
+            double elevation = acos(localToWorld(2,2));
+            osg::Quat azimRotation;
+            osg::Quat elevationRotation;
+            azimRotation.makeRotate(-azim,0.0,0.0,1.0);
+            elevationRotation.makeRotate(-elevation,0.0,1.0,0.0);
+            nodeRotation = elevationRotation*azimRotation;
+            osg::notify(osg::NOTICE)<<"azimRotation = "<<azim<<std::endl;
+            osg::notify(osg::NOTICE)<<"elevationRotation = "<<elevation<<std::endl;
+            break;
+        }
+        case(NODE_CENTER_AND_ROTATION):
+        {
+            localToWorld.get(nodeRotation);
+            break;
+        }
+        case(NODE_CENTER):
+        default:
+        {
+            nodeRotation = osg::Quat();
+            break;
+        }
+    }
+
 }
 
 
@@ -370,10 +433,7 @@ osg::Matrixd NodeTrackerManipulator::getMatrix() const
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter,nodeRotation);
-    if (_trackerMode==NODE_CENTER)
-        return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(nodeCenter);
-    else
-        return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
 }
 
 osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
@@ -381,10 +441,7 @@ osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter,nodeRotation);
-    if (_trackerMode==NODE_CENTER)
-        return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
-    else
-        return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)

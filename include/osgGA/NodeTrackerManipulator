@@ -35,6 +35,8 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         enum TrackerMode 
         {
             NODE_CENTER,
+            NODE_CENTER_AND_AZMIM_ROTATION,
+            NODE_CENTER_AND_AZMIM_ELEVATION_ROTATION,
             NODE_CENTER_AND_ROTATION,
         };
         

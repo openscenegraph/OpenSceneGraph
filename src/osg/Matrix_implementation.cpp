@@ -62,8 +62,16 @@ void Matrix_implementation::set( value_type a00, value_type a01, value_type a02,
 #define QZ  q._v[2]
 #define QW  q._v[3]
 
-void Matrix_implementation::set(const Quat& q)
+void Matrix_implementation::set(const Quat& q_in)
 {
+    Quat q(q_in);
+    double length2 = q.length2();
+    if (length2!=1.0)
+    {
+        // normalize quat if required.
+        q /= sqrt(length2);
+    }
+
     // Source: Gamasutra, Rotating Objects Using Quaternions
     //
     //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm

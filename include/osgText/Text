@@ -169,8 +169,11 @@ public:
     enum AxisAlignment
     {
         XY_PLANE,
+        REVERSED_XY_PLANE,
         XZ_PLANE,
+        REVERSED_XZ_PLANE,
         YZ_PLANE,
+        REVERSED_YZ_PLANE,
         SCREEN
     };
 

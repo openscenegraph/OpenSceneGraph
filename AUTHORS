@@ -116,4 +116,8 @@ Janne Löf <jlof@mail.student.oulu.fi>
 Nate Robins - http://www.pobox.com/~ndr/
     - glm file format reader, usedf to develop osgPlugin/obj. 
 
-
+Bryan Walsh
+    - original txp loader for sgl (scene graph library)
+ 
+Terrex
+    - the original base source for txp loader.

@@ -417,6 +417,10 @@ SOURCE=..\..\src\osg\TextureCubeMap.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TextureRectangle.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Timer.cpp
 # End Source File
 # Begin Source File
@@ -830,6 +834,10 @@ SOURCE=..\..\Include\Osg\Texture3D
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\TextureCubeMap
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TextureRectangle
 # End Source File
 # Begin Source File
 

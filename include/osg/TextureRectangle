@@ -11,32 +11,36 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_TEXTURE2D
-#define OSG_TEXTURE2D 1
+#ifndef OSG_TEXTURERECTANGLE
+#define OSG_TEXTURERECTANGLE 1
 
 #include <osg/Texture>
 
+#ifndef GL_TEXTURE_RECTANGLE_NV
+#define GL_TEXTURE_RECTANGLE_NV           0x84F5
+#endif
+
 namespace osg {
 
-/** Texture state class which encapsulates OpenGl texture functionality.*/
-class SG_EXPORT Texture2D : public Texture
+/** Texture state class which encapsulates OpenGL texture functionality.*/
+class SG_EXPORT TextureRectangle : public Texture
 {
 
     public :
-        
-        Texture2D();
+
+        TextureRectangle();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Texture2D(const Texture2D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-        
-        META_StateAttribute(osg, Texture2D,TEXTURE);
+        TextureRectangle(const TextureRectangle& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_StateAttribute(osg, TextureRectangle, TEXTURE);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;
 
         virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
         {
-            modes.push_back(GL_TEXTURE_2D);
+            modes.push_back(GL_TEXTURE_RECTANGLE_NV);
         }
 
         /** Set the texture image. */
@@ -62,54 +66,23 @@ class SG_EXPORT Texture2D : public Texture
             _textureHeight = height;
         }
 
-        int getTextureWidth() const { return _textureWidth; }
-        int getTextureHeight() const { return _textureHeight; }
-
-        // deprecated.
+        /** Get the texture subload width. */
         inline void getTextureSize(int& width, int& height) const
         {
             width = _textureWidth;
             height = _textureHeight;
         }
 
-
-        class SG_EXPORT SubloadCallback : public Referenced
+        class SubloadCallback : public Referenced
         {
-            public:
-                virtual void load(const Texture2D& texture,State& state) const = 0;
-                virtual void subload(const Texture2D& texture,State& state) const = 0;
+        public:
+            virtual void load(const TextureRectangle&, State&) const = 0;
+            virtual void subload(const TextureRectangle&, State&) const = 0;
         };
-        
+
         void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb;; }
-        
         SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
-
         const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
-
-
-        /** Set the number of mip map levels the the texture has been created with,
-            should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
-        void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
-
-        /** Get the number of mip map levels the the texture has been created with.*/
-        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
-        
-
-        /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
-          * Creates an OpenGL texture object from the current OpenGL background
-          * framebuffer contents at pos \a x, \a y with width \a width and
-          * height \a height. \a width and \a height must be a power of two.
-          */
-        void copyTexImage2D(State& state, int x, int y, int width, int height );
-
-        /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
-          * Updates portion of an existing OpenGL texture object from the current OpenGL background
-          * framebuffer contents at pos \a x, \a y with width \a width and
-          * height \a height. \a width and \a height must be a power of two,
-          * and writing into the texture with offset \a xoffset and \a yoffset.
-          */
-        void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
-
 
         /** On first apply (unless already compiled), create the minmapped 
           * texture and bind it, subsequent apply will simple bind to texture.*/
@@ -117,28 +90,25 @@ class SG_EXPORT Texture2D : public Texture
 
     protected :
 
-        virtual ~Texture2D();
+        virtual ~TextureRectangle();
 
         virtual void computeInternalFormat() const;
 
+        void applyTexImageRectangle(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
 
         // not ideal that _image is mutable, but its required since
         // Image::ensureDimensionsArePowerOfTwo() can only be called
         // in a valid OpenGL context, a therefore within an Texture::apply
         // which is const...
-        ref_ptr<Image> _image;
+        mutable ref_ptr<Image> _image;
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight;
         
-        // number of mip map levels the the texture has been created with,        
-        mutable GLsizei _numMimpmapLevels;
-
         ref_ptr<SubloadCallback> _subloadCallback;
 
         typedef buffered_value<unsigned int> ImageModifiedTag;
         mutable ImageModifiedTag _modifiedTag;
-
 };
 
 }

@@ -84,6 +84,7 @@ CXXFILES =\
 	Texture2D.cpp\
 	Texture3D.cpp\
 	TextureCubeMap.cpp\
+	TextureRectangle.cpp\
 	Timer.cpp\
 	Transform.cpp\
 	UnitTestFramework.cpp\

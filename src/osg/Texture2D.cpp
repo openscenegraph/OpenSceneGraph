@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+
 #include <osg/GLExtensions>
 #include <osg/Texture2D>
 #include <osg/State>
@@ -151,8 +152,8 @@ void Texture2D::apply(State& state) const
         if (_unrefImageDataAfterApply)
         {
             // only unref image once all the graphics contexts has been set up.
-            int numLeftToBind=0;
-            for(int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
+            unsigned int numLeftToBind=0;
+            for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
             {
                 if (_handleList[i]==0) ++numLeftToBind;
             }

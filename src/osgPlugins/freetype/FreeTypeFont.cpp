@@ -122,5 +122,5 @@ osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightc
 
 bool FreeTypeFont::hasVertical() const
 {
-    return FT_HAS_VERTICAL(_face);
+    return FT_HAS_VERTICAL(_face)!=0;
 }

@@ -119,7 +119,7 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
         // reserve enough space for the glyphs.
         glyphTexture->setTextureSize(256,256);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-        //glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+        glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
         //glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
         glyphTexture->setMaxAnisotropy(8);
@@ -245,6 +245,9 @@ void Font::GlyphTexture::apply(osg::State& state) const
     }
 
 
+    const Extensions* extensions = getExtensions(contextID,true);
+    bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
+
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
 
@@ -256,8 +259,23 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
         
-        //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-        
+        // need to look at generate mip map extension if mip mapping required.
+        switch(_min_filter)
+        {
+        case NEAREST_MIPMAP_NEAREST:
+        case NEAREST_MIPMAP_LINEAR:
+        case LINEAR_MIPMAP_NEAREST:
+        case LINEAR_MIPMAP_LINEAR:
+            if (generateMipMapSupported) {
+                glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+            }
+            else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
+            break;
+        default:
+            // not mip mapping so no problems.
+            break;
+        }
+               
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA,
                 getTextureWidth(), getTextureHeight(), 0,
@@ -271,11 +289,27 @@ void Font::GlyphTexture::apply(osg::State& state) const
         // reuse texture by binding.
         glBindTexture( GL_TEXTURE_2D, handle );
         if (getTextureParameterDirty(contextID))
+        {
             applyTexParameters(GL_TEXTURE_2D,state);
+
+            // need to look at generate mip map extension if mip mapping required.
+            switch(_min_filter)
+            {
+            case NEAREST_MIPMAP_NEAREST:
+            case NEAREST_MIPMAP_LINEAR:
+            case LINEAR_MIPMAP_NEAREST:
+            case LINEAR_MIPMAP_LINEAR:
+                if (generateMipMapSupported) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+                else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
+                break;
+            default:
+                // not mip mapping so no problems.
+                break;
+            }
+        }
 
     }
     
-    //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
 
     // now subload the glyphs that are outstanding for this graphics context.
     GlyphPtrList& glyphsWereSubloading = _glyphsToSubload[contextID];

@@ -70,6 +70,8 @@
 #define GL_TEXTURE_3D                     0x806F
 #endif
 
+
+
 namespace osg {
 
 /** Texture base class which encapsulates OpenGl texture functionality which common betweent the various types of OpenGL textures.*/
@@ -248,6 +250,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool isTextureMirroredRepeatSupported() const { return _isTextureMirroredRepeatSupported; }
                 bool isTextureEdgeClampSupported() const { return _isTextureEdgeClampSupported; }
                 bool isTextureBorderClampSupported() const { return _isTextureBorderClampSupported; }
+                bool isGenerateMipMapSupported() const { return _isGenerateMipMapSupported; }
 
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
@@ -265,6 +268,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureMirroredRepeatSupported;
                 bool    _isTextureEdgeClampSupported;
                 bool    _isTextureBorderClampSupported;
+                bool    _isGenerateMipMapSupported;
                 
                 GLint   _maxTextureSize;
 

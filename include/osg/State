@@ -87,6 +87,14 @@ class SG_EXPORT State : public Referenced
         }
         
 
+        inline void setInitialViewMatrix(const osg::RefMatrix* matrix)
+        {
+            if (matrix) _initialViewMatrix = matrix;
+            else _initialViewMatrix = _identity;
+        }
+
+        inline const osg::Matrix& getInitialViewMatrix() const { return *_initialViewMatrix; }
+
         inline void applyProjectionMatrix(const osg::RefMatrix* matrix)
         {
             if (_projection!=matrix)
@@ -106,7 +114,7 @@ class SG_EXPORT State : public Referenced
             }
         }
         
-        const osg::Matrix& getProjectionMatrix() const
+        inline const osg::Matrix& getProjectionMatrix() const
         {
             return *_projection;
         }
@@ -630,6 +638,7 @@ class SG_EXPORT State : public Referenced
         ref_ptr<FrameStamp>         _frameStamp;
         
         ref_ptr<const RefMatrix>    _identity;
+        ref_ptr<const RefMatrix>    _initialViewMatrix;
         ref_ptr<const RefMatrix>    _projection;
         ref_ptr<const RefMatrix>    _modelView;
         

@@ -179,7 +179,7 @@ class SG_EXPORT Texture : public StateAttribute
           * filtering then normal filtering is used, equivilant to a max anisotropy value of 1.0.
           * valid range is 1.0f upwards.  The maximum value depends on the graphics
           * system being used.*/
-        inline void setMaxAnisotropy(float anis);
+        void setMaxAnisotropy(float anis);
         
         /** Get the maximum anisotropy value.*/
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }

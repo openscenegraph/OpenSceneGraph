@@ -501,6 +501,8 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
             fwrite( pad, sizeof(pad), 1, fp );
             fwrite( buffer, isize, 1, fp );
 
+            delete [] buffer;
+
             fclose(fp);
             return WriteResult::FILE_SAVED;
         }

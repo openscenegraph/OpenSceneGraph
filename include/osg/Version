@@ -32,6 +32,6 @@ extern SG_EXPORT const char* osgGetVersion();
 */
 extern SG_EXPORT const char* osgGetLibraryName();
 
-};
+}
 
 #endif

@@ -71,6 +71,6 @@ class OSGGLUT_EXPORT Window
 
 };
 
-};
+}
 
 #endif                           // SG_VIEWIER_H

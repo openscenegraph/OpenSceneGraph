@@ -57,6 +57,6 @@ class SG_EXPORT CopyOp
         CopyFlags _flags;
 };
 
-};
+}
 
 #endif

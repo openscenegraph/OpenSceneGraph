@@ -58,6 +58,6 @@ class SG_EXPORT TexEnv : public StateAttribute
         Mode _mode;
 };
 
-};
+}
 
 #endif

@@ -20,6 +20,6 @@ OSGDB_EXPORT extern std::string getStrippedName(const std::string& fileName);
 OSGDB_EXPORT extern bool equalCaseInsensitive(const std::string& lhs,const std::string& rhs);
 OSGDB_EXPORT extern bool equalCaseInsensitive(const std::string& lhs,const char* rhs);
 
-};
+}
 
 #endif

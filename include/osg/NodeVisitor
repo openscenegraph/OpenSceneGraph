@@ -171,6 +171,6 @@ struct NodeAcceptOp
     void operator () (ref_ptr<Node> node) { node->accept(_nv); }
 };
 
-};
+}
 
 #endif

@@ -248,7 +248,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         
 };
 
-};
+}
 
 #endif
 

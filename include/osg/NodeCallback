@@ -85,7 +85,7 @@ class SG_EXPORT NodeCallback : public Referenced {
         ref_ptr<NodeCallback> _nestedCallback;
 };
 
-}; // namespace
+} // namespace
 
 #endif
 

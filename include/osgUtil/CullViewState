@@ -82,8 +82,7 @@ class OSGUTIL_EXPORT CullViewState : public osg::Referenced
 
 };
 
-
-};
+}
 
 #endif
 

@@ -20,6 +20,6 @@ SG_EXPORT extern const bool isGLExtensionSupported(const char *extension);
   */
 SG_EXPORT extern void* getGLExtensionFuncPtr(const char *funcName);
 
-};
+}
 
 #endif

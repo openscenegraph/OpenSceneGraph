@@ -71,6 +71,6 @@ class SG_EXPORT Object : public Referenced
         Object& operator = (const Object&) { return *this; }
 };
 
-};
+}
 
 #endif

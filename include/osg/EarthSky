@@ -54,6 +54,6 @@ class SG_EXPORT EarthSky : public Group
         Vec4 _clearColor;  
 };
 
-};
+}
 
 #endif

@@ -171,6 +171,6 @@ class SG_EXPORT StateSet : public Object
 
 };
 
-};
+}
 
 #endif

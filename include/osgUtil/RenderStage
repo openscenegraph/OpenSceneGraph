@@ -152,7 +152,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
 };
 
-};
+}
 
 #endif
 

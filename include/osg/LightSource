@@ -42,6 +42,6 @@ class SG_EXPORT LightSource : public Node
         ref_ptr<Light> _light;
 };
 
-};
+}
 
 #endif

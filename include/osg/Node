@@ -234,6 +234,6 @@ class SG_EXPORT Node : public Object
 /** A vector of Nodes pointers which is used to describe the path from a root node to a descendant.*/
 typedef std::vector<Node*> NodePath;
 
-};
+}
 
 #endif

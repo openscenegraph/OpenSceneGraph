@@ -322,6 +322,6 @@ class SG_EXPORT Texture : public StateAttribute
 
 };
 
-};
+}
 
 #endif

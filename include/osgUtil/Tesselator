@@ -113,6 +113,6 @@ class OSGUTIL_EXPORT Tesselator
         
 };
 
-};
+}
 
 #endif

@@ -59,6 +59,6 @@ class SG_EXPORT ShadeModel : public StateAttribute
 
 };
 
-};
+}
 
 #endif

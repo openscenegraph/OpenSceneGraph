@@ -112,6 +112,6 @@ SG_EXPORT extern Geode* createGeodeForImage(Image* image);
  */
 SG_EXPORT extern Geode* createGeodeForImage(Image* image,const float s,const float t);
 
-};
+}
 
 #endif                                            // __SG_IMAGE_H

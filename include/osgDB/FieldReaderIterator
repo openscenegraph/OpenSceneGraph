@@ -67,6 +67,6 @@ class OSGDB_EXPORT FieldReaderIterator
 
 };
 
-};
+}
 
 #endif                                            // __OSGDB_FIELD_READER_QUEUE_H

@@ -48,6 +48,6 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
 
 };
 
-};
+}
 
 #endif

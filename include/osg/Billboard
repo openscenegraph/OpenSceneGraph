@@ -106,6 +106,6 @@ class SG_EXPORT Billboard : public Geode
 
 };
 
-};
+}
 
 #endif

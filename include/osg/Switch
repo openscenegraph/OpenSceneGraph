@@ -59,6 +59,6 @@ class SG_EXPORT Switch : public Group
         int _value;  
 };
 
-};
+}
 
 #endif

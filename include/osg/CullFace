@@ -64,6 +64,6 @@ class SG_EXPORT CullFace : public StateAttribute
 
 };
 
-};
+}
 
 #endif

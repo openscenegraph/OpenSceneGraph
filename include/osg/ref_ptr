@@ -99,6 +99,6 @@ class ref_ptr
         T* _ptr;
 };
 
-};
+}
 
 #endif

@@ -196,7 +196,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
 
 };
 
-};
+}
 
 #endif
 

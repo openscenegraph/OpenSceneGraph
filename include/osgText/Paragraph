@@ -57,6 +57,6 @@ class OSGTEXT_EXPORT Paragraph : public osg::Geode
         
 };
 
-};
+}
 
 #endif

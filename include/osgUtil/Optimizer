@@ -196,6 +196,6 @@ class OSGUTIL_EXPORT Optimizer
 
 };
 
-};
+}
 
 #endif

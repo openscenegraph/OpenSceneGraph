@@ -72,6 +72,6 @@ class SG_EXPORT PolygonMode : public StateAttribute
 
 };
 
-};
+}
 
 #endif

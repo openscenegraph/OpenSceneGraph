@@ -42,6 +42,6 @@ OSGDB_EXPORT extern osg::Node*  readNodeFile(const std::string& filename);
   * than one subgraph has been loaded.*/
 OSGDB_EXPORT extern osg::Node* readNodeFiles(std::vector<std::string>& commandLine);
 
-};
+}
 
 #endif

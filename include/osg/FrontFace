@@ -56,6 +56,6 @@ class SG_EXPORT FrontFace : public StateAttribute
 
 };
 
-};
+}
 
 #endif

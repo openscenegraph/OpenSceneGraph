@@ -141,6 +141,6 @@ class SG_EXPORT BoundingBox
         }
 };
 
-};
+}
 
 #endif

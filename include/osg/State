@@ -214,6 +214,6 @@ class SG_EXPORT State : public Referenced
         
 };
 
-};
+}
 
 #endif

@@ -33,7 +33,7 @@ extern OSGUTIL_EXPORT const char* osgUtilGetVersion();
 */
 extern OSGUTIL_EXPORT const char* osgUtilGetLibraryName();
 
-};
+}
 
 #endif
 

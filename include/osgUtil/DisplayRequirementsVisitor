@@ -48,6 +48,6 @@ class OSGUTIL_EXPORT DisplayRequirementsVisitor : public osg::NodeVisitor
     
 };
 
-};
+}
 
 #endif

@@ -63,6 +63,6 @@ class SG_EXPORT PolygonOffset : public StateAttribute
 
 };
 
-};
+}
 
 #endif

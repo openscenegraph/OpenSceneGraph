@@ -115,7 +115,6 @@ bool writeArrayBlock(Output& fw,T* start,T* finish)
     return true;
 }
 
-
-};
+}
 
 #endif                                            // __SG_OUTPUT_H

@@ -37,6 +37,6 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
 
 };
 
-};
+}
 
 #endif

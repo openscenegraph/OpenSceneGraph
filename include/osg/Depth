@@ -96,6 +96,6 @@ class SG_EXPORT Depth : public StateAttribute
 
 };
 
-};
+}
 
 #endif

@@ -72,6 +72,6 @@ inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
     inline bool isNaN(double v) { return isnan(v); }
 #endif
 
-};
+}
 
 #endif  // __OSG_MATH

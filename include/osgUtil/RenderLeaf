@@ -76,6 +76,6 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 
 };
 
-};
+}
 
 #endif

@@ -160,6 +160,6 @@ class SG_EXPORT Light : public StateAttribute
         float _spot_cutoff;                      // spread
 };
 
-};
+}
 
 #endif

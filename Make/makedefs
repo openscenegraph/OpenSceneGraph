@@ -132,7 +132,7 @@ ifeq ($(OS),IRIX)
   ARCH              = 32
 ifeq ($(ARCH),64)
     ARCHARGS          = -64
-    FREETYPE_LIB      = -L/usr/freeware/lib32 -lfreetype
+    FREETYPE_LIB      = -L/usr/freeware/lib64 -lfreetype
     PF_XTRA_LIBS      = -L/usr/lib64/libpfdb   -rpath /usr/lib64/libpfdb \
                       -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
                       -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
@@ -141,7 +141,7 @@ ifeq ($(ARCH),64)
                       -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
 else
     ARCHARGS          = -n32
-    FREETYPE_LIB      = -L/usr/freeware/lib64 -lfreetype
+    FREETYPE_LIB      = -L/usr/freeware/lib32 -lfreetype
     PF_XTRA_LIBS      = -L/usr/lib32/libpfdb   -rpath /usr/lib32/libpfdb \
                       -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
                       -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \

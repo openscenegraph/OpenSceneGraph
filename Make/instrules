@@ -131,20 +131,21 @@ __install :
 	    if [ -f $$f ] ; \
 	    then \
 	        INSTPATH=$$THISDIR/$$f; \
-		while [ -L $$INSTPATH ]; \
-		do \
-		    ll=`ls -l $$INSTPATH | cut -f2 -d">"`;\
-		    echo cd `dirname $$ll`;\
-		    cd `dirname $$ll`;\
-		    INSTPATH="`pwd`"/"`basename $$ll`";\
-		    cd $$THISDIR;\
-		done;\
 	        echo $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
 	        $(INSTALL) $$INSTPATH $(INSTDEST)/$$f;\
 	    fi\
 	  done\
 	fi
 
+#		while [ -L $$INSTPATH ]; \
+
+#		while `csh -f -c "test -L $$INSTPATH"` ;\
+#		do \
+#		    ll=`ls -l $$INSTPATH | cut -f2 -d">"`;\
+#		    cd `dirname $$ll`;\
+#		    INSTPATH="`pwd`"/"`basename $$ll`";\
+#		    cd $$THISDIR;\
+#		done;\
 
 
 __instclean :

@@ -7,22 +7,34 @@
 
 #include <osg/Matrix>
 #include <osg/Quat>
+#include <osg/Transform>
 
 #include <map>
 
 namespace osg {
 
-/** Animation Path for specify the time varying transformation pathway to use when update camera and model objects.
+/** AnimationPath for specify the time varying transformation pathway to use when update camera and model objects.
+  * Subclassed from Transform::ComputeTransformCallback allows AnimationPath to
+  * be attached directly to Transform nodes to move subgraphs around the scene.
 */
-class SG_EXPORT AnimationPath : public osg::Referenced
+class SG_EXPORT AnimationPath : public Transform::ComputeTransformCallback
 {
     public:
     
         AnimationPath() {}
+
+        /** get the local transformation matrix for a point in time.*/        
+        virtual bool getMatrix(double time,Matrix& matrix) const;
+
+        /** get the local inverse transformation matrix for a point in time.*/        
+        virtual bool getInverse(double time,Matrix& matrix) const;
         
-        virtual bool getMatrix(double time,Matrix& matrix);
-        virtual bool getInverse(double time,Matrix& matrix);
-        
+        /** Get the transformation matrix which moves from local coords to world coords.*/
+        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const;
+       
+        /** Get the transformation matrix which moves from world coords to local coords.*/
+        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const;
+
         struct Key
         {
             Key() {}
@@ -44,14 +56,14 @@ class SG_EXPORT AnimationPath : public osg::Referenced
                 _scale = first._scale*one_minus_ratio + second._scale*ratio;
             }
             
-            inline void getMatrix(Matrix& matrix)
+            inline void getMatrix(Matrix& matrix) const
             {
                 matrix.makeScale(_scale);
                 matrix.postMult(_rotation.getMatrix());
                 matrix.postMult(osg::Matrix::translate(_position));
             }
 
-            inline void getInverse(Matrix& matrix)
+            inline void getInverse(Matrix& matrix) const
             {
                 matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
                 matrix.postMult(_rotation.inverse().getMatrix());

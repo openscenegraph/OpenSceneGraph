@@ -158,8 +158,30 @@ void SceneView::app()
 void SceneView::cull()
 {
 
+    if (!_state)
+    {
+        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_state attached, creating a default state automatically."<< std::endl;
+
+        // note the constructor for osg::State will set ContextID to 0 which will be fine to single context graphics
+        // applications which is ok for most apps, but not multiple context/pipe applications.
+        _state = osgNew osg::State;
+    }
+
+    if (!_globalState)
+    {
+        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_globalState attached, creating a default global stateset automatically."<< std::endl;
+
+        _globalState = osgNew osg::StateSet;
+        _globalState->setGlobalDefaults();
+    }
+    
+    // we in theory should be able to be able to bypass reset, but we'll call it just incase.
     _state->reset();
    
+    _state->setFrameStamp(_frameStamp.get());
+    _state->setDisplaySettings(_displaySettings.get());
+
+
     osg::ref_ptr<osg::Matrix> projection = _projectionMatrix.get();
     osg::ref_ptr<osg::Matrix> modelview = _modelviewMatrix.get();
     
@@ -238,6 +260,22 @@ void SceneView::cull()
     }
     else
     {
+        if (!_cullVisitor)
+        {
+            osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
+            _cullVisitor = osgNew CullVisitor;
+        }
+        if (!_rendergraph)
+        {
+            osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default RenderGraph automatically."<< std::endl;
+            _rendergraph = osgNew RenderGraph;
+        }
+        if (!_renderStage)
+        {
+            osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_renderStage attached, creating a default RenderStage automatically."<< std::endl;
+            _renderStage = osgNew RenderStage;
+        }
+
         _cullVisitor->setTraversalMask(_cullMask);
         cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
     }
@@ -256,20 +294,6 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
 
     if (!_initCalled) init();
 
-    if (!_state)
-    {
-        osg::notify(osg::WARN) << "Warning: no valid osgUtil::SceneView::_state"<< std::endl;
-        osg::notify(osg::WARN) << "         creating a state automatically."<< std::endl;
-
-        // note the constructor for osg::State will set ContextID to 0.
-        _state = osgNew osg::State;
-    }
-
-    // we in theory should be able to be able to bypass reset, but we'll call it just incase.
-    _state->reset();
-    
-    _state->setFrameStamp(_frameStamp.get());
-    _state->setDisplaySettings(_displaySettings.get());
 
 
 

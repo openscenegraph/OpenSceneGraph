@@ -35,7 +35,6 @@ o Core OSG Library
         . add support for Multi-texturing into osg::GeoSet/osg::GeoState.
         . add support for pixel/vertex shaders into osg::GeoSet/osg::GeoState.
         . utilise stl vectors for osg::GeoSets?
-        . add handling of memory of osg::GeoSet's attributes.
         . add osg::Terrain node.
         . add proxy node for lazy loading of nodes, when needed.
         . implement visual proximity to assist loading of proxied data
@@ -44,13 +43,11 @@ o Core OSG Library
         . implement support for modified status/lazy evaluation of node data 
           and observer style pattern.
         . manipulator decoration nodes?
-        . spacial subdivision decoration nodes?
-        
-        . improved osgUtil:TriStringVisitor to replace NvTriStrip code.
+        . spacial subdivision decoration nodes?        
+        . improved osgUtil:TriStripVisitor to replace NvTriStrip code.
         . update of osgText to latest FTGL.
         . create osg::Drawable::PrimtiveFunrctor
         . support for volume rendering.
-        . improved stereo support.
         . occlusion culling.
         . integrated osgEnv.
         . implement a osg::CameraRelativeNode for earth sky/HUD's etc.
@@ -62,13 +59,10 @@ o Core OSG Library
         . osgParticles - support for particle effects.
         . osgAnimation - support for skinning etc.
         . osgShader - suppor for shader languages.
-        . improved makefiles.
         . improved impostor implementation - use depth textures?
         . clean up multi-bin control.
-        . improve the node callback mechanism.
         . osgUtil::MultiSceneView/Multi-channel configuration.
         . support for node kits via the plugins mechanism.
-        . Added tracking of matrix stacks in osg::State.
         . Added ImageGroup's which can be attached to textures for animation.
         
     - Visitors
@@ -109,9 +103,7 @@ o Under development
     Sign up here if would like to take on a task :-)
 
     - add osg::Billboard for trees etc.
-    - full maths support in osg::Matrix class.
     - Netscape plug-in.
-    - CVS support for when source is made fully public.
     - Mac port.
     - tri stripping visitor.
     - .obj      Alias wavefront's format.(functioning already.)
@@ -168,3 +160,10 @@ o Work completed
     - return error messages of on failed loading/saving. 
     - .bmp      Windows Bitmap files.
     - .tar      Automatic unpacking of directories and loading of contents.
+    - add handling of memory of osg::GeoSet's attributes.
+    - Added tracking of matrix stacks in osg::State.
+    - improved stereo support.
+    - improved makefiles.
+    - improve the node callback mechanism.
+    - CVS support for when source is made fully public.
+    - full maths support in osg::Matrix class.

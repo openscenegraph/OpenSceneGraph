@@ -33,7 +33,8 @@ void State::reset()
 
     _modeMap.clear();
     _modeMap[GL_DEPTH_TEST].global_default_value = true;
-
+    _modeMap[GL_DEPTH_TEST].changed = true;
+    
     // go through all active StateAttribute's, applying where appropriate.
     for(AttributeMap::iterator aitr=_attributeMap.begin();
         aitr!=_attributeMap.end();

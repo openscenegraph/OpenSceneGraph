@@ -130,6 +130,7 @@ void StateSet::setGlobalDefaults()
     setRendingBinToInherit();
 
 
+    setMode(GL_DEPTH_TEST,StateAttribute::ON);
     setAttributeAndModes(osgNew AlphaFunc,StateAttribute::OFF);
     setAttributeAndModes(osgNew Transparency,StateAttribute::OFF);
 

@@ -109,11 +109,13 @@ public:
         _latitude(0.0),
         _longitude(0.0),
         _height(100000.0)
-         {}
-
+    {
+        _rotation.makeRotate(osg::DegreesToRadians(90.0),0.0,0.0,1.0);
+    }
+    
     void updateParameters()
     {
-        _latitude -= ((2.0*osg::PI)/360.0)/20.0;
+        _longitude += ((2.0*osg::PI)/360.0)/20.0;
     }
 
 

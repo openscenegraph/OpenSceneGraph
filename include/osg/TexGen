@@ -17,8 +17,6 @@
 #include <osg/Plane>
 #include <osg/StateAttribute>
 
-namespace osg {
-
 #ifndef GL_NORMAL_MAP_ARB
 #define GL_NORMAL_MAP_ARB                   0x8511
 #endif
@@ -26,6 +24,8 @@ namespace osg {
 #ifndef GL_REFLECTION_MAP_ARB
 #define GL_REFLECTION_MAP_ARB               0x8512
 #endif
+
+namespace osg {
 
 /** TexGen encapsulates the OpenGL glTexGen (texture coordinate generation)
   * state.*/

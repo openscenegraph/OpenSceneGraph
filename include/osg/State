@@ -26,8 +26,6 @@
 #include <vector>
 #include <map>
 
-namespace osg {
-
 #ifndef GL_TEXTURE0
 #define GL_TEXTURE0 0x84C0
 #endif
@@ -47,6 +45,8 @@ namespace osg {
          #define GL_SECONDARY_COLOR_ARRAY 0x845E
     #endif
 #endif
+
+namespace osg {
 
 /** macro for use with osg::StateAttribute::apply methods for detecting and 
   * reporting OpenGL error messages.*/

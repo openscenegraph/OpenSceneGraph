@@ -320,7 +320,7 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
             }
             
             
-            // we don't properly handle per primitive and per primitive bindings yet
+            // we don't properly handle per primitive and per primitive_set bindings yet
             // will need to address this soon. Robert Oct 2002.
             {
                 osg::Vec3Array* normals = NULL; // GWM Sep 2002 - add normals for extra facets
@@ -330,6 +330,28 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                 {
                     normals = geom.getNormalArray(); // GWM Sep 2002
                 }
+                 // GWM Dec 2003 - nneded to add colours for extra facets
+                osg::Vec4Array* cols4 = NULL; // GWM Dec 2003 colours are vec4
+                osg::Vec3Array* cols3 = NULL; // GWM Dec 2003 colours are vec3
+                if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE/* ||
+                    geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET*/)
+                {
+                    Array* colours = geom.getColorArray(); // GWM Dec 2003 - need to duplicate face colours
+                    switch (colours->getType()) {
+                    case osg::Array::Vec4ArrayType:
+                        cols4=dynamic_cast<osg::Vec4Array *> (colours);
+                        break;
+                    case osg::Array::Vec3ArrayType:
+                        cols3=dynamic_cast<osg::Vec3Array *> (colours);
+                        break;
+                    }
+
+                }
+                // GWM Dec 2003 - these holders need to go outside the loop to 
+                // retain the flat shaded colour &/or normal for each tesselated polygon
+                osg::Vec3 norm(0.0f,0.0f,0.0f);
+                osg::Vec4 primCol4(0.0f,0.0f,0.0f,1.0f);
+                osg::Vec3 primCol3(0.0f,0.0f,0.0f);
                 for(PrimList::iterator primItr=_primList.begin();
                 primItr!=_primList.end();
                 ++primItr)
@@ -346,18 +368,33 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     }
                     
                     if (primItr==_primList.begin()) 
-                    {
-                        // first new primitive so overwrite the previous polygon.
+                    {   // first new primitive so overwrite the previous polygon & collect primitive normal & colour.
                         geom.getPrimitiveSetList()[primNo] = elements;                    
                         if (normals) {
                             norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
                         }
+                        if (cols4) {
+                            primCol4=(*cols4)[iprim]; // GWM Dec 2003 the flat shaded rgba colour
+                        }
+                        if (cols3) {
+                            primCol3=(*cols3)[iprim]; // GWM Dec 2003 flat shaded rgb colour
+                        }
                     }
                     else
                     {
-                        // subsequence primitives add to the back of the primitive list.
+                        // subsequent primitives add to the back of the primitive list, and may have same colour as hte original facet.
                         geom.addPrimitiveSet(elements);
                         if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                        if (cols4) cols4->push_back(primCol4); // GWM Dec 2003 add flat shaded colour for new facet
+                        if (cols3) cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
+                        if (prim->_mode==GL_TRIANGLES) { // also need one per triangle?
+                            int ntris=elements->getNumIndices()/3;
+                            for (int ii=1; ii<ntris; ii++) {
+                                if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                                if (cols4) cols4->push_back(primCol4);
+                            }
+                        }
+                //        osg::notify(osg::WARN)<<"Add: "<< iprim << std::endl; 
                     }
                     iprim++; // GWM Sep 2002 count which normal we should use
                 }

@@ -22,7 +22,11 @@
 //
 
 
+// include std to get round dumb compilers which can't handle std::hex/dec.
+using namespace std;
+
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
+
 
 class Texture2DCallback : public osg::NodeCallback
 {
@@ -39,7 +43,7 @@ class Texture2DCallback : public osg::NodeCallback
             _prevTime = 0.0;
         }
         
-        virtual ~Texture2DCallback() {}
+	virtual ~Texture2DCallback() {}
         
         virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
         {
@@ -48,7 +52,7 @@ class Texture2DCallback : public osg::NodeCallback
                 double currTime = nv->getFrameStamp()->getReferenceTime();
                 if (currTime-_prevTime>1.0) 
                 {
-                    std::cout<<"Updating texturing filter to "<<std::hex<<_filterRange[_currPos]<<std::dec<<std::endl;
+                    cout<<"Updating texturing filter to "<<hex<<_filterRange[_currPos]<<dec<<std::endl;
                     _texture->setFilter(osg::Texture2D::MAG_FILTER,_filterRange[_currPos]);
                     _currPos++;
                     if (_currPos>=_filterRange.size()) _currPos=0;                    
@@ -91,7 +95,7 @@ ImageList getImagesFromFiles(std::vector<std::string>& commandLine)
 
     if (imageList.size()==0)
     {
-        osg::notify(osg::WARN) << "No image data loaded."<<std::endl;
+        osg::notify(osg::WARN) << "No image data loaded."<<endl;
     }
 
     return imageList;

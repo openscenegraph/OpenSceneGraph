@@ -204,7 +204,7 @@ void CullVisitor::popProjectionMatrix()
     if (_computeNearFar && _computed_zfar>=_computed_znear)
     {
 
-        osg::notify(osg::INFO)<<"clamping "<< "znear="<<_computed_znear << " zfar="<<_computed_zfar<<std::endl;
+        //osg::notify(osg::INFO)<<"clamping "<< "znear="<<_computed_znear << " zfar="<<_computed_zfar<<std::endl;
 
 
         // adjust the projection matrix so that it encompases the local coords.
@@ -215,7 +215,7 @@ void CullVisitor::popProjectionMatrix()
     }
     else
     {
-        osg::notify(osg::INFO)<<"Not clamping "<< "znear="<<_computed_znear << " zfar="<<_computed_zfar<<std::endl;
+        //osg::notify(osg::INFO)<<"Not clamping "<< "znear="<<_computed_znear << " zfar="<<_computed_zfar<<std::endl;
     }
 
     CullStack::popProjectionMatrix();
@@ -230,7 +230,7 @@ bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar
         double epsilon = 1e-6;
         if (fabs(projection(0,3))<epsilon  && fabs(projection(1,3))<epsilon  && fabs(projection(2,3))<epsilon )
         {
-            osg::notify(osg::INFO) << "Orthographic matrix before clamping"<<projection<<std::endl;
+            // osg::notify(osg::INFO) << "Orthographic matrix before clamping"<<projection<<std::endl;
 
             value_type delta_span = (zfar-znear)*0.02;
             if (delta_span<1.0) delta_span = 1.0;
@@ -244,7 +244,7 @@ bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar
             projection(2,2)=-2.0f/(desired_zfar-desired_znear);
             projection(3,2)=-(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
             
-            osg::notify(osg::INFO) << "Orthographic matrix after clamping "<<projection<<std::endl;
+            // osg::notify(osg::INFO) << "Orthographic matrix after clamping "<<projection<<std::endl;
 
             return true;
 
@@ -252,7 +252,7 @@ bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar
         else
         {
 
-            osg::notify(osg::INFO) << "Persepective matrix before clamping"<<projection<<std::endl;
+            // osg::notify(osg::INFO) << "Persepective matrix before clamping"<<projection<<std::endl;
 
             //std::cout << "_computed_znear"<<_computed_znear<<std::endl;
             //std::cout << "_computed_zfar"<<_computed_zfar<<std::endl;
@@ -284,7 +284,7 @@ bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar
                                             0.0f,0.0f,ratio,0.0f,
                                             0.0f,0.0f,center*ratio,1.0f));
                                             
-            osg::notify(osg::INFO) << "Persepective matrix after clamping"<<projection<<std::endl;
+            // osg::notify(osg::INFO) << "Persepective matrix after clamping"<<projection<<std::endl;
 
             return true;
         }

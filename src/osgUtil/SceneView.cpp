@@ -168,6 +168,12 @@ void SceneView::app()
         }
         
         _sceneData->accept(*_appVisitor.get());
+        
+        // now force a recompute of the bounding volume while we are still in
+        // the read/write app phase, this should prevent the need to recompute
+        // the bounding volumes from within the cull traversal which may be
+        // multi-threaded.
+        _sceneData->getBound();
     }
     
     

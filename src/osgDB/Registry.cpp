@@ -73,6 +73,7 @@ Registry::Registry()
     addFileExtensionAlias("geo",  "lwo");
     addFileExtensionAlias("lw",   "lwo");
 
+    addFileExtensionAlias("wrl",   "iv");
 }
 
 

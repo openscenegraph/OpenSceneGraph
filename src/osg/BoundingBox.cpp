@@ -18,7 +18,7 @@ void BoundingBox::expandBy(const Vec3& v)
 
 void BoundingBox::expandBy(const BoundingBox& bb)
 {
-    if (!bb.isValid()) return;
+    if (!bb.valid()) return;
 
     if(bb._min.x()<_min.x()) _min.x() = bb._min.x();
     if(bb._max.x()>_max.x()) _max.x() = bb._max.x();
@@ -33,7 +33,7 @@ void BoundingBox::expandBy(const BoundingBox& bb)
 
 void BoundingBox::expandBy(const BoundingSphere& sh)
 {
-    if (!sh.isValid()) return;
+    if (!sh.valid()) return;
 
     if(sh._center.x()-sh._radius<_min.x()) _min.x() = sh._center.x()-sh._radius;
     if(sh._center.x()+sh._radius>_max.x()) _max.x() = sh._center.x()+sh._radius;

@@ -84,7 +84,7 @@ void InsertImpostorsVisitor::insertImpostors()
             if (group!=previousGroup)
             {
                 const BoundingSphere& bs = group->getBound();
-                if (bs.isValid())
+                if (bs.valid())
                 {
 
                     // take a copy of the original parent list
@@ -133,7 +133,7 @@ void InsertImpostorsVisitor::insertImpostors()
             if (lod!=previousLOD)
             {
                 const osg::BoundingSphere& bs = lod->getBound();
-                if (bs.isValid())
+                if (bs.valid())
                 {
 
                     // take a copy of the original parent list

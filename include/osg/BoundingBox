@@ -50,12 +50,8 @@ class SG_EXPORT BoundingBox
             _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
         }
         
-        /** return true if the bounding box contains valid values,
-            false if the bounding box is effectively unset/empty.*/
-        inline const bool isValid() const
-        {
-            return _max.x()>=_min.x();
-        }
+        /** deprecated, use valid() instead.*/
+        inline const bool isValid() const { return _max.x()>=_min.x(); }
                 
         inline const bool valid() const
         {
@@ -139,7 +135,7 @@ class SG_EXPORT BoundingBox
         /** return true is vertex v is within the box.*/
         inline const bool contains(const Vec3& v) const
         {
-            return isValid() && 
+            return valid() && 
                    (v.x()>=_min.x() && v.x()<=_max.x()) &&
                    (v.y()>=_min.y() && v.y()<=_max.y()) &&
                    (v.z()>=_min.z() && v.z()<=_max.z());

@@ -24,6 +24,8 @@
 #include <osg/Point>
 #include <osg/Notify>
 
+#include <osgUtil/Tesselator>
+
 #include <map>
 #include <algorithm>
 
@@ -306,6 +308,13 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
                 (*itr)->addToGeometry(geom);
             }
         }
+    }
+
+    osgUtil::Tesselator tesselator;
+    for(int i=0;i<geode->getNumDrawables();++i)
+    {
+        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
+        if (geom) tesselator.retesselatePolygons(*geom);
     }
 
 //Old GeoSet code.    

@@ -7,255 +7,263 @@
 using namespace osg;
 using namespace osgUtil;
 
-/* Win32 calling conventions. (or a least thats what the GLUT example tess.c uses.)*/
-#ifndef CALLBACK
-#define CALLBACK
-#endif
-
-static Tesselator* s_tesselator = NULL;
-    
-void CALLBACK beginCallback(GLenum which)
-{
-    s_tesselator->beginPrimitive(which);
-}
-
-void CALLBACK errorCallback(GLenum errorCode)
-{
-    s_tesselator->_errorCode = errorCode;
-}
-
-void CALLBACK endCallback()
-{
-    s_tesselator->endPrimitive();
-}
-
-void CALLBACK vertexCallback(GLvoid *data)
-{
-    Tesselator::VertexIndexSet* vip = (Tesselator::VertexIndexSet*)data;
-    vip->accumulate();
-}
+static Tesselator* s_currentTesselator=0;
 
 
 Tesselator::Tesselator()
 {
+    _tobj = 0;
+    _errorCode = 0;
 }
 
 Tesselator::~Tesselator()
 {
+    if (_tobj) gluDeleteTess(_tobj);
 }
 
-void Tesselator::tesselate(osg::Vec3* coords,int numIndices, int* indices,InputBoundaryDirection ibd)
+void Tesselator::beginTesselation()
 {
-    init();
-    _coordVec.reserve(numIndices);
-    if (ibd==COUNTER_CLOCK_WISE)
+    reset();
+
+    if (!_tobj) _tobj = gluNewTess();
+    
+    gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLvoid (CALLBACK*)()) vertexCallback);
+    gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA,  (GLvoid (CALLBACK*)()) beginCallback);
+    gluTessCallback(_tobj, GLU_TESS_END_DATA,    (GLvoid (CALLBACK*)()) endCallback);
+    gluTessCallback(_tobj, GLU_TESS_COMBINE,     (GLvoid (CALLBACK*)()) combineCallback);
+    gluTessCallback(_tobj, GLU_TESS_ERROR_DATA,  (GLvoid (CALLBACK*)()) errorCallback);
+
+    gluTessBeginPolygon(_tobj,this);
+    
+    s_currentTesselator = this;
+    
+}    
+    
+void Tesselator::beginContour()
+{
+    if (_tobj)
     {
-        for(int i=0;i<numIndices;++i)
-        {
-            _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
-        }
+        gluTessBeginContour(_tobj);
     }
-    else
+}
+      
+void Tesselator::addVertex(osg::Vec3* vertex)
+{
+    if (_tobj)
     {
-    for(int i=numIndices-1;i>=0;--i)
-    {
-            _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
-        }
+        Vec3d* data = new Vec3d;
+        _coordData.push_back(data);
+        (*data)._v[0]=(*vertex)[0];
+        (*data)._v[1]=(*vertex)[1];
+        (*data)._v[2]=(*vertex)[2];
+        gluTessVertex(_tobj,data->_v,vertex);
     }
-    do_it();
 }
 
-void Tesselator::tesselate(osg::Vec3* coords,int numIndices, osg::ushort* indices,InputBoundaryDirection ibd)
+void Tesselator::endContour()
 {
-    init();
-    _coordVec.reserve(numIndices);
-	if (ibd==COUNTER_CLOCK_WISE)
-	{
-        for(int i=0;i<numIndices;++i)
-        {
-            _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
-        }
-    }
-	else
+    if (_tobj)
     {
-        for(int i=numIndices-1;i>=0;--i)
-        {
-            _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
-        }
-	}
-    do_it();
+        gluTessEndContour(_tobj);
+    }
 }
 
-void Tesselator::tesselate(osg::Vec3* coords,int numIndices, osg::uint* indices,InputBoundaryDirection ibd)
+void Tesselator::endTesselation()
 {
-    init();
-    _coordVec.reserve(numIndices);
-	if (ibd==COUNTER_CLOCK_WISE)
-	{
-        for(int i=0;i<numIndices;++i)
+    if (_tobj)
+    {
+        gluTessEndPolygon(_tobj);
+        gluDeleteTess(_tobj);
+        _tobj = 0;
+        
+        if (_errorCode!=0)
         {
-            _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
+           const GLubyte *estring = gluErrorString((GLenum)_errorCode);
+           osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<< std::endl;
         }
     }
-	else
-    {
-        for(int i=numIndices-1;i>=0;--i)
-        {
-            _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
-        }
-	}
-    do_it();
 }
 
-void Tesselator::init()
+void Tesselator::reset()
 {
+    if (_tobj)
+    {
+        gluDeleteTess(_tobj);
+        _tobj = 0;
+    }
+    _primList.clear();
+    _coordData.clear();
     _errorCode = 0;
-    _coordVec.clear();
-    _acummulated_indices.clear();
-    _tesselated_indices.clear();
-    _currentPrimtiveType=0;
 }
 
-#ifdef GLU_VERSION_1_2
-void Tesselator::do_it()
+void Tesselator::retesselatePolygons(osg::Geometry& geom)
 {
-    GLUtesselator *tobj = gluNewTess();
-    
-    gluTessCallback(tobj, (GLenum)GLU_TESS_VERTEX, 
-                   (GLvoid (CALLBACK*) ()) (&vertexCallback));
-    gluTessCallback(tobj, (GLenum)GLU_TESS_BEGIN, 
-                   (GLvoid (CALLBACK*) ()) (&beginCallback));
-    gluTessCallback(tobj, (GLenum)GLU_TESS_END, 
-                   (GLvoid (CALLBACK*) ()) (&endCallback));
-    gluTessCallback(tobj, (GLenum)GLU_TESS_ERROR, 
-                   (GLvoid (CALLBACK*) ()) (&errorCallback));
+    Vec3Array* vertices = geom.getVertexArray();
+    if (!vertices || vertices->empty() || geom.getPrimitiveList().empty()) return;
 
-    s_tesselator = this;
-
-    gluTessBeginPolygon(tobj,NULL);
-    gluTessBeginContour(tobj);
-      
-    for(CoordVec::iterator itr=_coordVec.begin();
-      itr!=_coordVec.end();
-      ++itr)
+    int noPrimitiveAtStart = geom.getPrimitiveList().size();
+    for(int primNo=0;primNo<noPrimitiveAtStart;++primNo)
     {
-        gluTessVertex(tobj,itr->_vertex,itr->_vertex);
-    }
-        
-    gluTessEndContour(tobj);
-    gluTessEndPolygon(tobj);
-
-    gluDeleteTess(tobj);
-
-    if (_errorCode!=0)
-    {
-       const GLubyte *estring = gluErrorString((GLenum)_errorCode);
-       osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<< std::endl;
-       osg::notify(osg::WARN)<<"  Num indices created = "<<_tesselated_indices.size()<< std::endl;
-    }
-}
-
-#else
-
-// old style glu tesseleation.
-void Tesselator::do_it()
-{
-    GLUtriangulatorObj *tobj = gluNewTess();
-    
-    gluTessCallback(tobj, (GLenum)GLU_VERTEX, 
-                   (GLvoid (CALLBACK*) ()) (&vertexCallback));
-    gluTessCallback(tobj, (GLenum)GLU_BEGIN, 
-                   (GLvoid (CALLBACK*) ()) (&beginCallback));
-    gluTessCallback(tobj, (GLenum)GLU_END, 
-                   (GLvoid (CALLBACK*) ()) (&endCallback));
-    gluTessCallback(tobj, (GLenum)GLU_ERROR, 
-                   (GLvoid (CALLBACK*) ()) (&errorCallback));
-
-    s_tesselator = this;
-
-    gluBeginPolygon(tobj);
-      
-    for(CoordVec::iterator itr=_coordVec.begin();
-      itr!=_coordVec.end();
-      ++itr)
-    {
-        gluTessVertex(tobj,itr->_vertex,itr->_vertex);
-    }
-        
-    gluEndPolygon(tobj);
-
-    gluDeleteTess(tobj);
-
-    if (_errorCode!=0)
-    {
-       const GLubyte *estring = gluErrorString((GLenum)_errorCode);
-       osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<< std::endl;
-       osg::notify(osg::WARN)<<"  Num indices created = "<<_tesselated_indices.size()<< std::endl;
-    }
-}
-
-#endif
-
-void Tesselator::beginPrimitive(int primitiveType)
-{
-    _currentPrimtiveType = primitiveType;
-}
-
-void Tesselator::endPrimitive()
-{
-    if (_acummulated_indices.size()>=3)
-    {
-    
-        switch(_currentPrimtiveType)
+        osg::Primitive* primitive = geom.getPrimitiveList()[primNo].get();
+        if (primitive->getMode()==osg::Primitive::POLYGON)
         {
-        case(GL_TRIANGLE_FAN):
+            beginTesselation();
+            beginContour();
+
+            switch(primitive->getType())
             {
-                osg::uint first = _acummulated_indices[0];
-                for(unsigned int i=2;i<_acummulated_indices.size();++i)
+                case(osg::Primitive::DrawArraysPrimitiveType):
                 {
-                    _tesselated_indices.push_back(first);
-                    _tesselated_indices.push_back(_acummulated_indices[i-1]);
-                    _tesselated_indices.push_back(_acummulated_indices[i]);
+                    osg::DrawArrays* drawArray = static_cast<osg::DrawArrays*>(primitive);
+                    unsigned int first = drawArray->getFirst(); 
+                    unsigned int last = first+drawArray->getCount();
+                    for(unsigned int i=first;i<last;++i)
+                    {
+                        addVertex(&((*vertices)[i]));
+                    }
+                    break;
+                }
+                case(osg::Primitive::UByteDrawElementsPrimitiveType):
+                {
+                    osg::UByteDrawElements* drawElements = static_cast<osg::UByteDrawElements*>(primitive);
+                    for(osg::UByteDrawElements::iterator indexItr=drawElements->begin();
+                        indexItr!=drawElements->end();
+                        ++indexItr)
+                    {
+                        addVertex(&((*vertices)[*indexItr]));
+                    }
+                    break;
+                }
+                case(osg::Primitive::UShortDrawElementsPrimitiveType):
+                {
+                    osg::UShortDrawElements* drawElements = static_cast<osg::UShortDrawElements*>(primitive);
+                    for(osg::UShortDrawElements::iterator indexItr=drawElements->begin();
+                        indexItr!=drawElements->end();
+                        ++indexItr)
+                    {
+                        addVertex(&((*vertices)[*indexItr]));
+                    }
+                    break;
+                }
+                case(osg::Primitive::UIntDrawElementsPrimitiveType):
+                {
+                    osg::UIntDrawElements* drawElements = static_cast<osg::UIntDrawElements*>(primitive);
+                    for(osg::UIntDrawElements::iterator indexItr=drawElements->begin();
+                        indexItr!=drawElements->end();
+                        ++indexItr)
+                    {
+                        addVertex(&((*vertices)[*indexItr]));
+                    }
+                    break;
                 }
             }
-            break;
-        case(GL_TRIANGLE_STRIP):
+            
+            endContour();
+            endTesselation();
+            
+            Vec3* vbase = &(vertices->front());
+            Vec3* vtop = &(vertices->back());
+            
+            for(PrimList::iterator primItr=_primList.begin();
+                primItr!=_primList.end();
+                ++primItr)
             {
-                for(unsigned int i=2;i<_acummulated_indices.size();++i)
+                Prim* prim = primItr->get();
+
+                osg::UShortDrawElements* elements = new osg::UShortDrawElements(prim->_mode);
+                for(Prim::VecList::iterator vitr=prim->_vertices.begin();
+                    vitr!=prim->_vertices.end();
+                    ++vitr)
                 {
-                    if (i%2)
+                    if (*vitr<vbase || *vitr>vtop)
                     {
-                        // i == 3,5,7 etc
-                        // add in order.
-                        _tesselated_indices.push_back(_acummulated_indices[i-2]);
-                        _tesselated_indices.push_back(_acummulated_indices[i-1]);
-                        _tesselated_indices.push_back(_acummulated_indices[i]);
+                        // new vertex.
+                        std::cout<<"Ooohhh we're getting funky, extra vertices need to be inserted"<<std::endl;
                     }
                     else
                     {
-                        // i == 2,4,6 etc
-                        // add in flipping orde to preserve anticlockwise direction.
-                        _tesselated_indices.push_back(_acummulated_indices[i-1]);
-                        _tesselated_indices.push_back(_acummulated_indices[i-2]);
-                        _tesselated_indices.push_back(_acummulated_indices[i]);
+                        // old vertex.
+                        unsigned int i=*vitr-vbase;
+                        elements->push_back(i);
                     }
                 }
-            }
-            break;
-        case(GL_TRIANGLES):
-            {
-                
-                for(unsigned int i=2;i<_acummulated_indices.size();i+=3)
+
+                if (primItr==_primList.begin()) 
                 {
-                    _tesselated_indices.push_back(_acummulated_indices[i-2]);
-                    _tesselated_indices.push_back(_acummulated_indices[i-1]);
-                    _tesselated_indices.push_back(_acummulated_indices[i]);
+                    // first new primitive so overwrite the previous polygon.
+                    geom.getPrimitiveList()[primNo] = elements;                    
+                }
+                else
+                {
+                    // subsequence primtives add to the back of the primitive list.
+                    geom.addPrimitive(elements);
                 }
             }
-            break;
+            
         }
+        
     }
-    
-    _acummulated_indices.clear();
 }
 
+void Tesselator::begin(GLenum mode)
+{
+    _primList.push_back(new Prim(mode));
+}
+
+void Tesselator::vertex(osg::Vec3* vertex)
+{
+    if (!_primList.empty())
+    {
+        Prim* prim = _primList.back().get();
+        prim->_vertices.push_back(vertex);
+    }
+}
+
+void Tesselator::combine(osg::Vec3* vertex)
+{
+    if (!_primList.empty())
+    {
+        Prim* prim = _primList.back().get();
+        prim->_vertices.push_back(vertex);
+    }
+}
+
+void Tesselator::end()
+{
+    // no need to do anything right now...
+}
+
+void Tesselator::error(GLenum errorCode)
+{
+    _errorCode = errorCode;
+}
+
+void CALLBACK Tesselator::beginCallback(GLenum which, void* userData)
+{
+    ((Tesselator*)userData)->begin(which);
+}
+
+void CALLBACK Tesselator::endCallback(void* userData)
+{
+    ((Tesselator*)userData)->end();
+}
+
+void CALLBACK Tesselator::vertexCallback(GLvoid *data, void* userData)
+{
+    ((Tesselator*)userData)->vertex((Vec3*)data);
+}
+
+void CALLBACK Tesselator::combineCallback(GLdouble coords[3], void* /*vertex_data*/[4],
+                              GLfloat /*weight*/[4], void** outData,
+                              void* userData)
+{
+    Vec3* newData = new osg::Vec3(coords[0],coords[2],coords[3]);
+    *outData = newData;
+    //((Tesselator*)userData)->combine(newData);
+    s_currentTesselator->combine(newData);
+}
+
+void CALLBACK Tesselator::errorCallback(GLenum errorCode, void* userData)
+{
+    ((Tesselator*)userData)->error(errorCode);
+}

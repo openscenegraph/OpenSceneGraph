@@ -497,12 +497,16 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
 
     }
 
+    // create vertices.
     osg::Vec3Array* osg_coords = new osg::Vec3Array(noVertex);
+    geom->setVertexArray(osg_coords);
+
     Lib3dsVector c;
        
     for (i=0; i<m->points; ++i)
     {
-        if (orig2NewMapping[i]>=0) {
+        if (orig2NewMapping[i]>=0)
+        {
             if (matrix)
             {
                 lib3ds_vector_transform(c,*matrix, m->pointL[i].pos);
@@ -516,12 +520,13 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
         }
     }
 
-    osg::Vec2Array* osg_tcoords = NULL;
+    // create texture coords if needed.
     if (m->texels>0)
     {
         if (m->texels==m->points)
         {
-            osg_tcoords = new osg::Vec2Array(noVertex);
+            osg::Vec2Array* osg_tcoords = new osg::Vec2Array(noVertex);
+            geom->setTexCoordArray(0,osg_tcoords);
             for (i=0; i<m->texels; ++i)
             {
                 if (orig2NewMapping[i]>=0) (*osg_tcoords)[orig2NewMapping[i]].set(m->texelL[i][0],m->texelL[i][1]);
@@ -533,27 +538,56 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
         }
     }
 
-
-    // handle normals.
-    osg::Vec3Array* osg_normals=0;
-    osg::Vec3Array::iterator normal_itr = 0;
+    // create normals.
     if (_usePerVertexNormals)
     {
-        osg_normals = new osg::Vec3Array(noVertex);
+        osg::Vec3Array* osg_normals=osg_normals = new osg::Vec3Array(noVertex);
         
         // initialize normal list to zero's.
         for (i=0; i<noVertex; ++i)
         {
             (*osg_normals)[i].set(0.0f,0.0f,0.0f);
         }
+
+        for (fitr=faceList.begin();
+            fitr!=faceList.end();
+            ++fitr)
+        {
+            Lib3dsFace& face = m->faceL[*fitr];
+
+            (*osg_normals)[orig2NewMapping[face.points[0]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            (*osg_normals)[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+            (*osg_normals)[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
+
+        }
+
+        // normalize the normal list to unit length normals.
+        for (i=0; i<noVertex; ++i)
+        {
+            (*osg_normals)[i].normalize();
+        }
+
+        geom->setNormalArray(osg_normals);
+        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
     }
     else 
     {
-        osg_normals = new osg::Vec3Array(faceList.size());
-        normal_itr = osg_normals->begin();
+        osg::Vec3Array* osg_normals = new osg::Vec3Array(faceList.size());
+        osg::Vec3Array::iterator normal_itr = osg_normals->begin();
+        for (fitr=faceList.begin();
+            fitr!=faceList.end();
+            ++fitr)
+        {
+            Lib3dsFace& face = m->faceL[*fitr];
+            *(normal_itr++) =  osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);
+        }
+        geom->setNormalArray(osg_normals);
+        geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
     
-
+    
+    // create primitives
     int numIndices = faceList.size()*3;
     UShortDrawElements* elements = new osg::UShortDrawElements(osg::Primitive::TRIANGLES,numIndices);
     UShortDrawElements::iterator index_itr = elements->begin();
@@ -567,48 +601,9 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
         *(index_itr++) = orig2NewMapping[face.points[0]];
         *(index_itr++) = orig2NewMapping[face.points[1]];
         *(index_itr++) = orig2NewMapping[face.points[2]];
-
-        if (_usePerVertexNormals)
-        {
-            (*osg_normals)[orig2NewMapping[face.points[0]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-            (*osg_normals)[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-            (*osg_normals)[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
-        }
-        else
-        {
-            *(normal_itr++) =  osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);
-        }
-        
     }
-    
+   
     geom->addPrimitive(elements);
-
-    geom->setVertexArray(osg_coords);
-    
-    if (osg_tcoords)
-    {
-        geom->setTexCoordArray(0,osg_tcoords);
-    }
-
-    if (_usePerVertexNormals)
-    {
-        // normalize the normal list to unit length normals.
-        for (i=0; i<noVertex; ++i)
-        {
-            (*osg_normals)[i].normalize();
-        }
-
-        geom->setNormalArray(osg_normals);
-        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-
-    }
-    else
-    {
-        geom->setNormalArray(osg_normals);
-        geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-    }
-
-
 
     return geom;
 }

@@ -198,6 +198,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
 
     osg::Geode* geode = new osg::Geode;
     
+    osgUtil::Tesselator tesselator;
+    
     // add everthing into the Geode.    
     osgUtil::SmoothingVisitor smoother;
     for(itr=mtgcm.begin();
@@ -207,7 +209,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
         GeometryCollection& gc = itr->second;
         if (gc._geom)
         {
+            
+            tesselator.retesselatePolygons(*gc._geom);
+        
             smoother.smooth(*gc._geom);
+            
             geode->addDrawable(gc._geom);
         }
 

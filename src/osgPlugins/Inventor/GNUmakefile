@@ -14,8 +14,8 @@ else
     INVENTOR_LIB = -lInventor
 endif
 
-INC += -I$(THISDIR)
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS) $(INVENTOR_LIB)
+INC += -I$(THISDIR) $(INVENTOR_INCLUDE)
+LIBS  += $(OSG_LIBS) $(OTHER_LIBS) $(INVENTOR_LIB_DIR) $(INVENTOR_LIB)
 TARGET_BASENAME = iv
 
 include $(TOPDIR)/Make/cygwin_plugin_def

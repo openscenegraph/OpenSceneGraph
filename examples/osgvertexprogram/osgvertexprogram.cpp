@@ -415,7 +415,7 @@ int main(int argc, char *argv[])
         {
             if (!vpExt->isVertexProgramSupported())
             {
-                cout<<"Warning: ARB_vertex_program not supported by OpenGL drivers, unable to run application."<<std::endl;
+                std::cout<<"Warning: ARB_vertex_program not supported by OpenGL drivers, unable to run application."<<std::endl;
                 return 1;
             }
         }

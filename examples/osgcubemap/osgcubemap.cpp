@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         {
             if (!tcmExt->isCubeMapSupported())
             {
-                cout<<"Warning: texture_cube_map not supported by OpenGL drivers, unable to run application."<<std::endl;
+                std::cout<<"Warning: texture_cube_map not supported by OpenGL drivers, unable to run application."<<std::endl;
                 return 1;
             }
         }

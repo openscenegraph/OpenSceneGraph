@@ -611,6 +611,17 @@ void OsgCameraGroup::frame()
     osg::Node* node = getTopMostSceneData();
     if (node) node->getBound();
 
-    CameraGroup::frame();
+
+    // pass on the cull settings to the scene views to keep
+    // the settings in sync.
+    for(SceneHandlerList::iterator itr = _shvec.begin();
+        itr != _shvec.end();
+        ++itr)
+    {
+        (*itr)->getSceneView()->setCullSettings(_cullSettings);
+    }
+ 
+ 
+     CameraGroup::frame();
 }
 

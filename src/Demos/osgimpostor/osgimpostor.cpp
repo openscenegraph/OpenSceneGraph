@@ -158,7 +158,8 @@ void LayoutAsGrid()
 
 	// setup grid information
 	osg::Group ** groups = new osg::Group*[GridX * GridY];
-	for (int i = 0; i < GridX * GridY; i++)
+        int i;
+	for (i = 0; i < GridX * GridY; i++)
 		groups[i] = new osg::Group();
 
 	float xGridStart = bbox.xMin();
@@ -180,7 +181,7 @@ void LayoutAsGrid()
 	}
  
 	// add nodes to building root    
-	for (int i = 0; i < GridX * GridY; i++)
+	for (i = 0; i < GridX * GridY; i++)
 	{
 		osg::StateSet * stateset = new osg::StateSet();
 

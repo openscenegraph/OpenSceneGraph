@@ -69,7 +69,8 @@
 
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \
     defined (sun) || \
-    defined (__hpux__)
+    defined (__hpux__) || \
+    defined (__DARWIN_OSX__)
 
     #ifndef floorf
     #define floorf (float)floor
@@ -123,13 +124,14 @@ inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
     inline bool isNaN(float v) { return _isnan(v)!=0; }
     inline bool isNaN(double v) { return _isnan(v)!=0; }
 #else
-    # if defined(__DARWIN_OSX__)
-    inline bool isNaN(float v) { return __isnanf(v); }
-    inline bool isNaN(double v) { return __isnand(v); }
-    #else
+// coment out this special handling for OSX, no longer seems valid.
+//    # if defined(__DARWIN_OSX__)
+//    inline bool isNaN(float v) { return __isnanf(v); }
+//    inline bool isNaN(double v) { return __isnand(v); }
+//    #else
     inline bool isNaN(float v) { return isnan(v); }
     inline bool isNaN(double v) { return isnan(v); }
-    #endif
+//    #endif
 #endif
 
 

@@ -1,4 +1,5 @@
 #include <osg/Geometry>
+#include <osg/Notify>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -63,50 +64,65 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
     }
 
-    if (fr.matchSequence("VertexArray %i {"))
+    if (fr[0].matchWord("VertexArray"))
     {
-    
-        int entry = fr[0].getNoNestedBrackets();
-
-        int capacity;
-        fr[1].getInt(capacity);
-        
-        Vec3Array* vertices = new Vec3Array;
-        vertices->reserve(capacity);
-
-        fr += 3;
-
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        if (fr.matchSequence("VertexArray %i {"))
         {
-            Vec3 v;
-            if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()))
+
+            int entry = fr[0].getNoNestedBrackets();
+
+            int capacity;
+            fr[1].getInt(capacity);
+
+            Vec3Array* vertices = new Vec3Array;
+            vertices->reserve(capacity);
+
+            fr += 3;
+
+            while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
-                fr += 3;
-                vertices->push_back(v);
+                Vec3 v;
+                if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()))
+                {
+                    fr += 3;
+                    vertices->push_back(v);
+                }
+                else
+                {
+                    ++fr;
+                }
             }
-            else
-            {
-                ++fr;
-            }
+
+            geom.setVertexArray(vertices);
+
+            iteratorAdvanced = true;
+            ++fr;
+
         }
-        
-        geom.setVertexArray(vertices);
-        
-        iteratorAdvanced = true;
-        ++fr;
-
-    
+        else
+        {
+            // post 0.9.3 releases.
+            ++fr;
+            Vec3Array* vertices = dynamic_cast<Vec3Array*>(Array_readLocalData(fr));
+            if (vertices)
+            {
+                geom.setVertexArray(vertices);
+            }
+            iteratorAdvanced = true;
+        }
     }
-
-    if (fr.matchSequence("VertexIndices %w %i {"))
+    
+    if (fr[0].matchWord("VertexIndices"))
     {
         ++fr;
+
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
             geom.setVertexIndices(indices);
-            iteratorAdvanced = true;
         }
+
+        iteratorAdvanced = true;
     }
 
 
@@ -118,46 +134,61 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("NormalArray %i {"))
+    if (fr[0].matchWord("NormalArray"))
     {
-        int entry = fr[0].getNoNestedBrackets();
-
-        int capacity;
-        fr[1].getInt(capacity);
-        
-        Vec3Array* normals = new Vec3Array;
-        normals->reserve(capacity);
-
-        fr += 3;
-
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        if (fr.matchSequence("NormalArray %i {"))
         {
-            Vec3 v;
-            if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()))
+            // pre 0.9.3 releases..
+            int entry = fr[0].getNoNestedBrackets();
+
+            int capacity;
+            fr[1].getInt(capacity);
+
+            Vec3Array* normals = new Vec3Array;
+            normals->reserve(capacity);
+
+            fr += 3;
+
+            while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
-                fr += 3;
-                normals->push_back(v);
+                Vec3 v;
+                if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()))
+                {
+                    fr += 3;
+                    normals->push_back(v);
+                }
+                else
+                {
+                    ++fr;
+                }
             }
-            else
-            {
-                ++fr;
-            }
+
+            geom.setNormalArray(normals);
+
+            iteratorAdvanced = true;
+            ++fr;
         }
-        
-        geom.setNormalArray(normals);
-        
-        iteratorAdvanced = true;
-        ++fr;
+        else
+        {
+            // post 0.9.3 releases.
+            ++fr;
+            Vec3Array* normals = dynamic_cast<Vec3Array*>(Array_readLocalData(fr));
+            if (normals)
+            {
+                geom.setNormalArray(normals);
+            }
+            iteratorAdvanced = true;
+        }
     }
-    if (fr.matchSequence("NormalIndices %w %i {"))
+    if (fr[0].matchWord("NormalIndices"))
     {
         ++fr;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
             geom.setNormalIndices(indices);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
     Geometry::AttributeBinding colorBinding=Geometry::BIND_OFF;
@@ -168,26 +199,26 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("ColorArray %w %i {"))
+    if (fr[0].matchWord("ColorArray"))
     {
         ++fr;
         Array* colors = Array_readLocalData(fr);
         if (colors)
         {
             geom.setColorArray(colors);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("ColorIndices %w %i {"))
+    if (fr[0].matchWord("ColorIndices"))
     {
         ++fr;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
             geom.setColorIndices(indices);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
 
@@ -199,26 +230,26 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("SecondaryColorArray %w %i {"))
+    if (fr[0].matchWord("SecondaryColorArray"))
     {
         ++fr;
         Array* colors = Array_readLocalData(fr);
         if (colors)
         {
             geom.setSecondaryColorArray(colors);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("SecondaryColorIndices %w %i {"))
+    if (fr[0].matchWord("SecondaryColorIndices"))
     {
         ++fr;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
             geom.setSecondaryColorIndices(indices);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
 
@@ -230,30 +261,30 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("FogCoordArray %w %i {"))
+    if (fr[0].matchWord("FogCoordArray"))
     {
         ++fr;
         Array* fogcoords = Array_readLocalData(fr);
         if (fogcoords)
         {
             geom.setFogCoordArray(fogcoords);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("FogCoordIndices %w %i {"))
+    if (fr[0].matchWord("FogCoordIndices"))
     {
         ++fr;
         IndexArray* indices = dynamic_cast<IndexArray*>(Array_readLocalData(fr));
         if (indices)
         {
             geom.setFogCoordIndices(indices);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
 
-    if (fr.matchSequence("TexCoordArray %i %w %i {"))
+    if (fr.matchSequence("TexCoordArray %i"))
     {
         int unit=0;
         fr[1].getInt(unit);
@@ -263,12 +294,12 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (texcoords)
         {
             geom.setTexCoordArray(unit,texcoords);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
         
     }
 
-    if (fr.matchSequence("TexCoordIndices %i %w %i {"))
+    if (fr.matchSequence("TexCoordIndices %i"))
     {
         int unit=0;
         fr[1].getInt(unit);
@@ -278,8 +309,8 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         if (indices)
         {
             geom.setTexCoordIndices(unit,indices);
-            iteratorAdvanced = true;
         }
+        iteratorAdvanced = true;
     }
 
     return iteratorAdvanced;
@@ -288,6 +319,30 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
 Array* Array_readLocalData(Input& fr)
 {
+    if (fr[0].matchWord("Use"))
+    {
+        if (fr[1].isString())
+        {
+            Object* obj = fr.getObjectForUniqueID(fr[1].getStr());
+            if (obj)
+            {
+                fr+=2;
+                return dynamic_cast<Array*>(obj);
+            }
+        }
+
+        osg::notify(osg::WARN)<<"Warning: invalid uniqueID found in file."<<std::endl;
+        return NULL;
+    }
+
+    std::string uniqueID;
+    if (fr[0].matchWord("UniqueID") && fr[1].isString())
+    {
+        uniqueID = fr[1].getStr();
+        fr += 2;
+    }
+
+
     int entry = fr[0].getNoNestedBrackets();
 
     const char* arrayName = fr[0].getStr();
@@ -297,6 +352,9 @@ Array* Array_readLocalData(Input& fr)
     ++fr;
 
     fr += 2;
+
+
+    Array* return_array = 0;
 
     if (strcmp(arrayName,"ByteArray")==0)
     {
@@ -313,7 +371,8 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+
+        return_array = array;
     }
     else if (strcmp(arrayName,"ShortArray")==0)
     {
@@ -330,7 +389,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"IntArray")==0)
     {
@@ -347,7 +406,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"UByteArray")==0)
     {
@@ -364,7 +423,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"UShortArray")==0)
     {
@@ -381,7 +440,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"UIntArray")==0)
     {
@@ -398,7 +457,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"UByte4Array")==0)
     {
@@ -418,7 +477,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"FloatArray")==0)
     {
@@ -435,7 +494,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"Vec2Array")==0)
     {
@@ -452,7 +511,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"Vec3Array")==0)
     {
@@ -469,7 +528,7 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     else if (strcmp(arrayName,"Vec4Array")==0)
     {
@@ -486,10 +545,15 @@ Array* Array_readLocalData(Input& fr)
             else ++fr;
         }
         ++fr;
-        return array;
+        return_array = array;
     }
     
-    return 0;
+    if (return_array) 
+    {
+        if (!uniqueID.empty()) fr.regisiterUniqueIDForObject(uniqueID.c_str(),return_array);
+    }
+    
+    return return_array;
 }
 
 
@@ -563,6 +627,24 @@ void Array_writeLocalDataAsInts(Output& fw, Iterator first, Iterator last,int no
 
 bool Array_writeLocalData(const Array& array,Output& fw)
 {
+    if (array.referenceCount()>1)
+    {
+        std::string uniqueID;
+        if (fw.getUniqueIDForObject(&array,uniqueID))
+        {
+            fw << "Use " << uniqueID << std::endl;
+            return true;
+        }
+        else
+        {
+            std::string uniqueID;
+            fw.createUniqueIDForObject(&array,uniqueID);
+            fw.registerUniqueIDForObject(&array,uniqueID);
+            fw << "UniqueID " << uniqueID << " ";
+        }
+    }
+
+
     switch(array.getType())
     {
         case(Array::ByteArrayType):
@@ -886,10 +968,12 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
 
     if (geom.getVertexArray())
     {
-        const Vec3Array& vertices = *geom.getVertexArray();
-        fw.indent()<<"VertexArray "<<vertices.size()<<std::endl;
-        
-        Array_writeLocalData(fw,vertices.begin(),vertices.end(),1);
+//         const Vec3Array& vertices = *geom.getVertexArray();
+//         fw.indent()<<"VertexArray "<<vertices.size()<<std::endl;
+//         Array_writeLocalData(fw,vertices.begin(),vertices.end(),1);
+
+        fw.indent()<<"VertexArray ";
+        Array_writeLocalData(*geom.getVertexArray(),fw);
         
     }
     if (geom.getVertexIndices())
@@ -903,10 +987,12 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         
         fw.indent()<<"NormalBinding "<<Geometry_getBindingTypeStr(geom.getNormalBinding())<<std::endl;
         
-        const Vec3Array& normals = *geom.getNormalArray();
-        fw.indent()<<"NormalArray "<<normals.size()<<std::endl;
-        
-        Array_writeLocalData(fw,normals.begin(),normals.end(),1);
+//        const Vec3Array& normals = *geom.getNormalArray();
+//        fw.indent()<<"NormalArray "<<normals.size()<<std::endl;
+//        Array_writeLocalData(fw,normals.begin(),normals.end(),1);
+
+        fw.indent()<<"NormalArray ";
+        Array_writeLocalData(*geom.getNormalArray(),fw);        
         
     }
     if (geom.getNormalIndices())

@@ -1,5 +1,5 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- * Copyright (C) 2003 3Dlabs Inc. Ltd.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+ * Copyright (C) 2003-2004 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osgGL2/Extensions.cpp
- * author:	Mike Weiblen 2003-09-12
+ * author:	Mike Weiblen 2004-07-08
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -38,6 +38,8 @@ Extensions::Extensions(const Extensions& rhs) : osg::Referenced()
     _isShaderObjectsSupported = rhs._isShaderObjectsSupported;
     _isVertexShaderSupported = rhs._isVertexShaderSupported;
     _isFragmentShaderSupported = rhs._isFragmentShaderSupported;
+    _isLanguage100Supported = rhs._isLanguage100Supported;
+    _languageVersion = rhs._languageVersion;
 
     _glCreateShaderObject = rhs._glCreateShaderObject;
     _glCreateProgramObject = rhs._glCreateProgramObject;
@@ -88,6 +90,8 @@ void Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isShaderObjectsSupported) _isShaderObjectsSupported = false;
     if (!rhs._isVertexShaderSupported) _isVertexShaderSupported = false;
     if (!rhs._isFragmentShaderSupported) _isFragmentShaderSupported = false;
+    if (!rhs._isLanguage100Supported) _isLanguage100Supported = false;
+    if (rhs._languageVersion < _languageVersion) _languageVersion = rhs._languageVersion;
 
     if (!rhs._glCreateShaderObject) _glCreateShaderObject = 0;
     if (!rhs._glCreateProgramObject) _glCreateProgramObject = 0;
@@ -137,6 +141,26 @@ void Extensions::setupGLExtensions()
     _isShaderObjectsSupported = osg::isGLExtensionSupported("GL_ARB_shader_objects");
     _isVertexShaderSupported = osg::isGLExtensionSupported("GL_ARB_vertex_shader");
     _isFragmentShaderSupported = osg::isGLExtensionSupported("GL_ARB_fragment_shader");
+    _isLanguage100Supported = osg::isGLExtensionSupported("GL_ARB_shading_language_100");
+    _languageVersion = 0.0f;
+
+    if( _isLanguage100Supported )
+    {
+	// If glGetString raises an error, assume initial release "1.00"
+	glGetError();	// reset error flag
+	const char* langVerStr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION_ARB);
+	const GLenum errorNum = glGetError();
+	if( (errorNum != GL_NO_ERROR) || (langVerStr == 0) )
+	{
+	    langVerStr = "1.00 (default)";
+	}
+        osg::notify(osg::INFO) << "GL_SHADING_LANGUAGE_VERSION_ARB: \"" << langVerStr << "\"" << std::endl;
+
+	// TODO verify this parser is sufficiently robust
+	_languageVersion = atof( langVerStr );
+    }
+
+    osg::notify(osg::INFO) << "GLSL language version = " << _languageVersion << std::endl;
 
     _glCreateShaderObject = osg::getGLExtensionFuncPtr("glCreateShaderObjectARB");
     _glCreateProgramObject = osg::getGLExtensionFuncPtr("glCreateProgramObjectARB");
@@ -212,7 +236,7 @@ GLhandleARB Extensions::glCreateShaderObject(GLenum shaderType) const
     else
     {
 	osg::notify(osg::WARN)<<"Error: glCreateShaderObject not supported by OpenGL driver"<<std::endl;
-	return -1;	//TODO
+	return 0;
     }
 }
 
@@ -226,7 +250,7 @@ GLhandleARB Extensions::glCreateProgramObject() const
     else
     {
 	osg::notify(osg::WARN)<<"Error: glCreateProgramObject not supported by OpenGL driver"<<std::endl;
-	return -1;	//TODO
+	return 0;
     }
 }
 
@@ -630,7 +654,7 @@ GLint Extensions::glGetUniformLocation(GLhandleARB programObject, const GLcharAR
     else
     {
 	osg::notify(osg::WARN)<<"Error: glGetUniformLocation not supported by OpenGL driver"<<std::endl;
-	return -1;	//TODO
+	return -1;
     }
 }
 
@@ -644,7 +668,7 @@ GLint Extensions::glGetAttribLocation(GLhandleARB programObj, const GLcharARB *n
     else
     {
 	osg::notify(osg::WARN)<<"Error: glGetAttribLocation not supported by OpenGL driver"<<std::endl;
-	return -1;	//TODO
+	return -1;
     }
 }
 
@@ -736,7 +760,7 @@ GLhandleARB Extensions::glGetHandle(GLenum pname) const
     else
     {
 	osg::notify(osg::WARN)<<"Error: glGetHandle not supported by OpenGL driver"<<std::endl;
-	return -1;	//TODO
+	return 0;
     }
 }
 

@@ -1,5 +1,5 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- * Copyright (C) 2003 3Dlabs Inc. Ltd.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+ * Copyright (C) 2003-2004 3Dlabs Inc. Ltd.
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -10,11 +10,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-/* file:	include/osgGL2/Extensions
- * author:	Mike Weiblen 2003-09-12
+/* file:             include/osgGL2/Extensions
+ * author:           Mike Weiblen          2004-07-06
+ * modifications:    Bob Kuehne            2004-06-03
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
+ * See also:
+ *  http://oss.sgi.com/projects/ogl-sample/registry/ARB/fragment_shader.txt
+ *  http://oss.sgi.com/projects/ogl-sample/registry/ARB/vertex_shader.txt
+ *  http://oss.sgi.com/projects/ogl-sample/registry/ARB/shader_objects.txt
+ *  http://oss.sgi.com/projects/ogl-sample/registry/ARB/shading_language_100.txt
 */
 
 #ifndef OSGGL2_EXTENSIONS
@@ -24,72 +30,95 @@
 #include <osg/GL>
 #include <osgGL2/Export>
 
-// If not defined by gl.h use the definitions found in the
-// arb_shader_objects, arb_vertex_shader, and arb_fragment_shader
-// specificiations.
+///////////////////////////////////////////////////////////////////////////
+// If not defined by the OpenGL headers, use #defines from the glext.h
+// header available from  http://oss.sgi.com/projects/ogl-sample/registry/
 
-#if !defined(GL_ARB_vertex_shader) && !defined(GL_ARB_fragment_shader) && !defined(GL_ARB_shader_objects) //(
+// These enums were copied verbatim from:
+// glext.h, updated 2004/6/22, GL_GLEXT_VERSION 23
 
-typedef int GLhandleARB;
-typedef char GLcharARB;
+#ifndef GL_ARB_vertex_program
+#define GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB 0x8622
+#define GL_VERTEX_ATTRIB_ARRAY_SIZE_ARB   0x8623
+#define GL_VERTEX_ATTRIB_ARRAY_STRIDE_ARB 0x8624
+#define GL_VERTEX_ATTRIB_ARRAY_TYPE_ARB   0x8625
+#define GL_CURRENT_VERTEX_ATTRIB_ARB      0x8626
+#define GL_VERTEX_PROGRAM_POINT_SIZE_ARB  0x8642
+#define GL_VERTEX_PROGRAM_TWO_SIDE_ARB    0x8643
+#define GL_VERTEX_ATTRIB_ARRAY_POINTER_ARB 0x8645
+#define GL_MAX_VERTEX_ATTRIBS_ARB         0x8869
+#define GL_VERTEX_ATTRIB_ARRAY_NORMALIZED_ARB 0x886A
+#endif
 
-#define GL_PROGRAM_OBJECT_ARB			0x8B40
-#define GL_OBJECT_TYPE_ARB			0x8B4E
-#define GL_OBJECT_SUBTYPE_ARB			0x8B4F
+#ifndef GL_ARB_fragment_program
+#define GL_MAX_TEXTURE_COORDS_ARB         0x8871
+#define GL_MAX_TEXTURE_IMAGE_UNITS_ARB    0x8872
+#endif
 
-#define GL_SHADER_OBJECT_ARB			0x8B48
-#define GL_FLOAT_VEC2_ARB			0x8B50
-#define GL_FLOAT_VEC3_ARB			0x8B51
-#define GL_FLOAT_VEC4_ARB			0x8B52
-#define GL_INT_VEC2_ARB				0x8B53
-#define GL_INT_VEC3_ARB				0x8B54
-#define GL_INT_VEC4_ARB				0x8B55
-#define GL_BOOL_ARB				0x8B56
-#define GL_BOOL_VEC2_ARB			0x8B57
-#define GL_BOOL_VEC3_ARB			0x8B58
-#define GL_BOOL_VEC4_ARB			0x8B59
-#define GL_FLOAT_MAT2_ARB			0x8B5A
-#define GL_FLOAT_MAT3_ARB			0x8B5B
-#define GL_FLOAT_MAT4_ARB			0x8B5C
+#ifndef GL_ARB_shader_objects
+#define GL_PROGRAM_OBJECT_ARB             0x8B40
+#define GL_SHADER_OBJECT_ARB              0x8B48
+#define GL_OBJECT_TYPE_ARB                0x8B4E
+#define GL_OBJECT_SUBTYPE_ARB             0x8B4F
+#define GL_FLOAT_VEC2_ARB                 0x8B50
+#define GL_FLOAT_VEC3_ARB                 0x8B51
+#define GL_FLOAT_VEC4_ARB                 0x8B52
+#define GL_INT_VEC2_ARB                   0x8B53
+#define GL_INT_VEC3_ARB                   0x8B54
+#define GL_INT_VEC4_ARB                   0x8B55
+#define GL_BOOL_ARB                       0x8B56
+#define GL_BOOL_VEC2_ARB                  0x8B57
+#define GL_BOOL_VEC3_ARB                  0x8B58
+#define GL_BOOL_VEC4_ARB                  0x8B59
+#define GL_FLOAT_MAT2_ARB                 0x8B5A
+#define GL_FLOAT_MAT3_ARB                 0x8B5B
+#define GL_FLOAT_MAT4_ARB                 0x8B5C
+#define GL_SAMPLER_1D_ARB                 0x8B5D
+#define GL_SAMPLER_2D_ARB                 0x8B5E
+#define GL_SAMPLER_3D_ARB                 0x8B5F
+#define GL_SAMPLER_CUBE_ARB               0x8B60
+#define GL_SAMPLER_1D_SHADOW_ARB          0x8B61
+#define GL_SAMPLER_2D_SHADOW_ARB          0x8B62
+#define GL_SAMPLER_2D_RECT_ARB            0x8B63
+#define GL_SAMPLER_2D_RECT_SHADOW_ARB     0x8B64
+#define GL_OBJECT_DELETE_STATUS_ARB       0x8B80
+#define GL_OBJECT_COMPILE_STATUS_ARB      0x8B81
+#define GL_OBJECT_LINK_STATUS_ARB         0x8B82
+#define GL_OBJECT_VALIDATE_STATUS_ARB     0x8B83
+#define GL_OBJECT_INFO_LOG_LENGTH_ARB     0x8B84
+#define GL_OBJECT_ATTACHED_OBJECTS_ARB    0x8B85
+#define GL_OBJECT_ACTIVE_UNIFORMS_ARB     0x8B86
+#define GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB 0x8B87
+#define GL_OBJECT_SHADER_SOURCE_LENGTH_ARB 0x8B88
+#endif
 
-#define GL_VERTEX_SHADER_ARB			0x8B31
-#define GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB	0x8B4A
-#define GL_MAX_VERTEX_ATTRIBS_ARB		0x8869
-#define GL_MAX_TEXTURE_IMAGE_UNITS_ARB		0x8872
-#define GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB	0x8B4C
-#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB	0x8B4D
-#define GL_MAX_TEXTURE_COORDS_ARB		0x8871
-
-#define GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB	0x8622
-#define GL_VERTEX_ATTRIB_ARRAY_SIZE_ARB		0x8623
-#define GL_VERTEX_ATTRIB_ARRAY_STRIDE_ARB	0x8624
-#define GL_VERTEX_ATTRIB_ARRAY_TYPE_ARB		0x8625
-#define GL_VERTEX_ATTRIB_ARRAY_NORMALIZED_ARB	0x886A
-#define GL_CURRENT_VERTEX_ATTRIB_ARB		0x8626
-#define GL_VERTEX_ATTRIB_ARRAY_POINTER_ARB	0x8645
-
-#define GL_FRAGMENT_SHADER_ARB			0x8B30
-#define GL_MAX_FRAGMENT_UNIFORM_COMPONENTS_ARB	0x8B49
-
-#define GL_MAX_VARYING_FLOATS_ARB		0x8B4B
-
-#define GL_VERTEX_PROGRAM_POINT_SIZE_ARB	0x8642
-#define GL_VERTEX_PROGRAM_TWO_SIDE_ARB		0x8643
-
-#define GL_OBJECT_DELETE_STATUS_ARB		0x8B80
-#define GL_OBJECT_COMPILE_STATUS_ARB		0x8B81
-#define GL_OBJECT_LINK_STATUS_ARB		0x8B82
-#define GL_OBJECT_VALIDATE_STATUS_ARB		0x8B83
-#define GL_OBJECT_INFO_LOG_LENGTH_ARB		0x8B84
-#define GL_OBJECT_ATTACHED_OBJECTS_ARB		0x8B85
-#define GL_OBJECT_ACTIVE_UNIFORMS_ARB		0x8B86
-#define GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB	0x8B87
-#define GL_OBJECT_SHADER_SOURCE_LENGTH_ARB	0x8B88
+#ifndef GL_ARB_vertex_shader
+#define GL_VERTEX_SHADER_ARB              0x8B31
+#define GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB 0x8B4A
+#define GL_MAX_VARYING_FLOATS_ARB         0x8B4B
+#define GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB 0x8B4C
+#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB 0x8B4D
+#define GL_OBJECT_ACTIVE_ATTRIBUTES_ARB   0x8B89
 #define GL_OBJECT_ACTIVE_ATTRIBUTE_MAX_LENGTH_ARB 0x8B8A
-#define GL_OBJECT_ACTIVE_ATTRIBUTES_ARB		0x8B89
+#endif
 
-#endif //)
+#ifndef GL_ARB_fragment_shader
+#define GL_FRAGMENT_SHADER_ARB            0x8B30
+#define GL_MAX_FRAGMENT_UNIFORM_COMPONENTS_ARB 0x8B49
+#define GL_FRAGMENT_SHADER_DERIVATIVE_HINT_ARB 0x8B8B
+#endif
 
+#ifndef GL_ARB_shading_language_100
+#define GL_SHADING_LANGUAGE_VERSION_ARB   0x8B8C
+#endif
+
+#ifndef GL_ARB_shader_objects
+/* GL types for handling shader object handles and characters */
+typedef char GLcharARB;		/* native character */
+typedef unsigned int GLhandleARB;	/* shader object handle */
+#endif
+
+///////////////////////////////////////////////////////////////////////////
 
 namespace osgGL2 {
 
@@ -107,6 +136,12 @@ class OSGGL2_EXPORT Extensions : public osg::Referenced
 	
 	void setupGLExtensions();
 
+	/** are all the extensions required for GLSL supported? */
+	bool isGlslSupported() const { return ( _isShaderObjectsSupported &&
+	                                        _isVertexShaderSupported && 
+	                                        _isFragmentShaderSupported && 
+	                                        _isLanguage100Supported ); }
+
 	void setShaderObjectsSupported(bool flag) { _isShaderObjectsSupported = flag; }
 	bool isShaderObjectsSupported() const { return _isShaderObjectsSupported; }
 
@@ -115,6 +150,11 @@ class OSGGL2_EXPORT Extensions : public osg::Referenced
 
 	void setFragmentShaderSupported(bool flag) { _isFragmentShaderSupported = flag; }
 	bool isFragmentShaderSupported() const { return _isFragmentShaderSupported; }
+
+	void setLanguage100Supported(bool flag) { _isLanguage100Supported = flag; }
+	bool isLanguage100Supported() const { return _isLanguage100Supported; }
+
+	float getLanguageVersion() const { return _languageVersion; }
 
 	/** Function to call to get the extension of a specified context.
 	  * If the Exentsion object for that context has not yet been created then 
@@ -180,6 +220,8 @@ class OSGGL2_EXPORT Extensions : public osg::Referenced
 	bool _isShaderObjectsSupported;
 	bool _isVertexShaderSupported;
 	bool _isFragmentShaderSupported;
+	bool _isLanguage100Supported;
+	float _languageVersion;
 	
 	void* _glCreateShaderObject;
 	void* _glCreateProgramObject;

@@ -90,6 +90,7 @@ class Sphere;
 class Box;
 class Cone;
 class Cylinder;
+class Capsule;
 class InfinitePlane;
 
 class TriangleMesh;
@@ -108,6 +109,7 @@ class ShapeVisitor
     	virtual void apply(Box&) {}
     	virtual void apply(Cone&) {}
     	virtual void apply(Cylinder&) {}
+    	virtual void apply(Capsule&) {}
     	virtual void apply(InfinitePlane&) {}
 
     	virtual void apply(TriangleMesh&) {}
@@ -127,6 +129,7 @@ class ConstShapeVisitor
     	virtual void apply(const Box&) {}
     	virtual void apply(const Cone&) {}
     	virtual void apply(const Cylinder&) {}
+    	virtual void apply(const Capsule&) {}
     	virtual void apply(const InfinitePlane&) {}
 
     	virtual void apply(const TriangleMesh&) {}
@@ -342,6 +345,63 @@ class Cylinder : public Shape
     protected:
     
     	virtual ~Cylinder() {}
+    
+    	Vec3    _center;
+	float 	_radius;
+	float	_height;
+	
+    	Quat	_rotation;	
+};
+
+class Capsule : public Shape
+{
+    public:
+    	
+        Capsule():
+	    _center(0.0f,0.0f,0.0f),
+	    _radius(1.0f),
+	    _height(1.0f) {}
+	
+        Capsule(const osg::Vec3& center,float radius,float height):
+	    _center(center),
+	    _radius(radius),
+	    _height(height) {}
+
+        Capsule(const Capsule& capsule,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
+            Shape(capsule,copyop),
+	    _center(capsule._center),
+	    _radius(capsule._radius),
+	    _height(capsule._height),
+	    _rotation(capsule._rotation) {}
+        
+    	META_Shape(osg, Capsule);
+	
+	inline bool valid() const { return _radius>=0.0f; }
+	
+	inline void set(const Vec3& center,float radius, float height)
+	{
+	    _center = center;
+	    _radius = radius;
+	    _height = height;
+	}
+
+	inline void setCenter(const Vec3& center) { _center = center; }
+	inline const Vec3& getCenter() const { return _center; }
+	
+	inline void setRadius(float radius) { _radius = radius; }
+	inline float getRadius() const { return _radius; }
+
+	inline void setHeight(float height) { _height = height; }
+	inline float getHeight() const { return _height; }
+
+    	inline void setRotation(const Quat& quat) { _rotation = quat; }
+    	inline const Quat& getRotation() const { return _rotation; }
+    	inline Matrix getRotationMatrix() const { return Matrix(_rotation); }
+    	bool zeroRotation() const { return _rotation.zeroRotation(); } 
+
+    protected:
+    
+    	virtual ~Capsule() {}
     
     	Vec3    _center;
 	float 	_radius;

@@ -90,6 +90,8 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         /** Return node if attached.*/
         virtual osg::Node* getNode();
 
+        virtual void computeHomePosition();
+
         /** Move the camera to the default position. 
             May be ignored by manipulators if home functionality is not appropriate.*/
         virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);

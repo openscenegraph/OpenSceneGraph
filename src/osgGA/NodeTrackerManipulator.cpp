@@ -249,6 +249,9 @@ void NodeTrackerManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
+    osg::Vec3d eye,center,up;
+    matrix.getLookAt(eye,center,up,_distance);
+    computePosition(eye,center,up);
 }
 
 void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const

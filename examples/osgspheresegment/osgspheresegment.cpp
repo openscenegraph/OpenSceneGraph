@@ -220,9 +220,9 @@ void build_world(osg::Group *root)
         osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
         osgParticle::FireEffect* fire = new osgParticle::FireEffect;
 
-        osg::Geode* geode = new osg::Geode;
-        geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),10.0f)));
-        positionEffects->addChild(geode);
+        //osg::Geode* geode = new osg::Geode;
+        //geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),10.0f)));
+        //positionEffects->addChild(geode);
 
         positionEffects->addChild(explosion);
         positionEffects->addChild(smoke);

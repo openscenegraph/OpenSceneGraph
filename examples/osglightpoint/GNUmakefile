@@ -12,7 +12,7 @@ INSTFILES = \
 
 EXEC = osglightpoint
 
-INC +=  -I/usr/X11R6/includ
+INC +=  $(X_INC)
 
 include $(TOPDIR)/Make/makerules 
 

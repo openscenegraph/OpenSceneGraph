@@ -159,6 +159,7 @@ sMStats    m_getMemoryStatistics()
     static        bool        alwaysValidateAll      = true;
     static        bool        alwaysLogAll           = true;
     static        bool        alwaysWipeAll          = true;
+    static        bool        checkForUnitialized    = true;
     static        bool        cleanupLogOnFirstRun   = true;
     static    const    unsigned int    paddingSize            = 1024; // An extra 8K per allocation!
     #else
@@ -167,6 +168,7 @@ sMStats    m_getMemoryStatistics()
     static        bool        alwaysValidateAll      = false;
     static        bool        alwaysLogAll           = false;
     static        bool        alwaysWipeAll          = true;
+    static        bool        checkForUnitialized    = false;
     static        bool        cleanupLogOnFirstRun   = true;
     static    const    unsigned int    paddingSize            = 4;
     #endif
@@ -242,7 +244,10 @@ sMStats    m_getMemoryStatistics()
                 char *ptr;
                 if( (ptr = getenv("OSG_MM_STRESS_TEST")) != 0)
                 {
-                    activateStressTest();
+                    if (strcmp(ptr,"OFF")!=0)
+                    {
+                        activateStressTest();
+                    }
                 }
 
                 if( (ptr = getenv("OSG_MM_BREAK_ON_ALLOCATION")) != 0)
@@ -254,6 +259,13 @@ sMStats    m_getMemoryStatistics()
                     }
                 }
 
+                if( (ptr = getenv("OSG_MM_CHECK_FOR_UNINITIALIZED")) != 0)
+                {
+                    if (strcmp(ptr,"OFF")!=0)
+                    {
+                        checkForUnitialized=true;
+                    }
+                }
 
 
             }
@@ -450,6 +462,42 @@ sMStats    m_getMemoryStatistics()
             *pre = prefixPattern;
             *post = postfixPattern;
         }
+    }
+
+    static bool checkPattern(sAllocUnit *allocUnit, unsigned long pattern=unusedPattern)
+    {
+        int numMatching=0;
+        int numNotMatching=0;
+
+
+        long    *lptr = (long *) ((char *)allocUnit->reportedAddress);
+        int    length = allocUnit->reportedSize;
+        int    i;
+        for (i = 0; i < (length >> 2); i++, lptr++)
+        {
+            if (*lptr == pattern) numMatching+=4;
+            else numNotMatching+=4;
+        }
+
+        // Fill the remainder
+
+        unsigned int    shiftCount = 0;
+        char        *cptr = (char *) lptr;
+        for (i = 0; i < (length & 0x3); i++, cptr++, shiftCount += 8)
+        {
+            if (*cptr == static_cast<char>((pattern >> shiftCount) & 0xff)) ++numMatching;
+            else ++numNotMatching;
+        }
+
+        if (numMatching>0)
+        {
+            // possible unitialized data?
+            std::cout<<"possible uninitilized memory numMatching="<<numMatching<<"   numNotMatching="<<numNotMatching<<std::endl;
+            std::cout<<"    allocationNumber="<<allocUnit->allocationNumber<<" sourceFile '"<<allocUnit->sourceFile<<"'  sourceLine="<<allocUnit->sourceLine<<std::endl;
+            
+            return false;
+        }
+        return true;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------
@@ -945,6 +993,10 @@ sMStats    m_getMemoryStatistics()
 
     void    *m_allocator(const char *sourceFile, const unsigned int sourceLine, const unsigned int allocationType, const size_t reportedSize)
     {
+
+        // check that exists allocated units havn't been damaged.
+        if (checkForUnitialized) m_validateAllAllocUnits();
+
         try
         {
             #ifdef TEST_MEMORY_MANAGER
@@ -1488,6 +1540,9 @@ sMStats    m_getMemoryStatistics()
             {
                 allocCount++;
                 if (!m_validateAllocUnit(ptr)) errors++;
+                
+                if (checkForUnitialized) checkPattern(ptr);
+                
                 ptr = ptr->next;
             }
         }

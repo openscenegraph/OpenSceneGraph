@@ -128,7 +128,11 @@ int main( int argc, char **argv )
     PointsEventHandler* peh = new PointsEventHandler;
     viewer.getEventHandlerList().push_front(peh);
 
-    float width, height, distance;
+    osg::DisplaySettings::instance()->setSplitStereoAutoAjustAspectRatio(false);
+
+    float width = osg::DisplaySettings::instance()->getScreenWidth();
+    float height = osg::DisplaySettings::instance()->getScreenHeight();
+    float distance = osg::DisplaySettings::instance()->getScreenDistance();
     bool sizesSpecified = false;
     while (arguments.read("-s", width, height, distance)) 
     {
@@ -162,8 +166,14 @@ int main( int argc, char **argv )
     osg::Timer timer;
     osg::Timer_t start_tick = timer.tick();
 
+    // allow sharing of models.
+    osgDB::Registry::instance()->setUseObjectCacheHint(true);
+
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+
+    // switch sharing of loaded models back off.
+    osgDB::Registry::instance()->setUseObjectCacheHint(false);
 
     // if no model has been successfully loaded report failure.
     if (!loadedModel) 
@@ -194,13 +204,10 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
-    if (sizesSpecified)
-    {
-        double vfov = osg::RadiansToDegrees(atan2(height/2.0,distance)*2.0);
-        double hfov = osg::RadiansToDegrees(atan2(width/2.0,distance)*2.0);
-        
-        viewer.setLensPerspective( hfov, vfov, 0.1, 1000.0);
-    }
+    double vfov = osg::RadiansToDegrees(atan2(height/2.0,distance)*2.0);
+    double hfov = osg::RadiansToDegrees(atan2(width/2.0,distance)*2.0);
+
+    viewer.setLensPerspective( hfov, vfov, 0.1, 1000.0);
     
     // set all the sceneview's up so that their left and right add cull masks are set up.
     for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();

@@ -36,6 +36,37 @@
 #include <osgUtil/SmoothingVisitor>
 
 #include "osgac3d.h"
+#include "Exception.h"
+#include "Geode.h"
+
+using namespace osg;
+using namespace osgDB;
+
+class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub-graph attached to 'this'
+        public:
+            geodeVisitor():
+                osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+			~geodeVisitor() { _geodelist.clear();}
+
+		// one apply for each type of Node that might be a user transform
+         //   virtual void apply(osgAction::ActionHeader& ah);
+           // virtual void apply(osg::Drawable& dr);
+            virtual void apply(osg::Geode& geode) {
+				_geodelist.push_back(&geode);
+			}
+        //    virtual void apply(osg::Billboard& geode);
+            virtual void apply(osg::Group& gp){
+				traverse(gp);	// must continue subgraph traversal.
+			}
+         //   virtual void apply(osg::Switch& sw);
+           // virtual void apply(osg::Transform& transform);
+			std::vector<const osg::Geode *> getGeodes() {return _geodelist;}
+        protected:
+
+            typedef std::vector<const osg::Geode *>    Geodelist;
+            Geodelist  _geodelist;
+};
 
 class ReaderWriterAC : public osgDB::ReaderWriter
 {
@@ -52,6 +83,62 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             grp=ac_load_ac3d(fileName.c_str());
             return grp;
         };
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* /*options*/)
+        {
+            std::string ext = getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+			geodeVisitor vs; // this collects geodes.
+			Node *nd=(Node *)(&node);
+			std::vector<unsigned int>iNumMaterials;
+			nd->accept(vs); // this parses the tree to find Geodes
+			std::vector<const osg::Geode *> glist=vs.getGeodes();
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+			// Write out the file header
+			std::vector<const osg::Geode *>::iterator itr;
+			fout << "AC3Db" << std::endl;
+			// output the Materials
+			for (itr=glist.begin();itr!= glist.end();itr++) {
+                iNumMaterials.push_back(const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(*itr))->ProcessMaterial(fout,itr-glist.begin()));
+			}
+			// output the Geometry
+			unsigned int nfirstmat=0;
+			fout << "OBJECT world" << std::endl;
+			fout << "kids " << (glist.end()-glist.begin()) << std::endl;
+			for (itr=glist.begin();itr!= glist.end();itr++) {
+                const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(*itr))->ProcessGeometry(fout,nfirstmat);
+				nfirstmat+=iNumMaterials[itr-glist.begin()];
+			}
+            fout.close();
+            return WriteResult::FILE_SAVED;
+        }
+        
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* opts)
+        {
+            try
+            {
+                // write ac file.
+                if(dynamic_cast<const osg::Group*>(&node)) {
+					const osg::Group *gp=dynamic_cast<const osg::Group*>(&node);
+					const unsigned int nch=gp->getNumChildren();
+					for (unsigned int i=0; i<nch; i++) {
+						writeNode(*(gp->getChild(i)), fout, opts);
+					}
+				}
+				//const_cast<ac3d::Group*>(static_cast<const ac3d::Group*>(&node))->Process(fout, options);
+             //   else if(dynamic_cast<const osg::Geode*>(&node))
+             //       const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(&node))->Process(fout);
+                else
+                    std::cout<<"File must start with a geode "<<std::endl;
+                fout.flush();
+                return WriteResult::FILE_SAVED;
+            }
+            catch(ac3d::Exception e)
+            {
+		        osg::notify(osg::WARN)<<"Error parsing OSG tree: "<< e.getError() << std::endl;			
+            }
+            return WriteResult::FILE_NOT_HANDLED;
+
+        }
 private:
 };
 
@@ -60,8 +147,8 @@ static char buff[255];
 
 
 
-static osg::Material *palette[255];
-static int num_palette = 0;
+static std::vector<osg::Material*> palette; // change to dynamic array
+//static int num_palette = 0;
 static int startmatindex = 0;
 
 
@@ -295,384 +382,391 @@ protate(osg::Vec3 p, float m[9])
 
 osg::Group *ac_load_object(FILE *f,const ACObject *parent)
 {
-    // most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
-    char t[20];
-    osg::Group *gp=NULL;
-    osg::Geode *geode=NULL;
-    osg::Vec3Array *normals = NULL; // new osg::Vec3Array; // NULL;
+	// most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
+	char t[20];
+	osg::Group *gp=NULL;
+	osg::Geode *geode=NULL;
+	osg::Vec3Array *normals = NULL; // new osg::Vec3Array; // NULL;
 
-    ACObject ob; // local storage for stuff taken from AC's loader
-    osg::Vec3Array *vertpool = new osg::Vec3Array;
+	ACObject ob; // local storage for stuff taken from AC's loader
+	osg::Vec3Array *vertpool = new osg::Vec3Array;
 
-    if (parent) ob.loc=parent->loc; // copy loc
-    while (!feof(f))
-        {
-    read_line(f);
+	if (parent)
+		ob.loc=parent->loc; // copy loc
+	while (!feof(f))
+	{
+		read_line(f);
 
-    sscanf(buff, "%s", t);
+		sscanf(buff, "%s", t);
 
-        if (streq(t, "MATERIAL"))
-            {
-            if (get_tokens(buff, &tokc, tokv) != 22)
-                {
-                printf("expected 21 params after \"MATERIAL\" - line %d\n", line);
-                }
-            else
-                {
-            osg::Material *numat=new osg::Material();
-            osg::Vec4 cdiff((float)atof(tokv[3]), (float)atof(tokv[4]), 
-                (float)atof(tokv[5]), 1.0-(float)atof(tokv[21]));
-            numat->setDiffuse(osg::Material::FRONT_AND_BACK,cdiff);
-            osg::Vec4 camb((float)atof(tokv[7]),(float)atof(tokv[8]),
-                (float)atof(tokv[9]),1.0-(float)atof(tokv[21]));
-            numat->setAmbient(osg::Material::FRONT_AND_BACK,camb);
-            osg::Vec4 cspec((float)atof(tokv[15]), (float)atof(tokv[16]),
-                (float)atof(tokv[17]),1.0-(float)atof(tokv[21]));
-            numat->setSpecular(osg::Material::FRONT_AND_BACK,cspec);
-            osg::Vec4 cemm((float)atof(tokv[11]),(float)atof(tokv[12]),(float)atof(tokv[13]),1.0-(float)atof(tokv[21]));
-            numat->setSpecular(osg::Material::FRONT_AND_BACK,cemm);
-            //numat->setTransparency(osg::Material::FRONT_AND_BACK, 1.0-(float)atof(tokv[21]));
+		if (streq(t, "MATERIAL"))
+		{
+			if (get_tokens(buff, &tokc, tokv) != 22)
+			{
+				printf("expected 21 params after \"MATERIAL\" - line %d\n", line);
+			}
+			else
+			{
+				osg::Material *numat=new osg::Material();
+				osg::Vec4 cdiff((float)atof(tokv[3]), (float)atof(tokv[4]), 
+								(float)atof(tokv[5]), 1.0-(float)atof(tokv[21]));
+				numat->setDiffuse(osg::Material::FRONT_AND_BACK,cdiff);
+				osg::Vec4 camb((float)atof(tokv[7]),(float)atof(tokv[8]),
+								(float)atof(tokv[9]),1.0-(float)atof(tokv[21]));
+				numat->setAmbient(osg::Material::FRONT_AND_BACK,camb);
+				osg::Vec4 cspec((float)atof(tokv[15]), (float)atof(tokv[16]),
+								(float)atof(tokv[17]),1.0-(float)atof(tokv[21]));
+				numat->setSpecular(osg::Material::FRONT_AND_BACK,cspec);
+				osg::Vec4 cemm((float)atof(tokv[11]),(float)atof(tokv[12]),(float)atof(tokv[13]),1.0-(float)atof(tokv[21]));
+				numat->setSpecular(osg::Material::FRONT_AND_BACK,cemm);
+				//numat->setTransparency(osg::Material::FRONT_AND_BACK, 1.0-(float)atof(tokv[21]));
 
-            palette[num_palette++] = numat;
+				palette.push_back(numat); // [num_palette++] = numat;
 
-              }
-            }
-        else
-        if (streq(t, "OBJECT"))
-            {
-            char type[20];
-            char str[20];
-            osg::Vec3 loc=ob.loc;
-            if (!gp) gp = new osg::Group();
-            initobject(&ob); // rezero data for object
-            ob.loc=loc;
+			}
+		}
+		else if (streq(t, "OBJECT"))
+		{
+			char type[20];
+			char str[20];
+			osg::Vec3 loc=ob.loc;
+			if (!gp) gp = new osg::Group();
+			initobject(&ob); // rezero data for object
+			ob.loc=loc;
 
-            sscanf(buff, "%s %s", str, type);
+			sscanf(buff, "%s %s", str, type);
 
-            ob.type = string_to_objecttype(type);
-            }
-        else
-        if (streq(t, "data"))
-            {
-            if (get_tokens(buff, &tokc, tokv) != 2)
-                printf("expected 'data <number>' at line %d\n", line);
-            else
-                {
-                char *str;
-                int len;
+			ob.type = string_to_objecttype(type);
+		}
+		else if (streq(t, "data"))
+		{
+			if (get_tokens(buff, &tokc, tokv) != 2)
+				printf("expected 'data <number>' at line %d\n", line);
+			else
+			{
+				char *str;
+				int len;
 
-                len = atoi(tokv[1]);
-                if (len > 0)
-                    {
-                    str = (char *)myalloc(len+1);
-                    fread(str, len, 1, f);
-                    str[len] = 0;
-                    fscanf(f, "\n"); line++;
-                ob.data = STRING(str);
-                    myfree(str);
-                    }
-                }
-            }
-        else
-        if (streq(t, "name"))
-            {
-            int numtok = get_tokens(buff, &tokc, tokv);
-            if (numtok != 2)
-                {
-                 printf("expected quoted name at line %d (got %d tokens)\n", line, numtok);
-                }
-            else
-                if (gp) gp->setName(tokv[1]);
-            }
-        else
-        if (streq(t, "texture"))
-            {
-            if (get_tokens(buff, &tokc, tokv) != 2)
-                printf("expected quoted texture name at line %d\n", line);
+				len = atoi(tokv[1]);
+				if (len > 0)
+				{
+					str = (char *)myalloc(len+1);
+					fread(str, len, 1, f);
+					str[len] = 0;
+					fscanf(f, "\n"); line++;
+					ob.data = STRING(str);
+					myfree(str);
+				}
+			}
+		}
+		else if (streq(t, "name"))
+		{
+			int numtok = get_tokens(buff, &tokc, tokv);
+			if (numtok != 2)
+			{
+				printf("expected quoted name at line %d (got %d tokens)\n", line, numtok);
+			}
+			else
+				if (gp) gp->setName(tokv[1]);
+		}
+		else if (streq(t, "texture"))
+		{
+			if (get_tokens(buff, &tokc, tokv) != 2)
+				printf("expected quoted texture name at line %d\n", line);
 
-            else
-                {
-                    osg::Image *ctx= osgDB::readImageFile(tokv[1]);
-                    if (ctx) { // image coukd be read
-                        ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
-                        ob.texture->setImage(ctx);
-                        if (ob.texture_repeat_x > 0.1) {
-                            ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
-                        } else {
-                            ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP);
-                        }
-                        if (ob.texture_repeat_y > 0.1) {
-                            ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
-                        } else {
-                            ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP);
-                        }
-                    }
-                }
-            }
-        else
-        if (streq(t, "texrep"))
-            {
-            if (get_tokens(buff, &tokc, tokv) != 3)
-                printf("expected 'texrep <float> <float>' at line %d\n", line);
-            else
-                {
-                ob.texture_repeat_x = atof(tokv[1]);
-                ob.texture_repeat_y = atof(tokv[2]);
-                }
-            }
-        else
-        if (streq(t, "texoff"))
-            {
-            if (get_tokens(buff, &tokc, tokv) != 3)
-                printf("expected 'texoff <float> <float>' at line %d\n", line);
-            else
-                {
-                ob.texture_offset_x = atof(tokv[1]);
-                ob.texture_offset_y = atof(tokv[2]);
-                }
-            }
-        else
-        if (streq(t, "rot"))
-            {
-            float r[9];
-            char str2[5];
-            int n;
+			else
+			{
+				osg::Image *ctx= osgDB::readImageFile(tokv[1]);
+				if (ctx)
+				{ // image coukd be read
+					ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
+					ob.texture->setImage(ctx);
+					ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+					ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+				}
+			}
+		}
+		else if (streq(t, "texrep"))
+		{
+			if (get_tokens(buff, &tokc, tokv) != 3)
+				printf("expected 'texrep <float> <float>' at line %d\n", line);
+			else
+			{
+				ob.texture_repeat_x = atof(tokv[1]);
+				ob.texture_repeat_y = atof(tokv[2]);
+			}
+		}
+		else if (streq(t, "texoff"))
+		{
+			if (get_tokens(buff, &tokc, tokv) != 3)
+				printf("expected 'texoff <float> <float>' at line %d\n", line);
+			else
+			{
+				ob.texture_offset_x = atof(tokv[1]);
+				ob.texture_offset_y = atof(tokv[2]);
+			}
+		}
+		else if (streq(t, "rot"))
+		{
+			float r[9];
+			char str2[5];
+			int n;
 
-            sscanf(buff, "%s %f %f %f %f %f %f %f %f %f", str2, 
-                &r[0], &r[1], &r[2], &r[3], &r[4], &r[5], &r[6], &r[7], &r[8] );
+			sscanf(buff, "%s %f %f %f %f %f %f %f %f %f", str2, &r[0], &r[1], &r[2], &r[3], &r[4], &r[5], &r[6], &r[7], &r[8] );
 
-            for (n = 0; n < 9; n++)
-                ob.matrix[n] = r[n];
+			for (n = 0; n < 9; n++)
+				ob.matrix[n] = r[n];
 
-            }
-        else
-        if (streq(t, "loc"))
-            {
-            char str[5];
-            osg::Vec3 loc;
-            sscanf(buff, "%s %f %f %f", str, &loc[0], &loc[1], &loc[2]);
-            ob.loc+=loc;
-            }
-        else
-        if (streq(t, "url"))
-            {
-	    int ret;
-            if ((ret = get_tokens(buff, &tokc, tokv)) != 2)
-                printf("expected one arg to url at line %d (got %d)\n", line, ret); 
-            else
-                ob.url = STRING(tokv[1]);
-            }
-        else
-        if (streq(t, "numvert"))
-            {
-            int num, n;
-            char str[10];
-            if (ob.type == OBJECT_GROUP || ob.type == OBJECT_WORLD) {
-            } else if (ob.type == OBJECT_NORMAL) {
-                if (geode) {
-                    osgUtil::Tesselator tesselator;
-                    for(unsigned int i=0;i<geode->getNumDrawables();++i)
-                    {
-                        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-                        if (geom) tesselator.retesselatePolygons(*geom);
-                    }
-                }
-                geode = new osg::Geode();
-                gp->addChild(geode);
-                geode->setName(gp->getName());
-                normals = new osg::Vec3Array;
-            }
+		}
+		else if (streq(t, "loc"))
+		{
+			char str[5];
+			osg::Vec3 loc;
+			sscanf(buff, "%s %f %f %f", str, &loc[0], &loc[1], &loc[2]);
+			ob.loc+=loc;
+		}
+		else if (streq(t, "url"))
+		{
+			int ret;
+			if ((ret = get_tokens(buff, &tokc, tokv)) != 2)
+				printf("expected one arg to url at line %d (got %d)\n", line, ret); 
+			else
+				ob.url = STRING(tokv[1]);
+		}
+		else if (streq(t, "numvert"))
+		{
+			int num, n;
+			char str[10];
+			if (ob.type == OBJECT_GROUP || ob.type == OBJECT_WORLD)
+			{
+			}
+			else if (ob.type == OBJECT_NORMAL)
+			{
+				if (geode)
+				{
+					osgUtil::Tesselator tesselator;
+					for(unsigned int i=0;i<geode->getNumDrawables();++i)
+					{
+						osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
+						if (geom) tesselator.retesselatePolygons(*geom);
+					}
+				}
+				geode = new osg::Geode();
+				gp->addChild(geode);
+				geode->setName(gp->getName());
+				normals = new osg::Vec3Array;
+			}
 
-                sscanf(buff, "%s %d", str, &num);
+			sscanf(buff, "%s %d", str, &num);
 
-                if (num > 0)
-                    {
-                    ob.num_vert = num;
+			if (num > 0)
+			{
+				ob.num_vert = num;
 
-                    for (n = 0; n < num; n++)
-                        {
-                        osg::Vec3 p;
-                        fscanf(f, "%f %f %f\n", &p[0], &p[1], &p[2]); line++;
-                        protate(p, ob.matrix);
-                        vertpool->push_back(p+ob.loc);
-                        }
+				for (n = 0; n < num; n++)
+				{
+					osg::Vec3 p;
+					fscanf(f, "%f %f %f\n", &p[0], &p[1], &p[2]); line++;
+					protate(p, ob.matrix);
+					vertpool->push_back(p+ob.loc);
+				}
 
-                    }
-            }
-        else
-            if (streq(t, "numsurf"))
-            {
-                int num, n;
-                char str[10];
-                // this is not obvious (what is?).  Each set of surfaces can have different material on each surface.
-                // so I set up a set of 'bins' for 
-                //    the primitives (geometry list, geomlist)
-                //    the coords array of each geometry (Vec3Array list, vertslist)
-                //    the tx coords array for each geometry (Vec2Array list, texslist)
-                // then I add a new geometry to the current Geode for each new material as it is found.
+			}
+		}
+		else if (streq(t, "numsurf"))
+		{
+			int num, n;
+			char str[10];
+			// this is not obvious (what is?).  Each set of surfaces can have different material on each surface.
+			// so I set up a set of 'bins' for 
+			//    the primitives (geometry list, geomlist)
+			//    the coords array of each geometry (Vec3Array list, vertslist)
+			//    the tx coords array for each geometry (Vec2Array list, texslist)
+			// then I add a new geometry to the current Geode for each new material as it is found.
 
-                std::vector<int> ia; // list of materials required- generate one geode per material
-                typedef std::vector<osg::Geometry *> geomlist;
-                geomlist glist;
-                typedef std::vector<osg::Vec3Array *> vertslist;
-                vertslist vlists; // list of vertices for each glist element
-                typedef std::vector<osg::Vec2Array *> texslist;
-                texslist txlists; // list of texture coords for each glist element
-                
-                sscanf(buff, "%s %d", str, &num);
-                if (num > 0)
-                {
-                    int needSmooth=0; // flat shaded
-                    ob.num_surf = num;
-                    
-                    for (n = 0; n < num; n++)
-                    {
-                        osg::Geometry *geom=NULL; // the surface will be addded to this geometry
-                        osg::Vec3Array *vgeom=NULL; // vertices corresponding to geom taken from vertexpool
-                        osg::Vec2Array *tgeom=NULL; // texture coords corresponding to geom taken from vertexpool
-                        ACSurface asurf;
-                        osg::UShortArray *nusidx = new osg::UShortArray; // indices into the vertices
-                        osg::Vec2Array *tcs=new osg::Vec2Array; // texture coordinates for this object
-                        ACSurface *news = read_surface(f, &asurf, nusidx, tcs);
-                        if (news == NULL)
-                        {
-                            printf("error whilst reading surface at line: %d\n", line);
-                            return(NULL);
-                        } else {
-                            int i=0;
-                            for (std::vector<int>::iterator itr= ia.begin(); itr<ia.end(); itr++, i++) {
-                                if ((*itr)==asurf.mat) {
-                                    geom=glist[i];
-                                    vgeom=vlists[i];
-                                    tgeom=txlists[i]; // what is current texture array
-                                }
-                            }
-                            if (!geom) { // then we need a new geometry
-                                osg::Vec3Array *verts = new osg::Vec3Array;
+			std::vector<int> ia; // list of materials required- generate one geode per material
+			typedef std::vector<osg::Geometry *> geomlist;
+			geomlist glist;
+			typedef std::vector<osg::Vec3Array *> vertslist;
+			vertslist vlists; // list of vertices for each glist element
+			typedef std::vector<osg::Vec2Array *> texslist;
+			texslist txlists; // list of texture coords for each glist element
 
-                                osg::Vec2Array *tcrds=new osg::Vec2Array; // texture coordinates for this object
-                                vgeom=verts;
-                                tgeom=tcrds; // what is current texture array
-                                vlists.push_back(verts);
-                                txlists.push_back(tcrds);
-                                geom=new osg::Geometry();
-                                geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-                                geom->setNormalArray(normals);
-                                geom->setVertexArray(verts);
-                                if (ob.texture) {
-                                    geom->setTexCoordArray(0,tgeom); // share same set of TexCoords
-                                }
-                                osg::Material*mat=ac_palette_get_material(asurf.mat);
-                                osg::StateSet *dstate = new osg::StateSet;
-                                dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-                                dstate->setAttribute(mat);
-                                const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
-                                if (cdiff[3]<0.99) {
-                                    dstate->setMode(GL_BLEND,osg::StateAttribute::ON);
-                                    dstate->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                                } else {
-                                    dstate->setMode(GL_BLEND,osg::StateAttribute::OFF);
-                                }
-                                if (ob.texture) dstate->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-                                if (ob.texture) {
-                                    osg::TexEnv* texenv = new osg::TexEnv;
-                                    texenv->setMode(osg::TexEnv::MODULATE);
-                                    dstate->setTextureAttribute(0, texenv );
-                                    dstate->setTextureAttributeAndModes(0,ob.texture,osg::StateAttribute::ON);
-                                }
-                                if (asurf.flags & SURFACE_TWOSIDED) dstate->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
-                                else dstate->setMode( GL_CULL_FACE, osg::StateAttribute::ON );
+			sscanf(buff, "%s %d", str, &num);
+			if (num > 0)
+			{
+				int needSmooth=0; // flat shaded
+				ob.num_surf = num;
 
-                                geom->setStateSet( dstate );
-                                glist.push_back(geom);
-                                geode->addDrawable(geom);
-                                ia.push_back(asurf.mat);
-                            }
-                            
-                            osg::Vec3Array* normals = geom->getNormalArray();
-                            /** calc surface normal **/
-                            if (asurf.num_vertref >= 3) {
-                                osg::Vec3 norm;
-                                unsigned short i1=(*nusidx)[0];
-                                unsigned short i2=(*nusidx)[1];
-                                unsigned short i3=(*nusidx)[2];
-                                osgtri_calc_normal((*vertpool)[i1], 
-                                    (*vertpool)[i2], 
-                                    (*vertpool)[i3], norm);
-                                normals->push_back(norm);
-                            }
-                            int nstart=(*vgeom).size();
-                            for (i=0; i<asurf.num_vertref; i++) {
-                                int i1=(*nusidx)[i];
-                                (*vgeom).push_back((*vertpool)[i1]);
-                                (*tgeom).push_back((*tcs)[i]);
-                            }
-                            GLenum poltype=osg::PrimitiveSet::POLYGON;
-                            if (asurf.flags & SURFACE_TYPE_CLOSEDLINE) poltype=osg::PrimitiveSet::LINE_LOOP;
-                            if (asurf.flags & SURFACE_TYPE_LINE) poltype=osg::PrimitiveSet::LINE_STRIP;
-                            geom->addPrimitiveSet(new osg::DrawArrays(poltype,nstart,asurf.num_vertref));
-                            if (asurf.flags & 0x10) needSmooth++;
-                        }
-                    }
-                    for (geomlist::iterator itr= glist.begin(); itr<glist.end(); itr++) {
-                        osgUtil::Tesselator tesselator;
-                        if (*itr) tesselator.retesselatePolygons(**itr);
-                        if (needSmooth) {
-                            osgUtil::SmoothingVisitor smoother;
-                            smoother.smooth(**itr);
-                        }
-                    }
-                }
-            }
-        else
-        if (streq(t, "kids")) /** 'kids' is the last token in an object **/
-            {
-            int num, n;
+				for (n = 0; n < num; n++)
+				{
+					osg::Geometry *geom=NULL; // the surface will be addded to this geometry
+					osg::Vec3Array *vgeom=NULL; // vertices corresponding to geom taken from vertexpool
+					osg::Vec2Array *tgeom=NULL; // texture coords corresponding to geom taken from vertexpool
+					ACSurface asurf;
+					osg::UShortArray *nusidx = new osg::UShortArray; // indices into the vertices
+					osg::Vec2Array *tcs=new osg::Vec2Array; // texture coordinates for this object
+					ACSurface *news = read_surface(f, &asurf, nusidx, tcs);
+					if (news == NULL)
+					{
+						printf("error whilst reading surface at line: %d\n", line);
+						return(NULL);
+					}
+					else
+					{
+						int i=0;
+						for (std::vector<int>::iterator itr= ia.begin(); itr<ia.end(); itr++, i++)
+						{
+							if ((*itr)==asurf.mat)
+							{
+								geom=glist[i];
+								vgeom=vlists[i];
+								tgeom=txlists[i]; // what is current texture array
+							}
+						}
+						if (!geom)
+						{ // then we need a new geometry
+							osg::Vec3Array *verts = new osg::Vec3Array;
 
-            sscanf(buff, "%s %d", t, &num);
-            
-                if (num != 0)
-                    {
-                    // ob.kids = (ACObject **)myalloc(num * sizeof(ACObject *) );
-                    ob.num_kids = num;
+							osg::Vec2Array *tcrds=new osg::Vec2Array; // texture coordinates for this object
+							vgeom=verts;
+							tgeom=tcrds; // what is current texture array
+							vlists.push_back(verts);
+							txlists.push_back(tcrds);
+							geom=new osg::Geometry();
+							geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+							geom->setNormalArray(normals);
+							geom->setVertexArray(verts);
+							if (ob.texture.valid())
+							{
+								geom->setTexCoordArray(0,tgeom); // share same set of TexCoords
+							}
+							osg::Material*mat=ac_palette_get_material(asurf.mat);
+							osg::StateSet *dstate = new osg::StateSet;
+							dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
+							dstate->setAttribute(mat);
+							const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
+							if (cdiff[3]<0.99)
+							{
+								dstate->setMode(GL_BLEND,osg::StateAttribute::ON);
+								dstate->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+							} 
+							else
+							{
+								dstate->setMode(GL_BLEND,osg::StateAttribute::OFF);
+							}
+							if (ob.texture.valid()) dstate->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+							if (ob.texture.valid())
+							{
+								osg::TexEnv* texenv = new osg::TexEnv;
+								texenv->setMode(osg::TexEnv::MODULATE);
+								dstate->setTextureAttribute(0, texenv );
+								dstate->setTextureAttributeAndModes(0,ob.texture.get(),osg::StateAttribute::ON);
+							}
+							if (asurf.flags & SURFACE_TWOSIDED)
+								dstate->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+							else
+								dstate->setMode( GL_CULL_FACE, osg::StateAttribute::ON );
 
-                    for (n = 0; n < num; n++)
-                        {
-                        osg::Group *k = ac_load_object(f,&ob); //, ob);
+							geom->setStateSet( dstate );
+							glist.push_back(geom);
+							geode->addDrawable(geom);
+							ia.push_back(asurf.mat);
+						}
 
-                        if (k == NULL)
-                            {
-                            printf("error reading expected child object %d of %d at line: %d\n", n+1, num, line);
-                            return(gp);
-                            }
-                        else
-                            //ob.kids[n] = k;
-                            gp->addChild(k);
-                        }
+						osg::Vec3Array* normals = geom->getNormalArray();
+						/** calc surface normal **/
+						if (asurf.num_vertref >= 3)
+						{
+							osg::Vec3 norm;
+							unsigned short i1=(*nusidx)[0];
+							unsigned short i2=(*nusidx)[1];
+							unsigned short i3=(*nusidx)[2];
+							osgtri_calc_normal((*vertpool)[i1], 
+							(*vertpool)[i2], 
+							(*vertpool)[i3], norm);
+							normals->push_back(norm);
+						}
+						int nstart=(*vgeom).size();
+						for (i=0; i<asurf.num_vertref; i++)
+						{
+							osg::Vec2 TextureCoordinate;
 
-                    }
-                if (geode) {
-                    osgUtil::Tesselator tesselator;
-                    for(unsigned int i=0;i<geode->getNumDrawables();++i)
-                    {
-                        osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-                        if (geom) tesselator.retesselatePolygons(*geom);
-                    }
-                }
-            return(gp);
-            }
+							int i1=(*nusidx)[i];
+							(*vgeom).push_back((*vertpool)[i1]);
+							TextureCoordinate = (*tcs)[i];
+							TextureCoordinate._v[0] = ob.texture_offset_x + TextureCoordinate._v[0] * ob.texture_repeat_x;
+							TextureCoordinate._v[1] = ob.texture_offset_y + TextureCoordinate._v[1] * ob.texture_repeat_y;
+							(*tgeom).push_back(TextureCoordinate);
+//							(*tgeom).push_back((*tcs)[i]);
+						}
+						GLenum poltype=osg::PrimitiveSet::POLYGON;
+						if (asurf.flags & SURFACE_TYPE_CLOSEDLINE) poltype=osg::PrimitiveSet::LINE_LOOP;
+						if (asurf.flags & SURFACE_TYPE_LINE) poltype=osg::PrimitiveSet::LINE_STRIP;
+						geom->addPrimitiveSet(new osg::DrawArrays(poltype,nstart,asurf.num_vertref));
+						if (asurf.flags & 0x10) needSmooth++;
+					}
+				}
+				for (geomlist::iterator itr= glist.begin(); itr<glist.end(); itr++)
+				{
+					osgUtil::Tesselator tesselator;
+					if (*itr) tesselator.retesselatePolygons(**itr);
+					if (needSmooth)
+					{
+						osgUtil::SmoothingVisitor smoother;
+						smoother.smooth(**itr);
+					}
+				}
+			}
+		}
+		else if (streq(t, "kids")) /** 'kids' is the last token in an object **/
+		{
+			int num, n;
 
-    }
-    if (geode) {
-        osgUtil::Tesselator tesselator;
-        for(unsigned int i=0;i<geode->getNumDrawables();++i)
-        {
-            osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-            if (geom) tesselator.retesselatePolygons(*geom);
-        }
-    }
-    return(gp);
+			sscanf(buff, "%s %d", t, &num);
 
+			if (num != 0)
+			{
+				// ob.kids = (ACObject **)myalloc(num * sizeof(ACObject *) );
+				ob.num_kids = num;
+
+				for (n = 0; n < num; n++)
+				{
+					osg::Group *k = ac_load_object(f,&ob); //, ob);
+
+					if (k == NULL)
+					{
+						printf("error reading expected child object %d of %d at line: %d\n", n+1, num, line);
+						return(gp);
+					}
+					else
+						//ob.kids[n] = k;
+						gp->addChild(k);
+				}
+
+			}
+			if (geode)
+			{
+				osgUtil::Tesselator tesselator;
+				for(unsigned int i=0;i<geode->getNumDrawables();++i)
+				{
+					osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
+					if (geom) tesselator.retesselatePolygons(*geom);
+				}
+			}
+			return(gp);
+		}
+	}
+	if (geode)
+	{
+		osgUtil::Tesselator tesselator;
+		for(unsigned int i=0;i<geode->getNumDrawables();++i)
+		{
+			osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
+			if (geom) tesselator.retesselatePolygons(*geom);
+		}
+	}
+	return(gp);
 }
 
 
@@ -709,7 +803,7 @@ osg::Group *ret = NULL;
         }
 
 
-    startmatindex = num_palette;
+    startmatindex = palette.size(); //num_palette;
 
 
     ret = ac_load_object(f,NULL); //, NULL);

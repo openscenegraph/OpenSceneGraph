@@ -30,7 +30,7 @@ typedef struct ACObject_t
 	struct ACObject_t **kids;
 	float matrix[9];
 	int type;
-	osg::Texture2D *texture;
+	osg::ref_ptr<osg::Texture2D> texture;
 } ACObject;
 
 #define OBJECT_WORLD 999

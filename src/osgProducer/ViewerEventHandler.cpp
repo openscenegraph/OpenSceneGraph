@@ -830,6 +830,14 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 return true;
             }
 
+            case '*' :
+            case '/' :
+            {
+                if (ea.getKey()=='*') _cg->setLODScale( _cg->getLODScale() * 1.1f);
+                else _cg->setLODScale( _cg->getLODScale() / 1.1f);
+                return true;
+            }
+
             case osgGA::GUIEventAdapter::KEY_Help :
             case 'h' :
             {

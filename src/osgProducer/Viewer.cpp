@@ -315,6 +315,26 @@ bool Viewer::realize( ThreadingModel thread_model )
     return realize();
 }
 
+class DatabasePagerStartCullCallback : public OsgSceneHandler::Callback
+{
+public:
+
+        DatabasePagerStartCullCallback(osgDB::DatabasePager* databasePager):
+            _databasePager(databasePager)
+        {}
+
+       virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
+       {
+            
+            _databasePager->signalBeginFrame(sh.getSceneView()->getState()->getFrameStamp());
+
+            sh.cullImplementation(camera);
+
+       }
+       
+       osg::ref_ptr<osgDB::DatabasePager> _databasePager;
+};
+
 class DatabasePagerCompileCallback : public OsgSceneHandler::Callback
 {
 public:
@@ -328,9 +348,12 @@ public:
             
             sh.drawImplementation(camera);
 
-            double availableTime = 0.005; //  5 ms
+            double availableTime = 0.0025; //  5 ms
 
             _databasePager->compileRenderingObjects(*(sh.getSceneView()->getState()),availableTime);
+
+            _databasePager->signalEndFrame();
+
        }
        
        osg::ref_ptr<osgDB::DatabasePager> _databasePager;
@@ -357,6 +380,8 @@ bool Viewer::realize()
             // pass the database pager to the cull visitor so node can send requests to the pager.
             (*p)->getSceneView()->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
             
+            (*p)->setCullCallback(new DatabasePagerStartCullCallback(_databasePager.get()));
+
             // set up a draw callback to pre compile any rendering object of database has loaded, 
             // but not yet merged with the main scene graph.
             (*p)->setDrawCallback(new DatabasePagerCompileCallback(_databasePager.get()));
@@ -418,6 +443,9 @@ void Viewer::update()
     
     if (_databasePager.valid())
     {
+    
+        //_databasePager->signalBeginFrame(_frameStamp.get());
+    
         // removed any children PagedLOD children that havn't been visited in the cull traversal recently.
         _databasePager->removeExpiredSubgraphs(_frameStamp->getReferenceTime());
         
@@ -460,6 +488,7 @@ void Viewer::frame()
     }
 
     OsgCameraGroup::frame();
+
 }
 
 bool Viewer::computePixelCoords(float x,float y,unsigned int cameraNum,float& pixel_x,float& pixel_y)

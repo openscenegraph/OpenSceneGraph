@@ -80,10 +80,15 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         
         
     protected:
-    
+  
+        #if defined(_MSC_VER)
+        typedef __int64 pos_type;
+        typedef __int64 size_type;
+        #else
+        typedef unsigned long long pos_type;
+        typedef unsigned long long size_type;
+        #endif
         
-        typedef std::istream::pos_type pos_type;
-        typedef std::istream::off_type size_type;
         typedef std::pair<pos_type, size_type> PositionSizePair;
         typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
 

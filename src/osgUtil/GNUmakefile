@@ -9,6 +9,7 @@ CXXFILES = \
 	DisplayRequirementsVisitor.cpp\
 	InsertImpostorsVisitor.cpp\
 	IntersectVisitor.cpp\
+	PickVisitor.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\
 	RenderGraph.cpp\

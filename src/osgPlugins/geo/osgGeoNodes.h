@@ -52,7 +52,7 @@ public:
 	~internalVars() { 
 		}
 	void addInternalVars(const georecord &gr);
-	void update(osg::Timer  &_timer,osg::FrameStamp &_frameStamp);
+	void update(const osg::FrameStamp *_frameStamp);
 	double *getVar(const unsigned fid) { 
 		for (std::vector<geoValue>::iterator itr=vars.begin();
 		itr!=vars.end();
@@ -135,7 +135,7 @@ public:
 	double *getVar(const unsigned fid) const;
 	void addUserVar(const georecord &gr);
 	//== handler for updating internal variables
-	void update(void);
+	void update(const osg::FrameStamp *);
 	inline void getPalette(uint icp, float cll[4]) const { // get color from palette
         uint maxcol=icp/128; // the maximum intensity index
 		float frac = (float)(icp-maxcol*128)/128.0f;
@@ -165,8 +165,6 @@ public:
 private:
 	osg::Timer_t _lastFrameTick,_initialTick;
 	osg::Timer   _timer;
-	double tstart; // start time
-	osg::FrameStamp _frameStamp ; // time utilities
 	internalVars *intVars;
 	userVars *useVars;
 	userVars *extVars;

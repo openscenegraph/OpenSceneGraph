@@ -467,7 +467,7 @@ lib3ds_lin1_track_eval(Lib3dsLin1Track *track, Lib3dsFloat *p, Lib3dsFloat t)
   }
   if (!k->next) {
     if (track->flags&LIB3DS_REPEAT) {
-      nt=(Lib3dsFloat)fmod(t, k->tcb.frame);
+      nt=(Lib3dsFloat)fmod(t, (float)k->tcb.frame);
       for (k=track->keyL; k->next!=0; k=k->next) {
         if ((nt>=(Lib3dsFloat)k->tcb.frame) && (nt<(Lib3dsFloat)k->next->tcb.frame)) {
           break;
@@ -775,7 +775,7 @@ lib3ds_lin3_track_eval(Lib3dsLin3Track *track, Lib3dsVector p, Lib3dsFloat t)
   }
   if (!k->next) {
     if (track->flags&LIB3DS_REPEAT) {
-      nt=(Lib3dsFloat)fmod(t, k->tcb.frame);
+      nt=(Lib3dsFloat)fmod(t, (float)k->tcb.frame);
       for (k=track->keyL; k->next!=0; k=k->next) {
         if ((nt>=(Lib3dsFloat)k->tcb.frame) && (nt<(Lib3dsFloat)k->next->tcb.frame)) {
           break;
@@ -1122,7 +1122,7 @@ lib3ds_quat_track_eval(Lib3dsQuatTrack *track, Lib3dsQuat q, Lib3dsFloat t)
   }
   if (!k->next) {
     if (track->flags&LIB3DS_REPEAT) {
-      nt=(Lib3dsFloat)fmod(t, k->tcb.frame);
+      nt=(Lib3dsFloat)fmod(t, (float)k->tcb.frame);
       for (k=track->keyL; k->next!=0; k=k->next) {
         if ((nt>=k->tcb.frame) && (nt<k->next->tcb.frame)) {
           break;

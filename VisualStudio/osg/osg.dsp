@@ -117,6 +117,10 @@ SOURCE=..\..\src\osg\Camera.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ClipNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
@@ -378,6 +382,10 @@ SOURCE=..\..\Include\Osg\Camera
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ClippingVolume
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ClipNode
 # End Source File
 # Begin Source File
 

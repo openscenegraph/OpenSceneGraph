@@ -217,7 +217,6 @@ void Viewer::setUpViewer(unsigned int options)
     // register the callback with the keyboard mouse manger.
     _kbm->setCallback( _kbmcb.get() );
     //kbm->allowContinuousMouseMotionUpdate(true);
-    _kbm->startThread();
 
 
 
@@ -343,6 +342,8 @@ bool Viewer::realize()
 
     OsgCameraGroup::realize();
 
+    // kick start the keyboard mouse if needed.
+    if (_kbm.valid() && !_kbm->isRunning()) _kbm->startThread();
 
     // by default set up the DatabasePager.
     {    

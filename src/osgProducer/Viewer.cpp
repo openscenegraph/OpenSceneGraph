@@ -39,8 +39,8 @@ public:
         _lineSegment = new osg::LineSegment;
         _lineSegment->set(nr,fr); // make a line segment
         
-        std::cout<<"near "<<nr<<std::endl;
-        std::cout<<"far "<<fr<<std::endl;
+        //std::cout<<"near "<<nr<<std::endl;
+        //std::cout<<"far "<<fr<<std::endl;
         
         addLineSegment(_lineSegment.get());
 

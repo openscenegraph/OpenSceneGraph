@@ -15,10 +15,15 @@
 #endif
 
 using namespace osgDB;
+using namespace OpenThreads;
 
 DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
+    
+    _done = false;
+    _acceptNewRequests = true;
+    _databasePagerThreadPaused = false;
     
     _useFrameBlock = false;
     _frameNumber = 0;
@@ -51,14 +56,19 @@ DatabasePager::DatabasePager()
 
 DatabasePager::~DatabasePager()
 {
+    cancel();
+}
 
-
-    //std::cout<<"DatabasePager::~DatabasePager()"<<std::endl;
+int DatabasePager::cancel()
+{
+    int result = 0;
     if( isRunning() )
     {
+    
+        _done = true;
 
         // cancel the thread..
-        cancel();
+        result = Thread::cancel();
         //join();
 
         // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.
@@ -74,10 +84,41 @@ DatabasePager::~DatabasePager()
         
     }
     //std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
+    return result;
+}
+
+void DatabasePager::clear()
+{
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
+        _fileRequestList.clear();
+    }
+
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
+        _dataToCompileList.clear();
+    }
+
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_childrenToDeleteListMutex);
+        _childrenToDeleteList.clear();
+    }
+    
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
+        _dataToMergeList.clear();
+    }
+
+    // no mutex??
+    _pagedLODList.clear();
+    
+    // ??
+    // _activeGraphicsContexts
 }
 
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const osg::FrameStamp* framestamp)
 {
+    if (!_acceptNewRequests) return;
    
     double timestamp = framestamp?framestamp->getReferenceTime():0.0;
     int frameNumber = framestamp?framestamp->getFrameNumber():_frameNumber;
@@ -85,7 +126,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
 
-    _dataToCompileListMutex.lock();
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
     
         for(DatabaseRequestList::iterator litr = _dataToCompileList.begin();
             litr != _dataToCompileList.end() && !foundEntry;
@@ -101,71 +143,67 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             }
         }        
 
-    _dataToCompileListMutex.unlock();
+    }
 
     if (!foundEntry)
     {
-        _dataToMergeListMutex.lock();
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
 
-            for(DatabaseRequestList::iterator litr = _dataToMergeList.begin();
-                litr != _dataToMergeList.end() && !foundEntry;
-                ++litr)
+        for(DatabaseRequestList::iterator litr = _dataToMergeList.begin();
+            litr != _dataToMergeList.end() && !foundEntry;
+            ++litr)
+        {
+            if ((*litr)->_fileName==fileName)
             {
-                if ((*litr)->_fileName==fileName)
-                {
-                    foundEntry = true;
-                    (*litr)->_frameNumberLastRequest = frameNumber;
-                    (*litr)->_timestampLastRequest = timestamp;
-                    (*litr)->_priorityLastRequest = priority;
-                    ++((*litr)->_numOfRequests);
-                }
-            }        
-
-        _dataToMergeListMutex.unlock();
+                foundEntry = true;
+                (*litr)->_frameNumberLastRequest = frameNumber;
+                (*litr)->_timestampLastRequest = timestamp;
+                (*litr)->_priorityLastRequest = priority;
+                ++((*litr)->_numOfRequests);
+            }
+        }        
     }
     
     if (!foundEntry)
     {
     
-        _fileRequestListMutex.lock();
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
 
-            // search to see if entry already  in file request list.
-            bool foundEntry = false;
-            for(DatabaseRequestList::iterator ritr = _fileRequestList.begin();
-                ritr != _fileRequestList.end() && !foundEntry;
-                ++ritr)
+        // search to see if entry already  in file request list.
+        bool foundEntry = false;
+        for(DatabaseRequestList::iterator ritr = _fileRequestList.begin();
+            ritr != _fileRequestList.end() && !foundEntry;
+            ++ritr)
+        {
+            if ((*ritr)->_fileName==fileName)
             {
-                if ((*ritr)->_fileName==fileName)
-                {
-                    foundEntry = true;
-                    (*ritr)->_timestampLastRequest = timestamp;
-                    (*ritr)->_priorityLastRequest = priority;
-                    (*ritr)->_frameNumberLastRequest = frameNumber;
-                    ++((*ritr)->_numOfRequests);
-                }
-            }        
-
-            if (!foundEntry)
-            {
-                osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
-
-                osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
-
-                databaseRequest->_fileName = fileName;
-                databaseRequest->_frameNumberFirstRequest = frameNumber;
-                databaseRequest->_timestampFirstRequest = timestamp;
-                databaseRequest->_priorityFirstRequest = priority;
-                databaseRequest->_frameNumberLastRequest = frameNumber;
-                databaseRequest->_timestampLastRequest = timestamp;
-                databaseRequest->_priorityLastRequest = priority;
-                databaseRequest->_groupForAddingLoadedSubgraph = group;
-
-                _fileRequestList.push_back(databaseRequest);
-                
-                updateDatabasePagerThreadBlock();
+                foundEntry = true;
+                (*ritr)->_timestampLastRequest = timestamp;
+                (*ritr)->_priorityLastRequest = priority;
+                (*ritr)->_frameNumberLastRequest = frameNumber;
+                ++((*ritr)->_numOfRequests);
             }
+        }        
 
-        _fileRequestListMutex.unlock();
+        if (!foundEntry)
+        {
+            osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
+
+            osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
+
+            databaseRequest->_fileName = fileName;
+            databaseRequest->_frameNumberFirstRequest = frameNumber;
+            databaseRequest->_timestampFirstRequest = timestamp;
+            databaseRequest->_priorityFirstRequest = priority;
+            databaseRequest->_frameNumberLastRequest = frameNumber;
+            databaseRequest->_timestampLastRequest = timestamp;
+            databaseRequest->_priorityLastRequest = priority;
+            databaseRequest->_groupForAddingLoadedSubgraph = group;
+
+            _fileRequestList.push_back(databaseRequest);
+
+            updateDatabasePagerThreadBlock();
+        }
     }
     
     if (!isRunning())
@@ -179,6 +217,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         if (!s_startThreadCalled)
         {
             s_startThreadCalled = true;
+            _done = false;
             osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
             setSchedulePriority(_threadPriorityDuringFrame);
             startThread();
@@ -300,6 +339,12 @@ struct SortFileRequestFunctor
 };
 
 
+void DatabasePager::setDatabasePagerThreadPause(bool pause)
+{
+    _databasePagerThreadPaused = pause;
+    updateDatabasePagerThreadBlock();
+}
+
 void DatabasePager::run()
 {
     osg::notify(osg::INFO)<<"DatabasePager::run()"<<std::endl;
@@ -326,7 +371,8 @@ void DatabasePager::run()
         if (_deleteRemovedSubgraphsInDatabaseThread)
         {
             osg::ref_ptr<osg::Object> obj = 0;
-            _childrenToDeleteListMutex.lock();
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_childrenToDeleteListMutex);
                 if (!_childrenToDeleteList.empty())
                 {
                     //osg::notify(osg::NOTICE)<<"In DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" objects"<<std::endl;
@@ -338,11 +384,7 @@ void DatabasePager::run()
                     updateDatabasePagerThreadBlock();
 
                 }
-                else
-                {
-                    //osg::notify(osg::NOTICE)<<"In DatabasePager thread nothing to deleting"<<std::endl;
-                }
-            _childrenToDeleteListMutex.unlock();
+            }
         }
 
         //
@@ -351,14 +393,15 @@ void DatabasePager::run()
         osg::ref_ptr<DatabaseRequest> databaseRequest;
     
         // get the front of the file request list.
-        _fileRequestListMutex.lock();
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
             if (!_fileRequestList.empty())
             {
                 std::sort(_fileRequestList.begin(),_fileRequestList.end(),SortFileRequestFunctor());
                 databaseRequest = _fileRequestList.front();
             }
-        _fileRequestListMutex.unlock();
-        
+        }
+                
         if (databaseRequest.valid())
         {
             // check if databaseRequest is still relevant
@@ -409,29 +452,26 @@ void DatabasePager::run()
 
                 // move the databaseRequest from the front of the fileRequest to the end of
                 // dataLoad list.
-                _fileRequestListMutex.lock();
+                
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
 
-                    if (databaseRequest->_loadedModel.valid())
+                if (databaseRequest->_loadedModel.valid())
+                {
+                    if (loadedObjectsNeedToBeCompiled)
                     {
-                        if (loadedObjectsNeedToBeCompiled)
-                        {
-                            _dataToCompileListMutex.lock();
-                                _dataToCompileList.push_back(databaseRequest);
-                            _dataToCompileListMutex.unlock();
-                        }
-                        else
-                        {
-                            _dataToMergeListMutex.lock();
-                                _dataToMergeList.push_back(databaseRequest);
-                            _dataToMergeListMutex.unlock();
-                        }
-                    }        
+                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
+                        _dataToCompileList.push_back(databaseRequest);
+                    }
+                    else
+                    {
+                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
+                        _dataToMergeList.push_back(databaseRequest);
+                    }
+                }        
 
-                    _fileRequestList.erase(_fileRequestList.begin());
+                if (!_fileRequestList.empty()) _fileRequestList.erase(_fileRequestList.begin());
 
-                    updateDatabasePagerThreadBlock();
-
-                _fileRequestListMutex.unlock();
+                updateDatabasePagerThreadBlock();
 
             }
             else
@@ -439,13 +479,11 @@ void DatabasePager::run()
                 //std::cout<<"frame number delta for "<<databaseRequest->_fileName<<" "<<_frameNumber-databaseRequest->_frameNumberLastRequest<<std::endl;
                 // remove the databaseRequest from the front of the fileRequest to the end of
                 // dataLoad list as its is no longer relevant
-                _fileRequestListMutex.lock();
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
 
-                    _fileRequestList.erase(_fileRequestList.begin());
+                if (!_fileRequestList.empty()) _fileRequestList.erase(_fileRequestList.begin());
 
-                    updateDatabasePagerThreadBlock();
-
-                _fileRequestListMutex.unlock();
+                updateDatabasePagerThreadBlock();
 
             }
         }
@@ -469,10 +507,11 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
     DatabaseRequestList localFileLoadedList;
 
     // get the dat for the _dataToCompileList, leaving it empty via a std::vector<>.swap.
-    _dataToMergeListMutex.lock();
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
         localFileLoadedList.swap(_dataToMergeList);
-    _dataToMergeListMutex.unlock();
-    
+    }
+        
     // add the loaded data into the scene graph.
     for(DatabaseRequestList::iterator itr=localFileLoadedList.begin();
         itr!=localFileLoadedList.end();
@@ -566,56 +605,6 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     }
 
 
-#if 0
-    if (_deleteRemovedSubgraphsInDatabaseThread)
-    {
-
-        // for all the subgraphs to remove find all the textures and drawables and
-        // strip them from the display lists.   
-        ReleaseTexturesAndDrawablesVisitor rtadv;
-        for(osg::NodeList::iterator nitr=childrenRemoved.begin();
-            nitr!=childrenRemoved.end();
-            ++nitr)
-        {
-            (*nitr)->accept(rtadv);
-        }
-        
-        // unref' the children we need to remove, keeping behind the Texture's and Drawables for later deletion
-        // inside the database thread.
-        childrenRemoved.clear();
-
-        // transfer the removed children over to the to delete list so the database thread can delete them.
-        _childrenToDeleteListMutex.lock();
-
-            rtadv.releaseGLObjects(_childrenToDeleteList);
-
-        _childrenToDeleteListMutex.unlock();
-    }
-
-    // flush all the references from the child removed list.  If  _deleteRemovedSubgraphsInDatabaseThread 
-    // is false then this will typically resulting in a delete, otherwise this will be left to the
-    // clean up of the _childrenToDeleteList from within the database paging thread.
-    childrenRemoved.clear();
-
-    for(unsigned int i=_pagedLODList.size();
-        i>0;
-        )
-    {
-        --i;
-        
-        osg::PagedLOD* plod = _pagedLODList[i].get();
-        if (plod->referenceCount()==1)
-        {
-            osg::notify(osg::NOTICE)<<"PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
-            _pagedLODList.erase(_pagedLODList.begin()+i);
-        }
-        else
-        {
-            //osg::notify(osg::INFO)<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
-        }
-    }
-    
-#endif    
     
     if (osgDB::Registry::instance()->getSharedStateManager()) 
         osgDB::Registry::instance()->getSharedStateManager()->prune();
@@ -681,7 +670,8 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
     osg::ref_ptr<DatabaseRequest> databaseRequest;
     
     // get the first compileable entry.
-    _dataToCompileListMutex.lock();
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
         if (!_dataToCompileList.empty())
         {
             std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
@@ -703,7 +693,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
             databaseRequest = _dataToCompileList.front();
         }
-    _dataToCompileListMutex.unlock();
+    };
 
     // while there are valid databaseRequest's in the to compile list and there is
     // sufficient time left compile each databaseRequest's stateset and drawables.
@@ -785,22 +775,22 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
             // we've compile all of the current databaseRequest so we can now pop it off the
             // to compile list and place it on the merge list.
-            _dataToCompileListMutex.lock();
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
             
-                _dataToMergeListMutex.lock();
-                    _dataToMergeList.push_back(databaseRequest);
-                _dataToMergeListMutex.unlock();
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
+                _dataToMergeList.push_back(databaseRequest);
+            }
 
-                _dataToCompileList.erase(_dataToCompileList.begin());
-                
-                if (!_dataToCompileList.empty())
-                {
-                    std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
-                    databaseRequest = _dataToCompileList.front();
-                }
-                else databaseRequest = 0;
+            if (!_dataToCompileList.empty()) _dataToCompileList.erase(_dataToCompileList.begin());
 
-            _dataToCompileListMutex.unlock();
+            if (!_dataToCompileList.empty())
+            {
+                std::sort(_dataToCompileList.begin(),_dataToCompileList.end(),SortFileRequestFunctor());
+                databaseRequest = _dataToCompileList.front();
+            }
+            else databaseRequest = 0;
+
         }
         else 
         {

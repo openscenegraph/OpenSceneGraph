@@ -350,7 +350,7 @@ void CullVisitor::apply(Node& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
     if (node_state) popStateSet();
@@ -551,7 +551,7 @@ void CullVisitor::apply(Group& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -581,7 +581,7 @@ void CullVisitor::apply(Transform& node)
     node.getLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get());
     
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     popModelViewMatrix();
 
@@ -612,7 +612,7 @@ void CullVisitor::apply(Projection& node)
     *matrix = node.getMatrix();
     pushProjectionMatrix(matrix.get());
     
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     popProjectionMatrix();
 
@@ -649,7 +649,7 @@ void CullVisitor::apply(LOD& node)
     if (node_state) pushStateSet(node_state);
 
     //notify(INFO) << "selecting child "<<eval<< std::endl;
-    node.getChild(eval)->accept(*this);
+    handle_cull_callbacks_and_accept(node,node.getChild(eval));
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -667,7 +667,7 @@ void CullVisitor::apply(osg::EarthSky& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    traverse(node);
+    handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();
@@ -708,13 +708,13 @@ void CullVisitor::apply(Impostor& node)
     {
         // outwith the impostor distance threshold therefore simple
         // traverse the appropriate child of the LOD.
-        node.getChild(eval)->accept(*this);
+        handle_cull_callbacks_and_accept(node,node.getChild(eval));
     }
     else if (_viewportStack.empty())
     {
         // need to use impostor but no valid viewport is defined to simply
         // default to using the LOD child as above.
-        node.getChild(eval)->accept(*this);
+        handle_cull_callbacks_and_accept(node,node.getChild(eval));
     }
     else
     {    
@@ -799,7 +799,7 @@ void CullVisitor::apply(Impostor& node)
         {
            // no impostor has been selected or created so default to 
            // traversing the usual LOD selected child.
-            node.getChild(eval)->accept(*this);
+            handle_cull_callbacks_and_accept(node,node.getChild(eval));
         }
                 
     }
@@ -973,7 +973,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     {
 
         // traversing the usual LOD selected child.
-        node.getChild(eval)->accept(*this);
+        handle_cull_callbacks_and_accept(node,node.getChild(eval));
 
     }
 

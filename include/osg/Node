@@ -112,6 +112,15 @@ class SG_EXPORT Node : public Object
         inline const int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
 
 
+        /** Set cull node callback, called during cull traversal. */
+        void setCullCallback(NodeCallback* nc) { _cullCallback = nc; }
+
+        /** Get app node callback, called during app traversal. */
+        inline NodeCallback* getCullCallback() { return _cullCallback.get(); }
+
+        /** Get const app node callback, called during app traversal. */
+        inline const NodeCallback* getCullCallback() const { return _cullCallback.get(); }
+
         /** Set the view frustum/small feature culling of this node to be active or inactive.
           * The default value to true for _cullingActive. Used a guide
           * to the cull traversal.*/
@@ -219,6 +228,8 @@ class SG_EXPORT Node : public Object
         ref_ptr<NodeCallback> _appCallback;
         int _numChildrenRequiringAppTraversal;
         void setNumChildrenRequiringAppTraversal(const int num);
+
+        ref_ptr<NodeCallback> _cullCallback;
 
         bool _cullingActive;
         int _numChildrenWithCullingDisabled;        

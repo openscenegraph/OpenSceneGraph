@@ -27,6 +27,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _parents(), // leave empty as parentList is managed by Group.
         _appCallback(node._appCallback),
         _numChildrenRequiringAppTraversal(0), // assume no children yet.
+        _cullCallback(node._cullCallback),
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
         _userData(copyop(node._userData.get())),

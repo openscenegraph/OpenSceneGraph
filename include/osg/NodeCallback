@@ -22,7 +22,13 @@ class SG_EXPORT NodeCallback : public Referenced {
         
         
         /** Callback method call by the NodeVisitor when visiting a node.*/
-        virtual void operator()(Node*, NodeVisitor*) {}
+        virtual void operator()(Node* node, NodeVisitor* nv)
+        { 
+            // note, callback is repsonsible for scenegraph traversal so
+            // should always include call the traverse(node,nv) to ensure 
+            // that the rest of cullbacks and the scene graph are traversed.
+            traverse(node,nv);
+        }
         
         /** Call any nested callbacks and then traverse the scene graph. */
         void traverse(Node* node,NodeVisitor* nv);

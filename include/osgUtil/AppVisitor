@@ -13,6 +13,7 @@
 #include <osg/Switch>
 #include <osg/LightSource>
 #include <osg/Transform>
+#include <osg/Projection>
 #include <osg/Impostor>
 
 #include <osgUtil/Export>
@@ -33,17 +34,18 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
 
         virtual void reset();
 
-        virtual void apply(osg::Node& node)       { handle_callbacks(node); }
+        virtual void apply(osg::Node& node)       { handle_callbacks_and_traverse(node); }
         
-        virtual void apply(osg::Geode& node)      { handle_callbacks(node); }
-        virtual void apply(osg::Billboard& node)  { handle_callbacks(node); }
-        virtual void apply(osg::LightSource& node){ handle_callbacks(node); }
+        virtual void apply(osg::Geode& node)      { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Billboard& node)  { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::LightSource& node){ handle_callbacks_and_traverse(node); }
         
-        virtual void apply(osg::Group& node)      { handle_callbacks(node); }
-        virtual void apply(osg::Transform& node)  { handle_callbacks(node); }
-        virtual void apply(osg::Switch& node)     { handle_callbacks(node); }
-        virtual void apply(osg::LOD& node)        { handle_callbacks(node); }
-        virtual void apply(osg::Impostor& node)   { handle_callbacks(node); }
+        virtual void apply(osg::Group& node)      { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Transform& node)  { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Projection& node) { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Switch& node)     { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::LOD& node)        { handle_callbacks_and_traverse(node); }
+        virtual void apply(osg::Impostor& node)   { handle_callbacks_and_traverse(node); }
 
 
     protected:
@@ -54,7 +56,7 @@ class OSGUTIL_EXPORT AppVisitor : public osg::NodeVisitor
         /** prevent unwanted copy operator.*/
         AppVisitor& operator = (const AppVisitor&) { return *this; }
         
-        inline void handle_callbacks(osg::Node& node)
+        inline void handle_callbacks_and_traverse(osg::Node& node)
         {
             osg::NodeCallback* callback = node.getAppCallback();
             if (callback) (*callback)(&node,this);

@@ -5,6 +5,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
 #include <osg/Geode>
+#include <osg/ShapeDrawable>
 
 #include <osgUtil/Optimizer>
 
@@ -18,128 +19,6 @@
 #include <osgProducer/Viewer>
 
 
-struct SolarSystemParameters
-{
-    SolarSystemParameters():
-        radiusSun(20.0),
-        RorbitEarth(100.0),
-        radiusEarth(10.0),
-        radiusMoon(2.0),
-        RorbitMoon(20.0),
-        tiltEarth(5.0),
-        rotateSpeedEarth(5.0)
-    {}
-    
-    double radiusSun;
-    double RorbitEarth;
-    double radiusEarth;
-    double radiusMoon;
-    double RorbitMoon;
-    double tiltEarth;
-    double rotateSpeedEarth;
-};
-
-osg::Node* createSolarSystem(SolarSystemParameters& parameters)
-{
-    return 0;
-}
-
-int main( int argc, char **argv )
-{
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of osg::AnimationPath and UpdateCallbacks for adding animation to your scenes.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-
-    // initialize the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-
-
-    SolarSystemParameters parameters;
-
-    while (arguments.read("--radiusMoon",parameters.radiusMoon)) {}
-
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    // load the nodes from the commandline arguments.
-    osg::Node* model = createSolarSystem(parameters);
-    if (!model)
-    {
-        return 1;
-    }
-    
-    std::cout << "radiusSun = " << parameters.radiusSun << std::endl;
-    std::cout << "RorbitEarth = " << parameters.RorbitEarth << std::endl;
-    std::cout << "radiusEarth = " << parameters.radiusEarth << std::endl;
-    std::cout << "radiusMoon = " << parameters.radiusMoon << std::endl;
-    std::cout << "RorbitMoon = " << parameters.RorbitMoon << std::endl;
-    std::cout << "tiltEarth = " << parameters.tiltEarth << std::endl;
-    std::cout << "rotateSpeedEarth = " << parameters.rotateSpeedEarth << std::endl;
-
-    
-    /*
-    // tilt the scene so the default eye position is looking down on the model.
-    osg::MatrixTransform* rootnode = new osg::MatrixTransform;
-    rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
-    rootnode->addChild(model);
-
-    // run optimization over the scene graph
-    osgUtil::Optimizer optimzer;
-    optimzer.optimize(rootnode);
-     
-    // set the scene to render
-    viewer.setSceneData(rootnode);
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete before exit.
-    viewer.sync();
-*/
-    return 0;
-}
-
-/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
 {
     // set up the animation path 
@@ -165,147 +44,260 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
 
     }
     return animationPath;    
-}
+}// end createAnimationPath
 
-osg::Node* createBase(const osg::Vec3& center,float radius)
+
+osg::MatrixTransform* createEarthTranslationAndTilt( double RorbitEarth, double tiltEarth ) 
 {
+        osg::MatrixTransform* earthPositioned = new osg::MatrixTransform;
+        //earthPositioned->setDataVariance(osg::Object::STATIC);
+        earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, RorbitEarth, 0.0 ) )*
+                                     osg::Matrix::scale(1.0, 1.0, 1.0)*
+                                     osg::Matrix::rotate(osg::inDegrees( tiltEarth ),0.0f,0.0f,1.0f));
+                                     
+        return earthPositioned;
+}// end createEarthTranslationAndTilt
 
-    
 
-    int numTilesX = 10;
-    int numTilesY = 10;
-    
-    float width = 2*radius;
-    float height = 2*radius;
-    
-    osg::Vec3 v000(center - osg::Vec3(width*0.5f,height*0.5f,0.0f));
-    osg::Vec3 dx(osg::Vec3(width/((float)numTilesX),0.0,0.0f));
-    osg::Vec3 dy(osg::Vec3(0.0f,height/((float)numTilesY),0.0f));
-    
-    // fill in vertices for grid, note numTilesX+1 * numTilesY+1...
-    osg::Vec3Array* coords = new osg::Vec3Array;
-    int iy;
-    for(iy=0;iy<=numTilesY;++iy)
-    {
-        for(int ix=0;ix<=numTilesX;++ix)
-        {
-            coords->push_back(v000+dx*(float)ix+dy*(float)iy);
-        }
-    }
-    
-    //Just two colours - black and white.
-    osg::Vec4Array* colors = new osg::Vec4Array;
-    colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f)); // white
-    colors->push_back(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
-    int numColors=colors->size();
-    
-    
-    int numIndicesPerRow=numTilesX+1;
-    osg::UByteArray* coordIndices = new osg::UByteArray; // assumes we are using less than 256 points...
-    osg::UByteArray* colorIndices = new osg::UByteArray;
-    for(iy=0;iy<numTilesY;++iy)
-    {
-        for(int ix=0;ix<numTilesX;++ix)
-        {
-            // four vertices per quad.
-            coordIndices->push_back(ix    +(iy+1)*numIndicesPerRow);
-            coordIndices->push_back(ix    +iy*numIndicesPerRow);
-            coordIndices->push_back((ix+1)+iy*numIndicesPerRow);
-            coordIndices->push_back((ix+1)+(iy+1)*numIndicesPerRow);
-            
-            // one color per quad
-            colorIndices->push_back((ix+iy)%numColors);
-        }
-    }
-    
-
-    // set up a single normal
-    osg::Vec3Array* normals = new osg::Vec3Array;
-    normals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
-    
-
-    osg::Geometry* geom = new osg::Geometry;
-    geom->setVertexArray(coords);
-    geom->setVertexIndices(coordIndices);
-    
-    geom->setColorArray(colors);
-    geom->setColorIndices(colorIndices);
-    geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-    
-    geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
-    
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,coordIndices->size()));
-    
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(geom);
-    
-    return geode;
-}
-
-osg::Node* createMovingModel(const osg::Vec3& center, float radius)
+osg::MatrixTransform* createRotation( double orbit, double speed )
 {
+    osg::Vec3 center( 0.0, 0.0, 0.0 );
     float animationLength = 10.0f;
-
-    osg::AnimationPath* animationPath = createAnimationPath(center,radius,animationLength);
-
-    osg::Group* model = new osg::Group;
-
-    osg::Node* glider = osgDB::readNodeFile("glider.osg");
-    if (glider)
-    {
-        const osg::BoundingSphere& bs = glider->getBound();
-
-        float size = radius/bs.radius()*0.3f;
-        osg::MatrixTransform* positioned = new osg::MatrixTransform;
-        positioned->setDataVariance(osg::Object::STATIC);
-        positioned->setMatrix(osg::Matrix::translate(-bs.center())*
-                                     osg::Matrix::scale(size,size,size)*
-                                     osg::Matrix::rotate(osg::inDegrees(-90.0f),0.0f,0.0f,1.0f));
+    osg::AnimationPath* animationPath = createAnimationPath( center, orbit, animationLength );
     
-        positioned->addChild(glider);
+    osg::MatrixTransform* rotation = new osg::MatrixTransform;
+    rotation->setUpdateCallback( new osg::AnimationPathCallback( animationPath, 0.0f, speed ) );
     
-        osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform;    
-        xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0,1.0));
-        xform->addChild(positioned);
+    return rotation;
+}// end createEarthRotation
 
-        model->addChild(xform);
-    }
- 
-    osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
-    if (cessna)
-    {
-        const osg::BoundingSphere& bs = cessna->getBound();
 
-        float size = radius/bs.radius()*0.3f;
-        osg::MatrixTransform* positioned = new osg::MatrixTransform;
-        positioned->setDataVariance(osg::Object::STATIC);
-        positioned->setMatrix(osg::Matrix::translate(-bs.center())*
-                                     osg::Matrix::scale(size,size,size)*
-                                     osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,1.0f));
-    
-        positioned->addChild(cessna);
-    
-        osg::MatrixTransform* xform = new osg::MatrixTransform;
-        xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
-        xform->addChild(positioned);
-
-        model->addChild(xform);
-    }
-    
-    return model;
-}
-
-osg::Node* createModel()
+osg::MatrixTransform* createMoonTranslation( double RorbitMoon )
 {
-    osg::Vec3 center(0.0f,0.0f,0.0f);
-    float radius = 100.0f;
+    osg::MatrixTransform* moonPositioned = new osg::MatrixTransform;
+    //earthPositioned->setDataVariance(osg::Object::STATIC);
+    //earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( RorbitEarth, 0.0, 0.0 ) )*
+    moonPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, RorbitMoon, 0.0 ) )*
+    //earthPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, 0.0, RorbitEarth ) )*
+                                 osg::Matrix::scale(1.0, 1.0, 1.0)*
+                                 osg::Matrix::rotate(osg::inDegrees(0.0f),0.0f,0.0f,1.0f));
 
-    osg::Group* root = new osg::Group;
+    return moonPositioned;
+}// end createMoonTranslation
 
-    root->addChild(createMovingModel(center,radius*0.8f));
 
-    root->addChild(createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius));
+osg::Geode* createPlanet( double radius, std::string name, osg::Vec4 color )
+{
+    // create a cube shape
+    osg::Sphere *planetSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), radius );
 
-    return root;
-} */
+    // create a container that makes the sphere drawable
+    osg::ShapeDrawable *sPlanetSphere = new osg::ShapeDrawable( planetSphere );
+ 
+    // set the object color
+    sPlanetSphere->setColor( color );
+   
+    // create a geode object to as a container for our drawable sphere object
+    osg::Geode* geodePlanet = new osg::Geode();
+    geodePlanet->setName( name );
+    
+    // add our drawable sphere to the geode container
+    geodePlanet->addDrawable( sPlanetSphere );
+
+    return( geodePlanet );
+}// end createPlanet
+
+
+class SolarSystem
+{
+
+public:
+    double _radiusSun;
+    double _radiusEarth;
+    double _RorbitEarth;
+    double _tiltEarth;
+    double _rotateSpeedEarthAndMoon;
+    double _rotateSpeedEarth;
+    double _radiusMoon;
+    double _RorbitMoon;
+    double _rotateSpeedMoon;
+    
+    SolarSystem(
+        double _radiusSun = 20.0,
+        double _radiusEarth = 10.0,
+        double _RorbitEarth = 100.0,
+        double _tiltEarth = 5.0,
+        double _rotateSpeedEarthAndMoon = 5.0,
+        double _rotateSpeedEarth = 5.0,
+        double _radiusMoon = 2.0,
+        double _RorbitMoon = 20.0,
+        double _rotateSpeedMoon = 5.0 )
+    {}
+    
+    osg::Group* built()
+    {
+        osg::Group* thisSystem = new osg::Group;
+        
+        
+        // create the sun
+        osg::Node* sun = createPlanet( _radiusSun, "Sun", osg::Vec4( 1.0f, 1.0f, 0.5f, 1.0f) );
+        
+        // stick sun right under root, no transformations for the sun
+        thisSystem->addChild( sun );
+        
+        
+        
+        //creating right side of the graph with earth and moon and the rotations above it
+        
+        // create earth and moon
+        osg::Node* earth = createPlanet( _radiusEarth, "Earth", osg::Vec4( 0.0f, 0.0f, 1.0f, 1.0f) );
+        osg::Node* moon = createPlanet( _radiusMoon, "Moon", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f) );
+        
+        // create transformations for the earthMoonGroup
+        osg::MatrixTransform* aroundSunRotation = createRotation( _RorbitEarth, _rotateSpeedEarthAndMoon );
+        osg::MatrixTransform* earthPosition = createEarthTranslationAndTilt( _RorbitEarth, _tiltEarth );
+        
+        //Group with earth and moon under it
+        osg::Group* earthMoonGroup = new osg::Group;
+        
+        //transformation to rotate the earth around itself
+        osg::MatrixTransform* earthRotationAroundItself = createRotation ( 0.0, _rotateSpeedEarth );
+        
+        //transformations for the moon
+        osg::MatrixTransform* moonAroundEarthXform = createRotation( _RorbitMoon, _rotateSpeedMoon );
+        osg::MatrixTransform* moonTranslation = createMoonTranslation( _RorbitMoon );
+        
+        
+        moonTranslation->addChild( moon );
+        moonAroundEarthXform->addChild( moonTranslation );
+        earthMoonGroup->addChild( moonAroundEarthXform );
+        
+        earthRotationAroundItself->addChild( earth );
+        earthMoonGroup->addChild( earthRotationAroundItself );
+        
+        
+        earthPosition->addChild( earthMoonGroup );
+        aroundSunRotation->addChild( earthPosition );
+        
+        
+        thisSystem->addChild( aroundSunRotation );
+                
+        return( thisSystem );
+    }
+    
+    void printParameters()
+    {
+        std::cout << "radiusSun\t= " << _radiusSun << std::endl;
+        std::cout << "radiusEarth\t= " << _radiusEarth << std::endl;
+        std::cout << "RorbitEarth\t= " << _RorbitEarth << std::endl;
+        std::cout << "tiltEarth\t= " << _tiltEarth << std::endl;
+        std::cout << "rotateSpeedEarthAndMoon= " << _rotateSpeedEarthAndMoon     << std::endl;
+        std::cout << "rotateSpeedEarth= " << _rotateSpeedEarth << std::endl;
+        std::cout << "radiusMoon\t= " << _radiusMoon << std::endl;
+        std::cout << "RorbitMoon\t= " << _RorbitMoon << std::endl;
+        std::cout << "rotateSpeedMoon\t= " << _rotateSpeedMoon << std::endl;
+    }
+    
+};  // end SolarSystem
+
+
+int main( int argc, char **argv )
+{
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of osg::AnimationPath and UpdateCallbacks for adding animation to your scenes.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+
+    // initialize the viewer.
+    osgProducer::Viewer viewer(arguments);
+
+    // set up the value with sensible default event handlers.
+    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+
+    // get details on keyboard and mouse bindings used by the viewer.
+    viewer.getUsage(*arguments.getApplicationUsage());
+
+    SolarSystem solarSystem;
+
+    while (arguments.read("--radiusSun",solarSystem._radiusSun)) { }
+    while (arguments.read("--radiusEarth",solarSystem._radiusEarth)) { }
+    while (arguments.read("--RorbitEarth",solarSystem._RorbitEarth)) { }
+    while (arguments.read("--tiltEarth",solarSystem._tiltEarth)) { }
+    while (arguments.read("--rotateSpeedEarthAndMoon",solarSystem._rotateSpeedEarthAndMoon)) { }
+    while (arguments.read("--rotateSpeedEarth",solarSystem._rotateSpeedEarth)) { }
+    while (arguments.read("--radiusMoon",solarSystem._radiusMoon)) { }
+    while (arguments.read("--RorbitMoon",solarSystem._RorbitMoon)) { }
+    while (arguments.read("--rotateSpeedMoon",solarSystem._rotateSpeedMoon)) { }
+
+
+    // solarSystem.printParameters();
+
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        std::cout << "setup the following arguments: " << std::endl;
+        std::cout << "--radiusSun: double" << std::endl;
+        std::cout << "--radiusEarth: double" << std::endl;
+        std::cout << "--RorbitEarth: double" << std::endl;
+        std::cout << "--tiltEarth: double" << std::endl;
+        std::cout << "--rotateSpeedEarthAndMoon: double" << std::endl;
+        std::cout << "--rotateSpeedEarth: double" << std::endl;
+        std::cout << "--radiusMoon: double" << std::endl;
+        std::cout << "--RorbitMoon: double" << std::endl;
+        std::cout << "--rotateSpeedMoon: double" << std::endl;
+                
+        return 1;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    
+    osg::Group* root = solarSystem.built();
+        
+    /*
+    // tilt the scene so the default eye position is looking down on the model.
+    osg::MatrixTransform* rootnode = new osg::MatrixTransform;
+    rootnode->setMatrix(osg::Matrix::rotate(osg::inDegrees(30.0f),1.0f,0.0f,0.0f));
+    rootnode->addChild(model);
+    */
+
+    // run optimization over the scene graph
+    osgUtil::Optimizer optimzer;
+    optimzer.optimize( root );
+     
+    // set the scene to render
+    viewer.setSceneData( root );
+
+    // create the windows and run the threads.
+    viewer.realize();
+
+    while( !viewer.done() )
+    {
+        // wait for all cull and draw threads to complete.
+        viewer.sync();
+
+        // update the scene by traversing it with the the update visitor which will
+        // call all node update callbacks and animations.
+        viewer.update();
+         
+        // fire off the cull and draw traversals of the scene.
+        viewer.frame();
+        
+    }
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
+
+    return 0;
+}

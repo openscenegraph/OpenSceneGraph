@@ -110,11 +110,6 @@ void Camera::setPerspective(const double fovy,const double aspectRatio,
 
     _zNear = zNear;
     _zFar = zFar;
-
-    notify(INFO)<<"osg::Camera::setPerspective(fovy="<<fovy<<",aspectRatio="<<aspectRatio<<","<<endl;
-    notify(INFO)<<"                            zNear="<<zNear<<", zFar="<<zFar<<")"<<endl;    
-    notify(INFO)<<"    osg::Camera::calc_fovx()="<<calc_fovx()<<endl;
-    notify(INFO)<<"    osg::Camera::calc_fovy()="<<calc_fovy()<<endl;
     
     _dirty = true;
 }
@@ -140,11 +135,6 @@ void Camera::setFOV(const double fovx,const double fovy,
     _zNear = zNear;
     _zFar = zFar;
 
-    notify(INFO)<<"osg::Camera::setFOV(fovx="<<fovx<<",fovy="<<fovy<<","<<endl;
-    notify(INFO)<<"                    zNear="<<zNear<<", zFar="<<zFar<<")"<<endl;    
-    notify(INFO)<<"    osg::Camera::calc_fovx()="<<calc_fovx()<<endl;
-    notify(INFO)<<"    osg::Camera::calc_fovy()="<<calc_fovy()<<endl;
-    
     _dirty = true;
 }
 
@@ -178,10 +168,6 @@ void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRa
         _bottom /= deltaRatio;
         _top /= deltaRatio;
     }
-
-    notify(INFO)<<"osg::Camera::adjustAspectRatio(newAspectRatio="<<newAspectRatio<<", AdjustAxis="<<aa<<")"<<endl;
-    notify(INFO)<<"    osg::Camera::calc_fovx()="<<calc_fovx()<<endl;
-    notify(INFO)<<"    osg::Camera::calc_fovy()="<<calc_fovy()<<endl;
 
     _dirty = true;
 }

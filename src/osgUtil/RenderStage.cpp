@@ -42,6 +42,7 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _renderStageLighting(rhs._renderStageLighting)
 
 {
+    _stage = this;
 }
 
 

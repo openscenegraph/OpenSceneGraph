@@ -119,7 +119,7 @@ double getLinearUnits(const osg::CoordinateSystemNode* lhs)
     return result;
 }
 
-bool areCoordinateSystemEquivilant(const osg::CoordinateSystemNode* lhs,const osg::CoordinateSystemNode* rhs)
+bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const osg::CoordinateSystemNode* rhs)
 {
     // if ptr's equal the return true
     if (lhs == rhs) return true;
@@ -127,7 +127,7 @@ bool areCoordinateSystemEquivilant(const osg::CoordinateSystemNode* lhs,const os
     // if one CS is NULL then true false
     if (!lhs || !rhs)
     {
-        //std::cout<<"areCoordinateSystemEquivilant lhs="<<lhs<<"  rhs="<<rhs<<std::endl;
+        //std::cout<<"areCoordinateSystemEquivalent lhs="<<lhs<<"  rhs="<<rhs<<std::endl;
         return false;
     }
     
@@ -157,7 +157,7 @@ bool areCoordinateSystemEquivilant(const osg::CoordinateSystemNode* lhs,const os
 #if 0
     int result2 = lhsSR.IsSameGeogCS(&rhsSR);
 
-     std::cout<<"areCoordinateSystemEquivilant "<<std::endl
+     std::cout<<"areCoordinateSystemEquivalent "<<std::endl
               <<"LHS = "<<lhs->getCoordinateSystem()<<std::endl
               <<"RHS = "<<rhs->getCoordinateSystem()<<std::endl
               <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
@@ -293,7 +293,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
         return itr->second;
     }
 
-    if (areCoordinateSystemEquivilant(_cs.get(),cs))
+    if (areCoordinateSystemEquivalent(_cs.get(),cs))
     {
         return *this;
     }
@@ -788,9 +788,9 @@ bool DataSet::Source::needReproject(const osg::CoordinateSystemNode* cs, double 
         return true;
     }
 
-    if (!areCoordinateSystemEquivilant(_cs.get(),cs))
+    if (!areCoordinateSystemEquivalent(_cs.get(),cs))
     {
-        std::cout<<"Need to do reproject !areCoordinateSystemEquivilant(_cs.get(),cs)"<<std::endl;
+        std::cout<<"Need to do reproject !areCoordinateSystemEquivalent(_cs.get(),cs)"<<std::endl;
 
         return true;
     }

@@ -1,6 +1,6 @@
-
 #include <osg/Types>
 #include <osg/Notify>
+#include <osg/TriangleFunctor>
 
 #include <osgUtil/TriStripVisitor>
 

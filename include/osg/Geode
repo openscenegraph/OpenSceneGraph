@@ -68,7 +68,7 @@ class SG_EXPORT Geode : public Node
             return false;
         }
 
-        /** return the iterator postion for specified Drawable.
+        /** return the iterator position for specified Drawable.
          *  return _geoset.end() if gset not is contained in Geode.
          */
         inline DrawableList::iterator findDrawable(const Drawable* gset)
@@ -83,7 +83,7 @@ class SG_EXPORT Geode : public Node
             return _drawables.end();
         }
 
-        /** return the const_iterator postion for specified Drawable.
+        /** return the const_iterator position for specified Drawable.
          *  return _geoset.end() if gset not is contained in Geode.
          */
         inline DrawableList::const_iterator findDrawable(const Drawable* gset) const
@@ -98,7 +98,7 @@ class SG_EXPORT Geode : public Node
             return _drawables.end();
         }
 
-        /** complile OpenGL Display List for each geoset.*/
+        /** compile OpenGL Display List for each geoset.*/
         void compileDrawables(State& state);
 
     protected:

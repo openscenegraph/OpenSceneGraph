@@ -7,7 +7,7 @@ namespace osg {
 
 /** return true if OpenGL "extension" is supported.
   * note: Must only called within a valid OpenGL context,
-  * undefined behaviour may occur otherwise.
+  * undefined behavior may occur otherwise.
   */
 SG_EXPORT extern const bool isGLExtensionSupported(const char *extension);
 

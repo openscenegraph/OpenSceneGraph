@@ -72,8 +72,8 @@ class SG_EXPORT Group : public Node
         }
 
 
-        /** return the iterator postion for specified Node.
-         *  return _chilren.end() if node is not contained in Group.
+        /** return the iterator position for specified Node.
+         *  return _children.end() if node is not contained in Group.
          */
         inline ChildList::iterator findNode( const Node* node )
         {
@@ -86,8 +86,8 @@ class SG_EXPORT Group : public Node
             return _children.end();
         }
 
-        /** return the const_iterator postion for specified Node.
-         *  return _chilren.end() if node is not contained in Group.
+        /** return the const_iterator position for specified Node.
+         *  return _children.end() if node is not contained in Group.
          */
         inline ChildList::const_iterator findNode( const Node* node ) const
         {

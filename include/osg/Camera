@@ -13,7 +13,7 @@ namespace osg {
 /** Camera class for encapsulating the view position and orientation and
   * projection (lens) used.  Creates a projection and modelview matrices
   * which can be used to set OpenGL's PROJECTION and MODELVIEW matrices
-  * represectively.
+  * respectively.
   */
 class SG_EXPORT Camera: public osg::Referenced
 {
@@ -24,10 +24,10 @@ class SG_EXPORT Camera: public osg::Referenced
         virtual ~Camera();
 
         /** Range of projection types.
-          * OTHO2D is a special case of OTHO where the near and far planes
+          * ORTHO2D is a special case of ORTHO where the near and far planes
           * are equal to -1 and 1 respectively.
-          * PRESPECTIVE is a special case of FRUSTUM where the left & right
-          * and bottom and top and symetrical.*/
+          * PERSPECTIVE is a special case of FRUSTUM where the left & right
+          * and bottom and top and symmetrical.*/
         enum ProjectionType
         {
             ORTHO,
@@ -40,12 +40,12 @@ class SG_EXPORT Camera: public osg::Referenced
           * and set perspective methods.*/
         const ProjectionType getProjectionType() const { return _projectionType; }
 
-        /** Set a orthographics projection. See glOrtho for further details.*/
+        /** Set a orthographic projection. See glOrtho for further details.*/
         void setOrtho(const double left, const double right,
                       const double bottom, const double top,
                       const double zNear, const double zFar);
                       
-        /** Set a 2D orthographics projection. See gluOrtho2D for further details.*/
+        /** Set a 2D orthographic projection. See gluOrtho2D for further details.*/
         void setOrtho2D(const double left, const double right,
                         const double bottom, const double top);
 
@@ -54,12 +54,12 @@ class SG_EXPORT Camera: public osg::Referenced
                         const double bottom, const double top,
                         const double zNear, const double zFar);
 
-        /** Set a sysmetical perspective projection, See gluPerspective for further details.
+        /** Set a symmetrical perspective projection, See gluPerspective for further details.
           * Aspect ratio is defined as width/height.*/
         void setPerspective(const double fovy,const double aspectRatio,
                             const double zNear, const double zFar);
 
-        /** Set a sysmetical perspective projection using field of view.*/
+        /** Set a sysmmetical perspective projection using field of view.*/
         void setFOV(const double fovx,const double fovy,
                             const double zNear, const double zFar);
         
@@ -83,15 +83,15 @@ class SG_EXPORT Camera: public osg::Referenced
           * are adjusted on a resize. */
         const AdjustAspectRatioMode getAdjustAspectRatioMode() const { return _adjustAspectRatioMode; }
 
-        /** Adjust the clipping planes to account for a new window aspcect ratio.
-          * Typicall used after resizeing a window. Aspect ratio is defined as
+        /** Adjust the clipping planes to account for a new window aspect ratio.
+          * Typically used after resizing a window. Aspect ratio is defined as
           * width/height.*/
         void adjustAspectRatio(const double newAspectRatio)
         {
             adjustAspectRatio(newAspectRatio,_adjustAspectRatioMode);
         }
 
-        /** Adjust the clipping planes to account for a new window aspcect ratio.
+        /** Adjust the clipping planes to account for a new window aspect ratio.
           * Typicall used after resizeing a window. Aspect ratio is defined as
           * width/height.*/
         void adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa);
@@ -103,13 +103,13 @@ class SG_EXPORT Camera: public osg::Referenced
         const double zNear() const;
         const double zFar() const;
 
-        /** Calculate and return the equivilant fovx for the current project setting.
-          * This value is only valid for when a symetric persepctive projection exists.
+        /** Calculate and return the equivalent fovx for the current project setting.
+          * This value is only valid for when a symmetric perspective projection exists.
           * i.e. getProjectionType()==PERSPECTIVE.*/
         const double calc_fovy() const;
 
-        /** Calculate and return the equivilant fovy for the current project setting.
-          * This value is only valid for when a symetric persepctive projection exists.
+        /** Calculate and return the equivalent fovy for the current project setting.
+          * This value is only valid for when a symmetric perspective projection exists.
           * i.e. getProjectionType()==PERSPECTIVE.*/
         const double calc_fovx() const;
         
@@ -143,14 +143,14 @@ class SG_EXPORT Camera: public osg::Referenced
 	             const Vec3& lookPoint,
 	             const Vec3& upVector);
         
-        /** set the position and orientaion of the camera, using the same convention as
+        /** set the position and orientation of the camera, using the same convention as
           * gluLookAt.
           */
         void setLookAt(const Vec3& eye,
                        const Vec3& center,
                        const Vec3& up);
         
-        /** set the position and orientaion of the camera, using the same convention as
+        /** set the position and orientation of the camera, using the same convention as
           * gluLookAt.
           */
         void setLookAt(const double eyeX, const double eyeY, const double eyeZ,
@@ -193,12 +193,12 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Attach a transform matrix which is applied after the camera look at.
           * The attached matrix can work in two ways, either as transform of the eye
           * into the model coordinates - EYE_TO_MODEL, or as a transform of the
-          * model to the eye - MODEL_TO_EYE.  The former is equivilant to attaching
-          * a camera internal to the scene graph.  The later is equivilant to adding 
+          * model to the eye - MODEL_TO_EYE.  The former is equivalent to attaching
+          * a camera internal to the scene graph.  The later is equivalent to adding 
           * a osg::Transform at root of the scene to move the scene to the eye point.
           * Typical used in conjunction with the LookAt position set to home,
           * in which case it is simply treated as a model view matrix.
-          * If the same behaviour as IRIS Performer's setViewMat is desired 
+          * If the same behavior as IRIS Performer's setViewMat is desired 
           * then set the LookAt to be (0,0,0),(0,1,0),(0,0,1) since Performer's
           * default direction is along the y axis, unlike OpenGL and the default OSG.
           * If modelTransfor is NULL then do not use any model transform - just use the
@@ -225,9 +225,9 @@ class SG_EXPORT Camera: public osg::Referenced
         
         /** Get the ModelView matrix. 
           * If a ModelTransform is supplied then the ModelView matrix is
-          * created by multipling the current LookAt by ModelTransform.
+          * created by multiplying the current LookAt by ModelTransform.
           * Otherwise it is simply created by using the current LookAt,
-          * equivialent to using gluLookAt.*/
+          * equivalent to using gluLookAt.*/
         const Matrix& getModelViewMatrix() const;
         
         
@@ -242,11 +242,11 @@ class SG_EXPORT Camera: public osg::Referenced
 
 
         /** Map object coordinates into windows coordinates.
-          * Equivilant to gluProject(...). */
+          * Equivalent to gluProject(...). */
         const bool project(const Vec3& obj,const Viewport& viewport,Vec3& win) const;
         
         /** Map window coordinates into object coordinates. 
-          * Equivilant to gluUnProject(...). */
+          * Equivalent to gluUnProject(...). */
         const bool unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const;
 
 
@@ -287,7 +287,7 @@ class SG_EXPORT Camera: public osg::Referenced
         ref_ptr<Matrix> _eyeToModelTransform;
         ref_ptr<Matrix> _modelToEyeTransform;
         
-        // flags to determin if near and far clipping planes are required.
+        // flags to determine if near and far clipping planes are required.
         bool            _useNearClippingPlane;
         bool            _useFarClippingPlane;
 

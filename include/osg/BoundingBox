@@ -80,7 +80,7 @@ class SG_EXPORT BoundingBox
         }
 
         /** return the corner of the bounding box.
-            Position (pos) is specfied by a number between 0 and 7,
+            Position (pos) is specified by a number between 0 and 7,
             the first bit toggles between x min and x max, second
             bit toggles between y min and y max, third bit toggles
             between z min and z max.*/
@@ -89,15 +89,15 @@ class SG_EXPORT BoundingBox
             return Vec3(pos&1?_max.x():_min.x(),pos&2?_max.y():_min.y(),pos&4?_max.z():_min.z());
         }
 
-        /** If the vertex is outwith the box expand to ecompass vertex.
+        /** If the vertex is out-with the box expand to encompass vertex.
             If this box is empty then move set this box's min max to vertex. */
         void expandBy(const Vec3& v);
 
-        /** If incomming box is outwith the box expand to ecompass incomming box.
-            If this box is empty then move set this box to incomming box. */
+        /** If incoming box is out-with the box expand to encompass incoming box.
+            If this box is empty then move set this box to incoming box. */
         void expandBy(const BoundingBox& bb);
 
-        /** If incomming sphere is outwith the box expand to ecompass incomming sphere.
+        /** If incoming sphere is out-with the box expand to encompass incoming sphere.
             If this box is empty then move set this box to encompass the sphere. */
         void expandBy(const BoundingSphere& sh);
 

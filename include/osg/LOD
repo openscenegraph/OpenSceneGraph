@@ -23,7 +23,7 @@ class SG_EXPORT LOD : public Group
         
         /** Sets the value of range list element index to range which
             is a floating point distance specified in world coordinates.
-            Range list automatically expands to accomodate values beyond
+            Range list automatically expands to accommodate values beyond
             the current getNumRanges().*/
         void setRange(const unsigned int index, const float range);
         
@@ -43,7 +43,7 @@ class SG_EXPORT LOD : public Group
 
         /** return the child to traverse.
             Selected by the distance between the eye point in local
-            coordinates and the LOD center, mutliplied by the bias.*/ 
+            coordinates and the LOD center, multiplied by the bias.*/ 
         const int evaluate(const Vec3& eye_local,const float bias=1.0f) const;
 
 

@@ -43,25 +43,25 @@ class TXPArchive;
 class TXPTileNode : public osg::Group
 {
 public:
-	TXPTileNode();
+    TXPTileNode();
 
-	/** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-	TXPTileNode(const TXPTileNode&,
-		const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+    /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+    TXPTileNode(const TXPTileNode&,
+        const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
-	META_Node(txp, TXPTileNode);
+    META_Node(txp, TXPTileNode);
 
-	void setArchive(TXPArchive* archive);
-	bool loadTile(int x, int y, int lod);
+    void setArchive(TXPArchive* archive);
+    bool loadTile(int x, int y, int lod);
 
-	osg::Node* seamReplacement(osg::Node* child, int x, int y, int level,
-		TXPArchive::TileInfo& info);
+    osg::Node* seamReplacement(osg::Node* child, int x, int y, int level,
+        TXPArchive::TileInfo& info);
 
 protected:
 
-	virtual ~TXPTileNode();
+    virtual ~TXPTileNode();
 
-	TXPArchive* _archive;
+    TXPArchive* _archive;
 };
 } // namespace
 

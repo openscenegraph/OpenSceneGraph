@@ -540,7 +540,7 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
     info.center.set(0.f,0.f,0.f);
     info.bbox.set(0.f,0.f,0.f,0.f,0.f,0.f);
 
-	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     header.GetLodRange(lod,info.maxRange);
     header.GetLodRange(lod+1,info.minRange);
@@ -602,16 +602,16 @@ osg::Group* TXPArchive::getTileContent(
 
 bool TXPArchive::getLODSize(int lod, int& x, int& y)
 {
-	x = y = 0;
+    x = y = 0;
 
-	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-	trpg2iPoint size;
-	if (header.GetLodSize(lod,size))
-	{
-		x = size.x;
-		y = size.y;
-	}
-	
-	return true;
+    trpg2iPoint size;
+    if (header.GetLodSize(lod,size))
+    {
+        x = size.x;
+        y = size.y;
+    }
+    
+    return true;
 }

@@ -91,7 +91,7 @@ public:
     // Gets some informations for a given tile
     struct TileInfo
     {
-        osg::Vec3			center;
+        osg::Vec3            center;
         double              minRange;
         double              maxRange;
         float               radius;
@@ -128,13 +128,13 @@ public:
         y=_swExtents.y;
     }
     
-	// Returns global texture
+    // Returns global texture
     inline osg::Texture2D* getGlobalTexture(int id)
     {
         return _textures[id].get();
     }
     
-	// Returns scenegraph representing the Tile
+    // Returns scenegraph representing the Tile
     osg::Group* getTileContent(
         int x,
         int y,
@@ -143,8 +143,8 @@ public:
         double realMaxRange,
         double usedMaxRange);
 
-	// Get the number of tiles for given LOD
-	bool getLODSize(int lod, int& x, int& y);
+    // Get the number of tiles for given LOD
+    bool getLODSize(int lod, int& x, int& y);
         
 protected:
 
@@ -176,8 +176,8 @@ protected:
     // Light attributes vector
     std::vector<DefferedLightAttribute>                _lights;
 
-	//
-	OpenThreads::Mutex  _mutex;
+    //
+    OpenThreads::Mutex  _mutex;
     
 };
 

@@ -30,44 +30,44 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
     switch(nv.getTraversalMode())
     {
-	case(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN):
-			std::for_each(_children.begin(),_children.end(),osg::NodeAcceptOp(nv));
+    case(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN):
+            std::for_each(_children.begin(),_children.end(),osg::NodeAcceptOp(nv));
             break;
-	case(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
+    case(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
         {
             float distance = nv.getDistanceToEyePoint(getCenter(),true);
 
             int lastChildTraversed = -1;
             bool needToLoadChild = false;
-			bool rollBack = false;
+            bool rollBack = false;
             for(unsigned int i=0;i<_rangeList.size();++i)
             {    
                 if (_rangeList[i].first<=distance && distance<_rangeList[i].second)
                 {
                     if (i<_children.size())
                     {
-						bool acceptThisChild = true;
+                        bool acceptThisChild = true;
 
-						if (i)
-						{
-							for (unsigned int ni = 0; ni < _neighbours.size(); ni++)
-							{
-								Neighbour& n = _neighbours[ni];
-								if (TileMapper::instance()->getPagedLOD(n._x, n._y, _tileLOD)== 0)
-								{
-									rollBack = true;
-									acceptThisChild = false;
-									break;
-								}
-							}
-						}
+                        if (i)
+                        {
+                            for (unsigned int ni = 0; ni < _neighbours.size(); ni++)
+                            {
+                                Neighbour& n = _neighbours[ni];
+                                if (TileMapper::instance()->getPagedLOD(n._x, n._y, _tileLOD)== 0)
+                                {
+                                    rollBack = true;
+                                    acceptThisChild = false;
+                                    break;
+                                }
+                            }
+                        }
 
-						if (acceptThisChild)
-						{
-							if (updateTimeStamp) _perRangeDataList[i]._timeStamp=timeStamp;
-							_children[i]->accept(nv);
-							lastChildTraversed = (int)i;
-						}
+                        if (acceptThisChild)
+                        {
+                            if (updateTimeStamp) _perRangeDataList[i]._timeStamp=timeStamp;
+                            _children[i]->accept(nv);
+                            lastChildTraversed = (int)i;
+                        }
                     }
                     else
                     {
@@ -76,13 +76,13 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
                 }
             }
 
-			if (rollBack)
-			{
-				if (updateTimeStamp) _perRangeDataList[0]._timeStamp=timeStamp;
-				_children[0]->accept(nv);
-				lastChildTraversed = 0;
-				//std::cout << "Rolling back" << std::endl;
-			}
+            if (rollBack)
+            {
+                if (updateTimeStamp) _perRangeDataList[0]._timeStamp=timeStamp;
+                _children[0]->accept(nv);
+                lastChildTraversed = 0;
+                //std::cout << "Rolling back" << std::endl;
+            }
             
             if (needToLoadChild)
             {

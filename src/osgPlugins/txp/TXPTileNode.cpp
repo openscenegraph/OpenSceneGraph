@@ -223,19 +223,19 @@ bool TXPTileNode::loadTile(int x, int y, int lod)
             pagedLOD->setRange(1,0,info.minRange);
             pagedLOD->setCenter(info.center);
             pagedLOD->setRadius(info.radius);
-			pagedLOD->setPriorityOffset(0,numLods-lod);
-			pagedLOD->setPriorityScale(0,1.0f);
+            pagedLOD->setPriorityOffset(0,numLods-lod);
+            pagedLOD->setPriorityScale(0,1.0f);
             pagedLOD->setNumChildrenThatCannotBeExpired(1);
-			pagedLOD->setTileId(x,y,lod);
+            pagedLOD->setTileId(x,y,lod);
 
-			int sizeX, sizeY;
-			if (_archive->getLODSize(lod,sizeX,sizeY))
-			{
-				if ((x-1) > -1) pagedLOD->addNeighbour(x-1,y);
-				if ((x+1) < sizeX) pagedLOD->addNeighbour(x+1,y);
-				if ((y-1) > -1) pagedLOD->addNeighbour(x,y-1);
-				if ((y+1) < sizeY) pagedLOD->addNeighbour(x,y+1);
-			}
+            int sizeX, sizeY;
+            if (_archive->getLODSize(lod,sizeX,sizeY))
+            {
+                if ((x-1) > -1) pagedLOD->addNeighbour(x-1,y);
+                if ((x+1) < sizeX) pagedLOD->addNeighbour(x+1,y);
+                if ((y-1) > -1) pagedLOD->addNeighbour(x,y-1);
+                if ((y+1) < sizeY) pagedLOD->addNeighbour(x,y+1);
+            }
 
             TileMapper::instance()->insertPagedLOD(x,y,lod,pagedLOD.get());
 

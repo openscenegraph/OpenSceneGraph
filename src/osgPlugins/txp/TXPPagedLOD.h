@@ -38,44 +38,44 @@
 
 namespace txp
 {
-	class TXPPagedLOD : public osg::PagedLOD
-	{
-	public:
-		TXPPagedLOD();
+    class TXPPagedLOD : public osg::PagedLOD
+    {
+    public:
+        TXPPagedLOD();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-		TXPPagedLOD(const TXPPagedLOD&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        TXPPagedLOD(const TXPPagedLOD&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Node(txp, TXPPagedLOD);
         
-		virtual void traverse(osg::NodeVisitor& nv);
+        virtual void traverse(osg::NodeVisitor& nv);
 
-		inline void setTileId(int x, int y, int lod)
-		{
-			_tileX = x; _tileY = y; _tileLOD = lod;
-		}
+        inline void setTileId(int x, int y, int lod)
+        {
+            _tileX = x; _tileY = y; _tileLOD = lod;
+        }
 
-		inline void addNeighbour(int x,int y)
-		{
-			Neighbour n;
-			n._x = x;
-			n._y = y;
-			_neighbours.push_back(n);
-		}
+        inline void addNeighbour(int x,int y)
+        {
+            Neighbour n;
+            n._x = x;
+            n._y = y;
+            _neighbours.push_back(n);
+        }
 
-	protected:
-		virtual ~TXPPagedLOD();
+    protected:
+        virtual ~TXPPagedLOD();
 
-		int _tileX;
-		int _tileY;
-		int _tileLOD;
+        int _tileX;
+        int _tileY;
+        int _tileLOD;
 
-		struct Neighbour
-		{
-			int _x, _y;
-		};
-		std::vector<Neighbour> _neighbours;
-	};
+        struct Neighbour
+        {
+            int _x, _y;
+        };
+        std::vector<Neighbour> _neighbours;
+    };
 
 } // namespace
 

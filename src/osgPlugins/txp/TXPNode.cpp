@@ -191,22 +191,22 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y, int lod)
     TXPPagedLOD* pagedLOD = new TXPPagedLOD;
     pagedLOD->setFileName(0,pagedLODfile);
     //pagedLOD->setPriorityOffset(0,1.0f);
-	pagedLOD->setPriorityOffset(0,_archive->getNumLODs());
+    pagedLOD->setPriorityOffset(0,_archive->getNumLODs());
     pagedLOD->setPriorityScale(0,1.0f);
     pagedLOD->setRange(0,0.0,info.maxRange);
     pagedLOD->setCenter(info.center);
     pagedLOD->setRadius(info.radius);
     pagedLOD->setNumChildrenThatCannotBeExpired(1);
-	pagedLOD->setTileId(x,y,lod);
+    pagedLOD->setTileId(x,y,lod);
 
-	int sizeX, sizeY;
-	if (_archive->getLODSize(lod,sizeX,sizeY))
-	{
-		if ((x-1) > -1) pagedLOD->addNeighbour(x-1,y);
-		if ((x+1) < sizeX) pagedLOD->addNeighbour(x+1,y);
-		if ((y-1) > -1) pagedLOD->addNeighbour(x,y-1);
-		if ((y+1) < sizeY) pagedLOD->addNeighbour(x,y+1);
-	}
+    int sizeX, sizeY;
+    if (_archive->getLODSize(lod,sizeX,sizeY))
+    {
+        if ((x-1) > -1) pagedLOD->addNeighbour(x-1,y);
+        if ((x+1) < sizeX) pagedLOD->addNeighbour(x+1,y);
+        if ((y-1) > -1) pagedLOD->addNeighbour(x,y-1);
+        if ((y+1) < sizeY) pagedLOD->addNeighbour(x,y+1);
+    }
 
     _nodesToAdd.push_back(pagedLOD);
     

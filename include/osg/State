@@ -617,16 +617,22 @@ class SG_EXPORT State : public Referenced
             }
         }
 
+
+        /** Set the current texture unit, return true if selected,
+		  * false if selection failed such as when multitexturing is not supported.
+          * note, only updates values that change.*/
+        bool setActiveTextureUnit( unsigned int unit );
+        
+        /** Get the current texture unit.*/
+        unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
+
         /** Set the current tex coord array texture unit, return true if selected,
 		  * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
 
-
-        /** set the current texture unit, return true if selected,
-		  * false if selection failed such as when multitexturing is not supported.
-          * note, only updates values that change.*/
-        bool setActiveTextureUnit( unsigned int unit );
+        /** Get the current tex coord array texture unit.*/
+        unsigned int getClientActiveTextureUnit() const { return _currentClientActiveTextureUnit; }
 
         /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
           * note, only updates values that change.*/

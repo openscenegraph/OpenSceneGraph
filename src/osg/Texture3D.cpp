@@ -369,7 +369,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
         //glBindTexture( GL_TEXTURE_3D, handle );
 
         // inform state that this texture is the current one bound.
-        state.haveAppliedAttribute(this);
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
 
     }
     else

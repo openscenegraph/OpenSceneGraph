@@ -324,7 +324,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
     textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,1,1,0);
 
     // inform state that this texture is the current one bound.
-    state.haveAppliedAttribute(this);
+    state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
 }
 
 void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int width)
@@ -344,7 +344,7 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
         glCopyTexSubImage1D( GL_TEXTURE_1D, 0, xoffset, x, y, width);
 
         // inform state that this texture is the current one bound.
-        state.haveAppliedAttribute(this);
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
 
     }
     else

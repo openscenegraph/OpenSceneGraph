@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgParticle::SegmentPlacer</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgParticle::SegmentPlacer</A></H2></H2><BLOCKQUOTE>A segment-shaped particle placer.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Object,M,CPlacer,MPlacer.html,CSegmentPlacer,MSegmentPlacer.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.23.1">META_Object</A></B>(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="SegmentPlacer.html">SegmentPlacer</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.23.6">SegmentPlacer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.23.7">SegmentPlacer</A></B>(const <!1><A HREF="SegmentPlacer.html#DOC.2.23.7">SegmentPlacer</A> &amp;copy, const osg::CopyOp &amp;copyop)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.23.8">getVertexA</A></B>() const 
+<DD><I>get vertex <B>A</B></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.23.9">getVertexB</A></B>() const 
+<DD><I>get vertex <B>B</B></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23.10">setSegment</A></B>(const osg::Vec3 &amp;A, const osg::Vec3 &amp;B)
+<DD><I>Set both vertices</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23.11">place</A></B>(<!1><A HREF="Particle.html">Particle</A>* P) const 
+<DD><I>Place a particle.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23.12">setVertexA</A></B>(const osg::Vec3 &amp;v)
+<DD><I>Set vertex <B>A</B> of the segment as a vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23.13">setVertexA</A></B>(float x, float y, float z)
+<DD><I>Set vertex <B>A</B> of the segment as three floats</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23.14">setVertexB</A></B>(const osg::Vec3 &amp;v)
+<DD><I>Set vertex <B>B</B> of the segment as a vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.23.15">setVertexB</A></B>(float x, float y, float z)
+<DD><I>Set vertex <B>B</B> of the segment as three floats</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.23.2">~SegmentPlacer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SegmentPlacer.html">SegmentPlacer</A>&amp; <B><A HREF="#DOC.2.23.3">operator=</A></B>(const <!1><A HREF="SegmentPlacer.html">SegmentPlacer</A> &amp;)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Placer.html">Placer</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A segment-shaped particle placer.
+To use this placer you have to define a segment, by setting its two vertices (<B>A</B> and <B>B</B>);
+when an emitter requests a <CODE>SegmentPlacer</CODE> to place a particle, the position is chosen randomly
+within that segment.</BLOCKQUOTE>
+<DL>
+
+<A NAME="META_Object"></A>
+<A NAME="DOC.2.23.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgParticle.html">osgParticle</A>, <!1><A HREF="SegmentPlacer.html">SegmentPlacer</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~SegmentPlacer"></A>
+<A NAME="DOC.2.23.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~SegmentPlacer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.23.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SegmentPlacer.html">SegmentPlacer</A>&amp; operator=(const <!1><A HREF="SegmentPlacer.html">SegmentPlacer</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SegmentPlacer"></A>
+<A NAME="DOC.2.23.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   SegmentPlacer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SegmentPlacer"></A>
+<A NAME="DOC.2.23.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   SegmentPlacer(const <!1><A HREF="SegmentPlacer.html#DOC.2.23.7">SegmentPlacer</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getVertexA"></A>
+<A NAME="DOC.2.23.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getVertexA() const </B></TT>
+<DD>get vertex <B>A</B>
+<DL><DT><DD></DL><P>
+<A NAME="getVertexB"></A>
+<A NAME="DOC.2.23.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getVertexB() const </B></TT>
+<DD>get vertex <B>B</B>
+<DL><DT><DD></DL><P>
+<A NAME="setSegment"></A>
+<A NAME="DOC.2.23.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSegment(const osg::Vec3 &amp;A, const osg::Vec3 &amp;B)</B></TT>
+<DD>Set both vertices
+<DL><DT><DD></DL><P>
+<A NAME="place"></A>
+<A NAME="DOC.2.23.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void place(<!1><A HREF="Particle.html">Particle</A>* P) const </B></TT>
+<DD>Place a particle. This method is called by <CODE>ModularEmitter</CODE>, do not call it manually.
+<DL><DT><DD></DL><P>
+<A NAME="setVertexA"></A>
+<A NAME="DOC.2.23.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexA(const osg::Vec3 &amp;v)</B></TT>
+<DD>Set vertex <B>A</B> of the segment as a vector
+<DL><DT><DD></DL><P>
+<A NAME="setVertexA"></A>
+<A NAME="DOC.2.23.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexA(float x, float y, float z)</B></TT>
+<DD>Set vertex <B>A</B> of the segment as three floats
+<DL><DT><DD></DL><P>
+<A NAME="setVertexB"></A>
+<A NAME="DOC.2.23.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexB(const osg::Vec3 &amp;v)</B></TT>
+<DD>Set vertex <B>B</B> of the segment as a vector
+<DL><DT><DD></DL><P>
+<A NAME="setVertexB"></A>
+<A NAME="DOC.2.23.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertexB(float x, float y, float z)</B></TT>
+<DD>Set vertex <B>B</B> of the segment as three floats
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

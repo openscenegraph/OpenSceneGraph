@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osg::CompositeShape</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osg::CompositeShape</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CShape,MShape.html,CCompositeShape,MCompositeShape.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.163.2">CompositeShape</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.163.3">CompositeShape</A></B>(const <!1><A HREF="CompositeShape.html#DOC.2.163.3">CompositeShape</A>&amp; cs, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="InfinitePlane.html#DOC.2.158.3">META_Shape</A> <B><A HREF="#DOC.2.163.4">(osg, CompositeShape)</A></B>(<!1><A HREF="Shape.html">Shape</A>* shape)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Shape.html">Shape</A>* <B><A HREF="#DOC.2.163.5">getShape</A></B>()
+<DD><I>Get the shape that encloses all of the children</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Shape.html">Shape</A>* <B><A HREF="#DOC.2.163.6">getShape</A></B>() const 
+<DD><I>Get the const shape that encloses all of the children</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.163.7">getNumChildren</A></B>() const 
+<DD><I>Get the number of children of this composite shape</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Shape.html">Shape</A>* <B><A HREF="#DOC.2.163.8">getChild</A></B>(unsigned int i)
+<DD><I>Get a child</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Shape.html">Shape</A>* <B><A HREF="#DOC.2.163.9">getChild</A></B>(unsigned int i) const 
+<DD><I>Get a const child</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.163.10">addChild</A></B>(<!1><A HREF="Shape.html">Shape</A>* shape)
+<DD><I>Add a child to the list</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.163.11">removeChild</A></B>(unsigned int i)
+<DD><I>remove a child from the list</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.163.12">findChildNo</A></B>(<!1><A HREF="Shape.html">Shape</A>* shape) const 
+<DD><I>find the index number of child, if child is not found then it returns getNumChildren(), so should be used in similar sytle of STL's result!=end()</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Shape.html">Shape</A>&gt; &gt; <B><A HREF="#DOC.2.163.1">ChildList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Shape.html">Shape</A>&gt;  <B><A HREF="#DOC.2.163.14">_shape</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeShape.html#DOC.2.163.1">ChildList</A> <B><A HREF="#DOC.2.163.15">_children</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.163.13">~CompositeShape</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Shape.html">Shape</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="ShapeVisitor.html">ShapeVisitor</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="ConstShapeVisitor.html">ConstShapeVisitor</A>&amp;) const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="ChildList"></A>
+<A NAME="DOC.2.163.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Shape.html">Shape</A>&gt; &gt; ChildList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CompositeShape"></A>
+<A NAME="DOC.2.163.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CompositeShape()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CompositeShape"></A>
+<A NAME="DOC.2.163.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CompositeShape(const <!1><A HREF="CompositeShape.html#DOC.2.163.3">CompositeShape</A>&amp; cs, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(osg, CompositeShape)"></A>
+<A NAME="DOC.2.163.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="InfinitePlane.html#DOC.2.158.3">META_Shape</A> (osg, CompositeShape)(<!1><A HREF="Shape.html">Shape</A>* shape)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getShape"></A>
+<A NAME="DOC.2.163.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Shape.html">Shape</A>* getShape()</B></TT>
+<DD>Get the shape that encloses all of the children
+<DL><DT><DD></DL><P>
+<A NAME="getShape"></A>
+<A NAME="DOC.2.163.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Shape.html">Shape</A>* getShape() const </B></TT>
+<DD>Get the const shape that encloses all of the children
+<DL><DT><DD></DL><P>
+<A NAME="getNumChildren"></A>
+<A NAME="DOC.2.163.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getNumChildren() const </B></TT>
+<DD>Get the number of children of this composite shape
+<DL><DT><DD></DL><P>
+<A NAME="getChild"></A>
+<A NAME="DOC.2.163.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Shape.html">Shape</A>* getChild(unsigned int i)</B></TT>
+<DD>Get a child
+<DL><DT><DD></DL><P>
+<A NAME="getChild"></A>
+<A NAME="DOC.2.163.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Shape.html">Shape</A>* getChild(unsigned int i) const </B></TT>
+<DD>Get a const child
+<DL><DT><DD></DL><P>
+<A NAME="addChild"></A>
+<A NAME="DOC.2.163.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addChild(<!1><A HREF="Shape.html">Shape</A>* shape)</B></TT>
+<DD>Add a child to the list
+<DL><DT><DD></DL><P>
+<A NAME="removeChild"></A>
+<A NAME="DOC.2.163.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeChild(unsigned int i)</B></TT>
+<DD>remove a child from the list
+<DL><DT><DD></DL><P>
+<A NAME="findChildNo"></A>
+<A NAME="DOC.2.163.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int findChildNo(<!1><A HREF="Shape.html">Shape</A>* shape) const </B></TT>
+<DD>find the index number of child, if child is not found then it returns getNumChildren(),
+so should be used in similar sytle of STL's result!=end()
+<DL><DT><DD></DL><P>
+<A NAME="~CompositeShape"></A>
+<A NAME="DOC.2.163.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~CompositeShape()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_shape"></A>
+<A NAME="DOC.2.163.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Shape.html">Shape</A>&gt;  _shape</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_children"></A>
+<A NAME="DOC.2.163.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeShape.html#DOC.2.163.1">ChildList</A> _children</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

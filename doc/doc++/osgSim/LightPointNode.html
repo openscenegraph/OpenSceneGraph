@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGSIM_EXPORT osgSim::LightPointNode</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGSIM_EXPORT <A HREF="#DOC.DOCU">osgSim::LightPointNode</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Node,M,CLightPointNode,MLightPointNode.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.2">LightPointNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">LightPointNode</A></B>(const <!1><A HREF="LightPointNode.html#DOC.2.3.3">LightPointNode</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.4">META_Node</A></B>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="LightPointNode.html">LightPointNode</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.5">traverse</A></B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.3.6">addLightPoint</A></B>(const <!1><A HREF="LightPoint.html">LightPoint</A>&amp; lp)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.7">removeLightPoint</A></B>(unsigned int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LightPoint.html">LightPoint</A>&amp; <B><A HREF="#DOC.2.3.8">getLightPoint</A></B>(unsigned int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="LightPoint.html">LightPoint</A>&amp; <B><A HREF="#DOC.2.3.9">getLightPoint</A></B>(unsigned int pos) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.10">setLightPointList</A></B>(const <!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A>&amp; lpl)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A>&amp; <B><A HREF="#DOC.2.3.11">getLightPointList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A>&amp; <B><A HREF="#DOC.2.3.12">getLightPointList</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.13">setMinPixelSize</A></B>(float minPixelSize)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.14">getMinPixelSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.15">setMaxPixelSize</A></B>(float maxPixelSize)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.16">getMaxPixelSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.17">setMaxVisableDistance2</A></B>(float maxVisableDistance2)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.18">setMaxVisableDistance2</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="LightPoint.html">LightPoint</A> &gt; <B><A HREF="#DOC.2.3.1">LightPointList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable osg::BoundingBox <B><A HREF="#DOC.2.3.20">_bbox</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A> <B><A HREF="#DOC.2.3.22">_lightPointList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.23">_minPixelSize</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.24">_maxPixelSize</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.25">_maxVisableDistance2</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.19">~LightPointNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.3.21">computeBound</A></B>() const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="LightPointList"></A>
+<A NAME="DOC.2.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="LightPoint.html">LightPoint</A> &gt; LightPointList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LightPointNode"></A>
+<A NAME="DOC.2.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LightPointNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LightPointNode"></A>
+<A NAME="DOC.2.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LightPointNode(const <!1><A HREF="LightPointNode.html#DOC.2.3.3">LightPointNode</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="LightPointNode.html">LightPointNode</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(osg::NodeVisitor&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addLightPoint"></A>
+<A NAME="DOC.2.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int addLightPoint(const <!1><A HREF="LightPoint.html">LightPoint</A>&amp; lp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removeLightPoint"></A>
+<A NAME="DOC.2.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeLightPoint(unsigned int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightPoint"></A>
+<A NAME="DOC.2.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LightPoint.html">LightPoint</A>&amp; getLightPoint(unsigned int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightPoint"></A>
+<A NAME="DOC.2.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="LightPoint.html">LightPoint</A>&amp; getLightPoint(unsigned int pos) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLightPointList"></A>
+<A NAME="DOC.2.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightPointList(const <!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A>&amp; lpl)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightPointList"></A>
+<A NAME="DOC.2.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A>&amp; getLightPointList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightPointList"></A>
+<A NAME="DOC.2.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A>&amp; getLightPointList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMinPixelSize"></A>
+<A NAME="DOC.2.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinPixelSize(float minPixelSize)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinPixelSize"></A>
+<A NAME="DOC.2.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getMinPixelSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaxPixelSize"></A>
+<A NAME="DOC.2.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxPixelSize(float maxPixelSize)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaxPixelSize"></A>
+<A NAME="DOC.2.3.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getMaxPixelSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaxVisableDistance2"></A>
+<A NAME="DOC.2.3.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxVisableDistance2(float maxVisableDistance2)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaxVisableDistance2"></A>
+<A NAME="DOC.2.3.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float setMaxVisableDistance2() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~LightPointNode"></A>
+<A NAME="DOC.2.3.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~LightPointNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bbox"></A>
+<A NAME="DOC.2.3.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable osg::BoundingBox _bbox</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.3.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_lightPointList"></A>
+<A NAME="DOC.2.3.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LightPointNode.html#DOC.2.3.1">LightPointList</A> _lightPointList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_minPixelSize"></A>
+<A NAME="DOC.2.3.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _minPixelSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxPixelSize"></A>
+<A NAME="DOC.2.3.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maxPixelSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxVisableDistance2"></A>
+<A NAME="DOC.2.3.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maxVisableDistance2</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osgUtx::TestQualifier</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osgUtx::TestQualifier</A></H2></H2><BLOCKQUOTE> Maintains a string that when accessed in the "visit" member, returns the current qualified TestSuite path</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CTestVisitor,MTestVisitor.html,CTestQualifier,MTestQualifier.html,CTestRunner,MTestRunner.html,CQualifiedTestPrinter,MQualifiedTestPrinter.html">
+<param name=before value="M,M,M|_,Mr_">
+<param name=after value="Md_,M,M,M">
+<param name=indent value="0,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.164.11.2">visitEnter</A></B>( <!1><A HREF="TestSuite.html">TestSuite</A>* pSuite )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.164.11.3">visitLeave</A></B>( <!1><A HREF="TestSuite.html">TestSuite</A>* pSuite )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.164.11.4">currentPath</A></B>() const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="TestVisitor.html">TestVisitor</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>visit</B>( <!1><A HREF="TestCase.html">TestCase</A>* )
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Maintains a string that when accessed in the "visit" member, returns the
+current qualified TestSuite path</BLOCKQUOTE>
+<DL>
+<DL>
+
+<A NAME="SEPCHAR"></A>
+<A NAME="DOC.164.11.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SEPCHAR</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="visitEnter"></A>
+<A NAME="DOC.164.11.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool visitEnter( <!1><A HREF="TestSuite.html">TestSuite</A>* pSuite )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="visitLeave"></A>
+<A NAME="DOC.164.11.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool visitLeave( <!1><A HREF="TestSuite.html">TestSuite</A>* pSuite )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="currentPath"></A>
+<A NAME="DOC.164.11.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; currentPath() const </B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="TestRunner.html">TestRunner</A><BR>
+<A HREF="QualifiedTestPrinter.html">QualifiedTestPrinter</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGDB_EXPORT osgDB::FieldReaderIterator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGDB_EXPORT <A HREF="#DOC.DOCU">osgDB::FieldReaderIterator</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CFieldReaderIterator,MFieldReaderIterator.html,CInput,MInput.html">
+<param name=before value="M,M^_">
+<param name=after value="M,M">
+<param name=indent value="0,0">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.2">FieldReaderIterator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.3">FieldReaderIterator</A></B>(const <!1><A HREF="FieldReaderIterator.html#DOC.2.5.3">FieldReaderIterator</A>&amp; ic)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.5.4">~FieldReaderIterator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; <B><A HREF="#DOC.2.5.5">operator = </A></B>(const <!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; ic)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.6">attach</A></B>(std::istream* input)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.7">detach</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.5.8">eof</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FieldReader.html">FieldReader</A>&amp; <B><A HREF="#DOC.2.5.9">getFieldReader</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.10">insert</A></B>(int pos, <!1><A HREF="Field.html">Field</A>* <!1><A HREF="FieldReaderIterator.html#DOC.2.5.13">field</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.11">insert</A></B>(int pos, const char* str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Field.html">Field</A>&amp; <B><A HREF="#DOC.2.5.12">operator [] </A></B>(int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Field.html">Field</A>&amp; <B><A HREF="#DOC.2.5.13">field</A></B>(int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; <B><A HREF="#DOC.2.5.14">operator ++ </A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; <B><A HREF="#DOC.2.5.15">operator += </A></B>(int no)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.16">advanceOverCurrentFieldOrBlock</A></B>()
+<DD><I>increments the iterator of the next simple field or whole block if the current field[0] is an open bracket </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.17">advanceToEndOfCurrentBlock</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.18">advanceToEndOfBlock</A></B>(int noNestBrackets)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.19">matchSequence</A></B>(const char* str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.20">readSequence</A></B>(const char* keyword, std::string&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.21">readSequence</A></B>(const char* keyword, unsigned int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.22">readSequence</A></B>(const char* keyword, int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.23">readSequence</A></B>(const char* keyword, float&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.24">readSequence</A></B>(const char* keyword, osg::Vec2&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.25">readSequence</A></B>(const char* keyword, osg::Vec3&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.26">readSequence</A></B>(const char* keyword, osg::Vec4&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.27">readSequence</A></B>(std::string&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.28">readSequence</A></B>(unsigned int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.29">readSequence</A></B>(int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.30">readSequence</A></B>(float&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.31">readSequence</A></B>(osg::Vec2&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.32">readSequence</A></B>(osg::Vec3&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.33">readSequence</A></B>(osg::Vec4&amp; value)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum <B><A HREF="#DOC.2.5.1"></A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME=""></A>
+<A NAME="DOC.2.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum </B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="MINIMUM_FIELD_READER_QUEUE_SIZE"></A>
+<A NAME="DOC.2.5.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MINIMUM_FIELD_READER_QUEUE_SIZE</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="FieldReaderIterator"></A>
+<A NAME="DOC.2.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FieldReaderIterator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FieldReaderIterator"></A>
+<A NAME="DOC.2.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FieldReaderIterator(const <!1><A HREF="FieldReaderIterator.html#DOC.2.5.3">FieldReaderIterator</A>&amp; ic)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~FieldReaderIterator"></A>
+<A NAME="DOC.2.5.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~FieldReaderIterator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.2.5.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; operator = (const <!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; ic)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="attach"></A>
+<A NAME="DOC.2.5.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void attach(std::istream* input)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="detach"></A>
+<A NAME="DOC.2.5.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void detach()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="eof"></A>
+<A NAME="DOC.2.5.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool eof() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFieldReader"></A>
+<A NAME="DOC.2.5.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FieldReader.html">FieldReader</A>&amp; getFieldReader()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="insert"></A>
+<A NAME="DOC.2.5.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void insert(int pos, <!1><A HREF="Field.html">Field</A>* <!1><A HREF="FieldReaderIterator.html#DOC.2.5.13">field</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="insert"></A>
+<A NAME="DOC.2.5.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void insert(int pos, const char* str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator [] "></A>
+<A NAME="DOC.2.5.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Field.html">Field</A>&amp; operator [] (int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="field"></A>
+<A NAME="DOC.2.5.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Field.html">Field</A>&amp; field(int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator ++ "></A>
+<A NAME="DOC.2.5.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; operator ++ ()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator += "></A>
+<A NAME="DOC.2.5.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>&amp; operator += (int no)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="advanceOverCurrentFieldOrBlock"></A>
+<A NAME="DOC.2.5.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void advanceOverCurrentFieldOrBlock()</B></TT>
+<DD>increments the iterator of the next simple field or
+whole block if the current field[0] is an open bracket 
+<DL><DT><DD></DL><P>
+<A NAME="advanceToEndOfCurrentBlock"></A>
+<A NAME="DOC.2.5.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void advanceToEndOfCurrentBlock()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="advanceToEndOfBlock"></A>
+<A NAME="DOC.2.5.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void advanceToEndOfBlock(int noNestBrackets)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="matchSequence"></A>
+<A NAME="DOC.2.5.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchSequence(const char* str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, std::string&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, unsigned int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, float&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, osg::Vec2&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, osg::Vec3&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(const char* keyword, osg::Vec4&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(std::string&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(unsigned int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(float&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(osg::Vec2&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(osg::Vec3&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readSequence"></A>
+<A NAME="DOC.2.5.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool readSequence(osg::Vec4&amp; value)</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="Input.html">Input</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

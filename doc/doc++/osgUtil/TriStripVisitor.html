@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::TriStripVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::TriStripVisitor</A></H2></H2><BLOCKQUOTE>A tri stripping visitor for converting Geometry surface primitives into tri strips.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::NodeVisitor,M,CTriStripVisitor,MTriStripVisitor.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.1">TriStripVisitor</A></B>()
+<DD><I>default to traversing all children</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.26.2">stripify</A></B>(osg::Geometry&amp; drawable)
+<DD><I>convert mesh primitives in Geometry into Tri Strips using NvTriStrip.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.26.3">apply</A></B>(osg::Geode&amp; geode)
+<DD><I>apply stripify method to all geode geometry</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.26.4">setCacheSize</A></B>( unsigned int size )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.26.5">getCacheSize</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.26.6">getCacheSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.26.7">setMinStripSize</A></B>( unsigned int size )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.26.8">getMinStripSize</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.26.9">getMinStripSize</A></B>() const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A tri stripping visitor for converting Geometry surface primitives into tri strips.
+The current implemention is based up NVidia's NvTriStrip.</BLOCKQUOTE>
+<DL>
+
+<A NAME="TriStripVisitor"></A>
+<A NAME="DOC.2.26.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TriStripVisitor()</B></TT>
+<DD>default to traversing all children
+<DL><DT><DD></DL><P>
+<A NAME="stripify"></A>
+<A NAME="DOC.2.26.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void stripify(osg::Geometry&amp; drawable)</B></TT>
+<DD>convert mesh primitives in Geometry into Tri Strips using
+NvTriStrip.  Converts all primitive types except points
+and lines, linestrips which it leaves unchanged.
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.26.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; geode)</B></TT>
+<DD>apply stripify method to all geode geometry
+<DL><DT><DD></DL><P>
+<A NAME="setCacheSize"></A>
+<A NAME="DOC.2.26.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCacheSize( unsigned int size )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCacheSize"></A>
+<A NAME="DOC.2.26.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getCacheSize()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCacheSize"></A>
+<A NAME="DOC.2.26.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getCacheSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMinStripSize"></A>
+<A NAME="DOC.2.26.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMinStripSize( unsigned int size )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinStripSize"></A>
+<A NAME="DOC.2.26.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getMinStripSize()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinStripSize"></A>
+<A NAME="DOC.2.26.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getMinStripSize() const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

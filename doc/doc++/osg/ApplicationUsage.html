@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::ApplicationUsage</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::ApplicationUsage</A></H2></H2><HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.4.1">instance</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.2">ApplicationUsage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.3">ApplicationUsage</A></B>(const std::string&amp; commandLineUsage)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.5">setApplicationName</A></B>(const std::string&amp; <!1><A HREF="Test.html#DOC.164.1.3">name</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.4.6">getApplicationName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.7">setDescription</A></B>(const std::string&amp; desc)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.4.8">getDescription</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.10">addUsageExplanation</A></B>(<!1><A HREF="ApplicationUsage.html#DOC.2.4.9">Type</A> type, const std::string&amp; option, const std::string&amp; explanation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.11">setCommandLineUsage</A></B>(const std::string&amp; explanation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.4.12">getCommandLineUsage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.13">addCommandLineOption</A></B>(const std::string&amp; option, const std::string&amp; explanation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; <B><A HREF="#DOC.2.4.14">getCommandLineOptions</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.15">addEnvironmentalVariable</A></B>(const std::string&amp; option, const std::string&amp; explanation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; <B><A HREF="#DOC.2.4.16">getEnvironmentalVariables</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.17">addKeyboardMouseBinding</A></B>(const std::string&amp; option, const std::string&amp; explanation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; <B><A HREF="#DOC.2.4.18">getKeyboardMouseBindings</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.19">getFormatedString</A></B>(std::string&amp; str, const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; um, unsigned int widthOfOutput=80)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.20">write</A></B>(std::ostream&amp; output, const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; um, unsigned int widthOfOutput=80)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.21">write</A></B>(std::ostream&amp; output, unsigned int type=<!1><A HREF="ApplicationUsage.html#DOC.2.4.9.1">COMMAND_LINE_OPTION</A>|<!1><A HREF="ApplicationUsage.html#DOC.2.4.9.2">ENVIRONMENTAL_VARIABLE</A>|<!1><A HREF="ApplicationUsage.html#DOC.2.4.9.3">KEYBOARD_MOUSE_BINDING</A>, unsigned int widthOfOutput=80)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string,std::string&gt; <B><A HREF="#DOC.2.4.4">UsageMap</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.4.9">Type</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.4.22">_applicationName</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.4.23">_description</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.4.24">_commandLineUsage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A> <B><A HREF="#DOC.2.4.25">_commandLineOptions</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A> <B><A HREF="#DOC.2.4.26">_environmentalVariables</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A> <B><A HREF="#DOC.2.4.27">_keyboardMouse</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="instance"></A>
+<A NAME="DOC.2.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ApplicationUsage"></A>
+<A NAME="DOC.2.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ApplicationUsage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ApplicationUsage"></A>
+<A NAME="DOC.2.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ApplicationUsage(const std::string&amp; commandLineUsage)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UsageMap"></A>
+<A NAME="DOC.2.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string,std::string&gt; UsageMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setApplicationName"></A>
+<A NAME="DOC.2.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setApplicationName(const std::string&amp; <!1><A HREF="Test.html#DOC.164.1.3">name</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getApplicationName"></A>
+<A NAME="DOC.2.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getApplicationName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDescription"></A>
+<A NAME="DOC.2.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDescription(const std::string&amp; desc)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDescription"></A>
+<A NAME="DOC.2.4.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getDescription() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Type"></A>
+<A NAME="DOC.2.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Type</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="COMMAND_LINE_OPTION"></A>
+<A NAME="DOC.2.4.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMMAND_LINE_OPTION</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ENVIRONMENTAL_VARIABLE"></A>
+<A NAME="DOC.2.4.9.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENVIRONMENTAL_VARIABLE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="KEYBOARD_MOUSE_BINDING"></A>
+<A NAME="DOC.2.4.9.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEYBOARD_MOUSE_BINDING</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="addUsageExplanation"></A>
+<A NAME="DOC.2.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addUsageExplanation(<!1><A HREF="ApplicationUsage.html#DOC.2.4.9">Type</A> type, const std::string&amp; option, const std::string&amp; explanation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCommandLineUsage"></A>
+<A NAME="DOC.2.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCommandLineUsage(const std::string&amp; explanation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCommandLineUsage"></A>
+<A NAME="DOC.2.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getCommandLineUsage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addCommandLineOption"></A>
+<A NAME="DOC.2.4.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addCommandLineOption(const std::string&amp; option, const std::string&amp; explanation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCommandLineOptions"></A>
+<A NAME="DOC.2.4.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; getCommandLineOptions() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addEnvironmentalVariable"></A>
+<A NAME="DOC.2.4.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addEnvironmentalVariable(const std::string&amp; option, const std::string&amp; explanation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEnvironmentalVariables"></A>
+<A NAME="DOC.2.4.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; getEnvironmentalVariables() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addKeyboardMouseBinding"></A>
+<A NAME="DOC.2.4.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addKeyboardMouseBinding(const std::string&amp; option, const std::string&amp; explanation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouseBindings"></A>
+<A NAME="DOC.2.4.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; getKeyboardMouseBindings() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFormatedString"></A>
+<A NAME="DOC.2.4.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getFormatedString(std::string&amp; str, const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; um, unsigned int widthOfOutput=80)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="write"></A>
+<A NAME="DOC.2.4.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void write(std::ostream&amp; output, const <!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A>&amp; um, unsigned int widthOfOutput=80)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="write"></A>
+<A NAME="DOC.2.4.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void write(std::ostream&amp; output, unsigned int type=<!1><A HREF="ApplicationUsage.html#DOC.2.4.9.1">COMMAND_LINE_OPTION</A>|<!1><A HREF="ApplicationUsage.html#DOC.2.4.9.2">ENVIRONMENTAL_VARIABLE</A>|<!1><A HREF="ApplicationUsage.html#DOC.2.4.9.3">KEYBOARD_MOUSE_BINDING</A>, unsigned int widthOfOutput=80)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_applicationName"></A>
+<A NAME="DOC.2.4.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _applicationName</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_description"></A>
+<A NAME="DOC.2.4.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _description</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_commandLineUsage"></A>
+<A NAME="DOC.2.4.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _commandLineUsage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_commandLineOptions"></A>
+<A NAME="DOC.2.4.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A> _commandLineOptions</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_environmentalVariables"></A>
+<A NAME="DOC.2.4.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A> _environmentalVariables</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_keyboardMouse"></A>
+<A NAME="DOC.2.4.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ApplicationUsage.html#DOC.2.4.4">UsageMap</A> _keyboardMouse</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

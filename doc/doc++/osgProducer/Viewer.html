@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGPRODUCER_EXPORT osgProducer::Viewer</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGPRODUCER_EXPORT <A HREF="#DOC.DOCU">osgProducer::Viewer</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="MosgGA::GUIActionAdapter,M,MProducer::CameraGroup,M,COsgCameraGroup,MOsgCameraGroup.html,CViewer,MViewer.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Ml_,Md_||,MD_,M">
+<param name=indent value="1,0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.1">Viewer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.2">Viewer</A></B>(Producer::CameraConfig* cfg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.3">Viewer</A></B>(const std::string&amp; configFile)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.4">Viewer</A></B>(osg::ArgumentParser&amp; arguments)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.5.5">~Viewer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.7">setUpViewer</A></B>(unsigned int options=<!1><A HREF="Viewer.html#DOC.2.5.6.11">STANDARD_SETTINGS</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.5.8">done</A></B>() const 
+<DD><I>return true if the application is done and should exit</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.9">setViewByMatrix</A></B>( const Producer::Matrix &amp; pm)
+<DD><I>Override the Producer::CameraGroup::setViewByMatrix to catch all changes to view</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.5.10">realize</A></B>(ThreadingModel thread_model)
+<DD><I>Set the threading model and then call realize()</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.5.11">realize</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.12">update</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.13">frame</A></B>()
+<DD><I>Dispatch the cull and draw for each of the Camera's for this frame</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.14">requestRedraw</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.15">requestContinuousUpdate</A></B>(bool)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.16">requestWarpPointer</A></B>(float x, float y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.17">computePixelCoords</A></B>(float x, float y, unsigned int cameraNum, float&amp; pixel_x, float&amp; pixel_y)
+<DD><I>compute, from normalized mouse coords, for sepecified Camera, the pixel coords relative to that Camera's RenderSurface</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.18">computeNearFarPoints</A></B>(float x, float y, unsigned int cameraNum, osg::Vec3&amp; near, osg::Vec3&amp; far)
+<DD><I>compute, from normalized mouse coords, for sepecified Camera, the near and far points in worlds coords</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.19">computeIntersections</A></B>(float x, float y, unsigned int cameraNum, osgUtil::IntersectVisitor::HitList&amp; hits)
+<DD><I>compute, from normalized mouse coords, for sepecified Camera, intersections with the scene</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.20">computeIntersections</A></B>(float x, float y, osgUtil::IntersectVisitor::HitList&amp; hits)
+<DD><I>compute, from normalized mouse coords, for all Cameras, intersections with the scene</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Producer::KeyboardMouse* <B><A HREF="#DOC.2.5.21">getKeyboardMouse</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const Producer::KeyboardMouse* <B><A HREF="#DOC.2.5.22">getKeyboardMouse</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="KeyboardMouseCallback.html">KeyboardMouseCallback</A>* <B><A HREF="#DOC.2.5.23">getKeyboardMouseCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="KeyboardMouseCallback.html">KeyboardMouseCallback</A>* <B><A HREF="#DOC.2.5.24">getKeyboardMouseCallback</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Viewer.html#DOC.2.5.25">EventHandlerList</A>&amp; <B><A HREF="#DOC.2.5.26">getEventHandlerList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Viewer.html#DOC.2.5.25">EventHandlerList</A>&amp; <B><A HREF="#DOC.2.5.27">getEventHandlerList</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osgGA::KeySwitchCameraManipulator* <B><A HREF="#DOC.2.5.28">getKeySwitchCameraManipulator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osgGA::KeySwitchCameraManipulator* <B><A HREF="#DOC.2.5.29">getKeySwitchCameraManipulator</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.5.30">addCameraManipulator</A></B>(osgGA::CameraManipulator* cm)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.31">selectCameraManipulator</A></B>(unsigned int no)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.32">setRecordingAnimationPath</A></B>(bool on)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.33">getRecordingAnimationPath</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.34">setAnimationPath</A></B>(osg::AnimationPath* path)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::AnimationPath* <B><A HREF="#DOC.2.5.35">getAnimationPath</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::AnimationPath* <B><A HREF="#DOC.2.5.36">getAnimationPath</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.37">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
+<DD><I>Get the keyboard and mouse usage of this viewer</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.6">ViewerOptions</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::list&lt; osg::ref_ptr&lt;osgGA::GUIEventHandler&gt; &gt; <B><A HREF="#DOC.2.5.25">EventHandlerList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.38">_done</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="KeyboardMouseCallback.html">osgProducer::KeyboardMouseCallback</A>* <B><A HREF="#DOC.2.5.39">_kbmcb</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Viewer.html#DOC.2.5.25">EventHandlerList</A> <B><A HREF="#DOC.2.5.40">_eventHandlerList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osgGA::KeySwitchCameraManipulator&gt;  <B><A HREF="#DOC.2.5.41">_keyswitchManipulator</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Camera&gt;  <B><A HREF="#DOC.2.5.42">_old_style_osg_camera</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::NodeVisitor&gt;  <B><A HREF="#DOC.2.5.43">_updateVisitor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.44">_recordingAnimationPath</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::AnimationPath&gt;  <B><A HREF="#DOC.2.5.45">_animationPath</A></B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="OsgCameraGroup.html">OsgCameraGroup</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setApplicationUsage</B>(osg::ApplicationUsage* au)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ApplicationUsage* <B>getApplicationUsage</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::ApplicationUsage* <B>getApplicationUsage</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="OsgCameraGroup.html#DOC.2.3.9">SceneHandlerList</A>&amp; <B>getSceneHandlerList</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="OsgCameraGroup.html#DOC.2.3.9">SceneHandlerList</A>&amp; <B>getSceneHandlerList</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSceneData</B>( osg::Node* scene )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Node* <B>getSceneData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Node* <B>getSceneData</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSceneDecorator</B>( osg::Group* decorator)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Group* <B>getSceneDecorator</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Group* <B>getSceneDecorator</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Node* <B>getTopMostSceneData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Node* <B>getTopMostSceneData</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setDisplaySettings</B>( osg::DisplaySettings* ds )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::DisplaySettings* <B>getDisplaySettings</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::DisplaySettings* <B>getDisplaySettings</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setFrameStamp</B>( osg::FrameStamp* fs )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::FrameStamp* <B>getFrameStamp</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::FrameStamp* <B>getFrameStamp</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setGlobalStateSet</B>( osg::StateSet* sset )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::StateSet* <B>getGlobalStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::StateSet* <B>getGlobalStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setBackgroundColor</B>( const osg::Vec4&amp; backgroundColor )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec4&amp; <B>getBackgroundColor</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Vec4&amp; <B>getBackgroundColor</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setLODScale</B>( float scale )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setFusionDistance</B>( osgUtil::SceneView::FusionDistanceMode mode, float value=1.0f)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setRealizeCallback</B>( <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* cb)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RealizeCallback.html">RealizeCallback</A>* <B>getRealizeCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* <B>getRealizeCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>advance</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setView</B>(const osg::Matrix&amp; matrix)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const osg::Matrix <B>getViewMatrix</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sync</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="OsgSceneHandler.html">osgProducer::OsgSceneHandler</A>&gt; &gt; <B>SceneHandlerList</B>
+<DT>
+class  OSGPRODUCER_EXPORT <B><A HREF="RealizeCallback.html">RealizeCallback</A></B>: public osg::Referenced
+<DD><I>RealizeCallback class one should override to provide an the implemention of realize callbacks.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ApplicationUsage* <B>_applicationUsage</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::Node&gt;  <B>_scene_data</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::Group&gt;  <B>_scene_decorator</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B>_global_stateset</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec4 <B>_background_color</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_LODScale</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osgUtil::SceneView::FusionDistanceMode <B>_fusionDistanceMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_fusionDistanceValue</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="OsgCameraGroup.html#DOC.2.3.9">SceneHandlerList</A> <B>_shvec</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RealizeCallback.html">RealizeCallback</A>&gt;  <B>_realizeCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B>_ds</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_initialized</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_frameNumber</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Timer <B>_timer</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Timer_t <B>_start_tick</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B>_frameStamp</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUpSceneViewsWithData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>_init</B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="Viewer"></A>
+<A NAME="DOC.2.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Viewer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Viewer"></A>
+<A NAME="DOC.2.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Viewer(Producer::CameraConfig* cfg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Viewer"></A>
+<A NAME="DOC.2.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Viewer(const std::string&amp; configFile)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Viewer"></A>
+<A NAME="DOC.2.5.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Viewer(osg::ArgumentParser&amp; arguments)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Viewer"></A>
+<A NAME="DOC.2.5.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Viewer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ViewerOptions"></A>
+<A NAME="DOC.2.5.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ViewerOptions</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_EVENT_HANDLERS"></A>
+<A NAME="DOC.2.5.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_EVENT_HANDLERS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TRACKBALL_MANIPULATOR"></A>
+<A NAME="DOC.2.5.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRACKBALL_MANIPULATOR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DRIVE_MANIPULATOR"></A>
+<A NAME="DOC.2.5.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DRIVE_MANIPULATOR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FLIGHT_MANIPULATOR"></A>
+<A NAME="DOC.2.5.6.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FLIGHT_MANIPULATOR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STATE_MANIPULATOR"></A>
+<A NAME="DOC.2.5.6.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STATE_MANIPULATOR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="HEAD_LIGHT_SOURCE"></A>
+<A NAME="DOC.2.5.6.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEAD_LIGHT_SOURCE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SKY_LIGHT_SOURCE"></A>
+<A NAME="DOC.2.5.6.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SKY_LIGHT_SOURCE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STATS_MANIPULATOR"></A>
+<A NAME="DOC.2.5.6.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STATS_MANIPULATOR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="VIEWER_MANIPULATOR"></A>
+<A NAME="DOC.2.5.6.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VIEWER_MANIPULATOR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ESCAPE_SETS_DONE"></A>
+<A NAME="DOC.2.5.6.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ESCAPE_SETS_DONE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STANDARD_SETTINGS"></A>
+<A NAME="DOC.2.5.6.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STANDARD_SETTINGS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setUpViewer"></A>
+<A NAME="DOC.2.5.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUpViewer(unsigned int options=<!1><A HREF="Viewer.html#DOC.2.5.6.11">STANDARD_SETTINGS</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="done"></A>
+<A NAME="DOC.2.5.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool done() const </B></TT>
+<DD>return true if the application is done and should exit
+<DL><DT><DD></DL><P>
+<A NAME="setViewByMatrix"></A>
+<A NAME="DOC.2.5.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setViewByMatrix( const Producer::Matrix &amp; pm)</B></TT>
+<DD>Override the Producer::CameraGroup::setViewByMatrix to catch all changes to view
+<DL><DT><DD></DL><P>
+<A NAME="realize"></A>
+<A NAME="DOC.2.5.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool realize(ThreadingModel thread_model)</B></TT>
+<DD>Set the threading model and then call realize()
+<DL><DT><DD></DL><P>
+<A NAME="realize"></A>
+<A NAME="DOC.2.5.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool realize()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="update"></A>
+<A NAME="DOC.2.5.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void update()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frame"></A>
+<A NAME="DOC.2.5.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void frame()</B></TT>
+<DD>Dispatch the cull and draw for each of the Camera's for this frame
+<DL><DT><DD></DL><P>
+<A NAME="requestRedraw"></A>
+<A NAME="DOC.2.5.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestRedraw()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="requestContinuousUpdate"></A>
+<A NAME="DOC.2.5.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestContinuousUpdate(bool)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="requestWarpPointer"></A>
+<A NAME="DOC.2.5.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestWarpPointer(float x, float y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computePixelCoords"></A>
+<A NAME="DOC.2.5.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computePixelCoords(float x, float y, unsigned int cameraNum, float&amp; pixel_x, float&amp; pixel_y)</B></TT>
+<DD>compute, from normalized mouse coords, for sepecified Camera, the pixel coords relative to that Camera's RenderSurface
+<DL><DT><DD></DL><P>
+<A NAME="computeNearFarPoints"></A>
+<A NAME="DOC.2.5.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeNearFarPoints(float x, float y, unsigned int cameraNum, osg::Vec3&amp; near, osg::Vec3&amp; far)</B></TT>
+<DD>compute, from normalized mouse coords, for sepecified Camera, the near and far points in worlds coords
+<DL><DT><DD></DL><P>
+<A NAME="computeIntersections"></A>
+<A NAME="DOC.2.5.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeIntersections(float x, float y, unsigned int cameraNum, osgUtil::IntersectVisitor::HitList&amp; hits)</B></TT>
+<DD>compute, from normalized mouse coords, for sepecified Camera, intersections with the scene
+<DL><DT><DD></DL><P>
+<A NAME="computeIntersections"></A>
+<A NAME="DOC.2.5.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeIntersections(float x, float y, osgUtil::IntersectVisitor::HitList&amp; hits)</B></TT>
+<DD>compute, from normalized mouse coords, for all Cameras, intersections with the scene
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouse"></A>
+<A NAME="DOC.2.5.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Producer::KeyboardMouse* getKeyboardMouse()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouse"></A>
+<A NAME="DOC.2.5.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const Producer::KeyboardMouse* getKeyboardMouse() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouseCallback"></A>
+<A NAME="DOC.2.5.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="KeyboardMouseCallback.html">KeyboardMouseCallback</A>* getKeyboardMouseCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeyboardMouseCallback"></A>
+<A NAME="DOC.2.5.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="KeyboardMouseCallback.html">KeyboardMouseCallback</A>* getKeyboardMouseCallback() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="EventHandlerList"></A>
+<A NAME="DOC.2.5.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::list&lt; osg::ref_ptr&lt;osgGA::GUIEventHandler&gt; &gt; EventHandlerList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEventHandlerList"></A>
+<A NAME="DOC.2.5.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Viewer.html#DOC.2.5.25">EventHandlerList</A>&amp; getEventHandlerList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEventHandlerList"></A>
+<A NAME="DOC.2.5.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Viewer.html#DOC.2.5.25">EventHandlerList</A>&amp; getEventHandlerList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeySwitchCameraManipulator"></A>
+<A NAME="DOC.2.5.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osgGA::KeySwitchCameraManipulator* getKeySwitchCameraManipulator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKeySwitchCameraManipulator"></A>
+<A NAME="DOC.2.5.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osgGA::KeySwitchCameraManipulator* getKeySwitchCameraManipulator() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addCameraManipulator"></A>
+<A NAME="DOC.2.5.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int addCameraManipulator(osgGA::CameraManipulator* cm)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="selectCameraManipulator"></A>
+<A NAME="DOC.2.5.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void selectCameraManipulator(unsigned int no)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRecordingAnimationPath"></A>
+<A NAME="DOC.2.5.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRecordingAnimationPath(bool on)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRecordingAnimationPath"></A>
+<A NAME="DOC.2.5.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getRecordingAnimationPath() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAnimationPath"></A>
+<A NAME="DOC.2.5.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAnimationPath(osg::AnimationPath* path)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAnimationPath"></A>
+<A NAME="DOC.2.5.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::AnimationPath* getAnimationPath()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAnimationPath"></A>
+<A NAME="DOC.2.5.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::AnimationPath* getAnimationPath() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUsage"></A>
+<A NAME="DOC.2.5.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getUsage(osg::ApplicationUsage&amp; usage) const </B></TT>
+<DD>Get the keyboard and mouse usage of this viewer
+<DL><DT><DD></DL><P>
+<A NAME="_done"></A>
+<A NAME="DOC.2.5.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _done</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_kbmcb"></A>
+<A NAME="DOC.2.5.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="KeyboardMouseCallback.html">osgProducer::KeyboardMouseCallback</A>* _kbmcb</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eventHandlerList"></A>
+<A NAME="DOC.2.5.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Viewer.html#DOC.2.5.25">EventHandlerList</A> _eventHandlerList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_keyswitchManipulator"></A>
+<A NAME="DOC.2.5.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgGA::KeySwitchCameraManipulator&gt;  _keyswitchManipulator</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_old_style_osg_camera"></A>
+<A NAME="DOC.2.5.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Camera&gt;  _old_style_osg_camera</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_updateVisitor"></A>
+<A NAME="DOC.2.5.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::NodeVisitor&gt;  _updateVisitor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_recordingAnimationPath"></A>
+<A NAME="DOC.2.5.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _recordingAnimationPath</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_animationPath"></A>
+<A NAME="DOC.2.5.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::AnimationPath&gt;  _animationPath</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

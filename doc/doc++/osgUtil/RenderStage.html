@@ -1,0 +1,443 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::RenderStage</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::RenderStage</A></H2></H2><BLOCKQUOTE> RenderState base class.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="Mosg::Object,M,CRenderBin,MRenderBin.html,CRenderStage,MRenderStage.html,CRenderToTextureStage,MRenderToTextureStage.html">
+<param name=before value="M,M,M,M^_">
+<param name=after value="Md_SP,Md_,M,M">
+<param name=indent value="0,1,2,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.19.33">_stageDrawnThisFrame</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html#DOC.2.19.32">DependencyList</A> <B><A HREF="#DOC.2.19.34">_dependencyList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Viewport&gt;  <B><A HREF="#DOC.2.19.35">_viewport</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLbitfield <B><A HREF="#DOC.2.19.36">_clearMask</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::ColorMask&gt;  <B><A HREF="#DOC.2.19.37">_colorMask</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.19.38">_clearColor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.19.39">_clearAccum</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.19.40">_clearDepth</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.19.41">_clearStencil</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable osg::ref_ptr&lt;<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>&gt;  <B><A HREF="#DOC.2.19.42">_renderStageLighting</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.1">RenderStage</A></B>(<!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> mode=<!1><A HREF="RenderBin.html#DOC.2.14.8.1">SORT_BY_STATE</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.2">RenderStage</A></B>(const <!1><A HREF="RenderStage.html#DOC.2.19.2">RenderStage</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.19.3">cloneType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.19.4">clone</A></B>(const osg::CopyOp&amp; copyop) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.19.5">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.19.6">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.7">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.8">setViewport</A></B>(osg::Viewport* viewport)
+<DD><I>Set the viewport</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Viewport* <B><A HREF="#DOC.2.19.9">getViewport</A></B>() const 
+<DD><I>Get the const viewport.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Viewport* <B><A HREF="#DOC.2.19.10">getViewport</A></B>()
+<DD><I>Get the viewport.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.11">setClearMask</A></B>(GLbitfield mask)
+<DD><I>Set the clear mask used in glClear().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLbitfield <B><A HREF="#DOC.2.19.12">getClearMask</A></B>() const 
+<DD><I>Get the clear mask</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.13">setColorMask</A></B>(osg::ColorMask* cm)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ColorMask* <B><A HREF="#DOC.2.19.14">getColorMask</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::ColorMask* <B><A HREF="#DOC.2.19.15">getColorMask</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.16">setClearColor</A></B>(const osg::Vec4&amp; color)
+<DD><I>Set the clear color used in glClearColor().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.19.17">getClearColor</A></B>() const 
+<DD><I>Get the clear color</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.18">setClearAccum</A></B>(const osg::Vec4&amp; color)
+<DD><I>Set the clear accum used in glClearAccum().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.19.19">getClearAccum</A></B>() const 
+<DD><I>Get the clear accum</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.20">setClearDepth</A></B>(double depth)
+<DD><I>Set the clear depth used in glClearDepth().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.19.21">getClearDepth</A></B>() const 
+<DD><I>Get the clear depth</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.22">setClearStencil</A></B>(int stencil)
+<DD><I>Set the clear stencil value used in glClearStencil().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.19.23">getClearStencil</A></B>() const 
+<DD><I>Get the clear color</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.24">setRenderStageLighting</A></B>(<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* rsl)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* <B><A HREF="#DOC.2.19.25">getRenderStageLighting</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.26">addPositionedAttribute</A></B>(osg::RefMatrix* matrix, const osg::StateAttribute* attr)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.27">drawPreRenderStages</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.28">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.29">drawImplementation</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.30">addToDependencyList</A></B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.19.31">getStats</A></B>(osg::Statistics* primStats)
+<DD><I>extract stats for current draw list.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt; &gt; <B><A HREF="#DOC.2.19.32">DependencyList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.19.43">~RenderStage</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="RenderBin.html">RenderBin</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_binNum</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B>_parent</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B>_stage</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.3">RenderBinList</A> <B>_bins</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.2">RenderGraphList</A> <B>_renderGraphList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.1">RenderLeafList</A> <B>_renderLeafList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> <B>_sortMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>&gt;  <B>_sortCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html#DOC.2.14.49">RenderBinPrototypeList</A> <B>s_renderBinPrototypeList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html">RenderBin</A>* <B>createRenderBin</B>(const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html">RenderBin</A>* <B>getRenderBinPrototype</B>(const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>addRenderBinPrototype</B>(const std::string&amp; binName, <!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>removeRenderBinPrototype</B>(<!1><A HREF="RenderBin.html">RenderBin</A>* proto)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B>find_or_insert</B>(int binNum, const std::string&amp; binName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addRenderGraph</B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>sort</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortImplementation</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSortMode</B>(<!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> <B>getSortMode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortByState</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortFrontToBack</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>sortBackToFront</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSortCallback</B>(<!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>* sortCallback)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>* <B>getSortCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>* <B>getSortCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* drawCallback)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* <B>getDrawCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(osg::Statistics* primStats)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(osg::Statistics* primStats, int nbin)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>copyLeavesFromRenderGraphListToRenderLeafList</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&gt; <B>RenderLeafList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>*&gt; <B>RenderGraphList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B>RenderBinList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>SortMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>SortCallback</B>: public osg::Referenced
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public osg::Referenced
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B>RenderBinPrototypeList</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+RenderState base class. Used for encapsulate a complete stage in
+rendering - setting up of viewport, the projection and model
+matrices and rendering the RenderBin's enclosed with this RenderStage.
+RenderStage also has a dependency list of other RenderStages, each
+of which must be called before the rendering of this stage.  These
+'pre' rendering stages are used for advanced rendering techniques
+like multistage pixel shading or impostors.</BLOCKQUOTE>
+<DL>
+
+<A NAME="RenderStage"></A>
+<A NAME="DOC.2.19.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderStage(<!1><A HREF="RenderBin.html#DOC.2.14.8">SortMode</A> mode=<!1><A HREF="RenderBin.html#DOC.2.14.8.1">SORT_BY_STATE</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RenderStage"></A>
+<A NAME="DOC.2.19.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderStage(const <!1><A HREF="RenderStage.html#DOC.2.19.2">RenderStage</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.19.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.19.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* clone(const osg::CopyOp&amp; copyop) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.19.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.19.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.19.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setViewport"></A>
+<A NAME="DOC.2.19.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setViewport(osg::Viewport* viewport)</B></TT>
+<DD>Set the viewport
+<DL><DT><DD></DL><P>
+<A NAME="getViewport"></A>
+<A NAME="DOC.2.19.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Viewport* getViewport() const </B></TT>
+<DD>Get the const viewport. 
+<DL><DT><DD></DL><P>
+<A NAME="getViewport"></A>
+<A NAME="DOC.2.19.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Viewport* getViewport()</B></TT>
+<DD>Get the viewport. 
+<DL><DT><DD></DL><P>
+<A NAME="setClearMask"></A>
+<A NAME="DOC.2.19.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearMask(GLbitfield mask)</B></TT>
+<DD>Set the clear mask used in glClear().
+Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. 
+<DL><DT><DD></DL><P>
+<A NAME="getClearMask"></A>
+<A NAME="DOC.2.19.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLbitfield getClearMask() const </B></TT>
+<DD>Get the clear mask
+<DL><DT><DD></DL><P>
+<A NAME="setColorMask"></A>
+<A NAME="DOC.2.19.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColorMask(osg::ColorMask* cm)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getColorMask"></A>
+<A NAME="DOC.2.19.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ColorMask* getColorMask()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getColorMask"></A>
+<A NAME="DOC.2.19.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::ColorMask* getColorMask() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setClearColor"></A>
+<A NAME="DOC.2.19.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearColor(const osg::Vec4&amp; color)</B></TT>
+<DD>Set the clear color used in glClearColor(). 
+glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearColor"></A>
+<A NAME="DOC.2.19.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getClearColor() const </B></TT>
+<DD>Get the clear color
+<DL><DT><DD></DL><P>
+<A NAME="setClearAccum"></A>
+<A NAME="DOC.2.19.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearAccum(const osg::Vec4&amp; color)</B></TT>
+<DD>Set the clear accum used in glClearAccum(). 
+glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearAccum"></A>
+<A NAME="DOC.2.19.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getClearAccum() const </B></TT>
+<DD>Get the clear accum
+<DL><DT><DD></DL><P>
+<A NAME="setClearDepth"></A>
+<A NAME="DOC.2.19.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearDepth(double depth)</B></TT>
+<DD>Set the clear depth used in glClearDepth(). Defaults to 1.0
+glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearDepth"></A>
+<A NAME="DOC.2.19.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getClearDepth() const </B></TT>
+<DD>Get the clear depth
+<DL><DT><DD></DL><P>
+<A NAME="setClearStencil"></A>
+<A NAME="DOC.2.19.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearStencil(int stencil)</B></TT>
+<DD>Set the clear stencil value used in glClearStencil(). Defaults to 1.0 
+glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true
+<DL><DT><DD></DL><P>
+<A NAME="getClearStencil"></A>
+<A NAME="DOC.2.19.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getClearStencil() const </B></TT>
+<DD>Get the clear color
+<DL><DT><DD></DL><P>
+<A NAME="setRenderStageLighting"></A>
+<A NAME="DOC.2.19.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderStageLighting(<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* rsl)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderStageLighting"></A>
+<A NAME="DOC.2.19.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>* getRenderStageLighting() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addPositionedAttribute"></A>
+<A NAME="DOC.2.19.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addPositionedAttribute(osg::RefMatrix* matrix, const osg::StateAttribute* attr)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawPreRenderStages"></A>
+<A NAME="DOC.2.19.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawPreRenderStages(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="draw"></A>
+<A NAME="DOC.2.19.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawImplementation"></A>
+<A NAME="DOC.2.19.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addToDependencyList"></A>
+<A NAME="DOC.2.19.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addToDependencyList(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStats"></A>
+<A NAME="DOC.2.19.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getStats(osg::Statistics* primStats)</B></TT>
+<DD>extract stats for current draw list. 
+<DL><DT><DD></DL><P>
+<A NAME="DependencyList"></A>
+<A NAME="DOC.2.19.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt; &gt; DependencyList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_stageDrawnThisFrame"></A>
+<A NAME="DOC.2.19.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _stageDrawnThisFrame</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dependencyList"></A>
+<A NAME="DOC.2.19.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html#DOC.2.19.32">DependencyList</A> _dependencyList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_viewport"></A>
+<A NAME="DOC.2.19.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Viewport&gt;  _viewport</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearMask"></A>
+<A NAME="DOC.2.19.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLbitfield _clearMask</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_colorMask"></A>
+<A NAME="DOC.2.19.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::ColorMask&gt;  _colorMask</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearColor"></A>
+<A NAME="DOC.2.19.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _clearColor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearAccum"></A>
+<A NAME="DOC.2.19.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _clearAccum</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearDepth"></A>
+<A NAME="DOC.2.19.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _clearDepth</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clearStencil"></A>
+<A NAME="DOC.2.19.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _clearStencil</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderStageLighting"></A>
+<A NAME="DOC.2.19.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable osg::ref_ptr&lt;<!1><A HREF="RenderStageLighting.html">RenderStageLighting</A>&gt;  _renderStageLighting</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~RenderStage"></A>
+<A NAME="DOC.2.19.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderStage()</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="RenderToTextureStage.html">RenderToTextureStage</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,487 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::Texture2D</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::Texture2D</A></H2></H2><BLOCKQUOTE>Texture state class which encapsulates OpenGl texture functionality</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CStateAttribute,MStateAttribute.html,CTexture,MTexture.html,CTexture2D,MTexture2D.html">
+<param name=before value="M,M,M,M,M">
+<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3,4">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.188.1">Texture2D</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.188.2">Texture2D</A></B>(const <!1><A HREF="Texture2D.html#DOC.2.188.2">Texture2D</A>&amp; text, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.188.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Texture2D.html">Texture2D</A>, <!1><A HREF="StateAttribute.html#DOC.2.175.6.1">TEXTURE</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.188.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.188.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.175.1">GLMode</A>&gt;&amp; modes) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.188.6">setImage</A></B>(<!1><A HREF="Image.html">Image</A>* image)
+<DD><I>Set the texture image.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>* <B><A HREF="#DOC.2.188.7">getImage</A></B>()
+<DD><I>Get the texture image.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Image.html">Image</A>* <B><A HREF="#DOC.2.188.8">getImage</A></B>() const 
+<DD><I>Get the const texture image.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int&amp; <B><A HREF="#DOC.2.188.9">getModifiedTag</A></B>(unsigned int contextID) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.188.10">setTextureSize</A></B>(int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>) const 
+<DD><I>Set the texture width and height.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.188.11">getTextureWidth</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.188.12">getTextureHeight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.188.13">getTextureSize</A></B>(int&amp; <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int&amp; <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.188.15">setSubloadCallback</A></B>(<!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>* cb)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>* <B><A HREF="#DOC.2.188.16">getSubloadCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>* <B><A HREF="#DOC.2.188.17">getSubloadCallback</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.188.18">setNumMipmapLevels</A></B>(unsigned int num) const 
+<DD><I>Set the number of mip map levels the the texture has been created with, should only be called within an osg::Texuture::apply() and custom OpenGL texture load</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.188.19">getNumMipmapLevels</A></B>() const 
+<DD><I>Get the number of mip map levels the the texture has been created with</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.188.20">copyTexImage2D</A></B>(<!1><A HREF="State.html">State</A>&amp; state, int <!1><A HREF="Viewport.html#DOC.2.214.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.214.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A> )
+<DD><I>Copy pixels into a 2D texture imageAs per glCopyTexImage2D.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.188.21">copyTexSubImage2D</A></B>(<!1><A HREF="State.html">State</A>&amp; state, int xoffset, int yoffset, int <!1><A HREF="Viewport.html#DOC.2.214.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.214.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A> )
+<DD><I>Copy a two-dimensional texture subimage.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.188.22">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DD><I>On first apply (unless already compiled), create the minmapped  texture and bind it, subsequent apply will simple bind to texture</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+class  SG_EXPORT <B><A HREF="SubloadCallback.2.html">SubloadCallback</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Image.html">Image</A>&gt;  <B><A HREF="#DOC.2.188.25">_image</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable GLsizei <B><A HREF="#DOC.2.188.26">_textureWidth</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable GLsizei  <B><A HREF="#DOC.2.188.27">_textureHeight</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable GLsizei <B><A HREF="#DOC.2.188.28">_numMimpmapLevels</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>&gt;  <B><A HREF="#DOC.2.188.29">_subloadCallback</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="Texture2D.html#DOC.2.188.30">ImageModifiedTag</A> <B><A HREF="#DOC.2.188.31">_modifiedTag</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.188.23">~Texture2D</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.188.24">computeInternalFormat</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;unsigned int&gt; <B><A HREF="#DOC.2.188.30">ImageModifiedTag</A></B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Texture.html">Texture</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">osg::Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">osg::Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">osg::Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.175.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setWrap</B>(<!1><A HREF="Texture.html#DOC.2.186.10">WrapParameter</A> which, <!1><A HREF="Texture.html#DOC.2.186.11">WrapMode</A> wrap)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.11">WrapMode</A> <B>getWrap</B>(<!1><A HREF="Texture.html#DOC.2.186.10">WrapParameter</A> which) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setBorderColor</B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>getBorderColor</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setFilter</B>(<!1><A HREF="Texture.html#DOC.2.186.16">FilterParameter</A> which, <!1><A HREF="Texture.html#DOC.2.186.17">FilterMode</A> filter)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.17">FilterMode</A> <B>getFilter</B>(<!1><A HREF="Texture.html#DOC.2.186.16">FilterParameter</A> which) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setMaxAnisotropy</B>(float anis)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   float <B>getMaxAnisotropy</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUseHardwareMipMapGeneration</B>(bool useHardwareMipMapGeneration)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getUseHardwareMipMapGeneration</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUnRefImageDataAfterApply</B>(bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getUnRefImageDataAfterApply</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setInternalFormatMode</B>(<!1><A HREF="Texture.html#DOC.2.186.26">InternalFormatMode</A> mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Texture.html#DOC.2.186.26">InternalFormatMode</A> <B>getInternalFormatMode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setInternalFormat</B>(GLint internalFormat)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   GLint <B>getInternalFormat</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>isCompressedInternalFormat</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   GLuint&amp; <B>getTextureObject</B>(unsigned int contextID) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int&amp; <B>getTextureParameterDirty</B>(unsigned int contextID) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyTextureObject</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyTextureParameters</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>deleteTextureObject</B>(unsigned int contextID, GLuint handle)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedTextureObjects</B>(unsigned int contextID)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="Extensions.html">Extensions</A>* <B>getExtensions</B>(unsigned int contextID, bool createIfNotInitalized)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setExtensions</B>(unsigned int contextID, <!1><A HREF="Extensions.html">Extensions</A>* extensions)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>applyTexImage2D_load</B>(GLenum target, const <!1><A HREF="Image.html">Image</A>* image, <!1><A HREF="State.html">State</A>&amp; state, GLsizei&amp; <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLsizei&amp; <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLsizei&amp; numMimpmapLevels) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>applyTexImage2D_subload</B>(GLenum target, const <!1><A HREF="Image.html">Image</A>* image, <!1><A HREF="State.html">State</A>&amp; state, GLsizei&amp; <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLsizei&amp; <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLsizei&amp; numMimpmapLevels) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>WrapParameter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>WrapMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>FilterParameter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>FilterMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>InternalFormatMode</B>
+<DT>
+class  SG_EXPORT <B><A HREF="Extensions.html">Extensions</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I>Extensions class which encapsulates the querring of extensions and associated function pointers, and provide convinience wrappers to  check for the extensions or use the associated functions</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Texture.html#DOC.2.186.51">TextureNameList</A> <B>_handleList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Texture.html#DOC.2.186.53">TexParameterDirtyList</A> <B>_texParametersDirtyList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.11">WrapMode</A> <B>_wrap_s</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.11">WrapMode</A> <B>_wrap_t</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.11">WrapMode</A> <B>_wrap_r</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.17">FilterMode</A> <B>_min_filter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.17">FilterMode</A> <B>_mag_filter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_maxAnisotropy</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_useHardwareMipMapGeneration</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_unrefImageDataAfterApply</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Vec4.html">Vec4</A> <B>_borderColor</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Texture.html#DOC.2.186.26">InternalFormatMode</A> <B>_internalFormatMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable GLint <B>_internalFormat</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>computeInternalFormatWithImage</B>(const <!1><A HREF="Image.html">osg::Image</A>&amp; image) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>isCompressedInternalFormat</B>(GLint internalFormat) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>applyTexParameters</B>(GLenum target, <!1><A HREF="State.html">State</A>&amp; state) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>compareTexture</B>(const <!1><A HREF="Texture.html">Texture</A>&amp; rhs) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;GLuint&gt; <B>TextureNameList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;unsigned int&gt; <B>TexParameterDirtyList</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="StateAttribute.html">StateAttribute</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  GLenum <B>GLMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>GLModeValue</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>OverrideValue</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Texture state class which encapsulates OpenGl texture functionality</BLOCKQUOTE>
+<DL>
+
+<A NAME="Texture2D"></A>
+<A NAME="DOC.2.188.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Texture2D()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Texture2D"></A>
+<A NAME="DOC.2.188.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Texture2D(const <!1><A HREF="Texture2D.html#DOC.2.188.2">Texture2D</A>&amp; text, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_StateAttribute"></A>
+<A NAME="DOC.2.188.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Texture2D.html">Texture2D</A>, <!1><A HREF="StateAttribute.html#DOC.2.175.6.1">TEXTURE</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compare"></A>
+<A NAME="DOC.2.188.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
+<DL><DT><DD></DL><P>
+<A NAME="getAssociatedModes"></A>
+<A NAME="DOC.2.188.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.175.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setImage"></A>
+<A NAME="DOC.2.188.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(<!1><A HREF="Image.html">Image</A>* image)</B></TT>
+<DD>Set the texture image. 
+<DL><DT><DD></DL><P>
+<A NAME="getImage"></A>
+<A NAME="DOC.2.188.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>* getImage()</B></TT>
+<DD>Get the texture image. 
+<DL><DT><DD></DL><P>
+<A NAME="getImage"></A>
+<A NAME="DOC.2.188.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Image.html">Image</A>* getImage() const </B></TT>
+<DD>Get the const texture image. 
+<DL><DT><DD></DL><P>
+<A NAME="getModifiedTag"></A>
+<A NAME="DOC.2.188.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int&amp; getModifiedTag(unsigned int contextID) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTextureSize"></A>
+<A NAME="DOC.2.188.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTextureSize(int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>) const </B></TT>
+<DD>Set the texture width and height. If width or height are zero then
+the repsective size value is calculated from the source image sizes. 
+<DL><DT><DD></DL><P>
+<A NAME="getTextureWidth"></A>
+<A NAME="DOC.2.188.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getTextureWidth() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTextureHeight"></A>
+<A NAME="DOC.2.188.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getTextureHeight() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTextureSize"></A>
+<A NAME="DOC.2.188.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getTextureSize(int&amp; <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int&amp; <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSubloadCallback"></A>
+<A NAME="DOC.2.188.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSubloadCallback(<!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>* cb)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSubloadCallback"></A>
+<A NAME="DOC.2.188.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>* getSubloadCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSubloadCallback"></A>
+<A NAME="DOC.2.188.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>* getSubloadCallback() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNumMipmapLevels"></A>
+<A NAME="DOC.2.188.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNumMipmapLevels(unsigned int num) const </B></TT>
+<DD>Set the number of mip map levels the the texture has been created with,
+should only be called within an osg::Texuture::apply() and custom OpenGL texture load
+<DL><DT><DD></DL><P>
+<A NAME="getNumMipmapLevels"></A>
+<A NAME="DOC.2.188.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getNumMipmapLevels() const </B></TT>
+<DD>Get the number of mip map levels the the texture has been created with
+<DL><DT><DD></DL><P>
+<A NAME="copyTexImage2D"></A>
+<A NAME="DOC.2.188.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copyTexImage2D(<!1><A HREF="State.html">State</A>&amp; state, int <!1><A HREF="Viewport.html#DOC.2.214.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.214.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A> )</B></TT>
+<DD>Copy pixels into a 2D texture imageAs per glCopyTexImage2D.
+Creates an OpenGL texture object from the current OpenGL background
+framebuffer contents at pos \a x, \a y with width \a width and
+height \a height. \a width and \a height must be a power of two.
+<DL><DT><DD></DL><P>
+<A NAME="copyTexSubImage2D"></A>
+<A NAME="DOC.2.188.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copyTexSubImage2D(<!1><A HREF="State.html">State</A>&amp; state, int xoffset, int yoffset, int <!1><A HREF="Viewport.html#DOC.2.214.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.214.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A> )</B></TT>
+<DD>Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
+Updates portion of an existing OpenGL texture object from the current OpenGL background
+framebuffer contents at pos \a x, \a y with width \a width and
+height \a height. \a width and \a height must be a power of two,
+and writing into the texture with offset \a xoffset and \a yoffset.
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.188.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
+<DD>On first apply (unless already compiled), create the minmapped 
+texture and bind it, subsequent apply will simple bind to texture
+<DL><DT><DD></DL><P>
+<A NAME="~Texture2D"></A>
+<A NAME="DOC.2.188.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Texture2D()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeInternalFormat"></A>
+<A NAME="DOC.2.188.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void computeInternalFormat() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_image"></A>
+<A NAME="DOC.2.188.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Image.html">Image</A>&gt;  _image</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_textureWidth"></A>
+<A NAME="DOC.2.188.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable GLsizei _textureWidth</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_textureHeight"></A>
+<A NAME="DOC.2.188.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable GLsizei  _textureHeight</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numMimpmapLevels"></A>
+<A NAME="DOC.2.188.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable GLsizei _numMimpmapLevels</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_subloadCallback"></A>
+<A NAME="DOC.2.188.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="SubloadCallback.2.html">SubloadCallback</A>&gt;  _subloadCallback</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ImageModifiedTag"></A>
+<A NAME="DOC.2.188.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="buffered_value.html">buffered_value</A>&lt;unsigned int&gt; ImageModifiedTag</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modifiedTag"></A>
+<A NAME="DOC.2.188.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="Texture2D.html#DOC.2.188.30">ImageModifiedTag</A> _modifiedTag</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

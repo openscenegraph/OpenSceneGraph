@@ -1,0 +1,325 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::Tesselator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::Tesselator</A></H2></H2><BLOCKQUOTE>A simple class for tessellating a single polygon boundary.</BLOCKQUOTE>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.24.1">Tesselator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.24.2">~Tesselator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.6">beginTesselation</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.7">beginContour</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.8">addVertex</A></B>(osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.24.16">vertex</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.9">endContour</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.10">endTesselation</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Tesselator.html#DOC.2.24.11">PrimList</A>&amp; <B><A HREF="#DOC.2.24.12">getPrimList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.13">retesselatePolygons</A></B>(osg::Geometry&amp; geom)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.14">reset</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.24.3">InputBoundaryDirection</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::Vec3*&gt; <B><A HREF="#DOC.2.24.4">VertexPointList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.24.5">Prim</A></B>: public osg::Referenced
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Tesselator.html#DOC.2.24.5">Prim</A>&gt; &gt; <B><A HREF="#DOC.2.24.11">PrimList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLUtesselator* <B><A HREF="#DOC.2.24.29">_tobj</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Tesselator.html#DOC.2.24.11">PrimList</A> <B><A HREF="#DOC.2.24.30">_primList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Tesselator.html#DOC.2.24.28">Vec3dList</A> <B><A HREF="#DOC.2.24.31">_coordData</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Tesselator.html#DOC.2.24.27">NewVertexList</A> <B><A HREF="#DOC.2.24.32">_newVertexList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.24.33">_errorCode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.15">begin</A></B>(GLenum mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.16">vertex</A></B>(osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.24.16">vertex</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.17">combine</A></B>(osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.24.16">vertex</A>, void* vertex_data[4], GLfloat weight[4])
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.18">end</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.24.19">error</A></B>(GLenum errorCode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void CALLBACK <B><A HREF="#DOC.2.24.20">beginCallback</A></B>(GLenum which, void* userData)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void CALLBACK <B><A HREF="#DOC.2.24.21">vertexCallback</A></B>(GLvoid* data, void* userData)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void CALLBACK <B><A HREF="#DOC.2.24.22">combineCallback</A></B>(GLdouble coords[3], void* vertex_data[4], GLfloat weight[4], void** outData, void* useData)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void CALLBACK <B><A HREF="#DOC.2.24.23">endCallback</A></B>(void* userData)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void CALLBACK <B><A HREF="#DOC.2.24.24">errorCallback</A></B>(GLenum errorCode, void* userData)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.24.25">Vec3d</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.24.26">NewVertex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;osg::Vec3*,<!1><A HREF="Tesselator.html#DOC.2.24.26">NewVertex</A>&gt; <B><A HREF="#DOC.2.24.27">NewVertexList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Tesselator.html#DOC.2.24.25">Vec3d</A>*&gt; <B><A HREF="#DOC.2.24.28">Vec3dList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A simple class for tessellating a single polygon boundary.
+Currently uses old style glu tessellation functions for portability.
+It be nice to use the modern glu tessellation functions or to find
+a small set of code for doing this job better.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Tesselator"></A>
+<A NAME="DOC.2.24.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Tesselator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Tesselator"></A>
+<A NAME="DOC.2.24.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~Tesselator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="InputBoundaryDirection"></A>
+<A NAME="DOC.2.24.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  InputBoundaryDirection</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="CLOCK_WISE"></A>
+<A NAME="DOC.2.24.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLOCK_WISE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COUNTER_CLOCK_WISE"></A>
+<A NAME="DOC.2.24.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COUNTER_CLOCK_WISE</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="VertexPointList"></A>
+<A NAME="DOC.2.24.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::Vec3*&gt; VertexPointList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Prim"></A>
+<A NAME="DOC.2.24.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  Prim: public osg::Referenced</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="Prim"></A>
+<A NAME="DOC.2.24.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Prim(GLenum mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="VecList"></A>
+<A NAME="DOC.2.24.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::Vec3*&gt; VecList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mode"></A>
+<A NAME="DOC.2.24.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _mode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_vertices"></A>
+<A NAME="DOC.2.24.5.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Tesselator.html#DOC.2.24.5.2">VecList</A> _vertices</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="beginTesselation"></A>
+<A NAME="DOC.2.24.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void beginTesselation()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="beginContour"></A>
+<A NAME="DOC.2.24.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void beginContour()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addVertex"></A>
+<A NAME="DOC.2.24.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addVertex(osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.24.16">vertex</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="endContour"></A>
+<A NAME="DOC.2.24.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void endContour()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="endTesselation"></A>
+<A NAME="DOC.2.24.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void endTesselation()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PrimList"></A>
+<A NAME="DOC.2.24.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Tesselator.html#DOC.2.24.5">Prim</A>&gt; &gt; PrimList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPrimList"></A>
+<A NAME="DOC.2.24.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Tesselator.html#DOC.2.24.11">PrimList</A>&amp; getPrimList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="retesselatePolygons"></A>
+<A NAME="DOC.2.24.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void retesselatePolygons(osg::Geometry&amp; geom)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.24.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="begin"></A>
+<A NAME="DOC.2.24.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void begin(GLenum mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="vertex"></A>
+<A NAME="DOC.2.24.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void vertex(osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.24.16">vertex</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="combine"></A>
+<A NAME="DOC.2.24.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void combine(osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.24.16">vertex</A>, void* vertex_data[4], GLfloat weight[4])</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="end"></A>
+<A NAME="DOC.2.24.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void end()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="error"></A>
+<A NAME="DOC.2.24.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void error(GLenum errorCode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="beginCallback"></A>
+<A NAME="DOC.2.24.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void CALLBACK beginCallback(GLenum which, void* userData)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="vertexCallback"></A>
+<A NAME="DOC.2.24.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void CALLBACK vertexCallback(GLvoid* data, void* userData)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="combineCallback"></A>
+<A NAME="DOC.2.24.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void CALLBACK combineCallback(GLdouble coords[3], void* vertex_data[4], GLfloat weight[4], void** outData, void* useData)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="endCallback"></A>
+<A NAME="DOC.2.24.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void CALLBACK endCallback(void* userData)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="errorCallback"></A>
+<A NAME="DOC.2.24.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void CALLBACK errorCallback(GLenum errorCode, void* userData)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Vec3d"></A>
+<A NAME="DOC.2.24.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  Vec3d</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="_v"></A>
+<A NAME="DOC.2.24.25.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _v[3]</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="NewVertex"></A>
+<A NAME="DOC.2.24.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  NewVertex</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NewVertex"></A>
+<A NAME="DOC.2.24.26.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NewVertex()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NewVertex"></A>
+<A NAME="DOC.2.24.26.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NewVertex(const <!1><A HREF="Tesselator.html#DOC.2.24.26.2">NewVertex</A>&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NewVertex"></A>
+<A NAME="DOC.2.24.26.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NewVertex(float f1, osg::Vec3* v1, float f2, osg::Vec3* v2, float f3, osg::Vec3* v3, float f4, osg::Vec3* v4)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_f1"></A>
+<A NAME="DOC.2.24.26.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _f1</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_v1"></A>
+<A NAME="DOC.2.24.26.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3* _v1</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_f2"></A>
+<A NAME="DOC.2.24.26.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _f2</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_v2"></A>
+<A NAME="DOC.2.24.26.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3* _v2</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_f3"></A>
+<A NAME="DOC.2.24.26.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _f3</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_v3"></A>
+<A NAME="DOC.2.24.26.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3* _v3</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_f4"></A>
+<A NAME="DOC.2.24.26.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _f4</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_v4"></A>
+<A NAME="DOC.2.24.26.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3* _v4</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="NewVertexList"></A>
+<A NAME="DOC.2.24.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;osg::Vec3*,<!1><A HREF="Tesselator.html#DOC.2.24.26">NewVertex</A>&gt; NewVertexList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Vec3dList"></A>
+<A NAME="DOC.2.24.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Tesselator.html#DOC.2.24.25">Vec3d</A>*&gt; Vec3dList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tobj"></A>
+<A NAME="DOC.2.24.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLUtesselator* _tobj</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_primList"></A>
+<A NAME="DOC.2.24.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Tesselator.html#DOC.2.24.11">PrimList</A> _primList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_coordData"></A>
+<A NAME="DOC.2.24.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Tesselator.html#DOC.2.24.28">Vec3dList</A> _coordData</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_newVertexList"></A>
+<A NAME="DOC.2.24.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Tesselator.html#DOC.2.24.27">NewVertexList</A> _newVertexList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_errorCode"></A>
+<A NAME="DOC.2.24.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _errorCode</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

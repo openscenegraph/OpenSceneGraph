@@ -1,0 +1,725 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>namespace osg</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>namespace <A HREF="#DOC.DOCU">osg</A></H2></H2>
+<HR>
+<P><DL>
+ <DT>
+class  SG_EXPORT <B><A HREF="AlphaFunc.html">AlphaFunc</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Encapsulate OpenGL glAlphaFunc</I>
+<DT>
+class  SG_EXPORT <B><A HREF="AnimationPath.html">AnimationPath</A></B>: public virtual <!1><A HREF="Object.html">osg::Object</A>
+<DD><I>AnimationPath for specify the time varying transformation pathway to use when update camera and model objects.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="AnimationPathCallback.html">AnimationPathCallback</A></B>: public <!1><A HREF="NodeCallback.html">NodeCallback</A>
+<DT>
+class  SG_EXPORT <B><A HREF="ApplicationUsage.html">ApplicationUsage</A></B>
+<DT>
+class  <B><A HREF="ApplicationUsageProxy.html">ApplicationUsageProxy</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="ArgumentParser.html">ArgumentParser</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="Array.html">Array</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DT>
+template&lt;typename <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <B><A HREF="TemplateArray.html">TemplateArray</A></B>: public <!1><A HREF="Array.html">Array</A>, public std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;
+<DT>
+class  SG_EXPORT <B><A HREF="IndexArray.html">IndexArray</A></B>: public <!1><A HREF="Array.html">Array</A>
+<DT>
+template&lt;typename <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <B><A HREF="TemplateIndexArray.html">TemplateIndexArray</A></B>: public <!1><A HREF="IndexArray.html">IndexArray</A>, public std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLbyte,Array::ByteArrayType,1,GL_BYTE&gt; <B><A HREF="#DOC.2.11">ByteArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLshort,Array::ShortArrayType,1,GL_SHORT&gt; <B><A HREF="#DOC.2.12">ShortArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLint,Array::IntArrayType,1,GL_INT&gt; <B><A HREF="#DOC.2.13">IntArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLubyte,Array::UByteArrayType,1,GL_UNSIGNED_BYTE&gt; <B><A HREF="#DOC.2.14">UByteArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLushort,Array::UShortArrayType,1,GL_UNSIGNED_SHORT&gt; <B><A HREF="#DOC.2.15">UShortArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLuint,Array::UIntArrayType,1,GL_UNSIGNED_INT&gt; <B><A HREF="#DOC.2.16">UIntArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;GLfloat,Array::FloatArrayType,1,GL_FLOAT&gt; <B><A HREF="#DOC.2.17">FloatArray</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="UByte4.html">UByte4</A>,Array::UByte4ArrayType,4,GL_UNSIGNED_BYTE&gt; <B><A HREF="#DOC.2.18">UByte4Array</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="Vec2.html">Vec2</A>,Array::Vec2ArrayType,2,GL_FLOAT&gt; <B><A HREF="#DOC.2.19">Vec2Array</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="Vec3.html">Vec3</A>,Array::Vec3ArrayType,3,GL_FLOAT&gt; <B><A HREF="#DOC.2.20">Vec3Array</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="Vec4.html">Vec4</A>,Array::Vec4ArrayType,4,GL_FLOAT&gt; <B><A HREF="#DOC.2.21">Vec4Array</A></B>
+<DT>
+class  <B><A HREF="ArrayVisitor.html">ArrayVisitor</A></B>
+<DT>
+class  <B><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A></B>
+<DT>
+class  <B><A HREF="ValueVisitor.html">ValueVisitor</A></B>
+<DT>
+class  <B><A HREF="ConstValueVisitor.html">ConstValueVisitor</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="Billboard.html">Billboard</A></B>: public <!1><A HREF="Geode.html">Geode</A>
+<DD><I>Billboard - a Geode which orientates its child osg::Drawable's to face the eye point.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="BlendFunc.html">BlendFunc</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>BlendFunc - encapsulates the OpenGL blend/transparency state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="BoundingBox.html">BoundingBox</A></B>
+<DD><I>General purpose axis-aligned bounding box class for enclosing objects/vertices.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="BoundingSphere.html">BoundingSphere</A></B>
+<DD><I>General purpose bounding sphere class for enclosing nodes/objects/vertices.</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampGEQUAL.html">clampGEQUAL</A></B>(<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const char* valueName)
+<DD><I>if value is greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampLEQUAL.html">clampLEQUAL</A></B>(<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if value is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampBetweenRange.html">clampBetweenRange</A></B>(<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if value is between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementGEQUAL.html">clampArrayElementGEQUAL</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const char* valueName)
+<DD><I>if array element value[i] is greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementLEQUAL.html">clampArrayElementLEQUAL</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array element value[i] is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementBetweenRange.html">clampArrayElementBetweenRange</A></B>(A&amp; value, unsigned int i, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array element value[i] is between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsGEQUAL.html">clampArrayElementsGEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const char* valueName)
+<DD><I>if array elements are greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsLEQUAL.html">clampArrayElementsLEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array elements are less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArrayElementsBetweenRange.html">clampArrayElementsBetweenRange</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array elements are between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3GEQUAL.html">clampArray3GEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const char* valueName)
+<DD><I>if array4 elements are greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3LEQUAL.html">clampArray3LEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array4 elements are is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArray3BetweenRange.html">clampArray3BetweenRange</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array4 elements are between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4GEQUAL.html">clampArray4GEQUAL</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const char* valueName)
+<DD><I>if array4 elements are greater than or equal to minValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4LEQUAL.html">clampArray4LEQUAL</A></B>(A&amp; value, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, unsigned int <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array4 elements are is less than or equal to maxValue do nothing - legal value, otherwise clamp value to specified maximum value and return warning  with valueName specifying which variable was clamped</I>
+<DT>
+template&lt;class A, class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="clampArray4BetweenRange.html">clampArray4BetweenRange</A></B>(A&amp; value, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> minValue, const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A> maxValue, const char* valueName)
+<DD><I>if array4 elements are between or equal to minValue and maxValue do nothing - legal value, otherwise clamp value to specified to range and return warning  with valueName specifying which variable was clamped.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Camera.html">Camera</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I>Camera class for encapsulating the view position and orientation and projection (lens) used.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ClearNode.html">ClearNode</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>ClearNode is a Group node which controls the clearing of the color and depth buffers at the start of each frame.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ClipNode.html">ClipNode</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>Leaf Node for defining the position of ClipPlanes in the scene</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ClipPlane.html">ClipPlane</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>ClipPlane state class which encapsulates OpenGL glClipPlane() functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="CollectOccludersVisitor.html">CollectOccludersVisitor</A></B>: public <!1><A HREF="NodeVisitor.html">osg::NodeVisitor</A>, public <!1><A HREF="CullStack.html">osg::CullStack</A>
+<DT>
+class  SG_EXPORT <B><A HREF="ColorMask.html">ColorMask</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Encapsulate OpenGL glColorMaskFunc/Op/Mask functions</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ColorMatrix.html">ColorMatrix</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Texture Matrix state class for encapsulating OpenGL texture matrix functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I>A class for representing convex clipping volumes made up.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ConvexPlanarPolygon.html">ConvexPlanarPolygon</A></B>
+<DD><I>A class for representing convex clipping volumes made up.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="CopyOp.html">CopyOp</A></B>
+<DD><I>Copy Op(erator) used to control the whether shallow or deep copy is used during copy construction and clone operation</I>
+<DT>
+class  SG_EXPORT <B><A HREF="CullFace.html">CullFace</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Class to globally enable/disable OpenGL's polygon culling mode=</I>
+<DT>
+class  SG_EXPORT <B><A HREF="CullStack.html">CullStack</A></B>
+<DD><I>A CullStack class which accumulates the current project, modelview matrices and the CullingSet.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="CullingSet.html">CullingSet</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>A CullingSet class which contains a frustum and a list of occluder.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="DOFTransform.html">DOFTransform</A></B>: public <!1><A HREF="Transform.html">Transform</A>
+<DD><I>DOFTransform - encapsulates Multigen DOF behavior</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Depth.html">Depth</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Encapsulate OpenGL glDepthFunc/Mask/Range functions</I>
+<DT>
+class  SG_EXPORT <B><A HREF="DisplaySettings.html">DisplaySettings</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I>DisplaySettings class for encapsulating what visuals are required and have been set up, and the status of stereo viewing</I>
+<DT>
+class  SG_EXPORT <B><A HREF="DrawPixels.html">DrawPixels</A></B>: public <!1><A HREF="Drawable.html">Drawable</A>
+<DD><I>DrawPixels is an osg::Drawable subclass which encapsulates the drawing of images using glDrawPixels</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.62">USE_SEPARATE_COMPILE_AND_EXECUTE</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="Drawable.html">Drawable</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I>Pure virtual base class for drawable Geometry.</I>
+<DT>
+enum  <B><A HREF="Endian.html">Endian</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Endian.html">Endian</A> <B><A HREF="#DOC.2.65">getCpuByteOrder</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void <B><A HREF="#DOC.2.66">swapBytes</A></B>( <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; in )
+<DT>
+class  SG_EXPORT <B><A HREF="Fog.html">Fog</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Fog - encapsulates OpenGL fog state.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="FrameStamp.html">FrameStamp</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>Class which encapsulates the frame number, reference time and calander time of specific frame, used to synchonize operations on the scene graph and other machines when using a graphics cluster.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="FrontFace.html">FrontFace</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Class to specifies the orientation of front-facing polygons</I>
+<DT>
+extern SG_EXPORT bool <B><A HREF="isGLExtensionSupported.html">isGLExtensionSupported</A></B>(const char* extension)
+<DD><I>return true if OpenGL "extension" is supported.</I>
+<DT>
+inline   void* <B><A HREF="getGLExtensionFuncPtr.html">getGLExtensionFuncPtr</A></B>(const char* funcName)
+<DD><I>return the address of the specified OpenGL function.</I>
+<DT>
+inline   void* <B><A HREF="getGLExtensionFuncPtr.2.html">getGLExtensionFuncPtr</A></B>(const char* funcName, const char* fallbackFuncName)
+<DD><I>return the address of the specified OpenGL function, if not found then check a second function name, if this fails then return NULL as function is not supported by OpenGL library.</I>
+<DT>
+extern SG_EXPORT bool <B><A HREF="isGLUExtensionSupported.html">isGLUExtensionSupported</A></B>(const char* extension)
+<DD><I>return true if OpenGL "extension" is supported.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="GeoSet.html">GeoSet</A></B>: public <!1><A HREF="Drawable.html">Drawable</A>
+<DD><I>Note, osg::GeoSet is now deprecated, please use osg::Geometry instead.</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;  void <B><A HREF="for_each_triangle.html">for_each_triangle</A></B>(<!1><A HREF="GeoSet.html">GeoSet</A>&amp; gset, <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; op)
+<DD><I>Template function for iterating through a GeoSet operating on triangles with templated functor.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Geode.html">Geode</A></B>: public <!1><A HREF="Node.html">Node</A>
+<DD><I>Leaf Node for grouping Drawables</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Geometry.html">Geometry</A></B>: public <!1><A HREF="Drawable.html">Drawable</A>
+<DT>
+class  SG_EXPORT <B><A HREF="Group.html">Group</A></B>: public <!1><A HREF="Node.html">Node</A>
+<DD><I>General group node which maintains a list of children.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Image.html">Image</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I>Image class for encapsulating the storage texture image data</I>
+<DT>
+extern SG_EXPORT <!1><A HREF="Geode.html">Geode</A>* <B><A HREF="createGeodeForImage.html">createGeodeForImage</A></B>(<!1><A HREF="Image.html">Image</A>* image)
+<DD><I>Convenience function to be used by images loaders to generate a valid geode to return for readNode().</I>
+<DT>
+extern SG_EXPORT <!1><A HREF="Geode.html">Geode</A>* <B><A HREF="createGeodeForImage.2.html">createGeodeForImage</A></B>(<!1><A HREF="Image.html">Image</A>* image, float <!1><A HREF="ImpostorSprite.html#DOC.2.83.24">s</A>, float <!1><A HREF="ImpostorSprite.html#DOC.2.83.25">t</A>)
+<DD><I>Convenience function to be used by images loaders to generate a valid geode to return for readNode().</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Impostor.html">Impostor</A></B>: public <!1><A HREF="LOD.html">LOD</A>
+<DD><I>Impostor - is a form of Level Of Detail group node which allows both switching  between children depending on distance from eye point and image caching.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ImpostorSprite.html">ImpostorSprite</A></B>: public <!1><A HREF="Drawable.html">Drawable</A>
+<DD><I>An ImposterSprite is a textured quad which is rendered in place a  3D geometry.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ImpostorSpriteManager.html">ImpostorSpriteManager</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>Helper class for managing the reuse of ImpostorSprite resources</I>
+<DT>
+class  SG_EXPORT <B><A HREF="LOD.html">LOD</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>LOD - Level Of Detail group node which allows switching between children depending on distance from eye point.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Light.html">Light</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Light state class which encapsulates OpenGL glLight() functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="LightModel.html">LightModel</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DT>
+class  SG_EXPORT <B><A HREF="LightSource.html">LightSource</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>Leaf Node for defining a light in the scene</I>
+<DT>
+class  SG_EXPORT <B><A HREF="LineSegment.html">LineSegment</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>LineSegment class for representing a line segment</I>
+<DT>
+class  SG_EXPORT <B><A HREF="LineStipple.html">LineStipple</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DT>
+class  SG_EXPORT <B><A HREF="LineWidth.html">LineWidth</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>LineWidth - encapsulates the OpenGL glLineWidth for setting the width of lines in pixels</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Material.html">Material</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Material - encapsulates OpenGL glMaterial state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Matrix.html">Matrix</A></B>
+<DT>
+class  <B><A HREF="RefMatrix.html">RefMatrix</A></B>: public <!1><A HREF="Object.html">Object</A>, public <!1><A HREF="Matrix.html">Matrix</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.95">operator* </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.96">operator* </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.97">operator<< </A></B>(std::ostream&amp; os, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )
+<DT>
+class  SG_EXPORT <B><A HREF="MatrixTransform.html">MatrixTransform</A></B>: public <!1><A HREF="Transform.html">Transform</A>
+<DD><I>MatrixTransform - is a subclass of Transform which has an osg::Matrix which represent a 4x4 transformation of its children from local cordinates into the Transform's parent coordinates</I>
+<DT>
+#define <B><A HREF="META_Node.html">META_Node</A></B>(library,<!1><A HREF="Test.html#DOC.164.1.3">name</A>)
+<DD><I>META_Node macro define the standard clone, isSameKindAs, className and accept methods.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Node.html">Node</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I>Base class for all internal nodes in the scene graph.</I>
+<DT>
+typedef  std::vector&lt;<!1><A HREF="Node.html">Node</A>*&gt; <B><A HREF="NodePath.html">NodePath</A></B>
+<DD><I>A vector of Nodes pointers which is used to describe the path from a root node to a descendant</I>
+<DT>
+class  SG_EXPORT <B><A HREF="NodeCallback.html">NodeCallback</A></B>: public virtual <!1><A HREF="Object.html">Object</A>
+<DT>
+class  SG_EXPORT <B><A HREF="NodeVisitor.html">NodeVisitor</A></B>: public virtual <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>Visitor for type safe operations on osg::Node's.</I>
+<DT>
+struct  <B><A HREF="NodeAcceptOp.html">NodeAcceptOp</A></B>
+<DD><I>Convenience functor for assisting visiting of arrays of osg::Node's</I>
+<DT>
+enum  <B><A HREF="NotifySeverity.html">NotifySeverity</A></B>
+<DD><I>Range of notify levels from DEBUG_FP through to FATAL, ALWAYS is reserved for forcing the absorption of all messages.</I>
+<DT>
+ <B><A HREF="globalnotifylevel..html">global notify level.</A></B>
+<DT>
+ <B><A HREF="xternSG_EXPORTNotifySeverityg_NotifyLevel.html">xtern SG_EXPORT NotifySeverity g_NotifyLevel;</A></B>
+<DT>
+ <B><A HREF="xternSG_EXPORTstdauto_ptrstdofstreamg_NotifyNulStream.html">xtern SG_EXPORT std::auto_ptr<std::ofstream> g_NotifyNulStream;</A></B>
+<DT>
+ <B><A HREF="globalnotifynulstream..html">global notify nul stream.</A></B>
+<DT>
+ <B><A HREF="xternSG_EXPORTboolg_NotifyInit.html">xtern SG_EXPORT bool g_NotifyInit;</A></B>
+<DT>
+extern SG_EXPORT void <B><A HREF="setNotifyLevel.html">setNotifyLevel</A></B>(<!1><A HREF="NotifySeverity.html">NotifySeverity</A> severity)
+<DD><I>set the notify level, overriding the default or value set by the environmental variable OSGNOTIFYLEVEL</I>
+<DT>
+extern SG_EXPORT <!1><A HREF="NotifySeverity.html">NotifySeverity</A> <B><A HREF="getNotifyLevel.html">getNotifyLevel</A></B>()
+<DD><I>get the notify level.</I>
+<DT>
+extern SG_EXPORT bool <B><A HREF="initNotifyLevel.html">initNotifyLevel</A></B>()
+<DD><I>initialize notify level.</I>
+<DT>
+extern SG_EXPORT std::ostream&amp; <B><A HREF="notify.html">notify</A></B>(const <!1><A HREF="NotifySeverity.html">NotifySeverity</A> severity)
+<DD><I>notify messaging function for providing fatal through to verbose debugging messages.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.115">notify</A></B>(void)
+<DT>
+#define <B><A HREF="META_Object.html">META_Object</A></B>(library,<!1><A HREF="Test.html#DOC.164.1.3">name</A>)
+<DD><I>META_Object macro define the standard clone, isSameKindAs and className methods.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Object.html">Object</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>Base class/standard interface for objects which require IO support,  cloning and reference counting.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="OccluderNode.html">OccluderNode</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>OccluderNode is a Group node which allows OccluderNodeing between children.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Plane.html">Plane</A></B>
+<DD><I>A plane class.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.120">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Plane.html">Plane</A>&amp; pl)
+<DT>
+class  SG_EXPORT <B><A HREF="Point.html">Point</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Point - encapsulates the OpenGL point smoothing and size state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="PolygonMode.html">PolygonMode</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Class to for setting OpenGL's polygon culling mode</I>
+<DT>
+class  SG_EXPORT <B><A HREF="PolygonOffset.html">PolygonOffset</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>PolygonOffset - encapsulates the OpenGL glPolygonOffset state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="PolygonStipple.html">PolygonStipple</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DT>
+class  SG_EXPORT <B><A HREF="Polytope.html">Polytope</A></B>
+<DD><I>A Polytope class for representing convex clipping volumes made up.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="PositionAttitudeTransform.html">PositionAttitudeTransform</A></B>: public <!1><A HREF="Transform.html">Transform</A>
+<DD><I>PositionAttitideTransform - is Transform the set the coordinates transform up via a Vec3 position and Quat attitude</I>
+<DT>
+typedef  std::vector&lt;GLsizei&gt; <B><A HREF="VectorSizei.html">VectorSizei</A></B>
+<DT>
+typedef  std::vector&lt;GLubyte&gt; <B><A HREF="VectorUByte.html">VectorUByte</A></B>
+<DT>
+typedef  std::vector&lt;GLushort&gt; <B><A HREF="VectorUShort.html">VectorUShort</A></B>
+<DT>
+typedef  std::vector&lt;GLuint&gt; <B><A HREF="VectorUInt.html">VectorUInt</A></B>
+<DT>
+class  <B><A HREF="VectorSizei.2.html">VectorSizei</A></B>: public std::vector&lt;GLsizei&gt;
+<DT>
+class  <B><A HREF="VectorUByte.2.html">VectorUByte</A></B>: public std::vector&lt;GLubyte&gt;
+<DT>
+class  <B><A HREF="VectorUShort.2.html">VectorUShort</A></B>: public std::vector&lt;GLushort&gt;
+<DT>
+class  <B><A HREF="VectorUInt.2.html">VectorUInt</A></B>: public std::vector&lt;GLuint&gt;
+<DT>
+class  <B><A HREF="PrimitiveSet.html">PrimitiveSet</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DT>
+class  SG_EXPORT <B><A HREF="DrawArrays.html">DrawArrays</A></B>: public <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>
+<DT>
+class  SG_EXPORT <B><A HREF="DrawArrayLengths.html">DrawArrayLengths</A></B>: public <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>, public <!1><A HREF="VectorSizei.html">VectorSizei</A>
+<DT>
+class  SG_EXPORT <B><A HREF="DrawElementsUByte.html">DrawElementsUByte</A></B>: public <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>, public <!1><A HREF="VectorUByte.html">VectorUByte</A>
+<DT>
+class  SG_EXPORT <B><A HREF="DrawElementsUShort.html">DrawElementsUShort</A></B>: public <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>, public <!1><A HREF="VectorUShort.html">VectorUShort</A>
+<DT>
+class  SG_EXPORT <B><A HREF="DrawElementsUInt.html">DrawElementsUInt</A></B>: public <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>, public <!1><A HREF="VectorUInt.html">VectorUInt</A>
+<DT>
+class  SG_EXPORT <B><A HREF="Projection.html">Projection</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>Projection nodes set up the frustum/orthographic projection used when rendering the scene </I>
+<DT>
+class  SG_EXPORT <B><A HREF="Quat.html">Quat</A></B>
+<DD><I>A quaternion class.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.143">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Quat.html">Quat</A>&amp; vec)
+<DT>
+class  SG_EXPORT <B><A HREF="Referenced.html">Referenced</A></B>
+<DD><I>Base class from providing referencing counted objects</I>
+<DT>
+class  <B><A HREF="DeleteHandler.html">DeleteHandler</A></B>
+<DD><I>Class for override the default delete behavior so that users can implment their own object deletion schemes.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Sequence.html">Sequence</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>Sequence is a Group node which allows automatic, time based switching between children</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ShadeModel.html">ShadeModel</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Class which encapsulates glShadeModel()</I>
+<DT>
+class  SG_EXPORT <B><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A></B>
+<DD><I>ShadowVolumeOccluder is a helper class for implementating shadow occlusion culling.</I>
+<DT>
+typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt; <B><A HREF="ShadowVolumeOccluderList.html">ShadowVolumeOccluderList</A></B>
+<DD><I>A list of ShadowVolumeOccluder, used by CollectOccluderVisitor and CullVistor's</I>
+<DT>
+#define <B><A HREF="META_Shape.html">META_Shape</A></B>(library,<!1><A HREF="Test.html#DOC.164.1.3">name</A>)
+<DD><I>META_StateAttribute macro define the standard clone, isSameKindAs, className and getType methods.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Shape.html">Shape</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I>Base class for all shape types.</I>
+<DT>
+class  <B><A HREF="ShapeVisitor.html">ShapeVisitor</A></B>
+<DT>
+class  <B><A HREF="ConstShapeVisitor.html">ConstShapeVisitor</A></B>
+<DT>
+class  <B><A HREF="Sphere.html">Sphere</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  <B><A HREF="Box.html">Box</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  <B><A HREF="Cone.html">Cone</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  <B><A HREF="Cylinder.html">Cylinder</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  <B><A HREF="InfinitePlane.html">InfinitePlane</A></B>: public <!1><A HREF="Shape.html">Shape</A>, public <!1><A HREF="Plane.html">Plane</A>
+<DT>
+class  <B><A HREF="TriangleMesh.html">TriangleMesh</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  <B><A HREF="ConvexHull.html">ConvexHull</A></B>: public <!1><A HREF="TriangleMesh.html">TriangleMesh</A>
+<DT>
+class  SG_EXPORT <B><A HREF="HeightField.html">HeightField</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  SG_EXPORT <B><A HREF="Grid.html">Grid</A></B>: public <!1><A HREF="HeightField.html">HeightField</A>
+<DT>
+class  <B><A HREF="CompositeShape.html">CompositeShape</A></B>: public <!1><A HREF="Shape.html">Shape</A>
+<DT>
+class  <B><A HREF="TessellationHints.html">TessellationHints</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DT>
+class  SG_EXPORT <B><A HREF="ShapeDrawable.html">ShapeDrawable</A></B>: public <!1><A HREF="Drawable.html">Drawable</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.166">GL_TEXTURE0</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.167">GL_FOG_COORDINATE_ARRAY</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.168">GL_SECONDARY_COLOR_ARRAY</A></B>
+<DT>
+#define <B><A HREF="OSG_GL_DEBUG.html">OSG_GL_DEBUG</A></B>(message)
+<DD><I>macro for use with osg::StateAttrbiute::apply methods for detected and  reporting OpenGL error messages</I>
+<DT>
+class  SG_EXPORT <B><A HREF="State.html">State</A></B>: public <!1><A HREF="Referenced.html">Referenced</A>
+<DD><I>State class for managing a state stack.</I>
+<DT>
+#define <B><A HREF="META_StateAttribute.html">META_StateAttribute</A></B>(library,<!1><A HREF="Test.html#DOC.164.1.3">name</A>,type)
+<DD><I>META_StateAttribute macro define the standard clone, isSameKindAs, className and getType methods.</I>
+<DT>
+#define <B><A HREF="COMPARE_StateAttribute_Types.html">COMPARE_StateAttribute_Types</A></B>(TYPE,rhs_attribute)
+<DD><I>COMPARE_StateAttribute_Types macro is a helper for implementing the StatateAtribute::compare() method</I>
+<DT>
+#define <B><A HREF="COMPARE_StateAttribute_Parameter.html">COMPARE_StateAttribute_Parameter</A></B>(parameter)
+<DD><I>COMPARE_StateAttribute_Parameter macro is a helper for implementing the StatateAtribute::compare() method.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.174">GL_COLOR_SUM</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="StateAttribute.html">StateAttribute</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I>Base class for state attribuets</I>
+<DT>
+class  SG_EXPORT <B><A HREF="StateSet.html">StateSet</A></B>: public <!1><A HREF="Object.html">Object</A>
+<DD><I> Encapsulates OpenGL state modes and attributes.</I>
+<DT>
+class  <B><A HREF="Statistics.html">Statistics</A></B>: public <!1><A HREF="PrimitiveFunctor.html">osg::Drawable::PrimitiveFunctor</A>
+<DD><I> Statistics base class.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Stencil.html">Stencil</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Encapsulate OpenGL glStencilFunc/Op/Mask functions</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Switch.html">Switch</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>Switch is a Group node which allows switching between children.</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TexEnv.html">TexEnv</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>TexEnv - encapsulates the OpenGL glTexEnv (texture environment) state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TexEnvCombine.html">TexEnvCombine</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>TexEnvCombine - encapsulates the OpenGL glTexEnvCombine (texture environment) state</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.182">GL_NORMAL_MAP_ARB</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>#define <B><A HREF="#DOC.2.183">GL_REFLECTION_MAP_ARB</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="TexGen.html">TexGen</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>TexGen - encapsulates the OpenGL glTexGen (texture coordinate generation) state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TexMat.html">TexMat</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Texture Matrix state class for encapsulating OpenGL texture matrix functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Texture.html">Texture</A></B>: public <!1><A HREF="StateAttribute.html">osg::StateAttribute</A>
+<DD><I>Texture base class which encapsulates OpenGl texture functionality which common betweent the various types of OpenGL textures</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Texture1D.html">Texture1D</A></B>: public <!1><A HREF="Texture.html">Texture</A>
+<DD><I>Texture state class which encapsulates OpenGl 1D texture functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Texture2D.html">Texture2D</A></B>: public <!1><A HREF="Texture.html">Texture</A>
+<DD><I>Texture state class which encapsulates OpenGl texture functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Texture3D.html">Texture3D</A></B>: public <!1><A HREF="Texture.html">Texture</A>
+<DD><I>Texture state class which encapsulates OpenGl 3D texture functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TextureCubeMap.html">TextureCubeMap</A></B>: public <!1><A HREF="Texture.html">Texture</A>
+<DD><I>TextureCubeMap state class which encapsulates OpenGl texture cubemap functionality</I>
+<DT>
+class  SG_EXPORT <B><A HREF="TextureRectangle.html">TextureRectangle</A></B>: public <!1><A HREF="Texture.html">Texture</A>
+<DD><I>Texture state class which encapsulates OpenGL texture functionality</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  __int64 <B><A HREF="#DOC.2.192">Timer_t</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned long long <B><A HREF="#DOC.2.193">Timer_t</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  double <B><A HREF="#DOC.2.194">Timer_t</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::clock_t <B><A HREF="#DOC.2.195">Timer_t</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="Timer.html">Timer</A></B>
+<DD><I>A high resolution, low latency time stamper</I>
+<DT>
+extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeLocalToWorld.html">computeLocalToWorld</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<DD><I>compute the matrix which transforms objects in local coords to world coords, by accumulating the Transform local to world matrices along the specified node path</I>
+<DT>
+extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeWorldToLocal.html">computeWorldToLocal</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<DD><I>compute the matrix which transforms objects in world coords to local coords, by accumulating the Transform world to local matrices along the specified node path</I>
+<DT>
+extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeLocalToEye.html">computeLocalToEye</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<DD><I>compute the matrix which transforms objects in local coords to world coords, by accumulating the Transform local to world matrices along the specified node path  the supplied initialial camera modelview </I>
+<DT>
+extern SG_EXPORT <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="computeEyeToLocal.html">computeEyeToLocal</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; modelview, <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<DD><I>compute the matrix which transforms objects in world coords to local coords, by accumulating the Transform world to local matrices along the specified node path  the inverse of the supplied initialial camera modelview</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Transform.html">Transform</A></B>: public <!1><A HREF="Group.html">Group</A>
+<DD><I>A Transform is a group node for which all children are transformed by a 4x4 matrix.</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt; class  <B><A HREF="TriangleFunctor.html">TriangleFunctor</A></B>: public Drawable::PrimitiveFunctor, public <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>
+<DT>
+class  <B><A HREF="UByte4.html">UByte4</A></B>
+<DD><I>General purpose float quad, uses include representation of colour coordinates.</I>
+<DT>
+class  <B><A HREF="Vec2.html">Vec2</A></B>
+<DD><I>General purpose float pair, uses include representation of texture coordinates.</I>
+<DT>
+class  <B><A HREF="Vec3.html">Vec3</A></B>
+<DD><I>General purpose float triple for use as vertices, vectors and normals.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   std::ostream&amp; <B><A HREF="#DOC.2.206">operator << </A></B>(std::ostream&amp; output, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.207">X_AXIS</A></B>(1.0f, 0.0f, 0.0f)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.208">Y_AXIS</A></B>(0.0f, 1.0f, 0.0f)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.209">Z_AXIS</A></B>(0.0f, 0.0f, 1.0f)
+<DT>
+class  <B><A HREF="Vec4.html">Vec4</A></B>
+<DD><I>General purpose float quad, uses include representation of colour coordinates.</I>
+<DT>
+inline   float <B><A HREF="operator.html">operator * </A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; lhs, const <!1><A HREF="Vec4.html">Vec4</A>&amp; rhs)
+<DD><I>Compute the dot product of a (Vec3,10) and a Vec4</I>
+<DT>
+inline   float <B><A HREF="operator.2.html">operator * </A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; lhs, const <!1><A HREF="Vec3.html">Vec3</A>&amp; rhs)
+<DD><I>Compute the dot product of a Vec4 and a (Vec3,10)</I>
+<DT>
+class  SG_EXPORT <B><A HREF="VertexProgram.html">VertexProgram</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>VertexProgram - encapsulates the OpenGL ARB vertex program state</I>
+<DT>
+class  SG_EXPORT <B><A HREF="Viewport.html">Viewport</A></B>: public <!1><A HREF="StateAttribute.html">StateAttribute</A>
+<DD><I>Encapsulte OpenGL glViewport</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt; class  <B><A HREF="buffered_value.html">buffered_value</A></B>
+<DD><I>Simple buffered value array which is used for values that need to multibuffered on one per graphics context basis</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt; class  <B><A HREF="buffered_object.html">buffered_object</A></B>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt; class  <B><A HREF="fast_back_stack.html">fast_back_stack</A></B>
+<DD><I>Simple stack implementation that keeps the back() cached locally for fast access rather than at the back of the vector which is the traditional stack implementation.</I>
+<DT>
+template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt; class  <B><A HREF="ref_ptr.html">ref_ptr</A></B>
+<DD><I>Smart pointer for handling referenced counted objects</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="ByteArray"></A>
+<A NAME="DOC.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLbyte,Array::ByteArrayType,1,GL_BYTE&gt; ByteArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ShortArray"></A>
+<A NAME="DOC.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLshort,Array::ShortArrayType,1,GL_SHORT&gt; ShortArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="IntArray"></A>
+<A NAME="DOC.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLint,Array::IntArrayType,1,GL_INT&gt; IntArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UByteArray"></A>
+<A NAME="DOC.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLubyte,Array::UByteArrayType,1,GL_UNSIGNED_BYTE&gt; UByteArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UShortArray"></A>
+<A NAME="DOC.2.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLushort,Array::UShortArrayType,1,GL_UNSIGNED_SHORT&gt; UShortArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UIntArray"></A>
+<A NAME="DOC.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateIndexArray.html">TemplateIndexArray</A>&lt;GLuint,Array::UIntArrayType,1,GL_UNSIGNED_INT&gt; UIntArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FloatArray"></A>
+<A NAME="DOC.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;GLfloat,Array::FloatArrayType,1,GL_FLOAT&gt; FloatArray</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UByte4Array"></A>
+<A NAME="DOC.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="UByte4.html">UByte4</A>,Array::UByte4ArrayType,4,GL_UNSIGNED_BYTE&gt; UByte4Array</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Vec2Array"></A>
+<A NAME="DOC.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="Vec2.html">Vec2</A>,Array::Vec2ArrayType,2,GL_FLOAT&gt; Vec2Array</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Vec3Array"></A>
+<A NAME="DOC.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="Vec3.html">Vec3</A>,Array::Vec3ArrayType,3,GL_FLOAT&gt; Vec3Array</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Vec4Array"></A>
+<A NAME="DOC.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="TemplateArray.html">TemplateArray</A>&lt;<!1><A HREF="Vec4.html">Vec4</A>,Array::Vec4ArrayType,4,GL_FLOAT&gt; Vec4Array</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="USE_SEPARATE_COMPILE_AND_EXECUTE"></A>
+<A NAME="DOC.2.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define USE_SEPARATE_COMPILE_AND_EXECUTE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCpuByteOrder"></A>
+<A NAME="DOC.2.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Endian.html">Endian</A> getCpuByteOrder()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="swapBytes"></A>
+<A NAME="DOC.2.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;inline   void swapBytes( <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; in )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator* "></A>
+<A NAME="DOC.2.95"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3.html">Vec3</A> operator* (const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator* "></A>
+<A NAME="DOC.2.96"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec4.html">Vec4</A> operator* (const <!1><A HREF="Vec4.html">Vec4</A>&amp; v, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator<< "></A>
+<A NAME="DOC.2.97"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator<< (std::ostream&amp; os, const <!1><A HREF="Matrix.html">Matrix</A>&amp; m )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="notify"></A>
+<A NAME="DOC.2.115"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; notify(void)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator << "></A>
+<A NAME="DOC.2.120"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator << (std::ostream&amp; output, const <!1><A HREF="Plane.html">Plane</A>&amp; pl)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator << "></A>
+<A NAME="DOC.2.143"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator << (std::ostream&amp; output, const <!1><A HREF="Quat.html">Quat</A>&amp; vec)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GL_TEXTURE0"></A>
+<A NAME="DOC.2.166"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_TEXTURE0</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GL_FOG_COORDINATE_ARRAY"></A>
+<A NAME="DOC.2.167"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_FOG_COORDINATE_ARRAY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GL_SECONDARY_COLOR_ARRAY"></A>
+<A NAME="DOC.2.168"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_SECONDARY_COLOR_ARRAY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GL_COLOR_SUM"></A>
+<A NAME="DOC.2.174"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_COLOR_SUM</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GL_NORMAL_MAP_ARB"></A>
+<A NAME="DOC.2.182"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_NORMAL_MAP_ARB</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GL_REFLECTION_MAP_ARB"></A>
+<A NAME="DOC.2.183"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>#define GL_REFLECTION_MAP_ARB</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Timer_t"></A>
+<A NAME="DOC.2.192"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  __int64 Timer_t</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Timer_t"></A>
+<A NAME="DOC.2.193"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned long long Timer_t</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Timer_t"></A>
+<A NAME="DOC.2.194"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  double Timer_t</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Timer_t"></A>
+<A NAME="DOC.2.195"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::clock_t Timer_t</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator << "></A>
+<A NAME="DOC.2.206"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   std::ostream&amp; operator << (std::ostream&amp; output, const <!1><A HREF="Vec3.html">Vec3</A>&amp; vec)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="X_AXIS"></A>
+<A NAME="DOC.2.207"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> X_AXIS(1.0f, 0.0f, 0.0f)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Y_AXIS"></A>
+<A NAME="DOC.2.208"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> Y_AXIS(0.0f, 1.0f, 0.0f)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Z_AXIS"></A>
+<A NAME="DOC.2.209"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">Vec3</A> Z_AXIS(0.0f, 0.0f, 1.0f)</B></TT>
+<DL><DT><DD></DL><P></DL>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

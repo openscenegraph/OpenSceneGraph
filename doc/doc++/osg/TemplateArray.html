@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType> class  osg::TemplateArray</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>template&lt;typename <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <A HREF="#DOC.DOCU">osg::TemplateArray</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="Mstd::vector,M,CReferenced,MReferenced.html,CObject,MObject.html,CArray,MArray.html,CTemplateArray,MTemplateArray.html">
+<param name=before value="M,M,M,M,M">
+<param name=after value="Ml_,Md_SP||,Md_||,MD_,M">
+<param name=indent value="2,0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.1">TemplateArray</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.2">TemplateArray</A></B>(const <!1><A HREF="TemplateArray.html#DOC.2.8.2">TemplateArray</A>&amp; ta, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.3">TemplateArray</A></B>(unsigned int no)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.4">TemplateArray</A></B>(unsigned int no, <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class InputIterator&gt;  <B><A HREF="#DOC.2.8.5">TemplateArray</A></B>(InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.8.6">cloneType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.8.7">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.8">accept</A></B>(<!1><A HREF="ArrayVisitor.html">ArrayVisitor</A>&amp; av)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.9">accept</A></B>(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp; av) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.10">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp; vv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.11">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp; vv) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const GLvoid* <B><A HREF="#DOC.2.8.12">getDataPointer</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.8.13">getNumElements</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.8.14">~TemplateArray</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Array.html">Array</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Array.html#DOC.2.7.1">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLint <B>getDataSize</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLenum <B>getDataType</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Array.html#DOC.2.7.1">Type</A> <B>_arrayType</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLint <B>_dataSize</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLenum <B>_dataType</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="TemplateArray"></A>
+<A NAME="DOC.2.8.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TemplateArray()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TemplateArray"></A>
+<A NAME="DOC.2.8.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TemplateArray(const <!1><A HREF="TemplateArray.html#DOC.2.8.2">TemplateArray</A>&amp; ta, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TemplateArray"></A>
+<A NAME="DOC.2.8.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TemplateArray(unsigned int no)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TemplateArray"></A>
+<A NAME="DOC.2.8.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TemplateArray(unsigned int no, <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TemplateArray"></A>
+<A NAME="DOC.2.8.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class InputIterator&gt;  TemplateArray(InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.8.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.8.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.8.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ArrayVisitor.html">ArrayVisitor</A>&amp; av)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.8.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp; av) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.8.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp; vv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.8.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp; vv) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDataPointer"></A>
+<A NAME="DOC.2.8.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const GLvoid* getDataPointer() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumElements"></A>
+<A NAME="DOC.2.8.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getNumElements() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~TemplateArray"></A>
+<A NAME="DOC.2.8.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TemplateArray()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>extern SG_EXPORT std::ostream& osg::notify</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>extern SG_EXPORT std::ostream&amp; <A HREF="#DOC.DOCU">osg::notify</A></H2><H2>(const <!1><A HREF="NotifySeverity.html">NotifySeverity</A> severity)</H2><BLOCKQUOTE>notify messaging function for providing fatal through to verbose debugging messages.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>notify messaging function for providing fatal through to verbose
+debugging messages.  Level of messages sent to the console can
+be controlled by setting the NotifyLevel either within your 
+application or via the an environmental variable. For instance
+setenv OSGNOTIFYLEVEL DEBUG (for tsh), export OSGNOTIFYLEVEL=DEBUG
+(for bourne shell) or set OSGNOTIFYLEVEL=DEBUG (for Windows) all
+set tell the osg to redirect all debugging and more important messages
+to the console (useful for debugging :-)  setting ALWAYS will force
+all messages to be absorbed, which might be appropriate for final
+applications.  Default NotifyLevel is NOTICE.  Check the enum 
+NotifySeverity for full range of possibilities.  To use the notify
+with your code simply use the notify function as a normal file
+stream (like cout) i.e osg::notify(osg::DEBUG) << "Hello Bugs!"<<endl;</BLOCKQUOTE>
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGTEXT_EXPORT osgText::String</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGTEXT_EXPORT <A HREF="#DOC.DOCU">osgText::String</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mstd::vector,M,Mosg::Referenced,M,CString,MString.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.3.1">String</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.3.2">String</A></B>(const <!1><A HREF="String.html#DOC.6.3.2">String</A>&amp; str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.3.3">~String</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="String.html">String</A>&amp; <B><A HREF="#DOC.6.3.4">operator = </A></B>(const <!1><A HREF="String.html">String</A>&amp; str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.5">set</A></B>(const std::string&amp; str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.6">set</A></B>(const wchar_t* text)
+<DD><I>Set the text using a wchar_t string,  which is converted to an internal TextString</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.8">set</A></B>(const std::string&amp; text, <!1><A HREF="String.html#DOC.6.3.7">Encoding</A> encoding)
+<DD><I>Set the text using a Unicode encoded std::string, which is converted to an internal TextString.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.6.3.9">createUTF8EncodedString</A></B>() const 
+<DD><I>returns a UTF8 encoded version of this osgText::String</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.6.3.7">Encoding</A></B>
+<DD><I> Types of string encodings supported</I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="String"></A>
+<A NAME="DOC.6.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> String()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="String"></A>
+<A NAME="DOC.6.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> String(const <!1><A HREF="String.html#DOC.6.3.2">String</A>&amp; str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~String"></A>
+<A NAME="DOC.6.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~String()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.6.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="String.html">String</A>&amp; operator = (const <!1><A HREF="String.html">String</A>&amp; str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.6.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(const std::string&amp; str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.6.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(const wchar_t* text)</B></TT>
+<DD>Set the text using a wchar_t string, 
+which is converted to an internal TextString
+<DL><DT><DD></DL><P>
+<A NAME="Encoding"></A>
+<A NAME="DOC.6.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Encoding</B></TT>
+<DD>
+Types of string encodings supported
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="ENCODING_UNDEFINED"></A>
+<A NAME="DOC.6.3.7.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UNDEFINED</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_ASCII"></A>
+<A NAME="DOC.6.3.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_ASCII</B></TT>
+<DD>not using Unicode
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF8"></A>
+<A NAME="DOC.6.3.7.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF8</B></TT>
+<DD>unsigned char ASCII
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF16"></A>
+<A NAME="DOC.6.3.7.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF16</B></TT>
+<DD>8-bit unicode transformation format
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF16_BE"></A>
+<A NAME="DOC.6.3.7.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF16_BE</B></TT>
+<DD>16-bit signature
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF16_LE"></A>
+<A NAME="DOC.6.3.7.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF16_LE</B></TT>
+<DD>16-bit big-endian
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF32"></A>
+<A NAME="DOC.6.3.7.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF32</B></TT>
+<DD>16-bit little-endian
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF32_BE"></A>
+<A NAME="DOC.6.3.7.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF32_BE</B></TT>
+<DD>32-bit signature
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_UTF32_LE"></A>
+<A NAME="DOC.6.3.7.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_UTF32_LE</B></TT>
+<DD>32-bit big-endian
+<DL><DT><DD></DL><P>
+<A NAME="ENCODING_SIGNATURE"></A>
+<A NAME="DOC.6.3.7.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENCODING_SIGNATURE</B></TT>
+<DD>32-bit little-endian
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="set"></A>
+<A NAME="DOC.6.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(const std::string&amp; text, <!1><A HREF="String.html#DOC.6.3.7">Encoding</A> encoding)</B></TT>
+<DD>Set the text using a Unicode encoded std::string, which is converted to an internal TextString.
+The encoding parameter specificies which Unicode encodeding is used in the std::string. 
+<DL><DT><DD></DL><P>
+<A NAME="createUTF8EncodedString"></A>
+<A NAME="DOC.6.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string createUTF8EncodedString() const </B></TT>
+<DD>returns a UTF8 encoded version of this osgText::String
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

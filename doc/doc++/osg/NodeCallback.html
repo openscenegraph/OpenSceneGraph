@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::NodeCallback</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::NodeCallback</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNodeCallback,MNodeCallback.html,CAnimationPathCallback,MAnimationPathCallback.html">
+<param name=before value="M,M,M,M^_">
+<param name=after value="Md_SP,Md_,M,M">
+<param name=indent value="0,1,2,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B><A HREF="#DOC.2.102.9">_nestedCallback</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.102.1">NodeCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.102.2">NodeCallback</A></B>(const <!1><A HREF="NodeCallback.html#DOC.2.102.2">NodeCallback</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="NodeCallback.html">NodeCallback</A>) <B><A HREF="#DOC.2.102.3">()</A></B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.102.4">traverse</A></B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<DD><I>Call any nested callbacks and then traverse the scene graph.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.102.5">setNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeCallback.html">NodeCallback</A>* <B><A HREF="#DOC.2.102.6">getNestedCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.102.7">addNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.102.8">removeNestedCallback</A></B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.102.10">~NodeCallback</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>*) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="NodeCallback"></A>
+<A NAME="DOC.2.102.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NodeCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NodeCallback"></A>
+<A NAME="DOC.2.102.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NodeCallback(const <!1><A HREF="NodeCallback.html#DOC.2.102.2">NodeCallback</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="()"></A>
+<A NAME="DOC.2.102.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="NodeCallback.html">NodeCallback</A>) ()(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.102.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void traverse(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
+<DD>Call any nested callbacks and then traverse the scene graph. 
+<DL><DT><DD></DL><P>
+<A NAME="setNestedCallback"></A>
+<A NAME="DOC.2.102.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNestedCallback(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNestedCallback"></A>
+<A NAME="DOC.2.102.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeCallback.html">NodeCallback</A>* getNestedCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addNestedCallback"></A>
+<A NAME="DOC.2.102.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addNestedCallback(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removeNestedCallback"></A>
+<A NAME="DOC.2.102.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void removeNestedCallback(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_nestedCallback"></A>
+<A NAME="DOC.2.102.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  _nestedCallback</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~NodeCallback"></A>
+<A NAME="DOC.2.102.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~NodeCallback()</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="AnimationPathCallback.html">AnimationPathCallback</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGPRODUCER_EXPORT osgProducer::ViewerEventHandler</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGPRODUCER_EXPORT <A HREF="#DOC.DOCU">osgProducer::ViewerEventHandler</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="MosgGA::GUIEventHandler,M,CViewerEventHandler,MViewerEventHandler.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1">ViewerEventHandler</A></B>(<!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>* cg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.6.2">handle</A></B>(const osgGA::GUIEventAdapter&amp; ea, osgGA::GUIActionAdapter&amp; aa)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.6.3">accept</A></B>(osgGA::GUIEventHandlerVisitor&amp; gehv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.6.4">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
+<DD><I>Get the keyboard and mouse usage of this manipulator</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>* <B><A HREF="#DOC.2.6.5">getOsgCameraGroup</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>* <B><A HREF="#DOC.2.6.6">getOsgCameraGroup</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.7">setWriteNodeFileName</A></B>(const std::string&amp; filename)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.6.8">getWriteNodeFileName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.9">setDisplayHelp</A></B>(bool displayHelp)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.10">getDisplayHelp</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.12">setFrameStatsMode</A></B>(<!1><A HREF="ViewerEventHandler.html#DOC.2.6.11">FrameStatsMode</A> mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ViewerEventHandler.html#DOC.2.6.11">FrameStatsMode</A> <B><A HREF="#DOC.2.6.13">getFrameStatsMode</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.11">FrameStatsMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="OsgCameraGroup.html">osgProducer::OsgCameraGroup</A>* <B><A HREF="#DOC.2.6.14">_cg</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.6.15">_writeNodeFileName</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.16">_displayHelp</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ViewerEventHandler.html#DOC.2.6.11">FrameStatsMode</A> <B><A HREF="#DOC.2.6.17">_frameStatsMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.18">_firstTimeTogglingFullScreen</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>StatsAndHelpDrawCallback* <B><A HREF="#DOC.2.6.19">_statsAndHelpDrawCallback</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ViewerEventHandler.html#DOC.2.6.20">SnapImageDrawCallbackList</A> <B><A HREF="#DOC.2.6.21">_snapImageDrawCallbackList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;SnapImageDrawCallback*&gt; <B><A HREF="#DOC.2.6.20">SnapImageDrawCallbackList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="ViewerEventHandler"></A>
+<A NAME="DOC.2.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ViewerEventHandler(<!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>* cg)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="handle"></A>
+<A NAME="DOC.2.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const osgGA::GUIEventAdapter&amp; ea, osgGA::GUIActionAdapter&amp; aa)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(osgGA::GUIEventHandlerVisitor&amp; gehv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUsage"></A>
+<A NAME="DOC.2.6.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getUsage(osg::ApplicationUsage&amp; usage) const </B></TT>
+<DD>Get the keyboard and mouse usage of this manipulator
+<DL><DT><DD></DL><P>
+<A NAME="getOsgCameraGroup"></A>
+<A NAME="DOC.2.6.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>* getOsgCameraGroup()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOsgCameraGroup"></A>
+<A NAME="DOC.2.6.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>* getOsgCameraGroup() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setWriteNodeFileName"></A>
+<A NAME="DOC.2.6.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWriteNodeFileName(const std::string&amp; filename)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getWriteNodeFileName"></A>
+<A NAME="DOC.2.6.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getWriteNodeFileName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDisplayHelp"></A>
+<A NAME="DOC.2.6.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDisplayHelp(bool displayHelp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDisplayHelp"></A>
+<A NAME="DOC.2.6.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getDisplayHelp() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FrameStatsMode"></A>
+<A NAME="DOC.2.6.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  FrameStatsMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_STATS"></A>
+<A NAME="DOC.2.6.11.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_STATS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FRAME_RATE"></A>
+<A NAME="DOC.2.6.11.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRAME_RATE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CAMERA_STATS"></A>
+<A NAME="DOC.2.6.11.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CAMERA_STATS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setFrameStatsMode"></A>
+<A NAME="DOC.2.6.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFrameStatsMode(<!1><A HREF="ViewerEventHandler.html#DOC.2.6.11">FrameStatsMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFrameStatsMode"></A>
+<A NAME="DOC.2.6.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ViewerEventHandler.html#DOC.2.6.11">FrameStatsMode</A> getFrameStatsMode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cg"></A>
+<A NAME="DOC.2.6.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="OsgCameraGroup.html">osgProducer::OsgCameraGroup</A>* _cg</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_writeNodeFileName"></A>
+<A NAME="DOC.2.6.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _writeNodeFileName</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_displayHelp"></A>
+<A NAME="DOC.2.6.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _displayHelp</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frameStatsMode"></A>
+<A NAME="DOC.2.6.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ViewerEventHandler.html#DOC.2.6.11">FrameStatsMode</A> _frameStatsMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_firstTimeTogglingFullScreen"></A>
+<A NAME="DOC.2.6.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _firstTimeTogglingFullScreen</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_statsAndHelpDrawCallback"></A>
+<A NAME="DOC.2.6.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>StatsAndHelpDrawCallback* _statsAndHelpDrawCallback</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SnapImageDrawCallbackList"></A>
+<A NAME="DOC.2.6.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;SnapImageDrawCallback*&gt; SnapImageDrawCallbackList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_snapImageDrawCallbackList"></A>
+<A NAME="DOC.2.6.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ViewerEventHandler.html#DOC.2.6.20">SnapImageDrawCallbackList</A> _snapImageDrawCallbackList</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

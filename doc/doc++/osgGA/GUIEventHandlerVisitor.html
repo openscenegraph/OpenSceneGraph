@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGGA_EXPORT osgGA::GUIEventHandlerVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::GUIEventHandlerVisitor</A></H2></H2><BLOCKQUOTE> Base class for visiting GUIEventHandlers.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CGUIEventHandlerVisitor,MGUIEventHandlerVisitor.html,CSetSceneViewVisitor,MSetSceneViewVisitor.html">
+<param name=before value="M,M^_">
+<param name=after value="M,M">
+<param name=indent value="0,0">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.1">visit</A></B>(<!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.2">visit</A></B>(<!1><A HREF="CompositeGUIEventHandler.html">CompositeGUIEventHandler</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.3">visit</A></B>(<!1><A HREF="CameraManipulator.html">CameraManipulator</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.4">visit</A></B>(<!1><A HREF="StateSetManipulator.html">StateSetManipulator</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>* <B><A HREF="#DOC.2.9.5">getGUIEventAdapter</A></B>()
+<DD><I>Get the GUI EventAdapter associated with this GUIEventHandlerVisitor </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>* <B><A HREF="#DOC.2.9.6">getGUIActionAdapter</A></B>()
+<DD><I>Get the GUI Action Adapter associated with this GEH Visitor </I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.7">GUIEventHandlerVisitor</A></B>(<!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>* in, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>* out)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.9.8">~GUIEventHandlerVisitor</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Base class for visiting GUIEventHandlers.
+
+<P>A Default Visitor, (Might want to make it an Extrinsic Visitor at some point).
+By default, it does nothing to the things it visits. Sub classes of this Visitor
+need only override visit operations for the types of object they're interested in.
+</BLOCKQUOTE>
+<DL>
+
+<A NAME="visit"></A>
+<A NAME="DOC.2.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void visit(<!1><A HREF="GUIEventHandler.html">GUIEventHandler</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="visit"></A>
+<A NAME="DOC.2.9.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void visit(<!1><A HREF="CompositeGUIEventHandler.html">CompositeGUIEventHandler</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="visit"></A>
+<A NAME="DOC.2.9.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void visit(<!1><A HREF="CameraManipulator.html">CameraManipulator</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="visit"></A>
+<A NAME="DOC.2.9.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void visit(<!1><A HREF="StateSetManipulator.html">StateSetManipulator</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getGUIEventAdapter"></A>
+<A NAME="DOC.2.9.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>* getGUIEventAdapter()</B></TT>
+<DD>Get the GUI EventAdapter associated with this GUIEventHandlerVisitor 
+<DL><DT><DD></DL><P>
+<A NAME="getGUIActionAdapter"></A>
+<A NAME="DOC.2.9.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>* getGUIActionAdapter()</B></TT>
+<DD>Get the GUI Action Adapter associated with this GEH Visitor 
+<DL><DT><DD></DL><P>
+<A NAME="GUIEventHandlerVisitor"></A>
+<A NAME="DOC.2.9.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GUIEventHandlerVisitor(<!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>* in, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>* out)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~GUIEventHandlerVisitor"></A>
+<A NAME="DOC.2.9.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~GUIEventHandlerVisitor()</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="SetSceneViewVisitor.html">SetSceneViewVisitor</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

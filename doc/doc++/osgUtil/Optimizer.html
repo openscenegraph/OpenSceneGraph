@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::Optimizer</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::Optimizer</A></H2></H2><BLOCKQUOTE>Insert impostor nodes into scene graph.</BLOCKQUOTE>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.1">Optimizer</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.3">optimize</A></B>(osg::Node* node, unsigned int options = <!1><A HREF="Optimizer.html#DOC.2.10.2.5">ALL_OPTIMIZATIONS</A>)
+<DD><I>traverse the node and its subgraph with a series of optimization visitors, specificied by the OptizationOptions</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.10.2">OptimizationOptions</A></B>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="ConvertGeoSetsToGeometryVisitor.html">ConvertGeoSetsToGeometryVisitor</A></B>: public osg::NodeVisitor
+<DD><I>ConvertGeoSetsToGeometryVisitor all the old GeoSet Drawables to the new Geometry Drawables</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="FlattenStaticTransformsVisitor.html">FlattenStaticTransformsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Flatten Static Trasform nodes by applying their transform to the geometry on the leaves of the scene graph, then removing the  now redundant transforms</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RemoveEmptyNodesVisitor.html">RemoveEmptyNodesVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Remove rendundant nodes, such as groups with one single child</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="RemoveRedundantNodesVisitor.html">RemoveRedundantNodesVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Remove rendundant nodes, such as groups with one single child</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="CombineLODsVisitor.html">CombineLODsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Optimize the LOD groups, by combining adjacent LOD's which have complementary ranges</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="StateVisitor.html">StateVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Optimize State in the scene graph by removing duplicate state, replacing it with shared instances, both for StateAttributes, and whole StateSets</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="MergeGeometryVisitor.html">MergeGeometryVisitor</A></B>: public osg::NodeVisitor
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Insert impostor nodes into scene graph.
+For example of usage see src/Demos/osgimpostor.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Optimizer"></A>
+<A NAME="DOC.2.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Optimizer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="OptimizationOptions"></A>
+<A NAME="DOC.2.10.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  OptimizationOptions</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="FLATTEN_STATIC_TRANSFORMS"></A>
+<A NAME="DOC.2.10.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FLATTEN_STATIC_TRANSFORMS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="REMOVE_REDUNDANT_NODES"></A>
+<A NAME="DOC.2.10.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> REMOVE_REDUNDANT_NODES</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COMBINE_ADJACENT_LODS"></A>
+<A NAME="DOC.2.10.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMBINE_ADJACENT_LODS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SHARE_DUPLICATE_STATE"></A>
+<A NAME="DOC.2.10.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SHARE_DUPLICATE_STATE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ALL_OPTIMIZATIONS"></A>
+<A NAME="DOC.2.10.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_OPTIMIZATIONS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="optimize"></A>
+<A NAME="DOC.2.10.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void optimize(osg::Node* node, unsigned int options = <!1><A HREF="Optimizer.html#DOC.2.10.2.5">ALL_OPTIMIZATIONS</A>)</B></TT>
+<DD>traverse the node and its subgraph with a series of optimization
+visitors, specificied by the OptizationOptions
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

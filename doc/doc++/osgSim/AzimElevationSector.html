@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGSIM_EXPORT osgSim::AzimElevationSector</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGSIM_EXPORT <A HREF="#DOC.DOCU">osgSim::AzimElevationSector</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="CElevationRange,MElevationRange.html,CAzimRange,MAzimRange.html,Mosg::Referenced,M,CSector,MSector.html,CAzimElevationSector,MAzimElevationSector.html">
+<param name=before value="M,M,M,M,M">
+<param name=after value="Ml_,ML_,Md_||,MD_,M">
+<param name=indent value="1,1,0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.1">AzimElevationSector</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.2">AzimElevationSector</A></B>(float minAzimuth, float maxAzimuth, float minElevation, float maxElevation, float fadeAngle=0.0f)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.9.3">operator() </A></B>(const osg::Vec3&amp; eyeLocal) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.9.4">~AzimElevationSector</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Sector.html">Sector</A>:</H3>
+<DL>
+</DL>
+<HR><H3>Inherited from <A HREF="AzimRange.html">AzimRange</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setAzimuthRange</B>(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   float <B>azimSector</B>(const osg::Vec3&amp; eyeLocal) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosAzim</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_sinAzim</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosAngle</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosFadeAngle</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="ElevationRange.html">ElevationRange</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setElevationRange</B>(float minElevation, float maxElevation, float fadeAngle=0.0f)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>getMinElevation</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>getMaxElevation</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   float <B>elevationSector</B>(const osg::Vec3&amp; eyeLocal) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosMinElevation</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosMinFadeElevation</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosMaxElevation</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>_cosMaxFadeElevation</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="AzimElevationSector"></A>
+<A NAME="DOC.2.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AzimElevationSector()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AzimElevationSector"></A>
+<A NAME="DOC.2.9.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AzimElevationSector(float minAzimuth, float maxAzimuth, float minElevation, float maxElevation, float fadeAngle=0.0f)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator() "></A>
+<A NAME="DOC.2.9.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float operator() (const osg::Vec3&amp; eyeLocal) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~AzimElevationSector"></A>
+<A NAME="DOC.2.9.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~AzimElevationSector()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

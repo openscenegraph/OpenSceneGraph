@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGGA_EXPORT osgGA::FlightManipulator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGGA_EXPORT <A HREF="#DOC.DOCU">osgGA::FlightManipulator</A></H2></H2><BLOCKQUOTE> FlightManipulator is a CameraManipulator which provides flight simulator-like updating of the camera position & orientation.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="Mosg::Object,M,CGUIEventHandler,MGUIEventHandler.html,CCameraManipulator,MCameraManipulator.html,CFlightManipulator,MFlightManipulator.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.1">FlightManipulator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.2">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.3">setNode</A></B>(osg::Node*)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.4.4">getNode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.4.5">getNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.6">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.7">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.8">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.9">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
+<DD><I>Get the keyboard and mouse usage of this manipulator</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.11">setYawControlMode</A></B>(<!1><A HREF="FlightManipulator.html#DOC.2.4.10">YawControlMode</A> ycm)
+<DD><I>Configure the Yaw control for the flight model.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.4.10">YawControlMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.4.18">_ga_t1</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.4.19">_ga_t0</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.4.20">_node</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.4.21">_modelScale</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.4.22">_velocity</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FlightManipulator.html#DOC.2.4.10">YawControlMode</A> <B><A HREF="#DOC.2.4.23">_yawMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3 <B><A HREF="#DOC.2.4.24">_eye</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.4.25">_rotation</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.4.26">_distance</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.12">~FlightManipulator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.13">flushMouseEventStack</A></B>()
+<DD><I>Reset the internal GUIEvent stack</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.14">addMouseEvent</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)
+<DD><I>Add the current mouse GUIEvent to internal stack</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.15">computeLocalDataFromCamera</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.16">computeCameraFromLocalData</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.17">calcMovement</A></B>()
+<DD><I>For the give mouse movement calculate the movement of the camera.</I>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="CameraManipulator.html">CameraManipulator</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setCamera</B>(osg::Camera*)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const osg::Camera* <B>getCamera</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   osg::Camera* <B>getCamera</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="GUIEventHandlerVisitor.html">GUIEventHandlerVisitor</A>&amp; v)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;osg::Camera&gt;  <B>_camera</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="GUIEventHandler.html">GUIEventHandler</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>META_Object <B>(osgGA, GUIEventHandler) const </B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="CompositeGUIEventHandler.html">CompositeGUIEventHandler</A>* <B>getComposite</B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+FlightManipulator is a CameraManipulator which provides flight simulator-like
+updating of the camera position & orientation. By default, the left mouse
+button accelerates, the right mouse button decelerates, and the middle mouse
+button (or left and right simultaneously) stops dead.</BLOCKQUOTE>
+<DL>
+
+<A NAME="FlightManipulator"></A>
+<A NAME="DOC.2.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FlightManipulator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNode"></A>
+<A NAME="DOC.2.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setNode(osg::Node*)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNode"></A>
+<A NAME="DOC.2.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::Node* getNode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNode"></A>
+<A NAME="DOC.2.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* getNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="home"></A>
+<A NAME="DOC.2.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init"></A>
+<A NAME="DOC.2.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="handle"></A>
+<A NAME="DOC.2.4.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUsage"></A>
+<A NAME="DOC.2.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getUsage(osg::ApplicationUsage&amp; usage) const </B></TT>
+<DD>Get the keyboard and mouse usage of this manipulator
+<DL><DT><DD></DL><P>
+<A NAME="YawControlMode"></A>
+<A NAME="DOC.2.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  YawControlMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="YAW_AUTOMATICALLY_WHEN_BANKED"></A>
+<A NAME="DOC.2.4.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> YAW_AUTOMATICALLY_WHEN_BANKED</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NO_AUTOMATIC_YAW"></A>
+<A NAME="DOC.2.4.10.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_AUTOMATIC_YAW</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setYawControlMode"></A>
+<A NAME="DOC.2.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setYawControlMode(<!1><A HREF="FlightManipulator.html#DOC.2.4.10">YawControlMode</A> ycm)</B></TT>
+<DD>Configure the Yaw control for the flight model.        
+<DL><DT><DD></DL><P>
+<A NAME="~FlightManipulator"></A>
+<A NAME="DOC.2.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~FlightManipulator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="flushMouseEventStack"></A>
+<A NAME="DOC.2.4.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flushMouseEventStack()</B></TT>
+<DD>Reset the internal GUIEvent stack
+<DL><DT><DD></DL><P>
+<A NAME="addMouseEvent"></A>
+<A NAME="DOC.2.4.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addMouseEvent(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)</B></TT>
+<DD>Add the current mouse GUIEvent to internal stack
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalDataFromCamera"></A>
+<A NAME="DOC.2.4.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeLocalDataFromCamera()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeCameraFromLocalData"></A>
+<A NAME="DOC.2.4.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeCameraFromLocalData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="calcMovement"></A>
+<A NAME="DOC.2.4.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool calcMovement()</B></TT>
+<DD>For the give mouse movement calculate the movement of the camera.
+Return true is camera has moved and a redraw is required.
+<DL><DT><DD></DL><P>
+<A NAME="_ga_t1"></A>
+<A NAME="DOC.2.4.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  _ga_t1</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ga_t0"></A>
+<A NAME="DOC.2.4.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  _ga_t0</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_node"></A>
+<A NAME="DOC.2.4.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _node</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modelScale"></A>
+<A NAME="DOC.2.4.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _modelScale</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_velocity"></A>
+<A NAME="DOC.2.4.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _velocity</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_yawMode"></A>
+<A NAME="DOC.2.4.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FlightManipulator.html#DOC.2.4.10">YawControlMode</A> _yawMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eye"></A>
+<A NAME="DOC.2.4.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3 _eye</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_rotation"></A>
+<A NAME="DOC.2.4.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Quat _rotation</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_distance"></A>
+<A NAME="DOC.2.4.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _distance</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

@@ -170,6 +170,10 @@ public:
 void DatabasePager::run()
 {
     std::cout<<"DatabasePager::run()"<<std::endl;
+
+    // need to set the texture object manager to be able to reuse textures
+    // by keeping deleted texture objects around for 10 seconds after being deleted.
+    osg::Texture::getTextureObjectManager()->setExpiryDelay(10.0f);
     
     while(true)
     {

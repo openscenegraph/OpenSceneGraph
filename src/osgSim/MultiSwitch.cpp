@@ -15,6 +15,7 @@
 #include <algorithm>
 
 using namespace osgSim;
+using namespace osg;
 
 MultiSwitch::MultiSwitch():
     _newChildDefaultValue(true),

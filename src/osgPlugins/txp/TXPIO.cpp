@@ -7,6 +7,8 @@
 
 #include "TXPNode.h"
 
+using namespace osg;
+
 bool TXPNode_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool TXPNode_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 

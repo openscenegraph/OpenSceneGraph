@@ -234,7 +234,7 @@ class SeamFinder: public osg::NodeVisitor
 {
 public:
     SeamFinder(int x, int y, int lod, TXPArchive::TileInfo& info, TXPArchive *archive ):
-    NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _x(x), _y(y), _lod(lod), _info(info), _archive(archive) 
     {};
 

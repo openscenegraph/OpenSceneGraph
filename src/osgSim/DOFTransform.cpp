@@ -13,6 +13,7 @@
 #include <osgSim/DOFTransform>
 
 using namespace osgSim;
+using namespace osg;
 
 DOFTransform::DOFTransform():
     _limitationFlags(0), 

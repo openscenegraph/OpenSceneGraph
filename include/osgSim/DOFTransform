@@ -30,7 +30,7 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
 
         /**copy constructor*/
         DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Transform(dof, copyop),
+            osg::Transform(dof, copyop),
             _minHPR(dof._minHPR),
             _maxHPR(dof._maxHPR),
             _currentHPR(dof._currentHPR),

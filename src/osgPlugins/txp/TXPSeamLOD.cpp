@@ -4,6 +4,7 @@
 #include "TileMapper.h"
 
 using namespace txp;
+using namespace osg;
 
 TXPSeamLOD::TXPSeamLOD() :
     Group()

@@ -24,6 +24,8 @@
 
 #include <osgProducer/Viewer>
 
+using namespace osg;
+
 class DistortionNode : public osg::Group
 {
 public:

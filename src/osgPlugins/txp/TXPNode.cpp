@@ -15,6 +15,7 @@
 
 
 using namespace txp;
+using namespace osg;
 
 
 

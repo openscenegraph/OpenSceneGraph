@@ -36,7 +36,7 @@ public:
 		uvarupdate=NULL; extvarupdate=NULL;
 	};
 	geoHeader(const geoHeader &geo,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) :
-		PositionAttitudeTransform(geo,copyop)
+		osg::PositionAttitudeTransform(geo,copyop)
 	{ 
 	//	const geoHeaderGeo *ghg=static_cast<const geoHeaderGeo *> (&geo);
 	}

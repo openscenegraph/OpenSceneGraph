@@ -1,3 +1,15 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 #include <osg/GLExtensions>
 #include <osg/State>
 #include <osg/Notify>
@@ -13,6 +25,8 @@ State::State()
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _projection = _identity;
     _modelView = _identity;
+    
+    _reportGLErrors = true;
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
@@ -193,6 +207,8 @@ T mymax(const T& a,const T& b)
 
 void State::apply(const StateSet* dstate)
 {
+    if (_reportGLErrors) checkGLErrors("start of State::apply(StateSet*)");
+
     // equivilant to:
     //pushStateSet(dstate);
     //apply();
@@ -234,6 +250,8 @@ void State::apply(const StateSet* dstate)
 
 void State::apply()
 {
+
+    if (_reportGLErrors) checkGLErrors("start of State::apply()");
 
     // go through all active OpenGL modes, enabling/disable where
     // appropriate.
@@ -603,3 +621,40 @@ bool State::computeFogCoordSupported() const
     _isFogCoordSupported = osg::isGLExtensionSupported("GL_EXT_fog_coord");
     return _isFogCoordSupported;
 }
+
+bool State::checkGLErrors(const char* str) const
+{
+    GLenum errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
+    {
+        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo);
+        if (str) osg::notify(WARN)<<"' at "<<str<< std::endl;
+        else osg::notify(WARN)<<"' in osg::State."<< std::endl;
+        return true;
+    }
+    return false;
+}
+
+bool State::checkGLErrors(StateAttribute::GLMode mode) const
+{
+    GLenum errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
+    {
+        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"' after applying GLMode "<<mode<< std::endl;
+        return true;
+    }
+    return false;
+}
+
+bool State::checkGLErrors(const StateAttribute* attribute) const
+{
+    GLenum errorNo = glGetError();
+    if (errorNo!=GL_NO_ERROR)
+    {
+        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"' after applying attribute "<<attribute->className()<<" "<<attribute<< std::endl;
+        //attribute->apply(*this);
+        return true;
+    }
+    return false;
+}
+

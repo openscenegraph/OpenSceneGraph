@@ -14,12 +14,37 @@ class SG_EXPORT Material : public StateAttribute
 
 
         Material();
-        virtual Object* clone() const { return new Material(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Material*>(obj)!=NULL; }
-        const char* className() const { return "Material"; }
 
-        virtual const Type getType() const { return MATERIAL; }
+        META_StateAttribute(Material, MATERIAL);
         
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(Material,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_colorMode)
+            COMPARE_StateAttribute_Parameter(_ambientFrontAndBack)
+            COMPARE_StateAttribute_Parameter(_ambientFront)
+            COMPARE_StateAttribute_Parameter(_ambientBack)
+            COMPARE_StateAttribute_Parameter(_diffuseFrontAndBack)
+            COMPARE_StateAttribute_Parameter(_diffuseFront)
+            COMPARE_StateAttribute_Parameter(_diffuseBack)
+            COMPARE_StateAttribute_Parameter(_specularFrontAndBack)
+            COMPARE_StateAttribute_Parameter(_specularFront)
+            COMPARE_StateAttribute_Parameter(_specularBack)
+            COMPARE_StateAttribute_Parameter(_emissionFrontAndBack)
+            COMPARE_StateAttribute_Parameter(_emissionFront)
+            COMPARE_StateAttribute_Parameter(_emissionBack)
+            COMPARE_StateAttribute_Parameter(_shininessFrontAndBack)
+            COMPARE_StateAttribute_Parameter(_shininessFront)
+            COMPARE_StateAttribute_Parameter(_shininessBack)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
             // Have to think about the role of _colorMode

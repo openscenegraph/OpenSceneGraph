@@ -23,40 +23,34 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.76.2">Switch</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.83.2">Switch</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.76.3">clone</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.83.3">META_Node</A></B>(<!1><A HREF="Switch.html">Switch</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.76.4">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.83.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.76.5">className</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.76.6">accept</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.76.7">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.8">setValue</A></B>(const int value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.83.5">setValue</A></B>(const int value)
 <DD><I> Selects the active child Node or enables a special SwitchType mode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.76.9">getValue</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.83.6">getValue</A></B>() const 
 <DD><I> Returns the number of the active child Node or the SwitchType</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.76.1">SwitchType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.83.1">SwitchType</A></B>
 <DD><I> Special mode values for the Switch.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.76.11">_value</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.83.8">_value</A></B>
 <DD><I>The current Switch value.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.76.10">~Switch</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.83.7">~Switch</A></B>()
 </DL></P>
 
 </DL>
@@ -98,6 +92,14 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; name )
@@ -106,7 +108,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.11">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.54.11">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
 <DT>
@@ -114,7 +116,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(void* <!1><A HREF="Image.html#DOC.2.35.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
+<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenRequiringAppTraversal</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(void* <!1><A HREF="Image.html#DOC.2.36.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void* <B>getUserData</B>()
 <DT>
@@ -128,9 +138,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.54.27">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.54.27">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
 <DT>
@@ -166,7 +176,11 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.52.11">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.54.11">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_appCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenRequiringAppTraversal</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void* <B>_userData</B>
 <DT>
@@ -174,9 +188,14 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.52.23">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.54.27">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenRequiringAppTraversal</B>(const int num)
 </DL></P>
 
 </DL>
@@ -213,7 +232,7 @@ to represent the different states of a traffic light.</BLOCKQUOTE>
 <DL>
 
 <A NAME="SwitchType"></A>
-<A NAME="DOC.2.76.1"></A>
+<A NAME="DOC.2.83.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SwitchType</B></TT>
 <DD>
 Special mode values for the Switch. Use these if you want to
@@ -221,62 +240,50 @@ turn on/off all child nodes.
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ALL_CHILDREN_ON"></A>
-<A NAME="DOC.2.76.1.1"></A>
+<A NAME="DOC.2.83.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_CHILDREN_ON</B></TT>
 <DD>Turn on all children. 
 <DL><DT><DD></DL><P>
 <A NAME="ALL_CHILDREN_OFF"></A>
-<A NAME="DOC.2.76.1.2"></A>
+<A NAME="DOC.2.83.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_CHILDREN_OFF</B></TT>
 <DD>Turn off all children. 
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Switch"></A>
-<A NAME="DOC.2.76.2"></A>
+<A NAME="DOC.2.83.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="clone"></A>
-<A NAME="DOC.2.76.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.76.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="className"></A>
-<A NAME="DOC.2.76.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="accept"></A>
-<A NAME="DOC.2.76.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.83.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="Switch.html">Switch</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.76.7"></A>
+<A NAME="DOC.2.83.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setValue"></A>
-<A NAME="DOC.2.76.8"></A>
+<A NAME="DOC.2.83.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setValue(const int value)</B></TT>
 <DD>
 Selects the active child Node or enables a special
 SwitchType mode. 
 
 <DL><DT><DT><B>Parameters:</B><DD><B>value</B> -  the number of the active child
-(<!1><A HREF="ImpostorSpriteManager.html#DOC.2.40.3">first</A> child == number 0) or SwitchType. Invalid values
+(<!1><A HREF="ImpostorSpriteManager.html#DOC.2.41.3">first</A> child == number 0) or SwitchType. Invalid <!1><A HREF="Matrix.html#DOC.2.47.18">values</A>
 will be ignored.<BR><DD></DL><P>
 <A NAME="getValue"></A>
-<A NAME="DOC.2.76.9"></A>
+<A NAME="DOC.2.83.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getValue() const </B></TT>
 <DD>
 Returns the number of the active child Node or the SwitchType
 <DL><DT><DD></DL><P>
 <A NAME="~Switch"></A>
-<A NAME="DOC.2.76.10"></A>
+<A NAME="DOC.2.83.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Switch()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_value"></A>
-<A NAME="DOC.2.76.11"></A>
+<A NAME="DOC.2.83.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _value</B></TT>
 <DD>The current Switch value. 
 <DL><DT><DD></DL><P></DL>

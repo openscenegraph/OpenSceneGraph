@@ -2,13 +2,6 @@
 #include <math.h>
 #include "osg/Geode"
 
-#include <algorithm>
-
-#ifdef __sgi
-using std::find;
-using std::for_each;
-#endif
-
 #define square(x)   ((x)*(x))
 
 using namespace osg;

@@ -16,10 +16,7 @@ class SG_EXPORT Geode : public Node
 
         Geode();
 
-        virtual Object* clone() const { return new Geode(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Geode*>(obj)!=NULL; }
-        virtual const char* className() const { return "Geode"; }
-        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+        META_Node(Geode);
 
         /** Add Drawable to Geode.
          *  If gset is not NULL and is not contained in Geode then increment its  
@@ -58,7 +55,7 @@ class SG_EXPORT Geode : public Node
         /** return geoset at position i.*/
         inline const Drawable* getDrawable( const int i ) const { return _drawables[i].get(); }
 
-        /** return true is geoset is contained within Geode.*/
+        /** return true if geoset is contained within Geode.*/
         inline const bool containsDrawable(const Drawable* gset) const
         {
             

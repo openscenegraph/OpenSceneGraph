@@ -14,10 +14,7 @@ class SG_EXPORT LightSource : public Node
 
         LightSource();
 
-        virtual Object* clone() const { return new LightSource(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const LightSource*>(obj)!=NULL; }
-        virtual const char* className() const { return "LightSource"; }
-        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+        META_Node(LightSource);
 
         /** Set the attached light.*/
         inline void setLight(Light* light) { _light = light; }

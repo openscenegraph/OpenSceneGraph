@@ -46,6 +46,50 @@ Texture::~Texture()
     dirtyTextureObject();
 }
 
+int Texture::compare(const StateAttribute& sa) const
+{
+    // check the types are equal and then create the rhs variable
+    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    COMPARE_StateAttribute_Types(Texture,sa)
+
+    if (_image!=rhs._image) // smart pointer comparison.
+    {
+        if (_image.valid())
+        {
+            if (rhs._image.valid())
+            {
+                if (_image->getFileName()<rhs._image->getFileName()) return -1;
+                else if (_image->getFileName()>rhs._image->getFileName()) return 1;;
+            }
+            else
+            {
+                return 1; // valid lhs._image is greater than null. 
+            }
+        }
+        else if (rhs._image.valid()) 
+        {
+            return -1; // valid rhs._image is greater than null. 
+        }
+    }
+
+    // compare each paramter in turn against the rhs.
+    COMPARE_StateAttribute_Parameter(_textureUnit)
+    COMPARE_StateAttribute_Parameter(_wrap_s)
+    COMPARE_StateAttribute_Parameter(_wrap_t)
+    COMPARE_StateAttribute_Parameter(_wrap_r)
+    COMPARE_StateAttribute_Parameter(_min_filter)
+    COMPARE_StateAttribute_Parameter(_mag_filter)
+    COMPARE_StateAttribute_Parameter(_internalFormatMode)
+    COMPARE_StateAttribute_Parameter(_internalFormatValue)
+    COMPARE_StateAttribute_Parameter(_textureWidth)
+    COMPARE_StateAttribute_Parameter(_textureHeight)
+    COMPARE_StateAttribute_Parameter(_subloadMode)
+    COMPARE_StateAttribute_Parameter(_subloadOffsX)
+    COMPARE_StateAttribute_Parameter(_subloadOffsY)
+
+    return 0; // passed all the above comparison macro's, must be equal.
+}
+
 void Texture::setImage(Image* image)
 {
     // delete old texture objects.
@@ -410,7 +454,7 @@ void Texture::applyImmediateMode(State& state) const
   * OpenGL texture objects to cached until they can be deleted
   * by the OpenGL context in which they were created, specified
   * by contextID.*/
-void Texture::deleteTextureObject(uint contextID,uint handle)
+void Texture::deleteTextureObject(uint contextID,GLuint handle)
 {
     if (handle!=0)
     {
@@ -443,7 +487,7 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     const uint contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    uint& handle = getHandle(contextID);
+    GLuint& handle = getHandle(contextID);
     
     if (handle)
     {
@@ -484,7 +528,6 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter );
-//    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
 
 
@@ -515,7 +558,6 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter );
-//        glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         glCopyTexSubImage2D( GL_TEXTURE_2D, 0, xoffset,yoffset, x, y, width, height);
 
         /* Redundant, delete later */

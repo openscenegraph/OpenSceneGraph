@@ -94,6 +94,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\AppVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\VisualsRequirementsVisitor.cpp
 # End Source File
 # Begin Source File
@@ -139,6 +143,10 @@ SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osgUtil\NvTriStripObjects.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\OptimizeStateVisitor.cpp
 # End Source File
 # Begin Source File
 
@@ -198,6 +206,10 @@ SOURCE=..\..\src\osgUtil\Version.cpp
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\Include\osgUtil\AppVisitor
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\osgUtil\VisualsRequirementsVisitor
 # End Source File
 # Begin Source File
@@ -255,6 +267,10 @@ SOURCE=..\..\Include\osgUtil\IntersectVisitor
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\InsertImpostorsVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\OptimizeStateVisitor
 # End Source File
 # Begin Source File
 

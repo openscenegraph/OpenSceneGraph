@@ -53,6 +53,9 @@ Environmental settings under Unix:
         export OSGFILEPATH=./:${OSGDATA}:${OSGDATA}/Images:
         export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${OSGHOME}/lib
         export PATH=${PATH}:${OSGHOME}/bin
+        
+    note: under IRIX you'll need to use LD_LIBRARYN32_PATH instead
+    of LD_LIBRARY_PATH. 
 
 Compiling under Linux :
 -----------------------
@@ -143,7 +146,11 @@ Compiling under Windows :
     The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
     in the VisualStudio\ below the OSG this root directory.  The OSG will 
     compile with the basic VisualC++6.0, but its recommended that you use 
-    Service Pack 4 to fix MS compiler bugs which affect the OSG.
+    Service Pack 4 to fix MS compiler bugs which affect the OSG.  Even
+    Service Pack 4 does not completely fix MSVC bugs associated with STL, so
+    it is recommended that you also use STLPort which can be downloaded
+    from http://www.stlport.org since they actually know how to write a
+    STL library and have done a rather good job at it.
     
     The OSG is composed of a number of libraries and executables, to get 
     running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT,

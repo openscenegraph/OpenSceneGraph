@@ -4,11 +4,41 @@
 #include <osg/Object>
 #include <osg/GL>
 
+#include <typeinfo>
+
 namespace osg {
 
 // forward declare State & StateSet
 class State;
 class StateSet;
+
+/** META_StateAttribute macro define the standard clone, isSameKindAs,
+  * className and getType methods.
+  * Use when subclassing from Object to make it more convinient to define 
+  * the standard pure virtual methods which are required for all Object 
+  * subclasses.*/
+#define META_StateAttribute(name,type) \
+        virtual Object* clone() const { return new name (); } \
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual const char* className() const { return #name; } \
+        virtual const Type getType() const { return type; }
+
+/** COMPARE_StateAttribute_Types macro is a helper for implementing the StatateAtribute::compare(..) method.*/
+#define COMPARE_StateAttribute_Types(TYPE,rhs_attribute) \
+            if (this==&rhs_attribute) return 0;\
+            const std::type_info* type_lhs = &typeid(*this);\
+            const std::type_info* type_rhs = &typeid(rhs_attribute);\
+            if (type_lhs->before(*type_rhs)) return -1;\
+            if (*type_lhs != *type_rhs) return 1;\
+            const TYPE& rhs = static_cast<const TYPE&>(rhs_attribute);
+
+
+/** COMPARE_StateAttribute_Parameter macro is a helper for implementing the StatateAtribute::compare(..) method.
+  * Macro assumes that variable rhs has been corrected defined by code preceesing
+  * macro.*/
+#define COMPARE_StateAttribute_Parameter(parameter) \
+        if (parameter<rhs.parameter) return -1; \
+        if (rhs.parameter<parameter) return 1;
 
 /** Base class for state attribues.
 */     
@@ -50,6 +80,9 @@ class SG_EXPORT StateAttribute : public Object
             INHERIT      = 0x4
         };
 
+        /** Type identifier to differentiate between different state types. */
+        typedef unsigned int Type;
+
         /** Values of StateAttribute::Type used to aid identification
           * of diffenent StateAttribute subclasses. Each subclass defines
           * it own value in the virtual Type getType() method.  When 
@@ -58,7 +91,7 @@ class SG_EXPORT StateAttribute : public Object
           * enum as a guide of what values to use.  If your new subclass
           * needs to override a standard StateAttriubte then simple use 
           * that types value. */
-        enum Type
+        enum Types
         {
             ALPHAFUNC       =1,
             ANTIALIAS       =2,
@@ -66,30 +99,39 @@ class SG_EXPORT StateAttribute : public Object
             CULLFACE        =4,
             FOG             =5,
             FRONTFACE       =6,
-            LIGHTING        =7,
-            MATERIAL        =8,
-            POINT           =9,
-            POLYGONMODE     =10,
-            POLYGONOFFSET   =11,
-            TEXENV          =12,
-            TEXGEN          =13,
-            TEXMAT          =14,
-            TEXTURE         =15,
+            LIGHT           =7,
+            LIGHT_0         =LIGHT+0,
+            LIGHT_1         =LIGHT+1,
+            LIGHT_2         =LIGHT+2,
+            LIGHT_3         =LIGHT+3,
+            LIGHT_4         =LIGHT+4,
+            LIGHT_5         =LIGHT+5,
+            LIGHT_6         =LIGHT+6,
+            LIGHT_7         =LIGHT+7,
+            MATERIAL        =15,
+            POINT           =16,
+            POLYGONMODE     =17,
+            POLYGONOFFSET   =18,
+            TEXENV          =19,
+            TEXGEN          =20,
+            TEXMAT          =21,
+            TEXTURE         =22,
             TEXTURE_0       =TEXTURE+0,
             TEXTURE_1       =TEXTURE+1,
             TEXTURE_2       =TEXTURE+2,
             TEXTURE_3       =TEXTURE+3,
-            TRANSPARENCY    =19,
-            STENCIL         =20,
-            COLORMASK       =21,
-            CLIPPLANE       =23,
+            TRANSPARENCY    =26,
+            STENCIL         =27,
+            COLORMASK       =28,
+            CLIPPLANE       =29,
             CLIPPLANE_0     =CLIPPLANE+0,
             CLIPPLANE_1     =CLIPPLANE+1,
             CLIPPLANE_2     =CLIPPLANE+2,
             CLIPPLANE_3     =CLIPPLANE+3,
             CLIPPLANE_4     =CLIPPLANE+4,
             CLIPPLANE_5     =CLIPPLANE+5,
-            DEPTH           =29
+            DEPTH           =35,
+            VIEWPORT        =36
         };
 
         StateAttribute() {}
@@ -105,6 +147,14 @@ class SG_EXPORT StateAttribute : public Object
         
         /** return the Type idenitifer of the attribute's class type.*/
         virtual const Type getType() const = 0;
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const = 0;
+        
+        bool operator <  (const StateAttribute& rhs) const { return compare(rhs)<0; }
+        bool operator == (const StateAttribute& rhs) const { return compare(rhs)==0; }
+        bool operator != (const StateAttribute& rhs) const { return compare(rhs)!=0; }
+
         
         virtual void setStateSetModes(StateSet&,const GLModeValue) const 
         {

@@ -41,55 +41,64 @@
 // we apply them. 
 
 
-// create an app visitor, to be used on each frame update,
-// the below app visitor rotates the loaded model.
-class AppVisitor : public osg::NodeVisitor {
+class TransformCallback : public osg::NodeCallback{
+
     public:
 
-        bool            _haveDoneTransformTransform;
-        float           _delta_angle;
-        float           _angular_velocity;
-        osg::Vec3       _pivotPoint;
-        osg::Transform*       _modifyTransform;
-        osg::Timer      _timer;
-        osg::Timer_t    _previous_t;
-
-        AppVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
+        TransformCallback(osg::Transform* node,float angularVelocity)
         {
-            _haveDoneTransformTransform = true;
-            _modifyTransform = NULL;
-            _delta_angle = 0;
-            _angular_velocity = 45; //degrees a sec.
+            _nodeToOperateOn = node;
+            if (node)
+            {
+                _pivotPoint = node->getBound().center();
+            }
+
+            _angular_velocity = angularVelocity;
+            _previousTraversalNumber = -1;
             _previous_t = _timer.tick();
         }
 
-        virtual void reset()
+        virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
         {
-            // set to no transform done so far in this new traversal.
-            _haveDoneTransformTransform = false;
-
-            // update angle of rotation.
-            osg::Timer_t new_t = _timer.tick();
-            _delta_angle = _angular_velocity*_timer.delta_s(_previous_t,new_t);
-            _previous_t = new_t;
-
-        }
-
-        virtual void apply(osg::Transform& visitor_dcs)
-        {
-
-            if (&visitor_dcs == _modifyTransform && !_haveDoneTransformTransform)
+            if (nv)
             {
-                // update the specified dcs.
-                visitor_dcs.preTranslate(_pivotPoint[0],_pivotPoint[1],_pivotPoint[2]);
-                visitor_dcs.preRotate(_delta_angle,0.0f,0.0f,1.0f);
-                visitor_dcs.preTranslate(-_pivotPoint[0],-_pivotPoint[1],-_pivotPoint[2]);
+                if (_nodeToOperateOn && node==_nodeToOperateOn)
+                {
+                    // ensure that we do not operate on this node more than
+                    // once during this traversal.  This is an issue since node
+                    // can be shared between multiple parents.
+                    if (nv->getTraversalNumber()!=_previousTraversalNumber)
+                    {
+                        osg::Timer_t new_t = _timer.tick();
+                        float delta_angle = _angular_velocity*_timer.delta_s(_previous_t,new_t);
+                        _previous_t = new_t;
 
-                // set to true to prevent applying rotation more than once 
-                // since the subgraph appears twice in the overall scene.
-                _haveDoneTransformTransform = true;
+                        // update the specified dcs.
+                        _nodeToOperateOn->preTranslate(_pivotPoint[0],_pivotPoint[1],_pivotPoint[2]);
+                        _nodeToOperateOn->preRotate(delta_angle,0.0f,0.0f,1.0f);
+                        _nodeToOperateOn->preTranslate(-_pivotPoint[0],-_pivotPoint[1],-_pivotPoint[2]);
+
+                        _previousTraversalNumber = nv->getTraversalNumber();
+                    }
+                }
             }
+            
+            // must continue subgraph traversal.
+            nv->traverse(*node);
+
+            
         }
+        
+    protected:
+    
+        osg::Transform*     _nodeToOperateOn;
+        float               _angular_velocity;
+        osg::Vec3           _pivotPoint;
+
+        int                 _previousTraversalNumber;
+        osg::Timer          _timer;
+        osg::Timer_t        _previous_t;
+
 };
 
 /*
@@ -463,13 +472,7 @@ int main( int argc, char **argv )
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootNode );
 
-
-    // create and register the app visitor.
-    AppVisitor* appVisitor = new AppVisitor();
-    appVisitor->_modifyTransform = loadedModelTransform;
-    appVisitor->_pivotPoint = bs.center();
-
-    viewer.getViewportSceneView(0)->setAppVisitor(appVisitor);
+    loadedModelTransform->setAppCallback(new TransformCallback(loadedModelTransform,45.0f));
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);

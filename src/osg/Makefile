@@ -13,6 +13,7 @@ C++FILES = \
 	Depth.cpp \
 	Drawable.cpp\
 	Fog.cpp\
+	FrameStamp.cpp\
 	FrontFace.cpp\
 	Geode.cpp\
 	GeoSet.cpp\
@@ -48,6 +49,7 @@ C++FILES = \
 	Transform.cpp\
 	Transparency.cpp\
         Version.cpp\
+        Viewport.cpp\
         
 
 TARGET_BASENAME = osg
@@ -69,6 +71,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Drawable\
 	osg/Export\
 	osg/Fog\
+	osg/FrameStamp\
 	osg/FrontFace\
 	osg/GL\
 	osg/GLExtensions\
@@ -86,6 +89,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Matrix\
 	osg/MemoryAdapter\
 	osg/Node\
+	osg/NodeCallback\
 	osg/NodeVisitor\
 	osg/Notify\
 	osg/Object\
@@ -112,6 +116,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Vec3\
 	osg/Vec4\
 	osg/Version\
+	osg/Viewport\
 	osg/mem_ptr\
 	osg/ref_ptr\
 

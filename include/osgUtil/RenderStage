@@ -30,23 +30,15 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         virtual void reset();
         
         
-        /** Set the viewport of the scene view. */
-        void setViewport(int x,int y,int width,int height)
-        {
-            _view[0] = x;
-            _view[1] = y;
-            _view[2] = width;
-            _view[3] = height;
-        }
-        
-        /** Get the viewport of the scene view. */
-        void getViewport(int& x,int& y,int& width,int& height) const
-        {
-            x = _view[0];
-            y = _view[1];
-            width = _view[2];
-            height = _view[3];
-        }
+        /** Set the viewport.*/
+        void setViewport(osg::Viewport* viewport) { _viewport = viewport; }
+
+        /** Get the const viewport. */
+        const osg::Viewport* getViewport() const { return _viewport.get(); }
+
+        /** Get the viewport. */
+        osg::Viewport* getViewport() { return _viewport.get(); }
+
 
 
         /** Set the clear mask used in glClear(..).
@@ -132,7 +124,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         osg::ref_ptr<osg::Camera>           _camera;
 
         // viewport x,y,width,height.
-        GLint                               _view[4];
+        osg::ref_ptr<osg::Viewport>         _viewport;
         
         GLbitfield                          _clearMask;
         osg::Vec4                           _clearColor;

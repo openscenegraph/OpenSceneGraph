@@ -6,6 +6,7 @@
 #include <osg/Matrix>
 #include <osg/Quat>
 #include <osg/ClippingVolume>
+#include <osg/Viewport>
 
 namespace osg {
 
@@ -58,6 +59,9 @@ class SG_EXPORT Camera: public osg::Referenced
         void setPerspective(const double fovy,const double aspectRatio,
                             const double zNear, const double zFar);
 
+        /** Set a sysmetical perspective projection using field of view.*/
+        void setFOV(const double fovx,const double fovy,
+                            const double zNear, const double zFar);
         
         /** Set the near and far clipping planes.*/
         void setNearFar(const double zNear, const double zFar);
@@ -65,16 +69,32 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Use in combination with adjustAspectRatio, to control
           * the change in frustum clipping planes to account for
           * changes in windows aspect ratio,*/
-        enum AdjustAxis
+        enum AdjustAspectRatioMode
         {
             ADJUST_VERTICAL,
             ADJUST_HORIZONTAL
         };
         
+        /** Set the way that the vertical or horizontal dimensions of the window
+          * are adjusted on a resize. */
+        void setAdjustAspectRatioMode(const AdjustAspectRatioMode aam) { _adjustAspectRatioMode = aam; }
+        
+        /** Get the way that the vertical or horizontal dimensions of the window
+          * are adjusted on a resize. */
+        const AdjustAspectRatioMode getAdjustAspectRatioMode() const { return _adjustAspectRatioMode; }
+
         /** Adjust the clipping planes to account for a new window aspcect ratio.
           * Typicall used after resizeing a window. Aspect ratio is defined as
           * width/height.*/
-        void adjustAspectRatio(const double newAspectRatio, const AdjustAxis aa = ADJUST_HORIZONTAL);
+        void adjustAspectRatio(const double newAspectRatio)
+        {
+            adjustAspectRatio(newAspectRatio,_adjustAspectRatioMode);
+        }
+
+        /** Adjust the clipping planes to account for a new window aspcect ratio.
+          * Typicall used after resizeing a window. Aspect ratio is defined as
+          * width/height.*/
+        void adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa);
 
         const double left() const;
         const double right() const;
@@ -223,11 +243,11 @@ class SG_EXPORT Camera: public osg::Referenced
 
         /** Map object coordinates into windows coordinates.
           * Equivilant to gluProject(...). */
-        const bool project(const Vec3& obj,const int* viewport,Vec3& win) const;
+        const bool project(const Vec3& obj,const Viewport& viewport,Vec3& win) const;
         
         /** Map window coordinates into object coordinates. 
           * Equivilant to gluUnProject(...). */
-        const bool unproject(const Vec3& win,const int* viewport,Vec3& obj) const;
+        const bool unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const;
 
 
     protected:
@@ -238,6 +258,9 @@ class SG_EXPORT Camera: public osg::Referenced
 
         // projection details.
         ProjectionType  _projectionType;
+
+        // how the window dimensions should be altered during a window resize.
+        AdjustAspectRatioMode _adjustAspectRatioMode;
 
         // note, in Frustum/Perspective mode these values are scaled
         // by the zNear from when they were initialised to ensure that

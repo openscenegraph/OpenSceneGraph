@@ -1,7 +1,7 @@
 #!smake
 SHELL=/bin/sh
 
-DIRS = sgv osgconv osgcube osgreflect osgtexture osgimpostor osgviews hangglide
+DIRS = sgv osgconv osgcube osgreflect osgtexture osgimpostor osgviews hangglide osgcluster
 
 all :
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done

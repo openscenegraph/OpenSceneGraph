@@ -41,7 +41,7 @@ ImpostorSprite::~ImpostorSprite()
     }
 }
 
-const float ImpostorSprite::calcPixelError(const Camera& camera,const int* viewport,const osg::Matrix* matrix) const
+const float ImpostorSprite::calcPixelError(const Camera& camera,const Viewport& viewport,const osg::Matrix* matrix) const
 {
     // find the maximum screen space pixel error between the control coords and the quad coners.
     float max_error_sqrd = 0.0f;
@@ -139,6 +139,12 @@ void ImpostorSprite::setTexture(Texture* tex,int s,int t)
 
 ImpostorSpriteManager::ImpostorSpriteManager()
 {
+    _texenv = new TexEnv;
+    _texenv->setMode(TexEnv::REPLACE);
+
+    _alphafunc = new osg::AlphaFunc;
+    _alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
+
     _first = NULL;
     _last = NULL;
 }
@@ -250,8 +256,12 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
 
     Texture* texture = new Texture;
-    stateset->setAttributeAndModes(texture,StateAttribute::ON);
 
+    stateset->setAttributeAndModes(texture,StateAttribute::ON);
+    stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
+    stateset->setAttribute(_texenv.get());
+
+/*
     TexEnv* texenv = new TexEnv;
     texenv->setMode(TexEnv::REPLACE);
     stateset->setAttribute(texenv);
@@ -259,6 +269,8 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     AlphaFunc* alphafunc = new osg::AlphaFunc;
     alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
     stateset->setAttributeAndModes( alphafunc, StateAttribute::ON );
+*/
+
 
     //    stateset->setMode( GL_ALPHA_TEST, StateAttribute::OFF );
 

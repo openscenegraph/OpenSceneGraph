@@ -23,39 +23,36 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.66.1">PolygonOffset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.70.1">PolygonOffset</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.66.2">clone</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.70.2">META_StateAttribute</A></B>(<!1><A HREF="PolygonOffset.html">PolygonOffset</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.19">POLYGONOFFSET</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.66.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.70.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.66.4">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.70.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> <B><A HREF="#DOC.2.66.5">getType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.70.5">setFactor</A></B>(const float factor)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.66.6">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.70.6">getFactor</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.66.7">setFactor</A></B>(const float factor)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.70.7">setUnits</A></B>(const float units)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.66.8">getFactor</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.70.8">getUnits</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.66.9">setUnits</A></B>(const float units)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const float <B><A HREF="#DOC.2.66.10">getUnits</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.66.11">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.70.9">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.66.13">_factor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.70.11">_factor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.66.14">_units</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.70.12">_units</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.66.12">~PolygonOffset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.70.10">~PolygonOffset</A></B>()
 </DL></P>
 
 </DL>
@@ -63,6 +60,20 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.80.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
 
@@ -76,7 +87,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
@@ -110,59 +123,52 @@
 <DL>
 
 <A NAME="PolygonOffset"></A>
-<A NAME="DOC.2.66.1"></A>
+<A NAME="DOC.2.70.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PolygonOffset()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="clone"></A>
-<A NAME="DOC.2.66.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
+<A NAME="META_StateAttribute"></A>
+<A NAME="DOC.2.70.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="PolygonOffset.html">PolygonOffset</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.19">POLYGONOFFSET</A>)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.66.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="className"></A>
-<A NAME="DOC.2.66.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getType"></A>
-<A NAME="DOC.2.66.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> getType() const </B></TT>
+<A NAME="compare"></A>
+<A NAME="DOC.2.70.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.66.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.70.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFactor"></A>
-<A NAME="DOC.2.66.7"></A>
+<A NAME="DOC.2.70.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFactor(const float factor)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFactor"></A>
-<A NAME="DOC.2.66.8"></A>
+<A NAME="DOC.2.70.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getFactor() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setUnits"></A>
-<A NAME="DOC.2.66.9"></A>
+<A NAME="DOC.2.70.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setUnits(const float units)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUnits"></A>
-<A NAME="DOC.2.66.10"></A>
+<A NAME="DOC.2.70.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const float getUnits() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.66.11"></A>
+<A NAME="DOC.2.70.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~PolygonOffset"></A>
-<A NAME="DOC.2.66.12"></A>
+<A NAME="DOC.2.70.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~PolygonOffset()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_factor"></A>
-<A NAME="DOC.2.66.13"></A>
+<A NAME="DOC.2.70.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _factor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_units"></A>
-<A NAME="DOC.2.66.14"></A>
+<A NAME="DOC.2.70.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _units</B></TT>
 <DL><DT><DD></DL><P></DL>
 

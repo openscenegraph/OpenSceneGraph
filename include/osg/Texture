@@ -60,12 +60,12 @@ class SG_EXPORT Texture : public StateAttribute
     public :
         
         Texture();
-        virtual Object* clone() const { return new Texture(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Texture*>(obj)!=0L; }
-        virtual const char* className() const { return "Texture"; }
 
-        virtual const Type getType() const { return (Type)(TEXTURE_0+_textureUnit); }
+        META_StateAttribute(Texture,(Type)(TEXTURE_0+_textureUnit));
         
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& rhs) const;
+
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
             ds.setMode(GL_TEXTURE_2D,value);
@@ -210,7 +210,7 @@ class SG_EXPORT Texture : public StateAttribute
         }
         
         /** Get the handle to the texture object for the current context.*/
-        inline uint& getHandle(const uint contextID) const
+        inline GLuint& getHandle(const uint contextID) const
         {
             // pad out handle list if required.
             while (_handleList.size()<=contextID)
@@ -240,7 +240,7 @@ class SG_EXPORT Texture : public StateAttribute
           * OpenGL texture objects to cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
-        static void deleteTextureObject(uint contextID,uint handle);
+        static void deleteTextureObject(uint contextID,GLuint handle);
 
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
@@ -251,7 +251,7 @@ class SG_EXPORT Texture : public StateAttribute
 
         virtual ~Texture();
 
-        typedef std::vector<uint> TextureNameList;
+        typedef std::vector<GLuint> TextureNameList;
         mutable TextureNameList _handleList;
 
         typedef std::vector<uint> ImageModifiedTag;

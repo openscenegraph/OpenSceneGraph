@@ -22,50 +22,50 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const osg::StateSet&gt;  <B><A HREF="#DOC.2.17.2">_stateset</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const osg::StateSet&gt;  <B><A HREF="#DOC.2.19.2">_stateset</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.17.3">_depth</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.19.3">_depth</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ChildList <B><A HREF="#DOC.2.17.4">_children</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ChildList <B><A HREF="#DOC.2.19.4">_children</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>LeafList <B><A HREF="#DOC.2.17.5">_leaves</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>LeafList <B><A HREF="#DOC.2.19.5">_leaves</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.17.6">RenderGraph</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.6">RenderGraph</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.17.7">RenderGraph</A></B>(<!1><A HREF="RenderGraph.html#DOC.2.17.7">RenderGraph</A>* parent, const osg::StateSet* stateset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.7">RenderGraph</A></B>(<!1><A HREF="RenderGraph.html#DOC.2.19.7">RenderGraph</A>* parent, const osg::StateSet* stateset)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.17.8">~RenderGraph</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.8">~RenderGraph</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.17.9">empty</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.19.9">empty</A></B>() const 
 <DD><I>return true if all of drawables, lights and chilren are empty</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.17.10">leaves_empty</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.19.10">leaves_empty</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.17.11">reset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.11">reset</A></B>()
 <DD><I>reset the internal contents of a RenderGraph, including deleting all children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.17.12">clean</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.12">clean</A></B>()
 <DD><I>recursively clean the RenderGraph of all its drawables, lights and depths.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.17.13">prune</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.13">prune</A></B>()
 <DD><I>recursively prune the RenderGraph of empty children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.17.14">find_or_insert</A></B>(const osg::StateSet* stateset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.19.14">find_or_insert</A></B>(const osg::StateSet* stateset)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.17.15">addLeaf</A></B>(<!1><A HREF="RenderLeaf.html">RenderLeaf</A>* leaf)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.19.15">addLeaf</A></B>(<!1><A HREF="RenderLeaf.html">RenderLeaf</A>* leaf)
 <DD><I>add a render leaf</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static inline   void <B><A HREF="#DOC.2.17.16">moveRenderGraph</A></B>(osg::State&amp; state, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_curr, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_new)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static inline   void <B><A HREF="#DOC.2.19.16">moveRenderGraph</A></B>(osg::State&amp; state, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_curr, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_new)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   void <B><A HREF="#DOC.2.17.17">moveToRootRenderGraph</A></B>(osg::State&amp; state, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_curr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   void <B><A HREF="#DOC.2.19.17">moveToRootRenderGraph</A></B>(osg::State&amp; state, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_curr)
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt; LeafList <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.17.1">_parent</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt; LeafList <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.19.1">_parent</A></B>
 </DL></P>
 
 </DL>
@@ -76,77 +76,77 @@
 <DL>
 
 <A NAME="_parent"></A>
-<A NAME="DOC.2.17.1"></A>
+<A NAME="DOC.2.19.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt; LeafList <!1><A HREF="RenderGraph.html">RenderGraph</A>* _parent</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stateset"></A>
-<A NAME="DOC.2.17.2"></A>
+<A NAME="DOC.2.19.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const osg::StateSet&gt;  _stateset</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_depth"></A>
-<A NAME="DOC.2.17.3"></A>
+<A NAME="DOC.2.19.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _depth</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_children"></A>
-<A NAME="DOC.2.17.4"></A>
+<A NAME="DOC.2.19.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ChildList _children</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_leaves"></A>
-<A NAME="DOC.2.17.5"></A>
+<A NAME="DOC.2.19.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>LeafList _leaves</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RenderGraph"></A>
-<A NAME="DOC.2.17.6"></A>
+<A NAME="DOC.2.19.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderGraph()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RenderGraph"></A>
-<A NAME="DOC.2.17.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderGraph(<!1><A HREF="RenderGraph.html#DOC.2.17.7">RenderGraph</A>* parent, const osg::StateSet* stateset)</B></TT>
+<A NAME="DOC.2.19.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RenderGraph(<!1><A HREF="RenderGraph.html#DOC.2.19.7">RenderGraph</A>* parent, const osg::StateSet* stateset)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~RenderGraph"></A>
-<A NAME="DOC.2.17.8"></A>
+<A NAME="DOC.2.19.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~RenderGraph()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="empty"></A>
-<A NAME="DOC.2.17.9"></A>
+<A NAME="DOC.2.19.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool empty() const </B></TT>
 <DD>return true if all of drawables, lights and chilren are empty
 <DL><DT><DD></DL><P>
 <A NAME="leaves_empty"></A>
-<A NAME="DOC.2.17.10"></A>
+<A NAME="DOC.2.19.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool leaves_empty() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.17.11"></A>
+<A NAME="DOC.2.19.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
 <DD>reset the internal contents of a RenderGraph, including deleting all children
 <DL><DT><DD></DL><P>
 <A NAME="clean"></A>
-<A NAME="DOC.2.17.12"></A>
+<A NAME="DOC.2.19.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void clean()</B></TT>
 <DD>recursively clean the RenderGraph of all its drawables, lights and depths.
 Leaves children intact, and ready to be populated again.
 <DL><DT><DD></DL><P>
 <A NAME="prune"></A>
-<A NAME="DOC.2.17.13"></A>
+<A NAME="DOC.2.19.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void prune()</B></TT>
 <DD>recursively prune the RenderGraph of empty children
 <DL><DT><DD></DL><P>
 <A NAME="find_or_insert"></A>
-<A NAME="DOC.2.17.14"></A>
+<A NAME="DOC.2.19.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* find_or_insert(const osg::StateSet* stateset)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addLeaf"></A>
-<A NAME="DOC.2.17.15"></A>
+<A NAME="DOC.2.19.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addLeaf(<!1><A HREF="RenderLeaf.html">RenderLeaf</A>* leaf)</B></TT>
 <DD>add a render leaf
 <DL><DT><DD></DL><P>
 <A NAME="moveRenderGraph"></A>
-<A NAME="DOC.2.17.16"></A>
+<A NAME="DOC.2.19.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static inline   void moveRenderGraph(osg::State&amp; state, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_curr, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_new)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="moveToRootRenderGraph"></A>
-<A NAME="DOC.2.17.17"></A>
+<A NAME="DOC.2.19.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   void moveToRootRenderGraph(osg::State&amp; state, <!1><A HREF="RenderGraph.html">RenderGraph</A>* sg_curr)</B></TT>
 <DL><DT><DD></DL><P></DL>
 

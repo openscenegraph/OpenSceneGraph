@@ -155,31 +155,6 @@ void StateSet::compile(State& state) const
     }
 }
 
-
-const StateSet::ModeVector StateSet::getModeVector() const
-{
-    ModeVector vec;
-    for (ModeList::const_iterator itr = _modeList.begin();
-        itr!=_modeList.end();
-        ++itr)
-    {
-        vec.push_back(*itr);
-    }
-    return vec;
-}
-
-const StateSet::AttributeVector StateSet::getAttributeVector() const
-{
-    AttributeVector vec;
-    for (AttributeList::const_iterator itr = _attributeList.begin();
-        itr!=_attributeList.end();
-        ++itr)
-    {
-        vec.push_back(itr->second.first.get());
-    }
-    return vec;
-}
-
 void StateSet::setRenderingHint(const int hint)
 {
     _renderingHint = hint;

@@ -15,12 +15,28 @@ class SG_EXPORT Stencil : public StateAttribute
     
     
         Stencil();
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Stencil*>(obj)!=0L; }
-        virtual Object* clone() const { return new Stencil(); }
-        virtual const char* className() const { return "Stencil"; }
-    
-        virtual const Type getType() const { return STENCIL; }
+
+        META_StateAttribute(Stencil, STENCIL);
         
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(Stencil,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_func)
+            COMPARE_StateAttribute_Parameter(_funcRef)
+            COMPARE_StateAttribute_Parameter(_funcMask)
+            COMPARE_StateAttribute_Parameter(_sfail)
+            COMPARE_StateAttribute_Parameter(_zfail)
+            COMPARE_StateAttribute_Parameter(_zpass)
+            COMPARE_StateAttribute_Parameter(_writeMask)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
             ds.setMode(GL_STENCIL_TEST,value);

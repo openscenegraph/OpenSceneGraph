@@ -27,6 +27,7 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     RenderStage::draw(state,previous);
 
     // now copy the rendered image to attached texture.
-    if (_texture.valid()) _texture->copyTexImage2D(state,_view[0],_view[1],_view[2],_view[3]);
+    if (_texture.valid())
+        _texture->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
     
 }

@@ -1,6 +1,147 @@
 OSG Change log
 ==============
 
+21th September 2001 - osg-20010921.tar.gz
+
+  o Fixed compilation problem under Windows due to ctime being included
+    in the osg::Timer header file.  The ctime refrence has been replaced
+    by time.h. Also fixed typo in osgGLUT/Viewer.cpp which was causing
+    compilation problems.
+  o Made the new osg::Matrix::translate/scale/rotate static method inline
+    to help improve peformance.
+  o Fixed bugs in osg::Matrix::preMult and postMult.
+  
+
+19th September 2001 - osg-20010919.tar.gz
+
+  o Cleaned up the implementation of the osg::Timer class so it is easy
+    to read and maintain, and have added support for gettimeofday under
+    unix OS's where no other realtime timer is available, if this isn't
+    available either than 
+  o Added FrameStamp class which encapsulates the frame number,
+    reference time and the calander time that a frame in schedualed.
+  o Fixed a couple of bugs & integrated further fixes from Paul Fredrikson,
+    to the new Matrix implemention, double checked results against the old
+    matrix class and am now getting consistent results.  For this dev 
+    version onwards the new Matrix class simply replaces the old one. The 
+    new Matrix class contains old style methods to keep things compiling,
+    however these are deprecated and will be removed, probably by the next 
+    full release.  Check the header file for deprecated methods.  You can
+    also comment in the #define WARN_DEPRECATED at the top of Matrix.cpp
+    and this will produce console warnings.
+  o From Don Burns - fixes to src/osgPlugins/osg/GeoSet.cpp adding in 
+    an iterator increment to the code for outputing interleaved arrays,
+    previously the code entered an .osg writing inifite loop for this 
+    data type.
+  o Have added #ifndef WIN32 around the call to the new OptimizeStateVisitor
+    which was added to sgv to prevent its use automatically under Windows -
+    thus avoiding the windows crash due to the MSVC++ buggy SLL implementation.
+
+14th September 2001 - osg-20010914.tar.gz
+
+  o Added osgUtil::StateOptimizeVisitor which traversing the scene
+    graph and builds up a map of all StateAttributes and StateSets
+    and then removes the duplicates. This promotes state sharing
+    throughout the scene graph which inturn can significantly improve
+    performance thanks to reduced state changing. Particularily 
+    effective on datasets where a great deal of duplicated state exists.
+    Even on already optimized datasets such as Performer town up 
+  o Added pure virtual compare(const osg::StateAttribute&)
+    method to osg::StateAttribute, and implemented it in all the
+    subclasses from StateAttribute. Added <,== & != operator
+    on StateAttribute and Matrix to support new StateOptimizeVisitor.
+  o Added META_Object, META_Node and META_StateAttribute macros to 
+    Object, Node and StateAttribute respectively which define the
+    standard pure virtual methods such as clone, className
+    & isSameKindAs.  Changed all the appropriate header files to
+    use these macro's rather define them in each header, these cleans
+    up the headers considerably.
+  o Corrected the implementation of osg::Light::getType so it correctly
+    uses a unique type for each of the OpenGL lights (GL_LIGHT0..
+    GL_LIGHT7 relates to osg::StateAttriburte::LIGHT_0..LIGHT_7.
+  o Changed the definition of osg::StateStateAttribute::Type to
+    is now a unsigned int rather than an enum, and have changed the
+    name of the previous Type enum list to be Types.  This makes it
+    more consistent with the difination of values found in StateAttribute
+    and also easier to extend with having to cast to an enum.
+  o From Pail Fredrikson, updated Maitrx.new implemention which uses
+    the same matrix orientation as the original Matrix implemention.
+
+11th September 2001 - osg-20010911.tar.gz
+
+  o From Paul Fredrikson - added new proposed Matrix implemention, its
+    been added in as Matrix.new and Matrix.cpp.new, the old Matrix 
+    implemetion has been moved to Matrix.old and Matrix.cpp.old, and
+    new Matrix and Matrix.cpp directs compilation to Matrix.new if
+    USE_NEW_MATRIX is defined, otherwise defaults to Matrix.old.  Once
+    a new implementation is settled and thoroughly tested then the
+    old one will be completely replaced by the new one.
+  o Added osg::NodeVisitor::s/getTraversalNumber(..) and s/getReferenceTime(..)
+    to better support syncronization of different traversals of the scene
+    graph and support osgcluster syncornization through the traversal number
+    and refernce time. 
+  o Added osg::NodeVisitor::s/getTraversalMask(..), s/getNodeMaskOverride(..)
+    and validNodeMask(..) and modified all osg::Node's and its 
+    subclass' ::accept(NodeVisitor) methods to check NodeVisitor::
+    validNodeMask(..) and only call the NodeVisitor::apply(..) if it
+    returns true.  This extra functionality allows users to switch on/off
+    nodes and their subgraph using a Node::s/getNodeMask() and since
+    a bit mask is used this can be done selectively for different
+    traversals, by using diffent bits for a traversal type (i.e app/cull).
+  o Added reuse of AlphaFunc and TexEnv objects between ImpostorSprites
+    into osg::ImpostorSpriteManager.
+  o Added osgcluster demo (can be found in src/Demos/osgcluster/), this
+    demo demonstrates a simple implmentation of keeping camera in sync
+    between entirely seperate apps running on different machines, and
+    what you get is multi-channel graphics cluster!  osgcluster uses
+    UDP packets to keep the camera position in sync between other 
+    osgcluster viewers running on other machines in the local area
+    network.  
+  o Changes to osg::Camera - added osg::Camera::setFOV(), osg::Camera::
+    s/getAdjustAspectRatioMode(), and osg::Camera::adjustAspectRatio(),
+    and renamed AdjustAxis enumerate AdjectAspectRatioMode.
+  o Updates to osg::NodeCallback and osgUtil::AppVisitor.
+
+
+24th August 2001 - osg-20010824.tar.gz
+
+  o Changed the impostor viewport so it is centered in the middle of
+    main viewport instead of the bottom left hand corner.  The later
+    was causing problems with the windowing decoration was obscuring
+    the backbuffer drawing and texture read.
+  o Changed the default resolution to 800x600 for osgGLUT::Viewer and
+    osg::Viewer so that the demos appear ok on very small screens such
+    as laptops.
+  o Three items added for support of app traversal callbacks.  
+    - added osg::NodeCallback for use as an app callback on osg::Node's
+      which is called by an app visitor.
+    - added osg::Node::setAppCallback()/getAppCallback().
+    - added osgUtil::AppVisitor and made it default AppVisitor on SceneView.
+    note: new files are include/osg/NodeCallback,
+    include/osgUtil/AppVisitor and src/osgUtil/AppVisitor.cpp.
+  o Changed osgreflect and osgcube demos so they use an app callback, 
+    instead of its own app visitor/glutTimerCallback repsectively.
+  o Changed the texture object type from osg::uint to GLunit in osg::Texture
+    to solved comptability problems under MacOS.
+  o Fixed spelling mistake of Minimum which occured several times
+    in include/osgUtil/VisualsRequirementsVisitor.
+  o Removed Lighting.cpp as it is nolonger used in any Makefiles,
+    and is only laying around due to not be removed earlier.
+  o From Bryan Woods - updated Metrowerks files for the MacOS port.
+
+22nd August 2001 - osg-20010822.tar.gz
+
+  o Removed osg::StateSet::getAttributeVector() and getModeVector()
+    since they were simply hacks around MSVC++ bugs which are both
+    fixed by using STLport under windows, along with other bugs reported
+    under Windows.  Its is now recommended that Windows users adopt 
+    STLport instead of the MSVC++ one since the later is just plain flakey.
+  o From Ben Discoe - fixed typo of a bookmark in index.html
+  o Added osg::Viewport for encapsulating glViewport and for passing around
+    viewport object between various osg classes.  Also helps avoid some 
+    portability issues which have arisen over OpenGl types under MacOS.
+  o From Bryan Woods - updated Metrowerks files for the MacOS port.
+
 9th August 2001 - osg-0.8.42.tar.gz
 
   o Toned down the specular light values set by default in osgUtil::SceneView::

@@ -26,13 +26,15 @@ class CameraPacket {
     
         CameraPacket():_masterKilled(false) {}
         
-        void setPacket(const osg::Camera& camera,int tnum, double rtime)
+        void setPacket(const osg::Camera& camera,const osg::FrameStamp* frameStamp)
         {
             _eye    = camera.getEyePoint();
             _center = camera.getCenterPoint();
             _up     = camera.getUpVector();
-            _traversalNumber    = tnum;
-            _referenceTime      = rtime;
+            if (frameStamp)
+            {
+                _frameStamp    = *frameStamp;
+            }
         }
         
         void getCamera(osg::Camera& camera,float angle_offset=0.0f)
@@ -50,8 +52,9 @@ class CameraPacket {
         
         void getSceneViewUpdate(osgUtil::SceneView& sv)
         {
-            sv.setTraversalNumber(_traversalNumber);
-            sv.setReferenceTime(_referenceTime);
+            // note pass a seperate reference counted FrameStamp
+            // rather than this frame stamp as it can get overwritten.
+            sv.setFrameStamp(new osg::FrameStamp(_frameStamp));
         }
         
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
@@ -63,9 +66,12 @@ class CameraPacket {
         osg::Vec3       _up;
         bool            _attachMatrix;
         osg::Matrix     _matrix;
-        
-        int             _traversalNumber;
-        double          _referenceTime;
+
+        // note don't use a ref_ptr as used elsewhere for FrameStamp
+        // since we don't want to copy the pointer - but the memory.
+        // FrameStamp doesn't have a private destructor to allow
+        // us to do this, even though its a reference counted object.    
+        osg::FrameStamp  _frameStamp;
         
 };
 
@@ -99,7 +105,7 @@ class MySceneView : public osgUtil::SceneView {
             {
                 // need to broadcast my death.
                 CameraPacket cp;
-                cp.setPacket(*getCamera(),getTraversalNumber(),getReferenceTime());
+                cp.setPacket(*getCamera(),getFrameStamp());
                 cp.setMasterKilled(true);
                 
                 _bc.setBuffer(&cp, sizeof( CameraPacket ));
@@ -119,7 +125,7 @@ class MySceneView : public osgUtil::SceneView {
             case(MASTER):
                 {
                     CameraPacket cp;
-                    cp.setPacket(*getCamera(),getTraversalNumber(),getReferenceTime());
+                    cp.setPacket(*getCamera(),getFrameStamp());
 
                     _bc.setBuffer(&cp, sizeof( CameraPacket ));
 	            _bc.sync();

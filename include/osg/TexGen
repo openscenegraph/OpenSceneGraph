@@ -13,12 +13,26 @@ class SG_EXPORT TexGen : public StateAttribute
     public :
     
         TexGen( void );
-        virtual Object* clone() const { return new TexGen(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TexGen*>(obj)!=NULL; }
-        virtual const char* className() const { return "TexGen"; }
+
+        META_StateAttribute(TexGen, TEXGEN);
         
-        virtual const Type getType() const { return TEXGEN; }
-        
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(TexGen,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_mode)
+            COMPARE_StateAttribute_Parameter(_plane_s)
+            COMPARE_StateAttribute_Parameter(_plane_s)
+            COMPARE_StateAttribute_Parameter(_plane_r)
+            COMPARE_StateAttribute_Parameter(_plane_q)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
             ds.setMode(GL_TEXTURE_GEN_S,value);

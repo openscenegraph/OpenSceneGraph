@@ -5,6 +5,9 @@
 #include <osg/StateSet>
 #include <osg/Matrix>
 
+#include <osg/FrameStamp>
+#include <osg/Camera>
+
 #include <vector>
 #include <map>
 
@@ -82,15 +85,21 @@ class SG_EXPORT State : public Referenced
         inline const unsigned int getContextID() const { return _contextID; }
         
         
+        /** Set the frame stamp for the current frame.*/
+        inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
+
+        /** Set the frame stamp for the current frame.*/
+        inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
         
-        /** Set the frame number.*/
-        inline void setFrameNumber(unsigned int fn) { _frameNumber = fn; }
         
-        /** Get the frame number.*/
-        inline unsigned int getFrameNumber() const { return _frameNumber; }
+        /** Set the camera. Note, nothing is applied, the camera is just used
+          * used in the State object to pass the current camera to Drawables
+          * during rendering. */
+        inline void setCamera(Camera* camera) { _camera = camera; }
         
-        /** Increment the frame number. Done once per frame.*/
-        inline void incrementFrameNumber() { ++_frameNumber; }
+        /** Get the camera */
+        inline const Camera* getCamera() const { return _camera.get(); }
+        
         
 
         /** Set the hint to OpenGL routines to do fine grained OpenGL error checking.*/
@@ -101,8 +110,9 @@ class SG_EXPORT State : public Referenced
 
     private:
     
-        unsigned int _contextID;
-        unsigned int _frameNumber;
+        unsigned int        _contextID;
+        ref_ptr<FrameStamp> _frameStamp;
+        ref_ptr<Camera>    _camera;
         
         typedef std::vector<StateAttribute::GLModeValue>  ValueVec;
 
@@ -173,7 +183,8 @@ class SG_EXPORT State : public Referenced
 
         ModeMap         _modeMap;
         AttributeMap    _attributeMap;
-        StateSetStack   _drawStateStack;        
+        StateSetStack   _drawStateStack;
+        
 
         bool _fineGrainedErrorDetection;
 

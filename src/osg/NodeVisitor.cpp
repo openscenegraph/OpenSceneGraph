@@ -5,8 +5,12 @@ using namespace osg;
 
 NodeVisitor::NodeVisitor(TraversalMode tm)
 {
+    _traversalNumber = -1;
+
     _traversalVisitor = NULL;
     _traversalMode = tm;
+    _traversalMask = 0xffffffff;
+    _nodeMaskOverride = 0x0;
 }
 
 

@@ -83,22 +83,6 @@ class SG_EXPORT StateSet : public Object
         /** return the const list of all StateAttributes contained in this const StateSet.*/
         inline const AttributeList& getAttributeList() const { return _attributeList; }
 
-        /** tempory type def to support tempory method getModeVector.*/
-        typedef std::vector<std::pair<StateAttribute::GLMode,StateAttribute::GLModeValue> > ModeVector; 
-        /** get method which copies this StateSet's osg::GLModeValues's into
-          * a std::vector.  method is overlaps on the propper get method - 
-          * getModeList and only exists to get round a crash under Windows.
-          * Will be removed once problem is fixed.*/
-        const ModeVector getModeVector() const;
-
-        /** tempory type def to support tempory method getAttributeVector.*/
-        typedef std::vector<const StateAttribute*> AttributeVector; 
-        /** get method which copies this StateSet's osg::StateAttribute's into
-          * a std::vector.  method is overlaps on the propper get method - 
-          * getAttributeList and only exists to get round a crash under Windows.
-          * Will be removed once problem is fixed.*/
-        const AttributeVector getAttributeVector() const;
-
         enum RenderingHint
         {
             DEFAULT_BIN = 0,

@@ -23,53 +23,50 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.1">TexGen</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.1">TexGen</A></B>( void )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.78.2">clone</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.2">META_StateAttribute</A></B>(<!1><A HREF="TexGen.html">TexGen</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.21">TEXGEN</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.3">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.85.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.78.4">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.85.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> <B><A HREF="#DOC.2.78.5">getType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.85.5">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.78.6">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.85.7">setMode</A></B>( const <!1><A HREF="TexGen.html#DOC.2.85.6">Mode</A> mode )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.78.7">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="TexGen.html#DOC.2.85.6">Mode</A> <B><A HREF="#DOC.2.85.8">getMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.78.9">setMode</A></B>( const <!1><A HREF="TexGen.html#DOC.2.78.8">Mode</A> mode )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.85.10">setPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.85.9">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="TexGen.html#DOC.2.78.8">Mode</A> <B><A HREF="#DOC.2.78.10">getMode</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.12">setPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.78.11">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.78.13">getPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.78.11">Coord</A> which) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.85.11">getPlane</A></B>(const <!1><A HREF="TexGen.html#DOC.2.85.9">Coord</A> which) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.78.8">Mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.85.6">Mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.78.11">Coord</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.85.9">Coord</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TexGen.html#DOC.2.78.8">Mode</A> <B><A HREF="#DOC.2.78.15">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TexGen.html#DOC.2.85.6">Mode</A> <B><A HREF="#DOC.2.85.13">_mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.78.16">_plane_s</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.85.14">_plane_s</A></B>
 <DD><I>additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>  <B><A HREF="#DOC.2.78.17">_plane_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>  <B><A HREF="#DOC.2.85.15">_plane_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>   <B><A HREF="#DOC.2.78.18">_plane_r</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>   <B><A HREF="#DOC.2.85.16">_plane_r</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>    <B><A HREF="#DOC.2.78.19">_plane_q</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>    <B><A HREF="#DOC.2.85.17">_plane_q</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.78.14">~TexGen</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.85.12">~TexGen</A></B>( void )
 </DL></P>
 
 </DL>
@@ -77,6 +74,20 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.80.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
 
@@ -90,7 +101,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
@@ -124,112 +137,105 @@
 <DL>
 
 <A NAME="TexGen"></A>
-<A NAME="DOC.2.78.1"></A>
+<A NAME="DOC.2.85.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGen( void )</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="clone"></A>
-<A NAME="DOC.2.78.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
+<A NAME="META_StateAttribute"></A>
+<A NAME="DOC.2.85.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="TexGen.html">TexGen</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.21">TEXGEN</A>)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.78.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="className"></A>
-<A NAME="DOC.2.78.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getType"></A>
-<A NAME="DOC.2.78.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> getType() const </B></TT>
+<A NAME="compare"></A>
+<A NAME="DOC.2.85.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.78.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.85.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.78.7"></A>
+<A NAME="DOC.2.85.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Mode"></A>
-<A NAME="DOC.2.78.8"></A>
+<A NAME="DOC.2.85.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="OBJECT_LINEAR"></A>
-<A NAME="DOC.2.78.8.1"></A>
+<A NAME="DOC.2.85.6.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OBJECT_LINEAR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EYE_LINEAR"></A>
-<A NAME="DOC.2.78.8.2"></A>
+<A NAME="DOC.2.85.6.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EYE_LINEAR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SPHERE_MAP"></A>
-<A NAME="DOC.2.78.8.3"></A>
+<A NAME="DOC.2.85.6.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SPHERE_MAP</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setMode"></A>
-<A NAME="DOC.2.78.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode( const <!1><A HREF="TexGen.html#DOC.2.78.8">Mode</A> mode )</B></TT>
+<A NAME="DOC.2.85.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode( const <!1><A HREF="TexGen.html#DOC.2.85.6">Mode</A> mode )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
-<A NAME="DOC.2.78.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="TexGen.html#DOC.2.78.8">Mode</A> getMode() const </B></TT>
+<A NAME="DOC.2.85.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="TexGen.html#DOC.2.85.6">Mode</A> getMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Coord"></A>
-<A NAME="DOC.2.78.11"></A>
+<A NAME="DOC.2.85.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Coord</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="S"></A>
-<A NAME="DOC.2.78.11.1"></A>
+<A NAME="DOC.2.85.9.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> S</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="T"></A>
-<A NAME="DOC.2.78.11.2"></A>
+<A NAME="DOC.2.85.9.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> T</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="R"></A>
-<A NAME="DOC.2.78.11.3"></A>
+<A NAME="DOC.2.85.9.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Q"></A>
-<A NAME="DOC.2.78.11.4"></A>
+<A NAME="DOC.2.85.9.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Q</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setPlane"></A>
-<A NAME="DOC.2.78.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPlane(const <!1><A HREF="TexGen.html#DOC.2.78.11">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)</B></TT>
+<A NAME="DOC.2.85.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPlane(const <!1><A HREF="TexGen.html#DOC.2.85.9">Coord</A> which, const <!1><A HREF="Vec4.html">Vec4</A>&amp; plane)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPlane"></A>
-<A NAME="DOC.2.78.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPlane(const <!1><A HREF="TexGen.html#DOC.2.78.11">Coord</A> which) const </B></TT>
+<A NAME="DOC.2.85.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPlane(const <!1><A HREF="TexGen.html#DOC.2.85.9">Coord</A> which) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~TexGen"></A>
-<A NAME="DOC.2.78.14"></A>
+<A NAME="DOC.2.85.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TexGen( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mode"></A>
-<A NAME="DOC.2.78.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TexGen.html#DOC.2.78.8">Mode</A> _mode</B></TT>
+<A NAME="DOC.2.85.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TexGen.html#DOC.2.85.6">Mode</A> _mode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_plane_s"></A>
-<A NAME="DOC.2.78.16"></A>
+<A NAME="DOC.2.85.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _plane_s</B></TT>
 <DD>additional texgen coefficents for GL_OBJECT_PLANE or GL_EYE_PLANE,
 <DL><DT><DD></DL><P>
 <A NAME="_plane_t"></A>
-<A NAME="DOC.2.78.17"></A>
+<A NAME="DOC.2.85.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>  _plane_t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_plane_r"></A>
-<A NAME="DOC.2.78.18"></A>
+<A NAME="DOC.2.85.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>   _plane_r</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_plane_q"></A>
-<A NAME="DOC.2.78.19"></A>
+<A NAME="DOC.2.85.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>    _plane_q</B></TT>
 <DL><DT><DD></DL><P></DL>
 

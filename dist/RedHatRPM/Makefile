@@ -1,9 +1,9 @@
 SHELL = /bin/sh
 
 BINDIRS = \
-	OpenSceneGraph-${OSGVERSION}/bin/\
-	OpenSceneGraph-${OSGVERSION}/include/\
-	OpenSceneGraph-${OSGVERSION}/lib/\
+	osg-${OSGVERSION}/bin/\
+	osg-${OSGVERSION}/include/\
+	osg-${OSGVERSION}/lib/\
 
 all :: rpm
 
@@ -13,7 +13,7 @@ rpm : osg.spec tardist
 
 
 osg.spec : makespec
-	makespec 
+	./makespec 
 
 tardist : 
 	@[ -n "${OSGHOME}" ] || (echo Please define OSGHOME; exit 3)
@@ -22,7 +22,7 @@ tardist :
 	@[ "`whoami`" = "root" ] || (echo Must be ROOT; exit 6)
 	(cd ${OSGHOME}/..; \
 		tar cf -  ${BINDIRS} | gzip > \
-		/usr/src/redhat/SOURCES/osg-${OSGVERSION}-${OSGRELEASE}.tar.gz)
+		/usr/src/redhat/SOURCES/osg-${OSGVERSION}.tar.gz)
 
 
 clean : 

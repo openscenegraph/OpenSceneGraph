@@ -1,5 +1,5 @@
-#ifndef OSGUTIL_NEWCULLVISITOR
-#define OSGUTIL_NEWCULLVISITOR 1
+#ifndef OSGUTIL_CULLVISITOR
+#define OSGUTIL_CULLVISITOR 1
 
 #include <osg/NodeVisitor>
 #include <osg/BoundingSphere>
@@ -36,7 +36,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         CullVisitor();
         virtual ~CullVisitor();
 
-        void reset();
+        virtual void reset();
 
         virtual void apply(osg::Node&);
         virtual void apply(osg::Geode& node);
@@ -100,33 +100,17 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** Returns the current CullingMode.*/
         CullViewState::CullingMode getCullingMode() const;
         
+
         /** Set the viewport.
           * Used to enable the CullVisitor can make decision 
-          * such as based on viewport dimensions,.*/
-        void setViewport(int x,int y,int width,int height)
-        {
-            _view[0] = x;
-            _view[1] = y;
-            _view[2] = width;
-            _view[3] = height;
-        }
-        
+          * such as based on viewport dimensions.*/
+        void setViewport(osg::Viewport* viewport) { _viewport = viewport; }
+
+        /** Get the const viewport. */
+        const osg::Viewport* getViewport() const { return _viewport.get(); }
+
         /** Get the viewport. */
-        void getViewport(int& x,int& y,int& width,int& height)
-        {
-            x = _view[0];
-            y = _view[1];
-            width = _view[2];
-            height = _view[3];
-        }
-
-
-        /** Set the frame number.*/
-        inline void setFrameNumber(const int fn) { _frameNumber = fn; }
-        
-        /** Get the frame number.*/
-        inline const int getFrameNumber() const { return _frameNumber; }
-
+        osg::Viewport* getViewport() { return _viewport.get(); }
 
         void pushCullViewState(const osg::Matrix* matrix=NULL);
         void popCullViewState();
@@ -276,8 +260,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
           * to generate the impostor texture. */
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
 
-        int _frameNumber;
-
         typedef std::vector< osg::ref_ptr<CullViewState> > CullViewStateStack;
         CullViewStateStack          _viewStateStack;
         osg::ref_ptr<CullViewState> _tvs;
@@ -301,7 +283,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         TransparencySortMode _tsm;
 	
         // viewport x,y,width,height respectiveyly.
-        int _view[4];
+        osg::ref_ptr<osg::Viewport> _viewport;
 
         bool _impostorActive;
         bool _depthSortImpostorSprites;

@@ -1,11 +1,4 @@
 // simple animation demo written by Graeme Harkness.
-// note from Robert to Robert.  The animiation techinque
-// present here using glut timer callbacks is one
-// approach, other approaches will soon be supported
-// within the osg itself via an app cullback which
-// can be attached to nodes themselves. This later
-// method will be the prefered approach (have a look
-// at osgreflect's app visitor for a clue.)
 
 
 #include <osg/Geode>
@@ -25,48 +18,60 @@
 // ----------------------------------------------------------------------
 // Global variables - this is basically the stuff which will be animated
 // ----------------------------------------------------------------------
-osg::Transform* myTransform;
-osg::GeoSet* cube;
 
-int mytime=0;                    // in milliseconds
-unsigned int dt=50;              // in milliseconds
-double omega=0.002;              // in inverse milliseconds
+class TransformCallback : public osg::NodeCallback{
 
-// ----------------------------------------------------------------
-// This is the callback function registered with GLUT to be called
-// at a future time in the GLUT loop
-// ----------------------------------------------------------------
-void timedCB( int delta_t )
-{
+    public:
 
-    static float lastdx = 0;
-    static float lastdy = 0;
-    static float lastdz = 0;
+        TransformCallback(osg::Transform* node,float angularVelocity)
+        {
+            _nodeToOperateOn = node;
+            _angular_velocity = angularVelocity;
+            _previousTraversalNumber = -1;
+            _orig_t = _timer.tick();
+        }
 
-    mytime+=dt;
+        virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
+        {
+            if (nv)
+            {
+                if (_nodeToOperateOn && node==_nodeToOperateOn)
+                {
+                    // ensure that we do not operate on this node more than
+                    // once during this traversal.  This is an issue since node
+                    // can be shared between multiple parents.
+                    if (nv->getTraversalNumber()!=_previousTraversalNumber)
+                    {
+                        osg::Timer_t new_t = _timer.tick();
+                        float delta_angle = _angular_velocity*_timer.delta_s(_orig_t,new_t);
+                        
+                        osg::Matrix matrix;
+                        matrix.makeRot(delta_angle,1.0f,1.0f,1.0f);
+                        matrix.postTrans(1.0f,0.0f,0.0f);
+                        matrix.postRot(delta_angle,0.0f,0.0f,1.0f);
+                                                
+                        _nodeToOperateOn->setMatrix(matrix);
 
-    // ---------------------------------------------------------
-    // Update the Transform so that the cube will appear to oscillate
-    // ---------------------------------------------------------
-    double dx = 0.5 * cos( (double) omega * (double) mytime );
-    double dy = 0.5 * sin( (double) omega * (double) mytime );
-    double dz = 0.0;
-    myTransform->preTranslate( -lastdx, -lastdy, -lastdz );
-    myTransform->preTranslate( (float) dx, (float) dy, dz );
-    lastdx=dx; lastdy=dy; lastdz=dz;
+                        _previousTraversalNumber = nv->getTraversalNumber();
+                    }
+                }
+            }
+            
+            // must continue subgraph traversal.
+            nv->traverse(*node);            
+            
+        }
+        
+    protected:
+    
+        osg::Transform*     _nodeToOperateOn;
+        float               _angular_velocity;
 
-    // Graeme, commeted out this call as the cube itself remains static.
-    // cube->dirtyDisplayList();
+        int                 _previousTraversalNumber;
+        osg::Timer          _timer;
+        osg::Timer_t        _orig_t;
 
-    // -------------------------------------------
-    // If required, reschedule the timed callback
-    // -------------------------------------------
-    if ( delta_t != 0 )
-    {
-        glutTimerFunc( (unsigned int) delta_t, timedCB, delta_t );
-    }
-}
-
+};
 
 osg::Geode* createCube()
 {
@@ -75,7 +80,7 @@ osg::Geode* createCube()
     // -------------------------------------------
     // Set up a new GeoSet which will be our cube
     // -------------------------------------------
-    cube = new osg::GeoSet();
+    osg::GeoSet* cube = new osg::GeoSet();
 
     // set up the primitives
     cube->setPrimType( osg::GeoSet::POLYGON );
@@ -145,10 +150,7 @@ osg::Geode* createCube()
     osg::StateSet* cubeState = new osg::StateSet();
     osg::Material* redMaterial = new osg::Material();
     osg::Vec4 red( 1.0f, 0.0f, 0.0f, 1.0f );
-    redMaterial->setEmission( osg::Material::FRONT_AND_BACK, red );
-    redMaterial->setAmbient( osg::Material::FRONT_AND_BACK, red );
     redMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, red );
-    redMaterial->setSpecular( osg::Material::FRONT_AND_BACK, red );
     cubeState->setAttribute( redMaterial );
 
     cube->setStateSet( cubeState );
@@ -164,23 +166,19 @@ int main( int argc, char **argv )
     glutInit( &argc, argv );
 
 
-    myTransform = new osg::Transform();
+    osg::Transform* myTransform = new osg::Transform();
     myTransform->addChild( createCube() );
+    
+    // move node in a circle at 90 degrees a sec.
+    myTransform->setAppCallback(new TransformCallback(myTransform,90.0f));
 
-    // ---------------------------------------------------------------------
-    // Register a timer callback with GLUT, in the first instance as a test
-    // This will call the function "timedCB(value)" after dt ms
-    // I have decided to use value as the time for the next scheduling
-    // If the last parameter=0 then don't reschedule the timer.
-    // ---------------------------------------------------------------------
-    glutTimerFunc( dt, timedCB, dt );
-
+    // create the viewer and the model to it.
     osgGLUT::Viewer viewer;
     viewer.addViewport( myTransform );
 
-    // register trackball, flight and drive.
+    // register trackball maniupulators.
     viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);
-
+    
     viewer.open();
 
     viewer.run();

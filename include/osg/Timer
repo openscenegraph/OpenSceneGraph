@@ -3,19 +3,20 @@
 
 #include <osg/Export>
 
-#ifdef macintosh
-//#define __TIMESIZE_DOUBLE__
-#include <ctime>
-#endif
 
 namespace osg {
 
 #ifdef WIN32
-	typedef __int64 Timer_t;
-#elif defined macintosh
-	typedef double Timer_t;
+    typedef __int64 Timer_t;
+#elif defined(__linux) || defined(__FreeBSD__)
+    typedef unsigned long long Timer_t;
+#elif defined(__sgi)
+    typedef unsigned long long Timer_t;
+#elif defined(unix)
+    typedef unsigned long long Timer_t;
 #else
-	typedef unsigned long long Timer_t;
+    #include <ctime>
+    typedef std::clock_t Timer_t;
 #endif
 
 /** A high resolution, low latency time stamper.*/
@@ -23,69 +24,108 @@ class SG_EXPORT Timer {
 
     public:
 
-        Timer( void );
-        ~Timer( void );
+        Timer();
+        ~Timer() {}
 
+        inline Timer_t tick();
 
-#ifdef WIN32
-        #pragma optimize("",off)
-        inline Timer_t tick( void )
-        {
-            volatile Timer_t ts;
-            volatile unsigned int HighPart;
-            volatile unsigned int LowPart;
-            _asm
-            {
-                xor eax, eax        //  Used when QueryPerformanceCounter()
-                xor edx, edx        //  not supported or minimal overhead
-                _emit 0x0f          //  desired
-                _emit 0x31          //
-		                mov HighPart,edx
-		                mov LowPart,eax
-            }
-            //ts = LowPart | HighPart >> 32;
-            *((unsigned int*)&ts) = LowPart;
-            *((unsigned int*)&ts+1) = HighPart;
-            return ts;
-        }
-        #pragma optimize("",on)
-#endif
-#if defined(__linux) || defined(__FreeBSD__)
-        #define CLK(x)	  __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
-	inline Timer_t tick( void ) {Timer_t x;CLK(x);return x;}
-#endif
-#ifdef __sgi
-        inline  Timer_t tick( void ) { return *clk; }
-#endif
-
-#ifdef macintosh
-        // because __TIMESIZE_DOUBLE__ is defined
-        // clock resolution is now: 100000 CLOCKS_PER_SEC instead of 60
-        inline  Timer_t tick( void ) { return std::clock(); }
-#endif
-        double delta_s( Timer_t t1, Timer_t t2 );
-        double delta_m( Timer_t t1, Timer_t t2 );
-
-        Timer_t delta_u( Timer_t t1, Timer_t t2 );
-        Timer_t delta_n( Timer_t t1, Timer_t t2 );
-
+        inline double delta_s( Timer_t t1, Timer_t t2 ) const { return (double)(t2 - t1)*_secsPerClick; }
+        inline double delta_m( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e3; }
+        inline double delta_u( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e6; }
+        inline double delta_n( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e9; }
 
     private :
 
-        double microseconds_per_click;
-        double nanoseconds_per_click;
-        unsigned long *clk;
-        int cycleCntrSize;
-        static unsigned long dummy;
-
-	static int inited;
-	static double cpu_mhz;
-	void init( void );
+        double                  _secsPerClick;
+        bool                    _useStandardClock;
+       
+        #ifdef __sgi
+        unsigned long*          _clockAddress;
+        int                     _cycleCntrSize;
+        static unsigned long    _dummy;
+        #endif
         
-    
-
 };
 
+
+#ifdef WIN32
+    #include <time.h>
+    #pragma optimize("",off)
+    inline Timer_t Timer::tick( void )
+    {
+        if (_useStandardClock) return clock();
+        
+        volatile Timer_t ts;
+        volatile unsigned int HighPart;
+        volatile unsigned int LowPart;
+        _asm
+        {
+            xor eax, eax        //  Used when QueryPerformanceCounter()
+            xor edx, edx        //  not supported or minimal overhead
+            _emit 0x0f          //  desired
+            _emit 0x31          //
+            mov HighPart,edx
+            mov LowPart,eax
+        }
+        //ts = LowPart | HighPart >> 32;
+        *((unsigned int*)&ts) = LowPart;
+        *((unsigned int*)&ts+1) = HighPart;
+        return ts;
+    }
+    #pragma optimize("",on)
+    
+#elif defined(__linux) || defined(__FreeBSD__)
+
+    #include <sys/time.h>
+
+    #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
+    inline Timer_t Timer::tick()
+    {
+        if (_useStandardClock)
+        {
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+        }
+        else
+        {
+            Timer_t x;CLK(x);return x;
+        }
+    }
+    
+#elif defined(__sgi)
+
+    #include <sys/time.h>
+    inline  Timer_t Timer::tick()
+    {
+        if (_useStandardClock)
+        {
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+        }
+        else
+        {
+            return *_sgiClockAddress;
+        }
+    }
+    
+#elif defined(unix)
+
+    #include <sys/time.h>
+    inline  Timer_t Timer::tick()
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+    }
+
+#else
+
+    // no choice, always use std::clock()
+    inline  Timer_t Timer::tick( void ) { return std::clock(); }
+
+#endif
 
 };
 #endif

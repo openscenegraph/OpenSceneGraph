@@ -25,52 +25,49 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.1">Depth</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.25.2">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.2">META_StateAttribute</A></B>(<!1><A HREF="Depth.html">Depth</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.38">DEPTH</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.25.3">clone</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.25.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.25.4">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.25.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> <B><A HREF="#DOC.2.25.5">getType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.6">setFunction</A></B>(const <!1><A HREF="Depth.html#DOC.2.25.5">Function</A> func)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.25.6">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Depth.html#DOC.2.25.5">Function</A> <B><A HREF="#DOC.2.25.7">getFunction</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.8">setFunction</A></B>(const <!1><A HREF="Depth.html#DOC.2.25.7">Function</A> func)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.8">setWriteMask</A></B>(const bool mask)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Depth.html#DOC.2.25.7">Function</A> <B><A HREF="#DOC.2.25.9">getFunction</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.25.9">getWriteMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.10">setWriteMask</A></B>(const bool mask)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.10">setRange</A></B>(const double <!1><A HREF="Camera.html#DOC.2.20.20">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.21">zFar</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.25.11">getWriteMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const double <B><A HREF="#DOC.2.25.11">getZNear</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.12">setRange</A></B>(const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const double <B><A HREF="#DOC.2.25.12">getZFar</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const double <B><A HREF="#DOC.2.25.13">getZNear</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const double <B><A HREF="#DOC.2.25.14">getZFar</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.25.15">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.25.13">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.25.7">Function</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.25.5">Function</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Depth.html#DOC.2.25.7">Function</A> <B><A HREF="#DOC.2.25.17">_func</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Depth.html#DOC.2.25.5">Function</A> <B><A HREF="#DOC.2.25.15">_func</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.25.18">_depthWriteMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.25.16">_depthWriteMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.25.19">_zNear</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.25.17">_zNear</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.25.20">_zFar</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.25.18">_zFar</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.25.16">~Depth</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.25.14">~Depth</A></B>()
 </DL></P>
 
 </DL>
@@ -78,6 +75,20 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.80.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
 
@@ -91,7 +102,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
@@ -128,114 +141,107 @@
 <A NAME="DOC.2.25.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Depth()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isSameKindAs"></A>
+<A NAME="META_StateAttribute"></A>
 <A NAME="DOC.2.25.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="Depth.html">Depth</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.38">DEPTH</A>)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="clone"></A>
+<A NAME="compare"></A>
 <A NAME="DOC.2.25.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="className"></A>
-<A NAME="DOC.2.25.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getType"></A>
-<A NAME="DOC.2.25.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> getType() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.25.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.25.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Function"></A>
-<A NAME="DOC.2.25.7"></A>
+<A NAME="DOC.2.25.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Function</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="NEVER"></A>
-<A NAME="DOC.2.25.7.1"></A>
+<A NAME="DOC.2.25.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEVER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LESS"></A>
-<A NAME="DOC.2.25.7.2"></A>
+<A NAME="DOC.2.25.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LESS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EQUAL"></A>
-<A NAME="DOC.2.25.7.3"></A>
+<A NAME="DOC.2.25.5.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LEQUAL"></A>
-<A NAME="DOC.2.25.7.4"></A>
+<A NAME="DOC.2.25.5.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GREATER"></A>
-<A NAME="DOC.2.25.7.5"></A>
+<A NAME="DOC.2.25.5.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GREATER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NOTEQUAL"></A>
-<A NAME="DOC.2.25.7.6"></A>
+<A NAME="DOC.2.25.5.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NOTEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GEQUAL"></A>
-<A NAME="DOC.2.25.7.7"></A>
+<A NAME="DOC.2.25.5.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ALWAYS"></A>
-<A NAME="DOC.2.25.7.8"></A>
+<A NAME="DOC.2.25.5.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALWAYS</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setFunction"></A>
-<A NAME="DOC.2.25.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(const <!1><A HREF="Depth.html#DOC.2.25.7">Function</A> func)</B></TT>
+<A NAME="DOC.2.25.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(const <!1><A HREF="Depth.html#DOC.2.25.5">Function</A> func)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFunction"></A>
-<A NAME="DOC.2.25.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Depth.html#DOC.2.25.7">Function</A> getFunction() const </B></TT>
+<A NAME="DOC.2.25.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Depth.html#DOC.2.25.5">Function</A> getFunction() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setWriteMask"></A>
-<A NAME="DOC.2.25.10"></A>
+<A NAME="DOC.2.25.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setWriteMask(const bool mask)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getWriteMask"></A>
-<A NAME="DOC.2.25.11"></A>
+<A NAME="DOC.2.25.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getWriteMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRange"></A>
-<A NAME="DOC.2.25.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRange(const double <!1><A HREF="Camera.html#DOC.2.20.16">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.17">zFar</A>)</B></TT>
+<A NAME="DOC.2.25.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRange(const double <!1><A HREF="Camera.html#DOC.2.20.20">zNear</A>, const double <!1><A HREF="Camera.html#DOC.2.20.21">zFar</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getZNear"></A>
-<A NAME="DOC.2.25.13"></A>
+<A NAME="DOC.2.25.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const double getZNear() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getZFar"></A>
-<A NAME="DOC.2.25.14"></A>
+<A NAME="DOC.2.25.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const double getZFar() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.25.15"></A>
+<A NAME="DOC.2.25.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Depth"></A>
-<A NAME="DOC.2.25.16"></A>
+<A NAME="DOC.2.25.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Depth()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_func"></A>
-<A NAME="DOC.2.25.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Depth.html#DOC.2.25.7">Function</A> _func</B></TT>
+<A NAME="DOC.2.25.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Depth.html#DOC.2.25.5">Function</A> _func</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_depthWriteMask"></A>
-<A NAME="DOC.2.25.18"></A>
+<A NAME="DOC.2.25.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _depthWriteMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_zNear"></A>
-<A NAME="DOC.2.25.19"></A>
+<A NAME="DOC.2.25.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _zNear</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_zFar"></A>
-<A NAME="DOC.2.25.20"></A>
+<A NAME="DOC.2.25.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _zFar</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -22,11 +22,7 @@ class SG_EXPORT Billboard : public Geode
 
         Billboard();
         
-        virtual Object* clone() const           { return new Billboard(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Billboard*>(obj)!=NULL; }
-        virtual const char* className() const   { return "Billboard"; }
-        virtual void accept(NodeVisitor& nv)    { nv.apply(*this); }
-
+        META_Node(Billboard);
 
         /** Set the axis about which all the billboard's drawable rotate. */
         inline void setAxis(const Vec3& axis)          { _axis = axis; }

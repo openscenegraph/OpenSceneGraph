@@ -1,418 +1,90 @@
-#include <math.h>
-#include <string.h>
-
-#include <osg/Types>
 #include <osg/Matrix>
+#include <osg/Quat>
 #include <osg/Notify>
-#include <osg/ref_ptr>
+#include <osg/Types>
 
-#define square(x)   ((x)*(x))
-#define DEG2RAD(x)  ((x)*M_PI/180.0)
-#define RAD2DEG(x)  ((x)*180.0/M_PI)
+#include <cstdlib> //memcpy
+#include <cmath> //acos
 
 using namespace osg;
 
-typedef struct quaternion_
+
+#define DEG2RAD(x)    ((x)*M_PI/180.0)
+#define RAD2DEG(x)    ((x)*180.0/M_PI)
+
+
+//#define WARN_DEPRECATED
+#define ANGLES_IN_DEGREES
+
+#define SET_ROW(row, v1, v2, v3, v4 )    \
+    _mat[(row)][0] = (v1); \
+    _mat[(row)][1] = (v2); \
+    _mat[(row)][2] = (v3); \
+    _mat[(row)][3] = (v4);
+
+#define INNER_PRODUCT(a,b,r,c) \
+     ((a)._mat[r][0] * (b)._mat[0][c]) \
+    +((a)._mat[r][1] * (b)._mat[1][c]) \
+    +((a)._mat[r][2] * (b)._mat[2][c]) \
+    +((a)._mat[r][3] * (b)._mat[3][c])
+
+
+Matrix::Matrix() : Object(), fully_realized(false) {}
+
+Matrix::Matrix( const Matrix& other ) : Object()
 {
-    double x ;
-    double y ;
-    double z ;
-    double w ;
-} quaternion ;
+    set( (float const * const) other._mat );
+}
 
-/* C = a(row).b(row) */
+Matrix::Matrix( float const * const def )
+{    
+    set( def ); 
+}
 
-#define matrix_inner_product( a, b, row, col, C ) \
-    { \
-        (C)[row][col] = (a)[row][0] * (b)[0][col] + \
-            (a)[row][1] * (b)[1][col] + \
-            (a)[row][2] * (b)[2][col] + \
-            (a)[row][3] * (b)[3][col]; \
-    }
-
-/* C = a.b */
-
-#define matrix_mult( a, b, C ) \
-    { \
-        matrix_inner_product( a, b, 0, 0, C ); \
-        matrix_inner_product( a, b, 0, 1, C ); \
-        matrix_inner_product( a, b, 0, 2, C ); \
-        matrix_inner_product( a, b, 0, 3, C ); \
-        matrix_inner_product( a, b, 1, 0, C ); \
-        matrix_inner_product( a, b, 1, 1, C ); \
-        matrix_inner_product( a, b, 1, 2, C ); \
-        matrix_inner_product( a, b, 1, 3, C ); \
-        matrix_inner_product( a, b, 2, 0, C ); \
-        matrix_inner_product( a, b, 2, 1, C ); \
-        matrix_inner_product( a, b, 2, 2, C ); \
-        matrix_inner_product( a, b, 2, 3, C ); \
-        matrix_inner_product( a, b, 3, 0, C ); \
-        matrix_inner_product( a, b, 3, 1, C ); \
-        matrix_inner_product( a, b, 3, 2, C ); \
-        matrix_inner_product( a, b, 3, 3, C ); \
-    }
-
-static void quaternion_matrix( quaternion *q, double mat[4][4] )
+Matrix::Matrix( float a00, float a01, float a02, float a03,
+                float a10, float a11, float a12, float a13,
+                float a20, float a21, float a22, float a23,
+                float a30, float a31, float a32, float a33)
 {
-    /* copied from Shoemake/ACM SIGGRAPH 89 */
-    double xs, ys, zs, wx, wy, wz, xx, xy, xz, yy, yz, zz ;
+    SET_ROW(0, a00, a01, a02, a03 )
+    SET_ROW(1, a10, a11, a12, a13 )
+    SET_ROW(2, a20, a21, a22, a23 )
+    SET_ROW(3, a30, a31, a32, a33 )
 
-    xs = q->x + q->x;
-    ys = q->y + q->y;
-    zs = q->z + q->z;
-
-    wx = q->w * xs ; wy = q->w * ys ; wz = q->w * zs ;
-    xx = q->x * xs ; xy = q->x * ys ; xz = q->x * zs ;
-    yy = q->y * ys ; yz = q->y * zs ; zz = q->z * zs ;
-
-    mat[0][0] = 1.0 - ( yy + zz ) ;
-    mat[0][1] = xy - wz ;
-    mat[0][2] = xz + wy ;
-    mat[1][0] = xy + wz ;
-    mat[1][1] = 1.0 - ( xx + zz ) ;
-    mat[1][2] = yz - wx ;
-    mat[2][0] = xz - wy ;
-    mat[2][1] = yz + wx ;
-    mat[2][2] = 1.0 - ( xx + yy ) ;
-
-    mat[0][3] = 0.0;
-    mat[1][3] = 0.0;
-    mat[2][3] = 0.0;
-
-    mat[3][0] = 0.0;
-    mat[3][1] = 0.0;
-    mat[3][2] = 0.0;
-    mat[3][3] = 1.0;
+    fully_realized = true;
 }
 
 
-Matrix::Matrix()
-{
-    makeIdent();
-}
-
-
-Matrix::Matrix(const Matrix& matrix) : Object()
-{
-    memcpy(_mat,matrix._mat,sizeof(_mat));
-}
-
-
-Matrix& Matrix::operator = (const Matrix& matrix)
-{
-    if (&matrix==this) return *this;
-    memcpy(_mat,matrix._mat,sizeof(_mat));
+Matrix& Matrix::operator = (const Matrix& other ) {
+    if( &other == this ) return *this;
+    set((const float*)other._mat);
     return *this;
 }
 
-
-Matrix::Matrix(
-float a00, float a01, float a02, float a03,
-float a10, float a11, float a12, float a13,
-float a20, float a21, float a22, float a23,
-float a30, float a31, float a32, float a33)
-{
-    _mat[0][0] = a00;
-    _mat[0][1] = a01;
-    _mat[0][2] = a02;
-    _mat[0][3] = a03;
-
-    _mat[1][0] = a10;
-    _mat[1][1] = a11;
-    _mat[1][2] = a12;
-    _mat[1][3] = a13;
-
-    _mat[2][0] = a20;
-    _mat[2][1] = a21;
-    _mat[2][2] = a22;
-    _mat[2][3] = a23;
-
-    _mat[3][0] = a30;
-    _mat[3][1] = a31;
-    _mat[3][2] = a32;
-    _mat[3][3] = a33;
+void Matrix::set( float const * const def ) {
+    memcpy( _mat, def, sizeof(_mat) );
+    fully_realized = true;
 }
 
 
-Matrix::~Matrix()
+void Matrix::set( float a00, float a01, float a02, float a03,
+                  float a10, float a11, float a12, float a13,
+                  float a20, float a21, float a22, float a23,
+                  float a30, float a31, float a32, float a33)
 {
+    SET_ROW(0, a00, a01, a02, a03 )
+    SET_ROW(1, a10, a11, a12, a13 )
+    SET_ROW(2, a20, a21, a22, a23 )
+    SET_ROW(3, a30, a31, a32, a33 )
+
+    fully_realized = true;
 }
-
-
-void Matrix::makeIdent()
-{
-    _mat[0][0] = 1.0f;
-    _mat[0][1] = 0.0f;
-    _mat[0][2] = 0.0f;
-    _mat[0][3] = 0.0f;
-
-    _mat[1][0] = 0.0f;
-    _mat[1][1] = 1.0f;
-    _mat[1][2] = 0.0f;
-    _mat[1][3] = 0.0f;
-
-    _mat[2][0] = 0.0f;
-    _mat[2][1] = 0.0f;
-    _mat[2][2] = 1.0f;
-    _mat[2][3] = 0.0f;
-
-    _mat[3][0] = 0.0f;
-    _mat[3][1] = 0.0f;
-    _mat[3][2] = 0.0f;
-    _mat[3][3] = 1.0f;
-}
-
-void Matrix::set(const float* m)
-{
-     _mat[0][0] = m[0];
-     _mat[0][1] = m[1];
-     _mat[0][2] = m[2];
-     _mat[0][3] = m[3];
-
-     _mat[1][0] = m[4];
-     _mat[1][1] = m[5];
-     _mat[1][2] = m[6];
-     _mat[1][3] = m[7];
-
-     _mat[2][0] = m[8];
-     _mat[2][1] = m[9];
-     _mat[2][2] = m[10];
-     _mat[2][3] = m[11];
-
-     _mat[3][0] = m[12];
-     _mat[3][1] = m[13];
-     _mat[3][2] = m[14];
-     _mat[3][3] = m[15];
-}
-
-
-void Matrix::set(
-                 float a00, float a01, float a02, float a03,
-                 float a10, float a11, float a12, float a13,
-                 float a20, float a21, float a22, float a23,
-                 float a30, float a31, float a32, float a33)
-{
-    _mat[0][0] = a00;
-    _mat[0][1] = a01;
-    _mat[0][2] = a02;
-    _mat[0][3] = a03;
-
-    _mat[1][0] = a10;
-    _mat[1][1] = a11;
-    _mat[1][2] = a12;
-    _mat[1][3] = a13;
-
-    _mat[2][0] = a20;
-    _mat[2][1] = a21;
-    _mat[2][2] = a22;
-    _mat[2][3] = a23;
-
-    _mat[3][0] = a30;
-    _mat[3][1] = a31;
-    _mat[3][2] = a32;
-    _mat[3][3] = a33;
-}
-
-void Matrix::copy(const Matrix& matrix)
-{
-    memcpy(_mat,matrix._mat,sizeof(_mat));
-}
-
-
-void Matrix::makeScale(float sx, float sy, float sz)
-{
-    makeIdent();
-    _mat[0][0] = sx;
-    _mat[1][1] = sy;
-    _mat[2][2] = sz;
-}
-
-
-void Matrix::preScale( float sx, float sy, float sz, const Matrix& m )
-{
-    Matrix transMat;
-    transMat.makeScale(sx, sy, sz);
-    mult(transMat,m);
-}
-
-
-void Matrix::postScale( const Matrix& m, float sx, float sy, float sz )
-{
-    Matrix transMat;
-    transMat.makeScale(sx, sy, sz);
-    mult(m,transMat);
-}
-
-
-void Matrix::preScale( float sx, float sy, float sz )
-{
-    Matrix transMat;
-    transMat.makeScale(sx, sy, sz);
-    preMult(transMat);
-}
-
-
-void Matrix::postScale( float sx, float sy, float sz )
-{
-    Matrix transMat;
-    transMat.makeScale(sx, sy, sz);
-    postMult(transMat);
-}
-
-
-void Matrix::makeTrans( float tx, float ty, float tz )
-{
-    makeIdent();
-    _mat[3][0] = tx;
-    _mat[3][1] = ty;
-    _mat[3][2] = tz;
-}
-
-
-void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m )
-{
-    Matrix transMat;
-    transMat.makeTrans(tx, ty, tz);
-    mult(transMat,m);
-}
-
-
-void Matrix::postTrans( const Matrix& m, float tx, float ty, float tz )
-{
-    Matrix transMat;
-    transMat.makeTrans(tx, ty, tz);
-    mult(m,transMat);
-}
-
-
-void Matrix::preTrans( float tx, float ty, float tz )
-{
-    _mat[3][0] = (tx * _mat[0][0]) + (ty * _mat[1][0]) + (tz * _mat[2][0]) + _mat[3][0];
-    _mat[3][1] = (tx * _mat[0][1]) + (ty * _mat[1][1]) + (tz * _mat[2][1]) + _mat[3][1];
-    _mat[3][2] = (tx * _mat[0][2]) + (ty * _mat[1][2]) + (tz * _mat[2][2]) + _mat[3][2];
-    _mat[3][3] = (tx * _mat[0][3]) + (ty * _mat[1][3]) + (tz * _mat[2][3]) + _mat[3][3];
-}
-
-
-void Matrix::postTrans( float tx, float ty, float tz )
-{
-    Matrix transMat;
-    transMat.makeTrans(tx, ty, tz);
-    postMult(transMat);
-}
-
-void Matrix::makeRot( const Vec3& old_vec, const Vec3& new_vec )
-{
-    /* dot product == cos(angle old_vec<>new_vec). */
-    double d = new_vec * old_vec;
-    if ( d < 0.9999 )
-    {
-        double angle = acos( d );
-        Vec3 rot_axis = new_vec ^ old_vec;
-        makeRot( RAD2DEG(angle),
-                 rot_axis.x(), rot_axis.y(), rot_axis.z() );
-    }
-    else
-        makeIdent();
-}
-
-void Matrix::makeRot( float deg, float x, float y, float z )
-{
-    double __mat[4][4];
-    quaternion q;
-    float d = sqrtf( square(x) + square(y) + square(z) );
-
-    if( d == 0 )
-        return;
-
-    float sin_HalfAngle = sinf( DEG2RAD(deg/2) );
-    float cos_HalfAngle = cosf( DEG2RAD(deg/2) );
-
-    q.x = sin_HalfAngle * (x/d);
-    q.y = sin_HalfAngle * (y/d);
-    q.z = sin_HalfAngle * (z/d);
-    q.w = cos_HalfAngle;
-
-    quaternion_matrix( &q, __mat );
-
-    for(int i=0;i<4;++i)
-    {
-        for(int j=0;j<4;++j)
-        {
-            _mat[i][j]=__mat[i][j];
-        }
-    }
-}
-
-
-void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  )
-{
-    Matrix rotMat;
-    rotMat.makeRot( deg, x, y, z );
-    mult(rotMat,m);
-}
-
-
-void Matrix::postRot( const Matrix& m, float deg, float x, float y, float z )
-{
-    Matrix rotMat;
-    rotMat.makeRot( deg, x, y, z );
-    mult(m,rotMat);
-}
-
-
-void Matrix::preRot( float deg, float x, float y, float z )
-{
-    quaternion q;
-    double __mat[4][4];
-    float res_mat[4][4];
-
-    float d = sqrtf( square(x) + square(y) + square(z) );
-
-    if( d == 0 )
-        return;
-
-    float sin_HalfAngle = sinf( DEG2RAD(deg/2) );
-    float cos_HalfAngle = cosf( DEG2RAD(deg/2) );
-
-    q.x = sin_HalfAngle * (x/d);
-    q.y = sin_HalfAngle * (y/d);
-    q.z = sin_HalfAngle * (z/d);
-    q.w = cos_HalfAngle;
-
-    quaternion_matrix( &q, __mat );
-    matrix_mult( __mat, _mat, res_mat );
-    memcpy( _mat, res_mat, sizeof( _mat ) );
-}
-
-
-void Matrix::postRot( float deg, float x, float y, float z )
-{
-    quaternion q;
-    double __mat[4][4];
-    float res_mat[4][4];
-
-    float d = sqrtf( square(x) + square(y) + square(z) );
-
-    if( d == 0 )
-        return;
-
-    float sin_HalfAngle = sinf( DEG2RAD(deg/2) );
-    float cos_HalfAngle = cosf( DEG2RAD(deg/2) );
-
-    q.x = sin_HalfAngle * (x/d);
-    q.y = sin_HalfAngle * (y/d);
-    q.z = sin_HalfAngle * (z/d);
-    q.w = cos_HalfAngle;
-
-    quaternion_matrix( &q, __mat );
-    matrix_mult( _mat, __mat , res_mat );
-    memcpy( _mat, res_mat, sizeof( _mat ) );
-}
-
 
 void Matrix::setTrans( float tx, float ty, float tz )
 {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::setTrans is deprecated.";
+#endif
     _mat[3][0] = tx;
     _mat[3][1] = ty;
     _mat[3][2] = tz;
@@ -421,62 +93,238 @@ void Matrix::setTrans( float tx, float ty, float tz )
 
 void Matrix::setTrans( const Vec3& v )
 {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::setTrans is deprecated.";
+#endif
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
     _mat[3][2] = v[2];
 }
 
-
-void Matrix::preMult(const Matrix& m)
+void Matrix::makeIdent()
 {
-    Matrix tm;
-    matrix_mult( m._mat, _mat, tm._mat );
-    *this = tm;
+    SET_ROW(0,    1, 0, 0, 0 )
+    SET_ROW(1,    0, 1, 0, 0 )
+    SET_ROW(2,    0, 0, 1, 0 )
+    SET_ROW(3,    0, 0, 0, 1 )
+    
+    fully_realized = true;
 }
 
-
-void Matrix::postMult(const Matrix& m)
+void Matrix::makeScale( const Vec3& v )
 {
-    Matrix tm;
-    matrix_mult( _mat, m._mat, tm._mat );
-    *this = tm;
+    makeScale(v[0], v[1], v[2] );
 }
 
-
-void Matrix::mult(const Matrix& lhs,const Matrix& rhs)
+void Matrix::makeScale( float x, float y, float z )
 {
-    if (&lhs==this || &rhs==this)
-    {
-        osg::Matrix tm;
-        matrix_mult( lhs._mat, rhs._mat, tm._mat );
-        *this = tm;
+    SET_ROW(0,    x, 0, 0, 0 )
+    SET_ROW(1,    0, y, 0, 0 )
+    SET_ROW(2,    0, 0, z, 0 )
+    SET_ROW(3,    0, 0, 0, 1 )
+
+    fully_realized = true;
+}
+
+void Matrix::makeTrans( const Vec3& v )
+{
+    makeTrans( v[0], v[1], v[2] );
+}
+
+void Matrix::makeTrans( float x, float y, float z )
+{
+    SET_ROW(0,    1, 0, 0, 0 )
+    SET_ROW(1,    0, 1, 0, 0 )
+    SET_ROW(2,    0, 0, 1, 0 )
+    SET_ROW(3,    x, y, z, 1 )
+
+    fully_realized = true;
+}
+
+void Matrix::makeRot( const Vec3& from, const Vec3& to )
+{
+    double d = from * to; // dot product == cos( angle between from & to )
+    if( d < 0.9999 ) {
+        double angle = acos(d);
+#ifdef ANGLES_IN_DEGREES
+        angle = RAD2DEG(angle);
+#endif
+        Vec3 axis = to ^ from; //we know ((to) x (from)) is perpendicular to both
+        makeRot( angle, axis );
+    }        
+    else 
+        makeIdent();
+}
+
+void Matrix::makeRot( float angle, const Vec3& axis )
+{
+    makeRot( angle, axis.x(), axis.y(), axis.z() );
+}
+
+void Matrix::makeRot( float angle, float x, float y, float z ) {
+    float d = sqrt( x*x + y*y + z*z );
+    if( d == 0 )
+        return;
+
+#ifdef ANGLES_IN_DEGREES
+    angle = DEG2RAD(angle);
+#endif
+
+    float sin_half = sin( angle/2 );
+    float cos_half = cos( angle/2 );
+
+    Quat q( sin_half * (x/d),
+            sin_half * (y/d),
+            sin_half * (z/d),
+            cos_half );//NOTE: original used a private quaternion made of doubles
+    makeRot( q );        // but Quat stores the values in a Vec4 made of floats.  
+}
+
+void Matrix::makeRot( const Quat& q ) {
+    // taken from Shoemake/ACM SIGGRAPH 89
+    Vec4 v = q.asVec4();
+
+    double xs = 2 * v.x(); //assume q is already normalized? assert?
+    double ys = 2 * v.y(); // if not, xs = 2 * v.x() / d, ys = 2 * v.y() / d
+    double zs = 2 * v.z(); // and zs = 2 * v.z() /d where d = v.length2()
+
+    double xx = xs * v.x();
+    double xy = ys * v.x();
+    double xz = zs * v.x();
+    double yy = ys * v.y();
+    double yz = zs * v.y();
+    double zz = zs * v.z();
+    double wx = xs * v.w();
+    double wy = ys * v.w();
+    double wz = zs * v.w();
+
+    SET_ROW(0,    1.0-(yy+zz),    xy - wz,    xz + wy,    0.0 )
+    SET_ROW(1,    xy + wz,        1.0-(xx+zz),yz - wx,    0.0 )
+    SET_ROW(2,    xz - wy,        yz + wx,    1.0-(xx+yy),0.0 )
+    SET_ROW(3,    0.0,            0.0,        0.0,        1.0 )
+
+    fully_realized = true;
+}
+
+void Matrix::makeRot( float yaw, float pitch, float roll)
+{
+#ifdef ANGLES_IN_DEGREES
+    yaw = DEG2RAD(yaw);
+    pitch = DEG2RAD(pitch);
+    roll = DEG2RAD(roll);
+#endif
+
+    // lifted straight from SOLID library v1.01 Quaternion.h
+    // available from http://www.win.tue.nl/~gino/solid/
+    // and also distributed under the LGPL
+    float cosYaw = cos(yaw / 2);
+    float sinYaw = sin(yaw / 2);
+    float cosPitch = cos(pitch / 2);
+    float sinPitch = sin(pitch / 2);
+    float cosRoll = cos(roll / 2);
+    float sinRoll = sin(roll / 2);
+    Quat q(sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw,
+            cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw,
+            cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw,
+            cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw);
+    makeRot( q );
+}
+
+void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
+{
+// PRECONDITION: We assume neither &lhs nor &rhs == this
+// if it did, use preMult or postMult instead
+    _mat[0][0] = INNER_PRODUCT(lhs, rhs, 0, 0);
+    _mat[0][1] = INNER_PRODUCT(lhs, rhs, 0, 1);
+    _mat[0][2] = INNER_PRODUCT(lhs, rhs, 0, 2);
+    _mat[0][3] = INNER_PRODUCT(lhs, rhs, 0, 3);
+    _mat[1][0] = INNER_PRODUCT(lhs, rhs, 1, 0);
+    _mat[1][1] = INNER_PRODUCT(lhs, rhs, 1, 1);
+    _mat[1][2] = INNER_PRODUCT(lhs, rhs, 1, 2);
+    _mat[1][3] = INNER_PRODUCT(lhs, rhs, 1, 3);
+    _mat[2][0] = INNER_PRODUCT(lhs, rhs, 2, 0);
+    _mat[2][1] = INNER_PRODUCT(lhs, rhs, 2, 1);
+    _mat[2][2] = INNER_PRODUCT(lhs, rhs, 2, 2);
+    _mat[2][3] = INNER_PRODUCT(lhs, rhs, 2, 3);
+    _mat[3][0] = INNER_PRODUCT(lhs, rhs, 3, 0);
+    _mat[3][1] = INNER_PRODUCT(lhs, rhs, 3, 1);
+    _mat[3][2] = INNER_PRODUCT(lhs, rhs, 3, 2);
+    _mat[3][3] = INNER_PRODUCT(lhs, rhs, 3, 3);
+    fully_realized = true;
+}
+
+void Matrix::preMult( const Matrix& other )
+{
+    if( !fully_realized ) {
+        //act as if this were an identity Matrix
+        set((const float*)other._mat);
+        return;
     }
-    else
+
+    // brute force method requiring a copy
+    //Matrix tmp(other* *this);
+    // *this = tmp;
+
+    // more efficient method just use a float[4] for temporary storage.
+    float t[4];
+    for(int col=0; col<4; ++col) {
+        t[0] = INNER_PRODUCT( other, *this, 0, col );
+        t[1] = INNER_PRODUCT( other, *this, 1, col );
+        t[2] = INNER_PRODUCT( other, *this, 2, col );
+        t[3] = INNER_PRODUCT( other, *this, 3, col );
+        _mat[0][col] = t[0];
+        _mat[1][col] = t[1];
+        _mat[2][col] = t[2];
+        _mat[3][col] = t[3];
+    }
+
+}
+
+void Matrix::postMult( const Matrix& other )
+{
+    if( !fully_realized ) {
+        //act as if this were an identity Matrix
+        set((const float*)other._mat);
+        return;
+    }
+    // brute force method requiring a copy
+    //Matrix tmp(*this * other);
+    // *this = tmp;
+
+    // more efficient method just use a float[4] for temporary storage.
+    float t[4];
+    for(int row=0; row<4; ++row)
     {
-        matrix_mult( lhs._mat, rhs._mat, _mat );
+        t[0] = INNER_PRODUCT( *this, other, row, 0 );
+        t[1] = INNER_PRODUCT( *this, other, row, 1 );
+        t[2] = INNER_PRODUCT( *this, other, row, 2 );
+        t[3] = INNER_PRODUCT( *this, other, row, 3 );
+        SET_ROW(row, t[0], t[1], t[2], t[3] )
     }
 }
 
+#undef SET_ROW
+#undef INNER_PRODUCT
 
-Matrix Matrix::operator * (const Matrix& m) const
+bool Matrix::invert( const Matrix& _m )
 {
-    Matrix tm;
-    matrix_mult( _mat,m._mat, tm._mat );
-    return tm;
-}
 
-
-bool Matrix::invert(const Matrix& invm)
-{
-    if (&invm==this) {
-        Matrix tm(invm);
+    if (&_m==this) 
+    {
+        Matrix tm(_m);
         return invert(tm);
     }
+    /*if ( _m._mat[0][3] == 0.0 
+        && _m._mat[1][3] == 0.0 
+        && _m._mat[2][3] == 0.0 
+        && _m._mat[3][3] == 1.0 )
+    {
+        return invertAffine( _m );
+    }*/
 
     // code lifted from VR Juggler.
     // not cleanly added, but seems to work.  RO.
-
-    const float*  a = reinterpret_cast<const float*>(invm._mat);
+    const float*  a = reinterpret_cast<const float*>(_m._mat);
     float*  b = reinterpret_cast<float*>(_mat);
 
     int     n = 4;
@@ -491,7 +339,7 @@ bool Matrix::invert(const Matrix& invm)
         row[ i] = col[ i] = 0;
     }
 
-    /* Set working matrix */
+    /* Set working Matrix */
     for ( i = 0; i < n; i++ )
     {
         for ( j = 0; j < n; j++ )
@@ -555,7 +403,7 @@ bool Matrix::invert(const Matrix& invm)
         }
     }
 
-    /* Assign invers to a matrix */
+    /* Assign invers to a Matrix */
     for ( i = 0; i < n; i++ )
         for ( j = 0; j < n; j++ )
             row[ i] = ( c[ j] == i ) ? r[j] : row[ i];
@@ -565,4 +413,155 @@ bool Matrix::invert(const Matrix& invm)
             b[ i * n +  j] = m[ row[ i]][j + n];
 
     return true;                 // It worked
+}
+
+const double PRECISION_LIMIT = 1.0e-15;
+
+bool Matrix::invertAffine( const Matrix& _m )
+{
+    // adapted from Graphics Gems II.
+    // 
+    // This method treats the Matrix as a block Matrix and calculates
+    // the inverse of one subMatrix, improving performance over something
+    // that inverts any non-singular Matrix:
+    //                           -1
+    //    -1    [ A  0 ] -1    [ A    0 ]
+    //   M   =  [      ]    =  [   -1   ]
+    //          [ C  1 ]       [-CA   1 ]
+    //
+    // returns true if _m is nonsingular, and (*this) contains its inverse
+    // otherwise returns false. (*this unchanged)
+
+    // assert( this->isAffine())?
+    double det_1, pos, neg, temp;
+
+    pos = neg = 0.0;
+
+#define ACCUMULATE \
+    { \
+        if(temp >= 0.0) pos += temp; \
+        else neg += temp; \
+    }
+
+    temp = _m._mat[0][0] * _m._mat[1][1] * _m._mat[2][2]; ACCUMULATE;
+    temp = _m._mat[0][1] * _m._mat[1][2] * _m._mat[2][0]; ACCUMULATE;
+    temp = _m._mat[0][2] * _m._mat[1][0] * _m._mat[2][1]; ACCUMULATE;
+
+    temp = - _m._mat[0][2] * _m._mat[1][1] * _m._mat[2][0]; ACCUMULATE;
+    temp = - _m._mat[0][1] * _m._mat[1][0] * _m._mat[2][2]; ACCUMULATE;
+    temp = - _m._mat[0][0] * _m._mat[1][2] * _m._mat[2][1]; ACCUMULATE;
+
+    det_1 = pos + neg;
+
+    if( (det_1 == 0.0) || (abs(det_1/(pos-neg)) < PRECISION_LIMIT )) {
+        // _m has no inverse
+        notify(WARN) << "Matrix::invert(): Matrix has no inverse." << endl;
+        return false;
+    }
+
+    // inverse is adj(A)/det(A)
+    det_1 = 1.0 / det_1;
+
+    _mat[0][0] = (_m._mat[1][1] * _m._mat[2][2] - _m._mat[1][2] * _m._mat[2][1]) * det_1;
+    _mat[1][0] = (_m._mat[1][0] * _m._mat[2][2] - _m._mat[1][2] * _m._mat[2][0]) * det_1;
+    _mat[2][0] = (_m._mat[1][0] * _m._mat[2][1] - _m._mat[1][1] * _m._mat[2][0]) * det_1;
+    _mat[0][1] = (_m._mat[0][1] * _m._mat[2][2] - _m._mat[0][2] * _m._mat[2][1]) * det_1;
+    _mat[1][1] = (_m._mat[0][0] * _m._mat[2][2] - _m._mat[0][2] * _m._mat[2][0]) * det_1;
+    _mat[2][1] = (_m._mat[0][0] * _m._mat[2][1] - _m._mat[0][1] * _m._mat[2][0]) * det_1;
+    _mat[0][2] = (_m._mat[0][1] * _m._mat[1][2] - _m._mat[0][2] * _m._mat[1][1]) * det_1;
+    _mat[1][2] = (_m._mat[0][0] * _m._mat[1][2] - _m._mat[0][2] * _m._mat[1][0]) * det_1;
+    _mat[2][2] = (_m._mat[0][0] * _m._mat[1][1] - _m._mat[0][1] * _m._mat[1][0]) * det_1;
+
+    // calculate -C * inv(A)
+    _mat[3][0] = -(_m._mat[3][0] * _mat[0][0] + _m._mat[3][1] * _mat[1][0] + _m._mat[3][2] * _mat[2][0] );
+    _mat[3][1] = -(_m._mat[3][0] * _mat[0][1] + _m._mat[3][1] * _mat[1][1] + _m._mat[3][2] * _mat[2][1] );
+    _mat[3][2] = -(_m._mat[3][0] * _mat[0][2] + _m._mat[3][1] * _mat[1][2] + _m._mat[3][2] * _mat[2][2] );
+
+    _mat[0][3] = 0.0;
+    _mat[1][3] = 0.0;
+    _mat[2][3] = 0.0;
+    _mat[3][3] = 1.0;
+
+    fully_realized = true;
+    return true;
+}
+
+//Deprecated methods 
+void Matrix::copy( const Matrix& other) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::copy is deprecated.  Use = instead.";
+#endif
+    (*this) = other;
+}
+void Matrix::preScale( float sx, float sy, float sz, const Matrix& m ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::preScale is deprecated. Use result = (Matrix::scale * m) instead.";
+#endif
+    (*this) = ( scale(sx,sy,sz) * m );
+}
+void Matrix::postScale( const Matrix& m, float sx, float sy, float sz ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::postScale is deprecated.  Use result = (m * Matrix::scale()) instead.";
+#endif
+    (*this) = ( m * scale(sx,sy,sz) );
+}
+void Matrix::preScale( float sx, float sy, float sz ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::preScale is deprecated. Use M.preMult( Matrix::scale ) instead.";
+#endif
+    preMult( scale(sx,sy,sz) );
+}
+void Matrix::postScale( float sx, float sy, float sz ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::postScale is deprecated.  Use M.postMult( Matrix::scale ) instead.";
+#endif
+    postMult( scale(sx,sy,sz) );
+}
+void Matrix::preTrans( float tx, float ty, float tz, const Matrix& m ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.";
+#endif
+    (*this) = trans(tx,ty,tz) * m;
+}
+void Matrix::postTrans( const Matrix& m, float tx, float ty, float tz ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.";
+#endif
+    (*this) = m * trans(tx,ty,tz);
+}
+void Matrix::preTrans( float tx, float ty, float tz ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::preTrans is deprecated.  Use result = Matrix::trans * m instead.";
+#endif
+    preMult( trans(tx,ty,tz) );
+}
+void Matrix::postTrans( float sx, float sy, float sz ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::postTrans is deprecated.  Use result = m * Matrix::trans instead.";
+#endif
+    postMult( trans(sx,sy,sz) );
+}
+void Matrix::preRot( float deg, float x, float y, float z, const Matrix& m  ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::preRot is deprecated.  Use result = Matrix::rot * m instead.";
+#endif
+    (*this) = rotate(deg,x,y,z) * m;
+}
+void Matrix::postRot( const Matrix& m, float deg, float x, float y, float z ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::postRot is deprecated.  Use result = m * Matrix::rotate instead.";
+#endif
+    (*this) = m * rotate(deg,x,y,z);
+}
+void Matrix::preRot( float deg, float x, float y, float z ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::preRot is deprecated.  Use m.preMult( Matrix::rotate ) instead.";
+#endif
+    preMult( rotate(deg,x,y,z) );
+}
+void Matrix::postRot( float deg, float x, float y, float z ) {
+#ifdef WARN_DEPRECATED
+    notify(NOTICE) << "Matrix::postRot is deprecated.  Use m.postMult( Matrix::rotate ) instead.";
+#endif
+    postMult( rotate(deg,x,y,z) );
 }

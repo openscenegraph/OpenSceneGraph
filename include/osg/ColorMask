@@ -15,12 +15,25 @@ class SG_EXPORT ColorMask : public StateAttribute
     
     
         ColorMask();
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ColorMask*>(obj)!=0L; }
-        virtual Object* clone() const { return new ColorMask(); }
-        virtual const char* className() const { return "ColorMask"; }
-    
-        virtual const Type getType() const { return COLORMASK; }
         
+        META_StateAttribute(ColorMask, COLORMASK);
+        
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(ColorMask,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_red)
+            COMPARE_StateAttribute_Parameter(_green)
+            COMPARE_StateAttribute_Parameter(_blue)
+            COMPARE_StateAttribute_Parameter(_alpha)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
         inline void setMask(bool red,bool green,bool blue,bool alpha)
         {
             _red = red;

@@ -558,7 +558,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
         else
         {
-            notify( DEBUG_INFO ) << "Couldn't find the Application Bundle" << std::endl;
+            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle" << std::endl;
         }
 
         // Next, check the User's Application Support folder
@@ -583,7 +583,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
         else
         {
-            notify( DEBUG_INFO ) << "Couldn't find the User's Application Support Path" << std::endl;
+            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the User's Application Support Path" << std::endl;
         }
 
         // Next, check the Local System's Application Support Folder
@@ -608,7 +608,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
         else
         {
-            notify( DEBUG_INFO ) << "Couldn't find the Local System's Application Support Path" << std::endl;
+            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Local System's Application Support Path" << std::endl;
         }
 
         // Finally, check the Network Application Support Folder
@@ -635,7 +635,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
         else
         {
-            notify( DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
+            osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Network Application Support Path" << std::endl;
         }
     }
 

@@ -67,8 +67,8 @@ osgstereoimage dog_left_eye.jpg dog_right_eye.jpg
 echo osgtext
 osgtext
 
-echo osgtexture1D reflect.rgb lz.rgb
-osgtexture1D reflect.rgb lz.rgb
+echo osgtexture1D cow.osg
+osgtexture1D cow.osg
 
 echo osgtexture2D reflect.rgb lz.rgb
 osgtexture2D reflect.rgb lz.rgb

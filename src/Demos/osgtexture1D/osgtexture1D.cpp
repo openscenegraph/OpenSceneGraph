@@ -1,9 +1,7 @@
-#include <osg/Node>
-#include <osg/Geometry>
 #include <osg/Notify>
-#include <osg/MatrixTransform>
-#include <osg/Texture2D>
-#include <osg/DrawPixels>
+#include <osg/Texture1D>
+#include <osg/TexGen>
+#include <osg/Material>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -16,374 +14,132 @@
 #include <osgGLUT/Viewer>
 
 
-//
-// A simple demo demonstrating different texturing modes, 
-// including using of texture extensions.
-//
+// Creates a stateset which contains a 1D texture which is populated by contour banded color
+// this is then used in conjunction with TexGen to create contoured models, either in 
+// object linear coords - like contours on a map, or eye linear which contour the distance from
+// the eye. An app callback toggles between the two tex gen modes.
+osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
+{
+    
+    const osg::BoundingSphere& bs = loadedModel->getBound();
+    
+    osg::Image* image = new osg::Image;
+
+    int noPixels = 1024;
+    
+    // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivilant to a Vec4!
+    image->allocateImage(noPixels,1,1,GL_RGBA,GL_FLOAT);
+    image->setInternalTextureFormat(GL_RGBA);
+    
+    typedef std::vector<osg::Vec4> ColorBands;
+    ColorBands colorbands;
+    colorbands.push_back(osg::Vec4(0.0f,0.0,0.0,1.0f));
+    colorbands.push_back(osg::Vec4(1.0f,0.0,0.0,1.0f));
+    colorbands.push_back(osg::Vec4(1.0f,1.0,0.0,1.0f));
+    colorbands.push_back(osg::Vec4(0.0f,1.0,0.0,1.0f));
+    colorbands.push_back(osg::Vec4(0.0f,1.0,1.0,1.0f));
+    colorbands.push_back(osg::Vec4(0.0f,0.0,1.0,1.0f));
+    colorbands.push_back(osg::Vec4(1.0f,0.0,1.0,1.0f));
+    colorbands.push_back(osg::Vec4(1.0f,1.0,1.0,1.0f));
+
+    float nobands = colorbands.size();
+    float delta = nobands/(float)noPixels;
+    float pos = 0.0f;
+
+    // fill in the image data.    
+    osg::Vec4* dataPtr = (osg::Vec4*)image->data();
+    for(int i=0;i<noPixels;++i,pos+=delta)
+    {
+        //float p = floorf(pos);
+        //float r = pos-p;
+        //osg::Vec4 color = colorbands[(int)p]*(1.0f-r);
+        //if (p+1<colorbands.size()) color += colorbands[(int)p+1]*r;
+        osg::Vec4 color = colorbands[(int)pos];
+        *dataPtr++ = color;
+    }
+    
+    osg::Texture1D* texture = new osg::Texture1D;
+    texture->setWrap(osg::Texture1D::WRAP_S,osg::Texture1D::MIRROR);
+    texture->setFilter(osg::Texture1D::MIN_FILTER,osg::Texture1D::LINEAR);
+    texture->setImage(image);
+
+    float zBase = bs.center().z()-bs.radius();
+    float zScale = 2.0f/bs.radius();
+    
+    osg::TexGen* texgen = new osg::TexGen;
+    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+    texgen->setPlane(osg::TexGen::S,osg::Vec4(0.0f,0.0f,zScale,-zBase));
+    
+    osg::Material* material = new osg::Material;
+    
+    osg::StateSet* stateset = new osg::StateSet;
+    
+    stateset->setTextureAttribute(0,texture,osg::StateAttribute::OVERRIDE);
+    stateset->setTextureMode(0,GL_TEXTURE_1D,osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
+    stateset->setTextureMode(0,GL_TEXTURE_3D,osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
+
+    stateset->setTextureAttribute(0,texgen,osg::StateAttribute::OVERRIDE);
+    stateset->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    
+    stateset->setAttribute(material,osg::StateAttribute::OVERRIDE);
+    
+    return stateset;
+}
 
 
-typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
-
-class Texture2DCallback : public osg::NodeCallback
+// An app callback which alternates the tex gen mode between object linear and eye linear to illustrate what differences it makes.
+class AnimateStateCallback : public osg::NodeCallback
 {
     public:
-        Texture2DCallback(osg::Texture2D* texture):_texture(texture)
-        {
-            _filterRange.push_back(osg::Texture2D::LINEAR);
-            _filterRange.push_back(osg::Texture2D::LINEAR_MIPMAP_LINEAR);
-            _filterRange.push_back(osg::Texture2D::LINEAR_MIPMAP_NEAREST);
-            _filterRange.push_back(osg::Texture2D::NEAREST);
-            _filterRange.push_back(osg::Texture2D::NEAREST_MIPMAP_LINEAR);
-            _filterRange.push_back(osg::Texture2D::NEAREST_MIPMAP_NEAREST);
-            _currPos = 0;
-            _prevTime = 0.0;
-        }
+        AnimateStateCallback() {}
         
-        virtual ~Texture2DCallback() {}
-        
-        virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
+        void animateState(osg::StateSet* stateset,double time)
         {
-            if (nv->getFrameStamp())
+            // here we simply get any existing texgen, and then increment its
+            // plane, pushing the R coordinate through the texture.
+            osg::StateAttribute* attribute = stateset->getTextureAttribute(0,osg::StateAttribute::TEXGEN);
+            osg::TexGen* texgen = dynamic_cast<osg::TexGen*>(attribute);
+            if (texgen)
             {
-                double currTime = nv->getFrameStamp()->getReferenceTime();
-                if (currTime-_prevTime>1.0) 
+                const double timeInterval = 1.0f;
+                
+                static double previousTime = time;
+                static bool state = false;
+                while (time>previousTime+timeInterval)
                 {
-                    std::cout<<"Updating texturing filter to "<<std::hex<<_filterRange[_currPos]<<std::dec<<std::endl;
-                    _texture->setFilter(osg::Texture2D::MAG_FILTER,_filterRange[_currPos]);
-                    _currPos++;
-                    if (_currPos>=_filterRange.size()) _currPos=0;                    
-                    _prevTime = currTime;
+                    previousTime+=timeInterval;
+                    state = !state;
+                }
+            
+                if (state)
+                {
+                    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+                }
+                else
+                {
+                    texgen->setMode(osg::TexGen::EYE_LINEAR);
                 }
             }
+            
         }
-        
-        osg::ref_ptr<osg::Texture2D>              _texture;
-        std::vector<osg::Texture2D::FilterMode>   _filterRange;
-        osg::uint                               _currPos;
-        double                                  _prevTime;
-};
 
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        { 
 
-/**
-  * Function to read several images files (typically one) as specified 
-  * on the command line, and return them in an ImageList
-  */
-ImageList getImagesFromFiles(std::vector<std::string>& commandLine)
-{
-
-    ImageList imageList;
-
-    for(std::vector<std::string>::iterator itr=commandLine.begin();
-        itr!=commandLine.end();
-        ++itr)
-    {
-        if ((*itr)[0]!='-')
-        {
-            // not an option so assume string is a filename.
-            osg::Image *image = osgDB::readImageFile( *itr );
-            if (image)
+            osg::StateSet* stateset = node->getStateSet();
+            if (stateset && nv->getFrameStamp())
             {
-                imageList.push_back(image);
+                // we have an exisitng stateset, so lets animate it.
+                animateState(stateset,nv->getFrameStamp()->getReferenceTime());
             }
 
-        }
-    }
-
-    if (imageList.size()==0)
-    {
-        osg::notify(osg::WARN) << "No image data loaded."<<std::endl;
-    }
-
-    return imageList;
-}
-
-/** create 2,2 square with center at 0,0,0 and aligned along the XZ plan */
-osg::Drawable* createSquare(float textureCoordMax=1.0f)
-{
-    // set up the Geometry.
-    osg::Geometry* geom = new osg::Geometry;
-
-    osg::Vec3Array* coords = new osg::Vec3Array(4);
-    (*coords)[0].set(-1.0f,0.0f,1.0f);
-    (*coords)[1].set(-1.0f,0.0f,-1.0f);
-    (*coords)[2].set(1.0f,0.0f,-1.0f);
-    (*coords)[3].set(1.0f,0.0f,1.0f);
-    geom->setVertexArray(coords);
-
-    osg::Vec3Array* norms = new osg::Vec3Array(1);
-    (*norms)[0].set(0.0f,-1.0f,0.0f);
-    geom->setNormalArray(norms);
-    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
-
-    osg::Vec2Array* tcoords = new osg::Vec2Array(4);
-    (*tcoords)[0].set(0.0f,textureCoordMax);
-    (*tcoords)[1].set(0.0f,0.0f);
-    (*tcoords)[2].set(textureCoordMax,0.0f);
-    (*tcoords)[3].set(textureCoordMax,textureCoordMax);
-    geom->setTexCoordArray(0,tcoords);
-    
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::QUADS,0,4));
-
-    return geom;
-}
-
-osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture2D* texture,osg::Node* geometry)
-{
-    // create a tranform node to position each square in appropriate
-    // place and also to add individual texture set to it, so that
-    // that state is inherited down to its children.
-    osg::MatrixTransform* local_transform = new osg::MatrixTransform;
-    local_transform->postMult(osg::Matrix::translate(offset));
-
-    // create the StateSet to store the texture data
-    osg::StateSet* stateset = new osg::StateSet;
-
-    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-
-    // turn the face culling off so you can see the texture from
-    // all angles.
-    stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
-
-    // attach the setset to tranform node.
-    local_transform->setStateSet(stateset);
-
-    // add the geode to the transform.
-    local_transform->addChild(geometry);
-    
-    return local_transform;
-}
-
-osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geometry,osg::Node* geometryRep)
-{
-    if (image==NULL) return NULL;
-    
-    osg::MatrixTransform* top_transform = new osg::MatrixTransform;
-    top_transform->postMult(osg::Matrix::translate(offset));
-
-    osg::Vec3 local_offset(0.0f,0.0f,0.0f);
-    osg::Vec3 local_delta(3.0f,0.0f,0.0f);
-
-//     // use DrawPixels drawable to draw a pixel image.
-//     {
-//     
-//         osg::DrawPixels* drawimage = osgNew osg::DrawPixels;
-//         drawimage->setPosition(local_offset);
-//         drawimage->setImage(image);
-//         
-//         osg::Geode* geode = osgNew osg::Geode;
-//         geode->addDrawable(drawimage);
-//     
-//         // add the transform node to root group node.
-//         top_transform->addChild(geode);
-// 
-//         local_offset += local_delta;
-//     }
-
-
-    // defaults mipmapped texturing.
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
-
-        local_offset += local_delta;
-        
-        // top_transform->setAppCallback(new TextureCallback(texture));
-
-    }
-        
-        
-    // bilinear
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-        
-        // set up bilinear filtering.
-        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_NEAREST);
-        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-        
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
-
-        local_offset += local_delta;
-
-    }
-
-    // trilinear
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-        
-        // set up trilinear filtering.
-        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_LINEAR);
-        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-        
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
-
-        local_offset += local_delta;
-
-    }
-
-
-    // anisotropic
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        // set up anistropic filtering.
-        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_LINEAR);
-        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-        texture->setMaxAnisotropy(2.0f);
-        
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
-
-        local_offset += local_delta;
-
-    }
-
-    // arb compression
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        texture->setInternalFormatMode(osg::Texture2D::USE_ARB_COMPRESSION);
-        
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
-
-        local_offset += local_delta;
-
-    }
-
-    // s3tc_dxt1 compression
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        texture->setInternalFormatMode(osg::Texture2D::USE_S3TC_DXT1_COMPRESSION);
-        
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
-
-        local_offset += local_delta;
-
-    }
-    
-    // default wrap mode. (osg::Texture2D::CLAMP)
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
-
-        local_offset += local_delta;
-
-    }
-
-    // clamp-to-edge mode.
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_EDGE);
-        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_EDGE);
-
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
-
-        local_offset += local_delta;
-
-    }
-
-    // repeat wrap mode.
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
-        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
-
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
-
-        local_offset += local_delta;
-
-    }
-
-    // mirror wrap mode.
-    {
-        // create the texture attribute
-        osg::Texture2D* texture = new osg::Texture2D;
-        texture->setImage(image);
-
-        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::MIRROR);
-        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::MIRROR);
-
-        // add the transform node to root group node.
-        top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
-
-        local_offset += local_delta;
-
-    }
-
-    return top_transform;
-}
-
-osg::Node* createModelFromImages(ImageList& imageList)
-{
-
-    if (imageList.empty()) return NULL;
-    
-    // create the root node which will hold the model.
-    osg::Group* root = new osg::Group();
-
-    // create a single drawable to be shared by each texture instance.
-    osg::Drawable* drawable_noTexCoodRep = createSquare(1.0f);
-    
-    // add the drawable into a single goede to be shared...
-    osg::Geode* geode_noTexCoodRep = new osg::Geode();
-    geode_noTexCoodRep->addDrawable(drawable_noTexCoodRep);
-    
-
-    // create a single drawable to be shared by each texture instance.
-    osg::Drawable* drawable_texCoodRep = createSquare(2.0f);
-
-    // add the drawable into a single goede to be shared...
-    osg::Geode* geode_texCoodRep = new osg::Geode();
-    geode_texCoodRep->addDrawable(drawable_texCoodRep);
-    
-    osg::Vec3 offset(0.0f,0.0f,0.0f);
-    osg::Vec3 delta(0.0f,0.0f,3.0f);
-    
-    // step through the image list processing each image in turn.
-    for(ImageList::iterator itr=imageList.begin();
-        itr!=imageList.end();
-        ++itr)
-    {
-    
-        // add the transform node to root group node.
-        root->addChild(createLayer(offset,itr->get(),geode_noTexCoodRep,geode_texCoodRep));
-        
-        offset += delta;
-    
-    }
-    
-    return root;
-}
+            // note, callback is repsonsible for scenegraph traversal so
+            // should always include call the traverse(node,nv) to ensure 
+            // that the rest of cullbacks and the scene graph are traversed.
+            traverse(node,nv);
+        } 
+};
 
 
 void write_usage(std::ostream& out,const std::string& name)
@@ -450,27 +206,26 @@ int main( int argc, char **argv )
     osgDB::readCommandLine(commandLine);
 
     // load the images specified on command line
-    ImageList imageList = getImagesFromFiles(commandLine);
+    osg::Node* loadedModel = osgDB::readNodeFiles(commandLine);
+
     
-    
-    if (!imageList.empty())
+    if (loadedModel)
     {
 
-        // create a model from the images.
-        osg::Node* rootNode = createModelFromImages(imageList);
-        
-        imageList.clear();
+        osg::StateSet* stateset = create1DTextureStateToDecorate(loadedModel);
+        if (!stateset)
+        {
+            std::cout<<"Error: failed to create 1D texture state."<<std::endl;
+            return 1;
+        }
+
+
+        loadedModel->setStateSet(stateset);
+        loadedModel->setAppCallback(new AnimateStateCallback());
 
         // add model to viewer.
-        viewer.addViewport( rootNode );
-
-        // register trackball, flight and drive.
-        viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
-        viewer.registerCameraManipulator(new osgGA::FlightManipulator);
-        viewer.registerCameraManipulator(new osgGA::DriveManipulator);
-
+        viewer.addViewport( loadedModel );
         viewer.open();
-
         viewer.run();
     }
     else

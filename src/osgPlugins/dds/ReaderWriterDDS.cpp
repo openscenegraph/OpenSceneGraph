@@ -129,15 +129,6 @@ typedef struct _DDSURFACEDESC2
 #define FOURCC_DXT4  (MAKEFOURCC('D','X','T','4'))
 #define FOURCC_DXT5  (MAKEFOURCC('D','X','T','5'))
 
-
-void shiftAlpha(int*imageData, int size){
-
-    for(int i=0;i<size/4;i++){
-        imageData[i] = imageData[i]<<8;
-    }
-
-}
-
 osg::Image* ReadDDSFile(const char *filename)
 {
     osg::Image* osgImage = new osg::Image();    
@@ -193,6 +184,7 @@ osg::Image* ReadDDSFile(const char *filename)
             case 24:
             case 16:
             default:
+                osg::notify(osg::WARN)<<"Warning:: unhandled pixel format in dds file, image not loaded."<<std::endl;
                 delete [] imageData;
                 return NULL;
         }
@@ -215,16 +207,23 @@ osg::Image* ReadDDSFile(const char *filename)
                 pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
                 break;
             default:
+                osg::notify(osg::WARN)<<"Warning:: unhandled pixel format in dds file, image not loaded."<<std::endl;
                 delete [] imageData;
                 return NULL;
         }
     }
     else
     {
-        osg::notify(osg::WARN)<<"Warning:: unhanlded pixel format in dds file, image not loaded."<<std::endl;
+        osg::notify(osg::WARN)<<"Warning:: unhandled pixel format in dds file, image not loaded."<<std::endl;
         delete [] imageData;
         return NULL;
     }
+
+    // NOTE: We need to set the image data before setting the mipmap data, this
+    // is because the setImage method clears the _mipmapdata vector in osg::Image.
+    // Set image data and properties.
+    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+
 
     // Take care of mipmaps if any.
     if (ddsd.dwMipMapCount>1)
@@ -268,7 +267,7 @@ osg::Image* ReadDDSFile(const char *filename)
                     width = 1;
                 if (height == 0)
                     height = 1;
-                size = s*t*(ddsd.ddpfPixelFormat.dwRGBBitCount/8);
+                size = width*height*(ddsd.ddpfPixelFormat.dwRGBBitCount/8);
                 offset += size;
                 mipmaps[k-1] = offset;
                 width >>= 1;
@@ -277,9 +276,6 @@ osg::Image* ReadDDSFile(const char *filename)
             osgImage->setMipmapData(mipmaps);
         }
     }
-
-    // Set image data and properties.
-    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
 
     // Return Image.
     return osgImage;

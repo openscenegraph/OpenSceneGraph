@@ -20,11 +20,27 @@
 #include "receiver.h"
 #include "broadcaster.h"
 
+typedef unsigned char * BytePtr;
+template <class T>
+inline void swapBytes(  T &s )
+{
+    if( sizeof( T ) == 1 ) return;
+
+    T d = s;
+    BytePtr sptr = (BytePtr)&s;
+    BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]); 
+
+    for( int i = 0; i < sizeof(T); i++ )
+        *(sptr++) = *(dptr--);
+}
 
 class CameraPacket {
     public:
     
-        CameraPacket():_masterKilled(false) {}
+        CameraPacket():_masterKilled(false) 
+	{
+	    _byte_order = 0x12345678;
+	}
         
         void setPacket(const osg::Camera& camera,const osg::FrameStamp* frameStamp)
         {
@@ -56,10 +72,34 @@ class CameraPacket {
             // rather than this frame stamp as it can get overwritten.
             sv.setFrameStamp(new osg::FrameStamp(_frameStamp));
         }
+
+
+	void checkByteOrder( void )
+	{
+	    if( _byte_order == 0x78563412 )  // We're backwards
+	    {
+	        swapBytes( _byte_order );
+		swapBytes( _masterKilled );
+		swapBytes( _eye[0] );
+		swapBytes( _eye[1] );
+		swapBytes( _eye[2] );
+		swapBytes( _center[0] );
+		swapBytes( _center[1] );
+		swapBytes( _center[2] );
+		swapBytes( _up[0] );
+		swapBytes( _up[1] );
+		swapBytes( _up[2] );
+		swapBytes( _attachMatrix );
+		for( int i = 0; i < 16; i++ )
+		    swapBytes( _matrix.ptr()[i] );
+	    }
+	}
+
         
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
         
+	unsigned long   _byte_order;
         bool            _masterKilled;
         osg::Vec3       _eye;
         osg::Vec3       _center;
@@ -139,6 +179,9 @@ class MySceneView : public osgUtil::SceneView {
                     _rc.setBuffer(&cp, sizeof( CameraPacket ));
 	            _rc.sync();
 
+		    cp.checkByteOrder();
+
+
                     cp.getCamera(*getCamera(),_camera_offset);
                     cp.getSceneViewUpdate(*this);
                     
@@ -161,6 +204,7 @@ class MySceneView : public osgUtil::SceneView {
         int             _socketNumber;
         float           _camera_fov;
         float           _camera_offset;
+	unsigned long   _byte_order;
         
 
         Broadcaster     _bc;

@@ -60,7 +60,11 @@ void BoundingSphere::expandBy(const BoundingSphere& sh)
         {
             Vec3 dv = sh._center-_center;
             float dv_len = dv.length();
-            if (dv_len+sh._radius>_radius)
+            
+            if(dv_len == 0 && sh._radius>_radius) {
+               _radius = sh._radius;
+            } 
+            else if (dv_len+sh._radius>_radius)
             {
                 Vec3 e1 = _center-(dv*(_radius/dv_len));
                 Vec3 e2 = sh._center+(dv*(sh._radius/dv_len));

@@ -247,7 +247,7 @@ private:
 TestGraph is a singleton providing central access to the tree of tests;
 primarily, it provides access to the root suite.
 */
-class TestGraph
+class SG_EXPORT TestGraph
 {
 
 public:

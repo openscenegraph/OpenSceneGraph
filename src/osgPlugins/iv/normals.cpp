@@ -18,8 +18,8 @@
  */
 
 
-#include "normals.h"
 #include <osg/Matrix>
+#include "normals.h"
 
 #define CREASE_ANGLE 3.14159265356 * 45 / 180
 

@@ -109,7 +109,7 @@ class DOFAnimationAppCallback : public osg::NodeCallback
 DOFTransform::DOFTransform():
     _limitationFlags(0), 
     _animationOn(true), 
-    _increasingFlags(0xffffff)
+    _increasingFlags(0xffff)
 {
     //default zero-ed Vec3-s are fine for all
     //default idenetiy inverse matrix is fine:

@@ -55,14 +55,18 @@ class SG_EXPORT ApplicationUsage
         const std::string& getCommandLineUsage() const { return _commandLineUsage; }
 
 
-        void addCommandLineOption(const std::string& option,const std::string& explanation);
+        void addCommandLineOption(const std::string& option,const std::string& explanation, const std::string &defaultValue = "");
         
         const UsageMap& getCommandLineOptions() const { return _commandLineOptions; }
 
+        const UsageMap& getCommandLineOptionsDefaults() const { return _commandLineOptionsDefaults; }
 
-        void addEnvironmentalVariable(const std::string& option,const std::string& explanation);
+
+        void addEnvironmentalVariable(const std::string& option,const std::string& explanation, const std::string& defaultValue = "");
         
         const UsageMap& getEnvironmentalVariables() const { return _environmentalVariables; }
+
+        const UsageMap& getEnvironmentalVariablesDefaults() const { return _environmentalVariablesDefaults; }
 
 
         void addKeyboardMouseBinding(const std::string& option,const std::string& explanation);
@@ -70,11 +74,11 @@ class SG_EXPORT ApplicationUsage
         const UsageMap& getKeyboardMouseBindings() const { return _keyboardMouse; }
 
 
-        void getFormatedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput=80);
+        void getFormattedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput=80,bool showDefaults=false,const UsageMap& ud=UsageMap());
 
-        void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80);
+        void write(std::ostream& output,const UsageMap& um,unsigned int widthOfOutput=80,bool showDefaults=false,const UsageMap& ud=UsageMap());
         
-        void write(std::ostream& output,unsigned int type=COMMAND_LINE_OPTION|ENVIRONMENTAL_VARIABLE|KEYBOARD_MOUSE_BINDING, unsigned int widthOfOutput=80);
+        void write(std::ostream& output,unsigned int type=COMMAND_LINE_OPTION|ENVIRONMENTAL_VARIABLE|KEYBOARD_MOUSE_BINDING, unsigned int widthOfOutput=80,bool showDefaults=false);
 
     protected:
     
@@ -84,6 +88,8 @@ class SG_EXPORT ApplicationUsage
         UsageMap    _commandLineOptions;
         UsageMap    _environmentalVariables;
         UsageMap    _keyboardMouse;
+        UsageMap    _environmentalVariablesDefaults;
+        UsageMap    _commandLineOptionsDefaults;
         
 };
 

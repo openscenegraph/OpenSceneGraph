@@ -43,7 +43,7 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         void setMinimumDistance(float minimumDistance) { _minimumDistance=minimumDistance; }
 
         /** get the minimum distance (as ratio) the eye point can be zoomed in */
-        float getMminimumDistance() const { return _minimumDistance; }
+        float getMinimumDistance() const { return _minimumDistance; }
 
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/

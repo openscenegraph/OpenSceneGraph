@@ -142,7 +142,7 @@ class CollectedCoordinateSystemNodesVisitor : public osg::NodeVisitor
 public:
 
     CollectedCoordinateSystemNodesVisitor():
-        NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+        NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
         
         
     virtual void apply(osg::Node& node)
@@ -309,10 +309,8 @@ void Viewer::setCoordindateSystemNodePath(const osg::NodePath& nodePath)
               std::back_inserter(_coordinateSystemNodePath));
 }
 
-void Viewer::updatedSceneData()
+void Viewer::computeActiveCoordindateSystemNodePath()
 {
-    OsgCameraGroup::updatedSceneData();
-    
     // now search for CoordinateSystemNode's for which we want to track.
     osg::Node* subgraph = getTopMostSceneData();
     
@@ -324,8 +322,18 @@ void Viewer::updatedSceneData()
         if (!ccsnv._pathToCoordinateSystemNode.empty())
         {
            setCoordindateSystemNodePath(ccsnv._pathToCoordinateSystemNode);
+           return;
         }
-    }    
+    }  
+    // otherwise no node path found so reset to empty.
+    setCoordindateSystemNodePath(osg::NodePath());
+}
+
+void Viewer::updatedSceneData()
+{
+    OsgCameraGroup::updatedSceneData();
+    
+    computeActiveCoordindateSystemNodePath();
 }
 
 void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)

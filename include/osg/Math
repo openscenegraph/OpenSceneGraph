@@ -7,7 +7,10 @@
 
 #include <math.h>
 
-#if defined(WIN32) || defined (macintosh)|| defined (sun) || defined (__DARWIN_OSX__)
+#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
+    defined (macintosh)|| \
+    defined (sun) || \
+    defined (__DARWIN_OSX__)
 
     #include <float.h>
 
@@ -55,7 +58,11 @@
     
 #endif
 
-#if defined(WIN32) || defined (macintosh)|| defined (sun) || defined (__DARWIN_OSX__) || defined (__hpux__)
+#if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) ) || \
+    defined (macintosh)|| \
+    defined (sun) || \
+    defined (__DARWIN_OSX__) ||\
+    defined (__hpux__)
 
     #ifndef floorf
     #define floorf (float)floor

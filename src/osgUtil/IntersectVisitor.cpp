@@ -68,8 +68,6 @@ Hit& Hit::operator = (const Hit& hit)
 
     // copy data across.
     _ratio = hit._ratio;
-    _originalLineSegment = hit._originalLineSegment;
-    _localLineSegment = hit._localLineSegment;
     _nodePath = hit._nodePath;
     _geode = hit._geode;
     _drawable = hit._drawable;

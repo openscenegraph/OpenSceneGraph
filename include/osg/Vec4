@@ -96,7 +96,6 @@ class Vec4
                    (unsigned long)clampTo((_v[0]*255.0f),0.0f,255.0f);
         }
 
-
         inline const bool valid() const { return !isNaN(); }
         inline const bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]) || osg::isNaN(_v[3]); }
 
@@ -110,13 +109,13 @@ class Vec4
         }
 
         /// multiply by scalar
-        inline Vec4 operator * (const float& rhs) const
+        inline Vec4 operator * (const float rhs) const
         {
             return Vec4(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs, _v[3]*rhs);
         }
 
         /// unary multiply by scalar
-        inline Vec4& operator *= (const float& rhs)
+        inline Vec4& operator *= (const float rhs)
         {
             _v[0]*=rhs;
             _v[1]*=rhs;
@@ -126,13 +125,13 @@ class Vec4
         }
 
         /// divide by scalar
-        inline Vec4 operator / (const float& rhs) const
+        inline Vec4 operator / (const float rhs) const
         {
             return Vec4(_v[0]/rhs, _v[1]/rhs, _v[2]/rhs, _v[3]/rhs);
         }
 
         /// unary divide by scalar
-        inline Vec4& operator /= (const float& rhs)
+        inline Vec4& operator /= (const float rhs)
         {
             _v[0]/=rhs;
             _v[1]/=rhs;

@@ -29,7 +29,7 @@ class SG_EXPORT ColorMask : public StateAttribute
             _blue(cm._blue),
             _alpha(cm._alpha) {}
         
-        META_StateAttribute(ColorMask, COLORMASK);
+        META_StateAttribute(osg, ColorMask, COLORMASK);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

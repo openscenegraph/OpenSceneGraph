@@ -22,10 +22,11 @@ class StateSet;
   * Use when subclassing from Object to make it more convinient to define 
   * the standard pure virtual methods which are required for all Object 
   * subclasses.*/
-#define META_StateAttribute(name,type) \
+#define META_StateAttribute(library,name,type) \
         virtual osg::Object* cloneType() const { return osgNew name(); } \
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \
         virtual const Type getType() const { return type; }
 
@@ -167,6 +168,9 @@ class SG_EXPORT StateAttribute : public Object
 
         /** return true if this and obj are of the same kind of object.*/
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateAttribute*>(obj)!=NULL; }
+
+        /** return the name of the attribute's library.*/
+        virtual const char* libraryName() const { return "osg"; }
 
         /** return the name of the attribute's class type.*/
         virtual const char* className() const { return "StateAttribute"; }

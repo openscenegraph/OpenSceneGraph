@@ -28,7 +28,7 @@ namespace osgParticle
         ModularProgram();
         ModularProgram(const ModularProgram &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
         
-        META_Node(ModularProgram);
+        META_Node(osgParticle,ModularProgram);
         
         /// Get the number of operators.
         inline int numOperators() const;

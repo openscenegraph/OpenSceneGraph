@@ -25,7 +25,7 @@ namespace osgParticle {
         inline SegmentPlacer();
         inline SegmentPlacer(const SegmentPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(SegmentPlacer);
+        META_Object(osgParticle, SegmentPlacer);
 
         /// get vertex <B>A</B>.
         inline const osg::Vec3 &getVertexA() const;

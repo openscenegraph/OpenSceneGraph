@@ -37,7 +37,7 @@ namespace osgParticle
         ModularEmitter();
         ModularEmitter(const ModularEmitter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
         
-        META_Node(ModularEmitter);
+        META_Node(osgParticle,ModularEmitter);
         
         /// Get the counter object.
         inline Counter *getCounter();

@@ -26,7 +26,7 @@ class SG_EXPORT LightModel : public StateAttribute
           _twoSided(lw._twoSided) {}
 
 
-        META_StateAttribute(LightModel, LIGHTMODEL);
+        META_StateAttribute(osg, LightModel, LIGHTMODEL);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

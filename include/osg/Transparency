@@ -23,7 +23,7 @@ class SG_EXPORT Transparency : public StateAttribute
             _source_factor(trans._source_factor),
             _destination_factor(trans._destination_factor) {}
 
-        META_StateAttribute(Transparency,TRANSPARENCY);
+        META_StateAttribute(osg, Transparency,TRANSPARENCY);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

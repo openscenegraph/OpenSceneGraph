@@ -22,7 +22,7 @@ class SG_EXPORT TexMat : public StateAttribute
             StateAttribute(texmat,copyop),
             _matrix(texmat._matrix) {}
 
-        META_StateAttribute(TexMat, TEXMAT);
+        META_StateAttribute(osg, TexMat, TEXMAT);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

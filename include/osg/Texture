@@ -102,7 +102,7 @@ class SG_EXPORT Texture : public StateAttribute
             _subloadWidth(text._subloadWidth),
             _subloadHeight(text._subloadHeight) {}
 
-        META_StateAttribute(Texture,(Type)(TEXTURE_0+_textureUnit));
+        META_StateAttribute(osg, Texture,(Type)(TEXTURE_0+_textureUnit));
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& rhs) const;

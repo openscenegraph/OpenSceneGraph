@@ -29,7 +29,7 @@ namespace osgParticle {
         MultiSegmentPlacer();
         MultiSegmentPlacer(const MultiSegmentPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(MultiSegmentPlacer);
+        META_Object(osgParticle, MultiSegmentPlacer);
 
         /// Get the number of vertices which define the segments.
         inline int numVertices() const;

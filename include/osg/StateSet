@@ -33,6 +33,7 @@ class SG_EXPORT StateSet : public Object
         virtual Object* cloneType() const { return osgNew StateSet(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew StateSet(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateSet*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "StateSet"; }
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

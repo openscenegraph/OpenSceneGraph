@@ -28,7 +28,7 @@ class SG_EXPORT Billboard : public Geode
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Billboard(const Billboard&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Node(Billboard);
+        META_Node(osg, Billboard);
 
         /** Set the billboard rotation mode. */
         void setMode(const Mode mode);

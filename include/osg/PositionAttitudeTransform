@@ -25,7 +25,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
             _attitude(pat._attitude) {}
             
 
-        META_Node(PositionAttitudeTransform);
+        META_Node(osg, PositionAttitudeTransform);
 
 
         void setPosition(const Vec3& pos) { _position = pos; }

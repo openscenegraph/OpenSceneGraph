@@ -22,7 +22,7 @@ class SG_EXPORT ColorMatrix : public StateAttribute
             StateAttribute(cm,copyop),
             _matrix(cm._matrix) {}
 
-        META_StateAttribute(ColorMatrix, COLORMATRIX);
+        META_StateAttribute(osg, ColorMatrix, COLORMATRIX);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

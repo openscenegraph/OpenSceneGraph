@@ -38,10 +38,11 @@ namespace osgText {
   * Use when subclassing from Object to make it more convinient to define 
   * the standard pure virtual methods which are required for all Object 
   * subclasses.*/
-#define META_Font(name) \
+#define META_Font(library,name) \
         virtual osg::Object* cloneType() const { return new name(); } \
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \
 
 
@@ -62,7 +63,9 @@ class OSGTEXT_EXPORT Font : public osg::Object
             _textureSize(font._textureSize)
             {}
 
+
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Font *>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osgText"; }
         virtual const char* className() const { return "Font"; } 
 
         bool open(const char* font);
@@ -118,6 +121,7 @@ class OSGTEXT_EXPORT RasterFont:public Font
         RasterFont(const std::string& /*font*/):Font() {}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RasterFont *>(obj)!=NULL; } 
+        virtual const char* libraryName() const { return "osgText"; }
         virtual const char* className() const { return "RasterFont"; } 
 
     protected:
@@ -135,6 +139,7 @@ class OSGTEXT_EXPORT VectorFont:public Font
         VectorFont(const std::string& /*font*/):Font(){}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const VectorFont *>(obj)!=NULL; } 
+        virtual const char* libraryName() const { return "osgText"; }
         virtual const char* className() const { return "VectorFont"; } 
 
     protected:
@@ -154,7 +159,7 @@ class OSGTEXT_EXPORT BitmapFont:public RasterFont
         BitmapFont(const std::string&    font, 
                    int                    point_size);
 
-        META_Font(BitmapFont);
+        META_Font(osgText,BitmapFont);
 
     protected:
 
@@ -174,7 +179,7 @@ class OSGTEXT_EXPORT PixmapFont:public RasterFont
         PixmapFont(const std::string&    font, 
                    int                    point_size);
 
-        META_Font(PixmapFont);
+        META_Font(osgText,PixmapFont);
 
     protected:
 
@@ -198,7 +203,7 @@ class OSGTEXT_EXPORT TextureFont:public RasterFont
                    int                    point_size,
 		    int textureSize );
 
-        META_Font(TextureFont);
+        META_Font(osgText,TextureFont);
 
     protected:
 
@@ -218,7 +223,7 @@ class OSGTEXT_EXPORT OutlineFont:public VectorFont
                     int                    point_size,
                     double                precision);
 
-        META_Font(OutlineFont);
+        META_Font(osgText,OutlineFont);
 
     protected:
 
@@ -243,7 +248,7 @@ public:
                 int         point_size,
                 double      precision);
     
-    META_Font(PolygonFont);
+    META_Font(osgText,PolygonFont);
 
 protected:
 

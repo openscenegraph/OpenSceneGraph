@@ -23,7 +23,7 @@ class SG_EXPORT Geode : public Node
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Geode(const Geode&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Node(Geode);
+        META_Node(osg, Geode);
 
         /** Add Drawable to Geode.
          *  If gset is not NULL and is not contained in Geode then increment its  

@@ -23,7 +23,7 @@ class SG_EXPORT LightSource : public Group
             _value(ls._value),
             _light(dynamic_cast<osg::Light*>(copyop(ls._light.get()))) {}
 
-        META_Node(LightSource);
+        META_Node(osg, LightSource);
 
         /** Set the attached light.*/
         void setLight(Light* light);

@@ -25,7 +25,7 @@ class SG_EXPORT ShadeModel : public StateAttribute
             _mode(sm._mode) {}
             
 
-        META_StateAttribute(ShadeModel, SHADEMODEL);
+        META_StateAttribute(osg, ShadeModel, SHADEMODEL);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

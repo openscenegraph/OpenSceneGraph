@@ -24,7 +24,7 @@ class SG_EXPORT Projection : public Group
 
         Projection(const Matrix& matix);
 
-        META_Node(Projection);
+        META_Node(osg, Projection);
 
         /** Set the transform's matrix.*/
         void setMatrix(const Matrix& mat) { (*_matrix) = mat; }

@@ -23,6 +23,7 @@ namespace osgParticle
         inline Placer();
         inline Placer(const Placer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
+        virtual const char *libraryName() const { return "osgParticle"; }
         virtual const char *className() const { return "Placer"; }
         virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Placer *>(obj) != 0; }
 

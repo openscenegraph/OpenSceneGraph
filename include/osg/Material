@@ -39,7 +39,7 @@ class SG_EXPORT Material : public StateAttribute
             _shininessFront(mat._shininessFront),
             _shininessBack(mat._shininessBack) {}
 
-        META_StateAttribute(Material, MATERIAL);
+        META_StateAttribute(osg, Material, MATERIAL);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

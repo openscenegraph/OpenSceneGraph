@@ -22,6 +22,7 @@ namespace osgParticle
         inline Shooter();
         inline Shooter(const Shooter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
+        virtual const char *libraryName() const { return "osgParticle"; }
         virtual const char *className() const { return "Shooter"; }
         virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Shooter *>(obj) != 0; }
 

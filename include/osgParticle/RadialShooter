@@ -29,7 +29,7 @@ namespace osgParticle
         inline RadialShooter();
         inline RadialShooter(const RadialShooter &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(RadialShooter);
+        META_Object(osgParticle, RadialShooter);
 
         /// Get the range of possible values for <B>theta</B> angle.
         inline const rangef &getThetaRange() const;

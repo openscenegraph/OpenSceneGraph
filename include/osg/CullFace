@@ -24,7 +24,7 @@ class SG_EXPORT CullFace : public StateAttribute
             StateAttribute(cf,copyop),
             _mode(cf._mode) {}
 
-        META_StateAttribute(CullFace, CULLFACE);
+        META_StateAttribute(osg, CullFace, CULLFACE);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const

@@ -47,7 +47,7 @@ namespace osgParticle
         /// Set the range of possible values for the central angle.
         inline void setPhiRange(float r1, float r2);    
 
-        META_Object(SectorPlacer);
+        META_Object(osgParticle, SectorPlacer);
         
         /// Place a particle. Do not call it manually.
         inline void place(Particle *P) const;

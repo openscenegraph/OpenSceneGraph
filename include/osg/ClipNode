@@ -23,7 +23,7 @@ class SG_EXPORT ClipNode : public Group
 
         ClipNode(const ClipNode& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Node(ClipNode);
+        META_Node(osg, ClipNode);
 	
 	/** Create a 6 clip planes to create a clip box.*/
 	void createClipBox(const BoundingBox& bb,unsigned int clipPlaneNumberBase=0);

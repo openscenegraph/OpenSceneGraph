@@ -24,7 +24,7 @@ namespace osgParticle
         inline PointPlacer();
         inline PointPlacer(const PointPlacer &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(PointPlacer);
+        META_Object(osgParticle, PointPlacer);
         
         /** Place a particle. 
             This method is called automatically by <CODE>ModularEmitter</CODE> and should not be called

@@ -114,14 +114,18 @@ class SG_EXPORT State : public Referenced
         /** Apply an OpenGL mode if required. */
         inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled)
         {
-            return applyMode(mode,enabled,_modeMap[mode]);
+            ModeStack& ms = _modeMap[mode];
+            ms.changed = true;    
+            return applyMode(mode,enabled,ms);
         }
 
 
         /** Apply an attribute if required. */
         inline const bool applyAttribute(const StateAttribute* attribute)
         {
-            return applyAttribute(attribute,_attributeMap[attribute->getType()]);
+            AttributeStack& as = _attributeMap[attribute->getType()];
+            as.changed = true;
+            return applyAttribute(attribute,as);
         }
 
        

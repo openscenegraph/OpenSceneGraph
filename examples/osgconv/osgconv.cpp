@@ -2,6 +2,7 @@
 #include <osg/Group>
 #include <osg/Notify>
 #include <osg/Vec3>
+#include <osg/Geometry>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -9,11 +10,48 @@
 #include <osgDB/ReaderWriter>
 
 #include "OrientationConverter.h"
+#include "GeoSet.h"
 
 typedef std::vector<std::string> FileNameList;
 
 static bool do_convert = false;
 
+////////////////////////////////////////////////////////////////////////////
+// Convert GeoSet To Geometry Visitor.
+////////////////////////////////////////////////////////////////////////////
+
+/** ConvertGeoSetsToGeometryVisitor all the old GeoSet Drawables to the new Geometry Drawables.*/
+class ConvertGeoSetsToGeometryVisitor : public osg::NodeVisitor
+{
+public:
+
+    ConvertGeoSetsToGeometryVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    virtual void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            osg::GeoSet* geoset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
+            if (geoset)
+            {
+                osg::Geometry* geom = geoset->convertToGeometry();
+                if (geom)
+                {
+                    std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
+                    geode.replaceDrawable(geoset,geom);
+                }
+                else
+                {
+                    std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
+                }
+
+            }
+        }
+    }
+
+    virtual void apply(osg::Node& node) { traverse(node); }
+
+};
 
 static void usage( const char *prog, const char *msg )
 {
@@ -231,6 +269,11 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
     
+    // convert the old style GeoSet to Geometry
+    ConvertGeoSetsToGeometryVisitor cgtg;
+    root->accept(cgtg);
+
+
     if( do_convert )
 	root = oc.convert( root.get() );
 

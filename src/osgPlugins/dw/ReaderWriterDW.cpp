@@ -12,7 +12,6 @@
 #include <osg/CullFace>
 #include <osg/Geode>
 #include <osg/Group>
-#include <osg/GeoSet>
 #include <osg/Light>
 #include <osg/LightSource>
 #include <osg/Material>
@@ -448,7 +447,11 @@ public:
         fc.tesselate(verts, themat, ts, dwob, tmat);
         nff+=nbegin; // the number of primitives generated
     }
-    void buildDrawable(Group *grp, const std::vector<Vec3> verts, dwmaterial *themat, const int nverts) {
+    void buildDrawable(Group *grp, const std::vector<Vec3> verts, dwmaterial *themat, const int nverts)
+    {
+    
+// Geoff this needs to be update to create osg::Geometry rather than GeoSet...
+#if 0
         if (nload>0 && nff>0) { // there are some strips of this type
             Geode *geode = new Geode;
             GeoSet *gset = new GeoSet;
@@ -539,6 +542,7 @@ public:
             primlengs=NULL; gsidx=NULL; nrmidx=NULL;
             txidx=NULL; nrms=NULL; txcoords=NULL;;
         }
+#endif
     }
     void settmat(const Matrix *mx) {
         tmat= mx;

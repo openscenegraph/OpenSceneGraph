@@ -37,9 +37,9 @@ class CameraPacket {
     public:
     
         CameraPacket():_masterKilled(false) 
-	{
-	    _byte_order = 0x12345678;
-	}
+    {
+        _byte_order = 0x12345678;
+    }
         
         void setPacket(const osg::Matrix& matrix,const osg::FrameStamp* frameStamp)
         {
@@ -56,24 +56,24 @@ class CameraPacket {
             matrix = _matrix * osg::Matrix::rotate(angle_offset,0.0f,1.0f,0.0f);
         }
         
-	void checkByteOrder( void )
-	{
-	    if( _byte_order == 0x78563412 )  // We're backwards
-	    {
-	        swapBytes( _byte_order );
-		swapBytes( _masterKilled );
-		for( int i = 0; i < 16; i++ )
-		    swapBytes( _matrix.ptr()[i] );
+    void checkByteOrder( void )
+    {
+        if( _byte_order == 0x78563412 )  // We're backwards
+        {
+            swapBytes( _byte_order );
+        swapBytes( _masterKilled );
+        for( int i = 0; i < 16; i++ )
+            swapBytes( _matrix.ptr()[i] );
                     
                 // umm.. we should byte swap _frameStamp too...
-	    }
-	}
+        }
+    }
 
         
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
         
-	unsigned long   _byte_order;
+    unsigned long   _byte_order;
         bool            _masterKilled;
         osg::Matrix     _matrix;
 
@@ -170,11 +170,13 @@ int main( int argc, char **argv )
     // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;
     Receiver        rc;
-    
-    bc.setPort(socketNumber);
-    rc.setPort(socketNumber);
 
-    while( !viewer.done() )
+    bc.setPort(static_cast<short int>(socketNumber));
+    rc.setPort(static_cast<short int>(socketNumber));
+
+    bool masterKilled = false;
+
+    while( !viewer.done() && !masterKilled )
     {
         // wait for all cull and draw threads to complete.
         viewer.sync();
@@ -197,7 +199,7 @@ int main( int argc, char **argv )
                 cp.setPacket(modelview,viewer.getFrameStamp());
 
                 bc.setBuffer(&cp, sizeof( CameraPacket ));
-	        bc.sync();
+            bc.sync();
 
             }
             break;
@@ -206,9 +208,10 @@ int main( int argc, char **argv )
                 CameraPacket cp;
 
                 rc.setBuffer(&cp, sizeof( CameraPacket ));
-	        rc.sync();
 
-		cp.checkByteOrder();
+                rc.sync();
+    
+                cp.checkByteOrder();
 
                 osg::Matrix modelview;
                 cp.getModelView(modelview,camera_offset);
@@ -217,9 +220,9 @@ int main( int argc, char **argv )
 
                 if (cp.getMasterKilled()) 
                 {
-                    std::cout << "recieved master killed"<<std::endl;
+                    std::cout << "received master killed"<<std::endl;
                     // break out of while (!done) loop since we've now want to shut down.
-                    break;
+                    masterKilled = true;
                 }
             }
             break;
@@ -229,10 +232,11 @@ int main( int argc, char **argv )
         }
          
         // fire off the cull and draw traversals of the scene.
-        viewer.frame();
+        if(!masterKilled)
+            viewer.frame();
         
     }
-    
+
     // wait for all cull and draw threads to complete before exit.
     viewer.sync();
 
@@ -245,7 +249,7 @@ int main( int argc, char **argv )
         cp.setMasterKilled(true);
 
         bc.setBuffer(&cp, sizeof( CameraPacket ));
-	bc.sync();
+        bc.sync();
 
         std::cout << "broadcasting death"<<std::endl;
 

@@ -8,7 +8,6 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 
-#include "ConvertToPerformer.h"
 #include "ConvertFromPerformer.h"
 
 #include <Performer/pfdu.h>
@@ -179,26 +178,6 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         }
 
-        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
-        {
-            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-
-            osg::notify(osg::INFO)<<"ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
-            initPerformer();
-
-            ConvertToPerformer converter;
-            pfNode* root = converter.convert(&node);
-            if (root)
-            {
-                if (pfdStoreFile(root,fileName.c_str())!=0) return WriteResult::FILE_SAVED;
-                else return std::string("Unable to write file from performer.");
-            }
-            else
-            {
-                return std::string("Unable to convert scene to performer, cannot write file.");
-            }
-        }
 
     protected:
 

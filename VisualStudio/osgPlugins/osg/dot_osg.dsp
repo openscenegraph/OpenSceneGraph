@@ -158,10 +158,6 @@ SOURCE=..\..\..\src\osgPlugins\osg\Geode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\GeoSet.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\osg\Geometry.cpp
 # End Source File
 # Begin Source File

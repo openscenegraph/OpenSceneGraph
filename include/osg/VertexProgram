@@ -150,12 +150,16 @@ class SG_EXPORT VertexProgram : public StateAttribute
         }
 
         /** Set the vertex program using C++ style string.*/
-        inline void setVertexProgram( const std::string& program ) { _vertexProgram = program; }
+        inline void setVertexProgram( const std::string& program )
+        {
+            _vertexProgram = program;
+            dirtyVertexProgramObject();
+        }
+        
         /** Set the vertex program using a C style string.*/
         inline void setVertexProgram( const char* program ) 
         { 
             _vertexProgram = program; 
-            
             dirtyVertexProgramObject();
         }
         /** Get the vertex program.*/

@@ -24,7 +24,7 @@ button accelerates, the right mouse button decelerates, and the middle mouse
 button (or left and right simultaneously) stops dead.
 */
 
-class OSGGA_EXPORT GliderManipulator : public osgGA::MatrixManipulator
+class GliderManipulator : public osgGA::MatrixManipulator
 {
     public:
 

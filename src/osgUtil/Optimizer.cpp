@@ -19,7 +19,6 @@
 #include <osg/Impostor>
 #include <osg/Billboard>
 #include <osg/Geometry>
-#include <osg/GeoSet>
 #include <osg/Notify>
 #include <osg/OccluderNode>
 #include <osg/Sequence>
@@ -31,10 +30,9 @@
 
 using namespace osgUtil;
 
-// #define CONVERT_GEOSET_TO_GEOMETRY
 
 ////////////////////////////////////////////////////////////////////////////
-// Overall Optimizetion function.
+// Overall Optimization function.
 ////////////////////////////////////////////////////////////////////////////
 
 static bool isNodeEmpty(const osg::Node& node)
@@ -90,11 +88,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     }
     
 
-#if defined(CONVERT_GEOSET_TO_GEOMETRY)
-    // convert the old style GeoSet to Geometry
-    ConvertGeoSetsToGeometryVisitor cgtg;
-    node->accept(cgtg);
-#endif
 
     if (options & SHARE_DUPLICATE_STATE)
     {
@@ -148,34 +141,6 @@ class TransformFunctor : public osg::Drawable::AttributeFunctor
         }
 
 };
-
-////////////////////////////////////////////////////////////////////////////
-// Convert GeoSet To Geometry Visitor.
-////////////////////////////////////////////////////////////////////////////
-
-void Optimizer::ConvertGeoSetsToGeometryVisitor::apply(osg::Geode& geode)
-{
-    for(unsigned int i=0;i<geode.getNumDrawables();++i)
-    {
-        osg::GeoSet* geoset = dynamic_cast<osg::GeoSet*>(geode.getDrawable(i));
-        if (geoset)
-        {
-            osg::Geometry* geom = geoset->convertToGeometry();
-            if (geom)
-            {
-                std::cout<<"Successfully converted GeoSet to Geometry"<<std::endl;
-                geode.replaceDrawable(geoset,geom);
-            }
-            else
-            {
-                std::cout<<"*** Failed to convert GeoSet to Geometry"<<std::endl;
-            }
-
-        }
-    }
-}
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////

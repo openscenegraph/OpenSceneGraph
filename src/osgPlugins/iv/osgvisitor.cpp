@@ -32,7 +32,6 @@
 #include "transform.h"
 
 #include <osg/Geode>
-#include <osg/GeoSet>
 #include <osg/StateSet>
 #include <osg/Material>
 #include <osg/Texture2D>

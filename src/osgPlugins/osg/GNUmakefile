@@ -19,7 +19,6 @@ CXXFILES =\
         FrontFace.cpp\
         Geode.cpp\
         Geometry.cpp\
-        GeoSet.cpp\
         Group.cpp\
         Image.cpp\
         Impostor.cpp\

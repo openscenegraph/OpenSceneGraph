@@ -79,7 +79,9 @@ else
   # comment in if you want Open DX support, currently not on by default
   # since we havn't yet checked compilation on all platforms yet.
   # note, moved to non Darwin build since it currently breaks the Drawin build.
-  PLUGIN_DIRS += dx
+  
+# commented out while the DX plugin is converted across to use Geometry rather than GeoSet.
+#  PLUGIN_DIRS += dx
 
 
   # comment in if you have libtiff installed.

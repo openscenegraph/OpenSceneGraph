@@ -53,17 +53,6 @@ class OSGUTIL_EXPORT Optimizer
         virtual void optimize(osg::Node* node, unsigned int options = ALL_OPTIMIZATIONS);
 
 
-        /** ConvertGeoSetsToGeometryVisitor all the old GeoSet Drawables to the new Geometry Drawables.*/
-        class OSGUTIL_EXPORT  ConvertGeoSetsToGeometryVisitor : public osg::NodeVisitor
-        {
-            public:
-
-                ConvertGeoSetsToGeometryVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-                
-                virtual void apply(osg::Geode& geode);
-                virtual void apply(osg::Node& node) { traverse(node); }
-
-        };
 
 
         /** Flatten Static Trasform nodes by applying their transform to the

@@ -41,12 +41,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & SHARE_DUPLICATE_STATE)
     {
-    #ifndef WIN32
-    // optimize the state in scene graph, removing duplicate state.
-    #endif
+    #if !defined(WIN32) || defined(_STLPORT_VERSION)
         StateVisitor osv;
         node->accept(osv);
         osv.optimize();
+    #endif
     }
     
 }

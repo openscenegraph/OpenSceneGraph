@@ -977,30 +977,64 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
         }
     }
 
-    // compute range of values
-    FindRangeOperator rangeOp;    
-    for(int r=0;r<sizeR;++r)
+
+    // normalise texture
     {
-        for(int t=0;t<sizeT;++t)
+        // compute range of values
+        FindRangeOperator rangeOp;    
+        for(int r=0;r<sizeR;++r)
         {
-            readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), rangeOp);
+            for(int t=0;t<sizeT;++t)
+            {
+                readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), rangeOp);
+            }
+        }
+
+        // scale the values
+        for(int r=0;r<sizeR;++r)
+        {
+            for(int t=0;t<sizeT;++t)
+            {
+                modifyRow(sizeS, pixelFormat, dataType, image->data(0,t,r), ScaleOperator(1.0f/rangeOp._rmax));
+            }
         }
     }
-
-    // scale the values
-    for(int r=0;r<sizeR;++r)
-    {
-        for(int t=0;t<sizeT;++t)
-        {
-            modifyRow(sizeS, pixelFormat, dataType, image->data(0,t,r), ScaleOperator(1.0f/rangeOp._rmax));
-        }
-    }
-
+    
+    
     fin.close();
 
     if (dataType!=GL_UNSIGNED_BYTE)
     {
         // need to convert to ubyte
+        
+        osg::ref_ptr<osg::Image> new_image = new osg::Image;
+        new_image->allocateImage(sizeS, sizeT, sizeR, pixelFormat, GL_UNSIGNED_BYTE);
+        
+        RecordRowOperator readOp(sizeS);
+        WriteRowOperator writeOp;
+
+        for(int r=0;r<sizeR;++r)
+        {
+            for(int t=0;t<sizeT;++t)
+            {
+                // reset the indices to begining
+                readOp._pos = 0;
+                writeOp._pos = 0;
+            
+                // read the pixels into readOp's _colour array
+                readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), readOp);
+                                
+                // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
+                writeOp._colours.swap(readOp._colours);
+                
+                modifyRow(sizeS, pixelFormat, GL_UNSIGNED_BYTE, new_image->data(0,t,r), writeOp);
+
+                // return readOp's _colour array contents back to its rightful owner.
+                writeOp._colours.swap(readOp._colours);
+            }
+        }
+        
+        image = new_image;
     }
     
     return image.release();

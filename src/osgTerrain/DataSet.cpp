@@ -2896,6 +2896,9 @@ DataSet::DataSet()
 {
     init();
     
+    _maximumTileImageSize = 256;
+    _maximumTileTerrainSize = 64;
+    
     _maximumVisiableDistanceOfTopLevel = 1e10;
     
     _radiusToMaxVisibleDistanceRatio = 7.0f;
@@ -3266,15 +3269,11 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     osg::notify(osg::INFO)<<"          yMin()"<<extents.yMin()<<" "<<extents.yMax()<<std::endl;
 
     // then create the destinate graph accordingly.
-
-    unsigned int imageSize = 256;
-    unsigned int terrainSize = 64;
-
     _destinationGraph = createDestinationGraph(0,
                                                _intermediateCoordinateSystem.get(),
                                                extents,
-                                               imageSize,
-                                               terrainSize,
+                                               _maximumTileImageSize,
+                                               _maximumTileTerrainSize,
                                                0,
                                                0,
                                                0,
@@ -3534,6 +3533,12 @@ void DataSet::_writeRow(Row& row)
                 node = decorateWithCoordinateSystemNode(node.get());
             }
             
+
+            if (!_comment.empty())
+            {
+                node->addDescription(_comment);
+            }
+
             //std::string filename = cd->_name + _tileExtension;
             std::string filename = _tileBasename+_tileExtension;
 
@@ -3597,6 +3602,11 @@ void DataSet::writeDestination()
             if (_decorateWithCoordinateSystemNode)
             {
                 _rootNode = decorateWithCoordinateSystemNode(_rootNode.get());
+            }
+
+            if (!_comment.empty())
+            {
+                _rootNode->addDescription(_comment);
             }
 
             osgDB::writeNodeFile(*_rootNode,filename);

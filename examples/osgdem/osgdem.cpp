@@ -187,21 +187,21 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--cs <coordinates system string>","Set the coordinates system of source imagery, DEM or destination database. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
     arguments.getApplicationUsage()->addCommandLineOption("--wkt <WKT string>","Set the coordinates system of source imagery, DEM or destination database in WellKownText form.");     
     arguments.getApplicationUsage()->addCommandLineOption("--wkt-file <WKT file>","Set the coordinates system of source imagery, DEM or destination database by as file containing WellKownText definition.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--skirt-ratio <float>","Set the ratio of skirt height to tile size.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--skirt-ratio <float>","Set the ratio of skirt height to tile size");     
     arguments.getApplicationUsage()->addCommandLineOption("--HEIGHT_FIELD","Create a height field database");     
     arguments.getApplicationUsage()->addCommandLineOption("--POLYGONAL","Create a height field database");     
     arguments.getApplicationUsage()->addCommandLineOption("--LOD","Create a LOD'd database");     
     arguments.getApplicationUsage()->addCommandLineOption("--PagedLOD","Create a PagedLOD'd database");     
     arguments.getApplicationUsage()->addCommandLineOption("-v","Set the vertical multiplier");     
     arguments.getApplicationUsage()->addCommandLineOption("--compressed","Use OpenGL compression on destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("--RGB_16","Use 16bit RGB destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("--RGB_24","Use 24bit RGB destination imagery");     
-    arguments.getApplicationUsage()->addCommandLineOption("--max_visible_distance_of_top_level","Set the maximum visible distance that the top most tile can be viewed at");     
-    arguments.getApplicationUsage()->addCommandLineOption("--radius_to_max_visible_distance_ratio","Set the maximum visible distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--no_mip_mapping","Disable mip mapping of textures");     
-    arguments.getApplicationUsage()->addCommandLineOption("--mip_mapping_hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--mip_mapping_imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
-    arguments.getApplicationUsage()->addCommandLineOption("--max_anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
+    arguments.getApplicationUsage()->addCommandLineOption("--RGB-16","Use 16bit RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--RGB-24","Use 24bit RGB destination imagery");     
+    arguments.getApplicationUsage()->addCommandLineOption("--max-visible-distance-of-top-level","Set the maximum visible distance that the top most tile can be viewed at");     
+    arguments.getApplicationUsage()->addCommandLineOption("--radius-to-max-visible-distance-ratio","Set the maximum visible distance ratio for all tiles apart from the top most tile. The maximum visuble distance is computed from the ratio * tile radius.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--no-mip-mapping","Disable mip mapping of textures");     
+    arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-hardware","Use mip mapped textures, and generate the mipmaps in hardware when available.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--mip-mapping-imagery","Use mip mapped textures, and generate the mipmaps in imagery.");     
+    arguments.getApplicationUsage()->addCommandLineOption("--max-anisotropy","Max anisotropy level to use when texturing, defaults to 1.0.");
     arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-east","");     
     arguments.getApplicationUsage()->addCommandLineOption("--bluemarble-west","");     
     arguments.getApplicationUsage()->addCommandLineOption("--whole-globe","");
@@ -213,6 +213,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--yt","");     
     arguments.getApplicationUsage()->addCommandLineOption("--zz","");     
     arguments.getApplicationUsage()->addCommandLineOption("--zt","");     
+    arguments.getApplicationUsage()->addCommandLineOption("--tile-image-size","Set the tile maximum image size");
+    arguments.getApplicationUsage()->addCommandLineOption("--tile-terrain-size","Set the tile maximum terrain size");
+    arguments.getApplicationUsage()->addCommandLineOption("--comment","Added a comment/description string to the top most node in the dataset");     
         
     // create DataSet.
     osg::ref_ptr<osgTerrain::DataSet> dataset = new osgTerrain::DataSet;
@@ -245,18 +248,27 @@ int main( int argc, char **argv )
     }
 
     while (arguments.read("--compressed")) { dataset->setTextureType(osgTerrain::DataSet::COMPRESSED_TEXTURE); }
-    while (arguments.read("--RGB_16")) { dataset->setTextureType(osgTerrain::DataSet::RGB_16_BIT); }
-    while (arguments.read("--RGB_24")) { dataset->setTextureType(osgTerrain::DataSet::RGB_24_BIT); }
+    while (arguments.read("--RGB_16") || arguments.read("--RGB-16") ) { dataset->setTextureType(osgTerrain::DataSet::RGB_16_BIT); }
+    while (arguments.read("--RGB_24") || arguments.read("--RGB-24") ) { dataset->setTextureType(osgTerrain::DataSet::RGB_24_BIT); }
 
-    while (arguments.read("--no_mip_mapping")) { dataset->setMipMappingMode(osgTerrain::DataSet::NO_MIP_MAPPING); }
-    while (arguments.read("--mip_mapping_hardware")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_HARDWARE); }
-    while (arguments.read("--mip_mapping_imagery")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_IMAGERY); }
+    while (arguments.read("--no_mip_mapping") || arguments.read("--no-mip-mapping")) { dataset->setMipMappingMode(osgTerrain::DataSet::NO_MIP_MAPPING); }
+    while (arguments.read("--mip_mapping_hardware") || arguments.read("--mip-mapping-hardware")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_HARDWARE); }
+    while (arguments.read("--mip_mapping_imagery") || arguments.read("--mip-mapping-imagery")) { dataset->setMipMappingMode(osgTerrain::DataSet::MIP_MAPPING_IMAGERY); }
 
     float maxAnisotropy;
-    while (arguments.read("--max_anisotropy",maxAnisotropy))
+    while (arguments.read("--max_anisotropy",maxAnisotropy) || arguments.read("--max-anisotropy",maxAnisotropy))
     {
         dataset->setMaxAnisotropy(maxAnisotropy);
     }
+
+    unsigned int image_size;
+    while (arguments.read("--tile-image-size",image_size)) { dataset->setMaximumTileImageSize(image_size); }
+
+    unsigned int terrain_size;
+    while (arguments.read("--tile-terrain-size",terrain_size)) { dataset->setMaximumTileTerrainSize(terrain_size); }
+
+    std::string comment;
+    while (arguments.read("--comment",comment)) { dataset->setCommentString(comment); }
 
 
     dataset->setDestinationTileBaseName("output");
@@ -279,13 +291,15 @@ int main( int argc, char **argv )
     }
 
     float maxVisibleDistanceOfTopLevel;
-    while (arguments.read("--max_visible_distance_of_top_level",maxVisibleDistanceOfTopLevel))
+    while (arguments.read("--max_visible_distance_of_top_level",maxVisibleDistanceOfTopLevel) ||
+          arguments.read("--max-visible-distance-of-top-level",maxVisibleDistanceOfTopLevel) )
     {
         dataset->setMaximumVisibleDistanceOfTopLevel(maxVisibleDistanceOfTopLevel);
     }
 
     float radiusToMaxVisibleDistanceRatio;
-    while (arguments.read("--radius_to_max_visible_distance_ratio",radiusToMaxVisibleDistanceRatio))
+    while (arguments.read("--radius_to_max_visible_distance_ratio",radiusToMaxVisibleDistanceRatio) ||
+           arguments.read("--radius-to-max-visible-distance-ratio",radiusToMaxVisibleDistanceRatio))
     {
         dataset->setRadiusToMaxVisibleDistanceRatio(radiusToMaxVisibleDistanceRatio);
     }

@@ -328,14 +328,14 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
     }
     else
     {        
-        if (_matrixStack.empty())
+        osg::ref_ptr<osg::Matrix> matrix = new osg::Matrix;
+        transform.getLocalToWorldMatrix(*matrix,this);
+
+        if (!_matrixStack.empty())
         {
-            _matrixStack.push_back(transform.getLocalToWorldMatrix());
+            matrix->postMult(_matrixStack.back());
         }
-        else
-        {
-            _matrixStack.push_back(transform.getLocalToWorldMatrix()*_matrixStack.back());
-        }
+        _matrixStack.push_back(*matrix);
 
         _transformStack.push_back(&transform);
 

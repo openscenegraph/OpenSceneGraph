@@ -357,14 +357,14 @@ osgDB::DirectoryContents osgDB::getDirectoryContents(const std::string& dirName)
     osgDB::DirectoryContents contents;
 
     struct _finddata_t data;
-    long handle = _findfirst((dirName + "\\*").c_str(), &data);
+    long handle = FindFirstFile((dirName + "\\*").c_str(), &data);
     if (handle != -1)
     {
         do
         {
             contents.push_back(data.name);
         }
-        while (_findnext(handle, &data) != -1);
+        while (FindNextFile(handle, &data) != -1);
 
         _findclose(handle);
     }

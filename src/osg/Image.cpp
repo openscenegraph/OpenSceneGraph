@@ -455,8 +455,6 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
         }
         
         
-        osg::notify(osg::WARN)<<"********** reading from compressed texture -------------------."<<std::endl;
-
         unsigned char* data = new unsigned char[total_size];
         if (!data)
         {

@@ -223,18 +223,10 @@ o What are the intended target platforms?
 
 o What platforms are currently supported?
 
-    The OSG is currently developed under Windows95, Linux,Irix and MacOS. Platform
-    specific makedefs are provided for Linux and Irix, and VisualC++ 6.0
+    The OSG is currently developed under Windows95/98/NT/2000/XP, Linux,Irix, FreeBSD Mac OSX 
+    and Solaris. Platform  specific makedefs are provided for Unix, and VisualC++ 6.0
     Workspace files for MS Windows platforms.
     
-    The OSG also compiles under Windows98/NT and 2000.
-
-
-o What further platforms will be supported in the near future?
-
-    We will be developing autoconf makefiles to assist the porting to
-    other Unix's as well as improving things on Linux and Irix.  
-
 
 o I'm wondering when the OSG will be ready for release.
 
@@ -243,10 +235,10 @@ o I'm wondering when the OSG will be ready for release.
     
     Once the design converges to a stable API we will issue it as a beta,
     depending on the various factors one would hope to have the API nailed
-    down during early-mid 2001.
+    down during early-mid 2002.
     
-    A full release with stable API and implementation will be available...
-    Can't set any dates but we can be sure it'll be after then beta release :-)
+    A full release with stable API and implementation will be available in
+    later half of the summer 2002.
     
 
 o What are the dependencies of the OSG?
@@ -345,4 +337,4 @@ o Is there a mailing list?
 
 o How do I submit my contributions?
 
-    Up till then send your changes, to <robert@openscenegraph.org>
+    Up till then send your changes, to <robert@openscenegraph.com>

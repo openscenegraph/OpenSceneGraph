@@ -697,6 +697,11 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
         axis.normalize();
         billboard->setAxis(axis);
 
+        osg::Vec3 normal = osg::Matrix::transform3x3(tf._im,billboard->getNormal());
+        normal.normalize();
+        billboard->setNormal(normal);
+
+
         for(unsigned int i=0;i<billboard->getNumDrawables();++i)
         {
             billboard->setPos(i,billboard->getPos(i)*matrix);

@@ -19,7 +19,7 @@ CXXFILES =\
 
 INC += -I$(THISDIR)
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS) $(GL_LIBS)
+LIBS  += -losgFX -losgGL2 $(OSG_LIBS) $(OTHER_LIBS) $(GL_LIBS)
 
 TARGET_BASENAME = lwo
 include $(TOPDIR)/Make/cygwin_plugin_def

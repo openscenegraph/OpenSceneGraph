@@ -13,12 +13,12 @@ CFG=osgtxp - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgtxp.mak" CFG="osgtxp - Win32 Debug"
+!MESSAGE NMAKE /f "osgtxp.mak" CFG="Demo osgtxp - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "osgtxp - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "osgtxp - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtxp - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtxp - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=osgtxp - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "osgtxp - Win32 Release"
+!IF  "$(CFG)" == "Demo osgtxp - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -52,7 +52,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib glut32.lib /nologo /subsystem:console /machine:I386 /out:"../../../bin/osgtxp.exe"
 
-!ELSEIF  "$(CFG)" == "osgtxp - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgtxp - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,8 +80,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "osgtxp - Win32 Release"
-# Name "osgtxp - Win32 Debug"
+# Name "Demo osgtxp - Win32 Release"
+# Name "Demo osgtxp - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

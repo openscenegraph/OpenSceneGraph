@@ -26,6 +26,7 @@ CFG=osgPlugin geo - Win32 Release
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+F90=df.exe
 MTL=midl.exe
 RSC=rc.exe
 
@@ -94,6 +95,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\geo\geoActions.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\geo\ReaderWriterGEO.cpp
 # End Source File
 # End Group
@@ -114,16 +119,28 @@ SOURCE=..\..\..\src\osgPlugins\geo\geoUnits.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\geo\osgGeoStructs.h
+SOURCE=..\..\..\src\osgPlugins\geo\osgGeoAction.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\geo\osgGeoAnimation.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\geo\osgGeoNodes.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\geo\osgGeoStructs.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\osgGeoNodes.asp
+# End Source File
 # End Target
 # End Project

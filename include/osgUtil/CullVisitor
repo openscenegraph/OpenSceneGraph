@@ -197,6 +197,47 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return _eyePointStack.back();
         }
 
+
+        inline float pixelSize(const osg::Vec3& v, float const radius)
+        {
+            const osg::Matrix& mvpw = getMVPW();
+            if (_windowToModelFactorDirty)
+            {
+                _windowToModelFactorDirty=false;
+                _windowToModelFactor = osg::Vec3(mvpw(0,0),mvpw(1,0),mvpw(2,0)).length();
+            }
+            float W = v.x()*mvpw(0,3)+
+                      v.y()*mvpw(1,3)+
+                      v.z()*mvpw(2,3)+
+                            mvpw(3,3);
+                                 
+            return fabs(radius*_windowToModelFactor/W);
+        }
+
+
+        inline bool isCulled(const osg::BoundingSphere& sp,CullingMode& mode)
+        {
+            if (!sp.isValid()) return true;
+
+            if (!(_modelviewClippingVolumeStack.back().contains(sp,mode))) return true;
+
+            if (mode&SMALL_FEATURE_CULLING)
+            {
+                if (pixelSize(sp.center(),sp.radius())<_smallFeatureCullingPixelSize) return true;
+            }
+            return false;
+        }
+
+        inline const bool isCulled(const osg::BoundingBox& bb,CullingMode mode)
+        {
+            if (!bb.isValid()) return true;
+
+            return !_modelviewClippingVolumeStack.back().contains(bb,mode);
+        }
+        
+        void setSmallFeatureCullingPixelSize(float s) { _smallFeatureCullingPixelSize=s; }
+        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
+
     protected:
 
         /** prevent unwanted copy construction.*/
@@ -233,30 +274,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         }
 
 
-        inline bool isCulled(const osg::BoundingSphere& sp,CullingMode& mode) const
-        {
-            if (!sp.isValid()) return true;
-
-            if (!(_modelviewClippingVolumeStack.back().contains(sp,mode))) return true;
-
-            if (mode&SMALL_FEATURE_CULLING)
-            {
-                const float _ratio2 = 0.002f*0.002f;
-                osg::Vec3 delta(sp._center-getEyeLocal());
-                if (sp.radius2()<delta.length2()*_ratio2)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        inline const bool isCulled(const osg::BoundingBox& bb,CullingMode mode) const
-        {
-            if (!bb.isValid()) return true;
-
-            return !_modelviewClippingVolumeStack.back().contains(bb,mode);
-        }
 	
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable);
     	void updateCalculatedNearFar(const osg::Vec3& pos);
@@ -356,7 +373,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             {
                 if (!_MVPW_Stack.back())
                 {
-                    _MVPW_Stack.back() = new osg::Matrix(getModelViewMatrix()*getProjectionMatrix()*getWindowMatrix());
+                    _MVPW_Stack.back() = createOrReuseMatrix(getModelViewMatrix());
+                    (*_MVPW_Stack.back()) *= getProjectionMatrix();
+                    (*_MVPW_Stack.back()) *= getWindowMatrix();
                 }
                 return *_MVPW_Stack.back();
             }
@@ -381,7 +400,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         MatrixStack                                         _modelviewStack;
         MatrixStack                                         _MVPW_Stack;
         ClippingVolumeStack                                 _modelviewClippingVolumeStack;
-
+        
+        bool                                                _windowToModelFactorDirty;
+        float                                               _windowToModelFactor;
+                
         typedef std::vector<osg::ref_ptr<osg::Viewport> >   ViewportStack;
         ViewportStack                                       _viewportStack;
         
@@ -404,7 +426,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
 
         float   _LODBias;
-
+        float   _smallFeatureCullingPixelSize;
 
         enum ComputeNearFarMode
         {
@@ -430,7 +452,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 	MatrixList _reuseMatrixList;
 	unsigned int _currentReuseMatrixIndex;
 	
-	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix value)
+	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix& value)
 	{
             // skip of any already reused matrix.
             while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 

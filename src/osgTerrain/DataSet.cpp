@@ -346,20 +346,28 @@ bool DataSet::SourceData::intersects(const SpatialProperties& sp) const
 
 void DataSet::SourceData::read(DestinationData& destination)
 {
+    std::cout<<"A"<<std::endl;
+
     if (!_source) return;
     
+    std::cout<<"B"<<std::endl;
+
     switch (_source->getType())
     {
     case(Source::IMAGE):
+        std::cout<<"B.1"<<std::endl;
         readImage(destination);
         break;
     case(Source::HEIGHT_FIELD):
+        std::cout<<"B.2"<<std::endl;
         readHeightField(destination);
         break;
     case(Source::MODEL):
+        std::cout<<"B.3"<<std::endl;
         readModels(destination);
         break;
     }
+    std::cout<<"C"<<std::endl;
 }
 
 void DataSet::SourceData::readImage(DestinationData& destination)
@@ -497,6 +505,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 
 void DataSet::SourceData::readHeightField(DestinationData& destination)
 {
+    std::cout<<"In DataSet::SourceData::readHeightField"<<std::endl;
     if (destination._heightField.valid())
     {
         std::cout<<"Reading height field"<<std::endl;
@@ -887,7 +896,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
             int success = 0;
             GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
             double noDataValue = band->GetNoDataValue(&success);
-            double new_noDataValue = 0.0;
+            double new_noDataValue = noDataValue;
             if (success)
             {
                 std::cout<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
@@ -902,15 +911,54 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
             }
         }    
 
-#if 0        
         psWO->papszWarpOptions = (char**)CPLMalloc(2*sizeof(char*));
         psWO->papszWarpOptions[0] = strdup("INIT_DEST=NO_DATA");
         psWO->papszWarpOptions[1] = 0;
-#endif
 
-#if 0        
-        psWO->pfnSrcValidityMaskFunc = (GDALMaskFunc)GDALWarpNoDataMasker;
-#endif        
+    }
+    else
+    {
+        
+        psWO->padfSrcNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        psWO->padfSrcNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        
+        psWO->padfDstNoDataReal = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        psWO->padfDstNoDataImag = (double*) CPLMalloc(psWO->nBandCount*sizeof(double));
+        
+        for(i = 0; i < _sourceData->_gdalDataSet->GetRasterCount(); i++ )
+        {
+            int success = 0;
+            GDALRasterBand* band = _sourceData->_gdalDataSet->GetRasterBand(i+1);
+            double noDataValue = band->GetNoDataValue(&success);
+            double new_noDataValue = 0.0;
+            if (success)
+            {
+                std::cout<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
+            
+                psWO->padfSrcNoDataReal[i] = noDataValue;
+                psWO->padfSrcNoDataImag[i] = 0.0;
+                psWO->padfDstNoDataReal[i] = noDataValue;
+                psWO->padfDstNoDataImag[i] = 0.0;
+                
+                GDALRasterBandH band = GDALGetRasterBand(hDstDS,i+1);
+                GDALSetRasterNoDataValue( band, new_noDataValue);
+            }
+            else
+            {
+                psWO->padfSrcNoDataReal[i] = 0.0;
+                psWO->padfSrcNoDataImag[i] = 0.0;
+                psWO->padfDstNoDataReal[i] = new_noDataValue;
+                psWO->padfDstNoDataImag[i] = 0.0;
+                
+                GDALRasterBandH band = GDALGetRasterBand(hDstDS,i+1);
+                GDALSetRasterNoDataValue( band, new_noDataValue);
+            }
+        }    
+
+        psWO->papszWarpOptions = (char**)CPLMalloc(2*sizeof(char*));
+        psWO->papszWarpOptions[0] = strdup("INIT_DEST=NO_DATA");
+        psWO->papszWarpOptions[1] = 0;
+
     }
     
 
@@ -933,14 +981,16 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
 /* -------------------------------------------------------------------- */
     GDALDestroyGenImgProjTransformer( hTransformArg );
     
-
+#if 0
     int anOverviewList[4] = { 2, 4, 8, 16 };
     GDALBuildOverviews( hDstDS, "AVERAGE", 4, anOverviewList, 0, NULL, 
                             GDALTermProgress/*GDALDummyProgress*/, NULL );
+#endif
 
     GDALClose( hDstDS );
     
     Source* newSource = new Source;
+    newSource->_type = _type;
     newSource->_filename = filename;
     newSource->_temporaryFile = true;
     newSource->_cs = cs;
@@ -1679,7 +1729,7 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
         SourceData* data = (*itr)->getSourceData();
         if (data)
         {
-            std::cout<<"SourceData::read() "<<std::endl;
+            std::cout<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
             if (_imagery.valid()) data->read(*_imagery);
             if (_terrain.valid()) data->read(*_terrain);
         }

@@ -1,4 +1,5 @@
 #include <osg/TexEnv>
+#include <osg/GLExtensions>
 
 using namespace osg;
 
@@ -15,9 +16,20 @@ TexEnv::~TexEnv()
 
 void TexEnv::apply(State&) const
 {
-    glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, _mode);
-    if (_mode==TexEnv::BLEND)
+    if (_mode==ADD)
     {
-        glTexEnvfv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, _color.ptr());
+        static bool isTexEnvAddSupported = isGLExtensionSupported("GL_ARB_texture_env_add");
+        if (isTexEnvAddSupported)
+            glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, ADD);
+        else // fallback on OpenGL default.
+            glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, MODULATE);
+    }
+    else
+    {
+        glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, _mode);
+        if (_mode==TexEnv::BLEND)
+        {
+            glTexEnvfv( GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, _color.ptr());
+        }
     }
 }

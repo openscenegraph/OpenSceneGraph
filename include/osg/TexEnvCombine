@@ -37,6 +37,10 @@
 #define GL_PREVIOUS_ARB                                    0x8578
 #endif
 
+#ifndef GL_TEXTURE0
+#define GL_TEXTURE0 0x84C0
+#endif
+
 namespace osg {
 
 /** TexEnvCombine - encapsulates the OpenGL glTexEnvCombine (texture environment) state.*/
@@ -49,6 +53,7 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         TexEnvCombine(const TexEnvCombine& texenv,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texenv,copyop),
+            _needsTexEnvCrossbar(texenv._needsTexEnvCrossbar),
             _combine_RGB(texenv._combine_RGB),
             _combine_Alpha(texenv._combine_Alpha),
             _source0_RGB(texenv._source0_RGB),
@@ -81,6 +86,7 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
             COMPARE_StateAttribute_Types(TexEnvCombine,sa)
 
             // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_needsTexEnvCrossbar)
             COMPARE_StateAttribute_Parameter(_combine_RGB)
             COMPARE_StateAttribute_Parameter(_combine_Alpha)
             COMPARE_StateAttribute_Parameter(_source0_RGB)
@@ -121,19 +127,27 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
         
         enum SourceParam
         {
-            TEXTURE         = GL_TEXTURE,
             CONSTANT        = GL_CONSTANT_ARB,
             PRIMARY_COLOR   = GL_PRIMARY_COLOR_ARB,
-            PREVIOUS        = GL_PREVIOUS_ARB
+            PREVIOUS        = GL_PREVIOUS_ARB,
+            TEXTURE         = GL_TEXTURE,
+            TEXTURE_0       = GL_TEXTURE0,
+            TEXTURE_1       = GL_TEXTURE0+1,
+            TEXTURE_2       = GL_TEXTURE0+2,
+            TEXTURE_3       = GL_TEXTURE0+3,
+            TEXTURE_4       = GL_TEXTURE0+4,
+            TEXTURE_5       = GL_TEXTURE0+5,
+            TEXTURE_6       = GL_TEXTURE0+6,
+            TEXTURE_7       = GL_TEXTURE0+7
         };
         
-        void setSource0_RGB(GLint sp) { _source0_RGB = sp; }
-        void setSource1_RGB(GLint sp) { _source1_RGB = sp; }
-        void setSource2_RGB(GLint sp) { _source2_RGB = sp; }
+        void setSource0_RGB(GLint sp) { _source0_RGB = sp; computeNeedoForTexEnvCombiners(); }
+        void setSource1_RGB(GLint sp) { _source1_RGB = sp; computeNeedoForTexEnvCombiners(); }
+        void setSource2_RGB(GLint sp) { _source2_RGB = sp; computeNeedoForTexEnvCombiners(); }
         
-        void setSource0_Alpha(GLint sp) { _source0_Alpha = sp; }
-        void setSource1_Alpha(GLint sp) { _source1_Alpha = sp; }
-        void setSource2_Alpha(GLint sp) { _source2_Alpha = sp; }
+        void setSource0_Alpha(GLint sp) { _source0_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+        void setSource1_Alpha(GLint sp) { _source1_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+        void setSource2_Alpha(GLint sp) { _source2_Alpha = sp; computeNeedoForTexEnvCombiners(); }
 
         GLint getSource0_RGB() const { return _source0_RGB; }
         GLint getSource1_RGB() const { return _source1_RGB; }
@@ -184,11 +198,38 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
 
         virtual ~TexEnvCombine();
 
+        inline bool needsTexEnvCombiner(GLint value) const
+        {
+            switch(value)
+            {
+                case(CONSTANT):
+                case(PRIMARY_COLOR):
+                case(PREVIOUS):
+                case(TEXTURE):
+                    return false;
+            }
+            return true;
+        }
+
+        void computeNeedoForTexEnvCombiners()
+        {
+            _needsTexEnvCrossbar = (needsTexEnvCombiner(_source0_RGB) ||
+                                    needsTexEnvCombiner(_source1_RGB) ||
+                                    needsTexEnvCombiner(_source2_RGB) ||
+                                    needsTexEnvCombiner(_source0_Alpha) ||
+                                    needsTexEnvCombiner(_source1_Alpha) ||
+                                    needsTexEnvCombiner(_source2_Alpha)); 
+        }
+        
+
+        
+
+
+        bool            _needsTexEnvCrossbar;
 
         GLint           _combine_RGB;
         GLint           _combine_Alpha;
-
-
+    
         GLint           _source0_RGB;
         GLint           _source1_RGB;
         GLint           _source2_RGB;

@@ -13,8 +13,8 @@ SRC_DIRS = \
 	osgGA\
 	osgParticle\
 	osgGLUT\
-	osgPlugins\
 	osgText\
+	osgPlugins\
 	Demos
 
 

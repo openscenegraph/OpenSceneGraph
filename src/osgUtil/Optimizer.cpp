@@ -408,7 +408,7 @@ void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg
 
 void Optimizer::FlattenStaticTransformsVisitor::disableObject(ObjectMap::iterator itr)
 {
-    if (itr==_transformMap.end())
+    if (itr==_objectMap.end())
     {
         // Euston we have a problem..
         osg::notify(osg::WARN)<<"Warning: internal error Optimizer::FlattenStaticTransformsVisitor::disableObject()"<<std::endl;

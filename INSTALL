@@ -378,3 +378,44 @@ STLport under IRIX with MipsPro7.2
     of using STLport own iostreams is required, which is in contrast to 
     the situation under Windows as outlined above.  Let us know how you
     get on.
+
+
+RedHat 7.1 & GLU1.3
+-------------------
+
+    I have posted a simple fix for those of us who have been unable to
+    correctly build OSG 0.8.43 on Redhat 7.2. You can download it
+    at www.terrainengine.com/fixosg.tar.gz.
+
+    To install it, follow these steps:
+
+    English
+    -----------
+    1) Untar the tarball. It will create a directory called fixosg/
+    2) Change to the fixosg/ directory
+    3) Become root
+    4) Run the script called fixosg
+
+    Cmd line
+    -------------
+    tar xvzf fixosg.tar.gz
+    cd fixosg/
+    su
+    (your root password)
+    ./fixosg
+    exit
+
+    You should then be able to do a "make" in your OSG directory and
+    everything will build as it should. Let me know if this doesn't
+    work and I will try to improve it. Email me directly for help instead of
+    posting here.
+
+    There's a README in the tarball with some info on what the script
+    actually does. There's nothing wrong with OSG itself; the
+    problem with Redhat 7.2 is that it doesn't have GLU 1.3 by default,
+    which OSG is now dependent on (for osgText.)
+
+    Good luck everyone.
+
+    - Clay
+    <clayfowler@earthlink.net>

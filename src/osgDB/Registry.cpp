@@ -650,10 +650,8 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
     {
         return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+fileName+"\".");
     }
-    else
-    {
-        return results.front();
-    }
+
+    return results.front();
 }
 
 
@@ -698,10 +696,8 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write objects to file \""+fileName+"\".");
     }
-    else
-    {
-        return results.front();
-    }
+
+    return results.front();
 }
 
 
@@ -750,10 +746,8 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
     {
         return ReaderWriter::ReadResult("Warning: Could not find plugin to read image from file \""+fileName+"\".");
     }
-    else
-    {
-        return results.front();
-    }
+
+    return results.front();
 }
 
 
@@ -798,10 +792,8 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write image to file \""+fileName+"\".");
     }
-    else
-    {
-        return results.front();
-    }
+    
+    return results.front();
 }
 
 
@@ -859,10 +851,8 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     {
         return ReaderWriter::ReadResult("Warning: Could not find plugin to read nodes from file \""+fileName+"\".");
     }
-    else
-    {
-        return results.front();
-    }
+
+    return results.front();
 }
 
 
@@ -907,8 +897,6 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write nodes to file \""+fileName+"\".");
     }
-    else
-    {
-        return results.front();
-    }
+
+    return results.front();
 }

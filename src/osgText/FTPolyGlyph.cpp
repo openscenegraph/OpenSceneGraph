@@ -7,7 +7,7 @@
 #endif
 
 
-void CALLBACK ftglError( GLenum errCode)
+void CALLBACK ftglError( GLenum /*errCode*/)
 {
 //    const GLubyte* estring;
 //    estring = gluErrorString( errCode);

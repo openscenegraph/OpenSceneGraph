@@ -52,7 +52,7 @@ FTGLTextureFont::~FTGLTextureFont()
 // mrn@changes
 bool FTGLTextureFont::MakeGlyphList(unsigned int renderContext)
 {
-    FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
+    // FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
 
     // check the context
     while (glContextTextureID.size() <= renderContext) 

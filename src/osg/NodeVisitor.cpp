@@ -44,12 +44,12 @@ void NodeVisitor::setTraversalVisitor(NodeVisitor* nv)
     else _traversalMode = TRAVERSE_NONE;
 }
 
-const bool getLocalToWorldMatrix(Matrix& matrix, MatrixMode mode)
+const bool NodeVisitor::getLocalToWorldMatrix(Matrix& /*matrix*/, MatrixMode /*mode*/)
 {
     return false;
 }
 
-const bool getWorldToLocalMatrix(Matrix& matrix, MatrixMode mode)
+const bool NodeVisitor::getWorldToLocalMatrix(Matrix& /*matrix*/, MatrixMode /*mode*/)
 {
     return false;
 }

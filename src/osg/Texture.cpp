@@ -11,9 +11,7 @@
 
 #include <osg/GLU>
 
-#ifndef GL_ARB_texture_compression
-    typedef void (APIENTRY * PFNGLCOMPRESSEDTEXIMAGE2DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-#endif    
+typedef void (APIENTRY * MyCompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
 
 using namespace osg;
 
@@ -433,7 +431,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     // an experiment to look at the changes in performance
     // when use 16 bit textures rather than 24/32bit textures.
     // internalFormat = GL_RGBA4;
-    static PFNGLCOMPRESSEDTEXIMAGE2DARBPROC glCompressedTexImage2D_ptr = 
+    static MyCompressedTexImage2DArbProc glCompressedTexImage2D_ptr = 
         (PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
 
     if (_subloadMode == OFF) {

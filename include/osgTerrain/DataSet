@@ -991,6 +991,14 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         const std::string& getCommentString() const { return _comment; }        
 
 
+        void setWriteNodeBeforeSimplification(bool flag) { _writeNodeBeforeSimplification = flag; }
+        bool getWriteNodeBeforeSimplification() const { return _writeNodeBeforeSimplification; }
+
+
+        static void setNotifyOffset(int level);
+        static int setNotifyOffset();
+
+
         CompositeDestination* createDestinationGraph(CompositeDestination* parent,
                                                      osg::CoordinateSystemNode* cs,
                                                      const osg::BoundingBox& extents,
@@ -1067,7 +1075,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         bool                                        _decorateWithCoordinateSystemNode;
         
         std::string                                 _comment;
-        
+
+        bool                                        _writeNodeBeforeSimplification;
+
         osg::ref_ptr<osg::Node>                     _rootNode;
         
 };

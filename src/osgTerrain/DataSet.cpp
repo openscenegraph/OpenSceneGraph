@@ -44,6 +44,14 @@
 
 using namespace osgTerrain;
 
+
+static int s_notifyOffset = 0;
+void DataSet::setNotifyOffset(int level) { s_notifyOffset = level; }
+int DataSet::setNotifyOffset() { return s_notifyOffset; }
+
+inline std::ostream& my_notify(osg::NotifySeverity level) { return osg::notify(osg::NotifySeverity(s_notifyOffset+level)); }
+
+
 std::string osgTerrain::DataSet::coordinateSystemStringToWTK(const std::string& coordinateSystem)
 {
     std::string wtkString;
@@ -63,7 +71,7 @@ std::string osgTerrain::DataSet::coordinateSystemStringToWTK(const std::string& 
     }
     else
     {
-        osg::notify(osg::WARN)<<"Warning: coordinateSystem string not recognised."<<std::endl;
+        my_notify(osg::WARN)<<"Warning: coordinateSystem string not recognised."<<std::endl;
         
     }
     
@@ -93,14 +101,14 @@ CoordinateSystemType getCoordinateSystemType(const osg::CoordinateSystemNode* lh
     
      
     
-    osg::notify(osg::INFO)<<"getCoordinateSystemType("<<projection_string<<")"<<std::endl;
-    osg::notify(osg::INFO)<<"    lhsSR.IsGeographic()="<<lhsSR.IsGeographic()<<std::endl;
-    osg::notify(osg::INFO)<<"    lhsSR.IsProjected()="<<lhsSR.IsProjected()<<std::endl;
-    osg::notify(osg::INFO)<<"    lhsSR.IsLocal()="<<lhsSR.IsLocal()<<std::endl;
+    my_notify(osg::INFO)<<"getCoordinateSystemType("<<projection_string<<")"<<std::endl;
+    my_notify(osg::INFO)<<"    lhsSR.IsGeographic()="<<lhsSR.IsGeographic()<<std::endl;
+    my_notify(osg::INFO)<<"    lhsSR.IsProjected()="<<lhsSR.IsProjected()<<std::endl;
+    my_notify(osg::INFO)<<"    lhsSR.IsLocal()="<<lhsSR.IsLocal()<<std::endl;
 
     free(projection_string);
 
-    if (strcmp(lhsSR.GetRoot()->GetValue(),"GEOCCS")==0) osg::notify(osg::INFO)<<"    lhsSR. is GEOCENTRIC "<<std::endl;
+    if (strcmp(lhsSR.GetRoot()->GetValue(),"GEOCCS")==0) my_notify(osg::INFO)<<"    lhsSR. is GEOCENTRIC "<<std::endl;
     
 
     if (strcmp(lhsSR.GetRoot()->GetValue(),"GEOCCS")==0) return GEOCENTRIC;    
@@ -123,7 +131,7 @@ double getAngularUnits(const osg::CoordinateSystemNode* lhs)
 
     char* str;
     double result = lhsSR.GetAngularUnits(&str);
-    osg::notify(osg::INFO)<<"lhsSR.GetAngularUnits("<<str<<") "<<result<<std::endl;
+    my_notify(osg::INFO)<<"lhsSR.GetAngularUnits("<<str<<") "<<result<<std::endl;
 
     return result;
 }
@@ -141,11 +149,11 @@ double getLinearUnits(const osg::CoordinateSystemNode* lhs)
 
     char* str;
     double result = lhsSR.GetLinearUnits(&str);
-    osg::notify(osg::INFO)<<"lhsSR.GetLinearUnits("<<str<<") "<<result<<std::endl;
+    my_notify(osg::INFO)<<"lhsSR.GetLinearUnits("<<str<<") "<<result<<std::endl;
 
-    osg::notify(osg::INFO)<<"lhsSR.IsGeographic() "<<lhsSR.IsGeographic()<<std::endl;
-    osg::notify(osg::INFO)<<"lhsSR.IsProjected() "<<lhsSR.IsProjected()<<std::endl;
-    osg::notify(osg::INFO)<<"lhsSR.IsLocal() "<<lhsSR.IsLocal()<<std::endl;
+    my_notify(osg::INFO)<<"lhsSR.IsGeographic() "<<lhsSR.IsGeographic()<<std::endl;
+    my_notify(osg::INFO)<<"lhsSR.IsProjected() "<<lhsSR.IsProjected()<<std::endl;
+    my_notify(osg::INFO)<<"lhsSR.IsLocal() "<<lhsSR.IsLocal()<<std::endl;
     
     return result;
 }
@@ -158,11 +166,11 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
     // if one CS is NULL then true false
     if (!lhs || !rhs)
     {
-        osg::notify(osg::INFO)<<"areCoordinateSystemEquivalent lhs="<<lhs<<"  rhs="<<rhs<<" return true"<<std::endl;
+        my_notify(osg::INFO)<<"areCoordinateSystemEquivalent lhs="<<lhs<<"  rhs="<<rhs<<" return true"<<std::endl;
         return false;
     }
     
-    osg::notify(osg::INFO)<<"areCoordinateSystemEquivalent lhs="<<lhs->getCoordinateSystem()<<"  rhs="<<rhs->getCoordinateSystem()<<std::endl;
+    my_notify(osg::INFO)<<"areCoordinateSystemEquivalent lhs="<<lhs->getCoordinateSystem()<<"  rhs="<<rhs->getCoordinateSystem()<<std::endl;
 
     // use compare on ProjectionRef strings.
     if (lhs->getCoordinateSystem() == rhs->getCoordinateSystem()) return true;
@@ -190,7 +198,7 @@ bool areCoordinateSystemEquivalent(const osg::CoordinateSystemNode* lhs,const os
 #if 0
     int result2 = lhsSR.IsSameGeogCS(&rhsSR);
 
-     osg::notify(osg::INFO)<<"areCoordinateSystemEquivalent "<<std::endl
+     my_notify(osg::INFO)<<"areCoordinateSystemEquivalent "<<std::endl
               <<"LHS = "<<lhs->getCoordinateSystem()<<std::endl
               <<"RHS = "<<rhs->getCoordinateSystem()<<std::endl
               <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
@@ -237,7 +245,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                 }
                 else if (gdalDataSet->GetGCPCount()>0 && gdalDataSet->GetGCPProjection())
                 {
-                    osg::notify(osg::INFO) << "    Using GCP's"<< std::endl;
+                    my_notify(osg::INFO) << "    Using GCP's"<< std::endl;
 
 
                     /* -------------------------------------------------------------------- */
@@ -251,7 +259,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
 
                     if ( hTransformArg == NULL )
                     {
-                        osg::notify(osg::INFO)<<" failed to create transformer"<<std::endl;
+                        my_notify(osg::INFO)<<" failed to create transformer"<<std::endl;
                         return NULL;
                     }
 
@@ -265,7 +273,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                                                  adfDstGeoTransform, &nPixels, &nLines )
                         != CE_None )
                     {
-                        osg::notify(osg::INFO)<<" failed to create warp"<<std::endl;
+                        my_notify(osg::INFO)<<" failed to create warp"<<std::endl;
                         return NULL;
                     }
 
@@ -282,7 +290,7 @@ DataSet::SourceData* DataSet::SourceData::readData(Source* source)
                 }
                 else
                 {
-                    osg::notify(osg::INFO) << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
+                    my_notify(osg::INFO) << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
                     
                     data->_geoTransform.set( 1.0,    0.0,    0.0,    0.0,
                                              0.0,    1.0,    0.0,    0.0,
@@ -337,7 +345,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
         if (_gdalDataSet)
         {
 
-            //osg::notify(osg::INFO)<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
+            //my_notify(osg::INFO)<<"Projecting bounding volume for "<<_source->getFileName()<<std::endl;
 
             
             // insert into the _spatialPropertiesMap for future reuse.
@@ -355,7 +363,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
 
             if (!hTransformArg)
             {
-                osg::notify(osg::INFO)<<" failed to create transformer"<<std::endl;
+                my_notify(osg::INFO)<<" failed to create transformer"<<std::endl;
                 return sp;
             }
         
@@ -366,7 +374,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
                                          adfDstGeoTransform, &nPixels, &nLines )
                 != CE_None )
             {
-                osg::notify(osg::INFO)<<" failed to create warp"<<std::endl;
+                my_notify(osg::INFO)<<" failed to create warp"<<std::endl;
                 return sp;
             }
 
@@ -386,7 +394,7 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
         }
 
     }
-    osg::notify(osg::INFO)<<"DataSet::DataSource::assuming compatible coordinates."<<std::endl;
+    my_notify(osg::INFO)<<"DataSet::DataSource::assuming compatible coordinates."<<std::endl;
     return *this;
 }
 
@@ -397,28 +405,28 @@ bool DataSet::SourceData::intersects(const SpatialProperties& sp) const
 
 void DataSet::SourceData::read(DestinationData& destination)
 {
-    osg::notify(osg::INFO)<<"A"<<std::endl;
+    my_notify(osg::INFO)<<"A"<<std::endl;
 
     if (!_source) return;
     
-    osg::notify(osg::INFO)<<"B"<<std::endl;
+    my_notify(osg::INFO)<<"B"<<std::endl;
 
     switch (_source->getType())
     {
     case(Source::IMAGE):
-        osg::notify(osg::INFO)<<"B.1"<<std::endl;
+        my_notify(osg::INFO)<<"B.1"<<std::endl;
         readImage(destination);
         break;
     case(Source::HEIGHT_FIELD):
-        osg::notify(osg::INFO)<<"B.2"<<std::endl;
+        my_notify(osg::INFO)<<"B.2"<<std::endl;
         readHeightField(destination);
         break;
     case(Source::MODEL):
-        osg::notify(osg::INFO)<<"B.3"<<std::endl;
+        my_notify(osg::INFO)<<"B.3"<<std::endl;
         readModels(destination);
         break;
     }
-    osg::notify(osg::INFO)<<"C"<<std::endl;
+    my_notify(osg::INFO)<<"C"<<std::endl;
 }
 
 void DataSet::SourceData::readImage(DestinationData& destination)
@@ -432,7 +440,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
         osg::BoundingBox intersect_bb(s_bb.intersect(d_bb));
         if (!intersect_bb.valid())
         {
-            osg::notify(osg::INFO)<<"Reading image but it does not intesection destination - ignoring"<<std::endl;
+            my_notify(osg::INFO)<<"Reading image but it does not intesection destination - ignoring"<<std::endl;
             return;
         }
         
@@ -447,8 +455,8 @@ void DataSet::SourceData::readImage(DestinationData& destination)
        int destWidth = osg::minimum((int)ceilf((float)destination._image->s()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._image->s())-destX;
        int destHeight = osg::minimum((int)ceilf((float)destination._image->t()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._image->t())-destY;
 
-        osg::notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
-        osg::notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
+        my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
+        my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
 
         bool hasRGB = _gdalDataSet->GetRasterCount() >= 3;
         bool hasColorTable = _gdalDataSet->GetRasterCount() >= 1 && _gdalDataSet->GetRasterBand(1)->GetColorTable();
@@ -465,7 +473,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             int lineSpace=-(int)(destination._image->getRowSizeInBytes());
 
             unsigned char* imageData = destination._image->data(destX,destY+destHeight-1);
-            osg::notify(osg::INFO) << "reading RGB"<<std::endl;
+            my_notify(osg::INFO) << "reading RGB"<<std::endl;
 
             unsigned char* tempImage = new unsigned char[destWidth*destHeight*3];
 
@@ -616,7 +624,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
         }
         else
         {
-            osg::notify(osg::INFO)<<"Warning image not read as Red, Blue and Green bands not present"<<std::endl;
+            my_notify(osg::INFO)<<"Warning image not read as Red, Blue and Green bands not present"<<std::endl;
         }
 
 
@@ -625,10 +633,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 
 void DataSet::SourceData::readHeightField(DestinationData& destination)
 {
-    osg::notify(osg::INFO)<<"In DataSet::SourceData::readHeightField"<<std::endl;
+    my_notify(osg::INFO)<<"In DataSet::SourceData::readHeightField"<<std::endl;
     if (destination._heightField.valid())
     {
-        osg::notify(osg::INFO)<<"Reading height field"<<std::endl;
+        my_notify(osg::INFO)<<"Reading height field"<<std::endl;
 
         osg::BoundingBox s_bb = getExtents(destination._cs.get());
         
@@ -638,7 +646,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 
         if (!intersect_bb.valid())
         {
-            osg::notify(osg::INFO)<<"Reading height field but it does not intesection destination - ignoring"<<std::endl;
+            my_notify(osg::INFO)<<"Reading height field but it does not intesection destination - ignoring"<<std::endl;
             return;
         }
         
@@ -653,8 +661,8 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
        int destWidth = osg::minimum((int)ceilf((float)destination._heightField->getNumColumns()*(intersect_bb.xMax()-d_bb.xMin())/(d_bb.xMax()-d_bb.xMin())),(int)destination._heightField->getNumColumns())-destX;
        int destHeight = osg::minimum((int)ceilf((float)destination._heightField->getNumRows()*(intersect_bb.yMax()-d_bb.yMin())/(d_bb.yMax()-d_bb.yMin())),(int)destination._heightField->getNumRows())-destY;
 
-        osg::notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
-        osg::notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
+        my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
+        my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
 
 
         // which band do we want to read from...        
@@ -696,47 +704,47 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             }
 
 
-            if (bandSelected->GetUnitType()) osg::notify(osg::INFO) << "bandSelected->GetUnitType()=" << bandSelected->GetUnitType()<<std::endl;
-            else osg::notify(osg::INFO) << "bandSelected->GetUnitType()= null" <<std::endl;
+            if (bandSelected->GetUnitType()) my_notify(osg::INFO) << "bandSelected->GetUnitType()=" << bandSelected->GetUnitType()<<std::endl;
+            else my_notify(osg::INFO) << "bandSelected->GetUnitType()= null" <<std::endl;
             
 
             int success = 0;
             float noDataValue = bandSelected->GetNoDataValue(&success);
             if (success)
             {
-                osg::notify(osg::INFO)<<"We have NoDataValue = "<<noDataValue<<std::endl;
+                my_notify(osg::INFO)<<"We have NoDataValue = "<<noDataValue<<std::endl;
             }
             else
             {
-                osg::notify(osg::INFO)<<"We have no NoDataValue"<<std::endl;
+                my_notify(osg::INFO)<<"We have no NoDataValue"<<std::endl;
                 noDataValue = 0.0f;
             }
 
             float offset = bandSelected->GetOffset(&success);
             if (success)
             {
-                osg::notify(osg::INFO)<<"We have Offset = "<<offset<<std::endl;
+                my_notify(osg::INFO)<<"We have Offset = "<<offset<<std::endl;
             }
             else
             {
-                osg::notify(osg::INFO)<<"We have no Offset"<<std::endl;
+                my_notify(osg::INFO)<<"We have no Offset"<<std::endl;
                 offset = 0.0f;
             }
 
             float scale = bandSelected->GetScale(&success);
             if (success)
             {
-                osg::notify(osg::INFO)<<"We have Scale = "<<scale<<std::endl;
+                my_notify(osg::INFO)<<"We have Scale = "<<scale<<std::endl;
             }
             else
             {
                 scale = destination._dataSet->getVerticalScale();
-                osg::notify(osg::INFO)<<"We have no Scale from file so use DataSet vertical scale of "<<scale<<std::endl;
+                my_notify(osg::INFO)<<"We have no Scale from file so use DataSet vertical scale of "<<scale<<std::endl;
                 //scale = (xyInDegrees /*&& !destination._dataSet->getConvertFromGeographicToGeocentric()*/) ? 1.0f/111319.0f : 1.0f;
 
             }
             
-            osg::notify(osg::INFO)<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
+            my_notify(osg::INFO)<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
 
             // read data into temporary array
             float* heightData = new float [ destWidth*destHeight ];
@@ -744,11 +752,11 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             // raad the data.
             osg::HeightField* hf = destination._heightField.get();
 
-            osg::notify(osg::INFO)<<"reading height field"<<std::endl;
+            my_notify(osg::INFO)<<"reading height field"<<std::endl;
             //bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
             bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,heightData,destWidth,destHeight,GDT_Float32,0,0);
 
-            osg::notify(osg::INFO)<<"    scaling height field"<<std::endl;
+            my_notify(osg::INFO)<<"    scaling height field"<<std::endl;
 
             float noDataValueFill = 0.0f;
             bool ignoreNoDataValue = true;
@@ -778,7 +786,7 @@ void DataSet::SourceData::readModels(DestinationData& destination)
 {
     if (_model.valid())
     {
-        osg::notify(osg::INFO)<<"Raading model"<<std::endl;
+        my_notify(osg::INFO)<<"Raading model"<<std::endl;
         destination._models.push_back(_model);
     }
 }
@@ -796,7 +804,7 @@ void DataSet::Source::setSortValueFromSourceDataResolution()
 
 void DataSet::Source::loadSourceData()
 {
-    osg::notify(osg::INFO)<<"DataSet::Source::loadSourceData() "<<_filename<<std::endl;
+    my_notify(osg::INFO)<<"DataSet::Source::loadSourceData() "<<_filename<<std::endl;
     
     _sourceData = SourceData::readData(this);
     
@@ -809,20 +817,20 @@ void DataSet::Source::assignCoordinateSystemAndGeoTransformAccordingToParameterP
     {
         _sourceData->_cs = _cs;
         
-        osg::notify(osg::INFO)<<"assigning CS from Source to Data."<<std::endl;
+        my_notify(osg::INFO)<<"assigning CS from Source to Data."<<std::endl;
         
     }
     else
     {
         _cs = _sourceData->_cs;
-        osg::notify(osg::INFO)<<"assigning CS from Data to Source."<<std::endl;
+        my_notify(osg::INFO)<<"assigning CS from Data to Source."<<std::endl;
     }
     
     if (getGeoTransformPolicy()==PREFER_CONFIG_SETTINGS)
     {
         _sourceData->_geoTransform = _geoTransform;
 
-        osg::notify(osg::INFO)<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
+        my_notify(osg::INFO)<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
 
     }
     else if (getGeoTransformPolicy()==PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION)
@@ -842,13 +850,13 @@ void DataSet::Source::assignCoordinateSystemAndGeoTransformAccordingToParameterP
 
         _sourceData->_geoTransform = _geoTransform;
 
-        osg::notify(osg::INFO)<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
+        my_notify(osg::INFO)<<"assigning GeoTransform from Source to Data."<<_geoTransform<<std::endl;
 
     }
     else
     {
         _geoTransform = _sourceData->_geoTransform;
-        osg::notify(osg::INFO)<<"assigning GeoTransform from Data to Source."<<_geoTransform<<std::endl;
+        my_notify(osg::INFO)<<"assigning GeoTransform from Data to Source."<<_geoTransform<<std::endl;
     }
     
     _sourceData->computeExtents();
@@ -871,13 +879,13 @@ bool DataSet::Source::needReproject(const osg::CoordinateSystemNode* cs, double 
     // always need to reproject imagery with GCP's.
     if (_sourceData->_hasGCPs)
     {
-        osg::notify(osg::INFO)<<"Need to to reproject due to presence of GCP's"<<std::endl;
+        my_notify(osg::INFO)<<"Need to to reproject due to presence of GCP's"<<std::endl;
         return true;
     }
 
     if (!areCoordinateSystemEquivalent(_cs.get(),cs))
     {
-        osg::notify(osg::INFO)<<"Need to do reproject !areCoordinateSystemEquivalent(_cs.get(),cs)"<<std::endl;
+        my_notify(osg::INFO)<<"Need to do reproject !areCoordinateSystemEquivalent(_cs.get(),cs)"<<std::endl;
 
         return true;
     }
@@ -901,19 +909,19 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
     if (!_sourceData) return 0;
     if (_type==MODEL) return 0;
     
-    osg::notify(osg::INFO)<<"reprojecting to file "<<filename<<std::endl;
+    my_notify(osg::INFO)<<"reprojecting to file "<<filename<<std::endl;
 
     GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
         
     if (hDriver == NULL)
     {       
-    osg::notify(osg::INFO)<<"Unable to load driver for "<<"GTiff"<<std::endl;
+    my_notify(osg::INFO)<<"Unable to load driver for "<<"GTiff"<<std::endl;
         return 0;
     }
     
     if (GDALGetMetadataItem( hDriver, GDAL_DCAP_CREATE, NULL ) == NULL )
     {
-        osg::notify(osg::INFO)<<"GDAL driver does not support create for "<<osgDB::getFileExtension(filename)<<std::endl;
+        my_notify(osg::INFO)<<"GDAL driver does not support create for "<<osgDB::getFileExtension(filename)<<std::endl;
         return 0;
     }
 
@@ -928,7 +936,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
 
     if (!hTransformArg)
     {
-        osg::notify(osg::INFO)<<" failed to create transformer"<<std::endl;
+        my_notify(osg::INFO)<<" failed to create transformer"<<std::endl;
         return 0;
     }
 
@@ -939,18 +947,18 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
                                  adfDstGeoTransform, &nPixels, &nLines )
         != CE_None )
     {
-        osg::notify(osg::INFO)<<" failed to create warp"<<std::endl;
+        my_notify(osg::INFO)<<" failed to create warp"<<std::endl;
         return 0;
     }
     
     if (targetResolution>0.0f)
     {
-        osg::notify(osg::INFO)<<"recomputing the target transform size"<<std::endl;
+        my_notify(osg::INFO)<<"recomputing the target transform size"<<std::endl;
         
         double currentResolution = sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2])+
                                         osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5]));
 
-        osg::notify(osg::INFO)<<"        default computed resolution "<<currentResolution<<" nPixels="<<nPixels<<" nLines="<<nLines<<std::endl;
+        my_notify(osg::INFO)<<"        default computed resolution "<<currentResolution<<" nPixels="<<nPixels<<" nLines="<<nLines<<std::endl;
 
         double extentsPixels = sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2]))*(double)(nPixels-1);
         double extentsLines = sqrt(osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5]))*(double)(nLines-1);
@@ -961,14 +969,14 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
         adfDstGeoTransform[4] *= ratio;
         adfDstGeoTransform[5] *= ratio;
         
-        osg::notify(osg::INFO)<<"    extentsPixels="<<extentsPixels<<std::endl;
-        osg::notify(osg::INFO)<<"    extentsLines="<<extentsLines<<std::endl;
-        osg::notify(osg::INFO)<<"    targetResolution="<<targetResolution<<std::endl;
+        my_notify(osg::INFO)<<"    extentsPixels="<<extentsPixels<<std::endl;
+        my_notify(osg::INFO)<<"    extentsLines="<<extentsLines<<std::endl;
+        my_notify(osg::INFO)<<"    targetResolution="<<targetResolution<<std::endl;
         
         nPixels = (int)ceil(extentsPixels/sqrt(osg::square(adfDstGeoTransform[1])+osg::square(adfDstGeoTransform[2])))+1;
         nLines = (int)ceil(extentsLines/sqrt(osg::square(adfDstGeoTransform[4])+osg::square(adfDstGeoTransform[5])))+1;
 
-        osg::notify(osg::INFO)<<"        target computed resolution "<<targetResolution<<" nPixels="<<nPixels<<" nLines="<<nLines<<std::endl;
+        my_notify(osg::INFO)<<"        target computed resolution "<<targetResolution<<" nPixels="<<nPixels<<" nLines="<<nLines<<std::endl;
         
     }
 
@@ -1006,7 +1014,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
     GDALTransformerFunc pfnTransformer = GDALGenImgProjTransform;
 
     
-    osg::notify(osg::INFO)<<"Setting projection "<<cs->getCoordinateSystem()<<std::endl;
+    my_notify(osg::INFO)<<"Setting projection "<<cs->getCoordinateSystem()<<std::endl;
 
 /* -------------------------------------------------------------------- */
 /*      Copy the color table, if required.                              */
@@ -1079,7 +1087,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
             double new_noDataValue = 0;
             if (success)
             {
-                osg::notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
+                my_notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
             
                 psWO->padfSrcNoDataReal[i] = noDataValue;
                 psWO->padfSrcNoDataImag[i] = 0.0;
@@ -1113,7 +1121,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
             double new_noDataValue = 0.0;
             if (success)
             {
-                osg::notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
+                my_notify(osg::INFO)<<"\tassinging no data value "<<noDataValue<<" to band "<<i+1<<std::endl;
             
                 psWO->padfSrcNoDataReal[i] = noDataValue;
                 psWO->padfSrcNoDataImag[i] = 0.0;
@@ -1154,7 +1162,7 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osg::
                                GDALGetRasterYSize( hDstDS ) );
     }
 
-    osg::notify(osg::INFO)<<"new projection is "<<GDALGetProjectionRef(hDstDS)<<std::endl;
+    my_notify(osg::INFO)<<"new projection is "<<GDALGetProjectionRef(hDstDS)<<std::endl;
 
 /* -------------------------------------------------------------------- */
 /*      Cleanup.                                                        */
@@ -1406,10 +1414,10 @@ void DataSet::DestinationTile::allocate()
         _terrain->_heightField->setYInterval(dem_dy);
 
         //float xMax = _terrain->_heightField->getOrigin().x()+_terrain->_heightField->getXInterval()*(float)(dem_numColumns-1);
-        //osg::notify(osg::INFO)<<"ErrorX = "<<xMax-_extents.xMax()<<std::endl;
+        //my_notify(osg::INFO)<<"ErrorX = "<<xMax-_extents.xMax()<<std::endl;
 
         //float yMax = _terrain->_heightField->getOrigin().y()+_terrain->_heightField->getYInterval()*(float)(dem_numRows-1);
-        //osg::notify(osg::INFO)<<"ErrorY = "<<yMax-_extents.yMax()<<std::endl;
+        //my_notify(osg::INFO)<<"ErrorY = "<<yMax-_extents.yMax()<<std::endl;
 
     }
 
@@ -1441,14 +1449,14 @@ void DataSet::DestinationTile::setNeighbours(DestinationTile* left, DestinationT
     _neighbour[ABOVE_LEFT] = above_left;
     
     
-//     osg::notify(osg::INFO)<<"LEFT="<<_neighbour[LEFT]<<std::endl;
-//     osg::notify(osg::INFO)<<"LEFT_BELOW="<<_neighbour[LEFT_BELOW]<<std::endl;
-//     osg::notify(osg::INFO)<<"BELOW="<<_neighbour[BELOW]<<std::endl;
-//     osg::notify(osg::INFO)<<"BELOW_RIGHT="<<_neighbour[BELOW_RIGHT]<<std::endl;
-//     osg::notify(osg::INFO)<<"RIGHT="<<_neighbour[RIGHT]<<std::endl;
-//     osg::notify(osg::INFO)<<"RIGHT_ABOVE="<<_neighbour[RIGHT_ABOVE]<<std::endl;
-//     osg::notify(osg::INFO)<<"ABOVE="<<_neighbour[ABOVE]<<std::endl;
-//     osg::notify(osg::INFO)<<"ABOVE_LEFT="<<_neighbour[ABOVE_LEFT]<<std::endl;
+//     my_notify(osg::INFO)<<"LEFT="<<_neighbour[LEFT]<<std::endl;
+//     my_notify(osg::INFO)<<"LEFT_BELOW="<<_neighbour[LEFT_BELOW]<<std::endl;
+//     my_notify(osg::INFO)<<"BELOW="<<_neighbour[BELOW]<<std::endl;
+//     my_notify(osg::INFO)<<"BELOW_RIGHT="<<_neighbour[BELOW_RIGHT]<<std::endl;
+//     my_notify(osg::INFO)<<"RIGHT="<<_neighbour[RIGHT]<<std::endl;
+//     my_notify(osg::INFO)<<"RIGHT_ABOVE="<<_neighbour[RIGHT_ABOVE]<<std::endl;
+//     my_notify(osg::INFO)<<"ABOVE="<<_neighbour[ABOVE]<<std::endl;
+//     my_notify(osg::INFO)<<"ABOVE_LEFT="<<_neighbour[ABOVE_LEFT]<<std::endl;
     
     for(int i=0;i<NUMBER_OF_POSITIONS;++i)
     {
@@ -1462,7 +1470,7 @@ void DataSet::DestinationTile::checkNeighbouringTiles()
     {
         if (_neighbour[i] && _neighbour[i]->_neighbour[(i+4)%NUMBER_OF_POSITIONS]!=this)
         {
-            osg::notify(osg::INFO)<<"Error:: Tile "<<this<<"'s _neighbour["<<i<<"] does not point back to it."<<std::endl;
+            my_notify(osg::INFO)<<"Error:: Tile "<<this<<"'s _neighbour["<<i<<"] does not point back to it."<<std::endl;
         }
     }
 }
@@ -1672,7 +1680,7 @@ const char* edgeString(DataSet::DestinationTile::Position position)
 void DataSet::DestinationTile::setTileComplete(bool complete)
 {
     _complete = complete;
-    osg::notify(osg::INFO)<<"setTileComplete("<<complete<<") for "<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
+    my_notify(osg::INFO)<<"setTileComplete("<<complete<<") for "<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
 }
 
 void DataSet::DestinationTile::equalizeEdge(Position position)
@@ -1693,7 +1701,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
     osg::Image* image1 = _imagery.valid()?_imagery->_image.get() : 0;
     osg::Image* image2 = tile2->_imagery.valid()?tile2->_imagery->_image.get() : 0;
 
-    //osg::notify(osg::INFO)<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY
+    //my_notify(osg::INFO)<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY
     //         <<"  neighbour "<<tile2->_level<<"\t"<<tile2->_tileX<<"\t"<<tile2->_tileY<<std::endl;
              
              
@@ -1706,8 +1714,8 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         image1->getDataType()==GL_UNSIGNED_BYTE)
     {
 
-        //osg::notify(osg::INFO)<<"   Equalizing image1= "<<image1<<                         " with image2 = "<<image2<<std::endl;
-        //osg::notify(osg::INFO)<<"              data1 = 0x"<<std::hex<<(int)image1->data()<<" with data2  = 0x"<<(int)image2->data()<<std::endl;
+        //my_notify(osg::INFO)<<"   Equalizing image1= "<<image1<<                         " with image2 = "<<image2<<std::endl;
+        //my_notify(osg::INFO)<<"              data1 = 0x"<<std::hex<<(int)image1->data()<<" with data2  = 0x"<<(int)image2->data()<<std::endl;
 
         unsigned char* data1 = 0;
         unsigned char* data2 = 0;
@@ -1723,7 +1731,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(image2->s()-1,1); // RIGHT hand side
             delta2 = image2->getRowSizeInBytes();
             num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
-            //osg::notify(osg::INFO)<<"       left "<<num<<std::endl;
+            //my_notify(osg::INFO)<<"       left "<<num<<std::endl;
             break;
         case BELOW:
             data1 = image1->data(1,0); // BELOW hand side
@@ -1731,7 +1739,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(1,image2->t()-1); // ABOVE hand side
             delta2 = 3;
             num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
-            //osg::notify(osg::INFO)<<"       below "<<num<<std::endl;
+            //my_notify(osg::INFO)<<"       below "<<num<<std::endl;
             break;
         case RIGHT:
             data1 = image1->data(image1->s()-1,1); // LEFT hand side
@@ -1739,7 +1747,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(0,1); // RIGHT hand side
             delta2 = image2->getRowSizeInBytes();
             num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
-            //osg::notify(osg::INFO)<<"       right "<<num<<std::endl;
+            //my_notify(osg::INFO)<<"       right "<<num<<std::endl;
             break;
         case ABOVE:
             data1 = image1->data(1,image1->t()-1); // ABOVE hand side
@@ -1747,10 +1755,10 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(1,0); // BELOW hand side
             delta2 = 3;
             num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
-            //osg::notify(osg::INFO)<<"       above "<<num<<std::endl;
+            //my_notify(osg::INFO)<<"       above "<<num<<std::endl;
             break;
         default :
-            //osg::notify(osg::INFO)<<"       default "<<num<<std::endl;
+            //my_notify(osg::INFO)<<"       default "<<num<<std::endl;
             break;
         }
 
@@ -1781,7 +1789,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data1 += delta1;
             data2 += delta2;
 
-            //osg::notify(osg::INFO)<<"    equalizing colour "<<(int)data1<<"  "<<(int)data2<<std::endl;
+            //my_notify(osg::INFO)<<"    equalizing colour "<<(int)data1<<"  "<<(int)data2<<std::endl;
 
         }
 
@@ -1792,7 +1800,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
 
     if (heightField1 && heightField2)
     {
-        //osg::notify(osg::INFO)<<"   Equalizing heightfield"<<std::endl;
+        //my_notify(osg::INFO)<<"   Equalizing heightfield"<<std::endl;
 
         float* data1 = 0;
         float* data2 = 0;
@@ -1838,7 +1846,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         {
             float z = (*data1 + *data2)/2.0f;
 
-            //osg::notify(osg::INFO)<<"    equalizing height"<<std::endl;
+            //my_notify(osg::INFO)<<"    equalizing height"<<std::endl;
 
             *data1 = z;
             *data2 = z;
@@ -1853,7 +1861,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
 
 void DataSet::DestinationTile::equalizeBoundaries()
 {
-    osg::notify(osg::INFO)<<"DataSet::DestinationTile::equalizeBoundaries()"<<std::endl;
+    my_notify(osg::INFO)<<"DataSet::DestinationTile::equalizeBoundaries()"<<std::endl;
 
     equalizeCorner(LEFT_BELOW);
     equalizeCorner(BELOW_RIGHT);
@@ -1888,7 +1896,7 @@ void DataSet::DestinationTile::optimizeResolution()
 
         if (minHeight==maxHeight)
         {
-            osg::notify(osg::INFO)<<"******* We have a flat tile ******* "<<std::endl;
+            my_notify(osg::INFO)<<"******* We have a flat tile ******* "<<std::endl;
 
             unsigned int minimumSize = 8;
 
@@ -1998,7 +2006,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         
         texture->dirtyTextureObject();
         
-        osg::notify(osg::INFO)<<">>>>>>>>>>>>>>>compressed image.<<<<<<<<<<<<<<"<<std::endl;
+        my_notify(osg::INFO)<<">>>>>>>>>>>>>>>compressed image.<<<<<<<<<<<<<<"<<std::endl;
 
     }
     else
@@ -2010,7 +2018,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         
         if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
         {
-            osg::notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
+            my_notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
         }
     }
 
@@ -2023,7 +2031,7 @@ osg::Node* DataSet::DestinationTile::createHeightField()
 
     if (_terrain.valid() && _terrain->_heightField.valid())
     {
-        osg::notify(osg::INFO)<<"--- Have terrain build tile ----"<<std::endl;
+        my_notify(osg::INFO)<<"--- Have terrain build tile ----"<<std::endl;
 
         osg::HeightField* hf = _terrain->_heightField.get();
         
@@ -2033,7 +2041,7 @@ osg::Node* DataSet::DestinationTile::createHeightField()
     }
     else 
     {
-        osg::notify(osg::INFO)<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
+        my_notify(osg::INFO)<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
         // create a dummy height field to file in the gap
         osg::HeightField* hf = new osg::HeightField;
         hf->allocate(2,2);
@@ -2092,7 +2100,7 @@ static inline osg::Vec3 computeLocalSkirtVector(const osg::EllipsoidModel* et, c
 
 osg::Node* DataSet::DestinationTile::createPolygonal()
 {
-    osg::notify(osg::INFO)<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
+    my_notify(osg::INFO)<<"--------- DataSet::DestinationTile::createDrawableGeometry() ------------- "<<std::endl;
 
     const osg::EllipsoidModel* et = _dataSet->getEllipsoidModel();
     bool mapLatLongsToXYZ = _dataSet->mapLatLongsToXYZ();
@@ -2102,7 +2110,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     
     if (_terrain.valid() && _terrain->_heightField.valid())
     {
-        osg::notify(osg::INFO)<<"--- Have terrain build tile ----"<<std::endl;
+        my_notify(osg::INFO)<<"--- Have terrain build tile ----"<<std::endl;
         grid = _terrain->_heightField.get();
     }
     else
@@ -2119,7 +2127,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             if (longitude_range>45.0) numColumns = (unsigned int)ceilf((float)numColumns*sqrtf(longitude_range/45.0));
             if (latitude_range>45.0) numRows = (unsigned int)ceilf((float)numRows*sqrtf(latitude_range/45.0));
             
-            osg::notify(osg::INFO)<<"numColumns = "<<numColumns<<"  numRows="<<numRows<<std::endl;
+            my_notify(osg::INFO)<<"numColumns = "<<numColumns<<"  numRows="<<numRows<<std::endl;
         }
         else
         {
@@ -2137,7 +2145,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     if (!grid)
     {
-        osg::notify(osg::INFO)<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
+        my_notify(osg::INFO)<<"**** No terrain to build tile from use flat terrain fallback ****"<<std::endl;
         
         return 0;
     }
@@ -2289,7 +2297,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
                 double phi = 2.0 * asin (d*0.5/globe_radius); // d/globe_radius;
                 double beta = theta+phi;
                 double cutoff = osg::PI_2 - 0.1;
-                //osg::notify(osg::INFO)<<"theta="<<theta<<"\tphi="<<phi<<" beta "<<beta<<std::endl;
+                //my_notify(osg::INFO)<<"theta="<<theta<<"\tphi="<<phi<<" beta "<<beta<<std::endl;
                 if (phi<cutoff && beta<cutoff)
                 {
 
@@ -2301,7 +2309,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
                 }
                 else
                 {
-                    //osg::notify(osg::INFO)<<"Turning off cluster culling for wrap around tile."<<std::endl;
+                    //my_notify(osg::INFO)<<"Turning off cluster culling for wrap around tile."<<std::endl;
                     useClusterCullingCallback = false;
                 }
             }
@@ -2514,9 +2522,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);
 
-#if 1
-    osgDB::writeNodeFile(*geode,"NodeBeforeSimplification.osg");
-#endif
+    if (_dataSet->getWriteNodeBeforeSimplification())
+    {
+        osgDB::writeNodeFile(*geode,"NodeBeforeSimplification.osg");
+    }
 
     unsigned int targetMaxNumVertices = 2048;
     float sample_ratio = (numVertices <= targetMaxNumVertices) ? 1.0f : (float)targetMaxNumVertices/(float)numVertices; 
@@ -2560,7 +2569,7 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 {
     allocate();
 
-    osg::notify(osg::INFO)<<"DestinationTile::readFrom() "<<std::endl;
+    my_notify(osg::INFO)<<"DestinationTile::readFrom() "<<std::endl;
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
     
@@ -2570,8 +2579,8 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
             SourceData* data = (*itr)->getSourceData();
             if (data)
             {
-                osg::notify(osg::INFO)<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
-                osg::notify(osg::INFO)<<"    destination._level="<<_level<<"\t"<<source->getMinLevel()<<"\t"<<source->getMaxLevel()<<std::endl;
+                my_notify(osg::INFO)<<"DataSet::DestinationTile::readFrom -> SourceData::read() "<<std::endl;
+                my_notify(osg::INFO)<<"    destination._level="<<_level<<"\t"<<source->getMinLevel()<<"\t"<<source->getMaxLevel()<<std::endl;
                 if (_imagery.valid()) data->read(*_imagery);
                 if (_terrain.valid()) data->read(*_terrain);
             }
@@ -2660,7 +2669,7 @@ void DataSet::CompositeDestination::addRequiredResolutions(CompositeSource* sour
 
 void DataSet::CompositeDestination::readFrom(CompositeSource* sourceGraph)
 {
-    osg::notify(osg::INFO)<<"CompositeDestination::readFrom() "<<std::endl;
+    my_notify(osg::INFO)<<"CompositeDestination::readFrom() "<<std::endl;
 
     // handle leaves
     for(TileList::iterator titr=_tiles.begin();
@@ -2968,7 +2977,7 @@ void DataSet::CompositeDestination::unrefLocalData()
         ++titr)
     {
         DestinationTile* tile = titr->get();
-        osg::notify(osg::INFO)<<"   unref tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+        my_notify(osg::INFO)<<"   unref tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
         tile->unrefData();
     }
 }
@@ -3000,6 +3009,8 @@ DataSet::DataSet()
     _useLocalTileTransform = true;
     
     _decorateWithCoordinateSystemNode = true;
+    
+    _writeNodeBeforeSimplification = false;
 
     setEllipsoidModel(new osg::EllipsoidModel());
 }
@@ -3155,7 +3166,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
 
         if (needToDivideX && needToDivideY)
         {
-            osg::notify(osg::INFO)<<"Need to Divide X + Y for level "<<currentLevel<<std::endl;
+            my_notify(osg::INFO)<<"Need to Divide X + Y for level "<<currentLevel<<std::endl;
             // create four tiles.
             osg::BoundingBox bottom_left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,yCenter,extents.zMax());
             osg::BoundingBox bottom_right(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
@@ -3215,7 +3226,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         }
         else if (needToDivideX)
         {
-            osg::notify(osg::INFO)<<"Need to Divide X only"<<std::endl;
+            my_notify(osg::INFO)<<"Need to Divide X only"<<std::endl;
 
             // create two tiles.
             osg::BoundingBox left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,extents.yMax(),extents.zMax());
@@ -3255,7 +3266,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         }
         else if (needToDivideY)
         {
-            osg::notify(osg::INFO)<<"Need to Divide Y only"<<std::endl;
+            my_notify(osg::INFO)<<"Need to Divide Y only"<<std::endl;
 
             // create two tiles.
             osg::BoundingBox top(extents.xMin(),yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
@@ -3294,7 +3305,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         }
         else
         {
-            osg::notify(osg::INFO)<<"No Need to Divide"<<std::endl;
+            my_notify(osg::INFO)<<"No Need to Divide"<<std::endl;
         }
     }
     
@@ -3316,7 +3327,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
                 if (sd->_cs.valid())
                 {
                     _destinationCoordinateSystem = sd->_cs;
-                    osg::notify(osg::INFO)<<"Setting coordinate system to "<<_destinationCoordinateSystem->getCoordinateSystem()<<std::endl;
+                    my_notify(osg::INFO)<<"Setting coordinate system to "<<_destinationCoordinateSystem->getCoordinateSystem()<<std::endl;
                     break;
                 }
             }
@@ -3327,7 +3338,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     {
         CoordinateSystemType cst = getCoordinateSystemType(_destinationCoordinateSystem.get());
 
-        osg::notify(osg::INFO)<<"new DataSet::createDestination()"<<std::endl;
+        my_notify(osg::INFO)<<"new DataSet::createDestination()"<<std::endl;
         if (cst!=GEOGRAPHIC && getConvertFromGeographicToGeocentric())
         {
             // need to use the geocentric coordinate system as a base for creating an geographic intermediate
@@ -3364,15 +3375,15 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
             if (sd)
             {
                 osg::BoundingBox local_extents(sd->getExtents(_intermediateCoordinateSystem.get()));
-                osg::notify(osg::INFO)<<"local_extents = xMin()"<<local_extents.xMin()<<" "<<local_extents.xMax()<<std::endl;
-                osg::notify(osg::INFO)<<"                yMin()"<<local_extents.yMin()<<" "<<local_extents.yMax()<<std::endl;
+                my_notify(osg::INFO)<<"local_extents = xMin()"<<local_extents.xMin()<<" "<<local_extents.xMax()<<std::endl;
+                my_notify(osg::INFO)<<"                yMin()"<<local_extents.yMin()<<" "<<local_extents.yMax()<<std::endl;
                 extents.expandBy(local_extents);
             }
         }
     }
 
-    osg::notify(osg::INFO)<<"extents = xMin()"<<extents.xMin()<<" "<<extents.xMax()<<std::endl;
-    osg::notify(osg::INFO)<<"          yMin()"<<extents.yMin()<<" "<<extents.yMax()<<std::endl;
+    my_notify(osg::INFO)<<"extents = xMin()"<<extents.xMin()<<" "<<extents.xMax()<<std::endl;
+    my_notify(osg::INFO)<<"          yMin()"<<extents.yMin()<<" "<<extents.yMax()<<std::endl;
 
     // then create the destinate graph accordingly.
     _destinationGraph = createDestinationGraph(0,
@@ -3442,32 +3453,32 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
             Source* source = sitr->get();
             if (source) 
             {
-                osg::notify(osg::INFO)<<"Source File "<<source->getFileName()<<std::endl;
+                my_notify(osg::INFO)<<"Source File "<<source->getFileName()<<std::endl;
 
 
                 const Source::ResolutionList& resolutions = source->getRequiredResolutions();
-                osg::notify(osg::INFO)<<"    resolutions.size() "<<resolutions.size()<<std::endl;
-                osg::notify(osg::INFO)<<"    { "<<std::endl;
+                my_notify(osg::INFO)<<"    resolutions.size() "<<resolutions.size()<<std::endl;
+                my_notify(osg::INFO)<<"    { "<<std::endl;
                 Source::ResolutionList::const_iterator itr;
                 for(itr=resolutions.begin();
                     itr!=resolutions.end();
                     ++itr)
                 {
-                    osg::notify(osg::INFO)<<"        resX="<<itr->_resX<<" resY="<<itr->_resY<<std::endl;
+                    my_notify(osg::INFO)<<"        resX="<<itr->_resX<<" resY="<<itr->_resY<<std::endl;
                 }
-                osg::notify(osg::INFO)<<"    } "<<std::endl;
+                my_notify(osg::INFO)<<"    } "<<std::endl;
 
                 source->consolodateRequiredResolutions();
 
-                osg::notify(osg::INFO)<<"    consolodated resolutions.size() "<<resolutions.size()<<std::endl;
-                osg::notify(osg::INFO)<<"    consolodated { "<<std::endl;
+                my_notify(osg::INFO)<<"    consolodated resolutions.size() "<<resolutions.size()<<std::endl;
+                my_notify(osg::INFO)<<"    consolodated { "<<std::endl;
                 for(itr=resolutions.begin();
                     itr!=resolutions.end();
                     ++itr)
                 {
-                    osg::notify(osg::INFO)<<"        resX="<<itr->_resX<<" resY="<<itr->_resY<<std::endl;
+                    my_notify(osg::INFO)<<"        resX="<<itr->_resX<<" resY="<<itr->_resY<<std::endl;
                 }
-                osg::notify(osg::INFO)<<"    } "<<std::endl;
+                my_notify(osg::INFO)<<"    } "<<std::endl;
             }
 
         }
@@ -3492,7 +3503,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
                 if (newSource) *itr = newSource;
                 else
                 {
-                    osg::notify(osg::WARN)<<"Failed to reproject"<<source->getFileName()<<std::endl;
+                    my_notify(osg::WARN)<<"Failed to reproject"<<source->getFileName()<<std::endl;
                     *itr = 0;
                 }
             }
@@ -3516,7 +3527,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
             if (source)
             {
                 source->setSortValueFromSourceDataResolution();
-                osg::notify(osg::INFO)<<"sort "<<source->getFileName()<<" value "<<source->getSortValue()<<std::endl;
+                my_notify(osg::INFO)<<"sort "<<source->getFileName()<<" value "<<source->getSortValue()<<std::endl;
             }
             
         }
@@ -3526,16 +3537,16 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         _sourceGraph->sort();
     }
     
-    osg::notify(osg::INFO)<<"Using source_lod_iterator itr"<<std::endl;
+    my_notify(osg::INFO)<<"Using source_lod_iterator itr"<<std::endl;
     for(CompositeSource::source_lod_iterator csitr(_sourceGraph.get(),CompositeSource::LODSourceAdvancer(0.0));csitr.valid();++csitr)
     {
         Source* source = csitr->get();
         if (source)
         {
-            osg::notify(osg::INFO)<<"  LOD "<<(*csitr)->getFileName()<<std::endl;
+            my_notify(osg::INFO)<<"  LOD "<<(*csitr)->getFileName()<<std::endl;
         }
     }
-    osg::notify(osg::INFO)<<"End of Using Source Iterator itr"<<std::endl;
+    my_notify(osg::INFO)<<"End of Using Source Iterator itr"<<std::endl;
     
 }
 
@@ -3543,7 +3554,7 @@ void DataSet::populateDestinationGraphFromSources()
 {
     if (!_destinationGraph || !_sourceGraph) return;
 
-    osg::notify(osg::NOTICE)<<std::endl<<"started DataSet::populateDestinationGraphFromSources)"<<std::endl;
+    my_notify(osg::NOTICE)<<"started DataSet::populateDestinationGraphFromSources)"<<std::endl;
 
     if (_databaseType==LOD_DATABASE)
     {
@@ -3562,13 +3573,13 @@ void DataSet::populateDestinationGraphFromSources()
         //  compute x and y range
         //  from top row down to bottom row equalize boundairies a write out
     }
-    osg::notify(osg::NOTICE)<<"completed DataSet::populateDestinationGraphFromSources)"<<std::endl;
+    my_notify(osg::NOTICE)<<"completed DataSet::populateDestinationGraphFromSources)"<<std::endl;
 }
 
 
 void DataSet::_readRow(Row& row)
 {
-    osg::notify(osg::NOTICE)<<"_readRow "<<row.size()<<std::endl;
+    my_notify(osg::NOTICE)<<"_readRow "<<row.size()<<std::endl;
     for(Row::iterator citr=row.begin();
         citr!=row.end();
         ++citr)
@@ -3579,7 +3590,7 @@ void DataSet::_readRow(Row& row)
             ++titr)
         {
             DestinationTile* tile = titr->get();
-            osg::notify(osg::NOTICE)<<"   reading tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+            my_notify(osg::NOTICE)<<"   reading tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
             tile->readFrom(_sourceGraph.get());
         }
     }
@@ -3587,7 +3598,7 @@ void DataSet::_readRow(Row& row)
 
 void DataSet::_equalizeRow(Row& row)
 {
-    osg::notify(osg::NOTICE)<<"_equalizeRow "<<row.size()<<std::endl;
+    my_notify(osg::NOTICE)<<"_equalizeRow "<<row.size()<<std::endl;
     for(Row::iterator citr=row.begin();
         citr!=row.end();
         ++citr)
@@ -3598,7 +3609,7 @@ void DataSet::_equalizeRow(Row& row)
             ++titr)
         {
             DestinationTile* tile = titr->get();
-            osg::notify(osg::NOTICE)<<"   equalizing tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+            my_notify(osg::NOTICE)<<"   equalizing tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
             tile->equalizeBoundaries();
             tile->setTileComplete(true);
         }
@@ -3643,7 +3654,6 @@ public:
             
             if (image)
             {
-                osg::notify(osg::INFO)<<"Writing out imagery to "<<image->getFileName()<<std::endl;
                 osgDB::writeImageFile(*image,image->getFileName().c_str());
             }
         }
@@ -3652,7 +3662,7 @@ public:
 
 void DataSet::_writeRow(Row& row)
 {
-    osg::notify(osg::NOTICE)<<"_writeRow "<<row.size()<<std::endl;
+    my_notify(osg::NOTICE)<<"_writeRow "<<row.size()<<std::endl;
     for(Row::iterator citr=row.begin();
         citr!=row.end();
         ++citr)
@@ -3668,14 +3678,14 @@ void DataSet::_writeRow(Row& row)
                 std::string filename = parent->getSubTileName();
                 if (node.valid())
                 {
-                    osg::notify(osg::NOTICE)<<"   writeSubTile filename="<<filename<<std::endl;
+                    my_notify(osg::NOTICE)<<"   writeSubTile filename="<<filename<<std::endl;
                     osgDB::writeNodeFile(*node,filename);
                     parent->setSubTilesGenerated(true);
                     parent->unrefSubTileData();
                 }
                 else
                 {
-                    osg::notify(osg::WARN)<<"   failed to writeSubTile node for tile, filename="<<filename<<std::endl;
+                    my_notify(osg::WARN)<<"   failed to writeSubTile node for tile, filename="<<filename<<std::endl;
                 }
             }
         }
@@ -3699,7 +3709,7 @@ void DataSet::_writeRow(Row& row)
 
             if (node.valid())
             {
-                osg::notify(osg::NOTICE)<<"   writeNodeFile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
+                my_notify(osg::NOTICE)<<"   writeNodeFile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
                 osgDB::writeNodeFile(*node,filename);
                 
                 if (_tileExtension==".osg")
@@ -3710,7 +3720,7 @@ void DataSet::_writeRow(Row& row)
             }
             else
             {
-                osg::notify(osg::WARN)<<"   faild to write node for tile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
+                my_notify(osg::WARN)<<"   faild to write node for tile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
             }
 
             // record the top nodes as the rootNode of the database
@@ -3722,13 +3732,13 @@ void DataSet::_writeRow(Row& row)
 
 void DataSet::createDestination(unsigned int numLevels)
 {
-    osg::notify(osg::NOTICE)<<std::endl<<"started DataSet::createDestination("<<numLevels<<")"<<std::endl;
+    my_notify(osg::NOTICE)<<"started DataSet::createDestination("<<numLevels<<")"<<std::endl;
 
     computeDestinationGraphFromSources(numLevels);
     
     updateSourcesForDestinationGraphNeeds();
 
-    osg::notify(osg::NOTICE)<<"completed DataSet::createDestination("<<numLevels<<")"<<std::endl;
+    my_notify(osg::NOTICE)<<"completed DataSet::createDestination("<<numLevels<<")"<<std::endl;
 
 }
 
@@ -3757,7 +3767,7 @@ void DataSet::_buildDestination(bool writeToDisk)
     if (_destinationGraph.valid())
     {
         std::string filename = _tileBasename+_tileExtension;
-        osg::notify(osg::NOTICE)<<std::endl<<"started DataSet::writeDestination("<<filename<<")"<<std::endl;
+        my_notify(osg::NOTICE)<<"started DataSet::writeDestination("<<filename<<")"<<std::endl;
 
         if (_databaseType==LOD_DATABASE)
         {
@@ -3796,7 +3806,7 @@ void DataSet::_buildDestination(bool writeToDisk)
                 // skip is level is empty.
                 if (level.empty()) continue;
                 
-                osg::notify(osg::INFO)<<"New level"<<std::endl;
+                my_notify(osg::INFO)<<"New level"<<std::endl;
 
                 Level::iterator prev_itr = level.begin();
                 _readRow(prev_itr->second);
@@ -3821,12 +3831,12 @@ void DataSet::_buildDestination(bool writeToDisk)
                 }
             }
         }
-        osg::notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<filename<<")"<<std::endl;
+        my_notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<filename<<")"<<std::endl;
 
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: no scene graph to output, no file written."<<std::endl;
+        my_notify(osg::WARN)<<"Error: no scene graph to output, no file written."<<std::endl;
     }
 
 }

@@ -6,32 +6,17 @@ using namespace osg;
 
 OrientationConverter::OrientationConverter( void )
 {
-    //_mat.makeIdent();
 }
 
 void OrientationConverter::setConversion( const Vec3 &from, const Vec3 &to )
 {
     Quat q;
-    Matrix mat;
-    // This is the default OpenGL UP vector
-    Vec3 A( 0, 1, 0 );
+    Matrix M;
 
-    // if from is not equal to the default, we must first rotate beteen A and from
-    if( A != from )
-    {
-	Vec3 aa = A;
-        q.makeRot( A, from );
-	q.get( mat );
+    q.makeRot( from, to );
+    q.get( M );
 
-	A = aa * mat;
-    }
-
-    // Now do a rotation between A and to
-
-    q.makeRot( A, to );
-    q.get( mat );
-    _cv.setMatrix( mat );
-
+    _cv.setMatrix( M );
 }
 
 
@@ -65,6 +50,5 @@ void OrientationConverter::ConvertVisitor::apply( Geode &geode )
 	    Vec3 vv = normals[i];
 	    normals[i] = vv * _mat;
 	}
-
    }
 }

@@ -154,6 +154,7 @@ osg::Group *SceneLoader::load(const std::string &filename, bool search)
         osg::ref_ptr<osg::PositionAttitudeTransform> pat = pats[j];
         if (!pat.valid()) {
             pat = new osg::PositionAttitudeTransform;
+            pat->setName(i->name);
             pats[j] = pat;
         }
 
@@ -252,11 +253,14 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
             }
 
             Scene_object so;
+            std::ostringstream oss;
+            oss << filename << "." << layer;
+            so.name = oss.str();
             so.layer_node = objnode->getChild(layer-1);
             if (so.layer_node.valid()) {            
                 scene_objects_.push_back(so);
             }
-                }
+        }
     }
 
     if (name == "PivotPosition") {

@@ -30,9 +30,9 @@ using namespace osgText;
 // define the default paths to look for fonts.
 // note delimator is : for unix, ; for windows.
 #if defined(__linux) || defined(__FreeBSD__) || defined (__sgi)
-    static char* s_FontFilePath = "/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives";
+    static char* s_FontFilePath = ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives";
 #elif defined(WIN32)
-    static char* s_FontFilePath = ".;";
+    static char* s_FontFilePath = ".;C:/windows/fonts";
 #else
     static char* s_FontFilePath = ".:";
 #endif
@@ -528,9 +528,9 @@ calcBounds(Vec3* min,Vec3* max) const
 	if(!_init)
 		return;
 
-	int h=_font->getHeight();
-	int w=_font->getWidth(_text.c_str());
-	int descender=_font->getDescender();
+	float h=_font->getHeight();
+	float w=_font->getWidth(_text.c_str());
+	float descender=_font->getDescender();
 
 	min->set(0,descender,0);
 	max->set(w,h + descender ,0);
@@ -577,9 +577,9 @@ initAlignement(Vec3* min,Vec3* max)
 	if(!_init)
 		return;
 
-	int h=_font->getHeight();
-	int w=_font->getWidth(_text.c_str());
-	int descender=_font->getDescender();
+	float h=_font->getHeight();
+	float w=_font->getWidth(_text.c_str());
+	float descender=_font->getDescender();
 
 	min->set(0,descender,0);
 	max->set(w,h + descender ,0);
@@ -591,33 +591,33 @@ initAlignement(Vec3* min,Vec3* max)
 			switch(_alignement)
 			{
 				case LEFT_TOP:
-					_alignementPos.set(0,h,0);
+					_alignementPos.set(0.0,h,0.0);
 					break;
 				case LEFT_CENTER:
-					_alignementPos.set(0,h/2,0);
+					_alignementPos.set(0.0,h/2.0,0.0);
 					break;
 				case LEFT_BOTTOM:
-					_alignementPos.set(0,0,0);
+					_alignementPos.set(0.0,0.0,0.0);
 					break;
 
 				case CENTER_TOP:
-					_alignementPos.set(w/2,h,0);
+					_alignementPos.set(w/2.0,h,0.0);
 					break;
 				case CENTER_CENTER:
-					_alignementPos.set(w/2,h/2,0);
+					_alignementPos.set(w/2.0,h/2.0,0.0);
 					break;
 				case CENTER_BOTTOM:
-					_alignementPos.set(w/2,0,0);
+					_alignementPos.set(w/2.0,0.0,0.0);
 					break;
 
 				case RIGHT_TOP:
-					_alignementPos.set(w,h,0);
+					_alignementPos.set(w,h,0.0);
 					break;
 				case RIGHT_CENTER:
-					_alignementPos.set(w,h/2,0);
+					_alignementPos.set(w,h/2.0,0.0);
 					break;
 				case RIGHT_BOTTOM:
-					_alignementPos.set(w,0,0);
+					_alignementPos.set(w,0.0,0.0);
 					break;
 			};
 			_alignementPos=-_alignementPos;
@@ -630,33 +630,33 @@ initAlignement(Vec3* min,Vec3* max)
 			switch(_alignement)
 			{
 				case LEFT_TOP:
-					_alignementPos.set(0,h + descender,0);
+					_alignementPos.set(0.0,h + descender,0.0);
 					break;
 				case LEFT_CENTER:
-					_alignementPos.set(0,(max->y()-min->y()) /2 + descender,0);
+					_alignementPos.set(0.0,(max->y()-min->y()) /2.0 + descender,0.0);
 					break;
 				case LEFT_BOTTOM:
-					_alignementPos.set(0,descender,0);
+					_alignementPos.set(0.0,descender,0.0);
 					break;
 
 				case CENTER_TOP:
-					_alignementPos.set(w/2,h + descender,0);
+					_alignementPos.set(w/2.0,h + descender,0.0);
 					break;
 				case CENTER_CENTER:
-					_alignementPos.set(w/2,(max->y()-min->y()) /2 + descender,0);
+					_alignementPos.set(w/2.0,(max->y()-min->y()) /2.0 + descender,0.0);
 					break;
 				case CENTER_BOTTOM:
-					_alignementPos.set(w/2,descender,0);
+					_alignementPos.set(w/2.0,descender,0.0);
 					break;
 
 				case RIGHT_TOP:
-					_alignementPos.set(w,h + descender,0);
+					_alignementPos.set(w,h + descender,0.0);
 					break;
 				case RIGHT_CENTER:
-					_alignementPos.set(w,(max->y()-min->y()) /2 + descender,0);
+					_alignementPos.set(w,(max->y()-min->y()) /2.0 + descender,0.0);
 					break;
 				case RIGHT_BOTTOM:
-					_alignementPos.set(w,descender,0);
+					_alignementPos.set(w,descender,0.0);
 					break;
 			};
 			_alignementPos=-_alignementPos;

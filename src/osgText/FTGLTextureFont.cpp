@@ -46,14 +46,14 @@ bool FTGLTextureFont::MakeGlyphList()
 	
 	GetSize();
 	GLuint totalMem;
-	
-	if( textureHeight > maxTextSize)
+
+	if( textureHeight > (maxTextSize-padding*2))
 	{
-		numTextures = static_cast<int>( textureHeight / maxTextSize) + 1;
+		numTextures = static_cast<int>( textureHeight / (maxTextSize-padding*2)) + 1;
 		if( numTextures > 15) // FIXME
 			numTextures = 15;
 		
-		GLsizei heightRemain = NextPowerOf2( textureHeight % maxTextSize);
+		GLsizei heightRemain = NextPowerOf2( textureHeight % (maxTextSize-padding*2));
 		totalMem = ((maxTextSize * ( numTextures - 1)) + heightRemain) * textureWidth;
 
 		glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
@@ -79,7 +79,8 @@ bool FTGLTextureFont::MakeGlyphList()
 	}
 	else
 	{
-		textureHeight = NextPowerOf2( textureHeight);
+
+		textureHeight = NextPowerOf2( textureHeight+padding*2);
 		totalMem = textureWidth * textureHeight;
 		
 		glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
@@ -95,7 +96,6 @@ bool FTGLTextureFont::MakeGlyphList()
 	return !err;
 }
 
-
 unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GLsizei width, GLsizei height, unsigned char* textdata)
 {
 	int currentTextX = padding;
@@ -105,7 +105,7 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GL
 	float currTextV = (float)padding / (float)height;
 	
 	unsigned int n;
-	
+        
 	for( n = glyphStart; n <= numGlyphs; ++n)
 	{
 		FT_Glyph* ftGlyph = face.Glyph( n, FT_LOAD_NO_HINTING);
@@ -136,6 +136,7 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GL
 		}
 	}
 
+
 	return n;
 }
 
@@ -143,13 +144,14 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GL
 void FTGLTextureFont::GetSize()
 {
 	//work out the max width. Most likely maxTextSize
-	textureWidth = NextPowerOf2( numGlyphs * glyphWidth);
+	textureWidth = NextPowerOf2( (numGlyphs * glyphWidth) + padding*2);
 	if( textureWidth > maxTextSize)
 	{
 		textureWidth = maxTextSize;
 	}
 	
-	int h = static_cast<int>( textureWidth / glyphWidth);
+	int h = static_cast<int>( (textureWidth-padding*2) / glyphWidth);
+        
 	textureHeight = (( numGlyphs / h) + 1) * glyphHeight;
 }
 

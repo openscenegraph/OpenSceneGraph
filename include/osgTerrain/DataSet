@@ -91,13 +91,16 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         struct DestinationData : public osg::Referenced, SpatialProperties
         {
         
-            DestinationData():
+            DestinationData(DataSet* dataSet):
+                _dataSet(dataSet),
                 _minDistance(0.0),
                 _maxDistance(FLT_MAX) {}
         
             
             typedef std::vector< osg::ref_ptr<osg::Node> > ModelList;
             
+            DataSet*                                    _dataSet;
+
             float                                       _minDistance;
             float                                       _maxDistance;
 
@@ -903,6 +906,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void setUseLocalTileTransform(bool flag) { _useLocalTileTransform = flag; }
         bool getUseLocalTileTransform() const { return _useLocalTileTransform; }
         
+        void setDecorateGeneratedSceneGraphWithCoordinateSystemNode(bool flag) { _decorateWithCoordinateSystemNode = flag; }
+        bool getDecorateGeneratedSceneGraphWithCoordinateSystemNode() const { return _decorateWithCoordinateSystemNode; }
+        
 
 
         CompositeDestination* createDestinationGraph(CompositeDestination* parent,
@@ -937,6 +943,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void _equalizeRow(Row& row);
         void _writeRow(Row& row);
         
+        osg::CoordinateSystemNode* decorateWithCoordinateSystemNode(osg::Node* subgraph);
+        
         void init();
 
         osg::ref_ptr<CompositeSource>               _sourceGraph;
@@ -949,8 +957,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 	float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
             
-        osg::ref_ptr<osg::CoordinateSystemNode>  _destinationCoordinateSystem;
-        osg::ref_ptr<osg::CoordinateSystemNode>  _intermediateCoordinateSystem;
+        osg::ref_ptr<osg::CoordinateSystemNode>     _destinationCoordinateSystem;
+        osg::ref_ptr<osg::CoordinateSystemNode>     _intermediateCoordinateSystem;
 
         bool                                        _convertFromGeographicToGeocentric;
         osg::ref_ptr<osg::EllipsoidModel>           _ellipsoidModel;
@@ -964,6 +972,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         GeometryType                                _geometryType;
         TextureType                                 _textureType;
         bool                                        _useLocalTileTransform;
+
+        bool                                        _decorateWithCoordinateSystemNode;
         
         osg::ref_ptr<osg::Node>                     _rootNode;
         

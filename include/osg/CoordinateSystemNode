@@ -93,7 +93,7 @@ class SG_EXPORT CoordinateSystemNode : public Group
         
                 
         /** Set the CoordinateSystem reference string, should be stored in OpenGIS Well Know Text form.*/
-        void setCoordnateSystem(const std::string& WKT) { _WKT = WKT; }
+        void setCoordinateSystem(const std::string& WKT) { _WKT = WKT; }
         
         /** Get the CoordinateSystem reference string.*/
         const std::string& getCoordinateSystem() const { return _WKT; }

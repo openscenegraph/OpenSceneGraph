@@ -9,6 +9,7 @@ CXXFILES =\
 	BlendFunc.cpp\
         ConvexPlanarOccluder.cpp\
         ConvexPlanarPolygon.cpp\
+        CoordinateSystemNode.cpp\
         ClusterCullingCallback.cpp\
 	CullFace.cpp\
 	DataInputStream.cpp\
@@ -20,6 +21,7 @@ CXXFILES =\
 	DrawElementsUShort.cpp\
 	DrawElementsUInt.cpp\
 	Drawable.cpp\
+	EllipsoidModel.cpp\
 	Exception.cpp\
 	Geode.cpp\
 	Geometry.cpp\

@@ -47,6 +47,7 @@
 #include "Switch.h"
 #include "OccluderNode.h"
 #include "Impostor.h"
+#include "CoordinateSystemNode.h"
 
 #include "LightPointNode.h"
 #include "MultiSwitch.h"
@@ -825,6 +826,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEPAGEDLOD){
         node = new osg::PagedLOD();
         ((ive::PagedLOD*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVECOORDINATESYSTEMNODE){
+        node = new osg::CoordinateSystemNode();
+        ((ive::CoordinateSystemNode*)(node))->read(this);
     }
     else if(nodeTypeID== IVESWITCH){
         node = new osg::Switch();

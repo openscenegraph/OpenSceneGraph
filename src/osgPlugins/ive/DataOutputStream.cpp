@@ -49,6 +49,7 @@
 #include "Switch.h"
 #include "OccluderNode.h"
 #include "Impostor.h"
+#include "CoordinateSystemNode.h"
 
 #include "LightPointNode.h"
 #include "MultiSwitch.h"
@@ -610,6 +611,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::Switch*>(node)){
             ((ive::Switch*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::CoordinateSystemNode*>(node)){
+            ((ive::CoordinateSystemNode*)(node))->write(this);
         }
         else if(dynamic_cast<const osgSim::MultiSwitch*>(node)){
             ((ive::MultiSwitch*)(node))->write(this);

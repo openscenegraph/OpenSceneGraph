@@ -365,7 +365,7 @@ bool Field::getFloat(double& f) const
     getFieldType();
     if (_fieldType==REAL || _fieldType==INTEGER)
     {
-        f = (float)atof(_fieldCache);
+        f = atof(_fieldCache);
         return true;
     }
     else

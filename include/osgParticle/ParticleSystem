@@ -104,7 +104,7 @@ namespace osgParticle
         /** A useful method to set the most common <CODE>StateAttribute</CODE>'s in one call.
             If <CODE>texturefile</CODE> is empty, then texturing is turned off.
         */
-        void setDefaultAttributes(const std::string &texturefile = "", bool emissive_particles = true, bool lighting = false);
+        void setDefaultAttributes(const std::string &texturefile = "", bool emissive_particles = true, bool lighting = false, int texture_unit = 0);
         
         /// (<B>EXPERIMENTAL</B>) Get the level of detail.
         inline int getLevelOfDetail() const;
@@ -126,7 +126,7 @@ namespace osgParticle
 
         inline virtual const bool computeBound() const;
         virtual void drawImmediateMode(osg::State &state);
-        inline void update_bounds(const osg::Vec3 &p);
+        inline void update_bounds(const osg::Vec3 &p, float r);
         void single_pass_render(const osg::Matrix &modelview);
 
     private:
@@ -237,19 +237,19 @@ namespace osgParticle
         return true;
     }
 
-    inline void ParticleSystem::update_bounds(const osg::Vec3 &p)
+    inline void ParticleSystem::update_bounds(const osg::Vec3 &p, float r)
     {
         if (reset_bounds_flag_) {
             reset_bounds_flag_ = false;
             bmin_ = p;
-            bmax_ = p;            
+            bmax_ = p;
         } else {
-            if (p.x() < bmin_.x()) bmin_.x() = p.x();
-            if (p.y() < bmin_.y()) bmin_.y() = p.y();
-            if (p.z() < bmin_.z()) bmin_.z() = p.z();
-            if (p.x() > bmax_.x()) bmax_.x() = p.x();
-            if (p.y() > bmax_.y()) bmax_.y() = p.y();
-            if (p.z() > bmax_.z()) bmax_.z() = p.z();
+            if (p.x() - r < bmin_.x()) bmin_.x() = p.x() - r;
+            if (p.y() - r < bmin_.y()) bmin_.y() = p.y() - r;
+            if (p.z() - r < bmin_.z()) bmin_.z() = p.z() - r;
+            if (p.x() + r > bmax_.x()) bmax_.x() = p.x() + r;
+            if (p.y() + r > bmax_.y()) bmax_.y() = p.y() + r;
+            if (p.z() + r > bmax_.z()) bmax_.z() = p.z() + r;
             
             if (!bounds_computed_) 
                 bounds_computed_ = true;

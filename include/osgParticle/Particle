@@ -171,6 +171,9 @@ namespace osgParticle
         
         /// Perform some post-rendering tasks. Called automatically by particle systems.
         inline void endRender();
+        
+        /// Get the current (interpolated) polygon size. Valid only after the first call to update().
+        inline float getCurrentSize() const;
 
     private:
         Shape shape_;
@@ -390,6 +393,11 @@ namespace osgParticle
             break;
         default: ;
         }
+    }
+    
+    inline float Particle::getCurrentSize() const
+    {
+		return current_size_;
     }
 
 

@@ -57,7 +57,7 @@ void DrawPixels::getSubImageDimensions(unsigned int& offsetX,unsigned int& offse
 }
 
 
-const bool DrawPixels::computeBound() const
+bool DrawPixels::computeBound() const
 {
     // really needs to be dependant of view poistion and projection... will implement simple version right now.
     _bbox.init();
@@ -83,11 +83,13 @@ void DrawPixels::drawImmediateMode(State&)
 
     if (_useSubImage)
     {
-        const GLvoid* pixels = _image->data();
+        const GLvoid* pixels = _image->data(_offsetX,_offsetY);
+        glPixelStorei(GL_PACK_ROW_LENGTH,_image->s());
         glDrawPixels(_width,_height,
                      (GLenum)_image->getPixelFormat(),
                      (GLenum)_image->getDataType(),
                      pixels);
+        glPixelStorei(GL_PACK_ROW_LENGTH,0);
     }
     else
     {

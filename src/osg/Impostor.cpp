@@ -58,7 +58,7 @@ void Impostor::addImpostorSprite(ImpostorSprite* is)
     }
 }
 
-const bool Impostor::computeBound() const
+bool Impostor::computeBound() const
 {
     return LOD::computeBound();
 }

@@ -105,7 +105,7 @@ void RenderBin::sort_local()
 
 struct SortByStateFunctor
 {
-    const bool operator() (const RenderGraph* lhs,const RenderGraph* rhs) const
+    bool operator() (const RenderGraph* lhs,const RenderGraph* rhs) const
     {
         return (*(lhs->_stateset)<*(rhs->_stateset));
     }
@@ -138,7 +138,7 @@ void RenderBin::sort_local_front_to_back()
 
 struct BackToFrontSortFunctor
 {
-    const bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs) const
+    bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs) const
     {
         return (rhs->_depth<lhs->_depth);
     }
@@ -299,7 +299,7 @@ void RenderBin::getPrims(osg::Statistics* primStats)
 
 }
 
-bool RenderBin::getPrims(osg::Statistics* primStats, const int nbin)
+bool RenderBin::getPrims(osg::Statistics* primStats, int nbin)
 { // collect stats for array of bins, maximum nbin 
     // (which will be modified on next call if array of primStats is too small);
     // return 1 for OK;

@@ -131,14 +131,14 @@ class SG_EXPORT State : public Referenced
 
 
         /** Apply an OpenGL mode if required. */
-        inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled)
+        inline bool applyMode(StateAttribute::GLMode mode,bool enabled)
         {
             ModeStack& ms = _modeMap[mode];
             ms.changed = true;    
             return applyMode(mode,enabled,ms);
         }
 
-        inline const bool applyTextureMode(unsigned int unit, const StateAttribute::GLMode mode,const bool enabled)
+        inline bool applyTextureMode(unsigned int unit, StateAttribute::GLMode mode,bool enabled)
         {
             ModeMap& modeMap = getOrCreateTextureModeMap(unit);
             ModeStack& ms = modeMap[mode];
@@ -147,14 +147,14 @@ class SG_EXPORT State : public Referenced
         }
 
         /** Apply an attribute if required. */
-        inline const bool applyAttribute(const StateAttribute* attribute)
+        inline bool applyAttribute(const StateAttribute* attribute)
         {
             AttributeStack& as = _attributeMap[attribute->getType()];
             as.changed = true;
             return applyAttribute(attribute,as);
         }
 
-        inline const bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
+        inline bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
         {
             AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
             AttributeStack& as = attributeMap[attribute->getType()];
@@ -163,11 +163,11 @@ class SG_EXPORT State : public Referenced
         }
        
         /** Mode has been set externally, update state to reflect this setting.*/
-        void haveAppliedMode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        void haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
         
         /** Mode has been set externally, therefore dirty the associated mode in osg::State
           * so it is applied on next call to osg::State::apply(..)*/
-        void haveAppliedMode(const StateAttribute::GLMode mode);
+        void haveAppliedMode(StateAttribute::GLMode mode);
 
         /** Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedAttribute(const StateAttribute* attribute);
@@ -179,22 +179,22 @@ class SG_EXPORT State : public Referenced
           * then use the have_applied(attribute) method as this will the osg::State to
           * track the current state more accuratly and enable lazy state updating such
           * that only changed state will be applied.*/
-        void haveAppliedAttribute(const StateAttribute::Type type);
+        void haveAppliedAttribute(StateAttribute::Type type);
 
         /** Get whether the current specified mode is enabled (true) or disabled (false).*/ 
-        const bool getLastAppliedMode(const StateAttribute::GLMode mode) const;
+        bool getLastAppliedMode(StateAttribute::GLMode mode) const;
         
         /** Get the current specified attribute, return NULL is one has not yet been applied.*/ 
-        const StateAttribute* getLastAppliedAttribute(const StateAttribute::Type type) const;
+        const StateAttribute* getLastAppliedAttribute(StateAttribute::Type type) const;
         
 
 
         /** texture Mode has been set externally, update state to reflect this setting.*/
-        void haveAppliedTextureMode(unsigned int unit, const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
         
         /** texture Mode has been set externally, therefore dirty the associated mode in osg::State
           * so it is applied on next call to osg::State::apply(..)*/
-        void haveAppliedTextureMode(unsigned int unit, const StateAttribute::GLMode mode);
+        void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode);
 
         /** texture Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedTextureAttribute(unsigned int unit, const StateAttribute* attribute);
@@ -206,13 +206,13 @@ class SG_EXPORT State : public Referenced
           * then use the have_applied(attribute) method as this will the osg::State to
           * track the current state more accuratly and enable lazy state updating such
           * that only changed state will be applied.*/
-        void haveAppliedTextureAttribute(unsigned int unit, const StateAttribute::Type type);
+        void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type);
 
         /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/ 
-        const bool getLastAppliedTextureMode(unsigned int unit, const StateAttribute::GLMode mode) const;
+        bool getLastAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode) const;
         
         /** Get the current specified texture attribute, return NULL is one has not yet been applied.*/ 
-        const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, const StateAttribute::Type type) const;
+        const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type) const;
 
 
 
@@ -437,7 +437,7 @@ class SG_EXPORT State : public Referenced
         inline void setContextID(unsigned int contextID) { _contextID=contextID; }
 
         /** Get the current OpenGL context unique ID.*/ 
-        inline const unsigned int getContextID() const { return _contextID; }
+        inline unsigned int getContextID() const { return _contextID; }
         
         
         /** Set the frame stamp for the current frame.*/
@@ -506,7 +506,7 @@ class SG_EXPORT State : public Referenced
         };
 
         /** apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack */
-        inline const bool applyMode(const StateAttribute::GLMode mode,const bool enabled,ModeStack& ms)
+        inline bool applyMode(StateAttribute::GLMode mode,bool enabled,ModeStack& ms)
         {
             if (ms.last_applied_value != enabled)
             {
@@ -522,7 +522,7 @@ class SG_EXPORT State : public Referenced
         }
 
         /** apply an attribute if required, passing in attribute and appropriate attribute stack */
-        inline const bool applyAttribute(const StateAttribute* attribute,AttributeStack& as)
+        inline bool applyAttribute(const StateAttribute* attribute,AttributeStack& as)
         {
             if (as.last_applied_attribute != attribute)
             {
@@ -536,7 +536,7 @@ class SG_EXPORT State : public Referenced
                 return false;
         }
 
-        inline const bool applyGlobalDefaultAttribute(AttributeStack& as)
+        inline bool applyGlobalDefaultAttribute(AttributeStack& as)
         {
             if (as.last_applied_attribute != as.global_default_attribute.get())
             {
@@ -614,12 +614,12 @@ class SG_EXPORT State : public Referenced
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);
 
-        void haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
-        void haveAppliedMode(ModeMap& modeMap,const StateAttribute::GLMode mode);
+        void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
+        void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode);
         void haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute* attribute);
-        void haveAppliedAttribute(AttributeMap& attributeMap,const StateAttribute::Type type);
-        const bool getLastAppliedMode(const ModeMap& modeMap,const StateAttribute::GLMode mode) const;
-        const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,const StateAttribute::Type type) const;
+        void haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type);
+        bool getLastAppliedMode(const ModeMap& modeMap,StateAttribute::GLMode mode) const;
+        const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type) const;
 
 };
 

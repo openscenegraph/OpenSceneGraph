@@ -148,7 +148,7 @@ namespace osgParticle
 
         ParticleSystem &operator=(const ParticleSystem &) { return *this; }
 
-        inline virtual const bool computeBound() const;
+        inline virtual bool computeBound() const;
         virtual void drawImmediateMode(osg::State &state);
         inline void update_bounds(const osg::Vec3 &p, float r);
         void single_pass_render(osg::State &state, const osg::Matrix &modelview);
@@ -282,7 +282,7 @@ namespace osgParticle
         return last_frame_;
     }
 
-    inline const bool ParticleSystem::computeBound() const
+    inline bool ParticleSystem::computeBound() const
     {        
         if (!bounds_computed_) {
             _bbox = def_bbox_;

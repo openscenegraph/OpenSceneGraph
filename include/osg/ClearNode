@@ -35,10 +35,10 @@ class SG_EXPORT ClearNode : public Group
         META_Node(osg, ClearNode);
 
 	/** Sets the flag which control whether a glClear is required at the beginning of each frame. */
-        inline void setRequiresClear(const bool requiresClear) { _requiresClear = requiresClear; }
+        inline void setRequiresClear(bool requiresClear) { _requiresClear = requiresClear; }
 
 	/** Gets the flag which control whether a glClear is required at the beginning of each frame. */
-        inline const bool getRequiresClear() const { return _requiresClear; }
+        inline bool getRequiresClear() const { return _requiresClear; }
 
 	/** Sets the clear color. */
         inline void setClearColor(const Vec4& color) { _clearColor = color; }

@@ -122,11 +122,7 @@ class SG_EXPORT Geometry : public Drawable
         Geometry& operator = (const Geometry&) { return *this;}
 
         virtual ~Geometry();
-
-        //virtual const bool computeBound() const;
-        
-        
-        
+       
         PrimitiveList               _primitives;
         
         ref_ptr<Vec3Array>          _vertexArray;

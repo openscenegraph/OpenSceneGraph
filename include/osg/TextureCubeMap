@@ -39,18 +39,18 @@ class SG_EXPORT TextureCubeMap : public Texture
         };
 
         /** Set the texture image for specified face. */
-        void setImage(const Face, Image* image);
+        void setImage(Face, Image* image);
 
         /** Get the texture image for specified face. */
-        Image* getImage(const Face);
+        Image* getImage(Face);
 
         /** Get the const texture image for specified face. */
-        const Image* getImage(const Face) const;
+        const Image* getImage(Face) const;
 
 
         /** Set the texture width and height. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
-        inline void setTextureSize(const int width, const int height) const
+        inline void setTextureSize(int width, int height) const
         {
             _textureWidth = width;
             _textureHeight = height;

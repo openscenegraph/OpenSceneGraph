@@ -85,10 +85,10 @@ class SG_EXPORT NodeVisitor : public Referenced
         inline VisitorType getVisitorType() const { return _visitorType; }
 
         /** Set the traversal number. Typically used to denote the frame count.*/
-        inline void setTraversalNumber(const int fn) { _traversalNumber = fn; }
+        inline void setTraversalNumber(int fn) { _traversalNumber = fn; }
         
         /** Get the traversal number. Typically used to denote the frame count.*/
-        inline const int getTraversalNumber() const { return _traversalNumber; }
+        inline int getTraversalNumber() const { return _traversalNumber; }
 
         /** Set the FrameStamp that this traversal is assoicated with.*/
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
@@ -127,7 +127,7 @@ class SG_EXPORT NodeVisitor : public Referenced
           * with the bit or between NodeVistor::_nodeMaskOverride and the Node::_nodeMask.
           * default values for _traversalMask is 0xffffffff, _nodeMaskOverride is 0x0,
           * and osg::Node::_nodeMask is 0xffffffff. */
-        inline const bool validNodeMask(const osg::Node& node) const
+        inline bool validNodeMask(const osg::Node& node) const
         {
             return (getTraversalMask() & (getNodeMaskOverride() | node.getNodeMask()))!=0;
         }
@@ -184,10 +184,10 @@ class SG_EXPORT NodeVisitor : public Referenced
         const NodePath& getNodePath() const { return _nodePath; }
         
         /** Get the Local To World Matrix from the NodePath for specified Transform::Mode, and u.*/
-        const bool getLocalToWorldMatrix(Matrix& matrix, Node* node);
+        bool getLocalToWorldMatrix(Matrix& matrix, Node* node);
         
         /** Get the World To Local Matrix from the NodePath for specified Transform::Mode.*/
-        const bool getWorldToLocalMatrix(Matrix& matrix, Node* node);
+        bool getWorldToLocalMatrix(Matrix& matrix, Node* node);
 
 
         virtual void apply(Node& node)                      { traverse(node);}

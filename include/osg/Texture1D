@@ -44,7 +44,7 @@ class SG_EXPORT Texture1D : public Texture
 
         /** Set the texture width and height. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
-        inline void setTextureSize(const int width) const
+        inline void setTextureSize(int width) const
         {
             _textureWidth = width;
         }

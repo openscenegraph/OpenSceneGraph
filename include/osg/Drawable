@@ -64,31 +64,36 @@ class SG_EXPORT Drawable : public Object
           * @param i index of the parent to get.
           * @return the parent i.
           */
-        inline Node* getParent(const unsigned int i)  { return _parents[i]; }
+        inline Node* getParent(unsigned int i)  { return _parents[i]; }
         /** Get a single const parent of Drawable.
           * @param i index of the parent to get.
           * @return the parent i.
           */
-        inline const Node* getParent(const unsigned int i) const  { return _parents[i]; }
+        inline const Node* getParent(unsigned int i) const  { return _parents[i]; }
 
         /**
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        inline const unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return _parents.size(); }
 
 
 
         /** Set the StateSet attached to the Drawable.
             Previously attached StateSet are automatically unreferenced on 
             assignment of a new drawstate.*/
-        inline void setStateSet(StateSet *state) { _dstate = state; }
+        inline void setStateSet(StateSet *state) { _stateset = state; }
         
         /** Get the attached StateSet.*/
-        inline StateSet* getStateSet() { return _dstate.get();}
+        inline StateSet* getStateSet() { return _stateset.get();}
 
         /** Get the attached const StateSet.*/
-        inline const StateSet* getStateSet() const { return _dstate.get();}
+        inline const StateSet* getStateSet() const { return _stateset.get();}
+
+        /** Get the attached const StateSet, 
+          * if one is not already attach create one, 
+          * attach it to the drawable and return a pointer to it.*/
+        inline StateSet* getOrCreateStateSet();
 
 
         /** Set the drawable to it can or cannot be used in conjunction with OpenGL
@@ -98,19 +103,19 @@ class SG_EXPORT Drawable : public Object
           * is typically used to guard against the switching on of display lists
           * on objects with dynamic internal data such as continuous Level of Detail
           * algorithms.*/
-        void setSupportsDisplayList(const bool flag);
+        void setSupportsDisplayList(bool flag);
       
         /** Get whether display lists are supported for this drawable instance.*/  
-        inline const bool getSupportsDisplayList() const { return _supportsDisplayList; }
+        inline bool getSupportsDisplayList() const { return _supportsDisplayList; }
 
 
         /** When set to true, force the draw method to use OpenGL Display List for rendering.
             If false rendering directly.  If the display list has not been already
             compile the next call to draw will automatically create the display list.*/
-        void setUseDisplayList(const bool flag);
+        void setUseDisplayList(bool flag);
 
         /** Return whether OpenGL display lists are being used for rendering.*/
-        inline const bool getUseDisplayList() const { return _useDisplayList; }
+        inline bool getUseDisplayList() const { return _useDisplayList; }
 
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
         void dirtyDisplayList();
@@ -292,7 +297,7 @@ class SG_EXPORT Drawable : public Object
 
         /** compute the bounding box of the drawable. Method must be 
             implemented by subclasses.*/
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
         
         void addParent(osg::Node* node);
         void removeParent(osg::Node* node);
@@ -301,7 +306,7 @@ class SG_EXPORT Drawable : public Object
         friend class Node;
         friend class Geode;
 
-        ref_ptr<StateSet>       _dstate;
+        ref_ptr<StateSet>       _stateset;
 
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;

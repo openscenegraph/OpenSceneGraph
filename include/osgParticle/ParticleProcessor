@@ -86,7 +86,7 @@ namespace osgParticle
         virtual ~ParticleProcessor() {}
         ParticleProcessor &operator=(const ParticleProcessor &) { return *this; }
         
-        inline const bool computeBound() const;    
+        inline bool computeBound() const;    
         
         virtual void process(double dt) = 0;
         
@@ -140,7 +140,7 @@ namespace osgParticle
         ps_ = ps;
     }
 
-    inline const bool ParticleProcessor::computeBound() const
+    inline bool ParticleProcessor::computeBound() const
     {
         _bsphere.init();
         _bsphere_computed = true;

@@ -50,30 +50,30 @@ class SG_EXPORT Camera: public osg::Referenced
         const ProjectionType getProjectionType() const { return _projectionType; }
 
         /** Set a orthographic projection. See glOrtho for further details.*/
-        void setOrtho(const double left, const double right,
-                      const double bottom, const double top,
-                      const double zNear, const double zFar);
+        void setOrtho(double left, double right,
+                      double bottom, double top,
+                      double zNear, double zFar);
                       
         /** Set a 2D orthographic projection. See gluOrtho2D for further details.*/
-        void setOrtho2D(const double left, const double right,
-                        const double bottom, const double top);
+        void setOrtho2D(double left, double right,
+                        double bottom, double top);
 
         /** Set a perspective projection. See glFrustum for further details.*/
-        void setFrustum(const double left, const double right,
-                        const double bottom, const double top,
-                        const double zNear, const double zFar);
+        void setFrustum(double left, double right,
+                        double bottom, double top,
+                        double zNear, double zFar);
 
         /** Set a symmetrical perspective projection, See gluPerspective for further details.
           * Aspect ratio is defined as width/height.*/
-        void setPerspective(const double fovy,const double aspectRatio,
-                            const double zNear, const double zFar);
+        void setPerspective(double fovy,double aspectRatio,
+                            double zNear, double zFar);
 
         /** Set a sysmmetical perspective projection using field of view.*/
-        void setFOV(const double fovx,const double fovy,
-                            const double zNear, const double zFar);
+        void setFOV(double fovx,double fovy,
+                            double zNear, double zFar);
         
         /** Set the near and far clipping planes.*/
-        void setNearFar(const double zNear, const double zFar);
+        void setNearFar(double zNear, double zFar);
 
         /** Use in combination with adjustAspectRatio, to control
           * the change in frustum clipping planes to account for
@@ -96,7 +96,7 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Adjust the clipping planes to account for a new window aspect ratio.
           * Typically used after resizing a window. Aspect ratio is defined as
           * width/height.*/
-        void adjustAspectRatio(const double newAspectRatio)
+        void adjustAspectRatio(double newAspectRatio)
         {
             adjustAspectRatio(newAspectRatio,_adjustAspectRatioMode);
         }
@@ -104,28 +104,28 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Adjust the clipping planes to account for a new window aspect ratio.
           * Typicall used after resizeing a window. Aspect ratio is defined as
           * width/height.*/
-        void adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa);
+        void adjustAspectRatio(double newAspectRatio, const AdjustAspectRatioMode aa);
 
-        const double left() const { return _left; }
-        const double right() const { return _right; }
-        const double bottom() const { return _bottom; }
-        const double top() const { return _top; }
-        const double zNear() const { return _zNear; }
-        const double zFar() const { return _zFar; }
+        double left() const { return _left; }
+        double right() const { return _right; }
+        double bottom() const { return _bottom; }
+        double top() const { return _top; }
+        double zNear() const { return _zNear; }
+        double zFar() const { return _zFar; }
 
         /** Calculate and return the equivalent fovx for the current project setting.
           * This value is only valid for when a symmetric perspective projection exists.
           * i.e. getProjectionType()==PERSPECTIVE.*/
-        const double calc_fovy() const;
+        double calc_fovy() const;
 
         /** Calculate and return the equivalent fovy for the current project setting.
           * This value is only valid for when a symmetric perspective projection exists.
           * i.e. getProjectionType()==PERSPECTIVE.*/
-        const double calc_fovx() const;
+        double calc_fovx() const;
         
         /** Calculate and return the projection aspect ratio.
           * Aspect ratio is defined as width/height.*/
-        const double calc_aspectRatio() const;
+        double calc_aspectRatio() const;
 
 
 
@@ -166,9 +166,9 @@ class SG_EXPORT Camera: public osg::Referenced
         /** set the position and orientation of the camera, using the same convention as
           * gluLookAt.
           */
-        void setLookAt(const double eyeX, const double eyeY, const double eyeZ,
-                       const double centerX, const double centerY, const double centerZ,
-                       const double upX, const double upY, const double upZ);
+        void setLookAt(double eyeX, double eyeY, double eyeZ,
+                       double centerX, double centerY, double centerZ,
+                       double upX, double upY, double upZ);
         
         /** post multiple the existing eye point and orientation by matrix.
           * note, does not affect any ModelTransforms that are applied.*/
@@ -186,10 +186,10 @@ class SG_EXPORT Camera: public osg::Referenced
         inline const Vec3& getUpVector() const      { return _up; }
 
         /** calculate look vector.*/
-        const Vec3 getLookVector() const;
+        Vec3 getLookVector() const;
 
         /** calculate side vector.*/
-        const Vec3 getSideVector() const;
+        Vec3 getSideVector() const;
 
         /** calculate the look distance which is the distance between the eye and the center.*/
         inline float getLookDistance() const { return (_center-_eye).length(); }
@@ -249,7 +249,7 @@ class SG_EXPORT Camera: public osg::Referenced
         float getFusionDistanceRatio() const { return _fusionDistanceRatio; }
 
         /** Calculate and return the fusion distance, using the FusionDistanceFunction.*/
-        const float getFusionDistance() const;
+        float getFusionDistance() const;
                 
                 
         /** Set the physical distance between the viewers eyes and the display system.
@@ -257,19 +257,19 @@ class SG_EXPORT Camera: public osg::Referenced
         void setScreenDistance(float screenDistance) { _screenDistance = screenDistance; }
 
         /** Get the physical distance between the viewers eyes and the display system.*/
-        const float getScreenDistance() const { return _screenDistance; }
+        float getScreenDistance() const { return _screenDistance; }
 
 
         
         /** Get the Projection Matrix.*/
-        const Matrix getProjectionMatrix() const;
+        Matrix getProjectionMatrix() const;
 
         /** Get the ModelView matrix. 
           * If a ModelTransform is supplied then the ModelView matrix is
           * created by multiplying the current LookAt by ModelTransform.
           * Otherwise it is simply created by using the current LookAt,
           * equivalent to using gluLookAt.*/
-        const Matrix getModelViewMatrix() const;
+        Matrix getModelViewMatrix() const;
 
 
         /** Get the camera view frustum.*/

@@ -51,7 +51,7 @@ class SG_EXPORT Quat
 	    return Vec3(_fv[0], _fv[1], _fv[2]);
 	}
 
-        inline void set(const float x, const float y, const float z, const float w)
+        inline void set(float x, float y, float z, float w)
         {
             _fv.set(x,y,z,w);
         }
@@ -82,13 +82,13 @@ class SG_EXPORT Quat
 	Also define methods for conjugate and the multiplicative inverse.		    
 	------------------------------------------------------------- */
 	/// Multiply by scalar 
-        inline const Quat operator * (const float rhs) const
+        inline const Quat operator * (float rhs) const
         {
             return Quat(_fv*rhs);
         }
 
 	/// Unary multiply by scalar 
-        inline Quat& operator *= (const float rhs)
+        inline Quat& operator *= (float rhs)
         {
             _fv*=rhs;
             return *this;		// enable nesting
@@ -119,13 +119,13 @@ class SG_EXPORT Quat
 	}
 
 	/// Divide by scalar 
-        inline const Quat operator / (const float& rhs) const
+        inline const Quat operator / (float rhs) const
         {
             return Quat(_fv/rhs);
         }
 
 	/// Unary divide by scalar 
-        inline Quat& operator /= (const float& rhs)
+        inline Quat& operator /= (float rhs)
         {
             _fv/=rhs;
             return *this;
@@ -178,19 +178,19 @@ class SG_EXPORT Quat
         }
 
         /// Length of the quaternion = sqrt( vec . vec )
-        const float length() const
+        float length() const
         {
             return _fv.length();
         }
 
         /// Length of the quaternion = vec . vec
-        const float length2() const
+        float length2() const
         {
             return _fv.length2();
         }
 
         /// Conjugate 
-        inline const Quat conj () const
+        inline Quat conj () const
         { 
              return Quat( -_fv[0], -_fv[1], -_fv[2], _fv[3] );
         }
@@ -211,9 +211,9 @@ class SG_EXPORT Quat
 
 	Not inlined - see the Quat.cpp file for implementation
 	-------------------------------------------------------- */
-        void makeRotate ( const float angle, 
-                          const float x, const float y, const float z );
-        void makeRotate ( const float angle, const Vec3& vec );
+        void makeRotate ( float angle, 
+                          float x, float y, float z );
+        void makeRotate ( float angle, const Vec3& vec );
 
         void makeRotate ( float angle1, const Vec3& axis1, 
                           float angle2, const Vec3& axis2,
@@ -233,7 +233,7 @@ class SG_EXPORT Quat
 
         /** Spherical Linear Interpolation.
 	    As t goes from 0 to 1, the Quat object goes from "from" to "to". */
-        void slerp   ( const float t, const Quat& from, const Quat& to);
+        void slerp   ( float t, const Quat& from, const Quat& to);
         
         /** Set quaternion to be equivalent to specified matrix.*/
         void set( const Matrix& m );

@@ -78,7 +78,7 @@ class SG_EXPORT Stencil : public StateAttribute
         
         inline const Function getFunction() const { return _func; }
         
-        inline const int getFunctionRef() const { return _funcRef; }
+        inline int getFunctionRef() const { return _funcRef; }
 
         inline const uint getFunctionMask() const { return _funcMask; }
         

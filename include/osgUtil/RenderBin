@@ -87,7 +87,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         /** extract stats for current draw list. */
         bool getStats(osg::Statistics* primStats);
         void getPrims(osg::Statistics* primStats);
-        bool getPrims(osg::Statistics* primStats, const int nbin);
+        bool getPrims(osg::Statistics* primStats, int nbin);
 
 
     public:

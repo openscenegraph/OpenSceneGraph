@@ -35,16 +35,16 @@ class SG_EXPORT LightSource : public Group
         inline const StateAttribute* getLight() const { return _light.get(); }
 
         /** Set the GLModes on StateSet associated with the LightSource.*/
-        void setStateSetModes(StateSet&,const StateAttribute::GLModeValue) const;
+        void setStateSetModes(StateSet&,StateAttribute::GLModeValue) const;
 
         /** Set up the local StateSet */
-        void setLocalStateSetModes(const StateAttribute::GLModeValue=StateAttribute::ON);
+        void setLocalStateSetModes(StateAttribute::GLModeValue=StateAttribute::ON);
 
     protected:
 
         virtual ~LightSource();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         StateAttribute::GLModeValue     _value;
         ref_ptr<StateAttribute>         _light;

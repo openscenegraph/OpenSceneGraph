@@ -24,9 +24,9 @@ class SG_EXPORT Plane
 
 	inline Plane():_fv(0.0f,0.0f,0.0f,0.0f) { _lowerBBCorner = 0; _upperBBCorner = 0; }
 	inline Plane(const Plane& pl):_fv(pl._fv) { calculateUpperLowerBBCorners(); }
-	inline Plane(const float a,const  float b,const float c,const float d):_fv(a,b,c,d) { calculateUpperLowerBBCorners(); }
+	inline Plane(float a,float b,float c,float d):_fv(a,b,c,d) { calculateUpperLowerBBCorners(); }
 	inline Plane(const Vec4& vec):_fv(vec) { calculateUpperLowerBBCorners(); }
-	inline Plane(const Vec3& norm,const float d):_fv(norm[0],norm[1],norm[2],d) { calculateUpperLowerBBCorners(); }
+	inline Plane(const Vec3& norm,float d):_fv(norm[0],norm[1],norm[2],d) { calculateUpperLowerBBCorners(); }
         inline Plane(const Vec3& v1, const Vec3& v2, const Vec3& v3) { set(v1,v2,v3); calculateUpperLowerBBCorners(); }
         
         inline Plane& operator = (const Plane& pl)
@@ -39,9 +39,9 @@ class SG_EXPORT Plane
         }
 
 	inline void set(const Plane& pl) { _fv = pl._fv; calculateUpperLowerBBCorners(); }
-	inline void set(const float a,const  float b,const float c,const float d) { _fv.set(a,b,c,d); calculateUpperLowerBBCorners(); }
+	inline void set(float a,float b,float c,float d) { _fv.set(a,b,c,d); calculateUpperLowerBBCorners(); }
 	inline void set(const Vec4& vec) { _fv = vec; calculateUpperLowerBBCorners(); }
-	inline void set(const Vec3& norm,const float d) { _fv.set(norm[0],norm[1],norm[2],d); calculateUpperLowerBBCorners(); }
+	inline void set(const Vec3& norm,float d) { _fv.set(norm[0],norm[1],norm[2],d); calculateUpperLowerBBCorners(); }
         inline void set(const Vec3& v1, const Vec3& v2, const Vec3& v3)
         {
             osg::Vec3 norm = (v2-v1)^(v3-v2);
@@ -78,20 +78,20 @@ class SG_EXPORT Plane
 
         }
 
-        inline const bool valid() const { return _fv[0]==0.0f && _fv[1]==0.0f && _fv[2]==0.0f; }
+        inline bool valid() const { return _fv[0]==0.0f && _fv[1]==0.0f && _fv[2]==0.0f; }
 
 	inline Vec4& asVec4() { return _fv; }
 
 	inline const Vec4& asVec4() const { return _fv; }
         
-        inline float& operator [] (const int i) { return _fv[i]; }
-        inline float  operator [] (const int i) const { return _fv[i]; }
+        inline float& operator [] (unsigned int i) { return _fv[i]; }
+        inline float  operator [] (unsigned int i) const { return _fv[i]; }
         
         
         inline osg::Vec3 getNormal() { return osg::Vec3(_fv[0],_fv[1],_fv[2]); }
       
               /** calculate the distance between a point and the plane.*/
-        inline const float distance(const osg::Vec3& v) const
+        inline float distance(const osg::Vec3& v) const
         {
             return _fv[0]*v.x()+
                    _fv[1]*v.y()+
@@ -103,7 +103,7 @@ class SG_EXPORT Plane
             return 1 if the bs is completely above plane,
             return 0 if the bs intersects the plane,
             return -1 if the bs is completely below the plane.*/
-        inline const int intersect(const std::vector<Vec3>& vertices) const
+        inline int intersect(const std::vector<Vec3>& vertices) const
         {
             if (vertices.empty()) return -1;
         
@@ -132,7 +132,7 @@ class SG_EXPORT Plane
             return 1 if the bs is completely above plane,
             return 0 if the bs intersects the plane,
             return -1 if the bs is completely below the plane.*/
-        inline const int intersect(const BoundingSphere& bs) const
+        inline int intersect(const BoundingSphere& bs) const
         {
             float d = distance(bs.center());
                       
@@ -146,7 +146,7 @@ class SG_EXPORT Plane
             return 1 if the bs is completely above plane,
             return 0 if the bs intersects the plane,
             return -1 if the bs is completely below the plane.*/
-        inline const int intersect(const BoundingBox& bb) const
+        inline int intersect(const BoundingBox& bb) const
         {
              // if lowest point above plane than all above.
             if (distance(bb.corner(_lowerBBCorner))>0.0f) return 1;

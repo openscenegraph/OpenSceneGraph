@@ -81,7 +81,7 @@ class SG_EXPORT Image : public Object
             
 
         /** Scale image to specified size. */
-        void scaleImage(const int s,const int t,const int r);
+        void scaleImage(int s,int t,int r);
 
         /** Copy a source Image into a subpart of this Image at specified position.
           * Typically used to copy to an already allocated image, such as creating
@@ -93,35 +93,35 @@ class SG_EXPORT Image : public Object
 
 
         /** Width of image.*/
-        inline const int s() const { return _s; }
+        inline int s() const { return _s; }
 
         /** Height of image.*/
-        inline const int t() const { return _t; }
+        inline int t() const { return _t; }
         
         /** Depth of image.*/
-        inline const int r() const { return _r; }
+        inline int r() const { return _r; }
         
         void setInternalTextureFormat(GLint internalFormat);
-        inline const GLint getInternalTextureFormat() const { return _internalTextureFormat; }
+        inline GLint getInternalTextureFormat() const { return _internalTextureFormat; }
         
-        void setPixelFormat(const GLenum format);
-        inline const GLenum getPixelFormat() const { return _pixelFormat; }
+        void setPixelFormat(GLenum format);
+        inline GLenum getPixelFormat() const { return _pixelFormat; }
         
-        inline const GLenum getDataType() const { return _dataType; }        
+        inline GLenum getDataType() const { return _dataType; }        
         
-        inline const unsigned int getPacking() const { return _packing; }
+        inline unsigned int getPacking() const { return _packing; }
         
         /** return the numbers of bits required for each pixel.*/        
-        inline const unsigned int getPixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
+        inline unsigned int getPixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
 
         /** return the numbers of bytes each row of pixels occupies once it has been packed.*/        
-        inline const unsigned int getRowSizeInBytes() const { return computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing); }
+        inline unsigned int getRowSizeInBytes() const { return computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing); }
 
         /** return the numbers of bytes each image (_s*_t) of pixels occupies..*/
-        inline const unsigned int getImageSizeInBytes() const { return getRowSizeInBytes()*_t; }
+        inline unsigned int getImageSizeInBytes() const { return getRowSizeInBytes()*_t; }
         
         /** return the numbers of bytes the whole row/image/volume of pixels occupies.*/        
-        inline const unsigned int getTotalSizeInBytes() const { return getImageSizeInBytes()*_r; }
+        inline unsigned int getTotalSizeInBytes() const { return getImageSizeInBytes()*_r; }
 
         /** raw image data.*/
         inline unsigned char *data() { return _data; }
@@ -136,7 +136,7 @@ class SG_EXPORT Image : public Object
             return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
         }
         
-        inline const unsigned char* data(int column, int row=0,int image=0) const
+        inline unsigned char* data(int column, int row=0,int image=0) const
         {
             if (!_data) return NULL;
             return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
@@ -159,18 +159,18 @@ class SG_EXPORT Image : public Object
         inline void dirty() { ++_modifiedTag; }      
       
         /** Set the modified tag value, only used by osg::Texture when using texture subloading. */
-        inline void setModifiedTag(const unsigned int value) { _modifiedTag=value; }
+        inline void setModifiedTag(unsigned int value) { _modifiedTag=value; }
 
         /** Get modified tag value, only used by osg::Texture when using texture subloading. */
-        inline const unsigned int getModifiedTag() const { return _modifiedTag; }
+        inline unsigned int getModifiedTag() const { return _modifiedTag; }
 
 
-        static const bool isPackedType(GLenum type);
-        static const unsigned int computeNumComponents(GLenum format);
-        static const unsigned int computePixelSizeInBits(GLenum format,GLenum type);
-        static const unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
-        static const unsigned int computeNearestPowerOfTwo(unsigned int s,float bias=0.5f);
-        
+        static bool isPackedType(GLenum type);
+        static unsigned int computeNumComponents(GLenum format);
+        static unsigned int computePixelSizeInBits(GLenum format,GLenum type);
+        static unsigned int computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing);
+        static unsigned int computeNearestPowerOfTwo(unsigned int s,float bias=0.5f);
+                
         // precomputed mipmaps stuff;
         typedef std::vector< unsigned int > MipmapDataType;
 
@@ -231,7 +231,7 @@ SG_EXPORT extern Geode* createGeodeForImage(Image* image);
  * to return for readNode().  
  * Use the specified s and t values scale the dimensions of the image.
  */
-SG_EXPORT extern Geode* createGeodeForImage(Image* image,const float s,const float t);
+SG_EXPORT extern Geode* createGeodeForImage(Image* image,float s,float t);
 
 }
 

@@ -59,14 +59,14 @@ class SG_EXPORT StateSet : public Object
         typedef std::map<StateAttribute::GLMode,StateAttribute::GLModeValue>  ModeList;
 
         /** set this StateSet to contain specified GLMode and value.*/
-        void setMode(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value);
+        void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         /** set this StateSet to inherit specified GLMode type from parents.
           * has the effect of deleting any GlMode of specified type from StateSet.*/
-        void setModeToInherit(const StateAttribute::GLMode mode);
+        void setModeToInherit(StateAttribute::GLMode mode);
 
         /** get specified GLModeValue for specified GLMode.
           * returns INHERIT if no GLModeValue is contained within StateSet.*/
-        const StateAttribute::GLModeValue getMode(const StateAttribute::GLMode mode) const;
+        StateAttribute::GLModeValue getMode(StateAttribute::GLMode mode) const;
 
         /** return the list of all GLModes contained in this StateSet.*/
         inline ModeList& getModeList() { return _modeList; }
@@ -82,24 +82,24 @@ class SG_EXPORT StateSet : public Object
         typedef std::map<StateAttribute::Type,RefAttributePair>                  AttributeList;
 
         /** set this StateSet to contain specified attribute and override flag.*/
-        void setAttribute(StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
+        void setAttribute(StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
         /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
-        void setAttributeAndModes(StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON);
+        void setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
         /** set this StateSet to inherit specified attribute type from parents.
           * has the effect of deleting any state attributes of specified type from StateSet.*/
-        void setAttributeToInherit(const StateAttribute::Type type);
+        void setAttributeToInherit(StateAttribute::Type type);
 
         /** get specified StateAttribute for specified type.
           * returns NULL if no type is contained within StateSet.*/
-        StateAttribute* getAttribute(const StateAttribute::Type type);
+        StateAttribute* getAttribute(StateAttribute::Type type);
 
         /** get specified const StateAttribute for specified type.
           * returns NULL if no type is contained within const StateSet.*/
-        const StateAttribute* getAttribute(const StateAttribute::Type type) const;
+        const StateAttribute* getAttribute(StateAttribute::Type type) const;
 
         /** get specified RefAttributePair for specified type.
           * returns NULL if no type is contained within StateSet.*/
-        const RefAttributePair* getAttributePair(const StateAttribute::Type type) const;
+        const RefAttributePair* getAttributePair(StateAttribute::Type type) const;
         
         /** return the list of all StateAttributes contained in this StateSet.*/
         inline AttributeList& getAttributeList() { return _attributeList; }
@@ -112,14 +112,14 @@ class SG_EXPORT StateSet : public Object
         typedef std::vector<ModeList>       TextureModeList;
 
         /** set this StateSet to contain specified GLMode and value.*/
-        void setTextureMode(unsigned int unit,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value);
+        void setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         /** set this StateSet to inherit specified GLMode type from parents.
           * has the effect of deleting any GlMode of specified type from StateSet.*/
-        void setTextureModeToInherit(unsigned int unit,const StateAttribute::GLMode mode);
+        void setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode);
 
         /** get specified GLModeValue for specified GLMode.
           * returns INHERIT if no GLModeValue is contained within StateSet.*/
-        const StateAttribute::GLModeValue getTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const;
+        StateAttribute::GLModeValue getTextureMode(unsigned int unit,StateAttribute::GLMode mode) const;
 
         /** return the list of all Texture related GLModes contained in this StateSet.*/
         inline TextureModeList& getTextureModeList() { return _textureModeList; }
@@ -131,24 +131,24 @@ class SG_EXPORT StateSet : public Object
         typedef std::vector<AttributeList>  TextureAttributeList;
 
         /** set this StateSet to contain specified attribute and override flag.*/
-        void setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
+        void setTextureAttribute(unsigned int unit,StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
         /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
-        void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, const StateAttribute::GLModeValue value=StateAttribute::ON);
+        void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
         /** set this StateSet to inherit specified attribute type from parents.
           * has the effect of deleting any state attributes of specified type from StateSet.*/
-        void setTextureAttributeToInherit(unsigned int unit,const StateAttribute::Type type);
+        void setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type);
 
         /** get specified Texture related StateAttribute for specified type.
           * returns NULL if no type is contained within StateSet.*/
-        StateAttribute* getTextureAttribute(unsigned int unit,const StateAttribute::Type type);
+        StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type);
 
         /** get specified Texture related const StateAttribute for specified type.
           * returns NULL if no type is contained within const StateSet.*/
-        const StateAttribute* getTextureAttribute(unsigned int unit,const StateAttribute::Type type) const;
+        const StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type) const;
 
         /** get specified Texture related RefAttributePair for specified type.
           * returns NULL if no type is contained within StateSet.*/
-        const RefAttributePair* getTextureAttributePair(unsigned int unit,const StateAttribute::Type type) const;
+        const RefAttributePair* getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const;
         
         /** return the list of all Texture related StateAttributes contained in this StateSet.*/
         inline TextureAttributeList& getTextureAttributeList() { return _textureAttributeList; }
@@ -157,9 +157,9 @@ class SG_EXPORT StateSet : public Object
         inline const TextureAttributeList& getTextureAttributeList() const { return _textureAttributeList; }
 
 
-        void setAssociatedModes(const StateAttribute* attribute, const StateAttribute::GLModeValue value);
+        void setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value);
         
-        void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, const StateAttribute::GLModeValue value);
+        void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value);
 
         enum RenderingHint
         {
@@ -173,10 +173,10 @@ class SG_EXPORT StateSet : public Object
           * draw bin to drop associated osg::Drawables in. For opaque
           * objects OPAQUE_BIN would typical used, which TRANSPARENT_BIN
           * should be used for objects which need to be depth sorted.*/
-        void setRenderingHint(const int hint);
+        void setRenderingHint(int hint);
 
         /** get the RenderingHint of the StateSet.*/
-        inline const int getRenderingHint() const      { return _renderingHint; }
+        inline int getRenderingHint() const      { return _renderingHint; }
 
         enum RenderBinMode
         {
@@ -187,19 +187,19 @@ class SG_EXPORT StateSet : public Object
         };
 
         /** set the render bin details.*/
-        void setRenderBinDetails(const int binNum,const std::string& binName,const RenderBinMode mode=USE_RENDERBIN_DETAILS);
+        void setRenderBinDetails(int binNum,const std::string& binName,RenderBinMode mode=USE_RENDERBIN_DETAILS);
                 
         /** set the render bin details to inherit.*/
         void setRendingBinToInherit();
         
         /** get the render bin mode.*/
-        inline const RenderBinMode getRenderBinMode() const { return _binMode; }
+        inline RenderBinMode getRenderBinMode() const { return _binMode; }
 
         /** get whether the render bin details are set and should be used.*/
-        inline const bool useRenderBinDetails() const { return _binMode!=INHERIT_RENDERBIN_DETAILS; }
+        inline bool useRenderBinDetails() const { return _binMode!=INHERIT_RENDERBIN_DETAILS; }
 
         /** get the render bin number.*/
-        inline const int getBinNumber() const { return _binNum; }
+        inline int getBinNumber() const { return _binNum; }
 
         /** get the render bin name.*/
         inline const std::string& getBinName() const { return _binName; }
@@ -237,10 +237,10 @@ class SG_EXPORT StateSet : public Object
         int compareAttributePtrs(const AttributeList& lhs,const AttributeList& rhs);
         int compareAttributeContents(const AttributeList& lhs,const AttributeList& rhs);
 
-        void setMode(ModeList& modeList,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value);
-        void setModeToInherit(ModeList& modeList,const StateAttribute::GLMode mode);
-        const StateAttribute::GLModeValue getMode(const ModeList& modeList,const StateAttribute::GLMode mode) const;
-        void setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, const StateAttribute::GLModeValue value);
+        void setMode(ModeList& modeList,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
+        void setModeToInherit(ModeList& modeList,StateAttribute::GLMode mode);
+        StateAttribute::GLModeValue getMode(const ModeList& modeList,StateAttribute::GLMode mode) const;
+        void setAssociatedModes(ModeList& modeList,const StateAttribute* attribute, StateAttribute::GLModeValue value);
 
         void setAttribute(AttributeList& attributeList,StateAttribute *attribute, const StateAttribute::OverrideValue value=StateAttribute::OFF);
 

@@ -42,7 +42,7 @@ class SG_EXPORT OccluderNode : public Group
         virtual ~OccluderNode() {}
         
         /** Override's Group's computeBound.*/
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         ref_ptr<ConvexPlanarOccluder>   _occluder;
 };

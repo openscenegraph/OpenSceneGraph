@@ -99,7 +99,7 @@ class TransformVisitor : public NodeVisitor
 };
 
 
-const bool NodeVisitor::getLocalToWorldMatrix(Matrix& matrix, Node* node)
+bool NodeVisitor::getLocalToWorldMatrix(Matrix& matrix, Node* node)
 {
     TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,this);
     for(NodePath::iterator itr=_nodePath.begin();
@@ -112,7 +112,7 @@ const bool NodeVisitor::getLocalToWorldMatrix(Matrix& matrix, Node* node)
     return true;
 }
 
-const bool NodeVisitor::getWorldToLocalMatrix(Matrix& matrix, Node* node)
+bool NodeVisitor::getWorldToLocalMatrix(Matrix& matrix, Node* node)
 {
     TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,this);
     for(NodePath::iterator itr=_nodePath.begin();

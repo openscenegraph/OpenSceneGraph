@@ -48,7 +48,7 @@ class SG_EXPORT DrawPixels : public Drawable
 
         void getSubImageDimensions(unsigned int& offsetX,unsigned int& offsetY,unsigned int& width,unsigned int& height) const;
 
-        const bool getUseSubImage() const { return _useSubImage; }
+        bool getUseSubImage() const { return _useSubImage; }
 
 
         virtual void drawImmediateMode(State& state);
@@ -60,7 +60,7 @@ class SG_EXPORT DrawPixels : public Drawable
 
         virtual ~DrawPixels();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
         
         Vec3            _position;
         ref_ptr<Image>  _image;

@@ -94,9 +94,9 @@ Camera::~Camera()
 
 
 /** Set a orthographics projection. See glOrtho for further details.*/
-void Camera::setOrtho(const double left, const double right,
-                      const double bottom, const double top,
-                      const double zNear, const double zFar)
+void Camera::setOrtho(double left, double right,
+                      double bottom, double top,
+                      double zNear, double zFar)
 {
     _projectionType = ORTHO;
     _left = left;
@@ -109,8 +109,8 @@ void Camera::setOrtho(const double left, const double right,
 
 
 /** Set a 2D orthographics projection. See gluOrtho2D for further details.*/
-void Camera::setOrtho2D(const double left, const double right,
-                        const double bottom, const double top)
+void Camera::setOrtho2D(double left, double right,
+                        double bottom, double top)
 {
     _projectionType = ORTHO2D;
     _left = left;
@@ -123,9 +123,9 @@ void Camera::setOrtho2D(const double left, const double right,
 
 
 /** Set a perspective projection. See glFrustum for further details.*/
-void Camera::setFrustum(const double left, const double right,
-                        const double bottom, const double top,
-                        const double zNear, const double zFar)
+void Camera::setFrustum(double left, double right,
+                        double bottom, double top,
+                        double zNear, double zFar)
 {
     _projectionType = FRUSTUM;
     // note, in Frustum/Perspective mode these values are scaled
@@ -142,8 +142,8 @@ void Camera::setFrustum(const double left, const double right,
 
 
 /** Set a sysmetical perspective projection, See gluPerspective for further details.*/
-void Camera::setPerspective(const double fovy,const double aspectRatio,
-                            const double zNear, const double zFar)
+void Camera::setPerspective(double fovy,double aspectRatio,
+                            double zNear, double zFar)
 {
     _projectionType = PERSPECTIVE;
     
@@ -163,8 +163,8 @@ void Camera::setPerspective(const double fovy,const double aspectRatio,
 }
 
 /** Set a sysmetical perspective projection using field of view.*/
-void Camera::setFOV(const double fovx,const double fovy,
-                    const double zNear, const double zFar)
+void Camera::setFOV(double fovx,double fovy,
+                    double zNear, double zFar)
 {
     _projectionType = PERSPECTIVE;
     
@@ -185,7 +185,7 @@ void Camera::setFOV(const double fovx,const double fovy,
 }
 
 /** Set the near and far clipping planes.*/
-void Camera::setNearFar(const double zNear, const double zFar)
+void Camera::setNearFar(double zNear, double zFar)
 {
     if (_projectionType==FRUSTUM || _projectionType==PERSPECTIVE)
     {
@@ -208,7 +208,7 @@ void Camera::setNearFar(const double zNear, const double zFar)
 
 /** Adjust the clipping planes to account for a new window aspcect ratio.
   * Typicall used after resizeing a window.*/
-void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa)
+void Camera::adjustAspectRatio(double newAspectRatio, const AdjustAspectRatioMode aa)
 {
     if (newAspectRatio<0.01f || newAspectRatio>100.0f)
     {
@@ -236,7 +236,7 @@ void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRa
 /** Calculate and return the equivilant fovx for the current project setting.
   * This value is only valid for when a symetric persepctive projection exists.
   * i.e. getProjectionType()==PERSPECTIVE.*/
-const double Camera::calc_fovy() const
+double Camera::calc_fovy() const
 {
      // note, _right & _left are prescaled by znear so 
      // no need to account for it.
@@ -247,7 +247,7 @@ const double Camera::calc_fovy() const
 /** Calculate and return the equivilant fovy for the current project setting.
   * This value is only valid for when a symetric persepctive projection exists.
   * i.e. getProjectionType()==PERSPECTIVE.*/
-const double Camera::calc_fovx() const
+double Camera::calc_fovx() const
 {
      // note, _right & _left are prescaled by znear so 
      // no need to account for it.
@@ -256,14 +256,14 @@ const double Camera::calc_fovx() const
 
 
 /** Calculate and return the projection aspect ratio.*/
-const double Camera::calc_aspectRatio() const
+double Camera::calc_aspectRatio() const
 {
     double delta_x = _right-_left;
     double delta_y = _top-_bottom;
     return delta_x/delta_y;
 }
 
-const Matrix Camera::getProjectionMatrix() const
+Matrix Camera::getProjectionMatrix() const
 {
     // set up the projection matrix.
     switch(_projectionType)
@@ -316,9 +316,9 @@ void Camera::setLookAt(const Vec3& eye,
 }
 
 
-void Camera::setLookAt(const double eyeX, const double eyeY, const double eyeZ,
-               const double centerX, const double centerY, const double centerZ,
-               const double upX, const double upY, const double upZ)
+void Camera::setLookAt(double eyeX, double eyeY, double eyeZ,
+               double centerX, double centerY, double centerZ,
+               double upX, double upY, double upZ)
 {
     _lookAtType = USE_EYE_CENTER_AND_UP;
     _eye.set(eyeX,eyeY,eyeZ);
@@ -342,14 +342,14 @@ void Camera::transformLookAt(const Matrix& matrix)
     _lookAtType=USE_EYE_CENTER_AND_UP;
 }
 
-const Vec3 Camera::getLookVector() const
+Vec3 Camera::getLookVector() const
 {
     osg::Vec3 lv(_center-_eye);
     lv.normalize();
     return lv;
 }
 
-const Vec3 Camera::getSideVector() const
+Vec3 Camera::getSideVector() const
 {
     osg::Vec3 lv(_center-_eye);
     lv.normalize();
@@ -359,7 +359,7 @@ const Vec3 Camera::getSideVector() const
 }
 
 
-void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
+void Camera::attachTransform(TransformMode mode, Matrix* matrix)
 {
     switch(mode)
     {
@@ -414,7 +414,7 @@ void Camera::attachTransform(const TransformMode mode, Matrix* matrix)
     }
 }
 
-Matrix* Camera::getTransform(const TransformMode mode)
+Matrix* Camera::getTransform(TransformMode mode)
 {
     switch(mode)
     {
@@ -435,7 +435,7 @@ const Matrix* Camera::getTransform(const TransformMode mode) const
 }
 
 
-const Matrix Camera::getModelViewMatrix() const
+Matrix Camera::getModelViewMatrix() const
 {
     Matrix modelViewMatrix;
 
@@ -475,7 +475,7 @@ const Matrix Camera::getModelViewMatrix() const
     return modelViewMatrix;
 }
 
-const float Camera::getFusionDistance() const
+float Camera::getFusionDistance() const
 {
     switch(_fusionDistanceMode)
     {

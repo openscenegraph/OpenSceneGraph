@@ -71,7 +71,7 @@ class OSGTEXT_EXPORT Font : public osg::Object
         bool open(const char* font);
         bool open(const std::string& font);
 
-        virtual bool create(osg::State& state,int  pointSize, const unsigned int res = 72 );
+        virtual bool create(osg::State& state,int  pointSize, unsigned int res = 72 );
         virtual bool create(osg::State& state);
         virtual void output(osg::State& state,const char* text);
 

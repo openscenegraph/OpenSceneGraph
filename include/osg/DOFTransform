@@ -102,9 +102,9 @@ class SG_EXPORT DOFTransform : public Transform
 
         void animate();
 
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
+        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
-        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
+        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
     protected:
         virtual ~DOFTransform() {}

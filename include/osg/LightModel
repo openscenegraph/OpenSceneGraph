@@ -54,16 +54,16 @@ class SG_EXPORT LightModel : public StateAttribute
             SINGLE_COLOR
         };
         
-        void setColorControl(const ColorControl cc) { _colorControl = cc; }
-        inline const ColorControl getColorControl() const { return _colorControl; }
+        void setColorControl(ColorControl cc) { _colorControl = cc; }
+        inline ColorControl getColorControl() const { return _colorControl; }
 
 
-        void setLocalViewer(const bool localViewer) { _localViewer=localViewer; }
-        inline const bool getLocalViewer() const { return _localViewer; }
+        void setLocalViewer(bool localViewer) { _localViewer=localViewer; }
+        inline bool getLocalViewer() const { return _localViewer; }
 
 
-        void setTwoSided(const bool twoSided) { _twoSided = twoSided; }
-        inline const bool getTwoSided() const { return _twoSided; }
+        void setTwoSided(bool twoSided) { _twoSided = twoSided; }
+        inline bool getTwoSided() const { return _twoSided; }
 
 
 

@@ -70,14 +70,14 @@ class SG_EXPORT Fog : public StateAttribute
         inline void  setMode( const Mode mode )         { _mode = mode; }
         inline Mode getMode() const                     { return _mode; }
 
-        inline void  setDensity( const float density )  { _density = density; }
-        inline const float getDensity() const           { return _density; }
+        inline void  setDensity( float density )  { _density = density; }
+        inline float getDensity() const           { return _density; }
 
-        inline void  setStart( const float start )      { _start = start; }
-        inline const float getStart() const             { return _start; }
+        inline void  setStart( float start )      { _start = start; }
+        inline float getStart() const             { return _start; }
 
-        inline void  setEnd( const float end )          { _end = end; }
-        inline const float getEnd() const               { return _end; }
+        inline void  setEnd( float end )          { _end = end; }
+        inline float getEnd() const               { return _end; }
 
         inline void  setColor( const Vec4 &color )      { _color = color; }
         inline const Vec4& getColor() const             { return _color; }

@@ -38,7 +38,7 @@ class SG_EXPORT Referenced
         inline void unref_nodelete() const { --_refCount; }
         
         /** return the number pointers currently referencing this object. */
-        inline const int referenceCount() const { return _refCount; }
+        inline int referenceCount() const { return _refCount; }
 
     protected:
         virtual ~Referenced();

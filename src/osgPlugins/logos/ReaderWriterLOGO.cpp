@@ -166,7 +166,7 @@ class Logos: public osg::Drawable
         Logos& operator = (const Logos&) { return *this;}
 
         virtual ~Logos() {}
-        virtual const bool computeBound() const 
+        virtual bool computeBound() const 
 	{
 	    _bbox.set( -1, -1, -1, 1, 1, 1);
             return true;

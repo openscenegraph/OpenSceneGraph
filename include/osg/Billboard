@@ -31,9 +31,9 @@ class SG_EXPORT Billboard : public Geode
         META_Node(osg, Billboard);
 
         /** Set the billboard rotation mode. */
-        void setMode(const Mode mode);
+        void setMode(Mode mode);
         /** Get the billboard rotation mode. */
-        inline const Mode getMode() const { return _mode; }
+        inline Mode getMode() const { return _mode; }
 
         /** Set the axis about which all the billboard's drawable rotate. Only utlized when mode==AXIAL_ROT*/
         void setAxis(const Vec3& axis);
@@ -47,9 +47,9 @@ class SG_EXPORT Billboard : public Geode
 
 
         /** Set the position of specified drawable. */
-        inline void setPos(int i,const Vec3& pos)      { _positionList[i] = pos; }
+        inline void setPos(unsigned int i,const Vec3& pos)      { _positionList[i] = pos; }
         /** Get the position of specified drawable. */
-        inline const Vec3& getPos(int i) const         { return _positionList[i]; }
+        inline const Vec3& getPos(unsigned int i) const         { return _positionList[i]; }
         
         /** PositionList represents a list of pivot points for each drawable.*/
         typedef std::vector<Vec3> PositionList;
@@ -65,14 +65,14 @@ class SG_EXPORT Billboard : public Geode
          *  reference count, and dirty the bounding box to cause it to recompute on 
          *  next getBound() and return true for success.  Otherwise return false.
          */
-        virtual const bool addDrawable( Drawable *gset );
+        virtual bool addDrawable( Drawable *gset );
 
         /** Add Drawable to Geode at position pos.
          *  If gset not NULL and is not contained in Billboard then increment its 
          *  reference count, and dirty the bounding box to cause it to recompute on 
          *  next getBound() and return true for success.  Otherwise return false.
          */
-        virtual const bool addDrawable(Drawable *gset,const Vec3& pos);
+        virtual bool addDrawable(Drawable *gset,const Vec3& pos);
 
         /** Remove Drawable and associated position from Billboard.
          *  If gset is contained in Billboard then remove it from the geoset
@@ -81,23 +81,23 @@ class SG_EXPORT Billboard : public Geode
          *  return true for success.  If gset is not found then return false
          *  and do not the reference count of gset is left unchanged.
          */
-        virtual const bool removeDrawable( Drawable *gset );
+        virtual bool removeDrawable( Drawable *gset );
                 
 
 
         
-        inline const bool getMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
+        inline bool getMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
         {
             return computeMatrix(modelview,eye_local,pos_local);
         }
 
-        virtual const bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
+        virtual bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
 
     protected:
 
         virtual ~Billboard();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         enum AxisAligned
         {

@@ -72,12 +72,12 @@ void ClipPlane::getClipPlane(double* plane) const
     plane[3] = _clipPlane[3];
 }
 
-void ClipPlane::setClipPlaneNum(const unsigned int num)
+void ClipPlane::setClipPlaneNum(unsigned int num)
 {
     _clipPlaneNum = num;
 }
 
-const unsigned int ClipPlane::getClipPlaneNum() const
+unsigned int ClipPlane::getClipPlaneNum() const
 {
     return _clipPlaneNum;
 }

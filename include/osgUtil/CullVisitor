@@ -72,31 +72,31 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
           * LOD children for rendering. Setting active to true forces the
           * CullVisitor to create the appropriate pre-rendering stages which
           * render to the ImpostorSprite's texture.*/
-        void setImpostorsActive(const bool active) { _impostorActive = active; }
+        void setImpostorsActive(bool active) { _impostorActive = active; }
         
         /** Get whether impostors are active or not. */
-        const bool getImpostorsActive() const { return _impostorActive; }
+        bool getImpostorsActive() const { return _impostorActive; }
 
         /** Set the impostor error threshold.
           * Used in calculation of whether impostors remain valid.*/
-        void setImpostorPixelErrorThreshold(const float numPixels) { _impostorPixelErrorThreshold=numPixels; }
+        void setImpostorPixelErrorThreshold(float numPixels) { _impostorPixelErrorThreshold=numPixels; }
 
         /** Get the impostor error threshold.*/
-        const float getImpostorPixelErrorThreshold() const { return _impostorPixelErrorThreshold; }
+        float getImpostorPixelErrorThreshold() const { return _impostorPixelErrorThreshold; }
 
         /** Set whether ImpsotorSprite's should be placed in a depth sorted bin for rendering.*/
-        void setDepthSortImpostorSprites(const bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
+        void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
 
         /** Get whether ImpsotorSprite's are depth sorted bin for rendering.*/
-        const bool setDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
+        bool setDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
 
         /** Set the number of frames that an ImpsotorSprite's is kept whilst not being beyond,
           * before being recycled.*/
-        void setNumberOfFrameToKeepImpostorSprites(const int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
+        void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
 
         /** Get the number of frames that an ImpsotorSprite's is kept whilst not being beyond,
           * before being recycled.*/
-        const int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
+        int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
 
         enum ComputeNearFarMode
         {
@@ -181,9 +181,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             _currentRenderBin = rb;
         }
 
-        inline const float getCalculatedNearPlane() const { return _computed_znear; }
+        inline float getCalculatedNearPlane() const { return _computed_znear; }
         
-        inline const float getCalculatedFarPlane() const { return _computed_zfar; }
+        inline float getCalculatedFarPlane() const { return _computed_zfar; }
 
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable) { updateCalculatedNearFar(matrix,drawable.getBound()); }
 	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::BoundingBox& bb);
@@ -193,7 +193,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix);
 
         /** Add a drawable and depth to current render graph.*/
-        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth);
+        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,float depth);
 
         /** Add an attribute which is positioned related to the modelview matrix.*/
         inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr);
@@ -279,7 +279,7 @@ inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::Matrix* matrix
 }
 
 /** Add a drawable and depth to current render graph.*/
-inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth)
+inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,float depth)
 {
     if (_currentRenderGraph->leaves_empty())
     {

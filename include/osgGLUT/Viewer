@@ -48,7 +48,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
                                  float x     = 0.0, float y      = 0.0,        
                                  float width = 1.0, float height = 1.0);
 
-        const unsigned int getNumViewports() const { return _viewportList.size(); }
+        unsigned int getNumViewports() const { return _viewportList.size(); }
 
         osgUtil::SceneView* getViewportSceneView(unsigned int pos) 
             { return _viewportList[pos].sceneView.get(); }
@@ -111,7 +111,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         void setFocusedViewport(unsigned int pos);
         int mapWindowXYToSceneView(int x, int y);
         
-        void showStats(const unsigned int i); // gwm 24.09.01 pass the viewport to collect sta for each viewport
+        void showStats(unsigned int i); // gwm 24.09.01 pass the viewport to collect sta for each viewport
 
         static Viewer*    s_theViewer;
 

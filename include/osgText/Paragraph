@@ -26,7 +26,7 @@ class OSGTEXT_EXPORT Paragraph : public osg::Geode
         const osgText::Font* getFont() const { return _font.get(); }
         
         void setMaximumNoCharactersPerLine(unsigned int maxCharsPerLine);
-        const unsigned int getMaximumNoCharactersPerLine() const { return _maxCharsPerLine; }
+        unsigned int getMaximumNoCharactersPerLine() const { return _maxCharsPerLine; }
         
         void setText(const std::string& text);
         std::string& getText() { return _text; }

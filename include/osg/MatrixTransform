@@ -51,7 +51,7 @@ class SG_EXPORT MatrixTransform : public Transform
             return *_inverse;
         }
 
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
+        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
         {
             if (_referenceFrame==RELATIVE_TO_PARENTS)
             {
@@ -64,7 +64,7 @@ class SG_EXPORT MatrixTransform : public Transform
             return true;
         }
 
-        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
+        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
         {
             const Matrix& inverse = getInverseMatrix();
 

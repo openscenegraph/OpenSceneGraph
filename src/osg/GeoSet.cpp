@@ -423,7 +423,7 @@ void GeoSet::computeNumVerts() const
 
 
 // just use the base Drawable's PrimitiveFunctor based implementation.
-const bool GeoSet::computeBound() const
+bool GeoSet::computeBound() const
 {
     _bbox.init();
 
@@ -536,7 +536,7 @@ const bool GeoSet::computeBound() const
     return true;
 }
 
-const bool GeoSet::check() const
+bool GeoSet::check() const
 {
     if( _coords == (Vec3 *)0 ) return false;
 

@@ -29,7 +29,7 @@ void LOD::traverse(NodeVisitor& nv)
 }
 
 
-void LOD::setRange(const unsigned int index, const float range)
+void LOD::setRange(unsigned int index, float range)
 {
     if (index<_rangeList.size()) _rangeList[index] = range;
     else while (index>=_rangeList.size()) _rangeList.push_back(range);
@@ -39,7 +39,7 @@ void LOD::setRange(const unsigned int index, const float range)
 }
 
 
-const int LOD::evaluateLODChild(const Vec3& eye_local, const float bias) const
+int LOD::evaluateLODChild(const Vec3& eye_local, float bias) const
 {
     // For cache coherency, use _rangeList2 exclusively
     if (_rangeList2.empty()) return -1;

@@ -64,10 +64,10 @@ class SG_EXPORT Light : public StateAttribute
         }
 
         /** Set which OpenGL light to operate on.*/
-        void setLightNum(const int num) { _lightnum = num; }
+        void setLightNum(int num) { _lightnum = num; }
         
         /** Get which OpenGL light this osg::Light operates on.*/
-        const int getLightNum() const { return _lightnum; }
+        int getLightNum() const { return _lightnum; }
 
 	/** Set the ambient component of the light. */
         inline void setAmbient( const Vec4& ambient ) { _ambient = ambient; }
@@ -100,34 +100,34 @@ class SG_EXPORT Light : public StateAttribute
         inline const Vec3& getDirection() const { return _direction; }
 
 	/** Set the constant attenuation of the light. */
-        inline void setConstantAttenuation( const float constant_attenuation )     { _constant_attenuation = constant_attenuation; }
+        inline void setConstantAttenuation( float constant_attenuation )     { _constant_attenuation = constant_attenuation; }
 
 	/** Get the constant attenuation of the light. */
-        inline const float getConstantAttenuation() const { return _constant_attenuation; }
+        inline float getConstantAttenuation() const { return _constant_attenuation; }
 
 	/** Set the linear attenuation of the light. */
-        inline void setLinearAttenuation ( const float linear_attenuation )        { _linear_attenuation = linear_attenuation; }
+        inline void setLinearAttenuation ( float linear_attenuation )        { _linear_attenuation = linear_attenuation; }
 
 	/** Get the linear attenuation of the light. */
-        inline const float getLinearAttenuation () const { return _linear_attenuation; }
+        inline float getLinearAttenuation () const { return _linear_attenuation; }
 
 	/** Set the quadratic attenuation of the light. */
-        inline void setQuadraticAttenuation ( const float quadratic_attenuation )  { _quadratic_attenuation = quadratic_attenuation; }
+        inline void setQuadraticAttenuation ( float quadratic_attenuation )  { _quadratic_attenuation = quadratic_attenuation; }
 
 	/** Get the quadratic attenuation of the light. */
-        inline const float getQuadraticAttenuation()  const { return _quadratic_attenuation; }
+        inline float getQuadraticAttenuation()  const { return _quadratic_attenuation; }
 
 	/** Set the spot exponent of the light. */
-        inline void setSpotExponent( const float spot_exponent )                   { _spot_exponent = spot_exponent; }
+        inline void setSpotExponent( float spot_exponent )                   { _spot_exponent = spot_exponent; }
 
 	/** Get the spot exponent of the light. */
-        inline const float getSpotExponent() const { return _spot_exponent; }
+        inline float getSpotExponent() const { return _spot_exponent; }
 
 	/** Set the spot cutoff of the light. */
-        inline void setSpotCutoff( const float spot_cutoff )                       { _spot_cutoff = spot_cutoff; }
+        inline void setSpotCutoff( float spot_cutoff )                       { _spot_cutoff = spot_cutoff; }
 
 	/** Get the spot cutoff of the light. */
-        inline const float getSpotCutoff() const                                   { return _spot_cutoff; }
+        inline float getSpotCutoff() const                                   { return _spot_cutoff; }
 
 	/**
 	 * Capture the lighting settings of the current OpenGL state

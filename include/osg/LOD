@@ -40,17 +40,17 @@ class SG_EXPORT LOD : public Group
             is a floating point distance specified in world coordinates.
             Range list automatically expands to accommodate values beyond
             the current getNumRanges().*/
-        void setRange(const unsigned int index, const float range);
+        void setRange(unsigned int index, float range);
         
         /** returns the range for specified index.*/
-        inline const float getRange(const unsigned int index) const { return _rangeList[index]; }
+        inline float getRange(unsigned int index) const { return _rangeList[index]; }
         
         /** returns the number of ranges currently set.*/
-        inline const unsigned int getNumRanges() const { return _rangeList.size(); }
+        inline unsigned int getNumRanges() const { return _rangeList.size(); }
 
         /** Sets the object-space point which defines the center of the osg::LOD.  
             center is affected by any transforms in the hierarchy above the osg::LOD.*/
-        inline void setCenter(const Vec3 &center) { _center = center; }
+        inline void setCenter(const Vec3& center) { _center = center; }
         
         /** return the LOD center point. */
         inline const Vec3& getCenter() const { return _center; }
@@ -60,7 +60,7 @@ class SG_EXPORT LOD : public Group
         struct EvaluateLODCallback : public osg::Referenced
         {
             /** Compute the child to select.*/
-            virtual const int evaluateLODChild(const osg::LOD* lod, const Vec3& eye_local, const float bias) const = 0;
+            virtual int evaluateLODChild(const osg::LOD* lod, const Vec3& eye_local, float bias) const = 0;
         };
 
         /** Set the EvaluateLODCallback which allows users to attach customize computation of the the selection of LOD children.*/
@@ -75,7 +75,7 @@ class SG_EXPORT LOD : public Group
         /** return the child to traverse.
             Selected by the distance between the eye point in local
             coordinates and the LOD center, multiplied by the bias.*/ 
-        inline const int evaluate(const Vec3& eye_local,const float bias=1.0f) const
+        inline int evaluate(const Vec3& eye_local,float bias=1.0f) const
         {
             if (_evaluateLODCallback.valid())
                 return _evaluateLODCallback->evaluateLODChild(this,eye_local,bias);
@@ -84,7 +84,7 @@ class SG_EXPORT LOD : public Group
         }
 
 
-        virtual const int evaluateLODChild(const Vec3& eye_local,const float bias) const;
+        virtual int evaluateLODChild(const Vec3& eye_local,float bias) const;
 
     protected :
         virtual ~LOD() {}

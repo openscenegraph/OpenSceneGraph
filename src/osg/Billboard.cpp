@@ -28,7 +28,7 @@ Billboard::~Billboard()
 {
 }
 
-void Billboard::setMode(const Mode mode)
+void Billboard::setMode(Mode mode)
 {
     _mode = mode;
     _cachedMode = CACHE_DIRTY;
@@ -64,7 +64,7 @@ void Billboard::updateCache()
     _side.normalize();    
 }
 
-const bool Billboard::addDrawable(Drawable *gset)
+bool Billboard::addDrawable(Drawable *gset)
 {
     if (Geode::addDrawable(gset))
     {
@@ -79,7 +79,7 @@ const bool Billboard::addDrawable(Drawable *gset)
 }
 
 
-const bool Billboard::addDrawable(Drawable *gset,const Vec3& pos)
+bool Billboard::addDrawable(Drawable *gset,const Vec3& pos)
 {
     if (Geode::addDrawable(gset))
     {
@@ -93,7 +93,7 @@ const bool Billboard::addDrawable(Drawable *gset,const Vec3& pos)
 }
 
 
-const bool Billboard::removeDrawable( Drawable *gset )
+bool Billboard::removeDrawable( Drawable *gset )
 {
     PositionList::iterator pitr = _positionList.begin();
     for (DrawableList::iterator itr=_drawables.begin();
@@ -112,7 +112,7 @@ const bool Billboard::removeDrawable( Drawable *gset )
     return false;
 }
 
-const bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
+bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
 {
     //Vec3 up_local(matrix(0,1),matrix(1,1),matrix(2,1));
 
@@ -222,7 +222,7 @@ const bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, co
 
 }
 
-const bool Billboard::computeBound() const
+bool Billboard::computeBound() const
 {
     int i;
     int ngsets = _drawables.size();

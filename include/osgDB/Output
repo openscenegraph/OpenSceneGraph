@@ -34,14 +34,14 @@ class OSGDB_EXPORT Output : public std::ofstream
 
         Output& indent();
 
-        inline const int getIndentStep() const { return _indentStep; }
         inline void setIndentStep(int step) { _indentStep = step; }
+        inline int getIndentStep() const { return _indentStep; }
 
-        inline const int getIndent() const { return _indent; }
         inline void setIndent(int indent)  { _indent = indent; }
+        inline int getIndent() const { return _indent; }
 
-        inline const int getNumIndicesPerLine() const { return _numIndicesPerLine; }
         inline void setNumIndicesPerLine(int num) { _numIndicesPerLine = num; }
+        inline int getNumIndicesPerLine() const { return _numIndicesPerLine; }
 
         void moveIn();
         void moveOut();

@@ -93,47 +93,47 @@ class SG_EXPORT Material : public StateAttribute
             OFF            
         };
 
-        inline void setColorMode(const ColorMode mode) { _colorMode = mode; }
-        inline const ColorMode getColorMode() const { return _colorMode; }
+        inline void setColorMode(ColorMode mode) { _colorMode = mode; }
+        inline ColorMode getColorMode() const { return _colorMode; }
 
-        void setAmbient( const Face face, const Vec4& ambient );
-        const Vec4& getAmbient(const Face face) const;
-        inline const bool getAmbientFrontAndBack() const { return _ambientFrontAndBack; }
+        void setAmbient( Face face, const Vec4& ambient );
+        const Vec4& getAmbient(Face face) const;
+        inline bool getAmbientFrontAndBack() const { return _ambientFrontAndBack; }
 
-        void setDiffuse( const Face face, const Vec4& diffuse );
-        const Vec4& getDiffuse(const Face face) const;
-        inline const bool getDiffuseFrontAndBack() const { return _diffuseFrontAndBack; }
+        void setDiffuse( Face face, const Vec4& diffuse );
+        const Vec4& getDiffuse(Face face) const;
+        inline bool getDiffuseFrontAndBack() const { return _diffuseFrontAndBack; }
 
         /** Set specular value of specified face(s) of the material, 
           * valid specular[0..3] range is 0.0 to 1.0.*/
-        void setSpecular( const Face face, const Vec4& specular );
+        void setSpecular( Face face, const Vec4& specular );
         /** Get the specular value for specified face.*/
-        const Vec4& getSpecular(const Face face) const;
+        const Vec4& getSpecular(Face face) const;
         /** Get the whether specular values are equal for front and back faces.*/
-        inline const bool getSpecularFrontAndBack() const { return _specularFrontAndBack; }
+        inline bool getSpecularFrontAndBack() const { return _specularFrontAndBack; }
 
         /** Set emission value of specified face(s) of the material, 
           * valid emmison[0..3] range is 0.0 to 1.0.*/
-        void setEmission( const Face face, const Vec4& emission );
+        void setEmission( Face face, const Vec4& emission );
         /** Get the emmsion value for specified face.*/
-        const Vec4& getEmission(const Face face) const;
+        const Vec4& getEmission(Face face) const;
         /** Get the whether emission values are equal for front and back faces.*/
-        inline const bool getEmissionFrontAndBack() const { return _emissionFrontAndBack; }
+        inline bool getEmissionFrontAndBack() const { return _emissionFrontAndBack; }
 
         /** Set shininess of specified face(s) of the material, valid shininess range is 0.0 to 128.0.*/
-        void setShininess( const Face face, float shininess );
+        void setShininess(Face face, float shininess );
         /** Get the shininess value for specified face.*/
-        const float getShininess(const Face face) const;
+        float getShininess(Face face) const;
         /** Get the whether shininess values are equal for front and back faces.*/
-        inline const bool getShininessFrontAndBack() const { return _shininessFrontAndBack; }
+        inline bool getShininessFrontAndBack() const { return _shininessFrontAndBack; }
         
         /** Set the alpha value of ambient,diffuse,specular and emission colors, 
           * of specified face, to 1-transparency. Valid transparency range is 0.0 to 1.0.*/
-        void setTransparency(const Face face,float trans);
+        void setTransparency(Face face,float trans);
 
         /** Set the alpha value of ambient,diffuse,specular and emission colors.
           * Valid transparency range is 0.0 to 1.0.*/
-        void setAlpha(const Face face,float alpha);
+        void setAlpha(Face face,float alpha);
 
     protected :
 

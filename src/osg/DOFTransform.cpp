@@ -19,7 +19,7 @@ void DOFTransform::traverse(NodeVisitor& nv)
     Transform::traverse(nv);
 }
 
-const bool DOFTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
+bool DOFTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     //put the PUT matrix first:
     Matrix l2w(getPutMatrix());
@@ -55,7 +55,7 @@ const bool DOFTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) 
 }
 
 
-const bool DOFTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
+bool DOFTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
     //put the PUT matrix first:
     Matrix w2l(getInversePutMatrix());

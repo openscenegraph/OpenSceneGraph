@@ -144,7 +144,7 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 }
 
 
-void TextureCubeMap::setImage( const Face face, Image* image)
+void TextureCubeMap::setImage( Face face, Image* image)
 {
     // Quick and dirty implementation committed by ABJ.
     if (face == 0)
@@ -166,12 +166,12 @@ void TextureCubeMap::setImage( const Face face, Image* image)
     _images[face] = image;
 }
 
-Image* TextureCubeMap::getImage(const Face face)
+Image* TextureCubeMap::getImage(Face face)
 {
     return _images[face].get();
 }
 
-const Image* TextureCubeMap::getImage(const Face face) const
+const Image* TextureCubeMap::getImage(Face face) const
 {
     return _images[face].get();
 }

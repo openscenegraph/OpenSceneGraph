@@ -46,11 +46,11 @@ class SG_EXPORT Point : public StateAttribute
             modes.push_back(GL_POINT_SMOOTH);
         }
 
-        void setSize(const float size);
-        inline const float getSize() const { return _size; }
+        void setSize(float size);
+        inline float getSize() const { return _size; }
 
-        void setFadeThresholdSize(const float fadeThresholdSize);
-        inline const float getFadeThresholdSize() const { return _fadeThresholdSize; }
+        void setFadeThresholdSize(float fadeThresholdSize);
+        inline float getFadeThresholdSize() const { return _fadeThresholdSize; }
 
         void setDistanceAttenuation(const Vec3& distanceAttenuation);
         inline const Vec3& getDistanceAttenuation() const { return _distanceAttenuation; }

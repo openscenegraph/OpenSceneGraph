@@ -56,8 +56,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         
         
 
-        void setStereo(const bool on) { _stereo = on; }
-        const bool getStereo() const { return _stereo; }
+        void setStereo(bool on) { _stereo = on; }
+        bool getStereo() const { return _stereo; }
 
         enum StereoMode
         {
@@ -67,14 +67,14 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
             VERTICAL_SPLIT
         };
         
-        void setStereoMode(const StereoMode mode) { _stereoMode = mode; }
-        const StereoMode getStereoMode() const { return _stereoMode; }
+        void setStereoMode(StereoMode mode) { _stereoMode = mode; }
+        StereoMode getStereoMode() const { return _stereoMode; }
 
-        void setEyeSeparation(const float eyeSeparation) { _eyeSeparation = eyeSeparation; }
-        const float getEyeSeparation() const { return _eyeSeparation; }
+        void setEyeSeparation(float eyeSeparation) { _eyeSeparation = eyeSeparation; }
+        float getEyeSeparation() const { return _eyeSeparation; }
 
-        void setScreenDistance(const float distance) { _screenDistance = distance; }
-        const float getScreenDistance() const { return _screenDistance; }
+        void setScreenDistance(float distance) { _screenDistance = distance; }
+        float getScreenDistance() const { return _screenDistance; }
 
         enum SplitStereoHorizontalEyeMapping
         {
@@ -85,8 +85,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setSplitStereoHorizontalEyeMapping(SplitStereoHorizontalEyeMapping m) { _splitStereoHorizontalEyeMapping = m; }
         SplitStereoHorizontalEyeMapping getSplitStereoHorizontalEyeMapping() const { return _splitStereoHorizontalEyeMapping; }
 
-        void setSplitStereoHorizontalSeparation(const int s) { _splitStereoHorizontalSeparation = s; }
-        const int getSplitStereoHorizontalSeparation() const { return _splitStereoHorizontalSeparation; }
+        void setSplitStereoHorizontalSeparation(int s) { _splitStereoHorizontalSeparation = s; }
+        int getSplitStereoHorizontalSeparation() const { return _splitStereoHorizontalSeparation; }
 
         enum SplitStereoVerticalEyeMapping
         {
@@ -97,38 +97,38 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setSplitStereoVerticalEyeMapping(SplitStereoVerticalEyeMapping m) { _splitStereoVerticalEyeMapping = m; }
         SplitStereoVerticalEyeMapping getSplitStereoVerticalEyeMapping() const { return _splitStereoVerticalEyeMapping; }
 
-        void setSplitStereoVerticalSeparation(const int s) { _splitStereoVerticalSeparation = s; }
-        const int getSplitStereoVerticalSeparation() const { return _splitStereoVerticalSeparation; }
+        void setSplitStereoVerticalSeparation(int s) { _splitStereoVerticalSeparation = s; }
+        int getSplitStereoVerticalSeparation() const { return _splitStereoVerticalSeparation; }
 
 
-        void setScreenHeight(const float height) { _screenHeight = height; }
-        const float getScreenHeight() const { return _screenHeight; }
+        void setScreenHeight(float height) { _screenHeight = height; }
+        float getScreenHeight() const { return _screenHeight; }
 
 
-        void setDoubleBuffer(const bool flag) { _doubleBuffer = flag; }
-        const bool getDoubleBuffer() const { return _doubleBuffer; }
+        void setDoubleBuffer(bool flag) { _doubleBuffer = flag; }
+        bool getDoubleBuffer() const { return _doubleBuffer; }
 
 
-        void setRGB(const bool flag) { _RGB = flag; }
-        const bool getRGB() const { return _RGB; }
+        void setRGB(bool flag) { _RGB = flag; }
+        bool getRGB() const { return _RGB; }
 
 
-        void setDepthBuffer(const bool flag) { _depthBuffer = flag; }
-        const bool getDepthBuffer() const { return _depthBuffer; }
+        void setDepthBuffer(bool flag) { _depthBuffer = flag; }
+        bool getDepthBuffer() const { return _depthBuffer; }
 
 
-        void setMinimumNumAlphaBits(const unsigned int bits) { _minimumNumberAlphaBits = bits; }
-        const unsigned int getMinimumNumAlphaBits() const { return _minimumNumberAlphaBits; }
-        const bool getAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
+        void setMinimumNumAlphaBits(unsigned int bits) { _minimumNumberAlphaBits = bits; }
+        unsigned int getMinimumNumAlphaBits() const { return _minimumNumberAlphaBits; }
+        bool getAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
 
 
-        void setMinimumNumStencilBits(const unsigned int bits) { _minimumNumberStencilBits = bits; }
-        const unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
-        const bool getStencilBuffer() const { return _minimumNumberStencilBits!=0; }
+        void setMinimumNumStencilBits(unsigned int bits) { _minimumNumberStencilBits = bits; }
+        unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
+        bool getStencilBuffer() const { return _minimumNumberStencilBits!=0; }
 
 
-        void setMaxNumberOfGraphicsContexts(const int num) { _maxNumOfGraphicsContexts = num; }
-        const int getMaxNumberOfGraphicsContexts() const { return _maxNumOfGraphicsContexts; }
+        void setMaxNumberOfGraphicsContexts(int num) { _maxNumOfGraphicsContexts = num; }
+        int getMaxNumberOfGraphicsContexts() const { return _maxNumOfGraphicsContexts; }
 
 
     protected:

@@ -66,7 +66,7 @@ int Texture::compareTexture(const Texture& rhs) const
 }
 
 
-void Texture::setWrap(const WrapParameter which, const WrapMode wrap)
+void Texture::setWrap(WrapParameter which, WrapMode wrap)
 {
     switch( which )
     {
@@ -79,7 +79,7 @@ void Texture::setWrap(const WrapParameter which, const WrapMode wrap)
 }
 
 
-const Texture::WrapMode Texture::getWrap(const WrapParameter which) const
+Texture::WrapMode Texture::getWrap(WrapParameter which) const
 {
     switch( which )
     {
@@ -91,7 +91,7 @@ const Texture::WrapMode Texture::getWrap(const WrapParameter which) const
 }
 
 
-void Texture::setFilter(const FilterParameter which, const FilterMode filter)
+void Texture::setFilter(FilterParameter which, FilterMode filter)
 {
     switch( which )
     {
@@ -102,7 +102,7 @@ void Texture::setFilter(const FilterParameter which, const FilterMode filter)
 }
 
 
-const Texture::FilterMode Texture::getFilter(const FilterParameter which) const
+Texture::FilterMode Texture::getFilter(FilterParameter which) const
 {
     switch( which )
     {

@@ -49,9 +49,9 @@ class SG_EXPORT CullFace : public StateAttribute
             FRONT_AND_BACK = GL_FRONT_AND_BACK
         };
     
-        inline void setMode(const Mode mode) { _mode = mode; }
+        inline void setMode(Mode mode) { _mode = mode; }
 
-        inline const Mode getMode() const { return _mode; }
+        inline Mode getMode() const { return _mode; }
     
         virtual void apply(State& state) const;
         

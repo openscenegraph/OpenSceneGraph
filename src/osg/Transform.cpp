@@ -29,7 +29,7 @@ void Transform::setReferenceFrame(ReferenceFrame rf)
     else setCullingActive(true);
 }
 
-const bool Transform::computeBound() const
+bool Transform::computeBound() const
 {
     if (!Group::computeBound()) return false;
     

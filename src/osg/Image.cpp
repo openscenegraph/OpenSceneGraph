@@ -66,7 +66,7 @@ void Image::setFileName(const std::string& fileName)
 }
 
 
-const bool Image::isPackedType(GLenum type)
+bool Image::isPackedType(GLenum type)
 {
     switch(type)
     {
@@ -86,7 +86,7 @@ const bool Image::isPackedType(GLenum type)
     }    
 }
 
-const unsigned int Image::computeNumComponents(GLenum format)
+unsigned int Image::computeNumComponents(GLenum format)
 {
     switch(format)
     {
@@ -108,7 +108,7 @@ const unsigned int Image::computeNumComponents(GLenum format)
 }
 
 
-const unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
+unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 {
     switch(type)
     {
@@ -144,7 +144,7 @@ const unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
-const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing)
+unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing)
 {
     unsigned int pixelSize = computePixelSizeInBits(format,type);
     int widthInBits = width*pixelSize;
@@ -152,7 +152,7 @@ const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum 
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
-const unsigned int Image::computeNearestPowerOfTwo(unsigned int s,float bias)
+unsigned int Image::computeNearestPowerOfTwo(unsigned int s,float bias)
 {
     if ((s & (s-1))!=0)
     {
@@ -174,7 +174,7 @@ void Image::setInternalTextureFormat(GLint internalFormat)
     _internalTextureFormat = internalFormat;
 }
 
-void Image::setPixelFormat(const GLenum format)
+void Image::setPixelFormat(GLenum format)
 {
     if (_pixelFormat==format) return; // do nothing if the same.
 
@@ -272,7 +272,7 @@ void Image::readPixels(int x,int y,int width,int height,
 }
 
 
-void Image::scaleImage(const int s,const int t,const int r)
+void Image::scaleImage(int s,int t,int r)
 {
     if (_s==s && _t==t && _r==r) return;
 
@@ -486,7 +486,7 @@ Geode* osg::createGeodeForImage(osg::Image* image)
 }
 
 
-Geode* osg::createGeodeForImage(osg::Image* image,const float s,const float t)
+Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
 {
     if (image)
     {

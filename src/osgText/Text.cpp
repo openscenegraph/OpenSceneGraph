@@ -127,8 +127,7 @@ setDefaults()
     _useDisplayList=false;
 }
 
-const bool Text::
-computeBound() const
+bool Text::computeBound() const
 {
     if(!_init)
     {

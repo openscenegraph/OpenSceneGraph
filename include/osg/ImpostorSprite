@@ -59,7 +59,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
         inline const Vec3& getStoredLocalEyePoint() const { return _storedLocalEyePoint; }
         
         /** Set the frame number for when the ImpostorSprite was last used in rendering.*/
-        inline void setLastFrameUsed(const int frameNumber) { _lastFrameUsed = frameNumber; }
+        inline void setLastFrameUsed(int frameNumber) { _lastFrameUsed = frameNumber; }
         
         /** Get the frame number for when the ImpostorSprite was last used in rendering.*/
         inline int getLastFrameUsed() const { return _lastFrameUsed; }
@@ -104,14 +104,14 @@ class SG_EXPORT ImpostorSprite : public Drawable
 
         /** calculate the pixel error value for passing in the ModelViewProjectionWindow transform,
           * which transform local coords into screen space.*/
-        const float calcPixelError(const Matrix& MVPW) const;
+        float calcPixelError(const Matrix& MVPW) const;
 
         void setTexture(Texture2D* tex,int s,int t);
 
         Texture2D* getTexture() { return _texture; }
         const Texture2D* getTexture() const { return _texture; }
-        const int s() const { return _s; }
-        const int t() const { return _t; }
+        int s() const { return _s; }
+        int t() const { return _t; }
 
         /** draw ImpostorSprite directly. */
         virtual void drawImmediateMode(State& state);
@@ -129,7 +129,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
 
         virtual ~ImpostorSprite();
 
-        virtual const bool computeBound() const;
+        virtual bool computeBound() const;
 
         Impostor* _parent;
 
@@ -163,7 +163,7 @@ class SG_EXPORT ImpostorSpriteManager : public Referenced
     
         ImpostorSpriteManager();
         
-        const bool empty() const { return _first==0; }
+        bool empty() const { return _first==0; }
 
         ImpostorSprite* first() { return _first; }
         

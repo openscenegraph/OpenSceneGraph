@@ -16,7 +16,7 @@ PolygonMode::~PolygonMode()
 {
 }
 
-void PolygonMode::setMode(const Face face,const Mode mode)
+void PolygonMode::setMode(Face face,Mode mode)
 {
     switch(face)
     {
@@ -36,7 +36,7 @@ void PolygonMode::setMode(const Face face,const Mode mode)
     }    
 }
 
-const PolygonMode::Mode PolygonMode::getMode(const Face face) const
+PolygonMode::Mode PolygonMode::getMode(Face face) const
 {
     switch(face)
     {

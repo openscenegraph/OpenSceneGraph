@@ -129,7 +129,7 @@ void PagedLOD::setTimeStamp(unsigned int childNo, double timeStamp)
     _timeStampList[childNo] = timeStamp;
 }
 
-void PagedLOD::removeExpiredChildren(double expiryTime)
+void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
 {
     for(unsigned int i=_children.size();i>0;)
     {
@@ -137,6 +137,7 @@ void PagedLOD::removeExpiredChildren(double expiryTime)
         if (!_fileNameList[i].empty() && _timeStampList[i]<expiryTime)
         {
             //std::cout<<"Removing child "<<_children[i].get()<<std::endl;
+            removedChildren.push_back(_children[i]);
             Group::removeChild(_children[i].get());
         }
     }

@@ -9,8 +9,13 @@ using namespace osgProducer;
 
 DatabasePager::DatabasePager()
 {
-    std::cout<<"Constructing DatabasePager()"<<std::endl;
+    //std::cout<<"Constructing DatabasePager()"<<std::endl;
+    
+    _deleteRemovedSubgraphsInDatabaseThread = true;
+    
     _expiryDelay = 1.0;
+    
+    _maximumTimeForCompiling = 0.005; // 5ms.
 }
 
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group)
@@ -19,10 +24,10 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
 
-    _fileLoadedListMutex.lock();
+    _dataLoadedListMutex.lock();
     
-        for(DatabaseRequestList::iterator litr = _fileLoadedList.begin();
-            litr != _fileLoadedList.end() && !foundEntry;
+        for(DatabaseRequestList::iterator litr = _dataLoadedList.begin();
+            litr != _dataLoadedList.end() && !foundEntry;
             ++litr)
         {
             if ((*litr)->_fileName==fileName)
@@ -32,7 +37,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             }
         }        
 
-    _fileLoadedListMutex.unlock();
+    _dataLoadedListMutex.unlock();
 
     if (!foundEntry)
     {
@@ -78,6 +83,23 @@ void DatabasePager::run()
     
     while(true)
     {
+        //
+        // delete any children if required.
+        //
+        if (_deleteRemovedSubgraphsInDatabaseThread)
+        {
+            _childrenToDeleteListMutex.lock();
+                if (!_childrenToDeleteList.empty())
+                {
+                    std::cout<<"In DatabasePager thread deleting "<<_childrenToDeleteList.size()<<" subgraphs"<<std::endl;
+                    _childrenToDeleteList.clear();
+                }
+            _childrenToDeleteListMutex.unlock();
+        }
+
+        //
+        // load any subgraphs that are required.
+        //
         osg::ref_ptr<DatabaseRequest> databaseRequest;
     
         // get the front of the file request list.
@@ -97,11 +119,11 @@ void DatabasePager::run()
 
             if (databaseRequest->_loadedModel.valid())
             {
-                _fileLoadedListMutex.lock();
+                _dataLoadedListMutex.lock();
 
-                    _fileLoadedList.push_back(databaseRequest);
+                    _dataLoadedList.push_back(databaseRequest);
 
-                _fileLoadedListMutex.unlock();
+                _dataLoadedListMutex.unlock();
             }        
         }
         
@@ -121,10 +143,10 @@ void DatabasePager::addLoadedDataToSceneGraph()
 {
     DatabaseRequestList localFileLoadedList;
 
-    // get the dat for the _fileLoadedList, leaving it empty via a std::vector<>.swap.
-    _fileLoadedListMutex.lock();
-        localFileLoadedList.swap(_fileLoadedList);
-    _fileLoadedListMutex.unlock();
+    // get the dat for the _dataLoadedList, leaving it empty via a std::vector<>.swap.
+    _dataLoadedListMutex.lock();
+        localFileLoadedList.swap(_dataLoadedList);
+    _dataLoadedListMutex.unlock();
     
     // add the loaded data into the scene graph.
     for(DatabaseRequestList::iterator itr=localFileLoadedList.begin();
@@ -144,13 +166,15 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 {
     double expiryTime = currentFrameTime - _expiryDelay;
 
+    osg::NodeList childrenRemoved;
+
     //std::cout<<"DatabasePager::removeExpiredSubgraphs("<<expiryTime<<") "<<std::endl;
     for(PagedLODList::iterator itr=_pagedLODList.begin();
         itr!=_pagedLODList.end();
         ++itr)
     {
         osg::PagedLOD* plod = itr->get();
-        plod->removeExpiredChildren(expiryTime);
+        plod->removeExpiredChildren(expiryTime,childrenRemoved);
     }
     
     for(unsigned int i=_pagedLODList.size();
@@ -171,7 +195,14 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         }
     }
         
-    
+    if (_deleteRemovedSubgraphsInDatabaseThread)
+    {
+        // transfer the removed children over to the to delete list so the database thread can delete them.
+        _childrenToDeleteListMutex.lock();
+            _childrenToDeleteList.insert(_childrenToDeleteList.begin(),childrenRemoved.begin(),childrenRemoved.end());
+        _childrenToDeleteListMutex.unlock();
+    }
+    // otherwise the childrenRemoved list will automatically unref() and deleting the nodes.    
 }
 
 
@@ -198,5 +229,10 @@ void DatabasePager::registerPagedLODs(osg::Node* subgraph)
 {
     FindPagedLODsVisitor fplv(_pagedLODList);
     if (subgraph) subgraph->accept(fplv);
+}
+
+void DatabasePager::compileRenderingObjects(osg::State& state)
+{
+//    std::cout<<"Compiling rendering objects"<<std::endl;
 }
 

@@ -19,6 +19,8 @@
 
 namespace osg {
 
+typedef std::vector< ref_ptr<Node> > NodeList;
+
 /** General group node which maintains a list of children.
     Children are reference counted. This allows children to be shared
     with memory management handled automatically via osg::Referenced.
@@ -27,7 +29,6 @@ class SG_EXPORT Group : public Node
 {
     public :
 
-        typedef std::vector<ref_ptr<Node> > ChildList;
 
         Group();
         
@@ -89,7 +90,7 @@ class SG_EXPORT Group : public Node
         inline bool containsNode( const Node* node ) const
         {
             
-            for (ChildList::const_iterator itr=_children.begin();
+            for (NodeList::const_iterator itr=_children.begin();
                  itr!=_children.end();
                  ++itr)
             {
@@ -116,7 +117,7 @@ class SG_EXPORT Group : public Node
 
         virtual bool computeBound() const;
 
-        ChildList _children;
+        NodeList _children;
 
 
 };

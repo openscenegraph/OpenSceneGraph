@@ -31,7 +31,7 @@ Group::Group()
 Group::Group(const Group& group,const CopyOp& copyop):
     Node(group,copyop)
 {
-    for(ChildList::const_iterator itr=group._children.begin();
+    for(NodeList::const_iterator itr=group._children.begin();
         itr!=group._children.end();
         ++itr)
     {
@@ -43,7 +43,7 @@ Group::Group(const Group& group,const CopyOp& copyop):
 Group::~Group()
 {
     // remove reference to this from children's parent lists.
-    for(ChildList::iterator itr=_children.begin();
+    for(NodeList::iterator itr=_children.begin();
         itr!=_children.end();
         ++itr)
     {
@@ -55,7 +55,7 @@ Group::~Group()
 
 void Group::traverse(NodeVisitor& nv)
 {
-    for(ChildList::iterator itr=_children.begin();
+    for(NodeList::iterator itr=_children.begin();
         itr!=_children.end();
         ++itr)
     {
@@ -298,7 +298,7 @@ bool Group::computeBound() const
 
     BoundingBox bb;
     bb.init();
-    ChildList::const_iterator itr;
+    NodeList::const_iterator itr;
     for(itr=_children.begin();
         itr!=_children.end();
         ++itr)

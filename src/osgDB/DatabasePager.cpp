@@ -197,6 +197,10 @@ void DatabasePager::run()
     
     while(true)
     {
+    
+        // test to see if we need to exit.
+        testCancel();
+    
         //
         // delete any children if required.
         //

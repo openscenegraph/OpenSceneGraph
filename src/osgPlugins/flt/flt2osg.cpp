@@ -1572,19 +1572,25 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                  }                 
                 }
 
-                //Now, an ugly thing,... we have detected that in Creator we defined that a texture will we used as
-                //detail texture, and we load it as it using texture unit 1,... but we also need to create texture 
-                //coordinates to map this detail texture, I found that texture coordinates assigment is made in
-                //DynGeoSet::addToGeometry and the easy way I found to create those new coordinates is to add a method
-                //to DynGeoSet class named setDetailTextureStatus that pass detail Texture AttrData class, so when 
-                //DynGeoSet::addToGeometry runs it reads this class and create new texture coordinates if we got a valid
-                //AttrData object. I now this is not a good way to do it, and I expect someone with more osg knowledge
-                //could make it in a better way.
-                // Julian Ortiz, June 18th 2003.                     
-                if (pSFace->iDetailTexturePattern != -1 && detailTextureAttrData && detailTextureAttrData->stateset)
-                 dgset->setDetailTextureAttrData(detailTextureAttrData);
+                // If a detail texture structure exists, set the texture
+                // coordinate scalars on the current DynGeoSet, so the correct
+                // detail texture coordinates get generated later.
+                if (pSFace->iDetailTexturePattern != -1 && 
+                    detailTextureAttrData && 
+                    detailTextureAttrData->stateset)
+                {
+                   // Set the texture coordinate scalars
+                   dgset->setDetailTexCoords(detailTextureAttrData->txDetail_m,
+                                             detailTextureAttrData->txDetail_n);
+
+                   // Make sure detail texturing is on
+                   dgset->enableDetailTexture();
+                }
                 else 
-                 dgset->setDetailTextureAttrData(NULL);
+                {
+                   // Make sure detail texturing is off
+                   dgset->disableDetailTexture();
+                }
 
                 // Merge face stateset with texture stateset
                 osgStateSet->merge(*textureStateSet);
@@ -1671,9 +1677,18 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
                 return;
             }
             
-            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *> ((pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()))->stateset);
+            // Get the texture attribute data from the texture pool
+            flt::AttrData *textureAttrData = dynamic_cast<flt::AttrData *> (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
 
             CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()) << "\n";
+            if (!textureAttrData)
+            {
+                CERR << "unable to set up multi-texture layer." << std::endl;
+                return;
+            }
+
+            // Get the texture state set from the attribute data structure
+            osg::StateSet *textureStateSet = textureAttrData->stateset;
             CERR << "textureStateSet: " << textureStateSet << "\n";
 
             if (!textureStateSet)
@@ -1709,10 +1724,13 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
             CERR << ", referenceCount: "
                  << geom->referenceCount() << "\n";
 
+            // Get the state set from the current geometry
             osg::StateSet* geom_stateset = geom->getStateSet();
             
             CERR << "geom_stateset: " << geom_stateset << "\n";
                 
+            // See if we need to merge or set the texture state set on the
+            // geometry
             if ( geom_stateset )
             {
                 geom_stateset->merge( *texture_stateset );
@@ -1722,6 +1740,10 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
                 CERR << "Setting layer " << i << "\n";
             }
 
+            // Set the texture binding on the current texture unit to
+            // per-vertex
+            dgset->setTextureBinding(i, osg::Geometry::BIND_PER_VERTEX);
+
             l++;
         }
     }
@@ -1730,9 +1752,7 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
 void
 ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
 {
-    osg::Geometry* geom = dgset->getGeometry();
-
-    if (!geom || !uvr || !uvr->isAncillaryRecord())
+    if (!dgset || !uvr || !uvr->isAncillaryRecord())
     {
         osg::notify(osg::WARN)<<"ConvertFromFLT::addUVList( DynGeoSet*, UVListRecord*) has been passed invalid paramters."<<std::endl;
         return;
@@ -1752,22 +1772,20 @@ ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
     {
         if ( (1 << (32-i)) & uvl->layers )
         {
-            osg::Vec2Array* tcoords = new osg::Vec2Array;
             CERR << "Has layer " << i << "\n";
+
             // Assume we are working with vertex lists for now
             for ( int v = l*num_coords; v < (l+1)*num_coords; v++ )
             {
                 uvl->coords.vertex[v].endian();
                 CERR << "( u: " << uvl->coords.vertex[v].coords[1] << ", "
-                            << "v: " << uvl->coords.vertex[v].coords[0] << ")\n";
-                        /// FIXME: should be (x,y) instead of (y,x) - ENDIAN problem???
-                tcoords->push_back( osg::Vec2( uvl->coords.vertex[v].coords[1],
-                        uvl->coords.vertex[v].coords[0] ) );
-            }
-            if ( !tcoords->empty() )
-            {
-                CERR << "Setting tcoords " << i << ": " << tcoords << "\n";
-                geom->setTexCoordArray( i, tcoords );
+                     << "v: " << uvl->coords.vertex[v].coords[0] << ")\n";
+
+                /// FIXME: should be (x,y) instead of (y,x) - ENDIAN problem???
+                // Add the texture coordinates to the current DynGeoSet
+                dgset->addTCoord(i, 
+                                 osg::Vec2(uvl->coords.vertex[v].coords[1],
+                                           uvl->coords.vertex[v].coords[0]));
             }
 
             l++;
@@ -1819,9 +1837,6 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, osg::Group& osgParent, F
     // Vertices
     addVertices(pBuilder, osgParent, rec);
 
-    // Add face to builder pool
-    pBuilder->addPrimitive();
-
     // Visit ancillary records
     for(int i=0; i < rec->getNumChildren(); i++)
     {
@@ -1842,9 +1857,9 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, osg::Group& osgParent, F
             }
             
             // original code, but causes crash becayse addPrimitive can invalidate teh dgset pointer.
-            // addMultiTexture( dgset, mtr );
+            addMultiTexture( dgset, mtr );
             
-            addMultiTexture( pBuilder->getDynGeoSet(), mtr );
+            // addMultiTexture( pBuilder->getDynGeoSet(), mtr );
         }
         break;
 
@@ -1859,6 +1874,9 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, osg::Group& osgParent, F
         break;
     }
     }
+
+    // Add face to builder pool
+    pBuilder->addPrimitive();
 
     // Look for subfaces
     {
@@ -3012,7 +3030,7 @@ uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVerte
 {
     if (!pool || !mesh || !geometry)
     {
-        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates passed null objects."<<std::endl;
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshNormals passed null objects."<<std::endl;
     }
 
     // If there aren't any coordinates...
@@ -3065,7 +3083,7 @@ uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertex
 {
     if (!pool || !mesh || !geometry)
     {
-        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshTexCoordinates passed null objects."<<std::endl;
+        osg::notify(osg::WARN)<<"OpenFlight loader detected error:: ConvertFromFLT::setMeshColors passed null objects."<<std::endl;
     }
 
     // If there aren't any colors...

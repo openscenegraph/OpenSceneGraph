@@ -13,6 +13,7 @@
 #include <osgUtil/Optimizer>
 
 #include <osg/Transform>
+#include <osg/TransformAttributeFunctor>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/LOD>
@@ -105,45 +106,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
 
 }
-
-class TransformFunctor : public osg::Drawable::AttributeFunctor
-{
-    public:
-    
-        osg::Matrix _m;
-        osg::Matrix _im;
-
-        TransformFunctor(const osg::Matrix& m)
-        {
-            _m = m;
-            _im.invert(_m);
-        }
-            
-        virtual ~TransformFunctor() {}
-
-        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin)
-        {
-            if (type == osg::Drawable::VERTICES)
-            {
-                osg::Vec3* end = begin+count;
-                for (osg::Vec3* itr=begin;itr<end;++itr)
-                {
-                    (*itr) = (*itr)*_m;
-                }
-            }
-            else if (type == osg::Drawable::NORMALS)
-            {
-                osg::Vec3* end = begin+count;
-                for (osg::Vec3* itr=begin;itr<end;++itr)
-                {
-                    // note post mult by inverse for normals.
-                    (*itr) = osg::Matrix::transform3x3(_im,(*itr));
-                    (*itr).normalize();
-                }
-            }
-        }
-
-};
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -535,7 +497,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
     osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
     if (drawable)
     {
-        TransformFunctor tf(matrix);
+        osg::TransformAttributeFunctor tf(matrix);
         drawable->accept(tf);
         drawable->dirtyBound();
         return;
@@ -570,7 +532,7 @@ void CollectLowestTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& m
         osg::Matrix matrix_no_trans = matrix;
         matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
   
-        TransformFunctor tf(matrix_no_trans);
+        osg::TransformAttributeFunctor tf(matrix_no_trans);
 
         osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard->getAxis());
         axis.normalize();
@@ -1362,14 +1324,62 @@ bool Optimizer::MergeGeometryVisitor::geometryContainsSharedArrays(osg::Geometry
     return false;
 }
 
+
+class MergeArrayVisitor : public osg::ArrayVisitor
+{
+    public:
+    
+        osg::Array* _lhs;
+    
+        MergeArrayVisitor() :
+            _lhs(0) {}
+            
+            
+        void merge(osg::Array* lhs,osg::Array* rhs)
+        {
+            if (lhs==0 || rhs==0) return;
+            if (lhs->getType()!=rhs->getType()) return;
+            
+            _lhs = lhs;
+            
+            rhs->accept(*this);
+        }
+        
+        template<typename T>
+        void _merge(T& rhs)
+        {
+            T* lhs = static_cast<T*>(_lhs); 
+            lhs->insert(lhs->end(),rhs.begin(),rhs.end());
+        }
+        
+            
+        virtual void apply(osg::Array&) { osg::notify(osg::WARN) << "Warning: Optimizer's MergeArrayVisitor cannot merge Array type." << std::endl; }
+        virtual void apply(osg::ByteArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::ShortArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::IntArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UByteArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UShortArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UIntArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::UByte4Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::FloatArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec2Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec3Array& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec4Array& rhs) { _merge(rhs); }
+};
+
 bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geometry& rhs)
 {
+
+    MergeArrayVisitor merger;
  
     unsigned int base = 0;
     if (lhs.getVertexArray() && rhs.getVertexArray())
     {
-        base = lhs.getVertexArray()->size();
-        lhs.getVertexArray()->insert(lhs.getVertexArray()->end(),rhs.getVertexArray()->begin(),rhs.getVertexArray()->end());
+
+        base = lhs.getVertexArray()->getNumElements();
+
+        merger.merge(lhs.getVertexArray(),rhs.getVertexArray());
+
     }
     else if (rhs.getVertexArray())
     {
@@ -1378,7 +1388,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        lhs.getNormalArray()->insert(lhs.getNormalArray()->end(),rhs.getNormalArray()->begin(),rhs.getNormalArray()->end());
+        merger.merge(lhs.getNormalArray(),rhs.getNormalArray());
     }
     else if (rhs.getNormalArray())
     {
@@ -1387,34 +1397,34 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
 
     if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        // we need to add the handling of the other array types...
-        osg::Vec4Array* col_lhs = dynamic_cast<osg::Vec4Array*>(lhs.getColorArray());
-        osg::Vec4Array* col_rhs = dynamic_cast<osg::Vec4Array*>(rhs.getColorArray());
-        
-        if (col_lhs && col_rhs)
-        {
-            col_lhs->insert(col_lhs->end(),col_rhs->begin(),col_rhs->end());
-        }
+        merger.merge(lhs.getColorArray(),rhs.getColorArray());
     }
     else if (rhs.getColorArray())
     {
         lhs.setColorArray(rhs.getColorArray());
     }
     
-    // need to implement handle secondary color array.
+    if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray());
+    }
+    else if (rhs.getColorArray())
+    {
+        lhs.setSecondaryColorArray(rhs.getSecondaryColorArray());
+    }
     
-    // need to implement handle fog coord array.
+    if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
+    {
+        merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray());
+    }
+    else if (rhs.getColorArray())
+    {
+        lhs.setFogCoordArray(rhs.getFogCoordArray());
+    }
 
     for(unsigned int unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
-        // we need to add the handling of the other array types...
-        osg::Vec2Array* tex_lhs = dynamic_cast<osg::Vec2Array*>(lhs.getTexCoordArray(unit));
-        osg::Vec2Array* tex_rhs = dynamic_cast<osg::Vec2Array*>(rhs.getTexCoordArray(unit));
-        
-        if (tex_lhs && tex_rhs)
-        {
-            tex_lhs->insert(tex_lhs->end(),tex_rhs->begin(),tex_rhs->end());
-        }
+        merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit));
     }
     
     // shift the indices of the incomming primitives to account for the pre exisiting geometry.

@@ -138,17 +138,18 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::operator()( const Producer::C
     _viewport->setViewport(x,y,width,height);
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
-    osh->getState()->pushStateSet(_stateset.get());
+    osgUtil::SceneView* sv = osh->getSceneView();
+    sv->getState()->pushStateSet(_stateset.get());
 
     if (_veh->getDisplayHelp()) displayHelp();
     
     if (_veh->getFrameStatsMode()!=ViewerEventHandler::NO_STATS && camera.getInstrumentationMode())
     {
-        osh->getState()->apply();
+        sv->getState()->apply();
         displayStats();
     }
 
-    osh->getState()->popStateSet();
+    sv->getState()->popStateSet();
 
 }
 
@@ -157,6 +158,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayHelp()
     if (!_helpInitialized) createHelpText();
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
+    osgUtil::SceneView* sv = osh->getSceneView();
 
     // should possibly update _viewport...
 
@@ -180,21 +182,21 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayHelp()
         ditr!=_descriptionList.end();
         ++ditr)
     {
-        (*ditr)->draw(*(osh->getState()));
+        (*ditr)->draw(*(sv->getState()));
     }
 
     for(TextList::iterator oitr=_optionList.begin();
         oitr!=_optionList.end();
         ++oitr)
     {
-        (*oitr)->draw(*(osh->getState()));
+        (*oitr)->draw(*(sv->getState()));
     }
 
     for(TextList::iterator eitr=_explanationList.begin();
         eitr!=_explanationList.end();
         ++eitr)
     {
-        (*eitr)->draw(*(osh->getState()));
+        (*eitr)->draw(*(sv->getState()));
     }
 
 
@@ -360,6 +362,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
     if (!_statsInitialized) createStatsText();
 
     OsgSceneHandler* osh = _veh->getOsgCameraGroup()->getSceneHandlerList()[_cameraNumber].get();
+    osgUtil::SceneView* sv = osh->getSceneView();
 
     // render the text
     if (_veh->getFrameStatsMode()>=ViewerEventHandler::FRAME_RATE)
@@ -384,7 +387,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
         
         char tmpText[128];
 
-        _frameRateLabelText->draw(*(osh->getState()));
+        _frameRateLabelText->draw(*(sv->getState()));
 
         if (_fs.size()>1)
         {
@@ -394,7 +397,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             sprintf(tmpText,"%4.2f",1.0/timePerFrame);
             _frameRateCounterText->setText(tmpText);
         }
-        _frameRateCounterText->draw(*(osh->getState()));
+        _frameRateCounterText->draw(*(sv->getState()));
         
 
         if (_veh->getFrameStatsMode()>=ViewerEventHandler::CAMERA_STATS)
@@ -405,7 +408,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
                 itr!=_statsLabelList.end();
                 ++itr)
             {
-                (*itr)->draw(*(osh->getState()));
+                (*itr)->draw(*(sv->getState()));
             }
 
             double updateTime = 0.0;
@@ -429,7 +432,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             sprintf(tmpText,"%4.2f",1000.0*updateTime/(double)_fs.size());
             _updateTimeText->setText(tmpText);
 
-            _updateTimeText->draw(*(osh->getState()));
+            _updateTimeText->draw(*(sv->getState()));
 
             CameraTimes::iterator titr;
             for(itr=_cullTimeText.begin(),titr = _cullTimes.begin();
@@ -438,7 +441,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             {
                 sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
                 (*itr)->setText(tmpText);
-                (*itr)->draw(*(osh->getState()));
+                (*itr)->draw(*(sv->getState()));
             }
             for(itr=_drawTimeText.begin(),titr = _drawTimes.begin();
                 itr!=_drawTimeText.end() && titr!=_cullTimes.end();
@@ -446,7 +449,7 @@ void ViewerEventHandler::StatsAndHelpDrawCallback::displayStats()
             {
                 sprintf(tmpText,"%4.2f",1000.0*(*titr)/(double)_fs.size());
                 (*itr)->setText(tmpText);
-                (*itr)->draw(*(osh->getState()));
+                (*itr)->draw(*(sv->getState()));
             }
         }
         

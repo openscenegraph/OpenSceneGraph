@@ -16,22 +16,26 @@
 
 using namespace osg;
 
-class DrawVertex
+class DrawVertex : public osg::ConstValueVisitor
 {
     public:
     
-        DrawVertex(const Vec3Array* vertices,const IndexArray* indices):
+        DrawVertex(const Array* vertices,const IndexArray* indices):
             _vertices(vertices),
             _indices(indices) {}
     
         void operator () (unsigned int pos)
         {
-            if (_indices) glVertex3fv((*_vertices)[_indices->index(pos)].ptr());
-            else glVertex3fv((*_vertices)[pos].ptr());
+            if (_indices) _vertices->accept(_indices->index(pos),*this);
+            else _vertices->accept(pos,*this);
         }
         
-        const Vec3Array*   _vertices;
-        const IndexArray*  _indices;
+        virtual void apply(const Vec2& v)   { glVertex2fv(v.ptr()); }
+        virtual void apply(const Vec3& v)   { glVertex3fv(v.ptr()); }
+        virtual void apply(const Vec4& v)   { glVertex4fv(v.ptr()); }
+
+        const Array*        _vertices;
+        const IndexArray*   _indices;
 };
 
 class DrawNormal
@@ -813,7 +817,7 @@ void Geometry::drawImplementation(State& state) const
         //
 
         if( _vertexArray.valid() )
-            state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->getDataPointer());
+            state.setVertexPointer(_vertexArray->getDataSize(),_vertexArray->getDataType(),0,_vertexArray->getDataPointer());
         else
             state.disableVertexPointer();
     
@@ -1547,13 +1551,26 @@ void Geometry::accept(ConstAttributeFunctor& af) const
 
 void Geometry::accept(PrimitiveFunctor& functor) const
 {
-    if (!_vertexArray.valid() || _vertexArray->empty()) return;
-    
-    
+    if (!_vertexArray.valid() || _vertexArray->getNumElements()==0) return;
+
     if (!_vertexIndices.valid())
     {
-        functor.setVertexArray(_vertexArray->size(),&(_vertexArray->front()));
-
+        switch(_vertexArray->getType())
+        {
+        case(Array::Vec2ArrayType): 
+            functor.setVertexArray(_vertexArray->getNumElements(),static_cast<const Vec2*>(_vertexArray->getDataPointer()));
+            break;
+        case(Array::Vec3ArrayType): 
+            functor.setVertexArray(_vertexArray->getNumElements(),static_cast<const Vec3*>(_vertexArray->getDataPointer()));
+            break;
+        case(Array::Vec4ArrayType): 
+            functor.setVertexArray(_vertexArray->getNumElements(),static_cast<const Vec4*>(_vertexArray->getDataPointer()));
+            break;
+        default:
+            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexArray->getType()<<std::endl;
+            return;
+        }
+        
         for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
@@ -1563,6 +1580,27 @@ void Geometry::accept(PrimitiveFunctor& functor) const
     }
     else
     {
+        const Vec2Array* vec2Array = 0;
+        const Vec3Array* vec3Array = 0;
+        const Vec4Array* vec4Array = 0;
+        Array::Type type = _vertexArray->getType();
+        switch(type)
+        {
+        case(Array::Vec2ArrayType): 
+            vec2Array = static_cast<const Vec2Array*>(_vertexArray.get());
+            break;
+        case(Array::Vec3ArrayType): 
+            vec3Array = static_cast<const Vec3Array*>(_vertexArray.get());
+            break;
+        case(Array::Vec4ArrayType): 
+            vec4Array = static_cast<const Vec4Array*>(_vertexArray.get());
+            break;
+        default:
+            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexArray->getType()<<std::endl;
+            return;
+        }
+
+    
         for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
@@ -1581,7 +1619,21 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         vindex<indexEnd;
                         ++vindex)
                     {
-                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                        switch(type)
+                        {
+                        case(Array::Vec2ArrayType): 
+                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec3ArrayType): 
+                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec4ArrayType): 
+                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        default:
+                            break;
+                        }
+
                     }
                     
                     functor.end();
@@ -1601,7 +1653,20 @@ void Geometry::accept(PrimitiveFunctor& functor) const
 
                         for(GLsizei primCount=0;primCount<*primItr;++primCount)
                         {
-                            functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                            switch(type)
+                            {
+                            case(Array::Vec2ArrayType): 
+                                functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                                break;
+                            case(Array::Vec3ArrayType): 
+                                functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                                break;
+                            case(Array::Vec4ArrayType): 
+                                functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                                break;
+                            default:
+                                break;
+                            }
                             ++vindex;
                         }
                         
@@ -1621,7 +1686,20 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         ++primCount,++primItr)
                     {
                         unsigned int vindex=*primItr;
-                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                        switch(type)
+                        {
+                        case(Array::Vec2ArrayType): 
+                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec3ArrayType): 
+                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec4ArrayType): 
+                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        default:
+                            break;
+                        }
                     }
 
                     functor.end();
@@ -1637,7 +1715,20 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         ++primItr)
                     {
                         unsigned int vindex=*primItr;
-                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                        switch(type)
+                        {
+                        case(Array::Vec2ArrayType): 
+                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec3ArrayType): 
+                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec4ArrayType): 
+                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        default:
+                            break;
+                        }
                     }
 
                     functor.end();
@@ -1653,7 +1744,20 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         ++primItr)
                     {
                         unsigned int vindex=*primItr;
-                        functor.vertex((*_vertexArray)[_vertexIndices->index(vindex)]);
+                        switch(type)
+                        {
+                        case(Array::Vec2ArrayType): 
+                            functor.vertex((*vec2Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec3ArrayType): 
+                            functor.vertex((*vec3Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        case(Array::Vec4ArrayType): 
+                            functor.vertex((*vec4Array)[_vertexIndices->index(vindex)]);
+                            break;
+                        default:
+                            break;
+                        }
                     }
 
                     functor.end();
@@ -1742,7 +1846,7 @@ void Geometry::computeCorrectBindingsAndArraySizes()
 {
     if (verifyBindings()) return;
 
-    if (!_vertexArray.valid() || _vertexArray->empty())
+    if (!_vertexArray.valid() || _vertexArray->getNumElements()==0)
     {
         // no vertex array so switch everything off.
         

@@ -3,7 +3,7 @@
 
 void osgGA::GUIEventHandlerVisitor::visit(osgGA::CompositeGUIEventHandler& cgeh)
 {
-    for(int i=0; i<cgeh.getNumChildren(); i++){
+    for(unsigned int i=0; i<cgeh.getNumChildren(); i++){
         cgeh.getChild(i)->accept(*this);
     }
 }

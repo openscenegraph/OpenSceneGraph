@@ -1838,11 +1838,25 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
     osg::Point* point = new osg::Point;
     if (point)
     {
+        /*
         point->setSize(pSLightPoint->sfSize);
         stateSet->setAttributeAndModes( point, osg::StateAttribute::ON );
 //      point->setFadeThresholdSize(const float fadeThresholdSize);
 //      point->setDistanceAttenuation(const Vec3& distanceAttenuation);
 //      point->setStateSetModes(*stateSet, osg::StateAttribute::ON); // GL_POINT_SMOOTH
+    */
+        //change to:
+        point->setSize(pSLightPoint->afActualPixelSize);
+        point->setFadeThresholdSize(pSLightPoint->sfTranspFalloff);
+        //numbers that are going to appear are "experimental"
+        point->setDistanceAttenuation(osg::Vec3(0.0001, 0.0005, 0.00000025));
+
+        point->setMinSize(pSLightPoint->sfMinPixelSize);
+        point->setMaxSize(pSLightPoint->sfMaxPixelSize);
+
+        stateSet->setAttributeAndModes( point, osg::StateAttribute::ON );
+        stateSet->setMode(GL_POINT_SMOOTH, osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(new osg::BlendFunc, osg::StateAttribute::ON);
 
     }
 

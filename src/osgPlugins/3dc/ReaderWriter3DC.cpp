@@ -105,7 +105,8 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                 //std::cout <<line<<std::endl;
                 //std::cout <<"]"<<std::endl;
             }
-    
+
+            geometry->setUseDisplayList(false);    
             geometry->setVertexArray(vertices);
             geometry->setNormalArray(normals);
             geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);

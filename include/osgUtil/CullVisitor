@@ -217,8 +217,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
     protected:
 
-        /** prevent unwanted copy construction.*/
-        CullVisitor(const CullVisitor&):osg::NodeVisitor(),osg::CullStack() {}
+//         /** prevent unwanted copy construction.*/
+//         CullVisitor(const CullVisitor&): osg::NodeVisitor(), osg::CullStack() {}
 
         /** prevent unwanted copy operator.*/
         CullVisitor& operator = (const CullVisitor&) { return *this; }

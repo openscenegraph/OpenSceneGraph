@@ -142,6 +142,7 @@ unsigned int Image::computeNumComponents(GLenum format)
     switch(format)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 3;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 4;
         case(GL_COLOR_INDEX): return 1;
@@ -157,7 +158,11 @@ unsigned int Image::computeNumComponents(GLenum format)
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;
         case(GL_LUMINANCE_ALPHA): return 2;
-        default: return 0;
+        default:
+        {
+            std::cout<<"error format = "<<std::hex<<format<<std::endl;
+            return 0;
+        }
     }        
 }
 
@@ -167,6 +172,8 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
     switch(type)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
+
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
         
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
         
@@ -199,7 +206,11 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_UNSIGNED_INT_8_8_8_8_REV):
         case(GL_UNSIGNED_INT_10_10_10_2):
         case(GL_UNSIGNED_INT_2_10_10_10_REV): return 32;
-        default: return 0;
+        default: 
+        {
+            std::cout<<"error type = "<<type<<std::endl;
+            return 0;
+        }
     }    
 
 }
@@ -209,6 +220,7 @@ unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,i
     unsigned int pixelSize = computePixelSizeInBits(format,type);
     int widthInBits = width*pixelSize;
     int packingInBits = packing*8;
+    std::cout << "width="<<width<<" pixelSize="<<pixelSize<<"  width in bit="<<widthInBits<<" packingInBits="<<packingInBits<<" widthInBits%packingInBits="<<widthInBits%packingInBits<<std::endl;
     return (widthInBits/packingInBits + ((widthInBits%packingInBits)?1:0))*packing;
 }
 
@@ -226,6 +238,40 @@ int Image::computeNearestPowerOfTwo(int s,float bias)
     }
     return s;
 }
+
+unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
+{
+    if (_mipmapData.empty()) 
+    {
+        // no mips so just return size of main image
+        return getTotalSizeInBytes();
+    }
+    
+    int s = _s;
+    int t = _t;
+    int r = _r;
+    
+    unsigned int maxValue = 0;
+    for(unsigned int i=0;i<_mipmapData.size() && _mipmapData[i];++i)
+    {
+        s >>= 1;
+        t >>= 1;
+        r >>= 1;
+        maxValue = maximum(maxValue,_mipmapData[i]);
+   }
+   
+   if (s==0) s=1;
+   if (t==0) t=1;
+   if (r==0) r=1;
+   
+   unsigned int sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*
+                                   r*t;
+
+   // std::cout<<"sizeOfLastMipMap="<<sizeOfLastMipMap<<"\ts="<<s<<"\tt="<<t<<"\tr"<<r<<std::endl;                  
+    
+   return maxValue+sizeOfLastMipMap;
+}
+
 
 void Image::setInternalTextureFormat(GLint internalFormat)
 {

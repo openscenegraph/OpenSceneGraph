@@ -20,9 +20,9 @@
 #include <osg/Geometry>
 #include <osg/Geode>
 
+#include <osg/Group>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
-
 #include <osgText/Text>
 
 #include <osgDB/Registry>
@@ -137,18 +137,14 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     // disable display list so our modified tex coordinates show up
     geom->setUseDisplayList(false);
 
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(geom);
-
     // setup texture
     osg::TextureRectangle* texture = new osg::TextureRectangle;
-    texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
-    texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
 
     // load image
     osg::Image* img = osgDB::readImageFile(filename);
     texture->setImage(img);
-    
+
+    // setup state
     osg::StateSet* state = geom->getOrCreateStateSet();
     state->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
 
@@ -156,6 +152,8 @@ osg::Node* createRectangle(osg::BoundingBox& bb,
     state->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     // install 'update' callback
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(geom);
     geode->setUpdateCallback(new TexturePanCallback(geom, img));
     
     return geode;
@@ -190,17 +188,17 @@ osg::Node* createHUD()
     state->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
 
     // add text
-    osg::Vec3 pos(150.0f, 800.0f, 0.0f);
+    osg::Vec3 pos(120.0f, 800.0f, 0.0f);
     const osg::Vec3 delta(0.0f, -80.0f, 0.0f);
 
     const char* text[] = {
         "TextureRectangle Mini-HOWTO",
         "- essentially behaves like Texture2D, *except* that:",
-        "- tex coords must be non-normalized (0..width) instead of (0..1)",
-        "- wrap mode must be CLAMP, CLAMP_TO_EDGE, or CLAMP_TO_BORDER",
-        "- repeating wrap modes are *not* supported",
-        "- texture border is *not* supported",
-        "- texture mipmaps are *not* supported",
+        "- tex coords must be non-normalized (0..pixel) instead of (0..1)",
+        "- wrap modes must be CLAMP, CLAMP_TO_EDGE, or CLAMP_TO_BORDER\n  repeating wrap modes are not supported",
+        "- filter modes must be NEAREST or LINEAR since\n  mipmaps are not supported",
+        "- texture borders are not supported",
+        "- defaults should be fine",
         NULL
     };
     const char** t = text;
@@ -226,9 +224,11 @@ osg::Node* createHUD()
 osg::Node* createModel(const std::string& filename)
 {
     osg::Group* root = new osg::Group;
-    
-    osg::BoundingBox bb(0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
-    root->addChild(createRectangle(bb, filename)); // XXX
+
+    if (filename != "X") {
+        osg::BoundingBox bb(0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
+        root->addChild(createRectangle(bb, filename)); // XXX
+    }
 
     root->addChild(createHUD());
 

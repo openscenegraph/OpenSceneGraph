@@ -41,7 +41,6 @@ LightPointDrawable::LightPointDrawable():
     _colorMaskOff = new osg::ColorMask;
     _colorMaskOff->setMask(false,false,false,false);
 
-    _point = new osg::Point;
 }
 
 LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::CopyOp& copyop):

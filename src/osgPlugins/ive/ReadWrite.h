@@ -2,64 +2,73 @@
 #define IVE_READWRITE 1
 
 #include "DataInputStream.h"
-#include "DataOutputStream.h"					   
+#include "DataOutputStream.h"                       
 
 namespace ive {
 
 // Objects and Nodes
-#define IVEOBJECT						0x00000001
-#define IVENODE							0x00000002
-#define IVEGROUP						0x00000003
-#define IVEMATRIXTRANSFORM				0x00000004
-#define IVESTATESET						0x00000005
-#define IVEGEODE						0x00000006
-#define IVEIMAGE						0x00000007
-#define IVELIGHTSOURCE					0x00000008
-#define IVELIGHT						0x00000009
-#define IVEBILLBOARD					0x00000010
-#define IVELOD							0x00000011
-#define IVESEQUENCE						0x00000012
-#define IVETRANSFORM					0x00000013
-#define IVEPOSITIONATTITUDETRANSFORM	0x00000014
-#define IVEANIMATIONPATH				0x00000015
+#define IVEOBJECT                       0x00000001
+#define IVENODE                         0x00000002
+#define IVEGROUP                        0x00000003
+#define IVEMATRIXTRANSFORM              0x00000004
+#define IVESTATESET                     0x00000005
+#define IVEGEODE                        0x00000006
+#define IVEIMAGE                        0x00000007
+#define IVELIGHTSOURCE                  0x00000008
+#define IVELIGHT                        0x00000009
+#define IVEBILLBOARD                    0x00000010
+#define IVELOD                          0x00000011
+#define IVESEQUENCE                     0x00000012
+#define IVETRANSFORM                    0x00000013
+#define IVEPOSITIONATTITUDETRANSFORM    0x00000014
+#define IVEANIMATIONPATH                0x00000015
+#define IVESWITCH                       0x00000016
+#define IVEOCCLUDERNODE                 0x00000017
+#define IVEIMPOSTOR                     0x00000018
+#define IVECONVEXPLANAROCCLUDER         0x00000019
+#define IVECONVEXPLANARPOLYGON          0x00000020
 
 // Node callbacks
-#define IVENODECALLBACK					0x00000050
-#define IVEANIMATIONPATHCALLBACK		0x00000051
+#define IVENODECALLBACK                 0x00000050
+#define IVEANIMATIONPATHCALLBACK        0x00000051
 
 // State attributes.
-#define IVESTATEATTRIBUTE		0x00000100
-#define IVEALPHAFUNC			0x00000101
-#define IVEBLENDFUNC			0x00000102
-#define IVEMATERIAL				0x00000110
-#define IVETEXTURE				0x00000120
-#define IVETEXTURE1D			0x00000121
-#define IVETEXTURE2D			0x00000122
-#define IVETEXTURE3D			0x00000123
-#define IVETEXTURECUBEMAP		0x00000124
-#define IVETEXENV				0x00000125
-#define IVETEXENVCOMBINE		0x00000126
-#define IVETEXGEN				0x00000127
-#define IVECULLFACE				0x00000128
+#define IVESTATEATTRIBUTE       0x00000100
+#define IVEALPHAFUNC            0x00000101
+#define IVEBLENDFUNC            0x00000102
+#define IVEMATERIAL             0x00000110
+#define IVETEXTURE              0x00000120
+#define IVETEXTURE1D            0x00000121
+#define IVETEXTURE2D            0x00000122
+#define IVETEXTURE3D            0x00000123
+#define IVETEXTURECUBEMAP       0x00000124
+#define IVETEXENV               0x00000125
+#define IVETEXENVCOMBINE        0x00000126
+#define IVETEXGEN               0x00000127
+#define IVECULLFACE             0x00000128
+#define IVEPOLYGONOFFSET        0x00000129
+#define IVESHADEMODEL           0x0000012A
+#define IVEPOINT                0x0000012B
 
 // Drawables
-#define IVEDRAWABLE				0x00001000
-#define IVEGEOMETRY				0x00001001
+#define IVEDRAWABLE                0x00001000
+#define IVEGEOMETRY                0x00001001
 
 // Primitive set
-#define IVEPRIMITIVESET			0x00010000
-#define IVEDRAWARRAYS			0x00010001
-#define IVEDRAWARRAYLENGTHS		0x00010002
-#define IVEDRAWELEMENTSUSHORT	0x00010003
+#define IVEPRIMITIVESET            0x00010000
+#define IVEDRAWARRAYS            0x00010001
+#define IVEDRAWARRAYLENGTHS        0x00010002
+#define IVEDRAWELEMENTSUSHORT    0x00010003
+#define IVEDRAWELEMENTSUINT    0x00010004
 
 // Our own classes
-#define IVEVIEWPOINT			0x00100001
+#define IVEVIEWPOINT            0x00100001
 
 class ReadWrite{
 
 public:
-	virtual void write(DataOutputStream* out) const = 0;
-	virtual void read(DataInputStream* out) const = 0;
+    virtual void write(DataOutputStream* out) const = 0;
+    virtual void read(DataInputStream* out) const = 0;
 };
 
 }

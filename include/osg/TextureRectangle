@@ -84,8 +84,8 @@ class SG_EXPORT TextureRectangle : public Texture
         SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
         const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
 
-        /** On first apply (unless already compiled), create the minmapped 
-          * texture and bind it, subsequent apply will simple bind to texture.*/
+        /** On first apply (unless already compiled), create and bind the 
+          * texture, subsequent apply will simple bind to texture.*/
         virtual void apply(State& state) const;
 
     protected :
@@ -94,7 +94,9 @@ class SG_EXPORT TextureRectangle : public Texture
 
         virtual void computeInternalFormat() const;
 
-        void applyTexImageRectangle(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
+        void applyTexParameters(GLenum target, State& state) const;
+
+        void applyTexImage(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
 
         // not ideal that _image is mutable, but its required since
         // Image::ensureDimensionsArePowerOfTwo() can only be called

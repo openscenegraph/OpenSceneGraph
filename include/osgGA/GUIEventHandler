@@ -106,11 +106,11 @@ public:
 
         virtual bool removeChild(GUIEventHandler *geh);
 
-        const int  getNumChildren() const { return _children.size(); }
+        unsigned int getNumChildren() const { return _children.size(); }
 
-        GUIEventHandler *getChild( int i) { return _children[i].get(); }
+        GUIEventHandler *getChild( unsigned int i) { return _children[i].get(); }
 
-        const GUIEventHandler *getChild( int i ) const { return _children[i].get(); }
+        const GUIEventHandler *getChild( unsigned int i ) const { return _children[i].get(); }
 
         bool containsNode( const GUIEventHandler* node ) const
         {

@@ -109,7 +109,7 @@ void SmoothingVisitor::smooth(osg::Geometry& geom)
     
     if (!numSurfacePrimitives) return;
 
-    osg::Vec3Array *coords = geom.getVertexArray();
+    osg::Vec3Array *coords = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     if (!coords || !coords->size()) return;
     
     osg::Vec3Array *normals = new osg::Vec3Array(coords->size());

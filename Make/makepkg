@@ -23,7 +23,7 @@ print_pkginfo()
 PKG="$1"
 NAME="$2"
 `[ "$OS" = "SunOS" ] && echo ARCH=sparc`
-VERSION=`$TOPDIR/bin/osgversion`
+VERSION=`gmake -s version`
 CATEGORY="application,graphics,opengl"
 DESC="$3"
 BASEDIR="/opt/"
@@ -67,7 +67,7 @@ make_installable()
 {
     PKGNAME=$1
     PKGDIR=$PKGNAME.pkg
-    DISTNAME="$PKGNAME"-"`$TOPDIR/bin/osgversion`"-"$OS".shar
+    DISTNAME="$PKGNAME"-"`gmake -s version`"-"$OS".shar
 
     THISDIR=`pwd`
     cd $PKGSUBDIR

@@ -508,7 +508,7 @@ int main( int argc, char **argv )
         itr!=viewer.getSceneHandlerList().end();
         ++itr)
     {
-        osgUtil::SceneView* sceneview = itr->get();
+        osgUtil::SceneView* sceneview = (*itr)->getSceneView();
         sceneview->setCullMask(0xffffffff);
         sceneview->setCullMaskLeft(0x00000001);
         sceneview->setCullMaskRight(0x00000002);

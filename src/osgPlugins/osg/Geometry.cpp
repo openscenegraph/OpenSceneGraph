@@ -103,7 +103,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         {
             // post 0.9.3 releases.
             ++fr;
-            Vec3Array* vertices = dynamic_cast<Vec3Array*>(Array_readLocalData(fr));
+            Array* vertices = Array_readLocalData(fr);
             if (vertices)
             {
                 geom.setVertexArray(vertices);

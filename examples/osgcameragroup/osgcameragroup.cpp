@@ -149,10 +149,10 @@ int main( int argc, char **argv )
 
     const osg::BoundingSphere& bs = loadedModel->getBound();
 
-    Producer::Trackball tb;
-    tb.setOrientation( Producer::Trackball::Z_UP );
-    tb.setDistance(bs.radius()*3.0f);
-    tb.translate(-bs.center().x(),-bs.center().y(),-bs.center().z());
+    osg::ref_ptr<Producer::Trackball> tb = new Producer::Trackball;
+    tb->setOrientation( Producer::Trackball::Z_UP );
+    tb->setDistance(bs.radius()*3.0f);
+    tb->translate(-bs.center().x(),-bs.center().y(),-bs.center().z());
 
     // create the windows and run the threads.
     cg.realize();
@@ -168,10 +168,10 @@ int main( int argc, char **argv )
         // call all node update callbacks and animations.
         cg.getSceneData()->accept(update);
 
-	tb.input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
+	tb->input( kbmcb.mx(), kbmcb.my(), kbmcb.mbutton() );
 
         // update the main producer camera
-        cg.setViewByMatrix(tb.getMatrix());
+        cg.setViewByMatrix(tb->getMatrix());
          
         // fire off the cull and draw traversals of the scene.
         cg.frame();

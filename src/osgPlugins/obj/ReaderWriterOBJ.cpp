@@ -14,7 +14,7 @@
  */
 
 #if defined(_MSC_VER)
-	#pragma warning( disable : 4786 )
+    #pragma warning( disable : 4786 )
 #endif
 
 #include <string>
@@ -118,8 +118,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                                        omtl->emmissive[2], omtl->emmissive[3]));
             // note, osg shininess scales between 0.0 and 1.0.
             mtl->setShininess(osg::Material::FRONT_AND_BACK, omtl->shininess);
+            mtl->setAlpha(osg::Material::FRONT_AND_BACK, omtl->alpha);
             
             stateset->setAttribute(mtl);
+
+            if (omtl->alpha<1.0f) {
+                stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+                stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+            }
             
             if (omtl->textureName)
             {
@@ -158,9 +164,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     osg::Group* osg_top = NULL;
     if (obj->position[0] != 0.0f || obj->position[2] != 0.0f || obj->position[2] != 0.0f) {
         osg::MatrixTransform* xform = new osg::MatrixTransform;
-		// note obj_x -> osg_x,
-		//      obj_y -> osg_z,
-		//      obj_z -> osg_y,
+        // note obj_x -> osg_x,
+        //      obj_y -> osg_z,
+        //      obj_z -> osg_y,
         xform->setMatrix(osg::Matrix::translate(obj->position[0], obj->position[2], obj->position[1]));
         osg_top = xform;
     }

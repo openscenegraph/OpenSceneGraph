@@ -31,7 +31,9 @@ class SG_EXPORT Point : public StateAttribute
             StateAttribute(point,copyop),
             _size(point._size),
             _fadeThresholdSize(point._fadeThresholdSize),
-            _distanceAttenuation(point._distanceAttenuation) {}
+            _distanceAttenuation(point._distanceAttenuation),
+            _minSize(point._minSize),
+            _maxSize(point._maxSize) {}
 
         META_StateAttribute(osg, Point, POINT);
         
@@ -46,6 +48,8 @@ class SG_EXPORT Point : public StateAttribute
             COMPARE_StateAttribute_Parameter(_size)
             COMPARE_StateAttribute_Parameter(_fadeThresholdSize)
             COMPARE_StateAttribute_Parameter(_distanceAttenuation)
+            COMPARE_StateAttribute_Parameter(_minSize)
+            COMPARE_StateAttribute_Parameter(_maxSize)
 
             return 0; // passed all the above comparison macro's, must be equal.
         }
@@ -64,6 +68,12 @@ class SG_EXPORT Point : public StateAttribute
         void setDistanceAttenuation(const Vec3& distanceAttenuation);
         inline const Vec3& getDistanceAttenuation() const { return _distanceAttenuation; }
 
+        void setMinSize(float minSize);
+        inline float getMinSize() const {return _minSize;}
+
+        void setMaxSize(float maxSize);
+        inline float getMaxSize() const {return _maxSize;}
+
         virtual void apply(State& state) const;
 
         static void init_GL_EXT();
@@ -75,6 +85,8 @@ class SG_EXPORT Point : public StateAttribute
         float       _size;
         float       _fadeThresholdSize;
         Vec3        _distanceAttenuation;
+        float        _minSize;
+        float        _maxSize;
 
 };
 

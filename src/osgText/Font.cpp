@@ -1,3 +1,4 @@
+
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
@@ -459,22 +460,95 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
     }
     
+    static const GLubyte* s_renderer = 0;
+    static bool s_subloadAllGlyphsTogether = false;
+    if (!s_renderer)
+    {
+        s_renderer = glGetString(GL_RENDERER);
+        osg::notify(osg::INFO)<<"glGetString(GL_RENDERER)=="<<s_renderer<<std::endl;
+        if (strstr((const char*)s_renderer,"IMPACT")!=0)
+        {
+            // we're running on an Octane, so need to work around its
+            // subloading bugs by loading all at once.
+            s_subloadAllGlyphsTogether = true;
+        }
+    }
+
 
     // now subload the glyphs that are outstanding for this graphics context.
     GlyphPtrList& glyphsWereSubloading = _glyphsToSubload[contextID];
 
     if (!glyphsWereSubloading.empty())
     {
-
-        for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
-            itr!=glyphsWereSubloading.end();
-            ++itr)
+    
+        if (!s_subloadAllGlyphsTogether)
         {
-            (*itr)->subload();
+            // default way of subloading as required.
+            
+            //std::cout<<"subloading"<<std::endl;
+
+            for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
+                itr!=glyphsWereSubloading.end();
+                ++itr)
+            {
+                (*itr)->subload();
+            }
+
+            // clear the list since we have now subloaded them.
+            glyphsWereSubloading.clear();
+            
         }
-        
-        // clear the list since we have now subloaded them.
-        glyphsWereSubloading.clear();
+        else
+        {
+            //std::cout<<"all loading"<<std::endl;
+
+            // Octane has bugs in OGL driver which mean that subloads smaller
+            // than 32x32 produce errors, and also cannot handle general alignment,
+            // so to get round this copy all glyphs into a temporary image and
+            // then subload the whole lot in one go.
+
+            int tsize = 2 * getTextureHeight() * getTextureWidth();
+            unsigned char *local_data = new unsigned char[tsize];
+            memset( local_data, 0L, tsize);
+
+            for(GlyphRefList::const_iterator itr=_glyphs.begin();
+                itr!=_glyphs.end();
+                ++itr)
+            {
+                //(*itr)->subload();
+
+                // Rather than subloading to graphics, we'll write the values
+                // of the glyphs into some intermediate data and subload the
+                // whole thing at the end
+                for( int t = 0; t < (*itr)->t(); t++ )
+                {
+                    for( int s = 0; s < (*itr)->s(); s++ )
+                    {
+                        int sindex = 2 * (t*(*itr)->s()+s);
+                        int dindex = 2 * 
+                            ((((*itr)->getTexturePositionY()+t) * getTextureWidth()) +
+                            ((*itr)->getTexturePositionX()+s));
+
+                        const unsigned char *sptr = &(*itr)->data()[sindex];
+                        unsigned char *dptr       = &local_data[dindex];
+
+                        (*dptr++) = (*sptr++);
+                        (*dptr)   = (*sptr);
+                    }
+                }
+            }
+
+            // clear the list since we have now subloaded them.
+            glyphsWereSubloading.clear();
+
+            // Subload the image once
+            glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 
+                    getTextureWidth(),
+                    getTextureHeight(),
+                    GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, local_data );
+
+            delete [] local_data;
+        }
     }
     else
     {
@@ -556,7 +630,7 @@ void Font::Glyph::subload() const
                      "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
                      "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
                      "\t                0x"<<(GLenum)getDataType()<<std::endl<<
-                     "\t                0x"<<(unsigned int)data()<<");"<<dec<<std::endl;
+                     "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
     }                    
 }
 

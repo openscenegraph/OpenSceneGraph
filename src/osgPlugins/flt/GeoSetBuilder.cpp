@@ -113,7 +113,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
 {
     int indexBase = 0;
     
-    osg::Vec3Array* vertices = geom->getVertexArray();
+    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
     if (vertices)
     {
         indexBase = vertices->size();

@@ -51,9 +51,9 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-        void setVertexArray(Vec3Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound(); }
-        Vec3Array* getVertexArray() { return _vertexArray.get(); }
-        const Vec3Array* getVertexArray() const  { return _vertexArray.get(); }
+        void setVertexArray(Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound(); }
+        Array* getVertexArray() { return _vertexArray.get(); }
+        const Array* getVertexArray() const  { return _vertexArray.get(); }
 
         void setVertexIndices(IndexArray* array) { _vertexIndices = array; _fastPathComputed=false; dirtyDisplayList(); dirtyBound(); }
         IndexArray* getVertexIndices() { return _vertexIndices.get(); }
@@ -366,31 +366,31 @@ class SG_EXPORT Geometry : public Drawable
 #ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
         AttributeList                   _attributeList;
 #endif
-        ref_ptr<Vec3Array>                _vertexArray;
-        ref_ptr<IndexArray>                _vertexIndices;
+        ref_ptr<Array>                  _vertexArray;
+        ref_ptr<IndexArray>             _vertexIndices;
 
         mutable AttributeBinding        _normalBinding;
-        ref_ptr<Vec3Array>                _normalArray;
-        ref_ptr<IndexArray>                _normalIndices;
+        ref_ptr<Vec3Array>                  _normalArray;
+        ref_ptr<IndexArray>             _normalIndices;
         
         mutable AttributeBinding        _colorBinding;
-        ref_ptr<Array>                    _colorArray;
-        ref_ptr<IndexArray>                _colorIndices;
+        ref_ptr<Array>                  _colorArray;
+        ref_ptr<IndexArray>             _colorIndices;
         
         mutable AttributeBinding        _secondaryColorBinding;
-        ref_ptr<Array>                    _secondaryColorArray;
-        ref_ptr<IndexArray>                _secondaryColorIndices;
+        ref_ptr<Array>                  _secondaryColorArray;
+        ref_ptr<IndexArray>             _secondaryColorIndices;
 
         mutable AttributeBinding        _fogCoordBinding;
-        ref_ptr<Array>                    _fogCoordArray;
-        ref_ptr<IndexArray>                _fogCoordIndices;
+        ref_ptr<Array>                  _fogCoordArray;
+        ref_ptr<IndexArray>             _fogCoordIndices;
         
-        TexCoordArrayList                _texCoordList;
+        TexCoordArrayList               _texCoordList;
         
-        VertexAttribArrayList            _vertexAttribList;
-        mutable VertexAttribBindingList    _vertexAttribBindingList; 
+        VertexAttribArrayList           _vertexAttribList;
+        mutable VertexAttribBindingList _vertexAttribBindingList; 
 
-        mutable bool                     _fastPathComputed;
+        mutable bool                    _fastPathComputed;
         mutable bool                    _fastPath;
 };
 

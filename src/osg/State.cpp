@@ -16,6 +16,7 @@
 #include <osg/GLExtensions>
 
 
+using namespace std;
 using namespace osg;
 
 State::State()
@@ -726,7 +727,7 @@ bool State::checkGLErrors(StateAttribute::GLMode mode) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"' after applying GLMode "<<mode<< std::endl;
+        osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"' after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
         return true;
     }
     return false;

@@ -28,6 +28,7 @@ TerrapageNode::~TerrapageNode()
 {
     // will the page manger delete the archive?
     delete _pageManager;
+	_pageManager = 0L;
 }
 
 void TerrapageNode::traverse(osg::NodeVisitor& nv)

@@ -6,18 +6,22 @@ CXXFILES =\
 	AnimationPathCallback.cpp\
 	Billboard.cpp\
 	BlendFunc.cpp\
+        ConvexPlanarOccluder.cpp\
+        ConvexPlanarPolygon.cpp\
 	CullFace.cpp\
 	DataInputStream.cpp\
 	DataOutputStream.cpp\
 	DrawArrayLengths.cpp\
 	DrawArrays.cpp\
 	DrawElementsUShort.cpp\
+	DrawElementsUInt.cpp\
 	Drawable.cpp\
 	Exception.cpp\
 	Geode.cpp\
 	Geometry.cpp\
 	Group.cpp\
 	Image.cpp\
+	Impostor.cpp\
 	LOD.cpp\
 	Light.cpp\
 	LightSource.cpp\
@@ -25,9 +29,14 @@ CXXFILES =\
 	MatrixTransform.cpp\
 	Node.cpp\
 	Object.cpp\
+	OccluderNode.cpp\
 	PositionAttitudeTransform.cpp\
+	PolygonOffset.cpp\
+	Point.cpp\
 	PrimitiveSet.cpp\
 	Sequence.cpp\
+	ShadeModel.cpp\
+	Switch.cpp\
 	StateSet.cpp\
 	TexEnv.cpp\
 	TexEnvCombine.cpp\

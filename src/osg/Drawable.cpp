@@ -257,7 +257,17 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
 {
         ComputeBound():_vertices(0) {}
         
+        virtual void setVertexArray(unsigned int count,const Vec2* vertices) 
+        {
+            notify(WARN)<<"ComputeBound does not support Vec2* vertex arrays"<<std::endl;
+        }
+
         virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices = vertices; }
+
+        virtual void setVertexArray(unsigned int count,const Vec4* vertices) 
+        {
+            notify(WARN)<<"ComputeBound does not support Vec4* vertex arrays"<<std::endl;
+        }
 
         virtual void drawArrays(GLenum,GLint first,GLsizei count)
         {
@@ -305,8 +315,12 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
         }
 
         virtual void begin(GLenum) {}
+        virtual void vertex(const Vec2& vert) { _bb.expandBy(osg::Vec3(vert[0],vert[1],0.0f)); }
         virtual void vertex(const Vec3& vert) { _bb.expandBy(vert); }
+        virtual void vertex(const Vec4& vert) { if (vert[3]!=0.0f) _bb.expandBy(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
+        virtual void vertex(float x,float y) { _bb.expandBy(x,y,1.0f); }
         virtual void vertex(float x,float y,float z) { _bb.expandBy(x,y,z); }
+        virtual void vertex(float x,float y,float z,float w) { if (w!=0.0f) _bb.expandBy(x/w,y/w,z/w); }
         virtual void end() {}
         
         const Vec3*     _vertices;

@@ -116,7 +116,6 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         osg::ref_ptr<osg::BlendFunc>    _blendOne;
         osg::ref_ptr<osg::BlendFunc>    _blendOneMinusSrcAlpha;
         osg::ref_ptr<osg::ColorMask>    _colorMaskOff;
-        osg::ref_ptr<osg::Point>        _point;
 
         
 };

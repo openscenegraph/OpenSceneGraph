@@ -128,6 +128,7 @@ EXAMPLE_DIRS = \
 	osgparticle\
 	osgpick\
 	osgprerender\
+	osgpoints\
 	osgreflect\
 	osgscribe\
 	osgsequence\
@@ -146,8 +147,10 @@ EXAMPLE_DIRS = \
 	osgversion\
 	osgvertexprogram\
 	osgviewer\
+	osgprerendercubemap\
 
-#	osgprerendercubemap\
+#	osgsimulation\
+#	osgdemeter\
 #	osgjigsaw\
 
 # comment in you want to compile the cluster demo.

@@ -51,7 +51,7 @@ void Node::write(DataOutputStream* out){
 			out->writeString(desc[i]); 
 	}
 	// Write Stateset if any
-	out->writeInt((int) getStateSet());
+	out->writeLong((long) getStateSet());
 	if(getStateSet())
 		out->writeStateSet(getStateSet());
 
@@ -59,7 +59,7 @@ void Node::write(DataOutputStream* out){
 	// Write UpdateCallback if any
 	osg::NodeCallback* nc = getUpdateCallback();
 	if(nc && dynamic_cast<osg::AnimationPathCallback*>(nc)){
-		out->writeInt((int)nc);
+		out->writeLong((long)nc);
 		((ive::AnimationPathCallback*)(nc))->write(out);
 	}
 	else

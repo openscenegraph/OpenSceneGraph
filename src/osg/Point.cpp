@@ -55,7 +55,10 @@ Point::Point()
     _size = 1.0f;                // TODO find proper default
     _fadeThresholdSize = 1.0f;   // TODO find proper default
                                  // TODO find proper default
-    _distanceAttenuation = Vec3(0.0f, 1.0f/5.f, 0.0f);
+    _distanceAttenuation = Vec3(1, 0.0, 0.0);
+
+    _minSize = 0.0;
+    _maxSize = 100.0;//depends on mulitsampling ... some default necessary
 }
 
 
@@ -99,6 +102,15 @@ void Point::setDistanceAttenuation(const Vec3& distanceAttenuation)
     _distanceAttenuation = distanceAttenuation;
 }
 
+void Point::setMinSize(float minSize)
+{
+    _minSize = minSize;
+}
+
+void Point::setMaxSize(float maxSize)
+{
+    _maxSize = maxSize;
+}
 
 void Point::apply(State&) const
 {
@@ -112,8 +124,14 @@ void Point::apply(State&) const
         init_GL_EXT();
     }
 
-    if (s_PointParameterfvEXT) s_PointParameterfvEXT(GL_DISTANCE_ATTENUATION_EXT, (const GLfloat*)&_distanceAttenuation);
-    if (s_PointParameterfEXT) s_PointParameterfEXT(GL_POINT_FADE_THRESHOLD_SIZE_EXT, _fadeThresholdSize);
 
+    if (s_PointParameterfvEXT) s_PointParameterfvEXT(GL_DISTANCE_ATTENUATION_EXT, (const GLfloat*)&_distanceAttenuation);
+    
+    if (s_PointParameterfEXT)
+    {
+        s_PointParameterfEXT(GL_POINT_FADE_THRESHOLD_SIZE_EXT, _fadeThresholdSize);
+        s_PointParameterfEXT(GL_POINT_SIZE_MIN_EXT, _minSize);
+        s_PointParameterfEXT(GL_POINT_SIZE_MAX_EXT, _maxSize);
+    }
 }
 

@@ -83,6 +83,7 @@ CXXFILES =\
 	Texture3D.cpp\
 	TextureCubeMap.cpp\
 	TextureRectangle.cpp\
+	TransformAttributeFunctor.cpp\
 	Timer.cpp\
 	Transform.cpp\
 	UnitTestFramework.cpp\

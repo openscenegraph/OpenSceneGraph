@@ -145,6 +145,8 @@ namespace txp
 		std::vector<osg::Group *> toMergeParent;
 		// Unhook list is filled in by the paging thread
 		std::vector<osg::Group *> toUnhook;
+		
+		volatile bool cancel;
 
 #ifdef USE_THREADLOOP_DELETE
 		// Main thread moves groups to the delete list as soon as they are unhooked

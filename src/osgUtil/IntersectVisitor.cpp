@@ -524,7 +524,7 @@ bool IntersectVisitor::intersect(Drawable& drawable)
                     
                     if (geometry)
                     {
-                        osg::Vec3Array* vertices = geometry->getVertexArray();
+                        osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
                         if (vertices)
                         {
                             osg::Vec3* first = &(vertices->front());

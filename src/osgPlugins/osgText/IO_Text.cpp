@@ -62,6 +62,14 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr.matchSequence("characterSizeMode %w"))
+    {
+        std::string str = fr[1].getStr();
+        if      (str=="OBJECT_COORDS") text.setCharacterSizeMode(osgText::Text::OBJECT_COORDS);
+        else if (str=="SCREEN_COORDS") text.setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
+        else if (str=="OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT") text.setCharacterSizeMode(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
+    }
+
     // maximum dimentsions of text box.
     if (fr[0].matchWord("maximumWidth"))
     {
@@ -127,24 +135,6 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
-    if (fr.matchSequence("scale %f"))
-    {
-        float scale;
-        fr[1].getFloat(scale);
-        text.setScale(scale);
-        fr += 2;
-        itAdvanced = true;
-    }
-
-    if (fr.matchSequence("autoUpdateEyeMovementTolerance %f"))
-    {
-        float scale;
-        fr[1].getFloat(scale);
-        text.setAutoUpdateEyeMovementTolerance(scale);
-        fr += 2;
-        itAdvanced = true;
-    }
-
     if (fr.matchSequence("autoRotateToScreen TRUE"))
     {
         text.setAutoRotateToScreen(true);
@@ -154,7 +144,7 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     if (fr.matchSequence("autoScaleToLimitScreenSizeToFontResolution TRUE"))
     {
-        text.setAutoScaleToLimitScreenSizeToFontResolution(true);
+        text.setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
         fr += 2;
         itAdvanced = true;
     }
@@ -263,6 +253,14 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     // charater size.
     fw.indent() << "characterSize " << text.getCharacterHeight() << " " << text.getCharacterAspectRatio() << std::endl;
 
+    fw.indent() << "characterSizeMode ";
+    switch(text.getCharacterSizeMode())
+    {
+      case osgText::Text::OBJECT_COORDS : fw<<"OBJECT_COORDS"<<std::endl; break;
+      case osgText::Text::SCREEN_COORDS : fw<<"SCREEN_COORDS"<<std::endl; break;
+      case osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT: fw<<"OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT"<<std::endl; break;
+    }
+
     // maximum dimension of text box.
     if (text.getMaximumWidth()>0.0f)
     {
@@ -301,25 +299,11 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
         fw.indent() << "rotation " << text.getRotation() << std::endl;
     }
 
-    if (text.getScale()!=1.0f)
-    {
-        fw.indent() << "scale " << text.getScale() << std::endl;
-    }
-
-    if (text.getAutoUpdateEyeMovementTolerance()!=0.0f)
-    {
-        fw.indent() << "autoUpdateEyeMovementTolerance " << text.getAutoUpdateEyeMovementTolerance() << std::endl;
-    }
-
     if (text.getAutoRotateToScreen())
     {
         fw.indent() << "autoRotateToScreen TRUE"<< std::endl;
     }
 
-    if (text.getAutoScaleToLimitScreenSizeToFontResolution())
-    {
-        fw.indent() << "autoScaleToLimitScreenSizeToFontResolution TRUE"<< std::endl;
-    }
 
     // layout
     fw.indent() << "layout ";

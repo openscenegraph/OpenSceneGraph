@@ -24,13 +24,29 @@
 
 #include <typeinfo>
 
-using namespace osgSim;
+namespace osgSim
+{
+
+osg::StateSet* getSingletonLightPointStateSet()
+{
+    static osg::ref_ptr<osg::StateSet> s_stateset = 0;
+    if (!s_stateset)
+    {
+        s_stateset = new osg::StateSet;
+        // force light point nodes to be drawn after everything else by picking a renderin bin number after
+        // the transparent bin.
+        s_stateset->setRenderBinDetails(20,"DepthSortedBin");
+    }
+    return s_stateset.get();
+}
+
 
 LightPointNode::LightPointNode():
     _minPixelSize(0.0f),
     _maxPixelSize(30.0f),
     _maxVisableDistance2(FLT_MAX)
 {
+    setStateSet(getSingletonLightPointStateSet());
 }
 
 /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -66,6 +82,12 @@ bool LightPointNode::computeBound() const
     _bsphere.init();
     _bbox.init();
 
+    if (_lightPointList.empty())
+    {
+        _bsphere_computed=true;
+        return false;
+    }
+
 
     LightPointList::const_iterator itr;
     for(itr=_lightPointList.begin();
@@ -96,6 +118,12 @@ bool LightPointNode::computeBound() const
 
 void LightPointNode::traverse(osg::NodeVisitor& nv)
 {
+    if (_lightPointList.empty())
+    {
+        // no light points so no op.
+        return;
+    }
+
     //#define USE_TIMER
     #ifdef USE_TIMER
     osg::Timer timer;
@@ -363,3 +391,4 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 }
 
 
+} // end of namespace

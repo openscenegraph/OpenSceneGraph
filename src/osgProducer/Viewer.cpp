@@ -128,7 +128,7 @@ private:
 // osgProducer::Viewer implemention
 //
 Viewer::Viewer():
-    _done(0),
+    _done(false),
     _kbmcb(0),
     _recordingAnimationPath(false)
 {
@@ -231,8 +231,8 @@ void Viewer::setUpViewer(unsigned int options)
     }
 
     
+    if (!_updateVisitor) _updateVisitor = new osgUtil::UpdateVisitor;
     
-    _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
 
     if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
@@ -320,7 +320,7 @@ bool Viewer::realize()
     // draw traversal.
     for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
     {
-        (*p)->getState()->setAbortRenderingPtr(&_done);
+        (*p)->getSceneView()->getState()->setAbortRenderingPtr(&_done);
     }
     
     return _realized;
@@ -433,11 +433,12 @@ bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Ve
     if (cameraNum>=getSceneHandlerList().size()) return false;
 
     OsgSceneHandler* scenehandler = getSceneHandlerList()[cameraNum].get();
+    osgUtil::SceneView* sv = scenehandler->getSceneView();
     
     float pixel_x,pixel_y;
     if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
     {
-        return scenehandler->projectWindowXYIntoObject((int)(pixel_x+0.5f),(int)(pixel_y+0.5f),near_point,far_point);
+        return sv->projectWindowXYIntoObject((int)(pixel_x+0.5f),(int)(pixel_y+0.5f),near_point,far_point);
     }
     return false;
 
@@ -462,11 +463,12 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
         //std::cout << "    rx "<<rx<<"  "<<ry<<std::endl;
 
         osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
+        osgUtil::SceneView* sv = sh?sh->getSceneView():0;
         osg::Matrix vum;
-        if (sh!=0 && sh->getModelViewMatrix()!=0 && sh->getProjectionMatrix()!=0)
+        if (sv!=0 && sv->getModelViewMatrix()!=0 && sv->getProjectionMatrix()!=0)
         {
-            vum.set((*(sh->getModelViewMatrix())) *
-                    (*(sh->getProjectionMatrix())));
+            vum.set((*(sv->getModelViewMatrix())) *
+                    (*(sv->getProjectionMatrix())));
         }
         else
         {

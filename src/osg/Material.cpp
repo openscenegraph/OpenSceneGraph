@@ -53,17 +53,17 @@ void Material::setAmbient(Face face, const Vec4& ambient )
         case(FRONT):
             _ambientFrontAndBack = false;
             _ambientFront = ambient;
-            clampArray4BetweenRange(_ambientFront,0.0f,1.0f,"osg::Material::setAmbient(..)");
+            //clampArray4BetweenRange(_ambientFront,0.0f,1.0f,"osg::Material::setAmbient(..)");
             break;
         case(BACK):
             _ambientFrontAndBack = false;
             _ambientBack = ambient;
-            clampArray4BetweenRange(_ambientBack,0.0f,1.0f,"Material::setAmbient(..)");
+            //clampArray4BetweenRange(_ambientBack,0.0f,1.0f,"Material::setAmbient(..)");
             break;
         case(FRONT_AND_BACK):
             _ambientFrontAndBack = true;
             _ambientFront = ambient;
-            clampArray4BetweenRange(_ambientFront,0.0f,1.0f,"Material::setAmbient(..)");
+            //clampArray4BetweenRange(_ambientFront,0.0f,1.0f,"Material::setAmbient(..)");
             _ambientBack = _ambientFront;
             break;
         default:
@@ -100,17 +100,17 @@ void Material::setDiffuse(Face face, const Vec4& diffuse )
         case(FRONT):
             _diffuseFrontAndBack = false;
             _diffuseFront = diffuse;
-            clampArray4BetweenRange(_diffuseFront,0.0f,1.0f,"Material::setDiffuse(..)");
+            //clampArray4BetweenRange(_diffuseFront,0.0f,1.0f,"Material::setDiffuse(..)");
             break;
         case(BACK):
             _diffuseFrontAndBack = false;
             _diffuseBack = diffuse;
-            clampArray4BetweenRange(_diffuseBack,0.0f,1.0f,"Material::setDiffuse(..)");
+            //clampArray4BetweenRange(_diffuseBack,0.0f,1.0f,"Material::setDiffuse(..)");
             break;
         case(FRONT_AND_BACK):
             _diffuseFrontAndBack = true;
             _diffuseFront = diffuse;
-            clampArray4BetweenRange(_diffuseFront,0.0f,1.0f,"Material::setDiffuse(..)");
+            //clampArray4BetweenRange(_diffuseFront,0.0f,1.0f,"Material::setDiffuse(..)");
             _diffuseBack = _diffuseFront;
             break;
         default:
@@ -148,17 +148,17 @@ void Material::setSpecular(Face face, const Vec4& specular )
         case(FRONT):
             _specularFrontAndBack = false;
             _specularFront = specular;
-            clampArray4BetweenRange(_specularFront,0.0f,1.0f,"Material::setSpecular(..)");
+            //clampArray4BetweenRange(_specularFront,0.0f,1.0f,"Material::setSpecular(..)");
             break;
         case(BACK):
             _specularFrontAndBack = false;
             _specularBack = specular;
-            clampArray4BetweenRange(_specularBack,0.0f,1.0f,"Material::setSpecular(..)");
+            //clampArray4BetweenRange(_specularBack,0.0f,1.0f,"Material::setSpecular(..)");
             break;
         case(FRONT_AND_BACK):
             _specularFrontAndBack = true;
             _specularFront = specular;
-            clampArray4BetweenRange(_specularFront,0.0f,1.0f,"Material::setSpecular(..)");
+            //clampArray4BetweenRange(_specularFront,0.0f,1.0f,"Material::setSpecular(..)");
             _specularBack = _specularFront;
             break;
         default:
@@ -196,17 +196,17 @@ void Material::setEmission(Face face, const Vec4& emission )
         case(FRONT):
             _emissionFrontAndBack = false;
             _emissionFront = emission;
-            clampArray4BetweenRange(_emissionFront,0.0f,1.0f,"Material::setEmission(..)");
+            //clampArray4BetweenRange(_emissionFront,0.0f,1.0f,"Material::setEmission(..)");
             break;
         case(BACK):
             _emissionFrontAndBack = false;
             _emissionBack = emission;
-            clampArray4BetweenRange(_emissionBack,0.0f,1.0f,"Material::setEmission(..)");
+            //clampArray4BetweenRange(_emissionBack,0.0f,1.0f,"Material::setEmission(..)");
             break;
         case(FRONT_AND_BACK):
             _emissionFrontAndBack = true;
             _emissionFront = emission;
-            clampArray4BetweenRange(_emissionFront,0.0f,1.0f,"Material::setEmission(..)");
+            //clampArray4BetweenRange(_emissionFront,0.0f,1.0f,"Material::setEmission(..)");
             _emissionBack = _emissionFront;
             break;
         default:
@@ -285,7 +285,7 @@ float Material::getShininess(Face face) const
 
 void Material::setTransparency(Face face,float transparency)
 {
-   clampBetweenRange(transparency,0.0f,1.0f,"Material::setTransparency()");
+   //clampBetweenRange(transparency,0.0f,1.0f,"Material::setTransparency()");
 
    if (face==FRONT || face==FRONT_AND_BACK)
    {

@@ -22,11 +22,20 @@
 
 namespace osgProducer {
 
-class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler, public osgUtil::SceneView
+class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
 {
     public :
     
         OsgSceneHandler(osg::DisplaySettings *ds = NULL);
+        
+        /// set the scene view to which will manage rendering of the OSG scene.
+        void setSceneView(osgUtil::SceneView* sceneView) { _sceneView = sceneView; }
+        
+        /// get the scene view.
+        osgUtil::SceneView* getSceneView() { return _sceneView.get(); }
+        
+        /// get the const scene view.
+        const osgUtil::SceneView* getSceneView() const { return _sceneView.get(); }
 
         /// override the init method to force it be run one at a time.
         virtual void init();
@@ -84,6 +93,9 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
     protected:
     
         virtual ~OsgSceneHandler() {}
+        
+        
+        osg::ref_ptr<osgUtil::SceneView> _sceneView;
     
         osg::ref_ptr<Callback> _clearCallback;
         osg::ref_ptr<Callback> _cullCallback;

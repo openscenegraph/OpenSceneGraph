@@ -29,18 +29,18 @@ public:
 	void writeBool(bool b);
 	void writeChar(char c);
 	void writeUShort(unsigned short s);
+	void writeUInt(unsigned int s);
 	void writeInt(int i);
 	void writeFloat(float f);
 	void writeLong(long l);
 	void writeDouble(double d);
 	void writeString(std::string s);
 	void writeCharArray(char* data, int size);
-	void writeVec2(osg::Vec2 v);
-	void writeVec3(osg::Vec3 v);
-	void writeVec4(osg::Vec4 v);
-	void writeUByte4(osg::UByte4 v);
-	void writeQuat(osg::Quat q);
-	void writeStateSet(osg::StateSet* stateset);
+	void writeVec2(const osg::Vec2& v);
+	void writeVec3(const osg::Vec3& v);
+	void writeVec4(const osg::Vec4& v);
+	void writeUByte4(const osg::UByte4& v);
+	void writeQuat(const osg::Quat& q);
 	void writeBinding(osg::Geometry::AttributeBinding b);
 	void writeArray(osg::Array* a);
 	void writeIntArray(osg::IntArray* a);
@@ -54,6 +54,11 @@ public:
 	void writeVec4Array(osg::Vec4Array* a);
 	void writeMatrix(osg::Matrix mat);
 
+	void writeStateSet(osg::StateSet* stateset);
+	void writeStateAttribute(osg::StateAttribute* sa);
+	void writeDrawable(osg::Drawable* sa);
+	void writeNode(osg::Node* sa);
+
 	// Set and get include image data in stream
 	void setIncludeImageData(bool b) {_includeImageData=b;};
 	bool getIncludeImageData() {return _includeImageData;};
@@ -62,10 +67,17 @@ private:
 	std::ostream* _ostream;
 
  	// Container to map stateset uniques to their respective stateset.
-	typedef std::vector<int>						StateSetList;
-	StateSetList _statesetList;
+	typedef std::map<osg::StateSet*,int>        StateSetMap;
+	typedef std::map<osg::StateAttribute*,int>  StateAttributeMap;
+	typedef std::map<osg::Drawable*,int>        DrawableMap;
+	typedef std::map<osg::Node*,int>            NodeMap;
+        
+        StateSetMap         _stateSetMap;
+        StateAttributeMap   _stateAttributeMap;
+        DrawableMap         _drawableMap;
+        NodeMap             _nodeMap;
 
-	bool			_includeImageData;
+	bool                _includeImageData;
 	
 };
 

@@ -187,24 +187,26 @@ void OsgCameraGroup::setUpSceneViewsWithData()
 {
     for(SceneHandlerList::iterator  p = _shvec.begin(); p != _shvec.end(); p++ )
     {
+        osgUtil::SceneView* sv = (*p)->getSceneView();
+    
         if (_scene_decorator.valid())
         {
-            (*p)->setSceneData( _scene_decorator.get() );
+            sv->setSceneData( _scene_decorator.get() );
         }
         else if (_scene_data.valid())
         {
-            (*p)->setSceneData( _scene_data.get() );
+            sv->setSceneData( _scene_data.get() );
         }
         else
         {
-            (*p)->setSceneData( 0 );
+            sv->setSceneData( 0 );
         }
         
-        (*p)->setFrameStamp( _frameStamp.get() );
-        (*p)->setGlobalStateSet( _global_stateset.get() );
-        (*p)->setBackgroundColor( _background_color );
-        (*p)->setLODScale( _LODScale );
-        (*p)->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
+        sv->setFrameStamp( _frameStamp.get() );
+        sv->setGlobalStateSet( _global_stateset.get() );
+        sv->setBackgroundColor( _background_color );
+        sv->setLODScale( _LODScale );
+        sv->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
     }
 }
 
@@ -317,14 +319,17 @@ bool OsgCameraGroup::realize()
         
         // create the scene handler.
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
-        sh->setDefaults();
-        sh->getState()->setContextID(i);
+
+        osgUtil::SceneView* sv = sh->getSceneView();
+        sv->setDefaults();
+
+        sh->setContextID(i);
 
         _shvec.push_back( sh );
         cam->setSceneHandler( sh );
         
         // set up the clear mask.
-        osgUtil::RenderStage *stage = sh->getRenderStage();
+        osgUtil::RenderStage *stage = sv->getRenderStage();
         if (stage) stage->setClearMask(clear_mask);
 
         // set the realize callback.
@@ -363,7 +368,7 @@ bool OsgCameraGroup::realize()
     if( _global_stateset == NULL && _shvec.size() > 0 )
     {
         SceneHandlerList::iterator p = _shvec.begin();
-        _global_stateset = (*p)->getGlobalStateSet();
+        _global_stateset = (*p)->getSceneView()->getGlobalStateSet();
     }
 
     setUpSceneViewsWithData();
@@ -430,9 +435,9 @@ void OsgCameraGroup::setView(const osg::Matrix& matrix)
 const osg::Matrix OsgCameraGroup::getViewMatrix() const
 {
     osg::Matrix matrix;
-    if (_cfg && _cfg->getNumberOfCameras()>=1)
+    if (_cfg.valid() && _cfg->getNumberOfCameras()>=1)
     {
-        Producer::Camera *cam = _cfg->getCamera(0);
+        const Producer::Camera *cam = _cfg->getCamera(0);
         matrix.set(cam->getViewMatrix());
     }
     return matrix;

@@ -38,7 +38,7 @@ void Texture2D::write(DataOutputStream* out){
 
 	// Include image data in stream
 	if(includeImg){
-		out->writeInt((int)getImage());
+		out->writeLong((long)getImage());
 		if(getImage())
 			((ive::Image*)getImage())->write(out);
 	}

@@ -9,6 +9,8 @@
 #include <osgDB/WriteFile>
 #include <osgDB/ReaderWriter>
 
+#include <osgUtil/Optimizer>
+
 #include "OrientationConverter.h"
 #include "GeoSet.h"
 
@@ -273,6 +275,10 @@ int main( int argc, char **argv )
     ConvertGeoSetsToGeometryVisitor cgtg;
     root->accept(cgtg);
 
+    // optimize the scene graph, remove rendundent nodes and state etc.
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(root.get());
+    
 
     if( do_convert )
 	root = oc.convert( root.get() );

@@ -32,26 +32,9 @@ class IVEReaderWriter : public ReaderWriter
         {
 	    try{
                 // Create datainputstream.
-                ive::DataInputStream* in = new ive::DataInputStream(&fin);
+                ive::DataInputStream in(&fin);
 
-                // Which object is written first in the stream.
-                int id = in->peekInt();
-
-                if(id==IVEMATRIXTRANSFORM)
-                {
-	                osg::MatrixTransform* rootNode = new osg::MatrixTransform;
-	                ((ive::MatrixTransform*)(rootNode))->read(in);
-                        return rootNode;
-                }
-                else if(id==IVEGROUP)
-                {
-	                osg::Group* rootNode = new osg::Group;
-	                ((ive::Group*)(rootNode))->read(in);
-                        return rootNode;
-                }
-                else{
-                    std::cout <<"Unknown class identification in file "<< id << std::endl;
-                }
+                return in.readNode();
 	    }
 	    catch(ive::Exception e)
             {
@@ -63,6 +46,9 @@ class IVEReaderWriter : public ReaderWriter
 
         virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
+            std::string ext = getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
             std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             WriteResult result = writeNode(node, fout, options);
             fout.close();
@@ -73,15 +59,9 @@ class IVEReaderWriter : public ReaderWriter
         {
             try
             {
-                ive::DataOutputStream* out = new ive::DataOutputStream(&fout);
-                // write ive file.
-                if(dynamic_cast<const osg::MatrixTransform*>(&node))
-                    const_cast<ive::MatrixTransform*>(static_cast<const ive::MatrixTransform*>(&node))->write(out);
-                else if(dynamic_cast<const osg::Group*>(&node))
-                    const_cast<ive::Group*>(static_cast<const ive::Group*>(&node))->write(out);
-                else
-                    std::cout<<"File must start with a MatrixTransform or Group "<<std::endl;
-                fout.flush();
+                ive::DataOutputStream out(&fout);
+                
+                out.writeNode(const_cast<osg::Node*>(&node));
                 return WriteResult::FILE_SAVED;
             }
             catch(ive::Exception e)

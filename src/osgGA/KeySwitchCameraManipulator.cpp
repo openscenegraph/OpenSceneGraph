@@ -68,8 +68,8 @@ void KeySwitchCameraManipulator::getUsage(osg::ApplicationUsage& usage) const
         itr!=_manips.end();
         ++itr)
     {
-        string key; key += (char)(itr->first);
-        string explanation(std::string("Select '")+itr->second.first+std::string("' camera manipulator"));
+        std::string key; key += (char)(itr->first);
+        std::string explanation(std::string("Select '")+itr->second.first+std::string("' camera manipulator"));
         if (_current==itr->second.second) explanation += " (default)";
 
         usage.addKeyboardMouseBinding(key,explanation);

@@ -116,10 +116,15 @@ void PrintFilePathList(std::ostream& stream,const FilePathList& filepath)
     }
 }
 
-Registry* Registry::instance()
+Registry* Registry::instance(bool erase)
 {
     static ref_ptr<Registry> s_nodeFactory = new Registry;
-    return s_nodeFactory.get();
+    if (erase) 
+    {
+        s_nodeFactory->closeAllLibraries();
+        s_nodeFactory = 0;
+    }
+    return s_nodeFactory.get(); // will return NULL on erase
 }
 
 
@@ -192,6 +197,7 @@ Registry::Registry()
 
 Registry::~Registry()
 {
+    closeAllLibraries();
 }
 
 #ifndef WIN32
@@ -354,8 +360,6 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;
 
-    if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
-
     //notify(INFO) << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<< std::endl;
     const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
     
@@ -441,8 +445,6 @@ void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
 void Registry::addReaderWriter(ReaderWriter* rw)
 {
     if (rw==0L) return;
-
-    // if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
 
     // notify(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
 
@@ -563,6 +565,10 @@ bool Registry::closeLibrary(const std::string& fileName)
     return false;
 }
 
+void Registry::closeAllLibraries()
+{
+    _dlList.clear();
+}
 
 Registry::DynamicLibraryList::iterator Registry::getLibraryItr(const std::string& fileName)
 {

@@ -41,12 +41,14 @@ DynamicLibrary::DynamicLibrary(const std::string& name,HANDLE handle)
 {
     _name = name;
     _handle = handle;
+    osg::notify(osg::INFO)<<"Opened DynamicLibrary "<<_name<<std::endl;
 }
 
 DynamicLibrary::~DynamicLibrary()
 {
     if (_handle)
     {
+        osg::notify(osg::INFO)<<"Closing DynamicLibrary "<<_name<<std::endl;
 #if defined(WIN32) && !defined(__CYGWIN__)
         FreeLibrary((HMODULE)_handle);
 #elif defined(__DARWIN_OSX__)

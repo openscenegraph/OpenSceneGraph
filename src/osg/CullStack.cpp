@@ -127,6 +127,13 @@ void CullStack::pushProjectionMatrix(Matrix* matrix)
     cullingSet->getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));
     cullingSet->getFrustum().transformProvidingInverse(*matrix);
     
+    // set the culling mask ( There should be a more elegant way!)  Nikolaus H.
+    osg::CullingSet::Mask mask = 0;
+    if( _cullingMode&VIEW_FRUSTUM_CULLING) mask |= osg::CullingSet::VIEW_FRUSTUM_CULLING;
+    if( _cullingMode&SMALL_FEATURE_CULLING) mask |= osg::CullingSet::SMALL_FEATURE_CULLING;
+    if( _cullingMode&SHADOW_OCCLUSION_CULLING) mask |= osg::CullingSet::SHADOW_OCCLUSION_CULLING;
+    cullingSet->setCullingMask(mask);
+
     // set the small feature culling.
     cullingSet->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
     

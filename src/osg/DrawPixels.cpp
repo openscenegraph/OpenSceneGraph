@@ -96,12 +96,12 @@ void DrawPixels::drawImplementation(State&) const
     if (_useSubImage)
     {
         const GLvoid* pixels = _image->data(_offsetX,_offsetY);
-        glPixelStorei(GL_PACK_ROW_LENGTH,_image->s());
+        glPixelStorei(GL_UNPACK_ROW_LENGTH,_image->s());
         glDrawPixels(_width,_height,
                      (GLenum)_image->getPixelFormat(),
                      (GLenum)_image->getDataType(),
                      pixels);
-        glPixelStorei(GL_PACK_ROW_LENGTH,0);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
     }
     else
     {

@@ -202,7 +202,9 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         t7 = timer.tick();
 #endif
 
-        cv->updateCalculatedNearFar(matrix,_bbox);
+        
+        if (cv->getComputeNearFarMode() != osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR)
+            cv->updateCalculatedNearFar(matrix,_bbox);
         
         
         const float minimumIntensity = 1.0f/256.0f;

@@ -20,6 +20,10 @@
 
 namespace osg {
 
+#ifndef GL_TEXTURE0
+#define GL_TEXTURE0 0x84C0
+#endif
+
 /** macro for use with osg::StateAttrbiute::apply methods for detected and 
   * reporting OpenGL error messages.*/
 #define OSG_GL_DEBUG(message) \
@@ -363,7 +367,7 @@ class SG_EXPORT State : public Referenced
 
                 if (s_glClientActiveTexture)
                 {
-                    s_glClientActiveTexture(GL_TEXTURE0_ARB+unit);
+                    s_glClientActiveTexture(GL_TEXTURE0+unit);
                     _currentClientActiveTextureUnit = unit;
                 }
                 else
@@ -386,7 +390,7 @@ class SG_EXPORT State : public Referenced
 
                 if (s_glActiveTexture)
                 {
-                    s_glActiveTexture(GL_TEXTURE0_ARB+unit);
+                    s_glActiveTexture(GL_TEXTURE0+unit);
                     _currentActiveTextureUnit = unit;
                 }
                 else

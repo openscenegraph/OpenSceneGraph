@@ -33,6 +33,7 @@ CXXFILES =\
 	MatrixTransform.cpp\
 	MultiSwitch.cpp\
 	Node.cpp\
+	LineWidth.cpp\
 	Object.cpp\
 	OccluderNode.cpp\
 	PagedLOD.cpp\

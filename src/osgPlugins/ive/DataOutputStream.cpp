@@ -24,6 +24,7 @@
 #include "PolygonOffset.h"
 #include "ShadeModel.h"
 #include "Point.h"
+#include "LineWidth.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
 #include "TextureCubeMap.h"
@@ -430,6 +431,12 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::Point*>(attribute)){
             ((ive::Point*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::LineWidth*>(attribute)){
+            ((ive::LineWidth*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::LineWidth*>(attribute)){
+            ((ive::LineWidth*)(attribute))->write(this);
         }
         // This is a Texture1D
         else if(dynamic_cast<const osg::Texture1D*>(attribute)){

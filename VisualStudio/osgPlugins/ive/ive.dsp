@@ -238,6 +238,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Point.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ReaderWriterIVE.cpp
 # End Source File
 # Begin Source File
@@ -487,6 +491,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Point.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.h
 # End Source File
 # Begin Source File
 

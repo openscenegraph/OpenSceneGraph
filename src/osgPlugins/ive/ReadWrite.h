@@ -53,6 +53,7 @@ namespace ive {
 #define IVESHADEMODEL					0x0000012A
 #define IVEPOINT					0x0000012B
 #define IVETEXMAT					0x0000012C
+#define IVELINEWIDTH					0x0000012D
 
 // Drawables
 #define IVEDRAWABLE						0x00001000

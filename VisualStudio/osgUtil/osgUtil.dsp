@@ -93,6 +93,18 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\CubeMapGenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\HalfWayMapGenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\HighlightMapGenerator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\AppVisitor.cpp
 # End Source File
 # Begin Source File
@@ -175,6 +187,22 @@ SOURCE=..\..\src\osgUtil\Version.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\CubeMapGenerator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\HalfWayMapGenerator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\HighlightMapGenerator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgUtil\ReflectionMapGenerator
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\AppVisitor

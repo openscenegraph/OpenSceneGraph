@@ -419,6 +419,16 @@ void Text::computePositions()
     case BASE_LINE:     _offset.set(0.0f,0.0f,0.0f); break;
     }
 
+    // adjust offset for axis alignment
+    switch(_axisAlignment)
+    {
+    case XZ_PLANE:  _offset.set(_offset.x(),-_offset.z(),_offset.y()); break;
+    case YZ_PLANE:  _offset.set(_offset.z(),_offset.x(),_offset.y()); break;
+    case XY_PLANE:  break; // nop - already on XY plane.
+    case SCREEN:    break; // nop - need to account for rotation in draw as it depends on ModelView _matrix.
+    }
+
+
     _matrix.makeTranslate(_position-_offset);
 
     switch(_axisAlignment)

@@ -67,10 +67,10 @@ bool FileInput::open(const std::string& fileName)
     if (_file == NULL) 
     {
         // ok havn't found file, resort to using findFile...
-        std::string newFileName = osgDB::findFile(fileName.c_str());
-        if (newFileName.empty()) return false;
-        
-        _file=::fopen( fileName.c_str(), "rb");
+        char* newFileName = osgDB::findFile(fileName.c_str());
+
+        if (!newFileName) return false;
+        _file=::fopen( newFileName, "rb");
         if (_file == NULL) return false;
     }
     _eof = false;

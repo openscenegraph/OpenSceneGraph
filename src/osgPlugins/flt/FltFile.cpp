@@ -91,9 +91,9 @@ Record* FltFile::readFile(const std::string& fileName)
     if (!fin.open(fileName)) 
     {
         // ok havn't found file, resort to using findFile...
-        std::string newFileName = osgDB::findFile(fileName.c_str());
-        
-        if (newFileName.empty()) return NULL;
+        char* newFileName = osgDB::findFile(fileName.c_str());
+
+        if (!newFileName) return NULL;
         if (!fin.open(newFileName)) return NULL;
     }
 

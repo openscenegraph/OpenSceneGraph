@@ -24,14 +24,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(clv);        
         clv.combineLODs();
     }
-/*    
+    
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
         FlattenStaticTransformsVisitor fstv;
         node->accept(fstv);
         fstv.removeTransforms();
     }
-*/    
+    
     if (options & REMOVE_REDUNDENT_NODES)
     {
         RemoveRedundentNodesVisitor rrnv;
@@ -291,13 +291,11 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Geode& geode)
 {
     if (!_matrixStack.empty())
     {
-        TransformFunctor tf(_matrixStack.back());
         for(int i=0;i<geode.getNumDrawables();++i)
         {
-            geode.getDrawable(i)->applyAttributeOperation(tf);
-            geode.getDrawable(i)->dirtyBound();
+            // register each drawable with the objectMap.
+            _objectMap[geode.getDrawable(i)].add(_transformStack,_matrixStack.back());
         }
-        geode.dirtyBound();
     }
 }
 
@@ -305,23 +303,8 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Billboard& billboard)
 {
     if (!_matrixStack.empty())
     {
-        osg::Matrix& matrix = _matrixStack.back();
-        osg::Matrix matrix_no_trans = matrix;
-        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
-  
-        TransformFunctor tf(matrix_no_trans);
-
-        osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard.getAxis());
-        axis.normalize();
-        billboard.setAxis(axis);
-
-        for(int i=0;i<billboard.getNumDrawables();++i)
-        {
-            billboard.setPos(i,billboard.getPos(i)*matrix);
-            billboard.getDrawable(i)->applyAttributeOperation(tf);
-        }
-        
-        billboard.dirtyBound();
+        // register ourselves with the objectMap.
+        _objectMap[&billboard].add(_transformStack,_matrixStack.back());
     }
 }
 
@@ -329,25 +312,10 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::LOD& lod)
 {
     if (!_matrixStack.empty())
     {
-        osg::Matrix& matrix = _matrixStack.back();
-        osg::Matrix matrix_no_trans = matrix;
-        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
-        
-        osg::Vec3 v111(1.0f,1.0f,1.0f);
-        osg::Vec3 new_v111 = v111*matrix_no_trans;
-        float ratio = new_v111.length()/v111.length();
-
-        // move center point.
-        lod.setCenter(lod.getCenter()*matrix);
-        
-        // adjust ranges to new scale.
-        for(int i=0;i<lod.getNumRanges();++i)
-        {
-            lod.setRange(i,lod.getRange(i)*ratio);
-        }
-        
-        lod.dirtyBound();
+        // register ourselves with the objectMap.
+        _objectMap[&lod].add(_transformStack,_matrixStack.back());
     }
+    
     traverse(lod);
 }
 
@@ -369,43 +337,209 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
             _matrixStack.push_back(transform.getMatrix()*_matrixStack.back());
         }
 
-        _transformList.insert(&transform);
+        _transformStack.push_back(&transform);
 
         // simple traverse the children as if this Transform didn't exist.
         traverse(transform);
 
-        // reset the matrix to identity.
-        transform.setMatrix(osg::Matrix::identity());
-
+        _transformStack.pop_back();
+        
         _matrixStack.pop_back();
+    }
+}
+
+void Optimizer::FlattenStaticTransformsVisitor::doTransform(osg::Object* obj,osg::Matrix& matrix)
+{
+    osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
+    if (drawable)
+    {
+        TransformFunctor tf(matrix);
+        drawable->applyAttributeOperation(tf);
+        drawable->dirtyBound();
+        return;
+    }
+
+    osg::LOD* lod = dynamic_cast<osg::LOD*>(obj);
+    if (lod)
+    {
+        osg::Matrix matrix_no_trans = matrix;
+        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
+        
+        osg::Vec3 v111(1.0f,1.0f,1.0f);
+        osg::Vec3 new_v111 = v111*matrix_no_trans;
+        float ratio = new_v111.length()/v111.length();
+
+        // move center point.
+        lod->setCenter(lod->getCenter()*matrix);
+        
+        // adjust ranges to new scale.
+        for(int i=0;i<lod->getNumRanges();++i)
+        {
+            lod->setRange(i,lod->getRange(i)*ratio);
+        }
+        
+        lod->dirtyBound();
+        return;
+    }
+
+    osg::Billboard* billboard = dynamic_cast<osg::Billboard*>(obj);
+    if (billboard)
+    {
+        osg::Matrix matrix_no_trans = matrix;
+        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
+  
+        TransformFunctor tf(matrix_no_trans);
+
+        osg::Vec3 axis = osg::Matrix::transform3x3(tf._im,billboard->getAxis());
+        axis.normalize();
+        billboard->setAxis(axis);
+
+        for(int i=0;i<billboard->getNumDrawables();++i)
+        {
+            billboard->setPos(i,billboard->getPos(i)*matrix);
+            billboard->getDrawable(i)->applyAttributeOperation(tf);
+        }
+        
+        billboard->dirtyBound();
+
+        return;
+    }
+}
+
+void Optimizer::FlattenStaticTransformsVisitor::disableObject(ObjectMap::iterator itr)
+{
+    if (itr==_transformMap.end())
+    {
+        // Euston we have a problem..
+        osg::notify(osg::WARN)<<"Warning: internal error Optimizer::FlattenStaticTransformsVisitor::disableObject()"<<std::endl;
+        return;
+    }    
+
+    if (itr->second._canBeApplied)
+    {
+        // we havn't been disabled yet so we need to disable,
+        itr->second._canBeApplied = false;
+
+        // and then inform everybody we have been disabled.
+        for(ObjectStruct::TransformSet::iterator titr = itr->second._transformSet.begin();
+            titr != itr->second._transformSet.end();
+            ++titr)
+        {
+            disableTransform(*titr);
+        }
+    }
+}
+
+void Optimizer::FlattenStaticTransformsVisitor::disableTransform(osg::Transform* transform)
+{
+    TransformMap::iterator itr=_transformMap.find(transform);
+    if (itr==_transformMap.end())
+    {
+        // Euston we have a problem..
+        osg::notify(osg::WARN)<<"Warning: internal error Optimizer::FlattenStaticTransformsVisitor::disableTransform()"<<std::endl;
+        return;
+    }    
+
+    if (itr->second._canBeApplied)
+    {
+    
+        // we havn't been disabled yet so we need to disable,
+        itr->second._canBeApplied = false;
+        // and then inform everybody we have been disabled.
+        for(TransformStruct::ObjectSet::iterator oitr = itr->second._objectSet.begin();
+            oitr != itr->second._objectSet.end();
+            ++oitr)
+        {
+            disableObject(*oitr);
+        }
     }
 }
 
 void Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
 {
-    for(TransformList::iterator itr=_transformList.begin();
-        itr!=_transformList.end();
-        ++itr)
-    {
-        osg::ref_ptr<osg::Transform> transform = *itr;
-        osg::ref_ptr<osg::Group>     group = new osg::Group;
 
-        int i;
-        for(i=0;i<transform->getNumChildren();++i)
+    // create the TransformMap from the ObjectMap
+    ObjectMap::iterator oitr;
+    for(oitr=_objectMap.begin();
+        oitr!=_objectMap.end();
+        ++oitr)
+    {
+        osg::Object* object = oitr->first;
+        ObjectStruct& os = oitr->second;
+        
+        for(ObjectStruct::TransformSet::iterator titr = os._transformSet.begin();
+            titr != os._transformSet.end();
+            ++titr)
         {
-            for(int j=0;j<transform->getNumParents();++j)
+            _transformMap[*titr].add(object);
+        }
+    }
+    
+
+    // disable all the objects which have more than one matrix associated 
+    // with them, and then disable all transforms which have an object associated 
+    // them that can't be applied, and then disable all objects which have
+    // disabled transforms associated, recursing until all disabled 
+    // associativity.
+    for(oitr=_objectMap.begin();
+        oitr!=_objectMap.end();
+        ++oitr)
+    {
+        ObjectStruct& os = oitr->second;
+        if (os._canBeApplied)
+        {
+            if (os._moreThanOneMatrixRequired)
             {
-                group->addChild(transform->getChild(i));
+                disableObject(oitr);
             }
         }
-
-        for(i=transform->getNumParents()-1;i>=0;--i)
-        {
-            transform->getParent(i)->replaceChild(transform.get(),group.get());
-        }                
-
     }
-    _transformList.clear();
+
+    // transform the objects that can be applied.
+    for(oitr=_objectMap.begin();
+        oitr!=_objectMap.end();
+        ++oitr)
+    {
+        osg::Object* object = oitr->first;
+        ObjectStruct& os = oitr->second;
+        if (os._canBeApplied)
+        {
+            doTransform(object,os._matrix);
+        }
+    }
+
+
+    // clean up the transforms.
+    for(TransformMap::iterator titr=_transformMap.begin();
+        titr!=_transformMap.end();
+        ++titr)
+    {
+        if (titr->second._canBeApplied)
+        {
+        
+        
+            osg::ref_ptr<osg::Transform> transform = titr->first;
+            osg::ref_ptr<osg::Group>     group = new osg::Group;
+
+            int i;
+            for(i=0;i<transform->getNumChildren();++i)
+            {
+                for(int j=0;j<transform->getNumParents();++j)
+                {
+                    group->addChild(transform->getChild(i));
+                }
+            }
+
+            for(i=transform->getNumParents()-1;i>=0;--i)
+            {
+                transform->getParent(i)->replaceChild(transform.get(),group.get());
+            }                
+        }
+    }
+    _objectMap.clear();
+    _transformMap.clear();
+    _transformStack.clear();
+    _matrixStack.clear();
 }
 
 
@@ -424,7 +558,6 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
     }
     traverse(group);
 }
-
 
 void Optimizer::RemoveRedundentNodesVisitor::removeRedundentNodes()
 {

@@ -1,3 +1,61 @@
+2002-01-02 10:42  robert
+
+	* src/: Demos/osgtexture/osgtexture.cpp,
+	osgPlugins/pfb/ConvertFromPerformer.cpp: Updates from Randall
+	Hopper to fix build under IRIX.
+
+2002-01-02 06:03  robert
+
+	* src/osgPlugins/lib3ds/: ReaderWriter3DS.cpp, matrix.cpp: A small
+	bug fix to the matrix dump function (it was primtiing out 5 columns
+	instead of four).
+	
+	Added support for multiplying mesh geometry by the matrix attached
+	to the Lib3dsMesh structure, however this produces disjointed
+	models so have to the default mode to bypass this multiplication
+	code.  Will need to revisit this in the future.
+
+2002-01-02 05:59  robert
+
+	* src/osgUtil/SmoothingVisitor.cpp: Commented out the smoothing of
+	FLAT_TRIANGLE_STRIP and FLAT_TRIANGLE_FAN since it was causes
+	problems with any color list which were attached.
+
+2002-01-02 05:53  robert
+
+	* src/osg/GeoSet_ogl.cpp: Moved the glShadeModel(FLAT/SMOOTH)
+	outside of the primtitive inner loop to reduce the amount state
+	changes incurred when using FLAT_ primtives.
+
+2002-01-02 05:49  robert
+
+	* include/osg/GeoSet: Fixed the orientation of for_each_triangle
+	cases for QUAD and QUAD_STRIP.
+
+2001-12-31 18:21  robert
+
+	* include/osgGLUT/Viewer, src/osgGLUT/Viewer.cpp: Removed the
+	variables which were duplicated in osgGLUT::Viewer and
+	osgGLUT::Window, standardising on the Window ones, and therefore
+	removing an unitialized variable that had been introduced.  This
+	caused a crash under WindowsXP due to send invalid values to
+	glutReshapeWindow.
+
+2001-12-31 18:16  robert
+
+	* include/osg/LOD: Added a more detailed explanation of how LOD's
+	work.
+
+2001-12-30 19:04  robert
+
+	* NEWS, src/osg/Makefile: Updates to NEWS for date of release, and
+	added include/osg/DisplaySettings and include/osg/LineWidth to the
+	src/osg/Makefile.
+
+2001-12-30 15:48  robert
+
+	* ChangeLog: Final update of ChangeLog for the 0.8.43 release.
+
 2001-12-30 15:03  robert
 
 	* include/osg/GeoSet: Added osg::GeoSet::FLAT_TRIANGLE_FAN to the
@@ -2500,15 +2558,16 @@
 	doc/osgUtil/ViewState.html, doc/osgUtil/icon1.gif,
 	doc/osgUtil/icon2.gif, doc/osgUtil/index.html,
 	doc/osgUtil/osgUtil.html, doc/osgUtil/osgUtilGetLibraryName.html,
-	doc/osgUtil/osgUtilGetVersion.html, src/osgPlugins/fly/Makedepend,
-	src/osgPlugins/fly/Makefile, src/osgPlugins/fly/base.cpp,
-	src/osgPlugins/fly/fly.cpp, src/osgPlugins/fly/hat.cpp,
-	src/osgPlugins/fly/hat.h, src/osgPlugins/fly/matrix.cpp,
-	src/osgPlugins/fly/matrix.h, src/osgPlugins/fly/oldtrees.cpp,
-	src/osgPlugins/fly/sky.cpp, src/osgPlugins/fly/tank.cpp,
-	src/osgPlugins/fly/terrain.cpp, src/osgPlugins/fly/terrain_data.h,
-	src/osgPlugins/fly/trees.cpp, src/osgPlugins/fly/vector.cpp,
-	src/osgPlugins/fly/vector.h,
+	doc/osgUtil/osgUtilGetVersion.html, src/Demos/cube/Makedepend,
+	src/Demos/cube/Makefile, src/Demos/cube/cube.cpp,
+	src/osgPlugins/fly/Makedepend, src/osgPlugins/fly/Makefile,
+	src/osgPlugins/fly/base.cpp, src/osgPlugins/fly/fly.cpp,
+	src/osgPlugins/fly/hat.cpp, src/osgPlugins/fly/hat.h,
+	src/osgPlugins/fly/matrix.cpp, src/osgPlugins/fly/matrix.h,
+	src/osgPlugins/fly/oldtrees.cpp, src/osgPlugins/fly/sky.cpp,
+	src/osgPlugins/fly/tank.cpp, src/osgPlugins/fly/terrain.cpp,
+	src/osgPlugins/fly/terrain_data.h, src/osgPlugins/fly/trees.cpp,
+	src/osgPlugins/fly/vector.cpp, src/osgPlugins/fly/vector.h,
 	src/osgPlugins/pfb/osg2pf/ConvertToPerformer.cpp,
 	src/osgPlugins/pfb/osg2pf/ConvertToPerformer.h,
 	src/osgPlugins/pfb/osg2pf/Makedepend,
@@ -3132,27 +3191,29 @@
 	include/osgUtil/IntersectVisitor, include/osgUtil/RenderVisitor,
 	include/osgUtil/SceneView, include/osgUtil/TrackballManipulator,
 	include/osgUtil/Version, src/Makefile, src/Demos/Makefile,
-	src/Demos/sgv/Makedepend, src/Demos/sgv/Makefile,
-	src/Demos/sgv/sgv.cpp, src/osg/AlphaFunc.cpp,
-	src/osg/Billboard.cpp, src/osg/BoundingBox.cpp,
-	src/osg/BoundingSphere.cpp, src/osg/Camera.cpp,
-	src/osg/CullFace.cpp, src/osg/DCS.cpp, src/osg/DynamicLibrary.cpp,
-	src/osg/ExtensionSupported.cpp, src/osg/Field.cpp,
-	src/osg/FieldReader.cpp, src/osg/FieldReaderIterator.cpp,
-	src/osg/FileNameUtils.cpp, src/osg/Fog.cpp, src/osg/GeoSet.cpp,
-	src/osg/GeoSet_ogl.cpp, src/osg/GeoState.cpp, src/osg/Geode.cpp,
-	src/osg/Group.cpp, src/osg/Image.cpp, src/osg/Input.cpp,
-	src/osg/LOD.cpp, src/osg/Light.cpp, src/osg/LightSource.cpp,
-	src/osg/Lighting.cpp, src/osg/Makedepend, src/osg/Makefile,
-	src/osg/Material.cpp, src/osg/Matrix.cpp, src/osg/Node.cpp,
-	src/osg/NodeVisitor.cpp, src/osg/Notify.cpp, src/osg/OSG.cpp,
-	src/osg/Object.cpp, src/osg/Output.cpp, src/osg/Point.cpp,
-	src/osg/PolygonOffset.cpp, src/osg/Quat.cpp,
-	src/osg/ReaderWriterOSG.cpp, src/osg/ReaderWriterRGB.cpp,
-	src/osg/Registry.cpp, src/osg/Scene.cpp, src/osg/Seg.cpp,
-	src/osg/Sequence.cpp, src/osg/Switch.cpp, src/osg/TexEnv.cpp,
-	src/osg/TexGen.cpp, src/osg/TexMat.cpp, src/osg/Texture.cpp,
-	src/osg/Timer.cpp, src/osg/Transparency.cpp, src/osg/Version.cpp,
+	src/Demos/cube/Makedepend, src/Demos/cube/Makefile,
+	src/Demos/cube/cube.cpp, src/Demos/sgv/Makedepend,
+	src/Demos/sgv/Makefile, src/Demos/sgv/sgv.cpp,
+	src/osg/AlphaFunc.cpp, src/osg/Billboard.cpp,
+	src/osg/BoundingBox.cpp, src/osg/BoundingSphere.cpp,
+	src/osg/Camera.cpp, src/osg/CullFace.cpp, src/osg/DCS.cpp,
+	src/osg/DynamicLibrary.cpp, src/osg/ExtensionSupported.cpp,
+	src/osg/Field.cpp, src/osg/FieldReader.cpp,
+	src/osg/FieldReaderIterator.cpp, src/osg/FileNameUtils.cpp,
+	src/osg/Fog.cpp, src/osg/GeoSet.cpp, src/osg/GeoSet_ogl.cpp,
+	src/osg/GeoState.cpp, src/osg/Geode.cpp, src/osg/Group.cpp,
+	src/osg/Image.cpp, src/osg/Input.cpp, src/osg/LOD.cpp,
+	src/osg/Light.cpp, src/osg/LightSource.cpp, src/osg/Lighting.cpp,
+	src/osg/Makedepend, src/osg/Makefile, src/osg/Material.cpp,
+	src/osg/Matrix.cpp, src/osg/Node.cpp, src/osg/NodeVisitor.cpp,
+	src/osg/Notify.cpp, src/osg/OSG.cpp, src/osg/Object.cpp,
+	src/osg/Output.cpp, src/osg/Point.cpp, src/osg/PolygonOffset.cpp,
+	src/osg/Quat.cpp, src/osg/ReaderWriterOSG.cpp,
+	src/osg/ReaderWriterRGB.cpp, src/osg/Registry.cpp,
+	src/osg/Scene.cpp, src/osg/Seg.cpp, src/osg/Sequence.cpp,
+	src/osg/Switch.cpp, src/osg/TexEnv.cpp, src/osg/TexGen.cpp,
+	src/osg/TexMat.cpp, src/osg/Texture.cpp, src/osg/Timer.cpp,
+	src/osg/Transparency.cpp, src/osg/Version.cpp,
 	src/osgGLUT/GLUTEventAdapter.cpp, src/osgGLUT/Makedepend,
 	src/osgGLUT/Makefile, src/osgGLUT/Version.cpp,
 	src/osgGLUT/Viewer.cpp, src/osgPlugins/Makefile,
@@ -3392,27 +3453,29 @@
 	include/osgUtil/IntersectVisitor, include/osgUtil/RenderVisitor,
 	include/osgUtil/SceneView, include/osgUtil/TrackballManipulator,
 	include/osgUtil/Version, src/Makefile, src/Demos/Makefile,
-	src/Demos/sgv/Makedepend, src/Demos/sgv/Makefile,
-	src/Demos/sgv/sgv.cpp, src/osg/AlphaFunc.cpp,
-	src/osg/Billboard.cpp, src/osg/BoundingBox.cpp,
-	src/osg/BoundingSphere.cpp, src/osg/Camera.cpp,
-	src/osg/CullFace.cpp, src/osg/DCS.cpp, src/osg/DynamicLibrary.cpp,
-	src/osg/ExtensionSupported.cpp, src/osg/Field.cpp,
-	src/osg/FieldReader.cpp, src/osg/FieldReaderIterator.cpp,
-	src/osg/FileNameUtils.cpp, src/osg/Fog.cpp, src/osg/GeoSet.cpp,
-	src/osg/GeoSet_ogl.cpp, src/osg/GeoState.cpp, src/osg/Geode.cpp,
-	src/osg/Group.cpp, src/osg/Image.cpp, src/osg/Input.cpp,
-	src/osg/LOD.cpp, src/osg/Light.cpp, src/osg/LightSource.cpp,
-	src/osg/Lighting.cpp, src/osg/Makedepend, src/osg/Makefile,
-	src/osg/Material.cpp, src/osg/Matrix.cpp, src/osg/Node.cpp,
-	src/osg/NodeVisitor.cpp, src/osg/Notify.cpp, src/osg/OSG.cpp,
-	src/osg/Object.cpp, src/osg/Output.cpp, src/osg/Point.cpp,
-	src/osg/PolygonOffset.cpp, src/osg/Quat.cpp,
-	src/osg/ReaderWriterOSG.cpp, src/osg/ReaderWriterRGB.cpp,
-	src/osg/Registry.cpp, src/osg/Scene.cpp, src/osg/Seg.cpp,
-	src/osg/Sequence.cpp, src/osg/Switch.cpp, src/osg/TexEnv.cpp,
-	src/osg/TexGen.cpp, src/osg/TexMat.cpp, src/osg/Texture.cpp,
-	src/osg/Timer.cpp, src/osg/Transparency.cpp, src/osg/Version.cpp,
+	src/Demos/cube/Makedepend, src/Demos/cube/Makefile,
+	src/Demos/cube/cube.cpp, src/Demos/sgv/Makedepend,
+	src/Demos/sgv/Makefile, src/Demos/sgv/sgv.cpp,
+	src/osg/AlphaFunc.cpp, src/osg/Billboard.cpp,
+	src/osg/BoundingBox.cpp, src/osg/BoundingSphere.cpp,
+	src/osg/Camera.cpp, src/osg/CullFace.cpp, src/osg/DCS.cpp,
+	src/osg/DynamicLibrary.cpp, src/osg/ExtensionSupported.cpp,
+	src/osg/Field.cpp, src/osg/FieldReader.cpp,
+	src/osg/FieldReaderIterator.cpp, src/osg/FileNameUtils.cpp,
+	src/osg/Fog.cpp, src/osg/GeoSet.cpp, src/osg/GeoSet_ogl.cpp,
+	src/osg/GeoState.cpp, src/osg/Geode.cpp, src/osg/Group.cpp,
+	src/osg/Image.cpp, src/osg/Input.cpp, src/osg/LOD.cpp,
+	src/osg/Light.cpp, src/osg/LightSource.cpp, src/osg/Lighting.cpp,
+	src/osg/Makedepend, src/osg/Makefile, src/osg/Material.cpp,
+	src/osg/Matrix.cpp, src/osg/Node.cpp, src/osg/NodeVisitor.cpp,
+	src/osg/Notify.cpp, src/osg/OSG.cpp, src/osg/Object.cpp,
+	src/osg/Output.cpp, src/osg/Point.cpp, src/osg/PolygonOffset.cpp,
+	src/osg/Quat.cpp, src/osg/ReaderWriterOSG.cpp,
+	src/osg/ReaderWriterRGB.cpp, src/osg/Registry.cpp,
+	src/osg/Scene.cpp, src/osg/Seg.cpp, src/osg/Sequence.cpp,
+	src/osg/Switch.cpp, src/osg/TexEnv.cpp, src/osg/TexGen.cpp,
+	src/osg/TexMat.cpp, src/osg/Texture.cpp, src/osg/Timer.cpp,
+	src/osg/Transparency.cpp, src/osg/Version.cpp,
 	src/osgGLUT/GLUTEventAdapter.cpp, src/osgGLUT/Makedepend,
 	src/osgGLUT/Makefile, src/osgGLUT/Version.cpp,
 	src/osgGLUT/Viewer.cpp, src/osgPlugins/Makefile,

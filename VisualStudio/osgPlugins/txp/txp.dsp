@@ -230,10 +230,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPArchive.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TXPIO.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\txp\TXPNode.h
 # End Source File
 # Begin Source File

@@ -344,13 +344,21 @@ void SceneView::draw()
                 osg::ColorMask* green = new osg::ColorMask;
 
                 red->setMask(true,false,false,true);
+                green->setMask(false,true,true,true);
+                
+                // draw right eye.
+                _globalState->setAttribute(red);
                 _renderStage->setColorMask(red);
                 _renderStage->setCamera(left_camera.get());
                 _renderStage->draw(*_state,previous);
 
-                green->setMask(false,true,true,true);
-                _renderStage->setColorMask(green);
+                // need to tell the rendering stage that it can be
+                // called again in this frame.
                 _renderStage->_stageDrawnThisFrame = false;
+
+                // draw left eye.
+                _globalState->setAttribute(green);
+                _renderStage->setColorMask(green);
                 _renderStage->setCamera(right_camera.get());
                 _renderStage->draw(*_state,previous);
 

@@ -337,7 +337,6 @@ ifeq ($(OS),Linux)
     endif
   endif
 
-
   SHARED            = -shared
   ifeq ($(SYSARCH),x86_64)
     LINKARGS          = -L/usr/X11R6/lib64
@@ -359,6 +358,16 @@ ifeq ($(OS),Linux)
   TIFF_LIB          = -ltiff
   GIF_LIBS          = -lungif
   MAKEDIST          = $(TOPDIR)/Make/makerpms
+
+  ifeq ("$(PROFILER)","gprof")
+    DEF += -pg
+  endif
+
+  ifeq ("$(PROFILER)","FunctionCheck")
+    DEF += -finstrument-functions
+    OTHER_LIBS += -lfnccheck
+  endif
+
 endif
 
 #### FreeBSD specific definitions

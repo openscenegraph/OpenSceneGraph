@@ -5,10 +5,10 @@
 #ifndef OSG_LIGHT
 #define OSG_LIGHT 1
 
-#include <osg/Vec3>
-#include <osg/Vec4>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
+#include <osg/Vec3>
+#include <osg/Vec4>
 
 namespace osg {
 

@@ -15,13 +15,12 @@ using namespace std;
 
 Image::Image()
 {
-    _fileName        = "";
-    _s = _t = _r     = 0;
-    _internalFormat  = 0;
-    _pixelFormat     = (unsigned int)0;
-    _dataType        = (unsigned int)0;
-    _packing         = 4;
-    _pixelSizeInBits = 0;
+    _fileName               = "";
+    _s = _t = _r            = 0;
+    _internalTextureFormat  = 0;
+    _pixelFormat            = (unsigned int)0;
+    _dataType               = (unsigned int)0;
+    _packing                = 4;
 
     _data = (unsigned char *)0L;
 
@@ -32,11 +31,10 @@ Image::Image(const Image& image,const CopyOp& copyop):
     Object(image,copyop),
     _fileName(image._fileName),
     _s(image._s), _t(image._t), _r(image._r),
-    _internalFormat(image._internalFormat),
+    _internalTextureFormat(image._internalTextureFormat),
     _pixelFormat(image._pixelFormat),
     _dataType(image._dataType),
     _packing(image._packing),
-    _pixelSizeInBits(image._pixelSizeInBits),
     _data(0L),
     _modifiedTag(image._modifiedTag)
 {
@@ -68,60 +66,7 @@ void Image::setFileName(const std::string& fileName)
 
 void Image::computePixelSize()
 {
-
-
-//     /* Data types */
-
-//     #define GL_BITMAP				0x1A00
-
-//     #define GL_BYTE					0x1400
-//     #define GL_UNSIGNED_BYTE			0x1401
-//     #define GL_SHORT				0x1402
-//     #define GL_UNSIGNED_SHORT			0x1403
-//     #define GL_INT					0x1404
-//     #define GL_UNSIGNED_INT				0x1405
-//     #define GL_FLOAT				0x1406
-//     #define GL_DOUBLE				0x140A
-//     #define GL_2_BYTES				0x1407
-//     #define GL_3_BYTES				0x1408
-//     #define GL_4_BYTES				0x1409
-// 
-#ifndef GL_VERSION_1_1
-    /* Internal texture formats (GL 1.1) */
-    #define GL_ALPHA4				0x803B
-    #define GL_ALPHA8				0x803C
-    #define GL_ALPHA12				0x803D
-    #define GL_ALPHA16				0x803E
-    #define GL_LUMINANCE4				0x803F
-    #define GL_LUMINANCE8				0x8040
-    #define GL_LUMINANCE12				0x8041
-    #define GL_LUMINANCE16				0x8042
-    #define GL_LUMINANCE4_ALPHA4			0x8043
-    #define GL_LUMINANCE6_ALPHA2			0x8044
-    #define GL_LUMINANCE8_ALPHA8			0x8045
-    #define GL_LUMINANCE12_ALPHA4			0x8046
-    #define GL_LUMINANCE12_ALPHA12			0x8047
-    #define GL_LUMINANCE16_ALPHA16			0x8048
-    #define GL_INTENSITY				0x8049
-    #define GL_INTENSITY4				0x804A
-    #define GL_INTENSITY8				0x804B
-    #define GL_INTENSITY12				0x804C
-    #define GL_INTENSITY16				0x804D
-    #define GL_R3_G3_B2				0x2A10
-    #define GL_RGB4					0x804F
-    #define GL_RGB5					0x8050
-    #define GL_RGB8					0x8051
-    #define GL_RGB10				0x8052
-    #define GL_RGB12				0x8053
-    #define GL_RGB16				0x8054
-    #define GL_RGBA2				0x8055
-    #define GL_RGBA4				0x8056
-    #define GL_RGB5_A1				0x8057
-    #define GL_RGBA8				0x8058
-    #define GL_RGB10_A2				0x8059
-    #define GL_RGBA12				0x805A
-    #define GL_RGBA16				0x805B
-#endif
+}
 
 #ifndef GL_VERSION_1_2
     /* 1.2 definitions...*/
@@ -141,16 +86,137 @@ void Image::computePixelSize()
     #define GL_UNSIGNED_INT_2_10_10_10_REV		0x8368
 #endif
 
-    // temporary code.. to be filled in properly ASAP. RO.
-    _pixelSizeInBits=32;
+const bool Image::isPackedType(GLenum format)
+{
+    switch(format)
+    {
+        case(GL_UNSIGNED_BYTE_3_3_2):
+        case(GL_UNSIGNED_BYTE_2_3_3_REV):
+        case(GL_UNSIGNED_SHORT_5_6_5):
+        case(GL_UNSIGNED_SHORT_5_6_5_REV):
+        case(GL_UNSIGNED_SHORT_4_4_4_4):
+        case(GL_UNSIGNED_SHORT_4_4_4_4_REV):
+        case(GL_UNSIGNED_SHORT_5_5_5_1):
+        case(GL_UNSIGNED_SHORT_1_5_5_5_REV):
+        case(GL_UNSIGNED_INT_8_8_8_8):
+        case(GL_UNSIGNED_INT_8_8_8_8_REV):
+        case(GL_UNSIGNED_INT_10_10_10_2):
+        case(GL_UNSIGNED_INT_2_10_10_10_REV): return true;
+        default: return false;
+    }    
 }
 
-void Image::setImage(const int s,const int t,const int r,
-                     const int internalFormat,
-                     const unsigned int pixelFormat,
-                     const unsigned int dataType,
+const unsigned int Image::computeNumComponents(GLenum type)
+{
+    switch(type)
+    {
+        case(GL_COLOR_INDEX): return 1;
+        case(GL_STENCIL_INDEX): return 1;
+        case(GL_DEPTH_COMPONENT): return 1;
+        case(GL_RED): return 1;
+        case(GL_GREEN): return 1;
+        case(GL_BLUE): return 1;
+        case(GL_ALPHA): return 1;
+        case(GL_RGB): return 3;
+        case(GL_BGR): return 3;
+        case(GL_RGBA): return 4;
+        case(GL_BGRA): return 4;
+        case(GL_LUMINANCE): return 1;
+        case(GL_LUMINANCE_ALPHA): return 1;
+        default: return 0;
+    }        
+}
+
+
+const unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
+{
+    switch(format)
+    {
+        case(GL_BITMAP): return computeNumComponents(type);
+        
+        case(GL_BYTE):
+        case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(type);
+        
+        case(GL_SHORT):
+        case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(type);
+        
+        case(GL_INT):
+        case(GL_UNSIGNED_INT):
+        case(GL_FLOAT): return 32*computeNumComponents(type);
+    
+    
+        case(GL_UNSIGNED_BYTE_3_3_2): 
+        case(GL_UNSIGNED_BYTE_2_3_3_REV): return 8;
+        
+        case(GL_UNSIGNED_SHORT_5_6_5):
+        case(GL_UNSIGNED_SHORT_5_6_5_REV):
+        case(GL_UNSIGNED_SHORT_4_4_4_4):
+        case(GL_UNSIGNED_SHORT_4_4_4_4_REV):
+        case(GL_UNSIGNED_SHORT_5_5_5_1):
+        case(GL_UNSIGNED_SHORT_1_5_5_5_REV): return 16;
+        
+        case(GL_UNSIGNED_INT_8_8_8_8):
+        case(GL_UNSIGNED_INT_8_8_8_8_REV):
+        case(GL_UNSIGNED_INT_10_10_10_2):
+        case(GL_UNSIGNED_INT_2_10_10_10_REV): return 32;
+        default: return false;
+    }    
+
+}
+
+const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing)
+{
+    unsigned int pixelSize = computePixelSizeInBits(format,type);
+    int widthInBits = width*pixelSize;
+    int packingInBits = packing*8;
+    return (widthInBits/packingInBits + (widthInBits%packingInBits)?1:0)*packing;
+}
+
+
+void Image::createImage(int s,int t,int r,
+                        GLenum format,GLenum type,
+                        int packing)
+{
+    unsigned int previousTotalSize = computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing)*_t*_r;
+    
+    unsigned int newTotalSize = computeRowWidthInBytes(s,format,type,packing)*t*r;
+
+    if (newTotalSize!=previousTotalSize)
+    {
+        if (_data) ::free(_data);
+        
+        _data = (unsigned char *)malloc (newTotalSize);
+    }
+
+    if (_data)
+    {
+        _s = s;
+        _t = t;
+        _r = r;
+        _pixelFormat = format;
+        _dataType = type;
+        _packing = packing;
+
+    }
+    else
+    {
+        // throw exception?? not for now, will simply set values to 0.
+        _s = 0;
+        _t = 0;
+        _r = 0;
+        _pixelFormat = 0;
+        _dataType = 0;
+        _packing = 0;
+    }
+    
+    ++_modifiedTag;
+}
+
+void Image::setImage(int s,int t,int r,
+                     GLint internalTextureFormat,
+                     GLenum format,GLenum type,
                      unsigned char *data,
-                     const int packing)
+                     int packing)
 {
     if (_data) ::free(_data);
 
@@ -158,21 +224,12 @@ void Image::setImage(const int s,const int t,const int r,
     _t = t;
     _r = r;
 
-    _internalFormat = internalFormat;
-    _pixelFormat    = pixelFormat;
-    _dataType       = dataType;
+    _internalTextureFormat = internalTextureFormat;
+    _pixelFormat    = format;
+    _dataType       = type;
 
     _data = data;
-
-    if (packing<0)
-    {
-        if (_s%4==0)
-            _packing = 4;
-        else
-            _packing = 1;
-    }
-    else
-        _packing = packing;
+    _packing = packing;
         
     computePixelSize();
 
@@ -184,64 +241,53 @@ void Image::setImage(const int s,const int t,const int r,
 }
 
 void Image::readPixels(int x,int y,int width,int height,
-                       unsigned int pixelFormat,unsigned int dataType,
-                       const int packing)
+                       GLenum format,GLenum type)
 {
-    
-    if (width!=_s || height!=_s || _t != 1 ||
-        _pixelFormat!=pixelFormat ||
-        _dataType!=dataType)
-    {
-
-        if (_data) ::free(_data);
-
-        _s = width;
-        _t = height;
-        _r = 1;
-        _pixelFormat = pixelFormat;
-        _dataType = dataType;
-
-        if (packing<0)
-        {
-            if (_s%4==0)
-                _packing = 4;
-            else
-                _packing = 1;
-        }
-        else
-            _packing = packing;
-
-        computePixelSize();
-
-        // need to sort out what size to really use...
-        _data = (unsigned char *)malloc(2 * (_s+1)*(_t+1)*4);
-        
-    }
+    createImage(width,height,1,format,type);
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
 
-    glReadPixels(x,y,width,height,pixelFormat,dataType,_data);
+    glReadPixels(x,y,width,height,format,type,_data);
 }
 
 
-void Image::scaleImage(const int s,const int t,const int /*r*/)
+void Image::scaleImage(const int s,const int t,const int r)
 {
-    if (_data==NULL) return;
+    if (_data==NULL)
+    {
+        notify(WARN) << "Error Image::scaleImage() do not succeed : cannot scale NULL image."<<std::endl;
+        return;
+    }
+
+    if (_r!=1 || r!=1)
+    {
+        notify(WARN) << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
+        return;
+    }
+    
+
+    unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*t;
 
     // need to sort out what size to really use...
-    unsigned char* newData = (unsigned char *)malloc(2 * (s+1)*(t+1)*4);
+    unsigned char* newData = (unsigned char *)malloc(newTotalSize);
+    if (newData)
+    {
+        // should we throw an exception???  Just return for time being.
+        notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<std::endl;
+        return;
+    }
 
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
     glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
 
-    GLint status = gluScaleImage((GLenum)_pixelFormat,
+    GLint status = gluScaleImage(_pixelFormat,
         _s,
         _t,
-        (GLenum)_dataType,
+        _dataType,
         _data,
         s,
         t,
-        (GLenum)_dataType,
+        _dataType,
         newData);
 
     if (status==0)

@@ -20,6 +20,10 @@ class SG_EXPORT ShadowOccluderVolume
     
         typedef std::vector<Polytope> HoleList;
 
+        ShadowOccluderVolume(const ShadowOccluderVolume& soc):
+            _occluderVolume(soc._occluderVolume),
+            _holeList(soc._holeList) {}
+
         ShadowOccluderVolume(const ShadowOccluderVolume& soc,Matrix& MVP);
         
         ShadowOccluderVolume(const ConvexPlanerOccluder& occluder,Matrix& MVP);

@@ -19,12 +19,12 @@ class SG_EXPORT CullingSet : public Referenced
     
     
         CullingSet();
-        CullingSet(const CullingSet& cs,const osg::Matrix& matrix):
+        CullingSet(const CullingSet& cs,const Matrix& matrix, const Vec4& pixelSizeVector):
             _mask(cs._mask),
             _clippingVolume(cs._clippingVolume),
             _occluderList(cs._occluderList),
-            _pixelSizeOffset(cs._pixelSizeOffset),
-            _pixelSizeVector(cs._pixelSizeVector)
+            _pixelSizeVector(pixelSizeVector),
+            _smallFeatureCullingPixelSize(cs._smallFeatureCullingPixelSize)
         {
             _clippingVolume.transformProvidingInverse(matrix);
             for(OccluderList::iterator itr=_occluderList.begin();
@@ -54,8 +54,28 @@ class SG_EXPORT CullingSet : public Referenced
         void setFrustum(Polytope& cv) { _clippingVolume = cv; }
 
         Polytope& getFrustum() { return _clippingVolume; }
+        const Polytope& getFrustum() const { return _clippingVolume; }
         
         void addOccluder(ShadowOccluderVolume& cv) { _occluderList.push_back(cv); }
+
+
+        void setPixelSizeVector(const Vec4& v) { _pixelSizeVector = v; }
+
+        Vec4& getPixelSizeVector() { return _pixelSizeVector; }
+        const Vec4& getPixelSizeVector() const { return _pixelSizeVector; }
+
+        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
+        
+        float& getSmallFeatureCullingPixelSize() { return _smallFeatureCullingPixelSize; }
+
+        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
+    
+    
+        /** Compute the pixel of an object at position v, with specified radius.*/
+        float pixelSize(const Vec3& v,float radius) const { return radius/(v*_pixelSizeVector); }
+
+        /** Compute the pixel of an bounding sphere.*/
+        float pixelSize(const BoundingSphere& bs) const { return bs.radius()/(bs.center()*_pixelSizeVector); }
 
         inline bool isCulled(const BoundingBox& bb)
         {
@@ -96,7 +116,7 @@ class SG_EXPORT CullingSet : public Referenced
             
             if (_mask&SMALL_FEATURE_CULLING)
             {
-                if ((bs.center()*_pixelSizeVector+_pixelSizeOffset)>bs.radius()) return true;
+                if (((bs.center()*_pixelSizeVector)*_smallFeatureCullingPixelSize)>bs.radius()) return true;
             }
 
             if (_mask&SHADOW_OCCLUSION_CULLING)
@@ -149,14 +169,11 @@ class SG_EXPORT CullingSet : public Referenced
         
     protected:
     
-        Mask _mask;
-
-        Polytope  _clippingVolume;
-        
-        OccluderList    _occluderList;
-        
-        float           _pixelSizeOffset;
-        Vec3            _pixelSizeVector;
+        Mask            _mask;
+        Polytope        _clippingVolume;
+        OccluderList    _occluderList;        
+        Vec4            _pixelSizeVector;
+        float           _smallFeatureCullingPixelSize;
 
 };
 

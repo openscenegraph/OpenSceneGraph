@@ -51,10 +51,10 @@ class SG_EXPORT CullStack
         void pushViewport(osg::Viewport* viewport);
         void popViewport();
 
-        void pushProjectionMatrix(osg::Matrix* matrix);
+        void pushProjectionMatrix(osg::RefMatrix* matrix);
         void popProjectionMatrix();
 
-        void pushModelViewMatrix(osg::Matrix* matrix);
+        void pushModelViewMatrix(osg::RefMatrix* matrix);
         void popModelViewMatrix();
 
         inline float getFrustumVolume() { if (_frustumVolume<0.0f) computeFrustumVolume(); return _frustumVolume; }
@@ -138,10 +138,10 @@ class SG_EXPORT CullStack
 
 
         inline osg::Viewport* getViewport();
-        inline osg::Matrix& getModelViewMatrix();
-        inline osg::Matrix& getProjectionMatrix();
+        inline osg::RefMatrix& getModelViewMatrix();
+        inline osg::RefMatrix& getProjectionMatrix();
         inline osg::Matrix getWindowMatrix();
-        inline const osg::Matrix& getMVPW();
+        inline const osg::RefMatrix& getMVPW();
 
         inline const osg::Vec3& getEyeLocal() const { return _eyePointStack.back(); }
 
@@ -169,7 +169,7 @@ class SG_EXPORT CullStack
         // base set of shadow volume occluder to use in culling.
         ShadowVolumeOccluderList                                    _occluderList;
 
-        typedef fast_back_stack< ref_ptr<Matrix> >                  MatrixStack;
+        typedef fast_back_stack< ref_ptr<RefMatrix> >                  MatrixStack;
 
         MatrixStack                                                 _projectionStack;
 
@@ -192,13 +192,13 @@ class SG_EXPORT CullStack
         unsigned int                                                _bbCornerNear;
         unsigned int                                                _bbCornerFar;
 
-        osg::Matrix                                                 _identity;
+        ref_ptr<osg::RefMatrix>                                     _identity;
         
-        typedef std::vector< osg::ref_ptr<osg::Matrix> > MatrixList;
+        typedef std::vector< osg::ref_ptr<osg::RefMatrix> > MatrixList;
 	MatrixList _reuseMatrixList;
 	unsigned int _currentReuseMatrixIndex;
 	
-	inline osg::Matrix* createOrReuseMatrix(const osg::Matrix& value);
+	inline osg::RefMatrix* createOrReuseMatrix(const osg::Matrix& value);
 
         
 };
@@ -215,7 +215,7 @@ inline osg::Viewport* CullStack::getViewport()
     }
 }
 
-inline osg::Matrix& CullStack::getModelViewMatrix()
+inline osg::RefMatrix& CullStack::getModelViewMatrix()
 {
     if (!_modelviewStack.empty())
     {
@@ -223,11 +223,11 @@ inline osg::Matrix& CullStack::getModelViewMatrix()
     }
     else
     {
-        return _identity;
+        return *_identity;
     }
 }
 
-inline osg::Matrix& CullStack::getProjectionMatrix()
+inline osg::RefMatrix& CullStack::getProjectionMatrix()
 {
     if (!_projectionStack.empty())
     {
@@ -235,7 +235,7 @@ inline osg::Matrix& CullStack::getProjectionMatrix()
     }
     else
     {
-        return _identity;
+        return *_identity;
     }
 }
 
@@ -248,11 +248,11 @@ inline osg::Matrix CullStack::getWindowMatrix()
     }
     else
     {
-        return _identity;
+        return *_identity;
     }
 }
 
-inline const osg::Matrix& CullStack::getMVPW()
+inline const osg::RefMatrix& CullStack::getMVPW()
 {
     if (!_MVPW_Stack.empty())
     {
@@ -266,11 +266,11 @@ inline const osg::Matrix& CullStack::getMVPW()
     }
     else
     {
-        return _identity;
+        return *_identity;
     }
 }
 
-inline Matrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
+inline RefMatrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
 {
     // skip of any already reused matrix.
     while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
@@ -284,13 +284,13 @@ inline Matrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
     // there return it to be reused.
     if (_currentReuseMatrixIndex<_reuseMatrixList.size())
     {
-        Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
+        RefMatrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
         matrix->set(value);
         return matrix;
     }
 
     // otherwise need to create new matrix.
-    osg::Matrix* matrix = new Matrix(value);
+    osg::RefMatrix* matrix = new RefMatrix(value);
     _reuseMatrixList.push_back(matrix);
     ++_currentReuseMatrixIndex;
     return matrix;

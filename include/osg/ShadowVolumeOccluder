@@ -104,11 +104,11 @@ class SG_EXPORT ShadowVolumeOccluder
 
     protected:
 
-        float                   _volume;
-        NodePath                _nodePath;
-        ref_ptr<const Matrix>   _projectionMatrix;
-        Polytope                _occluderVolume;
-        HoleList                _holeList;
+        float                       _volume;
+        NodePath                    _nodePath;
+        ref_ptr<const RefMatrix>    _projectionMatrix;
+        Polytope                    _occluderVolume;
+        HoleList                    _holeList;
 };
 
 

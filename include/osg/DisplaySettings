@@ -38,9 +38,6 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
         DisplaySettings(const DisplaySettings& vs);
         
-        virtual ~DisplaySettings();
-
-        
 
         DisplaySettings& operator = (const DisplaySettings& vs);
  
@@ -135,6 +132,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
     protected:
     
+        virtual ~DisplaySettings();
+
         void copy(const DisplaySettings& vs);
 
         bool                            _stereo;

@@ -4,13 +4,6 @@
 // GNU Lesser General Public License (LGPL) version 2.1 as published 
 // by the Free Software Foundation appearing in the file COPYING included in 
 // this distribution.
-// 
-// Licensees holding valid OpenSceneGraph Professional Licenses (OSGPL) may use 
-// this file in accordance with the OpenSceneGraph Professional License
-// Agreement provided to you by OpenSceneGraph Professional Services.
-// 
-// See http::/www.openscenegraph.org/licensing.html for details on and pricing
-// of the OpenSceneGraph Professional license.
 
 
 #ifndef OSG_NODE

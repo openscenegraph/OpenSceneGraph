@@ -53,6 +53,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
 
     protected :
             
+        virtual ~PositionAttitudeTransform() {}
 
         Vec3 _position;
         Quat _attitude;

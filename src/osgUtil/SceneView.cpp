@@ -206,8 +206,8 @@ void SceneView::cull()
     _state->setDisplaySettings(_displaySettings.get());
 
 
-    osg::ref_ptr<osg::Matrix> projection = _projectionMatrix.get();
-    osg::ref_ptr<osg::Matrix> modelview = _modelviewMatrix.get();
+    osg::ref_ptr<osg::RefMatrix> projection = _projectionMatrix.get();
+    osg::ref_ptr<osg::RefMatrix> modelview = _modelviewMatrix.get();
     
     if (_camera.valid())
     {
@@ -235,15 +235,15 @@ void SceneView::cull()
         if (_displaySettings.valid())
             _camera->setScreenDistance(_displaySettings->getScreenDistance());
         
-        if (!projection) projection = new osg::Matrix(_camera->getProjectionMatrix());
-        if (!modelview)  modelview  = new osg::Matrix(_camera->getModelViewMatrix());
+        if (!projection) projection = new osg::RefMatrix(_camera->getProjectionMatrix());
+        if (!modelview)  modelview  = new osg::RefMatrix(_camera->getModelViewMatrix());
 
         //cout <<"fovx="<<_camera->calc_fovx()<<endl;
         
     }
     
-    if (!projection) projection = new osg::Matrix();
-    if (!modelview)  modelview  = new osg::Matrix();
+    if (!projection) projection = new osg::RefMatrix();
+    if (!modelview)  modelview  = new osg::RefMatrix();
 
     if (!_cullVisitor)
     {
@@ -288,18 +288,18 @@ void SceneView::cull()
         if (_displaySettings->getStereoMode()==osg::DisplaySettings::LEFT_EYE)
         {
             // set up the left eye.
-            osg::ref_ptr<osg::Matrix> projectionLeft = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                          iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                          0.0f,0.0f,0.0f,1.0f)*
-                                                              (*projection));
+            osg::ref_ptr<osg::RefMatrix> projectionLeft = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                                         iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                                         0.0f,0.0f,0.0f,1.0f)*
+                                                                             (*projection));
 
 
-            osg::ref_ptr<osg::Matrix> modelviewLeft = new osg::Matrix( (*modelview) *
-                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                         0.0f,0.0f,1.0f,0.0f,
-                                                                         es,0.0f,0.0f,1.0f));
+            osg::ref_ptr<osg::RefMatrix> modelviewLeft = new osg::RefMatrix( (*modelview) *
+                                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                                         0.0f,0.0f,1.0f,0.0f,
+                                                                                         es,0.0f,0.0f,1.0f));
 
             _cullVisitor->setTraversalMask(_cullMaskLeft);
             cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
@@ -313,17 +313,17 @@ void SceneView::cull()
         else if (_displaySettings->getStereoMode()==osg::DisplaySettings::RIGHT_EYE)
         {
             // set up the right eye.
-            osg::ref_ptr<osg::Matrix> projectionRight = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                          0.0f,0.0f,0.0f,1.0f)*
-                                                              (*projection));
+            osg::ref_ptr<osg::RefMatrix> projectionRight = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                                              (*projection));
 
-            osg::ref_ptr<osg::Matrix> modelviewRight = new osg::Matrix( (*modelview) *
-                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                         0.0f,0.0f,1.0f,0.0f,
-                                                                         -es,0.0f,0.0f,1.0f));
+            osg::ref_ptr<osg::RefMatrix> modelviewRight = new osg::RefMatrix( (*modelview) *
+                                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                                          0.0f,0.0f,1.0f,0.0f,
+                                                                                          -es,0.0f,0.0f,1.0f));
 
             _cullVisitor->setTraversalMask(_cullMaskRight);
             cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
@@ -348,14 +348,14 @@ void SceneView::cull()
 
 
             // set up the left eye.
-            osg::ref_ptr<osg::Matrix> projectionLeft = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                          iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                          0.0f,0.0f,0.0f,1.0f)*
-                                                              (*projection));
+            osg::ref_ptr<osg::RefMatrix> projectionLeft = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                                         iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                                         0.0f,0.0f,0.0f,1.0f)*
+                                                                             (*projection));
 
 
-            osg::ref_ptr<osg::Matrix> modelviewLeft = new osg::Matrix( (*modelview) *
+            osg::ref_ptr<osg::RefMatrix> modelviewLeft = new osg::RefMatrix( (*modelview) *
                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                          0.0f,0.0f,1.0f,0.0f,
@@ -366,17 +366,17 @@ void SceneView::cull()
 
 
             // set up the right eye.
-            osg::ref_ptr<osg::Matrix> projectionRight = new osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                          0.0f,1.0f,0.0f,0.0f,
-                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
-                                                                          0.0f,0.0f,0.0f,1.0f)*
-                                                              (*projection));
+            osg::ref_ptr<osg::RefMatrix> projectionRight = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                          0.0f,1.0f,0.0f,0.0f,
+                                                                                          -iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                                              (*projection));
 
-            osg::ref_ptr<osg::Matrix> modelviewRight = new osg::Matrix( (*modelview) *
-                                                             osg::Matrix(1.0f,0.0f,0.0f,0.0f,
-                                                                         0.0f,1.0f,0.0f,0.0f,
-                                                                         0.0f,0.0f,1.0f,0.0f,
-                                                                         -es,0.0f,0.0f,1.0f));
+            osg::ref_ptr<osg::RefMatrix> modelviewRight = new osg::RefMatrix( (*modelview) *
+                                                                              osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                                         0.0f,1.0f,0.0f,0.0f,
+                                                                                         0.0f,0.0f,1.0f,0.0f,
+                                                                                         -es,0.0f,0.0f,1.0f));
 
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
             cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
@@ -407,7 +407,7 @@ void SceneView::cull()
     
 }
 
-void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
+void SceneView::cullStage(osg::RefMatrix* projection,osg::RefMatrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
     if (!_sceneData || !_viewport->valid()) return;

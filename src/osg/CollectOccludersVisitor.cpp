@@ -67,7 +67,7 @@ void CollectOccludersVisitor::apply(osg::Transform& node)
     // push the culling mode.
     pushCurrentMask();
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(getModelViewMatrix());
+    ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(getModelViewMatrix());
     node.getLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get());
     
@@ -86,7 +86,7 @@ void CollectOccludersVisitor::apply(osg::Projection& node)
     // push the culling mode.
     pushCurrentMask();
 
-    ref_ptr<osg::Matrix> matrix = createOrReuseMatrix(node.getMatrix());
+    ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
     
     handle_cull_callbacks_and_traverse(node);

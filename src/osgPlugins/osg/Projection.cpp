@@ -5,6 +5,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include "Matrix.h"
+
 using namespace osg;
 using namespace osgDB;
 
@@ -27,11 +29,10 @@ bool Projection_readLocalData(Object& obj, Input& fr)
     Projection &myobj = static_cast<Projection &>(obj);
     bool iteratorAdvanced = false;    
 
-    static Matrix s_matrix;
-
-    if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
+    Matrix matrix;
+    if (readMatrix(matrix,fr))
     {
-        myobj.setMatrix(*tmpMatrix);        
+        myobj.setMatrix(matrix);        
         iteratorAdvanced = true;
     }
 
@@ -43,7 +44,7 @@ bool Projection_writeLocalData(const Object& obj, Output& fw)
 {
     const Projection& myobj = static_cast<const Projection&>(obj);
 
-    fw.writeObject(myobj.getMatrix());
+    writeMatrix(myobj.getMatrix(),fw);
 
     return true;
 }

@@ -91,7 +91,7 @@ void VertexProgram::apply(State& state) const
             ++itr)
         {
             ::glMatrixMode((*itr).first);
-            ::glLoadMatrixf((*itr).second->ptr());
+            ::glLoadMatrixf((*itr).second.ptr());
         }
         ::glMatrixMode(GL_MODELVIEW); // restore matrix mode
     }

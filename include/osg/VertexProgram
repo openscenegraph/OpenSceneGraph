@@ -9,7 +9,6 @@
 #include <osg/Vec4>
 #include <osg/Matrix>
 
-#include <cassert>
 #include <map>
 #include <string>
 
@@ -140,22 +139,17 @@ class SG_EXPORT VertexProgram : public StateAttribute
         inline void setVertexProgram( const char* program ) { _vertexProgram = program; }
         /** Get the vertex program.*/
         inline const std::string& getVertexProgram() const { return _vertexProgram; }
-        /** Load vertex program from file. */
-//      inline void loadVertexProgram( const std::string& filename ) {
-//          _vertexProgram = loadProgramFile( filename ); }
-
 
         /** Program Parameters */
         inline void setProgramLocalParameter(const GLuint index, const Vec4& p)
-		{
+        {
             _programLocalParameters[index] = p;
-		}
+        }
 
         /** Matrix */
         inline void setMatrix(const GLenum mode, const Matrix& matrix)
         {
-            assert(mode>=GL_MATRIX0_ARB && mode<=GL_MATRIX31_ARB);
-            _matrixList[mode] = new Matrix(matrix);
+            _matrixList[mode] = matrix;
         }
 
         virtual void apply(State& state) const;
@@ -171,7 +165,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
         typedef std::map<GLuint,Vec4> LocalParamList;
         LocalParamList  _programLocalParameters;
 
-        typedef std::map<GLenum,ref_ptr<Matrix> > MatrixList;
+        typedef std::map<GLenum,Matrix> MatrixList;
         MatrixList  _matrixList;
 };
 

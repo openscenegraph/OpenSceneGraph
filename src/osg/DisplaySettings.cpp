@@ -1,29 +1,16 @@
 #include <osg/DisplaySettings>
+#include <osg/ref_ptr>
 
 #include <algorithm>
 
 using namespace osg;
 using namespace std;
 
-class DisplaySettingsPtr
-{
-    public:
-        DisplaySettingsPtr() : _ptr(0L) {}
-        DisplaySettingsPtr(DisplaySettings* t): _ptr(t) {}
-        DisplaySettingsPtr(const DisplaySettingsPtr& rp):_ptr(rp._ptr) { }
-        ~DisplaySettingsPtr() { if (_ptr) delete _ptr; _ptr=0L; }
-
-        inline DisplaySettings* get() { return _ptr; }
-
-        DisplaySettings* _ptr;
-};
-
 DisplaySettings* DisplaySettings::instance()
 {
-    static DisplaySettingsPtr s_displaySettings = new DisplaySettings;
+    static ref_ptr<DisplaySettings> s_displaySettings = new DisplaySettings;
     return s_displaySettings.get();
 }
-
 
 DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced()
 {

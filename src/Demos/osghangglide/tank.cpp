@@ -48,7 +48,7 @@ Node *makeTank( void )
 
     getDatabaseCenterRadius( dbcenter, &dbradius );
 
-    ref_ptr<Matrix> mat = new Matrix(
+    Matrix mat(
         0.05, 0, 0, 0,
         0, 0.05, 0, 0,
         0, 0, 0.05, 0,
@@ -142,7 +142,7 @@ Node *makeTank( void )
     }
 
     for( i = 0; i < c; i++ )
-        conv( vc[i], *mat, vc[i] );
+        conv( vc[i], mat, vc[i] );
      
      gset->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLE_FAN,prev_c,c-prev_c));
 

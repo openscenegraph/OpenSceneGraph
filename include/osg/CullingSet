@@ -35,8 +35,6 @@ class SG_EXPORT CullingSet : public Referenced
             }
         }
         
-        ~CullingSet();
-    
         typedef std::vector<ShadowVolumeOccluder>   OccluderList;
 
         typedef unsigned int Mask;
@@ -202,6 +200,8 @@ class SG_EXPORT CullingSet : public Referenced
         
     protected:
     
+        virtual ~CullingSet();
+
         Mask            _mask;
         Polytope        _frustum;
         OccluderList    _occluderList;        

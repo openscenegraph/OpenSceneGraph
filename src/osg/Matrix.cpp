@@ -24,12 +24,12 @@ using namespace osg;
 
 
 
-Matrix::Matrix() : Object()
+Matrix::Matrix()
 {
     makeIdentity();
 }
 
-Matrix::Matrix( const Matrix& other) : Object()
+Matrix::Matrix( const Matrix& other)
 {
     set( (const float *) other._mat );
 }

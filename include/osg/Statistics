@@ -25,7 +25,7 @@ namespace osg {
  * each trifan or tristrip = (length-2) triangles and so on.
  */
 
-class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFunctor{
+class Statistics : public osg::Drawable::PrimitiveFunctor{
     public:
 
         typedef std::pair<unsigned int,unsigned int>    PrimitivePair;
@@ -37,8 +37,6 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
             reset();
         };
 
-        ~Statistics() {}; // no dynamic allocations, so no need to free
-        
         enum statsType
         {
             STAT_NONE, // default
@@ -86,7 +84,7 @@ class Statistics : public osg::Referenced, public osg::Drawable::PrimitiveFuncto
 
         void setBinNo(int n) { _binNo=n;}       
                 
-public:
+    public:
                 
         int numDrawables, nummat, nbins;
         int nlights;
@@ -99,6 +97,7 @@ public:
         PrimtiveValueMap    _primitiveCount;
         GLenum              _currentPrimtiveFunctorMode;
         
+
 };
 
 }

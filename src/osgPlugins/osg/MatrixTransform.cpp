@@ -4,6 +4,8 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
+#include "Matrix.h"
+
 using namespace osg;
 using namespace osgDB;
 
@@ -54,17 +56,12 @@ bool MatrixTransform_readLocalData(Object& obj, Input& fr)
             iteratorAdvanced = true;
         }
         
-    }    
-
-    static Matrix s_matrix;
+    }   
     
-    if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
+    Matrix matrix; 
+    if (readMatrix(matrix,fr))
     {
-
-        transform.setMatrix(*tmpMatrix);
-
-        delete tmpMatrix;
-
+        transform.setMatrix(matrix);
         iteratorAdvanced = true;
     }
 
@@ -76,7 +73,7 @@ bool MatrixTransform_writeLocalData(const Object& obj, Output& fw)
 {
     const MatrixTransform& transform = static_cast<const MatrixTransform&>(obj);
 
-    fw.writeObject(transform.getMatrix());
+    writeMatrix(transform.getMatrix(),fw);
 
     return true;
 }

@@ -27,23 +27,23 @@ class SG_EXPORT Projection : public Group
         META_Node(osg, Projection);
 
         /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat) { (*_matrix) = mat; }
+        void setMatrix(const Matrix& mat) { _matrix = mat; }
         
         /** Get the transform's matrix. */
-        inline const Matrix& getMatrix() const { return *_matrix; }
+        inline const Matrix& getMatrix() const { return _matrix; }
 
         /** preMult transform.*/
-        void preMult(const Matrix& mat) { _matrix->preMult(mat); }
+        void preMult(const Matrix& mat) { _matrix.preMult(mat); }
         
         /** postMult transform.*/
-        void postMult(const Matrix& mat)  { _matrix->postMult(mat); }
+        void postMult(const Matrix& mat)  { _matrix.postMult(mat); }
     
 
     protected :
     
         virtual ~Projection();
                        
-        ref_ptr<Matrix>                     _matrix;
+        Matrix  _matrix;
 
 };
 

@@ -29,26 +29,26 @@ class SG_EXPORT MatrixTransform : public Transform
         META_Node(osg, MatrixTransform);
 
         /** Set the transform's matrix.*/
-        void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; dirtyBound(); }
+        void setMatrix(const Matrix& mat) { _matrix = mat; _inverseDirty=true; dirtyBound(); }
         
         /** Get the matrix. */
-        inline const Matrix& getMatrix() const { return *_matrix; }
+        inline const Matrix& getMatrix() const { return _matrix; }
 
         /** pre multiply the transforms matrix.*/
-        void preMult(const Matrix& mat) { _matrix->preMult(mat); _inverseDirty=true; dirtyBound(); }
+        void preMult(const Matrix& mat) { _matrix.preMult(mat); _inverseDirty=true; dirtyBound(); }
         
         /** post multiply the transforms matrix.*/
-        void postMult(const Matrix& mat)  { _matrix->postMult(mat); _inverseDirty=true; dirtyBound(); }
+        void postMult(const Matrix& mat)  { _matrix.postMult(mat); _inverseDirty=true; dirtyBound(); }
     
         /** Get the inverse matrix. */
         inline const Matrix& getInverseMatrix() const
         {
             if (_inverseDirty)
             {
-                _inverse->invert(*_matrix);
+                _inverse.invert(_matrix);
                 _inverseDirty = false;
             }
-            return *_inverse;
+            return _inverse;
         }
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const;
@@ -60,8 +60,8 @@ class SG_EXPORT MatrixTransform : public Transform
     
         virtual ~MatrixTransform();
         
-        ref_ptr<Matrix>                     _matrix;
-        mutable ref_ptr<Matrix>             _inverse;
+        Matrix                              _matrix;
+        mutable Matrix                      _inverse;
         mutable bool                        _inverseDirty;
 
 

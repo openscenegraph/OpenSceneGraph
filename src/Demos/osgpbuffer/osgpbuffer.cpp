@@ -123,12 +123,12 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     zfar *= 1.1f;
 
     // set up projection.
-    osg::Matrix* projection = new osg::Matrix;
+    osg::RefMatrix* projection = new osg::RefMatrix;
     projection->makeFrustum(-right,right,-top,top,znear,zfar);
 
     cv.pushProjectionMatrix(projection);
 
-    osg::Matrix* matrix = new osg::Matrix;
+    osg::RefMatrix* matrix = new osg::RefMatrix;
     matrix->makeLookAt(bs.center()+osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
 
     cv.pushModelViewMatrix(matrix);

@@ -30,7 +30,6 @@ class SG_EXPORT Camera: public osg::Referenced
         
         Camera(const Camera&);
         Camera& operator=(const Camera&);
-        virtual ~Camera();
 
         /** Range of projection types.
           * ORTHO2D is a special case of ORTHO where the near and far planes
@@ -217,7 +216,7 @@ class SG_EXPORT Camera: public osg::Referenced
           * basic LookAt values.
           * note: Camera internals maintains the both EYE_TO_MODEL and MODEL_TO_EYE
           * internally and ensures that they are the inverse of one another.*/
-        void attachTransform(TransformMode mode, Matrix* modelTransform=0);
+        void attachTransform(TransformMode mode, RefMatrix* modelTransform=0);
 
         Matrix* getTransform(TransformMode mode);
         
@@ -287,6 +286,8 @@ class SG_EXPORT Camera: public osg::Referenced
 
     protected:
 
+        virtual ~Camera();
+
         void copy(const Camera&);
 
         // projection details.
@@ -314,9 +315,9 @@ class SG_EXPORT Camera: public osg::Referenced
         Vec3            _center;
         Vec3            _up;
         
-        TransformMode   _attachedTransformMode;
-        ref_ptr<Matrix> _eyeToModelTransform;
-        ref_ptr<Matrix> _modelToEyeTransform;
+        TransformMode       _attachedTransformMode;
+        ref_ptr<RefMatrix>  _eyeToModelTransform;
+        ref_ptr<RefMatrix>  _modelToEyeTransform;
 
         float               _screenDistance;
         

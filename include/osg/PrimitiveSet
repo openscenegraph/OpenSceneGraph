@@ -149,6 +149,8 @@ class PrimitiveSet : public Object
 
     protected:
 
+        virtual ~PrimitiveSet() {}
+
         Type    _primitiveType;
         GLenum  _mode;
 };
@@ -201,6 +203,8 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
         virtual void offsetIndices(int offset) { _first += offset; }
 
     protected:
+
+        virtual ~DrawArrays() {}
 
         GLint   _first;
         GLsizei _count;
@@ -273,6 +277,8 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
 
     protected:
 
+        virtual ~DrawArrayLengths() {}
+
         GLint   _first;
 };
 
@@ -313,6 +319,10 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
+
+    protected:
+
+        virtual ~DrawElementsUByte() {}
 };
 
 
@@ -353,6 +363,10 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
+
+    protected:
+
+        virtual ~DrawElementsUShort() {}
 };
 
 class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
@@ -392,6 +406,10 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
+
+    protected:
+
+        virtual ~DrawElementsUInt() {}
 };
 
 }

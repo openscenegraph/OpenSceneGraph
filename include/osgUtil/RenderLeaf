@@ -24,17 +24,17 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     public:
     
 
-        inline RenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* modelview, float depth=0.0f):
-            _parent(NULL),
+        inline RenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f):
+            _parent(0),
             _drawable(drawable),
             _projection(projection),
             _modelview(modelview),
             _depth(depth) {}
 
         
-	inline void set(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* modelview, float depth=0.0f)
+	inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f)
 	{
-	    _parent = NULL;
+	    _parent = 0;
 	    _drawable = drawable;
             _projection = projection,
             _modelview = modelview,
@@ -43,10 +43,10 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 	
 	inline void reset()
 	{
-	    _parent = NULL;
-	    _drawable = NULL;
-	    _projection = NULL;
-	    _modelview = NULL;
+	    _parent = 0;
+	    _drawable = 0;
+	    _projection = 0;
+	    _modelview = 0;
 	    _depth = 0.0f;
 	}
 
@@ -58,20 +58,20 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 
     public:
     
-        RenderGraph*                _parent;
-        osg::Drawable*              _drawable;
-        osg::ref_ptr<osg::Matrix>   _projection;
-        osg::ref_ptr<osg::Matrix>   _modelview;
-        float                       _depth;
+        RenderGraph*                    _parent;
+        osg::Drawable*                  _drawable;
+        osg::ref_ptr<osg::RefMatrix>    _projection;
+        osg::ref_ptr<osg::RefMatrix>    _modelview;
+        float                           _depth;
 
     private:
 
         /// disallow creation of blank RenderLeaf as this isn't useful.
         RenderLeaf():
-            _parent(NULL),
-            _drawable(NULL),
-            _projection(NULL),
-            _modelview(NULL),
+            _parent(0),
+            _drawable(0),
+            _projection(0),
+            _modelview(0),
             _depth(0.0f) {}
 
         /// disallow copy construction.

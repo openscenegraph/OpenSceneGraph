@@ -170,8 +170,8 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
     CullingSet& cullingset = cullStack.getCurrentCullingSet();
 
-    const Matrix& MV = cullStack.getModelViewMatrix();
-    const Matrix& P = cullStack.getProjectionMatrix();
+    const RefMatrix& MV = cullStack.getModelViewMatrix();
+    const RefMatrix& P = cullStack.getProjectionMatrix();
 
     // take a reference to the NodePath to this occluder.
     _nodePath = nodePath;

@@ -611,14 +611,14 @@ void Viewer::showStats(const unsigned int /*viewport*/)
        * RO, July 2001.
         */
         
-        Statistics *primStats=new Statistics[maxbins]; // array of bin stats
+        std::vector<Statistics> primStats(maxbins); // array of bin stats
         ViewportList::iterator itr;
         for(itr=_viewportList.begin();
             itr!=_viewportList.end();
             ++itr)
         {
             osgUtil::RenderStage *stage = itr->sceneView->getRenderStage();
-            stage->getPrims(primStats, maxbins);
+            stage->getPrims(&primStats.front(), maxbins);
         }
         int nbinsUsed=(primStats[0].getBins()<maxbins)?primStats[0].getBins():maxbins;
         int ntop=0; // offset
@@ -628,7 +628,6 @@ void Viewer::showStats(const unsigned int /*viewport*/)
             //osg::notify(osg::INFO) << "ntop "<< ntop<< std::endl;
         }
         maxbins=(primStats[0].getBins()>maxbins)?primStats[0].getBins():maxbins;
-        delete [] primStats; // free up
     }
     if (_printStats==Statistics::STAT_DC) { // yet more stats - read the depth complexity
         int wid=_ww, ht=_wh; // temporary local screen size - must change during this section
@@ -1207,12 +1206,12 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 cov.pushViewport(sceneView->getViewport());
                 
                 if (sceneView->getProjectionMatrix()) cov.pushProjectionMatrix(sceneView->getProjectionMatrix());
-                else if (sceneView->getCamera()) cov.pushProjectionMatrix(new Matrix(sceneView->getCamera()->getProjectionMatrix()));
-                else cov.pushProjectionMatrix(new Matrix());
+                else if (sceneView->getCamera()) cov.pushProjectionMatrix(new RefMatrix(sceneView->getCamera()->getProjectionMatrix()));
+                else cov.pushProjectionMatrix(new RefMatrix());
                 
                 if (sceneView->getModelViewMatrix()) cov.pushModelViewMatrix(sceneView->getModelViewMatrix());
-                else if (sceneView->getCamera()) cov.pushModelViewMatrix(new Matrix(sceneView->getCamera()->getModelViewMatrix()));
-                else cov.pushModelViewMatrix(new Matrix());
+                else if (sceneView->getCamera()) cov.pushModelViewMatrix(new RefMatrix(sceneView->getCamera()->getModelViewMatrix()));
+                else cov.pushModelViewMatrix(new RefMatrix());
                 
                 sceneView->getSceneData()->accept(cov);
 

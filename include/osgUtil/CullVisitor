@@ -187,16 +187,16 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
         /** Add a drawable to current render graph.*/
-        inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix);
+        inline void addDrawable(osg::Drawable* drawable,osg::RefMatrix* matrix);
 
         /** Add a drawable and depth to current render graph.*/
-        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,float depth);
+        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::RefMatrix* matrix,float depth);
 
         /** Add an attribute which is positioned related to the modelview matrix.*/
-        inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr);
+        inline void addPositionedAttribute(osg::RefMatrix* matrix,const osg::StateAttribute* attr);
 
         /** reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far.*/
-        void popProjectionMatrix();
+        virtual void popProjectionMatrix();
 
         void setState(osg::State* state) { _state = state; }
         osg::State* getState() { return _state.get(); }
@@ -252,7 +252,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 	RenderLeafList _reuseRenderLeafList;
 	unsigned int _currentReuseRenderLeafIndex;
 	
-	inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth=0.0f);
+	inline RenderLeaf* createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth=0.0f);
         
         osg::ref_ptr<osg::ImpostorSpriteManager> _impostorSpriteManager;
 
@@ -260,7 +260,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 	
 };
 
-inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
+inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::RefMatrix* matrix)
 {
     if (_currentRenderGraph->leaves_empty())
     {
@@ -274,7 +274,7 @@ inline void CullVisitor::addDrawable(osg::Drawable* drawable,osg::Matrix* matrix
 }
 
 /** Add a drawable and depth to current render graph.*/
-inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,float depth)
+inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::RefMatrix* matrix,float depth)
 {
     if (_currentRenderGraph->leaves_empty())
     {
@@ -288,12 +288,12 @@ inline void CullVisitor::addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix
 }
 
 /** Add an attribute which is positioned related to the modelview matrix.*/
-inline void CullVisitor::addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
+inline void CullVisitor::addPositionedAttribute(osg::RefMatrix* matrix,const osg::StateAttribute* attr)
 {
     _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
 }
 
-inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* matrix, float depth)
+inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* matrix, float depth)
 {
     // skip of any already reused renderleaf.
     while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() && 

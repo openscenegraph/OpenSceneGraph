@@ -10,7 +10,8 @@ CullStack::CullStack()
     _frustumVolume=-1.0f;
     _bbCornerNear = 0;
     _bbCornerFar = 7;
-   _currentReuseMatrixIndex=0;
+    _currentReuseMatrixIndex=0;
+    _identity = new RefMatrix();
 }
 
 
@@ -126,7 +127,7 @@ void CullStack::popViewport()
     _MVPW_Stack.pop_back();
 }
 
-void CullStack::pushProjectionMatrix(Matrix* matrix)
+void CullStack::pushProjectionMatrix(RefMatrix* matrix)
 {
     _projectionStack.push_back(matrix);
     
@@ -181,7 +182,7 @@ void CullStack::popProjectionMatrix()
     popCullingSet();
 }
 
-void CullStack::pushModelViewMatrix(Matrix* matrix)
+void CullStack::pushModelViewMatrix(RefMatrix* matrix)
 {
     _modelviewStack.push_back(matrix);
     

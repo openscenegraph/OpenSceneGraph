@@ -1,3 +1,115 @@
+2003-09-15 09:34  robert
+
+	* NEWS.txt: Updated NEWS date to 15th September 2003, for 0.9.6
+	release.
+
+2003-09-15 09:32  robert
+
+	* src/osgPlugins/geo/: ReaderWriterGEO.cpp, geoFormat.h: Fixed
+	warnings in geo plugin.
+
+2003-09-14 23:49  robert
+
+	* NEWS.txt, VisualStudio/VisualStudio.dsw,
+	VisualStudio/examples/slideshow3D/slideshow3D.dsp,
+	src/osgPlugins/geo/ReaderWriterGEO.cpp,
+	src/osgPlugins/geo/geoFormat.h, src/osgPlugins/geo/geoTypes.h,
+	src/osgPlugins/geo/osgGeoAction.h,
+	src/osgPlugins/geo/osgGeoStructs.h: From Geoff Michel, updated geo
+	plugin to support latest rev of Geo Modeller's file format.
+
+2003-09-14 23:48  robert
+
+	* src/osgPlugins/ive/AzimElevationSector.cpp,
+	src/osgPlugins/ive/AzimElevationSector.h,
+	src/osgPlugins/ive/AzimSector.cpp, src/osgPlugins/ive/AzimSector.h,
+	src/osgPlugins/ive/BlinkSequence.cpp,
+	src/osgPlugins/ive/BlinkSequence.h,
+	src/osgPlugins/ive/ConeSector.cpp, src/osgPlugins/ive/ConeSector.h,
+	src/osgPlugins/ive/ConvexPlanarOccluder.cpp,
+	src/osgPlugins/ive/ConvexPlanarPolygon.cpp,
+	src/osgPlugins/ive/DataInputStream.cpp,
+	src/osgPlugins/ive/DataOutputStream.cpp,
+	src/osgPlugins/ive/ElevationSector.cpp,
+	src/osgPlugins/ive/ElevationSector.h,
+	src/osgPlugins/ive/GNUmakefile, src/osgPlugins/ive/Impostor.cpp,
+	src/osgPlugins/ive/LightPoint.cpp, src/osgPlugins/ive/LightPoint.h,
+	src/osgPlugins/ive/LightPointNode.cpp,
+	src/osgPlugins/ive/LightPointNode.h,
+	src/osgPlugins/ive/OccluderNode.cpp,
+	src/osgPlugins/ive/PagedLOD.cpp, src/osgPlugins/ive/ReadWrite.h,
+	src/osgPlugins/ive/Switch.cpp, VisualStudio/osgPlugins/ive/ive.dsp:
+	Forom yne Schmidt Jansen, added support for osgSim into ive plugin.
+
+2003-09-14 23:11  robert
+
+	* examples/slideshow3D/: GNUmakefile, PointsEventHandler.cpp,
+	PointsEventHandler.h, SlideEventHandler.h, slideshow3D.cpp: Added
+	support for conrolling point size into slideshow3D.
+
+2003-09-13 17:48  robert
+
+	* examples/slideshow3D/slideshow3D.cpp: Added commandline usage
+	docs.
+
+2003-09-13 17:43  robert
+
+	* Make/makedefs: Changed the FREETYPE_LIB under Cygwin from ft
+	freetype2 to freetype
+
+2003-09-13 16:59  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Fixed the OBJ loader so
+	that it shares all duplicate state, improving the load time and
+	rendering performance significantly.
+
+2003-09-12 22:15  robert
+
+	* ChangeLog: Updated change log for release.
+
+2003-09-12 22:15  robert
+
+	* src/osgPlugins/txp/TrPageArchive.h: Changed std::size_t to
+	unsigned int to attempt to fix IRIX build problem.
+
+2003-09-12 22:05  robert
+
+	* Make/makedefs: From Norman Vine, fixes for Cygwin and Mingw
+	builds.
+
+2003-09-12 20:17  robert
+
+	* src/osgPlugins/ive/: DataInputStream.cpp, DataOutputStream.cpp:
+	Work around for OSX errors when reading .ive files.
+
+2003-09-12 19:49  robert
+
+	* VisualStudio/osgFX/osgFX.dsp: Changed OSGUTIL_LIBRARY to
+	OSGFX_LIBRARY
+
+2003-09-12 16:29  robert
+
+	* src/osgPlugins/ive/: DataInputStream.cpp, DataInputStream.h,
+	DataOutputStream.cpp, DataOutputStream.h: Added verbode debugging
+	option to dataoutputstream and datainputstream to help invstigation
+	into crash under OSX when reading .ive files.
+
+2003-09-12 14:58  robert
+
+	* VisualStudio/osgFX/osgFX.dsp: Rebuild osgFX plugin by hand to fix
+	dependancy problems that some Win32 users are experiencing.
+
+2003-09-12 14:20  robert
+
+	* src/osgDB/Registry.cpp: Commented out various osg::notify() calls
+	that were causing crashes under OSX during initialization.
+
+2003-09-12 14:02  robert
+
+	* src/osgPlugins/ive/ReaderWriterIVE.cpp: Added #ifdef
+	IVE_CATCH_EXCEPTIONS to allow catching of exceptions to be turned
+	off for debugging purposes.
+
 2003-09-12 10:48  robert
 
 	* NEWS.txt: Updated NEWS file for the release.

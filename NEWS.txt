@@ -3,7 +3,7 @@ OSG News (most significant items from ChangeLog)
 
 15th September 2003 - OpenSceneGraph-0.9.6
 
-    >>> osgFX Special Effects nodekit, support for double Matrix traversals, 
+    >>> osgFX Special Effects nodekit (for bumping mapping & cartoon effects etc), support for double Matrix traversals, 
     >>> improved build support, thread safety and robustness.
     
     The new osgFX nodekit, written by Marco Jez, adds a set of decorator 
@@ -50,6 +50,17 @@ OSG News (most significant items from ChangeLog)
     the environmental variable USE_INVENTOR or USE_COIN and recompile.  
     Windows .dsp project file does to current exist, but should be 
     possible to add this.
+    
+    The .ive plugin has been improved with the addition of support for
+    osgSim light points, and various internal refinements to make it function
+    better on the various platforms supported by the OSG.  Note, these changes
+    mean that the .ive format has has changed and is no longer compatible
+    with previous version of .ive. It is recommend that one recreates .ive
+    for the original source via osgconv or similar to ensure consistency.
+    
+    A scalar bar, and sphere segment helper classes have been added to osgSim,
+    the new osgscalarbar and osgspheresegment examples demonstrate how to use
+    these new features.
     
     To help handle running applications of graphics cards/drivers that exhibit
     bugs with certain OpenGL extensions, support has been added to the GLextensions

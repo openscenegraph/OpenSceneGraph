@@ -20,24 +20,14 @@
 #ifndef __ATTRIBUTE_H__
 #define __ATTRIBUTE_H__
 
-#include <osg/Object>
+#include <osg/Referenced>
 
-class SG_EXPORT Attribute: public osg::Object {
+class Attribute: public osg::Referenced {
 public:
     char *name;
     virtual char *type()=0;
     char *getName() { return name; }
 
-    // OSG Object API
-
-    /** clone the an object of the same type as the node.*/
-    virtual osg::Object* cloneType() const =0;
-    /** return a clone of a node, with Object* return type.*/
-    virtual osg::Object* clone(const osg::CopyOp& copyop) const { return cloneType(); }
-    /** return the name of the node's library.*/
-    virtual const char* libraryName() const { return "osgdb_wrl"; }
-    /** return the name of the node's class type.*/
-    virtual const char* className() const { return "Attribute"; }
 protected:
     Attribute(char *name) {this->name=strdup(name); }
     ~Attribute() {free(name); }

@@ -66,7 +66,7 @@ class CacheObjetos {
     static TextureMap textures;
     static NodeMap nodos;
 public:
-    static osg::Node* getMyNode(MyNode* _node) {
+    static osg::Node* getMyNode(MyNode*) {
         return 0;
     }
 
@@ -127,7 +127,7 @@ OSGVisitor::OSGVisitor(MyNode *nodo) {
     std::cout << "Model of " << total_vert << " vertices" << std::endl;
 }
 
-void OSGVisitor::applyMyNode(MyNode *nodo) {
+void OSGVisitor::applyMyNode(MyNode *) {
 }
 
 void OSGVisitor::applyMaterial(Material *material) {

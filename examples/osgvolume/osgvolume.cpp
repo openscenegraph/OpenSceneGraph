@@ -508,6 +508,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
 }
 
 osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
+                       osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
                        float xMultiplier, float yMultiplier, float zMultiplier,
                        unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
@@ -606,6 +607,8 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
             bump_texture3D->setImage(normalmap_3d.get());
 
+            bump_texture3D->setInternalFormatMode(internalFormatMode);
+
             stateset->setTextureAttributeAndModes(0,bump_texture3D,osg::StateAttribute::ON);
 
             osg::TexEnvCombine* tec = new osg::TexEnvCombine;
@@ -643,6 +646,10 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
                 texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
                 texture3D->setInternalFormat(GL_INTENSITY);
             }
+            else
+            {
+                texture3D->setInternalFormatMode(internalFormatMode);
+            }
             texture3D->setImage(image_3d.get());
 
             stateset->setTextureAttributeAndModes(1,texture3D,osg::StateAttribute::ON);
@@ -664,6 +671,8 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
             bump_texture3D->setImage(normalmap_3d.get());
+
+            bump_texture3D->setInternalFormatMode(internalFormatMode);
 
             stateset->setTextureAttributeAndModes(0,bump_texture3D,osg::StateAttribute::ON);
 
@@ -709,6 +718,11 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
             texture3D->setInternalFormat(GL_INTENSITY);
         }
+        else
+        {
+            texture3D->setInternalFormatMode(internalFormatMode);
+        }
+
         texture3D->setImage(image_3d.get());
 
         stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
@@ -747,6 +761,11 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--s_maxTextureSize","Set the texture maximum resolution in the s (x) dimension.");
     arguments.getApplicationUsage()->addCommandLineOption("--t_maxTextureSize","Set the texture maximum resolution in the t (y) dimension.");
     arguments.getApplicationUsage()->addCommandLineOption("--r_maxTextureSize","Set the texture maximum resolution in the r (z) dimension.");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed","Enable the usage of compressed textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-arb","Enable the usage of OpenGL ARB compressed textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt1","Enable the usage of S3TC DXT1 compressed textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt3","Enable the usage of S3TC DXT3 compressed textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt5","Enable the usage of S3TC DXT5 compressed textures");
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -806,6 +825,12 @@ int main( int argc, char **argv )
     while(arguments.read("--t_maxTextureSize",t_maximumTextureSize)) {}
     while(arguments.read("--r_maxTextureSize",r_maximumTextureSize)) {}
 
+    osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
+    while(arguments.read("--compressed") || arguments.read("--compressed-arb")) { internalFormatMode = osg::Texture::USE_ARB_COMPRESSION; }
+
+    while(arguments.read("--compressed-dxt1")) { internalFormatMode = osg::Texture::USE_S3TC_DXT1_COMPRESSION; }
+    while(arguments.read("--compressed-dxt3")) { internalFormatMode = osg::Texture::USE_S3TC_DXT3_COMPRESSION; }
+    while(arguments.read("--compressed-dxt5")) { internalFormatMode = osg::Texture::USE_S3TC_DXT5_COMPRESSION; }
     
     osg::ref_ptr<osg::Image> image_3d;
     
@@ -853,8 +878,11 @@ int main( int argc, char **argv )
     
     osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
 
+
+
     // create a model from the images.
     osg::Node* rootNode = createModel(image_3d, normalmap_3d, 
+                                      internalFormatMode,
                                       xSize, ySize, zSize,
                                       xMultiplier, yMultiplier, zMultiplier,
                                       numSlices, sliceEnd, alphaFunc);

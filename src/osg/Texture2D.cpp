@@ -16,8 +16,6 @@
 #include <osg/State>
 #include <osg/GLU>
 
-typedef void (APIENTRY * MyCompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-
 using namespace osg;
 
 Texture2D::Texture2D():

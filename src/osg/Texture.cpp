@@ -1355,7 +1355,7 @@ void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLe
 
 void Texture::Extensions::glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data) const
 {
-    if (_glCompressedTexImage2D)
+    if (_glCompressedTexSubImage2D)
     {
         typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
         ((CompressedTexSubImage2DArbProc)_glCompressedTexSubImage2D)(target, level, xoffset, yoffset, width, height, format, imageSize, data);

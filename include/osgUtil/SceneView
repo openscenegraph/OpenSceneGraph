@@ -82,7 +82,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::Viewport* getViewport() { return _viewport.get(); }
 
         /** Get the viewport of the scene view. */
-        void getViewport(int& x,int& y,int& width,int& height)
+        void getViewport(int& x,int& y,int& width,int& height) const
         {
             _viewport->getViewport(x,y,width,height);
         }

@@ -87,9 +87,9 @@ void Texture3D::apply(State& state) const
     // current OpenGL context.
     const uint contextID = state.getContextID();
     
-    Extensions* extensions = getExtensions(contextID);
+    const Extensions* extensions = getExtensions(contextID,true);
                                         
-    if (!extensions->isTexture3DSupported)
+    if (!extensions->isTexture3DSupported())
     {
         notify(WARN)<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by OpenGL driver."<<std::endl;
         return;
@@ -165,7 +165,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
     // current OpenGL context.
     const uint contextID = state.getContextID();
 
-    Extensions* extensions = getExtensions(contextID);
+    const Extensions* extensions = getExtensions(contextID,true);
 
 
     // update the modified tag to show that it is upto date.
@@ -253,7 +253,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
-    Extensions* extensions = getExtensions(contextID);
+    const Extensions* extensions = getExtensions(contextID,true);
     
     if (handle)
     {
@@ -276,34 +276,42 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     }
 }
 
-Texture3D::Extensions* Texture3D::getExtensions(uint contextID)
+const Texture3D::Extensions* Texture3D::getExtensions(uint contextID,bool createIfNotInitalized)
 {
     typedef buffered_value< ref_ptr<Extensions> > BufferedExtensions;
     static BufferedExtensions s_extensions;
     
-    if (!s_extensions[contextID]) s_extensions[contextID] = new Extensions;
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     
     return s_extensions[contextID].get();
 }
 
+#ifndef GL_MAX_3D_TEXTURE_SIZE
+#define GL_MAX_3D_TEXTURE_SIZE 0x8073
+#endif
+
 Texture3D::Extensions::Extensions()
 {
-    isTexture3DFast = isGLExtensionSupported("GL_EXT_texture3D");
+    _isTexture3DFast = isGLExtensionSupported("GL_EXT_texture3D");
 
-    if (isTexture3DFast) isTexture3DSupported = true;
-    else isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
+    if (_isTexture3DFast) _isTexture3DSupported = true;
+    else _isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
     
-    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &maxTexture3DSize);
+    glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &_maxTexture3DSize);
+
+    _glTexImage3D           = getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");;
+    _glTexSubImage3D        = getGLExtensionFuncPtr("glTexSubImage3D","glTexSubImage3DEXT");
+    _glCopyTexSubImage3D    = getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+    _gluBuild3DMipmaps      = getGLUExtensionFuncPtr("gluBuild3DMipmaps");
+
 }
 
-void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const
 {
-    typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-    static GLTexImage3DProc s_glTexImage3D = (GLTexImage3DProc) getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");
-    
-    if (s_glTexImage3D)
+    if (_glTexImage3D)
     {
-        (*s_glTexImage3D)( target, level, internalFormat, width, height, depth, border, format, type, pixels);
+        typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+        (*((GLTexImage3DProc)_glTexImage3D))( target, level, internalFormat, width, height, depth, border, format, type, pixels);
     }
     else
     {
@@ -311,14 +319,12 @@ void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum int
     }
 }
 
-void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels)
+void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels) const
 {
-    typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-    static GLTexSubImage3DProc s_glTexSubImage3D = (GLTexSubImage3DProc) getGLExtensionFuncPtr("glTexSubImage3D","glTexSubImage3DEXT");
-
-    if (s_glTexSubImage3D)
+    if (_glTexSubImage3D)
     {
-        (*s_glTexSubImage3D)( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+        typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+        (*((GLTexSubImage3DProc)_glTexSubImage3D))( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     }
     else
     {
@@ -326,14 +332,12 @@ void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint x
     }
 }
 
-void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height )
+void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const
 {
-    typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-    static GLCopyTexSubImageProc s_glCopyTexSubImage3D = (GLCopyTexSubImageProc) getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
-    
-    if (s_glCopyTexSubImage3D)
+    if (_glCopyTexSubImage3D)
     {
-        (*s_glCopyTexSubImage3D)(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+        typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+        (*((GLCopyTexSubImageProc)_glCopyTexSubImage3D))(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     }
     else
     {
@@ -341,14 +345,12 @@ void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLi
     }
 }
 
-void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data)
+void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data) const
 {
-    typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
-    static GLUBuild3DMipMapsProc s_gluBuild3DMipmaps = (GLUBuild3DMipMapsProc) getGLUExtensionFuncPtr("gluBuild3DMipmaps");
-
-    if (s_gluBuild3DMipmaps)
+    if (_gluBuild3DMipmaps)
     {
-        (*s_gluBuild3DMipmaps)(target, internalFormat, width, height, depth, format, type, data);
+        typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
+        (*((GLUBuild3DMipMapsProc)_gluBuild3DMipmaps))(target, internalFormat, width, height, depth, format, type, data);
     }
     else
     {

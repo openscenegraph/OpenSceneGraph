@@ -15,6 +15,7 @@
 #define OSGDB_ARCHIVE 1
 
 #include <osgDB/ReaderWriter>
+#include <osgDB/Registry>
 
 #include <fstream>
 #include <list>
@@ -23,8 +24,6 @@ namespace osgDB {
 
 
 /** Base class for implementing database Archives. */
-
-
 class OSGDB_EXPORT Archive : public ReaderWriter
 {
     public:
@@ -37,15 +36,8 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 
         virtual bool acceptsExtension(const std::string& /*extension*/) { return true; }
         
-        enum Status
-        {
-            READ,
-            WRITE,
-            CREATE
-        };
-
         /** open the archive.*/
-        virtual bool open(const std::string& filename, Status status, unsigned int indexBlockSizeHint=4096);
+        virtual bool open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
 
         /** close the archive.*/
         virtual void close();
@@ -98,9 +90,9 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             
             void write(std::ostream& out);
             
-            inline bool spaceAvailable(pos_type position, size_type size, const std::string& filename) const
+            inline bool spaceAvailable(pos_type, size_type, const std::string& filename) const
             {
-                unsigned requiredSize = sizeof(position)+sizeof(unsigned int)+filename.size();
+                unsigned requiredSize = sizeof(pos_type)+sizeof(unsigned int)+filename.size();
                 return (_offsetOfNextAvailableSpace + requiredSize)<_blockSize;
             }
             
@@ -132,7 +124,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         
         static float        s_currentSupportedVersion;
         float               _version;
-        Status              _status;
+        ArchiveStatus       _status;
         std::ifstream       _input;
         std::fstream        _output;
         
@@ -141,6 +133,12 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 
 
 };
+
+/** Open an archive for reading or writing.*/
+Archive* openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
+
+/** Open an archive for reading or writing.*/
+osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,Registry::CacheHintOptions useObjectCache);
 
 }
 

@@ -21,6 +21,17 @@ using namespace osgDB;
 
 float Archive::s_currentSupportedVersion = 0.0;
 
+osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint)
+{
+    return openArchive(filename, status, indexBlockSizeHint, Registry::instance()->getUseObjectCacheHint());
+}
+
+osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,Registry::CacheHintOptions useObjectCache)
+{
+    ReaderWriter::ReadResult result = osgDB::Registry::instance()->openArchive(filename, status, indexBlockSizeHint, useObjectCache);
+    return result.takeArchive();
+}
+
 Archive::IndexBlock::IndexBlock(unsigned int blockSize):
     _requiresWrite(false),
     _filePosition(0),
@@ -185,7 +196,7 @@ Archive::~Archive()
 }
 #include <sys/stat.h>
 
-bool Archive::open(const std::string& filename, Status status, unsigned int indexBlockSize)
+bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSize)
 {
     if (status==READ)
     {
@@ -295,6 +306,7 @@ bool Archive::open(const std::string& filename, Status status, unsigned int inde
     else
     {
         osg::notify(osg::NOTICE)<<"Archive::open("<<filename<<") is a strange place!!."<<std::endl;
+        return false;
     }
 }
 

@@ -81,14 +81,18 @@ class OSGDB_EXPORT Registry : public osg::Referenced
              
             /// cache heightfield loaded via readHeightField(filename)
             CACHE_HEIGHTFIELDS  = 4, 
+
+            /// cache heightfield loaded via readHeightField(filename)
+            CACHE_ARCHIVES      = 8, 
             
             /// cache objects loaded via readObject(filename)
-            CACHE_OBJECTS       = 8, 
+            CACHE_OBJECTS       = 16, 
             
             /// cache on all read*(filename) calls
             CACHE_ALL           = CACHE_NODES |
                                   CACHE_IMAGES |
                                   CACHE_HEIGHTFIELDS |
+                                  CACHE_ARCHIVES |
                                   CACHE_OBJECTS
         };
 
@@ -147,6 +151,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         {
         public:
         
+            virtual ReaderWriter::ReadResult openArchive(const std::string& filename,ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache)
+            {
+                return osgDB::Registry::instance()->openArchiveImplementation(filename, status, indexBlockSizeHint, useObjectCache);
+            }
+            
             virtual ReaderWriter::ReadResult readObject(const std::string& filename, CacheHintOptions options)
             {
                 return osgDB::Registry::instance()->readObjectImplementation(filename,options);
@@ -181,6 +190,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         const ReadFileCallback* getReadFileCallback() const { return _readFileCallback.get(); }
 
 
+        ReaderWriter::ReadResult openArchive(const std::string& fileName,ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache)
+        {
+            if (_readFileCallback.valid()) return _readFileCallback->openArchive(fileName, status, indexBlockSizeHint, useObjectCache);
+            else return openArchiveImplementation(fileName, status, indexBlockSizeHint, useObjectCache);
+        }
+        ReaderWriter::ReadResult openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache);
+
         ReaderWriter::ReadResult readObject(const std::string& fileName,CacheHintOptions useObjectCache)
         {
             if (_readFileCallback.valid()) return _readFileCallback->readObject(fileName,useObjectCache);
@@ -208,6 +224,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             else return readNodeImplementation(fileName,useObjectCache);
         }
         ReaderWriter::ReadResult readNodeImplementation(const std::string& fileName,CacheHintOptions useObjectCache);
+
+
+
+
+
 
 
         class WriteFileCallback : public osg::Referenced
@@ -277,6 +298,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriter::WriteResult writeNodeImplementation(const osg::Node& node, const std::string& fileName);
         
         
+
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
         bool getCreateNodeFromImage() const { return _createNodeFromImage; }
 
@@ -401,6 +423,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
 
+        ReaderWriter::ReadResult openArchive(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint);
         ReaderWriter::ReadResult readObject(const std::string& fileName);
         ReaderWriter::ReadResult readImage(const std::string& fileName);
         ReaderWriter::ReadResult readHeightField(const std::string& fileName);

@@ -726,6 +726,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osg::ProxyNode*>(node)){
             ((ive::ProxyNode*)(node))->write(this);
         }
+        else if(dynamic_cast<const osgFX::MultiTextureControl*>(node)){
+            ((ive::MultiTextureControl*)(node))->write(this);
+        }
         else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);
         }
@@ -737,9 +740,6 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osgSim::LightPointNode*>(node)){
             ((ive::LightPointNode*)(node))->write(this);
-        }
-        else if(dynamic_cast<const osgFX::MultiTextureControl*>(node)){
-            ((ive::MultiTextureControl*)(node))->write(this);
         }
         else
             throw Exception("Unknown node in Group::write()");

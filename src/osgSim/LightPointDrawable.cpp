@@ -163,6 +163,7 @@ void LightPointDrawable::drawImplementation(osg::State& state) const
     state.haveAppliedAttribute(osg::StateAttribute::POINT);
     
     state.dirtyAllVertexArrays();
+    state.disableAllVertexArrays();
     
     // restore the state afterwards.
     state.apply();

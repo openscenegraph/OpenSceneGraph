@@ -9,7 +9,7 @@ using namespace osgGA;
 TerrainManipulator::TerrainManipulator()
 {
     _modelScale = 0.01f;
-    _minimumZoomScale = 0.05f;
+    _minimumZoomScale = 0.0005f;
     _thrown = false;
 
     _distance = 1.0f;
@@ -226,7 +226,7 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
         if (!hitList.empty())
         {
-            notify(INFO) << "Hit terrain ok"<< std::endl;
+            osg::notify(osg::NOTICE) << "Hit terrain ok"<< std::endl;
             osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
             osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
@@ -309,14 +309,12 @@ bool TerrainManipulator::calcMovement()
 
         // need to recompute the itersection point along the look vector.
         
-        osg::notify(osg::NOTICE)<<std::endl<<"Position before "<<_coordinateFrame.getTrans()<<std::endl;
-        
         _coordinateFrame = osg::Matrixd::rotate(_rotation.inverse())*
                            osg::Matrixd::translate(dx*scale,dy*scale,0.0f)*
                            osg::Matrixd::rotate(_rotation)*
                            _coordinateFrame;
 
-        osg::notify(osg::NOTICE)<<"\tafter "<<_coordinateFrame.getTrans()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"\tafter "<<_coordinateFrame.getTrans()<<std::endl;
 
         // now reorientate the coordinate frame to the frame coords.
         _coordinateFrame = getCoordinateFrame( _coordinateFrame(3,0), _coordinateFrame(3,1), _coordinateFrame(3,2));
@@ -324,9 +322,11 @@ bool TerrainManipulator::calcMovement()
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
 
-        osg::Vec3 start_segment = _coordinateFrame.getTrans();
-        osg::Vec3 end_segment = start_segment - getUpVector(_coordinateFrame) * 10000.0;
-        end_segment.set(0.0f,0.0f,0.0f);
+        osg::Vec3 start_segment = _coordinateFrame.getTrans() + getUpVector(_coordinateFrame) * 10000.0;
+        osg::Vec3 end_segment = start_segment - getUpVector(_coordinateFrame) * 20000.0;
+        //end_segment.set(0.0f,0.0f,0.0f);
+
+        osg::notify(osg::NOTICE)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(_coordinateFrame)<<std::endl;
 
         osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
         segLookVector->set(start_segment,end_segment);
@@ -342,8 +342,6 @@ bool TerrainManipulator::calcMovement()
             {
                 notify(NOTICE) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-                osg::Vec3 np = hitList.front().getWorldIntersectNormal();
-
                 _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
 
                 hitFound = true;

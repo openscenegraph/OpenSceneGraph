@@ -31,12 +31,12 @@ class Vec2d
 {
     public:
 
-        typedef float value_type;
+        typedef double value_type;
         value_type _v[2];
 
         Vec2d() {_v[0]=0.0; _v[1]=0.0;}
 
-        Vec2d(float x,float y) { _v[0]=x; _v[1]=y; }
+        Vec2d(value_type x,value_type y) { _v[0]=x; _v[1]=y; }
 
         inline Vec2d(const Vec2f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]; }
         
@@ -54,19 +54,19 @@ class Vec2d
             else return (_v[1]<v._v[1]);
         }
 
-        inline float* ptr() { return _v; }
-        inline const float* ptr() const { return _v; }
+        inline value_type* ptr() { return _v; }
+        inline const value_type* ptr() const { return _v; }
 
-        inline void set( float x, float y ) { _v[0]=x; _v[1]=y; }
+        inline void set( value_type x, value_type y ) { _v[0]=x; _v[1]=y; }
 
-        inline float& operator [] (int i) { return _v[i]; }
-        inline float operator [] (int i) const { return _v[i]; }
+        inline value_type& operator [] (int i) { return _v[i]; }
+        inline value_type operator [] (int i) const { return _v[i]; }
 
-        inline float& x() { return _v[0]; }
-        inline float& y() { return _v[1]; }
+        inline value_type& x() { return _v[0]; }
+        inline value_type& y() { return _v[1]; }
 
-        inline float x() const { return _v[0]; }
-        inline float y() const { return _v[1]; }
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
 
         inline bool valid() const { return !isNaN(); }
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
@@ -78,13 +78,13 @@ class Vec2d
         }
 
         /// multiply by scalar
-        inline const Vec2d operator * (float rhs) const
+        inline const Vec2d operator * (value_type rhs) const
         {
             return Vec2d(_v[0]*rhs, _v[1]*rhs);
         }
 
         /// unary multiply by scalar
-        inline Vec2d& operator *= (float rhs)
+        inline Vec2d& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
 	    _v[1]*=rhs;
@@ -92,13 +92,13 @@ class Vec2d
         }
 
         /// divide by scalar
-        inline const Vec2d operator / (float rhs) const
+        inline const Vec2d operator / (value_type rhs) const
         {
             return Vec2d(_v[0]/rhs, _v[1]/rhs);
         }
 
         /// unary divide by scalar
-        inline Vec2d& operator /= (float rhs)
+        inline Vec2d& operator /= (value_type rhs)
         {
             _v[0]/=rhs;
 	    _v[1]/=rhs;
@@ -154,12 +154,12 @@ class Vec2d
 
         /** normalize the vector so that it has length unity
             returns the previous length of the vector*/
-	inline float normalize()
+	inline value_type normalize()
 	{
-	    float norm = Vec2d::length();
+	    value_type norm = Vec2d::length();
             if (norm>0.0)
             {
-                float inv = 1.0/norm;
+                value_type inv = 1.0/norm;
 	        _v[0] *= inv;
 	        _v[1] *= inv;
             }

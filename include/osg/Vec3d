@@ -20,18 +20,18 @@
 
 namespace osg {
 
-/** General purpose float triple for use as vertices, vectors and normals.
+/** General purpose double triple for use as vertices, vectors and normals.
     Provides general maths operations from addition through to cross products.
-    No support yet added for float * Vec3d - is it necessary?
+    No support yet added for double * Vec3d - is it necessary?
     Need to define a non-member non-friend operator*  etc.
-   			     Vec3d * float is okay
+   			     Vec3d * double is okay
 */
 
 class Vec3d
 {
     public:
 
-        typedef float value_type;
+        typedef double value_type;
         value_type _v[3];
 
         Vec3d() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0;}

@@ -44,7 +44,7 @@ osg::StateSet* getSingletonLightPointStateSet()
 LightPointNode::LightPointNode():
     _minPixelSize(0.0f),
     _maxPixelSize(30.0f),
-    _maxVisableDistance2(FLT_MAX)
+    _maxVisibleDistance2(FLT_MAX)
 {
     setStateSet(getSingletonLightPointStateSet());
 }
@@ -55,7 +55,7 @@ LightPointNode::LightPointNode(const LightPointNode& lpn,const osg::CopyOp& copy
     _lightPointList(lpn._lightPointList),
     _minPixelSize(lpn._minPixelSize),
     _maxPixelSize(lpn._maxPixelSize),
-    _maxVisableDistance2(lpn._maxVisableDistance2)    
+    _maxVisibleDistance2(lpn._maxVisibleDistance2)    
 {
 }
 
@@ -267,9 +267,9 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             if (intensity<=minimumIntensity) continue;
 
 
-            if (_maxVisableDistance2!=FLT_MAX)
+            if (_maxVisibleDistance2!=FLT_MAX)
             {
-                if (dv.length2()>_maxVisableDistance2) continue;
+                if (dv.length2()>_maxVisibleDistance2) continue;
             }
 
 

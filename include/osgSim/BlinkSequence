@@ -30,12 +30,15 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Object
     public:
 
         /** sequence group which can be used to synchronize related blink sequences.*/
-        class OSGSIM_EXPORT SequenceGroup : public osg::Referenced
+        class OSGSIM_EXPORT SequenceGroup : public osg::Object
         {
             public:
 
                 SequenceGroup();
+                SequenceGroup(const SequenceGroup& bs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
                 SequenceGroup(double baseTime);
+
+                META_Object(osgSim,SequenceGroup);
 
                 double      _baseTime;
         };
@@ -44,22 +47,27 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Object
         BlinkSequence();
 
         BlinkSequence(const BlinkSequence& bs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgSim,BlinkSequence);
 
-        
         /** add a pulse of specified color and duration to the BlinkSequence.*/
         inline void addPulse(double length,const osg::Vec4& color);
+
+        /** return the number of pulses. */
+        inline int getNumPulses() const { return _pulseData.size(); }
+
+        /** return the pulse data at position i. */
+        inline void getPulse(unsigned int i, double& length,osg::Vec4& color) const;
 
         /** get the total pulse period of the blink sequence, which is equal to the sum of all the pulse periods.*/
         inline double getPulsePeriod() const { return _pulsePeriod; }
 
         /** set the sequence group which can be used to synchronize related blink sequences.*/
         inline void setSequenceGroup(SequenceGroup* sg) { _sequenceGroup = sg; }
-        
+
         /** get the non const sequence group.*/
         inline SequenceGroup* getSequenceGroup() { return _sequenceGroup.get(); }
-        
+
         /** get the const sequence group.*/
         inline const SequenceGroup* getSequenceGroup() const { return _sequenceGroup.get(); }
 
@@ -68,8 +76,6 @@ class OSGSIM_EXPORT BlinkSequence : public osg::Object
 
         /** get the pahse shift.*/        
         inline double getPhaseShift() const { return _phaseShift; }
-        
-
 
         /** compute the local time clamped to this BlinkSequences period, and accounting for the phase shift and sequence group.*/
         inline double localTime(double time) const;
@@ -102,6 +108,13 @@ inline void BlinkSequence::addPulse(double length,const osg::Vec4& color)
 {
     _pulseData.push_back(IntervalColor(length,color));
     _pulsePeriod += length;
+}
+
+inline void BlinkSequence::getPulse(unsigned int i, double& length, osg::Vec4& color) const
+{
+    const IntervalColor& ic = _pulseData[i];
+    length = ic.first;
+    color = ic.second;
 }
 
 inline osg::Vec4 BlinkSequence::color(double time,double length) const

@@ -57,6 +57,7 @@ tar cvf - . | tar xvfC - /
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_osgParticle.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_osg.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_osgText.so
+%attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_osgSim.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_osgtgz.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_pfb.so
 %attr(755, root, root) /usr/local/lib/osgPlugins/osgdb_pic.so

@@ -42,6 +42,19 @@ void AzimRange::setAzimuthRange(float minAzimuth,float maxAzimuth,float fadeAngl
 
 }
 
+void AzimRange::getAzimuthRange(float& minAzimuth, float& maxAzimuth, float& fadeAngle) const
+{
+    float centerAzim = atan2(_sinAzim, _cosAzim);
+    float angle = acos(_cosAngle);
+    minAzimuth = centerAzim - angle;
+    maxAzimuth = centerAzim + angle;
+    if (_cosFadeAngle == -1.0f) {
+        fadeAngle = 2.0f * osg::PI;
+    } else {
+        fadeAngle = acos(_cosFadeAngle) - angle;
+    }
+}
+
 
 //
 // Elevation Range 
@@ -81,6 +94,25 @@ float ElevationRange::getMinElevation() const
 float ElevationRange::getMaxElevation() const
 {
     return osg::PI_2-acos(_cosMaxElevation);
+}
+
+float ElevationRange::getFadeAngle() const
+{
+    float fadeAngle = 0.0;
+
+    // Take the appropriate (unclipped) elevation angle to calculate the fade angle
+    if (_cosMinFadeElevation != -1.0f) {
+        float minFadeAngle = acos(_cosMinFadeElevation);
+        float minElevation = osg::PI_2 - acos(_cosMinElevation);
+        fadeAngle = minFadeAngle + minElevation - osg::PI_2;
+
+    } else if (_cosMaxFadeElevation != 1.0f) {
+        float maxFadeAngle = acos(_cosMaxFadeElevation);
+        float maxElevation = osg::PI_2 - acos(_cosMaxElevation);
+        fadeAngle = osg::PI_2 - maxFadeAngle - maxElevation;
+    }
+
+    return fadeAngle;
 }
 
 //

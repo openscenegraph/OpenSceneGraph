@@ -54,6 +54,7 @@ class OSGSIM_EXPORT AzimRange
             _cosFadeAngle(-1.0f) {}
             
         void setAzimuthRange(float minAzimuth,float maxAzimuth,float fadeAngle=0.0f);
+        void getAzimuthRange(float& minAzimuth, float& maxAzimuth, float& fadeAngle) const;
 
 
         inline float azimSector(const osg::Vec3& eyeLocal) const
@@ -90,6 +91,8 @@ class OSGSIM_EXPORT ElevationRange
         float getMinElevation() const;
 
         float getMaxElevation() const;
+
+        float getFadeAngle() const;
 
         inline float elevationSector(const osg::Vec3& eyeLocal) const
         {

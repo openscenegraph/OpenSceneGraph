@@ -38,6 +38,7 @@ PLUGIN_DIRS = \
 	obj\
 	osgParticle\
 	osgText\
+	osgSim\
 	osg\
 	osgtgz\
 	pic\

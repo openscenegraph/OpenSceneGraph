@@ -27,10 +27,10 @@ bool ClipNode_readLocalData(Object& obj, Input& fr)
 
     ClipNode& clipnode = static_cast<ClipNode&>(obj);
 
-    StateAttribute* sa=0;
+    osg::ref_ptr<StateAttribute> sa=0;
     while((sa=fr.readStateAttribute())!=0)
     {
-        ClipPlane* clipplane = dynamic_cast<ClipPlane*>(sa);
+        ClipPlane* clipplane = dynamic_cast<ClipPlane*>(sa.get());
         if (clipplane) clipnode.addClipPlane(clipplane);
         iteratorAdvanced = true;
     }

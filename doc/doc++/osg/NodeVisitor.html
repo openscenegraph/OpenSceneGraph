@@ -23,94 +23,96 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.56.2">NodeVisitor</A></B>(<!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> tm=<!1><A HREF="NodeVisitor.html#DOC.2.56.1.1">TRAVERSE_NONE</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.69.2">NodeVisitor</A></B>(<!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> tm=<!1><A HREF="NodeVisitor.html#DOC.2.69.1.1">TRAVERSE_NONE</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.56.3">~NodeVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.69.3">~NodeVisitor</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.4">reset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.4">reset</A></B>()
 <DD><I>Method to call to reset visitor.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.56.5">setTraversalNumber</A></B>(const int fn)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.69.5">setTraversalNumber</A></B>(const int fn)
 <DD><I>Set the traversal number.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.56.6">getTraversalNumber</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.69.6">getTraversalNumber</A></B>() const 
 <DD><I>Get the traversal number.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.56.7">setFrameStamp</A></B>(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.69.7">setFrameStamp</A></B>(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)
 <DD><I>Set the FrameStamp that this traversal is assoicated with</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* <B><A HREF="#DOC.2.56.8">getFrameStamp</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* <B><A HREF="#DOC.2.69.8">getFrameStamp</A></B>() const 
 <DD><I>Get the FrameStamp that this traversal is assoicated with</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.56.9">setTraversalMask</A></B>(const Node::NodeMask mask)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.69.9">setTraversalMask</A></B>(const Node::NodeMask mask)
 <DD><I>Set the TraversalMask of this NodeVisitor.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node::NodeMask <B><A HREF="#DOC.2.56.10">getTraversalMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node::NodeMask <B><A HREF="#DOC.2.69.10">getTraversalMask</A></B>() const 
 <DD><I>Get the TraversalMask</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.56.11">setNodeMaskOverride</A></B>(const Node::NodeMask mask)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.69.11">setNodeMaskOverride</A></B>(const Node::NodeMask mask)
 <DD><I>Set the NodeMaskOverride mask.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node::NodeMask <B><A HREF="#DOC.2.56.12">getNodeMaskOverride</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node::NodeMask <B><A HREF="#DOC.2.69.12">getNodeMaskOverride</A></B>() const 
 <DD><I>Get the NodeMaskOverride mask</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.56.13">validNodeMask</A></B>(const <!1><A HREF="Node.html">osg::Node</A>&amp; node) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.69.13">validNodeMask</A></B>(const <!1><A HREF="Node.html">osg::Node</A>&amp; node) const 
 <DD><I>Method to called by Node and its subclass' Node::accept() method, if the result is true to be used to cull operations of nodes and their subgraphs.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.56.14">setTraversalMode</A></B>(const <!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.14">setTraversalMode</A></B>(const <!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> mode)
 <DD><I>Set the traversal mode for Node::traverse() to use when  deciding which children of a node to traverse.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> <B><A HREF="#DOC.2.56.15">getTraversalMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> <B><A HREF="#DOC.2.69.15">getTraversalMode</A></B>() const 
 <DD><I>Get the traversal mode</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.56.16">setTraversalVisitor</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.16">setTraversalVisitor</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DD><I>Set a visitor to handle traversal.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeVisitor.html">NodeVisitor</A>* <B><A HREF="#DOC.2.56.17">getTraversalVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeVisitor.html">NodeVisitor</A>* <B><A HREF="#DOC.2.69.17">getTraversalVisitor</A></B>()
 <DD><I>Get the traversal visitor, returns NULL if none is attached</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.56.18">traverse</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.18">traverse</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
 <DD><I>Inline method for handling traversal of a nodes.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.19">apply</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.19">apply</A></B>(<!1><A HREF="Node.html">Node</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.20">apply</A></B>(<!1><A HREF="Geode.html">Geode</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.20">apply</A></B>(<!1><A HREF="Geode.html">Geode</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.21">apply</A></B>(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.21">apply</A></B>(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.22">apply</A></B>(<!1><A HREF="LightSource.html">LightSource</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.22">apply</A></B>(<!1><A HREF="LightSource.html">LightSource</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.23">apply</A></B>(<!1><A HREF="Group.html">Group</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.23">apply</A></B>(<!1><A HREF="Group.html">Group</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.24">apply</A></B>(<!1><A HREF="Transform.html">Transform</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.24">apply</A></B>(<!1><A HREF="Transform.html">Transform</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.25">apply</A></B>(<!1><A HREF="Switch.html">Switch</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.25">apply</A></B>(<!1><A HREF="Switch.html">Switch</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.26">apply</A></B>(Sequence&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.26">apply</A></B>(Sequence&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.27">apply</A></B>(<!1><A HREF="LOD.html">LOD</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.27">apply</A></B>(<!1><A HREF="LOD.html">LOD</A>&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.56.28">apply</A></B>(<!1><A HREF="Impostor.html">Impostor</A>&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.28">apply</A></B>(<!1><A HREF="Impostor.html">Impostor</A>&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.69.29">apply</A></B>(<!1><A HREF="EarthSky.html">EarthSky</A>&amp; node)
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.56.1">TraversalMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.69.1">TraversalMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.56.29">_traversalNumber</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.69.30">_traversalNumber</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  <B><A HREF="#DOC.2.56.30">_frameStamp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  <B><A HREF="#DOC.2.69.31">_frameStamp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&gt;  <B><A HREF="#DOC.2.56.31">_traversalVisitor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&gt;  <B><A HREF="#DOC.2.69.32">_traversalVisitor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> <B><A HREF="#DOC.2.56.32">_traversalMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> <B><A HREF="#DOC.2.69.33">_traversalMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Node::NodeMask <B><A HREF="#DOC.2.56.33">_traversalMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Node::NodeMask <B><A HREF="#DOC.2.69.34">_traversalMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Node::NodeMask <B><A HREF="#DOC.2.56.34">_nodeMaskOverride</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>Node::NodeMask <B><A HREF="#DOC.2.69.35">_nodeMaskOverride</A></B>
 </DL></P>
 
 </DL>
@@ -138,73 +140,85 @@
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>Visitor for type safe operations on osg::Node's.
-Based on GOF's Visitor pattern.</BLOCKQUOTE>
+Based on GOF's Visitor pattern. The NodeVisitor 
+is useful for developing type safe operations to nodes
+in the scene graph (as per Visitor pattern), and adds to this
+support for optional scene graph traversal to allow
+operations to be applied to whole scenes at once. The Visitor
+pattern uses a technique of double dispatch as a mechanism to
+called the appropriate apply(..) method of the NodeVisitor.  To
+use this feature one must use the Node::accept(NodeVisitor) which
+is extended in each Node subclass, rather than the NodeVisitor
+apply directly.  So use root->accept(myVisitor); instead of
+myVisitor.apply(*root).  The later method will bypass the double
+dispatch and the appropriate NodeVisitor::apply(..) method will
+not be called. </BLOCKQUOTE>
 <DL>
 
 <A NAME="TraversalMode"></A>
-<A NAME="DOC.2.56.1"></A>
+<A NAME="DOC.2.69.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TraversalMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="TRAVERSE_NONE"></A>
-<A NAME="DOC.2.56.1.1"></A>
+<A NAME="DOC.2.69.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_NONE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TRAVERSE_PARENTS"></A>
-<A NAME="DOC.2.56.1.2"></A>
+<A NAME="DOC.2.69.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_PARENTS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TRAVERSE_ALL_CHILDREN"></A>
-<A NAME="DOC.2.56.1.3"></A>
+<A NAME="DOC.2.69.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_ALL_CHILDREN</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TRAVERSE_ACTIVE_CHILDREN"></A>
-<A NAME="DOC.2.56.1.4"></A>
+<A NAME="DOC.2.69.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_ACTIVE_CHILDREN</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TRAVERSE_VISITOR"></A>
-<A NAME="DOC.2.56.1.5"></A>
+<A NAME="DOC.2.69.1.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TRAVERSE_VISITOR</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="NodeVisitor"></A>
-<A NAME="DOC.2.56.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NodeVisitor(<!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> tm=<!1><A HREF="NodeVisitor.html#DOC.2.56.1.1">TRAVERSE_NONE</A>)</B></TT>
+<A NAME="DOC.2.69.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NodeVisitor(<!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> tm=<!1><A HREF="NodeVisitor.html#DOC.2.69.1.1">TRAVERSE_NONE</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~NodeVisitor"></A>
-<A NAME="DOC.2.56.3"></A>
+<A NAME="DOC.2.69.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~NodeVisitor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.56.4"></A>
+<A NAME="DOC.2.69.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
 <DD>Method to call to reset visitor. Useful for your visitor accumulates
-state during a traversal, and you plan to resuse the visitor. 
+state during a traversal, and you plan to reuse the visitor. 
 To flush that state for the next traversal than call reset() prior
 to each traversal.
 <DL><DT><DD></DL><P>
 <A NAME="setTraversalNumber"></A>
-<A NAME="DOC.2.56.5"></A>
+<A NAME="DOC.2.69.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTraversalNumber(const int fn)</B></TT>
 <DD>Set the traversal number. Typically used to denote the frame count.
 <DL><DT><DD></DL><P>
 <A NAME="getTraversalNumber"></A>
-<A NAME="DOC.2.56.6"></A>
+<A NAME="DOC.2.69.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getTraversalNumber() const </B></TT>
 <DD>Get the traversal number. Typically used to denote the frame count.
 <DL><DT><DD></DL><P>
 <A NAME="setFrameStamp"></A>
-<A NAME="DOC.2.56.7"></A>
+<A NAME="DOC.2.69.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFrameStamp(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)</B></TT>
 <DD>Set the FrameStamp that this traversal is assoicated with
 <DL><DT><DD></DL><P>
 <A NAME="getFrameStamp"></A>
-<A NAME="DOC.2.56.8"></A>
+<A NAME="DOC.2.69.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* getFrameStamp() const </B></TT>
 <DD>Get the FrameStamp that this traversal is assoicated with
 <DL><DT><DD></DL><P>
 <A NAME="setTraversalMask"></A>
-<A NAME="DOC.2.56.9"></A>
+<A NAME="DOC.2.69.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTraversalMask(const Node::NodeMask mask)</B></TT>
 <DD>Set the TraversalMask of this NodeVisitor.
 The TraversalMask is used by the NodeVisitor::validNodeMask() method
@@ -217,12 +231,12 @@ _nodeMaskOverride to 0xffffffff will allow a visitor to work on all nodes
 regardless of their own Node::_nodeMask state.
 <DL><DT><DD></DL><P>
 <A NAME="getTraversalMask"></A>
-<A NAME="DOC.2.56.10"></A>
+<A NAME="DOC.2.69.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node::NodeMask getTraversalMask() const </B></TT>
 <DD>Get the TraversalMask
 <DL><DT><DD></DL><P>
 <A NAME="setNodeMaskOverride"></A>
-<A NAME="DOC.2.56.11"></A>
+<A NAME="DOC.2.69.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNodeMaskOverride(const Node::NodeMask mask)</B></TT>
 <DD>Set the NodeMaskOverride mask.
 Used in validNodeMask() to determine whether to operate on a node or its 
@@ -231,12 +245,12 @@ Typically used to force on nodes which may have
 been switched off by their own Node::_nodeMask.
 <DL><DT><DD></DL><P>
 <A NAME="getNodeMaskOverride"></A>
-<A NAME="DOC.2.56.12"></A>
+<A NAME="DOC.2.69.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node::NodeMask getNodeMaskOverride() const </B></TT>
 <DD>Get the NodeMaskOverride mask
 <DL><DT><DD></DL><P>
 <A NAME="validNodeMask"></A>
-<A NAME="DOC.2.56.13"></A>
+<A NAME="DOC.2.69.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool validNodeMask(const <!1><A HREF="Node.html">osg::Node</A>&amp; node) const </B></TT>
 <DD>Method to called by Node and its subclass' Node::accept() method, if the result is true
 to be used to cull operations of nodes and their subgraphs.
@@ -246,8 +260,8 @@ default values for _traversalMask is 0xffffffff, _nodeMaskOverride is 0x0,
 and osg::Node::_nodeMask is 0xffffffff. 
 <DL><DT><DD></DL><P>
 <A NAME="setTraversalMode"></A>
-<A NAME="DOC.2.56.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTraversalMode(const <!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> mode)</B></TT>
+<A NAME="DOC.2.69.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTraversalMode(const <!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> mode)</B></TT>
 <DD>Set the traversal mode for Node::traverse() to use when 
 deciding which children of a node to traverse. If a
 NodeVisitor has been attached via setTraverseVisitor()
@@ -255,23 +269,23 @@ and the new mode is not TRAVERSE_VISITOR then the attached
 visitor is detached. Default mode is TRAVERSE_NONE.
 <DL><DT><DD></DL><P>
 <A NAME="getTraversalMode"></A>
-<A NAME="DOC.2.56.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> getTraversalMode() const </B></TT>
+<A NAME="DOC.2.69.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> getTraversalMode() const </B></TT>
 <DD>Get the traversal mode
 <DL><DT><DD></DL><P>
 <A NAME="setTraversalVisitor"></A>
-<A NAME="DOC.2.56.16"></A>
+<A NAME="DOC.2.69.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTraversalVisitor(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
 <DD>Set a visitor to handle traversal.
-Overides the traverse mode setting it to TRAVERSAL_VISITOR.
+Overrides the traverse mode setting it to TRAVERSAL_VISITOR.
 <DL><DT><DD></DL><P>
 <A NAME="getTraversalVisitor"></A>
-<A NAME="DOC.2.56.17"></A>
+<A NAME="DOC.2.69.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeVisitor.html">NodeVisitor</A>* getTraversalVisitor()</B></TT>
 <DD>Get the traversal visitor, returns NULL if none is attached
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.56.18"></A>
+<A NAME="DOC.2.69.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void traverse(<!1><A HREF="Node.html">Node</A>&amp; node)</B></TT>
 <DD>Inline method for handling traversal of a nodes.
 If you intend to use the visitor for actively traversing 
@@ -279,67 +293,71 @@ the scene graph then make sure the accept() methods call
 this method unless they handle traversal directly.
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.19"></A>
+<A NAME="DOC.2.69.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Node.html">Node</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.20"></A>
+<A NAME="DOC.2.69.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Geode.html">Geode</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.21"></A>
+<A NAME="DOC.2.69.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Billboard.html">Billboard</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.22"></A>
+<A NAME="DOC.2.69.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="LightSource.html">LightSource</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.23"></A>
+<A NAME="DOC.2.69.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Group.html">Group</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.24"></A>
+<A NAME="DOC.2.69.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Transform.html">Transform</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.25"></A>
+<A NAME="DOC.2.69.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Switch.html">Switch</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.26"></A>
+<A NAME="DOC.2.69.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(Sequence&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.27"></A>
+<A NAME="DOC.2.69.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="LOD.html">LOD</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.56.28"></A>
+<A NAME="DOC.2.69.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="Impostor.html">Impostor</A>&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.69.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="EarthSky.html">EarthSky</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_traversalNumber"></A>
-<A NAME="DOC.2.56.29"></A>
+<A NAME="DOC.2.69.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _traversalNumber</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameStamp"></A>
-<A NAME="DOC.2.56.30"></A>
+<A NAME="DOC.2.69.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_traversalVisitor"></A>
-<A NAME="DOC.2.56.31"></A>
+<A NAME="DOC.2.69.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&gt;  _traversalVisitor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_traversalMode"></A>
-<A NAME="DOC.2.56.32"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeVisitor.html#DOC.2.56.1">TraversalMode</A> _traversalMode</B></TT>
+<A NAME="DOC.2.69.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodeVisitor.html#DOC.2.69.1">TraversalMode</A> _traversalMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_traversalMask"></A>
-<A NAME="DOC.2.56.33"></A>
+<A NAME="DOC.2.69.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Node::NodeMask _traversalMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nodeMaskOverride"></A>
-<A NAME="DOC.2.56.34"></A>
+<A NAME="DOC.2.69.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>Node::NodeMask _nodeMaskOverride</B></TT>
 <DL><DT><DD></DL><P></DL>
 

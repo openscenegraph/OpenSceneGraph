@@ -22,23 +22,23 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.1">DriveManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.1">DriveManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.7.2">~DriveManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.8.2">~DriveManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.3">setNode</A></B>(osg::Node*)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.3">setNode</A></B>(osg::Node*)
 <DD><I>Attach a node to the manipulator.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.7.4">getNode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const osg::Node* <B><A HREF="#DOC.2.8.4">getNode</A></B>() const 
 <DD><I>Return node if attached</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.5">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.5">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>Move the camera to the default position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.6">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.8.6">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>Start/restart the manipulator</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.7.7">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.8.7">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DD><I>handle events, return true if handled, false otherwise</I>
 </DL></P>
 
@@ -68,15 +68,15 @@
 <DL>
 
 <A NAME="DriveManipulator"></A>
-<A NAME="DOC.2.7.1"></A>
+<A NAME="DOC.2.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DriveManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~DriveManipulator"></A>
-<A NAME="DOC.2.7.2"></A>
+<A NAME="DOC.2.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DriveManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setNode"></A>
-<A NAME="DOC.2.7.3"></A>
+<A NAME="DOC.2.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setNode(osg::Node*)</B></TT>
 <DD>Attach a node to the manipulator. 
 Automatically detaches previously attached node.
@@ -84,33 +84,33 @@ setNode(NULL) detaches previously nodes.
 Is ignored by manipulators which do not require a reference model.
 <DL><DT><DD></DL><P>
 <A NAME="getNode"></A>
-<A NAME="DOC.2.7.4"></A>
+<A NAME="DOC.2.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const osg::Node* getNode() const </B></TT>
 <DD>Return node if attached
 <DL><DT><DD></DL><P>
 <A NAME="home"></A>
-<A NAME="DOC.2.7.5"></A>
+<A NAME="DOC.2.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>Move the camera to the default position. 
 May be ignored by manipulators if home functionality is not appropriate.
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.7.6"></A>
+<A NAME="DOC.2.8.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>Start/restart the manipulator
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
-<A NAME="DOC.2.7.7"></A>
+<A NAME="DOC.2.8.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DD>handle events, return true if handled, false otherwise
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="USE_MOUSE_Y_FOR_SPEED"></A>
-<A NAME="DOC.2.7.18.1"></A>
+<A NAME="DOC.2.8.18.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_MOUSE_Y_FOR_SPEED</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="USE_MOUSE_BUTTONS_FOR_SPEED"></A>
-<A NAME="DOC.2.7.18.2"></A>
+<A NAME="DOC.2.8.18.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_MOUSE_BUTTONS_FOR_SPEED</B></TT>
 <DL><DT><DD></DL><P></DL>
 </DL>

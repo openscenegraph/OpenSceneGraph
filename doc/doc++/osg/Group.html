@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=215>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CTransform,MTransform.html,CSwitch,MSwitch.html,CLOD,MLOD.html">
-<param name=before value="M,M,M,M,M|_,MR_,Mr_">
-<param name=after value="Md_SPSP,Md_SP,Md_,M,M,M,M">
-<param name=indent value="0,1,2,3,3,3,3">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=245>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CTransform,MTransform.html,CSwitch,MSwitch.html,CLOD,MLOD.html,CEarthSky,MEarthSky.html">
+<param name=before value="M,M,M,M,M|_,MR_,MR_,Mr_">
+<param name=after value="Md_SPSP,Md_SP,Md_,M,M,M,M,M">
+<param name=indent value="0,1,2,3,3,3,3,3">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,50 +23,50 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; ChildList <B><A HREF="#DOC.2.35.1">Group</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; ChildList <B><A HREF="#DOC.2.39.1">Group</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.35.2">META_Node</A></B>(<!1><A HREF="Group.html">Group</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.39.2">META_Node</A></B>(<!1><A HREF="Group.html">Group</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.35.3">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.39.3">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.35.4">addChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.39.4">addChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
 <DD><I>Add Node to Group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.35.5">removeChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.39.5">removeChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
 <DD><I>Remove Node from Group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.35.6">replaceChild</A></B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.39.6">replaceChild</A></B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
 <DD><I>Replace specified Node with another Node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.35.7">getNumChildren</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.39.7">getNumChildren</A></B>() const 
 <DD><I>return the number of chilren nodes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.35.8">getChild</A></B>( const int i )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.39.8">getChild</A></B>( const int i )
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.35.9">getChild</A></B>( const int i ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.39.9">getChild</A></B>( const int i ) const 
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.35.10">containsNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.39.10">containsNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
 <DD><I>return true if node is contained within Group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::iterator <B><A HREF="#DOC.2.35.11">findNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node )
-<DD><I>return the iterator postion for specified Node.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::iterator <B><A HREF="#DOC.2.39.11">findNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node )
+<DD><I>return the iterator position for specified Node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::const_iterator <B><A HREF="#DOC.2.35.12">findNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
-<DD><I>return the const_iterator postion for specified Node.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ChildList::const_iterator <B><A HREF="#DOC.2.39.12">findNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<DD><I>return the const_iterator position for specified Node.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ChildList <B><A HREF="#DOC.2.35.15">_children</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ChildList <B><A HREF="#DOC.2.39.15">_children</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.35.13">~Group</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.39.13">~Group</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.35.14">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.39.14">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -90,7 +90,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.54.11">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.67.11">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(const int i)
 <DT>
@@ -106,23 +106,25 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenRequiringAppTraversal</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(void* <!1><A HREF="Image.html#DOC.2.36.15">data</A>, <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* ma=0L)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullingActive</B>(const bool active)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void* <B>getUserData</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getCullingActive</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const void* <B>getUserData</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumChildrenWithCullingDisabled</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">osg::Referenced</A>* obj)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>* <B>getMemoryAdapter</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(const NodeMask nm)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const NodeMask <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.54.27">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.67.28">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.54.27">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.67.28">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(const int i) const 
 <DT>
@@ -158,19 +160,21 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.54.11">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.67.11">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_appCallback</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenRequiringAppTraversal</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void* <B>_userData</B>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_cullingActive</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="MemoryAdapter.html">MemoryAdapter</A>&gt;  <B>_memoryAdapter</B>
+<IMG ALT="o" SRC=icon2.gif>int <B>_numChildrenWithCullingDisabled</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>NodeMask <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.54.27">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.67.28">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
 </DL></P>
@@ -178,6 +182,8 @@
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenRequiringAppTraversal</B>(const int num)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithCullingDisabled</B>(const int num)
 </DL></P>
 
 </DL>
@@ -213,19 +219,19 @@ with memory management handled automatically via osg::Referenced.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Group"></A>
-<A NAME="DOC.2.35.1"></A>
+<A NAME="DOC.2.39.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; ChildList Group()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.35.2"></A>
+<A NAME="DOC.2.39.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="Group.html">Group</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.35.3"></A>
+<A NAME="DOC.2.39.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.35.4"></A>
+<A NAME="DOC.2.39.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild( <!1><A HREF="Node.html">Node</A>* child )</B></TT>
 <DD>Add Node to Group.
 If node is not NULL and is not contained in Group then increment its  
@@ -234,7 +240,7 @@ sphere to force it to recompute on next getBound() and return true for success.
 Otherwise return false. Scene nodes can't be added as child nodes.
 <DL><DT><DD></DL><P>
 <A NAME="removeChild"></A>
-<A NAME="DOC.2.35.5"></A>
+<A NAME="DOC.2.39.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild( <!1><A HREF="Node.html">Node</A>* child )</B></TT>
 <DD>Remove Node from Group.
 If Node is contained in Group then remove it from the child
@@ -244,7 +250,7 @@ return true for success.  If Node is not found then return false
 and do not change the reference count of the Node.
 <DL><DT><DD></DL><P>
 <A NAME="replaceChild"></A>
-<A NAME="DOC.2.35.6"></A>
+<A NAME="DOC.2.39.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool replaceChild( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )</B></TT>
 <DD>Replace specified Node with another Node.
 Decrement the reference count origNode and increments the
@@ -255,47 +261,47 @@ add newNode.  If newNode is NULL then return false and do
 not remove origNode. Also returns false if newChild is a Scene node.
 <DL><DT><DD></DL><P>
 <A NAME="getNumChildren"></A>
-<A NAME="DOC.2.35.7"></A>
+<A NAME="DOC.2.39.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumChildren() const </B></TT>
 <DD>return the number of chilren nodes
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
-<A NAME="DOC.2.35.8"></A>
+<A NAME="DOC.2.39.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Node.html">Node</A>* getChild( const int i )</B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
-<A NAME="DOC.2.35.9"></A>
+<A NAME="DOC.2.39.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Node.html">Node</A>* getChild( const int i ) const </B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="containsNode"></A>
-<A NAME="DOC.2.35.10"></A>
+<A NAME="DOC.2.39.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool containsNode( const <!1><A HREF="Node.html">Node</A>* node ) const </B></TT>
 <DD>return true if node is contained within Group
 <DL><DT><DD></DL><P>
 <A NAME="findNode"></A>
-<A NAME="DOC.2.35.11"></A>
+<A NAME="DOC.2.39.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ChildList::iterator findNode( const <!1><A HREF="Node.html">Node</A>* node )</B></TT>
-<DD>return the iterator postion for specified Node.
-return _chilren.end() if node is not contained in Group.
+<DD>return the iterator position for specified Node.
+return _children.end() if node is not contained in Group.
 <DL><DT><DD></DL><P>
 <A NAME="findNode"></A>
-<A NAME="DOC.2.35.12"></A>
+<A NAME="DOC.2.39.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ChildList::const_iterator findNode( const <!1><A HREF="Node.html">Node</A>* node ) const </B></TT>
-<DD>return the const_iterator postion for specified Node.
-return _chilren.end() if node is not contained in Group.
+<DD>return the const_iterator position for specified Node.
+return _children.end() if node is not contained in Group.
 <DL><DT><DD></DL><P>
 <A NAME="~Group"></A>
-<A NAME="DOC.2.35.13"></A>
+<A NAME="DOC.2.39.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Group()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.35.14"></A>
+<A NAME="DOC.2.39.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_children"></A>
-<A NAME="DOC.2.35.15"></A>
+<A NAME="DOC.2.39.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ChildList _children</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
@@ -303,6 +309,7 @@ return _chilren.end() if node is not contained in Group.
 </B><DD><A HREF="Transform.html">Transform</A><BR>
 <A HREF="Switch.html">Switch</A><BR>
 <A HREF="LOD.html">LOD</A><BR>
+<A HREF="EarthSky.html">EarthSky</A><BR>
 </DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>

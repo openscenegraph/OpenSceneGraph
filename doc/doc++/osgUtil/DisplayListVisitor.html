@@ -7,7 +7,7 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::DisplayListVisitor</A></H2></H2><BLOCKQUOTE>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag,  with option to immediately compile osg::GeoSet's OpenGL Display lists.</BLOCKQUOTE>
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::DisplayListVisitor</A></H2></H2><BLOCKQUOTE>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag,  with option to immediately compile osg::Drawable OpenGL Display lists and osg::StateAttribute's</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
@@ -23,13 +23,13 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.2">DisplayListVisitor</A></B>(<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">SWITCH_ON_DISPLAY_LISTS</A>)
-<DD><I>Construct a CompileGeoSetsVisior to traverse all child, with set specfied display list mode.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.2">DisplayListVisitor</A></B>(<!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">COMPILE_DISPLAY_LISTS</A>|<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.4">COMPILE_STATE_ATTRIBUTES</A>)
+<DD><I>Construct a CompileGeoSetsVisior to traverse all child, with set specified display list mode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.3">setDisplayListMode</A></B>(<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.3">setMode</A></B>(<!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> mode)
 <DD><I>Set the operational mode of how the visitor should set up osg::GeoSet's</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> <B><A HREF="#DOC.2.6.4">getDisplayListMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> <B><A HREF="#DOC.2.6.4">getMode</A></B>() const 
 <DD><I>Get the operational mode</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.5">setState</A></B>(osg::State* state)
@@ -46,22 +46,15 @@
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.1">DisplayListMode</A></B>
-<DD><I>Operation modes of the DisplayListVisitor</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.1">ModeValues</A></B>
+<DD><I>Operation modes of the</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> <B><A HREF="#DOC.2.6.9">_displayListMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> <B><A HREF="#DOC.2.6.9">_mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.6.10">_localState</A></B>
-<DD><I>local state is created in constructor and used as the default state during traversal</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.6.11">_externalState</A></B>
-<DD><I>external state is used to override the default state</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.6.12">_activeState</A></B>
-<DD><I>active state is equal to _externalState when it is valid, otherwise defaults to _localState</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.6.10">_state</A></B>
 </DL></P>
 
 </DL>
@@ -70,62 +63,48 @@
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>Visitor for traversing scene graph and setting each osg::GeoSet's _useDisplayList flag, 
-with option to immediately compile osg::GeoSet's OpenGL Display lists.
-The mode of operation
-of the vistor is controlled by setting the DisplayListMode either on visitor
-constructor or via the setDisplayListMode() method.  DisplayListMode options are:
-_displayListMode == SWITCH_ON_AND_COMPILE_DISPLAY_LISTS cals gset->compile() on
-all Geode childern. Note, the visitor must only be used within a valid 
-OpenGL context as compile uses OpenGL calls.
-_displayListMode == SWITCH_ON_DISPLAY_LISTS sets the Geode's children with 
-gset->setUseDisplayList(true), this method does not directly create display list,
-or uses OpenGL calls so if safe to use before a valid OpenGL context has been set up.
-On the next redraw of the scene, the gset's draw methods will be called
-which then will respond to their _useDisplayList being set by creating display lists
-automatically.
-_displayListMode == SWITCH_OFF_DISPLAY_LISTS sets the Geode's children with 
-gset->setUseDisplayList(false), this method does not directly create display list,
-or uses OpenGL calls so if safe to use before a valid OpenGL context has been set up.</BLOCKQUOTE>
+with option to immediately compile osg::Drawable OpenGL Display lists and
+osg::StateAttribute's</BLOCKQUOTE>
 <DL>
 
-<A NAME="DisplayListMode"></A>
+<A NAME="ModeValues"></A>
 <A NAME="DOC.2.6.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  DisplayListMode</B></TT>
-<DD>Operation modes of the DisplayListVisitor
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ModeValues</B></TT>
+<DD>Operation modes of the
 <DL><DT><DD></DL><P><DL>
 
-<A NAME="SWITCH_ON_AND_COMPILE_DISPLAY_LISTS"></A>
-<A NAME="DOC.2.6.1.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWITCH_ON_AND_COMPILE_DISPLAY_LISTS</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="COMPILE_ON_DISPLAY_LISTS"></A>
-<A NAME="DOC.2.6.1.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPILE_ON_DISPLAY_LISTS</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="SWITCH_ON_DISPLAY_LISTS"></A>
-<A NAME="DOC.2.6.1.3"></A>
+<A NAME="DOC.2.6.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWITCH_ON_DISPLAY_LISTS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SWITCH_OFF_DISPLAY_LISTS"></A>
-<A NAME="DOC.2.6.1.4"></A>
+<A NAME="DOC.2.6.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWITCH_OFF_DISPLAY_LISTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COMPILE_DISPLAY_LISTS"></A>
+<A NAME="DOC.2.6.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPILE_DISPLAY_LISTS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COMPILE_STATE_ATTRIBUTES"></A>
+<A NAME="DOC.2.6.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPILE_STATE_ATTRIBUTES</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="DisplayListVisitor"></A>
 <A NAME="DOC.2.6.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplayListVisitor(<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">SWITCH_ON_DISPLAY_LISTS</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplayListVisitor(<!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> mode=<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.3">COMPILE_DISPLAY_LISTS</A>|<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1.4">COMPILE_STATE_ATTRIBUTES</A>)</B></TT>
 <DD>Construct a CompileGeoSetsVisior to traverse all child,
-with set specfied display list mode.  Default mode is to
+with set specified display list mode.  Default mode is to
 gset->setUseDisplayList(true).
 <DL><DT><DD></DL><P>
-<A NAME="setDisplayListMode"></A>
+<A NAME="setMode"></A>
 <A NAME="DOC.2.6.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDisplayListMode(<!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> mode)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> mode)</B></TT>
 <DD>Set the operational mode of how the visitor should set up osg::GeoSet's
 <DL><DT><DD></DL><P>
-<A NAME="getDisplayListMode"></A>
+<A NAME="getMode"></A>
 <A NAME="DOC.2.6.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> getDisplayListMode() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> getMode() const </B></TT>
 <DD>Get the operational mode
 <DL><DT><DD></DL><P>
 <A NAME="setState"></A>
@@ -148,24 +127,13 @@ gset->setUseDisplayList(true).
 <DD>For each Geode visited set the display list usage according to the 
 _displayListMode
 <DL><DT><DD></DL><P>
-<A NAME="_displayListMode"></A>
+<A NAME="_mode"></A>
 <A NAME="DOC.2.6.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplayListVisitor.html#DOC.2.6.1">DisplayListMode</A> _displayListMode</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.23.6">Mode</A> _mode</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_localState"></A>
+<A NAME="_state"></A>
 <A NAME="DOC.2.6.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _localState</B></TT>
-<DD>local state is created in constructor and used as the default state during traversal
-<DL><DT><DD></DL><P>
-<A NAME="_externalState"></A>
-<A NAME="DOC.2.6.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _externalState</B></TT>
-<DD>external state is used to override the default state
-<DL><DT><DD></DL><P>
-<A NAME="_activeState"></A>
-<A NAME="DOC.2.6.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _activeState</B></TT>
-<DD>active state is equal to _externalState when it is valid, otherwise defaults to _localState
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _state</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -23,60 +23,63 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.76.1">State</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.92.1">State</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.76.2">~State</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.92.2">~State</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.3">pushStateSet</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.3">pushStateSet</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
 <DD><I>push stateset onto state stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.4">popStateSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.4">popStateSet</A></B>()
 <DD><I>pop drawstate off state stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.5">reset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.5">captureCurrentState</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; stateset) const 
+<DD><I>copy the modes and attributes which captures the current state</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.6">reset</A></B>()
 <DD><I>reset the state object to an empty stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.76.6">apply_mode</A></B>(const StateAttribute::GLMode mode, const bool enabled)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.92.7">apply_mode</A></B>(const StateAttribute::GLMode mode, const bool enabled)
 <DD><I>apply an OpenGL mode if required.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.76.7">apply_attribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.92.8">apply_attribute</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DD><I>apply an attribute if required.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.8">apply</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.9">apply</A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)
 <DD><I>apply stateset</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.9">apply</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.10">apply</A></B>()
 <DD><I>apply the state</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.10">have_applied</A></B>(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.11">have_applied</A></B>(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
 <DD><I>mode has been set externally, update state to reflect this setting</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.11">have_applied</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.12">have_applied</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)
 <DD><I>attribute has been applied externally, update state to reflect this setting</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.12">setContextID</A></B>(unsigned int contextID)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.92.13">setContextID</A></B>(unsigned int contextID)
 <DD><I>Set the current OpenGL context uniqueID.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.76.13">getContextID</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.92.14">getContextID</A></B>() const 
 <DD><I>Get the current OpenGL context unique ID</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.14">setFrameStamp</A></B>(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.92.15">setFrameStamp</A></B>(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)
 <DD><I>Set the frame stamp for the current frame</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* <B><A HREF="#DOC.2.76.15">getFrameStamp</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* <B><A HREF="#DOC.2.92.16">getFrameStamp</A></B>() const 
 <DD><I>Set the frame stamp for the current frame</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.16">setCamera</A></B>(<!1><A HREF="Camera.html">Camera</A>* camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.92.17">setCamera</A></B>(<!1><A HREF="Camera.html">Camera</A>* camera)
 <DD><I>Set the camera.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Camera.html">Camera</A>* <B><A HREF="#DOC.2.76.17">getCamera</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Camera.html">Camera</A>* <B><A HREF="#DOC.2.92.18">getCamera</A></B>() const 
 <DD><I>Get the camera </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.18">setFineGrainedErrorDetection</A></B>(const bool flag)
-<DD><I>Set the hint to OpenGL routines to do fine grained OpenGL error checking</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.92.19">setDisplaySettings</A></B>(<!1><A HREF="DisplaySettings.html">DisplaySettings</A>* vs)
+<DD><I>Set the DisplaySettings.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.76.19">getFineGrainedErrorDetection</A></B>() const 
-<DD><I>Get the hint to OpenGL routines to do fine grained OpenGL error checking</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* <B><A HREF="#DOC.2.92.20">getDisplaySettings</A></B>() const 
+<DD><I>Get the DisplaySettings </I>
 </DL></P>
 
 </DL>
@@ -104,142 +107,158 @@
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>State class for managing a state stack.
-Lazy state updating is used to minize state changes.</BLOCKQUOTE>
+Lazy state updating is used to minimize state changes.</BLOCKQUOTE>
 <DL>
 
 <A NAME="State"></A>
-<A NAME="DOC.2.76.1"></A>
+<A NAME="DOC.2.92.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> State()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~State"></A>
-<A NAME="DOC.2.76.2"></A>
+<A NAME="DOC.2.92.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~State()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pushStateSet"></A>
-<A NAME="DOC.2.76.3"></A>
+<A NAME="DOC.2.92.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushStateSet(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)</B></TT>
 <DD>push stateset onto state stack
 <DL><DT><DD></DL><P>
 <A NAME="popStateSet"></A>
-<A NAME="DOC.2.76.4"></A>
+<A NAME="DOC.2.92.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popStateSet()</B></TT>
 <DD>pop drawstate off state stack
 <DL><DT><DD></DL><P>
+<A NAME="captureCurrentState"></A>
+<A NAME="DOC.2.92.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void captureCurrentState(<!1><A HREF="StateSet.html">StateSet</A>&amp; stateset) const </B></TT>
+<DD>copy the modes and attributes which captures the current state
+<DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.76.5"></A>
+<A NAME="DOC.2.92.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
 <DD>reset the state object to an empty stack
 <DL><DT><DD></DL><P>
 <A NAME="apply_mode"></A>
-<A NAME="DOC.2.76.6"></A>
+<A NAME="DOC.2.92.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool apply_mode(const StateAttribute::GLMode mode, const bool enabled)</B></TT>
 <DD>apply an OpenGL mode if required. 
 <DL><DT><DD></DL><P>
 <A NAME="apply_attribute"></A>
-<A NAME="DOC.2.76.7"></A>
+<A NAME="DOC.2.92.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool apply_attribute(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DD>apply an attribute if required. 
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.76.8"></A>
+<A NAME="DOC.2.92.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply(const <!1><A HREF="StateSet.html">StateSet</A>* dstate)</B></TT>
 <DD>apply stateset
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.76.9"></A>
+<A NAME="DOC.2.92.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply()</B></TT>
 <DD>apply the state
 <DL><DT><DD></DL><P>
 <A NAME="have_applied"></A>
-<A NAME="DOC.2.76.10"></A>
+<A NAME="DOC.2.92.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void have_applied(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)</B></TT>
 <DD>mode has been set externally, update state to reflect this setting
 <DL><DT><DD></DL><P>
 <A NAME="have_applied"></A>
-<A NAME="DOC.2.76.11"></A>
+<A NAME="DOC.2.92.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void have_applied(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attribute)</B></TT>
 <DD>attribute has been applied externally, update state to reflect this setting
 <DL><DT><DD></DL><P>
 <A NAME="setContextID"></A>
-<A NAME="DOC.2.76.12"></A>
+<A NAME="DOC.2.92.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setContextID(unsigned int contextID)</B></TT>
 <DD>Set the current OpenGL context uniqueID.
-Note, it is the application developers responsiblity to
+Note, it is the application developers responsibility to
 set up unique ID for each OpenGL context.  This value is
 then used by osg::StateAttribure's and osg::Drawable's to
 help manage OpenGL display list and texture binds appropriate
 for each context.
 <DL><DT><DD></DL><P>
 <A NAME="getContextID"></A>
-<A NAME="DOC.2.76.13"></A>
+<A NAME="DOC.2.92.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getContextID() const </B></TT>
 <DD>Get the current OpenGL context unique ID
 <DL><DT><DD></DL><P>
 <A NAME="setFrameStamp"></A>
-<A NAME="DOC.2.76.14"></A>
+<A NAME="DOC.2.92.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFrameStamp(<!1><A HREF="FrameStamp.html">FrameStamp</A>* fs)</B></TT>
 <DD>Set the frame stamp for the current frame
 <DL><DT><DD></DL><P>
 <A NAME="getFrameStamp"></A>
-<A NAME="DOC.2.76.15"></A>
+<A NAME="DOC.2.92.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="FrameStamp.html">FrameStamp</A>* getFrameStamp() const </B></TT>
 <DD>Set the frame stamp for the current frame
 <DL><DT><DD></DL><P>
 <A NAME="setCamera"></A>
-<A NAME="DOC.2.76.16"></A>
+<A NAME="DOC.2.92.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCamera(<!1><A HREF="Camera.html">Camera</A>* camera)</B></TT>
 <DD>Set the camera. Note, nothing is applied, the camera is just used
 used in the State object to pass the current camera to Drawables
 during rendering. 
 <DL><DT><DD></DL><P>
 <A NAME="getCamera"></A>
-<A NAME="DOC.2.76.17"></A>
+<A NAME="DOC.2.92.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Camera.html">Camera</A>* getCamera() const </B></TT>
 <DD>Get the camera 
 <DL><DT><DD></DL><P>
-<A NAME="setFineGrainedErrorDetection"></A>
-<A NAME="DOC.2.76.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFineGrainedErrorDetection(const bool flag)</B></TT>
-<DD>Set the hint to OpenGL routines to do fine grained OpenGL error checking
+<A NAME="setDisplaySettings"></A>
+<A NAME="DOC.2.92.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDisplaySettings(<!1><A HREF="DisplaySettings.html">DisplaySettings</A>* vs)</B></TT>
+<DD>Set the DisplaySettings. Note, nothing is applied, the visual settings are just used
+used in the State object to pass the current visual settings to Drawables
+during rendering. 
 <DL><DT><DD></DL><P>
-<A NAME="getFineGrainedErrorDetection"></A>
-<A NAME="DOC.2.76.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getFineGrainedErrorDetection() const </B></TT>
-<DD>Get the hint to OpenGL routines to do fine grained OpenGL error checking
+<A NAME="getDisplaySettings"></A>
+<A NAME="DOC.2.92.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>* getDisplaySettings() const </B></TT>
+<DD>Get the DisplaySettings 
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ModeStack"></A>
-<A NAME="DOC.2.76.23.1"></A>
+<A NAME="DOC.2.92.25.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ModeStack()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="changed"></A>
-<A NAME="DOC.2.76.23.2"></A>
+<A NAME="DOC.2.92.25.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool changed</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="last_applied_value"></A>
-<A NAME="DOC.2.76.23.3"></A>
+<A NAME="DOC.2.92.25.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool last_applied_value</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="global_default_value"></A>
+<A NAME="DOC.2.92.25.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool global_default_value</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="valueVec"></A>
-<A NAME="DOC.2.76.23.4"></A>
+<A NAME="DOC.2.92.25.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ValueVec valueVec</B></TT>
 <DL><DT><DD></DL><P></DL>
 <DL>
 
 <A NAME="AttributeStack"></A>
-<A NAME="DOC.2.76.24.1"></A>
+<A NAME="DOC.2.92.26.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AttributeStack()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="changed"></A>
-<A NAME="DOC.2.76.24.2"></A>
+<A NAME="DOC.2.92.26.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool changed</B></TT>
+<DD>apply an attribute if required, passing in attribute and appropriate attribute stack 
 <DL><DT><DD></DL><P>
 <A NAME="last_applied_attribute"></A>
-<A NAME="DOC.2.76.24.3"></A>
+<A NAME="DOC.2.92.26.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="StateAttribute.html">StateAttribute</A>* last_applied_attribute</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="global_default_attribute"></A>
+<A NAME="DOC.2.92.26.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateAttribute.html">StateAttribute</A>&gt;  global_default_attribute</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="attributeVec"></A>
-<A NAME="DOC.2.76.24.4"></A>
+<A NAME="DOC.2.92.26.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>AttributeVec attributeVec</B></TT>
 <DL><DT><DD></DL><P></DL>
 </DL>

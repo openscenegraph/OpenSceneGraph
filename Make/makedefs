@@ -133,6 +133,7 @@ ifeq ($(OS),SunOS)
     PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
     FREETYPE_LIB      = /usr/local/lib/libfreetype.a
 
+  endif 
     DYNAMICLIBRARYLIB = -ldl
     OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
 
@@ -148,7 +149,6 @@ ifeq ($(OS),SunOS)
 
     MAKEDIST          = $(TOPDIR)/Make/makepkg
 
-  endif 
 endif
 
 #### IRIX Specific definitions

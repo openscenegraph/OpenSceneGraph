@@ -12,12 +12,16 @@
 #include <osg/BlendFunc>
 #include <osg/TexEnv>
 #include <osg/Material>
+#include <osg/Notify>
 
 #include <osgDB/ReadFile>
 
 osgParticle::ParticleSystem::ParticleSystem()
 :    osg::Drawable(), 
     def_bbox_(osg::Vec3(-10, -10, -10), osg::Vec3(10, 10, 10)),
+    alignment_(BILLBOARD),
+    align_X_axis_(1, 0, 0),
+    align_Y_axis_(0, 1, 0),
     doublepass_(false),
     frozen_(false),
     display_list_id_(-1), 
@@ -39,6 +43,9 @@ osgParticle::ParticleSystem::ParticleSystem()
 osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem &copy, const osg::CopyOp &copyop)
 :    osg::Drawable(copy, copyop), 
     def_bbox_(copy.def_bbox_),
+    alignment_(copy.alignment_),
+    align_X_axis_(copy.align_X_axis_),
+    align_Y_axis_(copy.align_Y_axis_),
     doublepass_(copy.doublepass_),
     frozen_(copy.frozen_),
     display_list_id_(-1), 
@@ -89,10 +96,10 @@ void osgParticle::ParticleSystem::drawImmediateMode(osg::State &state)
     last_frame_ = state.getFrameStamp()->getFrameNumber();
 
     // get the current modelview matrix
-    const osg::Matrix &modelview = state.getModelViewMatrix();
+    osg::Matrix modelview = state.getModelViewMatrix();
 
-    // set modelview = identity
-    state.applyModelViewMatrix(0);
+    if (alignment_ == BILLBOARD)
+        state.applyModelViewMatrix(0);
 
     // set up depth mask for first rendering pass
     glPushAttrib(GL_DEPTH_BUFFER_BIT); 
@@ -108,17 +115,17 @@ void osgParticle::ParticleSystem::drawImmediateMode(osg::State &state)
 
         #ifdef USE_SEPERATE_COMPILE_AND_EXECUTE
             glNewList(display_list_id_, GL_COMPILE);
-            single_pass_render(modelview);
+            single_pass_render(state, modelview);
             glEndList();
             glCallList(display_list_id_);
         #else
             glNewList(display_list_id_, GL_COMPILE_AND_EXECUTE);
-            single_pass_render(modelview);
+            single_pass_render(state, modelview);
             glEndList();
         #endif
 
     } else {
-        single_pass_render(modelview);
+        single_pass_render(state, modelview);
     }
 
     // restore depth mask settings
@@ -175,7 +182,7 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &textur
 }
 
 
-void osgParticle::ParticleSystem::single_pass_render(const osg::Matrix &modelview)
+void osgParticle::ParticleSystem::single_pass_render(osg::State & /*state*/, const osg::Matrix &modelview)
 {
     draw_count_ = 0;
     if (particles_.size() <= 0) return;
@@ -193,8 +200,18 @@ void osgParticle::ParticleSystem::single_pass_render(const osg::Matrix &modelvie
                 i->beginRender();
                 i0 = i;
             }
-            ++draw_count_;            
-            i->render(modelview, sqrtf(static_cast<float>(detail_)));
+            ++draw_count_;
+
+            switch (alignment_) {
+                case BILLBOARD:
+                    i->render(modelview.preMult(i->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), sqrtf(static_cast<float>(detail_)));
+                    break;
+                case FIXED:
+                    i->render(i->getPosition(), align_X_axis_, align_Y_axis_, sqrtf(static_cast<float>(detail_)));
+                    break;
+                default: ;
+            }            
+            
         }        
     }
 

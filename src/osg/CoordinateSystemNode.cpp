@@ -49,7 +49,7 @@ CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(double X, doub
     }
     else
     {
-        return Matrixd();
+        return Matrixd::translate(X,Y,Z);
     }
 }
 

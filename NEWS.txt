@@ -3,6 +3,22 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+    osgProducer library adds very tight integration with OpenProducer,
+    provide the OpenSceneGraph with a scalable, configurable and portable 
+    framework for developing real-time and interactive graphics application.
+    The scalability afforded by OpenProducer allows applications to be
+    developed which seemlessly run on single pipe machines up to multi-pipe
+    machines such as Sgi Onyx IR system, and Sun Zulu systems, through
+    to running of clusters.  The osgProducer/OpenProducer framework
+    automatically handles the multi-threading of cull-draw pairs and GUI 
+    events.
+
+    All the example programs have been ported over from being based on
+    GLUT to using osgProducer.  This allows all the examples to scale from
+    running on laptops up to multiple cpu and graphics pipe systems. The
+    configuration of threading and multiple camera views can all be done
+    via ASCII configuration files, no need to recompile. 
+
     Improvemnts to the Makefle system.
 
     Added support for early abort of rendering, useful for interactive
@@ -12,11 +28,23 @@ OSG News (most significant items from ChangeLog)
 
     Improved thread safety when working multipipe systems.
 
-    New OpenProducer based examples.
+    New MD2 plugin which allows Quake animated characters to be loaded
+    into the OSG.
 
-    New MD2 plugin
-
-    New thread safe osgText implemention.  
+    Completely new osgText implemention which is simpler to use, faster, and
+    thread safe.  Support for high quality true type fonts has now been moved
+    to a freetype plugin which is dynamically loaded on demand, with the
+    core osgText library providing a default font when the plugin is
+    unavailable.  Moving the freetype dependancy out of the osgText allows
+    the text library to be just dependant on OpenGL and Standard C++ like
+    the rest of the core libraries, virtual of this osgText now compiles 
+    by default on platforms.
+    
+    Automatic subloading of textures when images are updated.
+    
+    New database cache in the osgDB library.
+    
+    Clean up of memory management in the OpenFlight loader.
 
 
 24th January 2003 - OpenSceneGraph-0.9.3.tar.gz

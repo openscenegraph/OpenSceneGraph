@@ -427,8 +427,7 @@ int main( int argc, char **argv )
     osg::TexMat* texmat = new osg::TexMat;
     stateset->setTextureAttribute(0,texmat);
 
-
-    osgDB::writeNodeFile(*rootNode,"test.osg");
+    //osgDB::writeNodeFile(*rootNode,"test.osg");
 
     // set the scene to render
     viewer.setSceneData(rootNode.get());

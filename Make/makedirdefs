@@ -175,6 +175,7 @@ EXAMPLE_DIRS = \
 	osgbillboard\
 	osgblendequation\
 	osgcallback\
+	osgcatch\
 	osgcameragroup\
 	osgclip\
 	osgcluster\

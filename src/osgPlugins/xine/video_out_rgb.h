@@ -27,6 +27,9 @@
 #ifndef VIDEO_OUT_RGB_H
 #define VIDEO_OUT_RGB_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 typedef struct
@@ -176,9 +179,13 @@ typedef struct
 
 } rgbout_packer_t;
 
+void register_rgbout_plugin(xine_t *self);
 
 #define XINE_VISUAL_TYPE_RGBOUT 100
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* VIDEO_OUT_RGB_H */
 

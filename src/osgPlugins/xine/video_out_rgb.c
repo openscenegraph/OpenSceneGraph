@@ -2773,3 +2773,11 @@ plugin_info_t xine_plugin_info[] =
   { PLUGIN_VIDEO_OUT, 20, "rgb", XINE_VERSION_CODE, &vo_info_rgbout, init_class},
   { PLUGIN_NONE, 0, "", 0, NULL, NULL}
 };
+
+void register_rgbout_plugin(xine_t *self)
+{
+     fprintf(stderr,"register_rgbout_plugin...\n");
+     xine_register_plugins(self, xine_plugin_info);
+     fprintf(stderr,"done register_rgbout_plugin\n");
+}
+

@@ -150,7 +150,18 @@ static char *findFileInPath( const char *_file, const char * filePath )
 
 char *osgDB::findFile( const char *file )
 {
-    return findFileInPath( file, s_filePath );
+    if (!file) return NULL;
+    
+    char* newFileName = findFileInPath( file, s_filePath );
+    if (newFileName) return newFileName;
+    
+
+    // need to check here to see if file has a path on it.
+    
+    // now strip the file of an previous path if one exists.
+    std::string simpleFileName = getSimpleFileName(file);
+    newFileName = findFileInPath( simpleFileName.c_str(), s_filePath );
+    return newFileName;
 }
 
 /*

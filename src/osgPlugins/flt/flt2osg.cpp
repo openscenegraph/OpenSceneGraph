@@ -911,7 +911,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
                 if (osgTexture)
                 {
                     osg::Image* osgImage = osgTexture->getImage();
-                    switch (osgImage->pixelFormat())
+                    switch (osgImage->getPixelFormat())
                     {
                     case GL_LUMINANCE_ALPHA:
                     case GL_RGBA:

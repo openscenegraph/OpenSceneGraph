@@ -163,6 +163,29 @@ const unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum 
 }
 
 
+void Image::setInternalTextureFormat(GLint internalFormat)
+{
+    // won't do any sanity checking right now, leave it to 
+    // OpenGL to make the call.
+    _internalTextureFormat = internalFormat;
+}
+
+void Image::setPixelFormat(const GLenum format)
+{
+    if (_pixelFormat==format) return; // do nothing if the same.
+
+    if (computeNumComponents(_pixelFormat)==computeNumComponents(format))
+    {
+       // if the two formats have the same number of componets then
+       // we can do a straight swap.
+        _pixelFormat = format;
+    }
+    else
+    {
+        notify(WARN)<<"Image::setPixelFormat(..) - warning, attempt to reset the pixel format with a different number of components."<<std::endl;
+    }
+}
+
 void Image::createImage(int s,int t,int r,
                         GLenum format,GLenum type,
                         int packing)

@@ -85,15 +85,15 @@ void DrawPixels::drawImmediateMode(State&)
     {
         const GLvoid* pixels = _image->data();
         glDrawPixels(_width,_height,
-                     (GLenum)_image->pixelFormat(),
-                     (GLenum)_image->dataType(),
+                     (GLenum)_image->getPixelFormat(),
+                     (GLenum)_image->getDataType(),
                      pixels);
     }
     else
     {
         glDrawPixels(_image->s(), _image->t(),
-                     (GLenum)_image->pixelFormat(),
-                     (GLenum)_image->dataType(),
+                     (GLenum)_image->getPixelFormat(),
+                     (GLenum)_image->getDataType(),
                      _image->data() );
     }
 }

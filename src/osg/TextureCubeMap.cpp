@@ -206,7 +206,7 @@ void TextureCubeMap::apply(State& state) const
                     glTexSubImage2D(faceTarget[n], 0,
                                     _subloadOffsX, _subloadOffsY,
                                     (_subloadWidth>0)?_subloadWidth:_images[n]->s(), (_subloadHeight>0)?_subloadHeight:_images[n]->t(),
-                                    (GLenum) _images[n]->pixelFormat(), (GLenum) _images[n]->dataType(),
+                                    (GLenum) _images[n]->getPixelFormat(), (GLenum) _images[n]->getDataType(),
                                     _images[n]->data());
                     // update the modified flag to show that the image has been loaded.
                     modifiedTag += _images[n]->getModifiedTag();

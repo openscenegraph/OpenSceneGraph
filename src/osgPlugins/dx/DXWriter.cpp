@@ -1433,8 +1433,8 @@ std::string DXWriter::WriteImage( const osg::Image &image )
   field.AddComponent( "connections", conn_name.c_str() );
   
   // Generate colors
-  unsigned int pixel_fmt = image.pixelFormat();     // A user-friendly int_fmt
-  unsigned int data_type = image.dataType();        // Sample data type
+  unsigned int pixel_fmt = image.getPixelFormat();     // A user-friendly int_fmt
+  unsigned int data_type = image.getDataType();        // Sample data type
   const unsigned char *data = image.data();
   int          r_dim     = image.r();
 

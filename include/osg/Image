@@ -74,25 +74,27 @@ class SG_EXPORT Image : public Object
         /** Depth of image.*/
         inline const int r() const { return _r; }
         
-        inline const GLint internalTextureFormat() const { return _internalTextureFormat; }
+        void setInternalTextureFormat(GLint internalFormat);
+        inline const GLint getInternalTextureFormat() const { return _internalTextureFormat; }
         
-        inline const GLenum pixelFormat() const { return _pixelFormat; }
+        void setPixelFormat(const GLenum format);
+        inline const GLenum getPixelFormat() const { return _pixelFormat; }
         
-        inline const GLenum dataType() const { return _dataType; }
+        inline const GLenum getDataType() const { return _dataType; }        
         
-        inline const unsigned int packing() const { return _packing; }
+        inline const unsigned int getPacking() const { return _packing; }
         
         /** return the numbers of bits required for each pixel.*/        
-        inline const unsigned int pixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
+        inline const unsigned int getPixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
 
         /** return the numbers of bytes each row of pixels occupies once it has been packed.*/        
-        inline const unsigned int rowSizeInBytes() const { return computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing); }
+        inline const unsigned int getRowSizeInBytes() const { return computeRowWidthInBytes(_s,_pixelFormat,_dataType,_packing); }
 
         /** return the numbers of bytes each image (_s*_t) of pixels occupies..*/
-        inline const unsigned int imageSizeInBytes() const { return rowSizeInBytes()*_t; }
+        inline const unsigned int getImageSizeInBytes() const { return getRowSizeInBytes()*_t; }
         
         /** return the numbers of bytes the whole row/image/volume of pixels occupies.*/        
-        inline const unsigned int totalSizeInBytes() const { return imageSizeInBytes()*_r; }
+        inline const unsigned int getTotalSizeInBytes() const { return getImageSizeInBytes()*_r; }
 
         /** raw image data.*/
         inline unsigned char *data() { return _data; }
@@ -104,7 +106,7 @@ class SG_EXPORT Image : public Object
         unsigned char* data(int column, int row=0,int image=0)
         {
             if (!_data) return NULL;
-            return _data+(column*pixelSizeInBits())/8+row*rowSizeInBytes()+image*imageSizeInBytes();
+            return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
         }
 
 

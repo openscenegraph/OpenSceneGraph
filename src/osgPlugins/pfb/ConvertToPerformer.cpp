@@ -521,10 +521,10 @@ pfGeoState* ConvertToPerformer::visitStateSet(osg::StateSet* stateset)
 	int ns = img->s();
 	int nt = img->t();
 	int ncomp = 
-		img->pixelFormat() == GL_LUMINANCE  ? 1 :
-		img->pixelFormat() == GL_LUMINANCE_ALPHA  ? 2 :
-		img->pixelFormat() == GL_RGB  ? 3 :
-		img->pixelFormat() == GL_RGBA ? 4 : 3;
+		img->getPixelFormat() == GL_LUMINANCE  ? 1 :
+		img->getPixelFormat() == GL_LUMINANCE_ALPHA  ? 2 :
+		img->getPixelFormat() == GL_RGB  ? 3 :
+		img->getPixelFormat() == GL_RGBA ? 4 : 3;
 
   	uint *uim = (uint *)pfMalloc( ns * nt * ncomp, pfGetSharedArena() );
 

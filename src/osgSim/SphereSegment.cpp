@@ -13,7 +13,7 @@ sphere's surface.
 class SphereSegment::Surface: public osg::Drawable
 {
 public:
-    Surface(SphereSegment* ss): Drawable(), _ss(ss) {}
+    Surface(SphereSegment* ss): osg::Drawable(), _ss(ss) {}
 
     Surface():_ss(0)
     {
@@ -21,7 +21,7 @@ public:
             "Warning: unexpected call to osgSim::SphereSegment::Surface() default constructor"<<std::endl;
     }
 
-    Surface(const Surface& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):Drawable(rhs,co), _ss(0)
+    Surface(const Surface& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):osg::Drawable(rhs,co), _ss(0)
     {
         osg::notify(osg::WARN)<<
             "Warning: unexpected call to osgSim::SphereSegment::Surface() copy constructor"<<std::endl;
@@ -59,7 +59,7 @@ of the specified area of the sphere's EdgeLine.
 class SphereSegment::EdgeLine: public osg::Drawable
 {
 public:
-    EdgeLine(SphereSegment* ss): Drawable(), _ss(ss) {}
+    EdgeLine(SphereSegment* ss): osg::Drawable(), _ss(ss) {}
 
     EdgeLine():_ss(0)
     {
@@ -67,7 +67,7 @@ public:
             "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() default constructor"<<std::endl;
     }
 
-    EdgeLine(const EdgeLine& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):Drawable(rhs,co), _ss(0)
+    EdgeLine(const EdgeLine& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):osg::Drawable(rhs,co), _ss(0)
     {
         osg::notify(osg::WARN)<<
             "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() copy constructor"<<std::endl;
@@ -107,7 +107,7 @@ class SphereSegment::Side: public osg::Drawable
 {
 public:
     Side(SphereSegment* ss, SphereSegment::SideOrientation po, SphereSegment::BoundaryAngle pa):
-            Drawable(), _ss(ss), _planeOrientation(po), _BoundaryAngle(pa) {}
+            osg::Drawable(), _ss(ss), _planeOrientation(po), _BoundaryAngle(pa) {}
 
     Side():_ss(0)
     {
@@ -115,7 +115,7 @@ public:
             "Warning: unexpected call to osgSim::SphereSegment::Side() default constructor"<<std::endl;
     }
 
-    Side(const Side& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): Drawable(rhs,co), _ss(0)
+    Side(const Side& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): osg::Drawable(rhs,co), _ss(0)
     {
         osg::notify(osg::WARN)<<
             "Warning: unexpected call to osgSim::SphereSegment::Side() copy constructor"<<std::endl;
@@ -156,7 +156,7 @@ class SphereSegment::Spoke: public osg::Drawable
 {
 public:
     Spoke(SphereSegment* ss, SphereSegment::BoundaryAngle azAngle, SphereSegment::BoundaryAngle elevAngle):
-            Drawable(), _ss(ss), _azAngle(azAngle), _elevAngle(elevAngle) {}
+            osg::Drawable(), _ss(ss), _azAngle(azAngle), _elevAngle(elevAngle) {}
 
     Spoke():_ss(0)
     {
@@ -164,7 +164,7 @@ public:
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() default constructor"<<std::endl;
     }
 
-    Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): Drawable(rhs,co), _ss(0)
+    Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): osg::Drawable(rhs,co), _ss(0)
     {
         osg::notify(osg::WARN)<<
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() copy constructor"<<std::endl;

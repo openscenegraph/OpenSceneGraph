@@ -76,7 +76,7 @@ public:
 
 
     /** Default constructor. */
-    SphereSegment():Geode(),
+    SphereSegment():osg::Geode(),
                     _centre(0.0f,0.0f,0.0f), _radius(1.0f),
                     _azMin(0.0f), _azMax(osg::PI/2.0f),
                     _elevMin(0.0f), _elevMax(osg::PI/2.0f),
@@ -99,7 +99,7 @@ public:
     */
     SphereSegment(const osg::Vec3& centre, float radius, float azMin, float azMax,
                     float elevMin, float elevMax, int density):
-        Geode(),
+        osg::Geode(),
         _centre(centre), _radius(radius),
         _azMin(azMin), _azMax(azMax),
         _elevMin(elevMin), _elevMax(elevMax),
@@ -124,7 +124,7 @@ public:
 
     /** Copy constructor */
     SphereSegment(const SphereSegment& rhs, const osg::CopyOp& co):
-        Geode(rhs,co),
+        osg::Geode(rhs,co),
         _centre(rhs._centre), _radius(rhs._radius),
         _azMin(rhs._azMin), _azMax(rhs._azMax),
         _elevMin(rhs._elevMin), _elevMax(rhs._elevMax),

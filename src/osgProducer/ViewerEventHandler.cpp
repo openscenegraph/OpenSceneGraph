@@ -829,14 +829,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                         if (viewer->getAnimationPath())
                         {
                             std::ofstream fout("saved_animation.path");
-                            const osg::AnimationPath::TimeControlPointMap& tcpm = viewer->getAnimationPath()->getTimeControlPointMap();
-                            for(osg::AnimationPath::TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();
-                                tcpmitr!=tcpm.end();
-                                ++tcpmitr)
-                            {
-                                const osg::AnimationPath::ControlPoint& cp = tcpmitr->second;
-                                fout<<tcpmitr->first<<" "<<cp._position<<" "<<cp._rotation<<std::endl;
-                            }
+                            viewer->getAnimationPath()->write(fout);
                             fout.close();
 
                             osg::notify(osg::NOTICE) << "Saved camera animation to 'saved_animation.path'"<< std::endl;

@@ -28,8 +28,11 @@ class OSGUTIL_EXPORT TransformCallback : public osg::NodeCallback
 
         TransformCallback(const osg::Vec3& pivot,const osg::Vec3& axis,float angularVelocity);
 
-        virtual void operator() (osg::Node* node, osg::NodeVisitor* nv);
-                
+        void setPause(bool pause) { _pause = pause; }
+
+        /** implements the callback*/
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
     protected:
     
         float               _angular_velocity;
@@ -38,6 +41,7 @@ class OSGUTIL_EXPORT TransformCallback : public osg::NodeCallback
 
         int                 _previousTraversalNumber;
         double              _previousTime;
+        bool                _pause;
 
 };
 

@@ -6,18 +6,22 @@
 #include <osg/Texture2D>
 #include <osg/MatrixTransform>
 
+#include <osgUtil/TransformCallback>
+
 #include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
 
 #include <osgText/Text>
 
 
 SlideShowConstructor::SlideShowConstructor()
 {
-    _slideOrigin.set(0.0f,0.0f,0.0f);
-    
+    _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
     _slideHeight = osg::DisplaySettings::instance()->getScreenHeight();
-
     _slideWidth = _slideHeight*1280.0f/1024.f;
+
+    _slideOrigin.set(-_slideWidth*0.5f,_slideDistance,-_slideHeight*0.5f);
+    
 
     _backgroundColor.set(0.0f,0.0f,0.0f,1.0f);
     _textColor.set(1.0f,1.0f,1.0f,1.0f);
@@ -77,11 +81,9 @@ void SlideShowConstructor::createPresentation()
     _root->addChild(_presentationSwitch.get());
     
     osg::Vec3 slideCenter = _slideOrigin + osg::Vec3(_slideWidth*0.5f,0.0f,_slideHeight*0.5f);
-    
-    float distanceToHeightRatio = osg::DisplaySettings::instance()->getScreenDistance()/osg::DisplaySettings::instance()->getScreenHeight();
-    
+       
     HomePosition* hp = new HomePosition;
-    hp->eye = slideCenter+osg::Vec3(0.0f,-distanceToHeightRatio*_slideHeight,0.0f);
+    hp->eye.set(0.0f,0.0f,0.0f);
     hp->center = slideCenter;
     hp->up.set(0.0f,0.0f,1.0f);
     
@@ -374,7 +376,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft,co
     _currentLayer->addChild(stereopair);
 }
 
-void SlideShowConstructor::addModel(const std::string& filename,float scale,float rotation,float position)
+void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const osg::Vec4& rotation)
 {
     if (!_currentLayer) addLayer();
 
@@ -382,24 +384,232 @@ void SlideShowConstructor::addModel(const std::string& filename,float scale,floa
 
     if (!model) return;
 
-    osg::Vec3 pos = _modelLeft*(1.0f-position) + _modelRight*position;
-    float radius = scale*_slideHeight*0.7f;
-    osg::Quat quat;
-    quat.makeRotate(osg::DegreesToRadians(rotation),0.0f,0.0f,1.0f);
+    if (coordinate_frame==SLIDE)
+    {
+        osg::Vec3 pos(_slideWidth*position.x(),
+                      _slideDistance*position.y(),
+                      _slideHeight*position.z());
+     
+        const osg::BoundingSphere& bs = model->getBound();
+        float model_scale = scale*_slideHeight*0.7f/bs.radius();
 
-    osg::MatrixTransform* transform = new osg::MatrixTransform;
-    
-    const osg::BoundingSphere& bs = model->getBound();
-    
-    transform->setDataVariance(osg::Object::STATIC);
-    transform->setMatrix(osg::Matrix::translate(-bs.center())*
-                         osg::Matrix::scale(radius/bs.radius(),radius/bs.radius(),radius/bs.radius())*
-                         osg::Matrix::rotate(quat)*
-                         osg::Matrix::translate(pos));
-                         
-    transform->addChild(model);
-    
-    _currentLayer->addChild(transform);
+        osg::MatrixTransform* transform = new osg::MatrixTransform;
+        transform->setDataVariance(osg::Object::STATIC);
+        transform->setMatrix(osg::Matrix::translate(-bs.center())*
+                             osg::Matrix::scale(model_scale,model_scale,model_scale)*
+                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*
+                             osg::Matrix::translate(pos));
 
+        transform->addChild(model);
+
+        if (rotation[0]!=0.0)
+        {
+            osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
+            animation_transform->setDataVariance(osg::Object::DYNAMIC);
+            animation_transform->setUpdateCallback(new osgUtil::TransformCallback(pos,osg::Vec3(rotation[1],rotation[2],rotation[3]),osg::DegreesToRadians(rotation[0])));
+            animation_transform->addChild(transform);            
+
+            _currentLayer->addChild(animation_transform);
+        }
+        else
+        {
+            _currentLayer->addChild(transform);
+        }
+
+    }
+    else
+    {
+        osg::MatrixTransform* transform = new osg::MatrixTransform;
+        transform->setDataVariance(osg::Object::STATIC);
+        transform->setMatrix(osg::Matrix::translate(-position)*
+                             osg::Matrix::scale(scale,scale,scale)*
+                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3]));
+
+        transform->addChild(model);
+        
+        if (rotation[0]!=0.0)
+        {
+            osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
+            animation_transform->setDataVariance(osg::Object::DYNAMIC);
+            animation_transform->setUpdateCallback(new osgUtil::TransformCallback(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(rotation[1],rotation[2],rotation[3]),osg::DegreesToRadians(rotation[0])));
+            animation_transform->addChild(transform);            
+
+            _currentLayer->addChild(animation_transform);
+        }   
+        else
+        {
+            _currentLayer->addChild(transform);
+        }
+
+    }
 }
 
+void SlideShowConstructor::addModelWithPath(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const std::string& animation_path)
+{
+    if (!_currentLayer) addLayer();
+
+    osg::Node* model = osgDB::readNodeFile(filename);
+
+    if (!model) return;
+
+    osg::AnimationPath* animation = 0;
+    if (!animation_path.empty()) 
+    {
+        std::string absolute_animation_file_path = osgDB::findDataFile(animation_path);
+        if (!absolute_animation_file_path.empty())
+        {        
+            std::ifstream animation_filestream(absolute_animation_file_path.c_str());
+            if (!animation_filestream.eof())
+            {
+                animation = new osg::AnimationPath;
+                animation->read(animation_filestream);
+            }
+        }
+    }
+
+
+    if (coordinate_frame==SLIDE)
+    {
+        osg::Vec3 pos(_slideWidth*position.x(),
+                      _slideDistance*position.y(),
+                      _slideHeight*position.z());
+     
+        const osg::BoundingSphere& bs = model->getBound();
+        float model_scale = scale*_slideHeight*0.7f/bs.radius();
+
+        osg::MatrixTransform* transform = new osg::MatrixTransform;
+        transform->setDataVariance(osg::Object::STATIC);
+        transform->setMatrix(osg::Matrix::translate(-bs.center())*
+                             osg::Matrix::scale(model_scale,model_scale,model_scale)*
+                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*
+                             osg::Matrix::translate(pos));
+
+        transform->addChild(model);
+
+        _currentLayer->addChild(transform);
+
+    }
+    else
+    {
+        osg::MatrixTransform* transform = new osg::MatrixTransform;
+        transform->setDataVariance(osg::Object::STATIC);
+        transform->setMatrix(osg::Matrix::translate(-position)*
+                             osg::Matrix::scale(scale,scale,scale)*
+                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3]));
+
+        transform->addChild(model);
+        
+        if (animation)
+        {
+            osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
+            animation_transform->setDataVariance(osg::Object::DYNAMIC);
+            
+            osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
+            
+            animation_transform->setUpdateCallback(apc);
+            animation_transform->addChild(transform);    
+            
+            _currentLayer->addChild(animation_transform);
+
+// 
+//             osg::MatrixTransform* orientation_transform = new osg::MatrixTransform;
+//             orientation_transform->setDataVariance(osg::Object::STATIC);
+//             orientation_transform->addChild(animation_transform);
+//             
+//             //orientation_transform->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(-00.0f),0.0f,1.0f,0.0f));
+//             //orientation_transform->setMatrix(osg::Matrix::inverse(osg::Matrix::lookAt(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0))));
+// 
+//             _currentLayer->addChild(orientation_transform);
+
+        }
+        else
+        {
+            _currentLayer->addChild(transform);
+        }
+
+    }
+}
+
+void SlideShowConstructor::addModelWithCameraPath(const std::string& filename, CoordinateFrame coordinate_frame, const osg::Vec3& position, float scale, const osg::Vec4& rotate, const std::string& animation_path)
+{
+    if (!_currentLayer) addLayer();
+
+    osg::Node* model = osgDB::readNodeFile(filename);
+
+    if (!model) return;
+
+    osg::AnimationPath* animation = 0;
+    if (!animation_path.empty()) 
+    {
+        std::string absolute_animation_file_path = osgDB::findDataFile(animation_path);
+        if (!absolute_animation_file_path.empty())
+        {        
+            std::ifstream animation_filestream(absolute_animation_file_path.c_str());
+            if (!animation_filestream.eof())
+            {
+                animation = new osg::AnimationPath;
+                animation->read(animation_filestream);
+            }
+        }
+    }
+
+
+    if (coordinate_frame==SLIDE)
+    {
+        osg::Vec3 pos(_slideWidth*position.x(),
+                      _slideDistance*position.y(),
+                      _slideHeight*position.z());
+     
+        const osg::BoundingSphere& bs = model->getBound();
+        float model_scale = scale*_slideHeight*0.7f/bs.radius();
+
+        osg::MatrixTransform* transform = new osg::MatrixTransform;
+        transform->setDataVariance(osg::Object::STATIC);
+        transform->setMatrix(osg::Matrix::translate(-bs.center())*
+                             osg::Matrix::scale(model_scale,model_scale,model_scale)*
+                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*
+                             osg::Matrix::translate(pos));
+
+        transform->addChild(model);
+
+        _currentLayer->addChild(transform);
+
+    }
+    else
+    {
+        osg::MatrixTransform* transform = new osg::MatrixTransform;
+        transform->setDataVariance(osg::Object::STATIC);
+        transform->setMatrix(osg::Matrix::translate(-position)*
+                             osg::Matrix::scale(scale,scale,scale)*
+                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3]));
+
+        transform->addChild(model);
+        
+        if (animation)
+        {
+            osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
+            animation_transform->setDataVariance(osg::Object::DYNAMIC);
+            
+            osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
+            apc->setUseInverseMatrix(true);
+            
+            animation_transform->setUpdateCallback(apc);
+            animation_transform->addChild(transform);    
+
+            osg::MatrixTransform* orientation_transform = new osg::MatrixTransform;
+            orientation_transform->setDataVariance(osg::Object::STATIC);
+            orientation_transform->addChild(animation_transform);
+            
+            //orientation_transform->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(-00.0f),0.0f,1.0f,0.0f));
+            orientation_transform->setMatrix(osg::Matrix::inverse(osg::Matrix::lookAt(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0))));
+
+            _currentLayer->addChild(orientation_transform);
+
+        }
+        else
+        {
+            _currentLayer->addChild(transform);
+        }
+
+    }
+}

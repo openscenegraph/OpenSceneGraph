@@ -10,6 +10,8 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
+#include <sstream>
+
 
 /**
  * OpenSceneGraph plugin wrapper/converter.
@@ -57,7 +59,23 @@ public:
         return _colorMap[str];
     }
     
+    inline bool read(const char* str, float& value) const;
+    inline bool read(const char* str, osg::Vec2& value) const;
+    inline bool read(const char* str, osg::Vec3& value) const;
+    inline bool read(const char* str, osg::Vec4& value) const;
     
+    inline bool read(const std::string& str, float& value) const;
+    inline bool read(const std::string& str, osg::Vec2& value) const;
+    inline bool read(const std::string& str, osg::Vec3& value) const;
+    inline bool read(const std::string& str, osg::Vec4& value) const;
+
+    bool getProperty(xmlNodePtr cur, const char* token) const;
+    bool getProperty(xmlNodePtr cur, const char* token, float& value) const;
+    bool getProperty(xmlNodePtr cur, const char* token, osg::Vec2& value) const;
+    bool getProperty(xmlNodePtr cur, const char* token, osg::Vec3& value) const;
+    bool getProperty(xmlNodePtr cur, const char* token, osg::Vec4& value) const;
+    bool getProperty(xmlNodePtr cur, const char* token, std::string& value) const;
+ 
     std::map<std::string,osg::Vec4> _colorMap;
 
 };
@@ -65,46 +83,206 @@ public:
 // Register with Registry to instantiate the above reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterSS3D> g_readerWriter_SS3D_Proxy;
 
+bool ReaderWriterSS3D::read(const char* str, float& value) const
+{
+    if (!str) return false;
+    std::istringstream iss((const char*)str);
+    iss >> value;
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::read(const char* str, osg::Vec2& value) const
+{
+    if (!str) return false;
+    std::istringstream iss((const char*)str);
+    iss >> value.x() >> value.y();
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::read(const char* str, osg::Vec3& value) const
+{
+    if (!str) return false;
+    std::istringstream iss((const char*)str);
+    iss >> value.x() >> value.y() >> value.z();
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::read(const char* str, osg::Vec4& value) const
+{
+    if (!str) return false;
+    std::istringstream iss((const char*)str);
+    iss >> value.x() >> value.y() >> value.z() >> value.w();
+    return !iss.fail();
+}
+
+
+bool ReaderWriterSS3D::read(const std::string& str, float& value) const
+{
+    std::istringstream iss(str);
+    iss >> value;
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::read(const std::string& str, osg::Vec2& value) const
+{
+    std::istringstream iss(str);
+    iss >> value.x() >> value.y();
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::read(const std::string& str, osg::Vec3& value) const
+{
+    std::istringstream iss(str);
+    iss >> value.x() >> value.y() >> value.z();
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::read(const std::string& str, osg::Vec4& value) const
+{
+    std::istringstream iss(str);
+    iss >> value.x() >> value.y() >> value.z() >> value.w();
+    return !iss.fail();
+}
+
+bool ReaderWriterSS3D::getProperty(xmlNodePtr cur, const char* token) const
+{
+    bool success = false;
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)token);
+    if (key) success=true;
+    xmlFree(key);
+    return success;
+}
+
+bool ReaderWriterSS3D::getProperty(xmlNodePtr cur, const char* token, float& value) const
+{
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)token);
+    bool success = read((const char*)key,value);
+    xmlFree(key);
+    return success;
+}
+
+bool ReaderWriterSS3D::getProperty(xmlNodePtr cur, const char* token, osg::Vec2& value) const
+{
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)token);
+    bool success = read((const char*)key,value);
+    xmlFree(key);
+    return success;
+}
+
+bool ReaderWriterSS3D::getProperty(xmlNodePtr cur, const char* token, osg::Vec3& value) const
+{
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)token);
+    bool success = read((const char*)key,value);
+    xmlFree(key);
+    return success;
+}
+
+bool ReaderWriterSS3D::getProperty(xmlNodePtr cur, const char* token, osg::Vec4& value) const
+{
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)token);
+    bool success = read((const char*)key,value);
+    xmlFree(key);
+    return success;
+}
+
+bool ReaderWriterSS3D::getProperty(xmlNodePtr cur, const char* token, std::string& value) const
+{
+    bool success = false;
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)token);
+    if (key)
+    {
+        success = true;
+        value = (const char*)key;
+    }
+    xmlFree(key);
+    return success;
+}
+
 
 void ReaderWriterSS3D::parseModel(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur)
 {
     std::string filename;
-    float scale = 1.0f;
-    float rotation = 0.0f;
-    float position = 0.5f;
 
-    xmlChar *key;
-    cur = cur->xmlChildrenNode;
-    while (cur != NULL)
+    SlideShowConstructor::CoordinateFrame coordinate_frame = SlideShowConstructor::SLIDE;
+    osg::Vec3 position(0.0f,1.0f,0.0f);
+    osg::Vec4 rotate(0.0f,0.0f,0.0f,1.0f);
+    float scale = 1.0f;
+
+    osg::Vec4 rotation(0.0f,0.0f,0.0f,1.0f);
+    std::string animation_path;
+    std::string camera_path;
+
+    // temporary
+    std::string str;
+
+    if (getProperty(cur, "coordinate_frame", str))
     {
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"filename")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            if (key) filename = (const char*)key;
-            xmlFree(key);
-        }
-        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"scale")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            if (key) scale = atoi((const char*)key);
-            xmlFree(key);
-        }
-        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"rotation")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            if (key) rotation = atoi((const char*)key);
-            xmlFree(key);
-        }
-        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"position")))
-        {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            if (key) position = atoi((const char*)key)/100.0f;
-            xmlFree(key);
-        }
-        cur = cur->next;
+        if (str=="model") coordinate_frame = SlideShowConstructor::MODEL;
+        else if (str=="slide") coordinate_frame = SlideShowConstructor::SLIDE;
+        else std::cout<<"Parser error - coordinate_frame=\""<<str<<"\" unrecongonized value"<<std::endl;
+    }
+
+    if (getProperty(cur, "position", str))
+    {
+        bool fail = false;
+        if (str=="center") position.set(0.0f,1.0f,0.0f);
+        else if (str=="eye") position.set(0.0f,0.0f,0.0f);
+        else if (!read(str,position)) fail = true;
+        
+        if (fail) std::cout<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl;
+        else std::cout<<"Read position="<<position<<std::endl;
     }
     
-    if (!filename.empty()) constructor.addModel(filename,scale,rotation,position);
+    if (getProperty(cur, "scale", scale))
+    {
+        std::cout<<"scale read "<<scale<<std::endl;
+    }
+
+    if (getProperty(cur, "rotate", rotate))
+    {
+        std::cout<<"rotate read "<<rotate<<std::endl;
+    }
+
+    if (getProperty(cur, "rotation", rotation))
+    {
+        std::cout<<"rotation read "<<rotation<<std::endl;
+    }
+
+    if (getProperty(cur, "path", animation_path))
+    {
+        std::cout<<"path read "<<animation_path<<std::endl;
+    }
+
+    if (getProperty(cur, "camera_path", camera_path))
+    {
+        std::cout<<"camera path read "<<camera_path<<std::endl;
+    }
+
+    xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+    if (key) filename = (const char*)key;
+    xmlFree(key);
+    
+    if (!filename.empty()) 
+    {
+        if (!camera_path.empty())
+        {
+            constructor.addModelWithCameraPath(filename,coordinate_frame,position,scale,rotate,camera_path);
+        }
+        else if (!animation_path.empty())
+        {
+            constructor.addModelWithPath(filename,coordinate_frame,position,scale,rotate,animation_path);
+        }
+        else 
+        {
+            constructor.addModel(filename,coordinate_frame,position,scale,rotate,rotation);
+        }
+    }
 }
 
 void ReaderWriterSS3D::parseStereoPair(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur)
@@ -115,7 +293,7 @@ void ReaderWriterSS3D::parseStereoPair(SlideShowConstructor& constructor, xmlDoc
     float height = 1.0f;
     xmlChar *key;
     key = xmlGetProp (cur, (const xmlChar *)"height");
-    if (key) height = atoi((const char*)key);
+    if (key) height = atof((const char*)key);
     xmlFree(key);
 
     cur = cur->xmlChildrenNode;

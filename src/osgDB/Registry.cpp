@@ -91,7 +91,7 @@ Registry::Registry()
     // comment out because it was causing problems under OSX - causing it to crash osgconv when constucting ostream in osg::notify().
     // notify(INFO) << "Constructing osg::Registry"<<std::endl;
 
-    _createNodeFromImage = true;
+    _createNodeFromImage = false;
     _openingLibrary = false;
     
     _useObjectCacheHint = false;

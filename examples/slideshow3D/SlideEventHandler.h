@@ -77,6 +77,9 @@ protected:
     bool                        _autoSteppingActive;
     bool                        _loopPresentation;
     bool                        _pause;
+
+    void resetUpdateCallbacks();
+    void resetUpdateCallbackActivity();
         
 };
 

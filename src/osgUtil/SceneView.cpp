@@ -8,6 +8,7 @@
 #include <osg/TexEnv>
 #include <osg/ColorMatrix>
 #include <osg/LightModel>
+#include <osg/CollectOccludersVisitor>
 
 #include <osg/GLU>
 
@@ -306,6 +307,34 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     if (!_initCalled) init();
 
 
+    // collect any occluder in the view frustum.
+    if (_sceneData->containsOccluderNodes())
+    {
+        std::cout << "Scene graph contains occluder nodes, searching for them"<<std::endl;
+        osg::CollectOccludersVisitor cov;
+        
+        cov.setFrameStamp(_frameStamp.get());
+
+        // use the frame number for the traversal number.
+        if (_frameStamp.valid())
+        {
+             cov.setTraversalNumber(_frameStamp->getFrameNumber());
+        }
+
+        cov.pushViewport(_viewport.get());
+        cov.pushProjectionMatrix(projection);
+        cov.pushModelViewMatrix(modelview);
+
+        // traverse the scene graph to search for occluder in there new positions.
+        _sceneData->accept(cov);
+
+        cov.popModelViewMatrix();
+        cov.popProjectionMatrix();
+        cov.popViewport();
+
+        std::cout << "finished searching for occluder"<<std::endl;
+    }
+    
 
 
     cullVisitor->reset();

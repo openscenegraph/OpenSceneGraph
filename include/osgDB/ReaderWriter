@@ -180,7 +180,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual ReadResult threadSafe_readNode(const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return readNode(fileName,options); }
 
         virtual WriteResult threadSafe_writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeObject(obj, fileName,options); }
-        virtual WriteResult threadSafe_writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeObject(image, fileName,options); }
+        virtual WriteResult threadSafe_writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeImage(image, fileName,options); }
         virtual WriteResult threadSafe_writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeHeightField(heightField, fileName,options); }
         virtual WriteResult threadSafe_writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) { SERIALIZER(); return writeNode(node, fileName,options); }
 

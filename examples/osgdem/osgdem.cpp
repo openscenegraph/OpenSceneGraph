@@ -74,7 +74,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-l <numOfLevels>","Specify the number of PagedLOD levels to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-e <x> <y> <w> <h>","Extents of the model to generate");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
+    arguments.getApplicationUsage()->addCommandLineOption("--o_cs <coordinates system string>","Set the output coordinates system. The string may be any of the usual GDAL/OGR forms, complete WKT, PROJ.4, EPS");     
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -142,7 +142,7 @@ int main( int argc, char **argv )
     }
 
     std::string def;
-    while (arguments.read("-s_srs",def))
+    while (arguments.read("--o_cs",def))
     {
         dataset->setDestinationCoordinateSystem(SanitizeSRS(def.c_str()) );
     }

@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
@@ -14,10 +14,10 @@ TARGET_BIN_FILES = osgconv
 #LIBS = ${PFLIBS} -losgDB -losg -lGLU -lGL  -lm -lXmu  -lX11 -lXi
 
 #note, standard library list. 
-LIBS = -losgDB -losg $(GL_LIBS) $(X_LIBS)
+LIBS = -losgUtil -losgDB -losg $(GL_LIBS) $(X_LIBS)
 
 #under Darwin we have to use the framework stuff to get GLUT OpenGL etc.
-MACOSXLIBS = -losgGLUT -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
+MACOSXLIBS = -losgUtil -losgDB -losg -lm -ldl -lstdc++ -lobjc
 
 C++FLAGS += -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib

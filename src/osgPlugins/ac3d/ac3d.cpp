@@ -6,7 +6,11 @@
 
 
 #include <stdio.h>
+#ifdef __DARWIN_OSX__
+#include <sys/malloc.h>
+#else
 #include <malloc.h>
+#endif
 #include <math.h>
 
 #include <osg/CullFace>

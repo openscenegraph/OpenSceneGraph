@@ -416,7 +416,7 @@ int main( int argc, char **argv )
     }
 
     float radius = 1.0f;
-    float height = 2*radius*tanf(fovy*0.5f);
+    float height = 2*radius*tan(fovy*0.5f);
     float length = osg::PI*radius;  // half a cylinder.
 
     // creat the scene from the file list.

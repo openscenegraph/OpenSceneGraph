@@ -388,6 +388,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_duplicateCoords(GLMmodel* obj, GLMg
     // geometry
     osg::Geometry* geom = new osg::Geometry;
     
+    geom->setUseDisplayList(false);
     // geom->setUseVertexBufferObjects(true);
 
     // primitives are only triangles
@@ -491,6 +492,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, G
     // geometry
     osg::Geometry* geom = new osg::Geometry;
     
+    geom->setUseDisplayList(false);
     // geom->setUseVertexBufferObjects(true);
 
     // the following code for mapping the coords, normals and texcoords
@@ -604,15 +606,15 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, G
         geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,ntris*3));
 
     }
-
+#if 0
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geom);
+#endif
 
     if (obj->numnormals==0)
     {
         osgUtil::SmoothingVisitor tsv;
         tsv.smooth(*geom);
     }
-
     return geom;
 }

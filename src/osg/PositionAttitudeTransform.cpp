@@ -14,7 +14,8 @@
 
 using namespace osg;
 
-PositionAttitudeTransform::PositionAttitudeTransform()
+PositionAttitudeTransform::PositionAttitudeTransform():
+    _scale(1.0f,1.0f,1.0f)
 {
 }
 
@@ -23,12 +24,14 @@ bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVis
     if (_referenceFrame==RELATIVE_TO_PARENTS)
     {
         matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
+                       osg::Matrix::scale(_scale)*
                        osg::Matrix::rotate(_attitude)*
                        osg::Matrix::translate(_position));
     }
     else // absolute
     {
         matrix = osg::Matrix::translate(-_pivotPoint)*
+                 osg::Matrix::scale(_scale)*
                  osg::Matrix::rotate(_attitude)*
                  osg::Matrix::translate(_position);
     }
@@ -42,12 +45,14 @@ bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVis
     {
         matrix.postMult(osg::Matrix::translate(-_position)*
                         osg::Matrix::rotate(_attitude.inverse())*
+                        osg::Matrix::scale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.z())*
                         osg::Matrix::translate(_pivotPoint));
     }
     else // absolute
     {
         matrix = osg::Matrix::translate(-_position)*
                  osg::Matrix::rotate(_attitude.inverse())*
+                 osg::Matrix::scale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.z())*
                  osg::Matrix::translate(_pivotPoint);
     }
     return true;

@@ -187,6 +187,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
     public:
 
         AnimationPathCallback():
+            _pivotPoint(0.0f,0.0f,0.0f),
             _useInverseMatrix(false),
             _timeOffset(0.0),
             _timeMultiplier(1.0),
@@ -198,6 +199,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         AnimationPathCallback(const AnimationPathCallback& apc,const CopyOp& copyop):
             NodeCallback(apc,copyop),
             _animationPath(apc._animationPath),
+            _pivotPoint(apc._pivotPoint),
             _useInverseMatrix(apc._useInverseMatrix),
             _timeOffset(apc._timeOffset),
             _timeMultiplier(apc._timeMultiplier),
@@ -211,6 +213,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
 
         AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
             _animationPath(ap),
+            _pivotPoint(0.0f,0.0f,0.0f),
             _useInverseMatrix(false),
             _timeOffset(timeOffset),
             _timeMultiplier(timeMultiplier),
@@ -221,11 +224,12 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
 
             
         void setAnimationPath(AnimationPath* path) { _animationPath = path; }
-
         AnimationPath* getAnimationPath() { return _animationPath.get(); }
-
         const AnimationPath* getAnimationPath() const { return _animationPath.get(); }
-        
+
+        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; }
+        inline const Vec3& getPivotPoint() const { return _pivotPoint; }
+
         void setUseInverseMatrix(bool useInverseMatrix) { _useInverseMatrix = useInverseMatrix; }
         bool getUseInverseMatrix() const { return _useInverseMatrix; }
 
@@ -252,6 +256,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
     public:
 
         ref_ptr<AnimationPath>  _animationPath;
+        osg::Vec3               _pivotPoint;
         bool                    _useInverseMatrix;
         double                  _timeOffset;
         double                  _timeMultiplier;

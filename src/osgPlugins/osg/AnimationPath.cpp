@@ -167,18 +167,33 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osg::AnimationPathCallback *apc = dynamic_cast<osg::AnimationPathCallback*>(&obj);
     if (!apc) return false;
 
-    bool itrAdvanced = false;
+    bool iteratorAdvanced = false;
+    
+    if (fr.matchSequence("pivotPoint %f %f %f"))
+    {
+        osg::Vec3 pivot;
+        fr[1].getFloat(pivot[0]);
+        fr[2].getFloat(pivot[1]);
+        fr[3].getFloat(pivot[2]);
+        
+        apc->setPivotPoint(pivot);
+        
+        fr += 4;
+        iteratorAdvanced = true;
+    }
+    
     if (fr.matchSequence("timeOffset %f"))
     {
         fr[1].getFloat(apc->_timeOffset);
         fr+=2;
-        itrAdvanced = true;
+        iteratorAdvanced = true;
     }
+    
     else if(fr.matchSequence("timeMultiplier %f"))
     {
         fr[1].getFloat(apc->_timeMultiplier);
         fr+=2;
-        itrAdvanced = true;
+        iteratorAdvanced = true;
     }
 
     static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
@@ -187,10 +202,10 @@ bool AnimationPathCallback_readLocalData(osg::Object &obj, osgDB::Input &fr)
     {
         osg::AnimationPath* animpath = dynamic_cast<osg::AnimationPath*>(object.get());
         if (animpath) apc->setAnimationPath(animpath);
-        itrAdvanced = true;
+        iteratorAdvanced = true;
     }
     
-    return itrAdvanced;
+    return iteratorAdvanced;
 }
 
 
@@ -202,6 +217,7 @@ bool AnimationPathCallback_writeLocalData(const osg::Object &obj, osgDB::Output 
     if (!apc) return false;
 
 
+    fw.indent() <<"pivotPoint " <<apc->getPivotPoint()<<std::endl;
     fw.indent() <<"timeOffset " <<apc->_timeOffset<<std::endl;
     fw.indent() <<"timeMultiplier " <<apc->_timeMultiplier << std::endl;
 

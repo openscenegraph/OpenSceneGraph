@@ -31,6 +31,7 @@ void AnimationPathCallback::write(DataOutputStream* out){
 		throw Exception("AnimationPathCallback::write(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
 	// Write AnimationPathCallback's properties.
 
+	out->writeVec3(_pivotPoint);
 	out->writeDouble(_timeOffset);
 	out->writeDouble(_timeMultiplier);
 	out->writeDouble(_firstTime);
@@ -61,6 +62,7 @@ void AnimationPathCallback::read(DataInputStream* in){
 		else
 			throw Exception("AnimationPathCallback::read(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
 		// Read AnimationPathCallback's properties
+		_pivotPoint = in->readVec3();
 		_timeOffset = in->readDouble();
 		_timeMultiplier = in->readDouble();
 		_firstTime = in->readDouble();

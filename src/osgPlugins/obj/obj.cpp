@@ -104,7 +104,7 @@ bool Model::readMTL(std::istream& fin)
     while (fin)
     {
         readline(fin,line,LINE_SIZE);
-        if (line[0]=='#')
+        if (line[0]=='#' || line[0]=='$')
         {
             // comment line
             // osg::notify(osg::NOTICE) <<"Comment: "<<line<<std::endl;
@@ -264,7 +264,7 @@ bool Model::readOBJ(std::istream& fin)
     while (fin)
     {
         readline(fin,line,LINE_SIZE);
-        if (line[0]=='#')
+        if (line[0]=='#' || line[0]=='$')
         {
             // comment line
             // osg::notify(osg::NOTICE) <<"Comment: "<<line<<std::endl;
@@ -397,9 +397,27 @@ bool Model::readOBJ(std::istream& fin)
                     currentElementList = 0; // reset the element list to force a recompute of which ElementList to use
                 }
             }
+            else if (strcmp(line,"o")==0)
+            {
+                std::string objectName(""); // empty name
+                if (currentElementState.objectName != objectName)
+                {
+                    currentElementState.objectName = objectName;
+                    currentElementList = 0; // reset the element list to force a recompute of which ElementList to use
+                }
+            }
             else if (strncmp(line,"g ",2)==0)
             {
                 std::string groupName(line+2);
+                if (currentElementState.groupName != groupName)
+                {
+                    currentElementState.groupName = groupName;
+                    currentElementList = 0; // reset the element list to force a recompute of which ElementList to use
+                }
+            }
+            else if (strcmp(line,"g")==0)
+            {
+                std::string groupName(""); // empty name
                 if (currentElementState.groupName != groupName)
                 {
                     currentElementState.groupName = groupName;

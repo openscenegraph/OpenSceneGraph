@@ -9,10 +9,6 @@
 
 #include <osgDB/ReadFile>
 
-#include <osgGA/TrackballManipulator>
-#include <osgGA/FlightManipulator>
-#include <osgGA/DriveManipulator>
-
 #include <osgProducer/Viewer>
 
 #include "TestManipulator.h"

@@ -222,7 +222,9 @@ int main( int argc, char **argv )
         viewer.frame();
         
     }
-
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
     // if we are master clean up by telling all slaves that we're going down.
     if (viewerMode==MASTER)

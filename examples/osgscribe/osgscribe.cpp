@@ -9,10 +9,6 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgGA/TrackballManipulator>
-#include <osgGA/FlightManipulator>
-#include <osgGA/DriveManipulator>
-
 #include <osgProducer/Viewer>
 
 #include <osgUtil/Optimizer>
@@ -124,6 +120,9 @@ int main( int argc, char **argv )
         viewer.frame();
         
     }
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
     return 0;
 }

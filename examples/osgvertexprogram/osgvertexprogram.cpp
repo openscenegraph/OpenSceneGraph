@@ -19,8 +19,6 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgGA/TrackballManipulator>
-
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Optimizer>
 
@@ -419,6 +417,9 @@ int main(int argc, char *argv[])
         viewer.frame();
         
     }
+    
+    // wait for all cull and draw threads to complete before exit.
+    viewer.sync();
 
     return 0;
 }

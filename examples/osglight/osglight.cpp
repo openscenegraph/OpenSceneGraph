@@ -371,6 +371,9 @@ int main( int argc, char **argv )
          
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
+    
+        // wait for all cull and draw threads to complete before exit.
+        viewer.sync();
         
     }
 

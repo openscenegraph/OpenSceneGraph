@@ -3,10 +3,6 @@
 #include <osg/TexGen>
 #include <osg/Material>
 
-#include <osgGA/TrackballManipulator>
-#include <osgGA/FlightManipulator>
-#include <osgGA/DriveManipulator>
-
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
@@ -214,6 +210,9 @@ int main( int argc, char **argv )
             viewer.frame();
 
         }
+    
+        // wait for all cull and draw threads to complete before exit.
+        viewer.sync();
     }
     else
     {

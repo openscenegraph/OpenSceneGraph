@@ -96,7 +96,7 @@ ifeq ($(COMPILER),gnu)
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -fPIC 
 ifeq ($(ARCH),64)
-    ARCHARGS          = -m64
+    ARCHARGS          = -m64 -DARCH64
 else
     ARCHARGS          = 
 endif
@@ -114,7 +114,7 @@ else
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -G
 ifeq ($(ARCH),64)
-    ARCHARGS          = -xarch=v9
+    ARCHARGS          = -xarch=v9 -DARCH64
 else
     ARCHARGS          = 
 endif
@@ -168,7 +168,7 @@ ifeq ($(OS),IRIX)
   SHARED            = -shared
   ARCH              = 32
 ifeq ($(ARCH),64)
-    ARCHARGS          = -64
+    ARCHARGS          = -64 -DARCH64
     FREETYPE_LIB      = -L/usr/freeware/lib64 -lfreetype
     PF_XTRA_LIBS      = -L/usr/lib64/libpfdb   -rpath /usr/lib64/libpfdb \
                       -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
@@ -464,7 +464,7 @@ ifeq ($(OS),HP-UX)
   ARCH              = 32
 ifeq ($(ARCH),64)
     # not yet tested
-    ARCHARGS          = -march=2.0
+    ARCHARGS          = -march=2.0 -DARCH64
 else
    # at least my gcc 3.1 defaults to HP-PA RISC 1.1
   ARCHARGS          = 

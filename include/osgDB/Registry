@@ -148,12 +148,12 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             
             virtual ReaderWriter::ReadResult readHeightField(const std::string& filename, CacheHintOptions options)
             {
-                return osgDB::Registry::instance()->readImageImplementation(filename,options);
+                return osgDB::Registry::instance()->readHeightFieldImplementation(filename,options);
             }
             
             virtual ReaderWriter::ReadResult readNode(const std::string& filename, CacheHintOptions options)
             {
-                return osgDB::Registry::instance()->readImageImplementation(filename,options);
+                return osgDB::Registry::instance()->readNodeImplementation(filename,options);
             }
             
         protected:

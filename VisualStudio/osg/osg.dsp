@@ -97,6 +97,10 @@ SOURCE=..\..\src\osg\AlphaFunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\AutoTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Billboard.cpp
 # End Source File
 # Begin Source File
@@ -322,6 +326,10 @@ SOURCE=..\..\src\osg\DisplaySettings.cpp
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\AlphaFunc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\AutoTransform
 # End Source File
 # Begin Source File
 

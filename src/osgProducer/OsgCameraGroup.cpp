@@ -322,17 +322,32 @@ bool OsgCameraGroup::realize()
     if (_ds->getDepthBuffer())      clear_mask |= GL_DEPTH_BUFFER_BIT;
     if (_ds->getStencilBuffer())    clear_mask |= GL_STENCIL_BUFFER_BIT;
 
-    for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
+    // make sure any camera's which share the same render surface also share the same osg::State.
+    // use a std::map to keep track of what render surfaces are associated with what state.
+    typedef std::map<Producer::RenderSurface*,osg::State*> RenderSurfaceStateMap;
+    RenderSurfaceStateMap _renderSurfaceStateMap;
+    unsigned int contextID = 0;
+
+    for(unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
     {
         Producer::Camera *cam = _cfg->getCamera(i);
+        Producer::RenderSurface* rs = cam->getRenderSurface();
         
         // create the scene handler.
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
 
         osgUtil::SceneView* sv = sh->getSceneView();
         sv->setDefaults();
-
-        sh->setContextID(i);
+        
+        if (_renderSurfaceStateMap.count(rs)==0)
+        {
+            _renderSurfaceStateMap[rs] = sv->getState();
+            sv->getState()->setContextID(contextID++);
+        }
+        else
+        {
+            sv->setState(_renderSurfaceStateMap[rs]);
+        }
 
         _shvec.push_back( sh );
         cam->setSceneHandler( sh );
@@ -342,7 +357,6 @@ bool OsgCameraGroup::realize()
         if (stage) stage->setClearMask(clear_mask);
 
         // set the realize callback.
-        Producer::RenderSurface* rs = cam->getRenderSurface();
         rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
         
         // set up the visual chooser.
@@ -374,6 +388,7 @@ bool OsgCameraGroup::realize()
         }        
     }
 
+    
     if( _global_stateset == NULL && _shvec.size() > 0 )
     {
         SceneHandlerList::iterator p = _shvec.begin();

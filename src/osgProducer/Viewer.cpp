@@ -188,7 +188,7 @@ void Viewer::setKeyboardMouse(Producer::KeyboardMouse* kbm)
     if (_kbm.valid() && _kbmcb.valid()) _kbm->setCallback(_kbmcb.get());
 }
 
-void Viewer::setKeyboardMouseCallback(KeyboardMouseCallback* kbmcb)
+void Viewer::setKeyboardMouseCallback(osgProducer::KeyboardMouseCallback* kbmcb)
 {
     _kbmcb = kbmcb;
     if (_kbm.valid() && _kbmcb.valid()) _kbm->setCallback(_kbmcb.get());

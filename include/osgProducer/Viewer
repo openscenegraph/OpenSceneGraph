@@ -120,9 +120,9 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         Producer::KeyboardMouse* getKeyboardMouse() { return _kbm.get(); }
         const Producer::KeyboardMouse* getKeyboardMouse() const { return _kbm.get(); }
 
-        void setKeyboardMouseCallback(KeyboardMouseCallback* kbmcb);
-        KeyboardMouseCallback* getKeyboardMouseCallback() { return _kbmcb.get(); }
-        const KeyboardMouseCallback* getKeyboardMouseCallback() const { return _kbmcb.get(); }
+        void setKeyboardMouseCallback(osgProducer::KeyboardMouseCallback* kbmcb);
+        osgProducer::KeyboardMouseCallback* getKeyboardMouseCallback() { return _kbmcb.get(); }
+        const osgProducer::KeyboardMouseCallback* getKeyboardMouseCallback() const { return _kbmcb.get(); }
 
         
 

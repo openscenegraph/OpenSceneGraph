@@ -272,7 +272,7 @@ bool TrackballManipulator::calcMovement()
 
         // pan model.
 
-        float scale = -0.5f*_distance;
+        float scale = -0.3f*_distance;
 
         osg::Matrix rotation_matrix;
         rotation_matrix.set(_rotation);

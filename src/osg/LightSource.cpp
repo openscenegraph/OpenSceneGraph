@@ -54,7 +54,7 @@ void LightSource::setStateSetModes(StateSet& stateset,StateAttribute::GLModeValu
 void LightSource::setLocalStateSetModes(StateAttribute::GLModeValue value)
 {
     if (!_stateset) _stateset = new StateSet;
-    _stateset->setAllToInherit();
+    _stateset->clear();
     setStateSetModes(*_stateset,value);
 }
 

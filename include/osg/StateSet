@@ -57,14 +57,19 @@ class SG_EXPORT StateSet : public Object
         bool operator == (const StateSet& rhs) const { return compare(rhs)==0; }
         bool operator != (const StateSet& rhs) const { return compare(rhs)!=0; }
 
-        /** set all the modes to on or off so that it defines a 
+        /** Set all the modes to on or off so that it defines a 
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();
 
-        /** set all the modes to inherit, typically used to signify
+#ifdef USE_DEPRECATED_API
+        /** Set all the modes to inherit, typically used to signify
             nodes which inherit all of their modes for the global state.*/
-        void setAllToInherit();
-        
+        void setAllToInherit() { clear(); }
+#endif
+
+        /** Clear the StateSet of all modes and attributes.*/
+        void clear();
+
         /** merge this stateset with stateset rhs, this overrides
           * the rhs if OVERRIDE is specified, otherwise rhs takes precedence.*/
         void merge(const StateSet& rhs);
@@ -72,14 +77,18 @@ class SG_EXPORT StateSet : public Object
         /** a container to map GLModes to their respective GLModeValues.*/
         typedef std::map<StateAttribute::GLMode,StateAttribute::GLModeValue>  ModeList;
 
-        /** set this StateSet to contain specified GLMode and value.*/
+        /** Set this StateSet to contain specified GLMode and value.*/
         void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
         
-        /** set this StateSet to inherit specified GLMode type from parents.
+#ifdef USE_DEPRECATED_API
+        /** Set this StateSet to inherit specified GLMode type from parents.
           * Has the effect of deleting any GLMode of specified type from StateSet.*/
-        void setModeToInherit(StateAttribute::GLMode mode);
+        void setModeToInherit(StateAttribute::GLMode mode) { removeMode(mode); }
+#endif
+        /** Remove mode from StateSet.*/
+        void removeMode(StateAttribute::GLMode mode);
 
-        /** get specified GLModeValue for specified GLMode.
+        /** Get specified GLModeValue for specified GLMode.
           * returns INHERIT if no GLModeValue is contained within StateSet.*/
         StateAttribute::GLModeValue getMode(StateAttribute::GLMode mode) const;
 
@@ -91,28 +100,36 @@ class SG_EXPORT StateSet : public Object
 
 
 
-        /** simple pairing between an attribute and its override flag.*/
+        /** Simple pairing between an attribute and its override flag.*/
         typedef std::pair<ref_ptr<StateAttribute>,StateAttribute::OverrideValue> RefAttributePair;
         /** a container to map StateAttribyte::Types to their respective RefAttributePair.*/
         typedef std::map<StateAttribute::Type,RefAttributePair>                  AttributeList;
 
-        /** set this StateSet to contain specified attribute and override flag.*/
+        /** Set this StateSet to contain specified attribute and override flag.*/
         void setAttribute(StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
-        /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
+        /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setAttributeAndModes(StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
-        /** set this StateSet to inherit specified attribute type from parents.
-          * has the effect of deleting any state attributes of specified type from StateSet.*/
-        void setAttributeToInherit(StateAttribute::Type type);
 
-        /** get specified StateAttribute for specified type.
+#ifdef USE_DEPRECATED_API
+        /** Set this StateSet to inherit specified attribute type from parents.
+          * has the effect of deleting any state attributes of specified type from StateSet.*/
+        void setAttributeToInherit(StateAttribute::Type type) { removeAttribute(type); }
+#endif
+        /** remove attribute of specified type from StateSet.*/
+        void removeAttribute(StateAttribute::Type type);
+
+        /** remove attribute from StateSet.*/
+        void removeAttribute(StateAttribute *attribute);
+
+        /** Get specified StateAttribute for specified type.
           * Returns NULL if no type is contained within StateSet.*/
         StateAttribute* getAttribute(StateAttribute::Type type);
 
-        /** get specified const StateAttribute for specified type.
+        /** Get specified const StateAttribute for specified type.
           * Returns NULL if no type is contained within const StateSet.*/
         const StateAttribute* getAttribute(StateAttribute::Type type) const;
 
-        /** get specified RefAttributePair for specified type.
+        /** Get specified RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getAttributePair(StateAttribute::Type type) const;
         
@@ -126,13 +143,18 @@ class SG_EXPORT StateSet : public Object
 
         typedef std::vector<ModeList>       TextureModeList;
 
-        /** set this StateSet to contain specified GLMode and value.*/
+        /** Set this StateSet to contain specified GLMode and value.*/
         void setTextureMode(unsigned int unit,StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
-        /** set this StateSet to inherit specified GLMode type from parents.
-          * has the effect of deleting any GLMode of specified type from StateSet.*/
-        void setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode);
 
-        /** get specified GLModeValue for specified GLMode.
+#ifdef USE_DEPRECATED_API
+        /** Set this StateSet to inherit specified GLMode type from parents.
+          * has the effect of deleting any GLMode of specified type from StateSet.*/
+        void setTextureModeToInherit(unsigned int unit,StateAttribute::GLMode mode) { removeTextureMode(unit,mode); }
+#endif
+        /** Remove texture mode from StateSet.*/
+        void removeTextureMode(unsigned int unit,StateAttribute::GLMode mode);
+
+        /** Get specified GLModeValue for specified GLMode.
           * returns INHERIT if no GLModeValue is contained within StateSet.*/
         StateAttribute::GLModeValue getTextureMode(unsigned int unit,StateAttribute::GLMode mode) const;
 
@@ -145,23 +167,32 @@ class SG_EXPORT StateSet : public Object
 
         typedef std::vector<AttributeList>  TextureAttributeList;
 
-        /** set this StateSet to contain specified attribute and override flag.*/
+        /** Set this StateSet to contain specified attribute and override flag.*/
         void setTextureAttribute(unsigned int unit,StateAttribute *attribute, StateAttribute::OverrideValue value=StateAttribute::OFF);
-        /** set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
+        /** Set this StateSet to contain specified attribute and set the associated GLMode's to specified value.*/
         void setTextureAttributeAndModes(unsigned int unit,StateAttribute *attribute, StateAttribute::GLModeValue value=StateAttribute::ON);
-        /** set this StateSet to inherit specified attribute type from parents.
-          * Has the effect of deleting any state attributes of specified type from StateSet.*/
-        void setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type);
 
-        /** get specified Texture related StateAttribute for specified type.
+#ifdef USE_DEPRECATED_API
+        /** Set this StateSet to inherit specified attribute type from parents.
+          * Has the effect of deleting any state attributes of specified type from StateSet.*/
+        void setTextureAttributeToInherit(unsigned int unit,StateAttribute::Type type) { removeTextureAttribute(unit,type); }
+#endif
+
+        /** remove texture attribute of specified type from StateSet.*/
+        void removeTextureAttribute(unsigned int unit, StateAttribute::Type type);
+
+        /** remove texture attribute from StateSet.*/
+        void removeTextureAttribute(unsigned int unit, StateAttribute *attribute);
+
+        /** Get specified Texture related StateAttribute for specified type.
           * Returns NULL if no type is contained within StateSet.*/
         StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type);
 
-        /** get specified Texture related const StateAttribute for specified type.
+        /** Get specified Texture related const StateAttribute for specified type.
           * Returns NULL if no type is contained within const StateSet.*/
         const StateAttribute* getTextureAttribute(unsigned int unit,StateAttribute::Type type) const;
 
-        /** get specified Texture related RefAttributePair for specified type.
+        /** Get specified Texture related RefAttributePair for specified type.
           * Returns NULL if no type is contained within StateSet.*/
         const RefAttributePair* getTextureAttributePair(unsigned int unit,StateAttribute::Type type) const;
         
@@ -183,14 +214,14 @@ class SG_EXPORT StateSet : public Object
             TRANSPARENT_BIN = 2
         };
         
-        /** set the RenderingHint of the StateSet.
+        /** Set the RenderingHint of the StateSet.
           * RenderingHint is used by osgUtil::Renderer to determine which
           * draw bin to drop associated osg::Drawables in. For opaque
           * objects OPAQUE_BIN would typical used, which TRANSPARENT_BIN
           * should be used for objects which need to be depth sorted.*/
         void setRenderingHint(int hint);
 
-        /** get the RenderingHint of the StateSet.*/
+        /** Get the RenderingHint of the StateSet.*/
         inline int getRenderingHint() const      { return _renderingHint; }
 
         enum RenderBinMode
@@ -201,22 +232,22 @@ class SG_EXPORT StateSet : public Object
             ENCLOSE_RENDERBIN_DETAILS
         };
 
-        /** set the render bin details.*/
+        /** Set the render bin details.*/
         void setRenderBinDetails(int binNum,const std::string& binName,RenderBinMode mode=USE_RENDERBIN_DETAILS);
                 
-        /** set the render bin details to inherit.*/
+        /** Set the render bin details to inherit.*/
         void setRenderBinToInherit();
         
-        /** get the render bin mode.*/
+        /** Get the render bin mode.*/
         inline RenderBinMode getRenderBinMode() const { return _binMode; }
 
-        /** get whether the render bin details are set and should be used.*/
+        /** Get whether the render bin details are set and should be used.*/
         inline bool useRenderBinDetails() const { return _binMode!=INHERIT_RENDERBIN_DETAILS; }
 
-        /** get the render bin number.*/
+        /** Get the render bin number.*/
         inline int getBinNumber() const { return _binNum; }
 
-        /** get the render bin name.*/
+        /** Get the render bin name.*/
         inline const std::string& getBinName() const { return _binName; }
 
         

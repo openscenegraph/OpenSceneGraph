@@ -432,7 +432,7 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     osg::StateSet* stateSet = new osg::StateSet;
     
     // Inherit modes from the global state
-    stateSet->setAllToInherit();
+    stateSet->clear();
 
     SbColor ambient, diffuse, specular, emission;
     float shininess, transparency;

@@ -51,7 +51,7 @@ public:
             NONE
         };
 
-        enum KeySybmol
+        enum KeySymbol
         {
             KEY_BackSpace       = 0xFF08,        /* back space, back char */
             KEY_Tab             = 0xFF09,

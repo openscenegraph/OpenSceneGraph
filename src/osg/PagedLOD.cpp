@@ -205,14 +205,11 @@ bool PagedLOD::removeChild( Node *child )
 
 void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
 {
-    for(unsigned int i=_children.size();i>_numChildrenThatCannotBeExpired;)
+    if (_children.size()>_numChildrenThatCannotBeExpired)
     {
-        --i;
-        if (!_perRangeDataList[i]._filename.empty() && _perRangeDataList[i]._timeStamp<expiryTime)
+        if (!_perRangeDataList[_children.size()-1]._filename.empty() && _perRangeDataList[_children.size()-1]._timeStamp<expiryTime)
         {
-            //std::cout<<"Removing child "<<_children[i].get()<<std::endl;
-            removedChildren.push_back(_children[i]);
-            Group::removeChild(_children[i].get());
+            Group::removeChild(_children[_children.size()-1].get());
         }
     }
 }

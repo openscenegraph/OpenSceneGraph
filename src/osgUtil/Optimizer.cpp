@@ -1189,16 +1189,16 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 itr!=primitives.end();
                 ++itr)
             {
-                osg::Primitive* prim = itr->get();
-                if (prim->getMode()==osg::Primitive::POLYGON)
+                osg::PrimitiveSet* prim = itr->get();
+                if (prim->getMode()==osg::PrimitiveSet::POLYGON)
                 {
                     if (prim->getNumIndices()==3)
                     {
-                        prim->setMode(osg::Primitive::TRIANGLES);
+                        prim->setMode(osg::PrimitiveSet::TRIANGLES);
                     }
                     else if (prim->getNumIndices()==4)
                     {
-                        prim->setMode(osg::Primitive::QUADS);
+                        prim->setMode(osg::PrimitiveSet::QUADS);
                     }
                 }
             }
@@ -1218,8 +1218,8 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 unsigned int primNo=0;
                 while(primNo+1<primitives.size())
                 {
-                    osg::Primitive* lhs = primitives[primNo].get();
-                    osg::Primitive* rhs = primitives[primNo+1].get();
+                    osg::PrimitiveSet* lhs = primitives[primNo].get();
+                    osg::PrimitiveSet* rhs = primitives[primNo+1].get();
  
                     bool combine = false;
 
@@ -1229,10 +1229,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 
                         switch(lhs->getMode())
                         {
-                        case(osg::Primitive::POINTS):
-                        case(osg::Primitive::LINES):
-                        case(osg::Primitive::TRIANGLES):
-                        case(osg::Primitive::QUADS):
+                        case(osg::PrimitiveSet::POINTS):
+                        case(osg::PrimitiveSet::LINES):
+                        case(osg::PrimitiveSet::TRIANGLES):
+                        case(osg::PrimitiveSet::QUADS):
                             combine = true;       
                             break;
                         }
@@ -1244,19 +1244,19 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                     
                         switch(lhs->getType())
                         {
-                        case(osg::Primitive::DrawArraysPrimitiveType):
+                        case(osg::PrimitiveSet::DrawArraysPrimitiveType):
                             combine = mergePrimitive(*(static_cast<osg::DrawArrays*>(lhs)),*(static_cast<osg::DrawArrays*>(rhs)));
                             break;
-                        case(osg::Primitive::DrawArrayLengthsPrimitiveType):
+                        case(osg::PrimitiveSet::DrawArrayLengthsPrimitiveType):
                             combine = mergePrimitive(*(static_cast<osg::DrawArrayLengths*>(lhs)),*(static_cast<osg::DrawArrayLengths*>(rhs)));
                             break;
-                        case(osg::Primitive::DrawElementsUBytePrimitiveType):
+                        case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
                             combine = mergePrimitive(*(static_cast<osg::DrawElementsUByte*>(lhs)),*(static_cast<osg::DrawElementsUByte*>(rhs)));
                             break;
-                        case(osg::Primitive::DrawElementsUShortPrimitiveType):
+                        case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
                             combine = mergePrimitive(*(static_cast<osg::DrawElementsUShort*>(lhs)),*(static_cast<osg::DrawElementsUShort*>(rhs)));
                             break;
-                        case(osg::Primitive::DrawElementsUIntPrimitiveType):
+                        case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
                             combine = mergePrimitive(*(static_cast<osg::DrawElementsUInt*>(lhs)),*(static_cast<osg::DrawElementsUInt*>(rhs)));
                             break;
                         default:
@@ -1336,7 +1336,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
         primItr!=rhs.getPrimitiveList().end();
         ++primItr)
     {
-        osg::Primitive* primitive = primItr->get();
+        osg::PrimitiveSet* primitive = primItr->get();
         primitive->offsetIndices(base);
     }
     

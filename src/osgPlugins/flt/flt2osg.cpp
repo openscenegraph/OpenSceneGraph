@@ -959,17 +959,17 @@ void ConvertFromFLT::setCullFaceAndWireframe ( const SFace *pSFace, osg::StateSe
             break;
 
         case FaceRecord::WIREFRAME_NOT_CLOSED:
-            dgset->setPrimType(osg::Primitive::LINE_STRIP);
+            dgset->setPrimType(osg::PrimitiveSet::LINE_STRIP);
             break;
 
         case FaceRecord::WIREFRAME_CLOSED:
-            dgset->setPrimType(osg::Primitive::LINE_LOOP);
+            dgset->setPrimType(osg::PrimitiveSet::LINE_LOOP);
             break;
 
         case FaceRecord::OMNIDIRECTIONAL_LIGHT:
         case FaceRecord::UNIDIRECTIONAL_LIGHT:
         case FaceRecord::BIDIRECTIONAL_LIGHT:
-            dgset->setPrimType(osg::Primitive::POINTS);
+            dgset->setPrimType(osg::PrimitiveSet::POINTS);
             break;
     }
 }
@@ -1440,7 +1440,7 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
 
     if (vertices > 0)
     {
-        if (dgset->getPrimType() == osg::Primitive::POINTS)
+        if (dgset->getPrimType() == osg::PrimitiveSet::POINTS)
         {
             for (i=0; i < vertices; i++)
                 dgset->addPrimLen(1);
@@ -1672,7 +1672,7 @@ void ConvertFromFLT::visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* 
     osg::StateSet* stateSet = dgset->getStateSet();
     SLightPoint *pSLightPoint = (SLightPoint*)rec->getData();
 
-    dgset->setPrimType(osg::Primitive::POINTS);
+    dgset->setPrimType(osg::PrimitiveSet::POINTS);
     stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     stateSet->setMode(GL_POINT_SMOOTH, osg::StateAttribute::ON);
     dgset->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
@@ -1796,16 +1796,16 @@ void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecor
     switch ( mesh->getData()->primitiveType )
     {
     case MeshPrimitiveRecord::TRIANGLE_STRIP:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::TRIANGLE_STRIP,0,mesh->getNumVertices()) );
+        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,0,mesh->getNumVertices()) );
         break;
     case MeshPrimitiveRecord::TRIANGLE_FAN:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::TRIANGLE_FAN,0,mesh->getNumVertices()) );
+        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN,0,mesh->getNumVertices()) );
         break;
     case MeshPrimitiveRecord::QUADRILATERAL_STRIP:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::QUAD_STRIP,0,mesh->getNumVertices()) );
+        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP,0,mesh->getNumVertices()) );
         break;
     case MeshPrimitiveRecord::INDEXED_POLYGON:
-        geometry->addPrimitive ( new osg::DrawArrays(osg::Primitive::POLYGON,0,mesh->getNumVertices()) );
+        geometry->addPrimitive ( new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,mesh->getNumVertices()) );
         break;
     default:
         assert ( 0 ); // What type is this?

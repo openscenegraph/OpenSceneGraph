@@ -163,9 +163,9 @@ void OSGVisitor::applySeparator(Separator *sep)
     }
 }
 
-osg::Primitive *generatePrimitive(PolygonList &polys, unsigned primsize) {
+osg::PrimitiveSet *generatePrimitive(PolygonList &polys, unsigned primsize) {
     unsigned i,j;
-    osg::Primitive *p=0;
+    osg::PrimitiveSet *p=0;
     // Fisrt of all count the number of polygons
     unsigned count=0;
     for (i=0;i<polys.size();i++) {
@@ -177,13 +177,13 @@ osg::Primitive *generatePrimitive(PolygonList &polys, unsigned primsize) {
     if (count==0) return 0; ///If no polys, no primitive :)
 
     // The type of primitive
-    osg::Primitive::Mode mode;
+    osg::PrimitiveSet::Mode mode;
     switch (primsize) {
-    case 1: mode=osg::Primitive::POINTS;break;
-    case 2: mode=osg::Primitive::LINES;break;
-    case 3: mode=osg::Primitive::TRIANGLES;break;
-    case 4: mode=osg::Primitive::QUADS;break;
-    default: mode=osg::Primitive::QUADS;
+    case 1: mode=osg::PrimitiveSet::POINTS;break;
+    case 2: mode=osg::PrimitiveSet::LINES;break;
+    case 3: mode=osg::PrimitiveSet::TRIANGLES;break;
+    case 4: mode=osg::PrimitiveSet::QUADS;break;
+    default: mode=osg::PrimitiveSet::QUADS;
     }
     // Now will generate the indices and the primitive
     if (count < 65536) {
@@ -289,7 +289,7 @@ void OSGVisitor::applyIndexedFaceSet(IndexedFaceSet *ifs) {
     /* Converting list of polys */
     PolygonList polys=ifs->getPolygons();
     for (i=1;i<=4;i++) {
-	osg::Primitive *p=generatePrimitive(polys,i);
+	osg::PrimitiveSet *p=generatePrimitive(polys,i);
 	if (p!=0) {
             geometry->addPrimitive(p);
 	}
@@ -348,7 +348,7 @@ void OSGVisitor::applyIndexedTriStripSet(IndexedTriStripSet *its) {
 	for (j=0;j<vindex.size();j++) {
             indices[j]=vindex[j];
 	}
-        geometry->addPrimitive(new osg::DrawElementsUShort(osg::Primitive::TRIANGLE_STRIP,vindex.size(),indices));
+        geometry->addPrimitive(new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,vindex.size(),indices));
     }
 
 

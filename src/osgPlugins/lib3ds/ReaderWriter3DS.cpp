@@ -589,8 +589,8 @@ osg::Drawable*   ReaderWriter3DS::createDrawable(Lib3dsMesh *m,FaceList& faceLis
     
     // create primitives
     int numIndices = faceList.size()*3;
-    UShortDrawElements* elements = new osg::UShortDrawElements(osg::Primitive::TRIANGLES,numIndices);
-    UShortDrawElements::iterator index_itr = elements->begin();
+    DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES,numIndices);
+    DrawElementsUShort::iterator index_itr = elements->begin();
 
     for (fitr=faceList.begin();
         fitr!=faceList.end();

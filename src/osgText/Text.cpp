@@ -181,6 +181,10 @@ void Text::drawImmediateMode(State& state)
 
     if(!_initAlignment)
         initAlignment();
+
+    // we must disable all the vertex arrays to prevent any state
+    // propagating into text.        
+    state.disableAllVertexArrays();
     
     // draw boundingBox
     if(_drawMode & BOUNDINGBOX)

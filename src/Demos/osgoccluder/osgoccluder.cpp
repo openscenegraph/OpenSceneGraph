@@ -250,7 +250,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     
-    geom->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::QUADS,0,4));
+    geom->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
     
     osg::Geode* geode = osgNew osg::Geode;
     geode->addDrawable(geom);
@@ -390,7 +390,7 @@ int main( int argc, char **argv )
 
     if (manuallyCreateImpostors)
     {
-        viewer.setEventHandler(new OccluderEventHandler(viewer.getViewportSceneView(0),rootnode));
+        viewer.addEventHandler(new OccluderEventHandler(viewer.getViewportSceneView(0),rootnode));
     }
 
     // open the viewer window.

@@ -76,11 +76,15 @@ void DynGeoSet::append(DynGeoSet* source)
             break;                                      \
         }
 
-const osg::Primitive::Mode NO_PRIMITIVE_TYPE = (osg::Primitive::Mode)0xffff;
+const osg::PrimitiveSet::Mode NO_PRIMITIVE_TYPE = (osg::PrimitiveSet::Mode)0xffff;
 
 DynGeoSet::DynGeoSet()
 {
-    _primtype=NO_PRIMITIVE_TYPE;
+    _primtype = NO_PRIMITIVE_TYPE;
+    _normal_binding = osg::Geometry::BIND_OFF;
+    _color_binding = osg::Geometry::BIND_OFF;
+    _texture_binding = osg::Geometry::BIND_OFF;
+
     _geom = new osg::Geometry;
 }
 
@@ -181,7 +185,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
         }
     }    
     
-    if (_primtype!=osg::Primitive::POLYGON)
+    if (_primtype!=osg::PrimitiveSet::POLYGON)
     {
         geom->addPrimitive(new osg::DrawArrays(_primtype,indexBase,_coordList.size()));
     }
@@ -308,17 +312,17 @@ DynGeoSet* GeoSetBuilder::findMatchingGeoSet()
 }
 
 
-osg::Primitive::Mode GeoSetBuilder::findPrimType(const int nVertices)
+osg::PrimitiveSet::Mode GeoSetBuilder::findPrimType(const int nVertices)
 {
     switch (nVertices)
     {
-        case 1: return osg::Primitive::POINTS;
-        case 2: return osg::Primitive::LINES;
-        case 3: return osg::Primitive::TRIANGLES;
-        case 4: return osg::Primitive::QUADS;
+        case 1: return osg::PrimitiveSet::POINTS;
+        case 2: return osg::PrimitiveSet::LINES;
+        case 3: return osg::PrimitiveSet::TRIANGLES;
+        case 4: return osg::PrimitiveSet::QUADS;
     }
 
-    if (nVertices>=5) return osg::Primitive::POLYGON;
+    if (nVertices>=5) return osg::PrimitiveSet::POLYGON;
     
     return NO_PRIMITIVE_TYPE;
 }

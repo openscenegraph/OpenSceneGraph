@@ -1,4 +1,4 @@
-#include <osg/Primitive>
+#include <osg/PrimitiveSet>
 
 using namespace osg;
 

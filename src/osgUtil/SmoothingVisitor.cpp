@@ -80,12 +80,12 @@ void SmoothingVisitor::smooth(osg::Geometry& geom)
     {
         switch((*itr)->getMode())
         {
-            case(Primitive::TRIANGLES):
-            case(Primitive::TRIANGLE_STRIP):
-            case(Primitive::TRIANGLE_FAN):
-            case(Primitive::QUADS):
-            case(Primitive::QUAD_STRIP):
-            case(Primitive::POLYGON):
+            case(PrimitiveSet::TRIANGLES):
+            case(PrimitiveSet::TRIANGLE_STRIP):
+            case(PrimitiveSet::TRIANGLE_FAN):
+            case(PrimitiveSet::QUADS):
+            case(PrimitiveSet::QUAD_STRIP):
+            case(PrimitiveSet::POLYGON):
                 ++numSurfacePrimitives;
                 break;
             default:

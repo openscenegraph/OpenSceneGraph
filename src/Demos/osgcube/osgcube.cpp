@@ -82,12 +82,12 @@ osg::Geode* createGeometryCube()
 
     // set up the primitives
     
-    cube->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,0,4));
-    cube->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,4,4));
-    cube->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,8,4));
-    cube->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,12,4));
-    cube->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,16,4));
-    cube->addPrimitive(osgNew osg::DrawArrays(osg::Primitive::POLYGON,20,4));
+    cube->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,4));
+    cube->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,4,4));
+    cube->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,8,4));
+    cube->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,12,4));
+    cube->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,16,4));
+    cube->addPrimitive(osgNew osg::DrawArrays(osg::PrimitiveSet::POLYGON,20,4));
     
 
     // set up coords.

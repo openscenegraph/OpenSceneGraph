@@ -99,7 +99,7 @@ Node *makeTerrain( void )
 
     for( i = 0; i < m-2; i++ )
     {
-        UShortDrawElements* elements = new UShortDrawElements(Primitive::TRIANGLE_STRIP);
+        DrawElementsUShort* elements = new DrawElementsUShort(PrimitiveSet::TRIANGLE_STRIP);
         elements->reserve(39*2);
         for( j = 0; j < n; j++ )
         {

@@ -102,7 +102,7 @@ Node *makeTank( void )
         c++;
     }
 
-    gset->addPrimitive( new DrawArrays(Primitive::TRIANGLE_STRIP,0,c) );
+    gset->addPrimitive( new DrawArrays(PrimitiveSet::TRIANGLE_STRIP,0,c) );
 
     // create the top of the tank.
 
@@ -144,7 +144,7 @@ Node *makeTank( void )
     for( i = 0; i < c; i++ )
         conv( vc[i], *mat, vc[i] );
      
-     gset->addPrimitive(new DrawArrays(Primitive::TRIANGLE_FAN,prev_c,c-prev_c));
+     gset->addPrimitive(new DrawArrays(PrimitiveSet::TRIANGLE_FAN,prev_c,c-prev_c));
 
 
 

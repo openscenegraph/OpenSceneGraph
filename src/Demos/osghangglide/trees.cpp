@@ -183,7 +183,7 @@ static Geometry *makeTree( _tree *tree, StateSet *dstate )
     geom->setColorArray( &l );
     geom->setColorBinding( Geometry::BIND_OVERALL );
 
-    geom->addPrimitive( new DrawArrays(Primitive::QUADS,0,4) );
+    geom->addPrimitive( new DrawArrays(PrimitiveSet::QUADS,0,4) );
 
     geom->setStateSet( dstate );
 

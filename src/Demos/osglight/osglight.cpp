@@ -193,7 +193,7 @@ osg::Geometry* createWall(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     
     for(row=0;row<noYSteps-1;++row)
     {
-        osg::DrawElementsUShort* quadstrip = new osg::DrawElementsUShort(osg::Primitive::QUAD_STRIP);
+        osg::DrawElementsUShort* quadstrip = new osg::DrawElementsUShort(osg::PrimitiveSet::QUAD_STRIP);
         quadstrip->reserve(noXSteps*2);
         for(unsigned int col=0;col<noXSteps;++col)        
         {

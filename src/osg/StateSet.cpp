@@ -60,7 +60,7 @@ StateSet::StateSet()
 
     _renderingHint = DEFAULT_BIN;
     
-    setRendingBinToInherit();
+    setRenderBinToInherit();
 }
 
 StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
@@ -341,7 +341,7 @@ void StateSet::setGlobalDefaults()
 {    
     _renderingHint = DEFAULT_BIN;
 
-    setRendingBinToInherit();
+    setRenderBinToInherit();
 
 
     setMode(GL_DEPTH_TEST,StateAttribute::ON);
@@ -358,7 +358,7 @@ void StateSet::setAllToInherit()
 {
     _renderingHint = DEFAULT_BIN;
 
-    setRendingBinToInherit();
+    setRenderBinToInherit();
 
     _modeList.clear();
     _attributeList.clear();
@@ -775,12 +775,27 @@ void StateSet::setRenderingHint(const int hint)
 {
     _renderingHint = hint;
     // temporary hack to get new render bins working.
-    if (_renderingHint==TRANSPARENT_BIN)
+    switch(_renderingHint)
     {
-        _binMode = USE_RENDERBIN_DETAILS;
-        _binNum = 1;
-        _binName = "DepthSortedBin";
-//        _binName = "RenderBin";
+        case(TRANSPARENT_BIN):
+        {
+            _binMode = USE_RENDERBIN_DETAILS;
+            _binNum = 1;
+            _binName = "DepthSortedBin";
+            break;
+        }
+        case(OPAQUE_BIN):
+        {
+            _binMode = USE_RENDERBIN_DETAILS;
+            _binNum = 0;
+            _binName = "RenderBin";
+            break;
+        }
+        default: // DEFAULT_BIN
+        {
+            setRenderBinToInherit();
+            break;
+        }
     }
 }
 
@@ -791,7 +806,7 @@ void StateSet::setRenderBinDetails(const int binNum,const std::string& binName,c
     _binName = binName;
 }
 
-void StateSet::setRendingBinToInherit()
+void StateSet::setRenderBinToInherit()
 {
     _binMode = INHERIT_RENDERBIN_DETAILS;
     _binNum = 0;

@@ -558,7 +558,7 @@ void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLe
     if (_glCompressedTexImage2D)
     {
         typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-        (*((CompressedTexImage2DArbProc)_glCompressedTexImage2D))(target, level, internalformat, width, height, border, imageSize, data);
+        ((CompressedTexImage2DArbProc)_glCompressedTexImage2D)(target, level, internalformat, width, height, border, imageSize, data);
     }
     else
     {

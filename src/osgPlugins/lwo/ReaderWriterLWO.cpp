@@ -198,26 +198,26 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         {
             GeometryCollection& gc = mtgcm[face.material];
             
-            osg::Primitive::Mode mode;
+            osg::PrimitiveSet::Mode mode;
             switch(face.index_cnt)
             {
                 case(0):
-                    mode = osg::Primitive::POINTS;
+                    mode = osg::PrimitiveSet::POINTS;
                     break;
                 case(1):
-                    mode = osg::Primitive::POINTS;
+                    mode = osg::PrimitiveSet::POINTS;
                     break;
                 case(2):
-                    mode = osg::Primitive::LINES;
+                    mode = osg::PrimitiveSet::LINES;
                     break;
                 case(3):
-                    mode = osg::Primitive::TRIANGLES;
+                    mode = osg::PrimitiveSet::TRIANGLES;
                     break;
                 case(4):
-                    mode = osg::Primitive::QUADS;
+                    mode = osg::PrimitiveSet::QUADS;
                     break;
                 default:
-                    mode = osg::Primitive::POLYGON;
+                    mode = osg::PrimitiveSet::POLYGON;
                     break;
             }
                         

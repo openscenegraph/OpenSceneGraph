@@ -4,7 +4,7 @@
 #include <osg/Texture>
 #include <osg/Drawable>
 #include <osg/Array>
-#include <osg/Primitive>
+#include <osg/PrimitiveSet>
 
 using namespace osg;
 
@@ -85,10 +85,10 @@ Array* CopyOp::operator() (const Array* array) const
         return const_cast<Array*>(array);
 }
 
-Primitive* CopyOp::operator() (const Primitive* primitive) const
+PrimitiveSet* CopyOp::operator() (const PrimitiveSet* primitive) const
 {
     if (primitive && _flags&DEEP_COPY_PRIMITIVES)
-        return dynamic_cast<Primitive*>(primitive->clone(*this));
+        return dynamic_cast<PrimitiveSet*>(primitive->clone(*this));
     else
-        return const_cast<Primitive*>(primitive);
+        return const_cast<PrimitiveSet*>(primitive);
 }

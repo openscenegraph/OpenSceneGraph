@@ -30,7 +30,7 @@ namespace osgParticle
 
         virtual const char *libraryName() const { return "osgParticle"; }
         virtual const char *className() const { return "Program"; }
-        virtual bool isSameKindAs(const osg::Object *obj) { return dynamic_cast<const Program*>(obj) != 0; }
+        virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const Program*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
     protected:

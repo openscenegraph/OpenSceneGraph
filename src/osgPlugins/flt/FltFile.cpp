@@ -25,6 +25,7 @@ FltFile::FltFile(
     MaterialPool* pMaterialPool)
 {
     _useTextureAlphaForTransparancyBinning = true;
+    _doUnitsConversion = true;
 
     if (pColorPool)
     {
@@ -70,6 +71,7 @@ FltFile::FltFile(
 
     // instances are always internally defined 
     setInstancePool( new InstancePool );
+    
 }
 
 
@@ -97,6 +99,7 @@ osg::Group* FltFile::convert()
 {
     ConvertFromFLT visit;
     visit.setUseTextureAlphaForTransparancyBinning(getUseTextureAlphaForTransparancyBinning());
+    visit.setDoUnitsConversion(getDoUnitsConversion());
     return visit.convert(getHeaderRecord());
 }
 

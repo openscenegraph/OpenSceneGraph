@@ -37,6 +37,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
     {
         read->setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
         osg::notify(osg::DEBUG_INFO) << "FltFile.getUseTextureAlphaForTransparancyBinning()=" << read->getUseTextureAlphaForTransparancyBinning() << std::endl;
+        read->setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.o
+        osg::notify(osg::DEBUG_INFO) << "FltFile.getDoUnitsConversion()=" << read->getDoUnitsConversion() << std::endl;
     }
 
     osg::Node* node = read->readNode(fileName);

@@ -32,35 +32,36 @@ class OSGReaderWriter : public ReaderWriter
                 Input fr;
                 fr.attach(&fin);
 
-                Group* group = new Group;
-                group->setName("import group");
+                typedef std::vector<osg::Node*> NodeList;
+                NodeList nodeList;
 
                 // load all nodes in file, placing them in a group.
                 while(!fr.eof())
                 {
                     Node *node = fr.readNode();
-                    if (node) group->addChild(node);
+                    if (node) nodeList.push_back(node);
                     else fr.advanceOverCurrentFieldOrBlock();
                 }
 
-                if  (group->getNumChildren()>1)
-                {
-                    return group;
-                }
-                else if (group->getNumChildren()==1)
-                {
-                    // only one node loaded so just return that one node,
-                    // and delete the redundent group.  Note, the
-                    // child must be referenced before defrencing
-                    // the group so to avoid delete its children.
-                    Node* node = group->getChild(0);
-                    node->ref();
-                    group->unref();
-                    return node;
-                }                // group->getNumChildren()==0
-                else
+                if  (nodeList.empty())
                 {
                     return ReadResult("No data loaded from "+fileName);
+                }
+                else if (nodeList.size()==1)
+                {
+                    return nodeList.front();
+                }
+                else
+                {
+                    Group* group = new Group;
+                    group->setName("import group");
+                    for(NodeList::iterator itr=nodeList.begin();
+                        itr!=nodeList.end();
+                        ++itr)
+                    {
+                        group->addChild(*itr);
+                    }
+                    return group;
                 }
 
             }

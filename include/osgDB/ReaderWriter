@@ -67,9 +67,9 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 const bool validImage() { return getImage()!=0; }
                 const bool validNode() { return getNode()!=0; }
 
-                osg::Object* takeObject() { osg::Object* obj = _object.get(); if (obj) { obj->ref(); _object=NULL; } return obj; }
-                osg::Image* takeImage() { osg::Image* image=dynamic_cast<osg::Image*>(_object.get()); if (image) { image->ref(); _object==NULL; } return image; }
-                osg::Node* takeNode() { osg::Node* node=dynamic_cast<osg::Node*>(_object.get()); if (node) { node->ref(); _object==NULL; } return node; }
+                osg::Object* takeObject() { osg::Object* obj = _object.get(); if (obj) { obj->ref(); _object=NULL; obj->unref_nodelete(); } return obj; }
+                osg::Image* takeImage() { osg::Image* image=dynamic_cast<osg::Image*>(_object.get()); if (image) { image->ref(); _object=NULL; image->unref_nodelete(); } return image; }
+                osg::Node* takeNode() { osg::Node* node=dynamic_cast<osg::Node*>(_object.get()); if (node) { node->ref(); _object=NULL; node->unref_nodelete(); } return node; }
 
                 const std::string& message() const { return _message; }
 

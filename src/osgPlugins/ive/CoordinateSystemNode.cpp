@@ -30,8 +30,9 @@ void CoordinateSystemNode::write(DataOutputStream* out)
     }
     else
         throw Exception("CoordinateSystemNode::write(): Could not cast this osg::CoordinateSystemNode to an osg::Group.");
-    // Write CoordinateSystemNode's properties.
+       // Write CoordinateSystemNode's properties.
 
+        out->writeString(getFormat());
         out->writeString(getCoordinateSystem());
 
         out->writeBool(getEllipsoidModel()!=0);
@@ -57,6 +58,9 @@ void CoordinateSystemNode::read(DataInputStream* in){
         else
             throw Exception("CoordinateSystemNode::read(): Could not cast this osg::CoordinateSystemNode to an osg::Group.");
         // Read CoordinateSystemNode's properties
+
+        // Read format string
+        setFormat( in->readString());
 
         // Read coord string
         setCoordinateSystem( in->readString());

@@ -144,6 +144,8 @@ void ClusterCullingCallback::set(const osg::Vec3& controlPoint, const osg::Vec3&
 
 bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::State*) const
 {
+    return false;
+
     if (_deviation<=-1.0f)
     {
 //        osg::notify(osg::NOTICE)<<"ClusterCullingCallback::cull()  _deviation="<<_deviation<<std::endl;

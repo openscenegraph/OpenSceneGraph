@@ -27,6 +27,15 @@ bool CoordinateSystemNode_readLocalData(Object& obj, Input& fr)
 
     CoordinateSystemNode& csn = static_cast<CoordinateSystemNode&>(obj);
 
+    if (fr.matchSequence("Format %s"))
+    {
+        const char* str = fr[1].getStr();
+        if (str) csn.setFormat(str);
+
+        iteratorAdvanced = true;
+        fr+=2;
+    }
+
     if (fr.matchSequence("CoordinateSystem %s"))
     {
         const char* str = fr[1].getStr();
@@ -49,6 +58,7 @@ bool CoordinateSystemNode_writeLocalData(const Object& obj, Output& fw)
 {
     const CoordinateSystemNode& csn = static_cast<const CoordinateSystemNode&>(obj);
 
+    fw.indent()<<"Format "<<fw.wrapString(csn.getFormat())<<std::endl;
     fw.indent()<<"CoordinateSystem "<<fw.wrapString(csn.getCoordinateSystem())<<std::endl;
     
     if (csn.getEllipsoidModel()) 

@@ -139,8 +139,7 @@ class OSGGL2_EXPORT Extensions : public osg::Referenced
 	/** are all the extensions required for GLSL supported? */
 	bool isGlslSupported() const { return ( _isShaderObjectsSupported &&
 	                                        _isVertexShaderSupported && 
-	                                        _isFragmentShaderSupported && 
-	                                        _isLanguage100Supported ); }
+	                                        _isFragmentShaderSupported ); }
 
 	void setShaderObjectsSupported(bool flag) { _isShaderObjectsSupported = flag; }
 	bool isShaderObjectsSupported() const { return _isShaderObjectsSupported; }

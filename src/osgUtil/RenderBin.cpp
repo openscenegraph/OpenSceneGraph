@@ -191,7 +191,7 @@ bool RenderBin::getStats(osg::Statistics* primStats)
             if (dw)
             {
                 // then tot up the primtive types and no vertices.
-                dw->applyPrimitiveOperation(*primStats); // use sub-class to find the stats for each drawable
+                dw->accept(*primStats); // use sub-class to find the stats for each drawable
             }
         }
         somestats=true;

@@ -116,6 +116,12 @@ class SG_EXPORT ImpostorSprite : public Drawable
         /** draw ImpostorSprite directly. */
         virtual void drawImmediateMode(State& state);
 
+        /** accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        virtual void accept(AttributeFunctor& af);
+        
+        /** accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has.*/
+        virtual void accept(PrimitiveFunctor& pf);
+
     protected:
 
         ImpostorSprite(const ImpostorSprite&):Drawable() {}

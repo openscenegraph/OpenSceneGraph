@@ -123,7 +123,7 @@ class Primitive : public Object
 
         virtual void draw() const = 0;
         
-        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor&) {}
+        virtual void accept(Drawable::PrimitiveFunctor&) {}
         
         virtual void offsetIndices(int offset) = 0;
 
@@ -174,7 +174,7 @@ class SG_EXPORT DrawArrays : public Primitive
 
         virtual void draw() const;
         
-        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+        virtual void accept(Drawable::PrimitiveFunctor& functor);
         
         virtual void offsetIndices(int offset) { _first += offset; }
 
@@ -225,7 +225,7 @@ class SG_EXPORT DrawArrayLengths : public Primitive, public VectorSizei
         
         virtual void draw() const;
         
-        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+        virtual void accept(Drawable::PrimitiveFunctor& functor);
         
         virtual void offsetIndices(int offset) { _first += offset; }
 
@@ -266,7 +266,7 @@ class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
 
         virtual void draw() const ;
         
-        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+        virtual void accept(Drawable::PrimitiveFunctor& functor);
 
         virtual void offsetIndices(int offset);
 };
@@ -304,7 +304,7 @@ class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
 
         virtual void draw() const;
         
-        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+        virtual void accept(Drawable::PrimitiveFunctor& functor);
 
         virtual void offsetIndices(int offset);
 };
@@ -341,7 +341,7 @@ class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
 
         virtual void draw() const;
         
-        virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
+        virtual void accept(Drawable::PrimitiveFunctor& functor);
 
         virtual void offsetIndices(int offset);
 };

@@ -82,7 +82,7 @@ void TriStripVisitor::stripify(Geometry& geom)
             case(Primitive::QUADS):
             case(Primitive::QUAD_STRIP):
             case(Primitive::POLYGON):
-                (*itr)->applyPrimitiveOperation(taf);
+                (*itr)->accept(taf);
                 break;
             default:
                 new_primitives.push_back(*itr);

@@ -111,7 +111,7 @@ void SmoothingVisitor::smooth(osg::Geometry& geom)
     TriangleFunctor<SmoothTriangleFunctor> stf;
     stf.set(&(coords->front()),coords->size(),&(normals->front()));
     
-    geom.applyPrimitiveOperation(stf);
+    geom.accept(stf);
 
     for(nitr= normals->begin();
         nitr!=normals->end();

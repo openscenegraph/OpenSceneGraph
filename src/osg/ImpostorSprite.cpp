@@ -115,6 +115,20 @@ void ImpostorSprite::setTexture(Texture* tex,int s,int t)
 }
 
 
+void ImpostorSprite::accept(AttributeFunctor& af)
+{
+    af.apply(VERTICES,4,_coords);
+    af.apply(TEXTURE_COORDS_0,4,_texcoords);
+}
+
+void ImpostorSprite::accept(PrimitiveFunctor& functor)
+{
+    functor.setVertexArray(4,_coords);
+    functor.drawArrays( GL_QUADS, 0, 4);
+    
+}
+
+
 ///////////////////////////////////////////////////////////////////////////
 // Helper class for managing the reuse of ImpostorSprite resources.
 ///////////////////////////////////////////////////////////////////////////
@@ -267,3 +281,4 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
     return is;
 
 }
+

@@ -849,91 +849,79 @@ void GeoSet::setInterleavedArray( const InterleaveArrayType format, float *ia, I
 
     set_fast_path();
 }
- 
-Drawable::AttributeBitMask GeoSet::suppportsAttributeOperation() const
-{
-    // we do support coords,normals,texcoords and colors so return true.
-    return COORDS | NORMALS | COLORS | TEXTURE_COORDS;
-}
 
-Drawable::AttributeBitMask GeoSet::applyAttributeOperation(AttributeFunctor& auf)
+void GeoSet::accept(AttributeFunctor& auf)
 {
     if (_numcoords == 0) computeNumVerts();
 
-    AttributeBitMask amb = auf.getAttributeBitMask();
-    AttributeBitMask ramb = 0;
-    
-    if ((amb & COORDS) && _coords && _numcoords)
+    if (_coords && _numcoords)
     {
-        if (auf.apply(COORDS,_coords,_coords+_numcoords)) ramb = COORDS;
+        auf.apply(VERTICES,_numcoords,_coords);
     }
     
-    if ((amb & NORMALS) && _normals && _numnormals)
+    if (_normals && _numnormals)
     {
-        if (auf.apply(NORMALS,_normals,_normals+_numnormals)) ramb = NORMALS;
+        auf.apply(NORMALS,_numnormals,_normals);
     }
     
-    if ((amb & COLORS) && _colors && _numcolors)
+    if (_colors && _numcolors)
     {
-        if (auf.apply(COLORS,_colors,_colors+_numcolors)) ramb = COLORS;
+        auf.apply(COLORS,_numcolors,_colors);
     }
     
-    if ((amb & TEXTURE_COORDS) && _tcoords && _numtcoords)
+    if (_tcoords && _numtcoords)
     {
-        if (auf.apply(TEXTURE_COORDS,_tcoords,_tcoords+_numtcoords)) ramb = TEXTURE_COORDS;
+        auf.apply(TEXTURE_COORDS_0,_numtcoords,_tcoords);
     }
-    
-    return ramb;
 }
 
 
-void GeoSet::applyPrimitiveOperation(PrimitiveFunctor& functor)
+void GeoSet::accept(PrimitiveFunctor& functor)
 {
-        // will easily convert into a Geometry.
-        
-        if (!_coords || !_numcoords) return;
-        
-        functor.setVertexArray(_numcoords,_coords);
-                
-        if( _needprimlen )
+    // will easily convert into a Geometry.
+
+    if (!_coords || !_numcoords) return;
+
+    functor.setVertexArray(_numcoords,_coords);
+
+    if( _needprimlen )
+    {
+        // LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP,
+        // TRIANGLE_FAN, QUAD_STRIP, POLYGONS
+        int index = 0;
+        if( _primLengths == (int *)0 )
         {
-            // LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP,
-            // TRIANGLE_FAN, QUAD_STRIP, POLYGONS
-            int index = 0;
-            if( _primLengths == (int *)0 )
-            {
-                return;
-            }
-
-            for( int i = 0; i < _numprims; i++ )
-            {
-                if( _cindex.valid() )
-                {
-                    
-                    if (_cindex._is_ushort)
-                        functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] );
-                    else
-                        functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._uint[index] );
-                }
-                else
-                    functor.drawArrays( (GLenum)_oglprimtype, index, _primLengths[i] );
-
-                index += _primLengths[i];
-            }
+            return;
         }
-        else                         // POINTS, LINES, TRIANGLES, QUADS
+
+        for( int i = 0; i < _numprims; i++ )
         {
-            if( _cindex.valid())
+            if( _cindex.valid() )
             {
+
                 if (_cindex._is_ushort)
-                    functor.drawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._ushort );
+                    functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._ushort[index] );
                 else
-                    functor.drawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._uint );
+                    functor.drawElements( (GLenum)_oglprimtype, _primLengths[i],&_cindex._ptr._uint[index] );
             }
             else
-                functor.drawArrays( (GLenum)_oglprimtype, 0, _numcoords );
+                functor.drawArrays( (GLenum)_oglprimtype, index, _primLengths[i] );
+
+            index += _primLengths[i];
         }
-        
+    }
+    else                         // POINTS, LINES, TRIANGLES, QUADS
+    {
+        if( _cindex.valid())
+        {
+            if (_cindex._is_ushort)
+                functor.drawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._ushort );
+            else
+                functor.drawElements( (GLenum)_oglprimtype, _cindex._size, _cindex._ptr._uint );
+        }
+        else
+            functor.drawArrays( (GLenum)_oglprimtype, 0, _numcoords );
+    }
         
 }
 

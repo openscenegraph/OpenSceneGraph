@@ -192,35 +192,22 @@ void Geometry::drawImmediateMode(State& state)
 
 }
 
-Drawable::AttributeBitMask Geometry::suppportsAttributeOperation() const
-{
-    // we do support coords,normals,texcoords and colors so return true.
-    return COORDS | NORMALS | COLORS | TEXTURE_COORDS;
-}
 
-
-/** return the attributes successully applied in applyAttributeUpdate.*/
-Drawable::AttributeBitMask Geometry::applyAttributeOperation(AttributeFunctor& auf)
+void Geometry::accept(AttributeFunctor& af)
 {
-    AttributeBitMask amb = auf.getAttributeBitMask();
-    AttributeBitMask ramb = 0;
-    
-    if ((amb & COORDS) && _vertexArray.valid() && !_vertexArray->empty())
+    if (_vertexArray.valid() && !_vertexArray->empty())
     {
-        if (auf.apply(COORDS,&(*(_vertexArray->begin())),&(*(_vertexArray->end())))) ramb = COORDS;
+        af.apply(VERTICES,_vertexArray->size(),&(_vertexArray->front()));
     }
     
-    if ((amb & NORMALS) && _normalArray.valid() && !_normalArray->empty())
+    if (_normalArray.valid() && !_normalArray->empty())
     {
-        if (auf.apply(NORMALS,&(*(_normalArray->begin())),&(*(_normalArray->end())))) ramb = NORMALS;
+        af.apply(NORMALS,_normalArray->size(),&(_normalArray->front()));
     }
-    
-    // colors and texture coords to implement...
-    
-    return ramb;
+    // need to add other attriubtes
 }
 
-void Geometry::applyPrimitiveOperation(PrimitiveFunctor& functor)
+void Geometry::accept(PrimitiveFunctor& functor)
 {
     if (!_vertexArray.valid() || _vertexArray->empty()) return;
     
@@ -230,7 +217,7 @@ void Geometry::applyPrimitiveOperation(PrimitiveFunctor& functor)
         itr!=_primitives.end();
         ++itr)
     {
-        (*itr)->applyPrimitiveOperation(functor);
+        (*itr)->accept(functor);
     }
     
 }

@@ -3,11 +3,11 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGGL2_EXPORT osgGL2::ProgramObject</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  OSGGL2_EXPORT <A HREF="#DOC.DOCU">osgGL2::ProgramObject</A></H2></H2><BLOCKQUOTE>Encapsulates the OpenGL Shading Language ProgramObject </BLOCKQUOTE>
+<H2>class  OSGGL2_EXPORT <A HREF="#DOC.DOCU">osgGL2::ProgramObject</A></H2></H2><BLOCKQUOTE>osgGL2::ProgramObject is an application-level abstraction of the OpenGL Shading Language glProgramObject.</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
@@ -23,55 +23,89 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.2.1">ProgramObject</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.67.4.1">ProgramObject</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.2.2">ProgramObject</A></B>(const <!1><A HREF="ProgramObject.html#DOC.57.2.2">ProgramObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.67.4.2">ProgramObject</A></B>(const <!1><A HREF="ProgramObject.html#DOC.67.4.2">ProgramObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.2.3">META_StateAttribute</A></B>(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ProgramObject.html">ProgramObject</A>, PROGRAMOBJECT)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.67.4.3">META_StateAttribute</A></B>(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ProgramObject.html">ProgramObject</A>, PROGRAMOBJECT)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.57.2.4">compare</A></B>(const osg::StateAttribute&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.67.4.4">compare</A></B>(const osg::StateAttribute&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.57.2.5">getAssociatedModes</A></B>(std::vector&lt;GLMode&gt;&amp; ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.67.4.5">apply</A></B>(osg::State&amp; state) const 
+<DD><I>If enabled, install our shader program in the GL pipeline, performing any shader program rebuild operations that might be pending.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.57.2.6">apply</A></B>(osg::State&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.67.4.6">compileGLObjects</A></B>(osg::State&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.57.2.7">compile</A></B>(osg::State&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.67.4.7">releaseGLObjects</A></B>(osg::State* state=0) const 
+<DD><I>release an OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.2.8">dirtyProgramObject</A></B>()
-<DD><I>Force a relink on next apply() of associated glProgramObject.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.8">dirtyProgramObject</A></B>()
+<DD><I>Mark us as "dirty" and in need of relinking.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.2.9">addShader</A></B>( <!1><A HREF="ShaderObject.html">ShaderObject</A>* shader )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.9">dirtyShaderObjects</A></B>()
+<DD><I>Mark our attached ShaderObjects as "dirty" and in need of recompilation.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.57.2.10">deleteObject</A></B>(unsigned int contextID, GLhandleARB handle)
-<DD><I>use deleteObject instead of glDeleteObject to allow GL2 Objects to cached until they can be deleted by the OpenGL context in which they were created, specified by contextID</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.10">enable</A></B>( bool enabled )
+<DD><I>An override to control whether the shader program will actually be installed when OSG attempts to apply() </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.57.2.11">flushDeletedGL2Objects</A></B>(unsigned int contextID, double currentTime, double&amp; availableTime)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.11">addShader</A></B>( <!1><A HREF="ShaderObject.html">ShaderObject</A>* shadObj )
+<DD><I>Attach a ShaderObject to this ProgramObject </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.12">setUniform</A></B>( const char* uniformName, int value )
+<DD><I>Assign a value to a ProgramObject's uniform variable </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.13">setUniform</A></B>( const char* uniformName, float value )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.14">setUniform</A></B>( const char* uniformName, osg::Vec2 value )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.15">setUniform</A></B>( const char* uniformName, osg::Vec3 value )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.16">setUniform</A></B>( const char* uniformName, osg::Vec4 value )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.67.4.17">setSampler</A></B>( const char* uniformName, int value )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.67.4.18">deleteObject</A></B>(unsigned int contextID, GLhandleARB handle)
+<DD><I>Mark internal GL objects for deletion.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.67.4.19">flushDeletedGL2Objects</A></B>(unsigned int contextID, double currentTime, double&amp; availableTime)
 <DD><I>flush all the cached glProgramObjects which need to be deleted in the OpenGL context related to contextID</I>
 </DL></P>
 
 <P><DL>
+<DT><H3>Protected Classes</H3><DD><DT>
+class  <B><A HREF="PerContextProgObj.html">PerContextProgObj</A></B>: public osg::Referenced
+<DD><I>PCPO is an OSG-internal encapsulation of glProgramObjects per-GL context.</I>
+</DL></P>
+
+<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ProgramObject.html#DOC.57.2.13">ShaderObjectList</A> <B><A HREF="#DOC.57.2.14">_shaderObjectList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.67.4.24">_enabled</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ProgramObject.html#DOC.57.2.16">PCPOList</A> <B><A HREF="#DOC.57.2.17">_pcpoList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ProgramObject.html#DOC.67.4.25">ShaderObjectList</A> <B><A HREF="#DOC.67.4.26">_shaderObjectList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>&gt; &gt;  <B><A HREF="#DOC.67.4.27">_pcpoList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.67.4.28">_frameNumberOfLastPCPOUpdate</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="osgGL2.html#DOC.67.7">UniformValueList</A> <B><A HREF="#DOC.67.4.29">_univalList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.57.2.12">~ProgramObject</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.67.4.21">~ProgramObject</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>* <B><A HREF="#DOC.57.2.18">getPCPO</A></B>(unsigned int contextID) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>* <B><A HREF="#DOC.67.4.22">getPCPO</A></B>(unsigned int contextID) const 
+<DD><I>Get the PCPO for a particular GL context </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.67.4.23">updateUniforms</A></B>( int frameNumber ) const 
+<DD><I>Per frame, copy the list of pending UniformValue updates to each of the PCPOs.</I>
 </DL></P>
 
 <P><DL>
-<DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ShaderObject.html">ShaderObject</A>&gt; &gt; <B><A HREF="#DOC.57.2.13">ShaderObjectList</A></B>
-<DT>
-class  OSGGL2_EXPORT <B><A HREF="PerContextProgObj.html">PerContextProgObj</A></B>: public osg::Referenced
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>&gt; &gt; <B><A HREF="#DOC.57.2.16">PCPOList</A></B>
+<DT><H3>Protected</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="osgGL2.html#DOC.67.3">ShaderObjectPtr</A> &gt;  <B><A HREF="#DOC.67.4.25">ShaderObjectList</A></B>
 </DL></P>
 
 </DL>
@@ -79,91 +113,157 @@ class  OSGGL2_EXPORT <B><A HREF="PerContextProgObj.html">PerContextProgObj</A></
 <A NAME="DOC.DOCU"></A>
 <HR>
 <H2>Documentation</H2>
-<BLOCKQUOTE>Encapsulates the OpenGL Shading Language ProgramObject </BLOCKQUOTE>
+<BLOCKQUOTE>osgGL2::ProgramObject is an application-level abstraction of the OpenGL Shading Language glProgramObject.
+It is an osg::StateAttribute that, when applied, will install an OGLSL
+shader program for subsequent rendering.
+osgGL2::ShaderObjects containing the actual shader source code are
+attached to the ProgramObject, which will then manage the compilation,
+linking, and installation of the GL shader program.
+ProgramObject will automatically manage per-context instancing of the
+internal objects, if that is necessary for a particular display
+configuration.</BLOCKQUOTE>
 <DL>
 
 <A NAME="ProgramObject"></A>
-<A NAME="DOC.57.2.1"></A>
+<A NAME="DOC.67.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ProgramObject()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ProgramObject"></A>
-<A NAME="DOC.57.2.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ProgramObject(const <!1><A HREF="ProgramObject.html#DOC.57.2.2">ProgramObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.67.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ProgramObject(const <!1><A HREF="ProgramObject.html#DOC.67.4.2">ProgramObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.57.2.3"></A>
+<A NAME="DOC.67.4.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ProgramObject.html">ProgramObject</A>, PROGRAMOBJECT)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.57.2.4"></A>
+<A NAME="DOC.67.4.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const osg::StateAttribute&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
-<A NAME="getAssociatedModes"></A>
-<A NAME="DOC.57.2.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;GLMode&gt;&amp; ) const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.57.2.6"></A>
+<A NAME="DOC.67.4.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::State&amp; state) const </B></TT>
+<DD>If enabled, install our shader program in the GL pipeline,
+performing any shader program rebuild operations that might
+be pending. 
 <DL><DT><DD></DL><P>
-<A NAME="compile"></A>
-<A NAME="DOC.57.2.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void compile(osg::State&amp; state) const </B></TT>
+<A NAME="compileGLObjects"></A>
+<A NAME="DOC.67.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void compileGLObjects(osg::State&amp; state) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="releaseGLObjects"></A>
+<A NAME="DOC.67.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void releaseGLObjects(osg::State* state=0) const </B></TT>
+<DD>release an OpenGL objects in specified graphics context if State
+object is passed, otherwise release OpenGL objexts for all graphics context if
+State object pointer NULL
 <DL><DT><DD></DL><P>
 <A NAME="dirtyProgramObject"></A>
-<A NAME="DOC.57.2.8"></A>
+<A NAME="DOC.67.4.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyProgramObject()</B></TT>
-<DD>Force a relink on next apply() of associated glProgramObject. 
+<DD>Mark us as "dirty" and in need of relinking. 
+<DL><DT><DD></DL><P>
+<A NAME="dirtyShaderObjects"></A>
+<A NAME="DOC.67.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyShaderObjects()</B></TT>
+<DD>Mark our attached ShaderObjects as "dirty" and in need of
+recompilation. 
+<DL><DT><DD></DL><P>
+<A NAME="enable"></A>
+<A NAME="DOC.67.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void enable( bool enabled )</B></TT>
+<DD>An override to control whether the shader program will
+actually be installed when OSG attempts to apply() 
 <DL><DT><DD></DL><P>
 <A NAME="addShader"></A>
-<A NAME="DOC.57.2.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addShader( <!1><A HREF="ShaderObject.html">ShaderObject</A>* shader )</B></TT>
+<A NAME="DOC.67.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addShader( <!1><A HREF="ShaderObject.html">ShaderObject</A>* shadObj )</B></TT>
+<DD>Attach a ShaderObject to this ProgramObject 
+<DL><DT><DD></DL><P>
+<A NAME="setUniform"></A>
+<A NAME="DOC.67.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUniform( const char* uniformName, int value )</B></TT>
+<DD>Assign a value to a ProgramObject's uniform variable 
+<DL><DT><DD></DL><P>
+<A NAME="setUniform"></A>
+<A NAME="DOC.67.4.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUniform( const char* uniformName, float value )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUniform"></A>
+<A NAME="DOC.67.4.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUniform( const char* uniformName, osg::Vec2 value )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUniform"></A>
+<A NAME="DOC.67.4.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUniform( const char* uniformName, osg::Vec3 value )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUniform"></A>
+<A NAME="DOC.67.4.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUniform( const char* uniformName, osg::Vec4 value )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSampler"></A>
+<A NAME="DOC.67.4.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSampler( const char* uniformName, int value )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="deleteObject"></A>
-<A NAME="DOC.57.2.10"></A>
+<A NAME="DOC.67.4.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void deleteObject(unsigned int contextID, GLhandleARB handle)</B></TT>
-<DD>use deleteObject instead of glDeleteObject to allow
-GL2 Objects to cached until they can be deleted
-by the OpenGL context in which they were created, specified
-by contextID
+<DD>Mark internal GL objects for deletion.
+Deletion requests are queued until they can be executed
+in the proper GL context. 
 <DL><DT><DD></DL><P>
 <A NAME="flushDeletedGL2Objects"></A>
-<A NAME="DOC.57.2.11"></A>
+<A NAME="DOC.67.4.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void flushDeletedGL2Objects(unsigned int contextID, double currentTime, double&amp; availableTime)</B></TT>
 <DD>flush all the cached glProgramObjects which need to be deleted
 in the OpenGL context related to contextID
 <DL><DT><DD></DL><P>
 <A NAME="~ProgramObject"></A>
-<A NAME="DOC.57.2.12"></A>
+<A NAME="DOC.67.4.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ProgramObject()</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="getPCPO"></A>
+<A NAME="DOC.67.4.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>* getPCPO(unsigned int contextID) const </B></TT>
+<DD>Get the PCPO for a particular GL context 
+<DL><DT><DD></DL><P>
+<A NAME="updateUniforms"></A>
+<A NAME="DOC.67.4.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateUniforms( int frameNumber ) const </B></TT>
+<DD>Per frame, copy the list of pending UniformValue updates to
+each of the PCPOs. 
+<DL><DT><DD></DL><P>
+<A NAME="_enabled"></A>
+<A NAME="DOC.67.4.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _enabled</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="ShaderObjectList"></A>
-<A NAME="DOC.57.2.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ShaderObject.html">ShaderObject</A>&gt; &gt; ShaderObjectList</B></TT>
+<A NAME="DOC.67.4.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="osgGL2.html#DOC.67.3">ShaderObjectPtr</A> &gt;  ShaderObjectList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_shaderObjectList"></A>
-<A NAME="DOC.57.2.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ProgramObject.html#DOC.57.2.13">ShaderObjectList</A> _shaderObjectList</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="PCPOList"></A>
-<A NAME="DOC.57.2.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>&gt; &gt; PCPOList</B></TT>
+<A NAME="DOC.67.4.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ProgramObject.html#DOC.67.4.25">ShaderObjectList</A> _shaderObjectList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pcpoList"></A>
-<A NAME="DOC.57.2.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ProgramObject.html#DOC.57.2.16">PCPOList</A> _pcpoList</B></TT>
+<A NAME="DOC.67.4.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>&gt; &gt;  _pcpoList</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getPCPO"></A>
-<A NAME="DOC.57.2.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>* getPCPO(unsigned int contextID) const </B></TT>
+<A NAME="_frameNumberOfLastPCPOUpdate"></A>
+<A NAME="DOC.67.4.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _frameNumberOfLastPCPOUpdate</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_univalList"></A>
+<A NAME="DOC.67.4.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="osgGL2.html#DOC.67.7">UniformValueList</A> _univalList</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

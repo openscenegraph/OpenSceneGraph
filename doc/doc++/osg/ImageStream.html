@@ -1,0 +1,391 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::ImageStream</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::ImageStream</A></H2></H2><BLOCKQUOTE> Image Stream class</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CImage,MImage.html,CImageStream,MImageStream.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.122.9">StreamStatus</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.122.1">ImageStream</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.122.2">ImageStream</A></B>(const <!1><A HREF="ImageStream.html#DOC.2.122.2">ImageStream</A>&amp; image, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.122.3">cloneType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.122.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.122.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.122.6">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.122.7">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.122.8">compare</A></B>(const <!1><A HREF="Image.html">Image</A>&amp; rhs) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.10">play</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.11">pause</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.12">rewind</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.13">quit</A></B>(bool  = true)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageStream.html#DOC.2.122.9">StreamStatus</A> <B><A HREF="#DOC.2.122.14">getStatus</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.15">setReferenceTime</A></B>(double)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.2.122.16">getReferenceTime</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.17">setTimeMultiplier</A></B>(double)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.2.122.18">getTimeMultiplier</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.122.19">update</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageStream.html#DOC.2.122.9">StreamStatus</A> <B><A HREF="#DOC.2.122.21">_status</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.122.20">~ImageStream</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Image.html">Image</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>AllocationMode</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setFileName</B>(const std::string&amp; fileName)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getFileName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setAllocationMode</B>(<!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> <B>getAllocationMode</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>allocateImage</B>(int <!1><A HREF="Image.html#DOC.2.119.21">s</A>, int <!1><A HREF="Image.html#DOC.2.119.22">t</A>, int <!1><A HREF="Image.html#DOC.2.119.23">r</A>, GLenum pixelFormat, GLenum type, int packing=1)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setImage</B>(int <!1><A HREF="Image.html#DOC.2.119.21">s</A>, int <!1><A HREF="Image.html#DOC.2.119.22">t</A>, int <!1><A HREF="Image.html#DOC.2.119.23">r</A>, GLint internalTextureformat, GLenum pixelFormat, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.119.35">data</A>, <!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> mode, int packing=1)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>readPixels</B>(int <!1><A HREF="Viewport.html#DOC.2.278.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.278.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.278.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>, GLenum pixelFormat, GLenum type)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>readImageFromCurrentTexture</B>(unsigned int contextID, bool copyMipMapsIfAvailable)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>scaleImage</B>(int <!1><A HREF="Image.html#DOC.2.119.21">s</A>, int <!1><A HREF="Image.html#DOC.2.119.22">t</A>, int <!1><A HREF="Image.html#DOC.2.119.23">r</A>)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>scaleImage</B>(int <!1><A HREF="Image.html#DOC.2.119.21">s</A>, int <!1><A HREF="Image.html#DOC.2.119.22">t</A>, int <!1><A HREF="Image.html#DOC.2.119.23">r</A>, GLenum newDataType)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>copySubImage</B>(int s_offset, int t_offset, int r_offset, <!1><A HREF="Image.html">osg::Image</A>* source)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>s</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>t</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>r</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setInternalTextureFormat</B>(GLint internalFormat)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   GLint <B>getInternalTextureFormat</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setPixelFormat</B>(GLenum pixelFormat)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   GLenum <B>getPixelFormat</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   GLenum <B>getDataType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getPacking</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getPixelSizeInBits</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getRowSizeInBytes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getImageSizeInBytes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getTotalSizeInBytes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getTotalSizeInBytesIncludingMipmaps</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned char* <B>data</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const unsigned char* <B>data</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned char* <B>data</B>(int column, int row=0, int image=0) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>flipHorizontal</B>(int image=0)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>flipVertical</B>(int image=0)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>ensureValidSizeForTexturing</B>(GLint <!1><A HREF="Extensions.5.html#DOC.2.240.57.26">maxTextureSize</A>)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>dirty</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setModifiedTag</B>(unsigned int value)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getModifiedTag</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   bool <B>isPackedType</B>(GLenum type)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   unsigned int <B>computeNumComponents</B>(GLenum pixelFormat)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   unsigned int <B>computePixelSizeInBits</B>(GLenum pixelFormat, GLenum type)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   unsigned int <B>computeRowWidthInBytes</B>(int <!1><A HREF="Viewport.html#DOC.2.278.10">width</A>, GLenum pixelFormat, GLenum type, int packing)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   int <B>computeNearestPowerOfTwo</B>(int <!1><A HREF="Image.html#DOC.2.119.21">s</A>, float bias=0.5f)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isMipmap</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getNumMipmapLevels</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setMipmapData</B>(const <!1><A HREF="Image.html#DOC.2.119.49">MipmapDataType</A>&amp; mipmapDataVector)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned char* <B>getMipmapData</B>(unsigned int mipmapNumber) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>computeMipMaps</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>isImageTranslucent</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; unsigned int &gt;  <B>MipmapDataType</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_fileName</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int <B>_s</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int  <B>_t</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>int   <B>_r</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLint <B>_internalTextureFormat</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLenum <B>_pixelFormat</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>GLenum <B>_dataType</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_packing</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> <B>_allocationMode</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned char* <B>_data</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_modifiedTag</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Image.html#DOC.2.119.49">MipmapDataType</A> <B>_mipmapData</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Image.html">Image</A>&amp; <B>operator = </B>(const <!1><A HREF="Image.html">Image</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>deallocateData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setData</B>(unsigned char* <!1><A HREF="Image.html#DOC.2.119.35">data</A>, <!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> allocationMode)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Image Stream class</BLOCKQUOTE>
+<DL>
+
+<A NAME="ImageStream"></A>
+<A NAME="DOC.2.122.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImageStream()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ImageStream"></A>
+<A NAME="DOC.2.122.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImageStream(const <!1><A HREF="ImageStream.html#DOC.2.122.2">ImageStream</A>&amp; image, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.122.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.122.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.122.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.122.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.122.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compare"></A>
+<A NAME="DOC.2.122.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="Image.html">Image</A>&amp; rhs) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
+<DL><DT><DD></DL><P>
+<A NAME="StreamStatus"></A>
+<A NAME="DOC.2.122.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  StreamStatus</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="PLAYING"></A>
+<A NAME="DOC.2.122.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PLAYING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PAUSED"></A>
+<A NAME="DOC.2.122.9.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PAUSED</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="REWINDING"></A>
+<A NAME="DOC.2.122.9.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> REWINDING</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="play"></A>
+<A NAME="DOC.2.122.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void play()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pause"></A>
+<A NAME="DOC.2.122.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void pause()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="rewind"></A>
+<A NAME="DOC.2.122.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void rewind()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="quit"></A>
+<A NAME="DOC.2.122.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void quit(bool  = true)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStatus"></A>
+<A NAME="DOC.2.122.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageStream.html#DOC.2.122.9">StreamStatus</A> getStatus()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setReferenceTime"></A>
+<A NAME="DOC.2.122.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setReferenceTime(double)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getReferenceTime"></A>
+<A NAME="DOC.2.122.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   double getReferenceTime() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTimeMultiplier"></A>
+<A NAME="DOC.2.122.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setTimeMultiplier(double)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTimeMultiplier"></A>
+<A NAME="DOC.2.122.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   double getTimeMultiplier()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="update"></A>
+<A NAME="DOC.2.122.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void update()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ImageStream"></A>
+<A NAME="DOC.2.122.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ImageStream()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_status"></A>
+<A NAME="DOC.2.122.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageStream.html#DOC.2.122.9">StreamStatus</A> _status</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGSIM_EXPORT osgSim::DirectionalSector</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGSIM_EXPORT <A HREF="#DOC.DOCU">osgSim::DirectionalSector</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Object,M,CSector,MSector.html,CDirectionalSector,MDirectionalSector.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.1">DirectionalSector</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.2">DirectionalSector</A></B>(const <!1><A HREF="DirectionalSector.html#DOC.2.19.2">DirectionalSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.19.3">DirectionalSector</A></B>(const osg::Vec3&amp; direction, float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle=0.0f)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SequenceGroup.html#DOC.2.1.4">META_Object</A> <B><A HREF="#DOC.2.19.4">(osgSim, DirectionalSector)</A></B>(const osg::Vec3&amp; direction)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec3&amp; <B><A HREF="#DOC.2.19.5">getDirection</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.6">setHorizLobeAngle</A></B>(float angle)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.7">getHorizLobeAngle</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.8">setLobeRollAngle</A></B>(float angle)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.9">getLobeRollAngle</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.10">setVertLobeAngle</A></B>(float angle)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.11">getVertLobeAngle</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.12">setFadeAngle</A></B>(float angle)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.13">getFadeAngle</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.19.14">operator() </A></B>(const osg::Vec3&amp; eyeLocal) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.15">computeMatrix</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3 <B><A HREF="#DOC.2.19.17">_direction</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.18">_rollAngle</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrix <B><A HREF="#DOC.2.19.19">_local_to_LP</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.20">_cosHorizAngle</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.21">_cosVertAngle</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.22">_cosHorizFadeAngle</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.19.23">_cosVertFadeAngle</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.19.16">~DirectionalSector</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Sector.html">Sector</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="DirectionalSector"></A>
+<A NAME="DOC.2.19.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DirectionalSector()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DirectionalSector"></A>
+<A NAME="DOC.2.19.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DirectionalSector(const <!1><A HREF="DirectionalSector.html#DOC.2.19.2">DirectionalSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DirectionalSector"></A>
+<A NAME="DOC.2.19.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DirectionalSector(const osg::Vec3&amp; direction, float horizLobeAngle, float vertLobeAngle, float lobeRollAngle, float fadeAngle=0.0f)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(osgSim, DirectionalSector)"></A>
+<A NAME="DOC.2.19.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SequenceGroup.html#DOC.2.1.4">META_Object</A> (osgSim, DirectionalSector)(const osg::Vec3&amp; direction)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDirection"></A>
+<A NAME="DOC.2.19.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec3&amp; getDirection() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setHorizLobeAngle"></A>
+<A NAME="DOC.2.19.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setHorizLobeAngle(float angle)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getHorizLobeAngle"></A>
+<A NAME="DOC.2.19.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getHorizLobeAngle() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setLobeRollAngle"></A>
+<A NAME="DOC.2.19.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLobeRollAngle(float angle)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLobeRollAngle"></A>
+<A NAME="DOC.2.19.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLobeRollAngle() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setVertLobeAngle"></A>
+<A NAME="DOC.2.19.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVertLobeAngle(float angle)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getVertLobeAngle"></A>
+<A NAME="DOC.2.19.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getVertLobeAngle() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFadeAngle"></A>
+<A NAME="DOC.2.19.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFadeAngle(float angle)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFadeAngle"></A>
+<A NAME="DOC.2.19.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getFadeAngle() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator() "></A>
+<A NAME="DOC.2.19.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float operator() (const osg::Vec3&amp; eyeLocal) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeMatrix"></A>
+<A NAME="DOC.2.19.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~DirectionalSector"></A>
+<A NAME="DOC.2.19.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DirectionalSector()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_direction"></A>
+<A NAME="DOC.2.19.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3 _direction</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_rollAngle"></A>
+<A NAME="DOC.2.19.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _rollAngle</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_local_to_LP"></A>
+<A NAME="DOC.2.19.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix _local_to_LP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cosHorizAngle"></A>
+<A NAME="DOC.2.19.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosHorizAngle</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cosVertAngle"></A>
+<A NAME="DOC.2.19.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosVertAngle</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cosHorizFadeAngle"></A>
+<A NAME="DOC.2.19.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosHorizFadeAngle</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cosVertFadeAngle"></A>
+<A NAME="DOC.2.19.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosVertFadeAngle</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

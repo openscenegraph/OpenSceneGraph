@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>template<class T> class  osg::TriangleIndexFunctor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>template&lt;class <!1><A HREF="TexGen.html#DOC.2.237.11.2">T</A>&gt; class  <A HREF="#DOC.DOCU">osg::TriangleIndexFunctor</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MT,M,MDrawable::PrimitiveIndexFunctor,M,CTriangleIndexFunctor,MTriangleIndexFunctor.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.257.9">_modeCache</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::vector&lt;GLuint&gt;  <B><A HREF="#DOC.2.257.10">_indexCache</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.1">setVertexArray</A></B>(unsigned int, const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>* )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.2">begin</A></B>(GLenum mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.3">vertex</A></B>(unsigned int vert)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.4">end</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.5">drawArrays</A></B>(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.125.3">first</A>, GLsizei count)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.6">drawElements</A></B>(GLenum mode, GLsizei count, const GLubyte* <!1><A HREF="Geometry.html#DOC.2.108.13.8">indices</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.7">drawElements</A></B>(GLenum mode, GLsizei count, const GLushort* <!1><A HREF="Geometry.html#DOC.2.108.13.8">indices</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.257.8">drawElements</A></B>(GLenum mode, GLsizei count, const GLuint* <!1><A HREF="Geometry.html#DOC.2.108.13.8">indices</A>)
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="setVertexArray"></A>
+<A NAME="DOC.2.257.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setVertexArray(unsigned int, const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>* )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="begin"></A>
+<A NAME="DOC.2.257.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void begin(GLenum mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="vertex"></A>
+<A NAME="DOC.2.257.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void vertex(unsigned int vert)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="end"></A>
+<A NAME="DOC.2.257.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void end()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawArrays"></A>
+<A NAME="DOC.2.257.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawArrays(GLenum mode, GLint <!1><A HREF="ImpostorSpriteManager.html#DOC.2.125.3">first</A>, GLsizei count)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawElements"></A>
+<A NAME="DOC.2.257.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLubyte* <!1><A HREF="Geometry.html#DOC.2.108.13.8">indices</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawElements"></A>
+<A NAME="DOC.2.257.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLushort* <!1><A HREF="Geometry.html#DOC.2.108.13.8">indices</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawElements"></A>
+<A NAME="DOC.2.257.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawElements(GLenum mode, GLsizei count, const GLuint* <!1><A HREF="Geometry.html#DOC.2.108.13.8">indices</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modeCache"></A>
+<A NAME="DOC.2.257.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _modeCache</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_indexCache"></A>
+<A NAME="DOC.2.257.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::vector&lt;GLuint&gt;  _indexCache</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

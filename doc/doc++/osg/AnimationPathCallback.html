@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::AnimationPathCallback</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,15 +22,23 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AnimationPath.html">AnimationPath</A>&gt;  <B><A HREF="#DOC.2.3.9">_animationPath</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AnimationPath.html">AnimationPath</A>&gt;  <B><A HREF="#DOC.2.3.21">_animationPath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.10">_timeOffset</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3d.html">osg::Vec3d</A> <B><A HREF="#DOC.2.3.22">_pivotPoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.11">_timeMultiplier</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.23">_useInverseMatrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.12">_firstTime</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.24">_timeOffset</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable double <B><A HREF="#DOC.2.3.13">_animationTime</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.25">_timeMultiplier</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.26">_firstTime</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.27">_latestTime</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.28">_pause</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.29">_pauseTime</A></B>
 </DL></P>
 
 <P><DL>
@@ -49,13 +57,38 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="AnimationPath.html">AnimationPath</A>* <B><A HREF="#DOC.2.3.7">getAnimationPath</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.8">operator()</A></B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.3.8">setPivotPoint</A></B>(const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; pivot)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; <B><A HREF="#DOC.2.3.9">getPivotPoint</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.10">setUseInverseMatrix</A></B>(bool useInverseMatrix)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.11">getUseInverseMatrix</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.12">setTimeOffset</A></B>(double <!1><A HREF="Geometry.html#DOC.2.108.13.11">offset</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.13">getTimeOffset</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.14">setTimeMultiplier</A></B>(double multiplier)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.15">getTimeMultiplier</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.16">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.17">setPause</A></B>(bool <!1><A HREF="ImageStream.html#DOC.2.122.11">pause</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.18">getAnimationTime</A></B>() const 
+<DD><I>get the animation time that is used to specify the position along the AnimationPath.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.19">operator()</A></B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DD><I>implements the callback</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.20">update</A></B>(<!1><A HREF="Node.html">osg::Node</A>&amp; node)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.14">~AnimationPathCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.30">~AnimationPathCallback</A></B>()
 </DL></P>
 
 </DL>
@@ -68,7 +101,7 @@
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="TessellationHints.html#DOC.2.184.3">META_Object</A>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="NodeCallback.html">NodeCallback</A>) <B>()</B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="TessellationHints.html#DOC.2.218.3">META_Object</A>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="NodeCallback.html">NodeCallback</A>) <B>()</B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>traverse</B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DT>
@@ -85,6 +118,11 @@
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
 <DT>
@@ -96,9 +134,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -108,13 +146,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -124,7 +157,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -141,6 +174,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -179,33 +214,99 @@
 <A NAME="DOC.2.3.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="AnimationPath.html">AnimationPath</A>* getAnimationPath() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="operator()"></A>
+<A NAME="setPivotPoint"></A>
 <A NAME="DOC.2.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPivotPoint(const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; pivot)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPivotPoint"></A>
+<A NAME="DOC.2.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; getPivotPoint() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUseInverseMatrix"></A>
+<A NAME="DOC.2.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseInverseMatrix(bool useInverseMatrix)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUseInverseMatrix"></A>
+<A NAME="DOC.2.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getUseInverseMatrix() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTimeOffset"></A>
+<A NAME="DOC.2.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTimeOffset(double <!1><A HREF="Geometry.html#DOC.2.108.13.11">offset</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTimeOffset"></A>
+<A NAME="DOC.2.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getTimeOffset() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTimeMultiplier"></A>
+<A NAME="DOC.2.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTimeMultiplier(double multiplier)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTimeMultiplier"></A>
+<A NAME="DOC.2.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getTimeMultiplier() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reset"></A>
+<A NAME="DOC.2.3.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setPause"></A>
+<A NAME="DOC.2.3.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPause(bool <!1><A HREF="ImageStream.html#DOC.2.122.11">pause</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAnimationTime"></A>
+<A NAME="DOC.2.3.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getAnimationTime() const </B></TT>
+<DD>get the animation time that is used to specify the position along the AnimationPath.
+Animation time is computed from the formula ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier.
+<DL><DT><DD></DL><P>
+<A NAME="operator()"></A>
+<A NAME="DOC.2.3.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operator()(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
 <DD>implements the callback
 <DL><DT><DD></DL><P>
+<A NAME="update"></A>
+<A NAME="DOC.2.3.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void update(<!1><A HREF="Node.html">osg::Node</A>&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_animationPath"></A>
-<A NAME="DOC.2.3.9"></A>
+<A NAME="DOC.2.3.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AnimationPath.html">AnimationPath</A>&gt;  _animationPath</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_pivotPoint"></A>
+<A NAME="DOC.2.3.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3d.html">osg::Vec3d</A> _pivotPoint</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_useInverseMatrix"></A>
+<A NAME="DOC.2.3.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useInverseMatrix</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_timeOffset"></A>
-<A NAME="DOC.2.3.10"></A>
+<A NAME="DOC.2.3.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _timeOffset</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeMultiplier"></A>
-<A NAME="DOC.2.3.11"></A>
+<A NAME="DOC.2.3.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _timeMultiplier</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_firstTime"></A>
-<A NAME="DOC.2.3.12"></A>
+<A NAME="DOC.2.3.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _firstTime</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_animationTime"></A>
-<A NAME="DOC.2.3.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable double _animationTime</B></TT>
+<A NAME="_latestTime"></A>
+<A NAME="DOC.2.3.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _latestTime</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pause"></A>
+<A NAME="DOC.2.3.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _pause</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pauseTime"></A>
+<A NAME="DOC.2.3.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _pauseTime</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~AnimationPathCallback"></A>
-<A NAME="DOC.2.3.14"></A>
+<A NAME="DOC.2.3.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~AnimationPathCallback()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -213,6 +314,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

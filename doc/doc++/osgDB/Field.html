@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGDB_EXPORT osgDB::Field</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -11,107 +11,107 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.2">Field</A></B>()
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum <B><A HREF="#DOC.2.5.1"></A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.3">Field</A></B>(const <!1><A HREF="Field.html#DOC.2.4.3">Field</A>&amp; <!1><A HREF="FieldReaderIterator.html#DOC.2.6.13">field</A>)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.4">~Field</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Field.html">Field</A>&amp; <B><A HREF="#DOC.2.4.5">operator = </A></B>(const <!1><A HREF="Field.html">Field</A>&amp; ic)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.6">reset</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.7">addChar</A></B>(char c)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.4.8">getNoCharacters</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.9">setWithinQuotes</A></B>(bool withinQuotes=true)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.10">getWithinQuotes</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.11">setNoNestedBrackets</A></B>(int no)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.4.12">getNoNestedBrackets</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Field.html#DOC.2.4.13">FieldType</A> <B><A HREF="#DOC.2.4.14">getFieldType</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.15">isValid</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.16">isOpenBracket</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.17">isCloseBracket</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.18">isWord</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.19">matchWord</A></B>(const char* str) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.20">matchWord</A></B>(const char* str, int noCharacters) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.21">isString</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.22">matchString</A></B>(const char* str) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.23">matchString</A></B>(const char* str, int noCharacters) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.24">isQuotedString</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const char* <B><A HREF="#DOC.2.4.25">getStr</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char* <B><A HREF="#DOC.2.4.26">takeStr</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.27">isInt</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.28">matchInt</A></B>(int i) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.29">getInt</A></B>(int&amp; i) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.30">isUInt</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.31">matchUInt</A></B>(unsigned int i) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.32">getUInt</A></B>(unsigned int&amp; i) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.33">isFloat</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.34">matchFloat</A></B>(float f) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.35">getFloat</A></B>(float&amp; f) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.36">getFloat</A></B>(double&amp; f) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Field.html#DOC.2.4.13">FieldType</A> <B><A HREF="#DOC.2.4.37">calculateFieldType</A></B>(const char* str, bool withinQuotes=false)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.13">FieldType</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum <B><A HREF="#DOC.2.4.1"></A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.2">Field</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.4.13">FieldType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.3">Field</A></B>(const <!1><A HREF="Field.html#DOC.2.5.3">Field</A>&amp; <!1><A HREF="FieldReaderIterator.html#DOC.2.7.13">field</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.5.4">~Field</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Field.html">Field</A>&amp; <B><A HREF="#DOC.2.5.5">operator = </A></B>(const <!1><A HREF="Field.html">Field</A>&amp; ic)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.6">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.7">addChar</A></B>(char c)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.8">getNoCharacters</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.9">setWithinQuotes</A></B>(bool withinQuotes=true)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.10">getWithinQuotes</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.11">setNoNestedBrackets</A></B>(int no)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.12">getNoNestedBrackets</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Field.html#DOC.2.5.13">FieldType</A> <B><A HREF="#DOC.2.5.14">getFieldType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.15">isValid</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.16">isOpenBracket</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.17">isCloseBracket</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.18">isWord</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.19">matchWord</A></B>(const char* str) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.20">matchWord</A></B>(const char* str, int noCharacters) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.21">isString</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.22">matchString</A></B>(const char* str) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.23">matchString</A></B>(const char* str, int noCharacters) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.24">isQuotedString</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const char* <B><A HREF="#DOC.2.5.25">getStr</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char* <B><A HREF="#DOC.2.5.26">takeStr</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.27">isInt</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.28">matchInt</A></B>(int i) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.29">getInt</A></B>(int&amp; i) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.30">isUInt</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.31">matchUInt</A></B>(unsigned int i) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.32">getUInt</A></B>(unsigned int&amp; i) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.33">isFloat</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.34">matchFloat</A></B>(float f) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.35">getFloat</A></B>(float&amp; f) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.36">getFloat</A></B>(double&amp; f) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Field.html#DOC.2.5.13">FieldType</A> <B><A HREF="#DOC.2.5.37">calculateFieldType</A></B>(const char* str, bool withinQuotes=false)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.4.41">_fieldCacheCapacity</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.41">_fieldCacheCapacity</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.4.42">_fieldCacheSize</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.42">_fieldCacheSize</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char* <B><A HREF="#DOC.2.4.43">_fieldCache</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char* <B><A HREF="#DOC.2.5.43">_fieldCache</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="Field.html#DOC.2.4.13">FieldType</A> <B><A HREF="#DOC.2.4.44">_fieldType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="Field.html#DOC.2.5.13">FieldType</A> <B><A HREF="#DOC.2.5.44">_fieldType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.4.45">_withinQuotes</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.5.45">_withinQuotes</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.4.46">_noNestedBrackets</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.5.46">_noNestedBrackets</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.38">_init</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.38">_init</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.39">_free</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.39">_free</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.40">_copy</A></B>(const <!1><A HREF="Field.html">Field</A>&amp; ic)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.40">_copy</A></B>(const <!1><A HREF="Field.html">Field</A>&amp; ic)
 </DL></P>
 
 </DL>
@@ -122,227 +122,227 @@
 <DL>
 
 <A NAME=""></A>
-<A NAME="DOC.2.4.1"></A>
+<A NAME="DOC.2.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum </B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="MIN_CACHE_SIZE"></A>
-<A NAME="DOC.2.4.1.1"></A>
+<A NAME="DOC.2.5.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MIN_CACHE_SIZE</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Field"></A>
-<A NAME="DOC.2.4.2"></A>
+<A NAME="DOC.2.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Field()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Field"></A>
-<A NAME="DOC.2.4.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Field(const <!1><A HREF="Field.html#DOC.2.4.3">Field</A>&amp; <!1><A HREF="FieldReaderIterator.html#DOC.2.6.13">field</A>)</B></TT>
+<A NAME="DOC.2.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Field(const <!1><A HREF="Field.html#DOC.2.5.3">Field</A>&amp; <!1><A HREF="FieldReaderIterator.html#DOC.2.7.13">field</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Field"></A>
-<A NAME="DOC.2.4.4"></A>
+<A NAME="DOC.2.5.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Field()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.4.5"></A>
+<A NAME="DOC.2.5.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Field.html">Field</A>&amp; operator = (const <!1><A HREF="Field.html">Field</A>&amp; ic)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.4.6"></A>
+<A NAME="DOC.2.5.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reset()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChar"></A>
-<A NAME="DOC.2.4.7"></A>
+<A NAME="DOC.2.5.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addChar(char c)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNoCharacters"></A>
-<A NAME="DOC.2.4.8"></A>
+<A NAME="DOC.2.5.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNoCharacters() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setWithinQuotes"></A>
-<A NAME="DOC.2.4.9"></A>
+<A NAME="DOC.2.5.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWithinQuotes(bool withinQuotes=true)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getWithinQuotes"></A>
-<A NAME="DOC.2.4.10"></A>
+<A NAME="DOC.2.5.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getWithinQuotes()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setNoNestedBrackets"></A>
-<A NAME="DOC.2.4.11"></A>
+<A NAME="DOC.2.5.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNoNestedBrackets(int no)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNoNestedBrackets"></A>
-<A NAME="DOC.2.4.12"></A>
+<A NAME="DOC.2.5.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNoNestedBrackets()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FieldType"></A>
-<A NAME="DOC.2.4.13"></A>
+<A NAME="DOC.2.5.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  FieldType</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="OPEN_BRACKET"></A>
-<A NAME="DOC.2.4.13.1"></A>
+<A NAME="DOC.2.5.13.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OPEN_BRACKET</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CLOSE_BRACKET"></A>
-<A NAME="DOC.2.4.13.2"></A>
+<A NAME="DOC.2.5.13.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CLOSE_BRACKET</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="STRING"></A>
-<A NAME="DOC.2.4.13.3"></A>
+<A NAME="DOC.2.5.13.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STRING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="WORD"></A>
-<A NAME="DOC.2.4.13.4"></A>
+<A NAME="DOC.2.5.13.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> WORD</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="REAL"></A>
-<A NAME="DOC.2.4.13.5"></A>
+<A NAME="DOC.2.5.13.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> REAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="INTEGER"></A>
-<A NAME="DOC.2.4.13.6"></A>
+<A NAME="DOC.2.5.13.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> INTEGER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BLANK"></A>
-<A NAME="DOC.2.4.13.7"></A>
+<A NAME="DOC.2.5.13.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BLANK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="UNINITIALISED"></A>
-<A NAME="DOC.2.4.13.8"></A>
+<A NAME="DOC.2.5.13.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UNINITIALISED</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="getFieldType"></A>
-<A NAME="DOC.2.4.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Field.html#DOC.2.4.13">FieldType</A> getFieldType() const </B></TT>
+<A NAME="DOC.2.5.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Field.html#DOC.2.5.13">FieldType</A> getFieldType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isValid"></A>
-<A NAME="DOC.2.4.15"></A>
+<A NAME="DOC.2.5.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isValid() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isOpenBracket"></A>
-<A NAME="DOC.2.4.16"></A>
+<A NAME="DOC.2.5.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isOpenBracket() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isCloseBracket"></A>
-<A NAME="DOC.2.4.17"></A>
+<A NAME="DOC.2.5.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCloseBracket() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isWord"></A>
-<A NAME="DOC.2.4.18"></A>
+<A NAME="DOC.2.5.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isWord() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchWord"></A>
-<A NAME="DOC.2.4.19"></A>
+<A NAME="DOC.2.5.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchWord(const char* str) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchWord"></A>
-<A NAME="DOC.2.4.20"></A>
+<A NAME="DOC.2.5.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchWord(const char* str, int noCharacters) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isString"></A>
-<A NAME="DOC.2.4.21"></A>
+<A NAME="DOC.2.5.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isString() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchString"></A>
-<A NAME="DOC.2.4.22"></A>
+<A NAME="DOC.2.5.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchString(const char* str) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchString"></A>
-<A NAME="DOC.2.4.23"></A>
+<A NAME="DOC.2.5.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchString(const char* str, int noCharacters) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isQuotedString"></A>
-<A NAME="DOC.2.4.24"></A>
+<A NAME="DOC.2.5.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isQuotedString() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStr"></A>
-<A NAME="DOC.2.4.25"></A>
+<A NAME="DOC.2.5.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* getStr() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="takeStr"></A>
-<A NAME="DOC.2.4.26"></A>
+<A NAME="DOC.2.5.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>char* takeStr()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isInt"></A>
-<A NAME="DOC.2.4.27"></A>
+<A NAME="DOC.2.5.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isInt() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchInt"></A>
-<A NAME="DOC.2.4.28"></A>
+<A NAME="DOC.2.5.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchInt(int i) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInt"></A>
-<A NAME="DOC.2.4.29"></A>
+<A NAME="DOC.2.5.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getInt(int&amp; i) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isUInt"></A>
-<A NAME="DOC.2.4.30"></A>
+<A NAME="DOC.2.5.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isUInt() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchUInt"></A>
-<A NAME="DOC.2.4.31"></A>
+<A NAME="DOC.2.5.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchUInt(unsigned int i) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUInt"></A>
-<A NAME="DOC.2.4.32"></A>
+<A NAME="DOC.2.5.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getUInt(unsigned int&amp; i) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isFloat"></A>
-<A NAME="DOC.2.4.33"></A>
+<A NAME="DOC.2.5.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isFloat() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="matchFloat"></A>
-<A NAME="DOC.2.4.34"></A>
+<A NAME="DOC.2.5.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchFloat(float f) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFloat"></A>
-<A NAME="DOC.2.4.35"></A>
+<A NAME="DOC.2.5.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getFloat(float&amp; f) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFloat"></A>
-<A NAME="DOC.2.4.36"></A>
+<A NAME="DOC.2.5.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getFloat(double&amp; f) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="calculateFieldType"></A>
-<A NAME="DOC.2.4.37"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Field.html#DOC.2.4.13">FieldType</A> calculateFieldType(const char* str, bool withinQuotes=false)</B></TT>
+<A NAME="DOC.2.5.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Field.html#DOC.2.5.13">FieldType</A> calculateFieldType(const char* str, bool withinQuotes=false)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_init"></A>
-<A NAME="DOC.2.4.38"></A>
+<A NAME="DOC.2.5.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _init()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_free"></A>
-<A NAME="DOC.2.4.39"></A>
+<A NAME="DOC.2.5.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _free()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_copy"></A>
-<A NAME="DOC.2.4.40"></A>
+<A NAME="DOC.2.5.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _copy(const <!1><A HREF="Field.html">Field</A>&amp; ic)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fieldCacheCapacity"></A>
-<A NAME="DOC.2.4.41"></A>
+<A NAME="DOC.2.5.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _fieldCacheCapacity</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fieldCacheSize"></A>
-<A NAME="DOC.2.4.42"></A>
+<A NAME="DOC.2.5.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _fieldCacheSize</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fieldCache"></A>
-<A NAME="DOC.2.4.43"></A>
+<A NAME="DOC.2.5.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>char* _fieldCache</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fieldType"></A>
-<A NAME="DOC.2.4.44"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="Field.html#DOC.2.4.13">FieldType</A> _fieldType</B></TT>
+<A NAME="DOC.2.5.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="Field.html#DOC.2.5.13">FieldType</A> _fieldType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_withinQuotes"></A>
-<A NAME="DOC.2.4.45"></A>
+<A NAME="DOC.2.5.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _withinQuotes</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_noNestedBrackets"></A>
-<A NAME="DOC.2.4.46"></A>
+<A NAME="DOC.2.5.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _noNestedBrackets</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -350,6 +350,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

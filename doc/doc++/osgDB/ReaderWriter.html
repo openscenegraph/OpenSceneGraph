@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGDB_EXPORT osgDB::ReaderWriter</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,45 +22,53 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.43.1">~ReaderWriter</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.43.2">className</A></B>() = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.43.3">acceptsExtension</A></B>(const std::string&amp;xtension*/)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.43.7">readObject</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.43.8">readImage</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.43.9">readNode</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.43.10">writeObject</A></B>(const osg::Object&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.43.11">writeImage</A></B>(const osg::Image&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.43.12">writeNode</A></B>(const osg::Node&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.43.13">readObject</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.43.14">readImage</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.43.15">readNode</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.43.16">writeObject</A></B>(const osg::Object&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.43.17">writeImage</A></B>(const osg::Image&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.43.18">writeNode</A></B>(const osg::Node&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public Classes</H3><DD><DT>
 class  <B><A HREF="Options.html">Options</A></B>: public osg::Referenced
 <DT>
 class  <B><A HREF="ReadResult.html">ReadResult</A></B>
 <DT>
 class  <B><A HREF="WriteResult.html">WriteResult</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.39.1">~ReaderWriter</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.39.2">className</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.39.3">acceptsExtension</A></B>(const std::string&amp;xtension*/)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.7">readObject</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.8">readImage</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.9">readHeightField</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.10">readNode</A></B>(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.11">writeObject</A></B>(const osg::Object&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.12">writeImage</A></B>(const osg::Image&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.13">writeHeightField</A></B>(const osg::HeightField&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.14">writeNode</A></B>(const osg::Node&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.15">readObject</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.16">readImage</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.17">readHeightField</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> <B><A HREF="#DOC.2.39.18">readNode</A></B>(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.19">writeObject</A></B>(const osg::Object&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.20">writeImage</A></B>(const osg::Image&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.21">writeHeightField</A></B>(const osg::HeightField&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> <B><A HREF="#DOC.2.39.22">writeNode</A></B>(const osg::Node&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)
 </DL></P>
 
 </DL>
@@ -72,63 +80,79 @@ class  <B><A HREF="WriteResult.html">WriteResult</A></B>
 <DL>
 
 <A NAME="~ReaderWriter"></A>
-<A NAME="DOC.2.43.1"></A>
+<A NAME="DOC.2.39.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ReaderWriter()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.43.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() = 0</B></TT>
+<A NAME="DOC.2.39.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="acceptsExtension"></A>
-<A NAME="DOC.2.43.3"></A>
+<A NAME="DOC.2.39.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool acceptsExtension(const std::string&amp;xtension*/)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.43.7"></A>
+<A NAME="DOC.2.39.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readObject(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.43.8"></A>
+<A NAME="DOC.2.39.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readImage(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="readHeightField"></A>
+<A NAME="DOC.2.39.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readHeightField(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.43.9"></A>
+<A NAME="DOC.2.39.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readNode(const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeObject"></A>
-<A NAME="DOC.2.43.10"></A>
+<A NAME="DOC.2.39.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeObject(const osg::Object&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeImage"></A>
-<A NAME="DOC.2.43.11"></A>
+<A NAME="DOC.2.39.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeImage(const osg::Image&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="writeHeightField"></A>
+<A NAME="DOC.2.39.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeHeightField(const osg::HeightField&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="writeNode"></A>
-<A NAME="DOC.2.43.12"></A>
+<A NAME="DOC.2.39.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeNode(const osg::Node&amp; , const std::string&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.43.13"></A>
+<A NAME="DOC.2.39.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readObject(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.43.14"></A>
+<A NAME="DOC.2.39.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readImage(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="readHeightField"></A>
+<A NAME="DOC.2.39.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readHeightField(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.43.15"></A>
+<A NAME="DOC.2.39.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="ReadResult.html">ReadResult</A> readNode(std::istream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeObject"></A>
-<A NAME="DOC.2.43.16"></A>
+<A NAME="DOC.2.39.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeObject(const osg::Object&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeImage"></A>
-<A NAME="DOC.2.43.17"></A>
+<A NAME="DOC.2.39.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeImage(const osg::Image&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="writeHeightField"></A>
+<A NAME="DOC.2.39.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeHeightField(const osg::HeightField&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="writeNode"></A>
-<A NAME="DOC.2.43.18"></A>
+<A NAME="DOC.2.39.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="WriteResult.html">WriteResult</A> writeNode(const osg::Node&amp; , std::ostream&amp; , const <!1><A HREF="Options.html">Options</A>* =NULL)</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -136,6 +160,6 @@ class  <B><A HREF="WriteResult.html">WriteResult</A></B>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::ArgumentParser</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -11,106 +11,121 @@
 
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+class  <B><A HREF="Parameter.html">Parameter</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.31">ErrorSeverity</A></B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1">ArgumentParser</A></B>(int* <!1><A HREF="ArgumentParser.html#DOC.2.6.5">argc</A>, char** <!1><A HREF="ArgumentParser.html#DOC.2.6.6">argv</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   bool <B><A HREF="#DOC.2.6.2">isOption</A></B>(const char* str)
+<DD><I>return return true if specified string is an option in the form of -option or --option </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.2">setApplicationUsage</A></B>(<!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* usage)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   bool <B><A HREF="#DOC.2.6.3">isString</A></B>(const char* str)
+<DD><I>return return true if string is any other string apart from an option</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.6.3">getApplicationUsage</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.6.4">getApplicationUsage</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int&amp; <B><A HREF="#DOC.2.6.5">argc</A></B>()
-<DD><I>return the argument count</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char** <B><A HREF="#DOC.2.6.6">argv</A></B>()
-<DD><I>return the argument array</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char* <B><A HREF="#DOC.2.6.7">operator [] </A></B>(int pos)
-<DD><I>return char* argument at specificed position</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const char* <B><A HREF="#DOC.2.6.8">operator [] </A></B>(int pos) const 
-<DD><I>return const char* argument at specificed position</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.6.9">getApplicationName</A></B>() const 
-<DD><I>return the application name, as specified by argv[0] </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.6.10">find</A></B>(const std::string&amp; str) const 
-<DD><I>return the position of an occurance of a string in the argument list.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.11">match</A></B>(int pos, const std::string&amp; str) const 
-<DD><I>return true if specified argument matches string</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.12">isOption</A></B>(int pos) const 
-<DD><I>return return true if specified parameter is an option in the form of -option or --option </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.13">isString</A></B>(int pos) const 
-<DD><I>return return true if specified parameter is an string, which can be any other string apart from an option</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.14">isNumber</A></B>(int pos) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   bool <B><A HREF="#DOC.2.6.4">isNumber</A></B>(const char* str)
 <DD><I>return return true if specified parameter is an number</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.15">containsOptions</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.5">ArgumentParser</A></B>(int* <!1><A HREF="ArgumentParser.html#DOC.2.6.9">argc</A>, char** <!1><A HREF="ArgumentParser.html#DOC.2.6.10">argv</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.16">remove</A></B>(int pos, int num=1)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.6">setApplicationUsage</A></B>(<!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* usage)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.6.7">getApplicationUsage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.6.8">getApplicationUsage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int&amp; <B><A HREF="#DOC.2.6.9">argc</A></B>()
+<DD><I>return the argument count</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char** <B><A HREF="#DOC.2.6.10">argv</A></B>()
+<DD><I>return the argument array</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char* <B><A HREF="#DOC.2.6.11">operator [] </A></B>(int pos)
+<DD><I>return char* argument at specificed position</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const char* <B><A HREF="#DOC.2.6.12">operator [] </A></B>(int pos) const 
+<DD><I>return const char* argument at specificed position</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.6.13">getApplicationName</A></B>() const 
+<DD><I>return the application name, as specified by argv[0] </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.6.14">find</A></B>(const std::string&amp; str) const 
+<DD><I>return the position of an occurance of a string in the argument list.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.15">isOption</A></B>(int pos) const 
+<DD><I>return return true if specified parameter is an option in the form of -option or --option </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.16">isString</A></B>(int pos) const 
+<DD><I>return return true if specified parameter is an string, which can be any other string apart from an option</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.17">isNumber</A></B>(int pos) const 
+<DD><I>return return true if specified parameter is an number</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.18">containsOptions</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.19">remove</A></B>(int pos, int num=1)
 <DD><I>remove one or more arguments from the argv argument list, and decrement the argc respectively</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.17">read</A></B>(const std::string&amp; str)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.20">match</A></B>(int pos, const std::string&amp; str) const 
+<DD><I>return true if specified argument matches string</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.21">read</A></B>(const std::string&amp; str)
 <DD><I>search for an occurance of a string in the argument list, on sucess remove that occurance from the list and return true, otherwise return false</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.18">read</A></B>(const std::string&amp; str, std::string&amp; value1)
-<DD><I>search for an occurance of a string in the argument list followed by a string, on sucess set the value string with the second parameters and then remove the two entries from the list and return true, otherwise return false</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.22">read</A></B>(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.19">read</A></B>(const std::string&amp; str, std::string&amp; value1, std::string&amp; value2)
-<DD><I>search for an occurance of a string in the argument list followed by a two strings, on sucess set the value strings with the second & third parameters and then remove the three entries from the list and return true, otherwise return false</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.23">read</A></B>(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.20">read</A></B>(const std::string&amp; str, std::string&amp; value1, std::string&amp; value2, std::string&amp; value3)
-<DD><I>search for an occurance of a string in the argument list followed by a three strings, on sucess set the value strings with the second & third & fourth parameters and then remove the four entries from the list and return true, otherwise return false</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.24">read</A></B>(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.21">read</A></B>(const std::string&amp; str, float&amp; value)
-<DD><I>search for an occurance of a string in the argument list followed by a numeric value, on sucess set the values with the second parameter and then remove the two entries from the list and return true, otherwise return false</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.25">read</A></B>(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3, <!1><A HREF="Parameter.html">Parameter</A> value4)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.22">read</A></B>(const std::string&amp; str, float&amp; value1, float&amp; value2)
-<DD><I>search for an occurance of a string in the argument list followed by two numeric values, on sucess set the values with the second & third parameters and then remove the three entries from the list and return true, otherwise return false</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.26">read</A></B>(int pos, const std::string&amp; str)
+<DD><I>if the argument value at the position pos matches specified string, and subsequent paramters are also matched then set the paramter values and remove the from the list of arguments</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.23">read</A></B>(const std::string&amp; str, float&amp; value1, float&amp; value2, float&amp; value3)
-<DD><I>search for an occurance of a string in the argument list followed by three numeric values, on sucess set the values with the second & third & fourth parameters and then remove the four entries from the list and return true, otherwise return false</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.27">read</A></B>(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.26">errors</A></B>(<!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.1">BENIGN</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.28">read</A></B>(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.29">read</A></B>(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.30">read</A></B>(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3, <!1><A HREF="Parameter.html">Parameter</A> value4)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.33">errors</A></B>(<!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.1">BENIGN</A>) const 
 <DD><I>return the error flag, true if an error has occured when reading arguments</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.27">reportError</A></B>(const std::string&amp; message, <!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.2">CRITICAL</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.34">reportError</A></B>(const std::string&amp; message, <!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.2">CRITICAL</A>)
 <DD><I>report an error message by adding to the ErrorMessageMap</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.28">reportRemainingOptionsAsUnrecognized</A></B>(<!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.1">BENIGN</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.35">reportRemainingOptionsAsUnrecognized</A></B>(<!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.1">BENIGN</A>)
 <DD><I>for each remaining option report it as an unrecongnized</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ArgumentParser.html#DOC.2.6.25">ErrorMessageMap</A>&amp; <B><A HREF="#DOC.2.6.29">getErrorMessageMap</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ArgumentParser.html#DOC.2.6.32">ErrorMessageMap</A>&amp; <B><A HREF="#DOC.2.6.36">getErrorMessageMap</A></B>()
 <DD><I>return the error message, if any has occured</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ArgumentParser.html#DOC.2.6.25">ErrorMessageMap</A>&amp; <B><A HREF="#DOC.2.6.30">getErrorMessageMap</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ArgumentParser.html#DOC.2.6.32">ErrorMessageMap</A>&amp; <B><A HREF="#DOC.2.6.37">getErrorMessageMap</A></B>() const 
 <DD><I>return the error message, if any has occured</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.31">writeErrorMessages</A></B>(std::ostream&amp; output, <!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> sevrity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.1">BENIGN</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.38">writeErrorMessages</A></B>(std::ostream&amp; output, <!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> sevrity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.1">BENIGN</A>)
 <DD><I>write out error messages at an above specified </I>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.24">ErrorSeverity</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string,<!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A>&gt; <B><A HREF="#DOC.2.6.25">ErrorMessageMap</A></B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;std::string,<!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A>&gt;  <B><A HREF="#DOC.2.6.32">ErrorMessageMap</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int* <B><A HREF="#DOC.2.6.32">_argc</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int* <B><A HREF="#DOC.2.6.39">_argc</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char** <B><A HREF="#DOC.2.6.33">_argv</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>char** <B><A HREF="#DOC.2.6.40">_argv</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ArgumentParser.html#DOC.2.6.25">ErrorMessageMap</A> <B><A HREF="#DOC.2.6.34">_errorMessageMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ArgumentParser.html#DOC.2.6.32">ErrorMessageMap</A> <B><A HREF="#DOC.2.6.41">_errorMessageMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.6.35">_usage</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* <B><A HREF="#DOC.2.6.42">_usage</A></B>
 </DL></P>
 
 </DL>
@@ -120,192 +135,203 @@
 <H2>Documentation</H2>
 <DL>
 
+<A NAME="isOption"></A>
+<A NAME="DOC.2.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   bool isOption(const char* str)</B></TT>
+<DD>return return true if specified string is an option in the form of -option or --option 
+<DL><DT><DD></DL><P>
+<A NAME="isString"></A>
+<A NAME="DOC.2.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   bool isString(const char* str)</B></TT>
+<DD>return return true if string is any other string apart from an option
+<DL><DT><DD></DL><P>
+<A NAME="isNumber"></A>
+<A NAME="DOC.2.6.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   bool isNumber(const char* str)</B></TT>
+<DD>return return true if specified parameter is an number
+<DL><DT><DD></DL><P>
 <A NAME="ArgumentParser"></A>
-<A NAME="DOC.2.6.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ArgumentParser(int* <!1><A HREF="ArgumentParser.html#DOC.2.6.5">argc</A>, char** <!1><A HREF="ArgumentParser.html#DOC.2.6.6">argv</A>)</B></TT>
+<A NAME="DOC.2.6.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ArgumentParser(int* <!1><A HREF="ArgumentParser.html#DOC.2.6.9">argc</A>, char** <!1><A HREF="ArgumentParser.html#DOC.2.6.10">argv</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setApplicationUsage"></A>
-<A NAME="DOC.2.6.2"></A>
+<A NAME="DOC.2.6.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setApplicationUsage(<!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* usage)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getApplicationUsage"></A>
-<A NAME="DOC.2.6.3"></A>
+<A NAME="DOC.2.6.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* getApplicationUsage()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getApplicationUsage"></A>
-<A NAME="DOC.2.6.4"></A>
+<A NAME="DOC.2.6.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* getApplicationUsage() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="argc"></A>
-<A NAME="DOC.2.6.5"></A>
+<A NAME="DOC.2.6.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int&amp; argc()</B></TT>
 <DD>return the argument count
 <DL><DT><DD></DL><P>
 <A NAME="argv"></A>
-<A NAME="DOC.2.6.6"></A>
+<A NAME="DOC.2.6.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>char** argv()</B></TT>
 <DD>return the argument array
 <DL><DT><DD></DL><P>
 <A NAME="operator [] "></A>
-<A NAME="DOC.2.6.7"></A>
+<A NAME="DOC.2.6.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>char* operator [] (int pos)</B></TT>
 <DD>return char* argument at specificed position
 <DL><DT><DD></DL><P>
 <A NAME="operator [] "></A>
-<A NAME="DOC.2.6.8"></A>
+<A NAME="DOC.2.6.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const char* operator [] (int pos) const </B></TT>
 <DD>return const char* argument at specificed position
 <DL><DT><DD></DL><P>
 <A NAME="getApplicationName"></A>
-<A NAME="DOC.2.6.9"></A>
+<A NAME="DOC.2.6.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string getApplicationName() const </B></TT>
 <DD>return the application name, as specified by argv[0] 
 <DL><DT><DD></DL><P>
 <A NAME="find"></A>
-<A NAME="DOC.2.6.10"></A>
+<A NAME="DOC.2.6.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int find(const std::string&amp; str) const </B></TT>
 <DD>return the position of an occurance of a string in the argument list.
 return -1 when no string is found.
 <DL><DT><DD></DL><P>
-<A NAME="match"></A>
-<A NAME="DOC.2.6.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool match(int pos, const std::string&amp; str) const </B></TT>
-<DD>return true if specified argument matches string
-<DL><DT><DD></DL><P>
 <A NAME="isOption"></A>
-<A NAME="DOC.2.6.12"></A>
+<A NAME="DOC.2.6.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isOption(int pos) const </B></TT>
 <DD>return return true if specified parameter is an option in the form of -option or --option 
 <DL><DT><DD></DL><P>
 <A NAME="isString"></A>
-<A NAME="DOC.2.6.13"></A>
+<A NAME="DOC.2.6.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isString(int pos) const </B></TT>
 <DD>return return true if specified parameter is an string, which can be any other string apart from an option
 <DL><DT><DD></DL><P>
 <A NAME="isNumber"></A>
-<A NAME="DOC.2.6.14"></A>
+<A NAME="DOC.2.6.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isNumber(int pos) const </B></TT>
 <DD>return return true if specified parameter is an number
 <DL><DT><DD></DL><P>
 <A NAME="containsOptions"></A>
-<A NAME="DOC.2.6.15"></A>
+<A NAME="DOC.2.6.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool containsOptions() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="remove"></A>
-<A NAME="DOC.2.6.16"></A>
+<A NAME="DOC.2.6.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void remove(int pos, int num=1)</B></TT>
 <DD>remove one or more arguments from the argv argument list, and decrement the argc respectively
 <DL><DT><DD></DL><P>
+<A NAME="match"></A>
+<A NAME="DOC.2.6.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool match(int pos, const std::string&amp; str) const </B></TT>
+<DD>return true if specified argument matches string
+<DL><DT><DD></DL><P>
 <A NAME="read"></A>
-<A NAME="DOC.2.6.17"></A>
+<A NAME="DOC.2.6.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str)</B></TT>
 <DD>search for an occurance of a string in the argument list, on sucess
 remove that occurance from the list and return true, otherwise return false
 <DL><DT><DD></DL><P>
 <A NAME="read"></A>
-<A NAME="DOC.2.6.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, std::string&amp; value1)</B></TT>
-<DD>search for an occurance of a string in the argument list followed by a string,
-on sucess set the value string with the second parameters and then
-remove the two entries from the list and return true, otherwise return false
-<DL><DT><DD></DL><P>
-<A NAME="read"></A>
-<A NAME="DOC.2.6.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, std::string&amp; value1, std::string&amp; value2)</B></TT>
-<DD>search for an occurance of a string in the argument list followed by a two strings,
-on sucess set the value strings with the second & third parameters and then
-remove the three entries from the list and return true, otherwise return false
-<DL><DT><DD></DL><P>
-<A NAME="read"></A>
-<A NAME="DOC.2.6.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, std::string&amp; value1, std::string&amp; value2, std::string&amp; value3)</B></TT>
-<DD>search for an occurance of a string in the argument list followed by a three strings,
-on sucess set the value strings with the second & third & fourth parameters and then
-remove the four entries from the list and return true, otherwise return false
-<DL><DT><DD></DL><P>
-<A NAME="read"></A>
-<A NAME="DOC.2.6.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, float&amp; value)</B></TT>
-<DD>search for an occurance of a string in the argument list followed by a numeric value,
-on sucess set the values with the second parameter and then
-remove the two entries from the list and return true, otherwise return false
-<DL><DT><DD></DL><P>
-<A NAME="read"></A>
 <A NAME="DOC.2.6.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, float&amp; value1, float&amp; value2)</B></TT>
-<DD>search for an occurance of a string in the argument list followed by two numeric values,
-on sucess set the values with the second & third parameters and then
-remove the three entries from the list and return true, otherwise return false
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="read"></A>
 <A NAME="DOC.2.6.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, float&amp; value1, float&amp; value2, float&amp; value3)</B></TT>
-<DD>search for an occurance of a string in the argument list followed by three numeric values,
-on sucess set the values with the second & third & fourth parameters and then
-remove the four entries from the list and return true, otherwise return false
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3, <!1><A HREF="Parameter.html">Parameter</A> value4)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(int pos, const std::string&amp; str)</B></TT>
+<DD>if the argument value at the position pos matches specified string, and subsequent
+paramters are also matched then set the paramter values and remove the from the list of arguments
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.6.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool read(int pos, const std::string&amp; str, <!1><A HREF="Parameter.html">Parameter</A> value1, <!1><A HREF="Parameter.html">Parameter</A> value2, <!1><A HREF="Parameter.html">Parameter</A> value3, <!1><A HREF="Parameter.html">Parameter</A> value4)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ErrorSeverity"></A>
-<A NAME="DOC.2.6.24"></A>
+<A NAME="DOC.2.6.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ErrorSeverity</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="BENIGN"></A>
-<A NAME="DOC.2.6.24.1"></A>
+<A NAME="DOC.2.6.31.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BENIGN</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CRITICAL"></A>
-<A NAME="DOC.2.6.24.2"></A>
+<A NAME="DOC.2.6.31.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CRITICAL</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="ErrorMessageMap"></A>
-<A NAME="DOC.2.6.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string,<!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A>&gt; ErrorMessageMap</B></TT>
+<A NAME="DOC.2.6.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;std::string,<!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A>&gt;  ErrorMessageMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="errors"></A>
-<A NAME="DOC.2.6.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool errors(<!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.1">BENIGN</A>) const </B></TT>
+<A NAME="DOC.2.6.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool errors(<!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.1">BENIGN</A>) const </B></TT>
 <DD>return the error flag, true if an error has occured when reading arguments
 <DL><DT><DD></DL><P>
 <A NAME="reportError"></A>
-<A NAME="DOC.2.6.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reportError(const std::string&amp; message, <!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.2">CRITICAL</A>)</B></TT>
+<A NAME="DOC.2.6.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reportError(const std::string&amp; message, <!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.2">CRITICAL</A>)</B></TT>
 <DD>report an error message by adding to the ErrorMessageMap
 <DL><DT><DD></DL><P>
 <A NAME="reportRemainingOptionsAsUnrecognized"></A>
-<A NAME="DOC.2.6.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reportRemainingOptionsAsUnrecognized(<!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.1">BENIGN</A>)</B></TT>
+<A NAME="DOC.2.6.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void reportRemainingOptionsAsUnrecognized(<!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> severity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.1">BENIGN</A>)</B></TT>
 <DD>for each remaining option report it as an unrecongnized
 <DL><DT><DD></DL><P>
 <A NAME="getErrorMessageMap"></A>
-<A NAME="DOC.2.6.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ArgumentParser.html#DOC.2.6.25">ErrorMessageMap</A>&amp; getErrorMessageMap()</B></TT>
+<A NAME="DOC.2.6.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ArgumentParser.html#DOC.2.6.32">ErrorMessageMap</A>&amp; getErrorMessageMap()</B></TT>
 <DD>return the error message, if any has occured
 <DL><DT><DD></DL><P>
 <A NAME="getErrorMessageMap"></A>
-<A NAME="DOC.2.6.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ArgumentParser.html#DOC.2.6.25">ErrorMessageMap</A>&amp; getErrorMessageMap() const </B></TT>
+<A NAME="DOC.2.6.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ArgumentParser.html#DOC.2.6.32">ErrorMessageMap</A>&amp; getErrorMessageMap() const </B></TT>
 <DD>return the error message, if any has occured
 <DL><DT><DD></DL><P>
 <A NAME="writeErrorMessages"></A>
-<A NAME="DOC.2.6.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void writeErrorMessages(std::ostream&amp; output, <!1><A HREF="ArgumentParser.html#DOC.2.6.24">ErrorSeverity</A> sevrity=<!1><A HREF="ArgumentParser.html#DOC.2.6.24.1">BENIGN</A>)</B></TT>
+<A NAME="DOC.2.6.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void writeErrorMessages(std::ostream&amp; output, <!1><A HREF="ArgumentParser.html#DOC.2.6.31">ErrorSeverity</A> sevrity=<!1><A HREF="ArgumentParser.html#DOC.2.6.31.1">BENIGN</A>)</B></TT>
 <DD>write out error messages at an above specified 
 <DL><DT><DD></DL><P>
 <A NAME="_argc"></A>
-<A NAME="DOC.2.6.32"></A>
+<A NAME="DOC.2.6.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int* _argc</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_argv"></A>
-<A NAME="DOC.2.6.33"></A>
+<A NAME="DOC.2.6.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>char** _argv</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_errorMessageMap"></A>
-<A NAME="DOC.2.6.34"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ArgumentParser.html#DOC.2.6.25">ErrorMessageMap</A> _errorMessageMap</B></TT>
+<A NAME="DOC.2.6.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ArgumentParser.html#DOC.2.6.32">ErrorMessageMap</A> _errorMessageMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_usage"></A>
-<A NAME="DOC.2.6.35"></A>
+<A NAME="DOC.2.6.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ApplicationUsage.html">ApplicationUsage</A>* _usage</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -313,6 +339,6 @@ remove the four entries from the list and return true, otherwise return false
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>template< typename FixtureT > class  osgUtx::TestCase_</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -23,19 +23,19 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.202.8.2">TestCase_</A></B>( const std::string&amp; sName, TestMethodPtr pTestMethod )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.246.8.2">TestCase_</A></B>( const std::string&amp; sName, TestMethodPtr pTestMethod )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.202.8.3">run</A></B>( const <!1><A HREF="TestCase.html#DOC.202.4.1">Context</A>&amp; ctx )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.246.8.3">run</A></B>( const <!1><A HREF="TestCase.html#DOC.246.4.1">Context</A>&amp; ctx )
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TestMethodPtr <B><A HREF="#DOC.202.8.5">_pTestMethod</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TestMethodPtr <B><A HREF="#DOC.246.8.5">_pTestMethod</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.202.8.4">~TestCase_</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.246.8.4">~TestCase_</A></B>()
 </DL></P>
 
 </DL>
@@ -43,11 +43,11 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>accept</B>( <!1><A HREF="Test.html#DOC.202.1.1">Visitor</A>&amp; v )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>accept</B>( <!1><A HREF="Test.html#DOC.246.1.1">Visitor</A>&amp; v )
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="TestContext.html">TestContext</A> <B>Context</B>
 </DL></P>
 
@@ -60,7 +60,7 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="TestVisitor.html">TestVisitor</A> <B>Visitor</B>
 </DL></P>
 
@@ -74,7 +74,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -91,6 +91,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -109,19 +111,19 @@ of information from one test case to the next.</BLOCKQUOTE>
 <DL>
 
 <A NAME="TestCase_"></A>
-<A NAME="DOC.202.8.2"></A>
+<A NAME="DOC.246.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TestCase_( const std::string&amp; sName, TestMethodPtr pTestMethod )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="run"></A>
-<A NAME="DOC.202.8.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void run( const <!1><A HREF="TestCase.html#DOC.202.4.1">Context</A>&amp; ctx )</B></TT>
+<A NAME="DOC.246.8.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void run( const <!1><A HREF="TestCase.html#DOC.246.4.1">Context</A>&amp; ctx )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~TestCase_"></A>
-<A NAME="DOC.202.8.4"></A>
+<A NAME="DOC.246.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TestCase_()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pTestMethod"></A>
-<A NAME="DOC.202.8.5"></A>
+<A NAME="DOC.246.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TestMethodPtr _pTestMethod</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -129,6 +131,6 @@ of information from one test case to the next.</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::TangentSpaceGenerator</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::TangentSpaceGenerator</A></H2></H2><BLOCKQUOTE> This class generates three arrays containing tangent-space basis vectors.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Referenced,M,CTangentSpaceGenerator,MTangentSpaceGenerator.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.1">TangentSpaceGenerator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.25.2">TangentSpaceGenerator</A></B>(const <!1><A HREF="TangentSpaceGenerator.html#DOC.2.25.2">TangentSpaceGenerator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.25.3">generate</A></B>(osg::Geometry* geo, int normal_map_tex_unit = 0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec4Array* <B><A HREF="#DOC.2.25.4">getTangentArray</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec4Array* <B><A HREF="#DOC.2.25.5">getTangentArray</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.6">setTangentArray</A></B>(osg::Vec4Array* array)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec4Array* <B><A HREF="#DOC.2.25.7">getNormalArray</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec4Array* <B><A HREF="#DOC.2.25.8">getNormalArray</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.9">setNormalArray</A></B>(osg::Vec4Array* array)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec4Array* <B><A HREF="#DOC.2.25.10">getBinormalArray</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec4Array* <B><A HREF="#DOC.2.25.11">getBinormalArray</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25.12">setBinormalArray</A></B>(osg::Vec4Array* array)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.25.13">~TangentSpaceGenerator</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TangentSpaceGenerator.html">TangentSpaceGenerator</A>&amp; <B><A HREF="#DOC.2.25.14">operator=</A></B>(const <!1><A HREF="TangentSpaceGenerator.html">TangentSpaceGenerator</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.25.15">compute_basis_vectors</A></B>(osg::PrimitiveSet* pset, const osg::Array* vx, const osg::Array* nx, const osg::Array* tx, int iA, int iB, int iC)
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+This class generates three arrays containing tangent-space basis vectors. It takes
+a texture-mapped Geometry object as input, traverses its primitive sets and computes
+Tangent, Normal and Binormal vectors for each vertex, storing them into arrays.
+The resulting arrays can be used as vertex program varying (per-vertex) parameters,
+enabling advanced effects like bump-mapping.
+To use this class, simply call the generate() method specifying the Geometry object
+you want to process and the texture unit that contains UV mapping for the normal map;
+then you can retrieve the TBN arrays by calling getTangentArray(), getNormalArray()
+and getBinormalArray() methods.</BLOCKQUOTE>
+<DL>
+
+<A NAME="TangentSpaceGenerator"></A>
+<A NAME="DOC.2.25.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TangentSpaceGenerator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TangentSpaceGenerator"></A>
+<A NAME="DOC.2.25.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TangentSpaceGenerator(const <!1><A HREF="TangentSpaceGenerator.html#DOC.2.25.2">TangentSpaceGenerator</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="generate"></A>
+<A NAME="DOC.2.25.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void generate(osg::Geometry* geo, int normal_map_tex_unit = 0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTangentArray"></A>
+<A NAME="DOC.2.25.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec4Array* getTangentArray()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTangentArray"></A>
+<A NAME="DOC.2.25.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec4Array* getTangentArray() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTangentArray"></A>
+<A NAME="DOC.2.25.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTangentArray(osg::Vec4Array* array)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNormalArray"></A>
+<A NAME="DOC.2.25.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec4Array* getNormalArray()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNormalArray"></A>
+<A NAME="DOC.2.25.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec4Array* getNormalArray() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNormalArray"></A>
+<A NAME="DOC.2.25.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNormalArray(osg::Vec4Array* array)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getBinormalArray"></A>
+<A NAME="DOC.2.25.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec4Array* getBinormalArray()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getBinormalArray"></A>
+<A NAME="DOC.2.25.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec4Array* getBinormalArray() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setBinormalArray"></A>
+<A NAME="DOC.2.25.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setBinormalArray(osg::Vec4Array* array)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~TangentSpaceGenerator"></A>
+<A NAME="DOC.2.25.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TangentSpaceGenerator()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.25.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TangentSpaceGenerator.html">TangentSpaceGenerator</A>&amp; operator=(const <!1><A HREF="TangentSpaceGenerator.html">TangentSpaceGenerator</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compute_basis_vectors"></A>
+<A NAME="DOC.2.25.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void compute_basis_vectors(osg::PrimitiveSet* pset, const osg::Array* vx, const osg::Array* nx, const osg::Array* tx, int iA, int iB, int iC)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

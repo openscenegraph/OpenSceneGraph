@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osg::EllipsoidModel</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osg::EllipsoidModel</A></H2></H2><BLOCKQUOTE>EllipsoidModel encapsulates the ellipsoid used to model astral bodies such as plants, moon etc</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CEllipsoidModel,MEllipsoidModel.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.76.1">EllipsoidModel</A></B>(double radiusEquator = <!1><A HREF="osg.html#DOC.2.74">WGS_84_RADIUS_EQUATOR</A>, double radiusPolar = <!1><A HREF="osg.html#DOC.2.75">WGS_84_RADIUS_POLAR</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.76.2">EllipsoidModel</A></B>(const <!1><A HREF="EllipsoidModel.html#DOC.2.76.2">EllipsoidModel</A>&amp; et, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.76.3">META_Object</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.4">setRadiusEquator</A></B>(double <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.76.5">getRadiusEquator</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.6">setRadiusPolar</A></B>(double <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.76.7">getRadiusPolar</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3d.html">osg::Vec3d</A> <B><A HREF="#DOC.2.76.8">computeLocalUpVector</A></B>(double X, double Y, double Z) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.13">convertLatLongHeightToXYZ</A></B>(double latitude, double longitude, double <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>, double&amp; X, double&amp; Y, double&amp; Z) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.14">convertXYZToLatLongHeight</A></B>(double X, double Y, double Z, double&amp; latitude, double&amp; longitude, double&amp; <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.15">computeLocalToWorldTransformFromLatLongHeight</A></B>(double latitude, double longitude, double <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>, <!1><A HREF="Matrixd.html">osg::Matrixd</A>&amp; localToWorld) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.76.16">computeLocalToWorldTransformFromXYZ</A></B>(double X, double Y, double Z, <!1><A HREF="Matrixd.html">osg::Matrixd</A>&amp; localToWorld) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Vec3d.html">Vec3d</A> <B><A HREF="#DOC.2.76.17">computeLocalUpVector</A></B>(double X, double Y, double Z) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.76.10">_radiusEquator</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.76.11">_radiusPolar</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.76.12">_eccentricitySquared</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.76.9">computeCoefficients</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>*) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>EllipsoidModel encapsulates the ellipsoid used to model astral bodies such as plants, moon etc</BLOCKQUOTE>
+<DL>
+
+<A NAME="EllipsoidModel"></A>
+<A NAME="DOC.2.76.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EllipsoidModel(double radiusEquator = <!1><A HREF="osg.html#DOC.2.74">WGS_84_RADIUS_EQUATOR</A>, double radiusPolar = <!1><A HREF="osg.html#DOC.2.75">WGS_84_RADIUS_POLAR</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="EllipsoidModel"></A>
+<A NAME="DOC.2.76.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EllipsoidModel(const <!1><A HREF="EllipsoidModel.html#DOC.2.76.2">EllipsoidModel</A>&amp; et, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="META_Object"></A>
+<A NAME="DOC.2.76.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRadiusEquator"></A>
+<A NAME="DOC.2.76.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRadiusEquator(double <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRadiusEquator"></A>
+<A NAME="DOC.2.76.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getRadiusEquator() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRadiusPolar"></A>
+<A NAME="DOC.2.76.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRadiusPolar(double <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRadiusPolar"></A>
+<A NAME="DOC.2.76.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getRadiusPolar() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalUpVector"></A>
+<A NAME="DOC.2.76.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3d.html">osg::Vec3d</A> computeLocalUpVector(double X, double Y, double Z) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeCoefficients"></A>
+<A NAME="DOC.2.76.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeCoefficients()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_radiusEquator"></A>
+<A NAME="DOC.2.76.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _radiusEquator</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_radiusPolar"></A>
+<A NAME="DOC.2.76.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _radiusPolar</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eccentricitySquared"></A>
+<A NAME="DOC.2.76.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _eccentricitySquared</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="convertLatLongHeightToXYZ"></A>
+<A NAME="DOC.2.76.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void convertLatLongHeightToXYZ(double latitude, double longitude, double <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>, double&amp; X, double&amp; Y, double&amp; Z) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="convertXYZToLatLongHeight"></A>
+<A NAME="DOC.2.76.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void convertXYZToLatLongHeight(double X, double Y, double Z, double&amp; latitude, double&amp; longitude, double&amp; <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalToWorldTransformFromLatLongHeight"></A>
+<A NAME="DOC.2.76.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void computeLocalToWorldTransformFromLatLongHeight(double latitude, double longitude, double <!1><A HREF="Viewport.html#DOC.2.278.11">height</A>, <!1><A HREF="Matrixd.html">osg::Matrixd</A>&amp; localToWorld) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalToWorldTransformFromXYZ"></A>
+<A NAME="DOC.2.76.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void computeLocalToWorldTransformFromXYZ(double X, double Y, double Z, <!1><A HREF="Matrixd.html">osg::Matrixd</A>&amp; localToWorld) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalUpVector"></A>
+<A NAME="DOC.2.76.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Vec3d.html">Vec3d</A> computeLocalUpVector(double X, double Y, double Z) const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

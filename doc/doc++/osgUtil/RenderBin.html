@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGUTIL_EXPORT osgUtil::RenderBin</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,24 +22,12 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.13.40">_binNum</A></B>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.13.8">SortMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.13.41">_parent</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.13.36">SortCallback</A></B>: public osg::Referenced
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.13.42">_stage</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A> <B><A HREF="#DOC.2.13.43">_bins</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A> <B><A HREF="#DOC.2.13.44">_renderGraphList</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A> <B><A HREF="#DOC.2.13.45">_renderLeafList</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> <B><A HREF="#DOC.2.13.46">_sortMode</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>&gt;  <B><A HREF="#DOC.2.13.47">_sortCallback</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>&gt;  <B><A HREF="#DOC.2.13.48">_drawCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.13.42">DrawCallback</A></B>: public osg::Referenced
 </DL></P>
 
 <P><DL>
@@ -69,68 +57,103 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.16">reset</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.13.17">find_or_insert</A></B>(int binNum, const std::string&amp; binName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.13.17">getParent</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.18">addRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.13.18">getParent</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.19">sort</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.13.19">getStage</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.20">sortImplementation</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.13.20">getStage</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.21">setSortMode</A></B>(<!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A>&amp; <B><A HREF="#DOC.2.13.21">getRenderGraphList</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> <B><A HREF="#DOC.2.13.22">getSortMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A>&amp; <B><A HREF="#DOC.2.13.22">getRenderGraphList</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.23">sortByState</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A>&amp; <B><A HREF="#DOC.2.13.23">getRenderBinList</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.24">sortFrontToBack</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A>&amp; <B><A HREF="#DOC.2.13.24">getRenderBinList</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.25">sortBackToFront</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A>&amp; <B><A HREF="#DOC.2.13.25">getRenderLeafList</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.27">setSortCallback</A></B>(<!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>* sortCallback)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A>&amp; <B><A HREF="#DOC.2.13.26">getRenderLeafList</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>* <B><A HREF="#DOC.2.13.28">getSortCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.13.27">find_or_insert</A></B>(int binNum, const std::string&amp; binName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>* <B><A HREF="#DOC.2.13.29">getSortCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.28">addRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.30">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.29">sort</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.31">drawImplementation</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.30">sortImplementation</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.33">setDrawCallback</A></B>(<!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>* drawCallback)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.31">setSortMode</A></B>(<!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>* <B><A HREF="#DOC.2.13.34">getDrawCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> <B><A HREF="#DOC.2.13.32">getSortMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>* <B><A HREF="#DOC.2.13.35">getDrawCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.33">sortByState</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.13.36">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.34">sortFrontToBack</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.35">sortBackToFront</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.37">setSortCallback</A></B>(<!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>* sortCallback)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>* <B><A HREF="#DOC.2.13.38">getSortCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>* <B><A HREF="#DOC.2.13.39">getSortCallback</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.40">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.13.41">drawImplementation</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.43">setDrawCallback</A></B>(<!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>* drawCallback)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>* <B><A HREF="#DOC.2.13.44">getDrawCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>* <B><A HREF="#DOC.2.13.45">getDrawCallback</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.13.46">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
 <DD><I>extract stats for current draw list.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.37">getPrims</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.47">getPrims</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.13.38">getPrims</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats, int nbin)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.39">copyLeavesFromRenderGraphListToRenderLeafList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.13.48">getPrims</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats, int nbin)
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&gt; <B><A HREF="#DOC.2.13.1">RenderLeafList</A></B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&gt;  <B><A HREF="#DOC.2.13.1">RenderLeafList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>*&gt; <B><A HREF="#DOC.2.13.2">RenderGraphList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>*&gt;  <B><A HREF="#DOC.2.13.2">RenderGraphList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B><A HREF="#DOC.2.13.3">RenderBinList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;  <B><A HREF="#DOC.2.13.3">RenderBinList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.13.51">_binNum</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.13.8">SortMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.13.52">_parent</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.13.26">SortCallback</A></B>: public osg::Referenced
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.13.53">_stage</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.13.32">DrawCallback</A></B>: public osg::Referenced
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A> <B><A HREF="#DOC.2.13.54">_bins</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A> <B><A HREF="#DOC.2.13.55">_renderGraphList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A> <B><A HREF="#DOC.2.13.56">_renderLeafList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> <B><A HREF="#DOC.2.13.57">_sortMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>&gt;  <B><A HREF="#DOC.2.13.58">_sortCallback</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>&gt;  <B><A HREF="#DOC.2.13.59">_drawCallback</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.13.49">~RenderBin</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.50">copyLeavesFromRenderGraphListToRenderLeafList</A></B>()
 </DL></P>
 
 </DL>
@@ -144,15 +167,15 @@ RenderBin base class</BLOCKQUOTE>
 
 <A NAME="RenderLeafList"></A>
 <A NAME="DOC.2.13.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&gt; RenderLeafList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&gt;  RenderLeafList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RenderGraphList"></A>
 <A NAME="DOC.2.13.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>*&gt; RenderGraphList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>*&gt;  RenderGraphList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RenderBinList"></A>
 <A NAME="DOC.2.13.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; RenderBinList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; int, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt;  RenderBinList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="createRenderBin"></A>
 <A NAME="DOC.2.13.4"></A>
@@ -221,150 +244,190 @@ RenderBin base class</BLOCKQUOTE>
 <A NAME="DOC.2.13.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="find_or_insert"></A>
+<A NAME="getParent"></A>
 <A NAME="DOC.2.13.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* getParent()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getParent"></A>
+<A NAME="DOC.2.13.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html">RenderBin</A>* getParent() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStage"></A>
+<A NAME="DOC.2.13.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">RenderStage</A>* getStage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStage"></A>
+<A NAME="DOC.2.13.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderStage.html">RenderStage</A>* getStage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderGraphList"></A>
+<A NAME="DOC.2.13.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A>&amp; getRenderGraphList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderGraphList"></A>
+<A NAME="DOC.2.13.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A>&amp; getRenderGraphList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderBinList"></A>
+<A NAME="DOC.2.13.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A>&amp; getRenderBinList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderBinList"></A>
+<A NAME="DOC.2.13.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A>&amp; getRenderBinList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderLeafList"></A>
+<A NAME="DOC.2.13.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A>&amp; getRenderLeafList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRenderLeafList"></A>
+<A NAME="DOC.2.13.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A>&amp; getRenderLeafList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="find_or_insert"></A>
+<A NAME="DOC.2.13.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* find_or_insert(int binNum, const std::string&amp; binName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addRenderGraph"></A>
-<A NAME="DOC.2.13.18"></A>
+<A NAME="DOC.2.13.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addRenderGraph(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="sort"></A>
-<A NAME="DOC.2.13.19"></A>
+<A NAME="DOC.2.13.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void sort()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="sortImplementation"></A>
-<A NAME="DOC.2.13.20"></A>
+<A NAME="DOC.2.13.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sortImplementation()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSortMode"></A>
-<A NAME="DOC.2.13.21"></A>
+<A NAME="DOC.2.13.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSortMode(<!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSortMode"></A>
-<A NAME="DOC.2.13.22"></A>
+<A NAME="DOC.2.13.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> getSortMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="sortByState"></A>
-<A NAME="DOC.2.13.23"></A>
+<A NAME="DOC.2.13.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sortByState()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="sortFrontToBack"></A>
-<A NAME="DOC.2.13.24"></A>
+<A NAME="DOC.2.13.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sortFrontToBack()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="sortBackToFront"></A>
-<A NAME="DOC.2.13.25"></A>
+<A NAME="DOC.2.13.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sortBackToFront()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SortCallback"></A>
-<A NAME="DOC.2.13.26"></A>
+<A NAME="DOC.2.13.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SortCallback: public osg::Referenced</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="sortImplementation"></A>
-<A NAME="DOC.2.13.26.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sortImplementation(<!1><A HREF="RenderBin.html">RenderBin</A>*) = 0</B></TT>
+<A NAME="DOC.2.13.36.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sortImplementation(<!1><A HREF="RenderBin.html">RenderBin</A>*)</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setSortCallback"></A>
-<A NAME="DOC.2.13.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSortCallback(<!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>* sortCallback)</B></TT>
+<A NAME="DOC.2.13.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSortCallback(<!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>* sortCallback)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSortCallback"></A>
-<A NAME="DOC.2.13.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>* getSortCallback()</B></TT>
+<A NAME="DOC.2.13.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>* getSortCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSortCallback"></A>
-<A NAME="DOC.2.13.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>* getSortCallback() const </B></TT>
+<A NAME="DOC.2.13.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>* getSortCallback() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.13.30"></A>
+<A NAME="DOC.2.13.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawImplementation"></A>
-<A NAME="DOC.2.13.31"></A>
+<A NAME="DOC.2.13.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DrawCallback"></A>
-<A NAME="DOC.2.13.32"></A>
+<A NAME="DOC.2.13.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  DrawCallback: public osg::Referenced</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="drawImplementation"></A>
-<A NAME="DOC.2.13.32.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(<!1><A HREF="RenderBin.html">RenderBin</A>* bin, osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous) = 0</B></TT>
+<A NAME="DOC.2.13.42.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(<!1><A HREF="RenderBin.html">RenderBin</A>* bin, osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setDrawCallback"></A>
-<A NAME="DOC.2.13.33"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawCallback(<!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>* drawCallback)</B></TT>
+<A NAME="DOC.2.13.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawCallback(<!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>* drawCallback)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDrawCallback"></A>
-<A NAME="DOC.2.13.34"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>* getDrawCallback()</B></TT>
+<A NAME="DOC.2.13.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>* getDrawCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDrawCallback"></A>
-<A NAME="DOC.2.13.35"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>* getDrawCallback() const </B></TT>
+<A NAME="DOC.2.13.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>* getDrawCallback() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStats"></A>
-<A NAME="DOC.2.13.36"></A>
+<A NAME="DOC.2.13.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getStats(<!1><A HREF="Statistics.html">Statistics</A>* primStats)</B></TT>
 <DD>extract stats for current draw list. 
 <DL><DT><DD></DL><P>
 <A NAME="getPrims"></A>
-<A NAME="DOC.2.13.37"></A>
+<A NAME="DOC.2.13.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getPrims(<!1><A HREF="Statistics.html">Statistics</A>* primStats)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPrims"></A>
-<A NAME="DOC.2.13.38"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getPrims(<!1><A HREF="Statistics.html">Statistics</A>* primStats, int nbin)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="copyLeavesFromRenderGraphListToRenderLeafList"></A>
-<A NAME="DOC.2.13.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copyLeavesFromRenderGraphListToRenderLeafList()</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_binNum"></A>
-<A NAME="DOC.2.13.40"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _binNum</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_parent"></A>
-<A NAME="DOC.2.13.41"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* _parent</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_stage"></A>
-<A NAME="DOC.2.13.42"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">RenderStage</A>* _stage</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_bins"></A>
-<A NAME="DOC.2.13.43"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A> _bins</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_renderGraphList"></A>
-<A NAME="DOC.2.13.44"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A> _renderGraphList</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_renderLeafList"></A>
-<A NAME="DOC.2.13.45"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A> _renderLeafList</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_sortMode"></A>
-<A NAME="DOC.2.13.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> _sortMode</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_sortCallback"></A>
-<A NAME="DOC.2.13.47"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.26">SortCallback</A>&gt;  _sortCallback</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_drawCallback"></A>
 <A NAME="DOC.2.13.48"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.32">DrawCallback</A>&gt;  _drawCallback</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getPrims(<!1><A HREF="Statistics.html">Statistics</A>* primStats, int nbin)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~RenderBin"></A>
 <A NAME="DOC.2.13.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderBin()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="copyLeavesFromRenderGraphListToRenderLeafList"></A>
+<A NAME="DOC.2.13.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copyLeavesFromRenderGraphListToRenderLeafList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_binNum"></A>
+<A NAME="DOC.2.13.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _binNum</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_parent"></A>
+<A NAME="DOC.2.13.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* _parent</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_stage"></A>
+<A NAME="DOC.2.13.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">RenderStage</A>* _stage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bins"></A>
+<A NAME="DOC.2.13.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.3">RenderBinList</A> _bins</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderGraphList"></A>
+<A NAME="DOC.2.13.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.2">RenderGraphList</A> _renderGraphList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderLeafList"></A>
+<A NAME="DOC.2.13.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.1">RenderLeafList</A> _renderLeafList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sortMode"></A>
+<A NAME="DOC.2.13.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html#DOC.2.13.8">SortMode</A> _sortMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sortCallback"></A>
+<A NAME="DOC.2.13.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.36">SortCallback</A>&gt;  _sortCallback</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_drawCallback"></A>
+<A NAME="DOC.2.13.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.13.42">DrawCallback</A>&gt;  _drawCallback</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
@@ -373,6 +436,6 @@ RenderBin base class</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

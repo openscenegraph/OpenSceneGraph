@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::Optimizer::TextureVisitor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::Optimizer::TextureVisitor</A></H2></H2><BLOCKQUOTE>For all textures apply settings</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::NodeVisitor,M,CTextureVisitor,MTextureVisitor.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Optimizer.html">Optimizer</A>* <B><A HREF="#DOC.2.11.25.7">_optimizer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.25.8">_changeAutoUnRef</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool  <B><A HREF="#DOC.2.11.25.9">_valueAutoUnRef</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.25.10">_changeClientImageStorage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool  <B><A HREF="#DOC.2.11.25.11">_valueClientImageStorage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.25.12">_changeAnisotropy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.25.13">_valueAnisotropy</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.25.1">TextureVisitor</A></B>(bool changeAutoUnRef, bool valueAutoUnRef, bool changeClientImageStorage, bool valueClientImageStorage, bool changeAnisotropy, float valueAnisotropy, <!1><A HREF="Optimizer.html">Optimizer</A>* optimizer=0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.25.2">apply</A></B>(osg::Geode&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.25.3">apply</A></B>(osg::Node&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.25.4">apply</A></B>(osg::StateSet&amp; stateset)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.25.5">apply</A></B>(osg::Texture&amp; texture)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.11.25.6">isOperationPermissableForObject</A></B>(const osg::Object* object) const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>For all textures apply settings</BLOCKQUOTE>
+<DL>
+
+<A NAME="TextureVisitor"></A>
+<A NAME="DOC.2.11.25.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TextureVisitor(bool changeAutoUnRef, bool valueAutoUnRef, bool changeClientImageStorage, bool valueClientImageStorage, bool changeAnisotropy, float valueAnisotropy, <!1><A HREF="Optimizer.html">Optimizer</A>* optimizer=0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.11.25.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.11.25.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.11.25.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply(osg::StateSet&amp; stateset)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.11.25.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void apply(osg::Texture&amp; texture)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isOperationPermissableForObject"></A>
+<A NAME="DOC.2.11.25.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isOperationPermissableForObject(const osg::Object* object) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_optimizer"></A>
+<A NAME="DOC.2.11.25.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Optimizer.html">Optimizer</A>* _optimizer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_changeAutoUnRef"></A>
+<A NAME="DOC.2.11.25.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _changeAutoUnRef</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_valueAutoUnRef"></A>
+<A NAME="DOC.2.11.25.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool  _valueAutoUnRef</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_changeClientImageStorage"></A>
+<A NAME="DOC.2.11.25.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _changeClientImageStorage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_valueClientImageStorage"></A>
+<A NAME="DOC.2.11.25.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool  _valueClientImageStorage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_changeAnisotropy"></A>
+<A NAME="DOC.2.11.25.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _changeAnisotropy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_valueAnisotropy"></A>
+<A NAME="DOC.2.11.25.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _valueAnisotropy</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGSIM_EXPORT osgSim::VisibilityGroup</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGSIM_EXPORT <A HREF="#DOC.DOCU">osgSim::VisibilityGroup</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Group,M,CVisibilityGroup,MVisibilityGroup.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.21.1">VisibilityGroup</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.21.2">VisibilityGroup</A></B>(const <!1><A HREF="VisibilityGroup.html#DOC.2.21.2">VisibilityGroup</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SphereSegment.html#DOC.2.20.27">META_Node</A> <B><A HREF="#DOC.2.21.3">(osgSim, VisibilityGroup)</A></B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.4">setVisibilityVolume</A></B>(osg::Node* node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.21.5">getVisibilityVolume</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Node* <B><A HREF="#DOC.2.21.6">getVisibilityVolume</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.7">setVolumeIntersectionMask</A></B>(osg::Node::NodeMask mask)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.8">getVolumeIntersectionMask</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.9">setSegmentLength</A></B>(float length)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.10">getSegmentLength</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.21.12">_visibilityVolume</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.13">_volumeIntersectionMask</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.14">_segmentLength</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.21.11">~VisibilityGroup</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="VisibilityGroup"></A>
+<A NAME="DOC.2.21.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VisibilityGroup()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="VisibilityGroup"></A>
+<A NAME="DOC.2.21.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VisibilityGroup(const <!1><A HREF="VisibilityGroup.html#DOC.2.21.2">VisibilityGroup</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="(osgSim, VisibilityGroup)"></A>
+<A NAME="DOC.2.21.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SphereSegment.html#DOC.2.20.27">META_Node</A> (osgSim, VisibilityGroup)(osg::NodeVisitor&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setVisibilityVolume"></A>
+<A NAME="DOC.2.21.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVisibilityVolume(osg::Node* node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getVisibilityVolume"></A>
+<A NAME="DOC.2.21.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* getVisibilityVolume()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getVisibilityVolume"></A>
+<A NAME="DOC.2.21.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Node* getVisibilityVolume() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setVolumeIntersectionMask"></A>
+<A NAME="DOC.2.21.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVolumeIntersectionMask(osg::Node::NodeMask mask)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getVolumeIntersectionMask"></A>
+<A NAME="DOC.2.21.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask getVolumeIntersectionMask() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSegmentLength"></A>
+<A NAME="DOC.2.21.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSegmentLength(float length)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSegmentLength"></A>
+<A NAME="DOC.2.21.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSegmentLength() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~VisibilityGroup"></A>
+<A NAME="DOC.2.21.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~VisibilityGroup()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_visibilityVolume"></A>
+<A NAME="DOC.2.21.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _visibilityVolume</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_volumeIntersectionMask"></A>
+<A NAME="DOC.2.21.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask _volumeIntersectionMask</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_segmentLength"></A>
+<A NAME="DOC.2.21.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _segmentLength</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

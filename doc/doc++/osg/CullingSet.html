@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::CullingSet</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,84 +22,87 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.57.1">CullingSet</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.57.2">CullingSet</A></B>(const <!1><A HREF="CullingSet.html#DOC.2.57.2">CullingSet</A>&amp; cs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.57.3">CullingSet</A></B>(const <!1><A HREF="CullingSet.html#DOC.2.57.3">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix, const <!1><A HREF="Vec4.html">Vec4</A>&amp; pixelSizeVector)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html">CullingSet</A>&amp; <B><A HREF="#DOC.2.57.4">operator = </A></B>(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.57.5">set</A></B>(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.57.6">set</A></B>(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix, const <!1><A HREF="Vec4.html">Vec4</A>&amp; pixelSizeVector)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.10">setCullingMask</A></B>(<!1><A HREF="CullingSet.html#DOC.2.57.8">Mask</A> mask)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.11">setFrustum</A></B>(<!1><A HREF="Polytope.html">Polytope</A>&amp; cv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.57.12">getFrustum</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.57.13">getFrustum</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.14">addOccluder</A></B>(<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&amp; cv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.15">setPixelSizeVector</A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.57.16">getPixelSizeVector</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.57.17">getPixelSizeVector</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.18">setSmallFeatureCullingPixelSize</A></B>(float value)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float&amp; <B><A HREF="#DOC.2.57.19">getSmallFeatureCullingPixelSize</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.57.20">getSmallFeatureCullingPixelSize</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.57.21">pixelSize</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.31.10">radius</A>) const 
-<DD><I>Compute the pixel of an object at position v, with specified radius</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.57.22">pixelSize</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const 
-<DD><I>Compute the pixel of an bounding sphere</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.57.23">isCulled</A></B>(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.57.24">isCulled</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.57.25">isCulled</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.57.26">pushCurrentMask</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.57.27">popCurrentMask</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.28">disableAndPushOccludersCurrentMask</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.57.29">popOccludersCurrentMask</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.57.30">~CullingSet</A></B>()
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.81.9">MaskValues</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt; <B><A HREF="#DOC.2.57.7">OccluderList</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.1">CullingSet</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.57.8">Mask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.2">CullingSet</A></B>(const <!1><A HREF="CullingSet.html#DOC.2.81.2">CullingSet</A>&amp; cs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.57.9">MaskValues</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.81.3">CullingSet</A></B>(const <!1><A HREF="CullingSet.html#DOC.2.81.3">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; pixelSizeVector)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html">CullingSet</A>&amp; <B><A HREF="#DOC.2.81.4">operator = </A></B>(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.81.5">set</A></B>(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.81.6">set</A></B>(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; pixelSizeVector)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.10">setCullingMask</A></B>(<!1><A HREF="CullingSet.html#DOC.2.81.8">Mask</A> mask)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.11">setFrustum</A></B>(<!1><A HREF="Polytope.html">Polytope</A>&amp; cv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.81.12">getFrustum</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.81.13">getFrustum</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.14">addOccluder</A></B>(<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&amp; cv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.15">setPixelSizeVector</A></B>(const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; v)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; <B><A HREF="#DOC.2.81.16">getPixelSizeVector</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; <B><A HREF="#DOC.2.81.17">getPixelSizeVector</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.18">setSmallFeatureCullingPixelSize</A></B>(float value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float&amp; <B><A HREF="#DOC.2.81.19">getSmallFeatureCullingPixelSize</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.81.20">getSmallFeatureCullingPixelSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.81.21">pixelSize</A></B>(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>) const 
+<DD><I>Compute the pixel of an object at position v, with specified radius</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.81.22">pixelSize</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const 
+<DD><I>Compute the pixel of an bounding sphere</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.81.23">isCulled</A></B>(const std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;&amp; vertices)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.81.24">isCulled</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.81.25">isCulled</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.81.26">pushCurrentMask</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.81.27">popCurrentMask</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.28">disableAndPushOccludersCurrentMask</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.81.29">popOccludersCurrentMask</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.81.30">~CullingSet</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt;  <B><A HREF="#DOC.2.81.7">OccluderList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.81.8">Mask</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html#DOC.2.57.8">Mask</A> <B><A HREF="#DOC.2.57.31">_mask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html#DOC.2.81.8">Mask</A> <B><A HREF="#DOC.2.81.31">_mask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A> <B><A HREF="#DOC.2.57.32">_frustum</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A> <B><A HREF="#DOC.2.81.32">_frustum</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html#DOC.2.57.7">OccluderList</A> <B><A HREF="#DOC.2.57.33">_occluderList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html#DOC.2.81.7">OccluderList</A> <B><A HREF="#DOC.2.81.33">_occluderList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.57.34">_pixelSizeVector</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.270">Vec4</A> <B><A HREF="#DOC.2.81.34">_pixelSizeVector</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.57.35">_smallFeatureCullingPixelSize</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.81.35">_smallFeatureCullingPixelSize</A></B>
 </DL></P>
 
 </DL>
@@ -122,6 +125,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -134,183 +139,183 @@
 <DL>
 
 <A NAME="CullingSet"></A>
-<A NAME="DOC.2.57.1"></A>
+<A NAME="DOC.2.81.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullingSet()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CullingSet"></A>
-<A NAME="DOC.2.57.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullingSet(const <!1><A HREF="CullingSet.html#DOC.2.57.2">CullingSet</A>&amp; cs)</B></TT>
+<A NAME="DOC.2.81.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullingSet(const <!1><A HREF="CullingSet.html#DOC.2.81.2">CullingSet</A>&amp; cs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CullingSet"></A>
-<A NAME="DOC.2.57.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullingSet(const <!1><A HREF="CullingSet.html#DOC.2.57.3">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix, const <!1><A HREF="Vec4.html">Vec4</A>&amp; pixelSizeVector)</B></TT>
+<A NAME="DOC.2.81.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullingSet(const <!1><A HREF="CullingSet.html#DOC.2.81.3">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; pixelSizeVector)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.57.4"></A>
+<A NAME="DOC.2.81.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullingSet.html">CullingSet</A>&amp; operator = (const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
-<A NAME="DOC.2.57.5"></A>
+<A NAME="DOC.2.81.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
-<A NAME="DOC.2.57.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; matrix, const <!1><A HREF="Vec4.html">Vec4</A>&amp; pixelSizeVector)</B></TT>
+<A NAME="DOC.2.81.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(const <!1><A HREF="CullingSet.html">CullingSet</A>&amp; cs, const <!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; matrix, const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; pixelSizeVector)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="OccluderList"></A>
-<A NAME="DOC.2.57.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt; OccluderList</B></TT>
+<A NAME="DOC.2.81.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt;  OccluderList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Mask"></A>
-<A NAME="DOC.2.57.8"></A>
+<A NAME="DOC.2.81.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int Mask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MaskValues"></A>
-<A NAME="DOC.2.57.9"></A>
+<A NAME="DOC.2.81.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  MaskValues</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="NO_CULLING"></A>
-<A NAME="DOC.2.57.9.1"></A>
+<A NAME="DOC.2.81.9.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VIEW_FRUSTUM_SIDES_CULLING"></A>
-<A NAME="DOC.2.57.9.2"></A>
+<A NAME="DOC.2.81.9.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VIEW_FRUSTUM_SIDES_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NEAR_PLANE_CULLING"></A>
-<A NAME="DOC.2.57.9.3"></A>
+<A NAME="DOC.2.81.9.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEAR_PLANE_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FAR_PLANE_CULLING"></A>
-<A NAME="DOC.2.57.9.4"></A>
+<A NAME="DOC.2.81.9.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FAR_PLANE_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="VIEW_FRUSTUM_CULLING"></A>
-<A NAME="DOC.2.57.9.5"></A>
+<A NAME="DOC.2.81.9.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VIEW_FRUSTUM_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SMALL_FEATURE_CULLING"></A>
-<A NAME="DOC.2.57.9.6"></A>
+<A NAME="DOC.2.81.9.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SMALL_FEATURE_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SHADOW_OCCLUSION_CULLING"></A>
-<A NAME="DOC.2.57.9.7"></A>
+<A NAME="DOC.2.81.9.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SHADOW_OCCLUSION_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEFAULT_CULLING"></A>
-<A NAME="DOC.2.57.9.8"></A>
+<A NAME="DOC.2.81.9.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEFAULT_CULLING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ENABLE_ALL_CULLING"></A>
-<A NAME="DOC.2.57.9.9"></A>
+<A NAME="DOC.2.81.9.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENABLE_ALL_CULLING</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setCullingMask"></A>
-<A NAME="DOC.2.57.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullingMask(<!1><A HREF="CullingSet.html#DOC.2.57.8">Mask</A> mask)</B></TT>
+<A NAME="DOC.2.81.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullingMask(<!1><A HREF="CullingSet.html#DOC.2.81.8">Mask</A> mask)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFrustum"></A>
-<A NAME="DOC.2.57.11"></A>
+<A NAME="DOC.2.81.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFrustum(<!1><A HREF="Polytope.html">Polytope</A>&amp; cv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFrustum"></A>
-<A NAME="DOC.2.57.12"></A>
+<A NAME="DOC.2.81.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Polytope.html">Polytope</A>&amp; getFrustum()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFrustum"></A>
-<A NAME="DOC.2.57.13"></A>
+<A NAME="DOC.2.81.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Polytope.html">Polytope</A>&amp; getFrustum() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addOccluder"></A>
-<A NAME="DOC.2.57.14"></A>
+<A NAME="DOC.2.81.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addOccluder(<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&amp; cv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setPixelSizeVector"></A>
-<A NAME="DOC.2.57.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPixelSizeVector(const <!1><A HREF="Vec4.html">Vec4</A>&amp; v)</B></TT>
+<A NAME="DOC.2.81.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPixelSizeVector(const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; v)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPixelSizeVector"></A>
-<A NAME="DOC.2.57.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>&amp; getPixelSizeVector()</B></TT>
+<A NAME="DOC.2.81.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; getPixelSizeVector()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPixelSizeVector"></A>
-<A NAME="DOC.2.57.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPixelSizeVector() const </B></TT>
+<A NAME="DOC.2.81.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; getPixelSizeVector() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSmallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.57.18"></A>
+<A NAME="DOC.2.81.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSmallFeatureCullingPixelSize(float value)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSmallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.57.19"></A>
+<A NAME="DOC.2.81.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float&amp; getSmallFeatureCullingPixelSize()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSmallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.57.20"></A>
+<A NAME="DOC.2.81.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSmallFeatureCullingPixelSize() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pixelSize"></A>
-<A NAME="DOC.2.57.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float pixelSize(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.31.10">radius</A>) const </B></TT>
+<A NAME="DOC.2.81.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float pixelSize(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>) const </B></TT>
 <DD>Compute the pixel of an object at position v, with specified radius
 <DL><DT><DD></DL><P>
 <A NAME="pixelSize"></A>
-<A NAME="DOC.2.57.22"></A>
+<A NAME="DOC.2.81.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float pixelSize(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const </B></TT>
 <DD>Compute the pixel of an bounding sphere
 <DL><DT><DD></DL><P>
 <A NAME="isCulled"></A>
-<A NAME="DOC.2.57.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)</B></TT>
+<A NAME="DOC.2.81.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;&amp; vertices)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isCulled"></A>
-<A NAME="DOC.2.57.24"></A>
+<A NAME="DOC.2.81.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isCulled"></A>
-<A NAME="DOC.2.57.25"></A>
+<A NAME="DOC.2.81.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pushCurrentMask"></A>
-<A NAME="DOC.2.57.26"></A>
+<A NAME="DOC.2.81.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushCurrentMask()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="popCurrentMask"></A>
-<A NAME="DOC.2.57.27"></A>
+<A NAME="DOC.2.81.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popCurrentMask()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="disableAndPushOccludersCurrentMask"></A>
-<A NAME="DOC.2.57.28"></A>
+<A NAME="DOC.2.81.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void disableAndPushOccludersCurrentMask(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="popOccludersCurrentMask"></A>
-<A NAME="DOC.2.57.29"></A>
+<A NAME="DOC.2.81.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popOccludersCurrentMask(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~CullingSet"></A>
-<A NAME="DOC.2.57.30"></A>
+<A NAME="DOC.2.81.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~CullingSet()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mask"></A>
-<A NAME="DOC.2.57.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullingSet.html#DOC.2.57.8">Mask</A> _mask</B></TT>
+<A NAME="DOC.2.81.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullingSet.html#DOC.2.81.8">Mask</A> _mask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frustum"></A>
-<A NAME="DOC.2.57.32"></A>
+<A NAME="DOC.2.81.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Polytope.html">Polytope</A> _frustum</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_occluderList"></A>
-<A NAME="DOC.2.57.33"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullingSet.html#DOC.2.57.7">OccluderList</A> _occluderList</B></TT>
+<A NAME="DOC.2.81.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullingSet.html#DOC.2.81.7">OccluderList</A> _occluderList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pixelSizeVector"></A>
-<A NAME="DOC.2.57.34"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _pixelSizeVector</B></TT>
+<A NAME="DOC.2.81.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.270">Vec4</A> _pixelSizeVector</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_smallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.57.35"></A>
+<A NAME="DOC.2.81.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _smallFeatureCullingPixelSize</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -318,6 +323,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGPARTICLE_EXPORT osgParticle::ParticleEffect</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGPARTICLE_EXPORT <A HREF="#DOC.DOCU">osgParticle::ParticleEffect</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="Mosg::Group,M,CParticleEffect,MParticleEffect.html,CSmokeEffect,MSmokeEffect.html,CFireEffect,MFireEffect.html,CExplosionEffect,MExplosionEffect.html">
+<param name=before value="M,M,M|_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M">
+<param name=indent value="0,1,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.17.1">ParticleEffect</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.17.2">ParticleEffect</A></B>(const <!1><A HREF="ParticleEffect.html#DOC.2.17.2">ParticleEffect</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.17.3">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.17.4">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.17.5">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.17.6">accept</A></B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.17.7">setEmitter</A></B>(<!1><A HREF="Emitter.html">Emitter</A>* emitter)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Emitter.html">Emitter</A>* <B><A HREF="#DOC.2.17.8">getEmitter</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Emitter.html">Emitter</A>* <B><A HREF="#DOC.2.17.9">getEmitter</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.17.10">setProgram</A></B>(<!1><A HREF="Program.html">Program</A>* program)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Program.html">Program</A>* <B><A HREF="#DOC.2.17.11">getProgram</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Program.html">Program</A>* <B><A HREF="#DOC.2.17.12">getProgram</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.17.13">setParticleSystem</A></B>(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>* ps)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B><A HREF="#DOC.2.17.14">getParticleSystem</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B><A HREF="#DOC.2.17.15">getParticleSystem</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.17.16">buildEffect</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Emitter.html">Emitter</A>&gt;  <B><A HREF="#DOC.2.17.17">_emitter</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Program.html">Program</A>&gt;  <B><A HREF="#DOC.2.17.18">_program</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="ParticleSystem.html">ParticleSystem</A>&gt;  <B><A HREF="#DOC.2.17.19">_particleSystem</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="ParticleEffect"></A>
+<A NAME="DOC.2.17.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleEffect()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ParticleEffect"></A>
+<A NAME="DOC.2.17.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleEffect(const <!1><A HREF="ParticleEffect.html#DOC.2.17.2">ParticleEffect</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.17.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.17.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.17.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="accept"></A>
+<A NAME="DOC.2.17.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(osg::NodeVisitor&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setEmitter"></A>
+<A NAME="DOC.2.17.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEmitter(<!1><A HREF="Emitter.html">Emitter</A>* emitter)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEmitter"></A>
+<A NAME="DOC.2.17.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Emitter.html">Emitter</A>* getEmitter()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEmitter"></A>
+<A NAME="DOC.2.17.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Emitter.html">Emitter</A>* getEmitter() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setProgram"></A>
+<A NAME="DOC.2.17.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setProgram(<!1><A HREF="Program.html">Program</A>* program)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getProgram"></A>
+<A NAME="DOC.2.17.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Program.html">Program</A>* getProgram()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getProgram"></A>
+<A NAME="DOC.2.17.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Program.html">Program</A>* getProgram() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setParticleSystem"></A>
+<A NAME="DOC.2.17.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setParticleSystem(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>* ps)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getParticleSystem"></A>
+<A NAME="DOC.2.17.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ParticleSystem.html">ParticleSystem</A>* getParticleSystem()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getParticleSystem"></A>
+<A NAME="DOC.2.17.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* getParticleSystem() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="buildEffect"></A>
+<A NAME="DOC.2.17.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void buildEffect()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_emitter"></A>
+<A NAME="DOC.2.17.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="Emitter.html">Emitter</A>&gt;  _emitter</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_program"></A>
+<A NAME="DOC.2.17.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="Program.html">Program</A>&gt;  _program</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_particleSystem"></A>
+<A NAME="DOC.2.17.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="ParticleSystem.html">ParticleSystem</A>&gt;  _particleSystem</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="SmokeEffect.html">SmokeEffect</A><BR>
+<A HREF="FireEffect.html">FireEffect</A><BR>
+<A HREF="ExplosionEffect.html">ExplosionEffect</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

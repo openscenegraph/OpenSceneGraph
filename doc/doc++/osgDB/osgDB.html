@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>namespace osgDB</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -11,6 +11,8 @@
 <HR>
 <P><DL>
  <DT>
+class  <B><A HREF="Block.html">Block</A></B>: public osg::Referenced
+<DT>
 class  OSGDB_EXPORT <B><A HREF="DatabasePager.html">DatabasePager</A></B>: public osg::NodeVisitor::DatabaseRequestHandler, public OpenThreads::Thread
 <DD><I>Database paging class which manages the loading of files in a background thread,  and syncronizing of loaded models with the main scene graph</I>
 <DT>
@@ -26,53 +28,64 @@ class  OSGDB_EXPORT <B><A HREF="FieldReader.html">FieldReader</A></B>
 <DT>
 class  OSGDB_EXPORT <B><A HREF="FieldReaderIterator.html">FieldReaderIterator</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.7">getFilePath</A></B>(const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.8">getFilePath</A></B>(const std::string&amp; filename)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.8">getFileExtension</A></B>(const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.9">getFileExtension</A></B>(const std::string&amp; filename)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.9">getLowerCaseFileExtension</A></B>(const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.10">getLowerCaseFileExtension</A></B>(const std::string&amp; filename)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.10">getSimpleFileName</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.11">getSimpleFileName</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.11">getStrippedName</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.12">getNameLessExtension</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT bool <B><A HREF="#DOC.2.12">equalCaseInsensitive</A></B>(const std::string&amp; lhs, const std::string&amp; rhs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.13">getStrippedName</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT bool <B><A HREF="#DOC.2.13">equalCaseInsensitive</A></B>(const std::string&amp; lhs, const char* rhs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT bool <B><A HREF="#DOC.2.14">equalCaseInsensitive</A></B>(const std::string&amp; lhs, const std::string&amp; rhs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT bool <B><A HREF="#DOC.2.15">equalCaseInsensitive</A></B>(const std::string&amp; lhs, const char* rhs)
+<DT>
+enum  <B><A HREF="CaseSensitivity.html">CaseSensitivity</A></B>
+<DT>
+enum  <B><A HREF="FileType.html">FileType</A></B>
 <DT>
 extern OSGDB_EXPORT bool <B><A HREF="fileExists.html">fileExists</A></B>(const std::string&amp; filename)
 <DD><I>return true if a file exisits.</I>
 <DT>
-extern OSGDB_EXPORT std::string <B><A HREF="findFileInPath.html">findFileInPath</A></B>(const std::string&amp; filename, const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filePath)
+extern OSGDB_EXPORT <!1><A HREF="FileType.html">FileType</A> <B><A HREF="fileType.2.html">fileType</A></B>(const std::string&amp; filename)
+<DD><I>return type of file.</I>
+<DT>
+extern OSGDB_EXPORT std::string <B><A HREF="findFileInPath.html">findFileInPath</A></B>(const std::string&amp; filename, const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filePath, <!1><A HREF="CaseSensitivity.html">CaseSensitivity</A> caseSensitivity=<!1><A HREF="CaseSensitivity.html#DOC.2.16.1">CASE_SENSITIVE</A>)
 <DD><I>find specified file in specified file path</I>
 <DT>
-extern OSGDB_EXPORT std::string <B><A HREF="findFileInDirectory.html">findFileInDirectory</A></B>(const std::string&amp; fileName, const std::string&amp; dirName, bool caseInsensitive=false)
+extern OSGDB_EXPORT std::string <B><A HREF="findFileInDirectory.html">findFileInDirectory</A></B>(const std::string&amp; fileName, const std::string&amp; dirName, <!1><A HREF="CaseSensitivity.html">CaseSensitivity</A> caseSensitivity=<!1><A HREF="CaseSensitivity.html#DOC.2.16.1">CASE_SENSITIVE</A>)
 <DD><I>return the directory/filename of a file if its is contained within specified directory.</I>
 <DT>
-typedef  std::vector&lt;std::string&gt; <B><A HREF="DirectoryContents.html">DirectoryContents</A></B>
+typedef  std::vector&lt;std::string&gt;  <B><A HREF="DirectoryContents.html">DirectoryContents</A></B>
 <DD><I>simple list of names to represent a directory's contents.</I>
 <DT>
 extern OSGDB_EXPORT <!1><A HREF="DirectoryContents.html">DirectoryContents</A> <B><A HREF="getDirectoryContents.html">getDirectoryContents</A></B>(const std::string&amp; dirName)
 <DD><I>return the contents of a directory.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.19">setDataFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.24">setDataFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.20">setDataFilePathList</A></B>(const std::string&amp; paths)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25">setDataFilePathList</A></B>(const std::string&amp; paths)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.21">getDataFilePathList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.26">getDataFilePathList</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.22">findDataFile</A></B>(const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.27">findDataFile</A></B>(const std::string&amp; filename, <!1><A HREF="CaseSensitivity.html">CaseSensitivity</A> caseSensitivity=<!1><A HREF="CaseSensitivity.html#DOC.2.16.1">CASE_SENSITIVE</A>)
 <DT>
 class  <B><A HREF="PushAndPopDataPath.html">PushAndPopDataPath</A></B>
 <DD><I>Convinience class for pushing a path on construction, and popping the path and destruction.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.24">setLibraryFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepaths)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.29">setLibraryFilePathList</A></B>(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepaths)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.25">setLibraryFilePathList</A></B>(const std::string&amp; paths)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.30">setLibraryFilePathList</A></B>(const std::string&amp; paths)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.26">getLibraryFilePathList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; <B><A HREF="#DOC.2.31">getLibraryFilePathList</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.27">findLibraryFile</A></B>(const std::string&amp; filename)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>extern OSGDB_EXPORT std::string <B><A HREF="#DOC.2.32">findLibraryFile</A></B>(const std::string&amp; filename, <!1><A HREF="CaseSensitivity.html">CaseSensitivity</A> caseSensitivity=<!1><A HREF="CaseSensitivity.html#DOC.2.16.1">CASE_SENSITIVE</A>)
+<DT>
+class  OSGDB_EXPORT <B><A HREF="ImageOptions.html">ImageOptions</A></B>: public <!1><A HREF="Options.html">osgDB::ReaderWriter::Options</A>
 <DT>
 class  OSGDB_EXPORT <B><A HREF="Input.html">Input</A></B>: public <!1><A HREF="FieldReaderIterator.html">FieldReaderIterator</A>
 <DD><I>Class for managing the reading of ASCII osg files</I>
@@ -82,42 +95,48 @@ class  OSGDB_EXPORT <B><A HREF="Output.html">Output</A></B>: public std::ofstrea
 <DT>
 class  <B><A HREF="ParameterOutput.html">ParameterOutput</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class Iterator&gt;  void <B><A HREF="#DOC.2.31">writeArray</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class Iterator&gt;  void <B><A HREF="#DOC.2.37">writeArray</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class Iterator&gt;  void <B><A HREF="#DOC.2.32">writeArrayAsInts</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class Iterator&gt;  void <B><A HREF="#DOC.2.38">writeArrayAsInts</A></B>(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)
 <DT>
-extern OSGDB_EXPORT osg::Object* <B><A HREF="readObjectFile.html">readObjectFile</A></B>(const std::string&amp; filename, bool useObjectCache)
+class  OSGDB_EXPORT <B><A HREF="ReaderWriter.html">ReaderWriter</A></B>: public osg::Referenced
+<DD><I>pure virtual base class for reading and writing of non native formats.</I>
+<DT>
+extern OSGDB_EXPORT osg::Object* <B><A HREF="readObjectFile.html">readObjectFile</A></B>(const std::string&amp; filename, Registry::CacheHintOptions useObjectCache)
 <DD><I>Read an osg::Object from file.</I>
 <DT>
 inline   osg::Object* <B><A HREF="readObjectFile.2.html">readObjectFile</A></B>(const std::string&amp; filename)
 <DD><I>Read an osg::Object from file.</I>
 <DT>
-extern OSGDB_EXPORT osg::Image* <B><A HREF="readImageFile.html">readImageFile</A></B>(const std::string&amp; filename, bool useObjectCache)
+extern OSGDB_EXPORT osg::Image* <B><A HREF="readImageFile.html">readImageFile</A></B>(const std::string&amp; filename, Registry::CacheHintOptions useObjectCache)
 <DD><I>Read an osg::Image from file.</I>
 <DT>
 inline   osg::Image* <B><A HREF="readImageFile.2.html">readImageFile</A></B>(const std::string&amp; filename)
 <DD><I>Read an osg::Image from file.</I>
 <DT>
-extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFile.html">readNodeFile</A></B>(const std::string&amp; filename, bool useObjectCache)
+extern OSGDB_EXPORT osg::HeightField* <B><A HREF="readHeightFieldFile.html">readHeightFieldFile</A></B>(const std::string&amp; filename, Registry::CacheHintOptions useObjectCache)
+<DD><I>Read an osg::HeightField from file.</I>
+<DT>
+inline   osg::HeightField* <B><A HREF="readHeightFieldFile.2.html">readHeightFieldFile</A></B>(const std::string&amp; filename)
+<DD><I>Read an osg::HeightField from file.</I>
+<DT>
+extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFile.html">readNodeFile</A></B>(const std::string&amp; filename, Registry::CacheHintOptions useObjectCache)
 <DD><I>Read an osg::Node from file.</I>
 <DT>
 inline   osg::Node* <B><A HREF="readNodeFile.2.html">readNodeFile</A></B>(const std::string&amp; filename)
 <DD><I>Read an osg::Node from file.</I>
 <DT>
-extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine, bool useObjectCache)
+extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine, Registry::CacheHintOptions useObjectCache)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded.</I>
 <DT>
 inline   osg::Node* <B><A HREF="readNodeFiles.2.html">readNodeFiles</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded</I>
 <DT>
-extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.3.html">readNodeFiles</A></B>(osg::ArgumentParser&amp; parser, bool useObjectCache)
+extern OSGDB_EXPORT osg::Node* <B><A HREF="readNodeFiles.3.html">readNodeFiles</A></B>(osg::ArgumentParser&amp; parser, Registry::CacheHintOptions useObjectCache)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded.</I>
 <DT>
 inline   osg::Node* <B><A HREF="readNodeFiles.4.html">readNodeFiles</A></B>(osg::ArgumentParser&amp; parser)
 <DD><I>Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more than one subgraph has been loaded</I>
-<DT>
-class  OSGDB_EXPORT <B><A HREF="ReaderWriter.html">ReaderWriter</A></B>: public osg::Referenced
-<DD><I>pure virtual base class for reading and writing of non native formats.</I>
 <DT>
 struct  <B><A HREF="basic_type_wrapper.html">basic_type_wrapper</A></B>
 <DD><I>basic structure for custom runtime inheritance checking </I>
@@ -125,7 +144,7 @@ struct  <B><A HREF="basic_type_wrapper.html">basic_type_wrapper</A></B>
 template&lt;class T&gt; struct  <B><A HREF="type_wrapper.html">type_wrapper</A></B>: <!1><A HREF="basic_type_wrapper.html">basic_type_wrapper</A>
 <DD><I>a class template that checks inheritance between a given Object's class and a class defined at compile time through the template parameter T.</I>
 <DT>
-typedef  std::deque&lt;std::string&gt; <B><A HREF="FilePathList.html">FilePathList</A></B>
+typedef  std::deque&lt;std::string&gt;  <B><A HREF="FilePathList.html">FilePathList</A></B>
 <DD><I>list of directories to search through which searching for files.</I>
 <DT>
 class  OSGDB_EXPORT <B><A HREF="Registry.html">Registry</A></B>: public osg::Referenced
@@ -140,11 +159,16 @@ class  <B><A HREF="RegisterDotOsgWrapperProxy.html">RegisterDotOsgWrapperProxy</
 template&lt;class T&gt; class  <B><A HREF="RegisterReaderWriterProxy.html">RegisterReaderWriterProxy</A></B>
 <DD><I>Proxy class for automatic registration of reader/writers with the Registry</I>
 <DT>
+class  OSGDB_EXPORT <B><A HREF="SharedStateManager.html">SharedStateManager</A></B>: public osg::NodeVisitor
+<DT>
 extern OSGDB_EXPORT bool <B><A HREF="writeObjectFile.html">writeObjectFile</A></B>(const osg::Object&amp; object, const std::string&amp; filename)
 <DD><I>Write an osg::Object to file.</I>
 <DT>
 extern OSGDB_EXPORT bool <B><A HREF="writeImageFile.html">writeImageFile</A></B>(const osg::Image&amp; image, const std::string&amp; filename)
 <DD><I>Write an osg::Image to file.</I>
+<DT>
+extern OSGDB_EXPORT bool <B><A HREF="writeHeightFieldFile.html">writeHeightFieldFile</A></B>(const osg::HeightField&amp; hf, const std::string&amp; filename)
+<DD><I>Write an osg::HeightField to file.</I>
 <DT>
 extern OSGDB_EXPORT bool <B><A HREF="writeNodeFile.html">writeNodeFile</A></B>(const osg::Node&amp; node, const std::string&amp; filename)
 <DD><I>Write an osg::Node to file.</I>
@@ -157,75 +181,79 @@ extern OSGDB_EXPORT bool <B><A HREF="writeNodeFile.html">writeNodeFile</A></B>(c
 <DL>
 
 <A NAME="getFilePath"></A>
-<A NAME="DOC.2.7"></A>
+<A NAME="DOC.2.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string getFilePath(const std::string&amp; filename)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFileExtension"></A>
-<A NAME="DOC.2.8"></A>
+<A NAME="DOC.2.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string getFileExtension(const std::string&amp; filename)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLowerCaseFileExtension"></A>
-<A NAME="DOC.2.9"></A>
+<A NAME="DOC.2.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string getLowerCaseFileExtension(const std::string&amp; filename)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSimpleFileName"></A>
-<A NAME="DOC.2.10"></A>
+<A NAME="DOC.2.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string getSimpleFileName(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="getNameLessExtension"></A>
+<A NAME="DOC.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string getNameLessExtension(const std::string&amp; fileName)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="getStrippedName"></A>
-<A NAME="DOC.2.11"></A>
+<A NAME="DOC.2.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string getStrippedName(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="equalCaseInsensitive"></A>
-<A NAME="DOC.2.12"></A>
+<A NAME="DOC.2.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string&amp; lhs, const std::string&amp; rhs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="equalCaseInsensitive"></A>
-<A NAME="DOC.2.13"></A>
+<A NAME="DOC.2.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string&amp; lhs, const char* rhs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDataFilePathList"></A>
-<A NAME="DOC.2.19"></A>
+<A NAME="DOC.2.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDataFilePathList(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepath)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDataFilePathList"></A>
-<A NAME="DOC.2.20"></A>
+<A NAME="DOC.2.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDataFilePathList(const std::string&amp; paths)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDataFilePathList"></A>
-<A NAME="DOC.2.21"></A>
+<A NAME="DOC.2.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; getDataFilePathList()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="findDataFile"></A>
-<A NAME="DOC.2.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string findDataFile(const std::string&amp; filename)</B></TT>
+<A NAME="DOC.2.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string findDataFile(const std::string&amp; filename, <!1><A HREF="CaseSensitivity.html">CaseSensitivity</A> caseSensitivity=<!1><A HREF="CaseSensitivity.html#DOC.2.16.1">CASE_SENSITIVE</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setLibraryFilePathList"></A>
-<A NAME="DOC.2.24"></A>
+<A NAME="DOC.2.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLibraryFilePathList(const <!1><A HREF="FilePathList.html">FilePathList</A>&amp; filepaths)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setLibraryFilePathList"></A>
-<A NAME="DOC.2.25"></A>
+<A NAME="DOC.2.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLibraryFilePathList(const std::string&amp; paths)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLibraryFilePathList"></A>
-<A NAME="DOC.2.26"></A>
+<A NAME="DOC.2.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="FilePathList.html">FilePathList</A>&amp; getLibraryFilePathList()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="findLibraryFile"></A>
-<A NAME="DOC.2.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string findLibraryFile(const std::string&amp; filename)</B></TT>
+<A NAME="DOC.2.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>extern OSGDB_EXPORT std::string findLibraryFile(const std::string&amp; filename, <!1><A HREF="CaseSensitivity.html">CaseSensitivity</A> caseSensitivity=<!1><A HREF="CaseSensitivity.html#DOC.2.16.1">CASE_SENSITIVE</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeArray"></A>
-<A NAME="DOC.2.31"></A>
+<A NAME="DOC.2.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class Iterator&gt;  void writeArray(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="writeArrayAsInts"></A>
-<A NAME="DOC.2.32"></A>
+<A NAME="DOC.2.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class Iterator&gt;  void writeArrayAsInts(<!1><A HREF="Output.html">Output</A>&amp; fw, Iterator first, Iterator last, int noItemsPerLine=0)</B></TT>
 <DL><DT><DD></DL><P></DL>
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGGA_EXPORT osgGA::FlightManipulator</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -21,6 +21,11 @@
 <HR>
 
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.3.14">YawControlMode</A></B>
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.1">FlightManipulator</A></B>()
@@ -59,11 +64,6 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.3.14">YawControlMode</A></B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.3.21">_ga_t1</A></B>
 <DT>
@@ -71,17 +71,19 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.3.23">_node</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.24">_modelScale</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.24">_modelScale</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.25">_velocity</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.25">_acceleration</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FlightManipulator.html#DOC.2.3.14">YawControlMode</A> <B><A HREF="#DOC.2.3.26">_yawMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.26">_velocity</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3 <B><A HREF="#DOC.2.3.27">_eye</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FlightManipulator.html#DOC.2.3.14">YawControlMode</A> <B><A HREF="#DOC.2.3.27">_yawMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.3.28">_rotation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.3.28">_eye</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.29">_distance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.3.29">_rotation</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.30">_distance</A></B>
 </DL></P>
 
 <P><DL>
@@ -104,12 +106,61 @@
 <HR><H3>Inherited from <A HREF="MatrixManipulator.html">MatrixManipulator</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+class  <B><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A></B>: public osg::Referenced
+<DD><I>callback class to use to allow matrix manipulators to querry the application for the local coordinate frame</I>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setMinimumDistance</B>(float minimumDistance)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>getMinimumDistance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setCoordinateFrameCallback</B>(<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* cb)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B>getCoordinateFrameCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B>getCoordinateFrameCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::CoordinateFrame <B>getCoordinateFrame</B>(const osg::Vec3d&amp; position) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>getSideVector</B>(const osg::CoordinateFrame&amp; cf) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>getFrontVector</B>(const osg::CoordinateFrame&amp; cf) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>getUpVector</B>(const osg::CoordinateFrame&amp; cf) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   osgUtil::SceneView::FusionDistanceMode <B>getFusionDistanceMode</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   float <B>getFusionDistanceValue</B>() const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setHomePosition</B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; center, const osg::Vec3d&amp; up)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>getHomePosition</B>(osg::Vec3d&amp; eye, osg::Vec3d&amp; center, osg::Vec3d&amp; up)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setAutoComputeHomePosition</B>(bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>getAutoComputeHomePosition</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>computeHomePosition</B>()
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="GUIEventHandlerVisitor.html">GUIEventHandlerVisitor</A>&amp; v)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>double <B>_minimumDistance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_autoComputeHomePosition</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>_homeEye</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>_homeCenter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>_homeUp</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>&gt;  <B>_coordinateFrameCallback</B>
 </DL></P>
 
 </DL>
@@ -248,33 +299,37 @@ Return true is camera has moved and a redraw is required.
 <DL><DT><DD></DL><P>
 <A NAME="_modelScale"></A>
 <A NAME="DOC.2.3.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _modelScale</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _modelScale</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_acceleration"></A>
+<A NAME="DOC.2.3.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _acceleration</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_velocity"></A>
-<A NAME="DOC.2.3.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _velocity</B></TT>
+<A NAME="DOC.2.3.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _velocity</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_yawMode"></A>
-<A NAME="DOC.2.3.26"></A>
+<A NAME="DOC.2.3.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FlightManipulator.html#DOC.2.3.14">YawControlMode</A> _yawMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_eye"></A>
-<A NAME="DOC.2.3.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3 _eye</B></TT>
+<A NAME="DOC.2.3.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _eye</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rotation"></A>
-<A NAME="DOC.2.3.28"></A>
+<A NAME="DOC.2.3.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Quat _rotation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_distance"></A>
-<A NAME="DOC.2.3.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _distance</B></TT>
+<A NAME="DOC.2.3.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _distance</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

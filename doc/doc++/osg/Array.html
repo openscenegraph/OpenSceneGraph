@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::Array</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -21,69 +21,77 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.2">Array</A></B>(<!1><A HREF="Array.html#DOC.2.7.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.7.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.3">Array</A></B>(const <!1><A HREF="Array.html#DOC.2.7.3">Array</A>&amp; <!1><A HREF="Geometry.html#DOC.2.84.12.5">array</A>, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.7.4">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.7.5">libraryName</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.7.6">className</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.7">accept</A></B>(<!1><A HREF="ArrayVisitor.html">ArrayVisitor</A>&amp;) = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.8">accept</A></B>(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp;) const  = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.9">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp;) = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.7.10">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp;) const  = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html#DOC.2.7.1">Type</A> <B><A HREF="#DOC.2.7.11">getType</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.7.12">getDataSize</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.7.13">getDataType</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const GLvoid* <B><A HREF="#DOC.2.7.14">getDataPointer</A></B>() const  = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.7.15">getTotalDataSize</A></B>() const  = 0
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.7.16">getNumElements</A></B>() const  = 0
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.15.1">Type</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.7.1">Type</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.2">Array</A></B>(<!1><A HREF="Array.html#DOC.2.15.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.15.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.3">Array</A></B>(const <!1><A HREF="Array.html#DOC.2.15.3">Array</A>&amp; <!1><A HREF="Geometry.html#DOC.2.108.13.7">array</A>, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.15.4">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.15.5">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.15.6">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7">accept</A></B>(<!1><A HREF="ArrayVisitor.html">ArrayVisitor</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.8">accept</A></B>(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp;) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.9">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.10">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp;) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.15.11">compare</A></B>(unsigned int lhs, unsigned int rhs) const 
+<DD><I>return -1 if lhs element is less than rhs element, 0 is equal, 1 if lhs element is greater than rhs elementreturn -1 if lhs element is less than rhs element, 0 is equal, 1 if lhs element is greater than rhs element</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html#DOC.2.15.1">Type</A> <B><A HREF="#DOC.2.15.12">getType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.15.13">getDataSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.15.14">getDataType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const GLvoid* <B><A HREF="#DOC.2.15.15">getDataPointer</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.15.16">getTotalDataSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.15.17">getNumElements</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html#DOC.2.7.1">Type</A> <B><A HREF="#DOC.2.7.18">_arrayType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Array.html#DOC.2.15.1">Type</A> <B><A HREF="#DOC.2.15.19">_arrayType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.7.19">_dataSize</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.15.20">_dataSize</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.7.20">_dataType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.15.21">_dataType</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.7.17">~Array</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.15.18">~Array</A></B>()
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -93,13 +101,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -109,7 +112,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -126,6 +129,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -137,133 +142,138 @@
 <DL>
 
 <A NAME="Type"></A>
-<A NAME="DOC.2.7.1"></A>
+<A NAME="DOC.2.15.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Type</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ArrayType"></A>
-<A NAME="DOC.2.7.1.1"></A>
+<A NAME="DOC.2.15.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ByteArrayType"></A>
-<A NAME="DOC.2.7.1.2"></A>
+<A NAME="DOC.2.15.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ByteArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ShortArrayType"></A>
-<A NAME="DOC.2.7.1.3"></A>
+<A NAME="DOC.2.15.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShortArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="IntArrayType"></A>
-<A NAME="DOC.2.7.1.4"></A>
+<A NAME="DOC.2.15.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IntArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="UByteArrayType"></A>
-<A NAME="DOC.2.7.1.5"></A>
+<A NAME="DOC.2.15.1.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UByteArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="UShortArrayType"></A>
-<A NAME="DOC.2.7.1.6"></A>
+<A NAME="DOC.2.15.1.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UShortArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="UIntArrayType"></A>
-<A NAME="DOC.2.7.1.7"></A>
+<A NAME="DOC.2.15.1.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UIntArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="UByte4ArrayType"></A>
-<A NAME="DOC.2.7.1.8"></A>
+<A NAME="DOC.2.15.1.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UByte4ArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FloatArrayType"></A>
-<A NAME="DOC.2.7.1.9"></A>
+<A NAME="DOC.2.15.1.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FloatArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Vec2ArrayType"></A>
-<A NAME="DOC.2.7.1.10"></A>
+<A NAME="DOC.2.15.1.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Vec2ArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Vec3ArrayType"></A>
-<A NAME="DOC.2.7.1.11"></A>
+<A NAME="DOC.2.15.1.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Vec3ArrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Vec4ArrayType"></A>
-<A NAME="DOC.2.7.1.12"></A>
+<A NAME="DOC.2.15.1.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Vec4ArrayType</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Array"></A>
-<A NAME="DOC.2.7.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Array(<!1><A HREF="Array.html#DOC.2.7.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.7.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)</B></TT>
+<A NAME="DOC.2.15.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Array(<!1><A HREF="Array.html#DOC.2.15.1">Type</A> arrayType=<!1><A HREF="Array.html#DOC.2.15.1.1">ArrayType</A>, GLint dataSize=0, GLenum dataType=0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Array"></A>
-<A NAME="DOC.2.7.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Array(const <!1><A HREF="Array.html#DOC.2.7.3">Array</A>&amp; <!1><A HREF="Geometry.html#DOC.2.84.12.5">array</A>, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.15.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Array(const <!1><A HREF="Array.html#DOC.2.15.3">Array</A>&amp; <!1><A HREF="Geometry.html#DOC.2.108.13.7">array</A>, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.7.4"></A>
+<A NAME="DOC.2.15.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.7.5"></A>
+<A NAME="DOC.2.15.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.7.6"></A>
+<A NAME="DOC.2.15.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.7.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ArrayVisitor.html">ArrayVisitor</A>&amp;) = 0</B></TT>
+<A NAME="DOC.2.15.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ArrayVisitor.html">ArrayVisitor</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.7.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp;) const  = 0</B></TT>
+<A NAME="DOC.2.15.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp;) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.7.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp;) = 0</B></TT>
+<A NAME="DOC.2.15.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.7.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp;) const  = 0</B></TT>
+<A NAME="DOC.2.15.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp;) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compare"></A>
+<A NAME="DOC.2.15.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(unsigned int lhs, unsigned int rhs) const </B></TT>
+<DD>return -1 if lhs element is less than rhs element, 0 is equal, 1 if lhs element is greater than rhs elementreturn -1 if lhs element is less than rhs element, 0 is equal, 1 if lhs element is greater than rhs element
 <DL><DT><DD></DL><P>
 <A NAME="getType"></A>
-<A NAME="DOC.2.7.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html#DOC.2.7.1">Type</A> getType() const </B></TT>
+<A NAME="DOC.2.15.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html#DOC.2.15.1">Type</A> getType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDataSize"></A>
-<A NAME="DOC.2.7.12"></A>
+<A NAME="DOC.2.15.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint getDataSize() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDataType"></A>
-<A NAME="DOC.2.7.13"></A>
+<A NAME="DOC.2.15.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum getDataType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDataPointer"></A>
-<A NAME="DOC.2.7.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const GLvoid* getDataPointer() const  = 0</B></TT>
+<A NAME="DOC.2.15.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const GLvoid* getDataPointer() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTotalDataSize"></A>
-<A NAME="DOC.2.7.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getTotalDataSize() const  = 0</B></TT>
+<A NAME="DOC.2.15.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getTotalDataSize() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNumElements"></A>
-<A NAME="DOC.2.7.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getNumElements() const  = 0</B></TT>
+<A NAME="DOC.2.15.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getNumElements() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Array"></A>
-<A NAME="DOC.2.7.17"></A>
+<A NAME="DOC.2.15.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Array()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_arrayType"></A>
-<A NAME="DOC.2.7.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html#DOC.2.7.1">Type</A> _arrayType</B></TT>
+<A NAME="DOC.2.15.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Array.html#DOC.2.15.1">Type</A> _arrayType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dataSize"></A>
-<A NAME="DOC.2.7.19"></A>
+<A NAME="DOC.2.15.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _dataSize</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dataType"></A>
-<A NAME="DOC.2.7.20"></A>
+<A NAME="DOC.2.15.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _dataType</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
@@ -274,6 +284,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGUTIL_EXPORT osgUtil::CullVisitor</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -47,169 +47,151 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.13">apply</A></B>(osg::ClipNode&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.14">apply</A></B>(osg::Group&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.14">apply</A></B>(osg::TexGenNode&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.15">apply</A></B>(osg::Transform&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.15">apply</A></B>(osg::Group&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.16">apply</A></B>(osg::Projection&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.16">apply</A></B>(osg::Transform&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.17">apply</A></B>(osg::Switch&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.17">apply</A></B>(osg::Projection&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.18">apply</A></B>(osg::LOD&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.18">apply</A></B>(osg::Switch&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.19">apply</A></B>(osg::ClearNode&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.19">apply</A></B>(osg::LOD&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.20">apply</A></B>(osg::OccluderNode&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.20">apply</A></B>(osg::ClearNode&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.21">apply</A></B>(osg::Impostor&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.21">apply</A></B>(osg::OccluderNode&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.22">setClearNode</A></B>(const osg::ClearNode* earthSky)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.22">apply</A></B>(osg::Impostor&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::ClearNode* <B><A HREF="#DOC.2.2.23">getClearNode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.23">setClearNode</A></B>(const osg::ClearNode* earthSky)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.24">setImpostorsActive</A></B>(bool active)
-<DD><I>Switch the creation of Impostors on or off.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::ClearNode* <B><A HREF="#DOC.2.2.24">getClearNode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.25">getImpostorsActive</A></B>() const 
-<DD><I>Get whether impostors are active or not.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.26">setImpostorPixelErrorThreshold</A></B>(float numPixels)
-<DD><I>Set the impostor error threshold.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.27">getImpostorPixelErrorThreshold</A></B>() const 
-<DD><I>Get the impostor error threshold</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.28">setDepthSortImpostorSprites</A></B>(bool doDepthSort)
-<DD><I>Set whether ImpsotorSprite's should be placed in a depth sorted bin for rendering</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.29">setDepthSortImpostorSprites</A></B>() const 
-<DD><I>Get whether ImpsotorSprite's are depth sorted bin for rendering</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.30">setNumberOfFrameToKeepImpostorSprites</A></B>(int numFrames)
-<DD><I>Set the number of frames that an ImpsotorSprite's is kept whilst not being beyond, before being recycled</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.2.31">getNumberOfFrameToKeepImpostorSprites</A></B>() const 
-<DD><I>Get the number of frames that an ImpsotorSprite's is kept whilst not being beyond, before being recycled</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.33">setComputeNearFarMode</A></B>(<!1><A HREF="CullVisitor.html#DOC.2.2.32">ComputeNearFarMode</A> cnfm)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.32">ComputeNearFarMode</A> <B><A HREF="#DOC.2.2.34">getComputeNearFarMode</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.35">setNearFarRatio</A></B>(float ratio)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.36">getNearFarRatio</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.37">pushStateSet</A></B>(const osg::StateSet* ss)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.25">pushStateSet</A></B>(const osg::StateSet* ss)
 <DD><I>Push state set on the current state group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.38">popStateSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.26">popStateSet</A></B>()
 <DD><I>Pop the top state set and hence associated state group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.39">setRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.27">setRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.2.40">getRootRenderGraph</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.2.28">getRootRenderGraph</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.2.41">getCurrentRenderGraph</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.2.29">getCurrentRenderGraph</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.42">setRenderStage</A></B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rg)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.30">setRenderStage</A></B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rg)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.2.43">getRenderStage</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderStage.html">RenderStage</A>* <B><A HREF="#DOC.2.2.31">getRenderStage</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.2.44">getCurrentRenderBin</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.2.32">getCurrentRenderBin</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.45">setCurrentRenderBin</A></B>(<!1><A HREF="RenderBin.html">RenderBin</A>* rb)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.33">setCurrentRenderBin</A></B>(<!1><A HREF="RenderBin.html">RenderBin</A>* rb)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.2.46">getCalculatedNearPlane</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.34">getCalculatedNearPlane</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.2.47">getCalculatedFarPlane</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.35">getCalculatedFarPlane</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.48">updateCalculatedNearFar</A></B>(const osg::Matrix&amp; matrix, const osg::Drawable&amp; drawable)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.36">computeNearestPointInFrustum</A></B>(const osg::Matrix&amp; matrix, const osg::Polytope::PlaneList&amp; planes, const osg::Drawable&amp; drawable)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.49">updateCalculatedNearFar</A></B>(const osg::Matrix&amp; matrix, const osg::BoundingBox&amp; bb)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.37">updateCalculatedNearFar</A></B>(const osg::Matrix&amp; matrix, const osg::BoundingBox&amp; bb)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.50">updateCalculatedNearFar</A></B>(const osg::Vec3&amp; pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.38">updateCalculatedNearFar</A></B>(const osg::Matrix&amp; matrix, const osg::Drawable&amp; drawable, bool isBillboard=false)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.51">popProjectionMatrix</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.39">updateCalculatedNearFar</A></B>(const osg::Vec3&amp; pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.40">popProjectionMatrix</A></B>()
 <DD><I>reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.52">setState</A></B>(osg::State* state)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.41">clampProjectionMatrixImplementation</A></B>(osg::Matrixf&amp; projection, double&amp; znear, double&amp; zfar) const 
+<DD><I>CullVisitor's default clamping of the projection float matrix to computed near and far values.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::State* <B><A HREF="#DOC.2.2.53">getState</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.42">clampProjectionMatrixImplementation</A></B>(osg::Matrixd&amp; projection, double&amp; znear, double&amp; zfar) const 
+<DD><I>CullVisitor's default clamping of the projection double matrix to computed near and far values.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::State* <B><A HREF="#DOC.2.2.54">getState</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.2.43">clampProjectionMatrix</A></B>(osg::Matrixf&amp; projection, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; znear, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; zfar) const 
+<DD><I>clamp the projection float matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.77">addDrawable</A></B>(osg::Drawable* drawable, osg::RefMatrix* matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.2.44">clampProjectionMatrix</A></B>(osg::Matrixd&amp; projection, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; znear, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; zfar) const 
+<DD><I>clamp the projection double matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.45">setState</A></B>(osg::State* state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::State* <B><A HREF="#DOC.2.2.46">getState</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::State* <B><A HREF="#DOC.2.2.47">getState</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.67">addDrawable</A></B>(osg::Drawable* drawable, osg::RefMatrix* matrix)
 <DD><I>Add a drawable to current render graph</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.78">addDrawableAndDepth</A></B>(osg::Drawable* drawable, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.23.32">depth</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.68">addDrawableAndDepth</A></B>(osg::Drawable* drawable, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.24.32">depth</A>)
 <DD><I>Add a drawable and depth to current render graphAdd a drawable and depth to current render graph</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.79">addPositionedAttribute</A></B>(osg::RefMatrix* matrix, const osg::StateAttribute* attr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.69">addPositionedAttribute</A></B>(osg::RefMatrix* matrix, const osg::StateAttribute* attr)
 <DD><I>Add an attribute which is positioned related to the modelview matrixAdd an attribute which is positioned related to the modelview matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderLeaf.html">RenderLeaf</A>* <B><A HREF="#DOC.2.2.80">createOrReuseRenderLeaf</A></B>(osg::Drawable* drawable, osg::RefMatrix* projection, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.23.32">depth</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.70">addPositionedTextureAttribute</A></B>(unsigned int textureUnit, osg::RefMatrix* matrix, const osg::StateAttribute* attr)
+<DD><I>Add an attribute which is positioned related to the modelview matrixAdd an attribute which is positioned related to the modelview matrix</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="RenderLeaf.html">RenderLeaf</A>* <B><A HREF="#DOC.2.2.71">createOrReuseRenderLeaf</A></B>(osg::Drawable* drawable, osg::RefMatrix* projection, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.24.32">depth</A>)
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  osg::Matrix::value_type <B><A HREF="#DOC.2.2.1">value_type</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.32">ComputeNearFarMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.64">MatrixPlanesDrawables</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>&gt;  <B><A HREF="#DOC.2.2.59">_rootRenderGraph</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const osg::ClearNode&gt;  <B><A HREF="#DOC.2.2.52">_clearNode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.2.60">_currentRenderGraph</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>&gt;  <B><A HREF="#DOC.2.2.53">_rootRenderGraph</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt;  <B><A HREF="#DOC.2.2.61">_rootRenderStage</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">RenderGraph</A>* <B><A HREF="#DOC.2.2.54">_currentRenderGraph</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.2.62">_currentRenderBin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt;  <B><A HREF="#DOC.2.2.55">_rootRenderStage</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.32">ComputeNearFarMode</A> <B><A HREF="#DOC.2.2.63">_computeNearFar</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderBin.html">RenderBin</A>* <B><A HREF="#DOC.2.2.56">_currentRenderBin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.64">_nearFarRatio</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.57">_computed_znear</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.65">_computed_znear</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.58">_computed_zfar</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> <B><A HREF="#DOC.2.2.66">_computed_zfar</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.59">RenderLeafList</A> <B><A HREF="#DOC.2.2.60">_reuseRenderLeafList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const osg::ClearNode&gt;  <B><A HREF="#DOC.2.2.67">_clearNode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.61">_currentReuseRenderLeafIndex</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.68">_impostorActive</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::ImpostorSpriteManager&gt;  <B><A HREF="#DOC.2.2.62">_impostorSpriteManager</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.69">_depthSortImpostorSprites</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.2.63">_state</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.70">_impostorPixelErrorThreshold</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.2.71">_numFramesToKeepImpostorSprites</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.72">RenderLeafList</A> <B><A HREF="#DOC.2.2.73">_reuseRenderLeafList</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.74">_currentReuseRenderLeafIndex</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::ImpostorSpriteManager&gt;  <B><A HREF="#DOC.2.2.75">_impostorSpriteManager</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.2.76">_state</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html#DOC.2.2.65">DistanceMatrixDrawableMap</A> <B><A HREF="#DOC.2.2.66">_nearPlaneCandidateMap</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">CullVisitor</A>&amp; <B><A HREF="#DOC.2.2.55">operator = </A></B>(const <!1><A HREF="CullVisitor.html">CullVisitor</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">CullVisitor</A>&amp; <B><A HREF="#DOC.2.2.48">operator = </A></B>(const <!1><A HREF="CullVisitor.html">CullVisitor</A>&amp;)
 <DD><I>prevent unwanted copy operator</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.56">handle_cull_callbacks_and_traverse</A></B>(osg::Node&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.49">handle_cull_callbacks_and_traverse</A></B>(osg::Node&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.57">handle_cull_callbacks_and_accept</A></B>(osg::Node&amp; node, osg::Node* acceptNode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.2.50">handle_cull_callbacks_and_accept</A></B>(osg::Node&amp; node, osg::Node* acceptNode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ImpostorSprite* <B><A HREF="#DOC.2.2.58">createImpostorSprite</A></B>(osg::Impostor&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ImpostorSprite* <B><A HREF="#DOC.2.2.51">createImpostorSprite</A></B>(osg::Impostor&amp; node)
 <DD><I>create an impostor sprite by setting up a pre-rendering stage to generate the impostor texture.</I>
 </DL></P>
 
 <P><DL>
-<DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt; <B><A HREF="#DOC.2.2.72">RenderLeafList</A></B>
+<DT><H3>Protected</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt;  <B><A HREF="#DOC.2.2.59">RenderLeafList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::multimap&lt;<!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>, <!1><A HREF="CullVisitor.html#DOC.2.2.64">MatrixPlanesDrawables</A>&gt;  <B><A HREF="#DOC.2.2.65">DistanceMatrixDrawableMap</A></B>
 </DL></P>
 
 </DL>
@@ -280,127 +262,50 @@ from the eye to the one nearest the eye. </BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Group&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::TexGenNode&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Transform&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Group&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Projection&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Transform&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Switch&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Projection&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Switch&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::ClearNode&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::OccluderNode&amp; node)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::ClearNode&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
 <A NAME="DOC.2.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::OccluderNode&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.2.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Impostor&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setClearNode"></A>
-<A NAME="DOC.2.2.22"></A>
+<A NAME="DOC.2.2.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearNode(const osg::ClearNode* earthSky)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getClearNode"></A>
-<A NAME="DOC.2.2.23"></A>
+<A NAME="DOC.2.2.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::ClearNode* getClearNode() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setImpostorsActive"></A>
-<A NAME="DOC.2.2.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImpostorsActive(bool active)</B></TT>
-<DD>Switch the creation of Impostors on or off.
-Setting active to false forces the CullVisitor to use the Impostor
-LOD children for rendering. Setting active to true forces the
-CullVisitor to create the appropriate pre-rendering stages which
-render to the ImpostorSprite's texture.
-<DL><DT><DD></DL><P>
-<A NAME="getImpostorsActive"></A>
-<A NAME="DOC.2.2.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getImpostorsActive() const </B></TT>
-<DD>Get whether impostors are active or not. 
-<DL><DT><DD></DL><P>
-<A NAME="setImpostorPixelErrorThreshold"></A>
-<A NAME="DOC.2.2.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImpostorPixelErrorThreshold(float numPixels)</B></TT>
-<DD>Set the impostor error threshold.
-Used in calculation of whether impostors remain valid.
-<DL><DT><DD></DL><P>
-<A NAME="getImpostorPixelErrorThreshold"></A>
-<A NAME="DOC.2.2.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getImpostorPixelErrorThreshold() const </B></TT>
-<DD>Get the impostor error threshold
-<DL><DT><DD></DL><P>
-<A NAME="setDepthSortImpostorSprites"></A>
-<A NAME="DOC.2.2.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDepthSortImpostorSprites(bool doDepthSort)</B></TT>
-<DD>Set whether ImpsotorSprite's should be placed in a depth sorted bin for rendering
-<DL><DT><DD></DL><P>
-<A NAME="setDepthSortImpostorSprites"></A>
-<A NAME="DOC.2.2.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool setDepthSortImpostorSprites() const </B></TT>
-<DD>Get whether ImpsotorSprite's are depth sorted bin for rendering
-<DL><DT><DD></DL><P>
-<A NAME="setNumberOfFrameToKeepImpostorSprites"></A>
-<A NAME="DOC.2.2.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNumberOfFrameToKeepImpostorSprites(int numFrames)</B></TT>
-<DD>Set the number of frames that an ImpsotorSprite's is kept whilst not being beyond,
-before being recycled
-<DL><DT><DD></DL><P>
-<A NAME="getNumberOfFrameToKeepImpostorSprites"></A>
-<A NAME="DOC.2.2.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getNumberOfFrameToKeepImpostorSprites() const </B></TT>
-<DD>Get the number of frames that an ImpsotorSprite's is kept whilst not being beyond,
-before being recycled
-<DL><DT><DD></DL><P>
-<A NAME="ComputeNearFarMode"></A>
-<A NAME="DOC.2.2.32"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ComputeNearFarMode</B></TT>
-<DL><DT><DD></DL><P><DL>
-
-<A NAME="DO_NOT_COMPUTE_NEAR_FAR"></A>
-<A NAME="DOC.2.2.32.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DO_NOT_COMPUTE_NEAR_FAR</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES"></A>
-<A NAME="DOC.2.2.32.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="COMPUTE_NEAR_FAR_USING_PRIMITIVES"></A>
-<A NAME="DOC.2.2.32.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPUTE_NEAR_FAR_USING_PRIMITIVES</B></TT>
-<DL><DT><DD></DL><P></DL>
-
-<A NAME="setComputeNearFarMode"></A>
-<A NAME="DOC.2.2.33"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setComputeNearFarMode(<!1><A HREF="CullVisitor.html#DOC.2.2.32">ComputeNearFarMode</A> cnfm)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getComputeNearFarMode"></A>
-<A NAME="DOC.2.2.34"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.32">ComputeNearFarMode</A> getComputeNearFarMode() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="setNearFarRatio"></A>
-<A NAME="DOC.2.2.35"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNearFarRatio(float ratio)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getNearFarRatio"></A>
-<A NAME="DOC.2.2.36"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getNearFarRatio() const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="pushStateSet"></A>
-<A NAME="DOC.2.2.37"></A>
+<A NAME="DOC.2.2.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushStateSet(const osg::StateSet* ss)</B></TT>
 <DD>Push state set on the current state group.
 If the state exists in a child state group of the current
@@ -410,192 +315,237 @@ it to the current state group then move the current state
 group pointer to the new state group.
 <DL><DT><DD></DL><P>
 <A NAME="popStateSet"></A>
-<A NAME="DOC.2.2.38"></A>
+<A NAME="DOC.2.2.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popStateSet()</B></TT>
 <DD>Pop the top state set and hence associated state group.
 Move the current state group to the parent of the popped
 state group.
 <DL><DT><DD></DL><P>
 <A NAME="setRenderGraph"></A>
-<A NAME="DOC.2.2.39"></A>
+<A NAME="DOC.2.2.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRenderGraph(<!1><A HREF="RenderGraph.html">RenderGraph</A>* rg)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRootRenderGraph"></A>
-<A NAME="DOC.2.2.40"></A>
+<A NAME="DOC.2.2.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* getRootRenderGraph()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCurrentRenderGraph"></A>
-<A NAME="DOC.2.2.41"></A>
+<A NAME="DOC.2.2.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderGraph.html">RenderGraph</A>* getCurrentRenderGraph()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRenderStage"></A>
-<A NAME="DOC.2.2.42"></A>
+<A NAME="DOC.2.2.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRenderStage(<!1><A HREF="RenderStage.html">RenderStage</A>* rg)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStage"></A>
-<A NAME="DOC.2.2.43"></A>
+<A NAME="DOC.2.2.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderStage.html">RenderStage</A>* getRenderStage()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCurrentRenderBin"></A>
-<A NAME="DOC.2.2.44"></A>
+<A NAME="DOC.2.2.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderBin.html">RenderBin</A>* getCurrentRenderBin()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCurrentRenderBin"></A>
-<A NAME="DOC.2.2.45"></A>
+<A NAME="DOC.2.2.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCurrentRenderBin(<!1><A HREF="RenderBin.html">RenderBin</A>* rb)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCalculatedNearPlane"></A>
-<A NAME="DOC.2.2.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getCalculatedNearPlane() const </B></TT>
+<A NAME="DOC.2.2.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> getCalculatedNearPlane() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCalculatedFarPlane"></A>
-<A NAME="DOC.2.2.47"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getCalculatedFarPlane() const </B></TT>
+<A NAME="DOC.2.2.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> getCalculatedFarPlane() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeNearestPointInFrustum"></A>
+<A NAME="DOC.2.2.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> computeNearestPointInFrustum(const osg::Matrix&amp; matrix, const osg::Polytope::PlaneList&amp; planes, const osg::Drawable&amp; drawable)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="updateCalculatedNearFar"></A>
-<A NAME="DOC.2.2.48"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateCalculatedNearFar(const osg::Matrix&amp; matrix, const osg::Drawable&amp; drawable)</B></TT>
+<A NAME="DOC.2.2.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool updateCalculatedNearFar(const osg::Matrix&amp; matrix, const osg::BoundingBox&amp; bb)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="updateCalculatedNearFar"></A>
-<A NAME="DOC.2.2.49"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateCalculatedNearFar(const osg::Matrix&amp; matrix, const osg::BoundingBox&amp; bb)</B></TT>
+<A NAME="DOC.2.2.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool updateCalculatedNearFar(const osg::Matrix&amp; matrix, const osg::Drawable&amp; drawable, bool isBillboard=false)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="updateCalculatedNearFar"></A>
-<A NAME="DOC.2.2.50"></A>
+<A NAME="DOC.2.2.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateCalculatedNearFar(const osg::Vec3&amp; pos)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="popProjectionMatrix"></A>
-<A NAME="DOC.2.2.51"></A>
+<A NAME="DOC.2.2.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void popProjectionMatrix()</B></TT>
 <DD>reimplement CullStack's popProjectionMatrix() adding clamping of the projection matrix to the computed near and far
 <DL><DT><DD></DL><P>
+<A NAME="clampProjectionMatrixImplementation"></A>
+<A NAME="DOC.2.2.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool clampProjectionMatrixImplementation(osg::Matrixf&amp; projection, double&amp; znear, double&amp; zfar) const </B></TT>
+<DD>CullVisitor's default clamping of the projection float matrix to computed near and far values.
+Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.
+<DL><DT><DD></DL><P>
+<A NAME="clampProjectionMatrixImplementation"></A>
+<A NAME="DOC.2.2.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool clampProjectionMatrixImplementation(osg::Matrixd&amp; projection, double&amp; znear, double&amp; zfar) const </B></TT>
+<DD>CullVisitor's default clamping of the projection double matrix to computed near and far values.
+Note, do not call this method directly, use clampProjectionMatrix(..) instead, unless you want to bypass the callback.
+<DL><DT><DD></DL><P>
+<A NAME="clampProjectionMatrix"></A>
+<A NAME="DOC.2.2.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool clampProjectionMatrix(osg::Matrixf&amp; projection, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; znear, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; zfar) const </B></TT>
+<DD>clamp the projection float matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation
+<DL><DT><DD></DL><P>
+<A NAME="clampProjectionMatrix"></A>
+<A NAME="DOC.2.2.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool clampProjectionMatrix(osg::Matrixd&amp; projection, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; znear, <!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>&amp; zfar) const </B></TT>
+<DD>clamp the projection double matrix to computed near and far values, use callback if it exists, otherwise use default CullVisitro implemntation
+<DL><DT><DD></DL><P>
 <A NAME="setState"></A>
-<A NAME="DOC.2.2.52"></A>
+<A NAME="DOC.2.2.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setState(osg::State* state)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getState"></A>
-<A NAME="DOC.2.2.53"></A>
+<A NAME="DOC.2.2.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::State* getState()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getState"></A>
-<A NAME="DOC.2.2.54"></A>
+<A NAME="DOC.2.2.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::State* getState() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.2.55"></A>
+<A NAME="DOC.2.2.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html">CullVisitor</A>&amp; operator = (const <!1><A HREF="CullVisitor.html">CullVisitor</A>&amp;)</B></TT>
 <DD>prevent unwanted copy operator
 <DL><DT><DD></DL><P>
 <A NAME="handle_cull_callbacks_and_traverse"></A>
-<A NAME="DOC.2.2.56"></A>
+<A NAME="DOC.2.2.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_cull_callbacks_and_traverse(osg::Node&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="handle_cull_callbacks_and_accept"></A>
-<A NAME="DOC.2.2.57"></A>
+<A NAME="DOC.2.2.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void handle_cull_callbacks_and_accept(osg::Node&amp; node, osg::Node* acceptNode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="createImpostorSprite"></A>
-<A NAME="DOC.2.2.58"></A>
+<A NAME="DOC.2.2.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ImpostorSprite* createImpostorSprite(osg::Impostor&amp; node)</B></TT>
 <DD>create an impostor sprite by setting up a pre-rendering stage
 to generate the impostor texture. 
 <DL><DT><DD></DL><P>
+<A NAME="_clearNode"></A>
+<A NAME="DOC.2.2.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const osg::ClearNode&gt;  _clearNode</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_rootRenderGraph"></A>
-<A NAME="DOC.2.2.59"></A>
+<A NAME="DOC.2.2.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">RenderGraph</A>&gt;  _rootRenderGraph</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_currentRenderGraph"></A>
-<A NAME="DOC.2.2.60"></A>
+<A NAME="DOC.2.2.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderGraph.html">RenderGraph</A>* _currentRenderGraph</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rootRenderStage"></A>
-<A NAME="DOC.2.2.61"></A>
+<A NAME="DOC.2.2.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">RenderStage</A>&gt;  _rootRenderStage</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_currentRenderBin"></A>
-<A NAME="DOC.2.2.62"></A>
+<A NAME="DOC.2.2.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderBin.html">RenderBin</A>* _currentRenderBin</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_computeNearFar"></A>
-<A NAME="DOC.2.2.63"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.32">ComputeNearFarMode</A> _computeNearFar</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_nearFarRatio"></A>
-<A NAME="DOC.2.2.64"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> _nearFarRatio</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_computed_znear"></A>
-<A NAME="DOC.2.2.65"></A>
+<A NAME="DOC.2.2.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> _computed_znear</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_computed_zfar"></A>
-<A NAME="DOC.2.2.66"></A>
+<A NAME="DOC.2.2.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A> _computed_zfar</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_clearNode"></A>
-<A NAME="DOC.2.2.67"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const osg::ClearNode&gt;  _clearNode</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_impostorActive"></A>
-<A NAME="DOC.2.2.68"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _impostorActive</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_depthSortImpostorSprites"></A>
-<A NAME="DOC.2.2.69"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _depthSortImpostorSprites</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_impostorPixelErrorThreshold"></A>
-<A NAME="DOC.2.2.70"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _impostorPixelErrorThreshold</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_numFramesToKeepImpostorSprites"></A>
-<A NAME="DOC.2.2.71"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _numFramesToKeepImpostorSprites</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="RenderLeafList"></A>
-<A NAME="DOC.2.2.72"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt; RenderLeafList</B></TT>
+<A NAME="DOC.2.2.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="RenderLeaf.html">RenderLeaf</A>&gt; &gt;  RenderLeafList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_reuseRenderLeafList"></A>
-<A NAME="DOC.2.2.73"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.72">RenderLeafList</A> _reuseRenderLeafList</B></TT>
+<A NAME="DOC.2.2.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.59">RenderLeafList</A> _reuseRenderLeafList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_currentReuseRenderLeafIndex"></A>
-<A NAME="DOC.2.2.74"></A>
+<A NAME="DOC.2.2.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _currentReuseRenderLeafIndex</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_impostorSpriteManager"></A>
-<A NAME="DOC.2.2.75"></A>
+<A NAME="DOC.2.2.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::ImpostorSpriteManager&gt;  _impostorSpriteManager</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_state"></A>
-<A NAME="DOC.2.2.76"></A>
+<A NAME="DOC.2.2.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _state</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="MatrixPlanesDrawables"></A>
+<A NAME="DOC.2.2.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  MatrixPlanesDrawables</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="MatrixPlanesDrawables"></A>
+<A NAME="DOC.2.2.64.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixPlanesDrawables(const osg::Matrix&amp; matrix, const osg::Drawable* drawable, const osg::Polytope&amp; frustum)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MatrixPlanesDrawables"></A>
+<A NAME="DOC.2.2.64.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixPlanesDrawables(const <!1><A HREF="CullVisitor.html#DOC.2.2.64.2">MatrixPlanesDrawables</A>&amp; mpd)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.2.2.64.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.64">MatrixPlanesDrawables</A>&amp; operator = (const <!1><A HREF="CullVisitor.html#DOC.2.2.64">MatrixPlanesDrawables</A>&amp; mpd)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_matrix"></A>
+<A NAME="DOC.2.2.64.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix _matrix</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_drawable"></A>
+<A NAME="DOC.2.2.64.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Drawable* _drawable</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_planes"></A>
+<A NAME="DOC.2.2.64.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Polytope::PlaneList _planes</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="DistanceMatrixDrawableMap"></A>
+<A NAME="DOC.2.2.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::multimap&lt;<!1><A HREF="CullVisitor.html#DOC.2.2.1">value_type</A>, <!1><A HREF="CullVisitor.html#DOC.2.2.64">MatrixPlanesDrawables</A>&gt;  DistanceMatrixDrawableMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_nearPlaneCandidateMap"></A>
+<A NAME="DOC.2.2.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html#DOC.2.2.65">DistanceMatrixDrawableMap</A> _nearPlaneCandidateMap</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="addDrawable"></A>
-<A NAME="DOC.2.2.77"></A>
+<A NAME="DOC.2.2.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addDrawable(osg::Drawable* drawable, osg::RefMatrix* matrix)</B></TT>
 <DD>Add a drawable to current render graph
 <DL><DT><DD></DL><P>
 <A NAME="addDrawableAndDepth"></A>
-<A NAME="DOC.2.2.78"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addDrawableAndDepth(osg::Drawable* drawable, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.23.32">depth</A>)</B></TT>
+<A NAME="DOC.2.2.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addDrawableAndDepth(osg::Drawable* drawable, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.24.32">depth</A>)</B></TT>
 <DD>Add a drawable and depth to current render graphAdd a drawable and depth to current render graph
 <DL><DT><DD></DL><P>
 <A NAME="addPositionedAttribute"></A>
-<A NAME="DOC.2.2.79"></A>
+<A NAME="DOC.2.2.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addPositionedAttribute(osg::RefMatrix* matrix, const osg::StateAttribute* attr)</B></TT>
 <DD>Add an attribute which is positioned related to the modelview matrixAdd an attribute which is positioned related to the modelview matrix
 <DL><DT><DD></DL><P>
+<A NAME="addPositionedTextureAttribute"></A>
+<A NAME="DOC.2.2.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix, const osg::StateAttribute* attr)</B></TT>
+<DD>Add an attribute which is positioned related to the modelview matrixAdd an attribute which is positioned related to the modelview matrix
+<DL><DT><DD></DL><P>
 <A NAME="createOrReuseRenderLeaf"></A>
-<A NAME="DOC.2.2.80"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderLeaf.html">RenderLeaf</A>* createOrReuseRenderLeaf(osg::Drawable* drawable, osg::RefMatrix* projection, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.23.32">depth</A>)</B></TT>
+<A NAME="DOC.2.2.71"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="RenderLeaf.html">RenderLeaf</A>* createOrReuseRenderLeaf(osg::Drawable* drawable, osg::RefMatrix* projection, osg::RefMatrix* matrix, float <!1><A HREF="Statistics.html#DOC.2.24.32">depth</A>)</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

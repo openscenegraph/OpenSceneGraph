@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::VertexProgram::Extensions</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::VertexProgram::Extensions</A></H2></H2><BLOCKQUOTE>Extensions class which encapsulates the querring of extensions and associated function pointers, and provide convinience wrappers to  check for the extensions or use the associated functions</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CExtensions,MExtensions.8.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.277.18.1">Extensions</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.277.18.2">Extensions</A></B>(const <!1><A HREF="Extensions.8.html#DOC.2.277.18.2">Extensions</A>&amp; rhs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.3">lowestCommonDenominator</A></B>(const <!1><A HREF="Extensions.8.html">Extensions</A>&amp; rhs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.4">setupGLExtenions</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.5">setVertexProgramSupported</A></B>(bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.277.18.6">isVertexProgramSupported</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.7">glBindProgram</A></B>(GLenum target, GLuint id) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.8">glGenPrograms</A></B>(GLsizei n, GLuint* programs) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.9">glDeletePrograms</A></B>(GLsizei n, GLuint* programs) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.10">glProgramString</A></B>(GLenum target, GLenum format, GLsizei len, const void* string) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.277.18.11">glProgramLocalParameter4fv</A></B>(GLenum target, GLuint <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, const GLfloat* params) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.277.18.13">_isVertexProgramSupported</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.277.18.14">_glBindProgram</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.277.18.15">_glGenPrograms</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.277.18.16">_glDeletePrograms</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.277.18.17">_glProgramString</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.277.18.18">_glProgramLocalParameter4fv</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.277.18.12">~Extensions</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Extensions class which encapsulates the querring of extensions and
+associated function pointers, and provide convinience wrappers to 
+check for the extensions or use the associated functions</BLOCKQUOTE>
+<DL>
+
+<A NAME="Extensions"></A>
+<A NAME="DOC.2.277.18.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Extensions()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Extensions"></A>
+<A NAME="DOC.2.277.18.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Extensions(const <!1><A HREF="Extensions.8.html#DOC.2.277.18.2">Extensions</A>&amp; rhs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="lowestCommonDenominator"></A>
+<A NAME="DOC.2.277.18.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void lowestCommonDenominator(const <!1><A HREF="Extensions.8.html">Extensions</A>&amp; rhs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setupGLExtenions"></A>
+<A NAME="DOC.2.277.18.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setupGLExtenions()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setVertexProgramSupported"></A>
+<A NAME="DOC.2.277.18.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVertexProgramSupported(bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isVertexProgramSupported"></A>
+<A NAME="DOC.2.277.18.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isVertexProgramSupported() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glBindProgram"></A>
+<A NAME="DOC.2.277.18.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glBindProgram(GLenum target, GLuint id) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glGenPrograms"></A>
+<A NAME="DOC.2.277.18.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glGenPrograms(GLsizei n, GLuint* programs) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glDeletePrograms"></A>
+<A NAME="DOC.2.277.18.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glDeletePrograms(GLsizei n, GLuint* programs) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glProgramString"></A>
+<A NAME="DOC.2.277.18.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glProgramString(GLenum target, GLenum format, GLsizei len, const void* string) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glProgramLocalParameter4fv"></A>
+<A NAME="DOC.2.277.18.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glProgramLocalParameter4fv(GLenum target, GLuint <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, const GLfloat* params) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Extensions"></A>
+<A NAME="DOC.2.277.18.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~Extensions()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_isVertexProgramSupported"></A>
+<A NAME="DOC.2.277.18.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isVertexProgramSupported</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glBindProgram"></A>
+<A NAME="DOC.2.277.18.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glBindProgram</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glGenPrograms"></A>
+<A NAME="DOC.2.277.18.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glGenPrograms</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glDeletePrograms"></A>
+<A NAME="DOC.2.277.18.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glDeletePrograms</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glProgramString"></A>
+<A NAME="DOC.2.277.18.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glProgramString</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glProgramLocalParameter4fv"></A>
+<A NAME="DOC.2.277.18.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glProgramLocalParameter4fv</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

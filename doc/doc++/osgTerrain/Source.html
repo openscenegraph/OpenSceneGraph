@@ -1,0 +1,417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgTerrain::DataSet::Source</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgTerrain::DataSet::Source</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MSpatialProperties,M,Mosg::Referenced,M,CSource,MSource.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.4.1">Type</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.4.2">ParameterPolicy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.4.37">ResolutionPair</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.4.3">Source</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.4.4">Source</A></B>(<!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> type, const std::string&amp; filename)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.5">setSortValue</A></B>(double s)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.4.6">getSortValue</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.7">setSortValueFromSourceDataResolution</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.8">setType</A></B>(<!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> type)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> <B><A HREF="#DOC.2.2.4.9">getType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.10">setFileName</A></B>(const std::string&amp; filename)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.2.4.11">getFileName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.12">setTemporaryFile</A></B>(bool temporaryFile)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.4.13">getTemporaryFile</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.14">setCoordinateSystemPolicy</A></B>(<!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> policy)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> <B><A HREF="#DOC.2.2.4.15">getCoordinateSystemPolicy</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.16">setCoordinateSystem</A></B>(const std::string&amp; wellKnownText)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.17">setCoordinateSystem</A></B>(osg::CoordinateSystemNode* cs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CoordinateSystemNode* <B><A HREF="#DOC.2.2.4.18">getCoordinateSystem</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.19">setGeoTransformPolicy</A></B>(<!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> policy)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> <B><A HREF="#DOC.2.2.4.20">getGeoTransformPolicy</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.21">setGeoTransform</A></B>(osg::Matrixd&amp; transform)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd&amp; <B><A HREF="#DOC.2.2.4.22">getGeoTransform</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.23">assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.24">setMinLevel</A></B>(unsigned int minLevel)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.25">setMaxLevel</A></B>(unsigned int maxLevel)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.26">setMinMaxLevel</A></B>(unsigned int minLevel, unsigned int maxLevel)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.4.27">getMinLevel</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.4.28">getMaxLevel</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.29">setSourceData</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>* data)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>* <B><A HREF="#DOC.2.2.4.30">getSourceData</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.4.31">intersects</A></B>(const <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&amp; sp) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.32">loadSourceData</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.4.33">needReproject</A></B>(const osg::CoordinateSystemNode* cs) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.4.34">needReproject</A></B>(const osg::CoordinateSystemNode* cs, double minResolution, double maxResolution) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html">Source</A>* <B><A HREF="#DOC.2.2.4.35">doReproject</A></B>(const std::string&amp; filename, osg::CoordinateSystemNode* cs, double targetResolution=0.0) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.36">buildOverviews</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.39">addRequiredResolution</A></B>(double resX, double resY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.40">setRequiredResolutions</A></B>(<!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A>&amp; resolutions)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A>&amp; <B><A HREF="#DOC.2.2.4.41">getRequiredResolutions</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A>&amp; <B><A HREF="#DOC.2.2.4.42">getRequiredResolutions</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.4.43">consolodateRequiredResolutions</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Source.html#DOC.2.2.4.37">ResolutionPair</A>&gt;  <B><A HREF="#DOC.2.2.4.38">ResolutionList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> <B><A HREF="#DOC.2.2.4.44">_type</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.4.45">_sortValue</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.4.46">_filename</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.4.47">_temporaryFile</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> <B><A HREF="#DOC.2.2.4.48">_coordinateSystemPolicy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> <B><A HREF="#DOC.2.2.4.49">_geoTransformPolicy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.4.50">_minLevel</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.4.51">_maxLevel</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>&gt;  <B><A HREF="#DOC.2.2.4.52">_sourceData</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A> <B><A HREF="#DOC.2.2.4.53">_requiredResolutions</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="Type"></A>
+<A NAME="DOC.2.2.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Type</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="IMAGE"></A>
+<A NAME="DOC.2.2.4.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> IMAGE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="HEIGHT_FIELD"></A>
+<A NAME="DOC.2.2.4.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEIGHT_FIELD</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MODEL"></A>
+<A NAME="DOC.2.2.4.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODEL</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ParameterPolicy"></A>
+<A NAME="DOC.2.2.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ParameterPolicy</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="PREFER_CONFIG_SETTINGS"></A>
+<A NAME="DOC.2.2.4.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PREFER_CONFIG_SETTINGS</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION"></A>
+<A NAME="DOC.2.2.4.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PREFER_FILE_SETTINGS"></A>
+<A NAME="DOC.2.2.4.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PREFER_FILE_SETTINGS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="Source"></A>
+<A NAME="DOC.2.2.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Source()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Source"></A>
+<A NAME="DOC.2.2.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Source(<!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> type, const std::string&amp; filename)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSortValue"></A>
+<A NAME="DOC.2.2.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSortValue(double s)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSortValue"></A>
+<A NAME="DOC.2.2.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getSortValue() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSortValueFromSourceDataResolution"></A>
+<A NAME="DOC.2.2.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSortValueFromSourceDataResolution()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setType"></A>
+<A NAME="DOC.2.2.4.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setType(<!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> type)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getType"></A>
+<A NAME="DOC.2.2.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> getType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFileName"></A>
+<A NAME="DOC.2.2.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFileName(const std::string&amp; filename)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFileName"></A>
+<A NAME="DOC.2.2.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getFileName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTemporaryFile"></A>
+<A NAME="DOC.2.2.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTemporaryFile(bool temporaryFile)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTemporaryFile"></A>
+<A NAME="DOC.2.2.4.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getTemporaryFile() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCoordinateSystemPolicy"></A>
+<A NAME="DOC.2.2.4.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoordinateSystemPolicy(<!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> policy)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCoordinateSystemPolicy"></A>
+<A NAME="DOC.2.2.4.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> getCoordinateSystemPolicy() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCoordinateSystem"></A>
+<A NAME="DOC.2.2.4.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoordinateSystem(const std::string&amp; wellKnownText)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCoordinateSystem"></A>
+<A NAME="DOC.2.2.4.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoordinateSystem(osg::CoordinateSystemNode* cs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCoordinateSystem"></A>
+<A NAME="DOC.2.2.4.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CoordinateSystemNode* getCoordinateSystem()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setGeoTransformPolicy"></A>
+<A NAME="DOC.2.2.4.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGeoTransformPolicy(<!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> policy)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getGeoTransformPolicy"></A>
+<A NAME="DOC.2.2.4.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> getGeoTransformPolicy() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setGeoTransform"></A>
+<A NAME="DOC.2.2.4.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGeoTransform(osg::Matrixd&amp; transform)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getGeoTransform"></A>
+<A NAME="DOC.2.2.4.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd&amp; getGeoTransform()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy"></A>
+<A NAME="DOC.2.2.4.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMinLevel"></A>
+<A NAME="DOC.2.2.4.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinLevel(unsigned int minLevel)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaxLevel"></A>
+<A NAME="DOC.2.2.4.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxLevel(unsigned int maxLevel)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMinMaxLevel"></A>
+<A NAME="DOC.2.2.4.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinMaxLevel(unsigned int minLevel, unsigned int maxLevel)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinLevel"></A>
+<A NAME="DOC.2.2.4.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getMinLevel() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaxLevel"></A>
+<A NAME="DOC.2.2.4.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getMaxLevel() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSourceData"></A>
+<A NAME="DOC.2.2.4.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSourceData(<!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>* data)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSourceData"></A>
+<A NAME="DOC.2.2.4.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>* getSourceData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="intersects"></A>
+<A NAME="DOC.2.2.4.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersects(const <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&amp; sp) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="loadSourceData"></A>
+<A NAME="DOC.2.2.4.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void loadSourceData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="needReproject"></A>
+<A NAME="DOC.2.2.4.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool needReproject(const osg::CoordinateSystemNode* cs) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="needReproject"></A>
+<A NAME="DOC.2.2.4.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool needReproject(const osg::CoordinateSystemNode* cs, double minResolution, double maxResolution) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="doReproject"></A>
+<A NAME="DOC.2.2.4.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html">Source</A>* doReproject(const std::string&amp; filename, osg::CoordinateSystemNode* cs, double targetResolution=0.0) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="buildOverviews"></A>
+<A NAME="DOC.2.2.4.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void buildOverviews()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ResolutionPair"></A>
+<A NAME="DOC.2.2.4.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ResolutionPair</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="ResolutionPair"></A>
+<A NAME="DOC.2.2.4.37.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ResolutionPair()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ResolutionPair"></A>
+<A NAME="DOC.2.2.4.37.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ResolutionPair(double x, double y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator < "></A>
+<A NAME="DOC.2.2.4.37.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator < (const <!1><A HREF="Source.html#DOC.2.2.4.37">ResolutionPair</A>&amp; rhs) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_resX"></A>
+<A NAME="DOC.2.2.4.37.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _resX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_resY"></A>
+<A NAME="DOC.2.2.4.37.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _resY</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ResolutionList"></A>
+<A NAME="DOC.2.2.4.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Source.html#DOC.2.2.4.37">ResolutionPair</A>&gt;  ResolutionList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addRequiredResolution"></A>
+<A NAME="DOC.2.2.4.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addRequiredResolution(double resX, double resY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRequiredResolutions"></A>
+<A NAME="DOC.2.2.4.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRequiredResolutions(<!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A>&amp; resolutions)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRequiredResolutions"></A>
+<A NAME="DOC.2.2.4.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A>&amp; getRequiredResolutions()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRequiredResolutions"></A>
+<A NAME="DOC.2.2.4.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A>&amp; getRequiredResolutions() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="consolodateRequiredResolutions"></A>
+<A NAME="DOC.2.2.4.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void consolodateRequiredResolutions()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_type"></A>
+<A NAME="DOC.2.2.4.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.1">Type</A> _type</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sortValue"></A>
+<A NAME="DOC.2.2.4.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _sortValue</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_filename"></A>
+<A NAME="DOC.2.2.4.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _filename</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_temporaryFile"></A>
+<A NAME="DOC.2.2.4.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _temporaryFile</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_coordinateSystemPolicy"></A>
+<A NAME="DOC.2.2.4.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> _coordinateSystemPolicy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_geoTransformPolicy"></A>
+<A NAME="DOC.2.2.4.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.2">ParameterPolicy</A> _geoTransformPolicy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_minLevel"></A>
+<A NAME="DOC.2.2.4.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _minLevel</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxLevel"></A>
+<A NAME="DOC.2.2.4.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _maxLevel</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sourceData"></A>
+<A NAME="DOC.2.2.4.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>&gt;  _sourceData</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_requiredResolutions"></A>
+<A NAME="DOC.2.2.4.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html#DOC.2.2.4.38">ResolutionList</A> _requiredResolutions</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>namespace osgUtil</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -20,11 +20,11 @@ class  OSGUTIL_EXPORT <B><A HREF="CullVisitor.html">CullVisitor</A></B>: public 
 class  OSGUTIL_EXPORT <B><A HREF="DelaunayTriangulator.html">DelaunayTriangulator</A></B>: public osg::Referenced
 <DD><I>Utility class that triangulates an irregolar network of sample points.</I>
 <DT>
-class  OSGUTIL_EXPORT <B><A HREF="DisplayListVisitor.html">DisplayListVisitor</A></B>: public osg::NodeVisitor
-<DD><I>Visitor for traversing scene graph and setting each osg::Drawable's _useDisplayList flag,  with option to immediately compile osg::Drawable OpenGL Display lists and osg::StateAttribute's</I>
-<DT>
 class  OSGUTIL_EXPORT <B><A HREF="DisplayRequirementsVisitor.html">DisplayRequirementsVisitor</A></B>: public osg::NodeVisitor
 <DD><I>A visitor for traversing a scene graph establishing the OpenGL visuals are required to support rendering of that scene graph.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="GLObjectsVisitor.html">GLObjectsVisitor</A></B>: public osg::NodeVisitor
+<DD><I>Visitor for traversing scene graph and setting each osg::Drawable's _useDisplayList flag,  with option to immediately compile osg::Drawable OpenGL Display lists and osg::StateAttribute's</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="HalfWayMapGenerator.html">HalfWayMapGenerator</A></B>: public <!1><A HREF="CubeMapGenerator.html">CubeMapGenerator</A>
 <DD><I>This cube map generator produces an Half-way vector map, useful for  hardware-based specular lighting effects.</I>
@@ -68,8 +68,11 @@ class  OSGUTIL_EXPORT <B><A HREF="RenderStageLighting.html">RenderStageLighting<
 class  OSGUTIL_EXPORT <B><A HREF="RenderToTextureStage.html">RenderToTextureStage</A></B>: public <!1><A HREF="RenderStage.html">RenderStage</A>
 <DD><I> RenderStage which copies the final image to an attached texture or image.</I>
 <DT>
-class  OSGUTIL_EXPORT <B><A HREF="SceneView.html">SceneView</A></B>: public osg::Referenced
+class  OSGUTIL_EXPORT <B><A HREF="SceneView.html">SceneView</A></B>: public osg::Referenced, public osg::CullSettings
 <DD><I> SceneView is literally a view of a scene, encapsulating the camera (modelview+projection matrices), global state, lights and the scene itself.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="Simplifier.html">Simplifier</A></B>: public osg::NodeVisitor
+<DD><I>A simplifier for reducing the number of traingles in osg::Geometry</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="SmoothingVisitor.html">SmoothingVisitor</A></B>: public osg::NodeVisitor
 <DD><I>A smoothing visitor for calculating smoothed normals for osg::GeoSet's which contains surface primitives</I>
@@ -80,8 +83,8 @@ class  <B><A HREF="Statistics.html">Statistics</A></B>: public osg::Drawable::Pr
 class  OSGUTIL_EXPORT <B><A HREF="TangentSpaceGenerator.html">TangentSpaceGenerator</A></B>: public osg::Referenced
 <DD><I> This class generates three arrays containing tangent-space basis vectors.</I>
 <DT>
-class  OSGUTIL_EXPORT <B><A HREF="Tesselator.html">Tesselator</A></B>
-<DD><I>A simple class for tessellating a single polygon boundary.</I>
+class  OSGUTIL_EXPORT <B><A HREF="Tesselator.html">Tesselator</A></B>: public osg::Referenced
+<DD><I>Originally a simple class for tessellating a single polygon boundary.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="TransformAttributeFunctor.html">TransformAttributeFunctor</A></B>: public osg::Drawable::AttributeFunctor
 <DD><I>Functor for transforming a drawable's vertex and normal attributes by specified matrix.</I>
@@ -103,6 +106,6 @@ class  OSGUTIL_EXPORT <B><A HREF="UpdateVisitor.html">UpdateVisitor</A></B>: pub
 </DL>
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osg::ArgumentParser::Parameter</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osg::ArgumentParser::Parameter</A></H2></H2><HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.1.1">ParameterType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>union  <B><A HREF="#DOC.2.6.1.2">ValueUnion</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1.3">Parameter</A></B>(float&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1.4">Parameter</A></B>(double&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1.5">Parameter</A></B>(int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1.6">Parameter</A></B>(unsigned int&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.1.7">Parameter</A></B>(std::string&amp; value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.1.8">valid</A></B>(const char* str) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.6.1.9">assign</A></B>(const char* str)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Parameter.html#DOC.2.6.1.1">ParameterType</A> <B><A HREF="#DOC.2.6.1.10">_type</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Parameter.html#DOC.2.6.1.2">ValueUnion</A> <B><A HREF="#DOC.2.6.1.11">_value</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="ParameterType"></A>
+<A NAME="DOC.2.6.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ParameterType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="FLOAT_PARAMETER"></A>
+<A NAME="DOC.2.6.1.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FLOAT_PARAMETER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DOUBLE_PARAMETER"></A>
+<A NAME="DOC.2.6.1.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DOUBLE_PARAMETER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="INT_PARAMETER"></A>
+<A NAME="DOC.2.6.1.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> INT_PARAMETER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UNSIGNED_INT_PARAMETER"></A>
+<A NAME="DOC.2.6.1.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UNSIGNED_INT_PARAMETER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STRING_PARAMETER"></A>
+<A NAME="DOC.2.6.1.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STRING_PARAMETER</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ValueUnion"></A>
+<A NAME="DOC.2.6.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>union  ValueUnion</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="_float"></A>
+<A NAME="DOC.2.6.1.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float* _float</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_double"></A>
+<A NAME="DOC.2.6.1.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double* _double</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_int"></A>
+<A NAME="DOC.2.6.1.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int* _int</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_uint"></A>
+<A NAME="DOC.2.6.1.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int* _uint</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_string"></A>
+<A NAME="DOC.2.6.1.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string* _string</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="Parameter"></A>
+<A NAME="DOC.2.6.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Parameter(float&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Parameter"></A>
+<A NAME="DOC.2.6.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Parameter(double&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Parameter"></A>
+<A NAME="DOC.2.6.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Parameter(int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Parameter"></A>
+<A NAME="DOC.2.6.1.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Parameter(unsigned int&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Parameter"></A>
+<A NAME="DOC.2.6.1.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Parameter(std::string&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="valid"></A>
+<A NAME="DOC.2.6.1.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool valid(const char* str) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="assign"></A>
+<A NAME="DOC.2.6.1.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool assign(const char* str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_type"></A>
+<A NAME="DOC.2.6.1.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Parameter.html#DOC.2.6.1.1">ParameterType</A> _type</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_value"></A>
+<A NAME="DOC.2.6.1.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Parameter.html#DOC.2.6.1.2">ValueUnion</A> _value</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

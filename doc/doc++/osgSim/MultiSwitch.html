@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGSIM_EXPORT osgSim::MultiSwitch</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGSIM_EXPORT <A HREF="#DOC.DOCU">osgSim::MultiSwitch</A></H2></H2><BLOCKQUOTE>MultiSwitch is a Group node which allows switching between sets of selected children.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Group,M,CMultiSwitch,MMultiSwitch.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.1">MultiSwitch</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.2">MultiSwitch</A></B>(const <!1><A HREF="MultiSwitch.html#DOC.2.9.2">MultiSwitch</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.9.3">META_Node</A></B>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="MultiSwitch.html">MultiSwitch</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.9.4">traverse</A></B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.5">setNewChildDefaultValue</A></B>(bool value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.6">getNewChildDefaultValue</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.9.7">addChild</A></B>( osg::Node* child )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.9.8">insertChild</A></B>( unsigned int index, osg::Node* child )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.9.9">removeChild</A></B>( osg::Node* child )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.10">setValue</A></B>(unsigned int switchSet, unsigned int pos, bool value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.11">getValue</A></B>(unsigned int switchSet, unsigned int pos) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.12">setChildValue</A></B>(const osg::Node* child, unsigned int switchSet, bool value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.13">getChildValue</A></B>(const osg::Node* child, unsigned int switchSet) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.14">setAllChildrenOff</A></B>(unsigned int switchSet)
+<DD><I>Set all the children off (false), and set the new default child value to off (false)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.15">setAllChildrenOn</A></B>(unsigned int switchSet)
+<DD><I>Set all the children on (true), and set the new default child value to on (true)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.16">setSingleChildOn</A></B>(unsigned int switchSet, unsigned int pos)
+<DD><I>Set a single child to be on, MultiSwitch off all other children</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.17">setActiveSwitchSet</A></B>(unsigned int switchSet)
+<DD><I>Set which of the available switch set lists to use</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.9.18">getActiveSwitchSet</A></B>() const 
+<DD><I>Get which of the available switch set lists to use</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="MultiSwitch.html#DOC.2.9.20">SwitchSetList</A>&amp; <B><A HREF="#DOC.2.9.21">getSwitchSetList</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="MultiSwitch.html#DOC.2.9.19">ValueList</A>&amp; <B><A HREF="#DOC.2.9.22">getValueList</A></B>(unsigned int switchSet) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;bool&gt;  <B><A HREF="#DOC.2.9.19">ValueList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="MultiSwitch.html#DOC.2.9.19">ValueList</A>&gt;  <B><A HREF="#DOC.2.9.20">SwitchSetList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.9.25">_newChildDefaultValue</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.9.26">_activeSwitchSet</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="MultiSwitch.html#DOC.2.9.20">SwitchSetList</A> <B><A HREF="#DOC.2.9.27">_values</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.9.23">~MultiSwitch</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.9.24">expandToEncompassSwitchSet</A></B>(unsigned int switchSet)
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>MultiSwitch is a Group node which allows switching between sets of selected children.
+MultiSwtich is based on the OpenFlight switch behaviour.</BLOCKQUOTE>
+<DL>
+
+<A NAME="MultiSwitch"></A>
+<A NAME="DOC.2.9.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MultiSwitch()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MultiSwitch"></A>
+<A NAME="DOC.2.9.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MultiSwitch(const <!1><A HREF="MultiSwitch.html#DOC.2.9.2">MultiSwitch</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.9.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="MultiSwitch.html">MultiSwitch</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.9.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(osg::NodeVisitor&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNewChildDefaultValue"></A>
+<A NAME="DOC.2.9.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNewChildDefaultValue(bool value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNewChildDefaultValue"></A>
+<A NAME="DOC.2.9.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getNewChildDefaultValue() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addChild"></A>
+<A NAME="DOC.2.9.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild( osg::Node* child )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="insertChild"></A>
+<A NAME="DOC.2.9.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool insertChild( unsigned int index, osg::Node* child )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removeChild"></A>
+<A NAME="DOC.2.9.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild( osg::Node* child )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setValue"></A>
+<A NAME="DOC.2.9.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setValue(unsigned int switchSet, unsigned int pos, bool value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getValue"></A>
+<A NAME="DOC.2.9.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getValue(unsigned int switchSet, unsigned int pos) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setChildValue"></A>
+<A NAME="DOC.2.9.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setChildValue(const osg::Node* child, unsigned int switchSet, bool value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getChildValue"></A>
+<A NAME="DOC.2.9.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getChildValue(const osg::Node* child, unsigned int switchSet) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setAllChildrenOff"></A>
+<A NAME="DOC.2.9.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool setAllChildrenOff(unsigned int switchSet)</B></TT>
+<DD>Set all the children off (false), and set the new default child value to off (false)
+<DL><DT><DD></DL><P>
+<A NAME="setAllChildrenOn"></A>
+<A NAME="DOC.2.9.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool setAllChildrenOn(unsigned int switchSet)</B></TT>
+<DD>Set all the children on (true), and set the new default child value to on (true)
+<DL><DT><DD></DL><P>
+<A NAME="setSingleChildOn"></A>
+<A NAME="DOC.2.9.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool setSingleChildOn(unsigned int switchSet, unsigned int pos)</B></TT>
+<DD>Set a single child to be on, MultiSwitch off all other children
+<DL><DT><DD></DL><P>
+<A NAME="setActiveSwitchSet"></A>
+<A NAME="DOC.2.9.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setActiveSwitchSet(unsigned int switchSet)</B></TT>
+<DD>Set which of the available switch set lists to use
+<DL><DT><DD></DL><P>
+<A NAME="getActiveSwitchSet"></A>
+<A NAME="DOC.2.9.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getActiveSwitchSet() const </B></TT>
+<DD>Get which of the available switch set lists to use
+<DL><DT><DD></DL><P>
+<A NAME="ValueList"></A>
+<A NAME="DOC.2.9.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;bool&gt;  ValueList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SwitchSetList"></A>
+<A NAME="DOC.2.9.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="MultiSwitch.html#DOC.2.9.19">ValueList</A>&gt;  SwitchSetList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSwitchSetList"></A>
+<A NAME="DOC.2.9.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="MultiSwitch.html#DOC.2.9.20">SwitchSetList</A>&amp; getSwitchSetList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getValueList"></A>
+<A NAME="DOC.2.9.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="MultiSwitch.html#DOC.2.9.19">ValueList</A>&amp; getValueList(unsigned int switchSet) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~MultiSwitch"></A>
+<A NAME="DOC.2.9.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~MultiSwitch()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="expandToEncompassSwitchSet"></A>
+<A NAME="DOC.2.9.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void expandToEncompassSwitchSet(unsigned int switchSet)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_newChildDefaultValue"></A>
+<A NAME="DOC.2.9.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _newChildDefaultValue</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_activeSwitchSet"></A>
+<A NAME="DOC.2.9.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _activeSwitchSet</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_values"></A>
+<A NAME="DOC.2.9.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="MultiSwitch.html#DOC.2.9.20">SwitchSetList</A> _values</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

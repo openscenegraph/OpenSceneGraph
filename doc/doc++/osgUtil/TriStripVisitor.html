@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGUTIL_EXPORT osgUtil::TriStripVisitor</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -23,26 +23,35 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.28.1">TriStripVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.29.1">TriStripVisitor</A></B>(<!1><A HREF="Optimizer.html">Optimizer</A>* =0)
 <DD><I>default to traversing all children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.28.2">stripify</A></B>(osg::Geometry&amp; drawable)
-<DD><I>convert mesh primitives in Geometry into Tri Strips using NvTriStrip.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.2">stripify</A></B>(osg::Geometry&amp; drawable)
+<DD><I>Convert mesh primitives in Geometry into Tri Strips.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.28.3">apply</A></B>(osg::Geode&amp; geode)
-<DD><I>apply stripify method to all geode geometry</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.3">stripify</A></B>()
+<DD><I>Stripfy the accumulated list of Geometry drawables</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.28.4">setCacheSize</A></B>( unsigned int size )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.29.4">apply</A></B>(osg::Geode&amp; geode)
+<DD><I>accumulate the Geometry drawables to stripify</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.28.5">getCacheSize</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.29.5">setCacheSize</A></B>( unsigned int size )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.28.6">getCacheSize</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.29.6">getCacheSize</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.28.7">setMinStripSize</A></B>( unsigned int size )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.29.7">getCacheSize</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.28.8">getMinStripSize</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.29.8">setMinStripSize</A></B>( unsigned int size )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.28.9">getMinStripSize</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.29.9">getMinStripSize</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.29.10">getMinStripSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.29.11">isOperationPermissableForObject</A></B>(const osg::Object* object) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.29.12">setGenerateFourPointPrimitivesQuads</A></B>(bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.29.13">getGenerateFourPointPrimitivesQuads</A></B>() const 
 </DL></P>
 
 </DL>
@@ -51,55 +60,72 @@
 <HR>
 <H2>Documentation</H2>
 <BLOCKQUOTE>A tri stripping visitor for converting Geometry surface primitives into tri strips.
-The current implemention is based up NVidia's NvTriStrip.</BLOCKQUOTE>
+The current implemention is based up Tanguy Fautre's triangulation code.</BLOCKQUOTE>
 <DL>
 
 <A NAME="TriStripVisitor"></A>
-<A NAME="DOC.2.28.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TriStripVisitor()</B></TT>
+<A NAME="DOC.2.29.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TriStripVisitor(<!1><A HREF="Optimizer.html">Optimizer</A>* =0)</B></TT>
 <DD>default to traversing all children
 <DL><DT><DD></DL><P>
 <A NAME="stripify"></A>
-<A NAME="DOC.2.28.2"></A>
+<A NAME="DOC.2.29.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void stripify(osg::Geometry&amp; drawable)</B></TT>
-<DD>convert mesh primitives in Geometry into Tri Strips using
-NvTriStrip.  Converts all primitive types except points
+<DD>Convert mesh primitives in Geometry into Tri Strips.
+Converts all primitive types except points
 and lines, linestrips which it leaves unchanged.
 <DL><DT><DD></DL><P>
+<A NAME="stripify"></A>
+<A NAME="DOC.2.29.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void stripify()</B></TT>
+<DD>Stripfy the accumulated list of Geometry drawables
+<DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.28.3"></A>
+<A NAME="DOC.2.29.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; geode)</B></TT>
-<DD>apply stripify method to all geode geometry
+<DD>accumulate the Geometry drawables to stripify
 <DL><DT><DD></DL><P>
 <A NAME="setCacheSize"></A>
-<A NAME="DOC.2.28.4"></A>
+<A NAME="DOC.2.29.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCacheSize( unsigned int size )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCacheSize"></A>
-<A NAME="DOC.2.28.5"></A>
+<A NAME="DOC.2.29.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getCacheSize()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCacheSize"></A>
-<A NAME="DOC.2.28.6"></A>
+<A NAME="DOC.2.29.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getCacheSize() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMinStripSize"></A>
-<A NAME="DOC.2.28.7"></A>
+<A NAME="DOC.2.29.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMinStripSize( unsigned int size )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMinStripSize"></A>
-<A NAME="DOC.2.28.8"></A>
+<A NAME="DOC.2.29.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getMinStripSize()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMinStripSize"></A>
-<A NAME="DOC.2.28.9"></A>
+<A NAME="DOC.2.29.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getMinStripSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isOperationPermissableForObject"></A>
+<A NAME="DOC.2.29.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isOperationPermissableForObject(const osg::Object* object) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setGenerateFourPointPrimitivesQuads"></A>
+<A NAME="DOC.2.29.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGenerateFourPointPrimitivesQuads(bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getGenerateFourPointPrimitivesQuads"></A>
+<A NAME="DOC.2.29.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getGenerateFourPointPrimitivesQuads() const </B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -70,6 +70,7 @@ public:
 	typedef std::map<int,osg::ref_ptr<osg::Drawable> >          DrawableMap;
 	typedef std::map<int,osg::ref_ptr<osg::Node> >              NodeMap;
 
+        bool                _verboseOutput;
 
 private:
 	std::istream*       _istream;

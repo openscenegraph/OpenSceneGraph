@@ -47,7 +47,9 @@
 
 using namespace ive;
 
-DataOutputStream::DataOutputStream(std::ostream * ostream){
+DataOutputStream::DataOutputStream(std::ostream * ostream)
+{
+    _verboseOutput = true;
 
     _includeImageData= true;
     _ostream = ostream;
@@ -60,56 +62,80 @@ DataOutputStream::~DataOutputStream(){}
 
 void DataOutputStream::writeBool(bool b)
 {
-    char c = b;
+    char c = b?1:0;
     _ostream->write(&c, CHARSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeBool() ["<<(int)c<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeChar(char c){
     _ostream->write(&c, CHARSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeChar() ["<<(int)c<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUShort(unsigned short s){
     _ostream->write((char*)&s, SHORTSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeUShort() ["<<s<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUInt(unsigned int s){
     _ostream->write((char*)&s, INTSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeUInt() ["<<s<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeInt(int i){
     _ostream->write((char*)&i, INTSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeInt() ["<<i<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeFloat(float f){
     _ostream->write((char*)&f, FLOATSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeFloat() ["<<f<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeLong(long l){
     _ostream->write((char*)&l, LONGSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeLong() ["<<l<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeDouble(double d){
     _ostream->write((char*)&d, DOUBLESIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeDouble() ["<<d<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeString(const std::string& s){
     writeInt(s.size());
     _ostream->write(s.c_str(), s.size());
+    
+    if (_verboseOutput) std::cout<<"read/writeString() ["<<s<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeCharArray(const char* data, int size){
     _ostream->write(data, size);
+    
+    if (_verboseOutput) std::cout<<"read/writeCharArray() ["<<data<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeVec2(const osg::Vec2& v){
     writeFloat(v.x());
     writeFloat(v.y());
+    
+    if (_verboseOutput) std::cout<<"read/writeVec2() ["<<v<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeVec3(const osg::Vec3& v){
     writeFloat(v.x());
     writeFloat(v.y());
     writeFloat(v.z());
+    
+    if (_verboseOutput) std::cout<<"read/writeVec3() ["<<v<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeVec4(const osg::Vec4& v){
@@ -117,6 +143,8 @@ void DataOutputStream::writeVec4(const osg::Vec4& v){
     writeFloat(v.y());
     writeFloat(v.z());
     writeFloat(v.w());
+    
+    if (_verboseOutput) std::cout<<"read/writeVec4() ["<<v<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUByte4(const osg::UByte4& v){
@@ -124,6 +152,8 @@ void DataOutputStream::writeUByte4(const osg::UByte4& v){
     writeChar(v.g());
     writeChar(v.b());
     writeChar(v.a());
+    
+    if (_verboseOutput) std::cout<<"read/writeUByte4() ["<<v<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeQuat(const osg::Quat& q){
@@ -131,6 +161,8 @@ void DataOutputStream::writeQuat(const osg::Quat& q){
     writeFloat(q.y());
     writeFloat(q.z());
     writeFloat(q.w());
+    
+    if (_verboseOutput) std::cout<<"read/writeQuat() ["<<q<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeBinding(osg::Geometry::AttributeBinding b){
@@ -142,6 +174,8 @@ void DataOutputStream::writeBinding(osg::Geometry::AttributeBinding b){
         case osg::Geometry::BIND_PER_VERTEX:        writeChar((char) 4); break;
         default: throw Exception("Unknown binding in DataOutputStream::writeBinding()");
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeBinding() ["<<b<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeArray(const osg::Array* a){
@@ -194,6 +228,8 @@ void DataOutputStream::writeIntArray(const osg::IntArray* a)
     for(int i =0; i<size ;i++){
         writeInt(a->index(i));
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeIntArray() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUByteArray(const osg::UByteArray* a)
@@ -203,6 +239,8 @@ void DataOutputStream::writeUByteArray(const osg::UByteArray* a)
     for(int i =0; i<size ;i++){
         writeChar((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeUByteArray() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUShortArray(const osg::UShortArray* a)
@@ -212,6 +250,8 @@ void DataOutputStream::writeUShortArray(const osg::UShortArray* a)
     for(int i =0; i<size ;i++){
         writeUShort((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeUShortArray() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUIntArray(const osg::UIntArray* a)
@@ -221,6 +261,8 @@ void DataOutputStream::writeUIntArray(const osg::UIntArray* a)
     for(int i =0; i<size ;i++){
         writeInt((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeUIntArray() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeUByte4Array(const osg::UByte4Array* a)
@@ -230,6 +272,8 @@ void DataOutputStream::writeUByte4Array(const osg::UByte4Array* a)
     for(int i =0; i<size ;i++){
         writeUByte4((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeUByte4Array() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeFloatArray(const osg::FloatArray* a)
@@ -239,6 +283,8 @@ void DataOutputStream::writeFloatArray(const osg::FloatArray* a)
     for(int i =0; i<size ;i++){
         writeFloat((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeFloatArray() ["<<size<<"]"<<std::endl;
 }
 
 
@@ -249,6 +295,8 @@ void DataOutputStream::writeVec2Array(const osg::Vec2Array* a)
     for(int i=0;i<size;i++){
         writeVec2((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeVec2Array() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeVec3Array(const osg::Vec3Array* a)
@@ -258,6 +306,8 @@ void DataOutputStream::writeVec3Array(const osg::Vec3Array* a)
     for(int i = 0; i < size; i++){
         writeVec3((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeVec3Array() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeVec4Array(const osg::Vec4Array* a)
@@ -267,6 +317,8 @@ void DataOutputStream::writeVec4Array(const osg::Vec4Array* a)
     for(int i=0;i<size;i++){
         writeVec4((*a)[i]);
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeVec4Array() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeMatrix(const osg::Matrix& mat)
@@ -278,6 +330,8 @@ void DataOutputStream::writeMatrix(const osg::Matrix& mat)
             writeDouble(mat(r,c));
         }
     }
+    
+    if (_verboseOutput) std::cout<<"read/writeMatrix() ["<<mat<<"]"<<std::endl;
 }
 
 
@@ -288,6 +342,8 @@ void DataOutputStream::writeStateSet(const osg::StateSet* stateset)
     {
         // Id already exists so just write ID.
         writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<itr->second<<"]"<<std::endl;
     }
     else
     {
@@ -302,7 +358,11 @@ void DataOutputStream::writeStateSet(const osg::StateSet* stateset)
 
         // write the stateset.
         ((ive::StateSet*)(stateset))->write(this);
+
+        if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<id<<"]"<<std::endl;
+
     }
+    
 }
 
 void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
@@ -312,6 +372,7 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
     {
         // Id already exists so just write ID.
         writeInt(itr->second);
+        if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<itr->second<<"]"<<std::endl;
     }
     else
     {
@@ -370,6 +431,7 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
             std::string className = attribute->className();
             throw Exception(std::string("StateSet::write(): Unknown StateAttribute: ").append(className));
         }
+        if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<id<<"]"<<std::endl;
     }
 }
 
@@ -380,6 +442,8 @@ void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
     {
         // Id already exists so just write ID.
         writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<itr->second<<"]"<<std::endl;
     }
     else
     {
@@ -397,6 +461,7 @@ void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
         else{
             throw Exception("Unknown drawable in DataOutputStream::writeDrawable()");
         }
+        if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<id<<"]"<<std::endl;
     }
 }
 
@@ -407,6 +472,8 @@ void DataOutputStream::writeNode(const osg::Node* node)
     {
         // Id already exists so just write ID.
         writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeNode() ["<<itr->second<<"]"<<std::endl;
     }
     else
     {
@@ -466,5 +533,6 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else
             throw Exception("Unknown node in Group::write()");
 
+        if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
     }
 }

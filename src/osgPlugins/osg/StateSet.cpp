@@ -471,7 +471,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
 template<class T>
 T mymax(const T& a,const T& b)
 {
-	return (((a) > (b)) ? (a) : (b));
+    return (((a) > (b)) ? (a) : (b));
 }
 
 bool StateSet_writeLocalData(const Object& obj, Output& fw)
@@ -522,7 +522,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
          else
          {
             // no name defined for GLMode so just pass its value to fw.
-			 fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
+             fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
          }
     }
     
@@ -556,7 +556,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
                  else
                  {
                     // no name defined for GLMode so just pass its value to fw.
-		                 fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
+                    fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
                  }
             }
         }
@@ -587,6 +587,12 @@ bool StateSet_matchModeStr(const char* str,StateAttribute::GLModeValue& mode)
     else if (strcmp(str,"OFF")==0) mode = StateAttribute::OFF;
     else if (strcmp(str,"OVERRIDE_ON")==0) mode = StateAttribute::OVERRIDE_ON;
     else if (strcmp(str,"OVERRIDE_OFF")==0) mode = StateAttribute::OVERRIDE_OFF;
+    else if (strcmp(str,"OVERRIDE|ON")==0) mode = StateAttribute::OVERRIDE|StateAttribute::ON;
+    else if (strcmp(str,"OVERRIDE|OFF")==0) mode = StateAttribute::OVERRIDE|StateAttribute::OFF;
+    else if (strcmp(str,"PROTECTED|ON")==0) mode = StateAttribute::PROTECTED|StateAttribute::ON;
+    else if (strcmp(str,"PROTECTED|OFF")==0) mode = StateAttribute::PROTECTED|StateAttribute::OFF;
+    else if (strcmp(str,"PROTECTED|OVERRIDE|ON")==0) mode = StateAttribute::PROTECTED|StateAttribute::OVERRIDE|StateAttribute::ON;
+    else if (strcmp(str,"PROTECTED|OVERRIDE|OFF")==0) mode = StateAttribute::PROTECTED|StateAttribute::OVERRIDE|StateAttribute::OFF;
     else return false;
     return true;
 }
@@ -599,8 +605,12 @@ const char* StateSet_getModeStr(StateAttribute::GLModeValue value)
         case(StateAttribute::INHERIT): return "INHERIT";
         case(StateAttribute::ON): return "ON";
         case(StateAttribute::OFF): return "OFF";
-        case(StateAttribute::OVERRIDE_ON): return "OVERRIDE_ON";
-        case(StateAttribute::OVERRIDE_OFF): return "OVERRIDE_OFF";
+        case(StateAttribute::OVERRIDE|StateAttribute::ON): return "OVERRIDE|ON";
+        case(StateAttribute::OVERRIDE|StateAttribute::OFF): return "OVERRIDE|OFF";
+        case(StateAttribute::PROTECTED|StateAttribute::ON): return "PROTECTED|ON";
+        case(StateAttribute::PROTECTED|StateAttribute::OFF): return "PROTECTED|OFF";
+        case(StateAttribute::PROTECTED|StateAttribute::OVERRIDE|StateAttribute::ON): return "PROTECTED|OVERRIDE|ON";
+        case(StateAttribute::PROTECTED|StateAttribute::OVERRIDE|StateAttribute::OFF): return "PROTECTED|OVERRIDE|OFF";
     }
     return "";
 }

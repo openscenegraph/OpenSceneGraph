@@ -1,0 +1,13 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgbluemarble.cpp\
+
+LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgbluemarble
+
+INC += $(X_INC)
+
+include $(TOPDIR)/Make/makerules

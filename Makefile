@@ -163,7 +163,6 @@ stats :
 	cat include/osgUtil/* src/osgUtil/*.cpp | wc -l
 	cat include/osgDB/* src/osgDB/*.cpp | wc -l
 	cat include/osgGLUT/* src/osgGLUT/*.cpp | wc -l
-	cat include/osgWX/* src/osgWX/*.cpp | wc -l
 	cat include/osgText/* src/osgText/*.cpp | wc -l
 	cat include/*/* src/*/*.cpp | wc -l
 	cat src/Demos/*/*.cpp | wc -l

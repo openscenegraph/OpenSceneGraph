@@ -106,13 +106,6 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             return _renderStageLighting.get();
         }
 
-        void setLightingMode(RenderStageLighting::Mode mode) { getRenderStageLighting()->setLightingMode(mode); }
-        RenderStageLighting::Mode getLightingMode() const { return getRenderStageLighting()->getLightingMode(); }
-
-        void setLight(osg::Light* light) { getRenderStageLighting()->setLight(light); }
-        osg::Light* getLight() { return getRenderStageLighting()->getLight(); }
-        const osg::Light* getLight() const { return getRenderStageLighting()->getLight(); }
-        
         virtual void addLight(osg::Light* light,osg::Matrix* matrix)
         {
             getRenderStageLighting()->addLight(light,matrix);

@@ -132,8 +132,8 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
                 image->setImage(s,t,r,
                                 internalFormat,
                                 pixelFormat,
-                                dataType,
-                                data);
+                                dataType,data,
+                                osg::Image::USE_MALLOC_FREE);
 
                 // free texture & image data
                 tex->unrefDelete();

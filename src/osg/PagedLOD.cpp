@@ -70,7 +70,12 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 // now request the loading of the next unload child.
                 if (nv.getDatabaseRequestHandler() && numChildren<_perRangeDataList.size())
                 {
+                    // compute priority from where abouts in the required range the distance falls.
                     float priority = (_rangeList[numChildren].second-distance)/(_rangeList[numChildren].second-_rangeList[numChildren].first);
+                    
+                    // modify the priority according to the child's priority offset and scale.
+                    priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
+
                     //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priotity = "<<priority<<std::endl;
                     nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
                 }

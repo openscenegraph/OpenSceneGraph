@@ -162,6 +162,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Light.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\LightModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\LightSource.cpp
 # End Source File
 # Begin Source File

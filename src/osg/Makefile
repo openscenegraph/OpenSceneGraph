@@ -28,6 +28,7 @@ C++FILES = \
 	Impostor.cpp\
 	ImpostorSprite.cpp\
 	Light.cpp\
+	LightModel.cpp\
 	LightSource.cpp\
 	LineSegment.cpp\
 	LineStipple.cpp\
@@ -98,6 +99,7 @@ TARGET_INCLUDE_FILES = \
 	osg/ImpostorSprite\
 	osg/LOD\
 	osg/Light\
+	osg/LightModel\
 	osg/LightSource\
 	osg/LineSegment\
 	osg/LineStipple\

@@ -1,0 +1,87 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_LIGHTMODEL
+#define OSG_LIGHTMODEL 1
+
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+#include <osg/Vec4>
+
+namespace osg {
+
+class SG_EXPORT LightModel : public StateAttribute
+{
+    public :
+
+        LightModel();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        LightModel(const LightModel& lw,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+          StateAttribute(lw,copyop),
+          _ambient(lw._ambient),
+          _colorControl(lw._colorControl),
+          _localViewer(lw._localViewer),
+          _twoSided(lw._twoSided) {}
+
+
+        META_StateAttribute(LightModel, LIGHTMODEL);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(LightModel,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_ambient)
+            COMPARE_StateAttribute_Parameter(_colorControl)
+            COMPARE_StateAttribute_Parameter(_localViewer)
+            COMPARE_StateAttribute_Parameter(_twoSided)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
+
+        void setAmbientIntensity(const osg::Vec4& ambient) { _ambient = ambient; }
+        const osg::Vec4& getAmbientIntensity() const { return _ambient; }
+
+
+        enum ColorControl
+        {
+            SEPERATE_SPECULAR_COLOR,
+            SINGLE_COLOR
+        };
+        
+        void setColorControl(const ColorControl cc) { _colorControl = cc; }
+        inline const ColorControl getColorControl() const { return _colorControl; }
+
+
+        void setLocalViewer(const bool localViewer) { _localViewer=localViewer; }
+        inline const bool getLocalViewer() const { return _localViewer; }
+
+
+        void setTwoSided(const bool twoSided) { _twoSided = twoSided; }
+        inline const bool getTwoSided() const { return _twoSided; }
+
+
+
+        virtual void apply(State& state) const;
+
+
+    protected :
+
+        virtual ~LightModel();
+
+        osg::Vec4 _ambient;
+        ColorControl _colorControl;
+        bool _localViewer;
+        bool _twoSided;
+
+};
+
+}
+
+#endif

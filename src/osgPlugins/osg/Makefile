@@ -19,6 +19,7 @@ C++FILES = \
         Image.cpp\
         Impostor.cpp\
         Light.cpp\
+        LightModel.cpp\
         LightSource.cpp\
         LineStipple.cpp\
         LineWidth.cpp\

@@ -193,6 +193,10 @@ SOURCE=..\..\src\osg\Light.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\LightModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\LightSource.cpp
 # End Source File
 # Begin Source File
@@ -438,6 +442,10 @@ SOURCE=..\..\Include\Osg\ImpostorSprite
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Light
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\LightModel
 # End Source File
 # Begin Source File
 

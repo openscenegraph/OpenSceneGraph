@@ -131,6 +131,7 @@ class SG_EXPORT StateAttribute : public Object
             TEXENV,
             TEXGEN,
             TEXMAT,
+            LIGHTMODEL,
             TRANSPARENCY,
             STENCIL,
             COLORMASK,

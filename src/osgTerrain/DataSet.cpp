@@ -1995,6 +1995,9 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     osg::Vec3 center_position(0.0f,0.0f,0.0f);
     osg::Vec3 center_normal(0.0f,0.0f,1.0f);
     osg::Vec3 transformed_center_normal(0.0f,0.0f,1.0f);
+    double globe_radius = et ? et->getRadiusPolar() : 1.0;
+
+    bool useClusterCullingCallback = mapLatLongsToXYZ;
 
     if (useLocalToTileTransform)
     {
@@ -2009,10 +2012,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             double minLat = grid->getOrigin().y();
 
             double minX,minY,minZ;
-            et->convertLatLongHeightToXYZ(osg::DegreesToRadians(minLat),osg::DegreesToRadians(minLong),midZ,minX,minY,minZ);
+            et->convertLatLongHeightToXYZ(osg::DegreesToRadians(minLat),osg::DegreesToRadians(minLong),midZ, minX,minY,minZ);
             
             double midX,midY;
-            et->convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ,midX,midY,midZ);
+            et->convertLatLongHeightToXYZ(osg::DegreesToRadians(midLat),osg::DegreesToRadians(midLong),midZ, midX,midY,midZ);
             
             double length = sqrt((midX-minX)*(midX-minX) + (midY-minY)*(midY-minY)); 
             
@@ -2070,6 +2073,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
 
     float min_dot_product = 1.0f;
+    float max_cluster_culling_height = 0.0f;
 
     for(r=0;r<numRows;++r)
     {
@@ -2078,18 +2082,13 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             double X = orig_X + delta_X*(double)c;
             double Y = orig_Y + delta_Y*(double)r;
             double Z = orig_Z + grid->getHeight(c,r);
+            double height = Z;
 
             if (mapLatLongsToXYZ)
             {
                 et->convertLatLongHeightToXYZ(osg::DegreesToRadians(Y),osg::DegreesToRadians(X),Z,
                                              X,Y,Z);
             }
-
-            // upadate the cluster culling data.
-            osg::Vec3 local_normal(X,Y,Z);
-            local_normal.normalize();
-            float local_dot_product = center_normal * local_normal;
-            min_dot_product = osg::minimum(min_dot_product, local_dot_product);
 
             if (useLocalToTileTransform)
             {
@@ -2098,6 +2097,31 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             else
             {
 	        v[vi].set(X,Y,Z);
+            }
+
+
+            if (useClusterCullingCallback)
+            {
+                osg::Vec3 dv = v[vi] - center_position;
+                double d = sqrt(dv.x()*dv.x() + dv.y()*dv.y() + dv.z()*dv.z());
+                double theta = acos( globe_radius/ (globe_radius + fabs(height)) );
+                double phi = 2.0 * asin (d*0.5/globe_radius); // d/globe_radius;
+                double beta = theta+phi;
+                double cutoff = osg::PI_2 - 0.1;
+                //std::cout<<"theta="<<theta<<"\tphi="<<phi<<" beta "<<beta<<std::endl;
+                if (phi<cutoff && beta<cutoff)
+                {
+
+                    float local_dot_product = -sin(theta + phi);
+                    float local_m = globe_radius*( 1.0/ cos(theta+phi) - 1.0);
+                    min_dot_product = osg::minimum(min_dot_product, local_dot_product);
+                    max_cluster_culling_height = osg::maximum(max_cluster_culling_height,local_m);      
+                }
+                else
+                {
+                    //std::cout<<"Turning off cluster culling for wrap around tile."<<std::endl;
+                    useClusterCullingCallback = false;
+                }
             }
 
             // note normal will need rotating.
@@ -2175,25 +2199,15 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 #endif
 
 
-    bool useClusterCullingCallback = mapLatLongsToXYZ;
     if (useClusterCullingCallback)
     {
         // set up cluster cullling, 
         osg::ClusterCullingCallback* ccc = new osg::ClusterCullingCallback;
 
-        float angle = acosf(min_dot_product)+osg::PI*0.5f;
-        float deviation = (angle<osg::PI) ? cos(angle) : -1.0f;
-
-        std::cout<<" center_position="<<center_position<<" center_normal="<<center_normal<<" min_dot_product="<<min_dot_product<<std::endl;
-        ccc->set(center_position, transformed_center_normal, deviation);
+        ccc->set(center_position + transformed_center_normal*max_cluster_culling_height ,
+                 transformed_center_normal, 
+                 min_dot_product);
         geometry->setCullCallback(ccc);
-
-        std::cout<<"manual      ccc->getControlPoint()==\t"<<ccc->getControlPoint()<<"\t"<<ccc->getNormal()<<"\t"<<ccc->getDeviation()<<std::endl;
-
-        #if 0    
-            ccc->computeFrom(geometry);
-            std::cout<<"computeFrom ccc->getControlPoint()==\t"<<ccc->getControlPoint()<<"\t"<<ccc->getNormal()<<"\t"<<ccc->getDeviation()<<std::endl;
-        #endif
     }
     
     osgUtil::Simplifier::IndexList pointsToProtectDuringSimplification;

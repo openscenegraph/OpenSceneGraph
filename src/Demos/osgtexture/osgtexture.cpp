@@ -460,6 +460,8 @@ int main( int argc, char **argv )
 
         // create a model from the images.
         osg::Node* rootNode = createModelFromImages(imageList);
+        
+        imageList.clear();
 
         // add model to viewer.
         viewer.addViewport( rootNode );

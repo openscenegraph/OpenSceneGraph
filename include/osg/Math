@@ -113,7 +113,7 @@ inline T RadiansToDegrees(T angle) { return angle*(T)180.0/(T)PI; }
 template<typename T>
 inline float computeVolume(const T& a,const T& b,const T& c,const T& d)
 {
-    return fabs(((b-c)^(a-b))*(d-b));
+    return fabsf(((b-c)^(a-b))*(d-b));
 }
 
 /** compute the volume of prism */

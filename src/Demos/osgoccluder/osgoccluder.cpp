@@ -57,9 +57,12 @@ void write_usage(std::ostream& out,const std::string& name)
 osg::Node* createOccludersAroundModel(osg::Node* model)
 {
     osg::Group* scene = osgNew osg::Group;
+    scene->setName("rootgroup");
+
 
     // add the loaded model into a the scene group.
     scene->addChild(model);
+    model->setName("model");
 
 
     // create and occluder which will site along side the loadmodel model.
@@ -77,6 +80,7 @@ osg::Node* createOccludersAroundModel(osg::Node* model)
 
     // attach it to the occluder node.
     occluderNode->setOccluder(cpo);
+    occluderNode->setName("occluder");
     
     // set the occluder up for the front face of the bounding box.
     osg::ConvexPlanerPolygon& occluder = cpo->getOccluder();

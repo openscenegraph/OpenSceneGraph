@@ -279,6 +279,7 @@ void SceneView::cull()
         }
 
         camera->setNearFar(_near_plane,_far_plane);
+        _camera->setNearFar(_near_plane,_far_plane);
     }
 
 }

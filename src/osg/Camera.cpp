@@ -92,13 +92,13 @@ void Camera::copy(const Camera& camera)
     _useFarClippingPlane = camera._useFarClippingPlane;
 
     // cached matrix and clipping volume derived from above settings.
-    _dirty = camera._dirty;
-    _projectionMatrix = camera._projectionMatrix;
-    _modelViewMatrix = camera._modelViewMatrix;
-    _clippingVolume = camera._clippingVolume;
+    _dirty = false;//    camera._dirty;
+    _projectionMatrix = NULL; //camera._projectionMatrix;
+    _modelViewMatrix = NULL; camera._modelViewMatrix;
+//    _clippingVolume = camera._clippingVolume;
 
-    _mp = camera._mp;
-    _inversemp = camera._inversemp;
+    _mp = NULL;
+    _inversemp = NULL;
 
     _useEyeOffset = camera._useEyeOffset;
     _eyeOffset = camera._eyeOffset;

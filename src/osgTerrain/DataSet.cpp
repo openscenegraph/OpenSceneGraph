@@ -3002,7 +3002,7 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
                 
                 triple._callback->transform(matrix);
                 
-                osg::notify(osg::NOTICE)<<"cluster culling matrix "<<matrix<<std::endl;
+                osg::notify(osg::INFO)<<"cluster culling matrix "<<matrix<<std::endl;
 
                 // moving cluster culling callback pagedLOD node.
                 pagedLOD->setCullCallback(triple._callback);
@@ -3903,7 +3903,17 @@ void DataSet::_buildDestination(bool writeToDisk)
     if (_destinationGraph.valid())
     {
         std::string filename = _tileBasename+_tileExtension;
-        my_notify(osg::NOTICE)<<"started DataSet::writeDestination("<<filename<<")"<<std::endl;
+        
+        if (_archive.valid())
+        {
+            my_notify(osg::NOTICE)<<"started DataSet::writeDestination("<<_archiveName<<")"<<std::endl;
+            my_notify(osg::NOTICE)<<"        archive file = "<<_archiveName<<std::endl;
+            my_notify(osg::NOTICE)<<"        archive master file = "<<filename<<std::endl;
+        }
+        else
+        {
+            my_notify(osg::NOTICE)<<"started DataSet::writeDestination("<<filename<<")"<<std::endl;
+        }
 
         if (_databaseType==LOD_DATABASE)
         {
@@ -3967,7 +3977,17 @@ void DataSet::_buildDestination(bool writeToDisk)
                 }
             }
         }
-        my_notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<filename<<")"<<std::endl;
+
+        if (_archive.valid())
+        {
+            my_notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<_archiveName<<")"<<std::endl;
+            my_notify(osg::NOTICE)<<"          archive file = "<<_archiveName<<std::endl;
+            my_notify(osg::NOTICE)<<"          archive master file = "<<filename<<std::endl;
+        }
+        else
+        {
+            my_notify(osg::NOTICE)<<"completed DataSet::writeDestination("<<filename<<")"<<std::endl;
+        }
 
     }
     else

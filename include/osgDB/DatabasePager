@@ -138,6 +138,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         ThreadPriority getThreadPriorityOutwithFrame() const { return _threadPriorityOutwithFrame; }
         
         
+        /** Get the number of frames that are currently active.*/
+        int getNumFramesActive() const { return _numFramesActive; }
+
         /** Signal the database thread that the update, cull and draw has begun for a new frame.
           * Note, this is called by the application so that the database pager can go to sleep while the CPU is busy on the main rendering threads. */
         void signalBeginFrame(const osg::FrameStamp* framestamp);
@@ -261,6 +264,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             _databasePagerThreadBlock->set(
                 (!_fileRequestList.empty() || !_childrenToDeleteList.empty()) && !_databasePagerThreadPaused);
         }
+        
+        inline void updateFrameBlock(int delta)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_numFramesActiveMutex);
+            _numFramesActive += delta;
+            _frameBlock->set(_numFramesActive==0);
+        }
 
 
         /** Iterate through the active PagedLOD nodes children removing 
@@ -277,6 +287,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool                            _databasePagerThreadPaused;
     
         bool                            _useFrameBlock;
+        int                             _numFramesActive;
+        mutable OpenThreads::Mutex      _numFramesActiveMutex;
         osg::ref_ptr<Block>             _frameBlock;
         int                             _frameNumber;
 

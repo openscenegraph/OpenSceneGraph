@@ -10,8 +10,8 @@
 #include <osg/Matrix>
 
 #include <osg/FrameStamp>
-#include <osg/Camera>
 #include <osg/DisplaySettings>
+#include <osg/ClippingVolume>
 
 #include <vector>
 #include <map>

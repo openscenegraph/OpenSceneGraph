@@ -115,14 +115,22 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::State* getState() { return _state.get(); }
         const osg::State* getState() const { return _state.get(); }
 
+
+        /** set an osg::Camera for the scene view to use for setting projection and modelview matrices internaly.
+          * However, the projection matrix from the camera will be overriden by a projection matrix which is set explicitly
+          * via setProjectionMatrix(..), see below.
+          * Also, the model matrix from the camera will be overriden by a modelview matrix which is set explicitly
+          * via setModelViewMatrix(..), see below.*/
         void setCamera(osg::Camera* camera) { _camera = camera; }
         osg::Camera* getCamera() { return _camera.get(); }
         const osg::Camera* getCamera() const { return _camera.get(); }
 
+        /** set an projection matrix. Note, this will override a camera's projection matrix if it is not NULL.*/
         void setProjectionMatrix(osg::Matrix* matrix) { _projectionMatrix = matrix; }
         osg::Matrix* getProjectionMatrix() { return _projectionMatrix.get(); }
         const osg::Matrix* getProjectionMatrix() const { return _projectionMatrix.get(); }
 
+        /** set an modelview matrix. Note, this will override a camera's modelview matrix if it is not NULL.*/
         void setModelViewMatrix(osg::Matrix* matrix) { _modelviewMatrix = matrix; }
         osg::Matrix* getModelViewMatrix() { return _modelviewMatrix.get(); }
         const osg::Matrix* getModelViewMatrix() const { return _modelviewMatrix.get(); }
@@ -237,7 +245,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         virtual ~SceneView();
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
-        virtual void cullStage(osg::Camera* camera,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
+        virtual void cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage);
         virtual void drawStage(osgUtil::RenderStage* renderStage);
 
         osg::ref_ptr<osg::Node>                     _sceneData;
@@ -258,13 +266,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
 
         osg::Node::NodeMask                          _cullMaskLeft;
-        osg::ref_ptr<osg::Camera>                   _cameraLeft;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphLeft;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageLeft;
 
         osg::Node::NodeMask                          _cullMaskRight;
-        osg::ref_ptr<osg::Camera>                   _cameraRight;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorRight;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;

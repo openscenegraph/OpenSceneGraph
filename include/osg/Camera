@@ -242,17 +242,6 @@ class SG_EXPORT Camera: public osg::Referenced
           * equivalent to using gluLookAt.*/
         const Matrix& getModelViewMatrix() const;
         
-        
-        /** Switch on/off the use of the near and far clipping plane which creating the
-          * getClippingVolume(), uses the camera _zfar value for the position 
-          * of the far clipping plane. By default this value is off.*/
-        void setUseNearAndFarClippingPlanes(const bool use);
-        /** Get whether the ClippingVolume uses a near and far clipping planes.*/
-        const bool getUseNearAndFarClippingPlanes() const { return _useNearAndFarClippingPlanes; }
-        
-        /** get the view frustum clipping in model coordinates */
-        const ClippingVolume& getClippingVolume() const;
-
 
         /** Map object coordinates into windows coordinates.
           * Equivalent to gluProject(...). */
@@ -297,15 +286,6 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Get the physical distance between the viewers eyes and the display system.*/
         const float getScreenDistance() const { return _screenDistance; }
 
-        /** Convinience method for adjusting the project and model view to account for
-          * and eye offset, as used in stereo work, assumes that the users will use
-          * a seperate camera for each eye, adjustEyePointForStereo(..) being used to
-          * specialize the camera for each eye view.*/ 
-        void adjustEyeOffsetForStereo(const osg::Vec3& offset);
-
-
-        /** Set up the OpenGL projection and model view matrices.*/
-        virtual void apply(State& state);
 
     protected:
 
@@ -352,11 +332,8 @@ class SG_EXPORT Camera: public osg::Referenced
         mutable ref_ptr<Matrix> _mp;
         mutable ref_ptr<Matrix> _inversemp;
 
-        void calculateMatricesAndClippingVolume() const;
+        void computeMatrices() const;
 
-        // used for offsetting camera to ajust for left and right stereo views.
-        bool                _useEyeOffset;
-        osg::Vec3           _eyeOffset;
         float               _screenDistance;
         
         FusionDistanceMode  _fusionDistanceMode;

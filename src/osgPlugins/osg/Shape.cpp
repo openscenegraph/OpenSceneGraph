@@ -117,7 +117,7 @@ bool Box_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(rotation.x());
         fr[2].getFloat(rotation.y());
         fr[3].getFloat(rotation.z());
-        fr[3].getFloat(rotation.w());
+        fr[4].getFloat(rotation.w());
         box.setRotation(rotation);
         fr+=5;
         iteratorAdvanced = true;
@@ -195,7 +195,7 @@ bool Cone_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(rotation.x());
         fr[2].getFloat(rotation.y());
         fr[3].getFloat(rotation.z());
-        fr[3].getFloat(rotation.w());
+        fr[4].getFloat(rotation.w());
         cone.setRotation(rotation);
         fr+=5;
         iteratorAdvanced = true;
@@ -275,7 +275,7 @@ bool Cylinder_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(rotation.x());
         fr[2].getFloat(rotation.y());
         fr[3].getFloat(rotation.z());
-        fr[3].getFloat(rotation.w());
+        fr[4].getFloat(rotation.w());
         cylinder.setRotation(rotation);
         fr+=5;
         iteratorAdvanced = true;
@@ -353,7 +353,7 @@ bool HeightField_readLocalData(Object& obj, Input& fr)
         fr[1].getFloat(rotation.x());
         fr[2].getFloat(rotation.y());
         fr[3].getFloat(rotation.z());
-        fr[3].getFloat(rotation.w());
+        fr[4].getFloat(rotation.w());
         heightfield.setRotation(rotation);
         fr+=5;
         iteratorAdvanced = true;

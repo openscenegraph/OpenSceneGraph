@@ -8,7 +8,7 @@ CXXFILES =\
     ShuttleCallback.cpp \
     GroupSoLOD.cpp
     
-ifeq ($(USE_COIN),1)
+ifeq ($(COIN_INSTALLED),yes)
     INVENTOR_LIB = -lCoin
 else
     INVENTOR_LIB = -lInventor

@@ -224,11 +224,7 @@ endif
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXi -lXmu -lX11
   PF_XTRA_LIBS      = -L/usr/lib/libpfdb   -Xlinker -rpath /usr/lib/libpfdb \
-                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
-                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
-                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
-                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
-                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf 
+                      -lpfdu -lpfutil -lpf 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lpthread
   PNG_LIBS          = -lpng

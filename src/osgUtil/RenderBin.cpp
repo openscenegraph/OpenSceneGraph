@@ -15,6 +15,7 @@
 
 #include <osg/Statistics>
 #include <osg/ImpostorSprite>
+#include <osg/Notify>
 
 #include <algorithm>
 
@@ -59,7 +60,9 @@ RenderBin* RenderBin::createRenderBin(const std::string& binName)
         RenderBin* prototype = getRenderBinPrototype(binName);
         if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
     }
-    return NULL;
+    
+    osg::notify(osg::WARN) <<"Warning: RenderBin \""<<binName<<"\" implemention not found, using default RenderBin as a fallback."<<std::endl;
+    return new RenderBin;
 }
 
 void RenderBin::addRenderBinPrototype(const std::string& binName,RenderBin* proto)

@@ -187,7 +187,7 @@ void Text::drawImmediateMode(State& state)
     if(_drawMode & BOUNDINGBOX)
         drawBoundingBox();
     // draw alignment
-    if(_drawMode & ALIGNEMENT)
+    if(_drawMode & ALIGNMENT)
         drawAlignment();
 
     // draw boundingBox

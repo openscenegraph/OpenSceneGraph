@@ -76,7 +76,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("BitmapFont");
@@ -104,7 +104,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("PixmapFont");
@@ -144,7 +144,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("TextureFont");
@@ -181,7 +181,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("PolygonFont");
@@ -211,7 +211,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("OutlineFont");
@@ -259,7 +259,7 @@ void setScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("BitmapFont");
@@ -286,7 +286,7 @@ void setScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("PixmapFont");
@@ -320,7 +320,7 @@ void setScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("TextureFont");
@@ -357,7 +357,7 @@ void setScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("PolygonFont");
@@ -386,7 +386,7 @@ void setScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("OutlineFont");
@@ -511,7 +511,7 @@ protected:
                 {    // change DrawMode
                     std::vector<osg::ref_ptr<osgText::Text> >::iterator itr=gTextList.begin();
                     for(;itr!=gTextList.end();itr++)
-                        (*itr)->setDrawMode(osgText::Text::ALIGNEMENT ^ (*itr)->getDrawMode());
+                        (*itr)->setDrawMode(osgText::Text::ALIGNMENT ^ (*itr)->getDrawMode());
                 }
                 return;
             ///////////////////////////////////////////////////////////////////

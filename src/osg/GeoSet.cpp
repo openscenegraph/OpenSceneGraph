@@ -434,7 +434,7 @@ const bool GeoSet::computeBound() const
     {
         if( _cindex.valid() )
 	{
-            for( i = 0; i < _numcoords; i++ )
+            for( i = 0; i < int(_cindex._size); i++ )
             {
                 center += _coords[_cindex[i]];
                 _bbox.expandBy(_coords[_cindex[i]]);

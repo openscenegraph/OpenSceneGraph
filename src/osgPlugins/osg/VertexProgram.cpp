@@ -31,6 +31,20 @@ bool VertexProgram_readLocalData(Object& obj, Input& fr)
 
     VertexProgram& vertexProgram = static_cast<VertexProgram&>(obj);
 
+    if (fr[0].matchWord("ProgramLocalParameter"))
+    {
+        int index;
+        Vec4 vec;
+        fr[1].getInt(index);
+        fr[2].getFloat(vec[0]);
+        fr[3].getFloat(vec[1]);
+        fr[4].getFloat(vec[2]);
+        fr[5].getFloat(vec[3]);
+        fr += 6;
+        iteratorAdvanced = true;
+        vertexProgram.setProgramLocalParameter(index, vec);
+    }
+
     if (fr.matchSequence("code {")) {
 	std::string code;
 	fr += 2;
@@ -73,6 +87,14 @@ bool VertexProgram_readLocalData(Object& obj, Input& fr)
 bool VertexProgram_writeLocalData(const Object& obj,Output& fw)
 {
     const VertexProgram& vertexProgram = static_cast<const VertexProgram&>(obj);
+
+    const VertexProgram::LocalParamList& lpl = vertexProgram.getLocalParamList();
+    VertexProgram::LocalParamList::const_iterator i;
+    for(i=lpl.begin(); i!=lpl.end(); i++)
+    {
+        fw.indent() << "ProgramLocalParameter " << (*i).first << " " << (*i).second << std::endl;
+    }
+
 
     std::vector<std::string> lines;
     std::istringstream iss(vertexProgram.getVertexProgram());

@@ -506,12 +506,13 @@ void State::dirtyAllVertexArrays()
 
 void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer)
 {
+    disableAllVertexArrays();
+
     glInterleavedArrays( format, stride, pointer);
-    
+
     // the crude way, assume that all arrays have been effected so dirty them and
     // disable them...
     dirtyAllVertexArrays();
-    disableAllVertexArrays();
 }
 
 

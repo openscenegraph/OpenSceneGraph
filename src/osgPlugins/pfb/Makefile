@@ -6,7 +6,7 @@ CXXFILES =\
         ConvertToPerformer.cpp\
         ReaderWriterPFB.cpp\
 
-LIBS   += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += $(OSG_LIBS) $(PF_XTRA_LIBS) (OTHER_LIBS)
 
 TARGET_BASENAME = pfb
 include $(TOPDIR)/Make/cygwin_plugin_def

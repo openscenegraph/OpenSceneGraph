@@ -130,13 +130,19 @@ ifeq ($(ARCH),64)
 else
     ARCHARGS          = -n32
 endif
-  LINKARGS          = -LANG:std -OPT:Olimit=0 -L/usr/local/lib32 -rpath /usr/local/lib32
+  LINKARGS          = -LANG:std -OPT:Olimit=0 -L/usr/local/lib32 -rpath /usr/local/lib32 -rpath $(INST_LIBS)
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXext -lXi -lXmu -lX11
+  PF_XTRA_LIBS      = -L/usr/lib32/libpfdb   -rpath /usr/lib32/libpfdb \
+                      -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
+                      -lpfflt -lpfgds -lpfgfo -lpfim -lpflsa -lpflsb \
+                      -lpfnff -lpfobj -lpfpegg -lpfpfb -lpfphd -lpfpts \
+                      -lpfrot -lpfscale -lpfsgf -lpfsgo -lpfsphere -lpfsv \
+                      -lpftri -lpfunc -lpfvct -lpfdu -lpfutil -lpf -limage
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm
 
@@ -166,6 +172,7 @@ endif
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXi -lXmu -lX11
+  PF_XTRA_LIBS      =
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
   PNG_LIBS          = -lpng

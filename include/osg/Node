@@ -95,7 +95,7 @@ class SG_EXPORT Node : public Object
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        inline const int getNumParents() const { return _parents.size(); }
+        inline const unsigned int getNumParents() const { return _parents.size(); }
 
 
         /** Set app node callback, called during app traversal. */

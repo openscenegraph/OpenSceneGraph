@@ -603,6 +603,42 @@ StateSet* Attr::createOsgStateSet()
         break;
     }
 
+/*  An email on ATTR mappings to OpenGL : "[osg-news] OpenFlight Texture Filter Modes"
+    from Joseph Steel:
+    
+
+    I posted a query on a forum on the Multigen web site re. the OpenFlight
+    texture filer modes. This is the reply:
+
+    Here are the mappings used by Creator under OpenGL: 
+    For Minification:
+    Point (0): GL_NEAREST
+    Bilinear (1): GL_LINEAR
+    Mipmap Point (3): GL_NEAREST_MIPMAP_NEAREST
+    Mipmap Linear (4): GL_NEAREST_MIPMAP_LINEAR
+    Mipmap Bilinear (5): GL_LINEAR_MIPMAP_NEAREST
+    Mipmap Trilinear (6): GL_LINEAR_MIPMAP_LINEAR
+    Bicubic (8): GL_LINEAR_MIPMAP_NEAREST
+    Bilinear Greater/Equal (9): GL_LINEAR_MIPMAP_NEAREST
+    Bilinear Less/Equal (10): GL_LINEAR_MIPMAP_NEAREST
+    Bicubic Greater/Equal (11): GL_LINEAR_MIPMAP_NEAREST
+    Bicubic Less/Equal (12): GL_LINEAR_MIPMAP_NEAREST 
+    For Magnification:
+    Point (0): GL_NEAREST
+    Bilinear (1): GL_LINEAR
+    Bicubic (3): GL_LINEAR
+    Sharpen (4): GL_LINEAR
+    Add Detail (5): GL_LINEAR
+    Modulate Detail (6): GL_LINEAR
+    Bilinear Greater/Equal (7): GL_LINEAR
+    Bilinear Less/Equal (8): GL_LINEAR
+    Bicubic Greater/Equal (9): GL_LINEAR
+    Bicubic Less/Equal (10): GL_LINEAR
+
+    Note that mode 2 for both minification & magnification are no longer
+    supported.
+*/
+
     // -----------
     // Min filter
     // -----------
@@ -613,11 +649,7 @@ StateSet* Attr::createOsgStateSet()
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST);
         break;
     case MIN_FILTER_BILINEAR:
-        // TX_BILINEAR is an old IrisGL mode which should map to OpenGL's LINEAR
-        // osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
-        // but we're getting awful quality so we'll use LINEAR_MIP_MAP_LINEAR instead.
-        osg::notify(osg::INFO) << "texture mode MIN_FILTER_BILINEAR encountered, remapping to LINEAR_MIPMAP_LINEAR"<<std::endl;
-        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
         break;
     case MIN_FILTER_MIPMAP_POINT:
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::NEAREST_MIPMAP_NEAREST);
@@ -632,23 +664,15 @@ StateSet* Attr::createOsgStateSet()
         osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
         break;
     case MIN_FILTER_BICUBIC:
-	osg::notify(osg::INFO) << "MIN_FILTER_BICUBIC"<< std::endl;
-        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
-        break;
     case MIN_FILTER_BILINEAR_GEQUAL:
     case MIN_FILTER_BILINEAR_LEQUAL:
-        // from IrisGL->OpenGL doc its looks like this is old IrisGL mdoe for shadowing support.
-        // should probably look
-        osg::notify(osg::INFO) << "texture mode MIN_FILTER_BILINEAR_*EQUAL encountered, remapping to LINEAR"<<std::endl;
-        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
-        break;
     case MIN_FILTER_BICUBIC_GEQUAL:
     case MIN_FILTER_BICUBIC_LEQUAL:
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_NEAREST);
+        break;
     default:
-        // from IrisGL->OpenGL doc its looks like this is old IrisGL mdoe for shadowing support.
-        // should probably look
-          osg::notify(osg::INFO) << "texture mode MIN_FILTER_BICUBIC_*EQUAL encountered, remapping to LINEAR"<<std::endl;
-          osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR);
+        osgTexture->setFilter(osg::Texture2D::MIN_FILTER, Texture2D::LINEAR_MIPMAP_LINEAR);
+        break;
           break;
     }
 
@@ -666,19 +690,13 @@ StateSet* Attr::createOsgStateSet()
     case MAG_FILTER_BILINEAR_GEQUAL:
     case MAG_FILTER_BILINEAR_LEQUAL:
     case MAG_FILTER_SHARPEN:
-        osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
-        break;
     case MAG_FILTER_BICUBIC:
     case MAG_FILTER_BICUBIC_GEQUAL:
     case MAG_FILTER_BICUBIC_LEQUAL:
+    case MAG_FILTER_ADD_DETAIL:
+    case MAG_FILTER_MODULATE_DETAIL:
         osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
-        osgTexture->setMaxAnisotropy(2.0f);
         break;
-
-//  case MAG_FILTER_ADD_DETAIL:
-//  case MAG_FILTER_MODULATE_DETAIL:
-//        osgTexture->setFilter(osg::Texture2D::MAG_FILTER, Texture2D::LINEAR);
-//        break;
     }
 
     // I have just ported the two below set*Attribute lines to use the new

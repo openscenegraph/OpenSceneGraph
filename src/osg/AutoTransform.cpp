@@ -136,7 +136,7 @@ void AutoTransform::accept(NodeVisitor& nv)
                 if (getAutoRotateToScreen())
                 {
                     osg::Quat rotation;
-                    rotation.set(cs->getModelViewMatrix());            
+                    cs->getModelViewMatrix().get(rotation);            
                     setRotation(rotation.inverse());
                 }
 

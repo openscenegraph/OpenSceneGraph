@@ -100,7 +100,7 @@ class SG_EXPORT State : public Referenced
                 if (matrix) 
                 {
                     _projection=matrix;
-                    matrix->glLoadMatrix();
+                    glLoadMatrix(matrix->ptr());
                 }
                 else
                 {
@@ -123,7 +123,7 @@ class SG_EXPORT State : public Referenced
                 if (matrix)
                 {
                     _modelView=matrix;
-                    matrix->glLoadMatrix();
+                    glLoadMatrix(matrix->ptr());
                 }
                 else 
                 {

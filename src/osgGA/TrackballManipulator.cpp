@@ -192,10 +192,9 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 void TrackballManipulator::setByMatrix(const osg::Matrix& matrix)
 {
     _center = osg::Vec3(0.0f,0.0f,-_distance)*matrix;//matrix.getTrans();
-    _rotation.set(matrix);
+    matrix.get(_rotation);
     
-    osg::Matrix rotation_matrix;
-    _rotation.get(rotation_matrix);
+    osg::Matrix rotation_matrix(_rotation);
 //    _center -= osg::Vec3(0.0f,0.0f,_distance)*rotation_matrix;
     
 }
@@ -229,7 +228,7 @@ void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3&
                    
     _center = center;
     _distance = lv.length();
-    _rotation.set(rotation_matrix);
+    rotation_matrix.get(_rotation);
     _rotation = _rotation.inverse();
 }
 
@@ -282,7 +281,7 @@ bool TrackballManipulator::calcMovement()
         float scale = -0.5f*_distance;
 
         osg::Matrix rotation_matrix;
-        _rotation.get(rotation_matrix);
+        rotation_matrix.set(_rotation);
 
         osg::Vec3 dv(dx*scale,dy*scale,0.0f);
 
@@ -311,8 +310,7 @@ bool TrackballManipulator::calcMovement()
             // push the camera forward.
             float scale = -fd;
 
-            osg::Matrix rotation_matrix;
-            _rotation.get(rotation_matrix);
+            osg::Matrix rotation_matrix(_rotation);
 
             osg::Vec3 dv = (osg::Vec3(0.0f,0.0f,-1.0f)*rotation_matrix)*(dy*scale);
 
@@ -356,8 +354,7 @@ void TrackballManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, fl
      * deformed sphere
      */
 
-    osg::Matrix rotation_matrix;
-    _rotation.get(rotation_matrix);
+    osg::Matrix rotation_matrix(_rotation);
 
 
     osg::Vec3 uv = osg::Vec3(0.0f,1.0f,0.0f)*rotation_matrix;

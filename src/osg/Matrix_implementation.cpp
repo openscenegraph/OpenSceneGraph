@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/Matrix>
+
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/Math>
@@ -34,7 +34,7 @@ using namespace osg;
     +((a)._mat[r][3] * (b)._mat[3][c])
 
 
-Matrix::Matrix( value_type a00, value_type a01, value_type a02, value_type a03,
+Matrix_implementation::Matrix_implementation( value_type a00, value_type a01, value_type a02, value_type a03,
                   value_type a10, value_type a11, value_type a12, value_type a13,
                   value_type a20, value_type a21, value_type a22, value_type a23,
                   value_type a30, value_type a31, value_type a32, value_type a33)
@@ -45,7 +45,7 @@ Matrix::Matrix( value_type a00, value_type a01, value_type a02, value_type a03,
     SET_ROW(3, a30, a31, a32, a33 )
 }
 
-void Matrix::set( value_type a00, value_type a01, value_type a02, value_type a03,
+void Matrix_implementation::set( value_type a00, value_type a01, value_type a02, value_type a03,
                    value_type a10, value_type a11, value_type a12, value_type a13,
                    value_type a20, value_type a21, value_type a22, value_type a23,
                    value_type a30, value_type a31, value_type a32, value_type a33)
@@ -56,7 +56,117 @@ void Matrix::set( value_type a00, value_type a01, value_type a02, value_type a03
     SET_ROW(3, a30, a31, a32, a33 )
 }
 
-void Matrix::setTrans( value_type tx, value_type ty, value_type tz )
+#define QX  q._fv[0]
+#define QY  q._fv[1]
+#define QZ  q._fv[2]
+#define QW  q._fv[3]
+
+void Matrix_implementation::set(const Quat& q)
+{
+    // Source: Gamasutra, Rotating Objects Using Quaternions
+    //
+    //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
+
+    double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+
+    // calculate coefficients
+    x2 = QX + QX;
+    y2 = QY + QY;
+    z2 = QZ + QZ;
+
+    xx = QX * x2;
+    xy = QX * y2;
+    xz = QX * z2;
+
+    yy = QY * y2;
+    yz = QY * z2;
+    zz = QZ * z2;
+
+    wx = QW * x2;
+    wy = QW * y2;
+    wz = QW * z2;
+
+    // Note.  Gamasutra gets the matrix assignments inverted, resulting
+    // in left-handed rotations, which is contrary to OpenGL and OSG's 
+    // methodology.  The matrix assignment has been altered in the next
+    // few lines of code to do the right thing.
+    // Don Burns - Oct 13, 2001
+    _mat[0][0] = 1.0f - (yy + zz);
+    _mat[1][0] = xy - wz;
+    _mat[2][0] = xz + wy;
+    _mat[3][0] = 0.0f;
+
+    _mat[0][1] = xy + wz;
+    _mat[1][1] = 1.0f - (xx + zz);
+    _mat[2][1] = yz - wx;
+    _mat[3][1] = 0.0f;
+
+    _mat[0][2] = xz - wy;
+    _mat[1][2] = yz + wx;
+    _mat[2][2] = 1.0f - (xx + yy);
+    _mat[3][2] = 0.0f;
+
+    _mat[0][3] = 0;
+    _mat[1][3] = 0;
+    _mat[2][3] = 0;
+    _mat[3][3] = 1;
+}
+
+void Matrix_implementation::get( Quat& q ) const
+{
+    // Source: Gamasutra, Rotating Objects Using Quaternions
+    //
+    //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
+
+    value_type  tr, s;
+    value_type tq[4];
+    int    i, j, k;
+
+    int nxt[3] = {1, 2, 0};
+
+    tr = _mat[0][0] + _mat[1][1] + _mat[2][2];
+
+    // check the diagonal
+    if (tr > 0.0)
+    {
+        s = (value_type)sqrt (tr + 1.0);
+        QW = s / 2.0f;
+        s = 0.5f / s;
+        QX = (_mat[1][2] - _mat[2][1]) * s;
+        QY = (_mat[2][0] - _mat[0][2]) * s;
+        QZ = (_mat[0][1] - _mat[1][0]) * s;
+    }
+    else
+    {
+        // diagonal is negative
+        i = 0;
+        if (_mat[1][1] > _mat[0][0])
+            i = 1;
+        if (_mat[2][2] > _mat[i][i])
+            i = 2;
+        j = nxt[i];
+        k = nxt[j];
+
+        s = (value_type)sqrt ((_mat[i][i] - (_mat[j][j] + _mat[k][k])) + 1.0);
+
+        tq[i] = s * 0.5f;
+
+        if (s != 0.0f)
+            s = 0.5f / s;
+
+        tq[3] = (_mat[j][k] - _mat[k][j]) * s;
+        tq[j] = (_mat[i][j] + _mat[j][i]) * s;
+        tq[k] = (_mat[i][k] + _mat[k][i]) * s;
+
+        QX = tq[0];
+        QY = tq[1];
+        QZ = tq[2];
+        QW = tq[3];
+    }
+}
+
+
+void Matrix_implementation::setTrans( value_type tx, value_type ty, value_type tz )
 {
     _mat[3][0] = tx;
     _mat[3][1] = ty;
@@ -64,14 +174,14 @@ void Matrix::setTrans( value_type tx, value_type ty, value_type tz )
 }
 
 
-void Matrix::setTrans( const Vec3& v )
+void Matrix_implementation::setTrans( const Vec3& v )
 {
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
     _mat[3][2] = v[2];
 }
 
-void Matrix::makeIdentity()
+void Matrix_implementation::makeIdentity()
 {
     SET_ROW(0,    1, 0, 0, 0 )
     SET_ROW(1,    0, 1, 0, 0 )
@@ -79,12 +189,12 @@ void Matrix::makeIdentity()
     SET_ROW(3,    0, 0, 0, 1 )
 }
 
-void Matrix::makeScale( const Vec3& v )
+void Matrix_implementation::makeScale( const Vec3& v )
 {
     makeScale(v[0], v[1], v[2] );
 }
 
-void Matrix::makeScale( value_type x, value_type y, value_type z )
+void Matrix_implementation::makeScale( value_type x, value_type y, value_type z )
 {
     SET_ROW(0,    x, 0, 0, 0 )
     SET_ROW(1,    0, y, 0, 0 )
@@ -92,12 +202,12 @@ void Matrix::makeScale( value_type x, value_type y, value_type z )
     SET_ROW(3,    0, 0, 0, 1 )
 }
 
-void Matrix::makeTranslate( const Vec3& v )
+void Matrix_implementation::makeTranslate( const Vec3& v )
 {
     makeTranslate( v[0], v[1], v[2] );
 }
 
-void Matrix::makeTranslate( value_type x, value_type y, value_type z )
+void Matrix_implementation::makeTranslate( value_type x, value_type y, value_type z )
 {
     SET_ROW(0,    1, 0, 0, 0 )
     SET_ROW(1,    0, 1, 0, 0 )
@@ -105,33 +215,33 @@ void Matrix::makeTranslate( value_type x, value_type y, value_type z )
     SET_ROW(3,    x, y, z, 1 )
 }
 
-void Matrix::makeRotate( const Vec3& from, const Vec3& to )
+void Matrix_implementation::makeRotate( const Vec3& from, const Vec3& to )
 {
     Quat quat;
     quat.makeRotate(from,to);
-    quat.get(*this);
+    set(quat);
 }
 
-void Matrix::makeRotate( float angle, const Vec3& axis )
+void Matrix_implementation::makeRotate( float angle, const Vec3& axis )
 {
     Quat quat;
     quat.makeRotate( angle, axis);
-    quat.get(*this);
+    set(quat);
 }
 
-void Matrix::makeRotate( float angle, float x, float y, float z ) 
+void Matrix_implementation::makeRotate( float angle, float x, float y, float z ) 
 {
     Quat quat;
     quat.makeRotate( angle, x, y, z);
-    quat.get(*this);
+    set(quat);
 }
 
-void Matrix::makeRotate( const Quat& q )
+void Matrix_implementation::makeRotate( const Quat& quat )
 {
-    q.get(*this);    
+    set(quat);
 }
 
-void Matrix::makeRotate( float angle1, const Vec3& axis1, 
+void Matrix_implementation::makeRotate( float angle1, const Vec3& axis1, 
                          float angle2, const Vec3& axis2,
                          float angle3, const Vec3& axis3)
 {
@@ -139,10 +249,10 @@ void Matrix::makeRotate( float angle1, const Vec3& axis1,
     quat.makeRotate(angle1, axis1, 
                     angle2, axis2,
                     angle3, axis3);
-    quat.get(*this);
+    set(quat);
 }
 
-void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
+void Matrix_implementation::mult( const Matrix_implementation& lhs, const Matrix_implementation& rhs )
 {   
     if (&lhs==this)
     {
@@ -175,10 +285,10 @@ void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
     _mat[3][3] = INNER_PRODUCT(lhs, rhs, 3, 3);
 }
 
-void Matrix::preMult( const Matrix& other )
+void Matrix_implementation::preMult( const Matrix_implementation& other )
 {
     // brute force method requiring a copy
-    //Matrix tmp(other* *this);
+    //Matrix_implementation tmp(other* *this);
     // *this = tmp;
 
     // more efficient method just use a float[4] for temporary storage.
@@ -196,14 +306,14 @@ void Matrix::preMult( const Matrix& other )
 
 }
 
-void Matrix::postMult( const Matrix& other )
+void Matrix_implementation::postMult( const Matrix_implementation& other )
 {
     // brute force method requiring a copy
-    //Matrix tmp(*this * other);
+    //Matrix_implementation tmp(*this * other);
     // *this = tmp;
 
     // more efficient method just use a float[4] for temporary storage.
-    float t[4];
+    value_type t[4];
     for(int row=0; row<4; ++row)
     {
         t[0] = INNER_PRODUCT( *this, other, row, 0 );
@@ -227,10 +337,10 @@ inline T SGL_ABS(T a)
 #define SGL_SWAP(a,b,temp) ((temp)=(a),(a)=(b),(b)=(temp))
 #endif
 
-bool Matrix::invert( const Matrix& mat )
+bool Matrix_implementation::invert( const Matrix_implementation& mat )
 {
     if (&mat==this) {
-       Matrix tm(mat);
+       Matrix_implementation tm(mat);
        return invert(tm);
     }
 
@@ -296,11 +406,11 @@ bool Matrix::invert( const Matrix& mat )
     return true;
 }
 
-void Matrix::makeOrtho(double left, double right,
+void Matrix_implementation::makeOrtho(double left, double right,
                        double bottom, double top,
                        double zNear, double zFar)
 {
-    // note transpose of Matrix wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
+    // note transpose of Matrix_implementation wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
     double tx = -(right+left)/(right-left);
     double ty = -(top+bottom)/(top-bottom);
     double tz = -(zFar+zNear)/(zFar-zNear);
@@ -310,7 +420,7 @@ void Matrix::makeOrtho(double left, double right,
     SET_ROW(3,                tx,                ty,                 tz, 1.0f )
 }
 
-void Matrix::getOrtho(double& left, double& right,
+void Matrix_implementation::getOrtho(double& left, double& right,
                       double& bottom, double& top,
                       double& zNear, double& zFar)
 {
@@ -325,11 +435,11 @@ void Matrix::getOrtho(double& left, double& right,
 }            
 
 
-void Matrix::makeFrustum(double left, double right,
+void Matrix_implementation::makeFrustum(double left, double right,
                          double bottom, double top,
                          double zNear, double zFar)
 {
-    // note transpose of Matrix wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
+    // note transpose of Matrix_implementation wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
     double A = (right+left)/(right-left);
     double B = (top+bottom)/(top-bottom);
     double C = -(zFar+zNear)/(zFar-zNear);
@@ -340,7 +450,7 @@ void Matrix::makeFrustum(double left, double right,
     SET_ROW(3,                    0.0f,                   0.0f,     D,  0.0f )
 }
 
-void Matrix::getFrustum(double& left, double& right,
+void Matrix_implementation::getFrustum(double& left, double& right,
                         double& bottom, double& top,
                         double& zNear, double& zFar)
 {
@@ -355,7 +465,7 @@ void Matrix::getFrustum(double& left, double& right,
 }                 
 
 
-void Matrix::makePerspective(double fovy,double aspectRatio,
+void Matrix_implementation::makePerspective(double fovy,double aspectRatio,
                              double zNear, double zFar)
 {
     // calculate the appropriate left, right etc.
@@ -368,7 +478,7 @@ void Matrix::makePerspective(double fovy,double aspectRatio,
 }
 
 
-void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
 {
     Vec3 f(center-eye);
     f.normalize();
@@ -383,12 +493,12 @@ void Matrix::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
         s[2],     u[2],     -f[2],     0.0f,
         0.0f,     0.0f,     0.0f,      1.0f);
 
-    preMult(Matrix::translate(-eye));
+    preMult(Matrix_implementation::translate(-eye));
 }
 
-void Matrix::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
 {
-    Matrix inv;
+    Matrix_implementation inv;
     inv.invert(*this);
     eye = osg::Vec3(0.0f,0.0f,0.0f)*inv;
     up = transform3x3(*this,osg::Vec3(0.0f,1.0f,0.0f));
@@ -397,18 +507,4 @@ void Matrix::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
     center = eye + center*lookDistance;
 }
 
-void my_glLoadMatrix(float* mat) { glLoadMatrixf((GLfloat*)mat); }
-void my_glLoadMatrix(double* mat) { glLoadMatrixd((GLdouble*)mat); }
-void my_glMultMatrix(float* mat) { glMultMatrixf((GLfloat*)mat); }
-void my_glMultMatrix(double* mat) { glMultMatrixd((GLdouble*)mat); }
-
-void Matrix::glLoadMatrix() const
-{
-    my_glLoadMatrix((value_type*)_mat);
-}
-
-void Matrix::glMultMatrix() const
-{
-    my_glMultMatrix((value_type*)_mat);
-}
 #undef SET_ROW

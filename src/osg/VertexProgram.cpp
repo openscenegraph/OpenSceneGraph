@@ -171,7 +171,7 @@ void VertexProgram::apply(State& state) const
             ++itr)
         {
             glMatrixMode((*itr).first);
-            (*itr).second.glLoadMatrix();
+            glLoadMatrix((*itr).second.ptr());
         }
         glMatrixMode(GL_MODELVIEW); // restore matrix mode
     }

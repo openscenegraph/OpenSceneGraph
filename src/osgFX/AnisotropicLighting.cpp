@@ -14,19 +14,19 @@ using namespace osgFX;
 namespace
 {
 
-	// a state attribute class that grabs the initial inverse view matrix
-	// and sends it to a VertexProgram.
-	// NOTE: due to lack of support for per-context parameters in VertexProgram,
-	// this class will send the matrix to the vp only while the first context
-	// is being rendered. All subsequent contexts will use the first context's
-	// matrix.
+    // a state attribute class that grabs the initial inverse view matrix
+    // and sends it to a VertexProgram.
+    // NOTE: due to lack of support for per-context parameters in VertexProgram,
+    // this class will send the matrix to the vp only while the first context
+    // is being rendered. All subsequent contexts will use the first context's
+    // matrix.
     class ViewMatrixExtractor: public osg::StateAttribute {
     public:
         ViewMatrixExtractor()
         :    osg::StateAttribute(),
             vp_(0),
             param_(0),
-			first_context_(-1)
+            first_context_(-1)
         {
         }
 
@@ -34,7 +34,7 @@ namespace
         :    osg::StateAttribute(copy, copyop),
             vp_(static_cast<osg::VertexProgram *>(copyop(copy.vp_.get()))),
             param_(copy.param_),
-			first_context_(-1)
+            first_context_(-1)
         {
         }
 
@@ -42,7 +42,7 @@ namespace
         :    osg::StateAttribute(),
             vp_(vp),
             param_(param),
-			first_context_(-1)
+            first_context_(-1)
         {
         }
 
@@ -59,23 +59,23 @@ namespace
 
         void apply(osg::State &state) const
         {
-			if (first_context_ == -1) {
-				first_context_ = state.getContextID();
-			}
-			if (state.getContextID() == first_context_) {
-				if (vp_.valid()) {
-					osg::Matrix M = state.getInitialInverseViewMatrix();
-					for (int i=0; i<4; ++i) {
-						vp_->setProgramLocalParameter(param_+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
-					}                
-				}
-			}
+            if (first_context_ == -1) {
+                first_context_ = state.getContextID();
+            }
+            if (state.getContextID() == (unsigned int)first_context_) {
+                if (vp_.valid()) {
+                    osg::Matrix M = state.getInitialInverseViewMatrix();
+                    for (int i=0; i<4; ++i) {
+                        vp_->setProgramLocalParameter(param_+i, osg::Vec4(M(0, i), M(1, i), M(2, i), M(3, i)));
+                    }                
+                }
+            }
         }
 
     private:
         mutable osg::ref_ptr<osg::VertexProgram> vp_;
         int param_;
-		mutable int first_context_;
+        mutable int first_context_;
     };
 
 }

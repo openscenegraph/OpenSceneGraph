@@ -86,7 +86,7 @@ class PrerenderCullCallback : public osg::NodeCallback
                 };
 
                 osg::Quat q;
-                q.set(cv->getModelViewMatrix());
+                cv->getModelViewMatrix().get(q);
                 const osg::Matrix C = osg::Matrix::rotate( q.inverse() );
                 _texmat->setMatrix(C);
 
@@ -336,7 +336,7 @@ struct DrawableCullCallback : public osg::Drawable::CullCallback
         if (cv)
         {
             osg::Quat q;
-            q.set(cv->getModelViewMatrix());
+            cv->getModelViewMatrix().get(q);
             const osg::Matrix C = osg::Matrix::rotate( q.inverse() );
             _texmat->setMatrix(C);
         }

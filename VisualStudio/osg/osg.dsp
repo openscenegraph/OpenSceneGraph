@@ -273,7 +273,15 @@ SOURCE=..\..\src\osg\Material.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Matrix.cpp
+SOURCE=..\..\src\osg\Matrixf.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Matrixd.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Matrix_implementation.cpp
 # End Source File
 # Begin Source File
 
@@ -662,6 +670,14 @@ SOURCE=..\..\include\osg\Math
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Matrix
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Matrixf
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Matrixd
 # End Source File
 # Begin Source File
 

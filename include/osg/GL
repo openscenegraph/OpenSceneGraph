@@ -90,4 +90,10 @@
 
 #endif // WIN32
 
+    inline void glLoadMatrix(const float* mat) { glLoadMatrixf((GLfloat*)mat); }
+    inline void glLoadMatrix(const double* mat) { glLoadMatrixd((GLdouble*)mat); }
+    inline void glMultMatrix(const float* mat) { glMultMatrixf((GLfloat*)mat); }
+    inline void glMultMatrix(const double* mat) { glMultMatrixd((GLdouble*)mat); }
+    
+
 #endif  // __osgGL_h

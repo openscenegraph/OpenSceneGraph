@@ -218,7 +218,7 @@ class Box : public Shape
 	
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat&  getRotation() const { return _rotation; }
-    	inline Matrix getRotationMatrix() const { Matrix matrix; _rotation.get(matrix); return matrix; }
+    	inline Matrix getRotationMatrix() const { return Matrix(_rotation); }
     	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
     protected:
@@ -276,7 +276,7 @@ class Cone : public Shape
 
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix getRotationMatrix() const { Matrix matrix; _rotation.get(matrix); return matrix; }
+    	inline Matrix getRotationMatrix() const { return Matrix(_rotation); }
     	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
 	
 	inline float getBaseOffsetFactor() const { return 0.25f; } 
@@ -336,7 +336,7 @@ class Cylinder : public Shape
 
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix getRotationMatrix() const { Matrix matrix; _rotation.get(matrix); return matrix; }
+    	inline Matrix getRotationMatrix() const { return Matrix(_rotation); }
     	bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
     protected:
@@ -452,7 +452,7 @@ class SG_EXPORT HeightField : public Shape
 	
     	inline void setRotation(const Quat& quat) { _rotation = quat; }
     	inline const Quat& getRotation() const { return _rotation; }
-    	inline Matrix getRotationMatrix() const { Matrix matrix; _rotation.get(matrix); return matrix; }
+    	inline Matrix getRotationMatrix() const { return Matrix(_rotation); }
     	inline bool zeroRotation() const { return _rotation.zeroRotation(); } 
 
     protected:

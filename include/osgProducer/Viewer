@@ -71,6 +71,11 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         
         void setUpViewer(unsigned int options=STANDARD_SETTINGS);
         
+
+        void setDone(bool done) { _done = done; } 
+        
+        bool getDone() const { return _done; } 
+
         /** return true if the application is done and should exit.*/
         virtual bool done() const;
 

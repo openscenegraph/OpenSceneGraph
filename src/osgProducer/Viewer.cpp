@@ -455,7 +455,7 @@ void Viewer::frame()
         osg::Matrix matrix;
         matrix.invert(getViewMatrix());
         osg::Quat quat;
-        quat.set(matrix);
+        matrix.get(quat);
         getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(matrix.getTrans(),quat));
     }
 

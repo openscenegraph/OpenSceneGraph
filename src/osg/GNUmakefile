@@ -48,7 +48,8 @@ CXXFILES =\
 	LineStipple.cpp\
 	LineWidth.cpp\
 	Material.cpp\
-	Matrix.cpp\
+	Matrixf.cpp\
+	Matrixd.cpp\
 	MatrixTransform.cpp\
 	Node.cpp\
 	NodeCallback.cpp\

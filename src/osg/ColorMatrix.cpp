@@ -32,7 +32,7 @@ void ColorMatrix::apply(State&) const
     if (s_ARB_imaging)
     {
         glMatrixMode( GL_COLOR );
-        _matrix.glLoadMatrix();
+        glLoadMatrix(_matrix.ptr());
         glMatrixMode( GL_MODELVIEW );
     }
 }

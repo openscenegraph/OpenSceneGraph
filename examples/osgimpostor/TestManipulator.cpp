@@ -182,7 +182,7 @@ void TestManipulator::addMouseEvent(const GUIEventAdapter& ea)
 void TestManipulator::setByMatrix(const osg::Matrix& matrix)
 {
     _center = matrix.getTrans();
-    _rotation.set(matrix);
+    matrix.get(_rotation);
     _distance = 1.0f;
 }
 
@@ -212,7 +212,7 @@ void TestManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,c
                    
     _center = eye+lv;
     _distance = lv.length();
-    _rotation.set(rotation_matrix);
+    rotation_matrix.get(_rotation);
     _rotation = _rotation.inverse();
 }
 
@@ -258,8 +258,7 @@ bool TestManipulator::calcMovement()
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
-        osg::Matrix rotation_matrix;
-        _rotation.get(rotation_matrix);
+        osg::Matrix rotation_matrix(_rotation);
     
         		
         osg::Vec3 uv = osg::Vec3(0.0f,1.0f,0.0f)*rotation_matrix;

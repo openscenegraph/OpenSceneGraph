@@ -434,6 +434,8 @@ void SceneView::draw()
         case(osg::DisplaySettings::QUAD_BUFFER):
             {
 
+                _globalState->setAttribute(_viewport.get());
+
                 glDrawBuffer(GL_BACK_LEFT);
                 drawStage(_renderStageLeft.get());
 
@@ -446,6 +448,8 @@ void SceneView::draw()
         case(osg::DisplaySettings::ANAGLYPHIC):
             {
                 
+                _globalState->setAttribute(_viewport.get());
+
                 // draw left eye.
                 osg::ref_ptr<osg::ColorMask> red = osgNew osg::ColorMask;
                 red->setMask(true,false,false,true);
@@ -481,17 +485,21 @@ void SceneView::draw()
 
                 if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
                 {
+                    _globalState->setAttribute(viewportLeft.get());
                     _renderStageLeft->setViewport(viewportLeft.get());
                     drawStage(_renderStageLeft.get());
 
+                    _globalState->setAttribute(viewportRight.get());
                     _renderStageRight->setViewport(viewportRight.get());
                     drawStage(_renderStageRight.get());
                 }
                 else
                 {
+                    _globalState->setAttribute(viewportRight.get());
                     _renderStageLeft->setViewport(viewportRight.get());
                     drawStage(_renderStageLeft.get());
 
+                    _globalState->setAttribute(viewportLeft.get());
                     _renderStageRight->setViewport(viewportLeft.get());
                     drawStage(_renderStageRight.get());
                 }
@@ -517,17 +525,21 @@ void SceneView::draw()
 
                 if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
                 {
+                    _globalState->setAttribute(viewportTop.get());
                     _renderStageLeft->setViewport(viewportTop.get());
                     drawStage(_renderStageLeft.get());
 
+                    _globalState->setAttribute(viewportBottom.get());
                     _renderStageRight->setViewport(viewportBottom.get());
                     drawStage(_renderStageRight.get());
                 }
                 else
                 {
+                    _globalState->setAttribute(viewportBottom.get());
                     _renderStageLeft->setViewport(viewportBottom.get());
                     drawStage(_renderStageLeft.get());
 
+                    _globalState->setAttribute(viewportTop.get());
                     _renderStageRight->setViewport(viewportTop.get());
                     drawStage(_renderStageRight.get());
                 }
@@ -543,6 +555,8 @@ void SceneView::draw()
     }
     else
     {
+        _globalState->setAttribute(_viewport.get());
+
         // bog standard draw.
         drawStage(_renderStage.get());
     }
@@ -643,7 +657,7 @@ void SceneView::clearArea(int x,int y,int width,int height,const osg::Vec4& colo
     osg::ref_ptr<osg::Viewport> viewport = osgNew osg::Viewport;
     viewport->setViewport(x,y,width,height);
 
-    viewport->apply(*_state);
+    _state->applyAttribute(viewport.get());
     
     glScissor( x, y, width, height );
     glEnable( GL_SCISSOR_TEST );

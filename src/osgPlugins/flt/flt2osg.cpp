@@ -206,9 +206,9 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
 
         #ifdef _DEBUG
 
-			osg::notify( osg::INFO ) << "flt::ConvertFromFLT::visitAncillary: "
-			<< "Unknown opcode: " << child->getOpcode() << "\n";
-			
+            osg::notify( osg::INFO ) << "flt::ConvertFromFLT::visitAncillary: "
+            << "Unknown opcode: " << child->getOpcode() << "\n";
+            
         #endif
 
             break;
@@ -498,10 +498,10 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
     if (pTexturePool == NULL) return;
 
 
-	std::string* textureName = new std::string(pFilename);
-	pTexturePool->addTextureName(nIndex, textureName);
+    std::string textureName(pFilename);
+    pTexturePool->addTextureName(nIndex, textureName);
 
-	CERR<<"pTexturePool->addTextureName("<<nIndex<<", "<<textureName<<")"<<std::endl;
+    CERR<<"pTexturePool->addTextureName("<<nIndex<<", "<<textureName<<")"<<std::endl;
 }
 
                                  /*osgParent*/
@@ -1141,95 +1141,9 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
         TexturePool* pTexturePool = rec->getFltFile()->getTexturePool();
         if (pTexturePool)
         {
-			int nIndex = (int)pSFace->iTexturePattern;
-            osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *>
-                (pTexturePool->getTexture(nIndex));
+            int nIndex = (int)pSFace->iTexturePattern;
+            osg::StateSet *textureStateSet = pTexturePool->getTexture(nIndex,rec->getFlightVersion());
 
-			if (!textureStateSet)
-			{
-				// Texture with this index not registered yet, try to find it and register
-				std::string* textureName = pTexturePool->getTextureName(nIndex);
-				if ( textureName )
-				{
-					// Valid index, find the texture
-					// Get StateSet containing texture from registry pool.
-					textureStateSet = Registry::instance()->getTexture(*textureName);
-
-					if (textureStateSet)
-					{
-						// Add texture to local pool to be able to get by index.
-						pTexturePool->addTexture(nIndex, textureStateSet);
-					}
-					else
-					{
-						char pFilename[80];
-						strcpy( pFilename, textureName->c_str() );
-
-						CERR<<"setTexture attempting to load ("<<textureName<<")"<<std::endl;
-    
-						unsigned int unit = 0;
-
-						// Read texture and attribute file
-						osg::ref_ptr<osg::Image> image = osgDB::readImageFile(pFilename);
-						if (image.valid())
-						{
-							std::string attrName(pFilename);
-							attrName += ".attr";
-
-							// Read attribute file
-							char options[256];
-							sprintf(options,"FLT_VER %d",rec->getFlightVersion());
-
-							osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(options));
-							textureStateSet =
-								dynamic_cast<osg::StateSet*>(osgDB::readObjectFile(attrName));
-							osgDB::Registry::instance()->setOptions(NULL);      // Delete options
-
-							// if not found create default StateSet
-							if (textureStateSet == NULL)
-							{
-								textureStateSet = new osg::StateSet;
-
-								osg::Texture2D* osgTexture = new osg::Texture2D;
-								osgTexture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
-								osgTexture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
-								textureStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
-
-								osg::TexEnv* osgTexEnv = new osg::TexEnv;
-								osgTexEnv->setMode(osg::TexEnv::MODULATE);
-								textureStateSet->setTextureAttribute( unit, osgTexEnv );
-							}
-
-							osg::Texture2D *osgTexture = dynamic_cast<osg::Texture2D*>(textureStateSet->getTextureAttribute( unit, osg::StateAttribute::TEXTURE));
-							if (osgTexture == NULL)
-							{
-								osgTexture = new osg::Texture2D;
-								textureStateSet->setTextureAttributeAndModes( unit, osgTexture,osg::StateAttribute::ON);
-							}
-
-							osgTexture->setImage(image.get());
-
-						}
-						else
-						{
-							// invalid image file, register an empty state set 
-							textureStateSet = new osg::StateSet;
-						}
-
-						// Add new texture to registry pool
-						// ( umm... should this have reference to the texture unit? RO. July2002)
-						Registry::instance()->addTexture(pFilename, textureStateSet);
-
-						// Also add to local pool to be able to get texture by index.
-						// ( umm... should this have reference to the texture unit? RO. July2002)
-						pTexturePool->addTexture(nIndex, textureStateSet);
-    
-						CERR<<"Registry::instance()->addTexture("<<pFilename<<", "<<textureStateSet<<")"<<std::endl;
-						CERR<<"pTexturePool->addTexture("<<nIndex<<", "<<textureStateSet<<")"<<std::endl;
-					}
-
-				}
-			}
 
             if (textureStateSet)
             {
@@ -1290,61 +1204,61 @@ ConvertFromFLT::addMultiTexture( DynGeoSet* dgset, MultiTextureRecord* mtr )
     assert( mtr );
     assert( mtr->isAncillaryRecord() );
     SMultiTexture* mt =
-	reinterpret_cast<SMultiTexture*>(mtr->getData());
+    reinterpret_cast<SMultiTexture*>(mtr->getData());
     assert( mt );
     CERR << "ConvertFromFLT::addMultiTexture\n";
     int l = 0;
     for ( int i = 0; i < 8; i++ ) {
-	if ( (1 << (32-i)) & mt->layers ) {
-	    CERR << "Has layer " << i << "\n";
-	    mt->data[l].endian();
-	    CERR << "texture: " << mt->data[l].texture << "\n";
-	    CERR << "effect: " << mt->data[l].effect << "\n";
-	    CERR << "mapping: " << mt->data[l].mapping << "\n";
-	    CERR << "data: " << mt->data[l].data << "\n";
+    if ( (1 << (32-i)) & mt->layers ) {
+        CERR << "Has layer " << i << "\n";
+        mt->data[l].endian();
+        CERR << "texture: " << mt->data[l].texture << "\n";
+        CERR << "effect: " << mt->data[l].effect << "\n";
+        CERR << "mapping: " << mt->data[l].mapping << "\n";
+        CERR << "data: " << mt->data[l].data << "\n";
 
-	    TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
-	    assert( pTexturePool );
+        TexturePool* pTexturePool = mtr->getFltFile()->getTexturePool();
+        assert( pTexturePool );
             osg::StateSet *textureStateSet = dynamic_cast<osg::StateSet *>
-                (pTexturePool->getTexture((int)mt->data[l].texture));
-	    
-            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture) << "\n";
+                (pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()));
+        
+            CERR << "pTexturePool->getTexture((int)mt->data[l].texture): " << pTexturePool->getTexture((int)mt->data[l].texture,mtr->getFlightVersion()) << "\n";
             CERR << "textureStateSet: " << textureStateSet << "\n";
-	    assert( textureStateSet );
-	    osg::Texture2D *texture =
-		dynamic_cast<osg::Texture2D*>(
-			textureStateSet->getTextureAttribute(
-			    0, osg::StateAttribute::TEXTURE));
+        assert( textureStateSet );
+        osg::Texture2D *texture =
+        dynamic_cast<osg::Texture2D*>(
+            textureStateSet->getTextureAttribute(
+                0, osg::StateAttribute::TEXTURE));
             CERR << "texture: " << texture << "\n";
 
-	    osg::StateSet* texture_stateset = new osg::StateSet;
+        osg::StateSet* texture_stateset = new osg::StateSet;
             CERR << "texture_stateset: " << texture_stateset << "\n";
 
-	    assert( texture );
+        assert( texture );
             texture_stateset->setTextureAttributeAndModes(
-		    i, texture,osg::StateAttribute::ON);
+            i, texture,osg::StateAttribute::ON);
 
             osg::TexEnv* osgTexEnv = new osg::TexEnv;
             CERR << "osgTexEnv: " << osgTexEnv << "\n";
             osgTexEnv->setMode(osg::TexEnv::MODULATE);
             texture_stateset->setTextureAttribute( i, osgTexEnv );
 
-	    assert( geom );
+        assert( geom );
             CERR << "geom: " << geom << "\n";
             CERR  << ", referenceCount: "
                 << geom->referenceCount() << "\n";
-	    osg::StateSet* geom_stateset = geom->getStateSet();
+        osg::StateSet* geom_stateset = geom->getStateSet();
             CERR << "geom_stateset: " << geom_stateset << "\n";
-	    if ( geom_stateset ) {
-		geom_stateset->merge( *texture_stateset );
-		CERR << "Merging layer " << i << "\n";
-	    } else {
-		geom->setStateSet( texture_stateset );
-		CERR << "Setting layer " << i << "\n";
-	    }
+        if ( geom_stateset ) {
+        geom_stateset->merge( *texture_stateset );
+        CERR << "Merging layer " << i << "\n";
+        } else {
+        geom->setStateSet( texture_stateset );
+        CERR << "Setting layer " << i << "\n";
+        }
 
-	    l++;
-	}
+        l++;
+    }
     }
 }
 
@@ -1356,31 +1270,31 @@ ConvertFromFLT::addUVList( DynGeoSet* dgset, UVListRecord* uvr )
     assert( uvr );
     assert( uvr->isAncillaryRecord() );
     SUVList* uvl =
-	reinterpret_cast<SUVList*>(uvr->getData());
+    reinterpret_cast<SUVList*>(uvr->getData());
     assert( uvl );
     CERR << "ConvertFromFLT::addUVList\n";
     int l = 0;
     int num_coords = dgset->coordListSize();
     for ( int i = 0; i < 8; i++ ) {
-	if ( (1 << (32-i)) & uvl->layers ) {
-	    osg::Vec2Array* tcoords = new osg::Vec2Array;
-	    CERR << "Has layer " << i << "\n";
-	    // Assume we are working with vertex lists for now
-	    for ( int v = l*num_coords; v < (l+1)*num_coords; v++ ) {
-		uvl->coords.vertex[v].endian();
-		CERR << "( u: " << uvl->coords.vertex[v].coords[1] << ", "
+    if ( (1 << (32-i)) & uvl->layers ) {
+        osg::Vec2Array* tcoords = new osg::Vec2Array;
+        CERR << "Has layer " << i << "\n";
+        // Assume we are working with vertex lists for now
+        for ( int v = l*num_coords; v < (l+1)*num_coords; v++ ) {
+        uvl->coords.vertex[v].endian();
+        CERR << "( u: " << uvl->coords.vertex[v].coords[1] << ", "
                     << "v: " << uvl->coords.vertex[v].coords[0] << ")\n";
                 /// FIXME: should be (x,y) instead of (y,x) - ENDIAN problem???
-		tcoords->push_back( osg::Vec2( uvl->coords.vertex[v].coords[1],
-			    uvl->coords.vertex[v].coords[0] ) );
-	    }
-	    if ( !tcoords->empty() ) {
-		CERR << "Setting tcoords " << i << ": " << tcoords << "\n";
-		geom->setTexCoordArray( i, tcoords );
-	    }
+        tcoords->push_back( osg::Vec2( uvl->coords.vertex[v].coords[1],
+                uvl->coords.vertex[v].coords[0] ) );
+        }
+        if ( !tcoords->empty() ) {
+        CERR << "Setting tcoords " << i << ": " << tcoords << "\n";
+        geom->setTexCoordArray( i, tcoords );
+        }
 
-	    l++;
-	}
+        l++;
+    }
     }
 }
 
@@ -1438,27 +1352,27 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
         if (!child->isAncillaryRecord())
             break;
 
-	switch (child->getOpcode())
-	{
-	    case MULTI_TEXTURE_OP:
-		{
-		    MultiTextureRecord* mtr =
-			dynamic_cast<MultiTextureRecord*>(child);
-		    assert( mtr );
-		    addMultiTexture( dgset, mtr );
-		}
-		break;
+    switch (child->getOpcode())
+    {
+        case MULTI_TEXTURE_OP:
+        {
+            MultiTextureRecord* mtr =
+            dynamic_cast<MultiTextureRecord*>(child);
+            assert( mtr );
+            addMultiTexture( dgset, mtr );
+        }
+        break;
 
-	    default:
+        default:
 
         #ifdef _DEBUG
 
-		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
-		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+        osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitFace: "
+            << "Unhandled opcode: " << child->getOpcode() << "\n";
         #endif
 
-		break;
-	}
+        break;
+    }
     }
 
     // Look for subfaces
@@ -1539,41 +1453,41 @@ int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* r
     for(int i=0; i < rec->getNumChildren(); i++)
     {
         Record* child = rec->getChild(i);
-	CERR << "OPCODE: " << child->getOpcode() << "\n";
+    CERR << "OPCODE: " << child->getOpcode() << "\n";
         if (!child->isAncillaryRecord())
             break;
 
-	switch (child->getOpcode())
-	{
-	    case UV_LIST_OP:
-		{
-		    UVListRecord* uvr =
-			dynamic_cast<UVListRecord*>(child);
-		    assert( uvr );
-		    addUVList( dgset, uvr );
-		}
-		break;
-	    case MULTI_TEXTURE_OP:
-		{
-		    CERR2 << "MULTI_TEXTURE_OP in visitVertexList\n";
-		    MultiTextureRecord* mtr =
-			dynamic_cast<MultiTextureRecord*>(child);
-		    assert( mtr );
-		    addMultiTexture( dgset, mtr );
-		}
-		break;
-	    default:
+    switch (child->getOpcode())
+    {
+        case UV_LIST_OP:
+        {
+            UVListRecord* uvr =
+            dynamic_cast<UVListRecord*>(child);
+            assert( uvr );
+            addUVList( dgset, uvr );
+        }
+        break;
+        case MULTI_TEXTURE_OP:
+        {
+            CERR2 << "MULTI_TEXTURE_OP in visitVertexList\n";
+            MultiTextureRecord* mtr =
+            dynamic_cast<MultiTextureRecord*>(child);
+            assert( mtr );
+            addMultiTexture( dgset, mtr );
+        }
+        break;
+        default:
 
         #ifdef _DEBUG
 
-		osg::notify( osg::WARN )
-		    << "flt::ConvertFromFLT::visitVertexList: "
-		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+        osg::notify( osg::WARN )
+            << "flt::ConvertFromFLT::visitVertexList: "
+            << "Unhandled opcode: " << child->getOpcode() << "\n";
 
         #endif
 
-		break;
-	}
+        break;
+    }
     }
 
     return vertices;
@@ -1800,28 +1714,28 @@ void ConvertFromFLT::visitMesh ( osg::Group &parent, GeoSetBuilder *pBuilder, Me
         if (!child->isAncillaryRecord())
             break;
 
-	switch (child->getOpcode())
-	{
-	    case MULTI_TEXTURE_OP:
-		{
-		    CERR2 << "MULTI_TEXTURE_OP in visitMesh\n";
-		    MultiTextureRecord* mtr =
-			dynamic_cast<MultiTextureRecord*>(child);
-		    assert( mtr );
-		    addMultiTexture( dgset, mtr );
-		}
-		break;
-	    default:
+    switch (child->getOpcode())
+    {
+        case MULTI_TEXTURE_OP:
+        {
+            CERR2 << "MULTI_TEXTURE_OP in visitMesh\n";
+            MultiTextureRecord* mtr =
+            dynamic_cast<MultiTextureRecord*>(child);
+            assert( mtr );
+            addMultiTexture( dgset, mtr );
+        }
+        break;
+        default:
 
         #ifdef _DEBUG
 
-		osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitMesh: "
-		    << "Unhandled opcode: " << child->getOpcode() << "\n";
+        osg::notify( osg::WARN ) << "flt::ConvertFromFLT::visitMesh: "
+            << "Unhandled opcode: " << child->getOpcode() << "\n";
 
         #endif
 
-		break;
-	}
+        break;
+    }
     }
 
 }

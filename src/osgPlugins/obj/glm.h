@@ -84,6 +84,7 @@ struct GLMgroup {
   GLuint            numtriangles;	/* number of triangles in this group */
   GLuint*           triangles;		/* array of triangle indices */
   GLuint            material;           /* index to material for group */
+  bool              hastexcoords;       /* set to true if triangles have texture coords */
   struct GLMgroup*  next;		/* pointer to next group in model */
 
   void init()
@@ -92,6 +93,7 @@ struct GLMgroup {
 	numtriangles = 0;	
 	triangles = NULL;	
 	material = 0;       
+        hastexcoords = false;
 	next = NULL;		
   }
 };

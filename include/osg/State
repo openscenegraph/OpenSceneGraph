@@ -283,6 +283,7 @@ class SG_EXPORT State : public Referenced
 
         inline void dirtyVertexPointer()
         {
+            _vertexArray._pointer = 0; 
             _vertexArray._dirty = true; 
         }
 
@@ -318,6 +319,7 @@ class SG_EXPORT State : public Referenced
 
         inline void dirtyNormalPointer()
         {
+            _normalArray._pointer = 0;
             _normalArray._dirty = true;
         }
 
@@ -352,7 +354,8 @@ class SG_EXPORT State : public Referenced
         }
 
         inline void dirtyColorPointer()
-        {
+        { 
+            _colorArray._pointer = 0;
             _colorArray._dirty = true;
         }
 
@@ -377,6 +380,7 @@ class SG_EXPORT State : public Referenced
 
         inline void dirtySecondaryColorPointer()
         {
+            _secondaryColorArray._pointer = 0;
             _secondaryColorArray._dirty = true;
         }
 
@@ -412,6 +416,7 @@ class SG_EXPORT State : public Referenced
 
         inline void dirtyIndexPointer()
         {
+            _indexArray._pointer = 0;
             _indexArray._dirty = true;
         }
 
@@ -436,6 +441,7 @@ class SG_EXPORT State : public Referenced
 
         inline void dirtyFogCoordPointer()
         {
+            _fogArray._pointer = 0;
             _fogArray._dirty = true;
         }
 
@@ -487,6 +493,7 @@ class SG_EXPORT State : public Referenced
         {
             if ( unit >= _texCoordArrayList.size()) return; // _texCoordArrayList.resize(unit+1);
             EnabledArrayPair& eap = _texCoordArrayList[unit];
+            eap._pointer = 0;
             eap._dirty = true;
         }
 
@@ -514,6 +521,7 @@ class SG_EXPORT State : public Referenced
             while (unit<_texCoordArrayList.size())
             {
                 EnabledArrayPair& eap = _texCoordArrayList[unit];
+                eap._pointer = 0;
                 eap._dirty = true;
                 ++unit;
             }

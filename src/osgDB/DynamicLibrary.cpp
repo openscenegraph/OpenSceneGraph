@@ -56,7 +56,7 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
 {
     if (_handle==NULL) return NULL;
 #if defined(WIN32) && !defined(__CYGWIN__)
-    return GetProcAddress( (HMODULE)_handle,  procName.c_str() );
+    return (DynamicLibrary::PROC_ADDRESS)GetProcAddress( (HMODULE)_handle,  procName.c_str() );
 #elif !defined(macintosh)
     return dlsym( _handle,  procName.c_str() );
 #endif

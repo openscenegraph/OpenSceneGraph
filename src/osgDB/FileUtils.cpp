@@ -132,8 +132,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     return "";
 }
 
-#if defined(WIN32) && !defined(__CYGWIN)
-
+#if defined(WIN32) && !defined(__CYGWIN__)
     #include <io.h>
     #include <direct.h>
 

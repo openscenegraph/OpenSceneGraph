@@ -378,51 +378,47 @@ std::string Registry::createLibraryNameForExt(const std::string& ext)
     ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
     if (itr!=_extAliasMap.end()) return createLibraryNameForExt(itr->second);
 
-#if defined(WIN32) // [
-// !! recheck evolving Cygwin DLL extension naming protocols !! NHV
- #ifdef __CYGWIN__ // [
-#   ifdef _DEBUG   // [
-	return "cygosgdb_"+ext+"d.dll";
-#   else           // ][
-	return "cygosgdb_"+ext+".dll";
-#   endif          // ]
- #else             // ][
-#   ifdef _DEBUG   // [
-    return "osgdb_"+ext+"d.dll";
-#   else           // ][
-    return "osgdb_"+ext+".dll";
-#   endif          // ]
- #endif            // ]
-#elif macintosh    // ][
+#if defined(WIN32)
+    // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
+    #ifdef __CYGWIN__
+        return "cygosgdb_"+ext+".dll";
+    #elif defined(__MINGW32__)
+        return "libosgdb_"+ext+".dll";
+    #else
+        #ifdef _DEBUG
+            return "osgdb_"+ext+"d.dll";
+        #else
+            return "osgdb_"+ext+".dll";
+        #endif
+    #endif
+#elif macintosh
     return "osgdb_"+ext;
-#else              // ][
+#else
     return "osgdb_"+ext+".so";
-#endif             // ]
+#endif
 
 }
 
 std::string Registry::createLibraryNameForNodeKit(const std::string& name)
 {
-#if defined(WIN32) // [
+#if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
     #ifdef __CYGWIN__ // [
-        #   ifdef _DEBUG   // [
-	    return "cyg"+name+"d.dll";
-        #   else           // ][
-	    return "cyg"+name+".dll";
-        #   endif          // ]
-    #else             // ][
-        #   ifdef _DEBUG   // [
+	return "cyg"+name+".dll";
+    #elif defined(__MINGW32__)
+        return "lib"+name+".dll";
+    #else
+        #ifdef _DEBUG
             return name+"d.dll";
-        #   else           // ][
+        #else
             return name+".dll";
-        #   endif          // ]
-    #endif            // ]
-#elif macintosh    // ][
+        #endif
+    #endif
+#elif macintosh
     return name;
-#else              // ][
+#else
     return "lib"+name+".so";
-#endif             // ]
+#endif
 }
 
 bool Registry::loadLibrary(const std::string& fileName)
@@ -1168,7 +1164,7 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
 
 void Registry::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     char delimitor = ';';
 #else
     char delimitor = ':';

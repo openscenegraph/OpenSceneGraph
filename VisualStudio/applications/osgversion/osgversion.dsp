@@ -87,7 +87,7 @@ LINK32=link.exe
 # Name "Application osgversion - Win32 Debug"
 # Begin Source File
 
-SOURCE=..\..\..\examples\osgversion\osgversion.cpp
+SOURCE=..\..\..\applications\osgversion\osgversion.cpp
 # End Source File
 # End Target
 # Begin Group "Resource Files"

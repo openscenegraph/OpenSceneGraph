@@ -87,7 +87,7 @@ LINK32=link.exe
 # Name "Application osgarchive - Win32 Debug"
 # Begin Source File
 
-SOURCE=..\..\..\examples\osgarchive\osgarchive.cpp
+SOURCE=..\..\..\applications\osgarchive\osgarchive.cpp
 # End Source File
 # End Target
 # Begin Group "Resource Files"

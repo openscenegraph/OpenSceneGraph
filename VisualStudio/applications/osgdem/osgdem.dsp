@@ -87,7 +87,7 @@ LINK32=link.exe
 # Name "Application osgdem - Win32 Debug"
 # Begin Source File
 
-SOURCE=..\..\..\examples\osgdem\osgdem.cpp
+SOURCE=..\..\..\applications\osgdem\osgdem.cpp
 # End Source File
 # End Target
 # Begin Group "Resource Files"

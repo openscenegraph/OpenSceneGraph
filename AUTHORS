@@ -43,7 +43,7 @@ Brede Johansen <bredej@email.com>
 Ben Discoe <ben@vterrain.org>
         - osgWX and wxsgv demos for integration of OSG with wxWindows.
         - png plugin.
-
+        - fixes to OBJ plugin.
 
 Byan Woods <byran@tapestrysolutions.com>
         - Port to MacOS, various code changes to support this.
@@ -94,6 +94,9 @@ Nikolaus Hanekamp <hanekamp@stn-atlas.de>
 Yefei He <yhe@nads-sc.uiowa.edu>
         - added support for nested extension, instance defination and reference
           to the Open Flight loader.
+          
+Bob Kuehne <rpk@mac.com>
+        - assistance with MacOSX port.
         
 Indirect Contributors
 ---------------------

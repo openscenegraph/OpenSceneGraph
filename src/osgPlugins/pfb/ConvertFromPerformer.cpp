@@ -479,6 +479,7 @@ int ConvertFromPerformer::getNumVerts(pfGeoSet *gset)
             break;
 
         case PFGS_TRISTRIPS :
+        case PFGS_TRIFANS :
         case PFGS_FLAT_TRISTRIPS :
         case PFGS_POLYS :
         case PFGS_LINESTRIPS :
@@ -906,7 +907,6 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
             if(ilist)
             {
-//                geom->setTexCoordIndices(0,new osg::UShortArray(nn,ilist));
                 geom->setColorIndices(new osg::UShortArray(nn,ilist));
             }
 

@@ -62,11 +62,14 @@ RECURSIVE_TARGETS = \
 	  opt\
 	  debug\
 	  clean\
+	  cleandepend\
+	  cleandependopt\
+	  cleandependdbg\
 	  cleandbg\
 	  cleanopt\
-	  cleanlite\
-	  cleanliteopt\
-	  cleanlitedbg\
+	  cleantarget\
+	  cleantargetopt\
+	  cleantargetdbg\
 	  clobber\
 	  clobberdbg\
 	  clobberopt\

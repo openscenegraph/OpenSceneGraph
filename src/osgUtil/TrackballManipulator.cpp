@@ -178,7 +178,7 @@ bool TrackballManipulator::calcMovement()
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    float dx = dx = _ga_t0->getX()-_ga_t1->getX();
+    float dx = _ga_t0->getX()-_ga_t1->getX();
     float dy = _ga_t0->getY()-_ga_t1->getY();
 
     // return if there is no movement.
@@ -325,7 +325,14 @@ void TrackballManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, fl
     /*
      *  Now, we want the cross product of P1 and P2
      */
-    axis = p1^p2;
+
+// Robert,
+//
+// This was the quick 'n' dirty  fix to get the trackball doing the right 
+// thing after fixing the Quat rotations to be right-handed.  You may want
+// to do something more elegant.
+//   axis = p1^p2;
+axis = p2^p1;
     axis.normalize();
 
     /*

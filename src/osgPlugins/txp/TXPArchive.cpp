@@ -557,7 +557,7 @@ osg::Group* TXPArchive::getTileContent(int x, int y, int lod)
     trpgMemReadBuffer buf(GetEndian());
     if (!ReadTile(x,y,lod,buf))
     {
-        return NULL;
+		return new osg::Group;
     }
 
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models);

@@ -103,6 +103,7 @@ bool TXPNode::loadArchive()
         return false;
     }
 
+	/*
     if (_archive->loadMaterials() == false)
     {
         TXPNodeERROR("loadArchive()") << "failed to load materials from archive: \"" << _archiveName << "\"" << std::endl;
@@ -120,6 +121,7 @@ bool TXPNode::loadArchive()
         TXPNodeERROR("loadArchive()") << "failed to load light attributes from archive: \"" << _archiveName << "\"" << std::endl;
         return false;
     }
+	*/
 
     _archive->getOrigin(_originX,_originY);
     _archive->getExtents(_extents);

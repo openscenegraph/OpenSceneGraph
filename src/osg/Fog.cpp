@@ -1,4 +1,5 @@
 #include <osg/Fog>
+#include <osg/GLExtensions>
 
 using namespace osg;
 
@@ -9,6 +10,7 @@ Fog::Fog()
     _start   = 0.0f;
     _end     = 1.0f;
     _color.set( 0.0f, 0.0f, 0.0f, 0.0f);
+    _fogCoordinateSource = FRAGMENT_DEPTH;
 }
 
 
@@ -23,4 +25,10 @@ void Fog::apply(State&) const
     glFogf( GL_FOG_START,    _start );
     glFogf( GL_FOG_END,      _end );
     glFogfv( GL_FOG_COLOR,    (GLfloat*)_color.ptr() );
+    
+    static bool fogCoordExtensionSuppoted = osg::isGLExtensionSupported("GL_EXT_fog_coord");
+    if (fogCoordExtensionSuppoted)
+    {
+        glFogi(GL_FOG_COORDINATE_SOURCE_EXT,_fogCoordinateSource);
+    }
 }

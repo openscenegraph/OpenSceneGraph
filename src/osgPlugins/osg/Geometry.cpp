@@ -157,6 +157,67 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    Geometry::AttributeBinding secondaryColorBinding=Geometry::BIND_OFF;
+    if (fr[0].matchWord("SecondaryColorBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),secondaryColorBinding))
+    {
+        geom.setSecondaryColorBinding(secondaryColorBinding);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("SecondaryColorArray %w %i {"))
+    {
+        ++fr;
+        Array* colors = Array_readLocalData(fr);
+        if (colors)
+        {
+            geom.setSecondaryColorArray(colors);
+            iteratorAdvanced = true;
+        }
+    }
+
+
+
+    Geometry::AttributeBinding fogCoordBinding=Geometry::BIND_OFF;
+    if (fr[0].matchWord("FogCoordBinding") && Geometry_matchBindingTypeStr(fr[1].getStr(),fogCoordBinding))
+    {
+        geom.setFogCoordBinding(fogCoordBinding);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("FogCoordArray %i {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+
+        int capacity;
+        fr[1].getInt(capacity);
+        
+        FloatArray* fogcoords = osgNew FloatArray;
+        fogcoords->reserve(capacity);
+
+        fr += 3;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            float fc;
+            if (fr[0].getFloat(fc))
+            {
+                ++fr;
+                fogcoords->push_back(fc);
+            }
+            else
+            {
+                ++fr;
+            }
+        }
+        
+        geom.setFogCoordArray(fogcoords);
+        
+        iteratorAdvanced = true;
+        ++fr;
+    }
+
     if (fr.matchSequence("TexCoordArray %i %w %i {"))
     {
         int unit=0;
@@ -748,6 +809,23 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         fw.indent()<<"ColorBinding "<<Geometry_getBindingTypeStr(geom.getColorBinding())<<std::endl;
         fw.indent()<<"ColorArray ";
         Array_writeLocalData(*geom.getColorArray(),fw);
+    }
+
+    if (geom.getSecondaryColorArray())
+    {
+        fw.indent()<<"SecondaryColorBinding "<<Geometry_getBindingTypeStr(geom.getSecondaryColorBinding())<<std::endl;
+        fw.indent()<<"SecondaryColorArray ";
+        Array_writeLocalData(*geom.getSecondaryColorArray(),fw);
+    }
+
+    if (geom.getFogCoordArray())
+    {
+        fw.indent()<<"FogCoordBinding "<<Geometry_getBindingTypeStr(geom.getFogCoordBinding())<<std::endl;
+
+        const FloatArray& fogcoords = *geom.getFogCoordArray();
+        fw.indent()<<"FogCoordArray "<<fogcoords.size()<<std::endl;
+        
+        Array_writeLocalData(fw,fogcoords.begin(),fogcoords.end());
     }
 
     const Geometry::TexCoordArrayList& tcal=geom.getTexCoordArrayList();

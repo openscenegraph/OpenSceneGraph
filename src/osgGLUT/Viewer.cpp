@@ -704,8 +704,8 @@ void Viewer::mouseMotion(int x, int y)
         //        osg::notify(osg::INFO) << "Handled mouseMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
 
-    mx = x;
-    my = y;
+    _mx = x;
+    _my = y;
 
 }
 
@@ -942,8 +942,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             break;
 
         case 'f' :
-            fullscreen = !fullscreen;
-            if (fullscreen)
+            _fullscreen = !_fullscreen;
+            if (_fullscreen)
             {
                 _saved_ww = _ww;
                 _saved_wh = _wh;

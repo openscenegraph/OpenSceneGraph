@@ -124,15 +124,12 @@ class OSGGLUT_EXPORT Viewer : public Window, osgUtil::GUIActionAdapter
         bool _viewFrustumCullingActive;
         bool _smallFeatureCullingActive;
 
-        int mx, my, mbutton;
         int polymode;
         int texture;
         int backface;
         int lighting;
         int flat_shade;
         int _two_sided_lighting;
-        bool fullscreen;
-        int _saved_wx, _saved_wy, _saved_ww,_saved_wh;
         float frRate; // gwm Jul 2001 added convolved ('averaged') frame rate
         int _printStats; // gwm Jul 2001 change from bool
         struct { // gwm Jul 2001, added for display of statistics

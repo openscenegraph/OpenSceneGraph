@@ -34,7 +34,7 @@ void DrawElementsUShort::write(DataOutputStream* out){
 	// Write array length and its elements.
 	out->writeInt(size());
 	for(unsigned int i=0; i<size(); i++){
-		out->writeUShort(((osg::VectorUShort)(*this))[i]);
+		out->writeUShort((*this)[i]);
 	}
 }
 

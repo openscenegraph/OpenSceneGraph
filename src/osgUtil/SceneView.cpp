@@ -297,11 +297,33 @@ void SceneView::cull()
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 
 
+
+
+            osg::Matrix projection_scale;
+            
+            
+            if (_displaySettings->getSplitStereoAutoAjustAspectRatio())
+            {
+
+                switch(_displaySettings->getStereoMode())
+                {
+                    case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+                        projection_scale.makeScale(2.0f,1.0f,1.0f);
+                        break;
+                    case(osg::DisplaySettings::VERTICAL_SPLIT):
+                        projection_scale.makeScale(1.0f,2.0f,1.0f);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
             // set up the left eye.
             osg::ref_ptr<osg::RefMatrix> projectionLeft = new osg::RefMatrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
                                                                                          0.0f,1.0f,0.0f,0.0f,
                                                                                          iod/(2.0f*sd),0.0f,1.0f,0.0f,
                                                                                          0.0f,0.0f,0.0f,1.0f)*
+                                                                             projection_scale*
                                                                              (*projection));
 
 
@@ -321,6 +343,7 @@ void SceneView::cull()
                                                                                           0.0f,1.0f,0.0f,0.0f,
                                                                                           -iod/(2.0f*sd),0.0f,1.0f,0.0f,
                                                                                           0.0f,0.0f,0.0f,1.0f)*
+                                                                              projection_scale*
                                                                               (*projection));
 
             osg::ref_ptr<osg::RefMatrix> modelviewRight = new osg::RefMatrix( (*modelview) *
@@ -329,19 +352,6 @@ void SceneView::cull()
                                                                                          0.0f,0.0f,1.0f,0.0f,
                                                                                          -es,0.0f,0.0f,1.0f));
 
-            switch(_displaySettings->getStereoMode())
-            {
-                case(osg::DisplaySettings::HORIZONTAL_SPLIT):
-                    (*projectionLeft).postMult(osg::Matrix::scale(2.0f,1.0f,1.0f));
-                    (*projectionRight).postMult(osg::Matrix::scale(2.0f,1.0f,1.0f));
-                    break;
-                case(osg::DisplaySettings::VERTICAL_SPLIT):
-                    (*projectionLeft).postMult(osg::Matrix::scale(1.0f,2.0f,1.0f));
-                    (*projectionRight).postMult(osg::Matrix::scale(1.0f,2.0f,1.0f));
-                    break;
-                default:
-                    break;
-            }
 
 
             _cullVisitorRight->setTraversalMask(_cullMaskRight);

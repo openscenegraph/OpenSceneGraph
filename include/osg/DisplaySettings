@@ -111,6 +111,9 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setSplitStereoVerticalSeparation(int s) { _splitStereoVerticalSeparation = s; }
         int getSplitStereoVerticalSeparation() const { return _splitStereoVerticalSeparation; }
 
+        void setSplitStereoAutoAjustAspectRatio(bool flag) { _splitStereoAutoAdjustAspectRatio=flag; }
+        bool getSplitStereoAutoAjustAspectRatio() const { return _splitStereoAutoAdjustAspectRatio; }
+
 
         void setScreenHeight(float height) { _screenHeight = height; }
         float getScreenHeight() const { return _screenHeight; }
@@ -158,6 +161,7 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         int                             _splitStereoHorizontalSeparation;
         SplitStereoVerticalEyeMapping   _splitStereoVerticalEyeMapping;
         int                             _splitStereoVerticalSeparation;
+        bool                            _splitStereoAutoAdjustAspectRatio;
     
         bool                            _doubleBuffer;
         bool                            _RGB;

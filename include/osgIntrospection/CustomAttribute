@@ -4,13 +4,13 @@
 namespace osgIntrospection
 {
 
-	/// The base class for custom attributes. This is an empty class
-	/// for now.
-	class CustomAttribute
-	{
-	public:
-		virtual ~CustomAttribute() {}
-	};
+    /// The base class for custom attributes. This is an empty class
+    /// for now.
+    class CustomAttribute
+    {
+    public:
+        virtual ~CustomAttribute() {}
+    };
 
 }
 

@@ -32,19 +32,19 @@
 // --------------------------------------------------------------------------
 
 #define BEGIN_ENUM_REFLECTOR(c)  \
-	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::EnumReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+     namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::EnumReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define BEGIN_VALUE_REFLECTOR(c)  \
-	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::ValueReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c, 0) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+     namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::ValueReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c, 0) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define BEGIN_OBJECT_REFLECTOR(c)  \
-	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::ObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+     namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::ObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define BEGIN_ABSTRACT_OBJECT_REFLECTOR(c)  \
-	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::AbstractObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+     namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::AbstractObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define END_REFLECTOR \
-	} } OSG_RM_LINEID(reflector_instance); }
+    } } OSG_RM_LINEID(reflector_instance); }
 
 
 // --------------------------------------------------------------------------
@@ -66,62 +66,62 @@
 // --------------------------------------------------------------------------
 
 #define Property(t, n) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  Method0(t, get##n), \
-	  Method1(void, set##n, IN, t, value)))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      Method0(t, get##n), \
+      Method1(void, set##n, IN, t, value)))
 
 #define ReadOnlyProperty(t, n) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  Method0(t, get##n), \
-	  0))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      Method0(t, get##n), \
+      0))
 
 #define WriteOnlyProperty(t, n) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  0, \
-	  Method1(void, set##n, IN, t, value)))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      0, \
+      Method1(void, set##n, IN, t, value)))
 
 #define PropertyWithCustomAccessors(t, n) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  0, \
-	  0))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      0, \
+      0))
 
 #define ArrayProperty(t, n, np) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #np, \
-	  Method1(t, get##n, IN, unsigned int, index), \
-	  Method2(void, set##n, IN, unsigned int, index, IN, t, value), \
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #np, \
+      Method1(t, get##n, IN, unsigned int, index), \
+      Method2(void, set##n, IN, unsigned int, index, IN, t, value), \
       Method0(unsigned int, getNum##np), \
-	  Method1(void, add##n, IN, t, value)))
+      Method1(void, add##n, IN, t, value)))
 
 #define ArrayPropertyWithCustomAccessors(t, n, np) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #np, \
-	  0, \
-	  0, \
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #np, \
       0, \
-	  0))
+      0, \
+      0, \
+      0))
 
 #define ArrayPropertyWithReturnType(t, n, np, r) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  Method1(t, get##n, IN, unsigned int, index), \
-	  Method2(r, set##n, IN, unsigned int, index, IN, t, value), \
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      Method1(t, get##n, IN, unsigned int, index), \
+      Method2(r, set##n, IN, unsigned int, index, IN, t, value), \
       Method0(unsigned int, getNum##np), \
-	  Method1(r, add##n, IN, t, value)))
+      Method1(r, add##n, IN, t, value)))
 
 #define IndexedProperty IndexedProperty1
 
 #define IndexedProperty1(t, n, i0, n0) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  Method1(t, get##n, IN, i0, n0), \
-	  Method2(void, set##n, IN, i0, n0, IN, t, value)))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      Method1(t, get##n, IN, i0, n0), \
+      Method2(void, set##n, IN, i0, n0, IN, t, value)))
 
 #define IndexedProperty2(t, n, i0, n0, i1, n1) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  Method2(t, get##n, IN, i0, n0, IN, i1, n1), \
-	  Method3(void, set##n, IN, i0, n0, IN i1, n1, IN, t, value)))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      Method2(t, get##n, IN, i0, n0, IN, i1, n1), \
+      Method3(void, set##n, IN, i0, n0, IN i1, n1, IN, t, value)))
 
 #define IndexedProperty3(t, n, i0, n0, i1, n1, i2, n2) \
-	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
-	  Method3(t, get##n, IN, i0, n0, IN, i1, n1, IN, i2, n2), \
-	  Method4(void, set##n, IN, i0, n0, IN i1, n1, IN, i2, n2, IN, t, value)))
+    cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+      Method3(t, get##n, IN, i0, n0, IN, i1, n1, IN, i2, n2), \
+      Method4(void, set##n, IN, i0, n0, IN i1, n1, IN, i2, n2, IN, t, value)))
 
 // --------------------------------------------------------------------------
 // ENUM LABELS

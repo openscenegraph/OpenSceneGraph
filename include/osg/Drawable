@@ -384,6 +384,9 @@ class SG_EXPORT Drawable : public Object
             implemented by subclasses.*/
         virtual bool computeBound() const;
         
+        /** set the bounding box .*/
+        void setBound(const BoundingBox& bb) const;
+ 
         void addParent(osg::Node* node);
         void removeParent(osg::Node* node);
 

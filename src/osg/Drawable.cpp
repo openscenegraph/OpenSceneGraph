@@ -326,3 +326,8 @@ bool Drawable::computeBound() const
     return true;
 }
 
+void Drawable::setBound(const BoundingBox& bb) const
+{
+     _bbox = bb;
+     _bbox_computed = true;
+}

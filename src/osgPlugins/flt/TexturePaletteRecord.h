@@ -12,14 +12,25 @@
 namespace flt {
 
 
-typedef struct TexturePaletteTag
+struct STexturePalette
 {
     SRecHeader    RecHeader;
-    char    szFilename[200];    // Filename of texture pattern
+    char     szFilename[200];    // Filename of texture pattern
     int32    diIndex;            // Pattern index
     int32    diX;                // x location in texture palette
     int32    diY;                // y location in texture palette
-} STexturePalette;
+};
+
+
+// Version 10, 12, 13
+struct SOldTexturePalette
+{
+    SRecHeader    RecHeader;
+    char     szFilename[80];     // Filename of texture pattern
+    int32    diIndex;            // Pattern index
+    int32    diX;                // x location in texture palette
+    int32    diY;                // y location in texture palette
+};
 
 
 class TexturePaletteRecord : public AncillaryRecord

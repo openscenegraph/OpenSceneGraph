@@ -15,18 +15,18 @@ namespace flt {
 struct SExternalReference
 {
     SRecHeader    RecHeader;
-    char    szPath[200];    // 199 char ASCII Path; 0 terminates
+    char    szPath[200];        // 199 char ASCII Path; 0 terminates
     // version 11, 12 & 13 stops here!
-    uint8    swReserved[4];    // Reserved
-    int32    diFlags;        // Flags (bits from left to right)
-                            // 0 = Color Palette Override
-                            // 1 = Material Palette Override
-                            // 2 = Texture Palette Override
-                            // 3 = Line Palette Override
-                            // 4 = Sound Palette Override
-                            // 5 = Light source Palette Override
-                            // 6-31 Spare
-//    int16    iReserved;        // Reserved
+    uint8    swReserved[4];     // Reserved
+    uint32   dwFlags;           // Flags (bits from left to right)
+                                // 0 = Color Palette Override
+                                // 1 = Material Palette Override
+                                // 2 = Texture Palette Override
+                                // 3 = Line Palette Override
+                                // 4 = Sound Palette Override
+                                // 5 = Light source Palette Override
+                                // 6-31 Spare
+//    int16    iReserved;       // Reserved
 };
 
 
@@ -46,6 +46,16 @@ class ExternalRecord : public PrimNodeRecord
         void setExternal(FltFile* pExternal);
         FltFile* getExternal() { return _fltfile.get(); }
         const std::string getFilename( void ) const { return std::string(getData()->szPath); }
+
+        enum Flag
+        {
+            COLOR_PALETTE_OVERRIDE      = BIT31,
+            MATERIAL_PALETTE_OVERRIDE   = BIT30,
+            TEXTURE_PALETTE_OVERRIDE    = BIT29,
+            LINESTYLE_PALETTE_OVERRIDE  = BIT28,
+            SOUND_PALETTE_OVERRIDE      = BIT27,
+            LIGHTSOURCE_PALETTE_OVERRIDE = BIT26
+        };
 
     protected:
         virtual ~ExternalRecord();

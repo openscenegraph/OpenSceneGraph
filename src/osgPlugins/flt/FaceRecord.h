@@ -53,7 +53,8 @@ struct SFace
     uint16   wTransparency;             // Transparency
                                         // = 0 opaque
                                         // = 65535 for totally clear
-    // version 11, 12 & 13 stops here!
+    // version 11, 12 & 13 ends here!
+
     uint8    swInfluenceLODGen;         // LOD Generation Control
     uint8    swLinestyle;               // Linestyle Index
     uint32   dwFlags;                   // Flags (bits from left to right)
@@ -70,9 +71,9 @@ struct SFace
                                         // = 2 use face color and vertex normal
                                         // = 3 use vertex color and vertex normal
 
-    uint8    Reserved1[7];            // Reserved
-    color32  PrimaryPackedColor;      // Packed Color Primary (A, B, G, R)
-    color32  SecondaryPackedColor;    // Packed Color Secondary (A, B, G, R)
+    uint8    Reserved1[7];              // Reserved
+    color32  PrimaryPackedColor;        // Packed Color Primary (A, B, G, R)
+    color32  SecondaryPackedColor;      // Packed Color Secondary (A, B, G, R)
     int16    iTextureMapIndex;          // Texture mapping index
     int16    iReserved2;
     uint32   dwPrimaryColorIndex;

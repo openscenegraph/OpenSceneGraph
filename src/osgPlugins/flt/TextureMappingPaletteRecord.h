@@ -29,10 +29,12 @@ struct STextureMapping
     int32       diWarpFlag;         // Warped flag; if TRUE, 8 point warp applied
     float64     dfMat[4][4];        // Transformation matrix (valid only for Types 1 & 2)
 //  Variable    Variable;           // Parameters (see below for parameters for each mapping type)
+};
 
 
-#if 0
 // Parameters for Put Texture Mapping (Type 1)
+struct SPutTextureMapping
+{
     uint32      dwState;            // State of Put Texture tool
                                     //  0 = Start state - no points entered
                                     //  1 = One point entered
@@ -49,17 +51,19 @@ struct STextureMapping
     float64x3   dfTxtAlignment;     // Texture alignment point
     float64x3   dfTxtShear;         // Texture shear point
     float64x3   dfGeoOrigin;        // Geometry origin point
-    float64x3   dfGeoAlignmentM     // Geometry alignment point
+    float64x3   dfGeoAlignment;     // Geometry alignment point
     float64x3   dfGeoShear;         // Geometry shear point
     int32       TxtActive;          // Active texture point
                                     //  1 = Origin point
                                     //  2 = Alignment point
                                     //  3 = Shear point
     int32       Reserved;           // should always be set to 1
-//  Variable    Variable;           // Parameters (see parameters below for each mapping type)
+};
 
 
 //Parameters for 4 Point Put Texture Mapping (Type 2)
+struct SPointPutTextureMapping
+{
     int32       state;              // State of Put Texture tool
                                     //  0 = Start state - no points entered
                                     //  1 = One point entered
@@ -91,20 +95,25 @@ struct STextureMapping
     int32       Reserved;           // should always be set to 1
     float32     sfScale;            // Depth scale factor
     float64     dfMat[4][4];        // Transformation matrix for the 4 point projection plane
-
+};
 
 
 // Parameters for Spherical Project Mapping (Type 4)
+struct SSphericalTextureMapping
+{
     float32     sfScale;            // Scale
     float64x3   Center;             // Center of the projection sphere
-    float32     sfScale;            // Scale / (maximum dimension of the mapped geometry
+    float32     sfMaxScale;         // Scale / (maximum dimension of the mapped geometry
                                     // bounding box)
     float32     sfMaxDimension;     // Maximum dimension of the mapped geometry
                                     // bounding box
+};
 
 
 // Parameters for Radial Project Mapping (Type 5)
-    int32       active              // Active geometry point
+struct SRadialTextureMapping
+{
+    int32       active;             // Active geometry point
                                     //  1 = End point 1 of cylinder center line
                                     //  2 = End point 2 of cylinder center line
     int32       reserved;           // Reserved
@@ -113,8 +122,11 @@ struct STextureMapping
     float64     dfMat[4][4];        // Trackplane to XY plane transformation matrix
     float64x3   endpoint1;          // End point 1 of cylinder center line
     float64x3   endpoint2;          // End point 2 of cylinder center line
+};
 
 // Parameters for Warped Mapping (Warped Flag Set)
+struct SWarpedTextureMapping
+{
     int32       active;             // Active geometry point
                                     //  0 = First warp FROM point
                                     //  1 = Second warp FROM point
@@ -161,8 +173,8 @@ struct STextureMapping
     Double 16*2 x, y of the seventh TO point transformed to the XY plane by the above matrix
     Double 16*2 x, y of the eighth TO point transformed to the XY plane by the above matrix
 */
-#endif
 };
+
 
 
 class TextureMappingPaletteRecord : public AncillaryRecord

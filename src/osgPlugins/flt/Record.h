@@ -19,8 +19,9 @@ using namespace std;
 
 namespace flt {
 
-class Record;
+//class Record;
 class Input;
+class FltFile;
 class RecordVisitor;
 class FltFile;
 class PrimNodeRecord;
@@ -53,7 +54,7 @@ class Record : public osg::Referenced
         virtual bool isPrimaryNode() const { return false; }
         virtual bool isControlRecord() const { return false; }
         virtual bool isAncillaryRecord() const { return false; }
-        virtual void    endian(){}
+        virtual void endian() {}
 
         int getRecordType() const;
 
@@ -65,6 +66,9 @@ class Record : public osg::Referenced
         size_t          getBodyLength() const;
         bool            isOfType(int op) const;
         Record*         getParent() const { return _pParent; }
+        FltFile*        getFltFile()  { return _pFltFile; }
+        int             getFlightVersion();
+
 
         friend ostream& operator << (ostream& output, const Record& rec);
 
@@ -73,14 +77,15 @@ class Record : public osg::Referenced
         /** disallow creation of Records on the stack.*/
         virtual ~Record();
 
-
         /** Template Method local read and write methods */
         virtual bool readLocalData(Input& /*fr*/) { return false; }
 //      virtual bool writeLocalData(Output& fw) { return false; }
 
         SRecHeader*     _pData;
         Record*         _pParent;
+        FltFile*        _pFltFile;
 
+        friend Input;
         friend FltFile;
         friend PrimNodeRecord;
 

@@ -11,6 +11,7 @@
 #include <osg/Notify>
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <string>
 
@@ -23,44 +24,42 @@ FltFile::FltFile(
     TexturePool* pTexturePool,
     MaterialPool* pMaterialPool)
 {
-    _pHeaderRecord = NULL;
-
     if (pColorPool)
     {
         // use external color palette, ignore internal
-        _useColorPalette = false;
+        _useInternalColorPalette = false;
         setColorPool( pColorPool );
     }
     else
     {
         // use internal color palette
-        _useColorPalette = true;
+        _useInternalColorPalette = true;
         setColorPool( new ColorPool );
     }
 
     if (pTexturePool)
     {
         // use external texture palette, ignore internal
-        _useTexturePalette = false;
+        _useInternalTexturePalette = false;
         setTexturePool( pTexturePool );
     }
     else
     {
         // use internal texture palette
-        _useTexturePalette = true;
+        _useInternalTexturePalette = true;
         setTexturePool( new TexturePool );
     }
 
     if (pMaterialPool)
     {
         // use external material palette, ignore internal
-        _useMaterialPalette = false;
+        _useInternalMaterialPalette = false;
         setMaterialPool( pMaterialPool );
     }
     else
     {
         // use internal material palette
-        _useMaterialPalette = true;
+        _useInternalMaterialPalette = true;
         setMaterialPool( new MaterialPool );
     }
 }
@@ -74,46 +73,44 @@ osg::Object* FltFile::readObject(const std::string& fileName)
 
 osg::Node* FltFile::readNode(const std::string& fileName)
 {
-    osg::Node* node = NULL;
-    Record* pRootRec = readModel(fileName);
+    _directory = osgDB::getFilePath(fileName);
 
-    if (pRootRec == NULL)
-        return NULL;
+    if (readModel(fileName))
+    {
+        // Convert record tree to osg scene graph
+        return convert();
+    }
 
-    // Convert record tree to osg scene graph
-    node = convert();
-
-    pRootRec->unref();           // delete record tree
-
-    return node;
+    return NULL;
 }
 
 
 osg::Node* FltFile::convert()
 {
-    ConvertFromFLT visit(this);
+    ConvertFromFLT visit;
     return visit.convert(getHeaderRecord());
 }
 
 
 // Read flight model (include externals)
-Record* FltFile::readModel(const std::string& fileName)
+bool FltFile::readModel(const std::string& fileName)
 {
-    Record* pRec = readFile(fileName);
-    if (pRec == NULL) return NULL;
-
-    readExternals(pRec);
-    return pRec;
+    if (readFile(fileName))
+    {
+        readExternals();
+        return getHeaderRecord() ? true : false;
+    }
+    return false;
 }
 
 
-Record* FltFile::readFile(const std::string& fileName)
+bool FltFile::readFile(const std::string& fileName)
 {
     FileInput fin;
 
     if (!fin.open(fileName)) 
     {
-        // ok havn't found file, resort to using findFile...
+        // havn't found file, look in OSGFILEPATH
         char* newFileName = osgDB::findFile(fileName.c_str());
 
         if (!newFileName) return NULL;
@@ -122,99 +119,99 @@ Record* FltFile::readFile(const std::string& fileName)
 
     osg::notify(osg::INFO) << "Loading " << fileName << " ... " << endl;
 
-    Record* pRec = fin.readCreateRecord();
-    _pHeaderRecord = pRec;
+    Record* pRec = fin.readCreateRecord(this);
     if (pRec == NULL)
     {
         osg::notify(osg::WARN) << "File not found " << fileName << endl;
-        return NULL;
+        return false;
     }
 
+    _headerRecord = (HeaderRecord*)pRec;
     if (pRec->isPrimaryNode())   // Header
         pRec->readLocalData(fin);// Read rest of file
 
     fin.close();
 
-    return pRec;
+    return true;
 }
 
 
 #define REGISTER_FLT 1
 
-class ReadExternal : public RecordVisitor
+void FltFile::readExternals()
 {
-    public:
-        ReadExternal(FltFile* fltFile)
-        {
-            _parentFltFile = fltFile;
-            setTraverseMode(RecordVisitor::TRAVERSE_ALL_CHILDREN);
-        }
-
-        virtual void apply(ExternalRecord& rec)
-        {
-            SExternalReference* pSExternal = (SExternalReference*)rec.getData();
-
-            if (pSExternal)
-            {
-                FltFile*        flt           = NULL;
-                ColorPool*      pColorPool    = NULL;
-                TexturePool*    pTexturePool  = NULL;
-                MaterialPool*   pMaterialPool = NULL;
-                std::string filename(pSExternal->szPath);
-
-                osg::notify(osg::INFO) << "External=" << filename << endl;
-
-                if (_parentFltFile && (_parentFltFile->getFlightVersion() > 13))
-                {
-                    if (pSExternal->diFlags & BIT0)
-                        pColorPool = _parentFltFile->getColorPool();
-
-                    if (pSExternal->diFlags & BIT2)
-                        pTexturePool = _parentFltFile->getTexturePool();
-
-                    if (pSExternal->diFlags & BIT1)
-                        pMaterialPool = _parentFltFile->getMaterialPool();
-                }
-
-#if REGISTER_FLT
-                flt = Registry::instance()->getFltFile(filename);
-                if (flt == NULL)
-                {
-                    flt = new FltFile(pColorPool, pTexturePool, pMaterialPool);
-                    flt->readModel(filename);
-                }
-                Registry::instance()->addFltFile(filename, flt);
-#else
-                flt = new FltFile(pColorPool, pTexturePool, pMaterialPool);
-                flt->readModel(filename);
-#endif
-
-                rec.setExternal(flt);
-            }
-        }
-
-    public:
-
-        FltFile* _parentFltFile;
-};
-
-
-void FltFile::readExternals(Record* pRec)
-{
-
-    if (pRec)
+    class ReadExternal : public RecordVisitor
     {
-        ReadExternal visitor(this);
-        pRec->accept(visitor);
-    }
+        public:
+            ReadExternal(FltFile* fltFile)
+            {
+                _pFltFile = fltFile;
+                setTraverseMode(RecordVisitor::TRAVERSE_ALL_CHILDREN);
+            }
+
+            virtual void apply(ExternalRecord& rec)
+            {
+                SExternalReference* pSExternal = (SExternalReference*)rec.getData();
+
+                if (pSExternal)
+                {
+                    FltFile*        pExternalFltFile = NULL;
+                    ColorPool*      pColorPool    = NULL;
+                    TexturePool*    pTexturePool  = NULL;
+                    MaterialPool*   pMaterialPool = NULL;
+                    std::string filename(pSExternal->szPath);
+
+                    osg::notify(osg::INFO) << "External=" << filename << endl;
+
+                    if (rec.getFlightVersion() > 13)
+                    {
+                        if (pSExternal->dwFlags & ExternalRecord::COLOR_PALETTE_OVERRIDE)
+                            pColorPool = NULL;
+                        else
+                            pColorPool = _pFltFile->getColorPool();
+
+                        if (pSExternal->dwFlags & ExternalRecord::TEXTURE_PALETTE_OVERRIDE)
+                            pTexturePool = NULL;
+                        else
+                            pTexturePool = _pFltFile->getTexturePool();
+
+                        if (pSExternal->dwFlags & ExternalRecord::MATERIAL_PALETTE_OVERRIDE)
+                            pMaterialPool = NULL;
+                        else
+                            pMaterialPool = _pFltFile->getMaterialPool();
+                    }
+
+    #if REGISTER_FLT
+                    pExternalFltFile = Registry::instance()->getFltFile(filename);
+                    if (pExternalFltFile == NULL)
+                    {
+                        pExternalFltFile = new FltFile(pColorPool, pTexturePool, pMaterialPool);
+                        pExternalFltFile->readModel(filename);
+                    }
+                    Registry::instance()->addFltFile(filename, pExternalFltFile);
+    #else
+                    pExternalFltFile = new FltFile(pColorPool, pTexturePool, pMaterialPool);
+                    pExternalFltFile->readModel(filename);
+    #endif
+                    rec.setExternal(pExternalFltFile);
+                }
+            }
+
+        public:
+
+            FltFile* _pFltFile;
+    };
+
+    ReadExternal visitor(this);
+    _headerRecord->accept(visitor);
 }
 
 
 int FltFile::getFlightVersion()
 {
-    if (_pHeaderRecord)
+    if (_headerRecord.get())
     {
-        SHeader* pSHeader = (SHeader*)_pHeaderRecord->getData();
+        SHeader* pSHeader = (SHeader*)_headerRecord.get()->getData();
         if (pSHeader)
             return pSHeader->diFormatRevLev;
     }

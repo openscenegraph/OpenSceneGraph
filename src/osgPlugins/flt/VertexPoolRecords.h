@@ -63,20 +63,20 @@ class VertexPaletteRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct VertexTag        // Vertex with Color Record Format
+struct SVertex                  // Vertex with Color Record Format
 {
-    SRecHeader    RecHeader;
-    uint16    swColor;            // Color Name Index
-    uint16    swFlags;            // Flags (bits, from left to right)
+    SRecHeader  RecHeader;
+    uint16      swColor;          // Color Name Index
+    uint16      swFlags;          // Flags (bits, from left to right)
                                 // 0 = Start Hard Edge
                                 // 1 = Normal frozen
                                 // 2 = no Vertex Color
                                 // 3 = Packed Color
                                 // 4-15 Spare
-    float64x3    Coord;            // x,y,z coordinate
+    float64x3   Coord;            // x,y,z coordinate
     color32     PackedColor;    // Packed color (A, B, G, R)
-    uint32        dwVertexColorIndex;
-} SVertex;
+    uint32      dwVertexColorIndex;
+};
 
 
 class VertexRecord : public AncillaryRecord
@@ -106,21 +106,21 @@ class VertexRecord : public AncillaryRecord
 ////////////////////////////////////////////////////////////////////
 
 
-typedef struct NormalVertexTag            // Vertex with Normal Record Format
+struct SNormalVertex                // Vertex with Normal Record Format
 {
-    SRecHeader    RecHeader;
-    uint16        swColor;            // Color Name Index
-    uint16        swFlags;            // Flags (bits, from left to right)
+    SRecHeader  RecHeader;
+    uint16      swColor;            // Color Name Index
+    uint16      swFlags;            // Flags (bits, from left to right)
                                     // 0 = Start Hard Edge
                                     // 1 = Normal frozen
                                     // 2 = no Vertex Color
                                     // 3 = Packed Color
                                     // 4-15 Spare
-    float64x3    Coord;                // x,y,z coordinate
-    float32x3    Normal;                // Vertex normal
+    float64x3   Coord;              // x,y,z coordinate
+    float32x3   Normal;             // Vertex normal
     color32     PackedColor;        // Packed color (A, B, G, R)
-    uint32        dwVertexColorIndex;
-} SNormalVertex;
+    uint32      dwVertexColorIndex;
+};
 
 
 class NormalVertexRecord : public AncillaryRecord
@@ -149,21 +149,21 @@ class NormalVertexRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct TextureVertexTag    // Vertex with Texture Record Format
+struct STextureVertex           // Vertex with Texture Record Format
 {
-    SRecHeader    RecHeader;
-    uint16        swColor;        // Color Name Index
-    uint16        swFlags;        // Flags (bits, from left to right)
+    SRecHeader   RecHeader;
+    uint16       swColor;       // Color Name Index
+    uint16       swFlags;       // Flags (bits, from left to right)
                                 // 0 = Start Hard Edge
                                 // 1 = Normal frozen
                                 // 2 = no Vertex Color
                                 // 3 = Packed Color
                                 // 4-15 Spare
-    float64x3    Coord;            // x,y,z coordinate
-    float32x2    Texture;        // Texture (u,v)
+    float64x3   Coord;          // x,y,z coordinate
+    float32x2   Texture;        // Texture (u,v)
     color32     PackedColor;    // Packed color (A, B, G, R)
     uint32      dwVertexColorIndex;
-} STextureVertex;
+};
 
 
 class TextureVertexRecord : public AncillaryRecord
@@ -192,22 +192,22 @@ class TextureVertexRecord : public AncillaryRecord
 //
 ////////////////////////////////////////////////////////////////////
 
-typedef struct NormalTextureVertexTag    //Vertex with Normal and Texture Format
+struct SNormalTextureVertex     //Vertex with Normal and Texture Format
 {
-    SRecHeader    RecHeader;
-    uint16        swColor;        // Color Name Index
-    uint16        swFlags;        // Flags (bits, from left to right)
+    SRecHeader  RecHeader;
+    uint16      swColor;        // Color Name Index
+    uint16      swFlags;        // Flags (bits, from left to right)
                                 // 0 = Start Hard Edge
                                 // 1 = Normal frozen
                                 // 2 = no Vertex Color
                                 // 3 = Packed Color
                                 // 4-15 Spare
     float64x3   Coord;          // x,y,z coordinate
-    float32x3   Normal;            // Vertex normal
+    float32x3   Normal;         // Vertex normal
     float32x2   Texture;        // Texture (u,v)
-    color32        PackedColor;    // Packed color (A, B, G, R)
-    uint32        dwVertexColorIndex;
-} SNormalTextureVertex;
+    color32     PackedColor;    // Packed color (A, B, G, R)
+    uint32      dwVertexColorIndex;
+};
 
 
 class NormalTextureVertexRecord : public AncillaryRecord

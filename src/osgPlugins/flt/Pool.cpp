@@ -61,7 +61,7 @@ ColorPool::ColorName* ColorPool::getColorName(int nIndex)
 ////////////////////////////////////////////////////////////////////
 
 
-osg::Texture* TexturePool::getTexture(int nIndex)
+osg::StateSet* TexturePool::getTexture(int nIndex)
 {
     TexturePaletteMap::iterator fitr = _textureMap.find(nIndex);
     if (fitr != _textureMap.end())
@@ -71,9 +71,9 @@ osg::Texture* TexturePool::getTexture(int nIndex)
 }
 
 
-void TexturePool::addTexture(int nIndex, osg::Texture* osgTexture)
+void TexturePool::addTexture(int nIndex, osg::StateSet* stateset)
 {
-    _textureMap[nIndex] = osgTexture;
+    _textureMap[nIndex] = stateset;
 }
 
 

@@ -54,6 +54,7 @@ class ColorPaletteRecord : public AncillaryRecord
         virtual Record* clone() const { return new ColorPaletteRecord(); }
         virtual const char* className() const { return "ColorPaletteRecord"; }
         virtual int classOpcode() const { return COLOR_PALETTE_OP; }
+//      virtual size_t sizeofData() const { return sizeof(SColorPalette); }
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
 

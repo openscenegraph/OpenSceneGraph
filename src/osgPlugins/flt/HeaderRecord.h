@@ -99,6 +99,15 @@ class HeaderRecord : public PrimNodeRecord
         SHeader* getData() const { return (SHeader*)_pData; }
         virtual const std::string getName( void ) const { return std::string(getData()->szIdent); }
 
+        enum CoordUnit
+        {
+            METERS = 0,
+            KILOMETERS = 1,
+            FEET = 4,
+            INCHES = 5,
+            NAUTICAL_MILES = 8
+        };
+
     protected:
 
         virtual ~HeaderRecord();

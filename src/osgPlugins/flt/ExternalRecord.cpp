@@ -36,12 +36,8 @@ void ExternalRecord::endian()
 {
     SExternalReference *pSExternal = (SExternalReference*)getData();
 
-    if (getSize() >= sizeof(SExternalReference))
+    if (getFlightVersion() > 13)
     {
-        ENDIAN( pSExternal->diFlags );
-    }
-    else
-    {
-        pSExternal->diFlags = 0;
+        ENDIAN( pSExternal->dwFlags );
     }
 }

@@ -8,43 +8,43 @@
 
 #define UNKNOWN_OP                       0
 
-#define    HEADER_OP                        1
-#define    GROUP_OP                         2
+#define HEADER_OP                        1
+#define GROUP_OP                         2
 #define OLD_LOD_OP                       3
-#define    OBJECT_OP                        4
-#define    FACE_OP                          5
+#define OBJECT_OP                        4
+#define FACE_OP                          5
 #define OLD_VERTEX_OP                    7
 #define OLD_VERTEX_COLOR_OP              8
 #define OLD_VERTEX_COLOR_NORMAL_OP       9
-#define    PUSH_LEVEL_OP                   10
-#define    POP_LEVEL_OP                    11
-#define    DOF_OP                          14
+#define PUSH_LEVEL_OP                   10
+#define POP_LEVEL_OP                    11
+#define DOF_OP                          14
 #define PUSH_SUBFACE_OP                 19
 #define POP_SUBFACE_OP                  20
 #define PUSH_EXTENSION_OP               21
 #define POP_EXTENSION_OP                22
-#define    COMMENT_OP                      31
-#define    COLOR_PALETTE_OP                32
+#define COMMENT_OP                      31
+#define COLOR_PALETTE_OP                32
 #define LONG_ID_OP                      33
 /*
 Ignore 40-48
 #define OLD_TRANSLATE_OP                44
 */
-#define    MATRIX_OP                       49
+#define MATRIX_OP                       49
 #define VECTOR_OP                       50
-#define    REPLICATE_OP                    60
-#define    INSTANCE_REFERENCE_OP           61
-#define    INSTANCE_DEFINITION_OP          62
-#define    EXTERNAL_REFERENCE_OP           63
-#define    TEXTURE_PALETTE_OP              64
+#define REPLICATE_OP                    60
+#define INSTANCE_REFERENCE_OP           61
+#define INSTANCE_DEFINITION_OP          62
+#define EXTERNAL_REFERENCE_OP           63
+#define TEXTURE_PALETTE_OP              64
 #define OLD_MATERIAL_PALETTE_OP         66
-#define    VERTEX_PALETTE_OP               67
+#define VERTEX_PALETTE_OP               67
 #define VERTEX_C_OP                     68
 #define VERTEX_CN_OP                    69
 #define VERTEX_CNT_OP                   70
 #define VERTEX_CT_OP                    71
 #define VERTEX_LIST_OP                  72
-#define    LOD_OP                          73
+#define LOD_OP                          73
 #define BOUNDING_BOX_OP                 74
 /*
 Ignore 76-82

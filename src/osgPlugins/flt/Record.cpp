@@ -34,12 +34,22 @@ Record::Record()
 {
     _pData = NULL;
     _pParent = NULL;
+    _pFltFile = NULL;
 }
 
 
 Record::~Record()
 {
     if (_pData) ::free(_pData);
+}
+
+
+int Record::getFlightVersion()
+{
+    if (_pFltFile)
+        return _pFltFile->getFlightVersion();
+
+    return -1;
 }
 
 
@@ -92,7 +102,7 @@ PrimNodeRecord::PrimNodeRecord()
 // virtual
 PrimNodeRecord::~PrimNodeRecord()
 {
-    removeAllChildren();
+//    removeAllChildren();
 }
 
 
@@ -152,7 +162,7 @@ bool PrimNodeRecord::readExtensionLevel(Input& fr)
 {
     Record* pRec;
 
-    while (pRec=fr.readCreateRecord())
+    while (pRec=fr.readCreateRecord(_pFltFile))
     {
         if (pRec->isOfType(POP_EXTENSION_OP))
             return true;
@@ -192,12 +202,12 @@ bool PrimNodeRecord::readLevel(Input& fr)
 // Read next record, including extension record
 Record* PrimNodeRecord::readRecord(Input& fr)
 {
-    Record* pRec = fr.readCreateRecord();
+    Record* pRec = fr.readCreateRecord(_pFltFile);
 
     while (pRec && (pRec->getOpcode() == PUSH_EXTENSION_OP))
     {
         readExtensionLevel(fr);
-        pRec=fr.readCreateRecord();
+        pRec=fr.readCreateRecord(_pFltFile);
     }
     return pRec;
 }

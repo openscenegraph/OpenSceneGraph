@@ -29,24 +29,31 @@ ColorPaletteRecord::~ColorPaletteRecord()
 // virtual
 void ColorPaletteRecord::endian()
 {
-    if (getSize() > sizeof(SOldColorPalette))
+    int flightVersion = getFlightVersion();
+
+    if (flightVersion > 13)
     {
+// TODO: May cause crash on win32
+// It's only color names so we ignore
+#if 0
         SColorPalette* pSColor = (SColorPalette*)getData();
         size_t nOffset = sizeof(SColorPalette);
 
-        if (nOffset < getSize())
+        if ((nOffset < getSize())
+        &&  (flightVersion >= 1500))
         {
             int n = 0;
             ENDIAN( pSColor->nNames );
 
             while ((n++ < pSColor->nNames) && (nOffset < getSize()))
             {
-                SColorName* pName = (SColorName*)((char*)getData())+nOffset;
+                SColorName* pName = (SColorName*)((char*)pSColor)+nOffset;
                 ENDIAN( pName->swSize );
                 ENDIAN( pName->nIndex );
                 nOffset += pName->swSize;
             };
         }
+#endif
     }
     else    // version 11, 12 & 13
     {

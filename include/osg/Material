@@ -56,7 +56,7 @@ class SG_EXPORT Material : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(Material,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_colorMode)
             COMPARE_StateAttribute_Parameter(_ambientFrontAndBack)
             COMPARE_StateAttribute_Parameter(_ambientFront)

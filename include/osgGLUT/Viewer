@@ -96,6 +96,8 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
 
     protected:
 
+        virtual void clear();
+
         virtual void display();
         virtual void reshape(GLint w, GLint h);
         virtual void mouseMotion(int x, int y);
@@ -141,6 +143,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
             osg::Timer_t frameend;
         } times[3]; // store up to 3 frames worth of times
         bool _useDisplayLists;
+        
         
         osg::Timer   _timer;
         osg::Timer_t _tickRatePerSecond;

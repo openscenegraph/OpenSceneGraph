@@ -33,6 +33,9 @@ Window::Window()
     _mx = _ww/2,
     _my = _wh/2;
     _mbutton = 0;    
+    
+    _exit = false;
+
 }
 
 
@@ -40,6 +43,9 @@ Window::~Window()
 {
 }
 
+void Window::clear()
+{
+}
 
 /**
   * Configure and open the GLUT window for this Window
@@ -82,6 +88,7 @@ bool Window::open()
 void Window::displayCB()
 {
     s_theWindow->display();
+    s_theWindow->check_if_exit();
 }
 
 
@@ -89,56 +96,66 @@ void Window::displayCB()
 void Window::reshapeCB(int w, int h)
 {
     s_theWindow->reshape(w, h);
+    s_theWindow->check_if_exit();
 }
 
 
 void Window::visibilityCB( int state )
 {
     s_theWindow->visibility(state);
+    s_theWindow->check_if_exit();
 }
 
 
 void Window::mouseCB(int button, int state, int x, int y)
 {
     s_theWindow->mouse(button, state, x, y);
+    s_theWindow->check_if_exit();
 }
 
 
 void Window::mouseMotionCB(int x, int y)
 {
     s_theWindow->mouseMotion(x,y);
+    s_theWindow->check_if_exit();
 }
 
 
 void Window::mousePassiveMotionCB(int x, int y)
 {
     s_theWindow->mousePassiveMotion(x,y);
+    s_theWindow->check_if_exit();
 }
 
 
 void Window::keyboardCB(unsigned char key, int x, int y)
 {
     s_theWindow->keyboard(key,x,y);
+    s_theWindow->check_if_exit();
 }
 
 void Window::specialCB(int key, int x, int y)
 {
     s_theWindow->special(key,x,y);
+    s_theWindow->check_if_exit();
 }
 
 void Window::spaceballMotionCB(int x, int y, int z)
 {
     s_theWindow->spaceballMotion(x,y,z);
+    s_theWindow->check_if_exit();
 }
 
 void Window::spaceballRotateCB(int x, int y, int z)
 {
     s_theWindow->spaceballRotate(x,y,z);
+    s_theWindow->check_if_exit();
 }
 
 void Window::spaceballButtonCB(int button, int state)
 {
     s_theWindow->spaceballButton(button,state);
+    s_theWindow->check_if_exit();
 }
 
 
@@ -236,3 +253,18 @@ bool Window::run()
 
     return true;
 }
+
+void Window::check_if_exit()
+{
+    if (_exit)
+    {
+        clear();
+    
+        #ifdef __MWERKS__
+        std::exit(0); // avoid collision of std::exit(..) / exit(..) compile errors.
+        #else
+        exit(0);
+        #endif
+    }
+}
+

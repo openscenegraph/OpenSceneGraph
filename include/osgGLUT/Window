@@ -31,6 +31,8 @@ class OSGGLUT_EXPORT Window
         
     protected:
 
+        virtual void clear();
+
         static void displayCB();
         static void reshapeCB(int w, int h);
         static void visibilityCB(int state);
@@ -68,6 +70,9 @@ class OSGGLUT_EXPORT Window
         bool _fullscreen;
         int _saved_wx, _saved_wy, _saved_ww,_saved_wh;
 
+        bool _exit;
+        void check_if_exit();
+        
 
 };
 

@@ -14,7 +14,12 @@
 #ifndef OSG_REFERENCED
 #define OSG_REFERENCED 1
 
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/Mutex>
+
 #include <osg/Export>
+
+#define USE_REF_MUTEX 1
 
 namespace osg {
 
@@ -51,7 +56,13 @@ class SG_EXPORT Referenced
 
         /** increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
-        inline void ref() const { ++_refCount; }
+        inline void ref() const
+        { 
+#ifdef USE_REF_MUTEX
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+#endif
+            ++_refCount;
+        }
         
         /** decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  If the
@@ -73,7 +84,11 @@ class SG_EXPORT Referenced
        
     protected:
         virtual ~Referenced();
-        mutable int _refCount;
+        
+#ifdef USE_REF_MUTEX
+        mutable OpenThreads::Mutex  _refMutex;
+#endif
+        mutable int                 _refCount;
         
 };
 
@@ -105,15 +120,18 @@ class DeleteHandler
 
 inline void Referenced::unref() const
 {
-    --_refCount;
-    if (_refCount==0)
+    bool needDelete = false;
+    {
+#ifdef USE_REF_MUTEX
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_refMutex); 
+#endif
+        --_refCount;
+        needDelete = _refCount<=0;
+    }
+    if (needDelete)
     {
         if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
         else delete this;
-    }
-    else if (_refCount<0)
-    {
-        throw 2325;
     }
 }
 

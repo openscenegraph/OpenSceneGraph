@@ -2,15 +2,15 @@
 
 \mainpage
 
-The <a href="http://www.openscenegraph.org/">Open Scene Graph</a> exists
+The <a href="http://www.openscenegraph.org/">OpenSceneGraph</a> exists
 as a number of modules, each sitting in its own library, enclosed within
 its own namespace.
 
 At the very core lies the osg library. This contains the Open Scene
 Graph's central classes and, at the bare minimum, it is all users need
-to write an Open Scene Graph program. Its only requirements are
-<a href="http://www.research.att.com/~bs/">standard C++</a> and
-<a href="http://www.opengl.org/">OpenGL</a>.
+to write an OpenSceneGraph program. Its only requirements are
+<a href="http://www.research.att.com/~bs/">Standard C++</a> and
+<a href="http://www.opengl.org/">OpenGL</a> and OpenThreads.
 
 Around and alongside this sit other supporting libraries, such as osgUtil
 (containing visitors for app traversals, cull traversals, scene graph

@@ -6,6 +6,7 @@
 #include <osg/Texture>
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
+#include <osg/ColorMatrix>
 
 #include <osg/GLU>
 
@@ -52,15 +53,6 @@ void SceneView::setDefaults()
     _state = new State;
     
     _camera = new Camera;
-    
-    _stereoMode = MONO;
-
-    _leftEye.set(-0.03f,0.0f,0.0f);
-    _rightEye.set(0.03f,0.0f,0.0f);
-
-    _focalLength = 1.0f;
-    _screenDistance = 1.0f;
-
 
     _rendergraph = new RenderGraph;
     _renderStage = new RenderStage;
@@ -143,7 +135,7 @@ void SceneView::app()
 void SceneView::cull()
 {
 
-    if (!_sceneData) return;
+    if (!_sceneData || !_viewport->valid()) return;
 
     if (!_initCalled) init();
 
@@ -276,7 +268,7 @@ void SceneView::cull()
 
 void SceneView::draw()
 {
-    if (!_sceneData) return;
+    if (!_sceneData || !_viewport->valid()) return;
 
     if (!_state)
     {
@@ -290,6 +282,7 @@ void SceneView::draw()
     _state->reset();
     
     _state->setFrameStamp(_frameStamp.get());
+    _state->setVisualsSettings(_visualsSettings.get());
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
     // and texture objects is deferred until the OpenGL context is the correct
@@ -299,67 +292,84 @@ void SceneView::draw()
     osg::Texture::flushDeletedTextureObjects(_state->getContextID());
 
     RenderLeaf* previous = NULL;
-
-    switch(getStereoMode())
-    {
-    case(MONO):
-        {
-            _renderStage->draw(*_state,previous);
-        }
-        break;
-    case(QUAD_BUFFER_STEREO):
-        {
-            osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
-            osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-            float iod = 0.05f;
-
-            left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),_screenDistance);
-            right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),_screenDistance);
-
-            glDrawBuffer(GL_BACK_LEFT);
-            _renderStage->setCamera(left_camera.get());
-            _renderStage->draw(*_state,previous);
-            
-
-            glDrawBuffer(GL_BACK_RIGHT);
-            _renderStage->setCamera(right_camera.get());
-            _renderStage->_stageDrawnThisFrame = false;
-            _renderStage->draw(*_state,previous);
-        }
-        break;
-    case(ANAGLYPHIC_STEREO):
-        {
-            osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
-            osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-            float iod = 0.05f;
-
-            left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),_screenDistance);
-            right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),_screenDistance);
-
-            osg::ColorMask* red = new osg::ColorMask;
-            osg::ColorMask* green = new osg::ColorMask;
-
-            red->setMask(true,false,false,true);
-            _renderStage->setColorMask(red);
-            _renderStage->setCamera(left_camera.get());
-            _renderStage->draw(*_state,previous);
-
-            green->setMask(false,true,true,true);
-            _renderStage->setColorMask(green);
-            _renderStage->_stageDrawnThisFrame = false;
-            _renderStage->setCamera(right_camera.get());
-            _renderStage->draw(*_state,previous);
-
-        }
-        break;
-    default:
-        {
-            osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
-            _renderStage->draw(*_state,previous);
-        }
-        break;
-    }
     
+    if (_visualsSettings.valid() && _visualsSettings->getStereo()) 
+    {
+    
+        switch(_visualsSettings->getStereoMode())
+        {
+        case(osg::VisualsSettings::QUAD_BUFFER):
+            {
+                osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
+                osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
+                
+                float iod = _visualsSettings->getEyeSeperation();
+                float screenDistance = _visualsSettings->getEyeSeperation();
+
+                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
+                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
+
+                glDrawBuffer(GL_BACK_LEFT);
+                _renderStage->setCamera(left_camera.get());
+                _renderStage->draw(*_state,previous);
+
+
+                glDrawBuffer(GL_BACK_RIGHT);
+                _renderStage->setCamera(right_camera.get());
+                _renderStage->_stageDrawnThisFrame = false;
+                _renderStage->draw(*_state,previous);
+            }
+            break;
+        case(osg::VisualsSettings::ANAGLYPHIC):
+            {
+                osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
+                osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
+
+                float iod = _visualsSettings->getEyeSeperation();
+                float screenDistance = _visualsSettings->getScreenDistance();
+
+                left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
+                right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
+                
+
+                osg::ColorMatrix* cm = new osg::ColorMatrix;
+                cm->setMatrix(osg::Matrix(0.3,0.3,0.3,0.0,
+                                          0.6,0.6,0.6,0.0,
+                                          0.1,0.1,0.1,0.0,
+                                          0.0,0.0,0.0,1.0));
+
+                _globalState->setAttribute(cm);                                          
+
+                osg::ColorMask* red = new osg::ColorMask;
+                osg::ColorMask* green = new osg::ColorMask;
+
+                red->setMask(true,false,false,true);
+                _renderStage->setColorMask(red);
+                _renderStage->setCamera(left_camera.get());
+                _renderStage->draw(*_state,previous);
+
+                green->setMask(false,true,true,true);
+                _renderStage->setColorMask(green);
+                _renderStage->_stageDrawnThisFrame = false;
+                _renderStage->setCamera(right_camera.get());
+                _renderStage->draw(*_state,previous);
+
+            }
+            break;
+        default:
+            {
+                osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
+                _renderStage->draw(*_state,previous);
+            }
+            break;
+        }
+    }
+    else
+    {
+        // bog standard draw.
+        _renderStage->draw(*_state,previous);
+    }
+        
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {

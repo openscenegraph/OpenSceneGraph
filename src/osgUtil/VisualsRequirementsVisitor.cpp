@@ -16,25 +16,29 @@ using namespace osgUtil;
 VisualsRequirementsVisitor::VisualsRequirementsVisitor()
 {
     setTraversalMode(NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    _requiresDoubleBuffer = true;
-    _requiresRBG = true;
-    _requiresDepthBuffer = true;
-    _minimumNumberAlphaBits = 0;
-    _minimumNumberStencilBits = 0;
-
 }
 
 void VisualsRequirementsVisitor::applyStateSet(StateSet& stateset)
 {
+    if (!_vs) _vs = new osg::VisualsSettings;
+
+   unsigned int min = 0; // assume stencil not needed by this stateset.
+   
    if (stateset.getMode(GL_STENCIL_TEST) & StateAttribute::ON)
    {
-        _minimumNumberStencilBits = 1;
+        min = 1; // number stencil bits we need at least.
    }
 
    if (stateset.getAttribute(StateAttribute::STENCIL))
    {
-        _minimumNumberStencilBits = 1;
+        min = 1; // number stencil bits we need at least.
    }
+   
+   if (min>_vs->getMinimumNumStencilBits())
+   {
+        // only update if new minimum exceeds previous minimum.
+        _vs->setMinimumNumStencilBits(min);
+   }    
 }
 
 void VisualsRequirementsVisitor::apply(Node& node)
@@ -59,6 +63,14 @@ void VisualsRequirementsVisitor::apply(Geode& geode)
 
 void VisualsRequirementsVisitor::apply(Impostor& impostor)
 {
-    _minimumNumberAlphaBits = 1;
+    if (!_vs) _vs = new osg::VisualsSettings;
+
+    unsigned int min = 1; // number alpha bits we need at least.
+    if (min>_vs->getMinimumNumAlphaBits())
+    {
+        // only update if new minimum exceeds previous minimum.
+        _vs->setMinimumNumAlphaBits(min);
+    }
+    
     apply((Node&)impostor);
 }

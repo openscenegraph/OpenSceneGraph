@@ -7,7 +7,7 @@
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/VisualsSettings>
 
 #include <osgUtil/Export>
 
@@ -27,36 +27,13 @@ class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor
           * alpha and stencil off.*/
         VisualsRequirementsVisitor();
         
+
+        /** Set the VisualsSettings. */
+        inline void setVisualsSettings(osg::VisualsSettings* vs) { _vs = vs; }
         
-        void setRequiresDoubleBuffer(const bool flag) { _requiresDoubleBuffer = flag; }
-
-        const bool requiresDoubleBuffer() const { return _requiresDoubleBuffer; }
-
-
-        void setRequiresRGB(const bool flag) { _requiresRBG = flag; }
-
-        const bool requiresRGB() const { return _requiresRBG; }
-
-
-        void setRequiresDepthBuffer(const bool flag) { _requiresDepthBuffer = flag; }
-
-        const bool requiresDepthBuffer() const { return _requiresDepthBuffer; }
-
-
-        void setMinimumNumAlphaBits(const unsigned int bits) { _minimumNumberAlphaBits = bits; }
-
-        const unsigned int getMinimumNumAlphaBits() const { return _minimumNumberAlphaBits; }
-
-        const bool requiresAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
-
-
-        void setMinimumNumStencilBits(const unsigned int bits) { _minimumNumberStencilBits = bits; }
-
-        const unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
+        /** Get the VisualsSettings */
+        inline const osg::VisualsSettings* getVisualsSettings() const { return _vs.get(); }
         
-        const bool requiresStencilBuffer() const { return _minimumNumberStencilBits!=0; }
-
-
         virtual void applyStateSet(osg::StateSet& stateset);
 
         virtual void apply(osg::Node& node);
@@ -67,12 +44,8 @@ class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor
         
     protected:
     
-        bool            _requiresDoubleBuffer;
-        bool            _requiresRBG;
-        bool            _requiresDepthBuffer;
-        unsigned int    _minimumNumberAlphaBits;
-        unsigned int    _minimumNumberStencilBits;
-
+        osg::ref_ptr<osg::VisualsSettings> _vs;
+    
 };
 
 };

@@ -17,6 +17,7 @@
 
 namespace osgDB {
 
+
 /**
     Registry is a singleton factory which stores
     the reader/writers which are linked in
@@ -37,6 +38,9 @@ class OSGDB_EXPORT Registry
 
         static Registry* instance();
 
+
+        /** read the command line string list, removing any matched control sequences.*/
+        void readCommandLine(std::vector<std::string>& commandLine);
 
         /** register an .fileextension alias to mapExt toExt, the later
 	  * should the the extension name of the readerwriter plugin library.
@@ -130,6 +134,12 @@ class OSGDB_EXPORT Registry
         osg::ref_ptr<ReaderWriter::Options>  _options;
 
 };
+
+/** read the command line string list into the osgDB::Registry(), removing any matched control sequences.*/
+inline void readCommandLine(std::vector<std::string>& commandLine)
+{
+    Registry::instance()->readCommandLine(commandLine);
+}
 
 /**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/
 class RegisterDotOsgWrapperProxy

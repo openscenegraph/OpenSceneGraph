@@ -121,6 +121,10 @@ SOURCE=..\..\src\osg\ColorMask.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ColorMatrix.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -291,6 +295,10 @@ SOURCE=..\..\src\osg\Version.cpp
 
 SOURCE=..\..\src\osg\Viewport.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\VisualsSettings.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -330,6 +338,10 @@ SOURCE=..\..\Include\Osg\ClipPlane
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ColorMask
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ColorMatrix
 # End Source File
 # Begin Source File
 
@@ -558,6 +570,10 @@ SOURCE=..\..\Include\Osg\Version
 # Begin Source File
 
 SOURCE=..\..\include\osg\Viewport
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\VisualsSettings
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -9,6 +9,7 @@ C++FILES = \
 	Camera.cpp\
 	ClipPlane.cpp \
 	ColorMask.cpp \
+	ColorMatrix.cpp \
 	CullFace.cpp\
 	Depth.cpp \
 	Drawable.cpp\
@@ -52,6 +53,7 @@ C++FILES = \
 	Transparency.cpp\
         Version.cpp\
         Viewport.cpp\
+        VisualsSettings.cpp\
         
 
 TARGET_BASENAME = osg
@@ -68,6 +70,7 @@ TARGET_INCLUDE_FILES = \
 	osg/ClipPlane\
 	osg/ClippingVolume\
 	osg/ColorMask\
+	osg/ColorMatrix\
 	osg/CullFace\
 	osg/Depth\
 	osg/Drawable\
@@ -123,6 +126,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Vec4\
 	osg/Version\
 	osg/Viewport\
+        osg/VisualsSettings\
 	osg/mem_ptr\
 	osg/ref_ptr\
 

@@ -128,6 +128,7 @@ Viewer::Viewer()
     
     _frameStamp = new osg::FrameStamp;
     
+    _visualsSettings = new osg::VisualsSettings;
 }
 
 
@@ -135,6 +136,11 @@ Viewer::~Viewer()
 {
 }
 
+/** read the command line string list, removing any matched control sequences.*/
+void Viewer::readCommandLine(std::vector<std::string>& commandLine)
+{
+    _visualsSettings->readCommandLine(commandLine);
+}
 
 /**
   * Configure and open the GLUT window for this Viewer
@@ -177,6 +183,8 @@ bool Viewer::open()
 
     bool needQuadBufferStereo = false;
 
+    // do we need quad buffer stereo?
+
     // Set the absolute viewport for each SceneView based on the
     //   relative viewport coordinates given to us
     for(itr=_viewportList.begin();
@@ -199,9 +207,21 @@ bool Viewer::open()
             //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
 
-        if (sceneView->getStereoMode()==osgUtil::SceneView::QUAD_BUFFER_STEREO) needQuadBufferStereo = true;
+        const osg::VisualsSettings* vs = sceneView->getVisualsSettings();
+        if (vs)
+        {
+            _visualsSettings->merge(*vs);
+        }
+        else
+        {
+            // one does not already exist so attach the viewers visualsSettins to the SceneView
+            sceneView->setVisualsSettings(_visualsSettings.get());
+        }
 
     }
+    
+    if (_visualsSettings->getStereo() && 
+        _visualsSettings->getStereoMode()==osg::VisualsSettings::QUAD_BUFFER) needQuadBufferStereo = true;
 
     //glutInit( &argc, argv );    // I moved this into main to avoid passing
     // argc and argv to the Viewer
@@ -211,6 +231,7 @@ bool Viewer::open()
 
     // traverse the scene graphs gathering the requirements of the OpenGL buffers.
     osgUtil::VisualsRequirementsVisitor vrv;
+    vrv.setVisualsSettings(_visualsSettings.get());
     for(itr=_viewportList.begin();
         itr!=_viewportList.end();
         ++itr)
@@ -219,13 +240,13 @@ bool Viewer::open()
         if (node) node->accept(vrv);
     }
 #ifdef        _DEBUG
-    vrv.setMinimumNumStencilBits(8); //gwm 12.8.01 to force stencils available for DC test
+    _visualsSettings->setMinimumNumStencilBits(8); //gwm 12.8.01 to force stencils available for DC test
 #endif
     // set up each render stage to clear the appropriate buffers.
     GLbitfield clear_mask=0;
-    if (vrv.requiresRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;
-    if (vrv.requiresDepthBuffer())      clear_mask |= GL_DEPTH_BUFFER_BIT;
-    if (vrv.requiresStencilBuffer())    clear_mask |= GL_STENCIL_BUFFER_BIT;
+    if (_visualsSettings->getRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;
+    if (_visualsSettings->getDepthBuffer())      clear_mask |= GL_DEPTH_BUFFER_BIT;
+    if (_visualsSettings->getStencilBuffer())    clear_mask |= GL_STENCIL_BUFFER_BIT;
 
     for(itr=_viewportList.begin();
         itr!=_viewportList.end();
@@ -238,13 +259,13 @@ bool Viewer::open()
 
     // set the GLUT display mode bit mask up to handle it.
     unsigned int displayMode=0;
-    if (vrv.requiresDoubleBuffer())     displayMode |= GLUT_DOUBLE;
-    else                                displayMode |= GLUT_SINGLE;
-    if (vrv.requiresRGB())              displayMode |= GLUT_RGB;
-    if (vrv.requiresDepthBuffer())      displayMode |= GLUT_DEPTH;
-    if (vrv.requiresAlphaBuffer())      displayMode |= GLUT_ALPHA;
-    if (vrv.requiresStencilBuffer())    displayMode |= GLUT_STENCIL;
-    if (needQuadBufferStereo)           displayMode |= GLUT_STEREO;
+    if (_visualsSettings->getDoubleBuffer())     displayMode |= GLUT_DOUBLE;
+    else                                         displayMode |= GLUT_SINGLE;
+    if (_visualsSettings->getRGB())              displayMode |= GLUT_RGB;
+    if (_visualsSettings->getDepthBuffer())      displayMode |= GLUT_DEPTH;
+    if (_visualsSettings->getAlphaBuffer())      displayMode |= GLUT_ALPHA;
+    if (_visualsSettings->getStencilBuffer())    displayMode |= GLUT_STENCIL;
+    if (needQuadBufferStereo)                    displayMode |= GLUT_STEREO;
 
     // and we'll add in multisample so that on systems like Onyx's can
     // go ahead and use there loverly anti-aliasing.  This is ignored

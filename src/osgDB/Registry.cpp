@@ -69,6 +69,58 @@ Registry* Registry::instance()
     return s_nodeFactory.get();
 }
 
+void Registry::readCommandLine(std::vector<std::string>& commandLine)
+{
+
+    bool found = true;
+    while (found)
+    {
+        found = false;
+
+        // load library option.
+        std::vector<std::string>::iterator itr = commandLine.begin();
+        for(;itr!=commandLine.end();++itr)
+        {
+            if (*itr=="-l") break;
+        }
+
+        if (itr!=commandLine.end())
+        {
+            std::vector<std::string>::iterator start = itr; 
+            ++itr;
+            if (itr!=commandLine.end())
+            {
+                loadLibrary(*itr);
+            }
+            commandLine.erase(start,itr);
+            found = true;
+        }
+        
+
+        // load library for extension 
+        itr = commandLine.begin();
+        for(;itr!=commandLine.end();++itr)
+        {
+            if (*itr=="-e") break;
+        }
+
+        if (itr!=commandLine.end())
+        {
+            std::vector<std::string>::iterator start = itr; 
+            ++itr;
+            if (itr!=commandLine.end())
+            {
+                std::string libName = osgDB::Registry::instance()->createLibraryNameForExt(*itr);
+                loadLibrary(libName);
+            }
+            commandLine.erase(start,itr);
+            found = true;
+        }
+        
+        
+    }    
+}
+
 void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;

@@ -137,11 +137,26 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
     Vec3Array* vertices = geom.getVertexArray();
     if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
 
+
+    // we currently don't handle geometry which use indices...
+    if (geom.getVertexIndices() ||
+        geom.getNormalIndices() ||
+        geom.getColorIndices() ||
+        geom.getSecondaryColorIndices() ||
+        geom.getFogCoordIndices()) return;
+        
+    // not even text coord indices don't handle geometry which use indices...
+    for(unsigned int unit=0;unit<geom.getNumTexCoordArrays();++unit)
+    {
+        if (geom.getTexCoordIndices(unit)) return;
+    }
+
+    // process the primitives 
     int noPrimitiveAtStart = geom.getPrimitiveSetList().size();
     for(int primNo=0;primNo<noPrimitiveAtStart;++primNo)
     {
         osg::PrimitiveSet* primitive = geom.getPrimitiveSetList()[primNo].get();
-        if (primitive->getMode()==osg::PrimitiveSet::POLYGON)
+        if (primitive->getMode()==osg::PrimitiveSet::POLYGON && primitive->getNumIndices()>3)
         {
             beginTesselation();
             beginContour();
@@ -225,6 +240,16 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     arrays.push_back(geom.getColorArray());
                 }
                 
+                if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+                {
+                    arrays.push_back(geom.getSecondaryColorArray());
+                }
+
+                if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_VERTEX)
+                {
+                    arrays.push_back(geom.getFogCoordArray());
+                }
+
                 osg::Geometry::TexCoordArrayList& tcal = geom.getTexCoordArrayList();
                 for(osg::Geometry::TexCoordArrayList::iterator tcalItr=tcal.begin();
                     tcalItr!=tcal.end();

@@ -19,6 +19,27 @@
 
 namespace osg {
 
+
+
+/** compute the matrix which transforms objects in local coords to world coords,
+  * by accumulating the Transform local to world matrices along the specified node path.*/
+extern SG_EXPORT Matrix computeLocalToWorld(NodePath& nodePath);
+
+/** compute the matrix which transforms objects in world coords to local coords,
+  * by accumulating the Transform world to local matrices along the specified node path.*/
+extern SG_EXPORT Matrix computeWorldToLocal(NodePath& nodePath);
+
+/** compute the matrix which transforms objects in local coords to world coords,
+  * by accumulating the Transform local to world matrices along the specified node path 
+  * the supplied initialial camera modelview .*/
+extern SG_EXPORT Matrix computeLocalToEye(const Matrix& modelview, NodePath& nodePath);
+
+/** compute the matrix which transforms objects in world coords to local coords,
+  * by accumulating the Transform world to local matrices along the specified node path 
+  * the inverse of the supplied initialial camera modelview.*/
+extern SG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, NodePath& nodePath);
+
+
 /** A Transform is a group node for which all children are transformed by
   * a 4x4 matrix.  It is often used for positioning objects within a scene,
   * producing trackball functionality or for animation.

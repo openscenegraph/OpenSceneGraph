@@ -14,6 +14,93 @@
 
 using namespace osg;
 
+class TransformVisitor : public NodeVisitor
+{
+    public:
+    
+        enum CoordMode
+        {
+            WORLD_TO_LOCAL,
+            LOCAL_TO_WORLD
+        };
+        
+
+        CoordMode       _coordMode;
+        Matrix&         _matrix;
+
+        TransformVisitor(Matrix& matrix,CoordMode coordMode):
+            NodeVisitor(),
+            _coordMode(coordMode),
+            _matrix(matrix)
+            {}
+
+        virtual void apply(Transform& transform)
+        {
+            if (_coordMode==LOCAL_TO_WORLD)
+            {
+                transform.getLocalToWorldMatrix(_matrix,this);
+            }
+            else // worldToLocal
+            {
+                transform.getWorldToLocalMatrix(_matrix,this);
+            }
+        }
+        
+        void accumulate(NodePath& nodePath)
+        {
+            for(NodePath::iterator itr=nodePath.begin();
+                itr!=nodePath.end();
+                ++itr)
+            {
+                (*itr)->accept(*this);
+            }
+        }
+    
+};
+
+Matrix osg::computeLocalToWorld(NodePath& nodePath)
+{
+    Matrix matrix;
+    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD);
+    tv.accumulate(nodePath);
+    return matrix;
+}
+
+Matrix osg::computeWorldToLocal(NodePath& nodePath)
+{
+    osg::Matrix matrix;
+    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL);
+    tv.accumulate(nodePath);
+    return matrix;
+}
+
+Matrix osg::computeLocalToEye(const Matrix& modelview,NodePath& nodePath)
+{
+    Matrix matrix(modelview);
+    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD);
+    tv.accumulate(nodePath);
+    return matrix;
+}
+
+Matrix osg::computeEyeToLocal(const Matrix& modelview,NodePath& nodePath)
+{
+    Matrix matrix;
+    matrix.invert(modelview);
+    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL);
+    tv.accumulate(nodePath);
+    return matrix;
+}
+
+
+
+
+
+
+
+
+
+
+
 Transform::Transform()
 {
     _referenceFrame = RELATIVE_TO_PARENTS;

@@ -51,7 +51,7 @@ public:
         return archive.get();
     }
 
-    virtual ReadResult readImage(const std::string& file,const Options* options)
+    virtual ReadResult readImage(const std::string& file,const Options*)
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
         
@@ -71,7 +71,7 @@ public:
         return result_2;
     }
 
-    virtual ReadResult readNode(const std::string& file,const Options* options)
+    virtual ReadResult readNode(const std::string& file,const Options*)
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
         

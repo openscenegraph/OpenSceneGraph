@@ -170,6 +170,8 @@ class OSGA_Archive : public osgDB::Archive
     
         typedef std::list< osg::ref_ptr<IndexBlock> >   IndexBlockList;
         
+        bool _open(std::istream& fin);
+
         void writeIndexBlocks();
         
         bool addFileReference(pos_type position, size_type size, const std::string& fileName);

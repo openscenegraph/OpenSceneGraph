@@ -67,10 +67,6 @@ const Array* Geometry::getTexCoordArray(unsigned int unit) const
     else return 0;
 }
 
-typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
-typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
-typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
-
 void Geometry::drawImmediateMode(State& state)
 {
     if (!_vertexArray.valid()) return;
@@ -100,7 +96,7 @@ void Geometry::drawImmediateMode(State& state)
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-;    // set up normals if required.
+    // set up normals if required.
     //
     Vec3* normalPointer = 0;
     if (_normalArray.valid() && !_normalArray->empty()) normalPointer = &(_normalArray->front());
@@ -242,6 +238,8 @@ void Geometry::drawImmediateMode(State& state)
         }
     }
     
+    typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+    typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
     static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
             (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
     static SecondaryColor3fvProc s_glSecondaryColor3fv =
@@ -293,6 +291,7 @@ void Geometry::drawImmediateMode(State& state)
     GLfloat* fogCoordPointer = 0;
     if (_fogCoordArray.valid() && !_fogCoordArray->empty()) fogCoordPointer = &(_fogCoordArray->front());
 
+    typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
     static FogCoordProc s_glFogCoordfv =
             (FogCoordProc) osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT");
 

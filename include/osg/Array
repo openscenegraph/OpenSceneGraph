@@ -17,6 +17,10 @@
 namespace osg {
 
 class ArrayVisitor;
+class ConstArrayVisitor;
+
+class ValueVisitor;
+class ConstValueVisitor;
 
 class SG_EXPORT Array : public Object
 {
@@ -54,14 +58,18 @@ class SG_EXPORT Array : public Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const;
         
-        virtual void accept(ArrayVisitor&) {}
+        virtual void accept(ArrayVisitor&) = 0;
+        virtual void accept(ConstArrayVisitor&) const = 0;
 
+        virtual void accept(unsigned int index,ValueVisitor&) = 0;
+        virtual void accept(unsigned int index,ConstValueVisitor&) const = 0;
 
         Type                    getType() const { return _arrayType; }
         GLint                   getDataSize() const { return _dataSize; }
         GLenum                  getDataType() const { return _dataType; }
         virtual const GLvoid*   getDataPointer() const = 0;
         virtual unsigned int    getNumElements() const = 0;
+        virtual bool            empty() const = 0;
 
     protected:
     
@@ -71,8 +79,6 @@ class SG_EXPORT Array : public Object
         GLint       _dataSize;
         GLenum      _dataType;
 };
-
-
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
 class TemplateArray : public Array, public std::vector<T>
@@ -100,24 +106,96 @@ class TemplateArray : public Array, public std::vector<T>
 
         virtual Object* cloneType() const { return osgNew TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
-        virtual void accept(ArrayVisitor& av) { av.apply(*this); }
 
-        virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
+        virtual void accept(ArrayVisitor& av) { av.apply(*this); }
+        virtual void accept(ConstArrayVisitor& av) const { av.apply(*this); }
+
+        virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
+        virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
+
+        virtual const GLvoid*   getDataPointer() const { if (!std::vector<T>::empty()) return &front(); else return 0; }
         virtual unsigned int    getNumElements() const { return size(); }
+
+        virtual bool            empty() const { return std::vector<T>::empty(); }
 
     protected:
     
         virtual ~TemplateArray() {}
 };
 
-typedef TemplateArray<GLbyte,Array::ByteArrayType,1,GL_BYTE>                    ByteArray;
-typedef TemplateArray<GLshort,Array::ShortArrayType,1,GL_SHORT>                 ShortArray;
-typedef TemplateArray<GLint,Array::IntArrayType,1,GL_INT>                       IntArray;
-typedef TemplateArray<GLubyte,Array::UByteArrayType,1,GL_UNSIGNED_BYTE>         UByteArray;
-typedef TemplateArray<GLushort,Array::UShortArrayType,1,GL_UNSIGNED_SHORT>      UShortArray;
-typedef TemplateArray<GLuint,Array::UIntArrayType,1,GL_UNSIGNED_INT>            UIntArray;
+class SG_EXPORT IndexArray : public Array
+{
+
+    public:
+
+        IndexArray(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
+            Array(arrayType,dataSize,dataType) {}
+    
+        IndexArray(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Array(array,copyop) {}
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const IndexArray*>(obj)!=NULL; }
+        
+        virtual unsigned int index(unsigned int pos) const = 0;
+
+    protected:
+    
+        virtual ~IndexArray() {}
+};
+
+template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
+class TemplateIndexArray : public IndexArray, public std::vector<T>
+{
+    public:
+    
+        TemplateIndexArray() : IndexArray(ARRAYTYPE,DataSize,DataType) {}
+
+        TemplateIndexArray(const TemplateIndexArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            IndexArray(ta,copyop),
+            std::vector<T>(ta) {}
+        
+        TemplateIndexArray(unsigned int no) : 
+            IndexArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(no) {}
+
+        TemplateIndexArray(unsigned int no,T* ptr) : 
+            IndexArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(ptr,ptr+no) {}
+
+        template <class InputIterator>
+        TemplateIndexArray(InputIterator first,InputIterator last) : 
+            IndexArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(first,last) {}        
+
+        virtual Object* cloneType() const { return osgNew TemplateIndexArray(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateIndexArray(*this,copyop); }        
+
+        virtual void accept(ArrayVisitor& av) { av.apply(*this); }
+        virtual void accept(ConstArrayVisitor& av) const { av.apply(*this); }
+
+        virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
+        virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
+
+        virtual const GLvoid*   getDataPointer() const { if (!std::vector<T>::empty()) return &front(); else return 0; }
+        virtual unsigned int    getNumElements() const { return size(); }
+
+        virtual bool            empty() const { return std::vector<T>::empty(); }
+        virtual unsigned int    index(unsigned int pos) const { return (*this)[pos]; }
+
+    protected:
+    
+        virtual ~TemplateIndexArray() {}
+};
+
+typedef TemplateIndexArray<GLbyte,Array::ByteArrayType,1,GL_BYTE>               ByteArray;
+typedef TemplateIndexArray<GLshort,Array::ShortArrayType,1,GL_SHORT>            ShortArray;
+typedef TemplateIndexArray<GLint,Array::IntArrayType,1,GL_INT>                  IntArray;
+typedef TemplateIndexArray<GLubyte,Array::UByteArrayType,1,GL_UNSIGNED_BYTE>    UByteArray;
+typedef TemplateIndexArray<GLushort,Array::UShortArrayType,1,GL_UNSIGNED_SHORT> UShortArray;
+typedef TemplateIndexArray<GLuint,Array::UIntArrayType,1,GL_UNSIGNED_INT>       UIntArray;
+
+typedef TemplateArray<GLfloat,Array::FloatArrayType,1,GL_FLOAT>                 FloatArray;
 typedef TemplateArray<UByte4,Array::UByte4ArrayType,4,GL_UNSIGNED_BYTE>         UByte4Array;
-typedef TemplateArray<float,Array::FloatArrayType,1,GL_FLOAT>                   FloatArray;
 typedef TemplateArray<Vec2,Array::Vec2ArrayType,2,GL_FLOAT>                     Vec2Array;
 typedef TemplateArray<Vec3,Array::Vec3ArrayType,3,GL_FLOAT>                     Vec3Array;
 typedef TemplateArray<Vec4,Array::Vec4ArrayType,4,GL_FLOAT>                     Vec4Array;
@@ -139,8 +217,64 @@ class ArrayVisitor
         virtual void apply(Vec2Array&) {}
         virtual void apply(Vec3Array&) {}
         virtual void apply(Vec4Array&) {}
-    
 };
+
+class ConstArrayVisitor
+{
+    public:
+        ConstArrayVisitor() {}
+        
+        virtual void apply(const Array&) {}
+        virtual void apply(const ByteArray&) {}
+        virtual void apply(const ShortArray&) {}
+        virtual void apply(const IntArray&) {}
+        virtual void apply(const UByteArray&) {}
+        virtual void apply(const UShortArray&) {}
+        virtual void apply(const UIntArray&) {}
+        virtual void apply(const UByte4Array&) {}
+        virtual void apply(const FloatArray&) {}
+        virtual void apply(const Vec2Array&) {}
+        virtual void apply(const Vec3Array&) {}
+        virtual void apply(const Vec4Array&) {}
+};
+
+
+class ValueVisitor
+{
+    public:
+        ValueVisitor() {}
+        
+        virtual void apply(GLbyte&) {}
+        virtual void apply(GLshort&) {}
+        virtual void apply(GLint&) {}
+        virtual void apply(GLushort&) {}
+        virtual void apply(GLubyte&) {}
+        virtual void apply(GLuint&) {}
+        virtual void apply(GLfloat&) {}
+        virtual void apply(UByte4&) {}
+        virtual void apply(Vec2&) {}
+        virtual void apply(Vec3&) {}
+        virtual void apply(Vec4&) {}
+};
+
+class ConstValueVisitor
+{
+    public:
+        ConstValueVisitor() {}
+        
+        virtual void apply(const GLbyte&) {}
+        virtual void apply(const GLshort&) {}
+        virtual void apply(const GLint&) {}
+        virtual void apply(const GLushort&) {}
+        virtual void apply(const GLubyte&) {}
+        virtual void apply(const GLuint&) {}
+        virtual void apply(const GLfloat&) {}
+        virtual void apply(const UByte4&) {}
+        virtual void apply(const Vec2&) {}
+        virtual void apply(const Vec3&) {}
+        virtual void apply(const Vec4&) {}
+};
+
 
 }
 

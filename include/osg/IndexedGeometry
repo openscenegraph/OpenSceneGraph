@@ -46,9 +46,9 @@ class SG_EXPORT IndexedGeometry : public Drawable
         Vec3Array* getVertexArray() { return _vertexArray.get(); }
         const Vec3Array* getVertexArray() const  { return _vertexArray.get(); }
 
-        void setVertexIndices(Array* array) { _vertexIndices = array; dirtyDisplayList(); dirtyBound(); }
-        Array* getVertexIndices() { return _vertexIndices.get(); }
-        const Array* getVertexIndices() const  { return _vertexIndices.get(); }
+        void setVertexIndices(IndexArray* array) { _vertexIndices = array; dirtyDisplayList(); dirtyBound(); }
+        IndexArray* getVertexIndices() { return _vertexIndices.get(); }
+        const IndexArray* getVertexIndices() const  { return _vertexIndices.get(); }
 
 
         void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; dirtyDisplayList(); }
@@ -58,9 +58,9 @@ class SG_EXPORT IndexedGeometry : public Drawable
         Vec3Array* getNormalArray() { return _normalArray.get(); }
         const Vec3Array* getNormalArray() const { return _normalArray.get(); }
 
-        void setNormalIndices(Array* array) { _normalIndices = array; dirtyDisplayList(); }
-        Array* getNormalIndices() { return _normalIndices.get(); }
-        const Array* getNormalIndices() const { return _normalIndices.get(); }
+        void setNormalIndices(IndexArray* array) { _normalIndices = array; dirtyDisplayList(); }
+        IndexArray* getNormalIndices() { return _normalIndices.get(); }
+        const IndexArray* getNormalIndices() const { return _normalIndices.get(); }
 
 
         void setColorBinding(AttributeBinding ab) { _colorBinding = ab; }
@@ -70,9 +70,9 @@ class SG_EXPORT IndexedGeometry : public Drawable
         Array* getColorArray() { return _colorArray.get(); }
         const Array* getColorArray() const { return _colorArray.get(); }
 
-        void setColorIndices(Array* array) { _colorIndices = array;  dirtyDisplayList(); }
-        Array* getColorIndices() { return _colorIndices.get(); }
-        const Array* getColorIndices() const { return _colorIndices.get(); }
+        void setColorIndices(IndexArray* array) { _colorIndices = array;  dirtyDisplayList(); }
+        IndexArray* getColorIndices() { return _colorIndices.get(); }
+        const IndexArray* getColorIndices() const { return _colorIndices.get(); }
 
 
         void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorBinding = ab; }
@@ -82,9 +82,9 @@ class SG_EXPORT IndexedGeometry : public Drawable
         Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
         const Array* getSecondaryColorArray() const { return _secondaryColorArray.get(); }
 
-        void setSecondaryColorIndices(Array* array) { _secondaryColorIndices = array;  dirtyDisplayList(); }
-        Array* getSecondaryColorIndices() { return _secondaryColorIndices.get(); }
-        const Array* getSecondaryColorIndices() const { return _secondaryColorIndices.get(); }
+        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorIndices = array;  dirtyDisplayList(); }
+        IndexArray* getSecondaryColorIndices() { return _secondaryColorIndices.get(); }
+        const IndexArray* getSecondaryColorIndices() const { return _secondaryColorIndices.get(); }
 
 
         void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; }
@@ -95,13 +95,13 @@ class SG_EXPORT IndexedGeometry : public Drawable
         const FloatArray* getFogCoordArray() const { return _fogCoordArray.get(); }
 
 
-        void setFogCoordIndices(Array* array) { _fogCoordIndices = array; dirtyDisplayList(); }
-        Array* getFogCoordIndices() { return _fogCoordIndices.get(); }
-        const Array* getFogCoordIndices() const { return _fogCoordIndices.get(); }
+        void setFogCoordIndices(IndexArray* array) { _fogCoordIndices = array; dirtyDisplayList(); }
+        IndexArray* getFogCoordIndices() { return _fogCoordIndices.get(); }
+        const IndexArray* getFogCoordIndices() const { return _fogCoordIndices.get(); }
 
 
 
-        typedef std::pair< ref_ptr<Array>, ref_ptr<Array> >  TexCoordArrayPair;
+        typedef std::pair< ref_ptr<Array>, ref_ptr<IndexArray> >  TexCoordArrayPair;
         typedef std::vector< TexCoordArrayPair >  TexCoordArrayList;
 
 
@@ -110,8 +110,8 @@ class SG_EXPORT IndexedGeometry : public Drawable
         const Array* getTexCoordArray(unsigned int unit) const;
         
         void setTexCoordIndices(unsigned int unit,Array*);
-        Array* getTexCoordIndices(unsigned int unit);
-        const Array* getTexCoordIndices(unsigned int unit) const;
+        IndexArray* getTexCoordIndices(unsigned int unit);
+        const IndexArray* getTexCoordIndices(unsigned int unit) const;
 
         unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
         TexCoordArrayList& getTexCoordArrayList() { return _texCoordList; }
@@ -157,23 +157,23 @@ class SG_EXPORT IndexedGeometry : public Drawable
         PrimitiveSetList            _primitives;
         
         ref_ptr<Vec3Array>          _vertexArray;
-        ref_ptr<Array>              _vertexIndices;
+        ref_ptr<IndexArray>         _vertexIndices;
 
         AttributeBinding            _normalBinding;
         ref_ptr<Vec3Array>          _normalArray;
-        ref_ptr<Array>              _normalIndices;
+        ref_ptr<IndexArray>         _normalIndices;
         
         AttributeBinding            _colorBinding;
         ref_ptr<Array>              _colorArray;
-        ref_ptr<Array>              _colorIndices;
+        ref_ptr<IndexArray>         _colorIndices;
         
         AttributeBinding            _secondaryColorBinding;
         ref_ptr<Array>              _secondaryColorArray;
-        ref_ptr<Array>              _secondaryColorIndices;
+        ref_ptr<IndexArray>         _secondaryColorIndices;
 
         AttributeBinding            _fogCoordBinding;
         ref_ptr<FloatArray>         _fogCoordArray;
-        ref_ptr<Array>              _fogCoordIndices;
+        ref_ptr<IndexArray>         _fogCoordIndices;
         
         TexCoordArrayList           _texCoordList;
 

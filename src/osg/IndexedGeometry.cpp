@@ -4,6 +4,167 @@
 
 using namespace osg;
 
+class DrawVertex
+{
+    public:
+    
+        DrawVertex(const Vec3Array* vertices,const IndexArray* indices):
+            _vertices(vertices),
+            _indices(indices) {}
+    
+        void operator () (unsigned int pos)
+        {
+            if (_indices) glVertex3fv((*_vertices)[_indices->index(pos)].ptr());
+            else glVertex3fv((*_vertices)[pos].ptr());
+        }
+        
+        const Vec3Array*   _vertices;
+        const IndexArray*  _indices;
+};
+
+class DrawNormal
+{
+    public:
+    
+        DrawNormal(const Vec3Array* normals,const IndexArray* indices):
+            _normals(normals),
+            _indices(indices) {}
+    
+        void operator () (unsigned int pos)
+        {
+            if (_indices) glNormal3fv((*_normals)[_indices->index(pos)].ptr());
+            else glNormal3fv((*_normals)[pos].ptr());
+        }
+        
+        const Vec3Array*   _normals;
+        const IndexArray*  _indices;
+};
+
+class DrawColor : public osg::ConstValueVisitor
+{
+    public:
+
+        DrawColor(const Array* colors,const IndexArray* indices):
+            _colors(colors),
+            _indices(indices) {}
+
+        void operator () (unsigned int pos)
+        {
+            if (_indices) _colors->accept(_indices->index(pos),*this);
+            else _colors->accept(pos,*this);
+        }
+
+        virtual void apply(const UByte4& v) { glColor4ubv(v.ptr()); }
+        virtual void apply(const Vec3& v)   { glColor3fv(v.ptr()); }
+        virtual void apply(const Vec4& v)   { glColor4fv(v.ptr()); }
+        
+        const Array*        _colors;
+        const IndexArray*   _indices;
+};
+
+class DrawTexCoord : public osg::ConstValueVisitor
+{
+    public:
+
+        DrawTexCoord(const Array* texcoords,const IndexArray* indices):
+            _texcoords(texcoords),
+            _indices(indices) {}
+
+        void operator () (unsigned int pos)
+        {
+            if (_indices) _texcoords->accept(_indices->index(pos),*this);
+            else _texcoords->accept(pos,*this);
+        }
+
+        virtual void apply(const GLfloat& v){ glTexCoord1f(v); }
+        virtual void apply(const Vec2& v)   { glTexCoord2fv(v.ptr()); }
+        virtual void apply(const Vec3& v)   { glTexCoord3fv(v.ptr()); }
+        virtual void apply(const Vec4& v)   { glTexCoord4fv(v.ptr()); }
+
+        const Array*        _texcoords;
+        const IndexArray*   _indices;
+};
+
+class DrawMultiTexCoord : public osg::ConstValueVisitor
+{
+    public:
+    
+        DrawMultiTexCoord(GLenum target,const Array* texcoords,const IndexArray* indices):
+            _target(target),
+            _texcoords(texcoords),
+            _indices(indices) {}
+
+        void operator () (unsigned int pos)
+        {
+            if (_indices) _texcoords->accept(_indices->index(pos),*this);
+            else _texcoords->accept(pos,*this);
+        }
+
+        virtual void apply(const GLfloat& v){ glMultiTexCoord1f(_target,v); }
+        virtual void apply(const Vec2& v)   { glMultiTexCoord2fv(_target,v.ptr()); }
+        virtual void apply(const Vec3& v)   { glMultiTexCoord3fv(_target,v.ptr()); }
+        virtual void apply(const Vec4& v)   { glMultiTexCoord4fv(_target,v.ptr()); }
+        
+        GLenum _target;
+        const Array*        _texcoords;
+        const IndexArray*   _indices;
+};
+
+
+typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
+class DrawSecondaryColor : public osg::ConstValueVisitor
+{
+    public:
+    
+        DrawSecondaryColor(const Array* colors,const IndexArray* indices,
+                          SecondaryColor3ubvProc sc3ubv,SecondaryColor3fvProc sc3fv):
+            _colors(colors),
+            _indices(indices),
+            _glSecondaryColor3ubv(sc3ubv),
+            _glSecondaryColor3fv(sc3fv) {}
+    
+        void operator () (unsigned int pos)
+        {
+            if (_indices) _colors->accept(_indices->index(pos),*this);
+            else _colors->accept(pos,*this);
+        }
+
+        virtual void apply(const UByte4& v) { _glSecondaryColor3ubv(v.ptr()); }
+        virtual void apply(const Vec3& v)   { _glSecondaryColor3fv(v.ptr()); }
+        virtual void apply(const Vec4& v)   { _glSecondaryColor3fv(v.ptr()); }
+
+        const Array*        _colors;
+        const IndexArray*   _indices;
+
+        SecondaryColor3ubvProc  _glSecondaryColor3ubv;
+        SecondaryColor3fvProc   _glSecondaryColor3fv;
+};
+
+typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
+class DrawFogCoord : public osg::ConstValueVisitor
+{
+    public:
+    
+        DrawFogCoord(const FloatArray* fogcoords,const IndexArray* indices,
+                        FogCoordProc fogCoordProc):
+            _fogcoords(fogcoords),
+            _indices(indices),
+            _glFogCoord1fv(fogCoordProc) {}
+    
+        void operator () (unsigned int pos)
+        {
+            if (_indices) _glFogCoord1fv(&(*_fogcoords)[_indices->index(pos)]);
+            else _glFogCoord1fv(&(*_fogcoords)[pos]);
+        }
+
+        const FloatArray*   _fogcoords;
+        const IndexArray*   _indices;
+
+        FogCoordProc _glFogCoord1fv;
+};
+
+
 IndexedGeometry::IndexedGeometry()
 {
     _normalBinding = BIND_OFF;
@@ -67,261 +228,122 @@ const Array* IndexedGeometry::getTexCoordArray(unsigned int unit) const
     else return 0;
 }
 
-typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
-typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
-typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
-
 void IndexedGeometry::drawImmediateMode(State& state)
 {
-    if (!_vertexArray.valid()) return;
+    if (!_vertexArray.valid() || _vertexArray->empty()) return;
+    if (_vertexIndices.valid() && _vertexIndices->empty()) return;
     
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // set up the vertex arrays.
-    //
-    state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->getDataPointer());
-    
+    // set up extensions.
+    static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
+            (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
+    static SecondaryColor3fvProc s_glSecondaryColor3fv =
+            (SecondaryColor3fvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT");
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-    // set up texture coordinates.
-    //
-    unsigned int i;
-    for(i=0;i<_texCoordList.size();++i)
+    static FogCoordProc s_glFogCoordfv =
+            (FogCoordProc) osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT");
+
+    DrawVertex         drawVertex(_vertexArray.get(),_vertexIndices.get());
+    DrawNormal         drawNormal(_normalArray.get(),_normalIndices.get());
+    DrawColor          drawColor(_colorArray.get(),_colorIndices.get());
+    DrawSecondaryColor drawSecondaryColor(_secondaryColorArray.get(),_secondaryColorIndices.get(),
+                                s_glSecondaryColor3ubv,s_glSecondaryColor3fv);
+    DrawFogCoord       drawFogCoord(_fogCoordArray.get(),_fogCoordIndices.get(),
+                                s_glFogCoordfv);
+
+
+    typedef std::vector<DrawMultiTexCoord*> DrawTexCoordList;
+    DrawTexCoordList drawTexCoordList;
+    for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
     {
-        Array* array = _texCoordList[i].first.get();
-        if (array)
-            state.setTexCoordPointer(i,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
-        else
-            state.disableTexCoordPointer(i);
+        TexCoordArrayPair& texcoordPair = _texCoordList[unit];
+        if (texcoordPair.first.valid() && !texcoordPair.first->empty())
+        {
+            if (texcoordPair.second.valid())
+            {
+                if (!texcoordPair.second->empty()) drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),texcoordPair.second.get()));
+            }
+            else
+            {
+                drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),0));
+            }
+        }
     }
-    state.disableTexCoordPointersAboveAndIncluding(i);
+
+
+    state.disableAllVertexArrays();
     
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-;    // set up normals if required.
+    // set up normals if required.
     //
-    Vec3* normalPointer = 0;
-    if (_normalArray.valid() && !_normalArray->empty()) normalPointer = &(_normalArray->front());
 
+    unsigned int normalIndex = 0;
     AttributeBinding normalBinding = _normalBinding;
-    if (normalBinding!=BIND_OFF && !normalPointer)
+    if (!_normalArray.valid() ||
+        _normalArray->empty() ||
+        (_normalIndices.valid() && _normalIndices->empty()) )
     {
         // switch off if not supported or have a valid data.
         normalBinding = BIND_OFF;
     }
 
-    switch (normalBinding)
-    {
-        case(BIND_OFF):
-            state.disableNormalPointer();
-            break;
-        case(BIND_OVERALL):
-            state.disableNormalPointer();
-            glNormal3fv(reinterpret_cast<const GLfloat*>(normalPointer));
-            break;
-        case(BIND_PER_PRIMITIVE):
-            state.disableNormalPointer();
-            break;
-        case(BIND_PER_VERTEX):
-            state.setNormalPointer(GL_FLOAT,0,normalPointer);
-            break;
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // Set up color if required.
+    // set up colours..
     //
-    // set up colors, complicated by the fact that the color array
-    // might be bound in 4 different ways, and be represented as 3 different data types -
-    // Vec3, Vec4 or UByte4 Arrays.
-    //
-    const unsigned char* colorPointer = 0;
-    unsigned int colorStride = 0;
-    Array::Type colorType = Array::ArrayType;
-    if (_colorArray.valid())
-    {
-        colorType = _colorArray->getType();
-        switch(colorType)
-        {
-            case(Array::UByte4ArrayType):
-            {
-                colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->getDataPointer());
-                colorStride = 4;
-                break;
-            }
-            case(Array::Vec3ArrayType):
-            {
-                colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->getDataPointer());
-                colorStride = 12;
-                break;
-            }
-            case(Array::Vec4ArrayType):
-            {
-                colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->getDataPointer());
-                colorStride = 16;
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    
-    
+    unsigned int colorIndex = 0;
     AttributeBinding colorBinding = _colorBinding;
-    if (colorBinding!=BIND_OFF && !colorPointer)
+    if (!_colorArray.valid() ||
+        _colorArray->empty() ||
+        (_colorIndices.valid() && _colorIndices->empty()) )
     {
         // switch off if not supported or have a valid data.
         colorBinding = BIND_OFF;
     }
 
-    switch (colorBinding)
-    {
-        case(BIND_OFF):
-            state.disableColorPointer();
-            break;
-        case(BIND_OVERALL):
-            state.disableColorPointer();
-            if (colorPointer)
-            {
-                switch(colorType)
-                {
-                    case(Array::UByte4ArrayType):
-                        glColor4ubv(reinterpret_cast<const GLubyte*>(colorPointer));
-                        break;
-                    case(Array::Vec3ArrayType):
-                        glColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
-                        break;
-                    case(Array::Vec4ArrayType):
-                        glColor4fv(reinterpret_cast<const GLfloat*>(colorPointer));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            break;
-        case(BIND_PER_PRIMITIVE):
-            state.disableColorPointer();
-            break;
-        case(BIND_PER_VERTEX):
-            state.setColorPointer(_colorArray->getDataSize(),_colorArray->getDataType(),0,colorPointer);
-    }
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Set up secondary color if required.
     //
-    // set up colors, complicated by the fact that the color array
-    // might be bound in 4 different ways, and be represented as 3 different data types -
-    // Vec3, Vec4 or UByte4 Arrays.
-    const unsigned char* secondaryColorPointer = 0;
-    unsigned int secondaryColorStride = 0;
-    Array::Type secondaryColorType = Array::ArrayType;
-    if (_secondaryColorArray.valid())
-    {
-        secondaryColorType = _secondaryColorArray->getType();
-        switch(secondaryColorType)
-        {
-            case(Array::UByte4ArrayType):
-            {
-                secondaryColorPointer = reinterpret_cast<const unsigned char*>(_secondaryColorArray->getDataPointer());
-                secondaryColorStride = 4;
-                break;
-            }
-            case(Array::Vec3ArrayType):
-            {
-                secondaryColorPointer = reinterpret_cast<const unsigned char*>(_secondaryColorArray->getDataPointer());
-                secondaryColorStride = 12;
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    
-    static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
-            (SecondaryColor3ubvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
-    static SecondaryColor3fvProc s_glSecondaryColor3fv =
-            (SecondaryColor3fvProc) osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT");
-
+    unsigned int secondaryColorIndex = 0;
     AttributeBinding secondaryColorBinding = _secondaryColorBinding;
-    if (secondaryColorBinding!=BIND_OFF && (!secondaryColorPointer || !s_glSecondaryColor3ubv || !s_glSecondaryColor3fv))
+    if (!_secondaryColorArray.valid() || 
+        _secondaryColorArray->empty() ||
+        !s_glSecondaryColor3ubv ||
+        !s_glSecondaryColor3fv ||
+        (_secondaryColorIndices.valid() && _secondaryColorIndices->empty()) )
     {
         // switch off if not supported or have a valid data.
         secondaryColorBinding = BIND_OFF;
     }
 
-
-    switch (secondaryColorBinding)
-    {
-        case(BIND_OFF):
-            state.disableSecondaryColorPointer();
-            break;
-        case(BIND_OVERALL):
-            state.disableSecondaryColorPointer();
-            if (secondaryColorPointer)
-            {
-                switch(secondaryColorType)
-                {
-                    case(Array::UByte4ArrayType):
-                        s_glSecondaryColor3ubv(reinterpret_cast<const GLubyte*>(secondaryColorPointer));
-                        break;
-                    case(Array::Vec3ArrayType):
-                        s_glSecondaryColor3fv(reinterpret_cast<const GLfloat*>(secondaryColorPointer));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            break;
-        case(BIND_PER_PRIMITIVE):
-            state.disableSecondaryColorPointer();
-            break;
-        case(BIND_PER_VERTEX):
-            state.setSecondaryColorPointer(_secondaryColorArray->getDataSize(),_secondaryColorArray->getDataType(),0,secondaryColorPointer);
-    }
-
-
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Set up fog coord if required.
     //
-
-    GLfloat* fogCoordPointer = 0;
-    if (_fogCoordArray.valid() && !_fogCoordArray->empty()) fogCoordPointer = &(_fogCoordArray->front());
-
-    static FogCoordProc s_glFogCoordfv =
-            (FogCoordProc) osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT");
-
-
+    unsigned int fogCoordIndex = 0;
     AttributeBinding fogCoordBinding = _fogCoordBinding;
-    if (fogCoordBinding!=BIND_OFF && (!fogCoordPointer || !s_glFogCoordfv))
+    if (!_fogCoordArray.valid() || 
+        _fogCoordArray->empty() ||
+        !s_glFogCoordfv ||
+        (_fogCoordIndices.valid() && _fogCoordIndices->empty()) )
     {
-        // swithc off if not supported or have a valid data.
+        // switch off if not supported or have a valid data.
         fogCoordBinding = BIND_OFF;
     }
-    
-    switch (fogCoordBinding)
-    {
-        case(BIND_OFF):
-            state.disableFogCoordPointer();
-            break;
-        case(BIND_OVERALL):
-            state.disableFogCoordPointer();
-            s_glFogCoordfv(fogCoordPointer);
-            break;
-        case(BIND_PER_PRIMITIVE):
-            state.disableFogCoordPointer();
-            break;
-        case(BIND_PER_VERTEX):
-            state.setFogCoordPointer(GL_FLOAT,0,fogCoordPointer);
-            break;
-    }
-    
-    
+
+
+    // pass the values onto OpenGL.
+    if (normalBinding==BIND_OVERALL)            drawNormal(normalIndex++);
+    if (colorBinding==BIND_OVERALL)             drawColor(colorIndex++);
+    if (secondaryColorBinding==BIND_OVERALL)    drawSecondaryColor(secondaryColorIndex++);
+    if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
+
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -332,50 +354,10 @@ void IndexedGeometry::drawImmediateMode(State& state)
         itr!=_primitives.end();
         ++itr)
     {
-        if (normalBinding==BIND_PER_PRIMITIVE_SET)
-        {
-            glNormal3fv((const GLfloat *)normalPointer++);
-        }
-    
-        if (colorBinding==BIND_PER_PRIMITIVE_SET)
-        {
-            switch(colorType)
-            {
-                case(Array::UByte4ArrayType):
-                    glColor4ubv(reinterpret_cast<const GLubyte*>(colorPointer));
-                    break;
-                case(Array::Vec3ArrayType):
-                    glColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
-                    break;
-                case(Array::Vec4ArrayType):
-                    glColor4fv(reinterpret_cast<const GLfloat*>(colorPointer));
-                    break;
-                default:
-                    break;
-            }
-            colorPointer += colorStride;
-        }
-
-        if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)
-        {
-            switch(secondaryColorType)
-            {
-                case(Array::UByte4ArrayType):
-                    s_glSecondaryColor3ubv(reinterpret_cast<const GLubyte*>(secondaryColorPointer));
-                    break;
-                case(Array::Vec3ArrayType):
-                    s_glSecondaryColor3fv(reinterpret_cast<const GLfloat*>(secondaryColorPointer));
-                    break;
-                default:
-                    break;
-            }
-            secondaryColorPointer += secondaryColorStride;
-        }
-
-        if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)
-        {
-            s_glFogCoordfv(fogCoordPointer++);
-        }
+        if (normalBinding==BIND_PER_PRIMITIVE_SET)            drawNormal(normalIndex++);
+        if (colorBinding==BIND_PER_PRIMITIVE_SET)             drawColor(colorIndex++);
+        if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
+        if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
     
         //(*itr)->draw();
         
@@ -387,12 +369,24 @@ void IndexedGeometry::drawImmediateMode(State& state)
                 DrawArrays* drawArray = static_cast<DrawArrays*>(primitiveset);
                 glBegin(primitiveset->getMode());
                 
-                Vec3* vertices = &(_vertexArray->front()) + drawArray->getFirst();
-                int count = drawArray->getCount();
-                for(GLsizei ci=0;ci<count;++ci)
+                unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
+                for(unsigned int vindex=drawArray->getFirst();
+                    vindex!=indexEnd;
+                    ++vindex)
                 {
-                    glVertex3fv(vertices->ptr());
-                    ++vertices;
+                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                        texItr!=drawTexCoordList.end();
+                        ++texItr)
+                    {
+                        (*(*texItr))(vindex);
+                    }
+
+                    drawVertex(vindex);
                 }
     
                 glEnd();
@@ -400,29 +394,127 @@ void IndexedGeometry::drawImmediateMode(State& state)
             }
             case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
             {
-                //* drawArray = static_cast<*>(primitiveset);
-                glBegin(primitiveset->getMode());
-                glEnd();
+                DrawArrayLengths* drawArrayLengths = static_cast<DrawArrayLengths*>(primitiveset);
+                GLenum mode = primitiveset->getMode();
+                
+                unsigned int vindex=drawArrayLengths->getFirst();
+                for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                    primItr!=drawArrayLengths->end();
+                    ++primItr)
+                {
+                    glBegin(mode);
+                
+                    for(GLsizei count=0;
+                        count<*primItr;
+                        ++count,++vindex)
+                    {
+                        if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                        if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                        if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                        if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                        for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                            texItr!=drawTexCoordList.end();
+                            ++texItr)
+                        {
+                            (*(*texItr))(vindex);
+                        }
+
+                        drawVertex(vindex);
+                    }
+
+                    glEnd();
+                    
+                }
                 break;
             }
             case(PrimitiveSet::DrawElementsUBytePrimitiveType):
             {
-                //* drawArray = static_cast<*>(primitiveset);
+                DrawElementsUByte* drawElements = static_cast<DrawElementsUByte*>(primitiveset);
                 glBegin(primitiveset->getMode());
+                
+                for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
+                    primItr!=drawElements->end();
+                    ++primItr)
+                {
+
+                    unsigned int vindex=*primItr;
+
+                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                        texItr!=drawTexCoordList.end();
+                        ++texItr)
+                    {
+                        (*(*texItr))(vindex);
+                    }
+
+                    drawVertex(vindex);
+                }
+    
                 glEnd();
                 break;
             }
             case(PrimitiveSet::DrawElementsUShortPrimitiveType):
             {
-                //* drawArray = static_cast<*>(primitiveset);
+                DrawElementsUShort* drawElements = static_cast<DrawElementsUShort*>(primitiveset);
                 glBegin(primitiveset->getMode());
+                
+                for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
+                    primItr!=drawElements->end();
+                    ++primItr)
+                {
+
+                    unsigned int vindex=*primItr;
+
+                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                        texItr!=drawTexCoordList.end();
+                        ++texItr)
+                    {
+                        (*(*texItr))(vindex);
+                    }
+
+                    drawVertex(vindex);
+                }
+    
                 glEnd();
                 break;
             }
             case(PrimitiveSet::DrawElementsUIntPrimitiveType):
             {
-                //* drawArray = static_cast<*>(primitiveset);
+                DrawElementsUInt* drawElements = static_cast<DrawElementsUInt*>(primitiveset);
                 glBegin(primitiveset->getMode());
+                
+                for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
+                    primItr!=drawElements->end();
+                    ++primItr)
+                {
+
+                    unsigned int vindex=*primItr;
+
+                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                        texItr!=drawTexCoordList.end();
+                        ++texItr)
+                    {
+                        (*(*texItr))(vindex);
+                    }
+
+                    drawVertex(vindex);
+                }
+    
                 glEnd();
                 break;
             }

@@ -150,12 +150,18 @@ EXAMPLE_DIRS = \
 	osgvertexprogram\
 	osgviewer\
 	osgwindows\
-	slideshow3D\
         
 #	osgpagedlod\
 #	osgsimulation\
 #	osgdemeter\
 #	osgjigsaw\
+
+
+
+ifneq ($(OS),SunOS)
+# Solaris requires an installation of libxml2
+EXAMPLE_DIRS += slideshow3D
+endif
 
 # comment in you want to compile the cluster demo.
 EXAMPLE_DIRS += osgcluster

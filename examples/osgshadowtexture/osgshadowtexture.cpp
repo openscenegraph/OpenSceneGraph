@@ -171,6 +171,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of pre rendering to texture to create a shadow effect..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
    

@@ -214,6 +214,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trdll.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trPagePageManager.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_compat.h
 # End Source File
 # Begin Source File
@@ -227,6 +231,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_ident.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_io.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_managers.h
 # End Source File
 # Begin Source File
 
@@ -250,6 +258,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_sys.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_util.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_write.h
 # End Source File
 # Begin Source File
@@ -259,6 +271,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\TrPageArchive.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\TrPageParser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\WaitBlock.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

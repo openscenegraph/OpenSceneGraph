@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <osgTXP/trpage_io.h>
+#include <trpage_io.h>
 
 /* Checkable
     This is just a class that checks validity.

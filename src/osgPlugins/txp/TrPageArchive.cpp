@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <osgTXP/TrPageArchive.h>
-#include <osgTXP/TrPageParser.h>
+#include <TrPageArchive.h>
+#include <TrPageParser.h>
 
 #include <osg/AlphaFunc>
 #include <osg/Group>
@@ -23,11 +23,11 @@
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 
-#include <osgTXP/trpage_geom.h>
-#include <osgTXP/trpage_read.h>
-#include <osgTXP/trpage_write.h>
-#include <osgTXP/trpage_scene.h>
-#include <osgTXP/trpage_managers.h>
+#include <trpage_geom.h>
+#include <trpage_read.h>
+#include <trpage_write.h>
+#include <trpage_scene.h>
+#include <trpage_managers.h>
 
 
 using namespace txp;

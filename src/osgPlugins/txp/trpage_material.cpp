@@ -23,8 +23,8 @@
     You should only modify this code if you want to add data to these classes.
     */
 
-#include <osgTXP/trpage_geom.h>
-#include <osgTXP/trpage_read.h>
+#include <trpage_geom.h>
+#include <trpage_read.h>
 
 /* Write Material Table class
     Keeps track of the materials that have been added.

@@ -9,9 +9,9 @@
 #include <pthread.h>
 #endif
 
-#include <osgTXP/TrPageArchive.h>
-#include <osgTXP/trPagePageManager.h>
-#include <osgTXP/trpage_print.h>
+#include <TrPageArchive.h>
+#include <trPagePageManager.h>
+#include <trpage_print.h>
 
 #include <osg/Group>
 #include <osg/Object>

@@ -26,15 +26,14 @@
 #include <osg/Group>
 #include <osg/Object>
 #include <osg/Node>
-#include <osgTXP/Export.h>
 
-#include <osgTXP/trpage_geom.h>
-#include <osgTXP/trpage_read.h>
-#include <osgTXP/trpage_write.h>
-#include <osgTXP/trpage_scene.h>
-#include <osgTXP/trpage_managers.h>
-#include <osgTXP/WaitBlock.h>
-#include <osgTXP/TrPageArchive.h>
+#include <trpage_geom.h>
+#include <trpage_read.h>
+#include <trpage_write.h>
+#include <trpage_scene.h>
+#include <trpage_managers.h>
+#include <WaitBlock.h>
+#include <TrPageArchive.h>
 
 namespace txp
 {
@@ -55,7 +54,7 @@ namespace txp
 	/* OSG Page Manager
 		This class handles the paging into 
 	 */ 
-	class OSGTXP_EXPORT OSGPageManager {
+	class OSGPageManager {
 	public:
 		/* Need a group to put things under and the archive to page.
 			Also, optionally, a Page Manager (if you've made changes

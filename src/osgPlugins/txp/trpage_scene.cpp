@@ -34,8 +34,8 @@
       to read into a scene graph.  You'll need to replace the helpers, primarily.
     */
 
-#include <osgTXP/trpage_read.h>
-#include <osgTXP/trpage_scene.h>
+#include <trpage_read.h>
+#include <trpage_scene.h>
 
 /*  ****************
     MBR Calculation and handling

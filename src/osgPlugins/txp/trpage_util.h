@@ -20,9 +20,9 @@
 #ifndef trpage_util_h_
 #define trpage_util_h_
 #include <stdlib.h>
-#include <osgTXP/trpage_read.h>
-#include <osgTXP/trpage_write.h>
-#include <osgTXP/trpage_scene.h>
+#include <trpage_read.h>
+#include <trpage_write.h>
+#include <trpage_scene.h>
 
 TX_EXDECL class TX_CLDECL trpgUtil {
 public:

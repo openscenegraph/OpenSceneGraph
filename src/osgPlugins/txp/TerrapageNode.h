@@ -6,7 +6,7 @@
 #include <osg/Node>
 #include <osg/BoundingBox>
 
-#include <osgTXP/trPagePageManager.h>
+#include <trPagePageManager.h>
 
 namespace txp
 {

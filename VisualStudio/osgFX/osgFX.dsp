@@ -150,6 +150,10 @@ DEP_CPP_ANISO=\
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgFX\BumpMapping.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgFX\Cartoon.cpp
 DEP_CPP_CARTO=\
 	"..\..\Include\Osg\Array"\
@@ -496,6 +500,10 @@ DEP_CPP_VALID=\
 # Begin Source File
 
 SOURCE=..\..\include\osgFX\AnisotropicLighting
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgFX\BumpMapping
 # End Source File
 # Begin Source File
 

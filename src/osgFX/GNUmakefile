@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	AnisotropicLighting.cpp\
+	BumpMapping.cpp\
 	Cartoon.cpp\
 	Effect.cpp\
 	Registry.cpp\

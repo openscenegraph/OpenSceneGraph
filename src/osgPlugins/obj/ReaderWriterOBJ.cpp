@@ -445,8 +445,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_duplicateCoords(GLMmodel* obj, GLMg
         {
             int ci = tri->vindices[corner]*3;
 
-            // note flip the y,z axis to convert the OBJ left hand coord system, y up to the OSG's
-            // right hand coords system z up.
+            // note rotate about the x axis to place the OBJ y up to OSG z up.
             coords->set(obj->vertices[ci],-obj->vertices[ci+2],obj->vertices[ci+1]);
             ++coords;
             
@@ -460,8 +459,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_duplicateCoords(GLMmodel* obj, GLMg
             {
                 int ni = tri->nindices[corner]*3;
 
-                // note flip the y,z axis to convert the OBJ left hand coord system, y up to the OSG's
-                // right hand coords system z up.
+                // note rotate about the x axis to place the OBJ y up to OSG z up.
                 normals->set(obj->normals[ni],-obj->normals[ni+2],obj->normals[ni+1]);
                 ++normals;
             }

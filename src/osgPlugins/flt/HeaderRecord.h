@@ -59,22 +59,19 @@ struct SHeader
     float64 dfDatabaseOffsetY;
     int16    iNextSound;            // Next Sound Bead Id
     int16    iNextPath;            // Next Path Bead ID
-     int32    diReserved_1[2];    // Reserved for MultiGen
     int16    iNextClippingRegion;// Next Clipping Region Bead ID
     int16    iNextText;            // Next Text Bead ID
     int16    iNextBSP;            // Next BSP ID
     int16    iNextSwitch;        // Next Switch Bead ID
-     int32    diReserved_2;        // Reserved
     float64x2    SWCorner;    // South West Corner Lat/Lon (NB: dec. degrees)
     float64x2    NECorner;    // North East Corner Lat/Lon (NB: dec. degrees)
     float64x2    Origin;        // Origin Lat/Lon (NB: dec. degrees, not radians)
     float64    dfLambertUpperLat;    // Lambert Upper Latitude
     float64    dfLambertLowerLat;    // Lambert Lower Latitude
     int16    iNextLightSource;    // Next Light Source ID Number
-    int16    iReserved_3;        // Reserved
+    int16    iNextLightPoint;      // Next Light Point ID number
     int16    iNextRoad;            // Next road bead ID number
     int16    iNextCat;            // Next CAT bead ID number
-    int16    iReserved_4[4];        // Reserved
     int32    diEllipsoid;        // Earth ellipsoid model
                                 // 0 - WGS 1984
                                 // 1 - WGS 1972
@@ -85,14 +82,20 @@ struct SHeader
     // New with 15.7.0 ...
     int16 iNextAdaptiveNodeID;    // Next Adaptive node ID number
     int16 iNextCurveNodeID;       // Next Curve node ID number
-    int16 iReserved_5;            // Reserved
     float64 dfDatabaseDeltaZ;     // Delta z to place database (used in 
                                   // conjunction with existing Delta x and 
                                   // Delta y values)
     float64 dfRadius;             // Radius (distance from database origin to 
                                   // farthest corner)
     uint16 iNextMeshNodeID;       // Next Mesh node ID number
-    uint16 iReserved_6;           // Reserved
+
+    // New with 15.8
+    // As of 2004/2/23, only adding 15.8 support to header parsing.
+    // Delete this comment when full support for 15.8 (1580) is added.
+    int16 iUTMZone; // UTM zone 1-60, negative indicates southern hemisphere
+    uint16 iNextLightPointSysID; // Light point system ID
+    float64 dfEarthMajorAxis; // Custom ellipsoid Earth major axis
+    float64 dfEarthMinorAxis; // Custom ellipsoid Earth minor axis
 };
 
 

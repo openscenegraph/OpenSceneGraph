@@ -87,8 +87,100 @@ HeaderRecord::~HeaderRecord()
 
 void HeaderRecord::endian()
 {
-    SHeader *pHeader = (SHeader*)getData();
+    // OpenFlight spec dictates values that arepacked and not do not necessarily
+    //   adhere to alignment rules. Copy values out of the OpenFlight packed header
+    //   and into the SHeader struct and let the compiler worry about alignment
+    //   issues within the struct.
 
+    SHeader *pHeader = (SHeader*) malloc( sizeof(SHeader) );
+    char* src = (char*)getData();
+
+    // Numeric constant data sizes taken from OpenFlight spec
+    memcpy( &(pHeader->RecHeader), src, 4 ); src += 4;
+    memcpy( &(pHeader->szIdent), src, 8 ); src += 8;
+    memcpy( &(pHeader->diFormatRevLev), src, 4 ); src += 4;
+    memcpy( &(pHeader->diDatabaseRevLev), src, 4 ); src += 4;
+    memcpy( &(pHeader->szDaTimLastRev), src, 32 ); src += 32;
+    memcpy( &(pHeader->iNextGroup), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextLOD), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextObject), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextPolygon), src, 2 ); src += 2;
+    memcpy( &(pHeader->iMultDivUnit), src, 2 ); src += 2;
+    memcpy( &(pHeader->swVertexCoordUnit), src, 1 ); src += 1;
+    memcpy( &(pHeader->swTexWhite), src, 1 ); src += 1;
+    memcpy( &(pHeader->dwFlags), src, 4 ); src += 4;
+    src += 4*6; // Reserved
+    memcpy( &(pHeader->diProjection), src, 4 ); src += 4;
+    src += 4*7; // Reserved
+    memcpy( &(pHeader->iNextDegOfFreedom), src, 2 ); src += 2;
+    memcpy( &(pHeader->iVertexStorage), src, 2 ); src += 2;
+    memcpy( &(pHeader->diDatabaseSource), src, 4 ); src += 4;
+    memcpy( &(pHeader->dfSWDatabaseCoordX), src, 8 ); src += 8;
+    memcpy( &(pHeader->dfSWDatabaseCoordY), src, 8 ); src += 8;
+    memcpy( &(pHeader->dfDatabaseOffsetX), src, 8 ); src += 8;
+    memcpy( &(pHeader->dfDatabaseOffsetY), src, 8 ); src += 8;
+    memcpy( &(pHeader->iNextSound), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextPath), src, 2 ); src += 2;
+    src += 4*2; // Reserved
+    memcpy( &(pHeader->iNextClippingRegion), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextText), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextBSP), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextSwitch), src, 2 ); src += 2;
+    src += 4; // reserved
+    memcpy( &(pHeader->SWCorner), src, 8*2 ); src += 8*2;
+    memcpy( &(pHeader->NECorner), src, 8*2 ); src += 8*2;
+    memcpy( &(pHeader->Origin), src, 8*2 ); src += 8*2;
+    memcpy( &(pHeader->dfLambertUpperLat), src, 8 ); src += 8;
+    memcpy( &(pHeader->dfLambertLowerLat), src, 8 ); src += 8;
+    memcpy( &(pHeader->iNextLightSource), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextLightPoint), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextRoad), src, 2 ); src += 2;
+    memcpy( &(pHeader->iNextCat), src, 2 ); src += 2;
+    src += 2*4; // Reserved;
+    memcpy( &(pHeader->diEllipsoid), src, 4 ); src += 4;
+
+    if ( pHeader->diFormatRevLev >= 1570 )
+    {
+        memcpy( &(pHeader->iNextAdaptiveNodeID), src, 2 ); src += 2;
+        memcpy( &(pHeader->iNextCurveNodeID), src, 2 ); src += 2;
+
+        if ( pHeader->diFormatRevLev >= 1580 )
+        {
+            // As of 2004/2/23, only adding 15.8 support to header parsing.
+            // Delete this comment when full support for 15.8 (1580) is added.
+            memcpy( &(pHeader->iUTMZone), src, 2 ); src += 2;
+            src += 6; // Reserved
+        }
+        else
+            // Must be v15.7
+            src += 2; // Reserved
+
+        memcpy( &(pHeader->dfDatabaseDeltaZ), src, 8 ); src += 8;
+        memcpy( &(pHeader->dfRadius), src, 8 ); src += 8;
+        memcpy( &(pHeader->iNextMeshNodeID), src, 2 ); src += 2;
+
+        if ( pHeader->diFormatRevLev >= 1580 )
+        {
+            // As of 2004/2/23, only adding 15.8 support to header parsing.
+            // Delete this comment when full support for 15.8 (1580) is added.
+            memcpy( &(pHeader->iNextLightPointSysID), src, 2 ); src += 2;
+            src += 4; // Reserved
+            memcpy( &(pHeader->dfEarthMajorAxis), src, 8 ); src += 8;
+            memcpy( &(pHeader->dfEarthMinorAxis), src, 8 ); src += 8;
+        }
+        else
+            // Must be v15.7
+            src += 2; // Reserved
+    }
+
+    // Now that we've copied the data into SHeader, we're done with the original packed
+    //   data as read out of the OpenFlight file. Free it, and replace it with the
+    //   SHeader struct, so that subsequent typecasts of _pData work as expected.
+    free( _pData );
+    _pData = (SRecHeader*)pHeader;
+
+
+    // Proceed with byteswapping
     ENDIAN( pHeader->diFormatRevLev );
     ENDIAN( pHeader->diDatabaseRevLev );
     ENDIAN( pHeader->iNextGroup );
@@ -127,6 +219,16 @@ void HeaderRecord::endian()
         ENDIAN( pHeader->dfDatabaseDeltaZ );
         ENDIAN( pHeader->dfRadius );
         ENDIAN( pHeader->iNextMeshNodeID );
+
+        if ( pHeader->diFormatRevLev >= 1580 )
+        {
+            // As of 2004/2/23, only adding 15.8 support to header parsing.
+            // Delete this comment when full support for 15.8 (1580) is added.
+            ENDIAN( pHeader->iUTMZone );
+            ENDIAN( pHeader->iNextLightPointSysID );
+            ENDIAN( pHeader->dfEarthMajorAxis );
+            ENDIAN( pHeader->dfEarthMinorAxis );
+        }
     }
 }
 

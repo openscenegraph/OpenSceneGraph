@@ -209,20 +209,13 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
         cam->setSceneHandler( sh );
     }
 
+    if( _global_stateset == NULL && _shvec.size() > 0 )
+	{
+        SceneHandlerList::iterator p = _shvec.begin();
+		_global_stateset = (*p)->getGlobalStateSet();
+	}
 
     setUpSceneViewsWithData();
-
-    /// Make all statesets the same as the first.
-    if( _global_stateset == NULL && _shvec.size() > 0 )
-    {
-        SceneHandlerList::iterator p;
-        p = _shvec.begin();
-        _global_stateset = (*p)->getGlobalStateSet();
-        p++;
-        for( ; p != _shvec.end(); p++ )
-            (*p)->setGlobalStateSet( _global_stateset.get() );
-    }
-
 
     CameraGroup::realize( thread_model );        
     _initialized = true;

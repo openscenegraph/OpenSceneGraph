@@ -68,17 +68,18 @@
 
 #endif
 
-#if defined(_MSC_VER)
-	#  ifdef FTGL_LIBRARY_STATIC		// staticLib
-	#    define FTGL_EXPORT
-	#  elif FTGL_LIBRARY				// dynamicLib
-	#    define FTGL_EXPORT   __declspec(dllexport)
-	#  else
-	#    define FTGL_EXPORT   __declspec(dllimport)
-	#  endif /* FTGL_LIBRARY */
-#else
+
+// #if defined(_MSC_VER)
+// 	#  ifdef FTGL_LIBRARY_STATIC		// staticLib
+// 	#    define FTGL_EXPORT
+// 	#  elif FTGL_LIBRARY				// dynamicLib
+// 	#    define FTGL_EXPORT   __declspec(dllexport)
+// 	#  else
+// 	#    define FTGL_EXPORT   __declspec(dllimport)
+// 	#  endif /* FTGL_LIBRARY */
+// #else
 	#  define FTGL_EXPORT
-#endif  
+// #endif  
 
 
 #endif	//	__FTGL__

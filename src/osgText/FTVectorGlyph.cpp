@@ -1,5 +1,3 @@
-#include	"GL/gl.h"
-
 #include	"FTVectorGlyph.h"
 #include	"FTVectoriser.h"
 #include	"FTGL.h"
@@ -26,7 +24,8 @@ FTVectorGlyph::FTVectorGlyph( FT_Glyph glyph)
 	numContours = vectoriser->contours();
 	contourLength = new int[ numContours];
 	
-	for( int c = 0; c < numContours; ++c)
+	int c;
+	for( c = 0; c < numContours; ++c)
 	{
 		contourLength[c] = vectoriser->contourSize( c);
 	}
@@ -46,7 +45,7 @@ FTVectorGlyph::FTVectorGlyph( FT_Glyph glyph)
 	int d = 0;
 
 	glNewList( glList, GL_COMPILE);
-		for( int c = 0; c < numContours; ++c)
+		for( c = 0; c < numContours; ++c)
 		{
 			glBegin( GL_LINE_LOOP);
 			for( int p = 0; p < ( contourLength[c]); ++p)

@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 freetype204MT.lib  /nologo /dll /pdb:none /machine:I386 /out:"../../bin/osgText.dll" /libpath:"../../lib"
+# ADD LINK32 freetype204MT.lib glu32.lib opengl32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../bin/osgText.dll" /libpath:"../../lib"
 
 !ELSEIF  "$(CFG)" == "osgText - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 freetype204MT.lib /nologo /dll /debug /machine:I386 /out:"../../bin/osgTextd.dll" /pdbtype:sept /libpath:"../../lib"
+# ADD LINK32 freetype204MT.lib glu32.lib opengl32.lib /nologo /dll /debug /machine:I386 /out:"../../bin/osgTextd.dll" /pdbtype:sept /libpath:"../../lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -169,11 +169,11 @@ SOURCE=..\..\src\osgText\FTVectoriser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgText\Version.cpp
+SOURCE=..\..\src\osgText\Text.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgText\Text.cpp
+SOURCE=..\..\src\osgText\Version.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -182,14 +182,6 @@ SOURCE=..\..\src\osgText\Text.cpp
 # Begin Source File
 
 SOURCE=..\..\include\osgText\Export
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgText\Text
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgText\Version
 # End Source File
 # Begin Source File
 
@@ -270,6 +262,14 @@ SOURCE=..\..\src\osgText\FTVectorGlyph.h
 # Begin Source File
 
 SOURCE=..\..\src\osgText\FTVectoriser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\Text
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\Version
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -221,7 +221,7 @@ ifeq ($(OS),Darwin)
   X_LIBS            = 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -ldl -lstdc++ -lobjc
-  LIBEXT            = dylib
+  LIB_EXT            = dylib
   QUICKTIME_LIB	    = -framework QuickTime
   TIFF_LIB	    = -ltiff
 

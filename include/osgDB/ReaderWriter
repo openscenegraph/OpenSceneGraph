@@ -63,12 +63,13 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                     FILE_NOT_HANDLED,
                     FILE_NOT_FOUND,
                     FILE_LOADED,
+                    FILE_LOADED_FROM_CACHE,
                     ERROR_IN_READING_FILE
                 };
 
                 ReadResult(ReadStatus status=FILE_NOT_HANDLED):_status(status) {}
                 ReadResult(const std::string& m):_status(ERROR_IN_READING_FILE),_message(m) {}
-                ReadResult(osg::Object* obj):_status(FILE_LOADED),_object(obj) {}
+                ReadResult(osg::Object* obj, ReadStatus status=FILE_LOADED):_status(status),_object(obj) {}
                 
                 ReadResult(const ReadResult& rr):_status(rr._status),_message(rr._message),_object(rr._object) {}
                 ReadResult& operator = (const ReadResult& rr) { if (this==&rr) return *this; _status=rr._status; _message=rr._message;_object=rr._object; return *this; }
@@ -91,7 +92,8 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
                 const std::string& message() const { return _message; }
 
                 ReadStatus status() const { return _status; }
-                bool success() const { return _status==FILE_LOADED; }
+                bool success() const { return _status==FILE_LOADED || _status==FILE_LOADED_FROM_CACHE ; }
+                bool loadedFromCache() const { return _status==FILE_LOADED_FROM_CACHE; }
                 bool error() const { return _status==ERROR_IN_READING_FILE; }
                 bool notHandled() const { return _status==FILE_NOT_HANDLED; }
                 bool notFound() const { return _status==FILE_NOT_FOUND; }

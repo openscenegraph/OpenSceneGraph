@@ -76,7 +76,7 @@ void Point::setSize( float size )
 }
 
 
-void Point::setFadeThresholdSize(const float fadeThresholdSize)
+void Point::setFadeThresholdSize(float fadeThresholdSize)
 {
     _fadeThresholdSize = fadeThresholdSize;
 }

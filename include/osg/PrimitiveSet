@@ -130,7 +130,7 @@ class PrimitiveSet : public Object
         void setMode(GLenum mode) { _mode = mode; }
         GLenum getMode() const { return _mode; }
 
-        virtual void draw() const = 0;
+        virtual void draw(State& state, bool useVertexBufferObjects) const = 0;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const = 0;
         virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const = 0;
@@ -204,7 +204,7 @@ class SG_EXPORT DrawArrays : public PrimitiveSet
         void setCount(GLsizei count) { _count = count; }
         GLsizei getCount() const { return _count; }
 
-        virtual void draw() const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
         virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
@@ -260,7 +260,7 @@ class SG_EXPORT DrawArrayLengths : public PrimitiveSet, public VectorSizei
         void setFirst(GLint first) { _first = first; }
         GLint getFirst() const { return _first; }
         
-        virtual void draw() const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
         virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
@@ -319,7 +319,7 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUByte"; }
 
-        virtual void draw() const ;
+        virtual void draw(State& state, bool useVertexBufferObjects) const ;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
         virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
@@ -329,6 +329,9 @@ class SG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorUByte
         virtual void offsetIndices(int offset);
 
     protected:
+
+        typedef osg::buffered_value<GLuint> GLObjectList;
+        mutable GLObjectList    _vboList;
 
         virtual ~DrawElementsUByte() {}
 };
@@ -364,7 +367,7 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUShort"; }
 
-        virtual void draw() const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
         virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
@@ -374,6 +377,9 @@ class SG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorUShort
         virtual void offsetIndices(int offset);
 
     protected:
+
+        typedef osg::buffered_value<GLuint> GLObjectList;
+        mutable GLObjectList    _vboList;
 
         virtual ~DrawElementsUShort() {}
 };
@@ -408,7 +414,7 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "DrawElementsUInt"; }
 
-        virtual void draw() const;
+        virtual void draw(State& state, bool useVertexBufferObjects) const;
         
         virtual void accept(Drawable::PrimitiveFunctor& functor) const;
         virtual void accept(Drawable::PrimitiveIndexFunctor& functor) const;
@@ -418,6 +424,9 @@ class SG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorUInt
         virtual void offsetIndices(int offset);
 
     protected:
+
+        typedef osg::buffered_value<GLuint> GLObjectList;
+        mutable GLObjectList    _vboList;
 
         virtual ~DrawElementsUInt() {}
 };

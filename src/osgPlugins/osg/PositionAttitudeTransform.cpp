@@ -28,6 +28,33 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
 
     PositionAttitudeTransform& transform = static_cast<PositionAttitudeTransform&>(obj);
 
+    if (fr.matchSequence("position %f %f %f"))
+    {
+        osg::Vec3 pos;
+        fr[1].getFloat(pos[0]);
+        fr[2].getFloat(pos[1]);
+        fr[3].getFloat(pos[2]);
+        
+        transform.setPosition(pos);
+
+        fr += 4;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("attitude %f %f %f %f"))
+    {
+        osg::Quat att;
+        fr[1].getFloat(att[0]);
+        fr[2].getFloat(att[1]);
+        fr[3].getFloat(att[2]);
+        fr[4].getFloat(att[3]);
+        
+        transform.setAttitude(att);
+        
+        fr += 4;
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -35,6 +62,10 @@ bool PositionAttitudeTransform_readLocalData(Object& obj, Input& fr)
 bool PositionAttitudeTransform_writeLocalData(const Object& obj, Output& fw)
 {
     const PositionAttitudeTransform& transform = static_cast<const PositionAttitudeTransform&>(obj);
+    
+    fw.indent()<<"position "<<transform.getPosition()<<std::endl;
+    fw.indent()<<"attitude "<<transform.getAttitude()<<std::endl;
+
 
     return true;
 }

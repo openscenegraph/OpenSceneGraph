@@ -1,5 +1,5 @@
-#ifndef		__FTPolyGlyph__
-#define		__FTPolyGlyph__
+#ifndef        __FTPolyGlyph__
+#define        __FTPolyGlyph__
 
 #include "FTGL.h"
 
@@ -21,73 +21,73 @@ class FTVectoriser;
  */
 class FTGL_EXPORT FTPolyGlyph : public FTGlyph
 {
-	public:
-		/**
-		 * Constructor
-		 *
-		 * @param glyph	The Freetype glyph to be processed
-		 */
-		FTPolyGlyph( FT_Glyph glyph);
+    public:
+        /**
+         * Constructor
+         *
+         * @param glyph    The Freetype glyph to be processed
+         */
+        FTPolyGlyph( FT_Glyph glyph);
 
-		/**
-		 * Destructor
-		 */
-		virtual ~FTPolyGlyph();
+        /**
+         * Destructor
+         */
+        virtual ~FTPolyGlyph();
 
-		/**
-		 * Renders this glyph at the current pen position.
-		 *
-		 * @param pen	The current pen position.
-		 * @return		The advance distance for this glyph.
-		 */
-		virtual float Render( const FT_Vector& pen);
-		
-	private:
-		/**
-		 * Convert the point data into a mesh.
-		 *
-		 * Uses GLUtesselator to create a mesh
-		 */
-		void Tesselate();
-		
-		/**
-		 * An object that helps convert freetype outlines into point
-		 * data
-		 */
-		FTVectoriser* vectoriser;
+        /**
+         * Renders this glyph at the current pen position.
+         *
+         * @param pen    The current pen position.
+         * @return        The advance distance for this glyph.
+         */
+        virtual float Render( const FT_Vector& pen);
+        
+    private:
+        /**
+         * Convert the point data into a mesh.
+         *
+         * Uses GLUtesselator to create a mesh
+         */
+        void Tesselate();
+        
+        /**
+         * An object that helps convert freetype outlines into point
+         * data
+         */
+        FTVectoriser* vectoriser;
 
-		/**
-		 * The total number of points in the Freetype outline
-		 */
-		int numPoints;
+        /**
+         * The total number of points in the Freetype outline
+         */
+        int numPoints;
 
-		/**
-		 * The totals number of contours in the Freetype outline
-		 */
-		int numContours;
+        /**
+         * The totals number of contours in the Freetype outline
+         */
+        int numContours;
 
-		/**
-		 * An flag indicating the tesselation rules for this glyph
-		 */
-		int contourFlag; 
+        /**
+         * An flag indicating the tesselation rules for this glyph
+         */
+        int contourFlag; 
 
-		/**
-		 * An array containing the number of points in each outline
-		 */
-		int* contourLength;
+        /**
+         * An array containing the number of points in each outline
+         */
+        int* contourLength;
 
-		/**
-		 * Pointer to the point data
-		 */
-		double* data;
-		
-		/**
-		 * OpenGL display list
-		 */
-		int glList;
-	
+        /**
+         * Pointer to the point data
+         */
+        double* data;
+        
+        /**
+         * OpenGL display list
+         */
+        int glList;
+    
 };
 
 
-#endif	//	__FTPolyGlyph__
+#endif    //    __FTPolyGlyph__
 

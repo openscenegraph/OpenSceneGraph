@@ -1,5 +1,5 @@
-#ifndef		__FTGLOutlineFont__
-#define		__FTGLOutlineFont__
+#ifndef        __FTGLOutlineFont__
+#define        __FTGLOutlineFont__
 
 #include "FTGL.h"
 
@@ -12,45 +12,48 @@ class FTOutlineGlyph;
  * FTGLOutlineFont is a specialisation of the FTFont class for handling
  * Vector Outline fonts
  *
- * @see		FTFont
+ * @see        FTFont
  */
 class FTGL_EXPORT FTGLOutlineFont : public FTFont
 {
-	public:
-		/**
-		 * Default Constructor
-		 */
-		FTGLOutlineFont();
-		
-		/**
-		 * Destructor
-		 */
-		~FTGLOutlineFont();
-		
-		/**
-		 * Renders a string of characters
-		 * 
-		 * @param string	'C' style string to be output.	 
-		 */
-		void render( const char* string);
-		
-		/**
-		 * Renders a string of characters
-		 * 
-		 * @param string	wchar_t string to be output.	 
-		 */
-		void render( const wchar_t* string);
+    public:
+        /**
+         * Default Constructor
+         */
+        FTGLOutlineFont();
+        
+        /**
+         * Destructor
+         */
+        ~FTGLOutlineFont();
+        
+        /**
+         * Renders a string of characters
+         * 
+         * @param string    'C' style string to be output.     
+         */
+        // mrn@changes
+        virtual void render( const char* string, unsigned int renderContext=0);
+        
+        /**
+         * Renders a string of characters
+         * 
+         * @param string    wchar_t string to be output.     
+         */
+        // mrn@changes
+        virtual void render( const wchar_t* string, unsigned int renderContext=0);
 
-		// attributes
-		
-	private:
-		/**
-		 * Constructs the internal glyph cache.
-		 *
-		 * This a list of glyphs processed for openGL rendering NOT
-		 * freetype glyphs
-		 */
-		bool MakeGlyphList();
-		
+        // attributes
+        
+    private:
+        /**
+         * Constructs the internal glyph cache.
+         *
+         * This a list of glyphs processed for openGL rendering NOT
+         * freetype glyphs
+         */
+        // mrn@changes
+        virtual bool MakeGlyphList( unsigned int renderContext=0);
+        
 };
 #endif // __FTGLOutlineFont__

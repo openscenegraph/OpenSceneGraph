@@ -1,5 +1,5 @@
-#ifndef		__FTGlyph__
-#define		__FTGlyph__
+#ifndef        __FTGlyph__
+#define        __FTGlyph__
 
 #include "FTGL.h"
 
@@ -21,59 +21,59 @@
  */
 class FTGL_EXPORT FTGlyph
 {
-	public:
-		/**
-		 * Constructor
-		 */
-		FTGlyph();
+    public:
+        /**
+         * Constructor
+         */
+        FTGlyph();
 
-		/**
-		 * Destructor
-		 */
-		virtual ~FTGlyph();
+        /**
+         * Destructor
+         */
+        virtual ~FTGlyph();
 
-		/**
-		 * Renders this glyph at the current pen position.
-		 *
-		 * @param pen	The current pen position.
-		 * @return		The advance distance for this glyph.
-		 */
-		virtual float Render( const FT_Vector& pen) = 0;
-		
-		/**
-		 * Return the advance width for this glyph.
-		 *
-		 * @return	advance width.
-		 */
-		float Advance() const { return advance;}
-		
-		/**
-		 * Queries for errors.
-		 *
-		 * @return	The current error code.
-		 */
-		FT_Error Error() const { return err;}
-		
-	protected:
-		/**
-		 * The advance distance for this glyph
-		 */
-		float advance;
+        /**
+         * Renders this glyph at the current pen position.
+         *
+         * @param pen    The current pen position.
+         * @return        The advance distance for this glyph.
+         */
+        virtual float Render( const FT_Vector& pen) = 0;
+        
+        /**
+         * Return the advance width for this glyph.
+         *
+         * @return    advance width.
+         */
+        float Advance() const { return advance;}
+        
+        /**
+         * Queries for errors.
+         *
+         * @return    The current error code.
+         */
+        FT_Error Error() const { return err;}
+        
+    protected:
+        /**
+         * The advance distance for this glyph
+         */
+        float advance;
 
-		/**
-		 * Vector from the pen position to the topleft corner of the glyph
-		 */
-		FT_Vector pos;
+        /**
+         * Vector from the pen position to the topleft corner of the glyph
+         */
+        FT_Vector pos;
 
-		/**
-		 * Current error code. Zero means no error.
-		 */
-		FT_Error err;
-		
-	private:
+        /**
+         * Current error code. Zero means no error.
+         */
+        FT_Error err;
+        
+    private:
 
 };
 
 
-#endif	//	__FTGlyph__
+#endif    //    __FTGlyph__
 

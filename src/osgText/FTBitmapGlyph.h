@@ -1,5 +1,5 @@
-#ifndef		__FTBitmapGlyph__
-#define		__FTBitmapGlyph__
+#ifndef        __FTBitmapGlyph__
+#define        __FTBitmapGlyph__
 
 #include "FTGL.h"
 
@@ -7,7 +7,7 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
-#include	"FTGlyph.h"
+#include    "FTGlyph.h"
 
 
 /**
@@ -22,45 +22,45 @@
  */
 class FTGL_EXPORT FTBitmapGlyph : public FTGlyph
 {
-	public:
-		/**
-		 * Constructor
-		 *
-		 * @param glyph	The Freetype glyph to be processed
-		 */
-		FTBitmapGlyph( FT_Glyph glyph);
+    public:
+        /**
+         * Constructor
+         *
+         * @param glyph    The Freetype glyph to be processed
+         */
+        FTBitmapGlyph( FT_Glyph glyph);
 
-		/**
-		 * Destructor
-		 */
-		virtual ~FTBitmapGlyph();
+        /**
+         * Destructor
+         */
+        virtual ~FTBitmapGlyph();
 
-		/**
-		 * Renders this glyph at the current pen position.
-		 *
-		 * @param pen	The current pen position.
-		 * @return		The advance distance for this glyph.
-		 */
-		virtual float Render( const FT_Vector& pen);
-		
-	private:
-		/**
-		 * The width of the glyph 'image'
-		 */
-		int destWidth;
+        /**
+         * Renders this glyph at the current pen position.
+         *
+         * @param pen    The current pen position.
+         * @return        The advance distance for this glyph.
+         */
+        virtual float Render( const FT_Vector& pen);
+        
+    private:
+        /**
+         * The width of the glyph 'image'
+         */
+        int destWidth;
 
-		/**
-		 * The height of the glyph 'image'
-		 */
-		int destHeight;
-		
-		/**
-		 * Pointer to the 'image' data
-		 */
-		unsigned char* data;
-		
+        /**
+         * The height of the glyph 'image'
+         */
+        int destHeight;
+        
+        /**
+         * Pointer to the 'image' data
+         */
+        unsigned char* data;
+        
 };
 
 
-#endif	//	__FTBitmapGlyph__
+#endif    //    __FTBitmapGlyph__
 

@@ -53,7 +53,7 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
     default:
         break;
     }
-    osg::Group::traverse(nv);
+    Group::traverse(nv);
 }
 
 bool TXPNode::computeBound() const

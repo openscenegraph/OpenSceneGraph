@@ -174,9 +174,9 @@ class SG_EXPORT Node : public Object
 
 
         typedef unsigned int NodeMask;
-        /** Set the node mask. Note, node mask is will be replaced by TraversalMask.*/
+        /** Set the node mask.*/
         inline void setNodeMask(NodeMask nm) { _nodeMask = nm; }
-        /** Get the node Mask. Note, node mask is will be replaced by TraversalMask.*/
+        /** Get the node Mask.*/
         inline NodeMask getNodeMask() const { return _nodeMask; }
 
 

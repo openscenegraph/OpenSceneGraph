@@ -3238,6 +3238,13 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     }
 
 
+    CoordinateSystemType destinateCoordSytemType = getCoordinateSystemType(_destinationCoordinateSystem.get());
+    if (destinateCoordSytemType==GEOGRAPHIC && !getConvertFromGeographicToGeocentric())
+    {
+        // convert elevation into degrees.
+        setVerticalScale(1.0f/111319.0f);
+    }
+
     // get the extents of the sources and
     osg::BoundingBox extents(_extents);
     if (!extents.valid()) 

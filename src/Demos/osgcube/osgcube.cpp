@@ -170,7 +170,7 @@ int main( int argc, char **argv )
     myTransform->addChild( createCube() );
     
     // move node in a circle at 90 degrees a sec.
-    myTransform->setAppCallback(new TransformCallback(myTransform,90.0f));
+    myTransform->setAppCallback(new TransformCallback(myTransform,osg::inDegrees(90.0f)));
 
     // create the viewer and the model to it.
     osgGLUT::Viewer viewer;

@@ -338,7 +338,7 @@ void TrackballManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, fl
      */
     if (t > 1.0) t = 1.0;
     if (t < -1.0) t = -1.0;
-    angle = asin(t) * 180.0f/M_PI;
+    angle = inRadians(asin(t));
 
 }
 

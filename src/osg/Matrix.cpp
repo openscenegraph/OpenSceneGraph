@@ -14,6 +14,7 @@ using namespace osg;
 #define DEG2RAD(x)    ((x)*M_PI/180.0)
 #define RAD2DEG(x)    ((x)*180.0/M_PI)
 
+
 // temporary #define's for warning that deprecated methods are being
 // used which should be replaced by the new variants.
 #define WARN_DEPRECATED
@@ -32,8 +33,6 @@ using namespace osg;
 #else
     #define DEPRECATED(message)
 #endif        
-
-#define ANGLES_IN_DEGREES
 
 
 #define SET_ROW(row, v1, v2, v3, v4 )    \
@@ -168,11 +167,8 @@ void Matrix::makeRot( const Vec3& from, const Vec3& to )
     double d = from * to; // dot product == cos( angle between from & to )
     if( d < 0.9999 ) {
         double angle = acos(d);
-#ifdef ANGLES_IN_DEGREES
-        angle = RAD2DEG(angle);
-#endif
         Vec3 axis = to ^ from; //we know ((to) x (from)) is perpendicular to both
-        makeRot( angle, axis );
+        makeRot( inRadians(angle) , axis );
     }        
     else 
         makeIdent();
@@ -188,7 +184,7 @@ void Matrix::makeRot( float angle, float x, float y, float z ) {
     if( d == 0 )
         return;
 
-#ifdef ANGLES_IN_DEGREES
+#ifdef USE_DEGREES_INTERNALLY
     angle = DEG2RAD(angle);
 #endif
 
@@ -230,7 +226,7 @@ void Matrix::makeRot( const Quat& q ) {
 
 void Matrix::makeRot( float yaw, float pitch, float roll)
 {
-#ifdef ANGLES_IN_DEGREES
+#ifdef USE_DEGREES_INTERNALLY
     yaw = DEG2RAD(yaw);
     pitch = DEG2RAD(pitch);
     roll = DEG2RAD(roll);

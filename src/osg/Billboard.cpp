@@ -10,7 +10,6 @@ using namespace osg;
 Billboard::Billboard()
 {
     _mode = AXIAL_ROT;
-    //    _mode = POINT_ROT_WORLD;
     _axis.set(0.0f,0.0f,1.0f);
 }
 
@@ -85,7 +84,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             {
                 mat.makeIdent();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
-                //mat.makeRot(rotation_z*180.0f/M_PI,0.0f,0.0f,1.0f);
+                //mat.makeRot(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
                 float c = ev.y()*inv;
                 float s = ev.x()*inv;
@@ -123,7 +122,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
                     cp /= cp_len;
 
                     float rotation_cp = acosf(dot);
-                    mat.makeRot(rotation_cp*180.0f/M_PI,cp[0],cp[1],cp[2]);
+                    mat.makeRot(inRadians(rotation_cp),cp[0],cp[1],cp[2]);
                 }
             }
             break;

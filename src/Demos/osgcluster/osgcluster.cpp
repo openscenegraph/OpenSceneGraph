@@ -336,8 +336,7 @@ int main( int argc, char **argv )
     osg::Timer_t after_load = timer.tick();
     cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<endl;
 
-    osg::ref_ptr<MySceneView> mySceneView = new MySceneView(viewerMode,socketNumber,camera_fov,camera_offset);
-
+    osg::ref_ptr<MySceneView> mySceneView = new MySceneView(viewerMode,socketNumber,camera_fov,osg::inDegrees(camera_offset));
     mySceneView->setSceneData(rootnode);
 
     // initialize the viewer.

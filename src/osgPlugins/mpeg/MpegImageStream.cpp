@@ -52,7 +52,7 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 {
     std::cout<<"Opening pegImageStream::MpegImageStream"<<std::endl;
 
-    _useMMX = true;
+    _useMMX = false;
     _fps = 0.0f;
     _frames = 0;
     _len = 0;

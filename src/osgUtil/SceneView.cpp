@@ -111,7 +111,7 @@ void SceneView::setDefaults()
 
     _cullMask = 0xffffffff;
     _cullMaskLeft = 0xffffffff;
-    _cullMaskLeft = 0xffffffff;
+    _cullMaskRight = 0xffffffff;
 }
 
 void SceneView::init()

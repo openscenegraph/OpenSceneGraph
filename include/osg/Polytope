@@ -69,7 +69,55 @@ class SG_EXPORT Polytope
             setupMask();
         }
 
+        inline void setAndTransformProvidingInverse(const Polytope& pt, const osg::Matrix& matrix)
+        {
+            _referenceVertexList = pt._referenceVertexList;
+
+            unsigned int resultMask = pt._maskStack.back();
+            if (resultMask==0)
+            {
+                _maskStack.back() = 0;
+                _resultMask = 0;
+                _planeList.clear();
+                return;
+            }
+            
+            ClippingMask selector_mask = 0x1;
+
+            unsigned int numActivePlanes = 0;
+
+            // count number active planes.
+            PlaneList::const_iterator itr;
+            for(itr=pt._planeList.begin();
+                itr!=pt._planeList.end();
+                ++itr)
+            {
+                if (resultMask&selector_mask) ++numActivePlanes;
+                selector_mask <<= 1;
+            }
+            
+            _planeList.resize(numActivePlanes);
+            _resultMask = 0;
+            selector_mask = 0x1;
+            unsigned int index = 0;
+            for(itr=pt._planeList.begin();
+                itr!=pt._planeList.end();
+                ++itr)
+            {
+                if (resultMask&selector_mask)
+                {
+                     _planeList[index] = *itr;
+                     _planeList[index++].transformProvidingInverse(matrix);
+                    _resultMask = (_resultMask<<1) | 1;
+                }
+                selector_mask <<= 1;
+            }
+
+            _maskStack.back() = _resultMask;
+        }
+
         inline void set(const PlaneList& pl) { _planeList = pl; setupMask(); }
+        
         
         inline void add(const osg::Plane& pl) { _planeList.push_back(pl); setupMask(); }
 

@@ -358,6 +358,23 @@ class DrawFogCoord : public osg::ConstValueVisitor
         const Drawable::Extensions * _extensions;
 };
 
+Geometry::ArrayData::ArrayData(const ArrayData& data,const CopyOp& copyop):
+    array(data.array.valid()?dynamic_cast<osg::Array*>(data.array->clone(copyop)):0),
+    indices(data.indices.valid()?dynamic_cast<osg::IndexArray*>(data.indices->clone(copyop)):0),
+    binding(data.binding),
+    normalize(data.normalize),
+    offset(data.offset)
+{
+}
+
+Geometry::Vec3ArrayData::Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& copyop):
+    array(data.array.valid()?dynamic_cast<osg::Vec3Array*>(data.array->clone(copyop)):0),
+    indices(data.indices.valid()?dynamic_cast<osg::IndexArray*>(data.indices->clone(copyop)):0),
+    binding(data.binding),
+    normalize(data.normalize),
+    offset(data.offset)
+{
+}
 
 Geometry::Geometry()
 {
@@ -367,11 +384,11 @@ Geometry::Geometry()
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
-    _vertexData(geometry._vertexData),
-    _normalData(geometry._normalData),
-    _colorData(geometry._colorData),
-    _secondaryColorData(geometry._secondaryColorData),
-    _fogCoordData(geometry._fogCoordData),
+    _vertexData(geometry._vertexData,copyop),
+    _normalData(geometry._normalData,copyop),
+    _colorData(geometry._colorData,copyop),
+    _secondaryColorData(geometry._secondaryColorData,copyop),
+    _fogCoordData(geometry._fogCoordData,copyop),
     _fastPath(geometry._fastPath),
     _fastPathHint(geometry._fastPathHint)
 {

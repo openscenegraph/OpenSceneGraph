@@ -138,19 +138,19 @@ make1DSineTexture( int texSize )
 
 ///////////////////////////////////////////////////////////////////////////
 
-static osg::Node* createGlobe()
-{
-    osg::Geode* geode = new osg::Geode();
-    osg::StateSet* stateset = geode->getOrCreateStateSet();
-
-    osg::Texture2D* texture = new osg::Texture2D;
-    texture->setImage( osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") );
-    stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-    
-    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0,0,0), 2.0f)));
-    
-    return geode;
-}
+// static osg::Node* createGlobe()
+// {
+//     osg::Geode* geode = new osg::Geode();
+//     osg::StateSet* stateset = geode->getOrCreateStateSet();
+// 
+//     osg::Texture2D* texture = new osg::Texture2D;
+//     texture->setImage( osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") );
+//     stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+//     
+//     geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0,0,0), 2.0f)));
+//     
+//     return geode;
+// }
 
 ///////////////////////////////////////////////////////////////////////////
 // OpenGL Shading Language source code for the "microshader" example,

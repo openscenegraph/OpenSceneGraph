@@ -58,6 +58,8 @@ class SG_EXPORT Geometry : public Drawable
                 normalize(GL_FALSE),
                 offset(0) {}
                 
+            ArrayData(const ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
             ArrayData(Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
                 array(a),
                 indices(0),
@@ -96,6 +98,8 @@ class SG_EXPORT Geometry : public Drawable
                 normalize(GL_FALSE),
                 offset(0) {}
                 
+            Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
             Vec3ArrayData(Vec3Array* a, AttributeBinding b, GLboolean n = GL_FALSE):
                 array(a),
                 indices(0),
@@ -357,24 +361,15 @@ class SG_EXPORT Geometry : public Drawable
         
 
         PrimitiveSetList                _primitives;
-
         ArrayData                       _vertexData;
-
         Vec3ArrayData                   _normalData;
-
         ArrayData                       _colorData;
-
         ArrayData                       _secondaryColorData;
-
         ArrayData                       _fogCoordData;
-        
         ArrayList                       _texCoordList;
-        
         ArrayList                       _vertexAttribList;
 
-
         mutable bool                    _fastPath;
-
         bool                            _fastPathHint;
 
         ref_ptr<Geometry>               _internalOptimizedGeometry;

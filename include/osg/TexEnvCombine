@@ -134,8 +134,8 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
             DOT3_RGBA       = GL_DOT3_RGBA_ARB
         };
 
-        void setCombine_RGB(GLint cm) { _combine_RGB = cm; }
-        void setCombine_Alpha(GLint cm) { _combine_Alpha = cm; }
+        void setCombine_RGB(GLint cm);
+        void setCombine_Alpha(GLint cm);
 
         GLint getCombine_RGB() const { return _combine_RGB; }
         GLint getCombine_Alpha() const { return _combine_Alpha; }
@@ -156,13 +156,13 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
             TEXTURE7        = GL_TEXTURE0+7
         };
         
-        void setSource0_RGB(GLint sp) { _source0_RGB = sp; computeNeedoForTexEnvCombiners(); }
-        void setSource1_RGB(GLint sp) { _source1_RGB = sp; computeNeedoForTexEnvCombiners(); }
-        void setSource2_RGB(GLint sp) { _source2_RGB = sp; computeNeedoForTexEnvCombiners(); }
+        void setSource0_RGB(GLint sp);
+        void setSource1_RGB(GLint sp);
+        void setSource2_RGB(GLint sp);
         
-        void setSource0_Alpha(GLint sp) { _source0_Alpha = sp; computeNeedoForTexEnvCombiners(); }
-        void setSource1_Alpha(GLint sp) { _source1_Alpha = sp; computeNeedoForTexEnvCombiners(); }
-        void setSource2_Alpha(GLint sp) { _source2_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+        void setSource0_Alpha(GLint sp);
+        void setSource1_Alpha(GLint sp);
+        void setSource2_Alpha(GLint sp);
 
         GLint getSource0_RGB() const { return _source0_RGB; }
         GLint getSource1_RGB() const { return _source1_RGB; }
@@ -180,13 +180,13 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
             ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA
         };
         
-        void setOperand0_RGB(GLint op) { _operand0_RGB = op; }
-        void setOperand1_RGB(GLint op) { _operand1_RGB = op; }
-        void setOperand2_RGB(GLint op) { _operand2_RGB = op; }
+        void setOperand0_RGB(GLint op);
+        void setOperand1_RGB(GLint op);
+        void setOperand2_RGB(GLint op);
         
-        void setOperand0_Alpha(GLint op) { _operand0_Alpha = op; }
-        void setOperand1_Alpha(GLint op) { _operand1_Alpha = op; }
-        void setOperand2_Alpha(GLint op) { _operand2_Alpha = op; }
+        void setOperand0_Alpha(GLint op);
+        void setOperand1_Alpha(GLint op);
+        void setOperand2_Alpha(GLint op);
 
         GLint getOperand0_RGB() const { return _operand0_RGB; }
         GLint getOperand1_RGB() const { return _operand1_RGB; }
@@ -197,8 +197,8 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
         GLint getOperand2_Alpha() const { return _operand2_Alpha; }
 
 
-        void setScale_RGB(float scale) { _scale_RGB = scale; }
-        void setScale_Alpha(float scale) { _scale_Alpha = scale; }
+        void setScale_RGB(float scale);
+        void setScale_Alpha(float scale);
 
         float getScale_RGB() const { return _scale_RGB; }
         float getScale_Alpha() const { return _scale_Alpha; }

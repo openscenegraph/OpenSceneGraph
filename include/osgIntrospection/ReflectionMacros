@@ -16,15 +16,15 @@
 // QUICK REFLECTORS
 // --------------------------------------------------------------------------
 
-#define STD_VALUE_REFLECTOR(t)           static osgIntrospection::StdValueReflector<t > OSG_RM_LINEID(reflector) (#t);
-#define VALUE_REFLECTOR_WITH_RW(t, rw)   static osgIntrospection::ValueReflector<t > OSG_RM_LINEID(reflector) (#t, new rw);
-#define STD_PAIR_REFLECTOR(t)            static osgIntrospection::StdPairReflector<t, t::first_type, t::second_type > OSG_RM_LINEID(reflector) (#t);
-#define STD_PAIR_REFLECTOR_WITH_TYPES(t, pt1, pt2)  static osgIntrospection::StdPairReflector<t, pt1, pt2 > OSG_RM_LINEID(reflector) (#t);
-#define ABSTRACT_OBJECT_REFLECTOR(t)     static osgIntrospection::AbstractObjectReflector<t > OSG_RM_LINEID(reflector) (#t);
-#define STD_CONTAINER_REFLECTOR(t)       static osgIntrospection::StdContainerReflector<t, t::value_type> OSG_RM_LINEID(reflector) (#t);
-#define STD_CONTAINER_REFLECTOR_WITH_TYPES(t, vt)       static osgIntrospection::StdContainerReflector<t, vt > OSG_RM_LINEID(reflector) (#t);
-#define STD_MAP_REFLECTOR(t)             static osgIntrospection::StdMapReflector<t, t::key_type, t::mapped_type > OSG_RM_LINEID(reflector) (#t);
-#define STD_MAP_REFLECTOR_WITH_TYPES(t, it, vt)             static osgIntrospection::StdMapReflector<t, it, vt > OSG_RM_LINEID(reflector) (#t);
+#define STD_VALUE_REFLECTOR(t)            namespace { osgIntrospection::StdValueReflector<t > OSG_RM_LINEID(reflector) (#t); }
+#define VALUE_REFLECTOR_WITH_RW(t, rw)    namespace { osgIntrospection::ValueReflector<t > OSG_RM_LINEID(reflector) (#t, new rw); }
+#define STD_PAIR_REFLECTOR(t)             namespace { osgIntrospection::StdPairReflector<t, t::first_type, t::second_type > OSG_RM_LINEID(reflector) (#t); }
+#define STD_PAIR_REFLECTOR_WITH_TYPES(t, pt1, pt2)   namespace { osgIntrospection::StdPairReflector<t, pt1, pt2 > OSG_RM_LINEID(reflector) (#t); }
+#define ABSTRACT_OBJECT_REFLECTOR(t)      namespace { osgIntrospection::AbstractObjectReflector<t > OSG_RM_LINEID(reflector) (#t); }
+#define STD_CONTAINER_REFLECTOR(t)        namespace { osgIntrospection::StdContainerReflector<t, t::value_type> OSG_RM_LINEID(reflector) (#t); }
+#define STD_CONTAINER_REFLECTOR_WITH_TYPES(t, vt)        namespace { osgIntrospection::StdContainerReflector<t, vt > OSG_RM_LINEID(reflector) (#t); }
+#define STD_MAP_REFLECTOR(t)              namespace { osgIntrospection::StdMapReflector<t, t::key_type, t::mapped_type > OSG_RM_LINEID(reflector) (#t); }
+#define STD_MAP_REFLECTOR_WITH_TYPES(t, it, vt)              namespace { osgIntrospection::StdMapReflector<t, it, vt > OSG_RM_LINEID(reflector) (#t); }
 
 
 // --------------------------------------------------------------------------
@@ -32,19 +32,19 @@
 // --------------------------------------------------------------------------
 
 #define BEGIN_ENUM_REFLECTOR(c)  \
-	static struct OSG_RM_LINEID(reflector): public osgIntrospection::EnumReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::EnumReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define BEGIN_VALUE_REFLECTOR(c)  \
-	static struct OSG_RM_LINEID(reflector): public osgIntrospection::ValueReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c, 0) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::ValueReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c, 0) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define BEGIN_OBJECT_REFLECTOR(c)  \
-	static struct OSG_RM_LINEID(reflector): public osgIntrospection::ObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::ObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define BEGIN_ABSTRACT_OBJECT_REFLECTOR(c)  \
-	static struct OSG_RM_LINEID(reflector): public osgIntrospection::AbstractObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+	 namespace { struct OSG_RM_LINEID(reflector): public osgIntrospection::AbstractObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
 
 #define END_REFLECTOR \
-	} } OSG_RM_LINEID(reflector_instance); 
+	} } OSG_RM_LINEID(reflector_instance); }
 
 
 // --------------------------------------------------------------------------

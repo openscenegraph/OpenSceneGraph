@@ -834,7 +834,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgintrospection"=.\examples\osgintrospection\osgintrospection.dsp - Package Owner=<4>
+Project: "Example osgintrospection"=.\examples\osgintrospection\example_osgintrospection.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

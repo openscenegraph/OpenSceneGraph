@@ -2,7 +2,7 @@
 #include <osgIntrospection/TypedMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Referenced>
+#include <osg/Vec2>
 
 using namespace osgIntrospection;
 

@@ -459,7 +459,7 @@ bool DriveManipulator::calcMovement()
         case(USE_MOUSE_Y_FOR_SPEED):
         {
             float dy = _ga_t0->getYnormalized();
-            _velocity = -_modelScale*0.2f*dy;
+            _velocity = _modelScale*0.2f*dy;
             break;
         }
         case(USE_MOUSE_BUTTONS_FOR_SPEED):

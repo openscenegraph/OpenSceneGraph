@@ -147,6 +147,7 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
     Producer::RenderSurface* rs = _keyboardMouse->getRenderSurface();
     if (ia)
     {
+    
         float minX = FLT_MAX;
         float minY = FLT_MAX;
         float maxX = -FLT_MAX;
@@ -172,9 +173,7 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
     }
     else if (rs)
     {
-        float xMin,yMin,xMax,yMax;
-        rs->getWindowRect(xMin,xMax,yMin,yMax);
-        ea->setWindowSize(xMin,yMin,xMax,yMax);
+        ea->setWindowSize(-1.0f,-1.0f,1.0f,1.0f);
     }
     
     return ea;

@@ -272,6 +272,7 @@ bool FlightManipulator::calcMovement()
     float dx = _ga_t0->getXnormalized();
     float dy = _ga_t0->getYnormalized();
 
+
     osg::Matrix rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
     
@@ -281,7 +282,7 @@ bool FlightManipulator::calcMovement()
     osg::Vec3 sv = lv^up;
     sv.normalize();
 
-    float pitch = inDegrees(dy*75.0f*dt);
+    float pitch = -inDegrees(dy*75.0f*dt);
     float roll = inDegrees(dx*50.0f*dt);
 
     osg::Quat delta_rotate;

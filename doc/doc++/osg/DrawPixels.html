@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::DrawPixels</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::DrawPixels</A></H2></H2><BLOCKQUOTE>DrawPixels is an osg::Drawable subclass which encapsulates the drawing of images using glDrawPixels</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CDrawable,MDrawable.html,CDrawPixels,MDrawPixels.html">
+<param name=before value="M,M,M,M">
+<param name=after value="Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.32.1">DrawPixels</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.32.2">DrawPixels</A></B>(const <!1><A HREF="DrawPixels.html#DOC.2.32.2">DrawPixels</A>&amp; drawimage, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.32.3">cloneType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.32.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.32.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.32.6">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.7">setPosition</A></B>(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; position)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <B><A HREF="#DOC.2.32.8">getPosition</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <B><A HREF="#DOC.2.32.9">getPosition</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.10">setImage</A></B>(<!1><A HREF="Image.html">osg::Image</A>* image)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">osg::Image</A>* <B><A HREF="#DOC.2.32.11">getImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Image.html">osg::Image</A>* <B><A HREF="#DOC.2.32.12">getImage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.13">setUseCompleteImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.14">setSubImageDimensions</A></B>(unsigned int offsetX, unsigned int offsetY, unsigned int <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, unsigned int <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.32.15">getSubImageDimensions</A></B>(unsigned int&amp; offsetX, unsigned int&amp; offsetY, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.32.16">getUseSubImage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.32.17">drawImmediateMode</A></B>(<!1><A HREF="State.html">State</A>&amp; state)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.32.21">_position</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Image.html">Image</A>&gt;  <B><A HREF="#DOC.2.32.22">_image</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.32.23">_useSubImage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.32.24">_offsetX</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int  <B><A HREF="#DOC.2.32.25">_offsetY</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int   <B><A HREF="#DOC.2.32.26">_width</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int    <B><A HREF="#DOC.2.32.27">_height</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DrawPixels.html">DrawPixels</A>&amp; <B><A HREF="#DOC.2.32.18">operator = </A></B>(const <!1><A HREF="DrawPixels.html">DrawPixels</A>&amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.32.19">~DrawPixels</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.32.20">computeBound</A></B>() const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Drawable.html">Drawable</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B>getParents</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getParent</B>(const int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getParent</B>(const int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">StateSet</A>* state)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">StateSet</A>* <B>getStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">StateSet</A>* <B>getStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setSupportsDisplayList</B>(const bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getSupportsDisplayList</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUseDisplayList</B>(const bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getUseDisplayList</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyDisplayList</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; <B>getBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* dc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* <B>getDrawCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* cc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* <B>getCullCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>* <B>getCullCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(uint contextID, uint globj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedDisplayLists</B>(uint contextID)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getStats</B>(<!1><A HREF="Statistics.html">Statistics</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   AttributeBitMask <B>suppportsAttributeOperation</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   AttributeBitMask <B>applyAttributeOperation</B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>draw</B>(<!1><A HREF="State.html">State</A>&amp; state)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;Node*&gt; <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>CullCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  uint AttributeBitMaskenum  <B>AttributeBitMaskValues</B>
+<DT>
+class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_dstate</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_supportsDisplayList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_useDisplayList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingBox.html">BoundingBox</A> <B>_bbox</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bbox_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.22">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.31.26">CullCallback</A>&gt;  <B>_cullCallback</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(osg::Node* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(osg::Node* node)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;uint&gt; GLObjectList mutable GLObjectList <B>_globjList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt;uint,std::set&lt;uint&gt; &gt;static  DeletedDisplayListCache DeletedDisplayListCache <B>s_deletedDisplayListCache</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> <B>getDataVariance</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> <B>_dataVariance</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>DrawPixels is an osg::Drawable subclass which encapsulates the drawing of
+images using glDrawPixels</BLOCKQUOTE>
+<DL>
+
+<A NAME="DrawPixels"></A>
+<A NAME="DOC.2.32.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawPixels()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DrawPixels"></A>
+<A NAME="DOC.2.32.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DrawPixels(const <!1><A HREF="DrawPixels.html#DOC.2.32.2">DrawPixels</A>&amp; drawimage, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="cloneType"></A>
+<A NAME="DOC.2.32.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="clone"></A>
+<A NAME="DOC.2.32.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.32.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.32.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setPosition"></A>
+<A NAME="DOC.2.32.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPosition(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; position)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPosition"></A>
+<A NAME="DOC.2.32.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">osg::Vec3</A>&amp; getPosition()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPosition"></A>
+<A NAME="DOC.2.32.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; getPosition() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setImage"></A>
+<A NAME="DOC.2.32.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(<!1><A HREF="Image.html">osg::Image</A>* image)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getImage"></A>
+<A NAME="DOC.2.32.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">osg::Image</A>* getImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getImage"></A>
+<A NAME="DOC.2.32.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Image.html">osg::Image</A>* getImage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUseCompleteImage"></A>
+<A NAME="DOC.2.32.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseCompleteImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSubImageDimensions"></A>
+<A NAME="DOC.2.32.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSubImageDimensions(unsigned int offsetX, unsigned int offsetY, unsigned int <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, unsigned int <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSubImageDimensions"></A>
+<A NAME="DOC.2.32.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getSubImageDimensions(unsigned int&amp; offsetX, unsigned int&amp; offsetY, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUseSubImage"></A>
+<A NAME="DOC.2.32.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getUseSubImage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="drawImmediateMode"></A>
+<A NAME="DOC.2.32.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImmediateMode(<!1><A HREF="State.html">State</A>&amp; state)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.2.32.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DrawPixels.html">DrawPixels</A>&amp; operator = (const <!1><A HREF="DrawPixels.html">DrawPixels</A>&amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~DrawPixels"></A>
+<A NAME="DOC.2.32.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DrawPixels()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.32.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_position"></A>
+<A NAME="DOC.2.32.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _position</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_image"></A>
+<A NAME="DOC.2.32.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Image.html">Image</A>&gt;  _image</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_useSubImage"></A>
+<A NAME="DOC.2.32.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useSubImage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_offsetX"></A>
+<A NAME="DOC.2.32.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _offsetX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_offsetY"></A>
+<A NAME="DOC.2.32.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int  _offsetY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_width"></A>
+<A NAME="DOC.2.32.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int   _width</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_height"></A>
+<A NAME="DOC.2.32.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int    _height</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

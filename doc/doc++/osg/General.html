@@ -175,9 +175,6 @@
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="_H_MMGR"></A>
 <B>_H_MMGR</B><DT>
 
-<IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="__FUNCTION__"></A>
-<B>__FUNCTION__</B><DT>
-
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern const unsigned int<A NAME="m_alloc_unknown"></A>
 <B>m_alloc_unknown</B><DT>
 
@@ -206,7 +203,7 @@
 <B>m_alloc_free</B><DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_setOwner"></A>
-<B>m_setOwner</B>(const char* file, const unsigned int line, const char* func)<DT>
+<B>m_setOwner</B>(const char* file, const unsigned int line)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern bool&amp;<A NAME="m_breakOnRealloc"></A>
 <B>m_breakOnRealloc</B>(void* reportedAddress)<DT>
@@ -218,13 +215,13 @@
 <B>m_breakOnAllocation</B>(unsigned int count)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void*<A NAME="m_allocator"></A>
-<B>m_allocator</B>(const char* sourceFile, const unsigned int sourceLine, const char* sourceFunc, const unsigned int allocationType, const size_t reportedSize)<DT>
+<B>m_allocator</B>(const char* sourceFile, const unsigned int sourceLine, const unsigned int allocationType, const size_t reportedSize)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void*<A NAME="m_reallocator"></A>
-<B>m_reallocator</B>(const char* sourceFile, const unsigned int sourceLine, const char* sourceFunc, const unsigned int reallocationType, const size_t reportedSize, void* reportedAddress)<DT>
+<B>m_reallocator</B>(const char* sourceFile, const unsigned int sourceLine, const unsigned int reallocationType, const size_t reportedSize, void* reportedAddress)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>SG_EXPORT extern void<A NAME="m_deallocator"></A>
-<B>m_deallocator</B>(const char* sourceFile, const unsigned int sourceLine, const char* sourceFunc, const unsigned int deallocationType, const void* reportedAddress)<DT>
+<B>m_deallocator</B>(const char* sourceFile, const unsigned int sourceLine, const unsigned int deallocationType, const void* reportedAddress)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>bool<A NAME="m_validateAddress"></A>
 <B>m_validateAddress</B>(const void* reportedAddress)<DT>
@@ -251,7 +248,7 @@
 <B>m_getMemoryStatistics</B>()<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>define<A NAME="osgNew"></A>
-<B>osgNew</B>(m_setOwner (__FILE__, __LINE__, __FUNCTION__), false)<DT>
+<B>osgNew</B>(m_setOwner (__FILE__, __LINE__), false)<DT>
 
 <IMG ALT="o" BORDER=0 SRC=icon1.gif>#define<A NAME="OSG_NODEVISITOR"></A>
 <B>OSG_NODEVISITOR</B><DT>

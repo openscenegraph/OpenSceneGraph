@@ -23,37 +23,37 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.97.2">Switch</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.96.2">Switch</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.97.3">Switch</A></B>(const <!1><A HREF="Switch.html#DOC.2.97.3">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.96.3">Switch</A></B>(const <!1><A HREF="Switch.html#DOC.2.96.3">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.97.4">META_Node</A></B>(<!1><A HREF="Switch.html">Switch</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.96.4">META_Node</A></B>(<!1><A HREF="Switch.html">Switch</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.97.5">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.96.5">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.97.6">setValue</A></B>(const int value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.96.6">setValue</A></B>(const int value)
 <DD><I> Selects the active child Node or enables a special SwitchType mode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.97.7">getValue</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.96.7">getValue</A></B>() const 
 <DD><I> Returns the number of the active child Node or the SwitchType</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.97.1">SwitchType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.96.1">SwitchType</A></B>
 <DD><I> Special mode values for the Switch.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.97.9">_value</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.96.9">_value</A></B>
 <DD><I>The current Switch value.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.97.8">~Switch</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.96.8">~Switch</A></B>()
 </DL></P>
 
 </DL>
@@ -102,7 +102,7 @@ to represent the different states of a traffic light.</BLOCKQUOTE>
 <DL>
 
 <A NAME="SwitchType"></A>
-<A NAME="DOC.2.97.1"></A>
+<A NAME="DOC.2.96.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SwitchType</B></TT>
 <DD>
 Special mode values for the Switch. Use these if you want to
@@ -110,35 +110,35 @@ turn on/off all child nodes.
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ALL_CHILDREN_ON"></A>
-<A NAME="DOC.2.97.1.1"></A>
+<A NAME="DOC.2.96.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_CHILDREN_ON</B></TT>
 <DD>Turn on all children. 
 <DL><DT><DD></DL><P>
 <A NAME="ALL_CHILDREN_OFF"></A>
-<A NAME="DOC.2.97.1.2"></A>
+<A NAME="DOC.2.96.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_CHILDREN_OFF</B></TT>
 <DD>Turn off all children. 
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Switch"></A>
-<A NAME="DOC.2.97.2"></A>
+<A NAME="DOC.2.96.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Switch"></A>
-<A NAME="DOC.2.97.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch(const <!1><A HREF="Switch.html#DOC.2.97.3">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.96.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch(const <!1><A HREF="Switch.html#DOC.2.96.3">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.97.4"></A>
+<A NAME="DOC.2.96.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="Switch.html">Switch</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.97.5"></A>
+<A NAME="DOC.2.96.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setValue"></A>
-<A NAME="DOC.2.97.6"></A>
+<A NAME="DOC.2.96.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setValue(const int value)</B></TT>
 <DD>
 Selects the active child Node or enables a special
@@ -148,17 +148,17 @@ SwitchType mode.
 (<!1><A HREF="ImpostorSpriteManager.html#DOC.2.48.3">first</A> child == number 0) or SwitchType. Invalid values
 will be ignored.<BR><DD></DL><P>
 <A NAME="getValue"></A>
-<A NAME="DOC.2.97.7"></A>
+<A NAME="DOC.2.96.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getValue() const </B></TT>
 <DD>
 Returns the number of the active child Node or the SwitchType
 <DL><DT><DD></DL><P>
 <A NAME="~Switch"></A>
-<A NAME="DOC.2.97.8"></A>
+<A NAME="DOC.2.96.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Switch()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_value"></A>
-<A NAME="DOC.2.97.9"></A>
+<A NAME="DOC.2.96.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _value</B></TT>
 <DD>The current Switch value. 
 <DL><DT><DD></DL><P></DL>

@@ -58,14 +58,10 @@ RenderBin::RenderBin(SortMode mode)
     _parent = NULL;
     _stage = NULL;
     _sortMode = mode;
-    _requiresDepthValueForSort = (_sortMode==SORT_FRONT_TO_BACK ||
-                                  _sortMode==SORT_BACK_TO_FRONT);
-
 }
 
 RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
         Object(rhs,copyop),
-        _requiresDepthValueForSort(rhs._requiresDepthValueForSort),
         _binNum(rhs._binNum),
         _parent(rhs._parent),
         _stage(rhs._stage),
@@ -107,8 +103,6 @@ void RenderBin::sort()
 void RenderBin::setSortMode(SortMode mode)
 {
     _sortMode = mode;
-    _requiresDepthValueForSort = (_sortMode==SORT_FRONT_TO_BACK ||
-                                  _sortMode==SORT_BACK_TO_FRONT);
 }
 
 void RenderBin::sort_local()

@@ -62,10 +62,6 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         {
             _renderGraphList.push_back(rg);
         }
-        
-        bool getRequiresDepthValueForSort() const { return _requiresDepthValueForSort; }
-
-        void setRequiresDepthValueForSort(bool flag) { _requiresDepthValueForSort=flag; }
 
         void sort();
 
@@ -102,7 +98,6 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         void copyLeavesFromRenderGraphListToRenderLeafList();
    
-        bool                            _requiresDepthValueForSort;
         int                             _binNum;
         RenderBin*                      _parent;
         RenderStage*                    _stage;

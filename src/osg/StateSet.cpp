@@ -12,7 +12,47 @@
 #include <osg/BlendFunc>
 #include <osg/Depth>
 
+#include <set>
+
+#include <osg/Texture>
+#include <osg/TextureCubeMap>
+
 using namespace osg;
+
+// local class to help porting from OSG0.8.x to 0.9.x 
+class TextureGLModeSet
+{
+
+    public:
+
+        TextureGLModeSet()
+        {
+
+            _textureModeSet.insert(GL_TEXTURE_1D);
+            _textureModeSet.insert(GL_TEXTURE_2D);
+            _textureModeSet.insert(GL_TEXTURE_3D);
+
+            _textureModeSet.insert(GL_TEXTURE_CUBE_MAP);
+
+            _textureModeSet.insert(GL_TEXTURE_GEN_Q);
+            _textureModeSet.insert(GL_TEXTURE_GEN_R);
+            _textureModeSet.insert(GL_TEXTURE_GEN_S);
+            _textureModeSet.insert(GL_TEXTURE_GEN_T);
+        }
+        
+        bool isTextureMode(StateAttribute::GLMode mode) const
+        {
+            return _textureModeSet.find(mode)!=_textureModeSet.end();
+        }
+
+    protected:
+
+        std::set<StateAttribute::GLMode> _textureModeSet;
+        
+};
+
+TextureGLModeSet s_textureGLModeSet;
+
 
 StateSet::StateSet()
 {
@@ -445,17 +485,51 @@ void StateSet::merge(const StateSet& rhs)
 
 void StateSet::setMode(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
 {
-    setMode(_modeList,mode,value);
+    if (!s_textureGLModeSet.isTextureMode(mode))
+    {
+        setMode(_modeList,mode,value);
+    }
+    else
+    {
+        notify(NOTICE)<<"Warning: texture mode '"<<mode<<"'passed to setMode(mode,value), "<<std::endl;
+        notify(NOTICE)<<"         assuming setTextureMode(unit=0,mode,value) instead."<<std::endl;
+        notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
+        setTextureMode(0,mode,value);
+    }
 }
 
 void StateSet::setModeToInherit(const StateAttribute::GLMode mode)
 {
-    setModeToInherit(_modeList,mode);
+    if (!s_textureGLModeSet.isTextureMode(mode))
+    {
+        setModeToInherit(_modeList,mode);
+    }
+    else
+    {
+        notify(NOTICE)<<"Warning: texture mode '"<<mode<<"'passed to setModeToInherit(mode), "<<std::endl;
+        notify(NOTICE)<<"         assuming setTextureModeToInherit(unit=0,mode) instead."<<std::endl;
+        notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
+        setTextureModeToInherit(0,mode);
+    }
+
 }
 
 const StateAttribute::GLModeValue StateSet::getMode(const StateAttribute::GLMode mode) const
 {
-    return getMode(_modeList,mode);
+    if (!s_textureGLModeSet.isTextureMode(mode))
+    {
+        return getMode(_modeList,mode);
+    }
+    else
+    {
+        notify(NOTICE)<<"Warning: texture mode '"<<mode<<"'passed to getMode(mode), "<<std::endl;
+        notify(NOTICE)<<"         assuming getTextureMode(unit=0,mode) instead."<<std::endl;
+        notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
+        return getTextureMode(0,mode);
+    }
 }
 
 void StateSet::setAttribute(StateAttribute *attribute, const StateAttribute::OverrideValue value)
@@ -471,6 +545,7 @@ void StateSet::setAttribute(StateAttribute *attribute, const StateAttribute::Ove
             notify(NOTICE)<<"Warning: texture attribute '"<<attribute->className()<<"'passed to setAttribute(attr,value), "<<std::endl;
             notify(NOTICE)<<"         assuming setTextureAttribute(unit=0,attr,value) instead."<<std::endl;
             notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
             setTextureAttribute(0,attribute,value);
         }
     }        
@@ -497,6 +572,7 @@ void StateSet::setAttributeAndModes(StateAttribute *attribute, const StateAttrib
             notify(NOTICE)<<"Warning: texture attribute '"<<attribute->className()<<"' passed to setAttributeAndModes(attr,value), "<<std::endl;
             notify(NOTICE)<<"         assuming setTextureAttributeAndModes(unit=0,attr,value) instead."<<std::endl;
             notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
             setTextureAttributeAndModes(0,attribute,value);
         }
     }
@@ -535,20 +611,53 @@ void StateSet::setAssociatedModes(const StateAttribute* attribute, const StateAt
 
 void StateSet::setTextureMode(unsigned int unit,const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
 {
-    setMode(getOrCreateTextureModeList(unit),mode,value);
+    if (s_textureGLModeSet.isTextureMode(mode))
+    {
+        setMode(getOrCreateTextureModeList(unit),mode,value);
+    }
+    else
+    {
+        notify(NOTICE)<<"Warning: non-texture mode '"<<mode<<"'passed to setTextureMode(unit,mode,value), "<<std::endl;
+        notify(NOTICE)<<"         assuming setMode(mode,value) instead."<<std::endl;
+        notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
+        setMode(mode,value);
+    }
 }
 
 void StateSet::setTextureModeToInherit(unsigned int unit,const StateAttribute::GLMode mode)
 {
-    if (unit>=_textureModeList.size()) return;
-    setModeToInherit(_textureModeList[unit],mode);
+    if (s_textureGLModeSet.isTextureMode(mode))
+    {
+        if (unit>=_textureModeList.size()) return;
+        setModeToInherit(_textureModeList[unit],mode);
+    }
+    else
+    {
+        notify(NOTICE)<<"Warning: non-texture mode '"<<mode<<"'passed to setTextureModeToInherit(unit,mode), "<<std::endl;
+        notify(NOTICE)<<"         assuming setModeToInherit(unit=0,mode) instead."<<std::endl;
+        notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
+        setModeToInherit(mode);
+    }
 }
 
 
 const StateAttribute::GLModeValue StateSet::getTextureMode(unsigned int unit,const StateAttribute::GLMode mode) const
 {
-    if (unit>=_textureModeList.size()) return StateAttribute::INHERIT;
-    return getMode(_textureModeList[unit],mode);
+    if (s_textureGLModeSet.isTextureMode(mode))
+    {
+        if (unit>=_textureModeList.size()) return StateAttribute::INHERIT;
+        return getMode(_textureModeList[unit],mode);
+    }
+    else
+    {
+        notify(NOTICE)<<"Warning: non-texture mode '"<<mode<<"'passed to geTexturetMode(unit,mode), "<<std::endl;
+        notify(NOTICE)<<"         assuming getMode(mode) instead."<<std::endl;
+        notify(NOTICE)<<"         please change calling code to use appropriate call."<<std::endl;
+
+        return getMode(mode);
+    }
 }
 
 void StateSet::setTextureAttribute(unsigned int unit,StateAttribute *attribute, const StateAttribute::OverrideValue value)

@@ -41,6 +41,8 @@ inline static char* strdup(const char *src)
 #endif
 #endif
 
+#define FILEUTILS_MAX_PATH_LENGTH 2048
+
 #if defined(WIN32) &&!defined(__CYGWIN__)
 char *PathDelimitor = ";";
 static const char *s_default_file_path = ".;";
@@ -91,7 +93,7 @@ void osgDB::initFilePath( void )
 
 void osgDB::setFilePath( const char *_path )
 {
-    char buff[1024];
+    char buff[FILEUTILS_MAX_PATH_LENGTH];
 
     notify(DEBUG_INFO) << "In osgDB::setFilePath("<<_path<<")"<<std::endl;
 
@@ -124,7 +126,7 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
 
 
 
-    char pathbuff[1024];
+    char pathbuff[FILEUTILS_MAX_PATH_LENGTH];
     char *tptr, *tmppath;
     char *path = 0L;
 
@@ -204,7 +206,7 @@ char *osgDB::findDSO( const char *name )
     {
         if (name[0]!='/')
         {
-            char pathbuff[1024];
+            char pathbuff[FILEUTILS_MAX_PATH_LENGTH];
             sprintf( pathbuff,"./%s", name );
             return (char *)strdup(pathbuff);
         }
@@ -215,7 +217,7 @@ char *osgDB::findDSO( const char *name )
     }
     #endif
 
-    char path[1024];
+    char path[FILEUTILS_MAX_PATH_LENGTH];
     char *ptr;
 
     strcpy( path, "./" );

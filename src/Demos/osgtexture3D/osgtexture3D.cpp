@@ -48,17 +48,22 @@ class ConstructStateCallback : public osg::NodeCallback
                 return 0;
             }
 
+            // get max 3D texture size
+            int textureSize;
+            glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &textureSize);
+            if (textureSize > 256)
+                textureSize = 256;
 
             // scale them all to the same size.
-            image_0->scaleImage(256,256,1);
-            image_1->scaleImage(256,256,1);
-            image_2->scaleImage(256,256,1);
-            image_3->scaleImage(256,256,1);
+            image_0->scaleImage(textureSize,textureSize,1);
+            image_1->scaleImage(textureSize,textureSize,1);
+            image_2->scaleImage(textureSize,textureSize,1);
+            image_3->scaleImage(textureSize,textureSize,1);
 
 
             // then allocated a 3d image to use for texturing.
             osg::Image* image_3d = new osg::Image;
-            image_3d->allocateImage(256,256,4,
+            image_3d->allocateImage(textureSize,textureSize,4,
                                     image_0->getPixelFormat(),image_0->getDataType());
 
             // copy the 2d images into the 3d image.

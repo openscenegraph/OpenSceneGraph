@@ -312,6 +312,7 @@ osg::Node* createAnisotripicWall(osg::BoundingBox& bb,const std::string& filenam
     text->setFont("fonts/arial.ttf");
     text->setPosition(center);
     text->setCharacterSize(height*0.03f);
+    text->setColor(osg::Vec4(1.0f,0.0f,1.0f,1.0f));
     text->setAlignment(osgText::Text::CENTER_CENTER);
     text->setAxisAlignment(osgText::Text::XY_PLANE);
     

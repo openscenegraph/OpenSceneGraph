@@ -421,8 +421,7 @@ int main( int argc, char **argv )
     // attach the scene graph.
     viewer.setSceneData( keyboardModel->getScene() );
 
-    osgDB::writeNodeFile(*keyboardModel->getScene(),"test.osg");
-
+    //osgDB::writeNodeFile(*keyboardModel->getScene(),"test.osg");
 
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);

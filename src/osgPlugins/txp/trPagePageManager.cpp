@@ -167,22 +167,11 @@ void OSGPageManager::LoadOneTile(trpgManagedTile* tile)
     tileGroup = archive->LoadTile(NULL,pageManage,tile,&parentNode);
     if (tileGroup) 
     {
-#ifdef USE_THREADLOOP_DELETE
-        // Make an extra reference to it because we want it back for deletion
-    // RO, commenting out as we don't want to do delete here, we want it to happen in the merge thread.
-        tileGroup->ref();
-#endif
-        // we only put tiles with NULL parent to merge list 
-        // others are referenced when added as a child 
         osgGuard g(changeListMutex);
-//         if(parentNode)
-//             parentNode->addChild(tileGroup) ;
-//         else
          if(parentNode)
             toMerge.push_back(MergePair(parentNode,tileGroup)) ;
          else
             toMerge.push_back(MergePair(0,tileGroup)) ;
-        //toMergeParent.push_back(parentNode );
     } 
     else 
     {
@@ -206,7 +195,7 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
     //std::cout<<"OSGPageManager::ThreadLoop()"<<std::endl;
     
     std::vector<osg::Group *> unhook;
-    std::vector <osg::Group *> nextDelete;
+    std::vector < osg::ref_ptr<osg::Group> > nextDelete;
 
     //bool pagingActive = false;
     do
@@ -251,7 +240,8 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
                 pageManage->AckUnload();
             }
 
-            nextDelete.clear();
+            //nextDelete.clear();
+            
             {
                 osgGuard g(changeListMutex);
                 // Add to the unhook list
@@ -260,25 +250,13 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
                     toUnhook.push_back(unhook[kk]);
                 }
                 // Also get the list of deletions while we're here
-#ifdef USE_THREADLOOP_DELETE
                 // use the stl Luke :-) swap is constant time operation that do a = b; b.clear() 
                 // if a is empty which is our case
                 nextDelete.swap(toDelete);
-                //                toDelete.clear();
-#endif
             }
             
-#ifdef USE_THREADLOOP_DELETE
-            // Unreference whatever we're supposed to delete
-            for (unsigned int gi=0;gi<nextDelete.size();gi++)
-            {
-                if(    nextDelete[gi] )
-                {
-                    std::cout<<"unrefing "<<nextDelete[gi]<<std::endl;
-                    nextDelete[gi]->unref();
-                }
-            }
-#endif
+            // unref the delete list.
+            nextDelete.clear();
         
 
             // Now do a single load
@@ -336,7 +314,7 @@ void OSGPageManager::UpdatePositionThread(double inLocX,double inLocY)
 bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
 {
     std::vector<MergePair> mergeList;
-    std::vector<osg::Group *> unhookList;
+    std::vector<osg::ref_ptr<osg::Group> > unhookList;
 
     // Make local copies of the merge and unhook lists
     {
@@ -345,9 +323,6 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
         // if a is empty which is our case
         mergeList.swap(toMerge);
         unhookList.swap(toUnhook);
-//        toMerge.clear();
-//        toMergeParent.clear();
-//        toUnhook.clear();
     }
 
     // visitor to go through unhooked subgraphs to release texture objects
@@ -357,7 +332,7 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
     // Do the unhooking first
     for (unsigned int ui=0;ui<unhookList.size();ui++)
     {
-        osg::Group *unhookMe = unhookList[ui];
+        osg::Group *unhookMe = unhookList[ui].get();
 
         // better safe than sorry
         if(!unhookMe ) continue;
@@ -378,14 +353,12 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
         }
     }
     
-#ifdef USE_THREADLOOP_DELETE
-    // Put the unhooked things on the list to delete
+    // Append the unhooked things on to the list to delete
     {
         osgGuard g(changeListMutex);
         for (unsigned int i = 0; i < unhookList.size();i++)
             toDelete.push_back(unhookList[i]);
     }
-#endif
 
     // Do the merging last
     {
@@ -393,8 +366,6 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
         {
             osg::Group *parent = mergeList[mi].first.get();
             osg::Group *mergeMe = mergeList[mi].second.get();
-//  NO need for that - we only put tiles with NULL parent to merge list         
-//            osg::Group *parent = mergeParentList[mi];
             if (parent)
                 parent->addChild(mergeMe);
             else

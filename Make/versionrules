@@ -14,7 +14,7 @@
 ####################################################################### 
 version : 
 	@if [ "$(VERSION_REVISION)" = "0" ];  then\
-		release=`date +%Y%m%e%H%M`;\
+        release=`date +%Y%m%d%H%M`;\
 	else\
 		release=$(VERSION_REVISION);\
 	fi;\

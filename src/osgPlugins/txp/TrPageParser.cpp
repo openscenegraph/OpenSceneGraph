@@ -46,6 +46,10 @@ using namespace osg;
 using std::vector;
 using std::string;
 
+#if defined(WIN32) && defined(_MSC_VER)
+#define strcasecmp stricmp
+#endif
+
 //----------------------------------------------------------------------------
 // Check if the node is billboard
 namespace {

@@ -29,6 +29,7 @@ RenderStageLighting::~RenderStageLighting()
 void RenderStageLighting::reset()
 {
     _attrList.clear();
+    _texAttrListMap.clear();
 }
 
 void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)

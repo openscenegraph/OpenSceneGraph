@@ -18,7 +18,7 @@ LightSource::~LightSource()
 }
 
 
-void LightSource::setLight(Light* light)
+void LightSource::setLight(StateAttribute* light)
 {
     _light = light;
     setLocalStateSetModes(_value);

@@ -15,7 +15,7 @@ namespace osg {
 class SG_EXPORT LightSource : public Group
 {
     public:
-
+    
         LightSource();
 
         LightSource(const LightSource& ls, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -26,13 +26,13 @@ class SG_EXPORT LightSource : public Group
         META_Node(osg, LightSource);
 
         /** Set the attached light.*/
-        void setLight(Light* light);
+        void setLight(StateAttribute* light);
 
         /** Get the attached light.*/
-        inline Light* getLight() { return _light.get(); }
+        inline StateAttribute* getLight() { return _light.get(); }
 
         /** Get the const attached light.*/
-        inline const Light* getLight() const { return _light.get(); }
+        inline const StateAttribute* getLight() const { return _light.get(); }
 
         /** Set the GLModes on StateSet associated with the LightSource.*/
         void setStateSetModes(StateSet&,const StateAttribute::GLModeValue) const;
@@ -46,8 +46,8 @@ class SG_EXPORT LightSource : public Group
 
         virtual const bool computeBound() const;
 
-        StateAttribute::GLModeValue _value;
-        ref_ptr<Light> _light;
+        StateAttribute::GLModeValue     _value;
+        ref_ptr<StateAttribute>         _light;
 };
 
 }

@@ -136,10 +136,7 @@ void RenderStage::drawImplementation(osg::State& state,RenderLeaf*& previous)
         glClearColor( _clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
 
     if (_clearMask & GL_DEPTH_BUFFER_BIT)
-    {
         glClearDepth( _clearDepth);
-    }
-    else
 
     if (_clearMask & GL_STENCIL_BUFFER_BIT)
         glClearStencil( _clearStencil);

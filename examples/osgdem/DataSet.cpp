@@ -1317,10 +1317,12 @@ osg::Node* DataSet::DestinationTile::createScene()
     {
         osg::HeightField* hf = _terrain->_heightField.get();
         
-        hf->setSkirtHeight(0.003f);
     
         osg::Geode* geode = new osg::Geode;
+
         geode->addDrawable(new osg::ShapeDrawable(hf));
+
+        hf->setSkirtHeight(geode->getBound().radius()*0.01f);
         
         if (_imagery.valid() && _imagery->_image.valid())
         {

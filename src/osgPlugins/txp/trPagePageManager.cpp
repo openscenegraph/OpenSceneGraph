@@ -12,6 +12,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
+#include <osgDB/DatabasePager>
 
 #include <iostream>
 
@@ -335,9 +336,17 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
 //        toUnhook.clear();
     }
 
+    // visitor to go through unhooked subgraphs to release texture objects
+    // and display lists.
+    osgDB::DatabasePager::ReleaseTexturesAndDrawablesVisitor rtadv;
+
     // Do the unhooking first
-    for (unsigned int ui=0;ui<unhookList.size();ui++) {
+    for (unsigned int ui=0;ui<unhookList.size();ui++)
+    {
         osg::Group *unhookMe = unhookList[ui];
+
+        // relase textre objects and display lists in subgraph.
+        unhookMe->accept(rtadv);
 
         // better safe than sorry
 

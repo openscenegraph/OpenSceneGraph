@@ -227,6 +227,11 @@ void Texture::computeInternalFormatWithImage(osg::Image& image) const
     _internalFormat = internalFormat;
 }
 
+bool Texture::isCompressedInternalFormat() const
+{
+    return isCompressedInternalFormat(getInternalFormat());
+}
+
 bool Texture::isCompressedInternalFormat(GLint internalFormat) const
 {
     switch(internalFormat)

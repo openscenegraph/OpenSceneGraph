@@ -1208,6 +1208,8 @@ int32 trpgTexture::CalcTotalSize() const
 
             return totSize;
         }
+    default:
+        break;        
     };
 
     // Figure out the total data size, including mipmaps if necessary
@@ -1341,6 +1343,8 @@ void trpgTexture::CalcMipLevelSizes()
         break;
     case trpg_INTA8:
         pixel_size = 2;
+        break;
+    default:
         break;
     }
 

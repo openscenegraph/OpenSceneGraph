@@ -8,7 +8,7 @@
 using namespace osgUtil;
 using namespace osgProducer;
 
-SceneHandler::SceneHandler( osg::DisplaySettings *ds = NULL) :
+SceneHandler::SceneHandler( osg::DisplaySettings *ds) :
     osgUtil::SceneView(ds)
 {
     mm = new osg::RefMatrix;

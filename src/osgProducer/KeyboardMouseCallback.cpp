@@ -60,6 +60,20 @@ void KeyboardMouseCallback::mouseMotion( float mx, float my)
 
 }
 
+void KeyboardMouseCallback::passiveMouseMotion( float mx, float my) 
+{
+    _mx = mx;
+    _my = my;
+    
+    osg::ref_ptr<EventAdapter> event = new EventAdapter;
+    event->adaptMouseMotion(getTime(),mx,my);
+    
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+
+}
+
 void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
 {
     _mx = mx;

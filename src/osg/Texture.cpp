@@ -20,6 +20,7 @@ Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
 
 Texture::Texture():
     _target(GL_TEXTURE_2D),
+    _unrefImageAfterApply(true),
     _wrap_s(CLAMP),
     _wrap_t(CLAMP),
     _wrap_r(CLAMP),
@@ -223,6 +224,9 @@ void Texture::apply(State& state) const
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
         glBindTexture( _target, handle );
+        
+        if (_unrefImageAfterApply)
+            _image = 0;
 
     }
 }

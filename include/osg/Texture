@@ -82,6 +82,7 @@ class SG_EXPORT Texture : public StateAttribute
             _handleList(),
             _modifiedTag(),
             _image(copyop(text._image.get())),
+            _unrefImageAfterApply(text._unrefImageAfterApply),
             _target(text._target),
             _wrap_s(text._wrap_s),
             _wrap_t(text._wrap_t),
@@ -120,6 +121,10 @@ class SG_EXPORT Texture : public StateAttribute
 
         /** Get the const texture image. */
         inline const Image* getImage() const { return _image.get(); }
+        
+        void setUnrefImageAfterApply(bool unrefImage) { _unrefImageAfterApply = unrefImage; }
+
+        bool getUnrefImageAfterApply() const { return _unrefImageAfterApply; }
 
         /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
           * Creates an OpenGL texture object from the current OpenGL background
@@ -273,7 +278,7 @@ class SG_EXPORT Texture : public StateAttribute
         {
             // pad out handle list if required.
             if (_modifiedTag.size()<=contextID)
-                _modifiedTag.resize(contextID,0);
+                _modifiedTag.resize(contextID+1,0);
 
             // get the modified tag for the current contextID.
             return _modifiedTag[contextID];
@@ -328,6 +333,8 @@ class SG_EXPORT Texture : public StateAttribute
         // in a valid OpenGL context, a therefore within an Texture::apply
         // which is const...
         mutable ref_ptr<Image> _image;
+
+        bool _unrefImageAfterApply;
 
         GLenum _target; // defaults to GL_TEXTURE_2D
 

@@ -65,24 +65,23 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 // Deconstructor: stop and terminate thread
 MpegImageStream::~MpegImageStream()
 {
-    stop();
-
     setCmd(THREAD_QUIT);
 
     if( isRunning() )
     {
 
         // cancel the thread..
-        cancel();
+        // cancel();
+
         //join();
 
         // then wait for the the thread to stop running.
         while(isRunning())
         {
-            osg::notify(osg::DEBUG_INFO)<<"Waiting for MpegImageStream to cancel"<<std::endl;
+            osg::notify(osg::INFO)<<"Waiting for MpegImageStream to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
-        
+
     }
 
     mpeg3_t* mpg = (mpeg3_t*)_mpg;
@@ -101,10 +100,9 @@ MpegImageStream::~MpegImageStream()
 // Set command
 void MpegImageStream::setCmd(ThreadCommand cmd)
 {
-    lock();
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _cmd[_wrIndex] = cmd;
     _wrIndex = (_wrIndex + 1) % NUM_CMD_INDEX;
-    unlock();
 }
 
 
@@ -112,12 +110,14 @@ void MpegImageStream::setCmd(ThreadCommand cmd)
 MpegImageStream::ThreadCommand MpegImageStream::getCmd()
 {
     ThreadCommand cmd = THREAD_IDLE;
-    lock();
-    if (_rdIndex != _wrIndex) {
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    if (_rdIndex != _wrIndex)
+    {
         cmd = _cmd[_rdIndex];
         _rdIndex = (_rdIndex + 1) % NUM_CMD_INDEX;
     }
-    unlock();
+
     return cmd;
 }
 
@@ -130,11 +130,13 @@ void MpegImageStream::load(const char* fileName)
         return;
     }
 
-    if (!mpeg3_has_video(mpg)) {
+    if (!mpeg3_has_video(mpg))
+    {
         osg::notify(WARN) << "No video streams in" << fileName << std::endl;
         return;
     }
-    if (mpeg3_has_audio(mpg)) {
+    if (mpeg3_has_audio(mpg))
+    {
         osg::notify(NOTICE) << "Stream has audio" << std::endl;
     }
 
@@ -196,9 +198,9 @@ void MpegImageStream::load(const char* fileName)
     //                     _texMat->setMatrix(osg::Matrix::scale(s,-t,1.0f)*osg::Matrix::translate(0.0f,t,0.0f));
     // #endif
     // XXX
-    osg::notify(NOTICE) << _frames << " @ " << _fps << " " << _len << "s" << std::endl;
-    osg::notify(NOTICE) << "img " << s << "x" << t << std::endl;
-    osg::notify(NOTICE) << "tex " << texWidth << "x" << texHeight << std::endl;
+    osg::notify(INFO) << _frames << " @ " << _fps << " " << _len << "s" << std::endl;
+    osg::notify(INFO) << "img " << s << "x" << t << std::endl;
+    osg::notify(INFO) << "tex " << texWidth << "x" << texHeight << std::endl;
 }
 
 
@@ -218,17 +220,18 @@ void MpegImageStream::run()
     double timePerFrame = 1.0f/_fps;
     double frameNumber = 0.0;
     
-    while (!done) {
-
+    while (!done)
+    {
         // Handle commands
         ThreadCommand cmd = getCmd();
-        if (cmd != THREAD_IDLE) {
-            switch (cmd) {
+        if (cmd != THREAD_IDLE)
+        {
+            switch (cmd)
+            {
             case THREAD_START: // Start or continue stream
                 playing = true;
                 break;
             case THREAD_STOP: // XXX
-                osg::notify(NOTICE) << "stop at " << t0 << std::endl;
                 playing = false;
                 break;
             case THREAD_REWIND: // XXX
@@ -239,13 +242,14 @@ void MpegImageStream::run()
                 break;
             case THREAD_CLOSE: // Stop and close
                 playing = false;
-                if (mpg) {
+                if (mpg)
+                {
                     mpeg3_close(mpg);
                     mpg = NULL;
                 }
                 break;
-            case THREAD_QUIT: // XXX
-                osg::notify(NOTICE) << "quit" << std::endl;
+            case THREAD_QUIT: 
+                playing = false;
                 done = true;
                 break;
             default:
@@ -254,9 +258,8 @@ void MpegImageStream::run()
             }
         }
 
-        if (playing) {
-
-
+        if (playing)
+        {
             last_frame_tick = timer->tick();
             
             // XXX needs more work to be real-time
@@ -282,9 +285,9 @@ void MpegImageStream::run()
                 }
             }
         }
-        else {
+        else if (!done) 
+        {
             ::usleep(IDLE_TIMEOUT);
         }
     }
-
 }

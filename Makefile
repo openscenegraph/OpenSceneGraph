@@ -4,7 +4,7 @@ MAKE_PREP = Make/makedefs Make/makerules
 
 DIRS = src
 
-VERSION = osg-0.8.42
+VERSION = osg-0.8.43
 
 all : $(MAKE_PREP)
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done

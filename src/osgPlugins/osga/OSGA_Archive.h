@@ -80,11 +80,6 @@ class OSGA_Archive : public osgDB::Archive
         /** Write an osg::Node with specified file name to the Archive.*/
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) const;
         
-        
-    protected:
-  
-        mutable osgDB::ReentrantMutex _serializerMutex;
-
         #if defined(_MSC_VER)
         typedef __int64 pos_type;
         typedef __int64 size_type;
@@ -95,6 +90,11 @@ class OSGA_Archive : public osgDB::Archive
         
         typedef std::pair<pos_type, size_type> PositionSizePair;
         typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
+        
+    protected:
+  
+        mutable osgDB::ReentrantMutex _serializerMutex;
+
 
         friend class IndexBlock;
 
@@ -148,6 +148,7 @@ class OSGA_Archive : public osgDB::Archive
             char*           _data;
         };
     
+	public: 
         /** Functor used in internal implementations.*/
         struct ReadFunctor
         {
@@ -161,11 +162,6 @@ class OSGA_Archive : public osgDB::Archive
             std::string _filename;
             const osgDB::ReaderWriter::Options* _options;
         };
-        
-        struct ReadObjectFunctor;
-        struct ReadImageFunctor;
-        struct ReadHeightFieldFunctor;
-        struct ReadNodeFunctor;
 
         /** Functor used in internal implementations.*/
         struct WriteFunctor
@@ -180,6 +176,13 @@ class OSGA_Archive : public osgDB::Archive
             std::string _filename;
             const osgDB::ReaderWriter::Options* _options;
         };
+        
+	protected:
+        struct ReadObjectFunctor;
+        struct ReadImageFunctor;
+        struct ReadHeightFieldFunctor;
+        struct ReadNodeFunctor;
+
 
         struct WriteObjectFunctor;
         struct WriteImageFunctor;

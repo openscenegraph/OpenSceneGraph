@@ -143,8 +143,14 @@ endif
 endif
 
 #### Linux specific definitions
+
 ifeq ($(OS),Linux)
+
+ifeq (x$(CXX),x)
   C++               = g++
+else
+  C++               = $(CXX)
+endif
   DEPARG            = -MM
   INC               += 
   DEF               += -W -Wall

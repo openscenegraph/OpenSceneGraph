@@ -158,3 +158,6 @@ Bryan Walsh
  
 Terrex
     - the original base source for txp loader.
+
+Tanguy Fautré <softdev@pandora.be>
+    - tri_stripper code utilized in the src/osgUtil/TriStipVisitor.cpp.

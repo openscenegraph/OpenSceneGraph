@@ -9,7 +9,6 @@ CXXFILES = \
 	DisplayRequirementsVisitor.cpp\
 	InsertImpostorsVisitor.cpp\
 	IntersectVisitor.cpp\
-	NvTriStripObjects.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\
 	RenderGraph.cpp\
@@ -22,6 +21,7 @@ CXXFILES = \
 	Tesselator.cpp\
 	TransformCallback.cpp\
 	TriStripVisitor.cpp\
+        TriStrip_tri_stripper.cpp\
 	CubeMapGenerator.cpp\
 	HalfWayMapGenerator.cpp\
 	HighlightMapGenerator.cpp\

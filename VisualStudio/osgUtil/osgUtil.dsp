@@ -129,10 +129,6 @@ SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\NvTriStripObjects.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\Optimizer.cpp
 # End Source File
 # Begin Source File
@@ -178,6 +174,10 @@ SOURCE=..\..\src\osgUtil\TransformCallback.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osgUtil\TriStripVisitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\TriStrip_tri_stripper.cpp
 # End Source File
 # Begin Source File
 
@@ -233,10 +233,6 @@ SOURCE=..\..\Include\osgUtil\IntersectVisitor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\NvTriStripObjects.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgUtil\Optimizer
 # End Source File
 # Begin Source File
@@ -282,6 +278,18 @@ SOURCE=..\..\include\osgUtil\TransformCallback
 # Begin Source File
 
 SOURCE=..\..\include\osgUtil\TriStripVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Src\osgUtil\TriStrip_graph_array.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Src\osgUtil\TriStrip_heap_array.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Src\osgUtil\TriStrip_tri_stripper.h
 # End Source File
 # Begin Source File
 

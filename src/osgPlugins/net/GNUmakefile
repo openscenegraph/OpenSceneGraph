@@ -3,8 +3,8 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	ReaderWriterNET.cpp\
-    sockinet.cpp\
-    sockstream.cpp\
+	sockinet.cpp\
+	sockstream.cpp\
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS) $(SOCKET_LIBS)
 

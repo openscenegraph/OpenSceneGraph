@@ -83,6 +83,9 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in)
 bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap)
 {
     if (!_data || _offsetOfNextAvailableSpace==0) return false;
+    
+    bool valuesAdded = false;
+    
     unsigned char* ptr = _data;
     unsigned char* end_ptr = _data + _offsetOfNextAvailableSpace;
     while (ptr<end_ptr)
@@ -99,7 +102,10 @@ bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap)
         indexMap[filename] = position;
         
         ptr += filename_size;
+        
+        valuesAdded = true;
     }
+    return valuesAdded;
 }
 
 void Archive::IndexBlock::write(std::ostream& out)

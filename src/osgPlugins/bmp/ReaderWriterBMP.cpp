@@ -5,6 +5,7 @@
 #include <osg/GL>
 
 #include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 /****************************************************************************
  *
@@ -309,6 +310,9 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
             unsigned char *imageData = NULL;
             int width_ret;
             int height_ret;
@@ -345,6 +349,9 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
         }
         virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
             FILE *fp = fopen(fileName.c_str(), "wb");
             if (!fp) return WriteResult::ERROR_IN_WRITING_FILE;
             // its easier for me to write a binary write using stdio than streams

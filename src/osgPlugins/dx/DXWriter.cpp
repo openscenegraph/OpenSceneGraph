@@ -2361,6 +2361,13 @@ void DXWriter::ReportUnhandledModesAndAttrs()
 //     the StateSetVisitor traversal using node.traverse, which continues
 //     traversal on the node's children.
 
+// need to add this to get round incompatibilities between the MipsPro7.3
+// and VisualStudio compiles handling of NodeVisitor:: method calls, VS
+// seems broke so can't handle osg::NodeVisitor intpreting it as a 
+// static method call?!? Anyway no osg:: but using namespace osg seems to
+// keep both happy. Robert, Feb 2002.
+using namespace osg;
+
 class StateSetVisitor;
 
 class StateSetActionVisitor : public osg::NodeVisitor

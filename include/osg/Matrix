@@ -42,14 +42,14 @@ class SG_EXPORT Matrix : public Object
 
         Matrix& operator = (const Matrix& );
 
-        int compare(const Matrix& m) const { return memcmp(_mat,m._mat,sizeof(_mat)); }
+        int compare(const Matrix& m) const { ensureRealized();  m.ensureRealized(); return memcmp(_mat,m._mat,sizeof(_mat)); }
 
         bool operator < (const Matrix& m) const { return compare(m)<0; }
         bool operator == (const Matrix& m) const { return compare(m)==0; }
         bool operator != (const Matrix& m) const { return compare(m)!=0; }
 
-        inline float& operator()(int row, int col) { return _mat[row][col]; }
-        inline float operator()(int row, int col) const { return _mat[row][col]; }
+        inline float& operator()(int row, int col) { ensureRealized(); return _mat[row][col]; }
+        inline float operator()(int row, int col) const { ensureRealized(); return _mat[row][col]; }
 
         void set( float const * const );
         void set( float a00, float a01, float a02, float a03,
@@ -57,8 +57,10 @@ class SG_EXPORT Matrix : public Object
                   float a20, float a21, float a22, float a23,
                   float a30, float a31, float a32, float a33);
                   
-        float * ptr() { return (float *)_mat; }
-        const float * ptr() const { return (const float *)_mat; }
+        float * ptr() { ensureRealized(); return (float *)_mat; }
+        const float * ptr() const { ensureRealized(); return (const float *)_mat; }
+
+        inline void ensureRealized() const { if (!fully_realized) const_cast<Matrix*>(this)->makeIdent();}
 
         void makeIdent();
         void makeScale( const Vec3& );
@@ -97,7 +99,7 @@ class SG_EXPORT Matrix : public Object
 
         void setTrans( float tx, float ty, float tz );
 	void setTrans( const Vec3& v );
-        Vec3 getTrans() const { return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
+        Vec3 getTrans() const { ensureRealized(); return Vec3(_mat[3][0],_mat[3][1],_mat[3][2]); } 
 
 #ifdef USE_DEPRECATED_MATRIX_METHODS
 
@@ -162,90 +164,23 @@ class SG_EXPORT Matrix : public Object
             {    mult( p.A, p.B ); }
 
 
-        Matrix & operator *( Matrix &m )
+        // Don, I've made the matrix paramter a const, and the return type
+        // a Matrix, and the removed the r stuff too.  It should now, be
+        // safe. But there is the 
+        // MatrixProduct operator * ( const Matrix& other ) const method above
+        // which is what should be used instead. There is also the 
+        // Matrix( const MatrixProduct& p ) just above this comment too,
+        // which works in conjunction with the operator * (..) method.
+        // The only reason why the below is allow to compile is that it ins't
+        // defined as const, which it really should be, but if it is then
+        // it won't compile since there already is a proper matrix multiple 
+        // operator.  I believe it should be possible to delete the below
+        // method, just need confirmation about compilation without it at 
+        // your end. Robert. Sat 29th Sep.
+        Matrix operator *( const Matrix &m ) 
 	{
-	    static osg::Matrix r;
-	    r.set(
-	    	_mat[0][0] * m._mat[0][0] +
-		_mat[0][1] * m._mat[1][0] +
-		_mat[0][2] * m._mat[2][0] +
-		_mat[0][3] * m._mat[3][0],
-
-	    	_mat[0][0] * m._mat[0][1] +
-		_mat[0][1] * m._mat[1][1] +
-		_mat[0][2] * m._mat[2][1] +
-		_mat[0][3] * m._mat[3][1],
-
-	    	_mat[0][0] * m._mat[0][2] +
-		_mat[0][1] * m._mat[1][2] +
-		_mat[0][2] * m._mat[2][2] +
-		_mat[0][3] * m._mat[3][2],
-
-	    	_mat[0][0] * m._mat[0][3] +
-		_mat[0][1] * m._mat[1][3] +
-		_mat[0][2] * m._mat[2][3] +
-		_mat[0][3] * m._mat[3][3],
-	        
-	    	_mat[1][0] * m._mat[0][0] +
-		_mat[1][1] * m._mat[1][0] +
-		_mat[1][2] * m._mat[2][0] +
-		_mat[1][3] * m._mat[3][0],
-
-	    	_mat[1][0] * m._mat[0][1] +
-		_mat[1][1] * m._mat[1][1] +
-		_mat[1][2] * m._mat[2][1] +
-		_mat[1][3] * m._mat[3][1],
-
-	    	_mat[1][0] * m._mat[0][2] +
-		_mat[1][1] * m._mat[1][2] +
-		_mat[1][2] * m._mat[2][2] +
-		_mat[1][3] * m._mat[3][2],
-
-	    	_mat[1][0] * m._mat[0][3] +
-		_mat[1][1] * m._mat[1][3] +
-		_mat[1][2] * m._mat[2][3] +
-		_mat[1][3] * m._mat[3][3],
-
-	    	_mat[2][0] * m._mat[0][0] +
-		_mat[2][1] * m._mat[1][0] +
-		_mat[2][2] * m._mat[2][0] +
-		_mat[2][3] * m._mat[3][0],
-
-	    	_mat[2][0] * m._mat[0][1] +
-		_mat[2][1] * m._mat[1][1] +
-		_mat[2][2] * m._mat[2][1] +
-		_mat[2][3] * m._mat[3][1],
-
-	    	_mat[2][0] * m._mat[0][2] +
-		_mat[2][1] * m._mat[1][2] +
-		_mat[2][2] * m._mat[2][2] +
-		_mat[2][3] * m._mat[3][2],
-
-	    	_mat[2][0] * m._mat[0][3] +
-		_mat[2][1] * m._mat[1][3] +
-		_mat[2][2] * m._mat[2][3] +
-		_mat[2][3] * m._mat[3][3],
-
-	    	_mat[3][0] * m._mat[0][0] +
-		_mat[3][1] * m._mat[1][0] +
-		_mat[3][2] * m._mat[2][0] +
-		_mat[3][3] * m._mat[3][0],
-
-	    	_mat[3][0] * m._mat[0][1] +
-		_mat[3][1] * m._mat[1][1] +
-		_mat[3][2] * m._mat[2][1] +
-		_mat[3][3] * m._mat[3][1],
-
-	    	_mat[3][0] * m._mat[0][2] +
-		_mat[3][1] * m._mat[1][2] +
-		_mat[3][2] * m._mat[2][2] +
-		_mat[3][3] * m._mat[3][2],
-
-	    	_mat[3][0] * m._mat[0][3] +
-		_mat[3][1] * m._mat[1][3] +
-		_mat[3][2] * m._mat[2][3] +
-		_mat[3][3] * m._mat[3][3]
-	    );
+	    osg::Matrix r;
+            r.mult(*this,m);
 	    return  r;
 	}
 

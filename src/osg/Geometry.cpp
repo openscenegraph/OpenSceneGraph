@@ -24,12 +24,27 @@ class DrawVertex
             _vertices(vertices),
             _indices(indices)
         {
-            _verticesType = _vertices->getType();
+            _verticesType = _vertices?_vertices->getType():Array::ArrayType;
+            _indicesType = _indices?_indices->getType():Array::ArrayType;
         }
     
+        inline unsigned int index(unsigned int pos)
+        {
+            switch(_indicesType)
+            {
+            case(Array::ByteArrayType): return (*static_cast<const ByteArray*>(_indices))[pos];
+            case(Array::ShortArrayType): return (*static_cast<const ShortArray*>(_indices))[pos];
+            case(Array::IntArrayType): return (*static_cast<const IntArray*>(_indices))[pos];
+            case(Array::UByteArrayType): return (*static_cast<const UByteArray*>(_indices))[pos];
+            case(Array::UShortArrayType): return (*static_cast<const UShortArray*>(_indices))[pos];
+            case(Array::UIntArrayType): return (*static_cast<const UIntArray*>(_indices))[pos];
+            default: return 0;
+            }
+        }
+
         inline void operator () (unsigned int pos)
         {
-            if (_indices) pos = _indices->index(pos);
+            if (_indices) pos = index(pos);
 
             switch(_verticesType)
             {
@@ -42,6 +57,8 @@ class DrawVertex
             case(Array::Vec4ArrayType): 
                 apply((*(static_cast<const Vec4Array*>(_vertices)))[pos]);
                 break;
+            default:
+                break;
             }
             
         }
@@ -53,6 +70,7 @@ class DrawVertex
         const Array*        _vertices;
         const IndexArray*   _indices;
         Array::Type         _verticesType;
+        Array::Type         _indicesType;
 };
 #else
 class DrawVertex : public osg::ConstValueVisitor
@@ -105,8 +123,8 @@ class DrawColor
             _colors(colors),
             _indices(indices)
         {
-            _colorsType = _colors->getType();
-            _indicesType = _indices->getType();
+            _colorsType = _colors?_colors->getType():Array::ArrayType;
+            _indicesType = _indices?_indices->getType():Array::ArrayType;
         }
 
         inline unsigned int index(unsigned int pos)
@@ -137,6 +155,8 @@ class DrawColor
                 break;
             case(Array::Vec3ArrayType):
                 apply((*static_cast<const Vec3Array*>(_colors))[pos]);
+                break;
+            default:
                 break;
             }
         }

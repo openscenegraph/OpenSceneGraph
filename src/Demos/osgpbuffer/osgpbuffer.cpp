@@ -248,7 +248,7 @@ class MyGeometryCallback :
                 osg::Vec3* end = begin+count;
                 for (osg::Vec3* itr=begin;itr<end;++itr)
                 {
-                    osg::Vepc3 dv(*itr-_origin);
+                    osg::Vec3 dv(*itr-_origin);
                     osg::Vec3 local(dv*_xAxis,dv*_yAxis,dv*_zAxis);
                     
                     local.z() = local.x()*_amplitude*

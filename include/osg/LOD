@@ -36,9 +36,11 @@ class SG_EXPORT LOD : public Group
 
         virtual void traverse(NodeVisitor& nv);
         
-        virtual bool addChild( Node *child );
+        virtual bool addChild(Node *child);
 
-        virtual bool removeChild( Node *child );
+        virtual bool addChild(Node *child, float min, float max);
+
+        virtual bool removeChild(Node *child);
 
 
         typedef std::pair<float,float>  MinMaxPair;

@@ -42,11 +42,18 @@ void LOD::traverse(NodeVisitor& nv)
 
 bool LOD::addChild( Node *child )
 {
+    float maxRange = 0.0f;
+    if (!_rangeList.empty()) maxRange=_rangeList.back().second;
+    return addChild(child,maxRange,maxRange);
+}
+
+bool LOD::addChild(Node *child, float min, float max)
+{
     if (Group::addChild(child))
     {
-        float maxRange = 0.0f;
-        if (!_rangeList.empty()) maxRange=_rangeList.back().second;
-        if (_children.size()>_rangeList.size()) _rangeList.resize(_children.size(),MinMaxPair(maxRange,maxRange));
+        if (_children.size()>_rangeList.size()) _rangeList.resize(_children.size(),MinMaxPair(min,min));
+        _rangeList[_children.size()-1].first = min;
+        _rangeList[_children.size()-1].second = max;
         return true;
     }
     return false;

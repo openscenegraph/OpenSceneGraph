@@ -22,6 +22,9 @@ sgv cube_mapped_torus.osg
 echo sgv Town.osg
 sgv Town.osg
 
+echo osganimate
+osganimate
+
 echo osghangglide
 osghangglide
 

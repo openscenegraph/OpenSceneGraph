@@ -20,7 +20,6 @@ Node *makeBase( void )
     Vec3Array *coords = new Vec3Array(19);
     Vec2Array *tcoords = new Vec2Array(19);
     Vec4Array *colors = new Vec4Array(1);
-    int *lengths = new int[1];
 
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
 

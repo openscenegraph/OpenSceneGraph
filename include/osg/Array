@@ -1,0 +1,120 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_ARRAY
+#define OSG_ARRAY 1
+
+#include <osg/Object>
+#include <osg/GL>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+
+#include <vector>
+
+namespace osg {
+
+enum ArrayType
+{
+    AttributeArrayType = 0,
+    ByteArrayType     = 1,
+    ShortArrayType    = 2,
+    IntArrayType      = 3,
+    UByteArrayType    = 4,
+    UShortArrayType   = 5,
+    UIntArrayType     = 6,
+    UByte4ArrayType   = 7,
+    FloatArrayType    = 8,
+    Vec2ArrayType     = 9,
+    Vec3ArrayType     = 10,
+    Vec4ArrayType     = 11
+};
+
+class SG_EXPORT AttributeArray : public Object
+{
+
+    public:
+    
+        AttributeArray(ArrayType arrayType=AttributeArrayType,GLint dataSize=0,GLenum dataType=0):
+            _arrayType(arrayType),
+            _dataSize(dataSize),
+            _dataType(dataType) {}
+    
+        AttributeArray(const AttributeArray& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Object(array,copyop),
+            _arrayType(array._arrayType),
+            _dataSize(array._dataSize),
+            _dataType(array._dataType) {}
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const AttributeArray*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const;
+
+
+        ArrayType               arrayType() const { return _arrayType; }
+        GLint                   dataSize() const { return _dataSize; }
+        GLenum                  dataType() const { return _dataType; }
+        virtual const GLvoid*   dataPointer() const = 0;
+
+    protected:
+    
+        virtual ~AttributeArray() {}
+
+        ArrayType   _arrayType;
+        GLint       _dataSize;
+        GLenum      _dataType;
+};
+
+
+
+template<typename T, ArrayType ARRAYTYPE, int DataSize, int DataType>
+class TemplateArray : public AttributeArray, public std::vector<T>
+{
+    public:
+    
+        TemplateArray() : AttributeArray(ARRAYTYPE,DataSize,DataType) {}
+
+        TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            AttributeArray(ta,copyop),
+            std::vector<T>(ta) {}
+        
+        TemplateArray(unsigned int no) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(no) {}
+
+        TemplateArray(unsigned int no,T* ptr) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(ptr,ptr+no) {}
+
+
+        template <class InputIterator>
+        TemplateArray(InputIterator first,InputIterator last) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(first,last) {}        
+
+//         TemplateArray(T* first,T* last) : 
+//             AttributeArray(ARRAYTYPE,DataSize,DataType),
+//             std::vector<T>(first,last) {}
+
+        virtual Object* cloneType() const { return osgNew TemplateArray(); }
+        virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
+
+        virtual const GLvoid*   dataPointer() const { if (!empty()) return &front(); else return 0; }
+};
+
+typedef TemplateArray<char,ByteArrayType,1,GL_BYTE>                       ByteArray;
+typedef TemplateArray<short,ShortArrayType,1,GL_SHORT>                    ShortArray;
+typedef TemplateArray<int,IntArrayType,1,GL_INT>                          IntArray;
+typedef TemplateArray<unsigned char,UByteArrayType,1,GL_UNSIGNED_BYTE>    UByteArray;
+typedef TemplateArray<unsigned short,UShortArrayType,1,GL_UNSIGNED_SHORT> UShortArray;
+typedef TemplateArray<unsigned int,UIntArrayType,1,GL_UNSIGNED_INT>       UIntArray;
+typedef TemplateArray<unsigned int,UByte4ArrayType,4,GL_UNSIGNED_BYTE>    UByte4Array;
+typedef TemplateArray<float,FloatArrayType,1,GL_FLOAT>                    FloatArray;
+typedef TemplateArray<Vec2,Vec2ArrayType,2,GL_FLOAT>                      Vec2Array;
+typedef TemplateArray<Vec3,Vec3ArrayType,3,GL_FLOAT>                      Vec3Array;
+typedef TemplateArray<Vec4,Vec4ArrayType,4,GL_FLOAT>                      Vec4Array;
+
+}
+
+#endif

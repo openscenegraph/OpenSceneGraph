@@ -14,7 +14,6 @@
 #ifndef OSG_VIEWER_H
 #define OSG_VIEWER_H
 
-#include <osg/Timer>
 #include <osg/NodeVisitor>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>

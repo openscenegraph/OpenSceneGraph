@@ -1,3 +1,5 @@
+// -*-c++-*-
+
 #include "ConvertFromPerformer.h"
 
 #include <osg/Group>
@@ -13,6 +15,7 @@
 #include <osg/TexMat>
 #include <osg/Material>
 #include <osg/Notify>
+#include <osg/Geometry>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -101,7 +104,7 @@ osg::Object* ConvertFromPerformer::getOsgObject(pfObject* pfObj)
 }
 
 
-void ConvertFromPerformer::regisiterPfObjectForOsgObject(pfObject* pfObj,osg::Object* osgObj)
+void ConvertFromPerformer::registerPfObjectForOsgObject(pfObject* pfObj,osg::Object* osgObj)
 {
     _pfToOsgMap[pfObj] = osgObj;
 }
@@ -137,7 +140,7 @@ osg::Node* ConvertFromPerformer::visitScene(osg::Group* osgParent,pfScene* scene
     osgScene = new osg::Group;
     if (osgParent) osgParent->addChild(osgScene);
 
-    regisiterPfObjectForOsgObject(scene,osgScene);
+    registerPfObjectForOsgObject(scene,osgScene);
 
     const char* name = scene->getName();
     if (name) osgScene->setName(name);
@@ -162,7 +165,7 @@ osg::Node* ConvertFromPerformer::visitGroup(osg::Group* osgParent,pfGroup* group
     osgGroup = new osg::Group;
     if (osgParent) osgParent->addChild(osgGroup);
 
-    regisiterPfObjectForOsgObject(group,osgGroup);
+    registerPfObjectForOsgObject(group,osgGroup);
 
     const char* name = group->getName();
     if (name) osgGroup->setName(name);
@@ -187,7 +190,7 @@ osg::Node* ConvertFromPerformer::visitLOD(osg::Group* osgParent,pfLOD* lod)
     osgLOD = new osg::LOD;
     if (osgParent) osgParent->addChild(osgLOD);
 
-    regisiterPfObjectForOsgObject(lod,osgLOD);
+    registerPfObjectForOsgObject(lod,osgLOD);
 
     const char* name = lod->getName();
     if (name) osgLOD->setName(name);
@@ -224,7 +227,7 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
     osgSwitch = new osg::Switch;
     if (osgParent) osgParent->addChild(osgSwitch);
 
-    regisiterPfObjectForOsgObject(switchNode,osgSwitch);
+    registerPfObjectForOsgObject(switchNode,osgSwitch);
 
     const char* name = switchNode->getName();
     if (name) osgSwitch->setName(name);
@@ -266,7 +269,7 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence*
     osgSequence = new osg::Switch;
     if (osgParent) osgParent->addChild(osgSequence);
 
-    regisiterPfObjectForOsgObject(sequence,osgSequence);
+    registerPfObjectForOsgObject(sequence,osgSequence);
 
     if (sequence->getNumChildren()>0)
     {
@@ -298,7 +301,7 @@ osg::Node* ConvertFromPerformer::visitDCS(osg::Group* osgParent,pfDCS* dcs)
     osgTransform = new osg::Transform;
     if (osgParent) osgParent->addChild(osgTransform);
 
-    regisiterPfObjectForOsgObject(dcs,osgTransform);
+    registerPfObjectForOsgObject(dcs,osgTransform);
 
     const char* name = dcs->getName();
     if (name) osgTransform->setName(name);
@@ -334,7 +337,7 @@ osg::Node* ConvertFromPerformer::visitSCS(osg::Group* osgParent,pfSCS* scs)
     osgTransform = new osg::Transform;
     if (osgParent) osgParent->addChild(osgTransform);
 
-    regisiterPfObjectForOsgObject(scs,osgTransform);
+    registerPfObjectForOsgObject(scs,osgTransform);
 
     const char* name = scs->getName();
     if (name) osgTransform->setName(name);
@@ -368,7 +371,7 @@ osg::Node* ConvertFromPerformer::visitGeode(osg::Group* osgParent,pfGeode* geode
     osgGeode = new osg::Geode;
     if (osgParent) osgParent->addChild(osgGeode);
 
-    regisiterPfObjectForOsgObject(geode,osgGeode);
+    registerPfObjectForOsgObject(geode,osgGeode);
 
     const char* name = geode->getName();
     if (name) osgGeode->setName(name);
@@ -396,7 +399,7 @@ osg::Node* ConvertFromPerformer::visitBillboard(osg::Group* osgParent,pfBillboar
     osgBillboard = new osg::Billboard;
     if (osgParent) osgParent->addChild(osgBillboard);
 
-    regisiterPfObjectForOsgObject(billboard,osgBillboard);
+    registerPfObjectForOsgObject(billboard,osgBillboard);
 
     const char* name = billboard->getName();
     if (name) osgBillboard->setName(name);
@@ -476,7 +479,8 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
     // we'll make it easy to convert by using the Performer style osg::GeoSet,
     // and then convert back to a osg::Geometry afterwards.
-    osg::ref_ptr<osg::GeoSet> osgGeoSet = new osg::GeoSet;
+    //osg::ref_ptr<osg::GeoSet> osgGeoSet = new osg::GeoSet;
+    osg::GeoSet* osgGeoSet = new osg::GeoSet;
 
     int i;
 
@@ -699,15 +703,14 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
 
     }
 
-    visitGeoState(osgGeoSet,geoset->getGState());
-
+    osg::StateSet* osgStateSet = visitGeoState(osgGeoSet,geoset->getGState());
 
     // convert to osg::Geometry, as osg::GeoSet is now deprecated.
     osgDrawable = osgGeoSet->convertToGeometry();
     if (osgDrawable)
     {
         osgGeode->addDrawable(osgDrawable);
-        regisiterPfObjectForOsgObject(geoset,osgDrawable);
+        registerPfObjectForOsgObject(geoset,osgDrawable);
     }
 
 
@@ -722,7 +725,7 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg:Drawable* osgDrawable,pfG
     osg::StateSet* osgStateSet = dynamic_cast<osg::StateSet*>(getOsgObject(geostate));
     if (osgStateSet)
     {
-        if (osgGeoSet) osgGeoSet->setStateSet(osgStateSet);
+        if (osgDrawable) osgDrawable->setStateSet(osgStateSet);
         return osgStateSet;
     }
 

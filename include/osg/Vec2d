@@ -40,7 +40,7 @@ class Vec2d
 
         inline Vec2d(const Vec2f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]; }
         
-        inline operator Vec2f() const { return Vec2f(_v[0],_v[1]);}
+        inline operator Vec2f() const { return Vec2f(static_cast<float>(_v[0]),static_cast<float>(_v[1]));}
 
 
         inline bool operator == (const Vec2d& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
@@ -143,7 +143,7 @@ class Vec2d
         /// Length of the vector = sqrt( vec . vec )
 	inline value_type length() const
 	{
-	    return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] );
+	    return sqrt( _v[0]*_v[0] + _v[1]*_v[1] );
 	}
 
         /// Length squared of the vector = vec . vec

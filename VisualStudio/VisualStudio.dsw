@@ -162,7 +162,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Core osgTerrain"=.\osgTerraom\osgTerrain.dsp - Package Owner=<4>
+Project: "Core osgTerrain"=.\osgTerrain\osgTerrain.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

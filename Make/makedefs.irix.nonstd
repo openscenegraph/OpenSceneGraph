@@ -19,8 +19,9 @@ LDFLAGS = -O2 -n32 -OPT:Olimit=0
 .cpp.o:
 	$(C++) $(C++FLAGS) -c $<
 
+LINKERARGS = 
 DYNAMICLIBRARYLIB = 
-PFLIBS = -lpfdu -lpfutil -lpf -limage 
+PFLOADERPATH = /usr/lib32/libpfdb
 GLUTLIB = -lglut
 
 #

@@ -45,7 +45,7 @@ TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.so
 
 C++FLAGS += -g -I../../../include 
 
-LDFLAGS += -g -L../../../lib  -L$(PFLOADERPATH)  -Xlinker -rpath $(PFLOADERPATH)
+LDFLAGS += -g -L../../../lib  -L$(PFLOADERPATH)  $(LINKERARGS) -rpath $(PFLOADERPATH)
 
 include ../../../Make/makerules
 

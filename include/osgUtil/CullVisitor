@@ -244,8 +244,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
         RenderBin*                                                  _currentRenderBin;
 
-        osg::ref_ptr<osg::StateSet>                                 _localPreRenderState;
-
         ComputeNearFarMode  _computeNearFar;
         float               _computed_znear;
         float               _computed_zfar;

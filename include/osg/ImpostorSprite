@@ -198,7 +198,10 @@ class SG_EXPORT ImpostorSpriteManager : public Referenced
         void remove(ImpostorSprite* is);
         
         ImpostorSprite* createOrReuseImpostorSprite(int s,int t,int frameNumber);
-    
+
+        StateSet* createOrReuseStateSet();
+
+        void reset();
     
     protected:
 
@@ -210,6 +213,10 @@ class SG_EXPORT ImpostorSpriteManager : public Referenced
 
         ImpostorSprite*     _first;
         ImpostorSprite*     _last;
+        
+        typedef std::vector< ref_ptr<StateSet> > StateSetList;
+        StateSetList        _stateSetList;
+        unsigned int        _reuseStateSetIndex;
 
 
 };

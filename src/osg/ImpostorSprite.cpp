@@ -163,6 +163,8 @@ ImpostorSpriteManager::ImpostorSpriteManager():
 
     _alphafunc = new osg::AlphaFunc;
     _alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
+    
+    _reuseStateSetIndex = 0;
 }
 
 
@@ -305,3 +307,18 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
 
 }
 
+StateSet* ImpostorSpriteManager::createOrReuseStateSet()
+{
+    if (_reuseStateSetIndex<_stateSetList.size())
+    {
+        return _stateSetList[_reuseStateSetIndex++].get();
+    }
+    _stateSetList.push_back(new StateSet);
+    _reuseStateSetIndex=_stateSetList.size();
+    return _stateSetList.back().get();
+}
+
+void ImpostorSpriteManager::reset()
+{
+    _reuseStateSetIndex = 0;
+}

@@ -114,21 +114,25 @@ void Text::setText(const wchar_t* text)
 void Text::setPosition(const osg::Vec3& pos)
 {
     _position = pos;
+    computePositions();
 }
 
 void Text::setAlignment(AlignmentType alignment)
 {
     _alignment = alignment;
+    computePositions();
 }
 
 void Text::setAxisAlignment(AxisAlignment axis)
 {
     _axisAlignment = axis;
+    computePositions();
 }
 
 void Text::setRotation(const osg::Quat& quat)
 {
     _rotation = quat;
+    computePositions();
 }
 
 void Text::setLayout(Layout layout)
@@ -145,10 +149,7 @@ void Text::setColor(const osg::Vec4& color)
 bool Text::computeBound() const
 {
     _bbox.init();
-    _textBB.init();
 
-    osg::Matrix matrix;
-    matrix.makeTranslate(_position);
 
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
@@ -160,8 +161,7 @@ bool Text::computeBound() const
             citr != glyphquad._coords.end();
             ++citr)
         {
-            _textBB.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f));
-            _bbox.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f)*matrix);
+            _bbox.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f)*_matrix);
         }
     }
     
@@ -276,65 +276,98 @@ void Text::computeGlyphRepresentation()
         previous_charcode = charcode;
     }
 
+    _textBB.init();
+
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        const GlyphQuads& glyphquad = titr->second;
+        
+        for(GlyphQuads::Coords::const_iterator citr = glyphquad._coords.begin();
+            citr != glyphquad._coords.end();
+            ++citr)
+        {
+            _textBB.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f));
+        }
+    }
+
     if (!_textureGlyphQuadMap.empty()) 
     {
         setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
     }
 
+    computePositions();
+}
+
+void Text::computePositions()
+{
+
+    switch(_alignment)
+    {
+    case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
+    case LEFT_CENTER:   _offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+    case LEFT_BOTTOM:   _offset.set(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()); break;
+
+    case CENTER_TOP:    _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),_textBB.zMin()); break;
+    case CENTER_CENTER: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+    case CENTER_BOTTOM: _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),_textBB.zMin()); break;
+
+    case RIGHT_TOP:     _offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
+    case RIGHT_CENTER:  _offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+    case RIGHT_BOTTOM:  _offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
+    case BASE_LINE:     _offset.set(0.0f,0.0f,0.0f); break;
+    }
+
+    _matrix.makeTranslate(_position-_offset);
+
+    switch(_axisAlignment)
+    {
+    case XZ_PLANE:  _matrix.preMult(osg::Matrix::rotate(osg::inDegrees(90.0f),1.0f,0.0f,0.0f)); break;
+    case YZ_PLANE:  _matrix.preMult(osg::Matrix::rotate(osg::inDegrees(90.0f),1.0f,0.0f,0.0f)*osg::Matrix::rotate(osg::inDegrees(90.0f),0.0f,0.0f,1.0f)); break;
+    case XY_PLANE:  break; // nop - already on XY plane.
+    case SCREEN:    break; // nop - need to account for rotation in draw as it depends on ModelView _matrix.
+    }
+
+    if (_axisAlignment!=SCREEN && !_rotation.zeroRotation())
+    {
+        osg::Matrix matrix;
+        _rotation.get(matrix);
+        _matrix.preMult(matrix);
+    }
+
     dirtyBound();    
 }
+
 
 void Text::drawImplementation(osg::State& state) const
 {
     
 
-    osg::Vec3 offset;
-    switch(_alignment)
-    {
-    case LEFT_TOP:      offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
-    case LEFT_CENTER:   offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case LEFT_BOTTOM:   offset.set(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()); break;
-
-    case CENTER_TOP:    offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),_textBB.zMin()); break;
-    case CENTER_CENTER: offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case CENTER_BOTTOM: offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),_textBB.zMin()); break;
-
-    case RIGHT_TOP:     offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
-    case RIGHT_CENTER:  offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
-    case RIGHT_BOTTOM:  offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
-    case BASE_LINE:     offset.set(0.0f,0.0f,0.0f);
-    }
-    
     
     glPushMatrix();
-    glTranslatef(_position.x(),_position.y(),_position.z());
-    glTranslatef(-offset.x(),-offset.y(),-offset.z());
 
-    switch(_axisAlignment)
+    // draw part.
+    glMultMatrixf(_matrix.ptr());
+
+
+    if (_axisAlignment==SCREEN)
     {
-    case XZ_PLANE: glRotatef(90.0f,1.0f,0.0f,0.0f); break;
-    case YZ_PLANE: glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f); break;
-    case XY_PLANE: break; // nop - already on XY plane.
-    case SCREEN: 
+        osg::Matrix mv = state.getModelViewMatrix();
+        mv.setTrans(0.0f,0.0f,0.0f);
+        osg::Matrix mat3x3;
+        mat3x3.invert(mv);
+        glMultMatrixf(mat3x3.ptr());
+
+        if (!_rotation.zeroRotation())
         {
-            osg::Matrix mv = state.getModelViewMatrix();
-            mv.setTrans(0.0f,0.0f,0.0f);
-            osg::Matrix mat3x3;
-            mat3x3.invert(mv);
-
-            glMultMatrixf(mat3x3.ptr());
-            
+            osg::Matrix matrix;
+            _rotation.get(matrix);
+            glMultMatrixf(matrix.ptr());
         }
-        break;
-    }
+
+    }      
     
-    if (!_rotation.zeroRotation())
-    {
-        osg::Matrix matrix;
-        _rotation.get(matrix);
-        glMultMatrixf(matrix.ptr());
-    }
-                    
     glNormal3f(0.0f,0.0,1.0f);
     glColor4fv(_color.ptr());
 
@@ -386,7 +419,7 @@ void Text::drawImplementation(osg::State& state) const
     if (_drawMode & ALIGNMENT)
     {
         glColor4f(1.0f,0.0f,1.0f,1.0f);
-        glTranslatef(offset.x(),offset.y(),offset.z());
+        glTranslatef(_offset.x(),_offset.y(),_offset.z());
         
         state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
         

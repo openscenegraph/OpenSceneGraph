@@ -270,6 +270,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TexGen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\TexMat.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Texture.cpp
 # End Source File
 # Begin Source File
@@ -495,6 +499,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TexEnvCombine.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\TexGen.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\TexMat.h
 # End Source File
 # Begin Source File
 

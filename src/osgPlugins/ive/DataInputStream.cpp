@@ -25,6 +25,7 @@
 #include "TexEnv.h"
 #include "TexEnvCombine.h"
 #include "TexGen.h"
+#include "TexMat.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -569,6 +570,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVETEXGEN){
         attribute = new osg::TexGen();
         ((ive::TexGen*)(attribute))->read(this);
+    }
+    else if(attributeID == IVETEXMAT){
+        attribute = new osg::TexMat();
+        ((ive::TexMat*)(attribute))->read(this);
     }
     else{
         throw Exception("Unkown StateAttribute in StateSet::read()");

@@ -187,19 +187,19 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         /** Get the handle to the texture object for the current context.*/
         /** return the OpenGL texture object for specified context.*/
-        inline GLuint& getTextureObject(uint contextID) const
+        inline GLuint& getTextureObject(unsigned int contextID) const
         {
             // get the globj for the current contextID.
             return _handleList[contextID];
         }
 
-        inline uint& getModifiedTag(uint contextID) const
+        inline unsigned int& getModifiedTag(unsigned int contextID) const
         {
             // get the modified tag for the current contextID.
             return _modifiedTag[contextID];
         }
 
-        inline uint& getTextureParameterDirty(uint contextID) const
+        inline unsigned int& getTextureParameterDirty(unsigned int contextID) const
         {
             // get the dirty flag for the current contextID.
             return _texParametersDirtyList[contextID];
@@ -216,11 +216,11 @@ class SG_EXPORT Texture : public osg::StateAttribute
           * OpenGL texture objects to cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
-        static void deleteTextureObject(uint contextID,GLuint handle);
+        static void deleteTextureObject(unsigned int contextID,GLuint handle);
 
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
-        static void flushDeletedTextureObjects(uint contextID);
+        static void flushDeletedTextureObjects(unsigned int contextID);
         
         /** Texture is pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;

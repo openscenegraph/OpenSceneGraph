@@ -139,7 +139,7 @@ void Drawable::compile(State& state) const
     unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    uint& globj = _globjList[contextID];
+    GLuint& globj = _globjList[contextID];
 
     // call the globj if already set otherwise comple and execute.
     if( globj != 0 )

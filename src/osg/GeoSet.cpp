@@ -811,7 +811,7 @@ void GeoSet::setInterleavedArray( InterleaveArrayType format, float *pointer )
 }
 
 
-void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, ushort *iai )
+void GeoSet::setInterleavedArray( InterleaveArrayType format, float *ia, unsigned short *iai )
 {
     _iaformat = format;
 

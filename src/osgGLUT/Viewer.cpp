@@ -1053,14 +1053,14 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                     hitr!=hitList.end();
                     ++hitr)
                 {
-                    osg::Vec3 ip = hitr->_intersectPoint;
-                    osg::Vec3 in = hitr->_intersectNormal;
+                    osg::Vec3 ip = hitr->getLocalIntersectPoint();
+                    osg::Vec3 in = hitr->getLocalIntersectNormal();
                     osg::Geode* geode = hitr->_geode.get();
                     osg::notify(osg::NOTICE) << "  Itersection Point ("<<ip<<") Normal ("<<in<<")"<< std::endl;
                     if (hitr->_matrix.valid())
                     {
-                        osg::Vec3 ipEye = ip*(*(hitr->_matrix));
-                        osg::Vec3 inEye = (in+ip)*(*(hitr->_matrix))-ipEye;
+                        osg::Vec3 ipEye = hitr->getWorldIntersectPoint();
+                        osg::Vec3 inEye = hitr->getWorldIntersectNormal();
                         inEye.normalize();
                         if (geode) osg::notify(osg::NOTICE) << "Geode '"<<geode->getName()<< std::endl;
                         osg::notify(osg::NOTICE) << "  Eye Itersection Point ("<<ipEye<<") Normal ("<<inEye<<")"<< std::endl;

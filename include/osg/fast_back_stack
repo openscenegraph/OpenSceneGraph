@@ -33,6 +33,7 @@ class fast_back_stack
             _value = fbs._value;
             _stack = fbs._stack;
             _size = fbs._size;
+            return *this;
         }
 
         inline void clear() { _stack.clear(); _size = 0; }

@@ -2,7 +2,9 @@
 include ../../../Make/makedefs
 
 C++FILES = \
-	osgconv.cpp
+	osgconv.cpp\
+	orientationconverter.cpp
+
 
 TARGET = ../../../bin/osgconv
 

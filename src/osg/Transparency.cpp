@@ -1,4 +1,4 @@
-#include "osg/Transparency"
+#include <osg/Transparency>
 
 using namespace osg;
 

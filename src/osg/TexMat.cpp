@@ -1,5 +1,5 @@
-#include "osg/GL"
-#include "osg/TexMat"
+#include <osg/GL>
+#include <osg/TexMat>
 
 using namespace osg;
 

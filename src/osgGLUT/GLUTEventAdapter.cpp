@@ -1,4 +1,4 @@
-#include "osgGLUT/GLUTEventAdapter"
+#include <osgGLUT/GLUTEventAdapter>
 #include <osgGLUT/glut>
 
 using namespace osgGLUT;

@@ -10,14 +10,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "osg/Notify"
-#include "osg/Node"
-#include "osg/Geode"
-#include "osg/Group"
+#include <osg/Notify>
+#include <osg/Node>
+#include <osg/Geode>
+#include <osg/Group>
 
-#include "osgDB/FileUtils"
-#include "osgDB/FileNameUtils"
-#include "osgDB/Registry"
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
+#include <osgDB/Registry>
 
 using namespace osg;
 using namespace osgDB;
@@ -319,8 +319,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 
 #ifdef WIN32
 
-#include "io.h"
-#include "direct.h"
+#include <io.h>
+#include <direct.h>
 
 osgDB::DirectoryContents osgDB::getDirectoryContents(const std::string& dirName)
 {

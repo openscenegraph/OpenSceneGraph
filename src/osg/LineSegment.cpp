@@ -1,4 +1,4 @@
-#include "osg/LineSegment"
+#include <osg/LineSegment>
 
 using namespace osg;
 

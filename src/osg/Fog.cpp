@@ -1,4 +1,4 @@
-#include "osg/Fog"
+#include <osg/Fog>
 
 using namespace osg;
 

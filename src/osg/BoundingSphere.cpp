@@ -1,4 +1,4 @@
-#include "osg/BoundingSphere"
+#include <osg/BoundingSphere>
 
 using namespace osg;
 

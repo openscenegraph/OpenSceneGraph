@@ -1,4 +1,4 @@
-#include "osg/Version"
+#include <osg/Version>
 
 const char* osgGetVersion()
 {

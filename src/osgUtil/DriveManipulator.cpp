@@ -2,9 +2,9 @@
 	#pragma warning( disable : 4786 )
 #endif
 
-#include "osgUtil/DriveManipulator"
-#include "osgUtil/IntersectVisitor"
-#include "osg/Notify"
+#include <osgUtil/DriveManipulator>
+#include <osgUtil/IntersectVisitor>
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;

@@ -12,10 +12,10 @@
 using namespace std;
 #endif
 
-#include "osg/Notify"
+#include <osg/Notify>
 
-#include "osgDB/DynamicLibrary"
-#include "osgDB/FileUtils"
+#include <osgDB/DynamicLibrary>
+#include <osgDB/FileUtils>
 
 using namespace osg;
 using namespace osgDB;

@@ -1,4 +1,4 @@
-#include "osg/Object"
+#include <osg/Object>
 
 using namespace osg;
 

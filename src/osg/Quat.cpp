@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "osg/Quat"
-#include "osg/Vec4"
-#include "osg/Vec3"
-#include "osg/Types"
+#include <osg/Quat>
+#include <osg/Vec4>
+#include <osg/Vec3>
+#include <osg/Types>
 
 #include <math.h>
 

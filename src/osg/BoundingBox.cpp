@@ -1,5 +1,5 @@
-#include "osg/BoundingBox"
-#include "osg/BoundingSphere"
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
 
 using namespace osg;
 

@@ -1,4 +1,4 @@
-#include "osg/NodeVisitor"
+#include <osg/NodeVisitor>
 #include <stdlib.h>
 
 using namespace osg;

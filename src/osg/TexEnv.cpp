@@ -1,4 +1,4 @@
-#include "osg/TexEnv"
+#include <osg/TexEnv>
 
 using namespace osg;
 

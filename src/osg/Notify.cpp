@@ -1,4 +1,4 @@
-#include "osg/Notify"
+#include <osg/Notify>
 #include <string>
 
 osg::NotifySeverity osg::g_NotifyLevel = osg::NOTICE;

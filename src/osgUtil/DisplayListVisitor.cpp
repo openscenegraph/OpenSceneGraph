@@ -1,5 +1,5 @@
-#include "osgUtil/DisplayListVisitor"
-#include "osg/Drawable"
+#include <osgUtil/DisplayListVisitor>
+#include <osg/Drawable>
 
 using namespace osg;
 using namespace osgUtil;

@@ -1,6 +1,6 @@
-#include "osg/GL"
-#include "osg/PolygonMode"
-#include "osg/Notify"
+#include <osg/GL>
+#include <osg/PolygonMode>
+#include <osg/Notify>
 
 using namespace osg;
 

@@ -1,5 +1,5 @@
-#include "osg/TexGen"
-#include "osg/Notify"
+#include <osg/TexGen>
+#include <osg/Notify>
 
 using namespace osg;
 

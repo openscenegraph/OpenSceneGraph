@@ -1,4 +1,4 @@
-#include "osg/Impostor"
+#include <osg/Impostor>
 
 #include <algorithm>
 

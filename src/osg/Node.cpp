@@ -1,8 +1,8 @@
-#include "osg/Node"
-#include "osg/Group"
-#include "osg/NodeVisitor"
+#include <osg/Node>
+#include <osg/Group>
+#include <osg/NodeVisitor>
 
-#include "osg/Notify"
+#include <osg/Notify>
 
 #include <algorithm>
 

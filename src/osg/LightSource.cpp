@@ -1,4 +1,4 @@
-#include "osg/LightSource"
+#include <osg/LightSource>
 
 using namespace osg;
 

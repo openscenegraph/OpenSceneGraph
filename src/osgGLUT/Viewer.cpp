@@ -12,8 +12,8 @@
 
 #include <string>
 
-#include "osgGLUT/Viewer"
-#include "osgGLUT/GLUTEventAdapter"
+#include <osgGLUT/Viewer>
+#include <osgGLUT/GLUTEventAdapter>
 
 #include <osg/Switch>
 #include <osg/Billboard>

@@ -1,4 +1,4 @@
-#include "osgDB/FileNameUtils"
+#include <osgDB/FileNameUtils>
 
 
 // mac requires std::tolower, but IRIX MipsPro doesn't like it,

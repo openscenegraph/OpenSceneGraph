@@ -133,7 +133,11 @@ public:
         RIGHT_TOP,
         RIGHT_CENTER,
         RIGHT_BOTTOM,
-        BASE_LINE /// default.
+        
+        LEFT_BASE_LINE,
+        CENTER_BASE_LINE,
+        RIGHT_BASE_LINE,
+        BASE_LINE = LEFT_BASE_LINE /// default.
     
     };
     
@@ -240,16 +244,37 @@ protected:
     osg::Vec4               _color;
     unsigned int            _drawMode;
 
+public:
+
     // internal structures, variable and methods used for rendering of characters.
-    struct GlyphQuads
+    struct OSGTEXT_EXPORT GlyphQuads
     {
         typedef std::vector<osg::Vec2> Coords;
         typedef std::vector<osg::Vec2> TexCoords;
 
         Coords      _coords;
         TexCoords   _texcoords;
+
+        Coords& getCoords() { return _coords; }
+        const Coords& getCoords() const { return _coords; }
+
+        TexCoords& getTexCoords() { return _texcoords; }
+        const TexCoords& getTexCoords() const { return _texcoords; }
     };
+    
     typedef std::map<osg::ref_ptr<osg::StateSet>,GlyphQuads> TextureGlyphQuadMap;
+
+    /** Direct Access to GlyphQuads */
+    const GlyphQuads* getGlyphQuad(unsigned int index) const
+    {
+        if (index>=_textureGlyphQuadMap.size()) return NULL;
+
+        TextureGlyphQuadMap::const_iterator itGlyph = _textureGlyphQuadMap.begin();
+        while((index--) && (itGlyph!=_textureGlyphQuadMap.end())) itGlyph++;
+        return &itGlyph->second;
+    }
+
+protected:
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     TextureGlyphQuadMap         _textureGlyphQuadMap;

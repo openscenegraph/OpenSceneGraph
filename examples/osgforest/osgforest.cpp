@@ -1,22 +1,27 @@
-#include <osg/Geode>
-#include <osg/ShapeDrawable>
-#include <osg/Material>
-#include <osg/Texture2D>
-#include <osg/Billboard>
 #include <osg/AlphaFunc>
+#include <osg/Billboard>
 #include <osg/BlendFunc>
-#include <osg/StateSet>
+#include <osg/Depth>
+#include <osg/Geode>
 #include <osg/Geometry>
+#include <osg/Material>
+#include <osg/Math>
 #include <osg/MatrixTransform>
+#include <osg/PolygonOffset>
+#include <osg/Projection>
+#include <osg/ShapeDrawable>
+#include <osg/StateSet>
 #include <osg/Switch>
-
-#include <osgProducer/Viewer>
+#include <osg/Texture2D>
 
 #include <osgDB/ReadFile>
+
 #include <osgUtil/IntersectVisitor>
 #include <osgUtil/SmoothingVisitor>
 
-#include <osg/Math>
+#include <osgText/Text>
+
+#include <osgProducer/Viewer>
 
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
@@ -102,14 +107,20 @@ public:
     osg::Node* createXGraph(Cell* cell,osg::StateSet* stateset);
 
     osg::Node* createTransformGraph(Cell* cell,osg::StateSet* stateset);
+    
+    osg::Node* createHUDWithText(const std::string& text);
 
-    osg::Node* createScene();
+    osg::Node* createScene(unsigned int numTreesToCreates);
     
     void advanceToNextTechnique(int delta=1)
     {
         if (_techniqueSwitch.valid())
         {
-            _currentTechnique = (_currentTechnique + delta)%_techniqueSwitch->getNumChildren();
+            _currentTechnique += delta;
+            if (_currentTechnique<0)
+                _currentTechnique = _techniqueSwitch->getNumChildren()-1;
+            if (_currentTechnique>=(int)_techniqueSwitch->getNumChildren())
+                _currentTechnique = 0;
             _techniqueSwitch->setSingleChildOn(_currentTechnique);
         }
     }
@@ -701,12 +712,53 @@ osg::Node* ForestTechniqueManager::createTransformGraph(Cell* cell,osg::StateSet
     else return transform_group;
 }
 
+osg::Node* ForestTechniqueManager::createHUDWithText(const std::string& str)
+{
+    osg::Geode* geode = new osg::Geode();
+    
+    std::string timesFont("fonts/arial.ttf");
 
-osg::Node* ForestTechniqueManager::createScene()
+    // turn lighting off for the text and disable depth test to ensure its always ontop.
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+    // or disable depth test, and make sure that the hud is drawn after everything 
+    // else so that it always appears ontop.
+    stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    stateset->setRenderBinDetails(11,"RenderBin");
+
+    osg::Vec3 position(150.0f,800.0f,0.0f);
+    osg::Vec3 delta(0.0f,-120.0f,0.0f);
+
+    {
+        osgText::Text* text = new  osgText::Text;
+        geode->addDrawable( text );
+
+        text->setFont(timesFont);
+        text->setPosition(position);
+        text->setText(str);
+        
+        position += delta;
+    }    
+
+   
+    // create the hud.
+    osg::MatrixTransform* modelview_abs = new osg::MatrixTransform;
+    modelview_abs->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
+    modelview_abs->setMatrix(osg::Matrix::identity());
+    modelview_abs->addChild(geode);
+
+    osg::Projection* projection = new osg::Projection;
+    projection->setMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
+    projection->addChild(modelview_abs);
+
+    return projection;
+}
+
+osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
 {
     osg::Vec3 origin(0.0f,0.0f,0.0f);
     osg::Vec3 size(1000.0f,1000.0f,200.0f);
-    unsigned int numTreesToCreates = 10000;
 
     std::cout<<"Creating terrain...";
     osg::ref_ptr<osg::Node> terrain = createTerrain(origin,size);
@@ -746,17 +798,32 @@ osg::Node* ForestTechniqueManager::createScene()
 
     _techniqueSwitch = new osg::Switch;
     
-    std::cout<<"Creating billboard based forest...";
-   _techniqueSwitch->addChild(createBillboardGraph(cell.get(),dstate));
-    std::cout<<"done."<<std::endl;
+    {
+        std::cout<<"Creating billboard based forest...";
+        osg::Group* group = new osg::Group;
+        group->addChild(createBillboardGraph(cell.get(),dstate));
+        group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select osg::MatrixTransform based forest\nPress right cursor key to select double quad based forest"));
+        _techniqueSwitch->addChild(group);
+        std::cout<<"done."<<std::endl;
+    }
+    
+    {
+        std::cout<<"Creating billboard based forest...";
+        osg::Group* group = new osg::Group;
+        group->addChild(createXGraph(cell.get(),dstate));
+        group->addChild(createHUDWithText("Using double quads to create a forest\n\nPress left cursor key to select osg::Billboard based forest\nPress right cursor key to select osg::MatrixTransform based forest\n"));
+        _techniqueSwitch->addChild(group);
+        std::cout<<"done."<<std::endl;
+    }
 
-    std::cout<<"Creating double quad based forest...";
-   _techniqueSwitch->addChild(createXGraph(cell.get(),dstate));
-    std::cout<<"done."<<std::endl;
-
-    std::cout<<"Creating transform based forest...";
-   _techniqueSwitch->addChild(createTransformGraph(cell.get(),dstate));
-    std::cout<<"done."<<std::endl;
+    {
+        std::cout<<"Creating billboard based forest...";
+        osg::Group* group = new osg::Group;
+        group->addChild(createTransformGraph(cell.get(),dstate));
+        group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select osg::Billboard based forest"));
+        _techniqueSwitch->addChild(group);
+        std::cout<<"done."<<std::endl;
+    }
     
     _currentTechnique = 0;
     _techniqueSwitch->setSingleChildOn(_currentTechnique);
@@ -780,9 +847,13 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates the osg::Shape classes.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--trees <number>","Set the number of trees to create");
    
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
+
+    float numTreesToCreates = 10000;
+    arguments.read("--trees",numTreesToCreates);
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
@@ -811,7 +882,7 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osg::Node* node = ttm->createScene();
+    osg::Node* node = ttm->createScene((unsigned int)numTreesToCreates);
 
     // add model to viewer.
     viewer.setSceneData( node );

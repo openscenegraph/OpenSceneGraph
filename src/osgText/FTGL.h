@@ -33,6 +33,18 @@
 
 #else
 
+#if defined(__CYGWIN__) || defined(__MINGW32__)
+#  ifndef APIENTRY
+#   define GLUT_APIENTRY_DEFINED
+#   define APIENTRY    __stdcall
+#  endif
+	   // XXX This is from Win32's <winnt.h> 
+#  ifndef CALLBACK
+#    define CALLBACK __stdcall
+#  endif
+
+#else // ! __CYGWIN__
+
     // Under windows avoid including <windows.h>
     // to avoid name space pollution, but Win32's <GL/gl.h> 
     // needs APIENTRY and WINGDIAPI defined properly. 
@@ -58,6 +70,9 @@
     #    define CALLBACK
     #   endif
     #  endif
+
+#endif // __CYGWIN__
+
        // XXX This is from Win32's <wingdi.h> and <winnt.h> 
     #  ifndef WINGDIAPI
     #   define GLUT_WINGDIAPI_DEFINED

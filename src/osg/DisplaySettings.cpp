@@ -149,7 +149,7 @@ void DisplaySettings::readEnvironmentalVariables()
 
     if( (ptr = getenv("OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS")) != 0)
     {
-        _maxNumOfGraphicsContexts = atof(ptr);
+        _maxNumOfGraphicsContexts = atoi(ptr);
     }
 }
 

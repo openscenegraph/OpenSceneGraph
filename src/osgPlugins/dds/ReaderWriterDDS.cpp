@@ -214,8 +214,11 @@ osg::Image* ReadDDSFile(const char *filename)
                 else
                 {
                     internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-                    //#######################pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+#if 1                    
+                    pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+#else                    
                     pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+#endif                    
                 }
                 break;
             case FOURCC_DXT3:

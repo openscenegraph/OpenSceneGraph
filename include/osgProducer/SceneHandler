@@ -1,0 +1,67 @@
+//C++ header - Open Producer - Copyright (C) 2002 Don Burns
+//Distributed under the terms of the GNU LIBRARY GENERAL PUBLIC LICENSE (LGPL)
+//as published by the Free Software Foundation.
+#ifndef OSGPRODUCER_SCENEHANDLER
+#define OSGPRODUCER_SCENEHANDLER 1
+
+#include <osgProducer/Export>
+
+#include <Producer/Camera>
+#include <osgUtil/SceneView>
+#include <osg/Matrix>
+
+#include <iostream>
+
+namespace osgProducer {
+
+class SceneHandler : public Producer::Camera::SceneHandler, public osgUtil::SceneView
+{
+    public :
+        SceneHandler( osg::DisplaySettings *ds = NULL) : osgUtil::SceneView(ds)
+        {
+            mm = new osg::RefMatrix;
+            pm = new osg::RefMatrix;
+        }
+
+        void cull(Producer::Camera &cam) 
+        {
+            pm->set(cam.getProjectionMatrix());
+            mm->set(cam.getPositionAndAttitudeMatrix());
+            setProjectionMatrix( pm.get() );
+            setModelViewMatrix( mm.get() );
+
+            int x, y;
+            unsigned int w, h;
+            cam.getProjectionRect( x, y, w, h );
+
+            setViewport( x, y, w, h );
+#ifdef _windows_is_non_standard
+            SceneView::cull();
+#else
+            osgUtil::SceneView::cull();
+#endif
+        }
+
+        void draw(Producer::Camera &) 
+        {
+#ifdef _windows_is_non_standard
+            SceneView::draw();
+#else
+            osgUtil::SceneView::draw();
+#endif
+        }
+
+        void setContextID( int id )
+        {
+            getState()->setContextID( id );
+        }
+
+
+    private:
+        osg::ref_ptr<osg::RefMatrix> mm; 
+        osg::ref_ptr<osg::RefMatrix> pm;
+};
+
+}
+
+#endif

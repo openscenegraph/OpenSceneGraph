@@ -5,16 +5,21 @@
 #ifndef OSGGLUT_ProducerEventAdapter
 #define OSGGLUT_ProducerEventAdapter 1
 
+#include <osgProducer/Export>
+
 #include <osgGA/GUIEventAdapter>
 #include <Producer/KeyboardMouse>
 
-/** Class for adapting GLUT events so that they can be used as input to osgGA::CameraManipulators.*/
-class ProducerEventAdapter : public osgGA::GUIEventAdapter
+
+namespace osgProducer {
+
+/** Class for adapting Producer events so that they can be used as input to osgGA::CameraManipulators.*/
+class OSGPRODUCER_EXPORT EventAdapter : public osgGA::GUIEventAdapter
 {
 
     public:
-        ProducerEventAdapter();
-        virtual ~ProducerEventAdapter() {}
+        EventAdapter();
+        virtual ~EventAdapter() {}
 
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const { return _eventType; }
@@ -112,5 +117,7 @@ class ProducerEventAdapter : public osgGA::GUIEventAdapter
         static int _s_modKeyMask;
 
 };
+
+}
 
 #endif

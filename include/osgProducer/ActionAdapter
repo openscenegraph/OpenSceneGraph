@@ -1,0 +1,26 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef PRODUCERACTIONADAPTER
+#define PRODUCERGUIACTIONADAPTER 1 
+
+#include <osgGA/GUIActionAdapter>
+
+namespace osgProducer {
+
+class ActionAdapter : public osgGA::GUIActionAdapter
+{
+    public:
+
+        void requestRedraw() {}
+
+        void requestContinuousUpdate(bool) {}
+
+        void requestWarpPointer(int,int) {}
+
+};
+
+}
+
+#endif

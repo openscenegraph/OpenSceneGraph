@@ -1,26 +1,33 @@
-//C++
-#ifndef PRODUCEREVENTCALLBACK
-#define PRODUCEREVENTCALLBACK
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
 
-#include <stdio.h>
+#ifndef OSGPRODUCER_EVENTCALLBACK
+#define OSGPRODUCER_EVENTCALLBACK 1
+
+
 #include <Producer/RenderSurface> // For definition of KeySymbol
 #include <Producer/KeyboardMouse>
 #include <Producer/Mutex>
 
-#include "ProducerEventAdapter.h"
+#include <osgProducer/EventAdapter>
+
 #include <osg/ref_ptr>
 #include <osg/Timer>
 
-class ProducerEventCallback : public Producer::KeyboardMouseCallback
+namespace osgProducer {
+
+
+class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseCallback
 {
     public:
-        ProducerEventCallback(bool &done) :
+        KeyboardMouseCallback(bool &done) :
             Producer::KeyboardMouseCallback(),
             _mx(0.0f),_my(0.0f),_mbutton(0),
             _done(done)    
             {}
 
-        virtual ~ProducerEventCallback() {}
+        virtual ~KeyboardMouseCallback() {}
 
         virtual void keyPress( Producer::KeySymbol key );
                 
@@ -32,7 +39,7 @@ class ProducerEventCallback : public Producer::KeyboardMouseCallback
                 
         virtual void buttonRelease( float mx, float my, unsigned int mbutton );
 
-        typedef std::vector< osg::ref_ptr<ProducerEventAdapter> > EventQueue;
+        typedef std::vector< osg::ref_ptr<EventAdapter> > EventQueue;
 
         void getEventQueue(EventQueue& queue);
 
@@ -57,4 +64,7 @@ class ProducerEventCallback : public Producer::KeyboardMouseCallback
         EventQueue      _eventQueue;
         
 };
+
+}
+
 #endif

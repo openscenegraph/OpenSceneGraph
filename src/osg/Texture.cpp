@@ -1196,7 +1196,14 @@ void Texture::Extensions::setupGLExtensions()
         }
     }
 
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS,&_numTextureUnits);
+    if( _isMultiTexturingSupported )
+    {
+       glGetIntegerv(GL_MAX_TEXTURE_UNITS,&_numTextureUnits);
+    }
+    else
+    {
+       _numTextureUnits = 1;
+    }
 
     _glCompressedTexImage2D = getGLExtensionFuncPtr("glCompressedTexImage2D","glCompressedTexImage2DARB");
     _glCompressedTexSubImage2D = getGLExtensionFuncPtr("glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");

@@ -14,8 +14,8 @@ typedef std::vector<Point>      PointList;
 typedef std::vector<Vec3>       VertexList;
 
 
-// convert a vector for Vec3 into a vector of Point's.
-void convert(const VertexList& in,PointList& out)
+// copyVertexListToPointList a vector for Vec3 into a vector of Point's.
+void copyVertexListToPointList(const VertexList& in,PointList& out)
 {
     out.reserve(in.size());
     for(VertexList::const_iterator itr=in.begin();
@@ -23,6 +23,17 @@ void convert(const VertexList& in,PointList& out)
         ++itr)
     {
         out.push_back(Point(0,*itr));
+    }
+}
+
+void copyPointListToVertexList(const PointList& in,VertexList& out)
+{
+    out.reserve(in.size());
+    for(PointList::const_iterator itr=in.begin();
+        itr!=in.end();
+        ++itr)
+    {
+        out.push_back(itr->second);
     }
 }
 
@@ -74,7 +85,7 @@ unsigned int clip(const Plane& plane,const PointList& in, PointList& out,unsigne
 unsigned int clip(const Polytope::PlaneList& planeList,const VertexList& vin,PointList& out)
 {
     PointList in;
-    convert(vin,in);
+    copyVertexListToPointList(vin,in);
     
     unsigned int planeMask = 0x1;
     for(Polytope::PlaneList::const_iterator itr=planeList.begin();
@@ -137,22 +148,6 @@ Plane computeFrontPlane(const PointList& front)
 {
     return Plane(front[2].second,front[1].second,front[0].second);
 }
-
-
-// // compute the volume of tetrahedron
-// inline float computeVolume(const osg::Vec3& a,const osg::Vec3& b,const osg::Vec3& c,const osg::Vec3& d)
-// {
-//     return fabs(((b-c)^(a-b))*(d-b));
-// }
-// 
-// // compute the volume of prism.
-// inline float computeVolume(const osg::Vec3& f1,const osg::Vec3& f2,const osg::Vec3& f3,
-//                            const osg::Vec3& b1,const osg::Vec3& b2,const osg::Vec3& b3)
-// {
-//     return computeVolume(f1,f2,f3,b1)+
-//            computeVolume(b1,b2,b3,f2)+
-//            computeVolume(b1,b3,f2,f3);
-// }
 
 // compute the volume between the front and back polygons of the occluder/hole.
 float computePolytopeVolume(const PointList& front, const PointList& back)
@@ -275,6 +270,10 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         // move the occlude points into projection space.
         transform(points,MV);
 
+        // use the points on the front plane as reference vertices on the _occluderVolume
+        // so that the vertices can later by used to test for occlusion of the occluder itself.
+        copyPointListToVertexList(points,_occluderVolume.getReferenceVertexList());
+
         // create the front face of the occluder
         Plane occludePlane = computeFrontPlane(points);
         _occluderVolume.add(occludePlane);
@@ -330,6 +329,10 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
                 // move the occlude points into projection space.
                 transform(points,MV);
+
+                // use the points on the front plane as reference vertices on the _occluderVolume
+                // so that the vertices can later by used to test for occlusion of the occluder itself.
+                copyPointListToVertexList(points,polytope.getReferenceVertexList());
 
                 // create the front face of the occluder
                 Plane occludePlane = computeFrontPlane(points);

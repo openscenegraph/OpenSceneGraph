@@ -8,12 +8,16 @@
 #include <osg/NodeVisitor>
 #include <osg/CullStack>
 
+#include <set>
+
 namespace osg {
 
 class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::CullStack
 {
     public:
 
+
+        typedef std::set<ShadowVolumeOccluder> ShadowVolumeOccluderSet;
 
         CollectOccludersVisitor();
         virtual ~CollectOccludersVisitor();
@@ -37,9 +41,12 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         void setCreateDrawablesOnOccludeNodes(bool flag) { _createDrawables=flag; }
         bool getCreateDrawablesOnOccludeNodes() const { return _createDrawables; }
 
-        void setCollectedOcculderList(const ShadowVolumeOccluderList& svol) { _occluderList = svol; }
-        ShadowVolumeOccluderList& getCollectedOccluderList() { return _occluderList; }
-        const ShadowVolumeOccluderList& getCollectedOccluderList() const { return _occluderList; }
+        void setCollectedOcculderList(const ShadowVolumeOccluderSet& svol) { _occluderSet = svol; }
+        ShadowVolumeOccluderSet& getCollectedOccluderSet() { return _occluderSet; }
+        const ShadowVolumeOccluderSet& getCollectedOccluderSet() const { return _occluderSet; }
+
+        /** remove occluded occluders for the collected occluders list.*/
+        void removeOccludedOccluders();
 
 
     protected:
@@ -66,7 +73,7 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
 
         float                       _minimumShadowOccluderVolume;
         bool                        _createDrawables;
-        ShadowVolumeOccluderList    _collectedOccluderList;
+        ShadowVolumeOccluderSet     _occluderSet;
 
 };
 

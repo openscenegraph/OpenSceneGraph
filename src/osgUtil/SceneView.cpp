@@ -341,9 +341,14 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
         cov.popProjectionMatrix();
         cov.popViewport();
         
-        //std::cout << "finished searching for occluder"<<std::endl;
+        // sort the occluder from largest occluder volume to smallest.
+        cov.removeOccludedOccluders();
         
-        cullVisitor->setOccluderList(cov.getCollectedOccluderList());
+        
+        //std::cout << "finished searching for occluder"<<std::endl;
+           
+        cullVisitor->getOccluderList().clear();
+        std::copy(cov.getCollectedOccluderSet().begin(),cov.getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
     }
     
 

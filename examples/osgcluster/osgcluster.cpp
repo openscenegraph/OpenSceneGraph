@@ -37,9 +37,9 @@ class CameraPacket {
     public:
     
         CameraPacket():_masterKilled(false) 
-    {
-        _byte_order = 0x12345678;
-    }
+        {
+            _byte_order = 0x12345678;
+        }
         
         void setPacket(const osg::Matrix& matrix,const osg::FrameStamp* frameStamp)
         {
@@ -53,21 +53,21 @@ class CameraPacket {
         void getModelView(osg::Matrix& matrix,float angle_offset=0.0f)
         {
         
-            matrix = _matrix * osg::Matrix::rotate(angle_offset,0.0f,1.0f,0.0f);
+            matrix = _matrix * osg::Matrix::rotate(osg::DegreesToRadians(angle_offset),0.0f,1.0f,0.0f);
         }
         
-    void checkByteOrder( void )
-    {
-        if( _byte_order == 0x78563412 )  // We're backwards
+        void checkByteOrder( void )
         {
-            swapBytes( _byte_order );
-        swapBytes( _masterKilled );
-        for( int i = 0; i < 16; i++ )
-            swapBytes( _matrix.ptr()[i] );
-                    
-                // umm.. we should byte swap _frameStamp too...
+            if( _byte_order == 0x78563412 )  // We're backwards
+            {
+                swapBytes( _byte_order );
+            swapBytes( _masterKilled );
+            for( int i = 0; i < 16; i++ )
+                swapBytes( _matrix.ptr()[i] );
+
+                    // umm.. we should byte swap _frameStamp too...
+            }
         }
-    }
 
         
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
@@ -127,7 +127,12 @@ int main( int argc, char **argv )
     while (arguments.read("-n",socketNumber)) ;
 
     float camera_fov=45.0f;
-    while (arguments.read("-f",camera_fov)) ;
+    while (arguments.read("-f",camera_fov)) 
+    {
+        std::cout << "setting lens perspective : original "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
+        viewer.setLensPerspective(camera_fov,camera_fov*viewer.getLensVerticalFov()/viewer.getLensHorizontalFov(),1.0f,1000.0f);
+        std::cout << "setting lens perspective : new "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
+    }
 
     float camera_offset=45.0f;
     while (arguments.read("-o",camera_offset)) ;

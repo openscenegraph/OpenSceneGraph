@@ -10,6 +10,8 @@ void KeySwitchCameraManipulator::addCameraManipulator(int key, std::string name,
     _manips[key]=std::make_pair(name,osg::ref_ptr<CameraManipulator>(cm));
     if(!_current.valid()){
         _current=cm;
+        _current->setNode(_current->getNode());
+        _current->setCamera(_current->getCamera());
     }
 }
 
@@ -39,13 +41,3 @@ bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
 
     return _current->handle(ea,aa);
 }
-
-// void KeySwitchCameraManipulator::addCallback(Callback* c)
-// {
-//     _cameraManipChangeCallbacks.addCallback(c);
-// }
-// 
-// void KeySwitchCameraManipulator::removeCallback(Callback* c)
-// {
-//     _cameraManipChangeCallbacks.removeCallback(c);
-// }

@@ -134,7 +134,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         float               _version;
         Status              _status;
         std::ifstream       _input;
-        std::ofstream       _output;
+        std::fstream        _output;
         
         IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;

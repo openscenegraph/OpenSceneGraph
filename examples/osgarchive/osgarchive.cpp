@@ -17,54 +17,39 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
-
-  #include <iostream>
-    #include <streambuf>
-    #include <locale>
-    #include <cstdio>
-
-class proxy_streambuf : public std::streambuf
-{
-   public:
-   
-      proxy_streambuf(std::streambuf* streambuf, unsigned int numChars):
-        _streambuf(streambuf),
-        _numChars(numChars) {}
-   
-      /// Destructor deallocates no buffer space.
-      virtual ~proxy_streambuf()  {}
-
-      std::streambuf* _streambuf;
-      unsigned int _numChars;
-
-    protected:
-
-      virtual int_type uflow ()
-      {
-         if (_numChars==0) return -1;
-         --_numChars;
-         return _streambuf->sbumpc();
-      }
-};
+#include <iostream>
 
 int main( int argc, char **argv )
 {
 /*
-    std::ifstream fin("GNUmakefile");
-    std::istream& ins = fin;
-
-    proxy_streambuf mystreambuf(ins.rdbuf(),10000);
-    ins.rdbuf(&mystreambuf);
     
-    while (!fin.eof())
+    std::fstream fout("test.data",std::ofstream::out | std::ofstream::binary);
+    unsigned int numCharacters = 26;
+    char baseCharacter = 'A';
+    
+    for(unsigned int i=0;i<numCharacters;++i)
     {
-        std::cout.put(fin.get());
+        char c = baseCharacter + i;
+        fout.write(&c,1);
     }
-    std::cout<<"Exiting normally "<<std::endl;
+    fout.close();
     
-    ins.rdbuf(mystreambuf._streambuf);
-*/
+    fout.open("test.data",std::ofstream::out | std::ofstream::in | std::ofstream::binary);
+    
+    char offset = 'a'-'A';
+    unsigned int start_range = 5;
+    unsigned int end_range = 15;
+    
+    fout.seekp(start_range);
+    for(unsigned int i=start_range;i<end_range;++i)
+    {
+        char c = (baseCharacter + i)+offset ;
+        fout.write(&c,1);
+    }
+    
+    fout.close();       
 
+*/
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     

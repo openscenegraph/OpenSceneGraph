@@ -247,27 +247,16 @@ bool Archive::open(const std::string& filename, Status status, unsigned int inde
         if (status==WRITE && open(filename,READ))
         {
             _input.close();
-            
-            struct stat results;
-            pos_type end_of_file = 0;
-            if (stat(filename.c_str(), &results) == 0)
-            {
-                // The size of the file in bytes is in
-                // results.st_size
-                end_of_file = results.st_size;
-            }
-    
             _status = WRITE;
 
-            _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::out);
+            _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out);
   
             
             
             osg::notify(osg::NOTICE)<<"File position after open = "<<(int)_output.tellp()<<" is_open "<<_output.is_open()<<std::endl;
 
             // place write position at end of file.
-            //_output.seekp(0,std::ios::end);
-            _output.seekp(end_of_file, std::ios::end);
+            _output.seekp(0, std::ios::end);
             
 
             osg::notify(osg::NOTICE)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
@@ -497,7 +486,7 @@ ReaderWriter::WriteResult Archive::writeObject(const osg::Object& obj,const std:
     osg::notify(osg::NOTICE)<<"Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
     
     // place write position at end of file.
-    // _output.seekp(0,std::ios::end);
+    _output.seekp(0,std::ios::end);
     
     pos_type position = _output.tellp();
     

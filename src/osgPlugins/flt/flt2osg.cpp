@@ -22,7 +22,6 @@
 #include <osg/Texture>
 #include <osg/Image>
 #include <osg/Notify>
-#include <osg/GeoSet>
 
 #include <osg/DOFTransform>
 #include <osg/Sequence>
@@ -923,7 +922,6 @@ osg::Group* ConvertFromFLT::visitObject(osg::Group& osgParent, ObjectRecord* rec
 
 void ConvertFromFLT::setCullFaceAndWireframe ( const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset )
 {
-
     //
     // Cull face & wireframe
     //
@@ -1139,23 +1137,6 @@ void ConvertFromFLT::setMaterial ( FaceRecord *rec, SFace *pSFace, osg::StateSet
             if (alpha < 1.0f) bBlend = true;
         }
     }
-    //
-    // Subface
-    //
-
-    if (rec->getParent()->isOfType(FACE_OP))
-    {
-        if (_nSubfaceLevel > 0)
-        {
-            osg::PolygonOffset* polyoffset = new osg::PolygonOffset;
-            if (polyoffset)
-            {
-                polyoffset->setFactor(-1.0f*_nSubfaceLevel);
-                polyoffset->setUnits(-20.0f*_nSubfaceLevel);
-                osgStateSet->setAttributeAndModes(polyoffset,osg::StateAttribute::ON);
-            }
-        }
-    }
 }
 
 
@@ -1269,7 +1250,7 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
     // Vertices
     addVertices(pBuilder, rec);
 
-    // Add face to builder GeoSet pool
+    // Add face to builder pool
     pBuilder->addPrimitive();
 
     // Look for subfaces
@@ -1632,8 +1613,9 @@ void ConvertFromFLT::visitMeshPrimitive ( osg::Group &parent, MeshPrimitiveRecor
     // Add the vertex properties.
     setMeshCoordinates ( mesh->getNumVertices(), pool, mesh, geometry );
     setMeshNormals     ( mesh->getNumVertices(), pool, mesh, geometry );
+    setMeshColors      ( mesh->getNumVertices(), pool, mesh, geometry );
 
-    // Add the geoset to the geode.
+    // Add the geometry to the geode.
     geode->addDrawable ( geometry );
 
     // Add the geode to the parent.
@@ -1656,14 +1638,14 @@ uint32 ConvertFromFLT::setMeshCoordinates ( const uint32 &numVerts, const LocalV
     if ( NULL == coords )
     {
         assert ( 0 );
-        return false;
+        return 0;
     }
 
     // Declare outside of loop.
     uint32 i ( 0 ), index ( 0 );
     float64 px, py, pz;
 
-    // Loop through all the coordinates.
+    // Loop through all the vertices.
     for ( i = 0; i < numVerts; ++i )
     {
         // Get the i'th index into the vertex pool.
@@ -1714,7 +1696,7 @@ uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVerte
     uint32 i ( 0 ), index ( 0 );
     float32 x, y, z;
 
-    // Loop through all the coordinates.
+    // Loop through all the vertices.
     for ( i = 0; i < numVerts; ++i )
     {
         // Get the i'th index into the vertex pool.
@@ -1724,21 +1706,72 @@ uint32 ConvertFromFLT::setMeshNormals ( const uint32 &numVerts, const LocalVerte
             break;
         }
 
-        // Get the coordinate (using "index").
+        // Get the normal (using "index").
         if ( !pool->getNormal ( index, x, y, z ) )
         {
             assert ( 0 ); // We stepped out of bounds.
             break;
         }
 
-        // Add the coordinate.
+        // Add the normal.
         (*normals)[i].set ( x, y, z );
     }
 
-    // Set the mesh coordinates.
+    // Set the mesh normals.
     geometry->setNormalArray( normals );
     geometry->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
 
-    // Return the number of coordinates added.
+    // Return the number of normals added.
+    return i;
+}
+
+
+uint32 ConvertFromFLT::setMeshColors ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry )
+{
+    assert ( pool );
+    assert ( mesh );
+    assert ( geometry );
+
+    // If there aren't any colors...
+    if ( false == pool->hasAttribute ( LocalVertexPoolRecord::RGB_COLOR ) )
+        return 0;
+
+    // Allocate the normals.
+    osg::Vec4Array *colors = new osg::Vec4Array(numVerts);
+    if ( NULL == colors )
+    {
+        assert ( 0 );
+        return 0;
+    }
+
+    // Declare outside of loop.
+    uint32 i ( 0 ), index ( 0 );
+    float32 red, green, blue, alpha;
+
+    // Loop through all the vertices.
+    for ( i = 0; i < numVerts; ++i )
+    {
+        // Get the i'th index into the vertex pool.
+        if ( false == mesh->getVertexIndex ( i, index ) )
+        {
+            assert ( 0 ); // We stepped out of bounds.
+            break;
+        }
+
+        // Get the color (using "index").
+        if ( false == pool->getColorRGBA ( index, red, green, blue, alpha ) )
+        {
+            assert ( 0 ); // We stepped out of bounds.
+            break;
+        }
+
+        // Add the coordinate.
+        (*colors)[i].set ( red, green, blue, alpha );
+    }
+
+    // Set the mesh coordinates.
+    geometry->setColorArray ( colors );
+
+    // Return the number of colors added.
     return i;
 }

@@ -160,6 +160,7 @@ class ConvertFromFLT
         void visitFaceOrMeshCommonCode(GeoSetBuilder* pBuilder, FaceRecord* rec);
         uint32 setMeshCoordinates ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
         uint32 setMeshNormals ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
+        uint32 setMeshColors ( const uint32 &numVerts, const LocalVertexPoolRecord *pool, MeshPrimitiveRecord *mesh, osg::Geometry *geometry );
 
         void setCullFaceAndWireframe ( const SFace *pSFace, osg::StateSet *osgStateSet, DynGeoSet *dgset );
         void setDirectionalLight();

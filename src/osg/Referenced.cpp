@@ -100,7 +100,7 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
     }
 }
 
-
+/*
 void Referenced::ref() const
 { 
     if (_refMutex)
@@ -136,7 +136,7 @@ void Referenced::unref() const
         else delete this;
     }
 }
-
+*/
 void Referenced::unref_nodelete() const
 {
     if (_refMutex)

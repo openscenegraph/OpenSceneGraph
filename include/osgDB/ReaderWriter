@@ -134,6 +134,16 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
         virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+
+        virtual ReadResult readObject(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readImage(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readNode(std::istream& /*fin*/,const Options* =NULL) { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+
+        virtual WriteResult writeObject(const osg::Object& /*obj*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+
+
 };
 
 }

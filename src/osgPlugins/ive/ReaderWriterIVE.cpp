@@ -1,6 +1,8 @@
 #include "MatrixTransform.h"
 #include "Group.h"
 
+#include <osg/Notify>
+
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 
@@ -17,15 +19,20 @@ class IVEReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"ive");
         }
 
-        virtual ReadResult readNode(const std::string& fileName, const Options*)
+        virtual ReadResult readNode(const std::string& fileName, const Options* options)
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
+    
+            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            return readNode(istream,options);
+        }
+        
+        virtual ReadResult readNode(std::istream& fin, const Options*)
+        {
 	    try{
                 // Create datainputstream.
-                std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
-                ive::DataInputStream* in = new ive::DataInputStream(&istream);
+                ive::DataInputStream* in = new ive::DataInputStream(&fin);
 
                 // Which object is written first in the stream.
                 int id = in->peekInt();
@@ -54,12 +61,19 @@ class IVEReaderWriter : public ReaderWriter
             return 0;
         }
 
-        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        {
+            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            WriteResult result = writeNode(node, fout, options);
+            fout.close();
+            return result;
+        }
+        
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options*)
         {
             try
             {
-                std::ofstream ostream(fileName.c_str(), std::ios::out | std::ios::binary);
-                ive::DataOutputStream* out = new ive::DataOutputStream(&ostream);
+                ive::DataOutputStream* out = new ive::DataOutputStream(&fout);
                 // write ive file.
                 if(dynamic_cast<const osg::MatrixTransform*>(&node))
                     const_cast<ive::MatrixTransform*>(static_cast<const ive::MatrixTransform*>(&node))->write(out);
@@ -67,13 +81,12 @@ class IVEReaderWriter : public ReaderWriter
                     const_cast<ive::Group*>(static_cast<const ive::Group*>(&node))->write(out);
                 else
                     std::cout<<"File must start with a MatrixTransform or Group "<<std::endl;
-                ostream.flush();
-                ostream.close();
+                fout.flush();
                 return WriteResult::FILE_SAVED;
             }
             catch(ive::Exception e)
             {
-	        std::cout<<"Error parsing OSG file: "<< e.getError() << std::endl;			
+	        osg::notify(osg::WARN)<<"Error parsing OSG file: "<< e.getError() << std::endl;			
             }
             return WriteResult::FILE_NOT_HANDLED;
 

@@ -14,10 +14,12 @@
 #ifndef    _H_MMGR
 #define    _H_MMGR
 
+
 #include <osg/Export>
 
 #include <stdlib.h>
 #include <new>
+
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Types
@@ -79,26 +81,26 @@ SG_EXPORT extern void        m_setOwner(const char *file, const unsigned int lin
 
 SG_EXPORT extern bool        &m_breakOnRealloc(void *reportedAddress);
 SG_EXPORT extern bool        &m_breakOnDealloc(void *reportedAddress);
-SG_EXPORT extern void            m_breakOnAllocation(unsigned int count);
+SG_EXPORT extern void         m_breakOnAllocation(unsigned int count);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // The meat of the memory tracking software
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-SG_EXPORT extern void        *m_allocator(const char *sourceFile, const unsigned int sourceLine,
-                 const unsigned int allocationType, const size_t reportedSize);
-SG_EXPORT extern void        *m_reallocator(const char *sourceFile, const unsigned int sourceLine,
-                   const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress);
-SG_EXPORT extern void        m_deallocator(const char *sourceFile, const unsigned int sourceLine,
-                  const unsigned int deallocationType, const void *reportedAddress);
+SG_EXPORT extern void  *m_allocator(const char *sourceFile, const unsigned int sourceLine,
+                                     const unsigned int allocationType, const size_t reportedSize);
+SG_EXPORT extern void  *m_reallocator(const char *sourceFile, const unsigned int sourceLine,
+                                      const unsigned int reallocationType, const size_t reportedSize, void *reportedAddress);
+SG_EXPORT extern void  m_deallocator(const char *sourceFile, const unsigned int sourceLine,
+                                     const unsigned int deallocationType, const void *reportedAddress);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Utilitarian functions
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-bool        m_validateAddress(const void *reportedAddress);
-bool        m_validateAllocUnit(const sAllocUnit *allocUnit);
-bool        m_validateAllAllocUnits();
+SG_EXPORT extern bool m_validateAddress(const void *reportedAddress);
+SG_EXPORT extern bool m_validateAllocUnit(const sAllocUnit *allocUnit);
+SG_EXPORT extern bool m_validateAllAllocUnits();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Unused RAM calculations
@@ -113,7 +115,7 @@ SG_EXPORT extern unsigned int    m_calcAllUnused();
 
 SG_EXPORT extern void        m_dumpAllocUnit(const sAllocUnit *allocUnit, const char *prefix = "");
 SG_EXPORT extern void        m_dumpMemoryReport(const char *filename = "memreport.log", const bool overwrite = true);
-SG_EXPORT extern sMStats        m_getMemoryStatistics();
+SG_EXPORT extern sMStats     m_getMemoryStatistics();
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Variations of global operators new & delete
@@ -121,16 +123,10 @@ SG_EXPORT extern sMStats        m_getMemoryStatistics();
 
 #ifdef OSG_USE_MEMORY_MANAGER
 
-    //void    *operator new(size_t reportedSize) throw (std::bad_alloc);
-    //void    *operator new[](size_t reportedSize) throw (std::bad_alloc);
-    //void    *operator new(size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
-    //void    *operator new[](size_t reportedSize, const char *sourceFile, int sourceLine) throw (std::bad_alloc);
-    //void    operator delete(void *reportedAddress) throw ();
-    //void    operator delete[](void *reportedAddress) throw ();
-
     // ---------------------------------------------------------------------------------------------------------------------------------
     // Macros -- "Kids, please don't try this at home. We're trained professionals here." :)
     // ---------------------------------------------------------------------------------------------------------------------------------
+
 
     #define    osgNew              (m_setOwner  (__FILE__,__LINE__),false) ? NULL : new
     #define    osgDelete           (m_setOwner  (__FILE__,__LINE__),false) ? m_setOwner("",0) : delete
@@ -139,7 +135,7 @@ SG_EXPORT extern sMStats        m_getMemoryStatistics();
     #define    osgRealloc(ptr,sz)   m_reallocator(__FILE__,__LINE__,m_alloc_realloc,sz,ptr)
     #define    osgFree(ptr)         m_deallocator(__FILE__,__LINE__,m_alloc_free,ptr)
 
-#else
+#else // OSG_USE_MEMORY_MANAGER
 
     #define    osgNew               new
     #define    osgDelete            delete
@@ -148,7 +144,7 @@ SG_EXPORT extern sMStats        m_getMemoryStatistics();
     #define    osgRealloc(ptr,sz)   realloc(ptr,sz)
     #define    osgFree(ptr)         free(ptr)
 
-#endif
+#endif // OSG_USE_MEMORY_MANAGER
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // mmgr.h - End of file

@@ -170,6 +170,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\LineWidth.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\LineStipple.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\LOD.cpp
 # End Source File
 # Begin Source File

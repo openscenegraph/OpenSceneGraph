@@ -20,6 +20,7 @@ C++FILES = \
         Impostor.cpp\
         Light.cpp\
         LightSource.cpp\
+        LineStipple.cpp\
         LineWidth.cpp\
         LOD.cpp\
         Material.cpp\

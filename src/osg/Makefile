@@ -30,6 +30,7 @@ C++FILES = \
 	Light.cpp\
 	LightSource.cpp\
 	LineSegment.cpp\
+	LineStipple.cpp\
 	LineWidth.cpp\
 	LOD.cpp\
 	Material.cpp\
@@ -99,6 +100,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Light\
 	osg/LightSource\
 	osg/LineSegment\
+	osg/LineStipple\
 	osg/LineWidth\
 	osg/Material\
 	osg/Math\

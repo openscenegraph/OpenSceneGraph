@@ -73,6 +73,7 @@ DEMOS_DIRS = \
 	osgconv\
 	osgcopy\
 	osgcube\
+	osggeometry\
 	osghud\
 	osgimpostor\
 	osgoccluder\

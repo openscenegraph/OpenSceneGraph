@@ -4,18 +4,18 @@ using namespace osg;
 
 Geometry::Geometry()
 {
+    _normalBinding = OFF;
+    _colorBinding = OFF;
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     Drawable(geometry,copyop),
-    _coords(geometry._coords),
-    _coordIndices(geometry._coordIndices),
-    _normals(geometry._normals),
-    _normalIndices(geometry._normalIndices),
-    _colors(geometry._colors),
-    _colorIndices(geometry._colorIndices),
-    _texCoordList(geometry._texCoordList),
-    _texCoordIndicesList(geometry._texCoordIndicesList)
+    _vertexArray(geometry._vertexArray),
+    _normalBinding(geometry._normalBinding),
+    _normalArray(geometry._normalArray),
+    _colorBinding(geometry._colorBinding),
+    _colorArray(geometry._colorArray),
+    _texCoordList(geometry._texCoordList)
 {
 }
 
@@ -24,170 +24,163 @@ Geometry::~Geometry()
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
-void Geometry::setTexCoordArray(unsigned int pos,AttributeArray* array)
+void Geometry::setTexCoordArray(unsigned int unit,AttributeArray* array)
 {
-    if (_texCoordList.size()<=pos)
-        _texCoordList.resize(pos+1,0);
+    if (_texCoordList.size()<=unit)
+        _texCoordList.resize(unit+1,0);
         
-   _texCoordList[pos] = array;
+   _texCoordList[unit] = array;
 }
 
-AttributeArray* Geometry::getTexCoordArray(unsigned int pos)
+AttributeArray* Geometry::getTexCoordArray(unsigned int unit)
 {
-    if (pos<_texCoordList.size()) return _texCoordList[pos].get();
+    if (unit<_texCoordList.size()) return _texCoordList[unit].get();
     else return 0;
 }
-
-void Geometry::setTexCoordIndicesArray(unsigned int pos,AttributeArray* array)
-{
-    if (_texCoordList.size()<=pos)
-        _texCoordList.resize(pos+1,0);
-        
-   _texCoordIndicesList[pos] = array;
-}
-
-AttributeArray* Geometry::getTexCoordIndicesArray(unsigned int pos)
-{
-    if (pos<_texCoordIndicesList.size()) return _texCoordIndicesList[pos].get();
-    else return 0;
-}
-
-void Geometry::setAttribute(AttributeType type,AttributeArray* array)
-{
-    switch(type)
-    {
-    case(PRIMITIVES):
-        _primitives = array;
-        break;
-    case(COORDS):
-        _coords = array;
-        break;
-    case(NORMALS):
-        _normals = array;
-        break;
-    case(COLORS):
-        _colors = array;
-        break;
-    default:
-        if (type>=TEX_COORDS_0)
-        {
-            setTexCoordArray(type-TEX_COORDS_0,array);
-        }
-        break;
-    }
-}
-
-
-void Geometry::setAttribute(AttributeType type,AttributeArray* array,AttributeArray* indices)
-{
-    switch(type)
-    {
-    case(PRIMITIVES):
-        _primitives = array;
-        // indices not appropriate!
-        break;
-    case(COORDS):
-        _coords = array;
-        _coordIndices = indices;
-        break;
-    case(NORMALS):
-        _normals = array;
-        _normalIndices = indices;
-        break;
-    case(COLORS):
-        _colors = array;
-        _colorIndices = indices;
-        break;
-    default:
-        if (type>=TEX_COORDS_0)
-        {
-            setTexCoordArray(type-TEX_COORDS_0,array);
-            setTexCoordIndicesArray(type-TEX_COORDS_0,indices);
-        }
-        break;
-    }
-}
-
-
-AttributeArray* Geometry::getAttribute(AttributeType type)
-{
-    switch(type)
-    {
-    case(PRIMITIVES):
-        return _primitives.get();
-        break;
-    case(COORDS):
-        return _coords.get();
-        break;
-    case(NORMALS):
-        return _normals.get();
-        break;
-    case(COLORS):
-        return _colors.get();
-        break;
-    default:
-        if (type>=TEX_COORDS_0)
-        {
-            return getTexCoordArray(type-TEX_COORDS_0);
-        }
-        break;
-    }
-    return 0;
-}
-
-
-void Geometry::setIndices(AttributeType type,AttributeArray* indices)
-{
-    switch(type)
-    {
-    case(PRIMITIVES):
-        // indices not appropriate!
-        break;
-    case(COORDS):
-        _coordIndices = indices;
-        break;
-    case(NORMALS):
-        _normalIndices = indices;
-        break;
-    case(COLORS):
-        _colorIndices = indices;
-        break;
-    default:
-        if (type>=TEX_COORDS_0)
-        {
-            setTexCoordIndicesArray(type-TEX_COORDS_0,indices);
-        }
-        break;
-    }
-}
-
-
-AttributeArray* Geometry::getIndices(AttributeType type)
-{
-    switch(type)
-    {
-    case(COORDS):
-        return _coordIndices.get();
-        break;
-    case(NORMALS):
-        return _normalIndices.get();
-        break;
-    case(COLORS):
-        return _colorIndices.get();
-        break;
-    default:
-        if (type>=TEX_COORDS_0)
-        {
-            return getTexCoordIndicesArray(type-TEX_COORDS_0);
-        }
-        break;
-    }
-    return 0;
-}
-
 
 void Geometry::drawImmediateMode(State& /*state*/)
 {
+    if (!_vertexArray.valid()) return;
+    
+    // set up the vertex arrays.
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glVertexPointer(3,GL_FLOAT,0,_vertexArray->dataPointer());
+    
+    
+    // set up texture coordinates.
+    for(unsigned int i=0;i<_texCoordList.size();++i)
+    {
+        AttributeArray* array = _texCoordList[i].get();
+        glClientActiveTextureARB(GL_TEXTURE0_ARB+i);
+        if (array)
+        {
+            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+            glTexCoordPointer(array->dataSize(),array->dataType(),0,array->dataPointer());
+        }
+        else
+        {
+            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+        }
+    }
+    
+    
+    // set up normals.
+    Vec3* normalPointer = 0;
+    if (_normalArray.valid() && !_normalArray->empty()) normalPointer = &(_normalArray->front());
+
+    switch (_normalBinding)
+    {
+        case(OFF):
+            glDisableClientState( GL_NORMAL_ARRAY );
+            break;
+        case(OVERALL):
+            if (normalPointer) glNormal3fv(reinterpret_cast<const GLfloat*>(normalPointer));
+            glDisableClientState( GL_NORMAL_ARRAY );
+            break;
+        case(PER_PRIMITIVE):
+            glDisableClientState( GL_NORMAL_ARRAY );
+            break;
+        case(PER_VERTEX):
+            glEnableClientState( GL_NORMAL_ARRAY );
+            if (normalPointer) glNormalPointer(GL_FLOAT,0,normalPointer);
+            break;
+    }
+
+
+    // set up colors, complicated by the fact that the color array
+    // might be bound in 4 different ways, and be represented as 3 different data types -
+    // Vec3, Vec4 or UByte4 Arrays.
+    const unsigned char* colorPointer = 0;
+    unsigned int colorStride = 0;
+    ArrayType colorType = AttributeArrayType;
+    if (_colorArray.valid())
+    {
+        colorType = _colorArray->arrayType();
+        switch(colorType)
+        {
+            case(UByte4ArrayType):
+            {
+                colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->dataPointer());
+                colorStride = 4;
+                break;
+            }
+            case(Vec3ArrayType):
+            {
+                colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->dataPointer());
+                colorStride = 12;
+                break;
+            }
+            case(Vec4ArrayType):
+            {
+                colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->dataPointer());
+                colorStride = 16;
+                break;
+            }
+        }
+    }
+
+    switch (_colorBinding)
+    {
+        case(OFF):
+            glDisableClientState( GL_COLOR_ARRAY );
+            break;
+        case(OVERALL):
+            glDisableClientState( GL_COLOR_ARRAY );
+            if (colorPointer)
+            {
+                switch(colorType)
+                {
+                    case(UByte4ArrayType):
+                        glColor4ubv(reinterpret_cast<const GLubyte*>(colorPointer));
+                        break;
+                    case(Vec3ArrayType):
+                        glColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
+                        break;
+                    case(Vec4ArrayType):
+                        glColor4fv(reinterpret_cast<const GLfloat*>(colorPointer));
+                        break;
+                }
+            }
+            break;
+        case(PER_PRIMITIVE):
+            glDisableClientState( GL_COLOR_ARRAY );
+            break;
+        case(PER_VERTEX):
+            glEnableClientState( GL_COLOR_ARRAY );
+            if (colorPointer) glColorPointer(_colorArray->dataSize(),_colorArray->dataType(),0,colorPointer);
+    }
+
+
+    // draw the primitives themselves.
+    for(PrimitiveList::iterator itr=_primitives.begin();
+        itr!=_primitives.end();
+        ++itr)
+    {
+        if (_normalBinding==PER_PRIMITIVE)
+        {
+            glNormal3fv((const GLfloat *)normalPointer++);
+        }
+    
+        if (_colorBinding==PER_PRIMITIVE)
+        {
+            switch(colorType)
+            {
+                case(UByte4ArrayType):
+                    glColor4ubv(reinterpret_cast<const GLubyte*>(colorPointer));
+                    break;
+                case(Vec3ArrayType):
+                    glColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
+                    break;
+                case(Vec4ArrayType):
+                    glColor4fv(reinterpret_cast<const GLfloat*>(colorPointer));
+                    break;
+            }
+            colorPointer += colorStride;
+        }
+
+        (*itr)->draw();
+    }
+
 }
 
 /** Statistics collection for each drawable- 26.09.01
@@ -213,7 +206,7 @@ const bool Geometry::computeBound() const
 {
     _bbox.init();
     
-    const Vec3Array* coords = dynamic_cast<const Vec3Array*>(_coords.get());
+    const Vec3Array* coords = dynamic_cast<const Vec3Array*>(_vertexArray.get());
     if (coords)
     {
         for(Vec3Array::const_iterator itr=coords->begin();

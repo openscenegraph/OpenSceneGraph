@@ -36,7 +36,7 @@ int ReentrantMutex::lock()
     }
     else
     {
-        int result = /*OpenThreads::*/Mutex::lock();
+        int result = Mutex::lock();
         if (result==0)
         {
             _threadHoldingMutex = OpenThreads::Thread::CurrentThread();

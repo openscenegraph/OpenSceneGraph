@@ -1,3 +1,98 @@
+2004-08-13 15:42  robert
+
+	* src/osgTerrain/DataSet.cpp: From Corbin Holtz, addition of
+	  support for reading imagery with color tables, including code
+	  from Frank Warmerdam on the GDAL side, and integration/reworking
+	  work form Robert Osfield.
+
+2004-08-13 15:09  robert
+
+	* doc/doc++/: osg/State.html, osgDB/Registry.html,
+	  osgFX/HIERjava.html, osgFX/Registry.html, osgFX/osgFX.html:
+	  Updated docs.
+
+2004-08-13 14:46  robert
+
+	* include/osgDB/Registry: Added docs for CacheObjectHints
+
+2004-08-13 14:27  robert
+
+	* src/osgUtil/: CullVisitor.cpp, RenderToTextureStage.cpp: Removed
+	  redundent include/ReadFile call
+
+2004-08-13 13:38  robert
+
+	* src/osgPlugins/ive/DataInputStream.cpp: Changed the "Reading a
+	  byte swapped file" message to info level.
+
+2004-08-13 13:05  robert
+
+	* src/osgPlugins/bmp/ReaderWriterBMP.cpp: Fix for VS6.0 build
+
+2004-08-13 11:50  robert
+
+	* include/osgGL2/UniformValue: Added #include<typeinfo> required
+	  for X-platform build.
+
+2004-08-13 11:49  robert
+
+	* src/osg/Referenced.cpp: Removed inappropriate #ifdefs
+
+2004-08-13 11:46  robert
+
+	* include/osgFX/Registry, include/osgGL2/Extensions,
+	  src/osgFX/Registry.cpp: Fixes for OSX.
+
+2004-08-11 09:25  robert
+
+	* src/osgUtil/CullVisitor.cpp: From Ben Discoe, build fix for float
+	  version of Matrix.
+
+2004-08-10 19:31  robert
+
+	* src/osgDB/DatabasePager.cpp: Changed the database pager run
+	  message to only output at an info level
+
+2004-08-10 14:30  robert
+
+	* index.html: Updated to include reference to osgdem
+
+2004-08-10 14:19  robert
+
+	* index.html, doc/contents.html, doc/data.html,
+	  doc/dependencies.html, doc/documentation.html, doc/examples.html,
+	  doc/index.html, doc/install.html, doc/introduction.html,
+	  doc/osgdem.html, doc/osgviewer.html, doc/plan.html,
+	  doc/stereo.html: Added osgdem quick usage guide
+
+2004-08-09 16:12  robert
+
+	* Make/makedefs: Set revision number back to 0.
+
+2004-08-09 16:08  robert
+
+	* Make/makedefs: Set version to  0.9.7-1
+
+2004-08-09 14:58  robert
+
+	* ChangeLog, NEWS.txt: Updated NEWS
+
+2004-08-07 20:08  robert
+
+	* src/osg/Geometry.cpp: Changed binding warnings to be reported as
+	  info rather than as warnings.
+
+2004-08-07 10:42  robert
+
+	* include/osg/State, src/osgUtil/RenderStageLighting.cpp: Added the
+	  ability to set the global stateset, as use this
+	  RenderStageLighting
+
+2004-08-06 20:55  robert
+
+	* Make/makedefs: From Bob Kuehne, change the FREETYPE_INCLUDE and
+	  _LIB to hardcoded version to avoid reliance on freetype-config.
+
 2004-08-06 10:38  robert
 
 	* examples/osgdem/GNUmakefile: Fix for Mingw from Norman Vine.

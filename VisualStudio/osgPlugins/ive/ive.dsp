@@ -286,6 +286,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Texture.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Texture1D.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Texture2D.cpp
 # End Source File
 # Begin Source File
@@ -527,6 +531,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\TexMat.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Texture.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Texture1D.h
 # End Source File
 # Begin Source File
 

@@ -2,8 +2,6 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-// -*-c++-*-
-
 #ifndef OSG_TEXTURE3D
 #define OSG_TEXTURE3D 1
 
@@ -93,25 +91,51 @@ class SG_EXPORT Texture3D : public Texture
           * texture and bind it, subsequent apply will simple bind to texture.*/
         virtual void apply(State& state) const;
         
-        
-        struct Extensions : public osg::Referenced
-        {
-            Extensions();
 
-            
-            bool                    isTexture3DSupported;
-            bool                    isTexture3DFast;
-            GLint                   maxTexture3DSize;
-            
-            
-            void glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-            void glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-            void glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-            void gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
+        /** Extensions class which encapsulates the querring of extensions and
+          * associated function pointers, and provide convinience wrappers to 
+          * check for the extensions or use the associated functions.*/        
+        class Extensions : public osg::Referenced
+        {
+            public:
+                Extensions();
+
+                bool isTexture3DSupported() const { return _isTexture3DSupported; }
+                bool isTexture3DFast() const { return _isTexture3DFast; }
+                GLint maxTexture3DSize() const { return _maxTexture3DSize; }
+
+                void glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const;
+                void glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels) const;
+                void glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const;
+                void gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data) const;
+
+            protected:
+
+                ~Extensions() {}
+                
+                typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+                typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+                typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+                typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
+
+                bool    _isTexture3DSupported;
+                bool    _isTexture3DFast;
+                GLint   _maxTexture3DSize;
+
+                void*   _glTexImage3D;
+                void*   _glTexSubImage3D;
+                void*   _glCopyTexSubImage3D;
+                void*   _gluBuild3DMipmaps;
 
         };
         
-        static Extensions* getExtensions(uint contextID=0);
+        /** Function to call to get the extension of a specified context.
+          * If the Exentsion object for that context has not yet been created then 
+          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+          * If 'createIfNotInitalized' is true then the Extensions object is 
+          * automatically created.  However, in this case the extension object 
+          * only be created with the graphics context associated with ContextID..*/
+        static const Extensions* getExtensions(uint contextID,bool createIfNotInitalized);
 
     protected :
 

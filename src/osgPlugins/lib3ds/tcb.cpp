@@ -20,8 +20,8 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <tcb.h>
-#include <readwrite.h>
+#include "tcb.h"
+#include "readwrite.h"
 #include <math.h>
 
 

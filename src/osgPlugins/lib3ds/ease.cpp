@@ -20,7 +20,7 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <ease.h>
+#include "ease.h"
 
 
 /*!

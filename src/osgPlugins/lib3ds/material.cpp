@@ -20,13 +20,13 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <material.h>
-#include <chunk.h>
-#include <readwrite.h>
+#include "material.h"
+#include "chunk.h"
+#include "readwrite.h"
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <config.h>
+#include "config.h"
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
 #endif

@@ -72,7 +72,9 @@ bool Window::open()
     glutVisibilityFunc( visibilityCB );
     glutDisplayFunc(    displayCB );
     glutKeyboardFunc(   keyboardCB );
+#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 13)
     glutKeyboardUpFunc(   keyboardUpCB );
+#endif
 
     glutMouseFunc( mouseCB );
     glutMotionFunc( mouseMotionCB );

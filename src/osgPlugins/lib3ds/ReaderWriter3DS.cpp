@@ -17,13 +17,13 @@
 #include <osg/NodeVisitor>
 
 
-#include <file.h>
-#include <mesh.h>
-#include <material.h>
-#include <vector.h>
-#include <matrix.h>
-#include <node.h>
-#include <quat.h>
+#include "file.h"
+#include "mesh.h"
+#include "material.h"
+#include "vector.h"
+#include "matrix.h"
+#include "node.h"
+#include "quat.h"
 
 #include <stdlib.h>
 #include <string.h>

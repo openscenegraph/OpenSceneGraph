@@ -24,7 +24,7 @@
  */
 
 #ifndef INCLUDED_LIB3DS_TCB_H
-#include <tcb.h>
+#include "tcb.h"
 #endif
 
 #ifdef __cplusplus

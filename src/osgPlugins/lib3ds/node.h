@@ -24,7 +24,7 @@
  */
 
 #ifndef INCLUDED_LIB3DS_TRACKS_H
-#include <tracks.h>
+#include "tracks.h"
 #endif
 
 #ifdef __cplusplus

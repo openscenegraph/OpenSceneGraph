@@ -20,7 +20,7 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <vector.h>
+#include "vector.h"
 #include <math.h>
 
 

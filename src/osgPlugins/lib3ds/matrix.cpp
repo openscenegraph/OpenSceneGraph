@@ -20,9 +20,9 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <matrix.h>
-#include <quat.h>
-#include <vector.h>
+#include "matrix.h"
+#include "quat.h"
+#include "vector.h"
 #include <string.h>
 #include <math.h>
 

@@ -20,19 +20,19 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <file.h>
-#include <chunk.h>
-#include <readwrite.h>
-#include <material.h>
-#include <mesh.h>
-#include <camera.h>
-#include <light.h>
-#include <node.h>
-#include <vector.h>
+#include "file.h"
+#include "chunk.h"
+#include "readwrite.h"
+#include "material.h"
+#include "mesh.h"
+#include "camera.h"
+#include "light.h"
+#include "node.h"
+#include "vector.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <config.h>
+#include "config.h"
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
 #endif

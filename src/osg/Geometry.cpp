@@ -668,7 +668,8 @@ bool Geometry::computeFastPathsUsed()
     // check to see if fast path can be used.
     //
     _fastPath = true;
-    if (_normalBinding==BIND_PER_PRIMITIVE || (_normalBinding==BIND_PER_VERTEX && _normalIndices.valid())) _fastPath = false;
+    if (_vertexIndices.valid()) _fastPath = false;
+    else if (_normalBinding==BIND_PER_PRIMITIVE || (_normalBinding==BIND_PER_VERTEX && _normalIndices.valid())) _fastPath = false;
     else if (_colorBinding==BIND_PER_PRIMITIVE || (_colorBinding==BIND_PER_VERTEX && _colorIndices.valid())) _fastPath = false;
     else if (_secondaryColorBinding==BIND_PER_PRIMITIVE || (_secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorIndices.valid())) _fastPath = false;
     else if (_fogCoordBinding==BIND_PER_PRIMITIVE || (_fogCoordBinding==BIND_PER_VERTEX && _fogCoordIndices.valid())) _fastPath = false;

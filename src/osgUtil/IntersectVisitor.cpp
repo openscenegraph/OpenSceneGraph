@@ -12,32 +12,87 @@
 using namespace osg;
 using namespace osgUtil;
 
-IntersectState::IntersectState()
+
+
+Hit::Hit()
 {
-    _matrix = NULL;
-    _inverse = NULL;
+}
+
+
+Hit::Hit(const Hit& hit)
+{
+    // copy data across.
+    _ratio = hit._ratio;
+    _originalLineSegment = hit._originalLineSegment;
+    _localLineSegment = hit._localLineSegment;
+    _nodePath = hit._nodePath;
+    _geode = hit._geode;
+    _geoset = hit._geoset;
+    _matrix = hit._matrix;
+    _inverse = hit._inverse;
+
+    _vecIndexList = hit._vecIndexList;
+    _primitiveIndex = hit._primitiveIndex;
+    _intersectPoint = hit._intersectPoint;
+    _intersectNormal = hit._intersectNormal;
+}
+
+
+Hit::~Hit()
+{
+}
+
+
+Hit& Hit::operator = (const Hit& hit)
+{
+    if (&hit==this) return *this;
+
+    _matrix = hit._matrix;
+    _inverse = hit._inverse;
+    _originalLineSegment = hit._originalLineSegment;
+    _localLineSegment = hit._localLineSegment;
+
+    // copy data across.
+    _ratio = hit._ratio;
+    _originalLineSegment = hit._originalLineSegment;
+    _localLineSegment = hit._localLineSegment;
+    _nodePath = hit._nodePath;
+    _geode = hit._geode;
+    _geoset = hit._geoset;
+
+    _vecIndexList = hit._vecIndexList;
+    _primitiveIndex = hit._primitiveIndex;
+    _intersectPoint = hit._intersectPoint;
+    _intersectNormal = hit._intersectNormal;
+
+    return *this;
+}
+
+const osg::Vec3 Hit::getWorldIntersectNormal() const
+{
+    if (_inverse.valid()) 
+    {
+        osg::Vec3 norm = osg::Matrix::transform3x3(*_inverse,_intersectNormal); 
+        norm.normalize();
+        return norm;
+    }
+    else return _intersectNormal;
+}
+
+
+
+IntersectVisitor::IntersectState::IntersectState()
+{
     _segmentMaskStack.push_back(0xffffffff);
 }
 
 
-IntersectState::~IntersectState()
+IntersectVisitor::IntersectState::~IntersectState()
 {
-    if (_matrix) _matrix->unref();
-    if (_inverse) _inverse->unref();
-    for(LineSegmentList::iterator itr=_segList.begin();
-        itr!=_segList.end();
-        ++itr)
-    {
-        itr->first->unref();
-        itr->second->unref();
-    }
-
-    _matrix = (osg::Matrix *)0xffffffff;
-    _inverse = (osg::Matrix *)0xffffffff;
 }
 
 
-bool IntersectState::isCulled(const BoundingSphere& bs,LineSegmentmentMask& segMaskOut)
+bool IntersectVisitor::IntersectState::isCulled(const BoundingSphere& bs,LineSegmentmentMask& segMaskOut)
 {
     bool hit = false;
     LineSegmentmentMask mask = 0x00000001;
@@ -61,7 +116,7 @@ bool IntersectState::isCulled(const BoundingSphere& bs,LineSegmentmentMask& segM
 }
 
 
-bool IntersectState::isCulled(const BoundingBox& bb,LineSegmentmentMask& segMaskOut)
+bool IntersectVisitor::IntersectState::isCulled(const BoundingBox& bb,LineSegmentmentMask& segMaskOut)
 {
     bool hit = false;
     LineSegmentmentMask mask = 0x00000001;
@@ -81,92 +136,6 @@ bool IntersectState::isCulled(const BoundingBox& bb,LineSegmentmentMask& segMask
     return !hit;
 }
 
-
-Hit::Hit()
-{
-    _originalLineSegment=NULL;
-    _localLineSegment=NULL;
-    _geode=NULL;
-    _geoset=NULL;
-    _matrix=NULL;
-}
-
-
-Hit::Hit(const Hit& hit):Referenced()
-{
-    // copy data across.
-    _ratio = hit._ratio;
-    _originalLineSegment = hit._originalLineSegment;
-    _localLineSegment = hit._localLineSegment;
-    _nodePath = hit._nodePath;
-    _geode = hit._geode;
-    _geoset = hit._geoset;
-    _matrix = hit._matrix;
-
-    _vecIndexList = hit._vecIndexList;
-    _primitiveIndex = hit._primitiveIndex;
-    _intersectPoint = hit._intersectPoint;
-    _intersectNormal = hit._intersectNormal;
-
-    if (_matrix) _matrix->ref();
-    if (_originalLineSegment) _originalLineSegment->ref();
-    if (_localLineSegment) _localLineSegment->ref();
-}
-
-
-Hit::~Hit()
-{
-    if (_matrix) _matrix->unref();
-    if (_originalLineSegment) _originalLineSegment->unref();
-    if (_localLineSegment) _localLineSegment->unref();
-    _matrix = (osg::Matrix*)0xffffffff;
-    _localLineSegment = (osg::LineSegment*)0xffffffff;
-    _localLineSegment = (osg::LineSegment*)0xffffffff;
-    _geode = (osg::Geode*)0xffffffff;
-}
-
-
-Hit& Hit::operator = (const Hit& hit)
-{
-    if (&hit==this) return *this;
-
-    // free old memory.
-    if (_matrix!=hit._matrix)
-    {
-        if (_matrix) _matrix->unref();
-        _matrix = hit._matrix;
-        if (_matrix) _matrix->ref();
-    }
-    if (_originalLineSegment!=hit._originalLineSegment)
-    {
-        if (_originalLineSegment) _originalLineSegment->unref();
-        _originalLineSegment = hit._originalLineSegment;
-        if (_originalLineSegment) _originalLineSegment->ref();
-    }
-    if (_localLineSegment!=hit._localLineSegment)
-    {
-        if (_localLineSegment) _localLineSegment->unref();
-        _localLineSegment = hit._localLineSegment;
-        if (_localLineSegment) _localLineSegment->ref();
-    }
-
-    // copy data across.
-    _ratio = hit._ratio;
-    _originalLineSegment = hit._originalLineSegment;
-    _localLineSegment = hit._localLineSegment;
-    _nodePath = hit._nodePath;
-    _geode = hit._geode;
-    _geoset = hit._geoset;
-
-    _vecIndexList = hit._vecIndexList;
-    _primitiveIndex = hit._primitiveIndex;
-    _intersectPoint = hit._intersectPoint;
-    _intersectNormal = hit._intersectNormal;
-
-    return *this;
-}
-
-
 IntersectVisitor::IntersectVisitor()
 {
     // overide the default node visitor mode.
@@ -182,16 +151,10 @@ IntersectVisitor::~IntersectVisitor()
 
 void IntersectVisitor::reset()
 {
-
-    //
-    // first unref all referenced objects and then empty the containers.
-    //
     _intersectStateStack.clear();
 
     // create a empty IntersectState on the the intersectStateStack.
     IntersectState* nis = new IntersectState;
-    nis->_matrix = NULL;
-    nis->_inverse = NULL;
 
     _intersectStateStack.push_back(nis);
 
@@ -231,11 +194,11 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
     // create a new segment transformed to local coordintes.
     IntersectState* cis = _intersectStateStack.back().get();
     LineSegment* ns = new LineSegment;
-    if (cis->_inverse) ns->mult(*seg,*(cis->_inverse));
+
+    if (cis->_inverse.valid()) ns->mult(*seg,*(cis->_inverse));
     else *ns = *seg;
-    cis->_segList.push_back(std::pair<LineSegment*,LineSegment*>(seg,ns));
-    seg->ref();
-    ns->ref();
+    
+    cis->addLineSegmentPair(seg,ns);
 
 }
 
@@ -246,7 +209,7 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
 
     IntersectState* cis = _intersectStateStack.back().get();
 
-    if (cis->_matrix)
+    if (cis->_matrix.valid())
     {
         nis->_matrix = new Matrix;
         nis->_matrix->mult(matrix,*(cis->_matrix));
@@ -255,10 +218,8 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
     {
         nis->_matrix = new Matrix(matrix);
     }
-    nis->_matrix->ref();
 
     Matrix* inverse_world = new Matrix;
-    inverse_world->ref();
     inverse_world->invert(*(nis->_matrix));
     nis->_inverse = inverse_world;
 
@@ -272,16 +233,12 @@ void IntersectVisitor::pushMatrix(const Matrix& matrix)
         {
             LineSegment* seg = new LineSegment;
             seg->mult(*(sitr->first),*inverse_world);
-            nis->_segList.push_back(std::pair<LineSegment*,LineSegment*>(sitr->first,seg));
-            seg->ref();
-            sitr->first->ref();
+            nis->addLineSegmentPair(sitr->first.get(),seg);
         }
         mask = mask << 1;
     }
 
     _intersectStateStack.push_back(nis);
-
-    //    notify(INFO) << << "IntersectVisitor::pushMatrix()"<< std::endl;
 }
 
 
@@ -289,11 +246,8 @@ void IntersectVisitor::popMatrix()
 {
     if (!_intersectStateStack.empty())
     {
-        //        IntersectState* pvs = _intersectStateStack.back().get();
-        //        pvs->unref();
         _intersectStateStack.pop_back();
     }
-    //    notify(INFO) << << "IntersectVisitor::popMatrix()"<< std::endl;
 }
 
 
@@ -335,7 +289,7 @@ void IntersectVisitor::apply(Node& node)
 
 struct TriangleIntersect
 {
-    LineSegment _seg;
+    osg::ref_ptr<LineSegment> _seg;
 
     Vec3    _s;
     Vec3    _d;
@@ -350,13 +304,13 @@ struct TriangleIntersect
 
     TriangleIntersect(const LineSegment& seg,float ratio=FLT_MAX)
     {
-        _seg=seg;
+        _seg=new LineSegment(seg);
         _hit=false;
         _index = 0;
         _ratio = ratio;
 
-        _s = _seg.start();
-        _d = _seg.end()-_seg.start();
+        _s = _seg->start();
+        _d = _seg->end()-_seg->start();
         _length = _d.length();
         _d /= _length;
 
@@ -485,7 +439,7 @@ bool IntersectVisitor::intersect(GeoSet& gset)
                     Hit hit;
                     hit._nodePath = _nodePath;
                     hit._matrix = cis->_matrix;
-                    if (hit._matrix) hit._matrix->ref();
+                    hit._inverse = cis->_inverse;
                     hit._geoset = &gset;
                     if (_nodePath.empty()) hit._geode = NULL;
                     else hit._geode = dynamic_cast<Geode*>(_nodePath.back());
@@ -493,25 +447,21 @@ bool IntersectVisitor::intersect(GeoSet& gset)
                     hit._ratio = thitr->first;
                     hit._primitiveIndex = thitr->second.first;
                     hit._originalLineSegment = sitr->first;
-                    if (hit._originalLineSegment) hit._originalLineSegment->ref();
                     hit._localLineSegment = sitr->second;
-                    if (hit._localLineSegment) hit._localLineSegment->ref();
 
                     hit._intersectPoint = sitr->second->start()*(1.0f-hit._ratio)+
                         sitr->second->end()*hit._ratio;
 
                     hit._intersectNormal = thitr->second.second;
 
-                    //                    _segHitList[sitr->first].insert(hit);
-                    _segHitList[sitr->first].push_back(hit);
-                    std::sort(_segHitList[sitr->first].begin(),_segHitList[sitr->first].end());
+                    _segHitList[sitr->first.get()].push_back(hit);
+                    std::sort(_segHitList[sitr->first.get()].begin(),_segHitList[sitr->first.get()].end());
 
                     hitFlag = true;
 
                 }
             }
         }
-        //        else notify(INFO) << << "no BB hit"<< std::endl;
     }
 
     return hitFlag;

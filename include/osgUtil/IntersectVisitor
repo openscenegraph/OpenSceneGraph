@@ -19,34 +19,11 @@
 
 namespace osgUtil {
 
-class OSGUTIL_EXPORT IntersectState : public osg::Referenced
+
+class OSGUTIL_EXPORT Hit
 {
     public:
 
-        IntersectState();
-
-        osg::Matrix* _matrix;
-        osg::Matrix* _inverse;
-
-        typedef std::vector< std::pair<osg::LineSegment*,osg::LineSegment*> > LineSegmentList;
-        LineSegmentList _segList;
-
-        typedef unsigned int LineSegmentmentMask;
-        typedef std::vector<LineSegmentmentMask> LineSegmentmentMaskStack;
-        LineSegmentmentMaskStack _segmentMaskStack;
-
-        bool isCulled(const osg::BoundingSphere& bs,LineSegmentmentMask& segMaskOut);
-        bool isCulled(const osg::BoundingBox& bb,LineSegmentmentMask& segMaskOut);
-
-    protected:
-
-        ~IntersectState();
-    
-};
-
-class OSGUTIL_EXPORT Hit : public osg::Referenced
-{
-    public:
         Hit();
         Hit(const Hit& hit);
         ~Hit();
@@ -61,19 +38,29 @@ class OSGUTIL_EXPORT Hit : public osg::Referenced
             if (_originalLineSegment>hit._originalLineSegment) return false;
             return _ratio<hit._ratio;
         }
-
-        float                _ratio;
-        osg::LineSegment*    _originalLineSegment;
-        osg::LineSegment*    _localLineSegment;
-        osg::NodePath        _nodePath;
-        osg::Geode*          _geode;
-        osg::GeoSet*         _geoset;
-        osg::Matrix*         _matrix;
         
-        VecIndexList         _vecIndexList;
-        int                  _primitiveIndex;
-        osg::Vec3            _intersectPoint;
-        osg::Vec3            _intersectNormal;
+        
+        const osg::Vec3& getLocalIntersectPoint() const { return _intersectPoint; }
+        const osg::Vec3& getLocalIntersectNormal() const { return _intersectNormal; }
+        
+        const osg::Vec3 getWorldIntersectPoint() const { if (_matrix.valid()) return _intersectPoint*(*_matrix); else return _intersectPoint; }
+        const osg::Vec3 getWorldIntersectNormal() const ;
+
+        float                           _ratio;
+        osg::ref_ptr<osg::LineSegment>  _originalLineSegment;
+        osg::ref_ptr<osg::LineSegment>  _localLineSegment;
+        osg::NodePath                   _nodePath;
+        osg::ref_ptr<osg::Geode>        _geode;
+        osg::ref_ptr<osg::GeoSet>       _geoset;
+        osg::ref_ptr<osg::Matrix>       _matrix;
+        osg::ref_ptr<osg::Matrix>       _inverse;
+        
+        VecIndexList                    _vecIndexList;
+        int                             _primitiveIndex;
+        osg::Vec3                       _intersectPoint;
+        osg::Vec3                       _intersectNormal;
+
+
 };
 
 
@@ -123,6 +110,37 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
     protected:
 
 
+        class IntersectState : public osg::Referenced
+        {
+            public:
+
+                IntersectState();
+
+                osg::ref_ptr<osg::Matrix> _matrix;
+                osg::ref_ptr<osg::Matrix> _inverse;
+
+                typedef std::pair<osg::ref_ptr<osg::LineSegment>,osg::ref_ptr<osg::LineSegment> >   LineSegmentPair;
+                typedef std::vector< LineSegmentPair >                                              LineSegmentList;
+                LineSegmentList _segList;
+
+                typedef unsigned int LineSegmentmentMask;
+                typedef std::vector<LineSegmentmentMask> LineSegmentmentMaskStack;
+                LineSegmentmentMaskStack _segmentMaskStack;
+
+                bool isCulled(const osg::BoundingSphere& bs,LineSegmentmentMask& segMaskOut);
+                bool isCulled(const osg::BoundingBox& bb,LineSegmentmentMask& segMaskOut);
+
+                void addLineSegmentPair(osg::LineSegment* first,osg::LineSegment* second)
+                {
+                    _segList.push_back(LineSegmentPair(first,second));
+                }
+
+            protected:
+
+                ~IntersectState();
+
+        };
+
         bool intersect(osg::GeoSet& gset);
 
         void pushMatrix(const osg::Matrix& matrix);
@@ -132,7 +150,8 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         void leaveNode();
 
         typedef std::vector<osg::ref_ptr<IntersectState> > IntersectStateStack;
-        IntersectStateStack                  _intersectStateStack;
+        
+        IntersectStateStack         _intersectStateStack;
 
         osg::NodePath               _nodePath;
 

@@ -294,84 +294,84 @@ void TriangleViewFrustumIntersect::intersect_triangle(const osg::Vec3& vert1, co
 
         //construct line segment of two triangle vertices and check if they intersect any clipping plane
         //but within correct clipping plane triangle
-        osg::LineSegment s12(v1, v2);
+        osg::ref_ptr<osg::LineSegment> s12 = new LineSegment(v1, v2);
 
 
         //left triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpLeft, DownLeft) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, DownLeft) == 0)
             _listVectors[returned] = true;
 
         //up triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpLeft, UpRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, UpRight) == 0)
             _listVectors[returned] = true;
 
         //right triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpRight, DownRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpRight, DownRight) == 0)
             _listVectors[returned] = true;
 
         //bottom triangled
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, DownLeft, DownRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, DownLeft, DownRight) == 0)
             _listVectors[returned] = true;
 
         //now for second edge of triangle
-        s12.set(v2, v3);
+        s12->set(v2, v3);
 
             //left triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpLeft, DownLeft) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, DownLeft) == 0)
             _listVectors[returned] = true;
 
         //up triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpLeft, UpRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, UpRight) == 0)
             _listVectors[returned] = true;
 
         //right triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpRight, DownRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpRight, DownRight) == 0)
             _listVectors[returned] = true;
 
         //bottom triangled
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, DownLeft, DownRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, DownLeft, DownRight) == 0)
             _listVectors[returned] = true;
 
-        s12.set(v3, v1);
+        s12->set(v3, v1);
 
         //left triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpLeft, DownLeft) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, DownLeft) == 0)
             _listVectors[returned] = true;
 
         //up triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpLeft, UpRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpLeft, UpRight) == 0)
             _listVectors[returned] = true;
 
         //right triangle
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, UpRight, DownRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, UpRight, DownRight) == 0)
             _listVectors[returned] = true;
 
         //bottom triangled
-        if(intersect_linesegment_and_triangle(returned, s12, _eye, DownLeft, DownRight) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, _eye, DownLeft, DownRight) == 0)
             _listVectors[returned] = true;
 
 
         //we still have possibility of camera being above huge triangle, so it is possible that clipping volume
         //intersects this triangle thus giving coordinates relevant for determination of near plane
 
-        s12.set(_eye, UpLeft);
+        s12->set(_eye, UpLeft);
 
-        if(intersect_linesegment_and_triangle(returned, s12, v1, v2, v3) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
             _listVectors[returned] = true;
 
-        s12.set(_eye, DownLeft);
+        s12->set(_eye, DownLeft);
 
-        if(intersect_linesegment_and_triangle(returned, s12, v1, v2, v3) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
             _listVectors[returned] = true;
 
-        s12.set(_eye, UpRight);
+        s12->set(_eye, UpRight);
 
-        if(intersect_linesegment_and_triangle(returned, s12, v1, v2, v3) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
             _listVectors[returned] = true;
 
-        s12.set(_eye, DownRight);
+        s12->set(_eye, DownRight);
 
-        if(intersect_linesegment_and_triangle(returned, s12, v1, v2, v3) == 0)
+        if(intersect_linesegment_and_triangle(returned, *s12, v1, v2, v3) == 0)
             _listVectors[returned] = true;
     }
 }

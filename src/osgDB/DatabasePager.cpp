@@ -5,6 +5,8 @@
 #include <osg/Texture>
 #include <osg/Notify>
 
+#include <OpenThreads/ScopedLock>
+
 #ifdef WIN32
 #include <windows.h>
 #else
@@ -111,12 +113,22 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         _fileRequestListMutex.unlock();
     }
     
-    //if (!threadIsRunning())
     if (!isRunning())
     {
-        osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
-        setSchedulePriority(PRIORITY_MIN);
-        startThread();
+        static OpenThreads::Mutex s_mutex;
+                
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex);
+        
+        static bool s_startThreadCalled = false;
+        
+        if (!s_startThreadCalled)
+        {
+            s_startThreadCalled = true;
+            osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
+            setSchedulePriority(PRIORITY_MIN);
+            startThread();
+        }
+                
     }
 }
 

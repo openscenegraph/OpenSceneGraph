@@ -19,6 +19,7 @@ CXXFILES = \
 	RenderToTextureStage.cpp\
 	SceneView.cpp\
 	SmoothingVisitor.cpp\
+	TangentSpaceGenerator.cpp\
 	Tesselator.cpp\
 	TransformCallback.cpp\
 	TransformAttributeFunctor.cpp\

@@ -28,11 +28,11 @@ public:
     {
     };
 
-    Node* readNode(const string &filename)
+    Node* readNode(const std::string &filename)
     {
         Group* ret = 0; 
         // search the SGL data path
-        string foundname =  osgDB::findFile(filename.c_str());
+        std::string foundname =  osgDB::findFile(filename.c_str());
         if( !foundname.empty())
         {
             if (archive.OpenFile(foundname))
@@ -65,7 +65,7 @@ public:
         return ret;
     };
 
-    Object* readObject(const string &filename)
+    Object* readObject(const std::string &filename)
     {
         return readNode(filename);
     };

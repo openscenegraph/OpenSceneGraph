@@ -209,7 +209,7 @@ void Billboard::calcTransform(const Vec3& eye_local, const Vec3& /*up_local*/, c
                     cp /= cp_len;
 
                     float rotation_cp = acosf(dot);
-                    mat.makeRotate(inRadians(rotation_cp),cp[0],cp[1],cp[2]);
+                    mat.makeRotate(-inRadians(rotation_cp),cp[0],cp[1],cp[2]);
                 }
             }
             break;

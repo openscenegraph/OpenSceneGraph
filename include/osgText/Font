@@ -139,7 +139,7 @@ protected:
 // declare the nested classes.
 public:
 
-    class OSGTEXT_EXPORT FontImplementation : public osg::Referenced
+    class FontImplementation : public osg::Referenced
     {
     public:
     

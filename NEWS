@@ -17,6 +17,10 @@ OSG News (most significant items from ChangeLog)
     virtual reality, scientific visualization, CAD, and architectural 
     walk-throughs.  Many thanks to Sun for providing resources for the port.
     
+    Additional html documentation has been added to the distribution to 
+    make it easier to get an understanding of scene graph technology and
+    the project itself and how to make use of it.  
+
     Support has also been added for OpenGL's texture cube mapping which
     is ideal for accurate environmental reflections and much more.
     

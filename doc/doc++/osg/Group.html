@@ -41,13 +41,13 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.42.7">replaceChild</A></B>( Node* origChild, Node* newChild )
 <DD><I>Replace specified Node with another Node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.42.8">getNumChildren</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.42.8">getNumChildren</A></B>() const 
 <DD><I>return the number of chilren nodes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.42.9">getChild</A></B>( const int i )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.42.9">getChild</A></B>( const unsigned int i )
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.42.10">getChild</A></B>( const int i ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.42.10">getChild</A></B>( const unsigned int i ) const 
 <DD><I>return child node at position i</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.42.11">containsNode</A></B>( const Node* node ) const 
@@ -131,17 +131,17 @@ not remove origNode. Also returns false if newChild is a Scene node.
 <DL><DT><DD></DL><P>
 <A NAME="getNumChildren"></A>
 <A NAME="DOC.2.42.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumChildren() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumChildren() const </B></TT>
 <DD>return the number of chilren nodes
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
 <A NAME="DOC.2.42.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Node* getChild( const int i )</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Node* getChild( const unsigned int i )</B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
 <A NAME="DOC.2.42.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node* getChild( const int i ) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node* getChild( const unsigned int i ) const </B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="containsNode"></A>

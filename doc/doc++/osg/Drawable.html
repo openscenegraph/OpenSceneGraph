@@ -38,13 +38,13 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Drawable.html#DOC.2.31.5">ParentList</A> <B><A HREF="#DOC.2.31.7">getParents</A></B>()
 <DD><I>Get the a copy of parent list of node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.31.8">getParent</A></B>(const int i)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Node* <B><A HREF="#DOC.2.31.8">getParent</A></B>(const unsigned int i)
 <DD><I>Get a single parent of Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.31.9">getParent</A></B>(const int i) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const Node* <B><A HREF="#DOC.2.31.9">getParent</A></B>(const unsigned int i) const 
 <DD><I>Get a single const parent of Drawable.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.31.10">getNumParents</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned int <B><A HREF="#DOC.2.31.10">getNumParents</A></B>() const 
 <DD><I> Get the number of parents of node.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.31.11">setStateSet</A></B>(<!1><A HREF="StateSet.html">StateSet</A>* state)
@@ -278,21 +278,21 @@ prevent modification of the parent list.
 <DL><DT><DD></DL><P>
 <A NAME="getParent"></A>
 <A NAME="DOC.2.31.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Node* getParent(const int i)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Node* getParent(const unsigned int i)</B></TT>
 <DD>Get a single parent of Drawable.
 
 <DL><DT><DT><B>Parameters:</B><DD><B>i</B> -  index of the parent to get.
 <BR><DT><B>Returns:</B><DD>  the parent i.<BR><DD></DL><P>
 <A NAME="getParent"></A>
 <A NAME="DOC.2.31.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node* getParent(const int i) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const Node* getParent(const unsigned int i) const </B></TT>
 <DD>Get a single const parent of Drawable.
 
 <DL><DT><DT><B>Parameters:</B><DD><B>i</B> -  index of the parent to get.
 <BR><DT><B>Returns:</B><DD>  the parent i.<BR><DD></DL><P>
 <A NAME="getNumParents"></A>
 <A NAME="DOC.2.31.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getNumParents() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned int getNumParents() const </B></TT>
 <DD>
 Get the number of parents of node.
 

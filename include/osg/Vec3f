@@ -16,6 +16,7 @@
 
 #include <ostream>
 
+#include <osg/Vec2f>
 #include <osg/Math>
 
 namespace osg {
@@ -35,6 +36,12 @@ class Vec3f
 
         Vec3f() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0;}
         Vec3f(value_type x,value_type y,value_type z) { _v[0]=x; _v[1]=y; _v[2]=z; }
+        Vec3f(const Vec2f& v2,value_type zz)
+        {
+            _v[0] = v2[0];
+            _v[1] = v2[1];
+            _v[2] = zz;
+        }
 
 
         inline bool operator == (const Vec3f& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }

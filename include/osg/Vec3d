@@ -14,6 +14,7 @@
 #ifndef OSG_VEC3D
 #define OSG_VEC3D 1
 
+#include <osg/Vec2d>
 #include <osg/Vec3f>
 
 namespace osg {
@@ -39,6 +40,12 @@ class Vec3d
         inline operator Vec3f() const { return Vec3f(static_cast<float>(_v[0]),static_cast<float>(_v[1]),static_cast<float>(_v[2]));}
 
         Vec3d(value_type x,value_type y,value_type z) { _v[0]=x; _v[1]=y; _v[2]=z; }
+        Vec3d(const Vec2d& v2,value_type zz)
+        {
+            _v[0] = v2[0];
+            _v[1] = v2[1];
+            _v[2] = zz;
+        }
 
         inline bool operator == (const Vec3d& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2]; }
         

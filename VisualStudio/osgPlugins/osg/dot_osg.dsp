@@ -130,6 +130,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\DOFTransforms.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\EarthSky.cpp
 # End Source File
 # Begin Source File
@@ -219,6 +223,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\PolygonMode.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\osg\PolygonOffset.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\PositionAttitudeTransform.cpp
 # End Source File
 # Begin Source File
 

@@ -10,6 +10,7 @@ CXXFILES =\
         ConvexPlanerOccluder.cpp\
         CullFace.cpp\
         Depth.cpp\
+        DOFTransform.cpp\
         Drawable.cpp\
         EarthSky.cpp\
         Fog.cpp\
@@ -35,6 +36,7 @@ CXXFILES =\
         Point.cpp\
         PolygonMode.cpp\
         PolygonOffset.cpp\
+        PositionAttitudeTransform.cpp\
         Projection.cpp\
         ReaderWriterOSG.cpp\
         ShadeModel.cpp\

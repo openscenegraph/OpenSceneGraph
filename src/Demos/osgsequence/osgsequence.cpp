@@ -2,7 +2,7 @@
 
 #include <osg/Group>
 #include <osg/Sequence>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 
 #include <osgDB/ReadFile>
 
@@ -173,7 +173,7 @@ int main( int argc, char **argv )
         osg::Matrix matrix;
         matrix.makeTranslate(x, 0.0, 0.0);
 
-        osg::Transform* xform = osgNew osg::Transform;
+        osg::MatrixTransform* xform = osgNew osg::MatrixTransform;
         xform->setMatrix(matrix);
         xform->addChild(seqNode);
 

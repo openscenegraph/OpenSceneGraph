@@ -22,11 +22,12 @@
 
 #include "mynodevisitor.h"
 #include <osg/Group>
+#include <osg/MatrixTransform>
 #include <osg/Geometry>
 
 class OSGVisitor: public MyNodeVisitor {
     osg::Node *root;
-    osg::Transform *parent;
+    osg::MatrixTransform *parent;
     Coordinate3 *coord3_active;
     TextureCoordinate *tcoord_active;
     Texture2 *texture_active;

@@ -21,6 +21,9 @@ using namespace osgUtil;
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
+
+    return;
+    
     if (options & COMBINE_ADJACENT_LODS)
     {
         CombineLODsVisitor clv;

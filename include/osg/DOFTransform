@@ -11,7 +11,7 @@
 
 namespace osg{
 /** DOFTransform - encapsulates Multigen DOF behavior*/
-class SG_EXPORT DOFTransform : public MatrixTransform
+class SG_EXPORT DOFTransform : public Transform
 {
     public:
         /** constructor*/
@@ -19,7 +19,7 @@ class SG_EXPORT DOFTransform : public MatrixTransform
 
         /**copy constructor*/
         DOFTransform(const DOFTransform& dof, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            MatrixTransform(dof, copyop),
+            Transform(dof, copyop),
             _minHPR(dof._minHPR),
             _maxHPR(dof._maxHPR),
             _currentHPR(dof._currentHPR),

@@ -946,10 +946,21 @@ int ConvertFromFLT::addVertices(GeoSetBuilder* pBuilder, PrimNodeRecord* primRec
         }
     }
 
-    if (vertices > 0) dgset->addPrimLen(vertices);
+    if (vertices > 0)
+    {
+        if (dgset->getPrimType() == osg::GeoSet::POINTS)
+        {
+            for (i=0; i < vertices; i++)
+                dgset->addPrimLen(1);
+        }
+        else
+        {
+            dgset->addPrimLen(vertices);
+        }
+    }
+
     return vertices;
 }
-
 
 int ConvertFromFLT::visitVertexList(GeoSetBuilder* pBuilder, VertexListRecord* rec)
 {

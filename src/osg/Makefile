@@ -28,6 +28,7 @@ C++FILES = \
 	Light.cpp\
 	LightSource.cpp\
         LineSegment.cpp\
+        LineWidth.cpp\
 	LOD.cpp\
 	Material.cpp\
 	Matrix.cpp\

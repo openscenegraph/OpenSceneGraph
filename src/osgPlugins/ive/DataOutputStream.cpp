@@ -266,7 +266,7 @@ void DataOutputStream::writeMatrix(const osg::Matrix& mat)
     {
         for(int c=0;c<4;c++)
         {
-            writeFloat(mat(r,c));
+            writeDouble(mat(r,c));
         }
     }
 }

@@ -59,6 +59,22 @@ class SG_EXPORT Geometry : public Drawable
         const Array* getColorArray() const { return _colorArray.get(); }
 
 
+        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorBinding = ab; }
+        AttributeBinding getSecondaryColorBinding() const { return _secondaryColorBinding; }
+
+        void setSecondaryColorArray(Array* array) { _secondaryColorArray = array;  if (!_secondaryColorArray.valid()) _secondaryColorBinding=BIND_OFF; dirtyDisplayList(); }
+        Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
+        const Array* getSecondaryColorArray() const { return _secondaryColorArray.get(); }
+
+
+        void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; }
+        AttributeBinding getFogCoordBinding() const { return _fogCoordBinding; }
+
+        void setFogCoordArray(FloatArray* array) { _fogCoordArray = array; if (!_fogCoordArray.valid()) _fogCoordBinding=BIND_OFF; dirtyDisplayList(); }
+        FloatArray* getFogCoordArray() { return _fogCoordArray.get(); }
+        const FloatArray* getFogCoordArray() const { return _fogCoordArray.get(); }
+
+
         typedef std::vector< ref_ptr<Array> >  TexCoordArrayList;
 
 
@@ -120,6 +136,12 @@ class SG_EXPORT Geometry : public Drawable
         
         AttributeBinding            _colorBinding;
         ref_ptr<Array>              _colorArray;
+        
+        AttributeBinding            _secondaryColorBinding;
+        ref_ptr<Array>              _secondaryColorArray;
+
+        AttributeBinding            _fogCoordBinding;
+        ref_ptr<FloatArray>         _fogCoordArray;
         
         TexCoordArrayList           _texCoordList;
 

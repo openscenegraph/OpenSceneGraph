@@ -184,6 +184,7 @@ bool TrackballManipulator::calcMovement()
     // return if there is no movement.
     if (dx==0 && dy==0) return false;
 
+    float focalLength = (_camera->getCenterPoint()-_camera->getEyePoint()).length();
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_BUTTON)
     {
@@ -229,8 +230,9 @@ bool TrackballManipulator::calcMovement()
     {
 
         // pan model.
+        
 
-        float scale = 0.0015f*_camera->getFocalLength();
+        float scale = 0.0015f*focalLength;
 
         osg::Vec3 uv = _camera->getUpVector();
         osg::Vec3 sv = _camera->getSideVector();
@@ -240,7 +242,7 @@ bool TrackballManipulator::calcMovement()
         mat.makeTranslate(dv.x(),dv.y(),dv.z());
 
         _camera->transformLookAt(mat);
-
+        
         return true;
 
     }
@@ -249,7 +251,7 @@ bool TrackballManipulator::calcMovement()
 
         // zoom model.
 
-        float fd = _camera->getFocalLength();
+        float fd = focalLength;
         float scale = 1.0f-dy*0.001f;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {

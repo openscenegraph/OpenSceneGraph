@@ -2,6 +2,7 @@
 #include <osg/Camera>
 #include <osg/Types>
 #include <osg/Notify>
+#include <osg/State>
 
 using namespace osg;
 
@@ -23,7 +24,7 @@ Camera::Camera()
     _center.set(0.0f,0.0f,-1.0f);
     _up.set(0.0f,1.0f,0.0f);
 
-    _focalLength = 1.0f;
+    _fusionDistance = 1.0f;
 
     _useNearClippingPlane = false;
     _useFarClippingPlane = false;
@@ -73,7 +74,7 @@ void Camera::copy(const Camera& camera)
     _center = camera._center;
     _up = camera._up;
 
-    _focalLength = camera._focalLength;
+    _fusionDistance = camera._fusionDistance;
 
     _attachedTransformMode = camera._attachedTransformMode;
     _eyeToModelTransform = camera._eyeToModelTransform;
@@ -218,11 +219,11 @@ void Camera::setNearFar(const double zNear, const double zFar)
   * Typicall used after resizeing a window.*/
 void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa)
 {
-	if (newAspectRatio<0.01f || newAspectRatio>100.0f)
-	{
-		notify(NOTICE)<<"Warning: aspect ratio out of range (0.01..100) in Camera::adjustAspectRatio("<<newAspectRatio<<","<<aa<<")"<<std::endl;
-		return;
-	}
+    if (newAspectRatio<0.01f || newAspectRatio>100.0f)
+    {
+        notify(NOTICE)<<"Warning: aspect ratio out of range (0.01..100) in Camera::adjustAspectRatio("<<newAspectRatio<<","<<aa<<")"<<std::endl;
+        return;
+    }
 
     double previousAspectRatio = (_right-_left)/(_top-_bottom);
     double deltaRatio = newAspectRatio/previousAspectRatio;
@@ -334,7 +335,7 @@ void Camera::home()
     _up.set(0.0f,1.0f,0.0f);
     
     // need to set to appropriate values..
-    _focalLength = 1.0f;
+    _fusionDistance = 1.0f;
     
     _dirty = true;
 }
@@ -357,9 +358,6 @@ void Camera::setLookAt(const Vec3& eye,
     
     ensureOrthogonalUpVector();
 
-    // need to set to appropriate values..
-    _focalLength = (center-eye).length();
-    
     _dirty = true;
 }
 
@@ -374,9 +372,6 @@ void Camera::setLookAt(const double eyeX, const double eyeY, const double eyeZ,
     _up.set(upX,upY,upZ);
     
     ensureOrthogonalUpVector();
-
-    // need to set to appropriate values..
-    _focalLength = (_center-_eye).length();
     
     _dirty = true;
 }
@@ -392,8 +387,6 @@ void Camera::transformLookAt(const Matrix& matrix)
     _center = _center*matrix;
     _up -= _eye;
     _up.normalize();
-
-    _focalLength = (_center-_eye).length();
 
     _dirty = true;
 }
@@ -702,7 +695,7 @@ void Camera::calculateMatricesAndClippingVolume() const
 
     if (_useEyeOffset)
     {
-        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::translate(-_eyeOffset*_focalLength/_screenDistance);
+        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::translate(-_eyeOffset*_fusionDistance/_screenDistance);
     }
 
 
@@ -817,4 +810,19 @@ void Camera::adjustEyeOffsetForStereo(const osg::Vec3& offset,float screenDistan
     _eyeOffset = offset;
     _screenDistance = screenDistance;
     _dirty = true;
+}
+
+void Camera::apply(State& state)
+{
+    const Matrix& projectionMat = getProjectionMatrix();
+    glMatrixMode( GL_PROJECTION );
+    glLoadMatrixf(projectionMat.ptr());
+
+    // set up camera modelview.
+    const Matrix& modelView = getModelViewMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glLoadMatrixf(modelView.ptr());
+    
+    state.setCamera(this);
+    
 }

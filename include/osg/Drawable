@@ -275,7 +275,7 @@ class SG_EXPORT Drawable : public Object
         };
         
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
-        void setUpdateCallback(UpdateCallback* ac);
+        virtual void setUpdateCallback(UpdateCallback* ac);
         
         /** Get the non const UpdateCallback.*/
         UpdateCallback* getUpdateCallback() { return _updateCallback.get(); }
@@ -297,7 +297,7 @@ class SG_EXPORT Drawable : public Object
         };
 
         /** Set the CullCallback which allows users to customize the culling of Drawable during the cull traversal.*/
-        void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
+        virtual void setCullCallback(CullCallback* cc) { _cullCallback=cc; }
         
         /** Get the non const CullCallback.*/
         CullCallback* getCullCallback() { return _cullCallback.get(); }
@@ -326,7 +326,7 @@ class SG_EXPORT Drawable : public Object
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
-        void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
+        virtual void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyDisplayList(); }
         
         /** Get the non const DrawCallback.*/
         DrawCallback* getDrawCallback() { return _drawCallback.get(); }

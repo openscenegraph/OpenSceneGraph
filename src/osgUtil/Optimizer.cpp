@@ -492,7 +492,10 @@ class CollectLowestTransformsVisitor : public Optimizer::BaseOptimizerVisitor
 
         CollectLowestTransformsVisitor(Optimizer* optimizer=0):
                     Optimizer::BaseOptimizerVisitor(optimizer,Optimizer::FLATTEN_STATIC_TRANSFORMS),
-                    _transformFunctor(osg::Matrix()) {}
+                    _transformFunctor(osg::Matrix())
+        {
+            setTraversalMode(osg::NodeVisitor::TRAVERSE_PARENTS);
+        }
 
         virtual void apply(osg::Node& node)
         {
@@ -576,9 +579,9 @@ class CollectLowestTransformsVisitor : public Optimizer::BaseOptimizerVisitor
             if (drawable) return isOperationPermissibleForObject(drawable);
             
             const osg::Node* node = dynamic_cast<const osg::Node*>(object);
-            if (drawable) return isOperationPermissibleForObject(node);
+            if (node) return isOperationPermissibleForObject(node);
 
-            return false;
+            return true;
         }
 
         inline bool isOperationPermissibleForObject(const osg::Drawable* drawable) const
@@ -796,7 +799,6 @@ void CollectLowestTransformsVisitor::disableTransform(osg::Transform* transform)
 
 void CollectLowestTransformsVisitor::setUpMaps()
 {
-
     // create the TransformMap from the ObjectMap
     ObjectMap::iterator oitr;
     for(oitr=_objectMap.begin();
@@ -813,7 +815,6 @@ void CollectLowestTransformsVisitor::setUpMaps()
             _transformMap[*titr].add(object);
         }
     }
-    
 
     // disable all the objects which have more than one matrix associated 
     // with them, and then disable all transforms which have an object associated 
@@ -835,6 +836,7 @@ void CollectLowestTransformsVisitor::setUpMaps()
             }
         }
     }
+
 }
 
 bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
@@ -862,7 +864,6 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
     {
         if (titr->second._canBeApplied)
         {
-        
             if (titr->first!=nodeWeCannotRemove)
             {
                 transformRemoved = true;
@@ -952,8 +953,6 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
 
     _transformStack.push_back(&transform);
 
-    
-
     // simple traverse the children as if this Transform didn't exist.
     traverse(transform);
 
@@ -1025,8 +1024,6 @@ bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* node
         TransformSet::iterator itr = _transformSet.find(nodeWeCannotRemove->asTransform()->asMatrixTransform());
         if (itr!=_transformSet.end()) _transformSet.erase(itr);
     }
-    
-    osg::notify(osg::INFO)<<"Have found "<<_transformSet.size()<<" static Transform pairs to flatten"<<std::endl;
     
     bool transformRemoved = false;
 

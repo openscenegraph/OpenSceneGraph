@@ -13,6 +13,7 @@ CXXFILES =\
 	IO_ModularProgram.cpp\
 	IO_MultiSegmentPlacer.cpp\
 	IO_Particle.cpp\
+	IO_ParticleEffect.cpp\
 	IO_ParticleProcessor.cpp\
 	IO_ParticleSystem.cpp\
 	IO_ParticleSystemUpdater.cpp\
@@ -22,6 +23,10 @@ CXXFILES =\
 	IO_RandomRateCounter.cpp\
 	IO_SectorPlacer.cpp\
 	IO_SegmentPlacer.cpp\
+	IO_SmokeEffect.cpp\
+	IO_FireEffect.cpp\
+	IO_ExplosionEffect.cpp\
+	IO_ExplosionDebriEffect.cpp\
 	IO_VariableRateCounter.cpp\
 
 

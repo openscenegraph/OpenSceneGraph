@@ -63,8 +63,11 @@ class OSGUTIL_EXPORT Hit
         float getRatio() const { return _ratio; }
         const osg::LineSegment* getOriginalLineSegment() const { return _originalLineSegment.get(); }
         const osg::LineSegment* getLocalLineSegment() const { return _localLineSegment.get(); }
+        osg::NodePath& getNodePath() { return _nodePath; }
         const osg::NodePath& getNodePath() const { return _nodePath; }
+        osg::Geode* getGeode() { return _geode.get(); }
         const osg::Geode* getGeode() const { return _geode.get(); }
+        osg::Drawable* getDrawable() { return _drawable.get(); }
         const osg::Drawable* getDrawable() const { return _drawable.get(); }
         const osg::RefMatrix* getMatrix() const { return _matrix.get(); }
         const osg::RefMatrix* getInverseMatrix() const { return _inverse.get(); }

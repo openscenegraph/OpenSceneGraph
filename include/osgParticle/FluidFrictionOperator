@@ -40,24 +40,30 @@ namespace osgParticle
         FluidFrictionOperator(const FluidFrictionOperator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgParticle, FluidFrictionOperator);
-        
-        /// Get the density of the fluid.
-        inline float getFluidDensity() const;
-        
+               
         /// Set the density of the fluid.
         inline void setFluidDensity(float d);
-        
-        /// Get the viscosity of the fluid.
-        inline float getFluidViscosity() const;
+
+        /// Get the density of the fluid.
+        inline float getFluidDensity() const;
         
         /// Set the viscosity of the fluid.
         inline void setFluidViscosity(float v);
         
-        /// Get the overriden radius value.
-        inline float getOverrideRadius() const;        
+        /// Get the viscosity of the fluid.
+        inline float getFluidViscosity() const;
         
+        /// Set the wind vector.
+        inline void setWind(const osg::Vec3& wind) { _wind = wind; }
+        
+        /// Get the wind vector.
+        inline const osg::Vec3& getWind() const { return _wind; }
+               
         /// Set the overriden radius value (pass 0 if you want to use particle's radius).
         inline void setOverrideRadius(float r);
+
+        /// Get the overriden radius value.
+        inline float getOverrideRadius() const;        
         
         /// Set the fluid parameters as for air (20°C temperature).
         inline void setFluidToAir();
@@ -76,11 +82,12 @@ namespace osgParticle
         FluidFrictionOperator &operator=(const FluidFrictionOperator &) { return *this; }
         
     private:
-        float A_;
-        float B_;
-        float density_;
-        float viscosity_;
-        float ovr_rad_;
+        float       A_;
+        float       B_;
+        float       density_;
+        float       viscosity_;
+        float       ovr_rad_;
+        osg::Vec3   _wind;
         Program *current_program_;
     };
     

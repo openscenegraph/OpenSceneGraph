@@ -107,6 +107,9 @@ namespace osgParticle
         
         /// Get the number of dead particles.
         inline int numDeadParticles() const;
+
+        /// Get whether all particles are dead        
+        inline bool areAllParticlesDead() const { return numDeadParticles()==numParticles(); }
         
         /// Get a pointer to the i-th particle.
         inline Particle *getParticle(int i);

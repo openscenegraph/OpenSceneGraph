@@ -4,9 +4,11 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	Emitter.cpp\
 	ExplosionEffect.cpp\
+	ExplosionDebriEffect.cpp\
 	SmokeEffect.cpp\
 	FireEffect.cpp\
 	FluidFrictionOperator.cpp\
+	FluidProgram.cpp\
 	ModularEmitter.cpp\
 	ModularProgram.cpp\
 	MultiSegmentPlacer.cpp\

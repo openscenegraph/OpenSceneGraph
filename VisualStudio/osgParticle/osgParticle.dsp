@@ -111,6 +111,10 @@ SOURCE=..\..\src\osgParticle\FluidFrictionOperator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgParticle\FluidProgram.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgParticle\ModularEmitter.cpp
 # End Source File
 # Begin Source File
@@ -192,6 +196,10 @@ SOURCE=..\..\include\osgParticle\FireEffect
 # Begin Source File
 
 SOURCE=..\..\include\osgParticle\FluidFrictionOperator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgParticle\FluidProgram
 # End Source File
 # Begin Source File
 

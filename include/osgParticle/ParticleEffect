@@ -25,11 +25,13 @@ namespace osgParticle
     public:
     
         ParticleEffect():
+            _useLocalParticleSystem(true),
             _scale(1.0f),
             _intensity(1.0f),
             _startTime(0.0),
-            _duration(1.0),
-            _direction(0.0f,0.0f,1.0f)
+            _emitterDuration(1.0),
+            _particleDuration(1.0),
+            _wind(0.0f,0.0f,0.0f)
             {}
         
         ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
@@ -39,6 +41,9 @@ namespace osgParticle
         virtual const char *className() const { return "ParticleEffect"; }
         virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const ParticleEffect*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
+
+        void setUseLocalParticleSystem(bool local);
+        bool getUseLocalParticleSystem() const { return _useLocalParticleSystem; }
 
         void setPosition(const osg::Vec3& position);
         const osg::Vec3& getPosition() const { return _position; }
@@ -52,9 +57,17 @@ namespace osgParticle
         void setStartTime(double startTime);
         double getStartTime() const { return _startTime; }
 
-        void setDuration(double duration);
-        double getDuration() const { return _duration; }
+        void setEmitterDuration(double duration);
+        double getEmitterDuration() const { return _emitterDuration; }
 
+        void setParticleDuration(double duration);
+        double getParticleDuration() const { return _particleDuration; }
+
+        void setWind(const osg::Vec3& wind);
+        const osg::Vec3& getWind() const { return _wind; }
+
+        /// Get whether all particles are dead 
+        bool areAllParticlesDead() const { return _particleSystem.valid()?_particleSystem->areAllParticlesDead():true; }
 
         virtual Emitter* getEmitter() = 0;
         virtual const Emitter* getEmitter() const  = 0;
@@ -62,8 +75,9 @@ namespace osgParticle
         virtual Program* getProgram()  = 0;
         virtual const Program* getProgram() const  = 0;
         
-        virtual ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
-        virtual const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
+        void setParticleSystem(ParticleSystem* ps);
+        inline ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
+        inline const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
 
         virtual void setDefaults();
 
@@ -74,13 +88,15 @@ namespace osgParticle
     protected:
     
         osg::ref_ptr<ParticleSystem>    _particleSystem;
-        
+
+        bool                            _useLocalParticleSystem;        
         osg::Vec3                       _position;
         float                           _scale;
         float                           _intensity;
         double                          _startTime;
-        double                          _duration;
-        osg::Vec3                       _direction;
+        double                          _emitterDuration;
+        double                          _particleDuration;
+        osg::Vec3                       _wind;
     };
 
 }

@@ -16,7 +16,7 @@
 
 #include <osgParticle/ParticleEffect>
 #include <osgParticle/ModularEmitter>
-#include <osgParticle/ModularProgram>
+#include <osgParticle/FluidProgram>
 
 namespace osgParticle
 {
@@ -34,7 +34,7 @@ namespace osgParticle
         virtual void setDefaults();
 
         virtual void setUpEmitterAndProgram();
-    
+
         virtual Emitter* getEmitter() { return _emitter.get(); }
         virtual const Emitter* getEmitter() const { return _emitter.get(); }
 
@@ -44,7 +44,7 @@ namespace osgParticle
     protected:
 
         osg::ref_ptr<ModularEmitter> _emitter;
-        osg::ref_ptr<ModularProgram> _program;
+        osg::ref_ptr<FluidProgram> _program;
 
     };
 }

@@ -46,15 +46,15 @@ namespace osgParticle
     public:
 
         /**
-		 Shape of particles.
-		 NOTE: the LINE shape should be used in conjunction with FIXED alignment mode (see ParticleSystem).
-	    */
-		enum Shape {
+         Shape of particles.
+         NOTE: the LINE shape should be used in conjunction with FIXED alignment mode (see ParticleSystem).
+        */
+        enum Shape {
             POINT,            // uses GL_POINTS as primitive
             QUAD,            // uses GL_QUADS as primitive
             QUAD_TRIANGLESTRIP,    // uses GL_TRIANGLE_STRIP as primitive, but each particle needs a glBegin/glEnd pair
             HEXAGON,            // may save some filling time, but uses more triangles
-			LINE                // uses GL_LINES to draw line segments that point to the direction of motion			
+            LINE                // uses GL_LINES to draw line segments that point to the direction of motion            
         };
         
         Particle();
@@ -117,14 +117,14 @@ namespace osgParticle
         /// Get the previous position (the position before last update).
         inline const osg::Vec3 &getPreviousPosition() const;
 
-		/// Get the angle vector.
-		inline const osg::Vec3 &getAngle() const;
-		
-		/// Get the rotational velocity vector.
-		inline const osg::Vec3 &getAngularVelocity() const;
-		
-		/// Get the previous angle vector.
-		inline const osg::Vec3 &getPreviousAngle() const;
+        /// Get the angle vector.
+        inline const osg::Vec3 &getAngle() const;
+        
+        /// Get the rotational velocity vector.
+        inline const osg::Vec3 &getAngularVelocity() const;
+        
+        /// Get the previous angle vector.
+        inline const osg::Vec3 &getPreviousAngle() const;
 
         /** Kill the particle on next update
             NOTE: after calling this function, the <CODE>isAlive()</CODE> method will still 
@@ -178,21 +178,21 @@ namespace osgParticle
         /// Transform position and velocity vectors by a matrix.
         inline void transformPositionVelocity(const osg::Matrix &xform);
 
-		/// Set the angle vector.
-		inline void setAngle(const osg::Vec3 &a);
-		
-		/**
-		  Set the angular velocity vector. 
-		  Components x, y and z are angles of rotation around the respective axis (in radians).
-	    */
-		inline void setAngularVelocity(const osg::Vec3 &v);
-		
-		/// Add a vector to the angular velocity vector.
-		inline void addAngularVelocity(const osg::Vec3 &dv);
-		
-		/// Transform angle and angularVelocity vectors by a matrix.
-		inline void transformAngleVelocity(const osg::Matrix &xform);
-		
+        /// Set the angle vector.
+        inline void setAngle(const osg::Vec3 &a);
+        
+        /**
+          Set the angular velocity vector. 
+          Components x, y and z are angles of rotation around the respective axis (in radians).
+        */
+        inline void setAngularVelocity(const osg::Vec3 &v);
+        
+        /// Add a vector to the angular velocity vector.
+        inline void addAngularVelocity(const osg::Vec3 &dv);
+        
+        /// Transform angle and angularVelocity vectors by a matrix.
+        inline void transformAngleVelocity(const osg::Matrix &xform);
+        
         /**    Update the particle (don't call this method manually).
             This method is called automatically by <CODE>ParticleSystem::update()</CODE>; it
             updates the graphical properties of the particle for the current time,
@@ -240,7 +240,7 @@ namespace osgParticle
 
         osg::Vec3 prev_angle_;
         osg::Vec3 angle_;
-		osg::Vec3 angular_vel_;
+        osg::Vec3 angular_vel_;
 
         double t0_;        
 
@@ -338,20 +338,20 @@ namespace osgParticle
         return prev_pos_;
     }
 
-	inline const osg::Vec3 &Particle::getAngle() const
-	{
-		return angle_;
-	}
-	
-	inline const osg::Vec3 &Particle::getAngularVelocity() const
-	{
-		return angular_vel_;
-	}
-	
-	inline const osg::Vec3 &Particle::getPreviousAngle() const
-	{
-		return prev_angle_;
-	}
+    inline const osg::Vec3 &Particle::getAngle() const
+    {
+        return angle_;
+    }
+    
+    inline const osg::Vec3 &Particle::getAngularVelocity() const
+    {
+        return angular_vel_;
+    }
+    
+    inline const osg::Vec3 &Particle::getPreviousAngle() const
+    {
+        return prev_angle_;
+    }
     
     inline void Particle::kill()
     {
@@ -422,30 +422,30 @@ namespace osgParticle
     
     inline void Particle::setAngle(const osg::Vec3 &a)
     {
-		angle_ = a;
-	}
-	
-	inline void Particle::setAngularVelocity(const osg::Vec3 &v)
-	{
-		angular_vel_ = v;
-	}
-	
-	inline void Particle::addAngularVelocity(const osg::Vec3 &dv)
-	{
-		angular_vel_ += dv;
-	}
-	
-	inline void Particle::transformAngleVelocity(const osg::Matrix &xform)
-	{
-		// this should be optimized!
-		
-		osg::Vec3 a1 = angle_ + angular_vel_;
-		
-		angle_ = xform.preMult(angle_);
-		a1 = xform.preMult(a1);
-		
-		angular_vel_ = a1 - angle_;
-	}
+        angle_ = a;
+    }
+    
+    inline void Particle::setAngularVelocity(const osg::Vec3 &v)
+    {
+        angular_vel_ = v;
+    }
+    
+    inline void Particle::addAngularVelocity(const osg::Vec3 &dv)
+    {
+        angular_vel_ += dv;
+    }
+    
+    inline void Particle::transformAngleVelocity(const osg::Matrix &xform)
+    {
+        // this should be optimized!
+        
+        osg::Vec3 a1 = angle_ + angular_vel_;
+        
+        angle_ = xform.preMult(angle_);
+        a1 = xform.preMult(a1);
+        
+        angular_vel_ = a1 - angle_;
+    }
             
     inline float Particle::getMass() const
     {
@@ -473,9 +473,9 @@ namespace osgParticle
         case QUAD:
             glBegin(GL_QUADS);
             break;
-		case LINE:
-			glBegin(GL_LINES);
-			break;
+        case LINE:
+            glBegin(GL_LINES);
+            break;
         default: ;
         }
     }
@@ -486,7 +486,7 @@ namespace osgParticle
         {        
         case POINT:
         case QUAD:
-		case LINE:
+        case LINE:
             glEnd();
             break;
         default: ;
@@ -499,18 +499,18 @@ namespace osgParticle
     }
     
     inline void Particle::setTextureTile(int sTile, int tTile, int numTiles)
-	{
-		s_tile_ = 1.0f / static_cast<float>(sTile);
-		t_tile_ = 1.0f / static_cast<float>(tTile);
-		if (numTiles <= 0)
-		{
-			num_tile_ = sTile * tTile;
-		}
-		else
-		{
-			num_tile_ = numTiles;
-		}
-	}
+    {
+        s_tile_ = 1.0f / static_cast<float>(sTile);
+        t_tile_ = 1.0f / static_cast<float>(tTile);
+        if (numTiles <= 0)
+        {
+            num_tile_ = sTile * tTile;
+        }
+        else
+        {
+            num_tile_ = numTiles;
+        }
+    }
 
 
 }

@@ -5,6 +5,7 @@
 #include <osg/BlendFunc>
 
 #include <algorithm>
+#include <fstream>
 
 using namespace osgProducer;
 

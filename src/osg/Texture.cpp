@@ -40,6 +40,8 @@ using namespace osg;
 #define GL_STORAGE_SHARED_APPLE           0x85BF
 #endif
 
+// #define DO_TIMING
+
 unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
 unsigned int Texture::s_numberNewTextureInLastFrame = 0;
 unsigned int Texture::s_numberDeletedTextureInLastFrame = 0;
@@ -759,6 +761,11 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     if (!image || !image->data())
         return;
 
+#ifdef DO_TIMING
+    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+    osg::notify(osg::NOTICE)<<"glTexImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+#endif
+
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
@@ -822,8 +829,28 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         
     }    
 
-    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && generateMipMapSupported;
+    unsigned int dataMinusOffset=0;
+    unsigned int dataPlusOffset=0;
 
+
+    const PixelBufferObject* pbo = image->getPixelBufferObject();
+    if (pbo && pbo->isBufferObjectSupported(contextID) && !needImageRescale)
+    {
+        pbo->compileBuffer(state);
+        pbo->bindBuffer(contextID);
+        dataMinusOffset = (unsigned int) data;
+        dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+#ifdef DO_TIMING
+        osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+#endif
+    }
+    else
+    {
+        pbo = 0;
+    }
+
+    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && generateMipMapSupported;
+    
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
         bool hardwareMipMapOn = false;
@@ -841,7 +868,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                 inwidth, inheight, _borderWidth,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
-                data );
+                data -dataMinusOffset+dataPlusOffset);
 
         }
         else if (extensions->isCompressedTexImage2DSupported())
@@ -854,7 +881,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
                 inwidth, inheight,0, 
                 size, 
-                data);                
+                data-dataMinusOffset+dataPlusOffset);                
         }
 
         if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
@@ -886,7 +913,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                          width, height, _borderWidth,
                         (GLenum)image->getPixelFormat(),
                         (GLenum)image->getDataType(),
-                        image->getMipmapData(k));
+                        image->getMipmapData(k)-dataMinusOffset+dataPlusOffset);
 
                     width >>= 1;
                     height >>= 1;
@@ -907,7 +934,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                     
                     extensions->glCompressedTexImage2D(target, k, _internalFormat, 
                                                        width, height, _borderWidth, 
-                                                       size, image->getMipmapData(k));                
+                                                       size, image->getMipmapData(k)-dataMinusOffset+dataPlusOffset);                
 
                     width >>= 1;
                     height >>= 1;
@@ -924,7 +951,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                 gluBuild2DMipmaps( target, _internalFormat,
                     inwidth,inheight,
                     (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
-                    data );
+                    data -dataMinusOffset+dataPlusOffset);
 
                 int width  = image->s();
                 int height = image->t();
@@ -942,6 +969,17 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         }
 
     }
+
+    if (pbo)
+    {
+        pbo->unbindBuffer(contextID);
+    }
+#ifdef DO_TIMING
+    static double s_total_time = 0.0;
+    double delta_time = osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick());
+    s_total_time += delta_time;
+    osg::notify(osg::NOTICE)<<"glTexImage2D "<<delta_time<<"ms  total "<<s_total_time<<"ms"<<std::endl;
+#endif
 
     if (needImageRescale)
     {
@@ -971,6 +1009,10 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     }
     // else image size the same as when loaded so we can go ahead and subload
     
+#ifdef DO_TIMING
+    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+    osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+#endif
    
 
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -1037,12 +1079,14 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         pbo->bindBuffer(contextID);
         dataMinusOffset = (unsigned int) data;
         dataPlusOffset=pbo->offset(); // -dataMinusOffset+dataPlusOffset
+#ifdef DO_TIMING
+        osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+#endif
     }
     else
     {
         pbo = 0;
     }
-    
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
@@ -1062,7 +1106,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                 inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
-                data - dataMinusOffset+dataPlusOffset);
+                data - dataMinusOffset + dataPlusOffset);
 
         }
         else if (extensions->isCompressedTexImage2DSupported())
@@ -1075,7 +1119,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                 inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
                 size,
-                data + -dataMinusOffset+dataPlusOffset );                
+                data - dataMinusOffset + dataPlusOffset );                
         }
 
         if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
@@ -1104,7 +1148,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                         width, height,
                         (GLenum)image->getPixelFormat(),
                         (GLenum)image->getDataType(),
-                        image->getMipmapData(k) -dataMinusOffset+dataPlusOffset);
+                        image->getMipmapData(k) - dataMinusOffset + dataPlusOffset);
 
                     width >>= 1;
                     height >>= 1;
@@ -1129,7 +1173,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                                                        width, height, 
                                                        (GLenum)image->getPixelFormat(),
                                                        size,
-                                                        image->getMipmapData(k) -dataMinusOffset+dataPlusOffset);                
+                                                        image->getMipmapData(k) - dataMinusOffset + dataPlusOffset);                
 
                     //state.checkGLErrors("after extensions->glCompressedTexSubImage2D(");
 
@@ -1141,75 +1185,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         }
         else
         {
-            if (!compressed_image)
-            {
-
-                 numMipmapLevels = 0;
-
-                int width  = inwidth;
-                int height = inheight;
-
-                glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-
-                unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(width,image->getPixelFormat(),image->getDataType(),image->getPacking())*height;
-                unsigned char* copyData1 = new unsigned char [newTotalSize];
-                unsigned char* copyData2 = new unsigned char [newTotalSize];
-                unsigned char* tmpdata = data;
-
-                int previous_width = width;
-                int previous_height = height;
-
-                for( GLsizei k = 0 ; (width || height) ;++k)
-                {
-
-                    if (width == 0)
-                        width = 1;
-                    if (height == 0)
-                        height = 1;
-
-
-                    if (k>0)
-                    {
-                        if (data!=copyData1)
-                        {
-                            gluScaleImage(image->getPixelFormat(),
-                                          previous_width,previous_height,image->getDataType(),data,
-                                          width,height,image->getDataType(),copyData1);
-                            data = copyData1;
-                        }
-                        else
-                        {
-                            gluScaleImage(image->getPixelFormat(),
-                                          previous_width,previous_height,image->getDataType(),data,
-                                          width,height,image->getDataType(),copyData2);
-                            data = copyData2;
-                        }                                  
-                    }
-
-                    glTexSubImage2D( target, k, 
-                        0, 0,
-                        width, height,
-                        (GLenum)image->getPixelFormat(),
-                        (GLenum)image->getDataType(),
-                        data);
-
-                    previous_width = width;
-                    previous_height = height;
-
-                    width >>= 1;
-                    height >>= 1;
-                }
-
-                delete [] copyData1;
-                delete [] copyData2;
-                
-                // restore the data paramters so it can be deleted if it was allocated locally via needImageRescale
-                data = tmpdata;
-            }
-            else 
-            {
-                notify(WARN)<<"Warning:: Compressed image cannot be mip mapped"<<std::endl;
-            }
+            notify(WARN)<<"Warning:: cannot subload mip mapped texture from non mipmapped image."<<std::endl;
         }
     }
     
@@ -1217,6 +1193,9 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     {
         pbo->unbindBuffer(contextID);
     }
+#ifdef DO_TIMING
+    osg::notify(osg::NOTICE)<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+#endif
 
     if (needImageRescale)
     {

@@ -52,7 +52,7 @@ public:
   virtual int           classOpcode() const { return LOCAL_VERTEX_POOL_OP; }
   virtual Record *      clone() const { return new LocalVertexPoolRecord(); }
 
-  SLocalVertexPool *    getData() const { return (SLocalVertexPool *) _pData; }
+  virtual SLocalVertexPool* getData() const { return (SLocalVertexPool *) _pData; }
   uint32                getNumVertices() const { return this->getData()->numVerts; }
   // Vertex attributes.
   bool                  getColorIndex ( const uint32 &whichVertex, uint32 &colorIndex ) const;

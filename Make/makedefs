@@ -315,7 +315,7 @@ ifeq ($(OS),CYGWIN)
   C++               = c++
   DEPARG            = -M
   INC               += 
-  DEF               += -DWIN32 -W -Wall
+  DEF               += -DWIN32 -W -Wall -DNOMINMAX
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared\
@@ -372,6 +372,15 @@ ifeq ($(OS),CYGWIN)
   INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
+
+  # Demos which require external libs: osghud osgtext
+  DEMOS_DIRS        = osgbillboard osgcallback osgclip \
+                      osgconv osgcopy osgcube osggeometry \
+                      osghangglide osgimpostor osgmultitexture osgoccluder \
+                      osgparticle osgprerender osgreflect osgscribe osgstereoimage \
+                      osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv \
+                      osgshape osganimate osgteapot
+#osgcluster 
 
 endif
 

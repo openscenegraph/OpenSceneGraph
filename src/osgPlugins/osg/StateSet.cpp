@@ -1,6 +1,7 @@
 #include <osg/StateSet>
 #include <osg/Texture2D>
 #include <osg/TextureCubeMap>
+#include <osg/TextureRectangle>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

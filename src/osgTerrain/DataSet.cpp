@@ -444,6 +444,17 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 	else if (!bandSelected && bandGreen) bandSelected = bandGreen;
 	else if (!bandSelected && bandBlue) bandSelected = bandBlue;
         
+        if (!(bandRed && bandGreen && bandBlue) && bandSelected)
+        {
+            // do a hack to get the handling of gery scale images working by
+            // copying the single band three times...
+            // will fix later, Robert Osfield, May 2nd 2004.
+            bandRed = bandSelected;
+            bandGreen = bandSelected;
+            bandBlue = bandSelected;
+        }
+
+
         if (bandRed && bandGreen && bandBlue)
         {
             // RGB
@@ -515,6 +526,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 delete [] tempImage;
 
             }
+        }
+        else
+        {
+            std::cout<<"Warning image not read as Red, Blue and Green bands not present"<<std::endl;
         }
 
 
@@ -1829,7 +1844,11 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
     bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
 
-    if (inlineImageFile && _dataSet->getTextureType()==COMPRESSED_TEXTURE)
+    std::cout<<"__________________image->getPixelFormat()="<<image->getPixelFormat()<<std::endl;
+
+    if (inlineImageFile && 
+        _dataSet->getTextureType()==COMPRESSED_TEXTURE &&
+        (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA))
     {
         texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
 
@@ -1840,11 +1859,12 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
         texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
 
-    } else if (_dataSet->getTextureType()==RGB_16_BIT)
+        std::cout<<">>>>>>>>>>>>>>>compress image.<<<<<<<<<<<<<<"<<std::endl;
+
+    } else if (_dataSet->getTextureType()==RGB_16_BIT &&
+               image->getPixelFormat()==GL_RGB)
     {
-
         image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
-
     }
 
     if (!inlineImageFile)

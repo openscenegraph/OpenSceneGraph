@@ -17,10 +17,13 @@
 #include <osgSim/LightPointNode>
 #include <osg/Point>
 #include <osg/ShapeDrawable>
+#include <osg/ApplicationUsage>
 
 #include "TXPParser.h"
 #include "TXPArchive.h"
 using namespace txp;
+
+static osg::ApplicationUsageProxy TXP_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TXP_DEFAULT_MAX_ANISOTROPY \"<value> [<value>]\"","1.0 | 2.0 | 4.0 | 8.0 | 16.0");
 
 TXPParser::TXPParser():
 _archive(0),
@@ -30,7 +33,8 @@ _underBillboardSubgraph(false),
 _numBillboardLevels(0),
 _underLayerSubgraph(false),
 _numLayerLevels(0),
-_layerGeode(0)
+_layerGeode(0),
+_defaultMaxAnisotropy(1.0f)
 {
     AddCallback(TRPG_GEOMETRY,new geomRead(this));
     AddCallback(TRPG_GROUP,new groupRead(this));
@@ -40,6 +44,12 @@ _layerGeode(0)
     AddCallback(TRPG_LIGHT,new lightRead(this));
     AddCallback(TRPG_LAYER,new layerRead(this));
     AddCallback(TRPGTILEHEADER,new tileHeaderRead(this));
+    
+    if (getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"))
+    {
+        _defaultMaxAnisotropy = atof(getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"));
+    }
+    
 }
 
 TXPParser::~TXPParser()
@@ -350,7 +360,7 @@ void TXPParser::loadLocalMaterials()
                     osg_texture->setWrap(osg::Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
                     
                     // by default is anisotropic filtering.
-                    osg_texture->setMaxAnisotropy(4.0f);
+                    osg_texture->setMaxAnisotropy(_defaultMaxAnisotropy);
                 }
                 else
                 {
@@ -428,6 +438,11 @@ void TXPParser::loadLocalMaterials()
             _localMaterials[i] = osg_state_set;
         }
      }
+}
+
+bool TXPParser::requestModel(int ix) 
+{
+    return _archive->loadModel(ix); 
 }
 
 //----------------------------------------------------------------------------
@@ -521,6 +536,12 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if( modelList->size() > size_t(modelID) )
     {
        osg_Model = (*modelList)[modelID].get();
+
+       if (osg_Model==NULL)
+       {
+           _parse->requestModel(modelID);
+           osg_Model = (*modelList)[modelID].get();
+       }
 
         // Create the SCS and position the model
         if (osg_Model)

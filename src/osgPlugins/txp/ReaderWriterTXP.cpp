@@ -37,7 +37,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fil
         if (txpNode->loadArchive())
         {
             TXPArchive* archive = txpNode->getArchive();
-            if (archive) archive->setId(_archiveId++);
+            if (archive) 
+            {
+                int id = _archiveId++;
+                archive->setId(id);
+                getArchive(id,osgDB::getFilePath(fileName));
+            }
             return txpNode.get();
         }
         else
@@ -137,11 +142,14 @@ TXPArchive *ReaderWriterTXP::getArchive(int id, const std::string& dir)
             return NULL;
         }
 
+        /*
+        // We load the models on demand
         if (archive->loadModels() == false)
         {
             ReaderWriterTXPERROR("getArchive()") << "failed to load models from archive: \"" << archiveName << "\"" << std::endl;
             return NULL;
         }
+        */
 
         if (archive->loadLightAttributes() == false)
         {

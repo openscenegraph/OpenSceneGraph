@@ -79,6 +79,10 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 
     osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph;
     
+
+
+//#define USE_LUMINANCE_ALPHA
+#ifdef USE_LUMINANCE_ALPHA
     unsigned int dataSize = width*height*2;
     unsigned char* data = new unsigned char[dataSize];
     
@@ -92,7 +96,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
                     data,
                     osg::Image::USE_NEW_DELETE,
                     1);
-
+    
     // skip the top margin        
     data += (margin*width)*2;
 
@@ -109,7 +113,41 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
         }
         data+=2*margin; // skip the right margin.
     }
+#else    
+    unsigned int dataSize = width*height;
+    unsigned char* data = new unsigned char[dataSize];
     
+
+    // clear the image to zeros.
+    for(unsigned char* p=data;p<data+dataSize;) { *p++ = 0; }
+
+    glyph->setImage(width,height,1,
+                    GL_ALPHA,
+                    GL_ALPHA,GL_UNSIGNED_BYTE,
+                    data,
+                    osg::Image::USE_NEW_DELETE,
+                    1);
+
+    glyph->setInternalTextureFormat(GL_ALPHA);
+
+    // skip the top margin        
+    data += (margin*width);
+
+    // copy image across to osgText::Glyph image.     
+    for(int r=sourceHeight-1;r>=0;--r)
+    {
+        data+=margin; // skip the left margin
+
+        unsigned char* ptr = buffer+r*pitch;
+        for(unsigned int c=0;c<sourceWidth;++c,++ptr)
+        {
+            (*data++)=*ptr;
+        }
+        data+=margin; // skip the right margin.
+    }
+#endif
+
+
     FT_Glyph_Metrics* metrics = &(glyphslot->metrics);
 
     glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX/64.0f,(float)(metrics->horiBearingY-metrics->height)/64.0f)); // bottom left.

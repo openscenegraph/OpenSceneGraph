@@ -195,10 +195,10 @@ void DefaultFont::constructGlyphs()
     unsigned int sourceWidth = 8;
     unsigned int sourceHeight = 12;
     
+//#define USE_LUMINANCE_ALPHA
+#ifdef USE_LUMINANCE_ALPHA
     _width = sourceWidth+2*_margin;
     _height = sourceHeight+2*_margin;
-    
-    
 
     // populate the glyph mp
     for(unsigned int i=32;i<127;i++)
@@ -229,22 +229,6 @@ void DefaultFont::constructGlyphs()
         for(unsigned int row=0;row<sourceHeight;++row,++ptr)
         {
             data+=2*_margin; // skip the left margin
-//             (*data++)=((*ptr)&128)?value_on:value_off;
-//             (*data++)=((*ptr)&128)?value_on:value_off;
-//             (*data++)=((*ptr)&64)?value_on:value_off;
-//             (*data++)=((*ptr)&64)?value_on:value_off;
-//             (*data++)=((*ptr)&32)?value_on:value_off;
-//             (*data++)=((*ptr)&32)?value_on:value_off;
-//             (*data++)=((*ptr)&16)?value_on:value_off;            
-//             (*data++)=((*ptr)&16)?value_on:value_off;            
-//             (*data++)=((*ptr)&8)?value_on:value_off;
-//             (*data++)=((*ptr)&8)?value_on:value_off;
-//             (*data++)=((*ptr)&4)?value_on:value_off;
-//             (*data++)=((*ptr)&4)?value_on:value_off;
-//             (*data++)=((*ptr)&2)?value_on:value_off;
-//             (*data++)=((*ptr)&2)?value_on:value_off;
-//             (*data++)=((*ptr)&1)?value_on:value_off;
-//             (*data++)=((*ptr)&1)?value_on:value_off;
             (*data++)=255;
             (*data++)=((*ptr)&128)?value_on:value_off;
             (*data++)=255;
@@ -263,7 +247,52 @@ void DefaultFont::constructGlyphs()
             (*data++)=((*ptr)&1)?value_on:value_off;
             data+=2*_margin; // skip the right margin.
         }
+#else        
+    _width = sourceWidth+2*_margin;
+    _height = sourceHeight+2*_margin;
+
+    // populate the glyph mp
+    for(unsigned int i=32;i<127;i++)
+    {
+        osg::ref_ptr<Glyph> glyph = new Glyph;
         
+        unsigned int dataSize = _width*_height;
+        unsigned char* data = new unsigned char[dataSize];
+
+        // clear the image to zeros.
+        for(unsigned char* p=data;p<data+dataSize;) { *p++ = 0; }
+        
+        glyph->setImage(_width,_height,1,
+                        GL_ALPHA,
+                        GL_ALPHA,GL_UNSIGNED_BYTE,
+                        data,
+                        osg::Image::USE_NEW_DELETE,
+                        1);
+
+        glyph->setInternalTextureFormat(GL_ALPHA);
+
+        // now populate data arry by converting bitmap into a luminance_alpha map.
+        unsigned char* ptr = rasters[i-32];
+        unsigned char value_on = 255;
+        unsigned char value_off = 0;
+
+        // skip the top margin        
+        data += (_margin*_width);
+        
+        for(unsigned int row=0;row<sourceHeight;++row,++ptr)
+        {
+            data+=_margin; // skip the left margin
+            (*data++)=((*ptr)&128)?value_on:value_off;
+            (*data++)=((*ptr)&64)?value_on:value_off;
+            (*data++)=((*ptr)&32)?value_on:value_off;
+            (*data++)=((*ptr)&16)?value_on:value_off;            
+            (*data++)=((*ptr)&8)?value_on:value_off;
+            (*data++)=((*ptr)&4)?value_on:value_off;
+            (*data++)=((*ptr)&2)?value_on:value_off;
+            (*data++)=((*ptr)&1)?value_on:value_off;
+            data+=_margin; // skip the right margin.
+        }
+#endif        
                         
         glyph->setHorizontalBearing(osg::Vec2(0.0f,0.0f)); // bottom left.
         glyph->setHorizontalAdvance((float)_width);

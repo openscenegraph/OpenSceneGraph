@@ -19,6 +19,7 @@
 #include <osg/Texture2D>
 #include <osg/StateSet>
 #include <osg/buffered_value>
+#include <osg/TexEnv>
 
 #include <osgText/Export>
 
@@ -136,6 +137,8 @@ protected:
     unsigned int                    _textureHeightHint;   
     osg::Texture::FilterMode        _minFilterHint;
     osg::Texture::FilterMode        _magFilterHint;
+    
+    osg::ref_ptr<osg::TexEnv >      _texEnv;
     
     osg::ref_ptr<FontImplementation> _implementation;
 

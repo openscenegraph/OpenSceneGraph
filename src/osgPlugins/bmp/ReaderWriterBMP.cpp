@@ -196,7 +196,16 @@ int *numComponents_ret)
             inf.ColorUsed=(long)pow(2.0,(double)inf.Colorbits); // infer the colours
         }
         osg::notify(osg::INFO) << "readbmp " <<inf.width<< " "<<inf.height << std::endl;
-        long size = hd.siz[1]+hd.siz[0]*65536;
+        
+        // previous size calculation, see new calcs below.
+        long size_prev = hd.siz[1]+hd.siz[0]*65536;
+        osg::notify(osg::INFO) << "previous size calc = "<<size_prev<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<endl;
+        
+        // order of size calculation swapped, by Christo Zietsman to fix size bug.
+        long size = hd.siz[1]*65536+hd.siz[0];
+        osg::notify(osg::INFO) << "new size calc = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<endl;
+
+
         int ncpal=4; // default number of colours per palette entry
         size -= sizeof(bmpheader)+infsize;
         if (inf.ImageSize<size) inf.ImageSize=size;
@@ -349,8 +358,15 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             hd.Reserved1=hd.Reserved2=0; // offset to image
             hd.offset[0]=sizeof(long)+sizeof(BMPInfo)+sizeof(hd); // 26; // offset to image
             hd.offset[1]=0; // offset to image
-            hd.siz[0]=(size&0xffff0000)>>16; // high word
-            hd.siz[1]=(size&0xffff); // low word
+  
+            // previous way round.          
+            // hd.siz[0]=(size&0xffff0000)>>16; // high word
+            // hd.siz[1]=(size&0xffff); // low word
+            
+            // new round to be consistent with the swap in the size calclation in the reading code.
+            hd.siz[0]=(size&0xffff); // low word
+            hd.siz[1]=(size&0xffff0000)>>16; // high word
+            
             fwrite(&hd, sizeof(hd), 1, fp);
             struct BMPInfo inf;
             osg::notify(osg::INFO) << "sizes "<<size << " "<<sizeof(inf)<< std::endl;

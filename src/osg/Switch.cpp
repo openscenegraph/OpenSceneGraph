@@ -56,8 +56,8 @@ bool Switch::addChild( Node *child, bool value )
         if (_children.size()>_values.size())
 	{
 	    _values.resize(_children.size(),_newChildDefaultValue);
-	    _values[childPosition]=value;
 	}
+	_values[childPosition]=value;
 	return true;
     }
     return false;

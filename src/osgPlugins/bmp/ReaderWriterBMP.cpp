@@ -199,11 +199,11 @@ int *numComponents_ret)
         
         // previous size calculation, see new calcs below.
         long size_prev = hd.siz[1]+hd.siz[0]*65536;
-        osg::notify(osg::INFO) << "previous size calc = "<<size_prev<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<endl;
+        osg::notify(osg::INFO) << "previous size calc = "<<size_prev<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
         
         // order of size calculation swapped, by Christo Zietsman to fix size bug.
         long size = hd.siz[1]*65536+hd.siz[0];
-        osg::notify(osg::INFO) << "new size calc = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<endl;
+        osg::notify(osg::INFO) << "new size calc = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
 
 
         int ncpal=4; // default number of colours per palette entry

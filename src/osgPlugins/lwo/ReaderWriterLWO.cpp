@@ -133,12 +133,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
         osg::Vec3* coord = new osg::Vec3[vertexCount];
         for (int i=0;i<lw->vertex_cnt;++i)
         {
-			// From the spec_low.lxt :
-			//   "By convention, the +X direction is to the right or east, the +Y
-			//    direction is upward, and the +Z direction is forward or north"
-			// However, the osg sticks to the more conventional, y to the north,
-			// z upwards, x is the same - rigth/east.  To handle this difference
-			// simple exchange osg_z for lwo_y, and osg_y for lwo_z.
+            // From the spec_low.lxt :
+            //   "By convention, the +X direction is to the right or east, the +Y
+            //    direction is upward, and the +Z direction is forward or north"
+            // However, the osg sticks to the more conventional, y to the north,
+            // z upwards, x is the same - rigth/east.  To handle this difference
+            // simple exchange osg_z for lwo_y, and osg_y for lwo_z.
 
             if (cim[i]>=0) coord[cim[i]].set(lw->vertex[i*3], lw->vertex[i*3+2], lw->vertex[i*3+1]);
         }

@@ -135,9 +135,10 @@ class PrimitiveSet : public Object
         GLenum  _mode;
 };
 
-// temporary addition for backwards compatiblity.
-typedef PrimitiveSet Primitive;
-
+#ifdef USE_DEPRECATED_API
+    // temporary addition for backwards compatiblity.
+    typedef PrimitiveSet Primitive;
+#endif
 
 class SG_EXPORT DrawArrays : public PrimitiveSet
 {

@@ -885,8 +885,8 @@ bool Image::isImageTranslucent() const
                 case(GL_SHORT):             return _findLowerAlphaValueInRow(s(), (short*)d + offset,          (short)32767, delta);
                 case(GL_UNSIGNED_SHORT):    return _findLowerAlphaValueInRow(s(), (unsigned short*)d + offset, (unsigned short)65535, delta);
                 case(GL_INT):               return _findLowerAlphaValueInRow(s(), (int*)d + offset,            (int)2147483647, delta);
-                case(GL_UNSIGNED_INT):      return _findLowerAlphaValueInRow(s(), (unsigned int*)d + offset,   (unsigned int)4294967295, delta);
-                case(GL_FLOAT):             return _findLowerAlphaValueInRow(s(), (float*)d + offset,           1.0f, delta);
+                case(GL_UNSIGNED_INT):      return _findLowerAlphaValueInRow(s(), (unsigned int*)d + offset,   4294967295u, delta);
+                case(GL_FLOAT):             return _findLowerAlphaValueInRow(s(), (float*)d + offset,          1.0f, delta);
             }
         }
     }

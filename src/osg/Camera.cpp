@@ -34,6 +34,7 @@ Camera::Camera(DisplaySettings* ds)
     _useEyeOffset = false;
     _eyeOffset.set(0.0f,0.0f,0.0f);
 
+    _attachedTransformMode = NO_ATTACHED_TRANSFORM;
 
     if (ds) _screenDistance = ds->getScreenDistance();
     else _screenDistance = 0.33f;

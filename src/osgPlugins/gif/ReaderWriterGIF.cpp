@@ -239,7 +239,7 @@ int *numComponents_ret)
                 }
                 if (giffile->Image.Interlace)
                 {
-                    fprintf(stderr,"interlace\n");
+                    //fprintf(stderr,"interlace\n");
                     /* Need to perform 4 passes on the images: */
                     for (i = 0; i < 4; i++)
                     {

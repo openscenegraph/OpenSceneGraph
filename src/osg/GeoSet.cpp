@@ -47,11 +47,6 @@ GeoSet::GeoSet()
 
     _fast_path = 1;
 
-    //     cout << endl << "Above allocated"<<endl;
-    //     newMemoryAdapter<Vec3>* ma = newMemoryAdapter<Vec3>::instance();
-    //     mem_ptr<Vec3> coords(ma->allocate(100),ma);
-    //     cout << "Registered"<<endl;mc
-
 }
 
 #define INDEX_ARRAY_DELETE(A) if (A._is_ushort) ushortList.insert(A._ptr._ushort); else uintList.insert(A._ptr._uint);

@@ -124,7 +124,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
 
         Impostor* _parent;
 
-        friend ImpostorSpriteManager;
+        friend class osg::ImpostorSpriteManager;
 
         // support for a double linked list managed by the
         // ImposotorSpriteManager.

@@ -93,7 +93,7 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
                 if (callback) callback->update(this,geode.getDrawable(i));
             }
         }
-	
+    
 };
 
 }

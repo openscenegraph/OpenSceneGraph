@@ -18,37 +18,37 @@
 namespace osgUtil
 {
 
-	/** This is the most simple cube map generator. It performs a direct association 
-	    between reflection vector and RGBA color (C = R).
-	*/
-	class ReflectionMapGenerator: public CubeMapGenerator {
-	public:
-		inline ReflectionMapGenerator(int texture_size = 64);
-		inline ReflectionMapGenerator(const ReflectionMapGenerator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
+    /** This is the most simple cube map generator. It performs a direct association 
+        between reflection vector and RGBA color (C = R).
+    */
+    class ReflectionMapGenerator: public CubeMapGenerator {
+    public:
+        inline ReflectionMapGenerator(int texture_size = 64);
+        inline ReflectionMapGenerator(const ReflectionMapGenerator &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
-	protected:
-		virtual ~ReflectionMapGenerator() {}
-		ReflectionMapGenerator &operator=(const ReflectionMapGenerator &) { return *this; }
+    protected:
+        virtual ~ReflectionMapGenerator() {}
+        ReflectionMapGenerator &operator=(const ReflectionMapGenerator &) { return *this; }
 
-		inline virtual osg::Vec4 compute_color(const osg::Vec3 &R) const;
-	};
+        inline virtual osg::Vec4 compute_color(const osg::Vec3 &R) const;
+    };
 
-	// INLINE METHODS
+    // INLINE METHODS
 
-	inline ReflectionMapGenerator::ReflectionMapGenerator(int texture_size)
-		: CubeMapGenerator(texture_size)
-	{
-	}
+    inline ReflectionMapGenerator::ReflectionMapGenerator(int texture_size)
+        : CubeMapGenerator(texture_size)
+    {
+    }
 
-	inline ReflectionMapGenerator::ReflectionMapGenerator(const ReflectionMapGenerator &copy, const osg::CopyOp &copyop)
-		: CubeMapGenerator(copy, copyop)
-	{
-	}
+    inline ReflectionMapGenerator::ReflectionMapGenerator(const ReflectionMapGenerator &copy, const osg::CopyOp &copyop)
+        : CubeMapGenerator(copy, copyop)
+    {
+    }
 
-	inline osg::Vec4 ReflectionMapGenerator::compute_color(const osg::Vec3 &R) const
-	{
-		return vector_to_color(R / R.length());
-	}
+    inline osg::Vec4 ReflectionMapGenerator::compute_color(const osg::Vec3 &R) const
+    {
+        return vector_to_color(R / R.length());
+    }
 
 }
 

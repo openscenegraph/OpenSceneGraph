@@ -20,33 +20,33 @@
 namespace osgUtil
 {
 
-	/** This cube map generator produces an Half-way vector map, useful for 
-	    hardware-based specular lighting effects.
-	    It computes: C = normalize(R - L), where C is the resulting color, 
-	    R is the reflection vector and L is the light direction.
-	*/
-	class OSGUTIL_EXPORT HalfWayMapGenerator: public CubeMapGenerator {
-	public:
-		HalfWayMapGenerator(const osg::Vec3 &light_direction, int texture_size = 64);
-		HalfWayMapGenerator(const HalfWayMapGenerator &copy, const osg::CopyOp &copyop);
+    /** This cube map generator produces an Half-way vector map, useful for 
+      * hardware-based specular lighting effects.
+      * It computes: C = normalize(R - L), where C is the resulting color, 
+      * R is the reflection vector and L is the light direction.
+      */
+    class OSGUTIL_EXPORT HalfWayMapGenerator: public CubeMapGenerator {
+    public:
+        HalfWayMapGenerator(const osg::Vec3 &light_direction, int texture_size = 64);
+        HalfWayMapGenerator(const HalfWayMapGenerator &copy, const osg::CopyOp &copyop);
 
-	protected:
-		virtual ~HalfWayMapGenerator() {}
-		HalfWayMapGenerator &operator=(const HalfWayMapGenerator &) { return *this; }
+    protected:
+        virtual ~HalfWayMapGenerator() {}
+        HalfWayMapGenerator &operator=(const HalfWayMapGenerator &) { return *this; }
 
-		inline virtual osg::Vec4 compute_color(const osg::Vec3 &R) const;
+        inline virtual osg::Vec4 compute_color(const osg::Vec3 &R) const;
 
-	private:
-		osg::Vec3 ldir_;
-	};
+    private:
+        osg::Vec3 ldir_;
+    };
 
-	// INLINE METHODS
+    // INLINE METHODS
 
-	inline osg::Vec4 HalfWayMapGenerator::compute_color(const osg::Vec3 &R) const
-	{
-		const osg::Vec3 V = (R / R.length()) - ldir_;
-		return vector_to_color(V / V.length());
-	}
+    inline osg::Vec4 HalfWayMapGenerator::compute_color(const osg::Vec3 &R) const
+    {
+        const osg::Vec3 V = (R / R.length()) - ldir_;
+        return vector_to_color(V / V.length());
+    }
 
 }
 

@@ -21,10 +21,10 @@ namespace osgUtil
 {
 
     /** This cube map generator produces a specular highlight map. 
-        The vector-color association is: C = (R dot (-L)) ^ n, where C is the 
-        resulting color, R is the reflection vector, L is the light direction 
-        and n is the specular exponent.
-    */
+      * The vector-color association is: C = (R dot (-L)) ^ n, where C is the 
+      * resulting color, R is the reflection vector, L is the light direction 
+      * and n is the specular exponent.
+      */
     class OSGUTIL_EXPORT HighlightMapGenerator: public CubeMapGenerator {
     public:
         HighlightMapGenerator(

@@ -23,10 +23,10 @@
 
 namespace osgUtil {
 
-// forward declare RenderGraph
+// Forward declare RenderGraph
 class RenderGraph;
 
-/** container class for all data required for rendering of drawables.
+/** Container class for all data required for rendering of drawables.
   */
 class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 {
@@ -41,28 +41,27 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _depth(depth) {}
 
         
-	inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f)
-	{
-	    _parent = 0;
-	    _drawable = drawable;
-            _projection = projection,
-            _modelview = modelview,
-	    _depth = depth;
-	}
-	
-	inline void reset()
-	{
-	    _parent = 0;
-	    _drawable = 0;
-	    _projection = 0;
-	    _modelview = 0;
-	    _depth = 0.0f;
-	}
-
-	
+        inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f)
+        {
+            _parent = 0;
+            _drawable = drawable;
+                _projection = projection,
+                _modelview = modelview,
+            _depth = depth;
+        }
+        
+        inline void reset()
+        {
+            _parent = 0;
+            _drawable = 0;
+            _projection = 0;
+            _modelview = 0;
+            _depth = 0.0f;
+        }
+    
         virtual void render(osg::State& state,RenderLeaf* previous);
         
-        /// allow RenderGraph to change the RenderLeaf's _parent.
+        /// Allow RenderGraph to change the RenderLeaf's _parent.
         friend class osgUtil::RenderGraph;
 
     public:

@@ -168,7 +168,7 @@ void RenderBin::sortByState()
 {
     // actually we'll do nothing right now, as fine grained sorting by state
     // appears to cost more to do than it saves in draw.  The contents of
-    // the RenderGraph leaves is already coasrse grained sorted, this
+    // the RenderGraph leaves is already coarse grained sorted, this
     // sorting is as a function of the cull traversal.
     // cout << "doing sortByState "<<this<<endl;
 }

@@ -43,7 +43,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         
         typedef unsigned int Mode;
 
-        /** Construct a GLObjectsVisior to traverse all child, operating on
+        /** Construct a GLObjectsVisitor to traverse all children, operating on
           * node according to specified mode, such as to compile or release 
           * display list/texture objects etc. Default mode is to compile 
           * GL objects.

@@ -22,13 +22,13 @@
 namespace osgUtil {
 
 /** Insert impostor nodes into scene graph.
-  * For example of usage see src/Demos/osgimpostor.
+  * For example of usage see examples/osgimpostor.
   */
 class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
 {
     public:
 
-        /// default to traversing all children.
+        /** Default to traversing all children. */
         InsertImpostorsVisitor();
         
         void setImpostorThresholdRatio(float ratio) { _impostorThresholdRatio = ratio; }
@@ -37,7 +37,7 @@ class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
         void setMaximumNumberOfNestedImpostors(unsigned int num) { _maximumNumNestedImpostors = num; }
         unsigned int getMaximumNumberOfNestedImpostors() const { return _maximumNumNestedImpostors; }
 
-        /** empty visitor, make it ready for next traversal.*/        
+        /** Empty visitor, make it ready for next traversal. */        
         void reset();
 
         virtual void apply(osg::Node& node);
@@ -48,7 +48,7 @@ class OSGUTIL_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
 
         virtual void apply(osg::Impostor& node);
         
-        /* insert the required impostors into the scene graph.*/
+        /* Insert the required impostors into the scene graph. */
         void insertImpostors();
         
     protected:

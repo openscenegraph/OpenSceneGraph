@@ -81,9 +81,9 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
             return _minStripSize;
         }
         
-        inline bool isOperationPermissableForObject(const osg::Object* object) const
+        inline bool isOperationPermissibleForObject(const osg::Object* object) const
         {
-            return _optimizer ? _optimizer->isOperationPermissableForObject(object,osgUtil::Optimizer::TRISTRIP_GEOMETRY) : true; 
+            return _optimizer ? _optimizer->isOperationPermissibleForObject(object,osgUtil::Optimizer::TRISTRIP_GEOMETRY) : true; 
         }
         
         void setGenerateFourPointPrimitivesQuads(bool flag) { _generateFourPointPrimitivesQuads = flag; }

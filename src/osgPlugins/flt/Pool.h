@@ -154,6 +154,36 @@ class InstancePool : public osg::Referenced
         InstanceMap _instanceMap;
 };
 
+
+class LtPtAppearancePool : public osg::Referenced
+{
+public:
+    struct PoolLtPtAppearance : public osg::Referenced
+    {
+        unsigned int _iBackColorIdx;
+        float _bIntensity;
+        float _sfMinPixelSize;
+        float _sfMaxPixelSize;
+        float _sfActualSize;
+        int _iDirectionality;
+        float _sfHLobeAngle;
+        float _sfVLobeAngle;
+    };
+
+    LtPtAppearancePool()
+    {}
+
+    PoolLtPtAppearance* get(int nIndex);
+    void add(int nIndex, PoolLtPtAppearance* appearance);
+
+protected:
+    ~LtPtAppearancePool() {}
+
+private:
+    typedef std::map<int, osg::ref_ptr<PoolLtPtAppearance> > AppearanceMap;
+    AppearanceMap _appearanceMap;
+};
+
 }; // end namespace flt
 
 #endif

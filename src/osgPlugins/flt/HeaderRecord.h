@@ -90,8 +90,6 @@ struct SHeader
     uint16 iNextMeshNodeID;       // Next Mesh node ID number
 
     // New with 15.8
-    // As of 2004/2/23, only adding 15.8 support to header parsing.
-    // Delete this comment when full support for 15.8 (1580) is added.
     int16 iUTMZone; // UTM zone 1-60, negative indicates southern hemisphere
     uint16 iNextLightPointSysID; // Light point system ID
     float64 dfEarthMajorAxis; // Custom ellipsoid Earth major axis

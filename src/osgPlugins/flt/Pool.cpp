@@ -285,3 +285,25 @@ void InstancePool::addInstance(int nIndex, osg::Group* instance)
     _instanceMap[nIndex] = instance;
 }
 
+
+LtPtAppearancePool::PoolLtPtAppearance* LtPtAppearancePool::get(int nIndex)
+{
+    if (nIndex < 0)
+        return NULL;
+
+    AppearanceMap::iterator fitr = _appearanceMap.find(nIndex);
+    if (fitr != _appearanceMap.end())
+        return (*fitr).second.get();
+
+    return NULL;
+}
+
+
+void LtPtAppearancePool::add(int nIndex, PoolLtPtAppearance* appearance)
+{
+    _appearanceMap[nIndex] = appearance;
+}
+
+
+
+

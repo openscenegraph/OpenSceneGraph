@@ -33,6 +33,7 @@ struct SLevelOfDetail
                             // 3-31 Spare
     float64x3    Center;        // Center coordinate (x,y,z) of LOD block
     float64    dfTransitionRange;            // Transition Range for Morphing
+	float64    dfSignificantSize;   // Multigen-Paradigm-internal for 15.8
 };
 
 

@@ -24,12 +24,16 @@ struct SGroup
                                 // 3 = Bounding box follows
                                 // 4 = Freeze bounding box
                                 // 5 = Default parent
-                                // 6-31 Spare
+                                // 6 - Backward animation
+                                // 7-31 Spare
     int16    iSpecialId_1;        // Special effects ID 1 - defined by real time
     int16    iSpecialId_2;        // Special effects ID 2 - defined by real time
     int16    iSignificance;        // Significance Flags
     uint8    swLayer;            // Layer Number
     uint8    swReserved[5];        // Reserved
+	int32    iLoopCount;           // Animation loop count
+	float32  fLoopDuration;        // Animation loop duration
+	float32  fLastFrameDuration;   // Duration of last frame in animation
 };
 
 

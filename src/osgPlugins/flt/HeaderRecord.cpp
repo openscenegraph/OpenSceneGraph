@@ -151,8 +151,6 @@ void HeaderRecord::endian()
 
         if ( pHeader->diFormatRevLev >= 1580 )
         {
-            // As of 2004/2/23, only adding 15.8 support to header parsing.
-            // Delete this comment when full support for 15.8 (1580) is added.
             memcpy( &(pHeader->iUTMZone), src, 2 ); src += 2;
             src += 6; // Reserved
         }
@@ -166,8 +164,6 @@ void HeaderRecord::endian()
 
         if ( pHeader->diFormatRevLev >= 1580 )
         {
-            // As of 2004/2/23, only adding 15.8 support to header parsing.
-            // Delete this comment when full support for 15.8 (1580) is added.
             memcpy( &(pHeader->iNextLightPointSysID), src, 2 ); src += 2;
             src += 4; // Reserved
             memcpy( &(pHeader->dfEarthMajorAxis), src, 8 ); src += 8;
@@ -226,8 +222,6 @@ void HeaderRecord::endian()
 
         if ( pHeader->diFormatRevLev >= 1580 )
         {
-            // As of 2004/2/23, only adding 15.8 support to header parsing.
-            // Delete this comment when full support for 15.8 (1580) is added.
             ENDIAN( pHeader->iUTMZone );
             ENDIAN( pHeader->iNextLightPointSysID );
             ENDIAN( pHeader->dfEarthMajorAxis );

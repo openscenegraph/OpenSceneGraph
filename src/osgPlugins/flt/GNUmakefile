@@ -34,6 +34,7 @@ CXXFILES =\
     UnknownRecord.cpp\
     LightPointRecord.cpp\
     VertexPoolRecords.cpp\
+    LightPointPaletteRecords.cpp\
     LightSourcePaletteRecord.cpp\
     flt.cpp\
     LightSourceRecord.cpp\

@@ -32,6 +32,7 @@ class VertexListRecord;
 class MorphVertexListRecord;
 class LightSourceRecord;
 class LightPointRecord;
+class LightPointIndexRecord;
 class SwitchRecord;
 class ExtensionRecord;
 class ExternalRecord;
@@ -129,6 +130,7 @@ class RecordVisitor
         virtual void apply(MorphVertexListRecord& rec)      { apply((PrimNodeRecord&)rec); }
         virtual void apply(LightSourceRecord& rec)          { apply((PrimNodeRecord&)rec); }
         virtual void apply(LightPointRecord& rec)           { apply((PrimNodeRecord&)rec); }
+        virtual void apply(LightPointIndexRecord& rec)      { apply((PrimNodeRecord&)rec); }
         virtual void apply(SwitchRecord& rec)               { apply((PrimNodeRecord&)rec); }
         virtual void apply(ExtensionRecord& rec)            { apply((PrimNodeRecord&)rec); }
         virtual void apply(ExternalRecord& rec)             { apply((PrimNodeRecord&)rec); }

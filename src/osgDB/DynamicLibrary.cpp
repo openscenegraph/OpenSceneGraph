@@ -2,7 +2,9 @@
 #include <Io.h>
 #include <Windows.h>
 #include <Winbase.h>
-#elif !defined(macintosh)
+#elif defined(__DARWIN_OSX__)
+#include <mach-o/dyld.h>
+#else // all other unix
 #include <unistd.h>
 #include <dlfcn.h>
 #endif
@@ -27,7 +29,9 @@ DynamicLibrary::~DynamicLibrary()
     {
 #if defined(WIN32) && !defined(__CYGWIN__)
         FreeLibrary((HMODULE)_handle);
-#elif !defined(macintosh)
+#elif defined(__DARWIN_OSX__)
+        NSUnLinkModule(_handle, FALSE);
+#else // other unix
         dlclose(_handle);
 #endif    
     }
@@ -43,7 +47,18 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     HANDLE handle = LoadLibrary( fullLibraryName.c_str() );
     if (handle) return osgNew DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
-#elif !defined(macintosh)
+#elif defined(__DARWIN_OSX__)
+    NSObjectFileImage image;
+    // NSModule os_handle = NULL;
+    if (NSCreateObjectFileImageFromFile(fullLibraryName.c_str(), &image) == NSObjectFileImageSuccess) {
+        // os_handle = NSLinkModule(image, fullLibraryName.c_str(), TRUE);
+        HANDLE handle = NSLinkModule(image, fullLibraryName.c_str(), TRUE);
+        NSDestroyObjectFileImage(image);
+        if (handle) return osgNew DynamicLibrary(libraryName,handle);
+    }
+    // if (os_handle) return osgNew DynamicLibrary(libraryName,os_handle);
+    notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
+#else // other unix
     HANDLE handle = dlopen( fullLibraryName.c_str(), RTLD_LAZY );
     if (handle) return osgNew DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
@@ -56,8 +71,15 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
 {
     if (_handle==NULL) return NULL;
 #if defined(WIN32) && !defined(__CYGWIN__)
-    return (DynamicLibrary::PROC_ADDRESS)GetProcAddress( (HMODULE)_handle,  procName.c_str() );
-#elif !defined(macintosh)
+    return (DynamicLibrary::PROC_ADDRESS)GetProcAddress( (HMODULE)_handle,
+                                                         procName.c_str() );
+#elif defined(__DARWIN_OSX__)
+    std::string temp("_");
+    NSSymbol symbol;
+    temp += procName;	// Mac OS X prepends an underscore on function names
+    symbol = NSLookupAndBindSymbol(temp.c_str());
+    return NSAddressOfSymbol(symbol);
+#else // other unix
     return dlsym( _handle,  procName.c_str() );
 #endif
     return NULL;

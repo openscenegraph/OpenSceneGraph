@@ -1,8 +1,10 @@
-#ifdef TARGET_API_MAC_CARBON
-    #include <osgDB/FileUtils_Mac.cpp>
+#if 0 // defined(__DARWIN_OSX__)
+#include "FileUtils_Mac.cpp" // this is not functional yet -- fix!
 #else
 
-// implementations for Windows and all Unix's except Mac when TARGET_API_MAC_CARBON defined.    
+// currently this impl is for _all_ platforms, execpt as defined.
+// the mac version will change soon to reflect the path scheme under osx, but
+// for now, the above include is commented out, and the below code takes precedence.
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     #include <Io.h>
@@ -10,10 +12,8 @@
     #include <Winbase.h>
     // set up for windows so acts just like unix access().
     #define F_OK 4
-#else
-    // unix.
+#else // unix
     #include <unistd.h>
-    #include <dlfcn.h>
 #endif
 
 #include <osg/Notify>

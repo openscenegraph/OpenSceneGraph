@@ -232,14 +232,14 @@ endif
 #### MacOS X specific definitions
 ifeq ($(OS),Darwin)
   C++               = cc
-  INC               +=  -I/usr/include -I/sw/include
+  INC               +=  -I/usr/include
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
   DBGF              = -g
   DEPARG            = -M $(DEF)
   SHARED            = -shared
   ARCHARGS          = 
-  LINKARGS          = -L/usr/lib -L/sw/lib 
+  LINKARGS          = -L/usr/lib
   DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
@@ -248,18 +248,19 @@ ifeq ($(OS),Darwin)
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
   X_LIBS            = 
   SOCKET_LIBS       = 
-  OTHER_LIBS        = -lm -ldl -lstdc++ -lobjc
+  OTHER_LIBS        = -lm -lstdc++ -lobjc
   LIB_EXT            = dylib
   QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   TIFF_LIB	    = -ltiff
-  SRC_DIRS          = osg osgUtil osgDB osgPlugins \
-                        osgGA osgGLUT osgParticle \
+  SRC_DIRS          = osg osgUtil osgDB \
+                        osgGA osgGLUT \
+                        osgPlugins osgParticle \
                         Demos
-  # Plugins which require external libs: gif jpeg png
+  # Plugins which require external libs: gif jpeg png tiff
   PLUGIN_DIRS       = bmp dw flt \
                         lib3ds logos lwo obj \
                         osg osgtgz pic \
-                        quicktime rgb tga tgz tiff \
+                        quicktime rgb tga tgz \
                         txp zip
   # Demos which require external libs: osghud osgtext
   DEMOS_DIRS        = osgbillboard osgcallback osgclip \

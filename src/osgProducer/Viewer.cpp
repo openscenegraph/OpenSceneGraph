@@ -188,7 +188,7 @@ void Viewer::realize( ThreadingModel thread_model)
     // force a sync before we intialize the keyswitch manipulator to home
     // so that Producer has a chance to set up the windows before we do
     // any work on them.
-    OsgCameraGroup::sync();
+    //OsgCameraGroup::sync();
  
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentCameraManipulator())
     {

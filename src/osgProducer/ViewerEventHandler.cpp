@@ -662,7 +662,7 @@ void DrawCallback::createStatsText()
 
         _drawTimes.push_back(0.0);
 
-        pos.x() = cullField->getBound().xMax();
+        pos.y() -= characterSize;
     }
 
 
@@ -674,7 +674,8 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     _cg(cg),
     _writeNodeFileName("saved_model.osg"),
     _displayHelp(false),
-    _frameStatsMode(NO_STATS)
+    _frameStatsMode(NO_STATS),
+    _firstTimeTogglingFullScreen(true)
 {
     Producer::CameraConfig* cfg = _cg->getCameraConfig();
     Producer::Camera *cam = cfg->getCamera(0);
@@ -716,8 +717,18 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 {
                     Producer::Camera *cam = cfg->getCamera(i);
                     Producer::RenderSurface* rs = cam->getRenderSurface();
-                    rs->fullScreen(!rs->isFullScreen());
+                    
+                    if (_firstTimeTogglingFullScreen && rs->isFullScreen())
+                    {
+                        rs->setWindowRect(240,220,800,600);
+                        rs->useBorder(true);
+                    }
+                    else
+                    {
+                        rs->fullScreen(!rs->isFullScreen());
+                    }
                 }
+                _firstTimeTogglingFullScreen = false;
 
                 return true;
             }

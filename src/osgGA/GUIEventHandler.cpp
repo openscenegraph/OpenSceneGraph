@@ -2,6 +2,16 @@
 
 using namespace osgGA;
 
+void CompositeGUIEventHandler::getUsage(osg::ApplicationUsage& usage) const
+{
+    for (ChildList::const_iterator itr=_children.begin();
+        itr!=_children.end();
+        ++itr)
+    {
+        (*itr)->getUsage(usage);
+    }
+}
+
 bool CompositeGUIEventHandler::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
     bool result=false;

@@ -32,6 +32,8 @@ class OSGGA_EXPORT FlightManipulator : public CameraManipulator
         FlightManipulator();
         virtual ~FlightManipulator();
 
+        virtual const char* className() { return "Flight"; }
+
         virtual void setNode(osg::Node*);
 
         virtual const osg::Node* getNode() const;
@@ -43,6 +45,9 @@ class OSGGA_EXPORT FlightManipulator : public CameraManipulator
         virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
 
         enum YawControlMode {
                 YAW_AUTOMATICALLY_WHEN_BANKED,

@@ -241,3 +241,12 @@ void Viewer::requestWarpPointer(int x,int y)
 }
 
 
+void Viewer::getUsage(osg::ApplicationUsage& usage) const
+{
+    for(EventHandlerList::const_iterator itr=_eventHandlerList.begin();
+        itr!=_eventHandlerList.end();
+        ++itr)
+    {
+        (*itr)->getUsage(usage);
+    }
+}

@@ -1,6 +1,23 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGPRODUCER_STATSEVENTHANDLER
+#define OSGPRODUCER_STATSEVENTHANDLER 1
 
 #include <osgGA/GUIEventHandler>
-#include <osgProducer/CameraGroup>
+#include <osgProducer/Viewer>
+
+namespace osgProducer {
 
 class StatsEventHandler : public osgGA::GUIEventHandler
 {
@@ -8,39 +25,18 @@ class StatsEventHandler : public osgGA::GUIEventHandler
     
         StatsEventHandler(osgProducer::Viewer* cg):_cg(cg) {}
     
-        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
-        {
-            if(!_cg) return false;
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
-            if(ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN)
-            {
+        virtual void accept(osgGA::GUIEventHandlerVisitor& gehv);
 
-                switch( ea.getKey() )
-                {
-                case 's' :
-                    _cg->setInstrumentationMode(!_cg->getInstrumentationMode());
-                    return true;
-
-                case 'v' :
-                    _cg->setBlockOnVsync(!_cg->getBlockOnVsync());
-                    //std::cout<<"_cg->getBlockOnVsync()="<<_cg->getBlockOnVsync()<<std::endl;
-                    return true;
-
-                default:
-                    break;
-
-                }
-            }
-            return false;
-            
-        }
-
-        virtual void accept(osgGA::GUIEventHandlerVisitor& gehv)
-        {
-            gehv.visit(*this);
-        }
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     protected:
         
         osgProducer::Viewer*        _cg;
 };
+
+}
+
+#endif

@@ -25,6 +25,8 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
         TrackballManipulator();
         virtual ~TrackballManipulator();
 
+        virtual const char* className() { return "Trackball"; }
+
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.
             setNode(NULL) detaches previously nodes.
@@ -44,9 +46,11 @@ class OSGGA_EXPORT TrackballManipulator : public CameraManipulator
         /** Start/restart the manipulator.*/
         virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-
         /** handle events, return true if handled, false otherwise.*/
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     protected:
 

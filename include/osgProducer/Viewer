@@ -82,6 +82,8 @@ class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAda
         unsigned int addCameraManipulator(osgGA::CameraManipulator* cm);
         void selectCameraManipulator(unsigned int no);
 
+        /** Get the keyboard and mouse usage of this viewer.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     protected :
 

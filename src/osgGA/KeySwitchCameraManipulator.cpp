@@ -18,7 +18,7 @@ void KeySwitchCameraManipulator::addCameraManipulator(int key, std::string name,
 void KeySwitchCameraManipulator::addNumberedCameraManipulator(CameraManipulator *cm)
 {
     if(!cm) return;
-    addCameraManipulator('1'+_manips.size(),"camera",cm);
+    addCameraManipulator('1'+_manips.size(),cm->className(),cm);
 }
 
 void KeySwitchCameraManipulator::selectCameraManipulator(unsigned int num)
@@ -60,4 +60,19 @@ bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
     }
 
     return _current->handle(ea,aa);
+}
+
+void KeySwitchCameraManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    for(KeyManipMap::const_iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        string key; key += (char)(itr->first);
+        string explanation(std::string("Select '")+itr->second.first+std::string("' camera manipulator"));
+        if (_current==itr->second.second) explanation += " (default)";
+
+        usage.addKeyboardMouseBinding(key,explanation);
+        itr->second.second->getUsage(usage);
+    }
 }

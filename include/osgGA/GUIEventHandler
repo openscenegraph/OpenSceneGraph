@@ -17,6 +17,7 @@
 #include <vector>
 
 #include <osg/Referenced>
+#include <osg/ApplicationUsage>
 
 #include <osgGA/Export>
 #include <osgGA/GUIEventAdapter>
@@ -49,8 +50,7 @@ class OSGGA_EXPORT GUIEventHandler : public osg::Referenced
 {
 public:
 
-        /** Handle events, return true if handled, false otherwise. */
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us)=0;
+        virtual const char* className() { return "GUIEventHandler"; }
 
         /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */
         virtual const CompositeGUIEventHandler* getComposite() const { return 0; }
@@ -58,8 +58,14 @@ public:
         /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */
         virtual CompositeGUIEventHandler* getComposite() { return 0; }
 
+        /** Handle events, return true if handled, false otherwise. */
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us)=0;
+
         /** Accept visits from GUIEventHandler visitors */
         virtual void accept(GUIEventHandlerVisitor&) = 0;
+        
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage&) const {}
 };
 
 
@@ -73,13 +79,19 @@ public:
 
         typedef std::vector< osg::ref_ptr<GUIEventHandler> > ChildList;
 
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa);
+        virtual const char* className() { return "CompositeGUIEventHandler"; }
 
         virtual const CompositeGUIEventHandler* getComposite() const { return this; }
 
         virtual CompositeGUIEventHandler* getComposite() { return this; }
 
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa);
+
         virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
 
         // Composite-specific methods below
 

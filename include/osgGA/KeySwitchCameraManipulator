@@ -34,6 +34,8 @@ class OSGGA_EXPORT KeySwitchCameraManipulator : public CameraManipulator
 {
 public:
 
+        virtual const char* className() { return "KeySwitchCamera"; }
+
         /**
         Add a camera manipulator with an associated name, and a key to
         trigger the switch,
@@ -74,6 +76,9 @@ public:
         virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->init(ee,aa); }
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
 
 private:
 

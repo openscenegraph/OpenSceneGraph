@@ -235,9 +235,6 @@ void Viewer::setUpViewer(unsigned int options)
     _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
 
-    // create a camera to use with the manipulators.
-    _old_style_osg_camera = new osg::Camera;
-
     if (options&TRACKBALL_MANIPULATOR) addCameraManipulator(new osgGA::TrackballManipulator);
     if (options&FLIGHT_MANIPULATOR) addCameraManipulator(new osgGA::FlightManipulator);
     if (options&DRIVE_MANIPULATOR) addCameraManipulator(new osgGA::DriveManipulator);
@@ -256,19 +253,19 @@ void Viewer::setUpViewer(unsigned int options)
     
 }
 
-unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)
+unsigned int Viewer::addCameraManipulator(osgGA::MatrixManipulator* cm)
 {
     if (!cm) return 0xfffff;
     
     // create a key switch manipulator if one doesn't already exist.
     if (!_keyswitchManipulator)
     {
-        _keyswitchManipulator = new osgGA::KeySwitchCameraManipulator;
+        _keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
         _eventHandlerList.push_back(_keyswitchManipulator.get());
     }
     
-    unsigned int num = _keyswitchManipulator->getNumCameraManipualtors();
-    _keyswitchManipulator->addNumberedCameraManipulator(cm);
+    unsigned int num = _keyswitchManipulator->getNumMatrixManipualtors();
+    _keyswitchManipulator->addNumberedMatrixManipulator(cm);
     
     return num;
 }
@@ -282,17 +279,13 @@ void Viewer::setViewByMatrix( const Producer::Matrix & pm)
 {
     CameraGroup::setViewByMatrix(pm);
     
-    if (_keyswitchManipulator.valid() && _old_style_osg_camera.valid())
+    if (_keyswitchManipulator.valid())
     {
         // now convert Producer matrix to an osg::Matrix so we can update
         // the internal camera...
         
         osg::Matrix matrix(pm.ptr());
-    
-        _old_style_osg_camera->home();
-        _old_style_osg_camera->transformLookAt(matrix);
-        osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
-        _keyswitchManipulator->init(*init_event,*this);
+        _keyswitchManipulator->setByInverseMatrix(matrix);
     }
 }
 
@@ -314,12 +307,11 @@ bool Viewer::realize()
     // any work on them.
     OsgCameraGroup::sync();
  
-    if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentCameraManipulator())
+    if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator())
     {
         osg::ref_ptr<osgProducer::EventAdapter> init_event = _kbmcb->createEventAdapter();
         init_event->adaptFrame(0.0);
     
-        _keyswitchManipulator->setCamera(_old_style_osg_camera.get());
         _keyswitchManipulator->setNode(getSceneDecorator());
         _keyswitchManipulator->home(*init_event,*this);
     }
@@ -329,7 +321,6 @@ bool Viewer::realize()
     for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
     {
         (*p)->getState()->setAbortRenderingPtr(&_done);
-        (*p)->setCamera(_old_style_osg_camera.get());
     }
     
     return _realized;
@@ -371,9 +362,18 @@ void Viewer::update()
     }
     
     // update the main producer camera
-    if (_old_style_osg_camera.valid()) 
+    if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator()) 
     {
-        CameraGroup::setViewByMatrix(Producer::Matrix(_old_style_osg_camera->getModelViewMatrix().ptr()));
+        osgGA::MatrixManipulator* mm = _keyswitchManipulator->getCurrentMatrixManipulator();
+        osg::Matrix matrix = mm->getInverseMatrix();
+        CameraGroup::setViewByMatrix(Producer::Matrix(matrix.ptr()));
+
+        for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
+        {
+            (*p)->setFusionDistance(mm->getFusionDistanceMode(),mm->getFusionDistanceValue());
+        }
+
+
     }
 }
 
@@ -505,7 +505,7 @@ bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::Hit
 
 void Viewer::selectCameraManipulator(unsigned int no)
 {
-    if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectCameraManipulator(no);
+    if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectMatrixManipulator(no);
 }
 
 void Viewer::requestWarpPointer(float x,float y)

@@ -44,14 +44,14 @@ osg::Node* FlightManipulator::getNode()
 
 void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(_node.get() && _camera.get())
+    if(_node.get())
     {
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        _camera->setLookAt(
+        computePosition(
             boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
-            boundingSphere._center,
+            osg::Vec3(0.0f,1.0f,0.0f),
             osg::Vec3(0.0f,0.0f,1.0f));
 
         _velocity = 0.0f;
@@ -59,8 +59,6 @@ void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
         us.requestRedraw();
 
         us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
-
-        computeLocalDataFromCamera();
 
         flushMouseEventStack();
 
@@ -81,15 +79,11 @@ void FlightManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
     {
         us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
     }
-
-    computeLocalDataFromCamera();
 }
 
 
 bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(!_camera.get()) return false;
-
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::PUSH):
@@ -138,16 +132,6 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 us.requestContinuousUpdate(false);
                 return true;
             }
-            else if (ea.getKey()=='+')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
-                return true;
-            }
-            else if (ea.getKey()=='-')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
-                return true;
-            }
             else if (ea.getKey()=='q')
             {
                 _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
@@ -178,8 +162,6 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 void FlightManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("Flight: Space","Reset the viewing position to home");
-    usage.addKeyboardMouseBinding("Flight: +","When in stereo, increase the fusion distance");
-    usage.addKeyboardMouseBinding("Flight: -","When in stereo, reduse the fusion distance");
     usage.addKeyboardMouseBinding("Flight: q","Automatically yaw when banked (default)");
     usage.addKeyboardMouseBinding("Flight: a","No yaw when banked");
 }
@@ -198,43 +180,46 @@ void FlightManipulator::addMouseEvent(const GUIEventAdapter& ea)
 }
 
 
-void FlightManipulator::computeLocalDataFromCamera()
+void FlightManipulator::setByMatrix(const osg::Matrix& matrix)
 {
-    // maths from gluLookAt/osg::Matrix::makeLookAt
-    osg::Vec3 f(_camera->getCenterPoint()-_camera->getEyePoint());
+    _eye = matrix.getTrans();
+    _rotation.set(matrix);
+    _distance = 1.0f;
+}
+
+osg::Matrix FlightManipulator::getMatrix() const
+{
+    return osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_eye);
+}
+
+osg::Matrix FlightManipulator::getInverseMatrix() const
+{
+    return osg::Matrix::translate(-_eye)*osg::Matrix::rotate(_rotation.inverse());
+}
+
+void FlightManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)
+{
+    osg::Vec3 f(lv);
     f.normalize();
-    osg::Vec3 s(f^_camera->getUpVector());
+    osg::Vec3 s(f^up);
     s.normalize();
     osg::Vec3 u(s^f);
     u.normalize();
-
+    
     osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
                                 s[1],     u[1],     -f[1],     0.0f,
                                 s[2],     u[2],     -f[2],     0.0f,
                                 0.0f,     0.0f,     0.0f,      1.0f);
                    
-    _eye = _camera->getEyePoint();
-    _distance = _camera->getLookDistance();
+    _eye = eye;
+    _distance = lv.length();
     _rotation.set(rotation_matrix);
     _rotation = _rotation.inverse();
-     
 }
 
-void FlightManipulator::computeCameraFromLocalData()
-{
-    osg::Matrix new_rotation;
-    new_rotation.makeRotate(_rotation);
-    
-    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * new_rotation;
-    osg::Vec3 center = (osg::Vec3(0.0f,0.0f,-_distance) * new_rotation) + _eye;
-
-    _camera->setLookAt(_eye,center,up);
-}
 
 bool FlightManipulator::calcMovement()
 {
-    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
-
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
@@ -310,8 +295,6 @@ bool FlightManipulator::calcMovement()
 
     _eye += lv;
     _rotation = _rotation*delta_rotate;
-
-    computeCameraFromLocalData();
 
     return true;
 }

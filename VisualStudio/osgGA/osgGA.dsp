@@ -97,7 +97,7 @@ SOURCE=..\..\src\osgGA\AnimationPathManipulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGA\CameraManipulator.cpp
+SOURCE=..\..\src\osgGA\MatrixManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -117,7 +117,7 @@ SOURCE=..\..\src\osgGA\GUIEventHandlerVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGA\KeySwitchCameraManipulator.cpp
+SOURCE=..\..\src\osgGA\KeySwitchMatrixManipulator.cpp
 # End Source File
 # Begin Source File
 
@@ -145,7 +145,7 @@ SOURCE=..\..\Include\osgGA\AnimationPathManipulator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgGA\CameraManipulator
+SOURCE=..\..\Include\osgGA\MatrixManipulator
 # End Source File
 # Begin Source File
 
@@ -177,7 +177,7 @@ SOURCE=..\..\Include\osgGA\GUIEventHandlerVisitor
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgGA\KeySwitchCameraManipulator
+SOURCE=..\..\Include\osgGA\KeySwitchMatrixManipulator
 # End Source File
 # Begin Source File
 

@@ -129,10 +129,6 @@ SOURCE=..\..\src\osg\BoundingSphere.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Camera.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\ClipNode.cpp
 # End Source File
 # Begin Source File
@@ -498,10 +494,6 @@ SOURCE=..\..\Include\Osg\BoundingSphere
 # Begin Source File
 
 SOURCE=..\..\include\osg\BoundsChecking
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Camera
 # End Source File
 # Begin Source File
 

@@ -16,7 +16,7 @@
 
 #include <osg/AnimationPath>
 #include <osg/Notify>
-#include <osgGA/CameraManipulator>
+#include <osgGA/MatrixManipulator>
 
 namespace osgGA{
 
@@ -31,7 +31,7 @@ namespace osgGA{
 //    px py pz = World position in catesian coordinates
 //    ax ay az aw = Orientation (attitude) defined as a quaternion
 
-class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
+class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
 {
     public:
     
@@ -41,6 +41,19 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
         
         virtual const char* className() const { return "AnimationPath"; }
         
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByMatrix(const osg::Matrix& matrix) { _matrix = matrix; }
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByInverseMatrix(const osg::Matrix& matrix) { _matrix.invert(matrix); }
+
+        /** get the position of the manipulator as 4x4 Matrix.*/
+        virtual osg::Matrix getMatrix() const { return _matrix; }
+
+        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
+        virtual osg::Matrix getInverseMatrix() const { return osg::Matrix::inverse(_matrix); } 
+
+
         void setAnimationPath( osg::AnimationPath* animationPath ) { _animationPath=animationPath; }
         
         osg::AnimationPath* getAnimationPath() { return _animationPath.get(); }
@@ -74,6 +87,8 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
         double  _realStartOfTimedPeriod;
         double  _animStartOfTimedPeriod;
         int     _numOfFramesSinceStartOfTimedPeriod;
+        
+        osg::Matrix _matrix;
 
 };
 

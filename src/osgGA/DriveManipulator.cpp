@@ -55,7 +55,7 @@ osg::Node* DriveManipulator::getNode()
 void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
 
-    if(_node.get() && _camera.get())
+    if(_node.get())
     {
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
@@ -68,7 +68,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
         // check to see if any obstruction in front.
         osgUtil::IntersectVisitor iv;
 
-        bool cameraSet = false;
+        bool positionSet = false;
 
         osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
         segDown->set(ep,bp);
@@ -89,22 +89,19 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 if (np.z()>0.0f) uv = np;
                 else uv = -np;
 
-                float lookDistance = _modelScale*0.1f;
-
                 ep = ip;
                 ep.z() += _height;
                 osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
-                osg::Vec3 cp = ep+lv*lookDistance;
 
-                _camera->setLookAt(ep,cp,uv);
+                computePosition(ep,lv,uv);
 
-                cameraSet = true;
+                positionSet = true;
 
             }
 
         }
 
-        if (!cameraSet)
+        if (!positionSet)
         {
             bp = ep;
             bp.z() += _modelScale;
@@ -128,29 +125,23 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
                     if (np.z()>0.0f) uv = np;
                     else uv = -np;
 
-                    float lookDistance = _modelScale*0.1f;
-
                     ep = ip;
                     ep.z() += _height;
                     osg::Vec3 lv = uv^osg::Vec3(1.0f,0.0f,0.0f);
-                    osg::Vec3 cp = ep+lv*lookDistance;
+                    computePosition(ep,lv,uv);
 
-                    _camera->setLookAt(ep,cp,uv);
-
-                    cameraSet = true;
+                    positionSet = true;
 
                 }
 
             }
         }
 
-        if (!cameraSet)
+        if (!positionSet)
         {
-                                 // eye
-            _camera->setLookAt(boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
-                                 // look
-                boundingSphere._center,
-                                 // up
+            computePosition(
+                boundingSphere._center+osg::Vec3( 0.0,-2.0f * boundingSphere._radius,0.0f),
+                osg::Vec3(0.0f,1.0f,0.0f),
                 osg::Vec3(0.0f,0.0f,1.0f));
         }
 
@@ -163,8 +154,6 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
     flushMouseEventStack();
-
-    computeLocalDataFromCamera();
 }
 
 void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
@@ -175,15 +164,18 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     _velocity = 0.0f;
 
-    osg::Vec3 ep = _camera->getEyePoint();
-    osg::Vec3 sv = _camera->getSideVector();
+    osg::Vec3 ep = _eye;
+
+    Matrix rotation_matrix;
+    _rotation.get(rotation_matrix);
+    osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f) * rotation_matrix;
     osg::Vec3 bp = ep;
     bp.z() -= _modelScale;
 
     // check to see if any obstruction in front.
     osgUtil::IntersectVisitor iv;
 
-    bool cameraSet = false;
+    bool positionSet = false;
 
     osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
     segDown->set(ep,bp);
@@ -204,22 +196,18 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
             if (np.z()>0.0f) uv = np;
             else uv = -np;
 
-            float lookDistance = _modelScale*0.1f;
-
             ep = ip+uv*_height;
             osg::Vec3 lv = uv^sv;
-            osg::Vec3 lp = ep+lv*lookDistance;
 
-            _camera->setLookAt(ep,lp,uv);
-            _camera->ensureOrthogonalUpVector();
+            computePosition(ep,lv,uv);
 
-            cameraSet = true;
+            positionSet = true;
 
         }
 
     }
 
-    if (!cameraSet)
+    if (!positionSet)
     {
         bp = ep;
         bp.z() += _modelScale;
@@ -243,16 +231,12 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 if (np.z()>0.0f) uv = np;
                 else uv = -np;
 
-                float lookDistance = _modelScale*0.1f;
-
                 ep = ip+uv*_height;
                 osg::Vec3 lv = uv^sv;
-                osg::Vec3 lp = ep+lv*lookDistance;
 
-                _camera->setLookAt(ep,lp,uv);
-                _camera->ensureOrthogonalUpVector();
+                computePosition(ep,lv,uv);
 
-                cameraSet = true;
+                positionSet = true;
 
             }
 
@@ -263,15 +247,11 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
     {
         us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
     }
-    
-    computeLocalDataFromCamera();
 }
 
 
 bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(!_camera.get()) return false;
-
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::PUSH):
@@ -330,16 +310,6 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
                 return true;
             }
-            else if (ea.getKey()=='+')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
-                return true;
-            }
-            else if (ea.getKey()=='-')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
-                return true;
-            }
             return false;
         }
 
@@ -365,8 +335,6 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 void DriveManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("Drive: Space","Reset the viewing position to home");
-    usage.addKeyboardMouseBinding("Drive: +","When in stereo, increase the fusion distance");
-    usage.addKeyboardMouseBinding("Drive: -","When in stereo, reduse the fusion distance");
     usage.addKeyboardMouseBinding("Drive: q","Use mouse y for controlling speed");
     usage.addKeyboardMouseBinding("Drive: a","Use mouse middle,right mouse buttons for speed");
 }
@@ -385,40 +353,23 @@ void DriveManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
-void DriveManipulator::computeLocalDataFromCamera()
+void DriveManipulator::setByMatrix(const osg::Matrix& matrix)
 {
-    // maths from gluLookAt/osg::Matrix::makeLookAt
-    osg::Vec3 f(_camera->getCenterPoint()-_camera->getEyePoint());
-    f.normalize();
-    osg::Vec3 s(f^_camera->getUpVector());
-    s.normalize();
-    osg::Vec3 u(s^f);
-    u.normalize();
-
-    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
-                                s[1],     u[1],     -f[1],     0.0f,
-                                s[2],     u[2],     -f[2],     0.0f,
-                                0.0f,     0.0f,     0.0f,      1.0f);
-                   
-    _eye = _camera->getEyePoint();
-    _distance = _camera->getLookDistance();
-    _rotation.set(rotation_matrix);
-    _rotation = _rotation.inverse();
-     
+    _eye = matrix.getTrans();
+    _rotation.set(matrix);
 }
 
-void DriveManipulator::computeCameraFromLocalData()
+osg::Matrix DriveManipulator::getMatrix() const
 {
-    osg::Matrix new_rotation;
-    new_rotation.makeRotate(_rotation);
-    
-    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * new_rotation;
-    osg::Vec3 center = (osg::Vec3(0.0f,0.0f,-_distance) * new_rotation) + _eye;
-
-    _camera->setLookAt(_eye,center,up);
+    return osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_eye);
 }
 
-void DriveManipulator::computeCameraFromLocalData(const osg::Vec3& lv,const osg::Vec3& up)
+osg::Matrix DriveManipulator::getInverseMatrix() const
+{
+    return osg::Matrix::translate(-_eye)*osg::Matrix::rotate(_rotation.inverse());
+}
+
+void DriveManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)
 {
     osg::Vec3 f(lv);
     f.normalize();
@@ -432,17 +383,14 @@ void DriveManipulator::computeCameraFromLocalData(const osg::Vec3& lv,const osg:
                                 s[2],     u[2],     -f[2],     0.0f,
                                 0.0f,     0.0f,     0.0f,      1.0f);
                    
+    _eye = eye;
     _rotation.set(rotation_matrix);
     _rotation = _rotation.inverse();
-    
-    computeCameraFromLocalData();
 }
 
 
 bool DriveManipulator::calcMovement()
 {
-    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
-
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
@@ -564,7 +512,7 @@ bool DriveManipulator::calcMovement()
                 _eye = ip+up*_height;
                 lv = up^sv;
 
-                computeCameraFromLocalData(lv,up);
+                computePosition(_eye,lv,up);
 
                 return true;
 
@@ -601,7 +549,7 @@ bool DriveManipulator::calcMovement()
                 _eye = ip+up*_height;
                 lv = up^sv;
 
-                computeCameraFromLocalData(lv,up);
+                computePosition(_eye,lv,up);
 
                 return true;
             }
@@ -615,8 +563,6 @@ bool DriveManipulator::calcMovement()
 
 
     }
-
-    computeCameraFromLocalData();
 
     return true;
 }

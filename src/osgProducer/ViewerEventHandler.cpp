@@ -829,6 +829,16 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 
                 return true;
             }
+            case '+' :
+            {
+                //_camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
+                return true;
+            }
+            case '-' :
+            {
+                //_camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
+                return true;
+            }
 
             case osgGA::GUIEventAdapter::KEY_Help :
             case 'h' :
@@ -880,12 +890,12 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                         osgGA::AnimationPathManipulator* apm = 0;
                         unsigned int apmNo = 0;
                         
-                        osgGA::KeySwitchCameraManipulator* kscm = viewer->getKeySwitchCameraManipulator();
+                        osgGA::KeySwitchMatrixManipulator* kscm = viewer->getKeySwitchMatrixManipulator();
                         if (kscm)
                         {
-                            for(apmNo=0;apmNo<kscm->getNumCameraManipualtors() && apm==0;++apmNo)
+                            for(apmNo=0;apmNo<kscm->getNumMatrixManipualtors() && apm==0;++apmNo)
                             {
-                                apm = dynamic_cast<osgGA::AnimationPathManipulator*>(kscm->getCameraManipulator(apmNo));
+                                apm = dynamic_cast<osgGA::AnimationPathManipulator*>(kscm->getMatrixManipulator(apmNo));
                             }
                         }
 
@@ -930,4 +940,6 @@ void ViewerEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("v","Toggle block and vsync");
     usage.addKeyboardMouseBinding("z","Start recording camera path.");
     usage.addKeyboardMouseBinding("Z","If recording camera path stop recording camera path, save to \"saved_animation.path\"\nThen start viewing from being on animation path");
+//    usage.addKeyboardMouseBinding("+","When in stereo, increase the fusion distance");
+//    usage.addKeyboardMouseBinding("-","When in stereo, reduse the fusion distance");
 }

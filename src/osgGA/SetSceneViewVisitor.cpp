@@ -1,11 +1,14 @@
 #include <osgGA/SetSceneViewVisitor>
-#include <osgGA/CameraManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgGA/MatrixManipulator>
 
-void osgGA::SetSceneViewVisitor::visit(osgGA::CameraManipulator& cm)
+void osgGA::SetSceneViewVisitor::visit(osgGA::MatrixManipulator& cm)
 {
     cm.setNode(_sceneView->getSceneData());
-    cm.setCamera(_sceneView->getCamera());
+    if (_sceneView->getModelViewMatrix())
+    {
+        cm.setByInverseMatrix(*(_sceneView->getModelViewMatrix()));
+    }
     cm.init(*getGUIEventAdapter(),*getGUIActionAdapter());
     cm.home(*getGUIEventAdapter(),*getGUIActionAdapter());
 }

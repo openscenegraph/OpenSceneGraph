@@ -5,14 +5,27 @@
 #ifndef OSGGA_TESTMANIPULATOR
 #define OSGGA_TESTMANIPULATOR 1
 
-#include <osgGA/CameraManipulator>
+#include <osgGA/MatrixManipulator>
+#include <osg/Quat>
 
-class TestManipulator : public osgGA::CameraManipulator
+class TestManipulator : public osgGA::MatrixManipulator
 {
     public:
 
         TestManipulator();
         virtual ~TestManipulator();
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByMatrix(const osg::Matrix& matrix);
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByInverseMatrix(const osg::Matrix& matrix) { setByMatrix(osg::Matrix::inverse(matrix)); }
+
+        /** get the position of the manipulator as 4x4 Matrix.*/
+        virtual osg::Matrix getMatrix() const;
+
+        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
+        virtual osg::Matrix getInverseMatrix() const;
 
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.
@@ -44,18 +57,12 @@ class TestManipulator : public osgGA::CameraManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const osgGA::GUIEventAdapter& ea);
 
-        void computeLocalDataFromCamera();
-
-        void computeCameraFromLocalData();
+        void computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up);
 
         /** For the give mouse movement calculate the movement of the camera.
             Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
         
-        void trackball(osg::Vec3& axis,float& angle, float p1x, float p1y, float p2x, float p2y);
-        float tb_project_to_sphere(float r, float x, float y);
-
-
         /** Check the speed at which the mouse is moving.
             If speed is below a threshold then return false, otherwise return true.*/
         bool isMouseMoving();

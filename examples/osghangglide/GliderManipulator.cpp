@@ -1,5 +1,4 @@
 #include "GliderManipulator.h"
-
 #include <osg/Notify>
 
 using namespace osg;
@@ -10,6 +9,8 @@ GliderManipulator::GliderManipulator()
     _modelScale = 0.01f;
     _velocity = 0.0f;
     _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
+
+    _distance = 1.0f;
 }
 
 
@@ -35,17 +36,23 @@ const osg::Node* GliderManipulator::getNode() const
 }
 
 
+
+osg::Node* GliderManipulator::getNode()
+{
+    return _node.get();
+}
+
 void GliderManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(_node.get() && _camera.get())
+    if(_node.get())
     {
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
         osg::Vec3 eye = boundingSphere._center+osg::Vec3(-boundingSphere._radius*0.25f,-boundingSphere._radius*0.25f,-boundingSphere._radius*0.03f);
 
-        _camera->setView(eye,
-            eye+osg::Vec3(1.0f,1.0f,-0.1f),
+        computePosition(eye,
+            osg::Vec3(1.0f,1.0f,-0.1f),
             osg::Vec3(0.0f,0.0f,1.0f));
 
         _velocity = boundingSphere._radius*0.01f;
@@ -67,23 +74,17 @@ void GliderManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     us.requestContinuousUpdate(false);
 
-    const osg::BoundingSphere& boundingSphere=_node->getBound();
-    _velocity = boundingSphere._radius*0.01f;
+    _velocity = 0.0f;
 
     if (ea.getEventType()!=GUIEventAdapter::RESIZE)
     {
         us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
     }
-
-    _camera->setFusionDistanceRatio(1/1000.0f);
-
 }
 
 
 bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(!_camera.get()) return false;
-
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::PUSH):
@@ -132,6 +133,16 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 us.requestContinuousUpdate(false);
                 return true;
             }
+            else if (ea.getKey()=='q')
+            {
+                _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
+                return true;
+            }
+            else if (ea.getKey()=='a')
+            {
+                _yawMode = NO_AUTOMATIC_YAW;
+                return true;
+            }
             return false;
 
         case(GUIEventAdapter::FRAME):
@@ -149,6 +160,12 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
     }
 }
 
+void GliderManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("Flight: Space","Reset the viewing position to home");
+    usage.addKeyboardMouseBinding("Flight: q","Automatically yaw when banked (default)");
+    usage.addKeyboardMouseBinding("Flight: a","No yaw when banked");
+}
 
 void GliderManipulator::flushMouseEventStack()
 {
@@ -164,16 +181,53 @@ void GliderManipulator::addMouseEvent(const GUIEventAdapter& ea)
 }
 
 
+void GliderManipulator::setByMatrix(const osg::Matrix& matrix)
+{
+    _eye = matrix.getTrans();
+    _rotation.set(matrix);
+    _distance = 1.0f;
+}
+
+osg::Matrix GliderManipulator::getMatrix() const
+{
+    return osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_eye);
+}
+
+osg::Matrix GliderManipulator::getInverseMatrix() const
+{
+    return osg::Matrix::translate(-_eye)*osg::Matrix::rotate(_rotation.inverse());
+}
+
+void GliderManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)
+{
+    osg::Vec3 f(lv);
+    f.normalize();
+    osg::Vec3 s(f^up);
+    s.normalize();
+    osg::Vec3 u(s^f);
+    u.normalize();
+    
+    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+                                s[1],     u[1],     -f[1],     0.0f,
+                                s[2],     u[2],     -f[2],     0.0f,
+                                0.0f,     0.0f,     0.0f,      1.0f);
+                   
+    _eye = eye;
+    _distance = lv.length();
+    _rotation.set(rotation_matrix);
+    _rotation = _rotation.inverse();
+}
+
+
 bool GliderManipulator::calcMovement()
 {
-    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
-    _camera->setFusionDistanceRatio(1/300.0f);
-    
+    //_camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
+
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
 
-    float dt = _ga_t0->time()-_ga_t1->time();
+    double dt = _ga_t0->time()-_ga_t1->time();
 
     if (dt<0.0f)
     {
@@ -206,29 +260,44 @@ bool GliderManipulator::calcMovement()
     float dx = _ga_t0->getXnormalized();
     float dy = _ga_t0->getYnormalized();
 
-    osg::Vec3 center = _camera->getEyePoint();
-    osg::Vec3 sv = _camera->getSideVector();
-    osg::Vec3 lv = _camera->getLookVector();
 
-    float pitch = inDegrees(-dy*70.0f*dt);
-    float roll = inDegrees(dx*60.0f*dt);
+    osg::Matrix rotation_matrix;
+    rotation_matrix.makeRotate(_rotation);
+    
+    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * rotation_matrix;
+    osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f) * rotation_matrix;
 
-    osg::Matrix mat;
-    mat.makeTranslate(-center);
-    mat *= Matrix::rotate(pitch,sv.x(),sv.y(),sv.z());
-    mat *= Matrix::rotate(roll,lv.x(),lv.y(),lv.z());
+    osg::Vec3 sv = lv^up;
+    sv.normalize();
+
+    float pitch = -inDegrees(dy*75.0f*dt);
+    float roll = inDegrees(dx*50.0f*dt);
+
+    osg::Quat delta_rotate;
+
+    osg::Quat roll_rotate;
+    osg::Quat pitch_rotate;
+
+    pitch_rotate.makeRotate(pitch,sv.x(),sv.y(),sv.z());
+    roll_rotate.makeRotate(roll,lv.x(),lv.y(),lv.z());
+
+    delta_rotate = pitch_rotate*roll_rotate;
+
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
         float bank = asinf(sv.z());
         float yaw = inRadians(bank)*dt;
-        mat *= Matrix::rotate(yaw,0.0f,0.0f,1.0f);
+        
+        osg::Quat yaw_rotate;
+        yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);
+
+        delta_rotate = delta_rotate*yaw_rotate;
     }
 
     lv *= (_velocity*dt);
 
-    mat *= Matrix::translate(center+lv);
-
-    _camera->transformLookAt(mat);
+    _eye += lv;
+    _rotation = _rotation*delta_rotate;
 
     return true;
 }

@@ -4,12 +4,12 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES = \
 	AnimationPathManipulator.cpp\
-	CameraManipulator.cpp\
+	MatrixManipulator.cpp\
 	DriveManipulator.cpp\
 	FlightManipulator.cpp\
         GUIEventHandler.cpp\
         GUIEventHandlerVisitor.cpp\
-        KeySwitchCameraManipulator.cpp\
+        KeySwitchMatrixManipulator.cpp\
         SetSceneViewVisitor.cpp\
 	StateSetManipulator.cpp\
 	TrackballManipulator.cpp\

@@ -17,7 +17,6 @@
 #include <osg/Node>
 #include <osg/StateSet>
 #include <osg/Light>
-#include <osg/Camera>
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 
@@ -28,7 +27,7 @@ namespace osgUtil {
 
 /**
  * SceneView is literally a view of a scene, encapsulating the
- * camera, global state, lights and the scene itself.  Provides
+ * camera (modelview+projection matrices), global state, lights and the scene itself.  Provides
  * methods for setting up the view and rendering it.
 */
 class OSGUTIL_EXPORT SceneView : public osg::Referenced
@@ -129,15 +128,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         const osg::State* getState() const { return _state.get(); }
 
 
-        /** set an osg::Camera for the scene view to use for setting projection and modelview matrices internaly.
-          * However, the projection matrix from the camera will be overriden by a projection matrix which is set explicitly
-          * via setProjectionMatrix(..), see below.
-          * Also, the model matrix from the camera will be overriden by a modelview matrix which is set explicitly
-          * via setModelViewMatrix(..), see below.*/
-        void setCamera(osg::Camera* camera) { _camera = camera; }
-        osg::Camera* getCamera() { return _camera.get(); }
-        const osg::Camera* getCamera() const { return _camera.get(); }
-
         /** set a projection matrix. Note, this will override a camera's projection matrix if it is not NULL.*/
         void setProjectionMatrix(osg::RefMatrix* matrix) { _projectionMatrix = matrix; }
         osg::RefMatrix* getProjectionMatrix() { return _projectionMatrix.get(); }
@@ -206,8 +196,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** FusionDistanceMode is used only when working in stereo.*/
         enum FusionDistanceMode
         {
-            /** Use fusion distance from the attached camera if one exist.*/
-            USE_CAMERA_FUSION_DISTANCE,
             /** Use fusion distance from the value set on the SceneView.*/
             USE_FUSION_DISTANCE_VALUE,
             /** Compute the fusion distance by multiplying the screen distance by the  fusion distance value.*/
@@ -306,7 +294,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::StateSet>                 _localStateSet;
         osg::ref_ptr<osg::Light>                    _light;
-        osg::ref_ptr<osg::Camera>                   _camera;
         osg::ref_ptr<osg::RefMatrix>                _projectionMatrix;
         osg::ref_ptr<osg::RefMatrix>                _modelviewMatrix;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;

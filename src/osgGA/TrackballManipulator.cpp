@@ -1,4 +1,5 @@
 #include <osgGA/TrackballManipulator>
+#include <osg/Quat>
 #include <osg/Notify>
 
 using namespace osg;
@@ -45,16 +46,14 @@ osg::Node* TrackballManipulator::getNode()
                                  /*ea*/
 void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 {
-    if(_node.get() && _camera.get())
+    if(_node.get())
     {
 
         const osg::BoundingSphere& boundingSphere=_node->getBound();
 
-        _camera->setView(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
+        computePosition(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
                         boundingSphere._center,
                         osg::Vec3(0.0f,0.0f,1.0f));
-
-        computeLocalDataFromCamera();
 
         us.requestRedraw();
     }
@@ -65,8 +64,6 @@ void TrackballManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 void TrackballManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
 {
     flushMouseEventStack();
-    
-    computeLocalDataFromCamera();
 }
 
 
@@ -79,8 +76,6 @@ void TrackballManipulator::getUsage(osg::ApplicationUsage& usage) const
 
 bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
-    if(!_camera.get()) return false;
-
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::PUSH):
@@ -151,26 +146,9 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);
                 return true;
-            } else if (ea.getKey()=='+')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
-                return true;
             }
-            else if (ea.getKey()=='-')
-            {
-                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
-                return true;
-            }
-// this is quick hack to test out othographic projection.            
-//             else if (ea.getKey()=='O')
-//             {
-//                 float dist = _camera->getLookDistance();
-//                 _camera->setOrtho(-dist,dist,-dist,dist,-dist,dist);
-//                 return true;
-//             }
             return false;
         case(GUIEventAdapter::FRAME):
-            _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE);
             if (_thrown)
             {
                 if (calcMovement()) us.requestRedraw();
@@ -211,39 +189,48 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
-
-
-void TrackballManipulator::computeLocalDataFromCamera()
+void TrackballManipulator::setByMatrix(const osg::Matrix& matrix)
 {
-    // maths from gluLookAt/osg::Matrix::makeLookAt
-    osg::Vec3 f(_camera->getCenterPoint()-_camera->getEyePoint());
+    _center = osg::Vec3(0.0f,0.0f,-_distance)*matrix;//matrix.getTrans();
+    _rotation.set(matrix);
+    
+    osg::Matrix rotation_matrix;
+    _rotation.get(rotation_matrix);
+//    _center -= osg::Vec3(0.0f,0.0f,_distance)*rotation_matrix;
+    
+}
+
+osg::Matrix TrackballManipulator::getMatrix() const
+{
+    return osg::Matrix::translate(0.0f,0.0f,_distance)*osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_center);
+}
+
+osg::Matrix TrackballManipulator::getInverseMatrix() const
+{
+    return osg::Matrix::translate(-_center)*osg::Matrix::rotate(_rotation.inverse())*osg::Matrix::translate(0.0f,0.0f,-_distance);
+}
+
+void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up)
+{
+
+    osg::Vec3 lv(center-eye);
+
+    osg::Vec3 f(lv);
     f.normalize();
-    osg::Vec3 s(f^_camera->getUpVector());
+    osg::Vec3 s(f^up);
     s.normalize();
     osg::Vec3 u(s^f);
     u.normalize();
-
+    
     osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
                                 s[1],     u[1],     -f[1],     0.0f,
                                 s[2],     u[2],     -f[2],     0.0f,
                                 0.0f,     0.0f,     0.0f,      1.0f);
                    
-    _center = _camera->getCenterPoint();
-    _distance = _camera->getLookDistance();
+    _center = center;
+    _distance = lv.length();
     _rotation.set(rotation_matrix);
     _rotation = _rotation.inverse();
-     
-}
-
-void TrackballManipulator::computeCameraFromLocalData()
-{
-    osg::Matrix new_rotation;
-    new_rotation.makeRotate(_rotation);
-    
-    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * new_rotation;
-    osg::Vec3 eye = (osg::Vec3(0.0f,0.0f,_distance) * new_rotation) + _center;
-
-    _camera->setLookAt(eye,_center,up);
 }
 
 
@@ -260,7 +247,6 @@ bool TrackballManipulator::calcMovement()
     // return if there is no movement.
     if (dx==0 && dy==0) return false;
 
-    float focalLength = (_camera->getCenterPoint()-_camera->getEyePoint()).length();
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
@@ -284,8 +270,6 @@ bool TrackballManipulator::calcMovement()
         
         _rotation = _rotation*new_rotate;
 
-        computeCameraFromLocalData();
-
         return true;
 
     }
@@ -295,16 +279,15 @@ bool TrackballManipulator::calcMovement()
 
         // pan model.
 
-        float scale = -0.5f*focalLength;
+        float scale = -0.5f*_distance;
 
-        osg::Vec3 uv = _camera->getUpVector();
-        osg::Vec3 sv = _camera->getSideVector();
-        osg::Vec3 dv = uv*(dy*scale)+sv*(dx*scale);
+        osg::Matrix rotation_matrix;
+        _rotation.get(rotation_matrix);
 
-        _center += dv;
+        osg::Vec3 dv(dx*scale,dy*scale,0.0f);
+
+        _center += dv*rotation_matrix;
         
-        computeCameraFromLocalData();
-
         return true;
 
     }
@@ -313,14 +296,12 @@ bool TrackballManipulator::calcMovement()
 
         // zoom model.
 
-        float fd = focalLength;
+        float fd = _distance;
         float scale = 1.0f+dy;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
 
             _distance *= scale;
-
-            computeCameraFromLocalData();
 
         }
         else
@@ -329,11 +310,13 @@ bool TrackballManipulator::calcMovement()
             // notify(DEBUG_INFO) << "Pushing forward"<<std::endl;
             // push the camera forward.
             float scale = -fd;
-            osg::Vec3 dv = _camera->getLookVector()*(dy*scale);
+
+            osg::Matrix rotation_matrix;
+            _rotation.get(rotation_matrix);
+
+            osg::Vec3 dv = (osg::Vec3(0.0f,0.0f,-1.0f)*rotation_matrix)*(dy*scale);
 
             _center += dv;
-
-            computeCameraFromLocalData();
 
         }
 
@@ -373,9 +356,13 @@ void TrackballManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, fl
      * deformed sphere
      */
 
-    osg::Vec3 uv = _camera->getUpVector();
-    osg::Vec3 sv = _camera->getSideVector();
-    osg::Vec3 lv = _camera->getLookVector();
+    osg::Matrix rotation_matrix;
+    _rotation.get(rotation_matrix);
+
+
+    osg::Vec3 uv = osg::Vec3(0.0f,1.0f,0.0f)*rotation_matrix;
+    osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f)*rotation_matrix;
+    osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f)*rotation_matrix;
 
     osg::Vec3 p1 = sv*p1x+uv*p1y-lv*tb_project_to_sphere(TRACKBALLSIZE,p1x,p1y);
     osg::Vec3 p2 = sv*p2x+uv*p2y-lv*tb_project_to_sphere(TRACKBALLSIZE,p2x,p2y);

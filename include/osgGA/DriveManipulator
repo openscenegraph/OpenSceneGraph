@@ -14,7 +14,8 @@
 #ifndef OSGGA_DRIVEMANIPULATOR
 #define OSGGA_DRIVEMANIPULATOR 1 
 
-#include <osgGA/CameraManipulator>
+#include <osgGA/MatrixManipulator>
+#include <osg/Quat>
 
 namespace osgGA{
 
@@ -25,13 +26,25 @@ mouse button decelerates, and the middle mouse button (or left and
 right simultaneously) stops dead.
 */
 
-class OSGGA_EXPORT DriveManipulator : public CameraManipulator
+class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
 {
     public:
 
         DriveManipulator();
 
         virtual const char* className() const { return "Drive"; }
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByMatrix(const osg::Matrix& matrix);
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByInverseMatrix(const osg::Matrix& matrix) { setByMatrix(osg::Matrix::inverse(matrix)); }
+
+        /** get the position of the manipulator as 4x4 Matrix.*/
+        virtual osg::Matrix getMatrix() const;
+
+        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
+        virtual osg::Matrix getInverseMatrix() const;
 
         virtual void setNode(osg::Node*);
 
@@ -58,10 +71,7 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
-        void computeLocalDataFromCamera();
-
-        void computeCameraFromLocalData();
-        void computeCameraFromLocalData(const osg::Vec3& lv,const osg::Vec3& up);
+        void computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up);
 
         /** For the give mouse movement calculate the movement of the camera.
         Return true is camera has moved and a redraw is required.*/

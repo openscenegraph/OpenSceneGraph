@@ -783,8 +783,8 @@ sMStats    m_getMemoryStatistics()
             // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
             // set it back again.
 
-            new_handler    nh = set_new_handler(0);
-            set_new_handler(nh);
+            new_handler    nh = std::set_new_handler(0);
+            std::set_new_handler(nh);
 
             // If there is an error handler, call it
 
@@ -835,8 +835,8 @@ sMStats    m_getMemoryStatistics()
             // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
             // set it back again.
 
-            new_handler    nh = set_new_handler(0);
-            set_new_handler(nh);
+            new_handler    nh = std::set_new_handler(0);
+            std::set_new_handler(nh);
 
             // If there is an error handler, call it
 
@@ -893,8 +893,8 @@ sMStats    m_getMemoryStatistics()
             // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
             // set it back again.
 
-            new_handler    nh = set_new_handler(0);
-            set_new_handler(nh);
+            new_handler    nh = std::set_new_handler(0);
+            std::set_new_handler(nh);
 
             // If there is an error handler, call it
 
@@ -945,8 +945,8 @@ sMStats    m_getMemoryStatistics()
             // There isn't a way to determine the new handler, except through setting it. So we'll just set it to NULL, then
             // set it back again.
 
-            new_handler    nh = set_new_handler(0);
-            set_new_handler(nh);
+            new_handler    nh = std::set_new_handler(0);
+            std::set_new_handler(nh);
 
             // If there is an error handler, call it
 

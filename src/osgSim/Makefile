@@ -12,7 +12,7 @@ CXXFILES = \
 
 DEF     += -DOSGSIM_LIBRARY
 
-LIBS  += -losg $(GL_LIBS) $(OTHER_LIBS)
+LIBS  += -losg -losgUtil $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgSim
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

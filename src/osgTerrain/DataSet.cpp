@@ -55,6 +55,8 @@ enum CoordinateSystemType
 
 CoordinateSystemType getCoordinateSystemType(const osg::CoordinateSystemNode* lhs)
 {
+    if (!lhs) return PROJECTED;
+
     // set up LHS SpatialReference
     char* projection_string = strdup(lhs->getCoordinateSystem().c_str());
     char* importString = projection_string;
@@ -3252,6 +3254,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
 
 void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
 {
+    if (!_sourceGraph) return;
 
     // ensure we have a valid coordinate system
     if (!_destinationCoordinateSystem)
@@ -3375,6 +3378,8 @@ void DataSet::CompositeSource::sort()
 
 void DataSet::updateSourcesForDestinationGraphNeeds()
 {
+    if (!_destinationGraph || !_sourceGraph) return;
+
 
     std::string temporyFilePrefix("temporaryfile_");
 
@@ -3487,6 +3492,8 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
 
 void DataSet::populateDestinationGraphFromSources()
 {
+    if (!_destinationGraph || !_sourceGraph) return;
+
     osg::notify(osg::NOTICE)<<std::endl<<"started DataSet::populateDestinationGraphFromSources)"<<std::endl;
 
     if (_databaseType==LOD_DATABASE)

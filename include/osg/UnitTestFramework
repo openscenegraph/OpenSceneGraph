@@ -31,7 +31,7 @@ public:
 
 	typedef TestVisitor Visitor;    // Test is redundant
 
-	Test( const string& sName ) : _name( sName ) {}
+	Test( const std::string& sName ) : _name( sName ) {}
 
 	const std::string& name() const { return _name; }
 
@@ -80,7 +80,7 @@ private:
 	class TraceStream{
 
 	public:
-		TraceStream(std::ostream& o=cout, TraceLevel tl=Results);
+		TraceStream(std::ostream& o=std::cout, TraceLevel tl=Results);
 		~TraceStream();
 
 		void setTraceLevel(TraceLevel tl);
@@ -320,7 +320,7 @@ public:
 	virtual bool visitLeave( TestSuite* pSuite );
 
 	// Provide read-only access to the current qualifier
-	const string& currentPath() const;
+	const std::string& currentPath() const;
 
 private:
 
@@ -365,7 +365,7 @@ class SG_EXPORT TestRecord
 
 		// Onlye a TestReport can create a TestRecord
 		friend class TestReport;
-		TestRecord(const string& name);
+		TestRecord(const std::string& name);
 
 		enum Result{
 			Success,Failure,Error
@@ -394,7 +394,7 @@ class SG_EXPORT TestReport
 {
 public:
 
-	TestRecord&	createRecord(const string& s){
+	TestRecord&	createRecord(const std::string& s){
 		_records.push_back(TestRecord(s));
 		return _records.back();
 	}
@@ -429,7 +429,7 @@ public:
 		Specifying "root.osg.de" will run all tests (and suites) below
 		\em root.osg with names beginning with the \em de.
 	*/
-	void specify( const string& sQualifiedName );
+	void specify( const std::string& sQualifiedName );
 
 	bool visitEnter( TestSuite* pSuite );
 	bool visit( TestCase* pTest );

@@ -65,9 +65,6 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
 {
     if( !valid() ) return false;
 
-    us = us;
-
-    bool retval = false;
     switch( ea.getEventType() )
     {
     case GUIEventAdapter::FRAME:
@@ -79,8 +76,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
         {
             handleFrame( ea.time() );
         }
-            retval =  true;
-        break;
+        return false;
     case GUIEventAdapter::KEYDOWN:
             if (ea.getKey()==' ')
             {
@@ -108,12 +104,11 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
                 return true;
             }
                 
-        retval =  false;
         break;
         default:
             break;
     }
-    return retval;
+    return false;
 }
 
 void AnimationPathManipulator::getUsage(osg::ApplicationUsage& usage) const

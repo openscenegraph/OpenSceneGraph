@@ -328,7 +328,7 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
         {
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();
-            return true;
+            return false;
         }
 
         case(GUIEventAdapter::RESIZE):

@@ -104,6 +104,9 @@ Registry::Registry()
     addFileExtensionAlias("int",  "rgb");
     addFileExtensionAlias("inta", "rgb");
     addFileExtensionAlias("bw",   "rgb");
+
+    addFileExtensionAlias("ivz",   "gz");
+    addFileExtensionAlias("ozg",   "gz");
     
 #if defined(__DARWIN_OSX__)
     addFileExtensionAlias("jpg",  "qt");
@@ -1285,7 +1288,9 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 ReaderWriter::ReadResult Registry::readImage(const std::string& fileName,bool useObjectCache)
 {
     std::string file = findDataFile( fileName );
-    if (file.empty()) return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
+    if (file.empty()) 
+		file = fileName;
+//		return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
 
     if (useObjectCache)
     {
@@ -1308,6 +1313,8 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName,bool us
             notify(INFO)<<"Adding to cache image "<<file<<std::endl;
             addEntryToObjectCache(file,rr.getObject());
         }
+		else
+			return ReaderWriter::ReadResult("Warning: file \""+fileName+"\" not found.");
         
         return rr;
 

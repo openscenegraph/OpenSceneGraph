@@ -159,6 +159,10 @@ ifeq ($(OS),Linux)
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
+  PNG_LIBS          = -lpng
+  JPEG_LIBS         = -ljpeg
+  TIFF_LIB          = -ltiff
+  GIF_LIBS          = -lgif
 
   MAKEDIST          = $(TOPDIR)/Make/makerpms
 endif

@@ -55,7 +55,7 @@ class Vec4d
             
         inline Vec4d(const Vec4f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]; _v[2]=vec._v[2]; _v[3]=vec._v[3];}
         
-        inline operator Vec4f() const { return Vec4f(_v[0],_v[1],_v[2],_v[3]);}
+        inline operator Vec4f() const { return Vec4f((float)_v[0],(float)_v[1],(float)_v[2],(float)_v[3]);}
 
 
         inline bool operator == (const Vec4d& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }

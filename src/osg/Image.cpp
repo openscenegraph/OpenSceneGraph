@@ -638,7 +638,7 @@ void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* sour
     if (!_data)
     {
         notify(INFO)<<"allocating image"<<endl;
-        allocateImage(s_offset+source->r(),t_offset+source->t(),r_offset+source->t(),
+        allocateImage(s_offset+source->s(),t_offset+source->t(),r_offset+source->r(),
                     source->getPixelFormat(),source->getDataType(),
                     source->getPacking());
     }

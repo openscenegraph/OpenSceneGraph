@@ -744,6 +744,21 @@ void StateSet::removeTextureAttribute(unsigned int unit,StateAttribute::Type typ
     }
 }
 
+void StateSet::removeTextureAttribute(unsigned int unit, StateAttribute* attribute)
+{
+	if (!attribute) return;
+	if (unit>=_textureAttributeList.size()) return;
+
+	AttributeList& attributeList = _textureAttributeList[unit];
+	AttributeList::iterator itr = attributeList.find(attribute->getTypeMemberPair());
+	if (itr!=attributeList.end())
+	{
+		if (itr->second.first != attribute) return;
+
+		setAssociatedTextureModes(unit,itr->second.first.get(),StateAttribute::INHERIT);
+		attributeList.erase(itr);
+	}
+}
 
 StateAttribute* StateSet::getTextureAttribute(unsigned int unit,StateAttribute::Type type)
 {

@@ -33,15 +33,15 @@ namespace osgParticle
         virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const ParticleEffect*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }
 
-        void setEmitter(Emitter* emitter);
+        void setEmitter(Emitter* emitter) { _emitter = emitter; }
         Emitter* getEmitter() { return _emitter.get(); }
         const Emitter* getEmitter() const { return _emitter.get(); }
 
-        void setProgram(Program* program);
+        void setProgram(Program* program) { _program = program; }
         Program* getProgram() { return _program.get(); }
         const Program* getProgram() const { return _program.get(); }
         
-        void setParticleSystem(ParticleSystem* ps);
+        void setParticleSystem(ParticleSystem* ps) { _particleSystem = ps; }
         ParticleSystem* getParticleSystem() { return _particleSystem.get(); }
         const ParticleSystem* getParticleSystem() const { return _particleSystem.get(); }
 

@@ -203,7 +203,7 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgSceneGraphParser : public trpgSceneParser {
 public:
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     typedef std::map<int,trpgReadGroupBase *> GroupMap;
 #else
     typedef std::map<int,trpgReadGroupBase *,std::less<int> > GroupMap;

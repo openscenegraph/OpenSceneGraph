@@ -38,18 +38,29 @@
 #include <windows.h>
 #include <stdio.h>
 
+#if !defined(__GNUC__)
 // Microsoft Developer warnings that annoy me
 #pragma warning ( disable : 4251)
 #pragma warning ( disable : 4275)
 #pragma warning ( disable : 4786)
+#endif
 
 // Somewhat system independent file deletion macro
-#define TRPGDELETEFILE(file) DeleteFile((file))
+#ifdef __CYGWIN__
+# define TRPGDELETEFILE(file) remove((file))
+#else
+# define TRPGDELETEFILE(file) DeleteFile((file))
+#endif
 
 #ifndef int64
-// 64 bit long value.  Need this for really big files.
-typedef __int64 int64;
+  // 64 bit long value.  Need this for really big files.
+#ifdef __GNUC__
+ typedef long long int64;
+#else
+ typedef __int64 int64;
 #endif
+#endif
+
 
 #else   // Unix
 

@@ -1,7 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#if defined(_WIN32)
+#if defined(__CYGWIN__)
+#include <windows.h>
+#include <unistd.h>
+#include <pthread.h>
+#elif defined(_WIN32)
 #include <windows.h>
 #include <conio.h>
 #else
@@ -124,7 +128,7 @@ void osgLockMutex(ThreadMutex &mtx)
 // --- Either thread ---
 void osgUnLockMutex(ThreadMutex &mtx)
 {
-#if defined (_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     ReleaseMutex(mtx);
 #else
     pthread_mutex_unlock( &mtx );
@@ -135,7 +139,7 @@ void osgUnLockMutex(ThreadMutex &mtx)
 // --- Either thread (only used in paging thread) ---
 void osgWaitEvent(ThreadEvent &ev)
 {
-#if defined (_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     WaitForSingleObject( ev, INFINITE);
 #else
     ev.wait();
@@ -146,7 +150,7 @@ void osgWaitEvent(ThreadEvent &ev)
 // --- Either thread (only used in main thread) ---
 void osgSetEvent(ThreadEvent &ev)
 {
-#if defined (_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     SetEvent(ev);
 #else
     ev.release();
@@ -156,7 +160,7 @@ void osgSetEvent(ThreadEvent &ev)
 // Windows specific thread function.
 // This just fires up our own loop
 // --- Paging Thread ---
-#if defined (_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 DWORD WINAPI ThreadFunc( LPVOID lpParam ) 
 {
     OSGPageManager *myPager = (OSGPageManager *)lpParam;
@@ -182,7 +186,7 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
 {
     positionValid = false;
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     // Create the event we'll use to wake up the pager thread when the location changes
     locationChangeEvent = CreateEvent(NULL,false,false,"Location Change Event");
 
@@ -228,7 +232,7 @@ bool OSGPageManager::StartThread(ThreadMode mode,ThreadID &newThread)
  */
 bool OSGPageManager::EndThread()
 {
-#ifdef WIN32
+#ifdef _WIN32
 #else
     // Need a handle to the thread ID here.
     //pthread_cancel( ?newThread? );

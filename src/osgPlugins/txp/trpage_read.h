@@ -74,7 +74,7 @@ protected:
 private:
     // Note: Just how slow is a map<> anyway?
     //         This usage is self-contained and could be replaced with an array
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     typedef std::map<trpgToken,trpgr_Token> tok_map;
 #else
     typedef std::map<trpgToken,trpgr_Token,std::less<trpgToken> > tok_map;

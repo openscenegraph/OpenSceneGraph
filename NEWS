@@ -2,30 +2,26 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-    Addition of osg::Texture1D, Texture2D & Texture3D classes, Texture2D becomes
-    the deprecates the original osg::Texture.  All Texture class, including
-    TextureCubeMap are derived from new base class for textures - osg::TextureBase.
+30th August 2002 - OpenSceneGraph-0.9.1.tar.gz
+
+    >>> Support added for 1D & 3D textures, texture env combiners, secondary color and fog coords, DOFTransform and Sequence nodes. Inventor/VRML and LWO2 loaders added and the a port HP-UX!
+
+    Despite only 6 weeks passing between 0.9.0 and this latest 0.9.1 release
+    there has been a number of significant new features, API clean ups and
+    bug fixes.  Follows is a quite run through the key improvements.
+
+    Addition of osg::Texture1D, Texture2D & Texture3D classes, Texture2D replaces
+    the original osg::Texture, which has now become a pure virtual base class. All
+    Texture classes, including TextureCubeMap are derived from this base class..
     
     New osgtexture1D and osgtexture3D demos demonstrate the new texture classes in
     action.
     
-    New PROTECTED mode for protecting local state mode and attributes from be
-    overriden from state above it in the scene graph.
-    
-    Support for fog coord and secondary colors extensions added to osg::Geometry.
+    Port to HP UX.
 
-    Support for HP_UX.
-    
-    New Inventor and VRML1.0 loader added.
+    New Inventor/VRML1.0 loader added.
     
     Support added to lwo plugin for loading the new lwo2 format.
-
-    Support for OpenFlight15.7 added, DOFTransforms and general enhancements and
-    bug fixes.
-
-    Improved osgbillboard example.
-
-    Improved osglight example utilizing AnimationPath and PositionAttitudeTransform.
 
     osg::TexEnvCombine implemented texture_env_combine and texture_env_crossbar
     and texture_env_dot3 extensions.
@@ -36,12 +32,54 @@ OSG News (most significant items from ChangeLog)
 
     osg::DOFTransformNode implemented.
 
-    osg::AnimationPath improved.
+    Support for OpenFlight15.7 added, DOFTransforms and general enhancements and
+    bug fixes.
+
+    New PROTECTED mode for protecting local state mode and attributes from be
+    overridden from state above it in the scene graph.
+    
+    Support for fog coord and secondary colors extensions added to osg::Geometry.
+
+    Improved osgbillboard example.
+
+    Improved osglight example utilizing AnimationPath and PositionAttitudeTransform.
+
+    osg::AnimationPath improved, now allowing swing and looping behavior and
+    with two new app callbacks which can update PositionAttitudeTransform
+    and MatrixTransform respectively.
     
     Support for writing osg::Image's to .rgb format added.
 
+    To keep the overall API clean, and the following items have been 
+    renamed and deprecated parts of the API have been removed:
 
-July 2002 - OpenSceneGraph-0.9.0.tar.gz
+    Renamed classes:
+
+            EarthSky        -> ClearNode
+            Transparency    -> BlendFunc
+            Texture         -> Texture2D  (old style subload parameters removed)
+
+    Method's changed
+
+            Matrix          -> makeRotate(..) euler angles parameters generalized.
+            Quat            -> makeRotate(..) euler angles parameters generalized.
+
+            BoundingBox     -> isValid() renamed valid()
+            BoundingSphere  -> isValid() renamed valid()
+
+            StateAttribute  -> OVERRIDE_OFF & OVERRIDE_ON which were short hand
+                               versions of OVERRIDE | OFF and OVERRIDE | ON
+                               removed, as the meaning of the bitmask was
+                               often confused by the short hand notation.
+
+
+            Transform       -> setMatrix/getMatrix() etc methods removed,
+                               Transform becoming the transform base class,
+                               with MatrixTransform taking over all the original
+                               functionality.
+
+
+19th July 2002 - OpenSceneGraph-0.9.0.tar.gz
 
     >>> OpenSceneGraph goes beta - Multitexturing, Occlusion Culling, Particles and much more added!
 
@@ -224,7 +262,7 @@ July 2002 - OpenSceneGraph-0.9.0.tar.gz
     polygonal, pixmap, bitmap and 3D fonts.
     
     We now have new osg::Matrix implementation which cleans up its interface.
-    Also all angular paramters are now based on radians rather than degrees
+    Also all angular parameters are now based on radians rather than degrees
     as before (and as in Performer), this has been done to be more consistent
     with the basic trignometric functions and standard maths conventions.
     

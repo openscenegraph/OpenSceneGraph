@@ -4,6 +4,12 @@ sgv Town.osg
 
 osghangglide
 
+osggeometry cow.osg
+
+osgprerender cow.osg
+
+osgparticle cow.osg
+
 osgbillboard lz.rgb
 
 osgcube

@@ -14,6 +14,18 @@ echo osghangglide
 osghangglide
 more memleaks.log
 
+echo osggeometry cow.osg
+osggeometry cow.osg
+more memleaks.log
+
+echo osgprerender cow.osg
+osgprerender cow.osg
+more memleaks.log
+
+echo osgparticle cow.osg
+osgparticle cow.osg
+more memleaks.log
+
 echo osgbillboard lz.rgb
 osgbillboard lz.rgb
 more memleaks.log

@@ -31,12 +31,16 @@ class MyCullCallback : public osg::NodeCallback
         MyCullCallback(osg::Node* subgraph,osg::Texture* texture):
             _subgraph(subgraph),
             _texture(texture) {}
+
+        MyCullCallback(osg::Node* subgraph,osg::Image* image):
+            _subgraph(subgraph),
+            _image(image) {}
         
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
 
             osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
-            if (cullVisitor && _texture.valid() && _subgraph.valid())
+            if (cullVisitor && (_texture.valid()|| _image.valid()) && _subgraph.valid())
             {            
                 doPreRender(*node,*cullVisitor);
 
@@ -55,6 +59,7 @@ class MyCullCallback : public osg::NodeCallback
         
         osg::ref_ptr<osg::Node>     _subgraph;
         osg::ref_ptr<osg::Texture>  _texture;
+        osg::ref_ptr<osg::Image>    _image;
 
     
 };
@@ -277,8 +282,11 @@ void MyCullCallback::doPreRender(osg::Node& node, osgUtil::CullVisitor& cv)
     // dependancy list.
     cv.getCurrentRenderBin()->_stage->addToDependencyList(rtts.get());
 
-    // attach texture to the RenderToTextureStage.
-    rtts->setTexture(_texture.get());
+    // if one exist attach texture to the RenderToTextureStage.
+    if (_texture.valid()) rtts->setTexture(_texture.get());
+
+    // if one exist attach image to the RenderToTextureStage.
+    if (_image.valid()) rtts->setImage(_image.get());
 
 }
 
@@ -333,7 +341,12 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     osg::StateSet* stateset = new osg::StateSet;
 
     // set up the texture.
+    osg::Image* image = new osg::Image;
+    image->setInternalTextureFormat(GL_RGBA);
+    //osg::Image* image = osgDB::readImageFile("lz.rgb");
     osg::Texture* texture = new osg::Texture;
+    texture->setSubloadMode(osg::Texture::IF_DIRTY);
+    texture->setImage(image);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
@@ -346,7 +359,8 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     billboard->addDrawable(polyGeom,bs.center());
     
     osg::Group* parent = new osg::Group;
-    parent->setCullCallback(new MyCullCallback(subgraph,texture));
+//   parent->setCullCallback(new MyCullCallback(subgraph,texture));
+    parent->setCullCallback(new MyCullCallback(subgraph,image));
     parent->addChild(billboard);
     
     return parent;

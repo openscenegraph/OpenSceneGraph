@@ -34,7 +34,7 @@ public:
         StateSetManipulator();
         virtual ~StateSetManipulator();
 
-        virtual const char* className() { return "StateSetManipulator"; }
+        virtual const char* className() const { return "StateSetManipulator"; }
 
         /** attach a geostate to the manipulator to be used for specifying view.*/
         virtual void setStateSet(osg::StateSet*);

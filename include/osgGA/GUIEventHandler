@@ -86,7 +86,7 @@ public:
 
         typedef std::vector< osg::ref_ptr<GUIEventHandler> > ChildList;
 
-        virtual const char* className() { return "CompositeGUIEventHandler"; }
+        virtual const char* className() const { return "CompositeGUIEventHandler"; }
 
         virtual const CompositeGUIEventHandler* getComposite() const { return this; }
 

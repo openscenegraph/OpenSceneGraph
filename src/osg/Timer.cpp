@@ -29,11 +29,19 @@ using namespace osg;
         else
         {
 
-            Timer_t start_time = tick();
-            Sleep (1000);
-            Timer_t end_time = tick();
+            // use a static here to ensure that the Sleep(..) for 1 sec
+            // is not incurred more than once per app execution.
+            static double _tempSecsPerClick=0.0;
+            if (_tempSecsPerClick==0.0)
+            {
+                Timer_t start_time = tick();
+                Sleep (1000);
+                Timer_t end_time = tick();
 
-            _secsPerClick = 1.0/(double)(end_time-start_time);
+                _tempSecsPerClick = 1.0/(double)(end_time-start_time);
+            }
+            _secsPerClick = _tempSecsPerClick;
+
         }
     }
 
@@ -136,13 +144,9 @@ using namespace osg;
 
     Timer::Timer( void )
     {
-        _useStandardClock = false;
+        _useStandardClock = false; // default to false.
 
-        if (_useStandardClock)
-        {
-            _secsPerClick = 1e-6; // gettimeofday()'s precision.
-        }
-        else
+        if (!_useStandardClock)
         {
             __psunsigned_t phys_addr, raddr;
             unsigned int cycleval;
@@ -178,7 +182,20 @@ using namespace osg;
 
             _clockAddress = (unsigned long *)iotimer_addr;
             _secsPerClick = (double)(cycleval)* 1e-12;
+            
+            // this is to force the use of the standard clock in
+            // instances which the realtime clock is of such a small
+            // size that it will loop too rapidly for proper realtime work.
+            // this happens on the O2 for instance.
+            if (_cycleCntrSize<=32) _useStandardClock=true;
+            
         }
+
+        if (_useStandardClock)
+        {
+            _secsPerClick = 1e-6; // gettimeofday()'s precision.
+        }
+
     }
 #elif defined (__APPLE_CC__)  || defined (macintosh)
 

@@ -210,7 +210,7 @@ int *numComponents_ret)
         int ncpal=4; // default number of colours per palette entry
         size -= sizeof(bmpheader)+infsize;
         if (inf.ImageSize<size) inf.ImageSize=size;
-        imbuff = (unsigned char *)malloc( inf.ImageSize); // read from disk
+        imbuff = new unsigned char [ inf.ImageSize]; // read from disk
         fread((char *)imbuff, sizeof(unsigned char),inf.ImageSize, fp);
         ncolours=inf.Colorbits/8;
         switch (ncolours) {
@@ -234,8 +234,9 @@ int *numComponents_ret)
             if (infsize==12 || infsize==64) ncpal=3; // OS2 - uses 3 colours per palette entry
             else ncpal=4; // Windoze uses 4!
         }
-        if (ncomp>0) buffer = (unsigned char *)malloc( (ncomp==BW?3:ncomp)*inf.width*inf.height*sizeof(unsigned char)); // to be returned
-        else buffer = (unsigned char *)malloc( 3*inf.width*inf.height*sizeof(unsigned char)); // default full colour to be returned
+
+        if (ncomp>0) buffer = new unsigned char [(ncomp==BW?3:ncomp)*inf.width*inf.height]; // to be returned
+        else buffer = new unsigned char [ 3*inf.width*inf.height]; // default full colour to be returned
         
         unsigned long off=0;
         unsigned long rowbytes=ncomp*sizeof(unsigned char)*inf.width;
@@ -271,7 +272,7 @@ int *numComponents_ret)
                 }
             }
         }
-        free(imbuff); // free the on-disk storage
+        delete [] imbuff; // free the on-disk storage
         
         fclose(fp);
 
@@ -342,7 +343,8 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                imageData);
+                imageData,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
 

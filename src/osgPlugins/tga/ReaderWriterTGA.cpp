@@ -307,7 +307,7 @@ int *numComponents_ret)
     {
         int len = getInt16(&header[5]);
         indexsize = header[7]>>3;
-        colormap = (unsigned char *)malloc(len*indexsize);
+        colormap = new unsigned char [len*indexsize];
         fread(colormap, 1, len*indexsize, fp);
     }
 
@@ -324,10 +324,10 @@ int *numComponents_ret)
     rleIsCompressed = 0;
     rleRemaining = 0;
     rleEntrySize = depth;
-    buffer = (unsigned char*)malloc(width*height*format);
+    buffer = new unsigned char [width*height*format];
     dest = buffer;
     bpr = format * width;
-    linebuf = (unsigned char *)malloc(width*depth);
+    linebuf = new unsigned char [width*depth];
 
     //check the intended image orientation
     bool bLeftToRight = (flags&0x10)==0;
@@ -383,7 +383,7 @@ int *numComponents_ret)
             fseek(fp, 0, SEEK_END);
             size = ftell(fp) - pos;
             fseek(fp, pos, SEEK_SET);
-            buf = (unsigned char *)malloc(size);
+            buf = new unsigned char [size];
             if (buf == NULL)
             {
                 tgaerror = ERR_MEM;
@@ -406,19 +406,19 @@ int *numComponents_ret)
                 }
                 dest += lineoffset;
             }
-            if (buf) free(buf);
+            if (buf) delete [] buf;
         }
         break;
         default:
             tgaerror = ERR_UNSUPPORTED;
     }
 
-    if (linebuf) free(linebuf);
+    if (linebuf) delete [] linebuf;
     fclose(fp);
 
     if (tgaerror)
     {
-        if (buffer) free(buffer);
+        if (buffer) delete [] buffer;
         return NULL;
     }
 
@@ -509,7 +509,8 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                imageData);
+                imageData,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
 

@@ -275,7 +275,7 @@ int *numComponents_ret)
     else
         format = 3;
 
-    buffer = (unsigned char*)malloc(w*h*format);
+    buffer = new unsigned char [w*h*format];
 
     if (!buffer)
     {
@@ -298,7 +298,7 @@ int *numComponents_ret)
         case pack(PHOTOMETRIC_MINISWHITE, PLANARCONFIG_SEPARATE):
         case pack(PHOTOMETRIC_MINISBLACK, PLANARCONFIG_SEPARATE):
 
-            inbuf = (unsigned char *)malloc(TIFFScanlineSize(in));
+            inbuf = new unsigned char [TIFFScanlineSize(in)];
             for (row = 0; row < h; row++)
             {
                 if (TIFFReadScanline(in, inbuf, row, 0) < 0)
@@ -330,7 +330,7 @@ int *numComponents_ret)
                 }
             }
 
-            inbuf = (unsigned char *)malloc(TIFFScanlineSize(in));
+            inbuf = new unsigned char [TIFFScanlineSize(in)];
             for (row = 0; row < h; row++)
             {
                 if (TIFFReadScanline(in, inbuf, row, 0) < 0)
@@ -344,7 +344,7 @@ int *numComponents_ret)
             break;
 
         case pack(PHOTOMETRIC_RGB, PLANARCONFIG_CONTIG):
-            inbuf = (unsigned char *)malloc(TIFFScanlineSize(in));
+            inbuf = new unsigned char [TIFFScanlineSize(in)];
             for (row = 0; row < h; row++)
             {
                 if (TIFFReadScanline(in, inbuf, row, 0) < 0)
@@ -359,7 +359,7 @@ int *numComponents_ret)
 
         case pack(PHOTOMETRIC_RGB, PLANARCONFIG_SEPARATE):
             rowsize = TIFFScanlineSize(in);
-            inbuf = (unsigned char *)malloc(3*rowsize);
+            inbuf = new unsigned char [3*rowsize];
             for (row = 0; !tifferror && row < h; row++)
             {
                 int s;
@@ -382,12 +382,12 @@ int *numComponents_ret)
             break;
     }
 
-    if (inbuf) free(inbuf);
+    if (inbuf) delete [] inbuf;
     TIFFClose(in);
 
     if (tifferror)
     {
-        if (buffer) free(buffer);
+        if (buffer) delete [] buffer;
         return NULL;
     }
     *width_ret = width;
@@ -448,7 +448,8 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 internalFormat,
                 pixelFormat,
                 dataType,
-                imageData);
+                imageData,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
 

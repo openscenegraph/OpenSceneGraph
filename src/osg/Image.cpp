@@ -34,7 +34,8 @@ Image::Image()
     _dataType               = (unsigned int)0;
     _packing                = 4;
 
-    _data = (unsigned char *)0L;
+    _allocationMode         = USE_NEW_DELETE;
+    _data                   = (unsigned char *)0L;
 
     _modifiedTag = 0;
 }
@@ -60,7 +61,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
             _pixelFormat == GL_RGBA ? 4 : 4;
 
         int size = _s*_t*_r*num_components;
-        _data = (unsigned char*) malloc(size);
+        setData(new unsigned char [size],USE_NEW_DELETE);
         memcpy(_data,image._data,size);
     }
 
@@ -68,13 +69,28 @@ Image::Image(const Image& image,const CopyOp& copyop):
 
 Image::~Image()
 {
-    if (_data) ::free(_data);
+    deallocateData();
 }
 
+void Image::deallocateData()
+{
+    if (_data) {
+        if (_allocationMode==USE_NEW_DELETE) delete [] _data;
+        else if (_allocationMode==USE_MALLOC_FREE) ::free(_data);
+        _data = 0;
+    }
+}
 
 void Image::setFileName(const std::string& fileName)
 {
     _fileName = fileName;
+}
+
+void Image::setData(unsigned char* data, AllocationMode mode)
+{
+    deallocateData();
+    _data = data;
+    _allocationMode = mode;
 }
 
 
@@ -214,12 +230,10 @@ void Image::allocateImage(int s,int t,int r,
 
     if (newTotalSize!=previousTotalSize)
     {
-        if (_data) ::free(_data);
-        
         if (newTotalSize)
-            _data = (unsigned char *)malloc (newTotalSize);
+            setData(new unsigned char [newTotalSize],USE_NEW_DELETE);
         else
-            _data = 0L;
+            deallocateData(); // and sets it to NULL.
     }
 
     if (_data)
@@ -251,9 +265,9 @@ void Image::setImage(int s,int t,int r,
                      GLint internalTextureFormat,
                      GLenum format,GLenum type,
                      unsigned char *data,
+                     AllocationMode mode,
                      int packing)
 {
-    if (_data) ::free(_data);
     _mipmapData.clear();
 
     _s = s;
@@ -264,12 +278,10 @@ void Image::setImage(int s,int t,int r,
     _pixelFormat    = format;
     _dataType       = type;
 
-    _data = data;
+    setData(data,mode);
+
     _packing = packing;
         
-    // test scaling...
-    //    scaleImageTo(16,16,_r);
-    
     ++_modifiedTag;
 
 }
@@ -306,7 +318,7 @@ void Image::scaleImage(int s,int t,int r)
     unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)*t;
 
     // need to sort out what size to really use...
-    unsigned char* newData = (unsigned char *)malloc(newTotalSize);
+    unsigned char* newData = new unsigned char [newTotalSize];
     if (!newData)
     {
         // should we throw an exception???  Just return for time being.
@@ -331,15 +343,13 @@ void Image::scaleImage(int s,int t,int r)
     {
 
         // free old image.
-        ::free(_data);
-
         _s = s;
         _t = t;
-        _data = newData;
+        setData(newData,USE_NEW_DELETE);
     }
     else
     {
-        ::free(newData);
+       delete [] newData;
 
         notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
     }
@@ -448,7 +458,7 @@ void Image::flipVertical(int image)
     unsigned char* imageData = _data+image*imageSizeInBytes;
 
     // make temp. buffer for one image
-    unsigned char *tmpData = (unsigned char*) malloc(imageSizeInBytes);
+    unsigned char *tmpData = new unsigned char [imageSizeInBytes];
 
     for (int t=0; t<_t; ++t)
     {
@@ -460,7 +470,8 @@ void Image::flipVertical(int image)
     // insert fliped image
     memcpy(imageData, tmpData, imageSizeInBytes);
 
-    free(tmpData);
+    delete [] tmpData;
+    
     ++_modifiedTag;
 }
 

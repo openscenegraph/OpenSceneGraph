@@ -103,8 +103,8 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             png_read_update_info(png, info);
 
-            data = (png_bytep) malloc(png_get_rowbytes(png, info)*height);
-            row_p = (png_bytep *) malloc(sizeof(png_bytep)*height);
+            data = (png_bytep) new unsigned char [png_get_rowbytes(png, info)*height];
+            row_p = new png_bytep [height];
 
             bool StandardOrientation = true;
             for (i = 0; i < height; i++)
@@ -116,7 +116,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             }
 
             png_read_image(png, row_p);
-            free(row_p);
+            delete [] row_p;
 
             int iBitCount=0;
 
@@ -147,7 +147,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             png_read_end(png, endinfo);
             png_destroy_read_struct(&png, &info, &endinfo);
 
-            //	free(data);
+            //	delete [] data;
 
             if (fp)
                 fclose(fp);
@@ -163,13 +163,15 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                     iBitCount / 8,// int internalFormat,
                     GL_RGB,      // unsigned int pixelFormat
                     GL_UNSIGNED_BYTE,// unsigned int dataType
-                    data);
+                    data,
+                    osg::Image::USE_NEW_DELETE);
             else
                 pOsgImage->setImage(width, height, 1,
                     iBitCount / 8,// int internalFormat,
                     GL_RGBA,     // unsigned int pixelFormat
                     GL_UNSIGNED_BYTE,// unsigned int dataType
-                    data);
+                    data,
+                    osg::Image::USE_NEW_DELETE);
             return pOsgImage;
         }
 };

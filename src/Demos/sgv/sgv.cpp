@@ -43,6 +43,7 @@ void write_usage(std::ostream& out,const std::string& name)
     out <<"    -stencil            - use a visual with stencil buffer enabled, this "<< std::endl;
     out <<"                          also allows the depth complexity statistics mode"<< std::endl;
     out <<"                          to be used (press 'p' three times to cycle to it)."<< std::endl;
+    out <<"    -f                  - start with a full screen, borderless window." << std::endl;
     out << std::endl;
 }
 

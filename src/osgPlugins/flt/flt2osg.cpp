@@ -1029,7 +1029,21 @@ void ConvertFromFLT::setColor ( FaceRecord *rec, SFace *pSFace, DynGeoSet *dgset
                 if (bPackedColor)
                     _faceColor = pSFace->PrimaryPackedColor.get();
                 else
-                    _faceColor = pColorPool->getColor(pSFace->dwPrimaryColorIndex);
+                {
+                    if (rec->getFlightVersion() >= 1540)
+                    {
+                        _faceColor = 
+                            pColorPool->getColor(pSFace->dwPrimaryColorIndex);
+                    }
+                    else  // Version 14.2, 15.0
+                    {
+                        // The field now called wPrimaryNameIndex was
+                        // originally the primary color/intensity code
+                        // for OpenFlight v14.2 and v15.0 files
+                        _faceColor = 
+                            pColorPool->getColor(pSFace->wPrimaryNameIndex);
+                    }
+                }
             }
         }
         else // Version 11, 12 & 13

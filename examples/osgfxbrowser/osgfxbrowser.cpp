@@ -341,6 +341,8 @@ int main(int argc, char *argv[])
 	osg::ref_ptr<osg::Light> light = new osg::Light;
 	light->setLightNum(0);
 	light->setDiffuse(osg::Vec4(1, 1, 1, 1));
+	light->setSpecular(osg::Vec4(1, 1, 0.8f, 1));
+	light->setAmbient(osg::Vec4(0.2f, 0.2f, 0.2f, 0.2f));
 	light->setPosition(osg::Vec4(1, -1, 1, 0));
 
 	osg::ref_ptr<osg::LightSource> root = new osg::LightSource;

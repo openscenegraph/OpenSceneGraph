@@ -70,10 +70,10 @@ void Font::addGlyph(unsigned int charcode, Glyph* glyph)
         
         // reserve enough space for the glyphs.
         glyphTexture->setTextureSize(256,256);
-        //glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-        glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+        glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+        //glyphTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
         //glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
-        //glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        glyphTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
         glyphTexture->setMaxAnisotropy(8);
         
         _glyphTextureList.push_back(glyphTexture);
@@ -202,7 +202,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
         
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+        //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
         
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA,
@@ -221,7 +221,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
     }
     
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
 
     // now subload the glyphs that are outstanding for this graphics context.
     GlyphList& glyphsWereSubloading = _glyphsToSubload[contextID];

@@ -200,9 +200,15 @@ protected:
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     TextureGlyphQuadMap         _textureGlyphQuadMap;
-    mutable osg::BoundingBox    _textBB;
     
     void computeGlyphRepresentation();
+
+    // internal caches of the positioning of the text.
+    osg::Matrix                 _matrix;
+    osg::Vec3                   _offset;
+    mutable osg::BoundingBox    _textBB;
+    
+    void computePositions();
 
 };
 

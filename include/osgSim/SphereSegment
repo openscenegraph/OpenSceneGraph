@@ -82,7 +82,9 @@ public:
                     _elevMin(0.0f), _elevMax(osg::PI/2.0f),
                     _density(10),
                     _drawMask(DrawMask(ALL))
-    {}
+    {
+        init();
+    }
 
     /**
     Construct by angle ranges. Note that the azimuth 'zero' is the Y axis; specifying
@@ -164,6 +166,22 @@ public:
     */
     void getArea(osg::Vec3& v, float& azRange, float& elevRange) const;
 
+    /** Set the area of the sphere segment
+    @param azMin        azimuth minimum
+    @param azMin        azimuth maximum
+    @param elevMin      elevation minimum
+    @param elevMax      elevation maximum
+    */
+    void setArea(float azMin, float azMax, float elevMin, float elevMax);
+
+    /** Get the area of the sphere segment
+    @param azMin        azimuth minimum
+    @param azMin        azimuth maximum
+    @param elevMin      elevation minimum
+    @param elevMax      elevation maximum
+    */
+    void getArea(float &azMin, float &azMax, float &elevMin, float &elevMax) const;
+
     /** Set the density of the sphere segment */
     void setDensity(int d);
 
@@ -177,17 +195,32 @@ public:
     */
     void setDrawMask(DrawMask dm);
 
+    /** Get the DrawMask */
+    DrawMask getDrawMask() const { return _drawMask; }
+
     /** Set the color of the surface. */
     void setSurfaceColor(const osg::Vec4& c);
+
+    /** Get the color of the surface. */
+    osg::Vec4 getSurfaceColor() const { return _surfaceColor; }
 
     /** Set the color of the spokes. */
     void setSpokeColor(const osg::Vec4& c);
 
+    /** Get the color of the spokes. */
+    osg::Vec4 getSpokeColor() const { return _spokeColor; }
+
     /** Set the color of the edge line. */
     void setEdgeLineColor(const osg::Vec4& c);
 
+    /** Get the color of the edge line. */
+    osg::Vec4 getEdgeLineColor() const { return _edgeLineColor; }
+
     /** Set the color of the planes. */
     void setSideColor(const osg::Vec4& c);
+
+    /** Get the color of the planes. */
+    osg::Vec4 getSideColor() const { return _planeColor; }
 
     /** Set color of all components. */
     void setAllColors(const osg::Vec4& c);

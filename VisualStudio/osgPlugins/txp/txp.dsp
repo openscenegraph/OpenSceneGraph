@@ -126,7 +126,7 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPTileNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TileMap.cpp
+SOURCE=..\..\..\src\osgPlugins\txp\TileMapper.cpp
 # End Source File
 # Begin Source File
 
@@ -254,7 +254,7 @@ SOURCE=..\..\..\src\osgPlugins\txp\TXPTileNode.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TileMap.h
+SOURCE=..\..\..\src\osgPlugins\txp\TileMapper.h
 # End Source File
 # Begin Source File
 

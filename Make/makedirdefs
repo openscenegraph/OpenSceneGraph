@@ -29,6 +29,7 @@ PLUGIN_DIRS = \
 	rgb\
     	ac3d\
 	lib3ds\
+	directx\
 	flt\
 	geo\
         iv\

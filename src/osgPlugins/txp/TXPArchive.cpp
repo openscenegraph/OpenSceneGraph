@@ -546,7 +546,7 @@ bool TXPArchive::loadTextStyles()
 		std::string line;
 		while (getline(fmapfile,line))
 		{
-			int ix = line.find_first_of('=');
+			unsigned int ix = line.find_first_of('=');
 			if (ix != std::string::npos)
 			{
 				std::string fontname = line.substr(0,ix);
@@ -564,7 +564,7 @@ bool TXPArchive::loadTextStyles()
 	else
 	{
 		osg::notify(osg::NOTICE) << "txp:: No font map file found: " << fmapfname << std::endl;		
-		osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to ARIAL.TTF" << std::endl;		
+		osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to arial.ttf" << std::endl;		
 	}
 
 	_fonts.resize(textStyleTable->GetNumStyle());
@@ -578,7 +578,7 @@ bool TXPArchive::loadTextStyles()
 		if (!fontName) continue;
 
 		std::string fontfilename = fontmap[*fontName];
-		if (!fontfilename.length()) fontfilename = "ARIAL.TTF";
+		if (!fontfilename.length()) fontfilename = "arial.ttf";
 		osg::ref_ptr< osgText::Font > font = osgText::readFontFile(fontfilename);
 
 		_fonts[i] = font;

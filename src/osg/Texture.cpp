@@ -42,6 +42,8 @@ Texture::Texture()
     _subloadOffsX = _subloadOffsY = 0;
 
     _borderColor.set(0.0, 0.0, 0.0, 0.0);//OpenGL default
+
+    _compile_flags = COMPILE_ALL;
 }
 
 
@@ -191,7 +193,14 @@ void Texture::apply(State& state) const
         if (_subloadMode == OFF)
         {
             glBindTexture( GL_TEXTURE_2D, handle );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+	    if( !(_compile_flags & COMPILE_MIN_FILTER) )
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _min_filter);
+	    if( !(_compile_flags & COMPILE_MAG_FILTER) )
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _mag_filter);
+	    if( !(_compile_flags & COMPILE_WRAP_S) )
+    		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _wrap_s );
+	    if( !(_compile_flags & COMPILE_WRAP_T) )
+    		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _wrap_t );
         }
         else  if (_image.valid() && _image->data())
         {

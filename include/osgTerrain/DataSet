@@ -163,6 +163,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
             enum ParameterPolicy
             {
                 PREFER_CONFIG_SETTINGS,
+                PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION,
                 PREFER_FILE_SETTINGS
             };
 

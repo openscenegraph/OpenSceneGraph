@@ -13,7 +13,7 @@ namespace osg {
 class Node;
 class NodeVisitor;
 
-class SG_EXPORT NodeCallback : public Referenced {
+class SG_EXPORT NodeCallback : public virtual Referenced {
 
     public :
     

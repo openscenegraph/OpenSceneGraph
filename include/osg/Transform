@@ -73,7 +73,7 @@ class SG_EXPORT Transform : public Group
         /** Callback attached to an Transform to specify how to compute the
           * modelview transformation for the transform below the Transform
           * node. */
-        struct ComputeTransformCallback : public osg::Referenced
+        struct ComputeTransformCallback : public virtual osg::Referenced
         {
             /** Get the transformation matrix which moves from local coords
               * to world coords.*/

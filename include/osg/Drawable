@@ -172,7 +172,7 @@ class SG_EXPORT Drawable : public Object
         void compile(State& state);
 
 
-        struct AppCallback : public osg::Referenced
+        struct AppCallback : public virtual osg::Referenced
         {
                 /** do customized app code.*/
                 virtual void app(osg::NodeVisitor *visitor, osg::Drawable* drawable) = 0;
@@ -188,7 +188,7 @@ class SG_EXPORT Drawable : public Object
         const AppCallback* getAppCallback() const { return _appCallback.get(); }
 
 
-        struct CullCallback : public osg::Referenced
+        struct CullCallback : public virtual osg::Referenced
         {
                 /** do customized cull code.*/
                 virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State *state=NULL) const = 0;
@@ -209,7 +209,7 @@ class SG_EXPORT Drawable : public Object
           * the user intends to decorate the exist draw code then simple call the drawable->drawImplementation() from
           * with the callbacks drawImplementation() method.  This allows the users to do both pre and post callbacks
           * without fuss and can even diable the inner draw in required.*/
-        struct DrawCallback : public osg::Referenced
+        struct DrawCallback : public virtual osg::Referenced
         {
             /** do customized draw code.*/
             virtual void drawImplementation(State& state,const osg::Drawable* drawable) const = 0;

@@ -12,25 +12,23 @@ using namespace osgProducer;
 void KeyboardMouseCallback::keyPress( Producer::KeySymbol key )
 {
 
-    switch( key )
+    if (_escapeKeySetsDone)
     {
-#ifdef XK_MISCELLANY // XWindows keydefs
-        case XK_Escape:
-            _done = true;
-            break;
-#endif
-#ifdef WIN32
-         case VK_ESCAPE:
-            _done = true;
-            break;
-#endif
+        switch( key )
+        {
+    #ifdef XK_MISCELLANY // XWindows keydefs
+            case XK_Escape:
+                _done = true;
+                break;
+    #endif
+    #ifdef WIN32
+             case VK_ESCAPE:
+                _done = true;
+                break;
+    #endif
+        }
     }
-    
-    if (_done)
-    {
-        // need to contact the viewer so pass on the abort..
-    }
-    
+           
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyPress(getTime(),key);
     

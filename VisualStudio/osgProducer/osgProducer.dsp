@@ -117,6 +117,10 @@ SOURCE=..\..\src\osgProducer\StatsEventHandler.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgProducer\FullScreenEventHandler.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgProducer\KeyboardMouseCallback.cpp
 # End Source File
 # End Group
@@ -154,6 +158,10 @@ SOURCE=..\..\Include\osgProducer\KeyboardMouseCallback
 # Begin Source File
 
 SOURCE=..\..\Include\osgProducer\StatsEventHandler
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgProducer\FullScreenEventHandler
 # End Source File
 # Begin Source File
 

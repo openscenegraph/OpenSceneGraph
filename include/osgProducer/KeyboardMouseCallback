@@ -30,10 +30,11 @@ namespace osgProducer {
 class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseCallback
 {
     public:
-        KeyboardMouseCallback(bool &done) :
+        KeyboardMouseCallback(bool &done, bool escapeKeySetsDone=true) :
             Producer::KeyboardMouseCallback(),
             _mx(0.0f),_my(0.0f),_mbutton(0),
-            _done(done)    
+            _done(done),
+            _escapeKeySetsDone(escapeKeySetsDone)            
             {}
 
         virtual ~KeyboardMouseCallback() {}
@@ -68,6 +69,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         float _mx, _my;
         unsigned int _mbutton;
         bool &_done;
+        bool _escapeKeySetsDone;
 
         osg::Timer_t    _startTick;
         osg::Timer      _timer;

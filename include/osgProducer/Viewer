@@ -47,6 +47,7 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         enum ViewerOptions
         {
+            NO_EVENT_HANDLERS       = 0,
             TRACKBALL_MANIPULATOR   = 1,
             DRIVE_MANIPULATOR       = 2,
             FLIGHT_MANIPULATOR      = 4,
@@ -54,12 +55,16 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
             HEAD_LIGHT_SOURCE       = 16,
             SKY_LIGHT_SOURCE        = 32,
             STATS_MANIPULATOR       = 64,
+            FULLSCREEN_MANIPULATOR  = 128,
+            ESCAPE_SETS_DONE        = 256,
             STANDARD_SETTINGS = TRACKBALL_MANIPULATOR|
                                 DRIVE_MANIPULATOR |
                                 FLIGHT_MANIPULATOR |
                                 STATE_MANIPULATOR |
                                 HEAD_LIGHT_SOURCE |
-                                STATS_MANIPULATOR
+                                STATS_MANIPULATOR |
+                                FULLSCREEN_MANIPULATOR |
+                                ESCAPE_SETS_DONE
         };
         
         void setUpViewer(unsigned int options=STANDARD_SETTINGS);

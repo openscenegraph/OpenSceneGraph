@@ -30,7 +30,7 @@ public:
         _cameraGroup(cameraGroup),
         _sceneHandler(sceneHandler) {}
     
-    virtual void operator()( const RenderSurface & rs)
+    virtual void operator()( const Producer::RenderSurface & rs)
     {
         if (_cameraGroup)
         {
@@ -232,7 +232,7 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
         sh->setDefaults();
         _shvec.push_back( sh );
         cam->setSceneHandler( sh );
-        RenderSurface* rs = cam->getRenderSurface();
+        Producer::RenderSurface* rs = cam->getRenderSurface();
         rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
     }
 

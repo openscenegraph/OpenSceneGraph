@@ -75,6 +75,11 @@
 #define GL_TEXTURE_3D                     0x806F
 #endif
 
+#ifndef GL_TEXTURE_COMPARE_MODE_ARB
+#define GL_TEXTURE_COMPARE_MODE_ARB       0x884C
+#define GL_TEXTURE_COMPARE_FUNC_ARB       0x884D
+#define GL_COMPARE_R_TO_TEXTURE_ARB       0x884E
+#endif
 
 
 namespace osg {
@@ -232,6 +237,29 @@ class SG_EXPORT Texture : public osg::StateAttribute
         void dirtyTextureParameters();
 
 
+        // set mode of GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB
+        // See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt
+        void setShadowComparison(bool flag) { _use_shadow_comparison = flag; }
+
+        enum ShadowCompareFunc {
+            LEQUAL = GL_LEQUAL,
+            GEQUAL = GL_GEQUAL
+        };
+
+        // set shadow texture comparison function
+        void setShadowCompareFunc(ShadowCompareFunc func) { _shadow_compare_func = func; }
+        ShadowCompareFunc getShadowCompareFunc() { return _shadow_compare_func; }
+
+        enum ShadowTextureMode {
+            LUMINANCE = GL_LUMINANCE,
+            INTENSITY = GL_INTENSITY,
+            ALPHA = GL_ALPHA
+        };
+
+        // set shadow texture mode after comparison
+        void setShadowTextureMode(ShadowTextureMode mode) { _shadow_texture_mode = mode; }
+        ShadowTextureMode getShadowTextureMode() { return _shadow_texture_mode; }
+
 
         
         /** Texture is pure virtual base class, apply must be overriden. */
@@ -278,6 +306,9 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 void setGenerateMipMapSupported(bool flag) { _isGenerateMipMapSupported=flag; }
                 bool isGenerateMipMapSupported() const { return _isGenerateMipMapSupported; }
 
+                void setShadowSupported(bool flag) { _isShadowSupported = flag; }
+                bool isShadowSupported() const { return _isShadowSupported; }
+
                 void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
@@ -304,6 +335,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureEdgeClampSupported;
                 bool    _isTextureBorderClampSupported;
                 bool    _isGenerateMipMapSupported;
+                bool    _isShadowSupported;
                 
                 GLint   _maxTextureSize;
 
@@ -372,8 +404,11 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         InternalFormatMode  _internalFormatMode;
         mutable GLint       _internalFormat;
-        
-        
+      
+        bool                _use_shadow_comparison;
+        ShadowCompareFunc   _shadow_compare_func;
+        ShadowTextureMode   _shadow_texture_mode;
+
     public:
     
         class TextureObject : public osg::Referenced

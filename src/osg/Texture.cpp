@@ -174,7 +174,10 @@ Texture::Texture():
             _unrefImageDataAfterApply(false),
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
-            _internalFormat(0)
+            _internalFormat(0),
+            _use_shadow_comparison(false),
+            _shadow_compare_func(LEQUAL),
+            _shadow_texture_mode(LUMINANCE)
 {
 }
 
@@ -190,7 +193,10 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
             _borderColor(text._borderColor),
             _internalFormatMode(text._internalFormatMode),
-            _internalFormat(text._internalFormat)
+            _internalFormat(text._internalFormat),
+            _use_shadow_comparison(text._use_shadow_comparison),
+            _shadow_compare_func(text._shadow_compare_func),
+            _shadow_texture_mode(text._shadow_texture_mode)
 {
 }
 
@@ -211,6 +217,9 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_useHardwareMipMapGeneration)
     COMPARE_StateAttribute_Parameter(_internalFormatMode)
     COMPARE_StateAttribute_Parameter(_internalFormat)
+    COMPARE_StateAttribute_Parameter(_use_shadow_comparison)
+    COMPARE_StateAttribute_Parameter(_shadow_compare_func)
+    COMPARE_StateAttribute_Parameter(_shadow_texture_mode)
     
     return 0;
 }
@@ -473,6 +482,20 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     {
         glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
     }
+
+    if (extensions->isShadowSupported() && target == GL_TEXTURE_2D)
+      {
+        if (_use_shadow_comparison)
+          {
+            glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
+            glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC_ARB, _shadow_compare_func);
+            glTexParameteri(target, GL_DEPTH_TEXTURE_MODE_ARB, _shadow_texture_mode);
+          }
+        else 
+          {
+            glTexParameteri(target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
+          }
+      }
 
     getTextureParameterDirty(state.getContextID()) = false;
 
@@ -1038,6 +1061,7 @@ void Texture::Extensions::setupGLExtenions()
     _isTextureBorderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
     _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
                                   isGLExtensionSupported("GL_SGIS_generate_mipmap");
+    _isShadowSupported = isGLExtensionSupported("GL_ARB_shadow");
 
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);

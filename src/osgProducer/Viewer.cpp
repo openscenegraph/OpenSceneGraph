@@ -508,6 +508,8 @@ void Viewer::requestWarpPointer(float x,float y)
 {
     if (_kbmcb)
     {
+        osg::notify(osg::INFO) << "requestWarpPointer x= "<<x<<" y="<<y<<std::endl;
+    
         EventAdapter::_s_mx = x;
         EventAdapter::_s_my = y;
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);

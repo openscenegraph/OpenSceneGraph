@@ -43,13 +43,13 @@ CubeMapGenerator::CubeMapGenerator(const CubeMapGenerator &copy, const osg::Copy
 
 void CubeMapGenerator::generateMap(bool use_osg_system)
 {
-	osg::Matrix M;
-	
-	if (use_osg_system) {
-		M = osg::Matrix::rotate(osg::PI_2, osg::Vec3(1, 0, 0));
-	} else {
-		M = osg::Matrix::identity();
-	}
+    osg::Matrix M;
+    
+    if (use_osg_system) {
+        M = osg::Matrix::rotate(osg::PI_2, osg::Vec3(1, 0, 0));
+    } else {
+        M = osg::Matrix::identity();
+    }
 
     const float dst = 2.0f/(texture_size_-1);
     
@@ -57,7 +57,7 @@ void CubeMapGenerator::generateMap(bool use_osg_system)
     for (int i=0; i<texture_size_; ++i) {
         float s = -1;
         for (int j=0; j<texture_size_; ++j) {
-			set_pixel(0, j, i, compute_color(osg::Vec3(1, -t, -s)  * M));
+            set_pixel(0, j, i, compute_color(osg::Vec3(1, -t, -s)  * M));
             set_pixel(1, j, i, compute_color(osg::Vec3(-1, -t, s)  * M));
             set_pixel(2, j, i, compute_color(osg::Vec3(s, 1, t)    * M));
             set_pixel(3, j, i, compute_color(osg::Vec3(s, -1, -t)  * M));

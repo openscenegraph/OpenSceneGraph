@@ -139,6 +139,9 @@ template<typename T>
 inline T clampBelow(T v,T maximum) { return v>maximum?maximum:v; }
 
 template<typename T>
+inline T clampBetween(T v,T minimum, T maximum) { return clampBelow(clampAbove(v,minimum),maximum); }
+
+template<typename T>
 inline T sign(T v) { return v<(T)0?(T)-1:(T)1; }
 
 template<typename T>

@@ -270,7 +270,7 @@ static    void doCleanupLogOnFirstRun()
 
 static    const char    *sourceFileStripper(const char *sourceFile)
 {
-    char    *ptr = strrchr(sourceFile, '\\');
+    const char *ptr = strrchr(sourceFile, '\\');
     if (ptr) return ptr + 1;
     ptr = strrchr(sourceFile, '/');
     if (ptr) return ptr + 1;
@@ -423,6 +423,9 @@ static    void    wipeWithPattern(sAllocUnit *allocUnit, unsigned long pattern, 
         char        *cptr = (char *) lptr;
         for (i = 0; i < (length & 0x3); i++, cptr++, shiftCount += 8)
         {
+            char res1 = (pattern & (0xff << shiftCount)) >> shiftCount;
+            char res2 = static_cast<char>((pattern >> shiftCount) & 0xff);
+            assert(res1==res2);
             *cptr = (pattern & (0xff << shiftCount)) >> shiftCount;
         }
     }

@@ -41,7 +41,19 @@ class ViewerEventHandler : public osgGA::GUIEventHandler
         
         
         void setDisplayHelp(bool displayHelp) { _displayHelp = displayHelp; }
+        
         bool getDisplayHelp() const { return _displayHelp; }
+        
+        
+        enum FrameStatsMode
+        {
+            NO_STATS = 0,
+            FRAME_RATE = 1,
+            CAMERA_STATS = 2
+        };
+        
+        void setFrameStatsMode(FrameStatsMode mode) { _frameStatsMode = mode; }
+        FrameStatsMode getFrameStatsMode() { return _frameStatsMode; }
 
     protected:
         
@@ -49,7 +61,8 @@ class ViewerEventHandler : public osgGA::GUIEventHandler
         
         std::string _writeNodeFileName;
         
-        bool _displayHelp;
+        bool            _displayHelp;
+        FrameStatsMode  _frameStatsMode;
 };
 
 }

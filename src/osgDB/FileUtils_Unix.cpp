@@ -219,14 +219,23 @@ char *osgDB::findDSO( const char *name )
     }
     #endif
     
-#else
+#elif defined(__CYGWIN__)
+
+    if ((ptr = getenv( "PATH" )))
+    {
+        notify(DEBUG_INFO) << "PATH = "<<ptr<<std::endl;
+        strcat( path, PathDelimitor );
+        strcat( path, ptr );
+    }
+
+#else   
 
     if( (ptr = getenv( "LD_LIBRARY_PATH" )))
     {
         strcat( path, PathDelimitor );
         strcat( path, ptr );
     }
-    
+
 #endif
 
     // check existance of dso assembled direct paths.

@@ -8,6 +8,7 @@
 
 using namespace osg;
 using namespace osgDB;
+using namespace std;
 
 // forward declare functions to use later.
 bool GeoState_readLocalData(Object& obj, Input& fr);
@@ -522,7 +523,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
          else
          {
             // no name defined for GLMode so just pass its value to fw.
-             fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
+             fw.indent() << "0x" << hex << (osg::uint)mitr->first << dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
          }
     }
     
@@ -556,7 +557,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
                  else
                  {
                     // no name defined for GLMode so just pass its value to fw.
-                    fw.indent() << "0x" << std::hex << (osg::uint)mitr->first << std::dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
+                    fw.indent() << "0x" << hex << (osg::uint)mitr->first << dec <<" " << StateSet_getModeStr(mitr->second) << std::endl;
                  }
             }
         }

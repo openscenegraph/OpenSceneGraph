@@ -155,9 +155,9 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
 
     // make the material black for a shadow.
     osg::Material* material = new osg::Material;
-    material->setAmbient(osg::Material::FRONT_AND_BACK,_ambientLightColor);
+    material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-    material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    material->setEmission(osg::Material::FRONT_AND_BACK,_ambientLightColor);
     material->setShininess(osg::Material::FRONT_AND_BACK,0.0f);
     _shadowState->setAttribute(material,osg::StateAttribute::OVERRIDE);
 
@@ -256,7 +256,7 @@ osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const os
 
     lightgroup->setLight(light);
     
-    osg::Vec4 ambientLightColor(0.1f,0.1f,0.1f,1.0f);
+    osg::Vec4 ambientLightColor(0.2,0.2f,0.2f,1.0f);
 
     // add the shadower
     lightgroup->addChild(shadower);

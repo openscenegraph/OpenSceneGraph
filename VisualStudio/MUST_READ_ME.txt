@@ -16,3 +16,15 @@ documentation.
 Several of the plugins and demoes, and two of the core libraries - osgText 
 and osgGLUT require external dependancies.  Full details on where to obtain
 these can be found in doc/dependancies.html.
+
+
+--
+
+For syntax highlighting in VisualStudio which the stanard C++ style found in the 
+OSG you can substiture the LANDEXT.DAT file found in this directory with the one found
+in :
+
+VisualStudio6.0               *\Common\MSDev98\Bin
+
+VisualStudio7.0/.NET          *\Common7\IDE\langext.dat
+

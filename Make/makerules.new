@@ -187,7 +187,6 @@ depend : $(MAKEDEPEND)
 ###############################################################################
 
 __link : 
-	@echo LNSRC is $(LNSRC) ... LNDEST is $(LNDEST)
 	@[ -n "$(LNSRC)" ] || echo "Internal error (LNSRC definition)"
 	@[ -n "$(LNSRC)" ] && echo > /dev/null
 	@[ -n "$(LNDEST)" ] || echo "Internal error (LNDEST definition)"

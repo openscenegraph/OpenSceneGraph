@@ -151,7 +151,7 @@ Registry::Registry()
     addFileExtensionAlias("ivz",   "gz");
     addFileExtensionAlias("ozg",   "gz");
     
-#if defined(__DARWIN_OSX__)
+#if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");
     addFileExtensionAlias("jpeg", "qt");

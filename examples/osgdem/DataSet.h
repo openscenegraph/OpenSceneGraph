@@ -669,8 +669,9 @@ class DataSet : public osg::Referenced
             void equalizeCorner(Position position);
             void equalizeEdge(Position position);
             
-
             void equalizeBoundaries();
+
+            void optimizeResolution();
 
             osg::Node* createScene();
             

@@ -29,6 +29,9 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
     public:
 
         Simplifier(float sampleRatio=0.5f);
+
+        void setSampleRatio(float sampleRatio) { _sampleRatio = sampleRatio; }
+        float getSampleRatio() const { return _sampleRatio; }
             
         virtual void apply(osg::Geode& geode)
         {

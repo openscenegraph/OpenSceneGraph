@@ -19,6 +19,8 @@
 #include <osg/StateSet>
 #include <osg/Geometry>
 
+#include <osgDB/ReaderWriter>
+
 #include <string>
 #include <map>
 
@@ -42,9 +44,9 @@ namespace lwosg
 
 		void compile(const lwo2::FORM::SURF *surf, const Clip_map &clips);
 
-		osg::Group *apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units = 0, bool use_osgfx = false, bool force_arb_compression = false) const;
+		osg::Group *apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units, bool use_osgfx, bool force_arb_compression, const osgDB::ReaderWriter::Options *db_options) const;
 
-		void generate_stateset(int max_tex_units = 0, bool force_arb_compression = false) const;
+		void generate_stateset(int max_tex_units, bool force_arb_compression, const osgDB::ReaderWriter::Options* options) const;
 
 		inline const std::string &get_name() const { return name_; }
 		inline void set_name(const std::string &n) { name_ = n; }

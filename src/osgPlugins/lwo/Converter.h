@@ -35,11 +35,11 @@ namespace lwosg
 		};
 
 		Converter();
-		Converter(const Options &options);
+		Converter(const Options &options, const osgDB::ReaderWriter::Options* db_options);
 
 		osg::Group *convert(Object &obj);
 		osg::Group *convert(const iff::Chunk_list &data);
-		osg::Group *convert(const std::string &filename, const osgDB::ReaderWriter::Options* options);
+		osg::Group *convert(const std::string &filename);
 
 		inline osg::Group *get_root() { return root_.get(); }
 		inline const osg::Group *get_root() const { return root_.get(); }
@@ -54,6 +54,7 @@ namespace lwosg
 	private:
 		osg::ref_ptr<osg::Group> root_;
 		Options options_;
+		osg::ref_ptr<const osgDB::ReaderWriter::Options> db_options_;
 	};
 
 }

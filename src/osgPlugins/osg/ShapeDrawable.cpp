@@ -17,25 +17,35 @@ RegisterDotOsgWrapperProxy g_ShapeDrawableFuncProxy
     new osg::ShapeDrawable,
     "ShapeDrawable",
     "Object Drawable ShapeDrawable",
-    &ShapeDrawable_readLocalData,
-    &ShapeDrawable_writeLocalData,
+    0,
+    0,
     DotOsgWrapper::READ_AND_WRITE
 );
 
-bool ShapeDrawable_readLocalData(Object& obj, Input& fr)
-{
-    bool iteratorAdvanced = false;
-
-    ShapeDrawable& geom = static_cast<ShapeDrawable&>(obj);
-
-    bool matchedFirst = false;
-
-    return iteratorAdvanced;
-}
-
-bool ShapeDrawable_writeLocalData(const Object& obj, Output& fw)
-{
-    const ShapeDrawable& geom = static_cast<const ShapeDrawable&>(obj);
-
-    return true;
-}
+// RegisterDotOsgWrapperProxy g_ShapeDrawableFuncProxy
+// (
+//     new osg::ShapeDrawable,
+//     "ShapeDrawable",
+//     "Object Drawable ShapeDrawable",
+//     &ShapeDrawable_readLocalData,
+//     &ShapeDrawable_writeLocalData,
+//     DotOsgWrapper::READ_AND_WRITE
+// );
+// 
+// bool ShapeDrawable_readLocalData(Object& obj, Input& fr)
+// {
+//     bool iteratorAdvanced = false;
+// 
+//     ShapeDrawable& geom = static_cast<ShapeDrawable&>(obj);
+// 
+//     bool matchedFirst = false;
+// 
+//     return iteratorAdvanced;
+// }
+// 
+// bool ShapeDrawable_writeLocalData(const Object& obj, Output& fw)
+// {
+//     const ShapeDrawable& geom = static_cast<const ShapeDrawable&>(obj);
+// 
+//     return true;
+// }

@@ -347,11 +347,19 @@ void CullVisitor::apply(LightSource& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    RefMatrix& matrix = getModelViewMatrix();
     StateAttribute* light = node.getLight();
     if (light)
     {
-        addPositionedAttribute(&matrix,light);
+        if (node.getReferenceFrame()==osg::LightSource::RELATIVE_TO_PARENTS)
+        {
+            RefMatrix& matrix = getModelViewMatrix();
+            addPositionedAttribute(&matrix,light);
+        }
+        else
+        {
+            // relative to absolute.
+            addPositionedAttribute(0,light);
+        }
     }
 
     handle_cull_callbacks_and_traverse(node);

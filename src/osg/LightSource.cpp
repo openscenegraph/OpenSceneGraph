@@ -3,7 +3,8 @@
 using namespace osg;
 
 LightSource::LightSource():
-    _value(StateAttribute::ON)
+    _value(StateAttribute::ON),
+    _referenceFrame(RELATIVE_TO_PARENTS)
 {
     // switch off culling of light source nodes by default.
     setCullingActive(false);
@@ -17,6 +18,11 @@ LightSource::~LightSource()
     // ref_ptr<> automactially decrements the reference count of attached lights.
 }
 
+void LightSource::setReferenceFrame(ReferenceFrame rf)
+{
+    _referenceFrame = rf;
+    setCullingActive(_referenceFrame==RELATIVE_TO_PARENTS);
+}
 
 void LightSource::setLight(StateAttribute* light)
 {
@@ -44,7 +50,7 @@ bool LightSource::computeBound() const
 {
     Group::computeBound();
     
-    if (_light.valid())
+    if (_light.valid() && _referenceFrame==RELATIVE_TO_PARENTS)
     {
         const Light* light = dynamic_cast<const Light*>(_light.get());
         if (light)

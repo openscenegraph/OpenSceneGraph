@@ -25,6 +25,26 @@ class SG_EXPORT LightSource : public Group
 
         META_Node(osg, LightSource);
 
+        enum ReferenceFrame
+        {
+            RELATIVE_TO_PARENTS,
+            RELATIVE_TO_ABSOLUTE
+        };
+        
+        /** Set the light sources's ReferenceFrame, either to be relative to its
+          * parent reference frame, or relative to an absolute coordinate
+          * frame. RELATIVE_TO_PARENTS is the default.
+          * Note: setting the ReferenceFrame to be RELATIVE_TO_ABSOLUTE will
+          * also set the CullingActive flag on the light source, and hence all
+          * of its parents, to false, thereby disabling culling of it and
+          * all its parents.  This is neccessary to prevent inappropriate
+          * culling, but may impact cull times if the absolute light source is
+          * deep in the scene graph.  It is therefore recommend to only use
+          * absolute light source at the top of the scene. */
+        void setReferenceFrame(ReferenceFrame rf);
+        
+        ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
+
         /** Set the attached light.*/
         void setLight(StateAttribute* light);
 
@@ -48,6 +68,8 @@ class SG_EXPORT LightSource : public Group
 
         StateAttribute::GLModeValue     _value;
         ref_ptr<StateAttribute>         _light;
+
+        ReferenceFrame                  _referenceFrame;
 };
 
 }

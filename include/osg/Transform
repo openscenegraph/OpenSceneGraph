@@ -64,7 +64,7 @@ class SG_EXPORT Transform : public Group
           * culling, but may impact cull times if the absolute transform is
           * deep in the scene graph.  It is therefore recommend to only use
           * absolute Transforms at the top of the scene, for such things as
-          * headlight LightSources or Heads up displays. */
+          * heads up displays. */
         void setReferenceFrame(ReferenceFrame rf);
         
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }

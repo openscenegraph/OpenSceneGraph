@@ -37,7 +37,7 @@ Record* Registry::getPrototype(const int opcode)
     if (itr != _recordProtoMap.end()) {
         return (*itr).second.get();
     }
-    osg::notify( osg::NOTICE )
+    osg::notify( osg::INFO )
 	<< "flt::Registry::getPrototype: Unkown opcode: " << opcode << "\n";
 
     return NULL;

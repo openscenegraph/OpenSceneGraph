@@ -48,7 +48,7 @@ namespace osg {
     #endif
 #endif
 
-/** macro for use with osg::StateAttrbiute::apply methods for detecting and 
+/** macro for use with osg::StateAttribute::apply methods for detecting and 
   * reporting OpenGL error messages.*/
 #define OSG_GL_DEBUG(message) \
     if (state.getFineGrainedErrorDetection()) \
@@ -69,17 +69,17 @@ class SG_EXPORT State : public Referenced
     
         State();
 
-        /** push stateset onto state stack.*/
+        /** Push stateset onto state stack.*/
         void pushStateSet(const StateSet* dstate);
 
-        /** pop stateset off state stack.*/
+        /** Pop stateset off state stack.*/
         void popStateSet();
        
         /** pop all statesets off state stack, ensuring it is empty ready for the next frame.
-          * note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
+          * Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
         void popAllStateSets();
 
-        /** copy the modes and attributes which captures the current state.*/
+        /** Copy the modes and attributes which capture the current state.*/
         void captureCurrentState(StateSet& stateset) const;
 
         /** reset the state object to an empty stack.*/
@@ -273,8 +273,6 @@ class SG_EXPORT State : public Referenced
         /** Get the current specified attribute, return NULL if one has not yet been applied.*/ 
         const StateAttribute* getLastAppliedAttribute(StateAttribute::Type type) const;
         
-
-
         /** texture Mode has been set externally, update state to reflect this setting.*/
         void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
         
@@ -307,7 +305,7 @@ class SG_EXPORT State : public Referenced
         /** Dirty the modes attributes previously applied in osg::State.*/
         void dirtyAllAttributes();
 
-        /** disable the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
+        /** disable the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
         void disableAllVertexArrays();
 
         /** dirty the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
@@ -596,14 +594,14 @@ class SG_EXPORT State : public Referenced
             }
         }
 
-        /** set the current tex coord array texture unit, return true if selected, 
-          * false if selection failed such as when multitexturing is not supported.
+        /** Set the current tex coord array texture unit, return true if selected, 
+		  * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
 
 
         /** set the current texture unit, return true if selected,
-          * false if selection failed such as when multitexturing is not supported.
+		  * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setActiveTextureUnit( unsigned int unit );
         
@@ -641,7 +639,7 @@ class SG_EXPORT State : public Referenced
             for each context, the contextID simply acts as an index in local
             arrays that they maintain for the purpose.
             Typical settings for contextID are 0,1,2,3... up to the maximum
-            number of graphics contexts you have setup.
+            number of graphics contexts you have set up.
             By default contextID is 0.*/ 
         inline void setContextID(unsigned int contextID) { _contextID=contextID; }
 
@@ -652,7 +650,7 @@ class SG_EXPORT State : public Referenced
         /** Set the frame stamp for the current frame.*/
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
 
-        /** Set the frame stamp for the current frame.*/
+        /** Get the frame stamp for the current frame.*/
         inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
         
                 
@@ -1026,7 +1024,7 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
 
             if (!ms.valueVec.empty() && (ms.valueVec.back() & StateAttribute::OVERRIDE) && !(ds_mitr->second & StateAttribute::PROTECTED))
             {
-                // override is on, there just treat as a normal apply on modes.
+                // override is on, just treat as a normal apply on modes.
 
                 if (ms.changed)
                 {
@@ -1124,8 +1122,8 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         else if (ds_aitr->first<this_aitr->first)
         {
 
-            // ds_mitr->first is a new attribute, therefore 
-            // need to insert a new attribute entry for ds_aistr->first.
+            // ds_aitr->first is a new attribute, therefore 
+            // need to insert a new attribute entry for ds_aitr->first.
             AttributeStack& as = attributeMap[ds_aitr->first];
 
             const StateAttribute* new_attr = ds_aitr->second.first.get();
@@ -1146,7 +1144,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
 
             if (!as.attributeVec.empty() && (as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(ds_aitr->second.second & StateAttribute::PROTECTED))
             {
-                // override is on, there just treat as a normal apply on modes.
+                // override is on, just treat as a normal apply on modes.
 
                 if (as.changed)
                 {
@@ -1197,8 +1195,8 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         ds_aitr!=attributeList.end();
         ++ds_aitr)
     {
-        // ds_mitr->first is a new attribute, therefore 
-        // need to insert a new attribute entry for ds_aistr->first.
+        // ds_aitr->first is a new attribute, therefore 
+        // need to insert a new attribute entry for ds_aitr->first.
         AttributeStack& as = attributeMap[ds_aitr->first];
 
         const StateAttribute* new_attr = ds_aitr->second.first.get();

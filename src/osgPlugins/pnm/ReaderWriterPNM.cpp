@@ -3,6 +3,7 @@
 
 #include <osg/Image>
 #include <osg/Notify>
+#include <osg/Endian>
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
@@ -12,17 +13,240 @@
 
 using namespace osg;
 
-
 class ReaderWriterPNM : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "PNM Image Reader/Writer"; }
         virtual bool acceptsExtension(const std::string& extension) const
-        { 
+        {
             return osgDB::equalCaseInsensitive(extension, "pnm") ||
                 osgDB::equalCaseInsensitive(extension, "ppm") ||
                 osgDB::equalCaseInsensitive(extension, "pgm") ||
-                osgDB::equalCaseInsensitive(extension, "pbm"); 
+                osgDB::equalCaseInsensitive(extension, "pbm");
+        }
+
+        template <class T>
+            unsigned char* read_bitmap_ascii(FILE* fp, int width, int height) const
+        {
+            T* data = new T[width*height];
+
+            T* dst = data;
+            T* end = data + width*height;
+
+            while(dst < end)
+            {
+                T value = 0;
+
+                // read in characters looking for '0's and '1's, these
+                // values map to 255 and 0. Any other characters
+                // are silently ignored.
+                while(1)
+                {
+                    int ch = fgetc(fp);
+                    if (feof(fp) || ferror(fp))
+                    {
+                        fclose(fp);
+                        delete [] data;
+                        return NULL;
+                    }
+
+                    if (ch == '0')
+                    {
+                        value = 255;
+                        break;
+                    }
+                    else if (ch == '1')
+                    {
+                        value = 0;
+                        break;
+                    }
+                }
+
+                // place value in the image
+                *(dst++) = value;
+            }
+
+            return reinterpret_cast<unsigned char*>(data);
+        }
+
+        template <class T>
+            unsigned char* read_grayscale_ascii(FILE* fp, int width, int height) const
+        {
+            T* data = new T[width*height];
+
+            T* dst = data;
+            T* end = data + width*height;
+
+            while(dst < end)
+            {
+                int ch;
+                T value = 0;
+
+                // read and discard any whitespace
+                // until a digit is reached
+                do
+                {
+                    ch = fgetc(fp);
+                    if (feof(fp) || ferror(fp))
+                    {
+                        fclose(fp);
+                        delete [] data;
+                        return NULL;
+                    }
+                }
+                while(!isdigit(ch));
+
+                // continue reading digits and incrementally
+                // construct the integer value
+                do
+                {
+                    value = 10*value + (ch - '0');
+                    ch = fgetc(fp);
+                    if (feof(fp) || ferror(fp))
+                    {
+                        fclose(fp);
+                        delete [] data;
+                        return NULL;
+                    }
+                }
+                while(isdigit(ch));
+
+                // place value in the image
+                *(dst++) = value;
+            }
+
+            return reinterpret_cast<unsigned char*>(data);
+        }
+
+        template <class T>
+            unsigned char* read_color_ascii(FILE* fp, int width, int height) const
+        {
+            T* data = new T[3*width*height];
+
+            T* dst = data;
+            T* end = data + 3*width*height;
+
+            while(dst < end)
+            {
+                int ch;
+                T value = 0;
+
+                // read and discard any whitespace
+                // until a digit is reached
+                do
+                {
+                    ch = fgetc(fp);
+                    if (feof(fp) || ferror(fp))
+                    {
+                        fclose(fp);
+                        delete [] data;
+                        return NULL;
+                    }
+                }
+                while(!isdigit(ch));
+
+                // continue reading digits and incrementally
+                // construct the integer value
+                do
+                {
+                    value = 10*value + (ch - '0');
+                    ch = fgetc(fp);
+                    if (feof(fp) || ferror(fp))
+                    {
+                        fclose(fp);
+                        delete [] data;
+                        return NULL;
+                    }
+                }
+                while(isdigit(ch));
+
+                // place value in the image
+                *(dst++) = value;
+            }
+
+            return reinterpret_cast<unsigned char*>(data);
+        }
+
+        template <class T>
+            unsigned char* read_bitmap_binary(FILE* fp, int width, int height) const
+        {
+            T* data = new T[width*height];
+
+            for(int y = 0; y < height; y++)
+            {
+                T* dst = data + (y+0)*width;
+                T* end = data + (y+1)*width;
+
+                while(dst < end)
+                {
+                    unsigned char b = fgetc(fp);
+                    if (feof(fp) || ferror(fp))
+                    {
+                        fclose(fp);
+                        delete [] data;
+                        return NULL;
+                    }
+
+                    for(int i = 7; i >= 0 && dst < end; i--)
+                    {
+                        // 1 means black, 0 means white
+                        T data_value = (b & (1<<i)) ? 0 : 255;
+                        *(dst++) = data_value;
+                    }
+                }
+            }
+
+            return reinterpret_cast<unsigned char*>(data);
+        }
+
+        template <class T>
+            unsigned char* read_grayscale_binary(FILE* fp, int width, int height) const
+        {
+            T* data = new T[width*height];
+
+            if (fread(data, sizeof(T)*width*height, 1, fp) != 1)
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+
+            // if the machine is little endian swap the bytes around
+            if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
+            {
+                for(int i = 0; i < width*height; i++)
+                {
+                    unsigned char* bs = (unsigned char*)(&data[i]);
+                    std::swap(bs[0], bs[1]);
+                }
+            }
+
+            return reinterpret_cast<unsigned char*>(data);
+        }
+
+        template <class T>
+            unsigned char* read_color_binary(FILE* fp, int width, int height) const
+        {
+            T* data = new T[3*width*height];
+
+            if (fread(data, 3*sizeof(T)*width*height, 1, fp) != 1)
+            {
+                fclose(fp);
+                delete [] data;
+                return NULL;
+            }
+
+            // if the machine is little endian swap the bytes around
+            if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
+            {
+                for(int i = 0; i < 3*width*height; i++)
+                {
+                    unsigned char* bs = (unsigned char*)(&data[i]);
+                    std::swap(bs[0], bs[1]);
+                }
+            }
+
+            return reinterpret_cast<unsigned char*>(data);
         }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -35,14 +259,10 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 
             FILE *fp = NULL;
             char line[300];
-            int ppmtype = 0; /* P1, P2, etc. */
+            int ppmtype = 0;    /* P1, P2, etc. */
             int width = 0;
             int height = 0;
             int max_value = 0;
-
-            bool binary_flag = false;
-            int shift_value = 0; // if greater than 8 bits
-
 
             // Open file.
             fp = fopen(fileName.c_str(), "rb");
@@ -93,167 +313,85 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             }
 
             // Check for valid values.
-            if (width <= 0 || height <= 0 || max_value <= 0 || ppmtype < 1 ||
-                ppmtype > 6)
+            if (width <= 0 || height <= 0 ||
+                max_value <= 0 || max_value > 65535 ||
+                ppmtype < 1 || ppmtype > 6)
             {
                 fclose(fp);
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
-            // Check for binary file.
-            if (ppmtype >= 4 && ppmtype <= 6)
-                binary_flag = true;
+            int pixelFormat = 0;
+            int dataType = 0;
+            unsigned char* data = NULL;
 
-            // Warn the user if the full image cannot be used.
             if (max_value > 255)
             {
-                osg::notify(osg::NOTICE) << "PNM file " << fileName <<
-                    " has channels larger than "
-                    " 8 bits.  Color resolution will be lost." << std::endl;
-
-                while (max_value > 255)
+                dataType = GL_UNSIGNED_SHORT;
+                switch(ppmtype)
                 {
-                    max_value >>= 1;
-                    shift_value++;
+                    case 1:    // bitmap ascii
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_bitmap_ascii<unsigned short>(fp, width, height);
+                        break;
+                    case 2:    // grayscale ascii
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_grayscale_ascii<unsigned short>(fp, width, height);
+                        break;
+                    case 3:    // color ascii
+                        pixelFormat = GL_RGB;
+                        data = read_color_ascii<unsigned short>(fp, width, height);
+                        break;
+                    case 4:    // bitmap binary
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_bitmap_binary<unsigned short>(fp, width, height);
+                        break;
+                    case 5:    // grayscale binary
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_grayscale_binary<unsigned short>(fp, width, height);
+                        break;
+                    case 6:    // color binary
+                        pixelFormat = GL_RGB;
+                        data = read_color_binary<unsigned short>(fp, width, height);
+                        break;
+                }
+            }
+            else
+            {
+                dataType = GL_UNSIGNED_BYTE;
+                switch(ppmtype)
+                {
+                    case 1:    // bitmap ascii
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_bitmap_ascii<unsigned char>(fp, width, height);
+                        break;
+                    case 2:    // grayscale ascii
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_grayscale_ascii<unsigned char>(fp, width, height);
+                        break;
+                    case 3:    // color ascii
+                        pixelFormat = GL_RGB;
+                        data = read_color_ascii<unsigned char>(fp, width, height);
+                        break;
+                    case 4:    // bitmap binary
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_bitmap_binary<unsigned char>(fp, width, height);
+                        break;
+                    case 5:    // grayscale binary
+                        pixelFormat = GL_LUMINANCE;
+                        data = read_grayscale_binary<unsigned char>(fp, width, height);
+                        break;
+                    case 6:    // color binary
+                        pixelFormat = GL_RGB;
+                        data = read_color_binary<unsigned char>(fp, width, height);
+                        break;
                 }
             }
 
-            // We always create a RGB image, no matter what type of
-            // source it was.
-            unsigned char *data = new unsigned char [width * height * 3];
-
-
-
-            // For the ascii files
-            if (!binary_flag)
+            if (data == NULL)
             {
-                unsigned char *end = data + width * height * 3;
-                unsigned char *dst = data;
-
-                char s_num[300];
-                int s_num_count;
-                int value = fgetc(fp);
-
-                while (dst < end)
-                {
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete[] data;
-                        return ReadResult::FILE_NOT_HANDLED;
-                    }
-
-                    // Read any extra whitespace
-                    //while (isspace(value)) 
-                    while (!isdigit(value))
-                    {
-                        value = fgetc(fp);
-                    }
-
-                    // Read any numeric digits
-                    s_num_count = 0;
-                    while (isdigit(value))
-                    {
-                        s_num[s_num_count++] = value;
-                        value = fgetc(fp);
-                    }
-                    // Don't forget to terminate the string!
-                    s_num[s_num_count] = 0;
-
-                    if (s_num_count == 0)
-                    {
-                        fclose(fp);
-                        delete[] data;
-                        return ReadResult::FILE_NOT_HANDLED;
-                    }
-
-                    unsigned int data_value = atoi(s_num) >> shift_value;
-
-                    // Now we have our value.  Put it into the array
-                    // in the appropriate place.
-                    if (ppmtype == 1)
-                    {
-                        if (data_value == 1)
-                            data_value = 0;
-                        else
-                            data_value = 255;
-
-                        *(dst++) = data_value;
-                        *(dst++) = data_value;
-                        *(dst++) = data_value;
-                    }
-                    else if (ppmtype == 2)
-                    {
-                        *(dst++) = data_value;
-                        *(dst++) = data_value;
-                        *(dst++) = data_value;
-                    }
-                    else if (ppmtype == 3)
-                    {
-                        *(dst++) = data_value;
-                    }
-                }
-            }
-
-            // If we have a binary bitmap
-            else if (ppmtype == 4)
-            {
-                unsigned char *end = data + width * height * 3;
-                unsigned char *dst = data;
-
-                while (dst < end)
-                {
-                    unsigned char b = (unsigned char) fgetc(fp);
-                    if (feof(fp) || ferror(fp))
-                    {
-                        fclose(fp);
-                        delete[] data;
-                        return ReadResult::FILE_NOT_HANDLED;
-                    }
-
-                    int i;
-                    for (i = 7; i >= 0 && dst < end; i--)
-                    {
-                        // 1 means black, 0 means white
-                        int data_value = (b & (1<<i)) ? 0 : 255;
-                        *(dst++) = data_value;
-                        *(dst++) = data_value;
-                        *(dst++) = data_value;
-                    }
-                }
-            }
-
-            // If we have a binary pgm
-            else if (ppmtype == 5)
-            {
-                int result = fread(data, width * height, 1, fp);
-                if (result != 1)
-                {
-                    fclose(fp);
-                    delete[] data;
-                    return ReadResult::FILE_NOT_HANDLED;
-                }
-
-                unsigned char *src = data + width * height;
-                unsigned char *dst = data + width * height * 3;
-                while (src > data)
-                {
-                    *(--dst) = *(--src);
-                    *(--dst) = *src;
-                    *(--dst) = *src;
-                }
-            }
-
-            // If we have a binary ppm, reading is very easy.
-            else if (ppmtype == 6)
-            {
-                int result = fread(data, width * height * 3, 1, fp);
-                if (result != 1)
-                {
-                    fclose(fp);
-                    delete[] data;
-                    return ReadResult::FILE_NOT_HANDLED;
-                }
+                fclose(fp);
+                return ReadResult::FILE_NOT_HANDLED;
             }
 
             if (fp)
@@ -263,12 +401,11 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 
             pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(width, height, 1,
-                    3,// int internalFormat,
-                    GL_RGB,      // unsigned int pixelFormat
-                    GL_UNSIGNED_BYTE,// unsigned int dataType
-                    data,
-                    osg::Image::USE_NEW_DELETE);
-            pOsgImage->flipVertical();
+                pixelFormat,
+                pixelFormat,
+                dataType,
+                data,
+                osg::Image::USE_NEW_DELETE);
 
             return pOsgImage;
         }

@@ -95,6 +95,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgIntrospection\ConstructorInfo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgIntrospection\CustomAttributeProvider.cpp
 # End Source File
 # Begin Source File
@@ -119,6 +123,10 @@ SOURCE=..\..\src\osgIntrospection\Type.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgIntrospection\Utility.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgIntrospection\Value.cpp
 # End Source File
 # End Group
@@ -131,6 +139,14 @@ SOURCE=..\..\include\osgIntrospection\Attributes
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgIntrospection\Comparator
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\ConstructorInfo
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgIntrospection\CustomAttribute
 # End Source File
 # Begin Source File
@@ -140,6 +156,14 @@ SOURCE=..\..\include\osgIntrospection\CustomAttributeProvider
 # Begin Source File
 
 SOURCE=..\..\include\osgIntrospection\Exceptions
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\InstanceCreator
 # End Source File
 # Begin Source File
 
@@ -171,11 +195,27 @@ SOURCE=..\..\include\osgIntrospection\Reflector
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgIntrospection\StaticMethodInfo
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgIntrospection\Type
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgIntrospection\TypedConstructorInfo
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgIntrospection\TypedMethodInfo
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\TypeNameAliasProxy
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\Utility
 # End Source File
 # Begin Source File
 
@@ -192,3 +232,4 @@ SOURCE=..\..\include\osgIntrospection\variant_cast
 # End Group
 # End Target
 # End Project
+

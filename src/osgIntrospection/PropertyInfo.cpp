@@ -36,6 +36,26 @@ Value PropertyInfo::getValue(const Value &instance) const
     return getm_->invoke(instance);
 }
 
+Value PropertyInfo::getValue(Value &instance) const
+{
+    const PropertyTypeAttribute *pta = getAttribute<PropertyTypeAttribute>(false);
+    const CustomPropertyGetAttribute *cget = getAttribute<CustomPropertyGetAttribute>(false);
+
+    if (cget) 
+    {
+        if (pta)
+            return cget->getGetter()->get(instance).convertTo(pta->getPropertyType());
+        return cget->getGetter()->get(instance);
+    }
+
+    if (!getm_)
+        throw PropertyAccessException(decltype_.getQualifiedName() + "::" + name_, PropertyAccessException::GET);
+
+    if (pta)
+        return getm_->invoke(instance).convertTo(pta->getPropertyType());
+    return getm_->invoke(instance);
+}
+
 void PropertyInfo::setValue(Value &instance, const Value &value) const
 {
     const CustomPropertySetAttribute *cset = getAttribute<CustomPropertySetAttribute>(false);
@@ -55,6 +75,26 @@ void PropertyInfo::setValue(Value &instance, const Value &value) const
 }
 
 Value PropertyInfo::getIndexedValue(const Value &instance, ValueList &args) const
+{
+    const PropertyTypeAttribute *pta = getAttribute<PropertyTypeAttribute>(false);
+    const CustomPropertyGetAttribute *cget = getAttribute<CustomPropertyGetAttribute>(false);
+
+    if (cget) 
+    {
+        if (pta)
+            return cget->getGetter()->get(instance, args).convertTo(pta->getPropertyType());
+        return cget->getGetter()->get(instance, args);
+    }
+
+    if (!getm_) 
+        throw PropertyAccessException(decltype_.getQualifiedName() + "::" + name_, PropertyAccessException::IGET);
+
+    if (pta)
+        return getm_->invoke(instance, args).convertTo(pta->getPropertyType());
+    return getm_->invoke(instance, args);
+}
+
+Value PropertyInfo::getIndexedValue(Value &instance, ValueList &args) const
 {
     const PropertyTypeAttribute *pta = getAttribute<PropertyTypeAttribute>(false);
     const CustomPropertyGetAttribute *cget = getAttribute<CustomPropertyGetAttribute>(false);
@@ -125,6 +165,29 @@ Value PropertyInfo::getArrayItem(const Value &instance, int i) const
     return getm_->invoke(instance, args);
 }
 
+Value PropertyInfo::getArrayItem(Value &instance, int i) const
+{
+    const PropertyTypeAttribute *pta = getAttribute<PropertyTypeAttribute>(false);
+    const CustomPropertyGetAttribute *cget = getAttribute<CustomPropertyGetAttribute>(false);
+
+    if (cget) 
+    {
+        if (pta)
+            return cget->getGetter()->get(instance, i).convertTo(pta->getPropertyType());
+        return cget->getGetter()->get(instance, i);
+    }
+
+    if (!getm_) 
+        throw PropertyAccessException(decltype_.getQualifiedName() + "::" + name_, PropertyAccessException::AGET);
+
+    ValueList args;
+    args.push_back(i);
+
+    if (pta)
+        return getm_->invoke(instance, args).convertTo(pta->getPropertyType());
+    return getm_->invoke(instance, args);
+}
+
 void PropertyInfo::setArrayItem(Value &instance, int i, const Value &value) const
 {
     const CustomPropertySetAttribute *cset = getAttribute<CustomPropertySetAttribute>(false);
@@ -158,6 +221,23 @@ void PropertyInfo::addArrayItem(Value &instance, const Value &value) const
     ValueList args;
     args.push_back(value);
     addm_->invoke(instance, args);
+}
+
+void PropertyInfo::removeArrayItem(Value &instance, int i) const
+{
+    const CustomPropertyRemoveAttribute *crem = getAttribute<CustomPropertyRemoveAttribute>(false);
+    if (crem) 
+    {
+        crem->getRemover()->remove(instance, i);
+        return;
+    }
+
+    if (!remm_) 
+        throw PropertyAccessException(decltype_.getQualifiedName() + "::" + name_, PropertyAccessException::REMOVE);
+
+    ValueList args;
+    args.push_back(i);
+    remm_->invoke(instance, args);
 }
 
 Value PropertyInfo::getDefaultValue() const

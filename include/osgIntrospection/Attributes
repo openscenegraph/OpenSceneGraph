@@ -4,6 +4,7 @@
 #include <osgIntrospection/CustomAttribute>
 #include <osgIntrospection/Value>
 #include <osgIntrospection/Exceptions>
+#include <osgIntrospection/Type>
 
 namespace osgIntrospection
 {
@@ -31,9 +32,12 @@ namespace osgIntrospection
     /// last one is used with array properties.
     struct PropertyGetter
     {
-        virtual Value get(const Value &instance, const ValueList &indices) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
-        virtual Value get(const Value &instance) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
-        virtual Value get(const Value &instance, int i) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
+        virtual Value get(Value & /*instance*/, const ValueList & /*indices*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
+        virtual Value get(Value & /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
+        virtual Value get(Value & /*instance*/, int /*i*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
+        virtual Value get(const Value & /*instance*/, const ValueList & /*indices*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::IGET); }
+        virtual Value get(const Value & /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::GET); }
+        virtual Value get(const Value & /*instance*/, int /*i*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::AGET); }
         virtual ~PropertyGetter() {}
     };
 
@@ -64,9 +68,9 @@ namespace osgIntrospection
     /// last one is used with array properties.
     struct PropertySetter
     {
-        virtual void set(Value &instance, ValueList &indices, const Value &value) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ISET); }
-        virtual void set(Value &instance, const Value &value) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::SET); }
-        virtual void set(Value &instance, int i, const Value &value) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ASET); }
+        virtual void set(Value & /*instance*/, ValueList & /*indices*/, const Value & /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ISET); }
+        virtual void set(Value & /*instance*/, const Value & /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::SET); }
+        virtual void set(Value & /*instance*/, int /*i*/, const Value & /*value*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::ASET); }
         virtual ~PropertySetter() {}
     };
 
@@ -95,7 +99,7 @@ namespace osgIntrospection
     /// in a chosen array property for the given instance.
     struct PropertyCounter
     {
-        virtual int count(const Value &instance) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::COUNT); }
+        virtual int count(const Value & /*instance*/) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::COUNT); }
         virtual ~PropertyCounter() {}
     };
 
@@ -144,6 +148,35 @@ namespace osgIntrospection
 
     private:
         const PropertyAdder *adder_;
+    };
+    
+
+    /// Base struct for custom array property removers. Descendants should
+    /// override the remove() method whose purpose is to remove an item from
+    /// an array property.
+    struct PropertyRemover
+    {
+        virtual void remove(Value&, int) const { throw PropertyAccessException("[n/a inside a custom accessor]", PropertyAccessException::REMOVE); }
+        virtual ~PropertyRemover() {}
+    };
+    
+    /// By setting an attribute of this class you can specify a custom object
+    /// that will be used to remove an item from an array property.
+    class CustomPropertyRemoveAttribute: public CustomAttribute
+    {
+    public:
+        CustomPropertyRemoveAttribute(const PropertyRemover *remover)
+        :    CustomAttribute(), remover_(remover) {}
+
+        const PropertyRemover *getRemover() const { return remover_; }
+
+        ~CustomPropertyRemoveAttribute()
+        {
+            delete remover_;
+        }
+
+    private:
+        const PropertyRemover *remover_;
     };
 
 

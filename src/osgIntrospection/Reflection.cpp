@@ -48,8 +48,13 @@ const Type &Reflection::getType(const std::string &qname)
     const TypeMap &types = getTypes();
 
     for (TypeMap::const_iterator i=types.begin(); i!=types.end(); ++i)
+	{
         if (i->second->isDefined() && i->second->getQualifiedName().compare(qname) == 0)
             return *i->second;
+		for (int j=0; j<i->second->getNumAliases(); ++j)
+			if (i->second->getAlias(j).compare(qname) == 0)
+				return *i->second;
+	}
 
     throw TypeNotFoundException(qname);
 }
@@ -66,13 +71,28 @@ Type *Reflection::registerType(const std::type_info &ti)
     return type.release();
 }
 
-Type *Reflection::registerOrReplaceType(const std::type_info &ti)
+Type *Reflection::getOrRegisterType(const std::type_info &ti, bool replace_if_defined)
 {
     TypeMap &tm = getOrCreateStaticData().typemap;
     TypeMap::iterator i = tm.find(&ti);
 
     if (i != tm.end())
-        return new (i->second) Type(ti);
+	{
+		if (replace_if_defined && i->second->isDefined())
+		{
+			std::string old_name = i->second->getName();
+			std::string old_namespace = i->second->getNamespace();
+			std::vector<std::string> old_aliases = i->second->aliases_;
+
+			Type *newtype = new (i->second) Type(ti);
+			newtype->name_ = old_name;
+			newtype->namespace_ = old_namespace;
+			newtype->aliases_.swap(old_aliases);
+
+			return newtype;
+		}
+		return i->second;
+	}
 
     return registerType(ti);
 }

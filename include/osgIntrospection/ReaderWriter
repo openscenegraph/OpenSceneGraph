@@ -219,12 +219,12 @@ namespace osgIntrospection
             return is;
         }
 
-        virtual std::ostream &writeBinaryValue(std::ostream &os, const Value &v, const Options *options = 0) const
+        virtual std::ostream &writeBinaryValue(std::ostream &os, const Value &v, const Options * = 0) const
         {
             return os.write(reinterpret_cast<const char *>(extract_raw_data<T>(v)), sizeof(T));
         }
 
-        virtual std::istream &readBinaryValue(std::istream &is, Value &v, const Options *options = 0) const
+        virtual std::istream &readBinaryValue(std::istream &is, Value &v, const Options * = 0) const
         {
             if (v.isEmpty())
                 v = Value(T());

@@ -1,0 +1,48 @@
+#ifndef OSGINTROSPECTION_COMPARATOR_
+#define OSGINTROSPECTION_COMPARATOR_
+
+
+namespace osgIntrospection
+{
+
+	class Value;
+
+	struct Comparator
+	{
+		virtual bool isEqualTo(const Value &l, const Value &r) const = 0;
+		virtual bool isLessThanOrEqualTo(const Value &l, const Value &r) const = 0;
+	};
+	
+	template<typename T>
+	struct TotalOrderComparator: Comparator
+	{
+		virtual bool isEqualTo(const Value &l, const Value &r) const
+		{
+			const T &vl = variant_cast<const T &>(l);
+			const T &vr = variant_cast<const T &>(r);
+			return vl <= vr && vr <= vl;
+		}
+
+		virtual bool isLessThanOrEqualTo(const Value &l, const Value &r) const
+		{
+			return variant_cast<const T &>(l) <= variant_cast<const T &>(r);
+		}
+	};
+	
+	template<typename T>
+	struct PartialOrderComparator: Comparator
+	{
+		virtual bool isEqualTo(const Value &l, const Value &r) const
+		{
+			return variant_cast<const T &>(l) == variant_cast<const T &>(r);
+		}
+
+		virtual bool isLessThanOrEqualTo(const Value &, const Value &) const
+		{
+			throw ComparisonOperatorNotSupportedException(typeid(T), "less than or equal to");
+		}
+	};
+
+}
+
+#endif

@@ -2,12 +2,14 @@ TOPDIR = ../..
 include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
+	ConstructorInfo.cpp\
 	CustomAttributeProvider.cpp\
 	DefaultReflectors.cpp\
 	MethodInfo.cpp\
 	PropertyInfo.cpp\
 	Reflection.cpp\
 	Type.cpp\
+	Utility.cpp\
 	Value.cpp\
 
 

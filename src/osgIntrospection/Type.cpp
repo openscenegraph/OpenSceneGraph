@@ -4,6 +4,9 @@
 #include <osgIntrospection/PropertyInfo>
 #include <osgIntrospection/MethodInfo>
 #include <osgIntrospection/ReaderWriter>
+#include <osgIntrospection/Utility>
+#include <osgIntrospection/ConstructorInfo>
+#include <osgIntrospection/Comparator>
 
 #include <iterator>
 #include <algorithm>
@@ -13,20 +16,24 @@ using namespace osgIntrospection;
 namespace
 {
 
-    struct MethodMatch
+	template<typename T>
+    struct ObjectMatch
     {
         int list_pos;
-        int exact_args;
-        const MethodInfo *method;
+        float match;
+        const T *object;
 
-        bool operator < (const MethodMatch &m) const
+        bool operator < (const ObjectMatch &m) const
         {
-            if (exact_args > m.exact_args) return true;
-            if (exact_args < m.exact_args) return false;
+            if (match > m.match) return true;
+            if (match < m.match) return false;
             if (list_pos < m.list_pos) return true;
             return false;
         }
     };
+
+	typedef ObjectMatch<MethodInfo> MethodMatch;
+	typedef ObjectMatch<ConstructorInfo> ConstructorMatch;
 
 }
 
@@ -36,8 +43,11 @@ Type::~Type()
         delete *i;
     for (MethodInfoList::const_iterator i=methods_.begin(); i!=methods_.end(); ++i)
         delete *i;
-    delete icb_;
+	for (ConstructorInfoList::const_iterator i=cons_.begin(); i!=cons_.end(); ++i)
+		delete *i;
+
     delete rw_;
+	delete cmp_;
 }
 
 bool Type::isSubclassOf(const Type &type) const
@@ -76,44 +86,22 @@ const MethodInfo *Type::getCompatibleMethod(const std::string &name, const Value
         const MethodInfo *mi = *j;
         if (mi->getName().compare(name) == 0)
         {
-            const ParameterInfoList &other_params = mi->getParameters();
-            if (values.size() == other_params.size())
-            {
-                if (values.empty()) 
-                    return mi;
-                ParameterInfoList::const_iterator i1 = other_params.begin();
-                ValueList::const_iterator i2 = values.begin();
-                bool candidate = true;
-                int exact_args = 0;
-                for (; i1<other_params.end(); ++i1, ++i2)
-                {
-                    if ((*i1)->getParameterType() != i2->getType())
-                    {
-                        if (i2->tryConvertTo((*i1)->getParameterType()).isEmpty())
-                        {
-                            candidate = false;
-                            break;
-                        }                        
-                    }
-                    else
-                        ++exact_args;
-                }
-                if (candidate) 
-                {
-                    MethodMatch mm;
-                    mm.list_pos = pos;
-                    mm.exact_args = exact_args;
-                    mm.method = mi;
-                    matches.push_back(mm);
-                }
-            }
+			float match;
+			if (areArgumentsCompatible(values, mi->getParameters(), match))
+			{
+				MethodMatch mm;
+                mm.list_pos = pos;
+                mm.match = match;
+                mm.object = mi;
+                matches.push_back(mm);
+			}
         }
     }
 
     if (!matches.empty())
     {
         std::sort(matches.begin(), matches.end());
-        return matches.front().method;
+        return matches.front().object;
     }
 
     return 0;
@@ -124,28 +112,13 @@ const MethodInfo *Type::getMethod(const std::string &name, const ParameterInfoLi
     check_defined();
     for (MethodInfoList::const_iterator j=methods_.begin(); j!=methods_.end(); ++j)
     {
-        const MethodInfo &mi = **j;
-        if (mi.getName().compare(name) == 0)
+        const MethodInfo *mi = *j;
+        if (mi->getName().compare(name) == 0)
         {
-            const ParameterInfoList &other_params = mi.getParameters();
-            if (params.size() == other_params.size())
-            {
-                if (params.empty()) 
-                    return &mi;
-                ParameterInfoList::const_iterator i1 = params.begin();
-                ParameterInfoList::const_iterator i2 = other_params.begin();
-                for (; i1<params.end(); ++i1, ++i2)
-                {
-                    const ParameterInfo &p1 = **i1;
-                    const ParameterInfo &p2 = **i2;
-                    if (p1.getParameterType() == p2.getParameterType() && 
-                        p1.getAttributes() == p2.getAttributes() &&
-                        p1.getPosition() == p2.getPosition())
-                    {
-                        return &mi;
-                    }
-                }
-            }
+			if (areParametersCompatible(params, mi->getParameters()))
+			{
+				return mi;
+			}
         }
     }
 
@@ -172,28 +145,13 @@ const PropertyInfo *Type::getProperty(const std::string &name, const Type &ptype
     check_defined();
     for (PropertyInfoList::const_iterator i=props_.begin(); i!=props_.end(); ++i)
     {
-        const PropertyInfo &pi = **i;
-        if (pi.getName() == name && pi.getPropertyType() == ptype)
+        const PropertyInfo *pi = *i;
+        if (pi->getName() == name && pi->getPropertyType() == ptype)
         {
-            const ParameterInfoList &other_indices = pi.getIndexParameters();
-            if (indices.size() == other_indices.size())
-            {
-                if (indices.empty())
-                    return &pi;
-                ParameterInfoList::const_iterator i1 = indices.begin();
-                ParameterInfoList::const_iterator i2 = other_indices.begin();
-                for (; i1<indices.end(); ++i1, ++i2)
-                {
-                    const ParameterInfo &p1 = **i1;
-                    const ParameterInfo &p2 = **i2;
-                    if (p1.getParameterType() == p2.getParameterType() && 
-                        p1.getAttributes() == p2.getAttributes() &&
-                        p1.getPosition() == p2.getPosition())
-                    {
-                        return &pi;
-                    }
-                }
-            }
+			if (areParametersCompatible(indices, pi->getIndexParameters()))
+			{
+				return pi;
+			}
         }
     }
 
@@ -225,7 +183,6 @@ Value Type::invokeMethod(const std::string &name, Value &instance, ValueList &ar
     return mi->invoke(instance, args);
 }
 
-
 void Type::getAllProperties(PropertyInfoList &props) const
 {
     check_defined();
@@ -244,4 +201,59 @@ void Type::getAllMethods(MethodInfoList &methods) const
     {
         (*i)->getAllMethods(methods);
     }
+}
+
+Value Type::createInstance(ValueList &args) const
+{
+	if (isAbstract())
+		throw TypeIsAbstractException(ti_);
+
+	const ConstructorInfo *ci = getCompatibleConstructor(args);
+	if (!ci)
+		throw ConstructorNotFoundException(ti_);
+
+	return ci->createInstance(args);
+}
+
+const ConstructorInfo *Type::getCompatibleConstructor(const ValueList &values) const
+{
+    check_defined();
+
+    typedef std::vector<ConstructorMatch> MatchList;
+    MatchList matches;
+
+    int pos = 0;
+    for (ConstructorInfoList::const_iterator j=cons_.begin(); j!=cons_.end(); ++j, ++pos)
+    {
+		float match;
+		if (areArgumentsCompatible(values, (*j)->getParameters(), match))
+		{
+			ConstructorMatch mm;
+            mm.list_pos = pos;
+            mm.match = match;
+            mm.object = *j;
+            matches.push_back(mm);
+		}
+    }
+
+    if (!matches.empty())
+    {
+        std::sort(matches.begin(), matches.end());
+        return matches.front().object;
+    }
+
+    return 0;
+}
+
+const ConstructorInfo *Type::getConstructor(const ParameterInfoList &params) const
+{
+    check_defined();
+
+	for (ConstructorInfoList::const_iterator j=cons_.begin(); j!=cons_.end(); ++j)
+    {
+		if (areParametersCompatible(params, (*j)->getParameters()))
+			return *j;
+    }
+
+    return 0;
 }

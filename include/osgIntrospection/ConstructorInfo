@@ -1,0 +1,49 @@
+#ifndef OSGINTROSPECTION_CONSTRUCTORINFO_
+#define OSGINTROSPECTION_CONSTRUCTORINFO_
+
+#include <osgIntrospection/Export>
+#include <osgIntrospection/Type>
+#include <osgIntrospection/ParameterInfo>
+#include <osgIntrospection/CustomAttributeProvider>
+
+namespace osgIntrospection
+{
+
+    class OSGINTROSPECTION_EXPORT ConstructorInfo: public CustomAttributeProvider
+    {
+    public:
+		ConstructorInfo(const Type &decltype, const ParameterInfoList &params)
+		:	decltype_(decltype),
+			params_(params)
+		{
+		}
+
+		virtual ~ConstructorInfo()
+		{
+			for (ParameterInfoList::iterator i=params_.begin(); i!=params_.end(); ++i)
+				delete *i;
+		}
+		
+		inline const Type &getDeclaringType() const
+		{
+			return decltype_;
+		}
+		
+		inline const ParameterInfoList &getParameters() const
+		{
+			return params_;
+		}
+				
+        virtual Value createInstance(ValueList &args) const = 0;
+        
+	protected:
+		virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+        
+    private:
+		const Type &decltype_;
+		ParameterInfoList params_;
+    };
+
+}
+
+#endif

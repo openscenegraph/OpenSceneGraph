@@ -37,6 +37,22 @@ namespace osgIntrospection
         {
         }
     };
+    
+    struct ConstructorNotFoundException: public ReflectionException
+    {
+		ConstructorNotFoundException(const std::type_info &ti)
+		:	ReflectionException("could not find a suitable constructor in type `" + std::string(ti.name()) + "'")
+		{
+		}
+    };
+    
+    struct InvokeNotImplementedException: public ReflectionException
+    {
+		InvokeNotImplementedException()
+		:	ReflectionException("invoke() not implemented")
+		{
+		}
+    };
 
     struct InvalidFunctionPointerException: public ReflectionException
     {
@@ -148,6 +164,7 @@ namespace osgIntrospection
             AGET,
             ASET,
             ADD,
+            REMOVE,
             COUNT
         };
 
@@ -169,6 +186,7 @@ namespace osgIntrospection
             case AGET: msg = "retrieved with array index"; break;
             case ASET: msg = "set with array index"; break;
             case ADD: msg = "added"; break;
+            case REMOVE: msg = "removed"; break;
             case COUNT: msg = "counted"; break;
             default: msg = "?";
             }
@@ -182,6 +200,22 @@ namespace osgIntrospection
             :    ReflectionException("couldn't determine a finite set of values for index `" + iname + "' of property `" + name + "'. Make sure that either: 1) the index is an enumeration, or 2) a valid custom indexing attribute was assigned to the property.")
         {
         }
+    };
+    
+    struct ComparisonNotPermittedException: ReflectionException
+    {
+		ComparisonNotPermittedException(const std::type_info &ti)
+		:	ReflectionException("comparison not permitted on type `" + std::string(ti.name()) + "'")
+		{
+		}
+    };
+    
+    struct ComparisonOperatorNotSupportedException: ReflectionException
+    {
+		ComparisonOperatorNotSupportedException(const std::type_info &ti, const std::string &op)
+		:	ReflectionException("comparison operator `" + op + "' is not supported on type `" + std::string(ti.name()) + "'")
+		{
+		}
     };
 
 }

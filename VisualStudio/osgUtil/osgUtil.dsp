@@ -97,10 +97,6 @@ SOURCE=..\..\src\osgUtil\CubeMapGenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\PickVisitor.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\HalfWayMapGenerator.cpp
 # End Source File
 # Begin Source File

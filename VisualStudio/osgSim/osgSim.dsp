@@ -133,6 +133,10 @@ SOURCE=..\..\src\osgSim\SphereSegment.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\MultiSwitch.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\Version.cpp
 # End Source File
 # End Group
@@ -178,6 +182,10 @@ SOURCE=..\..\include\osgSim\ColorRange
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\SphereSegment
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\MultiSwitch
 # End Source File
 # Begin Source File
 

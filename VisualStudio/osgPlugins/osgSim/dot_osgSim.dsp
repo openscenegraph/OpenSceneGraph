@@ -224,6 +224,14 @@ SOURCE=..\..\..\src\osgPlugins\osgSim\IO_BlinkSequence.cpp
 
 # End Source File
 
+# Begin Source File
+
+
+
+SOURCE=..\..\..\src\osgPlugins\osgSim\IO_MultiSwitch.cpp
+
+# End Source File
+
 # End Group
 
 # Begin Group "Header Files"

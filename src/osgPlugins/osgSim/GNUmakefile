@@ -6,6 +6,7 @@ CXXFILES =\
 	IO_LightPointNode.cpp\
 	IO_LightPoint.cpp\
 	IO_BlinkSequence.cpp\
+	IO_MultiSwitch.cpp\
 	IO_Sector.cpp
 
 LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)

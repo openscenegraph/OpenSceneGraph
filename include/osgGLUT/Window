@@ -39,12 +39,23 @@ class OSGGLUT_EXPORT Window
         static void mouseCB(int button, int state, int x, int y);
         static void keyboardCB(unsigned char key, int x, int y );
 
+        static void specialCB(int key, int x, int y);
+        static void spaceballMotionCB(int x, int y, int z);
+        static void spaceballRotateCB(int x, int y, int z);
+        static void spaceballButtonCB(int button, int state);
+
         virtual void reshape(GLint w, GLint h);
         virtual void visibility(int state);
         virtual void mouseMotion(int x, int y);
         virtual void mousePassiveMotion(int x, int y);
         virtual void mouse(int button, int state, int x, int y);
         virtual void keyboard(unsigned char key, int x, int y);
+        
+        virtual void special(int key, int x, int y);
+        virtual void spaceballMotion(int x, int y, int z);
+        virtual void spaceballRotate(int x, int y, int z);
+        virtual void spaceballButton(int button, int state);
+
 
         static Window*    s_theWindow;
 

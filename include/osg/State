@@ -1,6 +1,15 @@
-//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
-//Distributed under the terms of the GNU Library General Public License (LGPL)
-//as published by the Free Software Foundation.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 
 #ifndef OSG_STATE
 #define OSG_STATE 1
@@ -554,6 +563,14 @@ class SG_EXPORT State : public Referenced
         typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
         typedef std::vector<AttributePair>                                      AttributeVec;
         typedef std::vector<StateAttribute::GLModeValue>                        ValueVec;
+        
+        
+        void setReportGLErrors(bool flag) { _reportGLErrors = flag; }
+        bool getReportGLErrors() const { return _reportGLErrors; }
+
+        bool checkGLErrors(const char* str) const;
+        bool checkGLErrors(StateAttribute::GLMode mode) const;
+        bool checkGLErrors(const StateAttribute* attribute) const;
 
     protected:
 
@@ -568,6 +585,8 @@ class SG_EXPORT State : public Referenced
         
         ref_ptr<DisplaySettings>    _displaySettings;
         
+
+        bool                        _reportGLErrors;
 
         struct ModeStack
         {
@@ -601,6 +620,7 @@ class SG_EXPORT State : public Referenced
             ref_ptr<StateAttribute> global_default_attribute;
             AttributeVec            attributeVec;
         };
+        
 
         /** apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled,ModeStack& ms)
@@ -612,11 +632,14 @@ class SG_EXPORT State : public Referenced
                 if (enabled) glEnable(mode);
                 else glDisable(mode);
 
+                if (_reportGLErrors) checkGLErrors(mode);
+
                 return true;
             }
             else
                 return false;
         }
+
 
         /** apply an attribute if required, passing in attribute and appropriate attribute stack */
         inline bool applyAttribute(const StateAttribute* attribute,AttributeStack& as)
@@ -627,6 +650,9 @@ class SG_EXPORT State : public Referenced
 
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
+                
+                if (_reportGLErrors) checkGLErrors(attribute);
+                
                 return true;
             }
             else
@@ -638,7 +664,11 @@ class SG_EXPORT State : public Referenced
             if (as.last_applied_attribute != as.global_default_attribute.get())
             {
                 as.last_applied_attribute = as.global_default_attribute.get();
-                if (as.global_default_attribute.valid()) as.global_default_attribute->apply(*this);
+                if (as.global_default_attribute.valid())
+                {
+                    as.global_default_attribute->apply(*this);
+                    if (_reportGLErrors) checkGLErrors(as.global_default_attribute.get());
+                }
                 return true;
             }
             else

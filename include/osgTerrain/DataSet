@@ -846,9 +846,20 @@ class DataSet : public osg::Referenced
         void setDefaultColor(const osg::Vec4& defaultColor) { _defaultColor = defaultColor; }
         const osg::Vec4& getDefaultColor() const { return _defaultColor; }
 
-        void setDestinationCoordinateSystem(const std::string& wellKnownText) { _coordinateSystem = new osgTerrain::CoordinateSystem(wellKnownText); }
-        void setDestinationCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _coordinateSystem = cs; }
+        void setDestinationCoordinateSystem(const std::string& wellKnownText) { setDestinationCoordinateSystem(new osgTerrain::CoordinateSystem(wellKnownText)); }
+        void setDestinationCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _destinationCoordinateSystem = cs; }
+        osgTerrain::CoordinateSystem* getDestinationCoordinateSystem() { return _destinationCoordinateSystem .get(); }
         
+        void setIntermediateCoordinateSystem(const std::string& wellKnownText) { setIntermediateCoordinateSystem(new osgTerrain::CoordinateSystem(wellKnownText)); }
+        void setIntermediateCoordinateSystem(osgTerrain::CoordinateSystem* cs) { _intermediateCoordinateSystem = cs; }
+        osgTerrain::CoordinateSystem* getIntermediateCoordinateSystem() { return _intermediateCoordinateSystem.get(); }
+
+        void setConvertFromGeographicToGeocentric(bool flag) { _convertFromGeographicToGeocentric = flag; }
+        bool getConvertFromGeographicToGeocentric() const { return _convertFromGeographicToGeocentric; }
+
+        void setEllipsodeTransform(const osgTerrain::EllipsodeTransform& et) { _ellipsodeTransform = et; }
+        osgTerrain::EllipsodeTransform& getEllipsodeTransform() { return _ellipsodeTransform; }
+
         void setDestinationExtents(const osg::BoundingBox& extents) { _extents = extents; }
         
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
@@ -926,7 +937,12 @@ class DataSet : public osg::Referenced
 
         float                                       _verticalScale;
             
-        osg::ref_ptr<osgTerrain::CoordinateSystem>  _coordinateSystem;
+        osg::ref_ptr<osgTerrain::CoordinateSystem>  _destinationCoordinateSystem;
+        osg::ref_ptr<osgTerrain::CoordinateSystem>  _intermediateCoordinateSystem;
+
+        bool                                        _convertFromGeographicToGeocentric;
+        osgTerrain::EllipsodeTransform              _ellipsodeTransform;
+ 
         osg::Matrixd                                _geoTransform;
         osg::BoundingBox                            _extents;
         std::string                                 _tileBasename;

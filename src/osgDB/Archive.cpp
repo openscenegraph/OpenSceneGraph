@@ -89,6 +89,26 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in, bool doEndianSw
     if (indexBlock->_data)
     {
         in.read(reinterpret_cast<char*>(indexBlock->_data),indexBlock->_blockSize);
+
+        if (doEndianSwap)
+        {
+            char* ptr = indexBlock->_data;
+            char* end_ptr = indexBlock->_data + indexBlock->_offsetOfNextAvailableSpace;
+            while (ptr<end_ptr)
+            {
+                osg::swapBytes(ptr,sizeof(pos_type)); 
+                ptr += sizeof(pos_type);
+
+                osg::swapBytes(ptr,sizeof(size_type)); 
+                size_type size = *(reinterpret_cast<size_type*>(ptr)); 
+                ptr += sizeof(size_type);
+
+                osg::swapBytes(ptr,sizeof(unsigned int)); 
+                unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
+                ptr += sizeof(unsigned int);
+                ptr += filename_size;
+            }
+        }
     }
     else
     {

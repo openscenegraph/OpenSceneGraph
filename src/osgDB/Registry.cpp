@@ -59,7 +59,7 @@ Registry::Registry()
     initFilePathLists();
 
     // register file extension alias.
-    addFileExtensionAlias("sgi", "rgb");
+    addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");
     addFileExtensionAlias("int",  "rgb");
     addFileExtensionAlias("inta", "rgb");

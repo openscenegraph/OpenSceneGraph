@@ -29,8 +29,8 @@ class SG_EXPORT Transform : public Group
 
         Transform();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Transform(const Transform&,const Cloner& cloner=ShallowCopy());
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Transform(const Transform&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         Transform(const Matrix& matix);
 

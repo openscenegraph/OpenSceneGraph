@@ -21,11 +21,11 @@ class SG_EXPORT Image : public Object
 
         Image();
         
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Image(const Image& image,const Cloner& cloner=ShallowCopy());
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Image(const Image& image,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual Object* cloneType() const { return new Image(); }
-        virtual Object* clone(const Cloner& cloner) const { return new Image(*this,cloner); }
+        virtual Object* clone(const CopyOp& copyop) const { return new Image(*this,copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Image*>(obj)!=0; }
         virtual const char* className() const { return "Image"; }
 

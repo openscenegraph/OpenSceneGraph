@@ -31,8 +31,8 @@ class SG_EXPORT Switch : public Group
 
         Switch();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Switch(const Switch&,const Cloner& cloner=ShallowCopy());
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Switch(const Switch&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(Switch);
 

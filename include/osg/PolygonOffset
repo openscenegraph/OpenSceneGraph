@@ -17,9 +17,9 @@ class SG_EXPORT PolygonOffset : public StateAttribute
 
         PolygonOffset();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        PolygonOffset(const PolygonOffset& po,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(po,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        PolygonOffset(const PolygonOffset& po,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(po,copyop),
             _factor(po._factor),
             _units(po._units) {}
 

@@ -15,7 +15,7 @@ class OSGTEXT_EXPORT Paragraph : public osg::Geode
     public:
 
         Paragraph();
-        Paragraph(const Paragraph& paragraph,const osg::Cloner& cloner=osg::ShallowCopy());
+        Paragraph(const Paragraph& paragraph,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         Paragraph(const osg::Vec3& position,const std::string& text,osgText::Font* font);
 
         META_Node(Paragraph)

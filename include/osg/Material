@@ -19,9 +19,9 @@ class SG_EXPORT Material : public StateAttribute
 
         Material();
         
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Material(const Material& mat,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(mat,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Material(const Material& mat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(mat,copyop),
             _colorMode(mat._colorMode),
             _ambientFrontAndBack(mat._ambientFrontAndBack),
             _ambientFront(mat._ambientFront),

@@ -40,7 +40,7 @@ namespace osgText {
   * subclasses.*/
 #define META_Font(name) \
         virtual osg::Object* cloneType() const { return new name(); } \
-        virtual osg::Object* clone(const osg::Cloner& cloner) const { return new name (*this,cloner); } \
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* className() const { return #name; } \
 
@@ -51,8 +51,8 @@ class OSGTEXT_EXPORT Font : public osg::Object
     public:
 
         Font();
-        Font(const Font& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            Object(font,cloner),
+        Font(const Font& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            Object(font,copyop),
             _init(false),
             _created(false),
             _font(0L),
@@ -113,8 +113,8 @@ class OSGTEXT_EXPORT RasterFont:public Font
     public:
 
         RasterFont():Font(){}
-        RasterFont(const RasterFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            Font(font,cloner) {}            
+        RasterFont(const RasterFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            Font(font,copyop) {}            
         RasterFont(const std::string& font):Font() {}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RasterFont *>(obj)!=NULL; } 
@@ -130,8 +130,8 @@ class OSGTEXT_EXPORT VectorFont:public Font
 {
     public:
         VectorFont():Font(){}
-        VectorFont(const VectorFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            Font(font,cloner) {}
+        VectorFont(const VectorFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            Font(font,copyop) {}
         VectorFont(const std::string& font):Font(){}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const VectorFont *>(obj)!=NULL; } 
@@ -149,8 +149,8 @@ class OSGTEXT_EXPORT BitmapFont:public RasterFont
 
 
         BitmapFont() {}
-        BitmapFont(const BitmapFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            RasterFont(font,cloner) {}
+        BitmapFont(const BitmapFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            RasterFont(font,copyop) {}
         BitmapFont(const std::string&    font, 
                    int                    point_size);
 
@@ -168,8 +168,8 @@ class OSGTEXT_EXPORT PixmapFont:public RasterFont
     public:
 
         PixmapFont() {}
-        PixmapFont(const PixmapFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            RasterFont(font,cloner) {}
+        PixmapFont(const PixmapFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            RasterFont(font,copyop) {}
 
         PixmapFont(const std::string&    font, 
                    int                    point_size);
@@ -188,8 +188,8 @@ class OSGTEXT_EXPORT TextureFont:public RasterFont
     public:
 
         TextureFont() {}
-        TextureFont(const TextureFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            RasterFont(font,cloner) {}
+        TextureFont(const TextureFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            RasterFont(font,copyop) {}
 
         TextureFont(const std::string&    font, 
                    int                    point_size);
@@ -211,8 +211,8 @@ class OSGTEXT_EXPORT OutlineFont:public VectorFont
     public:
 
         OutlineFont() {}
-        OutlineFont(const OutlineFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-            VectorFont(font,cloner) {}
+        OutlineFont(const OutlineFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            VectorFont(font,copyop) {}
 
         OutlineFont(const std::string&    font, 
                     int                    point_size,
@@ -232,8 +232,8 @@ class OSGTEXT_EXPORT PolygonFont:public VectorFont
 public:
 
     PolygonFont() {}
-    PolygonFont(const PolygonFont& font,const osg::Cloner& cloner=osg::ShallowCopy()):
-        VectorFont(font,cloner) {}
+    PolygonFont(const PolygonFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+        VectorFont(font,copyop) {}
     
     PolygonFont(const std::string&    font, 
                 int                    point_size,

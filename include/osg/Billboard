@@ -25,8 +25,8 @@ class SG_EXPORT Billboard : public Geode
 
         Billboard();
         
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Billboard(const Billboard&,const Cloner& cloner=ShallowCopy());
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Billboard(const Billboard&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Node(Billboard);
 

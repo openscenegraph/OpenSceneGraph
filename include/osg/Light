@@ -19,9 +19,9 @@ class SG_EXPORT Light : public StateAttribute
 
         Light();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Light(const Light& light,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(light,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Light(const Light& light,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(light,copyop),
             _lightnum(light._lightnum),
             _ambient(light._ambient),
             _diffuse(light._diffuse),

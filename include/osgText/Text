@@ -67,11 +67,11 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         };
 
         Text();
-        Text(const Text& text,const osg::Cloner& cloner=osg::ShallowCopy());
+        Text(const Text& text,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         Text(Font* font);
 
         virtual osg::Object* cloneType() const { return new Text(); }
-        virtual osg::Object* clone(const osg::Cloner& cloner) const { return new Text(*this,cloner); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Text(*this,copyop); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Text*>(obj)!=NULL; }
         virtual const char* className() const { return "Text"; }
 

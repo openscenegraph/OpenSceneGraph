@@ -18,9 +18,9 @@ class SG_EXPORT ClipPlane : public StateAttribute
 
         ClipPlane();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        ClipPlane(const ClipPlane& cp,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(cp,cloner)
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ClipPlane(const ClipPlane& cp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(cp,copyop)
         {
             _clipPlane[0]=cp._clipPlane[0];
             _clipPlane[1]=cp._clipPlane[1];

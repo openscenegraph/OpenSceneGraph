@@ -14,8 +14,8 @@ Billboard::Billboard()
     setCachedMode();
 }
 
-Billboard::Billboard(const Billboard& billboard,const Cloner& cloner):
-        Geode(billboard,cloner),
+Billboard::Billboard(const Billboard& billboard,const CopyOp& copyop):
+        Geode(billboard,copyop),
         _mode(billboard._mode),
         _axis(billboard._axis),
         _positionList(billboard._positionList),

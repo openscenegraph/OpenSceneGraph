@@ -19,9 +19,9 @@ class SG_EXPORT ShadeModel : public StateAttribute
     
         ShadeModel();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        ShadeModel(const ShadeModel& sm,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(sm,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ShadeModel(const ShadeModel& sm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(sm,copyop),
             _mode(sm._mode) {}
             
 

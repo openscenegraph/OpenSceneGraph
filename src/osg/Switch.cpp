@@ -13,8 +13,8 @@ Switch::Switch()
     _value = ALL_CHILDREN_OFF;
 }
 
-Switch::Switch(const Switch& sw,const Cloner& cloner):
-    Group(sw,cloner),
+Switch::Switch(const Switch& sw,const CopyOp& copyop):
+    Group(sw,copyop),
     _value(sw._value)
 {
 }

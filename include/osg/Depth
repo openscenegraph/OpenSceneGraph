@@ -20,9 +20,9 @@ class SG_EXPORT Depth : public StateAttribute
     
         Depth();
         
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Depth(const Depth& dp,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(dp,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Depth(const Depth& dp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(dp,copyop),
             _func(dp._func),
             _depthWriteMask(dp._depthWriteMask),
             _zNear(dp._zNear),

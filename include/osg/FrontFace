@@ -18,9 +18,9 @@ class SG_EXPORT FrontFace : public StateAttribute
     
         FrontFace();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        FrontFace(const FrontFace& ff,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(ff,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        FrontFace(const FrontFace& ff,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(ff,copyop),
             _mode(ff._mode) {}
 
         META_StateAttribute(FrontFace, FRONTFACE);

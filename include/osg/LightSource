@@ -18,9 +18,9 @@ class SG_EXPORT LightSource : public Node
 
         LightSource();
 
-        LightSource(const LightSource& es, const Cloner& cloner=ShallowCopy()):
-            Node(es,cloner),
-            _light(dynamic_cast<osg::Light*>(cloner(es._light.get()))) {}
+        LightSource(const LightSource& es, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Node(es,copyop),
+            _light(dynamic_cast<osg::Light*>(copyop(es._light.get()))) {}
 
         META_Node(LightSource);
 

@@ -10,14 +10,14 @@ Geode::Geode()
 {
 }
 
-Geode::Geode(const Geode& geode,const Cloner& cloner):
-    Node(geode,cloner)
+Geode::Geode(const Geode& geode,const CopyOp& copyop):
+    Node(geode,copyop)
 {
     for(DrawableList::const_iterator itr=geode._drawables.begin();
         itr!=geode._drawables.end();
         ++itr)
     {
-        Drawable* drawable = cloner(itr->get());
+        Drawable* drawable = copyop(itr->get());
         if (drawable) addDrawable(drawable);
     }
 }

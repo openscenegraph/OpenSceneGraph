@@ -147,12 +147,12 @@ class SG_EXPORT GeoSet : public Drawable
 
         GeoSet();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        GeoSet(const GeoSet& geoset,const Cloner& cloner=ShallowCopy());
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        GeoSet(const GeoSet& geoset,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
             
         virtual Object* cloneType() const { return new GeoSet(); }
 
-        virtual Object* clone(const Cloner& cloner) const { return new GeoSet(*this,cloner); }
+        virtual Object* clone(const CopyOp& copyop) const { return new GeoSet(*this,copyop); }
         
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const GeoSet*>(obj)!=NULL; }
         

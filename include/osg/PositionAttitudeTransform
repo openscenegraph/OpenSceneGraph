@@ -19,8 +19,8 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
     public :
         PositionAttitudeTransform();
 
-        PositionAttitudeTransform(const PositionAttitudeTransform& pat,const Cloner& cloner=ShallowCopy()):
-            Transform(pat,cloner),
+        PositionAttitudeTransform(const PositionAttitudeTransform& pat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Transform(pat,copyop),
             _position(pat._position),
             _attitude(pat._attitude) {}
             

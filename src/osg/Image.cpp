@@ -26,8 +26,8 @@ Image::Image()
     _modifiedTag = 0;
 }
 
-Image::Image(const Image& image,const Cloner& cloner):
-    Object(image,cloner),
+Image::Image(const Image& image,const CopyOp& copyop):
+    Object(image,copyop),
     _fileName(image._fileName),
     _s(image._s), _t(image._t), _r(image._r),
     _internalFormat(image._internalFormat),

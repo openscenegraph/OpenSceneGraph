@@ -17,9 +17,9 @@ class SG_EXPORT LineWidth : public StateAttribute
 
         LineWidth();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        LineWidth(const LineWidth& lw,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(lw,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        LineWidth(const LineWidth& lw,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(lw,copyop),
             _width(lw._width) {}
             
         META_StateAttribute(LineWidth, LINEWIDTH);

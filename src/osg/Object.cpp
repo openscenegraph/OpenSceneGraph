@@ -2,5 +2,5 @@
 
 using namespace osg;
 
-Object::Object(const Object&,const Cloner&): 
+Object::Object(const Object&,const CopyOp&): 
     Referenced() {}

@@ -69,13 +69,13 @@ class SG_EXPORT Texture : public StateAttribute
         
         Texture();
 
-        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
-        Texture(const Texture& text,const Cloner& cloner=ShallowCopy()):
-            StateAttribute(text,cloner),
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(text,copyop),
             _handleList(text._handleList),
             _modifiedTag(text._modifiedTag),
             _textureObjectSize(text._textureObjectSize),
-            _image(cloner(text._image.get())),
+            _image(copyop(text._image.get())),
             _textureUnit(text._textureUnit),
             _wrap_s(text._wrap_s),
             _wrap_t(text._wrap_t),

@@ -801,7 +801,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 DatabaseRequestList::iterator litr;
                 int i=0;
                 for(litr = _dataToCompileList.begin();
-                    (litr != _dataToCompileList.end()) && (_frameNumber == (*litr)->_frameNumberLastRequest);
+                    (litr != _dataToCompileList.end()) && (_frameNumber-(*litr)->_frameNumberLastRequest)<=1;
                     ++litr,i++)
                 {
                     //osg::notify(osg::NOTICE)<<"Compile "<<_frameNumber-(*litr)->_frameNumberLastRequest<<std::endl;

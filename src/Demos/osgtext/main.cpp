@@ -463,7 +463,7 @@ protected:
     }
 
 
-    virtual void keyboard(unsigned char key, int x, int y)
+    virtual void keyboard(int key, int x, int y)
     {
         switch(key)
         {

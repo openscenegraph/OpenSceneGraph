@@ -881,10 +881,10 @@ void Viewer::mouse(int button, int state, int x, int y)
 
 
 
-void Viewer::keyboard(unsigned char key, int x, int y)
+void Viewer::keyboard(int key, int x, int y, bool keydown )
 {
     osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
-    ea->adaptKeyboard(clockSeconds(),key,x,y);
+    ea->adaptKeyboard(clockSeconds(),key,x,y,keydown);
 
     for ( EventHandlerList::iterator eh =
             _viewportList[_focusedViewport]._eventHandlerList.begin();
@@ -898,6 +898,11 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     }
     if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
                 *ea,*this) ) {
+        return;
+    }
+
+    // only keydown handled below
+    if ( !keydown ) {
         return;
     }
 

@@ -113,6 +113,8 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         osg::AnimationPath* getAnimationPath() { return _animationPath.get(); }
         const osg::AnimationPath* getAnimationPath() const { return _animationPath.get(); }
 
+        int mapWindowXYToViewport(int x, int y);
+
     protected:
 
         virtual void clear();
@@ -122,10 +124,9 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         virtual void mouseMotion(int x, int y);
         virtual void mousePassiveMotion(int x, int y);
         virtual void mouse(int button, int state, int x, int y);
-        virtual void keyboard(unsigned char key, int x, int y);
+        virtual void keyboard(int key, int x, int y, bool keydown = true);
 
         void setFocusedViewport(unsigned int pos);
-        int mapWindowXYToViewport(int x, int y);
         
         void showStats(unsigned int i); // gwm 24.09.01 pass the viewport to collect sta for each viewport
 

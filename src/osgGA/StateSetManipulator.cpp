@@ -34,7 +34,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
     if(!_drawState.valid()) return false;
 
-    if(ea.getEventType()==GUIEventAdapter::KEYBOARD){
+    if(ea.getEventType()==GUIEventAdapter::KEYDOWN){
 
         switch( ea.getKey() ){
 

@@ -75,10 +75,23 @@ class SG_EXPORT State : public Referenced
         void apply();
        
         /** mode has been set externally, update state to reflect this setting.*/
-        void have_applied(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
+        void have_applied_mode(const StateAttribute::GLMode mode,const StateAttribute::GLModeValue value);
         
+        /** mode has been set externally, therefore dirty the associated mode in osg::State
+          * so it is applied on next call to osg::State::apply(..)*/
+        void have_applied_mode(const StateAttribute::GLMode mode);
+
         /** attribute has been applied externally, update state to reflect this setting.*/
-        void have_applied(const StateAttribute* attribute);
+        void have_applied_attribute(const StateAttribute* attribute);
+
+        /** attribute has been applied externally, 
+          * and therefore this attribute type has been dirtied 
+          * and will need to be re-appplied on next osg::State.apply(..).
+          * note, if you have an osg::StateAttribute which you have applied externally
+          * then use the have_applied(attribute) method as this will the osg::State to
+          * track the current state more accuratly and enable lazy state updating such
+          * that only changed state will be applied.*/
+        void have_applied_attribute(const StateAttribute::Type type);
 
         
         /** Set the current OpenGL context uniqueID.

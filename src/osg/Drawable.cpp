@@ -261,6 +261,21 @@ void Drawable::setUseDisplayList(bool flag)
 }
 
 
+void Drawable::setUseVertexBufferObjects(bool flag)
+{
+    // if value unchanged simply return.
+    if (_useVertexBufferObjects==flag) return;
+
+    // if was previously set to true, remove display list.
+    if (_useVertexBufferObjects)
+    {
+        dirtyDisplayList();
+    }
+    
+    _useVertexBufferObjects = flag;
+    
+}
+
 void Drawable::dirtyDisplayList()
 {
     unsigned int i;

@@ -129,8 +129,8 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
             {
                 if (rhs._images[n].valid())
                 {
-                    if (_images[n]->getFileName()<rhs._images[n]->getFileName()) return -1;
-                    else if (_images[n]->getFileName()>rhs._images[n]->getFileName()) return 1;;
+                    int result = _images[n]->compare(*rhs._images[n]);
+                    if (result!=0) return result;
                 }
                 else
                 {

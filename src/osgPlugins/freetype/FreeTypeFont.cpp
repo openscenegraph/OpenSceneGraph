@@ -119,6 +119,8 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     glyph->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
 
     addGlyph(_facade->getWidth(),_facade->getHeight(),charcode,glyph.get());
+    
+//    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
 
     return glyph.get();
 

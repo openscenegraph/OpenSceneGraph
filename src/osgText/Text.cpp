@@ -219,6 +219,8 @@ void Text::computeGlyphRepresentation()
     
     _textureGlyphQuadMap.clear();
     
+    if (_text.empty()) return;
+    
     osg::Vec2 startOfLine(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine);
     osg::Vec2 local(0.0f,0.0f);

@@ -81,6 +81,27 @@ void Image::deallocateData()
     }
 }
 
+int Image::compare(const Image& rhs) const
+{
+    if (getFileName()<rhs.getFileName()) return -1;
+    else if (getFileName()>rhs.getFileName()) return 1;
+    
+    // need to test against image contents here...
+    COMPARE_StateAttribute_Parameter(_s)
+    COMPARE_StateAttribute_Parameter(_t)
+    COMPARE_StateAttribute_Parameter(_internalTextureFormat)
+    COMPARE_StateAttribute_Parameter(_pixelFormat)
+    COMPARE_StateAttribute_Parameter(_dataType)
+    COMPARE_StateAttribute_Parameter(_packing)
+    COMPARE_StateAttribute_Parameter(_modifiedTag)
+
+    // still need implement checks for
+    // _data
+    // _mipmapData
+
+    return 0;
+}
+
 void Image::setFileName(const std::string& fileName)
 {
     _fileName = fileName;

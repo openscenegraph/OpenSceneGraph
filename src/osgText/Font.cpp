@@ -210,6 +210,9 @@ bool Font::hasVertical() const
 
 void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
 {
+
+    //cout << "charcode "<<(char)charcode<<"  "<<&_glyphTextureList<<endl;
+
     _sizeGlyphMap[SizePair(width,height)][charcode]=glyph;
     
     
@@ -223,18 +226,24 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
         if ((*itr)->getSpaceForGlyph(glyph,posX,posY)) glyphTexture = itr->get();
     }
     
+    if (glyphTexture)
+    {
+        //cout << "    found space for texture "<<glyphTexture<<" posX="<<posX<<" posY="<<posY<<endl;
+    }
+    
     if (!glyphTexture)
     {
-        //std::cout<<"Creating new GlyphTexture & StateSet"<<std::endl;
         
         osg::StateSet* stateset = new osg::StateSet;
         _stateSetList.push_back(stateset);
 
         glyphTexture = new GlyphTexture;
         
-//         static int numberOfTexturesAllocated = 0;
-//         ++numberOfTexturesAllocated;
-//         std::cout << this<< "  numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
+        //std::cout<<"    Creating new GlyphTexture "<<glyphTexture<<"& StateSet "<<stateset<<std::endl;
+
+        static int numberOfTexturesAllocated = 0;
+        ++numberOfTexturesAllocated;
+        //std::cout << "    " << this<< "  numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);
@@ -276,6 +285,15 @@ Font::GlyphTexture::GlyphTexture():
 Font::GlyphTexture::~GlyphTexture() 
 {
 }
+
+// return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.
+int Font::GlyphTexture::compare(const StateAttribute& rhs) const
+{
+    if (this<&rhs) return -1;
+    else if (this>&rhs) return 1;
+    return 0;
+}
+
 
 bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {

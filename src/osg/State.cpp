@@ -212,7 +212,8 @@ void State::apply(const StateSet* dstate)
     //pushStateSet(dstate);
     //apply();
     //popStateSet();
-
+    //return;
+    
     if (dstate)
     {
 

@@ -123,7 +123,7 @@ void Texture2D::apply(State& state) const
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
-                                    _textureWidth, _textureHeight, _numMipmapLevels);
+                                    _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
  
             // update the modified tag to show that it is upto date.
             getModifiedTag(contextID) = _image->getModifiedTag();
@@ -172,7 +172,7 @@ void Texture2D::apply(State& state) const
         {
             //std::cout<<"Reusing texture object"<<std::endl;
             applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
-                                 _textureWidth, _textureHeight, _numMipmapLevels);
+                                 _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
         }
         else
         {

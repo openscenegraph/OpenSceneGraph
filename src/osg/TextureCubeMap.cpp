@@ -225,7 +225,7 @@ void TextureCubeMap::apply(State& state) const
                 const osg::Image* image = _images[n].get();
                 if (image && getModifiedTag((Face)n,contextID) != image->getModifiedTag())
                 {
-                    applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _numMipmapLevels);
+                    applyTexImage2D_subload( state, faceTarget[n], _images[n].get(), _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
                     getModifiedTag((Face)n,contextID) = image->getModifiedTag();
                 }
             }
@@ -272,7 +272,7 @@ void TextureCubeMap::apply(State& state) const
             {
                 if (textureObject->isAllocated())
                 {
-                    applyTexImage2D_subload( state, faceTarget[n], image, _textureWidth, _textureHeight, _numMipmapLevels);
+                    applyTexImage2D_subload( state, faceTarget[n], image, _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
                 }
                 else
                 {

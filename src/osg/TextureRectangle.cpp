@@ -118,7 +118,7 @@ void TextureRectangle::apply(State& state) const
         }
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
-            applyTexImage_subload(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight);
+            applyTexImage_subload(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
  
             // update the modified tag to show that it is upto date.
             getModifiedTag(contextID) = _image->getModifiedTag();
@@ -212,13 +212,13 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     inheight = image->t();
 }
 
-void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const
+void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLint& inInternalFormat) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
         return;
 
-    if (image->s()!=inwidth || image->t()!=inheight) 
+    if (image->s()!=inwidth || image->t()!=inheight || image->getInternalTextureFormat()!=inInternalFormat) 
     {
         applyTexImage_load(target, image, state, inwidth, inheight);
         return;

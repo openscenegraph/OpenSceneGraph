@@ -98,6 +98,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Get the whether UseFrameBlock is on or off.*/
         bool getUseFrameBlock() const { return _useFrameBlock; }
         
+        Block* getFrameBlock() { return _frameBlock.get(); }
 
         /** Set the priority of the database pager thread during the frame (i.e. while cull and draw are running.)*/
         void setThreadPriorityDuringFrame(ThreadPriority duringFrame) { _threadPriorityDuringFrame = duringFrame; }

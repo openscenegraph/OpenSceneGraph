@@ -315,7 +315,7 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
             itr!=textstring.end();
             ++itr)
         {
-            str.push_back((char)*itr);
+            str += (char)(*itr);
         }
 
         //std::copy(textstring.begin(),textstring.end(),std::back_inserter(str));

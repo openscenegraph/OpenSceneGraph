@@ -18,7 +18,6 @@
 
 #include <osgUtil/RenderGraph>
 #include <osgUtil/RenderStage>
-#include <osgUtil/CullViewState>
 
 #include <map>
 #include <vector>
@@ -38,6 +37,23 @@ namespace osgUtil {
 class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 {
     public:
+
+        enum 
+        {
+            NO_CULLING                  = 0x00,
+            FRUSTUM_LEFT_CULLING        = 0x01,
+            FRUSTUM_RIGHT_CULLING       = 0x02,
+            FRUSTUM_BOTTOM_CULLING      = 0x04,
+            FRUSTUM_TOP_CULLING         = 0x08,
+            FRUSTUM_NEAR_CULLING        = 0x10,
+            FRUSTUM_FAR_CULLING         = 0x20,
+            VIEW_FRUSTUM_CULLING        = 0x3F,
+            SMALL_FEATURE_CULLING       = 0x40,
+            ENABLE_ALL_CULLING          = 0x7F
+        };
+        
+        typedef unsigned int CullingMode;
+
 
         CullVisitor();
         virtual ~CullVisitor();
@@ -105,10 +121,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         void setTransparencySortMode(TransparencySortMode tsm) { _tsm = tsm; }
         
         /** Sets the current CullingMode.*/
-        void setCullingMode(CullViewState::CullingMode mode);
+        void setCullingMode(CullingMode mode);
 
         /** Returns the current CullingMode.*/
-        CullViewState::CullingMode getCullingMode() const;
+        CullingMode getCullingMode() const;
         
 
         void pushViewport(osg::Viewport* viewport);
@@ -216,13 +232,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         }
 
 
-        inline bool isCulled(const osg::BoundingSphere& sp,CullViewState::CullingMode& mode) const
+        inline bool isCulled(const osg::BoundingSphere& sp,CullingMode& mode) const
         {
             if (!sp.isValid()) return true;
 
             if (!(_modelviewClippingVolumeStack.back().contains(sp,mode))) return true;
 
-            if (mode&CullViewState::SMALL_FEATURE_CULLING)
+            if (mode&SMALL_FEATURE_CULLING)
             {
                 const float _ratio2 = 0.002f*0.002f;
                 osg::Vec3 delta(sp._center-getEyeLocal());
@@ -234,7 +250,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return false;
         }
 
-        inline const bool isCulled(const osg::BoundingBox& bb,CullViewState::CullingMode mode) const
+        inline const bool isCulled(const osg::BoundingBox& bb,CullingMode mode) const
         {
             if (!bb.isValid()) return true;
 
@@ -370,7 +386,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         typedef std::vector<osg::Vec3>                      EyePointStack;
         EyePointStack                                       _eyePointStack;
         
-        typedef std::vector<CullViewState::CullingMode>     CullingModeStack;
+        typedef std::vector<CullingMode>                    CullingModeStack;
         CullingModeStack                                    _cullingModeStack;
         
         unsigned int                                       _bbCornerNear;

@@ -5,7 +5,6 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES = \
 	AppVisitor.cpp\
 	CameraManipulator.cpp\
-	CullViewState.cpp\
 	CullVisitor.cpp\
 	DepthSortedBin.cpp\
 	DisplayListVisitor.cpp\

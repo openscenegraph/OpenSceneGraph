@@ -86,7 +86,7 @@ CullVisitor::CullVisitor()
     // is a least this one value on the stack, therefore they never
     // check whether the stack is empty. This shouldn't be a problem
     // unless there is bug somewhere...
-    _cullingModeStack.push_back(CullViewState::ENABLE_ALL_CULLING);
+    _cullingModeStack.push_back(ENABLE_ALL_CULLING);
 
 
     //_tsm = LOOK_VECTOR_DISTANCE;
@@ -335,20 +335,20 @@ void CullVisitor::updateCalculatedNearFar(const osg::Vec3& pos)
     if (d>_computed_zfar) _computed_zfar = d;
 }   
 
-void CullVisitor::setCullingMode(CullViewState::CullingMode mode)
+void CullVisitor::setCullingMode(CullingMode mode)
 {
     _cullingModeStack.back()=mode;
 }
 
 
-CullViewState::CullingMode CullVisitor::getCullingMode() const
+CullVisitor::CullingMode CullVisitor::getCullingMode() const
 {
     return _cullingModeStack.back();
 }
 
 void CullVisitor::apply(Node& node)
 {
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
     
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -375,7 +375,7 @@ void CullVisitor::apply(Geode& node)
 {
 
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -444,7 +444,7 @@ void CullVisitor::apply(Geode& node)
 void CullVisitor::apply(Billboard& node)
 {
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -535,7 +535,7 @@ void CullVisitor::apply(LightSource& node)
 void CullVisitor::apply(Group& node)
 {
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -560,7 +560,7 @@ void CullVisitor::apply(Group& node)
 void CullVisitor::apply(Transform& node)
 {
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -591,7 +591,7 @@ void CullVisitor::apply(Transform& node)
 void CullVisitor::apply(Projection& node)
 {
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -639,7 +639,7 @@ void CullVisitor::apply(Switch& node)
 void CullVisitor::apply(LOD& node)
 {
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -687,7 +687,7 @@ void CullVisitor::apply(Impostor& node)
     const BoundingSphere& bs = node.getBound();
 
     // return if object's bounding sphere is culled.
-    CullViewState::CullingMode mode = _cullingModeStack.back();
+    CullingMode mode = _cullingModeStack.back();
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
@@ -952,7 +952,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 
     // switch off the view frustum culling, since we will have
     // the whole subgraph in view.
-    _cullingModeStack.push_back((_cullingModeStack.back() & ~CullViewState::VIEW_FRUSTUM_CULLING));
+    _cullingModeStack.push_back((_cullingModeStack.back() & ~VIEW_FRUSTUM_CULLING));
 
     {
 

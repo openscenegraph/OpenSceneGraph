@@ -1,6 +1,6 @@
 #include <osgGA/GUIEventHandler>
 
-using osgGA::CompositeGUIEventHandler;
+using namespace osgGA;
 
 bool CompositeGUIEventHandler::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {

@@ -10,6 +10,6 @@ INSTFILES = \
 	$(CXXFILES)\
 	Makefile.inst=Makefile
 
-EXEC = osgreflect
+EXEC = osgprerender
 
 include $(TOPDIR)/Make/makerules 

@@ -230,6 +230,11 @@ void DatabasePager::run()
 
             if (databaseRequest->_loadedModel.valid() && !_activeGraphicsContexts.empty())
             {
+                // force a compute of the loaded model's bounding volume, so that when the subgraph
+                // merged with the main scene graph and large computeBound() isn't incurred.
+                databaseRequest->_loadedModel->getBound();
+            
+            
                 ActiveGraphicsContexts::iterator itr = _activeGraphicsContexts.begin();
             
                 DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];

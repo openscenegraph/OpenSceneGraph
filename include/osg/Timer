@@ -166,6 +166,7 @@ class SG_EXPORT Timer {
   
 #elif defined(__sgi)
 
+    #include <sys/types.h>
     #include <sys/time.h>
 
     namespace osg{

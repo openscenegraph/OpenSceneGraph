@@ -790,15 +790,15 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
         }
     }
 
-    if (inherit & PFSTATE_ENTEXTURE) osgStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::INHERIT);
+    if (inherit & PFSTATE_ENTEXTURE) osgStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::INHERIT);
     else
     {
         int mode = geostate->getMode(PFSTATE_ENTEXTURE);
         switch(mode)
         {
-            case(PF_ON):    osgStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::ON);break;
+            case(PF_ON):    osgStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);break;
             case(PF_OFF):
-            default:        osgStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::OFF);break;
+            default:        osgStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);break;
         }
     }
 

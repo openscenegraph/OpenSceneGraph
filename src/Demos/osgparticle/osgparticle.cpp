@@ -340,9 +340,10 @@ void build_world(osg::Group *root)
 //////////////////////////////////////////////////////////////////////////////
 
 
-int main()
+int main( int /*argc*/, char **argv )
 {
 	osgGLUT::Viewer viewer;
+        viewer.setWindowTitle(argv[0]);
 
 	osg::Group *root = osgNew osg::Group;
 	build_world(root);

@@ -119,8 +119,8 @@ int main( int argc, char **argv )
     stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE_ON);
     stateset->setAttributeAndModes(polyoffset,osg::StateAttribute::OVERRIDE_ON);
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE_ON);
-    stateset->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
+    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
     
 //     osg::LineStipple* linestipple = new osg::LineStipple;
 //     linestipple->setFactor(1);

@@ -1,19 +1,19 @@
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 
 using namespace osg;
 
-Transparency::Transparency()
+BlendFunc::BlendFunc()
 {
     _source_factor      = SRC_ALPHA;
     _destination_factor = ONE_MINUS_SRC_ALPHA;
 }
 
 
-Transparency::~Transparency()
+BlendFunc::~BlendFunc()
 {
 }
 
-void Transparency::apply(State&) const
+void BlendFunc::apply(State&) const
 {
     glBlendFunc( (GLenum)_source_factor, (GLenum)_destination_factor );
 }

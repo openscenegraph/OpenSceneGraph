@@ -8,6 +8,7 @@ CXXFILES =\
 	Billboard.cpp\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
+	BlendFunc.cpp\
 	Camera.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\
@@ -73,7 +74,6 @@ CXXFILES =\
 	TextureCubeMap.cpp\
 	Timer.cpp\
 	Transform.cpp\
-	Transparency.cpp\
 	Version.cpp\
 	Viewport.cpp\
 	

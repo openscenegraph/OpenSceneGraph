@@ -2002,9 +2002,9 @@ void MyStateSet::Query( const osg::StateSet &sset )
   }
 
   // TEXTURE / TEXTURE_0
-  attr = sset.getAttribute( osg::StateAttribute::TEXTURE );
+  attr = sset.getTextureAttribute(0, osg::StateAttribute::TEXTURE );
   if ( attr &&
-       ( sset.getMode( GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
+       ( sset.getTextureMode(0, GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
 
     const osg::Texture &texture = (const osg::Texture &) (*attr);
 
@@ -2060,9 +2060,9 @@ void MyStateSet::Query( const osg::StateSet &sset )
   }
 
   // TEXENV
-  attr = sset.getAttribute( osg::StateAttribute::TEXENV );
+  attr = sset.getTextureAttribute(0, osg::StateAttribute::TEXENV );
   if ( attr &&
-       ( sset.getMode( GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
+       ( sset.getTextureMode(0, GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
     AddAttribute( osg::StateAttribute::TEXENV );
 
     const osg::TexEnv &texenv = (const osg::TexEnv &) (*attr);
@@ -2071,9 +2071,9 @@ void MyStateSet::Query( const osg::StateSet &sset )
   }
 
   // TEXGEN
-  attr = sset.getAttribute( osg::StateAttribute::TEXGEN );
+  attr = sset.getTextureAttribute(0, osg::StateAttribute::TEXGEN );
   if ( attr &&
-       ( sset.getMode( GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
+       ( sset.getTextureMode(0, GL_TEXTURE_2D ) & osg::StateAttribute::ON )) {
 
     // FIXME: Just note that it is there for now.  We don't actually support
     //   texture coordinate generation yet (i.e. generating the "uv" component

@@ -118,7 +118,7 @@ static void initOSGAttrNames()
   ADD_ATTR( osg::StateAttribute::TEXENV          , "TEXENV"       );
   ADD_ATTR( osg::StateAttribute::TEXGEN          , "TEXGEN"       );
   ADD_ATTR( osg::StateAttribute::TEXMAT          , "TEXMAT"       );
-  ADD_ATTR( osg::StateAttribute::TRANSPARENCY    , "TRANSPARENCY" );
+  ADD_ATTR( osg::StateAttribute::BLENDFUNC       , "BLENDFUNC"    );
   ADD_ATTR( osg::StateAttribute::STENCIL         , "STENCIL"      );
   ADD_ATTR( osg::StateAttribute::COLORMASK       , "COLORMASK"    );
   ADD_ATTR( osg::StateAttribute::DEPTH           , "DEPTH"        );

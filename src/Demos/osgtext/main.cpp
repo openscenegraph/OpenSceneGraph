@@ -77,16 +77,10 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_2D);
     geode = osgNew osg::Geode();
     geode->setName("BitmapFont");
     geode->addDrawable( text );
-
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
 
     rootNode->addChild(geode);
 
@@ -105,24 +99,17 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_2D);
     geode = osgNew osg::Geode();
     geode->setName("PixmapFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_2D);
     // to get antiaA pixmapFonts we have to draw them with blending
     osg::Transparency    *transp= osgNew  osg::Transparency();
     transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-
-
-
     textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    textState->setAttribute(transp);
-    textState->setMode(GL_BLEND,osg::StateAttribute::ON);
+    textState->setAttributeAndModes(transp,osg::StateAttribute::ON);
     textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     
     
@@ -145,22 +132,19 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_2D);
     geode = osgNew osg::Geode();
     geode->setName("TextureFont");
     geode->addDrawable( text );
 
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
     // to get antiaA pixmapFonts we have to draw them with blending
     transp= osgNew  osg::Transparency();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    textState->setAttribute(transp);
+    textState->setAttributeAndModes(transp,osg::StateAttribute::ON);
 
-    textState->setMode(GL_TEXTURE_2D,osg::StateAttribute::ON);
+    textState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     geode->setStateSet( textState );
 
@@ -182,16 +166,10 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_2D);
     geode = osgNew osg::Geode();
     geode->setName("PolygonFont");
     geode->addDrawable( text );
-
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
 
     rootNode->addChild(geode);
 
@@ -212,16 +190,10 @@ void set2dScene(osg::Group* rootNode)
                        osgText::Text::BOUNDINGBOX |
                        osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
+    text->setColor(TEXT_COL_2D);
     geode = osgNew osg::Geode();
     geode->setName("OutlineFont");
     geode->addDrawable( text );
-
-    textMaterial = osgNew osg::Material();
-    textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
-    textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK, TEXT_COL_2D);
-    textState = osgNew osg::StateSet();
-    textState->setAttribute(textMaterial );
-    geode->setStateSet( textState );
 
     rootNode->addChild(geode);
     
@@ -337,7 +309,7 @@ void setScene(osg::Group* rootNode)
     textState->setAttribute(transp);
 
     //    textState->setMode(GL_BLEND,osg::StateAttribute::ON);
-    textState->setMode(GL_TEXTURE_2D,osg::StateAttribute::ON);
+    textState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON);
     textState->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     geode->setStateSet( textState );
 

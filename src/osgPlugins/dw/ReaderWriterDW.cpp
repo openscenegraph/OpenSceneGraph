@@ -99,7 +99,7 @@ public:
             cf->setMode(osg::CullFace::BACK);
             dstate->setAttribute(cf);
 
-            dstate->setMode(GL_TEXTURE_2D,StateAttribute::OFF);
+            dstate->setTextureMode(0,GL_TEXTURE_2D,StateAttribute::OFF);
             settexture();
         }
         return dstate;

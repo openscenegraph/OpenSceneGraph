@@ -46,9 +46,14 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         virtual void apply(osg::LOD& node);
         virtual void apply(osg::OccluderNode& node);
 
-
+        /** Set the minimum shadow occluder volume that an active occluder must have.
+          * volume is units relative the clip space volume where 1.0 is the whole clip space.*/
         void setMinimumShadowOccluderVolume(float vol) { _minimumShadowOccluderVolume = vol; }
         float getMinimumShadowOccluderVolume() const { return _minimumShadowOccluderVolume; }
+
+        /** Set the maximum number of occluders to have active for culling purposes.*/
+        void setMaximumNumberOfActiveOccluders(unsigned int num) { _maximumNumberOfActiveOccluders = num; }
+        unsigned int getMaximumNumberOfActiveOccluders() const { return _maximumNumberOfActiveOccluders; }
 
         void setCreateDrawablesOnOccludeNodes(bool flag) { _createDrawables=flag; }
         bool getCreateDrawablesOnOccludeNodes() const { return _createDrawables; }
@@ -57,7 +62,9 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         ShadowVolumeOccluderSet& getCollectedOccluderSet() { return _occluderSet; }
         const ShadowVolumeOccluderSet& getCollectedOccluderSet() const { return _occluderSet; }
 
-        /** remove occluded occluders for the collected occluders list.*/
+        /** remove occluded occluders for the collected occluders list,
+          * and then discard of all but MaximumNumberOfActiveOccluders of occluders,
+          * discarding the occluders with the lowests shadow occluder volume .*/
         void removeOccludedOccluders();
 
 
@@ -84,6 +91,7 @@ class SG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::C
         }
 
         float                       _minimumShadowOccluderVolume;
+        unsigned                    _maximumNumberOfActiveOccluders;
         bool                        _createDrawables;
         ShadowVolumeOccluderSet     _occluderSet;
 

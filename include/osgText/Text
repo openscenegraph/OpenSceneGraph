@@ -83,6 +83,27 @@ public:
     float getCharacterAspectRatio() const { return _characterAspectRatio; }
 
 
+
+    /** Set the maximum width of the text box.
+      * With horizontal layouts any characters which do not fit are wrapped around.
+      * 0 or negative values indicate that no maximum width is set, lines can be as long as 
+      * they need be to fit thre required text*/
+    void setMaximumWidth(float maximumWidth);
+    
+    /** Get the maximim width of the text box.*/
+    float getMaximumWidth() const { return _maximumWidth; }
+
+    /** Set the maximum height of the text box.
+      * With horizontal layouts any characters which do not fit are wrapped around.
+      * 0 or negative values indicate that no maximum height is set, lines can be as long as 
+      * they need be to fit thre required text*/
+    void setMaximumHeight(float maximumHeight);
+    
+    /** Get the maximum height of the text box.*/
+    float getMaximumHeight() const { return _maximumHeight; }
+
+
+
     /** Set the position of text.*/
     void setPosition(const osg::Vec3& pos);
     
@@ -182,6 +203,8 @@ protected:
     unsigned int            _fontHeight;
     float                   _characterHeight;
     float                   _characterAspectRatio;
+    float                   _maximumWidth;
+    float                   _maximumHeight;
 
     String                  _text;
     osg::Vec3               _position;

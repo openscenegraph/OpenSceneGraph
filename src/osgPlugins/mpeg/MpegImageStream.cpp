@@ -52,7 +52,7 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 {
     std::cout<<"Opening pegImageStream::MpegImageStream"<<std::endl;
 
-    _useMMX = false;
+    _useMMX = true;
     _fps = 0.0f;
     _frames = 0;
     _len = 0;
@@ -167,13 +167,12 @@ void MpegImageStream::load(const char* fileName)
 
 
     // Allocate image data
-    // maybe use BGRA888 and save some conversion somewhere?
     unsigned char* data = new unsigned char [s * t * 4];
     _videoWriteData = new unsigned char [s * t * 4];
 
     setImage(s, t, 1,
              GL_RGB,
-             GL_RGBA, GL_UNSIGNED_BYTE, data,
+             GL_BGRA, GL_UNSIGNED_BYTE, data,
              osg::Image::USE_NEW_DELETE);
 
 
@@ -287,7 +286,7 @@ void MpegImageStream::run()
             mpeg3_read_frame(mpg, _rows,
                              0, 0, _s, _t,
                              _s, _t,
-                             MPEG3_RGBA8888, str);
+                             MPEG3_BGRA8888, str);
 
             swapData();
 

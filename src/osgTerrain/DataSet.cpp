@@ -1873,6 +1873,10 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         layerNum<_imagery.size();
         ++layerNum)
     {
+        // do we have a image to equalize?
+        if (!_imagery[layerNum]._imagery.valid()) continue;
+        
+        // does the neighbouring tile have an image to equalize?
         if (layerNum>=tile2->_imagery.size()) continue;
         if (!(tile2->_imagery[layerNum]._imagery.valid())) continue;
     

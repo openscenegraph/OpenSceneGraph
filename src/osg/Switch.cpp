@@ -63,6 +63,29 @@ bool Switch::addChild( Node *child, bool value )
     return false;
 }
 
+bool Switch::insertChild( unsigned int index, Node *child )
+{
+    return insertChild(index,child,_newChildDefaultValue);
+}
+
+bool Switch::insertChild( unsigned int index, Node *child, bool value )
+{
+    if (Group::insertChild(index,child))
+    {
+        if (index>=_values.size())
+	{
+	    _values.push_back(value);
+	}
+        else
+        {
+	    _values.insert(_values.begin()+index, value);
+        }
+        
+	return true;
+    }
+    return false;
+}
+
 bool Switch::removeChild( Node *child )
 {
     // find the child's position.

@@ -99,7 +99,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         virtual int cancel();
         
         /** Clear all internally cached structures.*/
-        void clear();
+        virtual void clear();
         
         /** Set whether the database pager thread should be paused or not.*/
         void setDatabasePagerThreadPause(bool pause);
@@ -143,17 +143,17 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** Signal the database thread that the update, cull and draw has begun for a new frame.
           * Note, this is called by the application so that the database pager can go to sleep while the CPU is busy on the main rendering threads. */
-        void signalBeginFrame(const osg::FrameStamp* framestamp);
+        virtual void signalBeginFrame(const osg::FrameStamp* framestamp);
         
         /** Signal the database thread that the update, cull and draw dispatch has completed.
           * Note, this is called by the application so that the database pager can go to wake back up now the main rendering threads are iddle waiting for the next frame.*/
-        void signalEndFrame();
+        virtual void signalEndFrame();
         
 
         /** Find all PagedLOD nodes in a subgraph and register them with 
           * the DatabasePager so it can keep track of expired nodes.
           * note, should be only be called from the update thread. */
-        void registerPagedLODs(osg::Node* subgraph);
+        virtual void registerPagedLODs(osg::Node* subgraph);
 
 
         /** Set the amount of time that a subgraph will be kept without being visited in the cull traversal
@@ -190,7 +190,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
           * Note, must only be called from single thread update phase. */
-        void updateSceneGraph(double currentFrameTime)
+        virtual void updateSceneGraph(double currentFrameTime)
         {
             removeExpiredSubgraphs(currentFrameTime);
             addLoadedDataToSceneGraph(currentFrameTime);
@@ -210,10 +210,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
           * note, should only be called from the draw thread.
           * Note, must only be called from a valid graphics context. */
-        void compileGLObjects(osg::State& state,double& availableTime);
+        virtual void compileGLObjects(osg::State& state,double& availableTime);
 
 
-    public:
+    protected:
+
+        virtual ~DatabasePager();
 
         typedef std::list< osg::ref_ptr<osg::PagedLOD> >   PagedLODList;
 
@@ -249,9 +251,16 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
         typedef std::vector<  osg::ref_ptr<osg::Object> > ObjectList;
 
-    protected :
+        // forward declare inner helper classes
+        class FindCompileableGLObjectsVisitor;
+        friend class FindCompileableGLObjectsVisitor;
+        
+        class FindPagedLODsVisitor;
+        friend class FindPagedLODsVisitor;
 
-        virtual ~DatabasePager();
+        class SortFileRequestFunctor;
+        friend class SortFileRequestFunctor;
+
         
         OpenThreads::Mutex              _run_mutex;
         bool                            _startThreadCalled;

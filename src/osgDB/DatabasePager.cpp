@@ -537,6 +537,10 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         _childrenToDeleteListMutex.unlock();
     }
     // otherwise the childrenRemoved list will automatically unref() and deleting the nodes.    
+
+    // update the Registry object cache.
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExtenalReferences(currentFrameTime);
+    osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);
 }
 
 

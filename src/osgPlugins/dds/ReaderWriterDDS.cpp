@@ -12,8 +12,8 @@
 *    CREATED BY:        Rune Schmidt Jensen, rsj@uni-dk
 *
 *    HISTORY:        Created   31.03.2003
-*		     Modified  13.05.2004
-*		        by George Tarantilis, gtaranti@nps.navy.mil
+*             Modified  13.05.2004
+*                by George Tarantilis, gtaranti@nps.navy.mil
 *
 **********************************************************************/
 
@@ -30,14 +30,30 @@
 // NOTICE ON WIN32:
 // typedef DWORD unsigned long;
 // sizeof(DWORD) = 4
-typedef struct _DDCOLORKEY
+struct  DDCOLORKEY
 {
+    DDCOLORKEY():
+        dwColorSpaceLowValue(0),
+        dwColorSpaceHighValue(0) {}
+        
     unsigned long    dwColorSpaceLowValue;
     unsigned long    dwColorSpaceHighValue;
-} DDCOLORKEY;
+};
 
-typedef struct _DDPIXELFORMAT
+struct DDPIXELFORMAT
 {
+
+    DDPIXELFORMAT():
+        dwSize(0),
+        dwFlags(0),
+        dwFourCC(0),
+        dwRGBBitCount(0),
+        dwRBitMask(0),
+        dwGBitMask(0),
+        dwBBitMask(0),
+        dwRGBAlphaBitMask(0) {}
+        
+
     unsigned long    dwSize;
     unsigned long    dwFlags;
     unsigned long    dwFourCC;
@@ -70,10 +86,16 @@ typedef struct _DDPIXELFORMAT
         unsigned long    dwRGBZBitMask;
         unsigned long    dwYUVZBitMask;
     };
-} DDPIXELFORMAT;
+};
 
-typedef struct _DDSCAPS2
+struct  DDSCAPS2
 {
+     DDSCAPS2():
+        dwCaps(0),
+        dwCaps2(0),
+        dwCaps3(0),
+        dwCaps4(0) {}
+
     unsigned long       dwCaps;
     unsigned long       dwCaps2;
     unsigned long       dwCaps3;
@@ -82,10 +104,24 @@ typedef struct _DDSCAPS2
         unsigned long       dwCaps4;
         unsigned long       dwVolumeDepth;
     };
-} DDSCAPS2;
+};
 
-typedef struct _DDSURFACEDESC2 
+struct DDSURFACEDESC2
 {
+    DDSURFACEDESC2():
+        dwSize(0),
+        dwFlags(0),
+        dwHeight(0),
+        dwWidth(0), 
+        lPitch(0),
+        dwBackBufferCount(0),
+        dwMipMapCount(0),
+        dwAlphaBitDepth(0),
+        dwReserved(0),     
+        lpSurface(0),      
+        dwTextureStage(0) {}      
+        
+
     unsigned long         dwSize;
     unsigned long         dwFlags;
     unsigned long         dwHeight;
@@ -97,8 +133,8 @@ typedef struct _DDSURFACEDESC2
     };
     union
     {
-        unsigned long	  dwBackBufferCount;
-        unsigned long	  dwDepth;      
+        unsigned long      dwBackBufferCount;
+        unsigned long      dwDepth;      
     };
     union
     {
@@ -115,26 +151,26 @@ typedef struct _DDSURFACEDESC2
     DDPIXELFORMAT ddpfPixelFormat;         
     DDSCAPS2      ddsCaps;                 
     unsigned long dwTextureStage;          
-} DDSURFACEDESC2; 
+}; 
 
 //
 // DDSURFACEDESC2 flags that mark the validity of the struct data
 //
 #define DDSD_CAPS               0x00000001l     // default
-#define DDSD_HEIGHT             0x00000002l		// default
-#define DDSD_WIDTH              0x00000004l		// default
-#define DDSD_PIXELFORMAT        0x00001000l		// default
+#define DDSD_HEIGHT             0x00000002l        // default
+#define DDSD_WIDTH              0x00000004l        // default
+#define DDSD_PIXELFORMAT        0x00001000l        // default
 #define DDSD_PITCH              0x00000008l     // For uncompressed formats
 #define DDSD_MIPMAPCOUNT        0x00020000l
 #define DDSD_LINEARSIZE         0x00080000l     // For compressed formats
-#define DDSD_DEPTH              0x00800000l		// Volume Textures
+#define DDSD_DEPTH              0x00800000l        // Volume Textures
 
 //
 // DDPIXELFORMAT flags
 //
 #define DDPF_ALPHAPIXELS        0x00000001l
-#define DDPF_FOURCC             0x00000004l		// Compressed formats 
-#define DDPF_RGB                0x00000040l		// Uncompressed formats
+#define DDPF_FOURCC             0x00000004l        // Compressed formats 
+#define DDPF_RGB                0x00000040l        // Uncompressed formats
 #define DDPF_ALPHA              0x00000002l
 #define DDPF_COMPRESSED         0x00000080l
 #define DDPF_LUMINANCE          0x00020000l
@@ -171,7 +207,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 
     char filecode[4];
     
-	_istream.read(filecode, 4);
+    _istream.read(filecode, 4);
     if (strncmp(filecode, "DDS ", 4) != 0) {
         return NULL;
     }
@@ -226,10 +262,13 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         switch(ddsd.ddpfPixelFormat.dwRGBBitCount)
         {
         case 32:
-            internalFormat = usingAlpha ? 4 : 3;
-            pixelFormat = usingAlpha ? GL_RGBA  : GL_RGB;
+            internalFormat = 4;
+            pixelFormat = GL_RGBA;
             break;
         case 24:
+            internalFormat = 3;
+            pixelFormat = GL_RGB;
+            break;
         case 16:
         default:
             osg::notify(osg::WARN)<<"Warning:: unhandled pixel format in dds file, image not loaded"<<std::endl;
@@ -244,7 +283,6 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // Compressed formats
     else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
     {
-        bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
         switch(ddsd.ddpfPixelFormat.dwFourCC)
         {
         case FOURCC_DXT1:
@@ -366,20 +404,9 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     }
 
 
-	
-
-	//###[afarre_051904]
-	unsigned int size = 0;
-    if (is3dImage)
-	{
-        size = osg::Image::computeNumComponents(pixelFormat) * ddsd.dwWidth * ddsd.dwHeight * depth;
-	}
-	else
-	{
-		osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
-		if (mipmaps.size()>0)  osgImage->setMipmapData(mipmaps);
-		size = 	osgImage->getTotalSizeInBytesIncludingMipmaps();
-	}
+    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
+    if (mipmaps.size()>0)  osgImage->setMipmapData(mipmaps);
+    unsigned int size = osgImage->getTotalSizeInBytesIncludingMipmaps();
 
     if(size <= 0)
     {
@@ -433,13 +460,13 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
         return false;
 
     // Initialize ddsd structure and its members 
-    DDSURFACEDESC2 ddsd              = {0};
-    DDPIXELFORMAT  ddpf              = {0};
-    DDCOLORKEY     ddckCKDestOverlay = {0};
-    DDCOLORKEY     ddckCKDestBlt     = {0};
-    DDCOLORKEY     ddckCKSrcOverlay  = {0};
-    DDCOLORKEY     ddckCKSrcBlt      = {0};
-    DDSCAPS2       ddsCaps           = {0};
+    DDSURFACEDESC2 ddsd;
+    DDPIXELFORMAT  ddpf;
+    DDCOLORKEY     ddckCKDestOverlay;
+    DDCOLORKEY     ddckCKDestBlt;
+    DDCOLORKEY     ddckCKSrcOverlay;
+    DDCOLORKEY     ddckCKSrcBlt;
+    DDSCAPS2       ddsCaps;
 
     ddsd.dwSize = sizeof(ddsd);  
     ddpf.dwSize = sizeof(ddpf);
@@ -456,7 +483,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
     unsigned int internalFormat = img->getInternalTextureFormat();
     unsigned int components     = osg::Image::computeNumComponents(pixelFormat);
     unsigned int pixelSize      = osg::Image::computePixelSizeInBits(pixelFormat, dataType);
-    unsigned int imageSize      = img->getImageSizeInBytes() / components;
+    unsigned int imageSize      = img->getImageSizeInBytes();
     bool is3dImage = false;
 
     int s = ddsd.dwWidth  = img->s();
@@ -478,7 +505,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
         //Uncompressed
     case GL_RGBA:
         {
-            ddpf.dwRBitMask        = 0x00ff0000;  //1st change
+            ddpf.dwRBitMask        = 0x00ff0000;  
             ddpf.dwGBitMask        = 0x0000ff00;
             ddpf.dwBBitMask        = 0x000000ff;
             ddpf.dwRGBAlphaBitMask = 0xff000000;
@@ -490,7 +517,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
         break;
     case GL_BGRA:
         {
-            ddpf.dwBBitMask        = 0x00ff0000;  //2nd change
+            ddpf.dwBBitMask        = 0x00ff0000;  
             ddpf.dwGBitMask        = 0x0000ff00;
             ddpf.dwRBitMask        = 0x000000ff;
             ddpf.dwRGBAlphaBitMask = 0xff000000;
@@ -504,7 +531,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
         {
             ddpf.dwRBitMask         = 0x00ff0000;
             ddpf.dwRGBAlphaBitMask  = 0x000000ff;
-            PF_flags |= (DDPF_ALPHAPIXELS | DDPF_LUMINANCE);  //3rd change
+            PF_flags |= (DDPF_ALPHAPIXELS | DDPF_LUMINANCE);  
             ddpf.dwRGBBitCount = pixelSize; 
             ddsd.lPitch = img->getRowSizeInBytes();
             SD_flags |= DDSD_PITCH;
@@ -519,13 +546,21 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
             SD_flags |= DDSD_PITCH;
-
         }
         break;
     case GL_LUMINANCE:
         {
             ddpf.dwRBitMask         = 0x00ff0000;
             PF_flags |= DDPF_LUMINANCE;
+            ddpf.dwRGBBitCount = pixelSize;
+            ddsd.lPitch = img->getRowSizeInBytes();
+            SD_flags |= DDSD_PITCH;
+        }
+        break;
+    case GL_ALPHA:
+        {
+            ddpf.dwRGBAlphaBitMask  = 0x000000ff;
+            PF_flags |= DDPF_ALPHA;
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();
             SD_flags |= DDSD_PITCH;
@@ -570,7 +605,7 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
         return false;
     }
 
-
+   
     // set even more flags
     if(img->isMipmap() && !is3dImage)
     {
@@ -614,7 +649,11 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
             unsigned char *mmdPtr, *next_mmdPtr;
             int offset;
             unsigned int mipmaps = img->getNumMipmapLevels();
-            unsigned int blockSize = (pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
+            unsigned int blockSize;
+            if(ddsd.dwFlags & DDSD_LINEARSIZE) // COMPRESSED
+                blockSize = (pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
+            else
+                blockSize = pixelSize;    
 
             mmdPtr = img->getMipmapData(1); /* get the first mipmap address */
 
@@ -635,8 +674,8 @@ bool WriteDDSFile(const osg::Image *img, const char *filename)
     {
         for(int i = 0; i < r; ++i)
         {
-            memcpy(dataPtr, img->data(0, 0, i), imageSize*components);  //4th change
-            dataPtr += imageSize*components;
+            memcpy(dataPtr, img->data(0, 0, i), imageSize);  
+            dataPtr += imageSize;
         }
     }
 

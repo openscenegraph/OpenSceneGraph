@@ -56,7 +56,7 @@ public:
         
     ~EdgeCollapse();
 
-    void setGeometry(osg::Geometry* geometry);
+    void setGeometry(osg::Geometry* geometry, const Simplifier::IndexList& protectedPoints);
     osg::Geometry* getGeometry() { return _geometry; }
 
     unsigned int getNumOfTriangles() { return _triangleSet.size(); }
@@ -199,8 +199,10 @@ public:
 
     struct Point : public osg::Referenced
     {
-        Point():_index(0) {}
+        Point(): _protected(false), _index(0) {}
         
+        bool _protected;
+
         unsigned int _index;
 
         osg::Vec3           _vertex;
@@ -223,6 +225,8 @@ public:
         
         bool isBoundaryPoint() const
         {
+            if (_protected) return true;
+        
             for(TriangleSet::const_iterator itr=_triangles.begin();
                 itr!=_triangles.end();
                 ++itr)
@@ -1180,7 +1184,7 @@ class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
         EdgeCollapse::PointList& _pointList;
 };
 
-void EdgeCollapse::setGeometry(osg::Geometry* geometry)
+void EdgeCollapse::setGeometry(osg::Geometry* geometry, const Simplifier::IndexList& protectedPoints)
 {
     _geometry = geometry;
     
@@ -1227,10 +1231,20 @@ void EdgeCollapse::setGeometry(osg::Geometry* geometry)
             geometry->getVertexAttribArray(vi)->accept(copyArrayToPoints);
     }
 
+    // now set the protected points up.
+    for(Simplifier::IndexList::const_iterator pitr=protectedPoints.begin();
+        pitr!=protectedPoints.end();
+        ++pitr)
+    {
+        _originalPointList[*pitr]->_protected = true;
+    }
+
+
     CollectTriangleIndexFunctor collectTriangles;
     collectTriangles.setEdgeCollapse(this);
     
     _geometry->accept(collectTriangles);
+    
 }
  
 
@@ -1467,10 +1481,19 @@ Simplifier::Simplifier(float sampleRatio, float maximumError):
 
 void Simplifier::simplify(osg::Geometry& geometry)
 {
+    // pass an empty list of indices to simply(Geometry,IndexList)
+    // so that this one method handle both cases of non protected indices
+    // and specified indices.
+    IndexList emptyList;
+    simplify(geometry,emptyList);
+}
+
+void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoints)
+{
     osg::notify(osg::WARN)<<"++++++++++++++simplifier************"<<std::endl;
 
     EdgeCollapse ec;
-    ec.setGeometry(&geometry);
+    ec.setGeometry(&geometry, protectedPoints);
 
     ec.updateErrorMetricForAllEdges();
 
@@ -1498,5 +1521,4 @@ void Simplifier::simplify(osg::Geometry& geometry)
     osg::notify(osg::WARN)<<           "        continueSimplification(,,)  = "<<continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size())<<std::endl;
     
     ec.copyBackToGeometry();
-
 }

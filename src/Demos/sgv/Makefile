@@ -23,5 +23,6 @@ include $(OSGHOME)/Make/makerules
 
 test :
 	sgv cow.osg
+	sgv -stereo cessna.osg
 	sgv Town.osg
 

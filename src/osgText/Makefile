@@ -10,7 +10,7 @@ CXXFILES = \
 
 DEF     += -DOSGTEXT_LIBRARY
 
-LIBS  += -losg -losgUtil $(GL_LIBS) $(OTHER_LIBS)
+LIBS  +=  -losgDB -losgUtil -losg $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgText
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

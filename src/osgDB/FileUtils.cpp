@@ -99,7 +99,7 @@ bool osgDB::makeDirectory( const std::string &path )
                     break;
  
                 default:
-                    osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << sys_errlist[errno] << std::endl;
+                    osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
                     return false;
             }
         }
@@ -112,7 +112,7 @@ bool osgDB::makeDirectory( const std::string &path )
  
         if( mkdir( dir.c_str(), 0755 )< 0 )
         {
-            osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << sys_errlist[errno] << std::endl;
+            osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
             return false;
         } 
         paths.pop();

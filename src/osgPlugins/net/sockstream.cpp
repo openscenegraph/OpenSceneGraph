@@ -123,6 +123,11 @@ extern "C" {
 
 #endif // !WIN32
 
+#ifdef __sun
+#include <sys/sockio.h>
+#include <sys/filio.h>
+#endif
+
 #ifndef BUFSIZ
 #  define BUFSIZ 1024
 #endif
@@ -135,7 +140,7 @@ extern "C" {
 const char* sockerr::errstr () const
 {
 #if defined(__CYGWIN__) || !defined(WIN32)
-    return sys_errlist[err];
+    return strerror(err);
 #else
 	return 0; // TODO
 #endif
@@ -195,7 +200,7 @@ bool sockerr::op () const
   case EHOSTDOWN:
   case EHOSTUNREACH:
   case ENOTEMPTY:
-#	if !defined(__linux__) // LN
+#	if !defined(__linux__) && !defined(__sun)// LN
   case EPROCLIM:
 #	endif
   case EUSERS:
@@ -240,7 +245,7 @@ bool sockerr::benign () const
   case EWOULDBLOCK:
 // On FreeBSD (and probably on Linux too) 
 // EAGAIN has the same value as EWOULDBLOCK
-#if !defined(__CYGWIN__) && !defined( __sgi) && !defined(__linux__) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
+#if !defined(__CYGWIN__) && !defined( __sgi) && !defined(__linux__) && !defined(__sun) && !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__)) // LN
   case EAGAIN:
 #endif
     return true;

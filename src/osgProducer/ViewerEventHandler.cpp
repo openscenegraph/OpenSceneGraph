@@ -801,7 +801,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                 {
                     if (osgDB::writeNodeFile(*node,_writeNodeFileName.c_str()))
                     {
-                        std::cout<<"writen nodes to file "<<_writeNodeFileName<<std::endl;
+                        std::cout<<"written nodes to file "<<_writeNodeFileName<<std::endl;
                     }
                 }
 

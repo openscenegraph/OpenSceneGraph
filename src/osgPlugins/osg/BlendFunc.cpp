@@ -83,6 +83,8 @@ bool BlendFunc_matchModeStr(const char* str,int& mode)
     else if (strcmp(str,"SRC_ALPHA_SATURATE")==0)   mode = BlendFunc::SRC_ALPHA_SATURATE;
     else if (strcmp(str,"SRC_COLOR")==0)            mode = BlendFunc::SRC_COLOR;
     else if (strcmp(str,"ZERO")==0)                 mode = BlendFunc::ZERO;
+    else if (strcmp(str,"CONSTANT_ALPHA")==0)       mode = BlendFunc::CONSTANT_ALPHA;
+    else if (strcmp(str,"ONE_MINUS_CONSTANT_ALPHA")==0) mode = BlendFunc::ONE_MINUS_CONSTANT_ALPHA;
     else return false;
     return true;
 
@@ -103,6 +105,8 @@ const char* BlendFunc_getModeStr(int value)
         case(BlendFunc::SRC_ALPHA_SATURATE) :    return "SRC_ALPHA_SATURATE";
         case(BlendFunc::SRC_COLOR) :             return "SRC_COLOR";
         case(BlendFunc::ZERO) :                  return "ZERO";
+        case(BlendFunc::CONSTANT_ALPHA) :        return "CONSTANT_ALPHA";
+        case(BlendFunc::ONE_MINUS_CONSTANT_ALPHA): return "ONE_MINUS_CONSTANT_ALPHA";
     }
 
     return NULL;

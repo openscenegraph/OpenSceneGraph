@@ -417,8 +417,12 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
 				osg::Vec4 cspec((float)atof(tokv[15]), (float)atof(tokv[16]),
 								(float)atof(tokv[17]),1.0-(float)atof(tokv[21]));
 				numat->setSpecular(osg::Material::FRONT_AND_BACK,cspec);
+				// addition 1 Nov 2003 - use shininess (was defaulted)
+				float shininess=atof(tokv[19]);
+				numat->setShininess(osg::Material::FRONT_AND_BACK,shininess);
 				osg::Vec4 cemm((float)atof(tokv[11]),(float)atof(tokv[12]),(float)atof(tokv[13]),1.0-(float)atof(tokv[21]));
-				numat->setSpecular(osg::Material::FRONT_AND_BACK,cemm);
+				// correction 1 Nov 2003 - from Marcio Ferraz - use emission colour for emission
+				numat->setEmission(osg::Material::FRONT_AND_BACK,cemm);
 				//numat->setTransparency(osg::Material::FRONT_AND_BACK, 1.0-(float)atof(tokv[21]));
 
 				palette.push_back(numat); // [num_palette++] = numat;
@@ -733,15 +737,22 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
 				for (n = 0; n < num; n++)
 				{
 					osg::Group *k = ac_load_object(f,&ob); //, ob);
-
 					if (k == NULL)
 					{
 						printf("error reading expected child object %d of %d at line: %d\n", n+1, num, line);
 						return(gp);
 					}
-					else
-						//ob.kids[n] = k;
+					else {
+						osg::LightSource *ls=dynamic_cast<osg::LightSource*>(k);
+						if (ls) {
+							osg::StateSet* lightStateSet = gp->getOrCreateStateSet();
+							gp->setStateSet(lightStateSet);
+							gp->setCullingActive(false);
+							ls->setStateSetModes(*lightStateSet,osg::StateAttribute::ON);
+						}
+						
 						gp->addChild(k);
+					}
 				}
 
 			}
@@ -753,6 +764,23 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
 					osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
 					if (geom) tesselator.retesselatePolygons(*geom);
 				}
+			}
+			else if (ob.type == OBJECT_LIGHT)
+			{ // add a light source to the scene 1 Nov 2003
+				static int nlight=1;
+				osg::Light* ac3dLight = new osg::Light;
+				ac3dLight->setLightNum(nlight++);
+				ac3dLight->setPosition(osg::Vec4(ob.loc[0],ob.loc[1],ob.loc[2],0.0f));
+				ac3dLight->setAmbient(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
+				ac3dLight->setDiffuse(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
+				ac3dLight->setSpecular(osg::Vec4(1.0f,1.0f,0.5f,1.0f));
+				
+				osg::LightSource* ac3dLightSource = new osg::LightSource;	
+				ac3dLightSource->setLight(ac3dLight);
+				ac3dLightSource->setLocalStateSetModes(osg::StateAttribute::ON); 
+				
+				// for some mad reason, you need to set this so that the light works.  WHY?
+				return ac3dLightSource;
 			}
 			return(gp);
 		}

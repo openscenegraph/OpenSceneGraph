@@ -4,6 +4,19 @@ using namespace osg;
 
 FrameStamp::FrameStamp():Referenced()
 {
+    _frameNumber=0;
+    _referenceTime=0;
+
+    tm_sec=0;            /* Seconds.        [0-60] (1 leap second) */
+    tm_min=0;            /* Minutes.        [0-59] */
+    tm_hour=0;           /* Hours.          [0-23] */
+    tm_mday=0;           /* Day.            [1-31] */
+    tm_mon=0;            /* Month.          [0-11] */
+    tm_year=0;           /* Year            - 1900.  */
+    tm_wday=0;           /* Day of week.    [0-6] */
+    tm_yday=0;           /* Days in year.   [0-365]    */
+    tm_isdst=0;           /* DST.           [-1/0/1]*/
+
 }
 
 FrameStamp::FrameStamp(const FrameStamp& fs):Referenced()

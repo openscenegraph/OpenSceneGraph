@@ -213,7 +213,7 @@ void Texture::apply(State& state) const
                 glTexSubImage2D(_target, 0,
                                 _subloadOffsX, _subloadOffsY,
                                 (_subloadWidth>0)?_subloadWidth:_image->s(), (_subloadHeight>0)?_subloadHeight:_image->t(),
-                                (GLenum) _image->pixelFormat(), (GLenum) _image->dataType(),
+                                (GLenum) _image->getPixelFormat(), (GLenum) _image->getDataType(),
                                 _image->data());
                 // update the modified flag to show that the image has been loaded.
                 modifiedTag = _image->getModifiedTag();
@@ -333,23 +333,23 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
     if (_subloadMode == OFF)
         image->ensureValidSizeForTexturing();
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT,image->packing());
+    glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     
     static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
     static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
 
     // select the internalFormat required for the texture.
-    int internalFormat = image->internalTextureFormat();
+    GLint internalFormat = image->getInternalTextureFormat();
     switch(_internalFormatMode)
     {
         case(USE_IMAGE_DATA_FORMAT):
-            internalFormat = image->internalTextureFormat();
+            internalFormat = image->getInternalTextureFormat();
             break;
 
         case(USE_ARB_COMPRESSION):
             if (s_ARB_Compression)
             {
-                switch(image->pixelFormat())
+                switch(image->getPixelFormat())
                 {
                     case(1): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
                     case(2): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
@@ -363,52 +363,52 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
                     case(GL_INTENSITY): internalFormat = GL_COMPRESSED_INTENSITY_ARB; break;
                 }
             }
-            else internalFormat = image->internalTextureFormat();
+            else internalFormat = image->getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT1_COMPRESSION):
             if (s_S3TC_Compression)
             {
-                switch(image->pixelFormat())
+                switch(image->getPixelFormat())
                 {
                     case(3):        internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(4):        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
                     case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
-                    default:        internalFormat = image->internalTextureFormat(); break;
+                    default:        internalFormat = image->getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image->internalTextureFormat();
+            else internalFormat = image->getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT3_COMPRESSION):
             if (s_S3TC_Compression)
             {
-                switch(image->pixelFormat())
+                switch(image->getPixelFormat())
                 {
                     case(3):
                     case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(4):
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
-                    default:        internalFormat = _image->internalTextureFormat(); break;
+                    default:        internalFormat = _image->getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image->internalTextureFormat();
+            else internalFormat = image->getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT5_COMPRESSION):
             if (s_S3TC_Compression)
             {
-                switch(image->pixelFormat())
+                switch(image->getPixelFormat())
                 {
                     case(3):
                     case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
                     case(4):
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
-                    default:        internalFormat = image->internalTextureFormat(); break;
+                    default:        internalFormat = image->getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image->internalTextureFormat();
+            else internalFormat = image->getInternalTextureFormat();
             break;
 
         case(USE_USER_DEFINED_FORMAT):
@@ -427,8 +427,8 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         {
             glTexImage2D( target, 0, internalFormat,
                 image->s(), image->t(), 0,
-                (GLenum)image->pixelFormat(),
-                (GLenum)image->dataType(),
+                (GLenum)image->getPixelFormat(),
+                (GLenum)image->getDataType(),
                 image->data() );
 
             // just estimate estimate it right now..
@@ -441,7 +441,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
 
             gluBuild2DMipmaps( target, internalFormat,
                 image->s(),image->t(),
-                (GLenum)image->pixelFormat(), (GLenum)image->dataType(),
+                (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                 image->data() );
 
             // just estimate size it right now..
@@ -477,13 +477,13 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
         // reserve appropriate texture memory
         glTexImage2D(target, 0, internalFormat,
                      _textureWidth, _textureHeight, 0,
-                     (GLenum) image->pixelFormat(), (GLenum) image->dataType(),
+                     (GLenum) image->getPixelFormat(), (GLenum) image->getDataType(),
                      NULL);
 
         glTexSubImage2D(target, 0,
                         _subloadOffsX, _subloadOffsY,
                         width, height,
-                        (GLenum) image->pixelFormat(), (GLenum) image->dataType(),
+                        (GLenum) image->getPixelFormat(), (GLenum) image->getDataType(),
                         image->data());
     }
     

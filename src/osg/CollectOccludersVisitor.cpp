@@ -9,10 +9,9 @@
 
 using namespace osg;
 
-CollectOccludersVisitor::CollectOccludersVisitor()
+CollectOccludersVisitor::CollectOccludersVisitor():
+    NodeVisitor(COLLECT_OCCLUDER_VISITOR,TRAVERSE_ACTIVE_CHILDREN)
 {
-    // overide the default node visitor mode.
-    setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
     setCullingMode(VIEW_FRUSTUM_CULLING|
                    NEAR_PLANE_CULLING|

@@ -88,7 +88,9 @@ void Viewer::setUpViewer(unsigned int options)
     _start_tick = _timer.tick();
 
     // set the keyboard mouse callback to catch the events from the windows.
-    _kbmcb = new osgProducer::KeyboardMouseCallback( kbm, _done, (options & ESCAPE_SETS_DONE)!=0 );
+    if (!_kbmcb)
+        _kbmcb = new osgProducer::KeyboardMouseCallback( kbm, _done, (options & ESCAPE_SETS_DONE)!=0 );
+        
     _kbmcb->setStartTick(_start_tick);
     
     // register the callback with the keyboard mouse manger.

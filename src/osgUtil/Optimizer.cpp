@@ -94,7 +94,10 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         StateVisitor osv;
         node->accept(osv);
         osv.optimize();
-
+    }
+    
+    if (options & MERGE_GEOMETRY)
+    {
         MergeGeometryVisitor mgv;
         node->accept(mgv);
     }
@@ -1068,17 +1071,32 @@ struct LessGeometry
         if (lhs->getStateSet()<rhs->getStateSet()) return true;
         if (rhs->getStateSet()<lhs->getStateSet()) return false;
         
+        if (rhs->getVertexIndices()) { if (!lhs->getVertexIndices()) return true; }
+        else if (lhs->getVertexIndices()) return false;
+        
         if (lhs->getNormalBinding()<rhs->getNormalBinding()) return true;
         if (rhs->getNormalBinding()<lhs->getNormalBinding()) return false;
+
+        if (rhs->getNormalIndices()) { if (!lhs->getNormalIndices()) return true; }
+        else if (lhs->getNormalIndices()) return false;
 
         if (lhs->getColorBinding()<rhs->getColorBinding()) return true;
         if (rhs->getColorBinding()<lhs->getColorBinding()) return false;
         
+        if (rhs->getColorIndices()) { if (!lhs->getColorIndices()) return true; }
+        else if (lhs->getColorIndices()) return false;
+
         if (lhs->getSecondaryColorBinding()<rhs->getSecondaryColorBinding()) return true;
         if (rhs->getSecondaryColorBinding()<lhs->getSecondaryColorBinding()) return false;
 
+        if (rhs->getSecondaryColorIndices()) { if (!lhs->getSecondaryColorIndices()) return true; }
+        else if (lhs->getSecondaryColorIndices()) return false;
+
         if (lhs->getFogCoordBinding()<rhs->getFogCoordBinding()) return true;
         if (rhs->getFogCoordBinding()<lhs->getFogCoordBinding()) return false;
+
+        if (rhs->getFogCoordIndices()) { if (!lhs->getFogCoordIndices()) return true; }
+        else if (lhs->getFogCoordIndices()) return false;
 
         if (lhs->getNumTexCoordArrays()<rhs->getNumTexCoordArrays()) return true;
         if (rhs->getNumTexCoordArrays()<lhs->getNumTexCoordArrays()) return false;
@@ -1087,12 +1105,17 @@ struct LessGeometry
         
         for(unsigned int i=0;i<lhs->getNumTexCoordArrays();++i)
         {
-            if (rhs->getTexCoordArray(i))
+            if (rhs->getTexCoordArray(i)) 
             {
                 if (!lhs->getTexCoordArray(i)) return true;
             }
             else if (lhs->getTexCoordArray(i)) return false;
+
+            if (rhs->getTexCoordIndices(i)) { if (!lhs->getTexCoordIndices(i)) return true; }
+            else if (lhs->getTexCoordIndices(i)) return false;
         }
+        
+        
         
         if (lhs->getNormalBinding()==osg::Geometry::BIND_OVERALL)
         {
@@ -1168,7 +1191,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
             osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
             if (geom)
             {
-                geom->computeCorrectBindingsAndArraySizes();
+                //geom->computeCorrectBindingsAndArraySizes();
 
                 if (!geometryContainsSharedArrays(*geom))
                 {

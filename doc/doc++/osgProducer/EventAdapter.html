@@ -23,23 +23,23 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.1.37">_s_accumulatedButtonMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.1.38">_s_accumulatedButtonMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.1.38">_s_button</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.1.39">_s_button</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.39">_s_Xmin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.40">_s_Xmin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.40">_s_Xmax</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.41">_s_Xmax</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.41">_s_Ymin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.42">_s_Ymin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.42">_s_Ymax</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.43">_s_Ymax</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.43">_s_mx</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.44">_s_mx</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.44">_s_my</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   float <B><A HREF="#DOC.2.1.45">_s_my</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.1.45">_s_modKeyMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.1.46">_s_modKeyMask</A></B>
 </DL></P>
 
 <P><DL>
@@ -92,49 +92,52 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.17">adaptResize</A></B>(double t, float Xmin, float Ymin, float Xmax, float Ymax)
 <DD><I>method for adapting resize events.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.18">adaptMouseMotion</A></B>(double t, float x, float y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.18">adaptMouseScroll</A></B>(double t, Producer::KeyboardMouseCallback::ScrollingMotion sm)
+<DD><I>method for adapting mouse scroll wheel events.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.19">adaptMouseMotion</A></B>(double t, float x, float y)
 <DD><I>method for adapting mouse motion events whilst mouse buttons are pressed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.19">adaptButtonPress</A></B>(double t, float x, float y, unsigned int button)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.20">adaptButtonPress</A></B>(double t, float x, float y, unsigned int button)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.20">adaptButtonRelease</A></B>(double t, float x, float y, unsigned int button)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.21">adaptButtonRelease</A></B>(double t, float x, float y, unsigned int button)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.21">adaptKeyPress</A></B>( double t, Producer::KeySymbol key)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.22">adaptKeyPress</A></B>( double t, Producer::KeySymbol key)
 <DD><I>method for adapting keyboard events</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.22">adaptKeyRelease</A></B>( double t, Producer::KeySymbol key)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.23">adaptKeyRelease</A></B>( double t, Producer::KeySymbol key)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.23">adaptFrame</A></B>(double t)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.24">adaptFrame</A></B>(double t)
 <DD><I>method for adapting frame events, ie.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.24">copyStaticVariables</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.25">copyStaticVariables</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>EventType <B><A HREF="#DOC.2.1.25">_eventType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>EventType <B><A HREF="#DOC.2.1.26">_eventType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.26">_key</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.27">_key</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.27">_button</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.1.28">_button</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.28">_Xmin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.29">_Xmin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.1.29">_Xmax</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.1.30">_Xmax</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.30">_Ymin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.31">_Ymin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.1.31">_Ymax</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.1.32">_Ymax</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.32">_mx</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.33">_mx</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.33">_my</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.34">_my</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.1.34">_buttonMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.1.35">_buttonMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.1.35">_modKeyMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.1.36">_modKeyMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.36">_time</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.37">_time</A></B>
 </DL></P>
 
 </DL>
@@ -227,119 +230,124 @@
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptResize(double t, float Xmin, float Ymin, float Xmax, float Ymax)</B></TT>
 <DD>method for adapting resize events. 
 <DL><DT><DD></DL><P>
-<A NAME="adaptMouseMotion"></A>
+<A NAME="adaptMouseScroll"></A>
 <A NAME="DOC.2.1.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMouseScroll(double t, Producer::KeyboardMouseCallback::ScrollingMotion sm)</B></TT>
+<DD>method for adapting mouse scroll wheel events. 
+<DL><DT><DD></DL><P>
+<A NAME="adaptMouseMotion"></A>
+<A NAME="DOC.2.1.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptMouseMotion(double t, float x, float y)</B></TT>
 <DD>method for adapting mouse motion events whilst mouse buttons are pressed
 <DL><DT><DD></DL><P>
 <A NAME="adaptButtonPress"></A>
-<A NAME="DOC.2.1.19"></A>
+<A NAME="DOC.2.1.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptButtonPress(double t, float x, float y, unsigned int button)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="adaptButtonRelease"></A>
-<A NAME="DOC.2.1.20"></A>
+<A NAME="DOC.2.1.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptButtonRelease(double t, float x, float y, unsigned int button)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="adaptKeyPress"></A>
-<A NAME="DOC.2.1.21"></A>
+<A NAME="DOC.2.1.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptKeyPress( double t, Producer::KeySymbol key)</B></TT>
 <DD>method for adapting keyboard events
 <DL><DT><DD></DL><P>
 <A NAME="adaptKeyRelease"></A>
-<A NAME="DOC.2.1.22"></A>
+<A NAME="DOC.2.1.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptKeyRelease( double t, Producer::KeySymbol key)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="adaptFrame"></A>
-<A NAME="DOC.2.1.23"></A>
+<A NAME="DOC.2.1.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void adaptFrame(double t)</B></TT>
 <DD>method for adapting frame events, ie. idle/display callback.
 <DL><DT><DD></DL><P>
 <A NAME="copyStaticVariables"></A>
-<A NAME="DOC.2.1.24"></A>
+<A NAME="DOC.2.1.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copyStaticVariables()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_eventType"></A>
-<A NAME="DOC.2.1.25"></A>
+<A NAME="DOC.2.1.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>EventType _eventType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_key"></A>
-<A NAME="DOC.2.1.26"></A>
+<A NAME="DOC.2.1.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _key</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_button"></A>
-<A NAME="DOC.2.1.27"></A>
+<A NAME="DOC.2.1.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _button</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_Xmin"></A>
-<A NAME="DOC.2.1.28"></A>
+<A NAME="DOC.2.1.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _Xmin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_Xmax"></A>
-<A NAME="DOC.2.1.29"></A>
+<A NAME="DOC.2.1.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float  _Xmax</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_Ymin"></A>
-<A NAME="DOC.2.1.30"></A>
+<A NAME="DOC.2.1.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _Ymin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_Ymax"></A>
-<A NAME="DOC.2.1.31"></A>
+<A NAME="DOC.2.1.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float  _Ymax</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mx"></A>
-<A NAME="DOC.2.1.32"></A>
+<A NAME="DOC.2.1.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _mx</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_my"></A>
-<A NAME="DOC.2.1.33"></A>
+<A NAME="DOC.2.1.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _my</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_buttonMask"></A>
-<A NAME="DOC.2.1.34"></A>
+<A NAME="DOC.2.1.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _buttonMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modKeyMask"></A>
-<A NAME="DOC.2.1.35"></A>
+<A NAME="DOC.2.1.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _modKeyMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_time"></A>
-<A NAME="DOC.2.1.36"></A>
+<A NAME="DOC.2.1.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _time</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_accumulatedButtonMask"></A>
-<A NAME="DOC.2.1.37"></A>
+<A NAME="DOC.2.1.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int _s_accumulatedButtonMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_button"></A>
-<A NAME="DOC.2.1.38"></A>
+<A NAME="DOC.2.1.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int _s_button</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_Xmin"></A>
-<A NAME="DOC.2.1.39"></A>
+<A NAME="DOC.2.1.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   float _s_Xmin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_Xmax"></A>
-<A NAME="DOC.2.1.40"></A>
+<A NAME="DOC.2.1.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   float _s_Xmax</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_Ymin"></A>
-<A NAME="DOC.2.1.41"></A>
+<A NAME="DOC.2.1.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   float _s_Ymin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_Ymax"></A>
-<A NAME="DOC.2.1.42"></A>
+<A NAME="DOC.2.1.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   float _s_Ymax</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_mx"></A>
-<A NAME="DOC.2.1.43"></A>
+<A NAME="DOC.2.1.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   float _s_mx</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_my"></A>
-<A NAME="DOC.2.1.44"></A>
+<A NAME="DOC.2.1.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   float _s_my</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s_modKeyMask"></A>
-<A NAME="DOC.2.1.45"></A>
+<A NAME="DOC.2.1.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int _s_modKeyMask</B></TT>
 <DL><DT><DD></DL><P></DL>
 

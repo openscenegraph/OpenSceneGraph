@@ -23,56 +23,56 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* <B><A HREF="#DOC.2.2.3">loadLibrary</A></B>(const std::string&amp; libraryName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* <B><A HREF="#DOC.2.3.3">loadLibrary</A></B>(const std::string&amp; libraryName)
 <DD><I>returns a pointer to a DynamicLibrary object on successfully opening of library returns NULL on failure</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.2.4">getName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.3.4">getName</A></B>() const 
 <DD><I>return name of library stripped of path</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.2.5">getFullName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.3.5">getFullName</A></B>() const 
 <DD><I>return name of library including full path to it</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> <B><A HREF="#DOC.2.2.6">getHandle</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> <B><A HREF="#DOC.2.3.6">getHandle</A></B>() const 
 <DD><I>return handle to dso/dll dynamic library itself</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html#DOC.2.2.2">PROC_ADDRESS</A> <B><A HREF="#DOC.2.2.7">getProcAddress</A></B>(const std::string&amp; procName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html#DOC.2.3.2">PROC_ADDRESS</A> <B><A HREF="#DOC.2.3.7">getProcAddress</A></B>(const std::string&amp; procName)
 <DD><I>return address of function located in library</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  void* <B><A HREF="#DOC.2.2.1">HANDLE</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  void* <B><A HREF="#DOC.2.3.1">HANDLE</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  void* <B><A HREF="#DOC.2.2.2">PROC_ADDRESS</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  void* <B><A HREF="#DOC.2.3.2">PROC_ADDRESS</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> <B><A HREF="#DOC.2.2.14">_handle</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> <B><A HREF="#DOC.2.3.14">_handle</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.15">_name</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.3.15">_name</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.16">_fullName</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.3.16">_fullName</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> <B><A HREF="#DOC.2.2.8">getLibraryHandle</A></B>( const std::string&amp; libraryName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> <B><A HREF="#DOC.2.3.8">getLibraryHandle</A></B>( const std::string&amp; libraryName)
 <DD><I>get handle to library file </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.9">DynamicLibrary</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.9">DynamicLibrary</A></B>()
 <DD><I>disallow default constructor</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.10">DynamicLibrary</A></B>(const <!1><A HREF="DynamicLibrary.html#DOC.2.2.10">DynamicLibrary</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.10">DynamicLibrary</A></B>(const <!1><A HREF="DynamicLibrary.html#DOC.2.3.10">DynamicLibrary</A>&amp;)
 <DD><I>disallow copy constructor</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&amp; <B><A HREF="#DOC.2.2.11">operator == </A></B>(const <!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&amp; <B><A HREF="#DOC.2.3.11">operator == </A></B>(const <!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&amp;)
 <DD><I>disallow copy operator</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.12">DynamicLibrary</A></B>(const std::string&amp; name, <!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> handle)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.12">DynamicLibrary</A></B>(const std::string&amp; name, <!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> handle)
 <DD><I>Disallow public construction so that users have to go through loadLibrary() above which returns NULL on  failure, a valid DynamicLibrary object on success</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.13">~DynamicLibrary</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.13">~DynamicLibrary</A></B>()
 </DL></P>
 
 </DL>
@@ -85,80 +85,80 @@ typically used for loading ReaderWriter plug-ins</BLOCKQUOTE>
 <DL>
 
 <A NAME="HANDLE"></A>
-<A NAME="DOC.2.2.1"></A>
+<A NAME="DOC.2.3.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  void* HANDLE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="PROC_ADDRESS"></A>
-<A NAME="DOC.2.2.2"></A>
+<A NAME="DOC.2.3.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  void* PROC_ADDRESS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="loadLibrary"></A>
-<A NAME="DOC.2.2.3"></A>
+<A NAME="DOC.2.3.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>* loadLibrary(const std::string&amp; libraryName)</B></TT>
 <DD>returns a pointer to a DynamicLibrary object on successfully
 opening of library returns NULL on failure
 <DL><DT><DD></DL><P>
 <A NAME="getName"></A>
-<A NAME="DOC.2.2.4"></A>
+<A NAME="DOC.2.3.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getName() const </B></TT>
 <DD>return name of library stripped of path
 <DL><DT><DD></DL><P>
 <A NAME="getFullName"></A>
-<A NAME="DOC.2.2.5"></A>
+<A NAME="DOC.2.3.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getFullName() const </B></TT>
 <DD>return name of library including full path to it
 <DL><DT><DD></DL><P>
 <A NAME="getHandle"></A>
-<A NAME="DOC.2.2.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> getHandle() const </B></TT>
+<A NAME="DOC.2.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> getHandle() const </B></TT>
 <DD>return handle to dso/dll dynamic library itself
 <DL><DT><DD></DL><P>
 <A NAME="getProcAddress"></A>
-<A NAME="DOC.2.2.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html#DOC.2.2.2">PROC_ADDRESS</A> getProcAddress(const std::string&amp; procName)</B></TT>
+<A NAME="DOC.2.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html#DOC.2.3.2">PROC_ADDRESS</A> getProcAddress(const std::string&amp; procName)</B></TT>
 <DD>return address of function located in library
 <DL><DT><DD></DL><P>
 <A NAME="getLibraryHandle"></A>
-<A NAME="DOC.2.2.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> getLibraryHandle( const std::string&amp; libraryName)</B></TT>
+<A NAME="DOC.2.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> getLibraryHandle( const std::string&amp; libraryName)</B></TT>
 <DD>get handle to library file 
 <DL><DT><DD></DL><P>
 <A NAME="DynamicLibrary"></A>
-<A NAME="DOC.2.2.9"></A>
+<A NAME="DOC.2.3.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DynamicLibrary()</B></TT>
 <DD>disallow default constructor
 <DL><DT><DD></DL><P>
 <A NAME="DynamicLibrary"></A>
-<A NAME="DOC.2.2.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DynamicLibrary(const <!1><A HREF="DynamicLibrary.html#DOC.2.2.10">DynamicLibrary</A>&amp;)</B></TT>
+<A NAME="DOC.2.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DynamicLibrary(const <!1><A HREF="DynamicLibrary.html#DOC.2.3.10">DynamicLibrary</A>&amp;)</B></TT>
 <DD>disallow copy constructor
 <DL><DT><DD></DL><P>
 <A NAME="operator == "></A>
-<A NAME="DOC.2.2.11"></A>
+<A NAME="DOC.2.3.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&amp; operator == (const <!1><A HREF="DynamicLibrary.html">DynamicLibrary</A>&amp;)</B></TT>
 <DD>disallow copy operator
 <DL><DT><DD></DL><P>
 <A NAME="DynamicLibrary"></A>
-<A NAME="DOC.2.2.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DynamicLibrary(const std::string&amp; name, <!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> handle)</B></TT>
+<A NAME="DOC.2.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DynamicLibrary(const std::string&amp; name, <!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> handle)</B></TT>
 <DD>Disallow public construction so that users have to go
 through loadLibrary() above which returns NULL on 
 failure, a valid DynamicLibrary object on success
 <DL><DT><DD></DL><P>
 <A NAME="~DynamicLibrary"></A>
-<A NAME="DOC.2.2.13"></A>
+<A NAME="DOC.2.3.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~DynamicLibrary()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_handle"></A>
-<A NAME="DOC.2.2.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html#DOC.2.2.1">HANDLE</A> _handle</B></TT>
+<A NAME="DOC.2.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DynamicLibrary.html#DOC.2.3.1">HANDLE</A> _handle</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_name"></A>
-<A NAME="DOC.2.2.15"></A>
+<A NAME="DOC.2.3.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _name</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fullName"></A>
-<A NAME="DOC.2.2.16"></A>
+<A NAME="DOC.2.3.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _fullName</B></TT>
 <DL><DT><DD></DL><P></DL>
 

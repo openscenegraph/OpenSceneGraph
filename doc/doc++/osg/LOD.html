@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
-<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CLOD,MLOD.html,CImpostor,MImpostor.html">
-<param name=before value="M,M,M,M,M,M^_">
-<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M,M">
-<param name=indent value="0,1,2,3,4,4">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=215>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CLOD,MLOD.html,CPagedLOD,MPagedLOD.html,CImpostor,MImpostor.html">
+<param name=before value="M,M,M,M,M,M|_,Mr_">
+<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M,M,M">
+<param name=indent value="0,1,2,3,4,4,4">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,71 +23,71 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.1">LOD</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.92.1">LOD</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.2">LOD</A></B>(const <!1><A HREF="LOD.html#DOC.2.85.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.92.2">LOD</A></B>(const <!1><A HREF="LOD.html#DOC.2.92.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="LOD.html">LOD</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.92.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="LOD.html">LOD</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.85.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.92.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.5">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.92.5">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.6">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child, float min, float max)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.92.6">addChild</A></B>(<!1><A HREF="Node.html">Node</A>* child, float min, float max)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.7">removeChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.92.7">removeChild</A></B>(<!1><A HREF="Node.html">Node</A>* child)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.85.11">setCenterMode</A></B>(<!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.11">setCenterMode</A></B>(<!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> <B><A HREF="#DOC.2.85.12">getCenterMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> <B><A HREF="#DOC.2.92.12">getCenterMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.85.13">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.92.13">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>)
 <DD><I>Sets the object-space point which defines the center of the osg::LOD.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.85.14">getCenter</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.92.14">getCenter</A></B>() const 
 <DD><I>return the LOD center point.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.85.15">setRange</A></B>(unsigned int childNo, float min, float max)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.92.15">setRange</A></B>(unsigned int childNo, float min, float max)
 <DD><I>Sets the min and max visible ranges of range of specifiec child.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.85.16">getMinRange</A></B>(unsigned int childNo) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.92.16">getMinRange</A></B>(unsigned int childNo) const 
 <DD><I>returns the min visible range for specified child</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.85.17">getMaxRange</A></B>(unsigned int childNo) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.92.17">getMaxRange</A></B>(unsigned int childNo) const 
 <DD><I>returns the max visible range for specified child</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.85.18">getNumRanges</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.92.18">getNumRanges</A></B>() const 
 <DD><I>returns the number of ranges currently set.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A>&amp; <B><A HREF="#DOC.2.85.19">getRangeList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; <B><A HREF="#DOC.2.92.19">getRangeList</A></B>()
 <DD><I>return the list of MinMax ranges for each child</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A>&amp; <B><A HREF="#DOC.2.85.20">getRangeList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; <B><A HREF="#DOC.2.92.20">getRangeList</A></B>() const 
 <DD><I>return the list of MinMax ranges for each child</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;float,float&gt; <B><A HREF="#DOC.2.85.8">MinMaxPair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;float,float&gt; <B><A HREF="#DOC.2.92.8">MinMaxPair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.85.8">MinMaxPair</A>&gt; <B><A HREF="#DOC.2.85.9">RangeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.92.8">MinMaxPair</A>&gt; <B><A HREF="#DOC.2.92.9">RangeList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.85.10">CenterMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.92.10">CenterMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> <B><A HREF="#DOC.2.85.22">_centerMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> <B><A HREF="#DOC.2.92.22">_centerMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.85.23">_userDefinedCenter</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.92.23">_userDefinedCenter</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A> <B><A HREF="#DOC.2.85.24">_rangeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A> <B><A HREF="#DOC.2.92.24">_rangeList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.85.21">~LOD</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.92.21">~LOD</A></B>()
 </DL></P>
 
 </DL>
@@ -98,6 +98,8 @@
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>insertChild</B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="Node.html">Node</A>* child )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
 <DT>
@@ -115,13 +117,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; <B>ChildList</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.78.1">ChildList</A> <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.84">NodeList</A> <B>_children</B>
 </DL></P>
 
 <P><DL>
@@ -152,15 +149,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.164.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.164.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.100.18">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.18">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -173,12 +170,6 @@
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenRequiringUpdateTraversal</B>() const 
 <DT>
@@ -200,13 +191,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> nm)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> nm)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> <B>getNodeMask</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
 <DT>
@@ -246,7 +237,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.18">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
@@ -260,9 +251,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> <B>_nodeMask</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 </DL></P>
@@ -285,9 +276,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -303,7 +294,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -354,126 +345,127 @@ during rendering.</BLOCKQUOTE>
 <DL>
 
 <A NAME="LOD"></A>
-<A NAME="DOC.2.85.1"></A>
+<A NAME="DOC.2.92.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LOD"></A>
-<A NAME="DOC.2.85.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD(const <!1><A HREF="LOD.html#DOC.2.85.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.92.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD(const <!1><A HREF="LOD.html#DOC.2.92.2">LOD</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.85.3"></A>
+<A NAME="DOC.2.92.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="LOD.html">LOD</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.85.4"></A>
+<A NAME="DOC.2.92.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.85.5"></A>
+<A NAME="DOC.2.92.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(<!1><A HREF="Node.html">Node</A>* child)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.85.6"></A>
+<A NAME="DOC.2.92.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild(<!1><A HREF="Node.html">Node</A>* child, float min, float max)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeChild"></A>
-<A NAME="DOC.2.85.7"></A>
+<A NAME="DOC.2.92.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild(<!1><A HREF="Node.html">Node</A>* child)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MinMaxPair"></A>
-<A NAME="DOC.2.85.8"></A>
+<A NAME="DOC.2.92.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;float,float&gt; MinMaxPair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RangeList"></A>
-<A NAME="DOC.2.85.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.85.8">MinMaxPair</A>&gt; RangeList</B></TT>
+<A NAME="DOC.2.92.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.92.8">MinMaxPair</A>&gt; RangeList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CenterMode"></A>
-<A NAME="DOC.2.85.10"></A>
+<A NAME="DOC.2.92.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  CenterMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="USE_BOUNDING_SPHERE_CENTER"></A>
-<A NAME="DOC.2.85.10.1"></A>
+<A NAME="DOC.2.92.10.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_BOUNDING_SPHERE_CENTER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="USER_DEFINED_CENTER"></A>
-<A NAME="DOC.2.85.10.2"></A>
+<A NAME="DOC.2.92.10.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USER_DEFINED_CENTER</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setCenterMode"></A>
-<A NAME="DOC.2.85.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCenterMode(<!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> mode)</B></TT>
+<A NAME="DOC.2.92.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCenterMode(<!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCenterMode"></A>
-<A NAME="DOC.2.85.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> getCenterMode() const </B></TT>
+<A NAME="DOC.2.92.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> getCenterMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCenter"></A>
-<A NAME="DOC.2.85.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>)</B></TT>
+<A NAME="DOC.2.92.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>)</B></TT>
 <DD>Sets the object-space point which defines the center of the osg::LOD.  
 center is affected by any transforms in the hierarchy above the osg::LOD.
 <DL><DT><DD></DL><P>
 <A NAME="getCenter"></A>
-<A NAME="DOC.2.85.14"></A>
+<A NAME="DOC.2.92.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenter() const </B></TT>
 <DD>return the LOD center point. 
 <DL><DT><DD></DL><P>
 <A NAME="setRange"></A>
-<A NAME="DOC.2.85.15"></A>
+<A NAME="DOC.2.92.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRange(unsigned int childNo, float min, float max)</B></TT>
 <DD>Sets the min and max visible ranges of range of specifiec child.
 Values are floating point distance specified in local objects coordinates.
 <DL><DT><DD></DL><P>
 <A NAME="getMinRange"></A>
-<A NAME="DOC.2.85.16"></A>
+<A NAME="DOC.2.92.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMinRange(unsigned int childNo) const </B></TT>
 <DD>returns the min visible range for specified child
 <DL><DT><DD></DL><P>
 <A NAME="getMaxRange"></A>
-<A NAME="DOC.2.85.17"></A>
+<A NAME="DOC.2.92.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMaxRange(unsigned int childNo) const </B></TT>
 <DD>returns the max visible range for specified child
 <DL><DT><DD></DL><P>
 <A NAME="getNumRanges"></A>
-<A NAME="DOC.2.85.18"></A>
+<A NAME="DOC.2.92.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getNumRanges() const </B></TT>
 <DD>returns the number of ranges currently set. 
 An LOD which has been fully set up will have getNumChildren()==getNumRanges(). 
 <DL><DT><DD></DL><P>
 <A NAME="getRangeList"></A>
-<A NAME="DOC.2.85.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A>&amp; getRangeList()</B></TT>
+<A NAME="DOC.2.92.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; getRangeList()</B></TT>
 <DD>return the list of MinMax ranges for each child
 <DL><DT><DD></DL><P>
 <A NAME="getRangeList"></A>
-<A NAME="DOC.2.85.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A>&amp; getRangeList() const </B></TT>
+<A NAME="DOC.2.92.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; getRangeList() const </B></TT>
 <DD>return the list of MinMax ranges for each child
 <DL><DT><DD></DL><P>
 <A NAME="~LOD"></A>
-<A NAME="DOC.2.85.21"></A>
+<A NAME="DOC.2.92.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~LOD()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_centerMode"></A>
-<A NAME="DOC.2.85.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> _centerMode</B></TT>
+<A NAME="DOC.2.92.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> _centerMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_userDefinedCenter"></A>
-<A NAME="DOC.2.85.23"></A>
+<A NAME="DOC.2.92.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _userDefinedCenter</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rangeList"></A>
-<A NAME="DOC.2.85.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A> _rangeList</B></TT>
+<A NAME="DOC.2.92.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A> _rangeList</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
-</B><DD><A HREF="Impostor.html">Impostor</A><BR>
+</B><DD><A HREF="PagedLOD.html">PagedLOD</A><BR>
+<A HREF="Impostor.html">Impostor</A><BR>
 </DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>

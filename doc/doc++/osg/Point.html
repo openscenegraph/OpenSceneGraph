@@ -23,47 +23,59 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.121.1">Point</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.129.1">Point</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.121.2">Point</A></B>(const <!1><A HREF="Point.html#DOC.2.121.2">Point</A>&amp; point, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.129.2">Point</A></B>(const <!1><A HREF="Point.html#DOC.2.129.2">Point</A>&amp; point, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.121.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Point.html">Point</A>, <!1><A HREF="StateAttribute.html#DOC.2.175.6.20">POINT</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.129.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Point.html">Point</A>, <!1><A HREF="StateAttribute.html#DOC.2.183.6.20">POINT</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.121.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.129.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.121.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.175.1">GLMode</A>&gt;&amp; modes) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.129.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.183.1">GLMode</A>&gt;&amp; modes) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.121.6">setSize</A></B>(float <!1><A HREF="fast_back_stack.html#DOC.2.217.7">size</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.129.6">setSize</A></B>(float <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.121.7">getSize</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.129.7">getSize</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.121.8">setFadeThresholdSize</A></B>(float fadeThresholdSize)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.129.8">setFadeThresholdSize</A></B>(float fadeThresholdSize)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.121.9">getFadeThresholdSize</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.129.9">getFadeThresholdSize</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.121.10">setDistanceAttenuation</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; distanceAttenuation)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.129.10">setDistanceAttenuation</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; distanceAttenuation)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.121.11">getDistanceAttenuation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.129.11">getDistanceAttenuation</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.121.12">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.129.12">setMinSize</A></B>(float minSize)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.121.13">init_GL_EXT</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.129.13">getMinSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.129.14">setMaxSize</A></B>(float maxSize)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.129.15">getMaxSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.129.16">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.129.17">init_GL_EXT</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.121.15">_size</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.129.19">_size</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.121.16">_fadeThresholdSize</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.129.20">_fadeThresholdSize</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.121.17">_distanceAttenuation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.129.21">_distanceAttenuation</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.129.22">_minSize</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.129.23">_maxSize</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.121.14">~Point</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.129.18">~Point</A></B>()
 </DL></P>
 
 </DL>
@@ -81,7 +93,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.175.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.183.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -114,9 +126,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -132,7 +144,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -171,74 +183,98 @@
 <DL>
 
 <A NAME="Point"></A>
-<A NAME="DOC.2.121.1"></A>
+<A NAME="DOC.2.129.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Point()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Point"></A>
-<A NAME="DOC.2.121.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Point(const <!1><A HREF="Point.html#DOC.2.121.2">Point</A>&amp; point, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.129.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Point(const <!1><A HREF="Point.html#DOC.2.129.2">Point</A>&amp; point, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.121.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Point.html">Point</A>, <!1><A HREF="StateAttribute.html#DOC.2.175.6.20">POINT</A>)</B></TT>
+<A NAME="DOC.2.129.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Point.html">Point</A>, <!1><A HREF="StateAttribute.html#DOC.2.183.6.20">POINT</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.121.4"></A>
+<A NAME="DOC.2.129.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.121.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.175.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<A NAME="DOC.2.129.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.183.1">GLMode</A>&gt;&amp; modes) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSize"></A>
-<A NAME="DOC.2.121.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSize(float <!1><A HREF="fast_back_stack.html#DOC.2.217.7">size</A>)</B></TT>
+<A NAME="DOC.2.129.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSize(float <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSize"></A>
-<A NAME="DOC.2.121.7"></A>
+<A NAME="DOC.2.129.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getSize() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFadeThresholdSize"></A>
-<A NAME="DOC.2.121.8"></A>
+<A NAME="DOC.2.129.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFadeThresholdSize(float fadeThresholdSize)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFadeThresholdSize"></A>
-<A NAME="DOC.2.121.9"></A>
+<A NAME="DOC.2.129.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getFadeThresholdSize() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDistanceAttenuation"></A>
-<A NAME="DOC.2.121.10"></A>
+<A NAME="DOC.2.129.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDistanceAttenuation(const <!1><A HREF="Vec3.html">Vec3</A>&amp; distanceAttenuation)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDistanceAttenuation"></A>
-<A NAME="DOC.2.121.11"></A>
+<A NAME="DOC.2.129.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getDistanceAttenuation() const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="setMinSize"></A>
+<A NAME="DOC.2.129.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinSize(float minSize)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinSize"></A>
+<A NAME="DOC.2.129.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMinSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaxSize"></A>
+<A NAME="DOC.2.129.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxSize(float maxSize)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaxSize"></A>
+<A NAME="DOC.2.129.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMaxSize() const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.121.12"></A>
+<A NAME="DOC.2.129.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="init_GL_EXT"></A>
-<A NAME="DOC.2.121.13"></A>
+<A NAME="DOC.2.129.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void init_GL_EXT()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Point"></A>
-<A NAME="DOC.2.121.14"></A>
+<A NAME="DOC.2.129.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Point()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_size"></A>
-<A NAME="DOC.2.121.15"></A>
+<A NAME="DOC.2.129.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _size</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fadeThresholdSize"></A>
-<A NAME="DOC.2.121.16"></A>
+<A NAME="DOC.2.129.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _fadeThresholdSize</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_distanceAttenuation"></A>
-<A NAME="DOC.2.121.17"></A>
+<A NAME="DOC.2.129.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _distanceAttenuation</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_minSize"></A>
+<A NAME="DOC.2.129.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _minSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxSize"></A>
+<A NAME="DOC.2.129.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maxSize</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

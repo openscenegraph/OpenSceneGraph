@@ -11,7 +11,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
-<param name=classes value="Mosg::Referenced,M,CSector,MSector.html,CElevationSector,MElevationSector.html,CConeSector,MConeSector.html,CAzimSector,MAzimSector.html,CAzimElevationSector,MAzimElevationSector.html">
+<param name=classes value="Mosg::Object,M,CSector,MSector.html,CElevationSector,MElevationSector.html,CConeSector,MConeSector.html,CAzimSector,MAzimSector.html,CAzimElevationSector,MAzimElevationSector.html">
 <param name=before value="M,M,M|_,MR_,MR_,Mr_">
 <param name=after value="Md_,M,M,M,M,M">
 <param name=indent value="0,1,1,1,1,1">
@@ -22,12 +22,22 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.4.1">operator() </A></B>(const osg::Vec3&amp;yeLocal*/) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.1">Sector</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.2">Sector</A></B>(const <!1><A HREF="Sector.html#DOC.2.4.2">Sector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.3">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.4">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.5">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.4.6">operator() </A></B>(const osg::Vec3&amp;yeLocal*/) const  = 0
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.2">~Sector</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.7">~Sector</A></B>()
 </DL></P>
 
 </DL>
@@ -37,12 +47,32 @@
 <H2>Documentation</H2>
 <DL>
 
-<A NAME="operator() "></A>
+<A NAME="Sector"></A>
 <A NAME="DOC.2.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Sector()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Sector"></A>
+<A NAME="DOC.2.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Sector(const <!1><A HREF="Sector.html#DOC.2.4.2">Sector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator() "></A>
+<A NAME="DOC.2.4.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float operator() (const osg::Vec3&amp;yeLocal*/) const  = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Sector"></A>
-<A NAME="DOC.2.4.2"></A>
+<A NAME="DOC.2.4.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Sector()</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

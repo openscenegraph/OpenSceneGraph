@@ -2,7 +2,7 @@
 
 <HTML>
 <HEAD>
-   <TITLE>class  SG_EXPORT osg::Texture::Extensions</TITLE>
+   <TITLE>class  SG_EXPORT osg::Drawable::Extensions</TITLE>
    <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
@@ -23,95 +23,149 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.186.40.1">Extensions</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.69.58.1">Extensions</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.186.40.2">Extensions</A></B>(const <!1><A HREF="Extensions.html#DOC.2.186.40.2">Extensions</A>&amp; rhs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.69.58.2">Extensions</A></B>(const <!1><A HREF="Extensions.html#DOC.2.69.58.2">Extensions</A>&amp; rhs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.3">lowestCommonDenominator</A></B>(const <!1><A HREF="Extensions.html">Extensions</A>&amp; rhs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.3">lowestCommonDenominator</A></B>(const <!1><A HREF="Extensions.html">Extensions</A>&amp; rhs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.4">setupGLExtenions</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.4">setupGLExtenions</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.5">setMultiTexturingSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.5">setVertexProgramSupported</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.6">isMultiTexturingSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.6">isVertexProgramSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.7">setTextureFilterAnisotropicSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.7">setSecondaryColorSupported</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.8">isTextureFilterAnisotropicSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.8">isSecondaryColorSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.9">setTextureCompressionARBSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.9">setFogCoordSupported</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.10">isTextureCompressionARBSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.10">isFogCoordSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.11">setTextureCompressionS3TCSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.11">setMultiTexSupported</A></B>(bool flag)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.12">isTextureCompressionS3TCSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.12">isMultiTexSupported</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.13">setTextureMirroredRepeatSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.13">glSecondaryColor3ubv</A></B>(const GLubyte* coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.14">isTextureMirroredRepeatSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.14">glSecondaryColor3fv</A></B>(const GLfloat* coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.15">setTextureEdgeClampSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.15">glFogCoordfv</A></B>(const GLfloat* coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.16">isTextureEdgeClampSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.16">glMultiTexCoord1f</A></B>(GLenum target, GLfloat coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.17">setTextureBorderClampSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.17">glMultiTexCoord2fv</A></B>(GLenum target, const GLfloat* coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.18">isTextureBorderClampSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.18">glMultiTexCoord3fv</A></B>(GLenum target, const GLfloat* coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.19">setGenerateMipMapSupported</A></B>(bool flag)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.19">glMultiTexCoord4fv</A></B>(GLenum target, const GLfloat* coord) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.20">isGenerateMipMapSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.20">glVertexAttrib1s</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLshort <!1><A HREF="ImpostorSprite.html#DOC.2.90.24">s</A>) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.21">setMaxTextureSize</A></B>(GLint maxsize)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.21">glVertexAttrib1f</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLfloat f) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.186.40.22">maxTextureSize</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.22">glVertexAttrib2fv</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.23">isCompressedTexImage2DSupported</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.23">glVertexAttrib3fv</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.24">setCompressedTexImage2DProc</A></B>(void* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.24">glVertexAttrib4fv</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.25">glCompressedTexImage2D</A></B>(GLenum target, GLint level, GLenum internalformat, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLint border, GLsizei imageSize, const GLvoid* <!1><A HREF="Image.html#DOC.2.79.33">data</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.25">glVertexAttrib4ubv</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLubyte*  v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.26">setCompressedTexSubImage2DProc</A></B>(void* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.26">glVertexAttrib4Nubv</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLubyte*  v) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.27">glCompressedTexSubImage2D</A></B>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLenum format, GLsizei type, const GLvoid* <!1><A HREF="Image.html#DOC.2.79.33">data</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.27">glGenBuffers</A></B>(GLsizei n, GLuint* buffers) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.28">setGetCompressedTexImageProc</A></B>(void* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.28">glBindBuffer</A></B>(GLenum target, GLuint buffer) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.186.40.29">glGetCompressedTexImage</A></B>(GLenum target, GLint level, GLvoid* <!1><A HREF="Image.html#DOC.2.79.33">data</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.29">glBufferData</A></B>(GLenum target, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, GLenum usage) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.30">glBufferSubData</A></B>(GLenum target, <!1><A HREF="osg.html#DOC.2.62">GLintptrARB</A> <!1><A HREF="Geometry.html#DOC.2.82.50.6">offset</A>, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.69.58.31">glDeleteBuffers</A></B>(GLsizei n, const GLuint* buffers) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.31">_isMultiTexturingSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.47">_isVertexProgramSupported</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.32">_isTextureFilterAnisotropicSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.48">_isSecondaryColorSupported</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.33">_isTextureCompressionARBSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.49">_isFogCoordSupported</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.34">_isTextureCompressionS3TCSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.69.58.50">_isMultiTexSupported</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.35">_isTextureMirroredRepeatSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>FogCoordProc <B><A HREF="#DOC.2.69.58.51">_glFogCoordfv</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.36">_isTextureEdgeClampSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>SecondaryColor3ubvProc <B><A HREF="#DOC.2.69.58.52">_glSecondaryColor3ubv</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.37">_isTextureBorderClampSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>SecondaryColor3fvProc <B><A HREF="#DOC.2.69.58.53">_glSecondaryColor3fv</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.186.40.38">_isGenerateMipMapSupported</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttrib1sProc <B><A HREF="#DOC.2.69.58.54">_glVertexAttrib1s</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.186.40.39">_maxTextureSize</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttrib1fProc <B><A HREF="#DOC.2.69.58.55">_glVertexAttrib1f</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.186.40.40">_glCompressedTexImage2D</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttribfvProc <B><A HREF="#DOC.2.69.58.56">_glVertexAttrib2fv</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.186.40.41">_glCompressedTexSubImage2D</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttribfvProc <B><A HREF="#DOC.2.69.58.57">_glVertexAttrib3fv</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.186.40.42">_glGetCompressedTexImage</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttribfvProc <B><A HREF="#DOC.2.69.58.58">_glVertexAttrib4fv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttribubvProc <B><A HREF="#DOC.2.69.58.59">_glVertexAttrib4ubv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>VertexAttribubvProc <B><A HREF="#DOC.2.69.58.60">_glVertexAttrib4Nubv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MultiTexCoord1fProc <B><A HREF="#DOC.2.69.58.61">_glMultiTexCoord1f</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MultiTexCoordfvProc <B><A HREF="#DOC.2.69.58.62">_glMultiTexCoord2fv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MultiTexCoordfvProc <B><A HREF="#DOC.2.69.58.63">_glMultiTexCoord3fv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MultiTexCoordfvProc <B><A HREF="#DOC.2.69.58.64">_glMultiTexCoord4fv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GenBuffersProc <B><A HREF="#DOC.2.69.58.65">_glGenBuffers</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>BindBufferProc <B><A HREF="#DOC.2.69.58.66">_glBindBuffer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>BufferDataProc <B><A HREF="#DOC.2.69.58.67">_glBufferData</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>BufferSubDataProc <B><A HREF="#DOC.2.69.58.68">_glBufferSubData</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>DeleteBuffersProc <B><A HREF="#DOC.2.69.58.69">_glDeleteBuffers</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.186.40.30">~Extensions</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.32">(APIENTRY * FogCoordProc)</A></B>(const GLfloat* coord)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.33">(APIENTRY * VertexAttrib1sProc)</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLshort <!1><A HREF="ImpostorSprite.html#DOC.2.90.24">s</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.34">(APIENTRY * VertexAttrib1fProc)</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLfloat f)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.35">(APIENTRY * VertexAttribfvProc)</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.36">(APIENTRY * VertexAttribubvProc)</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLubyte*  v)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.37">(APIENTRY * SecondaryColor3ubvProc)</A></B>(const GLubyte* coord)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.38">(APIENTRY * SecondaryColor3fvProc)</A></B>(const GLfloat* coord)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.39">(APIENTRY * MultiTexCoord1fProc)</A></B>(GLenum target, GLfloat coord)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.40">(APIENTRY * MultiTexCoordfvProc)</A></B>(GLenum target, const GLfloat* coord)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.41">(APIENTRY * GenBuffersProc)</A></B>(GLsizei n, GLuint* buffers)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.42">(APIENTRY * BindBufferProc)</A></B>(GLenum target, GLuint buffer)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.43">(APIENTRY * BufferDataProc)</A></B>(GLenum target, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, GLenum usage)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.44">(APIENTRY * BufferSubDataProc)</A></B>(GLenum target, <!1><A HREF="osg.html#DOC.2.62">GLintptrARB</A> <!1><A HREF="Geometry.html#DOC.2.82.50.6">offset</A>, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef void <B><A HREF="#DOC.2.69.58.45">(APIENTRY * DeleteBuffersProc)</A></B>(GLsizei n, const GLuint* buffers)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.69.58.46">~Extensions</A></B>()
 </DL></P>
 
 </DL>
@@ -150,172 +204,280 @@ check for the extensions or use the associated functions</BLOCKQUOTE>
 <DL>
 
 <A NAME="Extensions"></A>
-<A NAME="DOC.2.186.40.1"></A>
+<A NAME="DOC.2.69.58.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Extensions()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Extensions"></A>
-<A NAME="DOC.2.186.40.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Extensions(const <!1><A HREF="Extensions.html#DOC.2.186.40.2">Extensions</A>&amp; rhs)</B></TT>
+<A NAME="DOC.2.69.58.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Extensions(const <!1><A HREF="Extensions.html#DOC.2.69.58.2">Extensions</A>&amp; rhs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="lowestCommonDenominator"></A>
-<A NAME="DOC.2.186.40.3"></A>
+<A NAME="DOC.2.69.58.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void lowestCommonDenominator(const <!1><A HREF="Extensions.html">Extensions</A>&amp; rhs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setupGLExtenions"></A>
-<A NAME="DOC.2.186.40.4"></A>
+<A NAME="DOC.2.69.58.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setupGLExtenions()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setMultiTexturingSupported"></A>
-<A NAME="DOC.2.186.40.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMultiTexturingSupported(bool flag)</B></TT>
+<A NAME="setVertexProgramSupported"></A>
+<A NAME="DOC.2.69.58.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVertexProgramSupported(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isMultiTexturingSupported"></A>
-<A NAME="DOC.2.186.40.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isMultiTexturingSupported() const </B></TT>
+<A NAME="isVertexProgramSupported"></A>
+<A NAME="DOC.2.69.58.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isVertexProgramSupported() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setTextureFilterAnisotropicSupported"></A>
-<A NAME="DOC.2.186.40.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureFilterAnisotropicSupported(bool flag)</B></TT>
+<A NAME="setSecondaryColorSupported"></A>
+<A NAME="DOC.2.69.58.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSecondaryColorSupported(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isTextureFilterAnisotropicSupported"></A>
-<A NAME="DOC.2.186.40.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTextureFilterAnisotropicSupported() const </B></TT>
+<A NAME="isSecondaryColorSupported"></A>
+<A NAME="DOC.2.69.58.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isSecondaryColorSupported() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setTextureCompressionARBSupported"></A>
-<A NAME="DOC.2.186.40.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureCompressionARBSupported(bool flag)</B></TT>
+<A NAME="setFogCoordSupported"></A>
+<A NAME="DOC.2.69.58.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFogCoordSupported(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isTextureCompressionARBSupported"></A>
-<A NAME="DOC.2.186.40.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTextureCompressionARBSupported() const </B></TT>
+<A NAME="isFogCoordSupported"></A>
+<A NAME="DOC.2.69.58.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isFogCoordSupported() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setTextureCompressionS3TCSupported"></A>
-<A NAME="DOC.2.186.40.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureCompressionS3TCSupported(bool flag)</B></TT>
+<A NAME="setMultiTexSupported"></A>
+<A NAME="DOC.2.69.58.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMultiTexSupported(bool flag)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isTextureCompressionS3TCSupported"></A>
-<A NAME="DOC.2.186.40.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTextureCompressionS3TCSupported() const </B></TT>
+<A NAME="isMultiTexSupported"></A>
+<A NAME="DOC.2.69.58.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isMultiTexSupported() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setTextureMirroredRepeatSupported"></A>
-<A NAME="DOC.2.186.40.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureMirroredRepeatSupported(bool flag)</B></TT>
+<A NAME="glSecondaryColor3ubv"></A>
+<A NAME="DOC.2.69.58.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glSecondaryColor3ubv(const GLubyte* coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isTextureMirroredRepeatSupported"></A>
-<A NAME="DOC.2.186.40.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTextureMirroredRepeatSupported() const </B></TT>
+<A NAME="glSecondaryColor3fv"></A>
+<A NAME="DOC.2.69.58.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glSecondaryColor3fv(const GLfloat* coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setTextureEdgeClampSupported"></A>
-<A NAME="DOC.2.186.40.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureEdgeClampSupported(bool flag)</B></TT>
+<A NAME="glFogCoordfv"></A>
+<A NAME="DOC.2.69.58.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glFogCoordfv(const GLfloat* coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isTextureEdgeClampSupported"></A>
-<A NAME="DOC.2.186.40.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTextureEdgeClampSupported() const </B></TT>
+<A NAME="glMultiTexCoord1f"></A>
+<A NAME="DOC.2.69.58.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glMultiTexCoord1f(GLenum target, GLfloat coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setTextureBorderClampSupported"></A>
-<A NAME="DOC.2.186.40.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureBorderClampSupported(bool flag)</B></TT>
+<A NAME="glMultiTexCoord2fv"></A>
+<A NAME="DOC.2.69.58.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glMultiTexCoord2fv(GLenum target, const GLfloat* coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isTextureBorderClampSupported"></A>
-<A NAME="DOC.2.186.40.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isTextureBorderClampSupported() const </B></TT>
+<A NAME="glMultiTexCoord3fv"></A>
+<A NAME="DOC.2.69.58.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glMultiTexCoord3fv(GLenum target, const GLfloat* coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setGenerateMipMapSupported"></A>
-<A NAME="DOC.2.186.40.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGenerateMipMapSupported(bool flag)</B></TT>
+<A NAME="glMultiTexCoord4fv"></A>
+<A NAME="DOC.2.69.58.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glMultiTexCoord4fv(GLenum target, const GLfloat* coord) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isGenerateMipMapSupported"></A>
-<A NAME="DOC.2.186.40.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isGenerateMipMapSupported() const </B></TT>
+<A NAME="glVertexAttrib1s"></A>
+<A NAME="DOC.2.69.58.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib1s(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLshort <!1><A HREF="ImpostorSprite.html#DOC.2.90.24">s</A>) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setMaxTextureSize"></A>
-<A NAME="DOC.2.186.40.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxTextureSize(GLint maxsize)</B></TT>
+<A NAME="glVertexAttrib1f"></A>
+<A NAME="DOC.2.69.58.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib1f(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLfloat f) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="maxTextureSize"></A>
-<A NAME="DOC.2.186.40.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint maxTextureSize() const </B></TT>
+<A NAME="glVertexAttrib2fv"></A>
+<A NAME="DOC.2.69.58.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib2fv(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isCompressedTexImage2DSupported"></A>
-<A NAME="DOC.2.186.40.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isCompressedTexImage2DSupported() const </B></TT>
+<A NAME="glVertexAttrib3fv"></A>
+<A NAME="DOC.2.69.58.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib3fv(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setCompressedTexImage2DProc"></A>
-<A NAME="DOC.2.186.40.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCompressedTexImage2DProc(void* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)</B></TT>
+<A NAME="glVertexAttrib4fv"></A>
+<A NAME="DOC.2.69.58.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib4fv(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="glCompressedTexImage2D"></A>
-<A NAME="DOC.2.186.40.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLint border, GLsizei imageSize, const GLvoid* <!1><A HREF="Image.html#DOC.2.79.33">data</A>) const </B></TT>
+<A NAME="glVertexAttrib4ubv"></A>
+<A NAME="DOC.2.69.58.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib4ubv(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLubyte*  v) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setCompressedTexSubImage2DProc"></A>
-<A NAME="DOC.2.186.40.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCompressedTexSubImage2DProc(void* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)</B></TT>
+<A NAME="glVertexAttrib4Nubv"></A>
+<A NAME="DOC.2.69.58.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glVertexAttrib4Nubv(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLubyte*  v) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="glCompressedTexSubImage2D"></A>
-<A NAME="DOC.2.186.40.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLenum format, GLsizei type, const GLvoid* <!1><A HREF="Image.html#DOC.2.79.33">data</A>) const </B></TT>
+<A NAME="glGenBuffers"></A>
+<A NAME="DOC.2.69.58.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glGenBuffers(GLsizei n, GLuint* buffers) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setGetCompressedTexImageProc"></A>
-<A NAME="DOC.2.186.40.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGetCompressedTexImageProc(void* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)</B></TT>
+<A NAME="glBindBuffer"></A>
+<A NAME="DOC.2.69.58.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glBindBuffer(GLenum target, GLuint buffer) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="glGetCompressedTexImage"></A>
-<A NAME="DOC.2.186.40.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glGetCompressedTexImage(GLenum target, GLint level, GLvoid* <!1><A HREF="Image.html#DOC.2.79.33">data</A>) const </B></TT>
+<A NAME="glBufferData"></A>
+<A NAME="DOC.2.69.58.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glBufferData(GLenum target, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, GLenum usage) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glBufferSubData"></A>
+<A NAME="DOC.2.69.58.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glBufferSubData(GLenum target, <!1><A HREF="osg.html#DOC.2.62">GLintptrARB</A> <!1><A HREF="Geometry.html#DOC.2.82.50.6">offset</A>, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="glDeleteBuffers"></A>
+<A NAME="DOC.2.69.58.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void glDeleteBuffers(GLsizei n, const GLuint* buffers) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * FogCoordProc)"></A>
+<A NAME="DOC.2.69.58.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * FogCoordProc)(const GLfloat* coord)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * VertexAttrib1sProc)"></A>
+<A NAME="DOC.2.69.58.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * VertexAttrib1sProc)(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLshort <!1><A HREF="ImpostorSprite.html#DOC.2.90.24">s</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * VertexAttrib1fProc)"></A>
+<A NAME="DOC.2.69.58.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * VertexAttrib1fProc)(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, GLfloat f)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * VertexAttribfvProc)"></A>
+<A NAME="DOC.2.69.58.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * VertexAttribfvProc)(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLfloat*  v)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * VertexAttribubvProc)"></A>
+<A NAME="DOC.2.69.58.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * VertexAttribubvProc)(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, const GLubyte*  v)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * SecondaryColor3ubvProc)"></A>
+<A NAME="DOC.2.69.58.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * SecondaryColor3ubvProc)(const GLubyte* coord)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * SecondaryColor3fvProc)"></A>
+<A NAME="DOC.2.69.58.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * SecondaryColor3fvProc)(const GLfloat* coord)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * MultiTexCoord1fProc)"></A>
+<A NAME="DOC.2.69.58.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * MultiTexCoord1fProc)(GLenum target, GLfloat coord)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * MultiTexCoordfvProc)"></A>
+<A NAME="DOC.2.69.58.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * MultiTexCoordfvProc)(GLenum target, const GLfloat* coord)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * GenBuffersProc)"></A>
+<A NAME="DOC.2.69.58.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * GenBuffersProc)(GLsizei n, GLuint* buffers)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * BindBufferProc)"></A>
+<A NAME="DOC.2.69.58.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * BindBufferProc)(GLenum target, GLuint buffer)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * BufferDataProc)"></A>
+<A NAME="DOC.2.69.58.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * BufferDataProc)(GLenum target, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, GLenum usage)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * BufferSubDataProc)"></A>
+<A NAME="DOC.2.69.58.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * BufferSubDataProc)(GLenum target, <!1><A HREF="osg.html#DOC.2.62">GLintptrARB</A> <!1><A HREF="Geometry.html#DOC.2.82.50.6">offset</A>, <!1><A HREF="osg.html#DOC.2.63">GLsizeiptrARB</A> <!1><A HREF="fast_back_stack.html#DOC.2.224.7">size</A>, const GLvoid* <!1><A HREF="Image.html#DOC.2.86.34">data</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(APIENTRY * DeleteBuffersProc)"></A>
+<A NAME="DOC.2.69.58.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef void (APIENTRY * DeleteBuffersProc)(GLsizei n, const GLuint* buffers)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Extensions"></A>
-<A NAME="DOC.2.186.40.30"></A>
+<A NAME="DOC.2.69.58.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~Extensions()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isMultiTexturingSupported"></A>
-<A NAME="DOC.2.186.40.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isMultiTexturingSupported</B></TT>
+<A NAME="_isVertexProgramSupported"></A>
+<A NAME="DOC.2.69.58.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isVertexProgramSupported</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isTextureFilterAnisotropicSupported"></A>
-<A NAME="DOC.2.186.40.32"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isTextureFilterAnisotropicSupported</B></TT>
+<A NAME="_isSecondaryColorSupported"></A>
+<A NAME="DOC.2.69.58.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isSecondaryColorSupported</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isTextureCompressionARBSupported"></A>
-<A NAME="DOC.2.186.40.33"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isTextureCompressionARBSupported</B></TT>
+<A NAME="_isFogCoordSupported"></A>
+<A NAME="DOC.2.69.58.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isFogCoordSupported</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isTextureCompressionS3TCSupported"></A>
-<A NAME="DOC.2.186.40.34"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isTextureCompressionS3TCSupported</B></TT>
+<A NAME="_isMultiTexSupported"></A>
+<A NAME="DOC.2.69.58.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isMultiTexSupported</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isTextureMirroredRepeatSupported"></A>
-<A NAME="DOC.2.186.40.35"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isTextureMirroredRepeatSupported</B></TT>
+<A NAME="_glFogCoordfv"></A>
+<A NAME="DOC.2.69.58.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>FogCoordProc _glFogCoordfv</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isTextureEdgeClampSupported"></A>
-<A NAME="DOC.2.186.40.36"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isTextureEdgeClampSupported</B></TT>
+<A NAME="_glSecondaryColor3ubv"></A>
+<A NAME="DOC.2.69.58.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>SecondaryColor3ubvProc _glSecondaryColor3ubv</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isTextureBorderClampSupported"></A>
-<A NAME="DOC.2.186.40.37"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isTextureBorderClampSupported</B></TT>
+<A NAME="_glSecondaryColor3fv"></A>
+<A NAME="DOC.2.69.58.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>SecondaryColor3fvProc _glSecondaryColor3fv</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_isGenerateMipMapSupported"></A>
-<A NAME="DOC.2.186.40.38"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _isGenerateMipMapSupported</B></TT>
+<A NAME="_glVertexAttrib1s"></A>
+<A NAME="DOC.2.69.58.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttrib1sProc _glVertexAttrib1s</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_maxTextureSize"></A>
-<A NAME="DOC.2.186.40.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _maxTextureSize</B></TT>
+<A NAME="_glVertexAttrib1f"></A>
+<A NAME="DOC.2.69.58.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttrib1fProc _glVertexAttrib1f</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_glCompressedTexImage2D"></A>
-<A NAME="DOC.2.186.40.40"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glCompressedTexImage2D</B></TT>
+<A NAME="_glVertexAttrib2fv"></A>
+<A NAME="DOC.2.69.58.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttribfvProc _glVertexAttrib2fv</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_glCompressedTexSubImage2D"></A>
-<A NAME="DOC.2.186.40.41"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glCompressedTexSubImage2D</B></TT>
+<A NAME="_glVertexAttrib3fv"></A>
+<A NAME="DOC.2.69.58.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttribfvProc _glVertexAttrib3fv</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_glGetCompressedTexImage"></A>
-<A NAME="DOC.2.186.40.42"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _glGetCompressedTexImage</B></TT>
+<A NAME="_glVertexAttrib4fv"></A>
+<A NAME="DOC.2.69.58.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttribfvProc _glVertexAttrib4fv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glVertexAttrib4ubv"></A>
+<A NAME="DOC.2.69.58.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttribubvProc _glVertexAttrib4ubv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glVertexAttrib4Nubv"></A>
+<A NAME="DOC.2.69.58.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>VertexAttribubvProc _glVertexAttrib4Nubv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glMultiTexCoord1f"></A>
+<A NAME="DOC.2.69.58.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MultiTexCoord1fProc _glMultiTexCoord1f</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glMultiTexCoord2fv"></A>
+<A NAME="DOC.2.69.58.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MultiTexCoordfvProc _glMultiTexCoord2fv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glMultiTexCoord3fv"></A>
+<A NAME="DOC.2.69.58.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MultiTexCoordfvProc _glMultiTexCoord3fv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glMultiTexCoord4fv"></A>
+<A NAME="DOC.2.69.58.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MultiTexCoordfvProc _glMultiTexCoord4fv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glGenBuffers"></A>
+<A NAME="DOC.2.69.58.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GenBuffersProc _glGenBuffers</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glBindBuffer"></A>
+<A NAME="DOC.2.69.58.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>BindBufferProc _glBindBuffer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glBufferData"></A>
+<A NAME="DOC.2.69.58.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>BufferDataProc _glBufferData</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glBufferSubData"></A>
+<A NAME="DOC.2.69.58.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>BufferSubDataProc _glBufferSubData</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_glDeleteBuffers"></A>
+<A NAME="DOC.2.69.58.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>DeleteBuffersProc _glDeleteBuffers</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

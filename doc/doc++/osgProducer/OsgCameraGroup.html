@@ -117,7 +117,7 @@
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="OsgSceneHandler.html">osgProducer::OsgSceneHandler</A>&gt; &gt; <B><A HREF="#DOC.2.3.9">SceneHandlerList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; Producer::ref_ptr&lt;<!1><A HREF="OsgSceneHandler.html">osgProducer::OsgSceneHandler</A>&gt; &gt; <B><A HREF="#DOC.2.3.9">SceneHandlerList</A></B>
 <DT>
 class  OSGPRODUCER_EXPORT <B><A HREF="RealizeCallback.html">RealizeCallback</A></B>: public osg::Referenced
 <DD><I>RealizeCallback class one should override to provide an the implemention of realize callbacks.</I>
@@ -156,13 +156,15 @@ class  OSGPRODUCER_EXPORT <B><A HREF="RealizeCallback.html">RealizeCallback</A><
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.2.3.60">_start_tick</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.2.3.61">_frameStamp</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osgDB::DatabasePager&gt;  <B><A HREF="#DOC.2.3.62">_databasePager</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.45">setUpSceneViewsWithData</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.62">_init</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.63">_init</A></B>()
 </DL></P>
 
 </DL>
@@ -206,7 +208,7 @@ class  OSGPRODUCER_EXPORT <B><A HREF="RealizeCallback.html">RealizeCallback</A><
 <DL><DT><DD></DL><P>
 <A NAME="SceneHandlerList"></A>
 <A NAME="DOC.2.3.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="OsgSceneHandler.html">osgProducer::OsgSceneHandler</A>&gt; &gt; SceneHandlerList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; Producer::ref_ptr&lt;<!1><A HREF="OsgSceneHandler.html">osgProducer::OsgSceneHandler</A>&gt; &gt; SceneHandlerList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSceneHandlerList"></A>
 <A NAME="DOC.2.3.10"></A>
@@ -422,8 +424,12 @@ taking its value for camera 0
 <A NAME="DOC.2.3.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::FrameStamp&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_init"></A>
+<A NAME="_databasePager"></A>
 <A NAME="DOC.2.3.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgDB::DatabasePager&gt;  _databasePager</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_init"></A>
+<A NAME="DOC.2.3.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _init()</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

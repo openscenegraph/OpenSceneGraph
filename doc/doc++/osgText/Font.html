@@ -23,63 +23,63 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.2.1">Font</A></B>(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.3.1">Font</A></B>(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation=0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.6.2.2">cloneType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.6.3.2">cloneType</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.6.2.3">clone</A></B>(const osg::CopyOp&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.6.3.3">clone</A></B>(const osg::CopyOp&amp;) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.4">isSameKindAs</A></B>(const osg::Object* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.3.4">isSameKindAs</A></B>(const osg::Object* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.6.2.5">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.6.3.5">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.6.2.6">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.6.3.6">libraryName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   std::string <B><A HREF="#DOC.6.2.7">getFileName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   std::string <B><A HREF="#DOC.6.3.7">getFileName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.8">setSize</A></B>(unsigned int width, unsigned int height)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.3.8">setSize</A></B>(unsigned int width, unsigned int height)
 <DD><I>Set the pixel width and height hint</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.9">getWidth</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.9">getWidth</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.10">getHeight</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.10">getHeight</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Glyph.html">Glyph</A>* <B><A HREF="#DOC.6.2.11">getGlyph</A></B>(unsigned int charcode)
-<DD><I>Get a Glyph for specified charcode, and the font size nearest to the current font size hint</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.6.2.12">getKerning</A></B>(unsigned int leftcharcode, unsigned int rightcharcode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.6.3.11">getKerning</A></B>(unsigned int leftcharcode, unsigned int rightcharcode, <!1><A HREF="KerningType.html">KerningType</A> kerningType)
 <DD><I>Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, wrt the current font size hint</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.13">hasVertical</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Glyph.html">Glyph</A>* <B><A HREF="#DOC.6.3.12">getGlyph</A></B>(unsigned int charcode)
+<DD><I>Get a Glyph for specified charcode, and the font size nearest to the current font size hint</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.3.13">hasVertical</A></B>() const 
 <DD><I>Return true if this font provides vertical alignments and spacing or glyphs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.14">setGlyphImageMargin</A></B>(unsigned int margin)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.14">setGlyphImageMargin</A></B>(unsigned int margin)
 <DD><I>Set the margin around each glyph,  to ensure that texture filtering doesn't bleed adjacent glyph's into each other.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.15">getGlyphImageMargin</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.15">getGlyphImageMargin</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.16">setTextureSizeHint</A></B>(unsigned int width, unsigned int height)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.16">setTextureSizeHint</A></B>(unsigned int width, unsigned int height)
 <DD><I>Set the size of texture to create to store the glyph images when rendering.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.17">getTextureWidthHint</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.17">getTextureWidthHint</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.18">getTextureHeightHint</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.18">getTextureHeightHint</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.19">setMinFilterHint</A></B>(osg::Texture::FilterMode mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.19">setMinFilterHint</A></B>(osg::Texture::FilterMode mode)
 <DD><I>Set the minification texture filter to use when creating the texture to store the glyph images when rendering.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.2.20">getMinFilterHint</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.3.20">getMinFilterHint</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.21">setMagFilterHint</A></B>(osg::Texture::FilterMode mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.21">setMagFilterHint</A></B>(osg::Texture::FilterMode mode)
 <DD><I>Set the magnification texture filter to use when creating the texture to store the glyph images when rendering.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.2.22">getMagFilterHint</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.3.22">getMagFilterHint</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.23">setImplementation</A></B>(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.23">setImplementation</A></B>(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FontImplementation.html">FontImplementation</A>* <B><A HREF="#DOC.6.2.24">getImplementation</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="FontImplementation.html">FontImplementation</A>* <B><A HREF="#DOC.6.3.24">getImplementation</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="FontImplementation.html">FontImplementation</A>* <B><A HREF="#DOC.6.2.25">getImplementation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="FontImplementation.html">FontImplementation</A>* <B><A HREF="#DOC.6.3.25">getImplementation</A></B>() const 
 </DL></P>
 
 <P><DL>
@@ -93,47 +93,47 @@ class  OSGTEXT_EXPORT <B><A HREF="Glyph.html">Glyph</A></B>: public osg::Image
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.2.32">SizeGlyphMap</A> <B><A HREF="#DOC.6.2.33">_sizeGlyphMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.3.32">SizeGlyphMap</A> <B><A HREF="#DOC.6.3.33">_sizeGlyphMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.2.28">GlyphTextureList</A> <B><A HREF="#DOC.6.2.34">_glyphTextureList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.3.28">GlyphTextureList</A> <B><A HREF="#DOC.6.3.34">_glyphTextureList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.2.29">StateSetList</A> <B><A HREF="#DOC.6.2.35">_stateSetList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.3.29">StateSetList</A> <B><A HREF="#DOC.6.3.35">_stateSetList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.36">_width</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.36">_width</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.37">_height</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.37">_height</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.38">_margin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.38">_margin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.39">_textureWidthHint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.39">_textureWidthHint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.40">_textureHeightHint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.40">_textureHeightHint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.2.41">_minFilterHint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.3.41">_minFilterHint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.2.42">_magFilterHint</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.3.42">_magFilterHint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  <B><A HREF="#DOC.6.2.43">_implementation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  <B><A HREF="#DOC.6.3.43">_implementation</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.2.26">~Font</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.3.26">~Font</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.27">addGlyph</A></B>(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.27">addGlyph</A></B>(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt; <B><A HREF="#DOC.6.2.28">GlyphTextureList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt; <B><A HREF="#DOC.6.3.28">GlyphTextureList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; <B><A HREF="#DOC.6.2.29">StateSetList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; <B><A HREF="#DOC.6.3.29">StateSetList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; <B><A HREF="#DOC.6.2.30">GlyphMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; <B><A HREF="#DOC.6.3.30">GlyphMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt; unsigned int, unsigned int &gt; <B><A HREF="#DOC.6.2.31">SizePair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt; unsigned int, unsigned int &gt; <B><A HREF="#DOC.6.3.31">SizePair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.2.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.2.30">GlyphMap</A> &gt; <B><A HREF="#DOC.6.2.32">SizeGlyphMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt; <B><A HREF="#DOC.6.3.32">SizeGlyphMap</A></B>
 </DL></P>
 
 </DL>
@@ -147,188 +147,188 @@ and FreeTypeFont found in src/osgPlugins/freetype/FreeTypeFont.cpp</BLOCKQUOTE>
 <DL>
 
 <A NAME="Font"></A>
-<A NAME="DOC.6.2.1"></A>
+<A NAME="DOC.6.3.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Font(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation=0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.6.2.2"></A>
+<A NAME="DOC.6.3.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* cloneType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.6.2.3"></A>
+<A NAME="DOC.6.3.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* clone(const osg::CopyOp&amp;) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.6.2.4"></A>
+<A NAME="DOC.6.3.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.6.2.5"></A>
+<A NAME="DOC.6.3.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.6.2.6"></A>
+<A NAME="DOC.6.3.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFileName"></A>
-<A NAME="DOC.6.2.7"></A>
+<A NAME="DOC.6.3.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   std::string getFileName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSize"></A>
-<A NAME="DOC.6.2.8"></A>
+<A NAME="DOC.6.3.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setSize(unsigned int width, unsigned int height)</B></TT>
 <DD>Set the pixel width and height hint
 <DL><DT><DD></DL><P>
 <A NAME="getWidth"></A>
-<A NAME="DOC.6.2.9"></A>
+<A NAME="DOC.6.3.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getWidth()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getHeight"></A>
-<A NAME="DOC.6.2.10"></A>
+<A NAME="DOC.6.3.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getHeight()</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="getKerning"></A>
+<A NAME="DOC.6.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec2 getKerning(unsigned int leftcharcode, unsigned int rightcharcode, <!1><A HREF="KerningType.html">KerningType</A> kerningType)</B></TT>
+<DD>Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, wrt the current font size hint
+<DL><DT><DD></DL><P>
 <A NAME="getGlyph"></A>
-<A NAME="DOC.6.2.11"></A>
+<A NAME="DOC.6.3.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Glyph.html">Glyph</A>* getGlyph(unsigned int charcode)</B></TT>
 <DD>Get a Glyph for specified charcode, and the font size nearest to the current font size hint
 <DL><DT><DD></DL><P>
-<A NAME="getKerning"></A>
-<A NAME="DOC.6.2.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec2 getKerning(unsigned int leftcharcode, unsigned int rightcharcode)</B></TT>
-<DD>Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, wrt the current font size hint
-<DL><DT><DD></DL><P>
 <A NAME="hasVertical"></A>
-<A NAME="DOC.6.2.13"></A>
+<A NAME="DOC.6.3.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool hasVertical() const </B></TT>
 <DD>Return true if this font provides vertical alignments and spacing or glyphs
 <DL><DT><DD></DL><P>
 <A NAME="setGlyphImageMargin"></A>
-<A NAME="DOC.6.2.14"></A>
+<A NAME="DOC.6.3.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGlyphImageMargin(unsigned int margin)</B></TT>
 <DD>Set the margin around each glyph, 
 to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
 Default margin is 2 texels.
 <DL><DT><DD></DL><P>
 <A NAME="getGlyphImageMargin"></A>
-<A NAME="DOC.6.2.15"></A>
+<A NAME="DOC.6.3.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getGlyphImageMargin() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setTextureSizeHint"></A>
-<A NAME="DOC.6.2.16"></A>
+<A NAME="DOC.6.3.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureSizeHint(unsigned int width, unsigned int height)</B></TT>
 <DD>Set the size of texture to create to store the glyph images when rendering.
 Note, this doesn't affect already created Texture Glhph's.
 <DL><DT><DD></DL><P>
 <A NAME="getTextureWidthHint"></A>
-<A NAME="DOC.6.2.17"></A>
+<A NAME="DOC.6.3.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getTextureWidthHint() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTextureHeightHint"></A>
-<A NAME="DOC.6.2.18"></A>
+<A NAME="DOC.6.3.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getTextureHeightHint() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMinFilterHint"></A>
-<A NAME="DOC.6.2.19"></A>
+<A NAME="DOC.6.3.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinFilterHint(osg::Texture::FilterMode mode)</B></TT>
 <DD>Set the minification texture filter to use when creating the texture to store the glyph images when rendering.
 Note, this doesn't affect already created Texture Glhph's.
 <DL><DT><DD></DL><P>
 <A NAME="getMinFilterHint"></A>
-<A NAME="DOC.6.2.20"></A>
+<A NAME="DOC.6.3.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Texture::FilterMode getMinFilterHint() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMagFilterHint"></A>
-<A NAME="DOC.6.2.21"></A>
+<A NAME="DOC.6.3.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMagFilterHint(osg::Texture::FilterMode mode)</B></TT>
 <DD>Set the magnification texture filter to use when creating the texture to store the glyph images when rendering.
 Note, this doesn't affect already created Texture Glhph's.
 <DL><DT><DD></DL><P>
 <A NAME="getMagFilterHint"></A>
-<A NAME="DOC.6.2.22"></A>
+<A NAME="DOC.6.3.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Texture::FilterMode getMagFilterHint() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setImplementation"></A>
-<A NAME="DOC.6.2.23"></A>
+<A NAME="DOC.6.3.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImplementation(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getImplementation"></A>
-<A NAME="DOC.6.2.24"></A>
+<A NAME="DOC.6.3.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="FontImplementation.html">FontImplementation</A>* getImplementation()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getImplementation"></A>
-<A NAME="DOC.6.2.25"></A>
+<A NAME="DOC.6.3.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="FontImplementation.html">FontImplementation</A>* getImplementation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Font"></A>
-<A NAME="DOC.6.2.26"></A>
+<A NAME="DOC.6.3.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Font()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addGlyph"></A>
-<A NAME="DOC.6.2.27"></A>
+<A NAME="DOC.6.3.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GlyphTextureList"></A>
-<A NAME="DOC.6.2.28"></A>
+<A NAME="DOC.6.3.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt; GlyphTextureList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="StateSetList"></A>
-<A NAME="DOC.6.2.29"></A>
+<A NAME="DOC.6.3.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; StateSetList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GlyphMap"></A>
-<A NAME="DOC.6.2.30"></A>
+<A NAME="DOC.6.3.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; GlyphMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SizePair"></A>
-<A NAME="DOC.6.2.31"></A>
+<A NAME="DOC.6.3.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt; unsigned int, unsigned int &gt; SizePair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SizeGlyphMap"></A>
-<A NAME="DOC.6.2.32"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.2.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.2.30">GlyphMap</A> &gt; SizeGlyphMap</B></TT>
+<A NAME="DOC.6.3.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt; SizeGlyphMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_sizeGlyphMap"></A>
-<A NAME="DOC.6.2.33"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html#DOC.6.2.32">SizeGlyphMap</A> _sizeGlyphMap</B></TT>
+<A NAME="DOC.6.3.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html#DOC.6.3.32">SizeGlyphMap</A> _sizeGlyphMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_glyphTextureList"></A>
-<A NAME="DOC.6.2.34"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html#DOC.6.2.28">GlyphTextureList</A> _glyphTextureList</B></TT>
+<A NAME="DOC.6.3.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html#DOC.6.3.28">GlyphTextureList</A> _glyphTextureList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stateSetList"></A>
-<A NAME="DOC.6.2.35"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html#DOC.6.2.29">StateSetList</A> _stateSetList</B></TT>
+<A NAME="DOC.6.3.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html#DOC.6.3.29">StateSetList</A> _stateSetList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_width"></A>
-<A NAME="DOC.6.2.36"></A>
+<A NAME="DOC.6.3.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _width</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_height"></A>
-<A NAME="DOC.6.2.37"></A>
+<A NAME="DOC.6.3.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _height</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_margin"></A>
-<A NAME="DOC.6.2.38"></A>
+<A NAME="DOC.6.3.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _margin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_textureWidthHint"></A>
-<A NAME="DOC.6.2.39"></A>
+<A NAME="DOC.6.3.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _textureWidthHint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_textureHeightHint"></A>
-<A NAME="DOC.6.2.40"></A>
+<A NAME="DOC.6.3.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _textureHeightHint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_minFilterHint"></A>
-<A NAME="DOC.6.2.41"></A>
+<A NAME="DOC.6.3.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Texture::FilterMode _minFilterHint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_magFilterHint"></A>
-<A NAME="DOC.6.2.42"></A>
+<A NAME="DOC.6.3.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Texture::FilterMode _magFilterHint</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_implementation"></A>
-<A NAME="DOC.6.2.43"></A>
+<A NAME="DOC.6.3.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  _implementation</B></TT>
 <DL><DT><DD></DL><P></DL>
 

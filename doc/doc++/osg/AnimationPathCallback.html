@@ -22,15 +22,15 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AnimationPath.html">AnimationPath</A>&gt;  <B><A HREF="#DOC.2.3.8">_animationPath</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AnimationPath.html">AnimationPath</A>&gt;  <B><A HREF="#DOC.2.3.9">_animationPath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.9">_timeOffset</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.10">_timeOffset</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.10">_timeMultiplier</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.11">_timeMultiplier</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.11">_firstTime</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.3.12">_firstTime</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable double <B><A HREF="#DOC.2.3.12">_animationTime</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable double <B><A HREF="#DOC.2.3.13">_animationTime</A></B>
 </DL></P>
 
 <P><DL>
@@ -39,21 +39,23 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.2">AnimationPathCallback</A></B>(const <!1><A HREF="AnimationPathCallback.html#DOC.2.3.2">AnimationPathCallback</A>&amp; apc, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A> <B><A HREF="#DOC.2.3.3">(osg, AnimationPathCallback)</A></B>(<!1><A HREF="AnimationPath.html">AnimationPath</A>* ap, double timeOffset=0.0f, double timeMultiplier=1.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">META_Object</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AnimationPathCallback.html">AnimationPathCallback</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.4">setAnimationPath</A></B>(<!1><A HREF="AnimationPath.html">AnimationPath</A>* path)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.4">AnimationPathCallback</A></B>(<!1><A HREF="AnimationPath.html">AnimationPath</A>* ap, double timeOffset=0.0f, double timeMultiplier=1.0f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html">AnimationPath</A>* <B><A HREF="#DOC.2.3.5">getAnimationPath</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.5">setAnimationPath</A></B>(<!1><A HREF="AnimationPath.html">AnimationPath</A>* path)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="AnimationPath.html">AnimationPath</A>* <B><A HREF="#DOC.2.3.6">getAnimationPath</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html">AnimationPath</A>* <B><A HREF="#DOC.2.3.6">getAnimationPath</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.7">operator()</A></B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="AnimationPath.html">AnimationPath</A>* <B><A HREF="#DOC.2.3.7">getAnimationPath</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.8">operator()</A></B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DD><I>implements the callback</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.13">~AnimationPathCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.14">~AnimationPathCallback</A></B>()
 </DL></P>
 
 </DL>
@@ -66,7 +68,7 @@
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="NodeCallback.html">NodeCallback</A>) <B>()</B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="TessellationHints.html#DOC.2.172.3">META_Object</A>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="NodeCallback.html">NodeCallback</A>) <B>()</B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>traverse</B>(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)
 <DT>
@@ -94,9 +96,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -112,7 +114,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -157,49 +159,53 @@
 <A NAME="DOC.2.3.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AnimationPathCallback(const <!1><A HREF="AnimationPathCallback.html#DOC.2.3.2">AnimationPathCallback</A>&amp; apc, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="(osg, AnimationPathCallback)"></A>
+<A NAME="META_Object"></A>
 <A NAME="DOC.2.3.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TessellationHints.html#DOC.2.164.3">META_Object</A> (osg, AnimationPathCallback)(<!1><A HREF="AnimationPath.html">AnimationPath</A>* ap, double timeOffset=0.0f, double timeMultiplier=1.0f)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AnimationPathCallback.html">AnimationPathCallback</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AnimationPathCallback"></A>
+<A NAME="DOC.2.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AnimationPathCallback(<!1><A HREF="AnimationPath.html">AnimationPath</A>* ap, double timeOffset=0.0f, double timeMultiplier=1.0f)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAnimationPath"></A>
-<A NAME="DOC.2.3.4"></A>
+<A NAME="DOC.2.3.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAnimationPath(<!1><A HREF="AnimationPath.html">AnimationPath</A>* path)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAnimationPath"></A>
-<A NAME="DOC.2.3.5"></A>
+<A NAME="DOC.2.3.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html">AnimationPath</A>* getAnimationPath()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAnimationPath"></A>
-<A NAME="DOC.2.3.6"></A>
+<A NAME="DOC.2.3.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="AnimationPath.html">AnimationPath</A>* getAnimationPath() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator()"></A>
-<A NAME="DOC.2.3.7"></A>
+<A NAME="DOC.2.3.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operator()(<!1><A HREF="Node.html">Node</A>* node, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv)</B></TT>
 <DD>implements the callback
 <DL><DT><DD></DL><P>
 <A NAME="_animationPath"></A>
-<A NAME="DOC.2.3.8"></A>
+<A NAME="DOC.2.3.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="AnimationPath.html">AnimationPath</A>&gt;  _animationPath</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeOffset"></A>
-<A NAME="DOC.2.3.9"></A>
+<A NAME="DOC.2.3.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _timeOffset</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeMultiplier"></A>
-<A NAME="DOC.2.3.10"></A>
+<A NAME="DOC.2.3.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _timeMultiplier</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_firstTime"></A>
-<A NAME="DOC.2.3.11"></A>
+<A NAME="DOC.2.3.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _firstTime</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_animationTime"></A>
-<A NAME="DOC.2.3.12"></A>
+<A NAME="DOC.2.3.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable double _animationTime</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~AnimationPathCallback"></A>
-<A NAME="DOC.2.3.13"></A>
+<A NAME="DOC.2.3.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~AnimationPathCallback()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

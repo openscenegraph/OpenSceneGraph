@@ -13,21 +13,23 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.196.1">Timer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.203.1">Timer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.196.2">~Timer</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.203.2">~Timer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.196.3">delta_s</A></B>( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   const <!1><A HREF="Timer.html">Timer</A>* <B><A HREF="#DOC.2.203.3">instance</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.196.4">delta_m</A></B>( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.203.4">delta_s</A></B>( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.196.5">delta_u</A></B>( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.203.5">delta_m</A></B>( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.196.6">delta_n</A></B>( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.203.6">delta_u</A></B>( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> <B><A HREF="#DOC.2.196.14">tick</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.203.7">delta_n</A></B>( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> <B><A HREF="#DOC.2.196.15">tick</A></B>( void ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> <B><A HREF="#DOC.2.203.15">tick</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> <B><A HREF="#DOC.2.203.16">tick</A></B>( void ) const 
 </DL></P>
 
 </DL>
@@ -39,36 +41,40 @@
 <DL>
 
 <A NAME="Timer"></A>
-<A NAME="DOC.2.196.1"></A>
+<A NAME="DOC.2.203.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Timer()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Timer"></A>
-<A NAME="DOC.2.196.2"></A>
+<A NAME="DOC.2.203.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~Timer()</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="instance"></A>
+<A NAME="DOC.2.203.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   const <!1><A HREF="Timer.html">Timer</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="delta_s"></A>
-<A NAME="DOC.2.196.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_s( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const </B></TT>
+<A NAME="DOC.2.203.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_s( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="delta_m"></A>
-<A NAME="DOC.2.196.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_m( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const </B></TT>
+<A NAME="DOC.2.203.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_m( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="delta_u"></A>
-<A NAME="DOC.2.196.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_u( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const </B></TT>
+<A NAME="DOC.2.203.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_u( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="delta_n"></A>
-<A NAME="DOC.2.196.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_n( <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> t2 ) const </B></TT>
+<A NAME="DOC.2.203.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double delta_n( <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t1, <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> t2 ) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="tick"></A>
-<A NAME="DOC.2.196.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> tick() const </B></TT>
+<A NAME="DOC.2.203.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> tick() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="tick"></A>
-<A NAME="DOC.2.196.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="osg.html#DOC.2.192">Timer_t</A> tick( void ) const </B></TT>
+<A NAME="DOC.2.203.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="osg.html#DOC.2.199">Timer_t</A> tick( void ) const </B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -70,13 +70,19 @@ class  OSGUTIL_EXPORT <B><A HREF="RenderToTextureStage.html">RenderToTextureStag
 <DD><I> RenderStage which copies the final image to an attached texture or image.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="SceneView.html">SceneView</A></B>: public osg::Referenced
-<DD><I> SceneView is literally a view of a scene, encapsulating the camera, global state, lights and the scene itself.</I>
+<DD><I> SceneView is literally a view of a scene, encapsulating the camera (modelview+projection matrices), global state, lights and the scene itself.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="SmoothingVisitor.html">SmoothingVisitor</A></B>: public osg::NodeVisitor
 <DD><I>A smoothing visitor for calculating smoothed normals for osg::GeoSet's which contains surface primitives</I>
 <DT>
+class  <B><A HREF="Statistics.html">Statistics</A></B>: public osg::Drawable::PrimitiveFunctor
+<DD><I> Statistics base class.</I>
+<DT>
 class  OSGUTIL_EXPORT <B><A HREF="Tesselator.html">Tesselator</A></B>
 <DD><I>A simple class for tessellating a single polygon boundary.</I>
+<DT>
+class  OSGUTIL_EXPORT <B><A HREF="TransformAttributeFunctor.html">TransformAttributeFunctor</A></B>: public osg::Drawable::AttributeFunctor
+<DD><I>Functor for transforming a drawable's vertex and normal attributes by specified matrix.</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="TransformCallback.html">TransformCallback</A></B>: public osg::NodeCallback
 <DT>

@@ -417,6 +417,9 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 
 Geometry::~Geometry()
 {
+    // do dirty here to keep the getGLObjectSizeHint() estimate on the ball
+    dirtyDisplayList();
+    
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
@@ -745,8 +748,49 @@ bool Geometry::computeFastPathsUsed()
 
 unsigned int Geometry::getGLObjectSizeHint() const
 {
+    unsigned int totalSize = 0;
+    if (_vertexData.array.valid()) totalSize += _vertexData.array->getTotalDataSize();
+
+    if (_normalData.array.valid()) totalSize += _normalData.array->getTotalDataSize();
+
+    if (_colorData.array.valid()) totalSize += _colorData.array->getTotalDataSize();
+
+    if (_secondaryColorData.array.valid()) totalSize += _secondaryColorData.array->getTotalDataSize();
+
+    if (_fogCoordData.array.valid()) totalSize += _fogCoordData.array->getTotalDataSize();
+
+
+    unsigned int unit;
+    for(unit=0;unit<_texCoordList.size();++unit)
+    {
+        const Array* array = _texCoordList[unit].array.get();
+        if (array) totalSize += array->getTotalDataSize();
+
+    }
+
+    bool handleVertexAttributes = true;
+    if (handleVertexAttributes)
+    {
+        unsigned int index;
+        for( index = 0; index < _vertexAttribList.size(); ++index )
+        {
+            const Array* array = _vertexAttribList[index].array.get();
+            if (array) totalSize += array->getTotalDataSize();           
+        }
+    }
+
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
+            itr!=_primitives.end();
+            ++itr)
+        {
+
+            totalSize += 4*(*itr)->getNumIndices();
+
+        }
+
+
     // do a very simply mapping of display list size proportional to vertex datasize.
-    return _vertexData.array.valid() ? _vertexData.array->getNumElements() : 0;
+    return totalSize;
 }
 
 void Geometry::drawImplementation(State& state) const
@@ -885,7 +929,7 @@ void Geometry::drawImplementation(State& state) const
                     unsigned int index;
                     for( index = 0; index < _vertexAttribList.size(); ++index )
                     {
-                        _texCoordList[unit].offset = totalSize;
+                        _vertexAttribList[unit].offset = totalSize;
                         const Array* array = _vertexAttribList[index].array.get();
                         const AttributeBinding ab = _vertexAttribList[index].binding;
                         if( ab == BIND_PER_VERTEX && array )

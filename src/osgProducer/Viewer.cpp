@@ -509,14 +509,15 @@ public:
 #if 1
             double availableTime = 0.0025; //  2.5 ms
 
-            // flush deleted GL objects.
-            sh.getSceneView()->flushDeletedGLObjects(availableTime);
-
             // compile any GL objects that are required.
             if (dp) dp->compileGLObjects(*(sh.getSceneView()->getState()),availableTime);
+
+            // flush deleted GL objects.
+            sh.getSceneView()->flushDeletedGLObjects(availableTime);
 #endif
 
             if (dp) dp->signalEndFrame();
+            
 
        }
 };
@@ -542,6 +543,9 @@ public:
             // compile any GL objects that are required.
             if (dp) dp->compileGLObjects(*(_sceneView->getState()),availableTime);
 #endif
+
+            // glFinish();            
+
        }
        
        osg::ref_ptr<osgUtil::SceneView>     _sceneView;

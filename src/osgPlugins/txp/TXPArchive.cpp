@@ -573,7 +573,7 @@ bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
                 maxz
             )
         );
-        info.radius = osg::Vec3(size.x/2.f, size.y/2.f,0.f).length();
+        info.radius = osg::Vec3(size.x/2.f, size.y/2.f,0.f).length() * 1.3;
 
         return true;
     }

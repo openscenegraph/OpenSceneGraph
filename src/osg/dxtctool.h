@@ -44,10 +44,26 @@
 #include <osg/Texture>
 
 #if !defined(_MSC_VER)
-typedef char        __int8;
-typedef short       __int16;
-typedef int         __int32;
-typedef long long   __int64;
+
+    typedef char        __int8;
+    typedef short       __int16;
+    typedef int         __int32;
+    typedef long long   __int64;
+
+    #define HEX_0x000000000000FFFF 0x000000000000FFFFll
+    #define HEX_0x000000000FFF0000 0x000000000FFF0000ll
+    #define HEX_0x000000FFF0000000 0x000000FFF0000000ll
+    #define HEX_0x000FFF0000000000 0x000FFF0000000000ll
+    #define HEX_0xFFF0000000000000 0xFFF0000000000000ll
+
+#else
+
+    #define HEX_0x000000000000FFFF 0x000000000000FFFF
+    #define HEX_0x000000000FFF0000 0x000000000FFF0000
+    #define HEX_0x000000FFF0000000 0x000000FFF0000000
+    #define HEX_0x000FFF0000000000 0x000FFF0000000000
+    #define HEX_0xFFF0000000000000 0xFFF0000000000000
+
 #endif
 
 namespace dxtc_tool {
@@ -226,15 +242,19 @@ inline void dxtc_pixels::BVF_Alpha_DXT5_H2(void * const pBlock) const {
 }
 
 
+
+
+
+
 inline void dxtc_pixels::BVF_Alpha_DXT5_H4(void * const pBlock) const {
 	// Swap the the first row of pixels with the last one, then the 2 middle row of pixels (tricky again)
 	__int64 * const pB = (__int64 * const) pBlock;
 
-	__int64 TmpQWord = (pB[0] & 0x000000000000FFFFll);
-	TmpQWord |= (pB[0] & 0x000000000FFF0000ll) << 36;
-	TmpQWord |= (pB[0] & 0x000000FFF0000000ll) << 12;
-	TmpQWord |= (pB[0] & 0x000FFF0000000000ll) >> 12;
-	TmpQWord |= (pB[0] & 0xFFF0000000000000ll) >> 36;
+	__int64 TmpQWord = (pB[0] & HEX_0x000000000000FFFF);
+	TmpQWord |= (pB[0] & HEX_0x000000000FFF0000) << 36;
+	TmpQWord |= (pB[0] & HEX_0x000000FFF0000000) << 12;
+	TmpQWord |= (pB[0] & HEX_0x000FFF0000000000) >> 12;
+	TmpQWord |= (pB[0] & HEX_0xFFF0000000000000) >> 36;
 	pB[0] = TmpQWord;
 }
 
@@ -244,17 +264,17 @@ inline void dxtc_pixels::BVF_Alpha_DXT5(void * const pBlock1, void * const pBloc
 	__int64 * const pB1 = (__int64 * const) pBlock1;
 	__int64 * const pB2 = (__int64 * const) pBlock2;
 
-	__int64 TmpQWord1 = (pB1[0] & 0x000000000000FFFFll);
-	TmpQWord1 |= (pB1[0] & 0x000000000FFF0000ll) << 36;
-	TmpQWord1 |= (pB1[0] & 0x000000FFF0000000ll) << 12;
-	TmpQWord1 |= (pB1[0] & 0x000FFF0000000000ll) >> 12;
-	TmpQWord1 |= (pB1[0] & 0xFFF0000000000000ll) >> 36;
+	__int64 TmpQWord1 = (pB1[0] & HEX_0x000000000000FFFF);
+	TmpQWord1 |= (pB1[0] & HEX_0x000000000FFF0000) << 36;
+	TmpQWord1 |= (pB1[0] & HEX_0x000000FFF0000000) << 12;
+	TmpQWord1 |= (pB1[0] & HEX_0x000FFF0000000000) >> 12;
+	TmpQWord1 |= (pB1[0] & HEX_0xFFF0000000000000) >> 36;
 
-	__int64 TmpQWord2 = (pB2[0] & 0x000000000000FFFFll);
-	TmpQWord2 |= (pB2[0] & 0x000000000FFF0000ll) << 36;
-	TmpQWord2 |= (pB2[0] & 0x000000FFF0000000ll) << 12;
-	TmpQWord2 |= (pB2[0] & 0x000FFF0000000000ll) >> 12;
-	TmpQWord2 |= (pB2[0] & 0xFFF0000000000000ll) >> 36;
+	__int64 TmpQWord2 = (pB2[0] & HEX_0x000000000000FFFF);
+	TmpQWord2 |= (pB2[0] & HEX_0x000000000FFF0000) << 36;
+	TmpQWord2 |= (pB2[0] & HEX_0x000000FFF0000000) << 12;
+	TmpQWord2 |= (pB2[0] & HEX_0x000FFF0000000000) >> 12;
+	TmpQWord2 |= (pB2[0] & HEX_0xFFF0000000000000) >> 36;
 
 	pB1[0] = TmpQWord2;
 	pB2[0] = TmpQWord1;

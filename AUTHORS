@@ -81,11 +81,12 @@ Paul Fredrikson
 Phil Atkin <philatkin@philatkin.com>
         - MacOS X port.
 
-Boris Bralo
+Boris Bralo <boris.bralo@zg.tel.hr>
         - txp TerraPage loader.
 
 Sasa Bistrivic <sasa.bistrovic@zg.hinet.hr>
         - option for detailed calculation of the near clipping plane during cull traversal.
+        
 
 Nikolaus Hanekamp <hanekamp@stn-atlas.de>
         - added support billboards to Open Flight loader.

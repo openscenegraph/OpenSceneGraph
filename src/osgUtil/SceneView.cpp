@@ -70,9 +70,9 @@ void SceneView::setDefaults()
         _projectionMatrix = new RefMatrix();
         _projectionMatrix->makePerspective(50.0f,1.4f,1.0f,10000.0f);
     }
-    if (!_modelviewMatrix)
+    if (!_viewMatrix)
     {
-        _modelviewMatrix = new RefMatrix();
+        _viewMatrix = new RefMatrix();
     }
 
     _globalStateSet = new osg::StateSet;
@@ -216,7 +216,7 @@ void SceneView::cull()
 
 
     osg::ref_ptr<osg::RefMatrix> projection = _projectionMatrix.get();
-    osg::ref_ptr<osg::RefMatrix> modelview = _modelviewMatrix.get();
+    osg::ref_ptr<osg::RefMatrix> modelview = _viewMatrix.get();
        
     if (!projection) projection = new osg::RefMatrix();
     if (!modelview)  modelview  = new osg::RefMatrix();
@@ -761,8 +761,8 @@ const osg::Matrix SceneView::computeMVPW() const
 {
     osg::Matrix matrix;
     
-    if (_modelviewMatrix.valid())
-        matrix = (*_modelviewMatrix);
+    if (_viewMatrix.valid())
+        matrix = (*_viewMatrix);
         
     if (_projectionMatrix.valid())
         matrix.postMult(*_projectionMatrix);

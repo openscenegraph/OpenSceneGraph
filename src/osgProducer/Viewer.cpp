@@ -516,10 +516,10 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
         osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
         osgUtil::SceneView* sv = sh?sh->getSceneView():0;
         osg::Matrix vum;
-        if (sv!=0 && sv->getModelViewMatrix()!=0 && sv->getProjectionMatrix()!=0)
+        if (sv!=0)
         {
-            vum.set((*(sv->getModelViewMatrix())) *
-                    (*(sv->getProjectionMatrix())));
+            vum.set(sv->getViewMatrix() *
+                    sv->getProjectionMatrix());
         }
         else
         {

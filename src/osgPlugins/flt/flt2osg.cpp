@@ -386,7 +386,7 @@ void ConvertFromFLT::visitLongID(osg::Group& osgParent, LongIDRecord* rec)
 }
 
 
-void ConvertFromFLT::visitComment(osg::Group& osgParent, CommentRecord* rec)
+void ConvertFromFLT::visitComment(osg::Node& osgParent, CommentRecord* rec)
 {
     SComment *pSComment = (SComment*)rec->getData();
 
@@ -2018,6 +2018,13 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
     dgset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
     osgSim::LightPointNode *lpNode = new osgSim::LightPointNode();
+
+    for(int i=0; i < rec->getNumChildren(); i++)
+    {
+        Record* child = rec->getChild(i);
+        if( child->classOpcode() == COMMENT_OP) visitComment(*lpNode, (CommentRecord*)child);
+    }
+
     lpNode->setMinPixelSize( pSLightPoint->sfMinPixelSize);
     lpNode->setMaxPixelSize( pSLightPoint->sfMaxPixelSize);
 
@@ -2052,8 +2059,12 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
 	  // calc azimuth angles
 	  osg::Vec2 pNormal( normal.x(), normal.y() );
 	  float lng = pNormal.normalize();
-	  float azimAngle = acos( pNormal.y() );
-	  if( pNormal.y() > 0.0f ) azimAngle = - azimAngle;
+	  float azimAngle = 0.0f;
+	  if( lng > 0.0000001)
+	  {
+	     azimAngle = acos( pNormal.y() );
+	     if( pNormal.y() > 0.0f ) azimAngle = - azimAngle;
+	  }
 
 	  float minAzimuth = azimAngle - lobeHorz/2.0f;
 	  float maxAzimuth = azimAngle + lobeHorz/2.0f;

@@ -5,15 +5,25 @@ using namespace osg;
 Transform::Transform()
 {
     _type = DYNAMIC;
+    
     _matrix = new Matrix;
     _matrix->makeIdentity();
+    _matrixDirty = false;
+    
+    _inverse = new Matrix;
+    _inverse->makeIdentity();
+    _inverseDirty = false;
 }
 
 
 Transform::Transform(const Matrix& mat )
 {
     _type = DYNAMIC;
+
     _matrix = new Matrix(mat);
+    _matrixDirty = false;
+
+    _inverseDirty = true; // will neeed to recompute.
 }
 
 
@@ -24,6 +34,8 @@ Transform::~Transform()
 const bool Transform::computeBound() const
 {
     if (!Group::computeBound()) return false;
+
+    if (_matrixDirty) computeMatrix();
 
     Vec3 xdash = _bsphere._center;
     xdash.x() += _bsphere._radius;

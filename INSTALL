@@ -436,7 +436,7 @@ RedHat 7.2 & GLU1.3
 
     I have posted a simple fix for those of us who have been unable to
     correctly build OSG 0.8.43 on Redhat 7.2. You can download it at
-    http://www.openscenegraph.org/download/dependancies/ReadHat7.2_fixglu.tar.gz
+    http://www.openscenegraph.org/download/dependencies/ReadHat7.2_fixglu.tar.gz
 
 
     To install it, follow these steps:

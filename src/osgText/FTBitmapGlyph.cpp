@@ -12,6 +12,8 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
     if( err || ft_glyph_format_bitmap != glyph->format)
     {return;}
 
+    advance = glyph->advance.x >> 16;
+
     FT_BitmapGlyph  bitmap = (FT_BitmapGlyph)glyph;
     FT_Bitmap*      source = &bitmap->bitmap;
 
@@ -24,9 +26,8 @@ FTBitmapGlyph::FTBitmapGlyph( FT_Glyph glyph)
     
     if (srcPitch*srcHeight==0) return;
     
-    advance = glyph->advance.x >> 16;
 
-     pos.x = bitmap->left;
+    pos.x = bitmap->left;
     pos.y = srcHeight - bitmap->top;
     
    // FIXME What about dest alignment?

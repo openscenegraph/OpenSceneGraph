@@ -46,17 +46,17 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         struct ControlPoint
         {
             ControlPoint():
-                _scale(1.0f,1.0f,1.0f) {}
+                _scale(1.0,1.0,1.0) {}
 
             ControlPoint(const osg::Vec3d& position):
                 _position(position),
                 _rotation(),
-                _scale(1.0f,1.0f,1.0f) {}
+                _scale(1.0,1.0,1.0) {}
 
             ControlPoint(const osg::Vec3d& position, const osg::Quat& rotation):
                 _position(position),
                 _rotation(rotation),
-                _scale(1.0f,1.0f,1.0f) {}
+                _scale(1.0,1.0,1.0) {}
 
             ControlPoint(const osg::Vec3d& position, const osg::Quat& rotation, const osg::Vec3d& scale):
                 _position(position),
@@ -92,14 +92,14 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
 
             inline void getInverse(Matrixf& matrix) const
             {
-                matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
+                matrix.makeScale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z());
                 matrix.preMult(osg::Matrixf::rotate(_rotation.inverse()));
                 matrix.preMult(osg::Matrixf::translate(-_position));
             }
 
             inline void getInverse(Matrixd& matrix) const
             {
-                matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
+                matrix.makeScale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z());
                 matrix.preMult(osg::Matrixd::rotate(_rotation.inverse()));
                 matrix.preMult(osg::Matrixd::translate(-_position));
             }
@@ -191,7 +191,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
     public:
 
         AnimationPathCallback():
-            _pivotPoint(0.0f,0.0f,0.0f),
+            _pivotPoint(0.0,0.0,0.0),
             _useInverseMatrix(false),
             _timeOffset(0.0),
             _timeMultiplier(1.0),
@@ -215,9 +215,9 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         
         META_Object(osg,AnimationPathCallback);
 
-        AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
+        AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0,double timeMultiplier=1.0):
             _animationPath(ap),
-            _pivotPoint(0.0f,0.0f,0.0f),
+            _pivotPoint(0.0,0.0,0.0),
             _useInverseMatrix(false),
             _timeOffset(timeOffset),
             _timeMultiplier(timeMultiplier),

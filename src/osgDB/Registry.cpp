@@ -1118,6 +1118,34 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 //
 ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
 {
+    if (containsServerAddress(fileName))
+    {
+        std::string serverName = getServerAddress(fileName);
+        std::string serverFile = getServerFileName(fileName);
+        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
+        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
+
+        if (serverName.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server address invalid.");
+        }
+        
+        if (serverFile.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
+        }
+
+        ReaderWriter* rw = getReaderWriterForExtension("net");
+        if (rw)
+        {
+            return rw->readObject(serverName+":"+serverFile,_options.get());
+        }
+        else
+        {
+            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
+        }
+    }
+    
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
@@ -1276,6 +1304,35 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
 
 ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 {
+    if (containsServerAddress(fileName))
+    {
+        std::string serverName = getServerAddress(fileName);
+        std::string serverFile = getServerFileName(fileName);
+        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
+        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
+
+        if (serverName.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server address invalid.");
+        }
+        
+        if (serverFile.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
+        }
+
+        ReaderWriter* rw = getReaderWriterForExtension("net");
+        if (rw)
+        {
+            return rw->readImage(serverName+":"+serverFile,_options.get());
+        }
+        else
+        {
+            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
+        }
+    }
+
+
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
@@ -1435,6 +1492,34 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
 
 ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
 {
+    if (containsServerAddress(fileName))
+    {
+        std::string serverName = getServerAddress(fileName);
+        std::string serverFile = getServerFileName(fileName);
+        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
+        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
+
+        if (serverName.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server address invalid.");
+        }
+        
+        if (serverFile.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
+        }
+
+        ReaderWriter* rw = getReaderWriterForExtension("net");
+        if (rw)
+        {
+            return rw->readHeightField(serverName+":"+serverFile,_options.get());
+        }
+        else
+        {
+            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
+        }
+    }
+
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;

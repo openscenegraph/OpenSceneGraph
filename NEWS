@@ -8,7 +8,7 @@ OSG News (most significant items from ChangeLog)
 
     Despite only 6 weeks passing between 0.9.0 and this latest 0.9.1 release
     there has been a number of significant new features, API clean ups and
-    bug fixes.  Follows is a quite run through the key improvements.
+    bug fixes.  Follows is a quick run through the key improvements.
 
     Addition of osg::Texture1D, Texture2D & Texture3D classes, Texture2D replaces
     the original osg::Texture, which has now become a pure virtual base class. All
@@ -17,9 +17,11 @@ OSG News (most significant items from ChangeLog)
     New osgtexture1D and osgtexture3D demos demonstrate the new texture classes in
     action.
     
-    Port to HP UX.
+    The build system has been updated to support HP-UX.  This adds one of the last 
+    remaining mainstream platforms supported.
 
-    New Inventor/VRML1.0 loader added.
+    A new Inventor/VRML1.0 loader was added.  The inventor format has been requested 
+    on numerous occasions, so this is a welcome addition.
     
     Support added to lwo plugin for loading the new lwo2 format.
 
@@ -28,7 +30,8 @@ OSG News (most significant items from ChangeLog)
 
     osg::TexEnv texture_env_add added.
 
-    osg::Sequence implemented, and osgsequence demo added.
+    A osg::Sequence node has finally been implemented.  It is accompanied by a
+    demo, osgsequence.
 
     osg::DOFTransformNode implemented.
 
@@ -40,9 +43,11 @@ OSG News (most significant items from ChangeLog)
     
     Support for fog coord and secondary colors extensions added to osg::Geometry.
 
-    Improved osgbillboard example.
+    osg::Billboard has been improved to allow rotations around all axes, as well
+    as point rotations.  Check osgbillboard for a new improved demo.
 
-    Improved osglight example utilizing AnimationPath and PositionAttitudeTransform.
+    The osglight example has been improved by utilizing AnimationPath and 
+    PositionAttitudeTransform to keep light sources in motion.
 
     osg::AnimationPath improved, now allowing swing and looping behavior and
     with two new app callbacks which can update PositionAttitudeTransform

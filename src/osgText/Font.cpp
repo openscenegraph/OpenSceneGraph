@@ -21,6 +21,7 @@
 #include <osg/GLU>
 
 using namespace osgText;
+using namespace std;
 
 std::string findFontFile(const std::string& str)
 {
@@ -533,7 +534,7 @@ void Font::Glyph::subload() const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        osg::notify(osg::WARN)<<"before: detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
+        osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
@@ -548,13 +549,13 @@ void Font::Glyph::subload() const
     errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        std::cout << "  "<<GL_TEXTURE_2D<<"\t"<<0<<"\t"<<
-                    _texturePosX<<"\t"<<_texturePosY<<"\t"<<
-                    s()<<"\t"<<t()<<"\t"<<
-                    (GLenum)getPixelFormat()<<"\t"<<
-                    (GLenum)getDataType()<<"\t"<<
-                    (int)(*data())<<std::endl;
 
-        osg::notify(osg::WARN)<<"after: detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
+        osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<<std::endl;
+        std::cout << "\tglTexSubImage2D("<<GL_TEXTURE_2D<<" ,"<<0<<"\t"<<std::endl<<
+                     "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
+                     "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
+                     "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<
+                     "\t                0x"<<(GLenum)getDataType()<<std::endl<<
+                     "\t                0x"<<(unsigned int)data()<<");"<<dec<<std::endl;
     }                    
 }

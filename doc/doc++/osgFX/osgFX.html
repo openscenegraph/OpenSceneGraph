@@ -23,7 +23,7 @@ class  OSGFX_EXPORT <B><A HREF="Cartoon.html">Cartoon</A></B>: public <!1><A HRE
 class  OSGFX_EXPORT <B><A HREF="Effect.html">Effect</A></B>: public osg::Group
 <DD><I> The base class for special effects.</I>
 <DT>
-class  OSGFX_EXPORT <B><A HREF="Registry.html">Registry</A></B>
+class  OSGFX_EXPORT <B><A HREF="Registry.html">Registry</A></B>: public osg::Referenced
 <DT>
 class  OSGFX_EXPORT <B><A HREF="Scribe.html">Scribe</A></B>: public <!1><A HREF="Effect.html">Effect</A>
 <DD><I> This is a two-passes effect; the first pass renders the subgraph as usual  while the second pass switches to wireframe mode, sets up lighting and  material to obtain a fixed (user-defined) color and then renders the subgraph.</I>

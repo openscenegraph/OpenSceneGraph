@@ -148,6 +148,9 @@ int main( int argc, char **argv )
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );
+    
+    osgUtil::SceneView* sceneview = viewer.getViewportSceneView(0);
+    sceneview->setStereoMode(osgUtil::SceneView::ANAGLYPHIC_STEREO);
 
     // register trackball, flight and drive.
     viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);

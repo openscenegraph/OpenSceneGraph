@@ -214,6 +214,7 @@ void SceneView::cull()
         if (earthSky->getRequiresClear())
         {
             _renderStage->setClearColor(earthSky->getClearColor());
+            _renderStage->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
             // really should set clear mask here, but what to? Need
             // to consider the stencil and accumulation buffers..
             // will defer to later.  Robert Osfield. October 2001.
@@ -302,44 +303,50 @@ void SceneView::draw()
         {
             osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
             osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
-            float screenDistance = 3.5f;
             float iod = 0.05;
 
-            left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
-            right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
+            left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),_screenDistance);
+            right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),_screenDistance);
 
-            cout << "draw"<<endl;
-            cout << "   back left"<<endl;
             glDrawBuffer(GL_BACK_LEFT);
             _renderStage->setCamera(left_camera.get());
             _renderStage->draw(*_state,previous);
             
 
-            cout << "   back right"<<endl;
             glDrawBuffer(GL_BACK_RIGHT);
             _renderStage->setCamera(right_camera.get());
             _renderStage->_stageDrawnThisFrame = false;
             _renderStage->draw(*_state,previous);
         }
         break;
-    case(RED_GREEN_STEREO):
+    case(ANAGLYPHIC_STEREO):
         {
+            osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
+            osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
+            float iod = 0.05;
+
+            left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),_screenDistance);
+            right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),_screenDistance);
+
             osg::ColorMask* red = new osg::ColorMask;
             osg::ColorMask* green = new osg::ColorMask;
 
             red->setMask(true,false,false,true);
             _renderStage->setColorMask(red);
+            _renderStage->setCamera(left_camera.get());
             _renderStage->draw(*_state,previous);
 
-            green->setMask(false,true,false,true);
+            green->setMask(false,true,true,true);
             _renderStage->setColorMask(green);
             _renderStage->_stageDrawnThisFrame = false;
+            _renderStage->setCamera(right_camera.get());
             _renderStage->draw(*_state,previous);
 
         }
         break;
     default:
         {
+            osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<<endl;
             _renderStage->draw(*_state,previous);
         }
         break;

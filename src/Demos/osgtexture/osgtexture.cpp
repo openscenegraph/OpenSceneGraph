@@ -254,6 +254,22 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 
     }
 
+    // clamp-to-edge mode.
+    {
+        // create the texture attribute
+        osg::Texture* texture = new osg::Texture;
+        texture->setImage(image);
+
+        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+
+        // add the transform node to root group node.
+        top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
+
+        local_offset += local_delta;
+
+    }
+
     // repeat wrap mode.
     {
         // create the texture attribute

@@ -164,9 +164,9 @@ void Texture::flushTextureObjects(unsigned int contextID,double currentTime, dou
 }
 
 Texture::Texture():
-            _wrap_s(CLAMP),
-            _wrap_t(CLAMP),
-            _wrap_r(CLAMP),
+            _wrap_s(REPEAT),
+            _wrap_t(REPEAT),
+            _wrap_r(REPEAT),
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
@@ -454,8 +454,10 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     }
 
     glTexParameteri( target, GL_TEXTURE_WRAP_S, ws );
-    glTexParameteri( target, GL_TEXTURE_WRAP_T, wt );
-    glTexParameteri( target, GL_TEXTURE_WRAP_R, wr );
+    
+    if (target!=GL_TEXTURE_1D) glTexParameteri( target, GL_TEXTURE_WRAP_T, wt );
+    
+    if (target==GL_TEXTURE_3D) glTexParameteri( target, GL_TEXTURE_WRAP_R, wr );
 
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);

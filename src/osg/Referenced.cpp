@@ -12,7 +12,9 @@
 */
 #include <osg/Referenced>
 #include <osg/Notify>
+
 #include <typeinfo>
+#include <memory>
 
 namespace osg
 {

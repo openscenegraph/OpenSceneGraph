@@ -199,7 +199,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
 //             return _modifiedTag[contextID];
 //         }
 // 
-//         inline uint& getTextureParameterDity(uint contextID) const
+//         inline uint& getTextureParameterDirty(uint contextID) const
 //         {
 //             // pad out handle list if required.
 //             if (_texParametersDirtyList.size()<=contextID)
@@ -224,7 +224,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
             return _modifiedTag[contextID];
         }
 
-        inline uint& getTextureParameterDity(uint contextID) const
+        inline uint& getTextureParameterDirty(uint contextID) const
         {
             // get the dirty flag for the current contextID.
             return _texParametersDirtyList[contextID];

@@ -305,7 +305,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
     }
 
-    getTextureParameterDity(state.getContextID()) = false;
+    getTextureParameterDirty(state.getContextID()) = false;
 
 }
 

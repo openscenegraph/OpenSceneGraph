@@ -17,6 +17,10 @@
 
 #include <osg/Quat>
 
+#if defined (WIN32)
+#include <winsock.h>
+#endif
+
 #include "receiver.h"
 #include "broadcaster.h"
 

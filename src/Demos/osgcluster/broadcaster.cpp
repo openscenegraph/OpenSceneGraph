@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <sys/ioctl.h>
 #include <sys/types.h>
+
+#if !defined (WIN32)
+#include <sys/ioctl.h>
 #include <sys/uio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -11,9 +12,12 @@
 #include <sys/time.h>
 #include <net/if.h>
 #include <netdb.h>
+#endif
+
 #include <string.h>
 
 #if defined(__linux)
+#include <unistd.h>
 #  include <linux/sockios.h>
 #elif defined(__FreeBSD__)
 #  include <sys/sockio.h>
@@ -25,6 +29,9 @@
 #  include <sys/sockio.h>
 #elif defined (__DARWIN_OSX__)   // added
 #  include <sys/sockio.h>         // added
+#elif defined (WIN32)   // added
+#  include <winsock.h>         // added
+#  include <stdio.h>         // added
 #else
 #  error Teach me how to build on this system
 #endif
@@ -43,50 +50,82 @@ Broadcaster::Broadcaster( void )
 
 Broadcaster::~Broadcaster( void )
 {
+#if defined (WIN32)
+    closesocket( _so);
+#else
     close( _so );
+#endif
 }
 
 bool Broadcaster::init( void )
 {
+#if defined (WIN32)
+    WORD version = MAKEWORD(1,1);
+    WSADATA wsaData;
+    // First, we start up Winsock
+    WSAStartup(version, &wsaData);
+#endif
+
     if( _port == 0 )
     {
-	fprintf( stderr, "Broadcaster::init() - port not defined\n" );
-	return false;
+        fprintf( stderr, "Broadcaster::init() - port not defined\n" );
+        return false;
     }
 
     if( (_so = socket( AF_INET, SOCK_DGRAM, 0 )) < 0 )
     {
-        perror( "socket" );
-	return false;
+        perror( "Socket" );
+        return false;
     }
+#if defined (WIN32)
+    const BOOL on = TRUE;
+#else
     int on = 1;
+#endif
+
+#if defined (WIN32)
+    setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, (const char *) &on, sizeof(int));
+#else
     setsockopt( _so, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+#endif
 
     saddr.sin_family = AF_INET;
     saddr.sin_port   = htons( _port );
     if( _address == 0 )
     {
-    struct ifreq ifr;
-    setsockopt( _so, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
-#if defined (__linux)
-    strcpy( ifr.ifr_name, "eth0" );
-#elif defined(__sun)
-    strcpy( ifr.ifr_name, "hme0" );
+#if defined (WIN32)
+        setsockopt( _so, SOL_SOCKET, SO_BROADCAST, (const char *) &on, sizeof(int));
 #else
-    strcpy( ifr.ifr_name, "ef0" );
+        setsockopt( _so, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
 #endif
-    if( (ioctl( _so, SIOCGIFBRDADDR, &ifr)) < 0 )
-    {
-        perror( "Broadcaster::init() Cannot get Broadcast Address" );
-	return false;
+
+#if !defined (WIN32)
+        struct ifreq ifr;
+#endif
+#if defined (__linux)
+        strcpy( ifr.ifr_name, "eth0" );
+#elif defined(__sun)
+        strcpy( ifr.ifr_name, "hme0" );
+#elif !defined (WIN32)
+        strcpy( ifr.ifr_name, "ef0" );
+#endif
+#if defined (WIN32) // get the server address
+        saddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     }
-    saddr.sin_addr.s_addr = (
-		((sockaddr_in *)&ifr.ifr_broadaddr)->sin_addr.s_addr);
-    }
-    else
-    {
-	saddr.sin_addr.s_addr = _address;
-    }
+#else
+        if( (ioctl( _so, SIOCGIFBRDADDR, &ifr)) < 0 )
+        {
+            perror( "Broadcaster::init() Cannot get Broadcast Address" );
+            return false;
+        }
+            saddr.sin_addr.s_addr = (((sockaddr_in *)&ifr.ifr_broadaddr)->sin_addr.s_addr);
+        }
+        else
+        {
+            saddr.sin_addr.s_addr = _address;
+        }
+#endif
+#define _VERBOSE 1
 #ifdef _VERBOSE
     unsigned char *ptr = (unsigned char *)&saddr.sin_addr.s_addr;
     printf( "Broadcast address : %u.%u.%u.%u\n", ptr[0], ptr[1], ptr[2], ptr[3] );
@@ -121,7 +160,7 @@ void Broadcaster::setBuffer( void *buffer, const unsigned int size )
 
 void Broadcaster::sync( void )
 {
-    _initialized || init();
+    if(!_initialized) init();
 
     if( _buffer == 0L )
     {
@@ -129,9 +168,15 @@ void Broadcaster::sync( void )
 	return;
     }
 
+#if defined (WIN32)
+    unsigned int size = sizeof( SOCKADDR_IN );
+    sendto( _so, (const char *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
+    int err = WSAGetLastError ();
+    int *dum = (int*) _buffer;
+#else
     unsigned int size = sizeof( struct sockaddr_in );
-    sendto( _so, (const void *)_buffer, _buffer_size,
-			    0, (struct sockaddr *)&saddr, size );
+    sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
+#endif
 
 }
 

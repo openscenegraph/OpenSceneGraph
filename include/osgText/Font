@@ -174,7 +174,7 @@ public:
         GlyphTexture();
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const StateAttribute& rhs) const;
+        virtual int compare(const osg::StateAttribute& rhs) const;
 
         void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
         osg::StateSet* getStateSet() { return _stateset; }

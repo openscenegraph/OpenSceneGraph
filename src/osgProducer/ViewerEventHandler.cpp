@@ -783,9 +783,19 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                     {
                         unsigned int screenWidth;
                         unsigned int screenHeight;
+                        unsigned int windowWidth;
+                        unsigned int windowHeight;
                         rs->getScreenSize( screenWidth, screenHeight );
-                        unsigned int windowWidth  = (unsigned int)((float)screenWidth * 0.625);
-                        unsigned int windowHeight = (unsigned int)((float)windowWidth * 0.75);
+                        if( screenHeight > screenWidth )
+                        {
+                            windowWidth  = (unsigned int)((float)screenWidth * 0.625);
+                            windowHeight = (unsigned int)((float)windowWidth * 0.75);
+                        }
+                        else
+                        {
+                            windowHeight = (unsigned int)((float)screenHeight * 0.625);
+                            windowWidth  = (unsigned int)((float)windowHeight * 1.334);
+                        }
                         int x = (screenWidth - windowWidth) >> 1;
                         int y = (screenHeight - windowHeight) >> 1;
                     #ifndef WIN32                    

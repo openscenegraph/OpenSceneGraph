@@ -18,7 +18,6 @@ cleanlitedbg :
 	@[ -d $(DEBUGDIR) ] && cd $(DEBUGDIR); rm -f $(EXEC) $(LIB) $(PLUGIN)
 
 clean : cleanopt cleandbg
-	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) $(MAKEDEPEND)
 
 cleanopt : 
 	@[ -d $(OPTDIR) ] && cd $(OPTDIR); rm -f $(OBJS) $(MAKEDEPEND)
@@ -55,7 +54,7 @@ $(EXEC) : $(OBJS)
 ## causing us to have to make a special case here, rather than 
 ## just redefining the SHARED argument.
 
-ifeq ($(OS),MacOSX)
+ifeq ($(OS),Darwin)
 
 $(LIB) : $(OBJS)
 	$(C++) $(LDFLAGS) -dynamiclib $(OBJS) $(LIBS) -o $@

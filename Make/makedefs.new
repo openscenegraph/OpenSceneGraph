@@ -162,33 +162,28 @@ ifeq ($(OS),FreeBSD)
 endif
 
 #### Mac OSX specific definitions
-ifeq ($(OS),MacOSX)
-  C++               = g++
-  DEPARG            = ??
-  INC               +=  -I/usr/local/include -I/sw/include
-  DEF               += -D__DARWIN_OSX__
-  OPTF              = -O2 
+ifeq ($(OS),Darwin)
+  C++               = cc
+  INC               +=  -I/usr/include -I/sw/include
+  DEF               += -Wall -D__DARWIN_OSX__
+  OPTF              = -O2
   DBGF              = -g
+  DEPARG            = -M $(DEF)
   SHARED            = -shared
   ARCHARGS          = 
-  LINKARGS          = -all_load  -L/usr/local/lib -L/usr/lib  
+  LINKARGS          = -L/usr/lib -L/sw/lib 
   DYNAMICLIBRARYLIB = 
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
-  GLUT_LIB          = 
-  GL_LIBS           = 
+  GLUT_LIB          = -framework GLUT
+  CARBON_LIB        = -framework Carbon
+  GL_LIBS           = -framework OpenGL $(CARBON_LIB)
   X_LIBS            = 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -ldl -lstdc++ -lobjc
   SO_EXT            = dylib
   PLUGIN_EXT        = so
-  FRAMEWORKS        =  -L/sw/lib \
-  		 	-framework GLUT \
-			-framework Carbon \
-			-framework OpenGL
-
-  LIBS              += $(FRAMEWORKS)
-  QUICKTIME	    = -framework QuickTime
+  QUICKTIME_LIB	    = -framework QuickTime
   TIFF_LIB	    = -ltiff
 
 endif

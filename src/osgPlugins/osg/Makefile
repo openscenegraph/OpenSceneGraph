@@ -40,6 +40,7 @@ C++FILES = \
         TexGen.cpp\
         TexMat.cpp\
         Texture.cpp\
+        TextureCubeMap.cpp\
         Transform.cpp\
         Transparency.cpp\
 

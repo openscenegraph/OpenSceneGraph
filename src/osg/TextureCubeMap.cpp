@@ -15,10 +15,12 @@
 using namespace osg;
 
 
+// include/osg/TextureCubeMap defines GL_TEXTURE_CUBE_MAP to be
+// 0x8513 which is the same as GL_TEXTURE_CUBE_MAP_ARB & _EXT.
+// assume its the same as what OpenGL 1.3 defines.
+
 #ifndef GL_ARB_texture_cube_map
 #define GL_ARB_texture_cube_map 1
-//#define GL_NORMAL_MAP_ARB                   0x8511    // defined in TexGen
-//#define GL_REFLECTION_MAP_ARB               0x8512    //    --- '' ---
 #define GL_TEXTURE_CUBE_MAP_ARB             0x8513
 #define GL_TEXTURE_BINDING_CUBE_MAP_ARB     0x8514
 #define GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB  0x8515
@@ -34,8 +36,6 @@ using namespace osg;
 
 #ifndef GL_EXT_texture_cube_map
 #define GL_EXT_texture_cube_map 1
-//#define GL_NORMAL_MAP_EXT                   0x8511
-//#define GL_REFLECTION_MAP_EXT               0x8512
 #define GL_TEXTURE_CUBE_MAP_EXT             0x8513
 #define GL_TEXTURE_BINDING_CUBE_MAP_EXT     0x8514
 #define GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT  0x8515
@@ -81,7 +81,7 @@ static GLenum faceTarget[6] =
 
 TextureCubeMap::TextureCubeMap()
 {
-    _target = GL_TEXTURE_CUBE_MAP_ARB;      // default to ARB extension
+    _target = GL_TEXTURE_CUBE_MAP;      // default to ARB extension
 }
 
 
@@ -145,6 +145,15 @@ void TextureCubeMap::setImage( const Face face, Image* image)
     _images[face] = image;
 }
 
+Image* TextureCubeMap::getImage(const Face face)
+{
+    return _images[face].get();
+}
+
+const Image* TextureCubeMap::getImage(const Face face) const
+{
+    return _images[face].get();
+}
 
 bool TextureCubeMap::imagesValid() const
 {

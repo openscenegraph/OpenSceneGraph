@@ -223,6 +223,7 @@ void Texture::apply(State& state) const
         glGenTextures( 1L, (GLuint *)&handle );
         glBindTexture( _target, handle );
 
+        applyTexParameters(_target,state);
         applyTexImage(_target,_image.get(),state);
 
         // in theory the following line is redundent, but in practice
@@ -315,7 +316,7 @@ void Texture::applyTexParameters(GLenum target, State&) const
 void Texture::applyTexImage(GLenum target, Image* image, State& state) const
 {
     // if we don't have a valid image we can't create a texture!
-    if (!_image || !_image->data())
+    if (!image || !image->data())
         return;
 
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -331,8 +332,6 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->packing());
     
-    applyTexParameters(target,state);
-
     static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
     static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
 

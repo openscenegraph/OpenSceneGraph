@@ -37,7 +37,7 @@ Neil Salter <neil@nackle.org>
 Brede Johansen <bredej@email.com>
         - flt loader.
         - osg::Point.
-        - bug fixes.
+        - osg::TextureCubeMap
         - assistance on visual studio workspace files.
 
 Ben Discoe <ben@vterrain.org>

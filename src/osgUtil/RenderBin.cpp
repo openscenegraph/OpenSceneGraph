@@ -336,8 +336,28 @@ void RenderBin::drawImplementation(osg::State& state,RenderLeaf*& previous)
 // stats
 bool RenderBin::getStats(osg::Statistics* primStats)
 { // different by return type - collects the stats in this renderrBin
-    bool somestats=false;
-    for(RenderGraphList::iterator oitr=_renderGraphList.begin();
+  bool somestats=false;
+
+    // draw fine grained ordering.
+    for(RenderLeafList::iterator dw_itr = _renderLeafList.begin();
+        dw_itr != _renderLeafList.end();
+        ++dw_itr)
+    {
+      RenderLeaf* rl = *dw_itr;
+      Drawable* dw= rl->_drawable;
+      primStats->addDrawable(); // number of geosets
+      if (rl->_modelview.get()) primStats->addMatrix(); // number of matrices
+      if (dw)
+        {
+          // then tot up the primtive types and no vertices.
+          dw->accept(*primStats); // use sub-class to find the stats for each drawable
+          if (typeid(*dw)==typeid(osg::ImpostorSprite)) primStats->addImpostor(1);
+        }
+      somestats = true;
+
+    }
+
+  for(RenderGraphList::iterator oitr=_renderGraphList.begin();
         oitr!=_renderGraphList.end();
         ++oitr)
     {

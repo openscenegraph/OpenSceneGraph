@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 F90=df.exe
-# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
 # ADD BASE RSC /l 0x409
@@ -70,8 +70,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 F90=df.exe
-# ADD BASE CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
-# ADD CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
 # ADD BASE RSC /l 0x409

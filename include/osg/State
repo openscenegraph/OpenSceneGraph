@@ -13,8 +13,6 @@
 #include <osg/DisplaySettings>
 #include <osg/Polytope>
 
-#include <osg/GLExtensions>
-
 #include <vector>
 #include <map>
 

@@ -36,7 +36,7 @@ using namespace osg;
 #define IDLE_TIMEOUT 150000L
 #define ERR_MSG(no,msg) osg::notify(osg::WARN) << "QT-ImageStream: " << msg << " failed with error " << no << std::endl;
 
-static OpenThreads::Mutex s_qtMutex;
+static OpenThreads::Mutex* s_qtMutex = new OpenThreads::Mutex;
 
 
 // Constructor: setup and start thread
@@ -44,7 +44,7 @@ QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 {
 
     {    
-    	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+    	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
     	osgQuicktime::initQuicktime(); 
     }
         
@@ -74,11 +74,9 @@ QuicktimeImageStream::~QuicktimeImageStream()
 
     // clean up quicktime movies.
     {    
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
         delete _data;
     }
-
-   
 }
 
 
@@ -112,7 +110,7 @@ void QuicktimeImageStream::load(std::string fileName)
 {
     osg::notify(osg::DEBUG_INFO) << "QT-ImageStream: loading quicktime movie from " << fileName << std::endl;
     
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
 
     _data->load(this, fileName);
     
@@ -123,16 +121,17 @@ void QuicktimeImageStream::load(std::string fileName)
 
 void QuicktimeImageStream::quit(bool wiatForThreadToExit)
 {
-    osg::notify(osg::DEBUG_INFO)<<"Sending quit"<<std::endl;
+    osg::notify(osg::DEBUG_INFO)<<"Sending quit"<<this<<std::endl;
     setCmd(THREAD_QUIT);
 
     if (wiatForThreadToExit)
     {
         while(isRunning())
         {
-            osg::notify(osg::DEBUG_INFO)<<"Waiting for QuicktimeImageStream to quit"<<std::endl;
+            osg::notify(osg::DEBUG_INFO)<<"Waiting for QuicktimeImageStream to quit"<<this<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
+        osg::notify(osg::DEBUG_INFO)<<"QuicktimeImageStream has quit"<<this<<std::endl;
     }
 }
 
@@ -142,7 +141,7 @@ void QuicktimeImageStream::run()
 
     bool playing = false;
     bool done = false;
-    OSErr err;
+    //OSErr err;
    
     // err = EnterMoviesOnThread(0);
     // ERR_MSG(err,"EnterMoviesOnThread");
@@ -155,7 +154,7 @@ void QuicktimeImageStream::run()
 	float currentTime=0.0f;
 	
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
 
             if (cmd != THREAD_IDLE) {
                 switch (cmd) {

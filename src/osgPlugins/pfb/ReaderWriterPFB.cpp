@@ -7,6 +7,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include "ConvertFromPerformer.h"
 

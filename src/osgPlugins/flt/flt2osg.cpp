@@ -24,6 +24,7 @@
 #include <osg/Notify>
 
 #include <osg/DOFTransform>
+#include <osg/Sequence>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileNameUtils>
@@ -557,12 +558,38 @@ void ConvertFromFLT::visitNormalTextureVertex(osg::Group& , NormalTextureVertexR
 
 osg::Group* ConvertFromFLT::visitGroup(osg::Group& osgParent, GroupRecord* rec)
 {
-    osg::Group* group = new osg::Group;
 
-    group->setName(rec->getData()->szIdent);
-    visitAncillary(osgParent, *group, rec)->addChild( group );
-    visitPrimaryNode(*group, rec);
-    return group;
+    SGroup* currentGroup = (SGroup*) rec->getData();
+    bool forwardAnim , swingAnim;
+
+    // OpenFlight 15.7 has two animation flags, forward and swing 
+    if ( (currentGroup->dwFlags    & GroupRecord::FORWARD_ANIM)== GroupRecord::FORWARD_ANIM) forwardAnim    =    true; else forwardAnim    =    false;
+    if ( (currentGroup->dwFlags    & GroupRecord::SWING_ANIM)    == GroupRecord::SWING_ANIM) swingAnim       =    true; else swingAnim    =    false;
+     
+    if( forwardAnim || swingAnim )
+    {
+        osg::Sequence* animSeq = new osg::Sequence;
+        
+        if ( forwardAnim )
+            animSeq->setInterval(osg::Sequence::LOOP, 0, -1);
+        else 
+            animSeq->setInterval(osg::Sequence::SWING, 0, -1);
+        
+        animSeq->setName(rec->getData()->szIdent);
+        
+        visitAncillary(osgParent, *animSeq, rec)->addChild( animSeq );
+        visitPrimaryNode(*animSeq, rec);
+        return animSeq;
+    }
+     
+    else
+    {
+        osg::Group* group = new osg::Group;
+        group->setName(rec->getData()->szIdent);
+        visitAncillary(osgParent, *group, rec)->addChild( group );
+        visitPrimaryNode(*group, rec);
+        return group;
+    }
 }
 
 osg::Group* ConvertFromFLT::visitRoadConstruction(osg::Group& osgParent, GroupRecord* rec)
@@ -622,7 +649,9 @@ osg::Group* ConvertFromFLT::visitOldLOD(osg::Group& osgParent, OldLodRecord* rec
 // Converted DOF to use transform - jtracy@ist.ucf.edu
 osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 {
-#if 1
+#define USE_DOFTransform
+
+#if defined(USE_DOFTransform)
 
     osg::DOFTransform* transform = new osg::DOFTransform;
     transform->setName(rec->getData()->szIdent);
@@ -635,119 +664,96 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
     //now fill up members:
 
     //tranlsations:
-    transform->loadMinTranslate(osg::Vec3(_unitScale*p_data->dfX._dfMin,
+    transform->setMinTranslate(osg::Vec3(_unitScale*p_data->dfX._dfMin,
                       _unitScale*p_data->dfY._dfMin,
                       _unitScale*p_data->dfZ._dfMin));
 
-    transform->loadMaxTranslate(osg::Vec3(_unitScale*p_data->dfX._dfMax,
+    transform->setMaxTranslate(osg::Vec3(_unitScale*p_data->dfX._dfMax,
                       _unitScale*p_data->dfY._dfMax,
                       _unitScale*p_data->dfZ._dfMax));
 
-    transform->loadCurrentTranslate(osg::Vec3(_unitScale*p_data->dfX._dfCurrent,
+    transform->setCurrentTranslate(osg::Vec3(_unitScale*p_data->dfX._dfCurrent,
                       _unitScale*p_data->dfY._dfCurrent,
                       _unitScale*p_data->dfZ._dfCurrent));
 
-    transform->loadIncrementTranslate(osg::Vec3(_unitScale*p_data->dfX._dfIncrement,
+    transform->setIncrementTranslate(osg::Vec3(_unitScale*p_data->dfX._dfIncrement,
                       _unitScale*p_data->dfY._dfIncrement,
                       _unitScale*p_data->dfZ._dfIncrement));
 
     //rotations:
-    transform->loadMinHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfMin),
+    transform->setMinHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfMin),
                         osg::inDegrees(p_data->dfPitch._dfMin),
                         osg::inDegrees(p_data->dfRoll._dfMin)));
 
-    transform->loadMaxHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfMax),
+    transform->setMaxHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfMax),
                         osg::inDegrees(p_data->dfPitch._dfMax),
                         osg::inDegrees(p_data->dfRoll._dfMax)));
 
-    transform->loadCurrentHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfCurrent),
+    transform->setCurrentHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfCurrent),
                         osg::inDegrees(p_data->dfPitch._dfCurrent),
                         osg::inDegrees(p_data->dfRoll._dfCurrent)));
 
-    transform->loadIncrementHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfIncrement),
+    transform->setIncrementHPR(osg::Vec3(osg::inDegrees(p_data->dfYaw._dfIncrement),
                         osg::inDegrees(p_data->dfPitch._dfIncrement),
                         osg::inDegrees(p_data->dfRoll._dfIncrement)));
 
     //scales:
-    transform->loadMinScale(osg::Vec3(p_data->dfXscale._dfMin,
+    transform->setMinScale(osg::Vec3(p_data->dfXscale._dfMin,
                         p_data->dfYscale._dfMin,
                         p_data->dfZscale._dfMin));
 
-    transform->loadMaxScale(osg::Vec3(p_data->dfXscale._dfMax,
+    transform->setMaxScale(osg::Vec3(p_data->dfXscale._dfMax,
                         p_data->dfYscale._dfMax,
                         p_data->dfZscale._dfMax));
 
-    transform->loadCurrentScale(osg::Vec3(p_data->dfXscale._dfCurrent,
+    transform->setCurrentScale(osg::Vec3(p_data->dfXscale._dfCurrent,
                         p_data->dfYscale._dfCurrent,
                         p_data->dfZscale._dfCurrent));
 
-    transform->loadIncrementScale(osg::Vec3(p_data->dfXscale._dfIncrement,
+    transform->setIncrementScale(osg::Vec3(p_data->dfXscale._dfIncrement,
                         p_data->dfYscale._dfIncrement,
                         p_data->dfZscale._dfIncrement));
 
-    //now calculate put and inverse put matrix:
-    //the translation matrix:
-    osg::Matrix l2g_translation;
+    // compute the put matrix.
+    osg::Vec3 O ( p_data->OriginLocalDOF.x(),
+                  p_data->OriginLocalDOF.y(),
+                  p_data->OriginLocalDOF.z());
 
-    //translation vector
-    osg::Vec3 origin_translation(p_data->OriginLocalDOF.x(), p_data->OriginLocalDOF.y(), p_data->OriginLocalDOF.z());
-    origin_translation *= _unitScale;//of course, has to be scaled to units used
+    osg::Vec3 xAxis ( p_data->PointOnXaxis.x(),
+                      p_data->PointOnXaxis.y(),
+                      p_data->PointOnXaxis.z());
+    xAxis = xAxis - O;
+    xAxis.normalize();
 
-    //so we make translation matrix
-    l2g_translation.makeTranslate(origin_translation);
-
-    //now we need to construct rotation matrix that describes how is local coordinate system
-    //rotatoed in global:
-    osg::Matrix l2g_rotation;
-
-    //we make two normalized osg::Vec3s so we can cross-multiply them ....
-
-    //first we have "point on x axis", i.e. what the DOF local looks like in global
-    osg::Vec3 point_on_x_axis(p_data->PointOnXaxis.x(), p_data->PointOnXaxis.y(), p_data->PointOnXaxis.z());
-    point_on_x_axis *= _unitScale;
-    point_on_x_axis -= origin_translation;//we need to offset it for the origin
-
-    //second, we have "point in xy plane", so x ^ y gives us local z vector
-    osg::Vec3 point_in_xy_plane(p_data->PointInXYplane.x(), p_data->PointInXYplane.y(), p_data->PointInXYplane.z());
-    point_in_xy_plane *= _unitScale;
-    point_in_xy_plane -= origin_translation;//also offset it
-
-    //just in case, normalize them:
-    point_on_x_axis.normalize();
-
-    //now, local x in global is [1 0 0 1] * rotation_matrix, so we can directly write down first row
-    l2g_rotation.ptr()[0] = point_on_x_axis.x(); //that is mat[0][0]
-    l2g_rotation.ptr()[1] = point_on_x_axis.y(); //that is mat[0][1]
-    l2g_rotation.ptr()[2] = point_on_x_axis.z(); //that is mat[0][2]
-
+    osg::Vec3 xyPlane ( p_data->PointInXYplane.x(),
+                        p_data->PointInXYplane.y(),
+                        p_data->PointInXYplane.z());
+    xyPlane = xyPlane - O;
+    xyPlane.normalize();
     
-    //the cross product of x ^point_in_local_xy_plane gives local z
-    osg::Vec3 z_transformed = point_on_x_axis ^ point_in_xy_plane;
-    z_transformed.normalize();//we have to normalize it, and than we can directly writ it down to rotation matrix
-    //we can write it down to matrix directly:
-    l2g_rotation.ptr()[8] = z_transformed.x(); //that is mat[2][0]
-    l2g_rotation.ptr()[9] = z_transformed.y(); //that is mat[2][1]
-    l2g_rotation.ptr()[10] = z_transformed.z(); //that is mat[2][2]
+    osg::Vec3 normalz = xAxis ^ xyPlane;
+    normalz.normalize();
 
-    //now that we have x and z, we can get y = z ^ x
-    osg::Vec3 y_transformed = z_transformed ^ point_on_x_axis;
-    //and just in case, we can normalize it:
-    // y_transformed.normalize();
-
-    //this goes to rotation matrix:
-    l2g_rotation.ptr()[4] = y_transformed.x(); //that is mat[1][0]
-    l2g_rotation.ptr()[5] = y_transformed.y(); //that is mat[1][0]
-    l2g_rotation.ptr()[6] = y_transformed.z(); //that is mat[1][0]
+    // get X, Y, Z axis of the DOF in terms of global coordinates
+    osg::Vec3 Rz = normalz;
+    if (Rz == osg::Vec3(0,0,0)) Rz[2] = 1;
+    osg::Vec3 Rx = xAxis;
+    if (Rx == osg::Vec3(0,0,0)) Rx[0] = 1;
+    osg::Vec3 Ry = Rz ^ Rx;
 
 
-    //now we have actually the second "PUT" transformation, and the first is inverse
-    osg::Matrix second_put = l2g_rotation * l2g_translation;
+    O *= _unitScale;
 
-    //and we take invers of it since it has to be done at the end, see FLT spec
-    osg::Matrix the_first = osg::Matrix::inverse(second_put);
+    // create the putmatrix
+    osg::Matrix inv_putmat( Rx.x(), Rx.y(), Rx.z(), 0, 
+                            Ry.x(), Ry.y(), Ry.z(), 0,
+                            Rz.x(), Rz.y(), Rz.z(), 0,
+                            O.x(), O.y(), O.z(), 1);
 
-    transform->setPutMatrix(the_first);
-    transform->setInversePutMatrix(second_put);
+    transform->setInversePutMatrix(inv_putmat);
+    transform->setPutMatrix(osg::Matrix::inverse(inv_putmat));
+
+
 /*
     //and now do a little ENDIAN to put flags in ordewr as described in OpenFlight spec
     unsigned long flags = p_data->dwFlags;
@@ -780,16 +786,16 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
                       p_data->PointOnXaxis.y(),
                       p_data->PointOnXaxis.z());
     xAxis = xAxis - O;
-	xAxis.normalize();
+    xAxis.normalize();
 
     osg::Vec3 xyPlane ( p_data->PointInXYplane.x(),
                         p_data->PointInXYplane.y(),
                         p_data->PointInXYplane.z());
     xyPlane = xyPlane - O;
-	xyPlane.normalize();
+    xyPlane.normalize();
     
     osg::Vec3 normalz = xAxis ^ xyPlane;
-	normalz.normalize();
+    normalz.normalize();
 
     // get X, Y, Z axis of the DOF in terms of global coordinates
     osg::Vec3 Rz = normalz;
@@ -817,20 +823,22 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
     float sy = rec->getData()->dfYscale.current();
     float sz = rec->getData()->dfZscale.current();
 
-	// this is the local DOF transformation
-	osg::Matrix dof_matrix = osg::Matrix::scale(sx, sy, sz)*
+    // this is the local DOF transformation
+    osg::Matrix dof_matrix = osg::Matrix::scale(sx, sy, sz)*
                              osg::Matrix::rotate(yaw_rad,  0.0f,0.0f,1.0f)*
                              osg::Matrix::rotate(roll_rad,  0.0f,1.0f,0.0f)*
                              osg::Matrix::rotate(pitch_rad, 1.0f,0.0f,0.0f)*
                              osg::Matrix::translate(trans);
 
-	// transforming local into global
-	dof_matrix.preMult(osg::Matrix::inverse(putmat));
+    // transforming local into global
+    dof_matrix.preMult(osg::Matrix::inverse(putmat));
 
-	// transforming global into local
-	dof_matrix.postMult(putmat);
+    cout << "putmat "<< putmat<<endl;
 
-	transform->setMatrix(dof_matrix);
+    // transforming global into local
+    dof_matrix.postMult(putmat);
+
+    transform->setMatrix(dof_matrix);
     return transform;        
     
 #endif

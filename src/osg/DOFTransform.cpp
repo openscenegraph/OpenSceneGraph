@@ -2,120 +2,96 @@
 
 using namespace osg;
 
-struct DOFCullCallback : public Transform::ComputeTransformCallback
-{
-    /**/
-    virtual const bool computeLocalToWorldMatrix(Matrix& matrix, const Transform* trans, NodeVisitor* nv) const
-    {
-        const DOFTransform* dof = dynamic_cast<const DOFTransform*>(trans);
-        if(dof)
-        {
-            //here we are:
-            //put the PUT matrix first:
-            Matrix l2w(dof->getPutMatrix());
-
-            //now the current matrix:
-            Matrix current; 
-            current.makeTranslate(dof->getCurrentTranslate());
-
-            //now create the local rotation:
-            current.preMult(Matrix::rotate(dof->getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
-            current.preMult(Matrix::rotate(dof->getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
-            current.preMult(Matrix::rotate(dof->getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
-
-            //and scale:
-            current.preMult(Matrix::scale(dof->getCurrentScale()));
-
-            l2w.postMult(current);
-
-            //and impose inverse put:
-            l2w.postMult(dof->getInversePutMatrix());
-
-            //finally:
-            matrix.preMult(l2w);
-        }
-
-        return true;
-    }
-
-    /**/
-    virtual const bool computeWorldToLocalMatrix(Matrix& matrix, const Transform* trans, NodeVisitor* nv) const
-    {
-        const DOFTransform* dof = dynamic_cast<const DOFTransform*>(trans);
-        if(dof)
-        {
-            //here we are:
-            //put the PUT matrix first:
-            Matrix w2l(dof->getInversePutMatrix());
-
-            //now the current matrix:
-            Matrix current; 
-            current.makeTranslate(-dof->getCurrentTranslate());
-
-            //now create the local rotation:
-
-
-            current.postMult(Matrix::rotate(-dof->getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
-            current.postMult(Matrix::rotate(-dof->getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
-            current.postMult(Matrix::rotate(-dof->getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
-
-            //and scale:
-            current.postMult(Matrix::scale(1./dof->getCurrentScale()[0], 1./dof->getCurrentScale()[1], 1./dof->getCurrentScale()[2]));
-
-            w2l.postMult(current);
-
-            //and impose inverse put:
-            w2l.postMult(dof->getPutMatrix());
-
-            //finally:
-            matrix.postMult(w2l);
-        }
-
-        return true;
-    }
-};
-
-class DOFAnimationAppCallback : public osg::NodeCallback
-{
-    /** Callback method call by the NodeVisitor when visiting a node.*/
-    virtual void operator()(Node* node, NodeVisitor* nv)
-    {
-        if (nv && nv->getVisitorType()==NodeVisitor::APP_VISITOR)
-        {
-
-            //this is aspp visitor, see if we have DOFTransform:
-            DOFTransform* dof = dynamic_cast<DOFTransform*>(node);
-            if(dof)
-            {
-                //see if it is ina animation mode:
-                dof->animate();
-            }
-
-        }
-        
-        // note, callback is repsonsible for scenegraph traversal so
-        // should always include call the traverse(node,nv) to ensure 
-        // that the rest of cullbacks and the scene graph are traversed.
-        traverse(node,nv);
-    }
-};
-
 DOFTransform::DOFTransform():
     _limitationFlags(0), 
     _animationOn(true), 
     _increasingFlags(0xffff)
 {
-    //default zero-ed Vec3-s are fine for all
-    //default idenetiy inverse matrix is fine:
-
-    _computeTransformCallback = new DOFCullCallback;
-
-    DOFAnimationAppCallback* dof_animation = new DOFAnimationAppCallback;
-
-    setAppCallback(dof_animation);
+    setNumChildrenRequiringAppTraversal(1);
 }
 
-void DOFTransform::setCurrentHPR(const Vec3& hpr)
+void DOFTransform::traverse(NodeVisitor& nv)
+{
+    if (nv.getVisitorType()==NodeVisitor::APP_VISITOR)
+    {
+        animate();
+    }
+    Transform::traverse(nv);
+}
+
+const bool DOFTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
+{
+    //put the PUT matrix first:
+    Matrix l2w(getPutMatrix());
+
+    //now the current matrix:
+    Matrix current; 
+    current.makeTranslate(getCurrentTranslate());
+
+    //now create the local rotation:
+    current.preMult(Matrix::rotate(getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+    current.preMult(Matrix::rotate(getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+    current.preMult(Matrix::rotate(getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+
+    //and scale:
+    current.preMult(Matrix::scale(getCurrentScale()));
+
+    l2w.postMult(current);
+
+    //and impose inverse put:
+    l2w.postMult(getInversePutMatrix());
+
+    // finally.
+    if (_referenceFrame==RELATIVE_TO_PARENTS)
+    {
+        matrix.preMult(l2w);
+    }
+    else
+    {
+        matrix = l2w;    
+    }
+    
+    return true;
+}
+
+
+const bool DOFTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
+{
+    //put the PUT matrix first:
+    Matrix w2l(getInversePutMatrix());
+
+    //now the current matrix:
+    Matrix current; 
+    current.makeTranslate(-getCurrentTranslate());
+
+    //now create the local rotation:
+
+
+    current.postMult(Matrix::rotate(-getCurrentHPR()[0], 0.0, 0.0, 1.0));//heading
+    current.postMult(Matrix::rotate(-getCurrentHPR()[2], 0.0, 1.0, 0.0));//roll
+    current.postMult(Matrix::rotate(-getCurrentHPR()[1], 1.0, 0.0, 0.0));//pitch
+
+    //and scale:
+    current.postMult(Matrix::scale(1./getCurrentScale()[0], 1./getCurrentScale()[1], 1./getCurrentScale()[2]));
+
+    w2l.postMult(current);
+
+    //and impose inverse put:
+    w2l.postMult(getPutMatrix());
+
+    if (_referenceFrame==RELATIVE_TO_PARENTS)
+    {
+        //finally:
+        matrix.postMult(w2l);
+    }
+    else // absolute
+    {
+        matrix = w2l;
+    }
+    return true;
+}
+
+void DOFTransform::updateCurrentHPR(const Vec3& hpr)
 {
     //if there is no constrain on animation
     if(!(_limitationFlags & ((unsigned long)1<<26)))
@@ -183,9 +159,10 @@ void DOFTransform::setCurrentHPR(const Vec3& hpr)
             }
         }
     }
+    dirtyBound();
 }
 
-void DOFTransform::setCurrentTranslate(const Vec3& translate)
+void DOFTransform::updateCurrentTranslate(const Vec3& translate)
 {
     if(!(_limitationFlags & (unsigned long)1<<29))
     {
@@ -246,9 +223,10 @@ void DOFTransform::setCurrentTranslate(const Vec3& translate)
             }
         }
     }    
+    dirtyBound();
 }
 
-void DOFTransform::setCurrentScale(const Vec3& scale)
+void DOFTransform::updateCurrentScale(const Vec3& scale)
 {
 
     if(!(_limitationFlags & ((unsigned long)1<<23)))
@@ -310,6 +288,7 @@ void DOFTransform::setCurrentScale(const Vec3& scale)
             }
         }
     }    
+    dirtyBound();
 }
 
 void DOFTransform::animate()
@@ -334,7 +313,7 @@ void DOFTransform::animate()
     else
         new_value[2] -= _incrementTranslate[2];
 
-    setCurrentTranslate(new_value);
+    updateCurrentTranslate(new_value);
 
     new_value = _currentHPR;
 
@@ -353,7 +332,7 @@ void DOFTransform::animate()
     else
         new_value[0] -= _incrementHPR[0];
 
-    setCurrentHPR(new_value);
+    updateCurrentHPR(new_value);
 
     new_value = _currentScale;
 
@@ -372,7 +351,6 @@ void DOFTransform::animate()
     else
         new_value[2] -= _incrementScale[2];
 
-    setCurrentScale(new_value);
+    updateCurrentScale(new_value);
     
-    dirtyBound();
 }

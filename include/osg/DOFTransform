@@ -40,26 +40,28 @@ class SG_EXPORT DOFTransform : public Transform
 
         META_Node(osg, DOFTransform);
 
-        void loadMinHPR(const Vec3& hpr) {_minHPR = hpr;}
-        void loadMaxHPR(const Vec3& hpr) {_maxHPR = hpr;}
-        void loadCurrentHPR(const Vec3& hpr) {_currentHPR = hpr;}
-        void loadIncrementHPR(const Vec3& hpr) {_incrementHPR = hpr;}
+        virtual void traverse(NodeVisitor& nv);
 
-        void setCurrentHPR(const Vec3& hpr);
+        void setMinHPR(const Vec3& hpr) {_minHPR = hpr;}
+        void setMaxHPR(const Vec3& hpr) {_maxHPR = hpr;}
+        void setCurrentHPR(const Vec3& hpr) {_currentHPR = hpr;}
+        void setIncrementHPR(const Vec3& hpr) {_incrementHPR = hpr;}
 
-        void loadMinTranslate(const Vec3& translate) {_minTranslate = translate;}
-        void loadMaxTranslate(const Vec3& translate) {_maxTranslate = translate;}
-        void loadCurrentTranslate(const Vec3& translate){_currentTranslate = translate;}
-        void loadIncrementTranslate(const Vec3& translate) {_incrementTranslate = translate;}
+        void updateCurrentHPR(const Vec3& hpr);
 
-        void setCurrentTranslate(const Vec3& translate);
+        void setMinTranslate(const Vec3& translate) {_minTranslate = translate;}
+        void setMaxTranslate(const Vec3& translate) {_maxTranslate = translate;}
+        void setCurrentTranslate(const Vec3& translate){_currentTranslate = translate;}
+        void setIncrementTranslate(const Vec3& translate) {_incrementTranslate = translate;}
 
-        void loadMinScale(const Vec3& scale) {_minScale = scale;}
-        void loadMaxScale(const Vec3& scale) {_maxScale = scale;}
-        void loadCurrentScale(const Vec3& scale) {_currentScale = scale;}
-        void loadIncrementScale(const Vec3& scale) {_incrementScale = scale;}
+        void updateCurrentTranslate(const Vec3& translate);
 
-        void setCurrentScale(const Vec3& scale);
+        void setMinScale(const Vec3& scale) {_minScale = scale;}
+        void setMaxScale(const Vec3& scale) {_maxScale = scale;}
+        void setCurrentScale(const Vec3& scale) {_currentScale = scale;}
+        void setIncrementScale(const Vec3& scale) {_incrementScale = scale;}
+
+        void updateCurrentScale(const Vec3& scale);
 
         void setPutMatrix(const Matrix& put) {_Put = put;}
         void setInversePutMatrix(const Matrix& inversePut) {_inversePut = inversePut;}
@@ -78,9 +80,11 @@ class SG_EXPORT DOFTransform : public Transform
         inline void setAnimationOn(bool do_animate) {_animationOn = do_animate;}
         inline const bool animationOn() const {return _animationOn;}
 
-    //    inline const bool increasing() const {return _increasing;}
-
         void animate();
+
+        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
+
+        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
     protected:
         virtual ~DOFTransform() {}

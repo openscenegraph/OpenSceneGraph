@@ -60,11 +60,17 @@ class IVEReaderWriter : public ReaderWriter
             return result;
         }
         
-        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
         {
             try
             {
                 ive::DataOutputStream out(&fout);
+
+				if (options)
+				{
+					out.setIncludeImageData(options->getOptionString().find("noTexturesInIVEFile")==std::string::npos);
+					osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageData()=" << out.getIncludeImageData() << std::endl;
+				}
                 
                 out.writeNode(const_cast<osg::Node*>(&node));
                 return WriteResult::FILE_SAVED;

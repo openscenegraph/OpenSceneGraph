@@ -141,7 +141,7 @@ class SG_EXPORT CullStack
         }
         
         
-        typedef fast_back_stack<ref_ptr<CullingSet> > CullingStack;
+        typedef std::vector< CullingSet > CullingStack;
 
         inline CullingStack& getClipSpaceCullingStack() { return _clipspaceCullingStack; }
         
@@ -152,8 +152,8 @@ class SG_EXPORT CullStack
 //        inline CullingSet& getCurrentCullingSet() { return _modelviewCullingStack.back(); }
 //        inline const CullingSet& getCurrentCullingSet() const { return _modelviewCullingStack.back(); }
 
-        inline CullingSet& getCurrentCullingSet() { return *_modelviewCullingStack.back(); }
-        inline const CullingSet& getCurrentCullingSet() const { return *_modelviewCullingStack.back(); }
+        inline CullingSet& getCurrentCullingSet() { return *_back_modelviewCullingStack; }
+        inline const CullingSet& getCurrentCullingSet() const { return *_back_modelviewCullingStack; }
         
         inline osg::Viewport* getViewport();
         inline osg::RefMatrix& getModelViewMatrix();
@@ -202,7 +202,10 @@ class SG_EXPORT CullStack
 
         CullingStack                                                _clipspaceCullingStack;
         CullingStack                                                _projectionCullingStack;
+
         CullingStack                                                _modelviewCullingStack;
+        unsigned int                                                _index_modelviewCullingStack;
+        CullingSet*                                                 _back_modelviewCullingStack;
 
         void computeFrustumVolume();
         float                                                       _frustumVolume;

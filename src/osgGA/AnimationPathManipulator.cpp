@@ -5,6 +5,8 @@ using namespace osgGA;
 
 AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animationPath) 
 {
+    _printOutTiminInfo = true;
+
     _animationPath = animationPath;
     _timeOffset = 0.0;
     _timeScale = 1.0;
@@ -17,6 +19,8 @@ AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animation
 
 AnimationPathManipulator::AnimationPathManipulator( const std::string& filename ) 
 {
+    _printOutTiminInfo = true;
+
     _animationPath = new osg::AnimationPath;
     _animationPath->setLoopMode(osg::AnimationPath::LOOP);
     _timeOffset = 0.0f;
@@ -140,19 +144,22 @@ void AnimationPathManipulator::handleFrame( double time )
     
     ++_numOfFramesSinceStartOfTimedPeriod;
     
-    double delta = (animTime-_animStartOfTimedPeriod);
-    if (delta>=_animationPath->getPeriod())
+    if (_printOutTiminInfo)
     {
-        double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
-        osg::notify(osg::INFO) <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
-        osg::notify(osg::INFO) <<"             average frame rate = "<<frameRate<<std::endl;
-        
-        // reset counters for next loop.
-        _realStartOfTimedPeriod = time;
-        _animStartOfTimedPeriod = animTime;
-        
-        _numOfFramesSinceStartOfTimedPeriod = 0;  
-    }
+        double delta = (animTime-_animStartOfTimedPeriod);
+        if (delta>=_animationPath->getPeriod())
+        {
+            double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
+            osg::notify(osg::NOTICE) <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
+            osg::notify(osg::NOTICE) <<"             average frame rate = "<<frameRate<<std::endl;
 
+            // reset counters for next loop.
+            _realStartOfTimedPeriod = time;
+            _animStartOfTimedPeriod = animTime;
+
+            _numOfFramesSinceStartOfTimedPeriod = 0;  
+        }
+    }
+    
     cp.getMatrix( _matrix );
 }

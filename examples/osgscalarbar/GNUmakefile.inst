@@ -8,7 +8,6 @@ LIBS     += -losgText -losgProducer -lProducer -losgDB -losgText -losgUtil -losg
 
 EXEC = osgscalarbar
 
-INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include
-LDFLAGS  += $(PRODUCER_LIB_DIR)
+INC += $(X_INC)
 
 include $(TOPDIR)/Make/makerules

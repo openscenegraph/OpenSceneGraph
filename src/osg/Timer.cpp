@@ -88,7 +88,7 @@ const Timer* Timer::instance()
             if (sysctlbyname("machdep.tsc_freq", &cpuspeed, &len, NULL, NULL) == -1)
             {
                 _useStandardClock = true;
-	        perror("sysctlbyname(machdep.tsc_freq)");
+            perror("sysctlbyname(machdep.tsc_freq)");
                 return;
             }
 
@@ -106,7 +106,7 @@ const Timer* Timer::instance()
     Timer::Timer()
     {
 #ifdef __ia64
-		_useStandardClock = true;
+        _useStandardClock = true;
 #else
         _useStandardClock = false;
 #endif
@@ -125,17 +125,17 @@ const Timer* Timer::instance()
             while( fgets( buff, sizeof( buff ), fp ) > 0 )
             {
                 if( !strncmp( buff, "cpu MHz", strlen( "cpu MHz" )))
-	        {
-	            char *ptr = buff;
+            {
+                char *ptr = buff;
 
-	            while( ptr && *ptr != ':' ) ptr++;
-	            if( ptr ) 
-	            {
-	              ptr++;
-	              sscanf( ptr, "%lf", &cpu_mhz );
-	            }
-	            break;
-	        }
+                while( ptr && *ptr != ':' ) ptr++;
+                if( ptr ) 
+                {
+                  ptr++;
+                  sscanf( ptr, "%lf", &cpu_mhz );
+                }
+                break;
+            }
             }
             fclose( fp );
 
@@ -160,7 +160,6 @@ const Timer* Timer::instance()
     #include <unistd.h>
     #include <sys/types.h>
     #include <sys/syssgi.h>
-    #include <sys/immu.h>
     #include <sys/mman.h>
 
     Timer::Timer( void )
@@ -232,26 +231,26 @@ const Timer* Timer::instance()
 #elif defined (__DARWIN_OSX__)  || defined (macintosh)
 
     #if defined (__DARWIN_OSX__)
-	    #include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
-    #else	
-	    #include <MacTypes.h>
-	    #include <Timer.h>
+        #include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
+    #else    
+        #include <MacTypes.h>
+        #include <Timer.h>
     #endif
 
 
     Timer::Timer( void )
     {
-	    _useStandardClock = false;
-	    _secsPerTick = 1e-6; // Carbon timer's precision.
+        _useStandardClock = false;
+        _secsPerTick = 1e-6; // Carbon timer's precision.
 
     }
 
     Timer_t Timer::tick(void) const
     {
-	    UnsignedWide usecs;
-	    Microseconds(&usecs);
+        UnsignedWide usecs;
+        Microseconds(&usecs);
 
-	    return (usecs.hi * 4294967296.0) + usecs.lo;
+        return (usecs.hi * 4294967296.0) + usecs.lo;
     }
 
 #elif defined(unix)

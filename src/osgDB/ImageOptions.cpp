@@ -22,4 +22,7 @@ void ImageOptions::init()
     _sourceImageWindowMode = ALL_IMAGE;
     
     _destinationImageWindowMode = ALL_IMAGE;
+    
+    _destinationDataType = GL_NONE;
+    _destinationPixelFormat = GL_NONE;
 }

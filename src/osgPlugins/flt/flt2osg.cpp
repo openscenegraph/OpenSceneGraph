@@ -77,6 +77,7 @@ ConvertFromFLT::ConvertFromFLT() :
     _wObjTransparency = 0;
     _nSubfaceLevel = 0;
     _unitScale = 1.0;
+    _useTextureAlphaForTranspancyBinning = true;
     _bHdrRgbMode = false;
 }
 
@@ -1180,7 +1181,7 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 if (osgTexture)
                 {
                     osg::Image* osgImage = osgTexture->getImage();
-                    if (osgImage->isImageTranslucent()) bBlend = true;
+                    if (getUseTextureAlphaForTransparancyBinning() && osgImage->isImageTranslucent()) bBlend = true;
                     
                 }
 

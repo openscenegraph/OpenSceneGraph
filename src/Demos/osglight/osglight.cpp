@@ -124,7 +124,7 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
         animationPath->insert(8.0,osg::AnimationPath::ControlPoint(bb.corner(0)));
         animationPath->setLoopMode(osg::AnimationPath::SWING);
         
-        mt->setUpdateCallback(new osg::MatrixTransform::AnimationPathCallback(animationPath));
+        mt->setUpdateCallback(new osg::AnimationPathCallback(animationPath));
     }
     
     // create marker for point light.

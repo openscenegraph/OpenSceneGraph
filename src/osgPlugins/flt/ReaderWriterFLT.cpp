@@ -20,14 +20,19 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& f
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
 {
     if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
         return ReadResult::FILE_NOT_HANDLED;
 
     osg::ref_ptr<FltFile> read = new FltFile;
+    
+    if (options)
+    {
+        read->setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")!=std::string::npos);
+    }
 
-    osg::Node* node = read.get()->readNode(fileName);
+    osg::Node* node = read->readNode(fileName);
     if (node) return node;
     else return ReadResult::FILE_NOT_HANDLED;
 }

@@ -42,7 +42,7 @@ class Sequence;
     myVisitor.apply(*root).  The later method will bypass the double
     dispatch and the appropriate NodeVisitor::apply(..) method will
     not be called. */ 
-class SG_EXPORT NodeVisitor : public Referenced
+class SG_EXPORT NodeVisitor : public virtual Referenced
 {
     public:
 
@@ -51,8 +51,7 @@ class SG_EXPORT NodeVisitor : public Referenced
             TRAVERSE_NONE,
             TRAVERSE_PARENTS,
             TRAVERSE_ALL_CHILDREN,
-            TRAVERSE_ACTIVE_CHILDREN,
-            TRAVERSE_VISITOR
+            TRAVERSE_ACTIVE_CHILDREN
         };
         
         enum VisitorType
@@ -137,17 +136,10 @@ class SG_EXPORT NodeVisitor : public Referenced
             NodeVisitor has been attached via setTraverseVisitor()
             and the new mode is not TRAVERSE_VISITOR then the attached
             visitor is detached. Default mode is TRAVERSE_NONE.*/
-        void setTraversalMode(TraversalMode mode);
+        inline void setTraversalMode(TraversalMode mode) { _traversalMode = mode; }
         
         /** Get the traversal mode.*/
         inline TraversalMode getTraversalMode() const { return _traversalMode; }
-
-        /** Set a visitor to handle traversal.
-            Overrides the traverse mode setting it to TRAVERSAL_VISITOR.*/
-        void setTraversalVisitor(NodeVisitor* nv);
-        
-        /** Get the traversal visitor, returns NULL if none is attached.*/
-        inline NodeVisitor* getTraversalVisitor() { return _traversalVisitor.get(); }
 
         /** Method for handling traversal of a nodes.
             If you intend to use the visitor for actively traversing 
@@ -155,8 +147,7 @@ class SG_EXPORT NodeVisitor : public Referenced
             this method unless they handle traversal directly.*/
         inline void traverse(Node& node)
         {
-            if (_traversalVisitor.valid()) node.accept(*_traversalVisitor);
-            else if (_traversalMode==TRAVERSE_PARENTS) node.ascend(*this);
+            if (_traversalMode==TRAVERSE_PARENTS) node.ascend(*this);
             else if (_traversalMode!=TRAVERSE_NONE) node.traverse(*this);
         }
         
@@ -234,8 +225,6 @@ class SG_EXPORT NodeVisitor : public Referenced
         int                     _traversalNumber;
         
         ref_ptr<FrameStamp>     _frameStamp;
-
-        ref_ptr<NodeVisitor>    _traversalVisitor;
         
         TraversalMode           _traversalMode;
         Node::NodeMask          _traversalMask;

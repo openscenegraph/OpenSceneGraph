@@ -40,24 +40,3 @@ bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVis
     }
     return true;
 }
-
-void PositionAttitudeTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
-{
-    PositionAttitudeTransform* pat = dynamic_cast<PositionAttitudeTransform*>(node);
-    if (pat &&
-        _animationPath.valid() && 
-        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
-        nv->getFrameStamp())
-    {
-        double time = nv->getFrameStamp()->getReferenceTime();
-        if (_firstTime==0.0) _firstTime = time;
-        AnimationPath::ControlPoint cp;
-        if (_animationPath->getInterpolatedControlPoint(((time-_firstTime)-_timeOffset)*_timeMultiplier,cp))
-        {
-            pat->setPosition(cp._position);
-            pat->setAttitude(cp._rotation);
-        }
-    }
-    // must call any nested node callbacks and continue subgraph traversal.
-    traverse(node,nv);
-}

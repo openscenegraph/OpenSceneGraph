@@ -95,6 +95,37 @@ bool Node_readLocalData(Object& obj, Input& fr)
     }
 
 
+    static ref_ptr<NodeCallback> s_nodecallback = new osg::NodeCallback;
+    while (fr.matchSequence("UpdateCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
+            if (nodecallback) node.setUpdateCallback(nodecallback);
+            else ++fr;
+        }
+        iteratorAdvanced = true;
+
+    }
+
+    while (fr.matchSequence("CullCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
+            if (nodecallback) node.setUpdateCallback(nodecallback);
+            else ++fr;
+        }
+        iteratorAdvanced = true;
+
+    }
+
     return iteratorAdvanced;
 }
 
@@ -146,6 +177,24 @@ bool Node_writeLocalData(const Object& obj, Output& fw)
     if (node.getStateSet())
     {
         fw.writeObject(*node.getStateSet());
+    }
+    
+    if (node.getUpdateCallback())
+    {
+        fw.indent() << "UpdateCallbacks {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*node.getUpdateCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+
+    if (node.getCullCallback())
+    {
+        fw.indent() << "CullCallbacks {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*node.getCullCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
     }
 
     return true;

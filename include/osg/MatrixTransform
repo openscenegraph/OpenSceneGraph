@@ -28,8 +28,6 @@ class SG_EXPORT MatrixTransform : public Transform
 
         META_Node(osg, MatrixTransform);
 
-        virtual void traverse(NodeVisitor& nv);
-
         /** Set the transform's matrix.*/
         void setMatrix(const Matrix& mat) { (*_matrix) = mat; _inverseDirty=true; dirtyBound(); }
         
@@ -53,68 +51,10 @@ class SG_EXPORT MatrixTransform : public Transform
             return *_inverse;
         }
 
-        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
-        {
-            if (_referenceFrame==RELATIVE_TO_PARENTS)
-            {
-                matrix.preMult(*_matrix);
-            }
-            else // absolute
-            {
-                matrix = *_matrix;
-            }
-            return true;
-        }
+        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const;
 
-        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
-        {
-            const Matrix& inverse = getInverseMatrix();
+        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const;
 
-            if (_referenceFrame==RELATIVE_TO_PARENTS)
-            {
-                matrix.postMult(inverse);
-            }
-            else // absolute
-            {
-                matrix = inverse;
-            }
-            return true;
-        }
-
-
-
-        /** Set an optional animation path. */
-        void setAnimationPath(AnimationPath* ap) { _animationPath = ap; }
-
-        /** Get a read only version of the AnimationPath object*/
-        AnimationPath* getAnimationPath() { return _animationPath.get(); }
-
-        /** Get a read only version of the AnimationPath object*/
-        const AnimationPath* getAnimationPath() const { return _animationPath.get(); }
-
-
-
-        /** Callback which can be attached to a MatrixTransform as an app 
-          * callback to allow it to follow the path defined by a AnimationPath.
-          * note, now deprecated by attaching an AnimationPath directly to MatrixTransform.*/
-        class SG_EXPORT AnimationPathCallback : public NodeCallback
-        {
-            public:
-            
-                AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
-                    _animationPath(ap),
-                    _timeOffset(timeOffset),
-                    _timeMultiplier(timeMultiplier),
-                    _firstTime(0.0) {}
-            
-                /** implements the callback*/
-                virtual void operator()(Node* node, NodeVisitor* nv);
-                
-                ref_ptr<AnimationPath>  _animationPath;
-                double                  _timeOffset;
-                double                  _timeMultiplier;
-                double                  _firstTime;
-        };
 
     protected :
     
@@ -123,8 +63,6 @@ class SG_EXPORT MatrixTransform : public Transform
         ref_ptr<Matrix>                     _matrix;
         mutable ref_ptr<Matrix>             _inverse;
         mutable bool                        _inverseDirty;
-        
-        osg::ref_ptr<AnimationPath>         _animationPath;
 
 
 };

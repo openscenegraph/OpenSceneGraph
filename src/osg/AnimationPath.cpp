@@ -1,5 +1,6 @@
 #include <osg/AnimationPath>
-#include <osg/NodeVisitor>
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 
 using namespace osg;
 
@@ -66,4 +67,44 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
         controlPoint = _timeControlPointMap.rbegin()->second;
     }
     return true;
+}
+
+
+void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
+{
+    if (_animationPath.valid() && 
+        nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
+        nv->getFrameStamp())
+    {
+        double time = nv->getFrameStamp()->getReferenceTime();
+        if (_firstTime==0.0) _firstTime = time;
+        
+        _animationTime = ((time-_firstTime)-_timeOffset)*_timeMultiplier;
+        
+        node->accept(*this);
+        
+    }
+
+    // must call any nested node callbacks and continue subgraph traversal.
+    NodeCallback::traverse(node,nv);
+}
+
+void AnimationPathCallback::apply(MatrixTransform& mt)
+{
+    Matrix matrix;
+    if (_animationPath->getMatrix(_animationTime,matrix))
+    {
+        mt.setMatrix(matrix);
+    }
+}
+
+
+void AnimationPathCallback::apply(PositionAttitudeTransform& pat)
+{
+    AnimationPath::ControlPoint cp;
+    if (_animationPath->getInterpolatedControlPoint(_animationTime,cp))
+    {
+        pat.setPosition(cp._position);
+        pat.setAttitude(cp._rotation);
+    }
 }

@@ -44,6 +44,9 @@ class FltFile : public osg::Referenced
         inline const bool useInternalTexturePalette() const  { return _useInternalTexturePalette; }
         inline const bool useInternalMaterialPalette() const { return _useInternalMaterialPalette; }
 
+        void setUseTextureAlphaForTransparancyBinning(bool flag) { _useTextureAlphaForTransparancyBinning=flag; }
+        bool getUseTextureAlphaForTransparancyBinning() const { return _useTextureAlphaForTransparancyBinning; }
+
         int getFlightVersion() const;
         inline HeaderRecord* getHeaderRecord() { return _headerRecord.get(); }
 
@@ -61,6 +64,7 @@ class FltFile : public osg::Referenced
         bool                        _useInternalColorPalette;
         bool                        _useInternalTexturePalette;
         bool                        _useInternalMaterialPalette;
+        bool                        _useTextureAlphaForTransparancyBinning;
 
         std::string                 _directory;
         

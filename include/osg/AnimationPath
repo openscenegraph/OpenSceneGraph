@@ -7,6 +7,7 @@
 
 #include <osg/Matrix>
 #include <osg/Quat>
+#include <osg/NodeVisitor>
 
 #include <map>
 
@@ -129,6 +130,61 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         TimeControlPointMap _timeControlPointMap;
         LoopMode            _loopMode;
 
+};
+
+
+class SG_EXPORT AnimationPathCallback : public NodeCallback, public NodeVisitor
+{
+    public:
+
+        AnimationPathCallback():
+            _timeOffset(0.0),
+            _timeMultiplier(1.0),
+            _firstTime(0.0),
+            _animationTime(0.0) {}
+            
+
+        AnimationPathCallback(const AnimationPathCallback& apc,const CopyOp& copyop):
+            NodeCallback(apc,copyop),
+            _animationPath(apc._animationPath),
+            _timeOffset(apc._timeOffset),
+            _timeMultiplier(apc._timeMultiplier),
+            _firstTime(apc._firstTime),
+            _animationTime(apc._animationTime) {}
+
+        
+        META_Object(osg,AnimationPathCallback)
+
+        AnimationPathCallback(AnimationPath* ap,double timeOffset=0.0f,double timeMultiplier=1.0f):
+            _animationPath(ap),
+            _timeOffset(timeOffset),
+            _timeMultiplier(timeMultiplier),
+            _firstTime(0.0),
+            _animationTime(0.0) {}
+            
+            
+            
+        void setAnimationPath(AnimationPath* path) { _animationPath = path; }
+
+        AnimationPath* getAnimationPath() { return _animationPath.get(); }
+
+        const AnimationPath* getAnimationPath() const { return _animationPath.get(); }
+
+
+        /** implements the callback*/
+        virtual void operator()(Node* node, NodeVisitor* nv);
+        
+        virtual void apply(MatrixTransform& mt);
+        
+        virtual void apply(PositionAttitudeTransform& pat);
+
+    public:
+
+        ref_ptr<AnimationPath>  _animationPath;
+        double                  _timeOffset;
+        double                  _timeMultiplier;
+        double                  _firstTime;
+        mutable double          _animationTime;
 };
 
 }

@@ -21,6 +21,7 @@
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
+#include <OpenThreads/ScopedLock>
 #include <OpenThreads/Condition>
 
 #include <osgDB/SharedStateManager>
@@ -37,28 +38,25 @@ class Block: public osg::Referenced {
 
         void block()
         {
-            _mut.lock();
+            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             if( !_released )
                 _cond.wait(&_mut);
-            _mut.unlock();
         }
 
         void release()
         {
-            _mut.lock();
+            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             if (!_released)
             {
                 _released = true;
                 _cond.broadcast();
             }
-            _mut.unlock();
         }
 
         void reset()
         {
-            _mut.lock();
+            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             _released = false;
-            _mut.unlock();
         }
 
     protected:

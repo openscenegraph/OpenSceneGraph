@@ -24,7 +24,7 @@ osg::Geode* createShapes()
     osg::StateSet* stateset = osgNew osg::StateSet();
 
    
-    osg::Image* image = osgDB::readImageFile("lz.rgb");
+    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
     if (image)
     {
 	osg::Texture2D* texture = osgNew osg::Texture2D;

@@ -718,6 +718,7 @@ void Text::drawImplementation(osg::State& state) const
         int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
         AutoTransformCache& atc = _autoTransformCache[contextID];
         const osg::Matrix& modelview = state.getModelViewMatrix();
+        const osg::Matrix& projection = state.getProjectionMatrix();
 
         osg::Vec3 newTransformedPosition = _position*modelview;
         
@@ -741,7 +742,11 @@ void Text::drawImplementation(osg::State& state) const
             else if (width!=atc._width || height!=atc._height)
             {
                 doUpdate = true;
-            } 
+            }
+            else if (atc._projection!=projection)
+            {
+                doUpdate = true;
+            }
         }
         
         atc._traversalNumber = frameNumber;
@@ -751,7 +756,7 @@ void Text::drawImplementation(osg::State& state) const
         if (doUpdate)
         {    
             atc._transformedPosition = newTransformedPosition;
-            atc._projection = state.getProjectionMatrix();
+            atc._projection = projection;
             atc._modelview = modelview;
 
             computePositions(contextID);

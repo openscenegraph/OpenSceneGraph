@@ -22,6 +22,9 @@ CXXFILES = \
 	Tesselator.cpp\
 	TransformCallback.cpp\
 	TriStripVisitor.cpp\
+	CubeMapGenerator.cpp\
+	HalfWayMapGenerator.cpp\
+	HighlightMapGenerator.cpp\
 	Version.cpp\
 
 DEF     += -DOSGUTIL_LIBRARY

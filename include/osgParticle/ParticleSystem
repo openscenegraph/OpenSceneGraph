@@ -168,7 +168,6 @@ namespace osgParticle
 
         bool doublepass_;
         bool frozen_;
-        int display_list_id_;
 
         osg::Vec3 bmin_;
         osg::Vec3 bmax_;

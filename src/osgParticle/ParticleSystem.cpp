@@ -24,7 +24,6 @@ osgParticle::ParticleSystem::ParticleSystem()
     align_Y_axis_(0, 1, 0),
     doublepass_(false),
     frozen_(false),
-    display_list_id_(-1), 
     bmin_(0, 0, 0), 
     bmax_(0, 0, 0), 
     reset_bounds_flag_(false),
@@ -48,7 +47,6 @@ osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem &copy, const os
     align_Y_axis_(copy.align_Y_axis_),
     doublepass_(copy.doublepass_),
     frozen_(copy.frozen_),
-    display_list_id_(-1), 
     bmin_(copy.bmin_), 
     bmax_(copy.bmax_), 
     reset_bounds_flag_(copy.reset_bounds_flag_),
@@ -106,27 +104,7 @@ void osgParticle::ParticleSystem::drawImmediateMode(osg::State &state)
     glDepthMask(GL_FALSE);
 
     // render, first pass
-    if (doublepass_) {
-
-        // generate a display list ID if necessary
-        if (display_list_id_ == -1) {
-            display_list_id_ = glGenLists(1);
-        }
-
-        #ifdef USE_SEPERATE_COMPILE_AND_EXECUTE
-            glNewList(display_list_id_, GL_COMPILE);
-            single_pass_render(state, modelview);
-            glEndList();
-            glCallList(display_list_id_);
-        #else
-            glNewList(display_list_id_, GL_COMPILE_AND_EXECUTE);
-            single_pass_render(state, modelview);
-            glEndList();
-        #endif
-
-    } else {
-        single_pass_render(state, modelview);
-    }
+    single_pass_render(state, modelview);
 
     // restore depth mask settings
     glPopAttrib();
@@ -137,8 +115,8 @@ void osgParticle::ParticleSystem::drawImmediateMode(osg::State &state)
         glPushAttrib(GL_COLOR_BUFFER_BIT);
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-        // call the display list to render the particles onto the depth buffer
-        glCallList(display_list_id_);
+        // render the particles onto the depth buffer
+        single_pass_render(state, modelview);
 
         // restore color mask settings
         glPopAttrib();

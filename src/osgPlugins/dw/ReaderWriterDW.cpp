@@ -25,6 +25,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/FileUtils>
 
 #include <osg/GLU>
 
@@ -132,7 +133,7 @@ public:
             type=dwmaterial::FullFace;
     }
     void setfname(const char *buff) {
-        fname=new char[strlen(buff+13)+5];
+        //fname=new char[strlen(buff+13)+5];
         fname= (buff+13);
         fname+= ".tga";
     }
@@ -185,7 +186,6 @@ typedef struct {
     double pos[3]; // must be double for the tessellator to detect vertices
     Vec2 uv; // texture coordainte - may not be used?
     Vec3 nrmv; // surface normal
-    const dwmaterial *themat;
     int idx; // index in the verts[] array
 } avertex;
 
@@ -373,12 +373,16 @@ public:
         if (nbegin<20 && ntesverts[nbegin]>0) {
             primlengs[nff+nbegin]=ntesverts[nbegin];
             nbegin++;
+        } else {
+            printf("nbegin %d\n", nbegin);//, errm
         }
     }
     void begin(GLenum op) { // part of a tesselator callback - starts a new primitive of type op
         if (nbegin<20) { // reSet counters
             nbegtype[nbegin]=op;
             ntesverts[nbegin]=0;
+        } else {
+            printf("begin: nbegin %d too large\n", nbegin);//, errm
         }
         switch (op) {
         case GL_TRIANGLES:
@@ -474,6 +478,12 @@ public:
             delete [] primlengs;
             primlengs=NULL;
             txcoords=NULL;
+            Vec3 *vts=new Vec3[nverts]; // allocate a new storage area -
+            // this may get destroyed if multiple combines are made by the tesselator
+            // extending the array of vertices and freeing some memory GWM Feb 2002,
+            for (i=0; i<nverts; i++) {
+                vts[i].set(verts[i].x(),verts[i].y(),verts[i].z());
+            }
             
             geode->addDrawable(gset);
             grp->addChild( geode ); // add to the world outside
@@ -500,7 +510,7 @@ public:
             gset->setNormals(nunrms, nunrmidx);
 
             gset->setTextureCoords(nutxc,nutxidx);
-            gset->setCoords( verts, nusidx );
+            gset->setCoords( vts, nusidx );
             if (themat->isType(dwmaterial::PointLight) || themat->isType(dwmaterial::SpotLight)) {
                 Vec4 pos;
                 pos.set(0.0f,0.0f,0.0f,0.0f);
@@ -563,7 +573,6 @@ void CALLBACK myFaceEnd()
 }
 void CALLBACK myVertex(void *pv)
 {// tess vertex call back with texture coord == void *pv1, 
-    // dwob needed if there is a combine callback to add the new vertex to group
     if (prd.isGLtype()) { // a prim of type == nvf being created; use this vertex
         prd.addv((avertex *)pv);
     }
@@ -571,6 +580,7 @@ void CALLBACK myVertex(void *pv)
 void CALLBACK combineCallback( GLdouble coords[3], avertex *d[4], 
                          GLfloat w[4], avertex **dataOut , _dwobj *dwob) 
 { 
+    // dwob needed if there is a combine callback to add the new vertex to group
     prd.combine(coords, d, w, dataOut,dwob);
 }
 void CALLBACK error (GLenum errno)
@@ -776,7 +786,6 @@ void _face::tesselate(const Vec3 verts[], const dwmaterial *themat,
         setposes(poses[nused], j, verts);
         poses[nused].uv[0]=uv[0];
         poses[nused].uv[1]=uv[1];
-        poses[nused].themat=themat;
         gluTessVertex(ts, (double *)&(poses[nused]), (double *)(poses+nused));
         nused++;
     }
@@ -793,7 +802,6 @@ void _face::tesselate(const Vec3 verts[], const dwmaterial *themat,
             poses[nused].nrmv=nrm;
             poses[nused].uv[0]=uv[0];
             poses[nused].uv[1]=uv[1];
-            poses[nused].themat=themat;
             gluTessVertex(ts, (double *)&(poses[nused]), (double *)(poses+nused));
             nused++;
         }
@@ -811,14 +819,13 @@ void prims::combine( GLdouble coords[3], avertex *d[4],
         newv->pos[2] = coords[2];
         newv->uv[0] = newv->uv[1] =0;
         newv->nrmv[0] = newv->nrmv[1] = newv->nrmv[2] =0;
-        for (int i=0; i<4; i++) {
+       for (int i=0; i<4; i++) {
             if (d[i]) {
                 newv->uv[0] = w[i]*d[i]->uv[0];
                 newv->uv[1] = w[i]*d[i]->uv[1];
                 newv->nrmv[0] = w[i]*d[i]->nrmv[0];
                 newv->nrmv[1] = w[i]*d[i]->nrmv[1];
                 newv->nrmv[2] = w[i]*d[i]->nrmv[2];
-                newv->themat=d[i]->themat;
             }
         }
         dwob->makeuv(newv->uv, newv->pos);
@@ -838,6 +845,7 @@ void _dwobj::buildDrawable(Group *grp)
             faces[i].setnorm(verts); // set its normal and any hole normals
             nfnvf+=faces[i].getallverts(); // get total vertices in object, defines dimensions of NEW arrays
         }
+        
         
         GLUtesselator* ts=gluNewTess();
         gluTessCallback(ts, GLU_TESS_BEGIN, (void (CALLBACK *) ())myFaceBegin);  

@@ -26,13 +26,13 @@ void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
             itr != ev->getEventList().end();
             ++itr)
         {
-            handle(*(*itr), *(ev->getActionAdapter()));
+            handle(*(*itr), *(ev->getActionAdapter()), node, nv);
         }
     }
     traverse(node,nv);
 }
 
-void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* /*drawable*/)
+void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)
 {
     osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
     if (ev && ev->getActionAdapter() && !ev->getEventList().empty())
@@ -41,7 +41,7 @@ void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* /*drawable*/)
             itr != ev->getEventList().end();
             ++itr)
         {
-            handle(*(*itr), *(ev->getActionAdapter()));
+            handle(*(*itr), *(ev->getActionAdapter()), drawable, nv);
         }
     }
 }
@@ -56,7 +56,7 @@ void CompositeGUIEventHandler::getUsage(osg::ApplicationUsage& usage) const
     }
 }
 
-bool CompositeGUIEventHandler::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
+bool CompositeGUIEventHandler::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
 {
     bool result=false;
 
@@ -64,7 +64,7 @@ bool CompositeGUIEventHandler::handle(const GUIEventAdapter& ea,GUIActionAdapter
          itr!=_children.end();
          ++itr)
     {
-        result |= (*itr)->handle(ea,aa);
+        result |= (*itr)->handle(ea, aa, object, nv);
     }
     return result;
 }

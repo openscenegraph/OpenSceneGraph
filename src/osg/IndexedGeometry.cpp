@@ -62,7 +62,7 @@ class DrawColor : public osg::ConstValueVisitor
         const IndexArray*   _indices;
 };
 
-class DrawTexCoord : public osg::ConstValueVisitor
+class DrawTexCoord : public osg::Referenced, public osg::ConstValueVisitor
 {
     public:
 
@@ -87,7 +87,7 @@ class DrawTexCoord : public osg::ConstValueVisitor
 
 typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
 typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
-class DrawMultiTexCoord : public osg::ConstValueVisitor
+class DrawMultiTexCoord : public osg::Referenced, public osg::ConstValueVisitor
 {
     public:
     
@@ -244,8 +244,8 @@ const Array* IndexedGeometry::getTexCoordArray(unsigned int unit) const
 
 void IndexedGeometry::drawImmediateMode(State& state)
 {
-    if (!_vertexArray.valid() || _vertexArray->empty()) return;
-    if (_vertexIndices.valid() && _vertexIndices->empty()) return;
+    if (!_vertexArray.valid() || _vertexArray->getNumElements()>0) return;
+    if (_vertexIndices.valid() && _vertexIndices->getNumElements()>0) return;
     
     // set up extensions.
     static SecondaryColor3ubvProc s_glSecondaryColor3ubv =
@@ -283,7 +283,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
     AttributeBinding normalBinding = _normalBinding;
     if (!_normalArray.valid() ||
         _normalArray->empty() ||
-        (_normalIndices.valid() && _normalIndices->empty()) )
+        (_normalIndices.valid() && _normalIndices->getNumElements()>0) )
     {
         // switch off if not supported or have a valid data.
         normalBinding = BIND_OFF;
@@ -297,8 +297,8 @@ void IndexedGeometry::drawImmediateMode(State& state)
     unsigned int colorIndex = 0;
     AttributeBinding colorBinding = _colorBinding;
     if (!_colorArray.valid() ||
-        _colorArray->empty() ||
-        (_colorIndices.valid() && _colorIndices->empty()) )
+        _colorArray->getNumElements()>0 ||
+        (_colorIndices.valid() && _colorIndices->getNumElements()>0) )
     {
         // switch off if not supported or have a valid data.
         colorBinding = BIND_OFF;
@@ -313,10 +313,10 @@ void IndexedGeometry::drawImmediateMode(State& state)
     unsigned int secondaryColorIndex = 0;
     AttributeBinding secondaryColorBinding = _secondaryColorBinding;
     if (!_secondaryColorArray.valid() || 
-        _secondaryColorArray->empty() ||
+        _secondaryColorArray->getNumElements()>0 ||
         !s_glSecondaryColor3ubv ||
         !s_glSecondaryColor3fv ||
-        (_secondaryColorIndices.valid() && _secondaryColorIndices->empty()) )
+        (_secondaryColorIndices.valid() && _secondaryColorIndices->getNumElements()>0) )
     {
         // switch off if not supported or have a valid data.
         secondaryColorBinding = BIND_OFF;
@@ -330,9 +330,9 @@ void IndexedGeometry::drawImmediateMode(State& state)
     unsigned int fogCoordIndex = 0;
     AttributeBinding fogCoordBinding = _fogCoordBinding;
     if (!_fogCoordArray.valid() || 
-        _fogCoordArray->empty() ||
+        _fogCoordArray->getNumElements()>0 ||
         !s_glFogCoordfv ||
-        (_fogCoordIndices.valid() && _fogCoordIndices->empty()) )
+        (_fogCoordIndices.valid() && _fogCoordIndices->getNumElements()>0) )
     {
         // switch off if not supported or have a valid data.
         fogCoordBinding = BIND_OFF;
@@ -355,38 +355,70 @@ void IndexedGeometry::drawImmediateMode(State& state)
     //
     // Set up tex coords if required.
     //
-    typedef std::vector<DrawMultiTexCoord*> DrawTexCoordList;
+    typedef std::vector< ref_ptr<DrawMultiTexCoord> > DrawTexCoordList;
     DrawTexCoordList drawTexCoordList;
     drawTexCoordList.reserve(_texCoordList.size());
-    for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
+    
+    // fallback if multitexturing not supported.
+    ref_ptr<DrawTexCoord> drawTextCoord;
+
+    if (s_glMultiTexCoord2fv)
     {
-        TexCoordArrayPair& texcoordPair = _texCoordList[unit];
-        if (texcoordPair.first.valid() && !texcoordPair.first->empty())
+        // multitexture supported..
+        for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
         {
-            if (texcoordPair.second.valid())
+            TexCoordArrayPair& texcoordPair = _texCoordList[unit];
+            if (texcoordPair.first.valid() && texcoordPair.first->getNumElements()>0)
             {
-                if (!texcoordPair.second->empty())
+                if (texcoordPair.second.valid())
                 {
-                    drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),texcoordPair.second.get(),
+                    if (!texcoordPair.second->getNumElements()>0)
+                    {
+                        drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordPair.first.get(),texcoordPair.second.get(),
+                                                                         s_glMultiTexCoord1f,
+                                                                         s_glMultiTexCoord2fv,
+                                                                         s_glMultiTexCoord3fv,
+                                                                         s_glMultiTexCoord4fv));
+
+                        fastPath = false;           
+                    }
+                }
+                else
+                {
+                    drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0+unit,texcoordPair.first.get(),0,
                                                                      s_glMultiTexCoord1f,
                                                                      s_glMultiTexCoord2fv,
                                                                      s_glMultiTexCoord3fv,
                                                                      s_glMultiTexCoord4fv));
-
-                    fastPath = false;           
                 }
-            }
-            else
-            {
-                drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),0,
-                                                                 s_glMultiTexCoord1f,
-                                                                 s_glMultiTexCoord2fv,
-                                                                 s_glMultiTexCoord3fv,
-                                                                 s_glMultiTexCoord4fv));
             }
         }
     }
+    else
+    {
+        if (!_texCoordList.empty())
+        {
+            TexCoordArrayPair& texcoordPair = _texCoordList[0];
+            if (texcoordPair.first.valid() && !texcoordPair.first->getNumElements()>0)
+            {
+                if (texcoordPair.second.valid())
+                {
+                    if (!texcoordPair.second->getNumElements()>0)
+                    {
+                        drawTextCoord = new DrawTexCoord(texcoordPair.first.get(),texcoordPair.second.get());
 
+                        fastPath = false;           
+                    }
+                }
+                else
+                {
+                    drawTextCoord = new DrawTexCoord(texcoordPair.first.get(),0);
+                }
+            }
+            
+        }
+    }
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // set up vertex arrays if appropriate.
@@ -492,6 +524,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
                         {
                             (*(*texItr))(vindex);
                         }
+                        if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
                         drawVertex(vindex);
                     }
@@ -526,6 +559,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
                             {
                                 (*(*texItr))(vindex);
                             }
+                            if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
                             drawVertex(vindex);
                         }
@@ -558,6 +592,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
                         {
                             (*(*texItr))(vindex);
                         }
+                        if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
                         drawVertex(vindex);
                     }
@@ -588,6 +623,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
                         {
                             (*(*texItr))(vindex);
                         }
+                        if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
                         drawVertex(vindex);
                     }
@@ -618,6 +654,7 @@ void IndexedGeometry::drawImmediateMode(State& state)
                         {
                             (*(*texItr))(vindex);
                         }
+                        if (drawTextCoord.valid()) (*drawTextCoord)(vindex);
 
                         drawVertex(vindex);
                     }
@@ -677,6 +714,7 @@ bool IndexedGeometry::verifyBindings() const
             if (_normalArray->getNumElements()!=1) return false;
             break;
         case(BIND_PER_PRIMITIVE_SET):
+        case(BIND_PER_PRIMITIVE):
             if (!_normalArray.valid()) return false;
             if (_normalArray->getNumElements()!=_primitives.size()) return false;
             break;
@@ -700,6 +738,7 @@ bool IndexedGeometry::verifyBindings() const
             if (_colorArray->getNumElements()!=1) return false;
             break;
         case(BIND_PER_PRIMITIVE_SET):
+        case(BIND_PER_PRIMITIVE):
             if (!_colorArray.valid()) return false;
             if (_colorArray->getNumElements()!=_primitives.size()) return false;
             break;
@@ -773,6 +812,7 @@ void IndexedGeometry::computeCorrectBindingsAndArraySizes()
                 _normalArray->erase(_normalArray->begin()+1,_normalArray->end());
             }
             break;
+        case(BIND_PER_PRIMITIVE_SET):
         case(BIND_PER_PRIMITIVE):
             if (!_normalArray.valid())
             {

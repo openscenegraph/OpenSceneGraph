@@ -69,7 +69,6 @@ class SG_EXPORT Array : public Object
         GLenum                  getDataType() const { return _dataType; }
         virtual const GLvoid*   getDataPointer() const = 0;
         virtual unsigned int    getNumElements() const = 0;
-        virtual bool            empty() const = 0;
 
     protected:
     
@@ -113,10 +112,8 @@ class TemplateArray : public Array, public std::vector<T>
         virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
         virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
 
-        virtual const GLvoid*   getDataPointer() const { if (!std::vector<T>::empty()) return &front(); else return 0; }
+        virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
         virtual unsigned int    getNumElements() const { return size(); }
-
-        virtual bool            empty() const { return std::vector<T>::empty(); }
 
     protected:
     

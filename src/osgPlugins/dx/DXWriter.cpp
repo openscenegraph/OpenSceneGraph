@@ -129,15 +129,15 @@
 #include "StateSetStr.h"
 
 #if defined(__sgi) || defined(__FreeBSD__)
-	#include <unistd.h>
+    #include <unistd.h>
     #include <ieeefp.h>
 #else
     #include <math.h>
     #if (defined(WIN32) || defined (macintosh)) && !defined(__CYGWIN__)
         #include <float.h>
     #else
-		#include <unistd.h>
-	#endif
+        #include <unistd.h>
+    #endif
 #endif
 
 #if defined(WIN32) && !defined(__CYGWIN__)
@@ -603,6 +603,8 @@ inline int IsNaNorInf( float f )
   }
 #elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__) || defined(__DARWIN_OSX__)
   return isnanf(f) || isinf(f);
+#elif defined(__sun)
+  return isnan(f);  // KLUDGE - hack to get this to compile w/g++. 
 #elif defined(WIN32)
   return _isnan(f) || !_finite(f);
 #elif defined(__hpux__)

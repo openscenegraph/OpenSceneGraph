@@ -91,6 +91,43 @@ RECURSIVE_TARGETS = \
 #### SUN OS Specific definitions
 ifeq ($(OS),SunOS)
 
+#### if useing g++ on a sun
+ifeq ($(COMPILER),gnu)
+
+  C++               = g++
+  DEPARG            = -M
+  INC               += -I/usr/local/glut-3.7/include
+  DEF               += -W -Wall -fPIC -fpermissive
+  OPTF              = -O2
+  DBGF              = -g
+  SHARED            = -shared -fPIC 
+ifeq ($(ARCH),64)
+    ARCHARGS          = -m64
+else
+    ARCHARGS          = 
+endif
+  LINKARGS          =  
+  DYNAMICLIBRARYLIB = -ldl
+  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  FREETYPE_LIB      = -L/usr/local/lib -lfreetype
+  GLUT_LIB          = -L/usr/local/glut-3.7/lib/glut -lglut
+  GL_LIBS           = -lGLU -lGL 
+  X_LIBS            = -lXext -lXmu -lXi -lX11 
+  SOCKET_LIBS       = -lsocket -lnsl
+  OTHER_LIBS        = 
+  TIFF_LIB        = -ltiff
+
+  INSTBINCMD        = cp
+  INSTDEVCMD        = cp
+
+  INST_SYS_PREFIX   = /opt/OpenSceneGraph
+  INST_SHARE_PREFIX = /opt
+
+  MAKEDIST          = $(TOPDIR)/Make/makepkg
+
+#### using forte compilers (default)
+else
+
   C++               = CC
   DEPARG            = -xM1
   INC               += 
@@ -122,6 +159,8 @@ endif
 
   MAKEDIST          = $(TOPDIR)/Make/makepkg
 endif
+
+endif 
 
 #### IRIX Specific definitions
 ifeq ($(OS),IRIX)

@@ -13,12 +13,13 @@
 
 #include <osg/PagedLOD>
 #include <osg/CullStack>
+#include <osg/Notify>
 
 using namespace osg;
 
 PagedLOD::PerRangeData::PerRangeData():
     _priorityOffset(0.0f),
-    _priorityScale(0.0f),
+    _priorityScale(1.0f),
     _timeStamp(0.0f) {}
 
 PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
@@ -175,7 +176,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
-
+                    
                     if (_databasePath.empty())
                     {
                         nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());

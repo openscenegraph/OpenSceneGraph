@@ -48,6 +48,7 @@ class OSGUTIL_EXPORT Optimizer
             SPATIALIZE_GROUPS =         0x040,
             COPY_SHARED_NODES =         0x080,
             TRISTRIP_GEOMETRY =         0x100,
+            TESSELATE_GEOMETRY =        0x200,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
@@ -222,6 +223,21 @@ class OSGUTIL_EXPORT Optimizer
                 }
 
                 Optimizer*      _optimizer;
+        };
+
+        /** Tesselate all geodes, to remove POLYGONS
+          * complementary ranges.*/
+        class OSGUTIL_EXPORT TesselateVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                typedef std::set<osg::Group*>  GroupList;
+                GroupList                      _groupList;
+
+                TesselateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+                virtual void apply(osg::Geode& geode);
+
         };
 
         /** Optimize the LOD groups, by combining adjacent LOD's which have

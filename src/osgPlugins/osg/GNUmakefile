@@ -56,6 +56,7 @@ CXXFILES =\
 	TessellationHints.cpp\
         TexEnv.cpp\
         TexEnvCombine.cpp\
+        TexEnvFilter.cpp\
         TexGen.cpp\
         TexGenNode.cpp\
         TexMat.cpp\

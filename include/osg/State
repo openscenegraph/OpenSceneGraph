@@ -145,10 +145,10 @@ class SG_EXPORT State : public Referenced
         void haveAppliedAttribute(const StateAttribute::Type type);
 
         /** Get whether the current specified mode is enabled (true) or disabled (false).*/ 
-        const bool getCurrentMode(const StateAttribute::GLMode mode) const;
+        const bool getLastAppliedMode(const StateAttribute::GLMode mode) const;
         
         /** Get the current specified attribute, return NULL is one has not yet been applied.*/ 
-        const StateAttribute* getCurrentAttribute(const StateAttribute::Type type) const;
+        const StateAttribute* getLastAppliedAttribute(const StateAttribute::Type type) const;
 
         
         /** Set the current OpenGL context uniqueID.

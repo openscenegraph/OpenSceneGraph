@@ -250,10 +250,10 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     cullVisitor->setRenderGraph(rendergraph);
     cullVisitor->setRenderStage(renderStage);
 
-    // SandB
-    //now make it compute "clipping directions" needed for detailed culling
-    if(cullVisitor->getDetailedCulling()) 
-	    cullVisitor->calcClippingDirections();//only once pre frame
+//     // SandB
+//     //now make it compute "clipping directions" needed for detailed culling
+//     if(cullVisitor->getDetailedCulling()) 
+// 	    cullVisitor->calcClippingDirections();//only once pre frame
 
     renderStage->reset();
 
@@ -285,7 +285,7 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     if (_globalState.valid()) cullVisitor->pushStateSet(_globalState.get());
 
 
-    cullVisitor->pushCullViewState(modelview);
+    cullVisitor->pushCullViewState_ModelView(modelview);
     
 
     // traverse the scene graph to generate the rendergraph.
@@ -331,13 +331,13 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
             _far_plane  *= 1.05;
             _near_plane *= 0.95;
 
-            // if required clamp the near plane to prevent negative or near zero
-            // near planes.
-            if(!cullVisitor->getDetailedCulling())
-            {
+//             // if required clamp the near plane to prevent negative or near zero
+//             // near planes.
+//             if(!cullVisitor->getDetailedCulling())
+//             {
                 float min_near_plane = _far_plane*0.0005f;
                 if (_near_plane<min_near_plane) _near_plane=min_near_plane;
-            }
+//             }
         }
         else
         {

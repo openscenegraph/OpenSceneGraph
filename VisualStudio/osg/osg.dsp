@@ -269,6 +269,10 @@ SOURCE=..\..\src\osg\PositionAttitudeTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Projection.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Quat.cpp
 # End Source File
 # Begin Source File
@@ -546,6 +550,10 @@ SOURCE=..\..\Include\Osg\PolygonOffset
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\PositionAttitudeTransform
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Projection
 # End Source File
 # Begin Source File
 

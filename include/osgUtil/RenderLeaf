@@ -24,18 +24,20 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     public:
     
 
-        inline RenderLeaf(osg::Drawable* drawable,osg::Matrix* matrix, float depth=0.0f):
+        inline RenderLeaf(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* modelview, float depth=0.0f):
             _parent(NULL),
             _drawable(drawable),
-            _matrix(matrix),
+            _projection(projection),
+            _modelview(modelview),
             _depth(depth) {}
 
         
-	inline void set(osg::Drawable* drawable,osg::Matrix* matrix, float depth=0.0f)
+	inline void set(osg::Drawable* drawable,osg::Matrix* projection,osg::Matrix* modelview, float depth=0.0f)
 	{
 	    _parent = NULL;
 	    _drawable = drawable;
-	    _matrix = matrix;
+            _projection = projection,
+            _modelview = modelview,
 	    _depth = depth;
 	}
 	
@@ -43,7 +45,8 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 	{
 	    _parent = NULL;
 	    _drawable = NULL;
-	    _matrix = NULL;
+	    _projection = NULL;
+	    _modelview = NULL;
 	    _depth = 0.0f;
 	}
 
@@ -57,7 +60,8 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     
         RenderGraph*                _parent;
         osg::Drawable*              _drawable;
-        osg::ref_ptr<osg::Matrix>   _matrix;
+        osg::ref_ptr<osg::Matrix>   _projection;
+        osg::ref_ptr<osg::Matrix>   _modelview;
         float                       _depth;
 
     private:
@@ -66,7 +70,8 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         RenderLeaf():
             _parent(NULL),
             _drawable(NULL),
-            _matrix(NULL),
+            _projection(NULL),
+            _modelview(NULL),
             _depth(0.0f) {}
 
         /// disallow copy construction.

@@ -18,6 +18,7 @@ using namespace osgUtil;
 
 CullViewState::CullViewState()
 {
+    _projection = NULL;
     _matrix = NULL;
     _inverse = NULL;
     _ratio2 = 0.002f*0.002f;

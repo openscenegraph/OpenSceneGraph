@@ -66,12 +66,6 @@ class SG_EXPORT Transform : public Group
         /** Get the transform mode.*/
         inline const MatrixMode getMatrixMode() const { return _mode; }
         
-        /** Does the tranform set up the projection matrix.*/
-        inline const bool isProjectionTransform() const { return _mode==PROJECTION; }
-
-        /** Does the tranform set up the modelview matrix.*/
-        inline const bool isModelViewTransform() const { return _mode!=PROJECTION; }
-
         /** Callback attached to an Transform to specifiy how to compute the modelview or projection transformation
           * for the transform below the Transform node.*/
         struct ComputeTransformCallback : public osg::Referenced

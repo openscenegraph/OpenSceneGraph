@@ -185,7 +185,7 @@ bool RenderBin::getStats(osg::Statistics* primStats)
             RenderLeaf* rl = dw_itr->get();
             Drawable* dw= rl->_drawable;
             primStats->addOpaque(); // number of geosets
-            if (rl->_matrix.get()) primStats->addMatrix(); // number of matrices
+            if (rl->_modelview.get()) primStats->addMatrix(); // number of matrices
             if (dw) { // then tot up the types 1-14
                 // commenting out as having intrusive stats in base classes is
                 // undersirable.

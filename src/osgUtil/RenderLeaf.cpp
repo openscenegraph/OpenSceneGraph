@@ -30,7 +30,8 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
 
         }
         
-        state.applyModelViewMatrix(_matrix.get());
+        //state.applyProjectionMatrix(_projection.get());
+        state.applyModelViewMatrix(_modelview.get());
 
         _drawable->draw(state);
     }
@@ -41,7 +42,8 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         // send state changes and matrix changes to OpenGL.
         state.apply(_parent->_stateset.get());
 
-        state.applyModelViewMatrix(_matrix.get());
+        //state.applyProjectionMatrix(_projection.get());
+        state.applyModelViewMatrix(_modelview.get());
 
         _drawable->draw(state);
     }

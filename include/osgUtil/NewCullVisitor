@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSGUTIL_CULLVISITOR
-#define OSGUTIL_CULLVISITOR 1
+#ifndef OSGUTIL_NEWCULLVISITOR
+#define OSGUTIL_NEWCULLVISITOR 1
 
 #include <osg/NodeVisitor>
 #include <osg/BoundingSphere>
@@ -36,14 +36,14 @@ namespace osgUtil {
  * transparent bin in rendered in order from the furthest osg::Drawable
  * from the eye to the one nearest the eye. 
  */
-class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT NewCullVisitor : public osg::NodeVisitor
 {
     public:
 
-        CullVisitor();
-        virtual ~CullVisitor();
+        NewCullVisitor();
+        virtual ~NewCullVisitor();
 
-        virtual CullVisitor* cloneType() const { return new CullVisitor(); }
+        virtual NewCullVisitor* cloneType() const { return new NewCullVisitor(); }
 
         virtual void reset();
 
@@ -74,9 +74,9 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         const float getLODBias() const    { return _LODBias; }
         
         /** Switch the creation of Impostors on or off.
-          * Setting active to false forces the CullVisitor to use the Impostor
+          * Setting active to false forces the NewCullVisitor to use the Impostor
           * LOD children for rendering. Setting active to true forces the
-          * CullVisitor to create the appropriate pre-rendering stages which
+          * NewCullVisitor to create the appropriate pre-rendering stages which
           * render to the ImpostorSprite's texture.*/
         void setImpostorsActive(const bool active) { _impostorActive = active; }
         
@@ -119,7 +119,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         
 
         /** Set the viewport.
-          * Used to enable the CullVisitor can make decision 
+          * Used to enable the NewCullVisitor can make decision 
           * such as based on viewport dimensions.*/
         void setViewport(osg::Viewport* viewport) { _viewport = viewport; }
 
@@ -192,23 +192,13 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         
         const float getCalculatedFarPlane() const { return _calculated_zfar; }
 
-	//SandB
-	/**sets the flag for detailed culling*/
-	void setDetailedCulling(bool detailed) {_detailedCulling = detailed;}
-
-	/**gets the status of detailed culling*/
-	const bool getDetailedCulling() const {return _detailedCulling;}
-
-        /**calculates unit directions of vectors that are intersections of cameras' clipping planes*/
-        void calcClippingDirections() const;
-
     protected:
 
         /** prevent unwanted copy construction.*/
-        CullVisitor(const CullVisitor&):osg::NodeVisitor() {}
+        NewCullVisitor(const NewCullVisitor&):osg::NodeVisitor() {}
 
         /** prevent unwanted copy operator.*/
-        CullVisitor& operator = (const CullVisitor&) { return *this; }
+        NewCullVisitor& operator = (const NewCullVisitor&) { return *this; }
         
         inline osg::Matrix* getCurrentMatrix()
         {
@@ -257,23 +247,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
     	void updateCalculatedNearFar(const osg::Vec3& pos);
 		
-
-        //SandB added: ////////////////////////////////////////////////////////////////////////////////
-        /**updates near and far clipping values for case of detailed culling*/
-        void updateCalculatedNearFar(osg::Drawable* pDrawable);
-
         /**calculates near for "global" vertex in scene*/
         double calculateZNear(const osg::Vec3& position, const osg::Vec3& eye, const osg::Vec3& look);
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-
-        /**unit vector of direction along intersection of cameras left and top clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _LeftUp;
-        /**unit vector of direction along intersection of cameras right and top clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _RightUp;
-        /**unit vector of direction along intersection of cameras left and down clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _LeftDown;
-        /**unit vector of direction along intersection of cameras right and down clipping planes in "global" coordinates*/
-        mutable osg::Vec3 _RightDown;
 
 
         /** Add a drawable to current render graph.*/
@@ -313,8 +288,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** create an impostor sprite by setting up a pre-rendering stage
           * to generate the impostor texture. */
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
-
-		bool _detailedCulling;
 
         typedef std::vector< osg::ref_ptr<CullViewState> > CullViewStateStack;
         CullViewStateStack          _viewStateStack;

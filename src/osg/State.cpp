@@ -569,3 +569,11 @@ void State::haveAppliedAttribute(const StateAttribute::Type type)
         as.changed = true;
     }
 }
+
+ClippingVolume State::getClippingVolume() const
+{
+    ClippingVolume cv;
+    cv.setToUnitFrustum();
+    cv.transformProvidingInverse((*_modelView)*(*_projection));
+    return cv;
+}

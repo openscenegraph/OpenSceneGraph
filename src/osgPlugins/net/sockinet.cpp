@@ -59,6 +59,10 @@ extern "C" {
 #	define ENOPROTOOPT					WSAENOPROTOOPT
 #endif // !WIN32
 
+#ifndef INADDR_NONE
+#define INADDR_NONE             ((in_addr_t) 0xffffffff)
+#endif
+
 void	herror(const char*);
 
 sockinetaddr::sockinetaddr () 

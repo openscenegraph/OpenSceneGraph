@@ -123,7 +123,7 @@ void Surface::compile(const lwo2::FORM::SURF *surf, const Clip_map &clips)
 					osg::notify(osg::WARN) << "Warning: lwosg::Surface: cannot find clip number " << new_block.get_image_map().image_map << std::endl;
 				}				
 			}
-			blocks_.insert(std::make_pair(new_block.get_ordinal(), new_block));
+			blocks_.insert(Block_map::value_type(new_block.get_ordinal(), new_block));
 		}
 	}
 }

@@ -773,7 +773,7 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
 						const osg::StateSet::ModeList& ModeList = TextureModeList[0];
 						assert(ModeList.size() == 1);
 						// Check for a single mode of GL_TEXTURE_2D and ON
-						std::pair<osg::StateAttribute::GLMode, osg::StateAttribute::GLModeValue> ModeValuePair = *ModeList.begin();
+                                                osg::StateSet::ModeList::value_type ModeValuePair = *ModeList.begin();
 						assert(ModeValuePair.first == GL_TEXTURE_2D);
 						assert(ModeValuePair.second == osg::StateAttribute::ON);
 						const osg::StateSet::AttributeList& AttributeList = TextureAttributeList[0];

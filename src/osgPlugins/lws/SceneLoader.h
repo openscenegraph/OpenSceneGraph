@@ -72,17 +72,6 @@ namespace lwosg
         inline const Animation_list &get_camera_animations() const { return camera_animations_; }
         inline Animation_list &get_camera_animations() { return camera_animations_; }
 
-    protected:
-        bool parse_block(const std::string &name, const std::string &data);
-        bool parse_block(const std::string &name, const std::vector<std::string> &data);
-        void clear();
-
-    private:
-        typedef std::map<std::string, osg::ref_ptr<osg::Group> > Object_map;
-        Object_map objects_;
-
-        Animation_list camera_animations_;
-
         struct Motion_envelope {
             struct Key {
                 osg::Vec3 position;
@@ -93,6 +82,17 @@ namespace lwosg
             typedef std::map<double, Key> Key_map;
             Key_map keys;
         };
+
+    protected:
+        bool parse_block(const std::string &name, const std::string &data);
+        bool parse_block(const std::string &name, const std::vector<std::string> &data);
+        void clear();
+
+    private:
+        typedef std::map<std::string, osg::ref_ptr<osg::Group> > Object_map;
+        Object_map objects_;
+
+        Animation_list camera_animations_;
 
         struct Scene_object {
             osg::ref_ptr<osg::Node> layer_node;

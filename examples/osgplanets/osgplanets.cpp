@@ -381,8 +381,8 @@ int main( int argc, char **argv )
     root->addChild(sunLight);
 
     // create the sun
-    osg::Node* sun = solarSystem.createPlanet( solarSystem._radiusSun, "Sun", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f), solarSystem._mapSun );
-    osg::StateSet* sunStateSet = sun->getOrCreateStateSet();
+    osg::Node* solarSun = solarSystem.createPlanet( solarSystem._radiusSun, "Sun", osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f), solarSystem._mapSun );
+    osg::StateSet* sunStateSet = solarSun->getOrCreateStateSet();
     osg::Material* material = new osg::Material;
     material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 0.0f, 0.0f ) );
     sunStateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
@@ -396,7 +396,7 @@ int main( int argc, char **argv )
     sunLight->addChild( sunBillboard );
 
     // stick sun right under root, no transformations for the sun
-    sunLight->addChild( sun );
+    sunLight->addChild( solarSun );
 
     // create light source in the sun
 

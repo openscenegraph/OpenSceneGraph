@@ -417,7 +417,7 @@ void TriStripVisitor::stripify(Geometry& geom)
                     {
                         std::swap(pitr->m_Indices[2],pitr->m_Indices[3]);
                         unsigned int minValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
-                        quadMap.insert(std::pair<unsigned int,prim_iterator>(minValue,pitr));
+                        quadMap.insert(QuadMap::value_type(minValue,pitr));
                     }
                 }
 

@@ -34,7 +34,8 @@ class SG_EXPORT Matrixf
         typedef float value_type;
 
         inline Matrixf() { makeIdentity(); }
-        inline Matrixf( const Matrixf& other) { set(other.ptr()); }
+        inline Matrixf( const Matrixf& mat) { set(mat.ptr()); }
+        Matrixf( const Matrixd& mat );
         inline explicit Matrixf( float const * const ptr ) { set(ptr); }
         inline explicit Matrixf( double const * const ptr ) { set(ptr); }
         inline explicit Matrixf( const Quat& quat ) { set(quat); }
@@ -61,26 +62,29 @@ class SG_EXPORT Matrixf
                                                  osg::isNaN(_mat[2][0]) || osg::isNaN(_mat[2][1]) || osg::isNaN(_mat[2][2]) || osg::isNaN(_mat[2][3]) ||
                                                  osg::isNaN(_mat[3][0]) || osg::isNaN(_mat[3][1]) || osg::isNaN(_mat[3][2]) || osg::isNaN(_mat[3][3]); }
 
-        inline Matrixf& operator = (const Matrixf& other)
+        inline Matrixf& operator = (const Matrixf& rhs)
         {
-            if( &other == this ) return *this;
-            set(other.ptr());
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
             return *this;
         }
-        
-        inline void set(const Matrixf& other)
-        {
-            set(other.ptr());
-        }
-        
+
+        Matrixf& operator = (const Matrixd& rhs);
+
+        void set(const Matrixd& rhs);
+
+        inline void set(const Matrixf& rhs) { set(rhs.ptr()); }
+
         inline void set(float const * const ptr)
         {
-            std::copy(ptr,ptr+16,(value_type*)_mat);
+            value_type* local_ptr = (value_type*)_mat;
+            for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
         
         inline void set(double const * const ptr)
         {
-            std::copy(ptr,ptr+16,(value_type*)_mat);
+            value_type* local_ptr = (value_type*)_mat;
+            for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
 
         void set( value_type a00, value_type a01, value_type a02, value_type a03,
@@ -246,6 +250,7 @@ class RefMatrixf : public Object, public Matrixf
     
         RefMatrixf():Matrixf() {}
         RefMatrixf( const Matrixf& other) : Matrixf(other) {}
+        RefMatrixf( const Matrixd& other) : Matrixf(other) {}
         RefMatrixf( const RefMatrixf& other) : Object(other), Matrixf(other) {}
         explicit RefMatrixf( Matrixf::value_type const * const def ):Matrixf(def) {}
         RefMatrixf( Matrixf::value_type a00, Matrixf::value_type a01, Matrixf::value_type a02, Matrixf::value_type a03,

@@ -25,6 +25,7 @@
 #include <osg/StateSet>
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
+#include <osg/Matrixd>
 
 #include <osgDB/DatabasePager>
 
@@ -155,11 +156,11 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         /** Set the model view matrix of the camera group,
           * by individually set all the camera groups's camera.*/
-        virtual void setView(const osg::Matrix& matrix);
+        virtual void setView(const osg::Matrixd& matrix);
         
         /** Get the model view martrix of the camera group,
           * taking its value for camera 0.*/
-        const osg::Matrix getViewMatrix() const;
+        osg::Matrixd getViewMatrix() const;
 
 
         virtual void sync();

@@ -14,7 +14,8 @@
 #ifndef OSG_ANIMATIONPATH
 #define OSG_ANIMATIONPATH 1
 
-#include <osg/Matrix>
+#include <osg/Matrixf>
+#include <osg/Matrixd>
 #include <osg/Quat>
 #include <osg/NodeCallback>
 
@@ -71,24 +72,47 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
                 _scale = first._scale*one_minus_ratio + second._scale*ratio;
             }
             
-            inline void getMatrix(Matrix& matrix) const
+            inline void getMatrix(Matrixf& matrix) const
             {
                 matrix.makeScale(_scale);
-                matrix.postMult(osg::Matrix::rotate(_rotation));
-                matrix.postMult(osg::Matrix::translate(_position));
+                matrix.postMult(osg::Matrixf::rotate(_rotation));
+                matrix.postMult(osg::Matrixf::translate(_position));
             }
 
-            inline void getInverse(Matrix& matrix) const
+            inline void getMatrix(Matrixd& matrix) const
+            {
+                matrix.makeScale(_scale);
+                matrix.postMult(osg::Matrixd::rotate(_rotation));
+                matrix.postMult(osg::Matrixd::translate(_position));
+            }
+
+            inline void getInverse(Matrixf& matrix) const
             {
                 matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
-                matrix.postMult(osg::Matrix::rotate(_rotation.inverse()));
-                matrix.postMult(osg::Matrix::translate(-_position));
+                matrix.postMult(osg::Matrixf::rotate(_rotation.inverse()));
+                matrix.postMult(osg::Matrixf::translate(-_position));
+            }
+
+            inline void getInverse(Matrixd& matrix) const
+            {
+                matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
+                matrix.postMult(osg::Matrixd::rotate(_rotation.inverse()));
+                matrix.postMult(osg::Matrixd::translate(-_position));
             }
         };
         
 
         /** get the transformation matrix for a point in time.*/        
-        bool getMatrix(double time,Matrix& matrix) const
+        bool getMatrix(double time,Matrixf& matrix) const
+        {
+            ControlPoint cp;
+            if (!getInterpolatedControlPoint(time,cp)) return false;
+            cp.getMatrix(matrix);
+            return true;
+        }
+
+        /** get the transformation matrix for a point in time.*/        
+        bool getMatrix(double time,Matrixd& matrix) const
         {
             ControlPoint cp;
             if (!getInterpolatedControlPoint(time,cp)) return false;
@@ -97,7 +121,7 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
         }
 
         /** get the inverse transformation matrix for a point in time.*/        
-        bool getInverse(double time,Matrix& matrix) const
+        bool getInverse(double time,Matrixf& matrix) const
         {
             ControlPoint cp;
             if (!getInterpolatedControlPoint(time,cp)) return false;
@@ -105,6 +129,14 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             return true;
         }
         
+        bool getInverse(double time,Matrixd& matrix) const
+        {
+            ControlPoint cp;
+            if (!getInterpolatedControlPoint(time,cp)) return false;
+            cp.getInverse(matrix);
+            return true;
+        }
+
         /** get the local ControlPoint frame for a point in time.*/
         virtual bool getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const;
         

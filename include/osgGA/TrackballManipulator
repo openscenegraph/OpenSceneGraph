@@ -28,16 +28,16 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         virtual const char* className() const { return "Trackball"; }
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrix& matrix);
+        virtual void setByMatrix(const osg::Matrixd& matrix);
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrix& matrix) { setByMatrix(osg::Matrix::inverse(matrix)); }
+        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
 
         /** get the position of the manipulator as 4x4 Matrix.*/
-        virtual osg::Matrix getMatrix() const;
+        virtual osg::Matrixd getMatrix() const;
 
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
-        virtual osg::Matrix getInverseMatrix() const;
+        virtual osg::Matrixd getInverseMatrix() const;
 
         /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }

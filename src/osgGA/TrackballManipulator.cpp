@@ -189,24 +189,20 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
-void TrackballManipulator::setByMatrix(const osg::Matrix& matrix)
+void TrackballManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
-    _center = osg::Vec3(0.0f,0.0f,-_distance)*matrix;//matrix.getTrans();
+    _center = osg::Vec3(0.0f,0.0f,-_distance)*matrix;
     matrix.get(_rotation);
-    
-    osg::Matrix rotation_matrix(_rotation);
-//    _center -= osg::Vec3(0.0f,0.0f,_distance)*rotation_matrix;
-    
 }
 
-osg::Matrix TrackballManipulator::getMatrix() const
+osg::Matrixd TrackballManipulator::getMatrix() const
 {
-    return osg::Matrix::translate(0.0f,0.0f,_distance)*osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_center);
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_center);
 }
 
-osg::Matrix TrackballManipulator::getInverseMatrix() const
+osg::Matrixd TrackballManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-_center)*osg::Matrix::rotate(_rotation.inverse())*osg::Matrix::translate(0.0f,0.0f,-_distance);
+    return osg::Matrixd::translate(-_center)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up)

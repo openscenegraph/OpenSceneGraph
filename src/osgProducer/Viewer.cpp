@@ -72,7 +72,7 @@ public:
     virtual void apply(osg::Projection& pr)
     { // stack the intersect rays, transform to new projection, traverse
         // Assumes that the Projection is an absolute projection
-        osg::Matrix mt;
+        osg::Matrixd mt;
         mt.invert(pr.getMatrix());
         osg::Vec3 npt=osg::Vec3(xp,yp,-1.0f) * mt, farpt=osg::Vec3(xp,yp,1.0f) * mt;
 
@@ -105,11 +105,11 @@ public:
         return _PIVsegHitList;
     }
 
-    osgUtil::IntersectVisitor::HitList& getHits(osg::Node *node, const osg::Matrix &projm, const float x, const float y)
+    osgUtil::IntersectVisitor::HitList& getHits(osg::Node *node, const osg::Matrixd &projm, const float x, const float y)
     { 
         // utility for non=sceneview viewers
         // x,y are values returned by 
-        osg::Matrix inverseMVPW;
+        osg::Matrixd inverseMVPW;
         inverseMVPW.invert(projm);
         osg::Vec3 near_point = osg::Vec3(x,y,-1.0f)*inverseMVPW;
         osg::Vec3 far_point = osg::Vec3(x,y,1.0f)*inverseMVPW;
@@ -303,7 +303,7 @@ void Viewer::setViewByMatrix( const Producer::Matrix & pm)
         // now convert Producer matrix to an osg::Matrix so we can update
         // the internal camera...
         
-        osg::Matrix matrix(pm.ptr());
+        osg::Matrixd matrix(pm.ptr());
         _keyswitchManipulator->setByInverseMatrix(matrix);
     }
 }
@@ -439,7 +439,7 @@ void Viewer::update()
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentMatrixManipulator()) 
     {
         osgGA::MatrixManipulator* mm = _keyswitchManipulator->getCurrentMatrixManipulator();
-        osg::Matrix matrix = mm->getInverseMatrix();
+        osg::Matrixd matrix = mm->getInverseMatrix();
         CameraGroup::setViewByMatrix(Producer::Matrix(matrix.ptr()));
 
         setFusionDistance(mm->getFusionDistanceMode(),mm->getFusionDistanceValue());
@@ -452,7 +452,7 @@ void Viewer::frame()
 
     if (getRecordingAnimationPath() && getAnimationPath())
     {
-        osg::Matrix matrix;
+        osg::Matrixd matrix;
         matrix.invert(getViewMatrix());
         osg::Quat quat;
         matrix.get(quat);
@@ -538,7 +538,7 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
 
         osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
         osgUtil::SceneView* sv = sh?sh->getSceneView():0;
-        osg::Matrix vum;
+        osg::Matrixd vum;
         if (sv!=0)
         {
             vum.set(sv->getViewMatrix() *
@@ -546,8 +546,8 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil
         }
         else
         {
-            vum.set(osg::Matrix(camera->getViewMatrix()) *
-                    osg::Matrix(camera->getProjectionMatrix()));
+            vum.set(osg::Matrixd(camera->getViewMatrix()) *
+                    osg::Matrixd(camera->getProjectionMatrix()));
         }
 
         PickVisitor iv;

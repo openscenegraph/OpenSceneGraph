@@ -234,7 +234,10 @@ inline void heap_array<T, CmpT>::update(size_t i, const T & Elem) {
 
 
 template <class T, class CmpT> 
-inline void heap_array<T, CmpT>::Adjust(size_t i) {
+inline void heap_array<T, CmpT>::Adjust(size_t i)
+{
+    if (m_Heap.size()<=1) return; // nothing to swap, so just return.
+
     size_t j;
 
     // Check the upper part of the heap

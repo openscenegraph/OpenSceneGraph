@@ -350,7 +350,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
 
-    if (_maxAnisotropy>1.0f && extensions->isTextureFilterAnisotropicSupported())
+    if (extensions->isTextureFilterAnisotropicSupported())
     {
         // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
         // by gl.h (or via glext.h) or by include/osg/Texture.
@@ -442,7 +442,12 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
-        if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+        bool hardwareMipMapOn = false;
+        if (_min_filter != LINEAR && _min_filter != NEAREST) 
+        {
+            if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+            hardwareMipMapOn = true;
+        }
 
         if ( !compressed_image)
         {
@@ -468,7 +473,7 @@ void Texture::applyTexImage2D_load(GLenum target, const Image* image, State& sta
                 data);                
         }
 
-        if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
     }
     else
     {
@@ -572,12 +577,13 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
     // image size has changed so we have to re-load the image from scratch.
     if (image->s()!=inwidth || image->t()!=inheight) 
     {
-        applyTexImage2D_subload(target, image, state, inwidth, inheight,numMimpmapLevels); 
+
+        applyTexImage2D_load(target, image, state, inwidth, inheight,numMimpmapLevels); 
         return;
     }
     // else image size the same as when loaded so we can go ahead and subload
     
-    
+   
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
@@ -649,7 +655,14 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
-        if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+    
+        bool hardwareMipMapOn = false;
+        if (_min_filter != LINEAR && _min_filter != NEAREST) 
+        {
+            if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+            hardwareMipMapOn = true;
+        }
+        
 
         if (!compressed_image)
         {
@@ -671,7 +684,7 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
                 data );                
         }
 
-        if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
     }
     else
     {
@@ -732,7 +745,8 @@ void Texture::applyTexImage2D_subload(GLenum target, const Image* image, State& 
         {
             if (!compressed_image)
             {
-                numMimpmapLevels = 0;
+
+                 numMimpmapLevels = 0;
 
                 int width  = s_powerOfTwo;
                 int height = t_powerOfTwo;

@@ -30,6 +30,11 @@ public:
         _currPos(0),
         _prevTime(0.0)
     {
+        // start with a mip mapped mode to ensure that
+        _minFilterList.push_back(osg::Texture2D::LINEAR_MIPMAP_LINEAR);
+        _magFilterList.push_back(osg::Texture2D::LINEAR);
+        _textList.push_back("Tri-linear mip mapping (default filtering)\nsetFilter(MIN_FILTER,LINEAR_MIP_LINEAR)\nsetFilter(MAG_FILTER,LINEAR)");
+
         _minFilterList.push_back(osg::Texture2D::NEAREST);
         _magFilterList.push_back(osg::Texture2D::NEAREST);
         _textList.push_back("Nearest filtering\nsetFilter(MIN_FILTER,NEAREST)\nsetFilter(MAG_FILTER,NEAREST)");
@@ -50,9 +55,6 @@ public:
         _magFilterList.push_back(osg::Texture2D::LINEAR);
         _textList.push_back("bi-linear mip mapping\nsetFilter(MIN_FILTER,NEAREST_MIPMAP_LINEAR)\nsetFilter(MAG_FILTER,LINEAR)");
 
-        _minFilterList.push_back(osg::Texture2D::LINEAR_MIPMAP_LINEAR);
-        _magFilterList.push_back(osg::Texture2D::LINEAR);
-        _textList.push_back("Tri-linear mip mapping (default filtering)\nsetFilter(MIN_FILTER,LINEAR_MIP_LINEAR)\nsetFilter(MAG_FILTER,LINEAR)");
         
         setValues();
     }
@@ -146,6 +148,7 @@ osg::Node* createFilterWall(osg::BoundingBox& bb,const std::string& filename)
     
     // set up the texture state.    
     osg::Texture2D* texture = new osg::Texture2D;
+    texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
     texture->setImage(osgDB::readImageFile(filename));
     
     osg::StateSet* stateset = geom->getOrCreateStateSet();
@@ -297,6 +300,7 @@ osg::Node* createAnisotripicWall(osg::BoundingBox& bb,const std::string& filenam
     
     // set up the texture state.    
     osg::Texture2D* texture = new osg::Texture2D;
+    texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
     texture->setImage(osgDB::readImageFile(filename));
     
     osg::StateSet* stateset = geom->getOrCreateStateSet();
@@ -328,7 +332,7 @@ osg::Node* createAnisotripicWall(osg::BoundingBox& bb,const std::string& filenam
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// filter wall and animation callback.
+// wrap wall and animation callback.
 //
 class WrapCallback : public osg::NodeCallback
 {
@@ -352,7 +356,7 @@ public:
         _textList.push_back("Clamp to border color extension\nsetWrap(WRAP_S,CLAMP_TO_BORDER)");
         
         _wrapList.push_back(osg::Texture2D::REPEAT);
-        _textList.push_back("Repear wrap\nsetWrap(WRAP_S,REPEAT)");
+        _textList.push_back("Repeat wrap\nsetWrap(WRAP_S,REPEAT)");
         
         _wrapList.push_back(osg::Texture2D::MIRROR);
         _textList.push_back("Mirror wrap extension\nsetWrap(WRAP_S,MIRROR)");
@@ -435,7 +439,7 @@ osg::Node* createWrapWall(osg::BoundingBox& bb,const std::string& filename)
     geom->setTexCoordArray(0,texcoords);
 
     osg::Vec3Array* normals = new osg::Vec3Array(1);
-    (*normals)[0].set(0.0f,-1.0f,0.0f);
+    (*normals)[0].set(-1.0f,0.0f,0.0f);
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     
@@ -448,6 +452,7 @@ osg::Node* createWrapWall(osg::BoundingBox& bb,const std::string& filename)
     
     // set up the texture state.    
     osg::Texture2D* texture = new osg::Texture2D;
+    texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
     texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,0.5f)); // only used when wrap is set to CLAMP_TO_BORDER
     texture->setImage(osgDB::readImageFile(filename));
     
@@ -482,12 +487,156 @@ osg::Node* createWrapWall(osg::BoundingBox& bb,const std::string& filename)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// filter wall and animation callback.
+// sublooad wall and animation callback.
 //
 
-osg::Node* createSubloadWall(osg::BoundingBox& bb,const std::string& filename)
+class ImageUpdateCallback : public osg::NodeCallback
 {
-    return 0;
+public:
+
+    ImageUpdateCallback(osg::Texture2D* texture,osgText::Text* text,double delay=1.0):
+        _texture(texture),
+        _text(text),
+        _delay(delay),
+        _currPos(0),
+        _prevTime(0.0)
+    {
+
+        
+        _imageList.push_back(osgDB::readImageFile("dog_left_eye.jpg"));
+        _textList.push_back("Subloaded Image 1 - dog_left_eye.jpg");
+        
+        _imageList.push_back(osgDB::readImageFile("dog_right_eye.jpg"));
+        _textList.push_back("Subloaded Image 2 - dog_right_eye.jpg");
+        
+        setValues();
+    }
+
+    virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
+    {
+        if (nv->getFrameStamp())
+        {
+            double currTime = nv->getFrameStamp()->getReferenceTime();
+            if (currTime-_prevTime>_delay) 
+            {
+                // update filter modes and text.
+                setValues();
+                
+                // advance the current positon, wrap round if required.
+                _currPos++;
+                if (_currPos>=_imageList.size()) _currPos=0;                    
+                
+                // record time
+                _prevTime = currTime;
+            }
+        }
+    }
+    
+    void setValues()
+    {
+        // Note, as long as the images are the same dimensions subloading will be used
+        // to update the textures.  If dimensions change then the texture objects have
+        // to be deleted and re-recreated.
+        //
+        // The load/subload happens during the draw traversal so doesn't happen on
+        // the setImage which just updates internal pointers and modifed flags.
+
+        _texture->setImage(_imageList[_currPos].get());
+        
+        //_texture->dirtyTextureObject();
+
+        _text->setText(_textList[_currPos]);
+    }
+
+protected:
+
+    typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
+    typedef std::vector<std::string>                TextList;
+
+    osg::ref_ptr<osg::Texture2D>    _texture;
+    osg::ref_ptr<osgText::Text>     _text;
+    double                          _delay;
+    
+    ImageList                       _imageList;
+    TextList                        _textList;
+    
+    unsigned int                    _currPos;
+    double                          _prevTime;
+    
+};
+
+osg::Node* createSubloadWall(osg::BoundingBox& bb)
+{
+    osg::Group* group = new osg::Group;
+    
+    // left hand side of bounding box.
+    osg::Vec3 top_left(bb.xMin(),bb.yMax(),bb.zMax());
+    osg::Vec3 bottom_left(bb.xMin(),bb.yMax(),bb.zMin());
+    osg::Vec3 bottom_right(bb.xMax(),bb.yMax(),bb.zMin());
+    osg::Vec3 top_right(bb.xMax(),bb.yMax(),bb.zMax());
+    osg::Vec3 center((bb.xMax()+bb.xMin())*0.5f,bb.yMax(),(bb.zMin()+bb.zMax())*0.5f);    
+    float height = bb.zMax()-bb.zMin();
+    
+    // create the geometry for the wall.
+    osg::Geometry* geom = new osg::Geometry;
+    
+    osg::Vec3Array* vertices = new osg::Vec3Array(4);
+    (*vertices)[0] = top_left;
+    (*vertices)[1] = bottom_left;
+    (*vertices)[2] = bottom_right;
+    (*vertices)[3] = top_right;
+    geom->setVertexArray(vertices);
+    
+    osg::Vec2Array* texcoords = new osg::Vec2Array(4);
+    (*texcoords)[0].set(0.0f,1.0f);
+    (*texcoords)[1].set(0.0f,0.0f);
+    (*texcoords)[2].set(1.0f,0.0f);
+    (*texcoords)[3].set(1.0f,1.0f);
+    geom->setTexCoordArray(0,texcoords);
+
+    osg::Vec3Array* normals = new osg::Vec3Array(1);
+    (*normals)[0].set(0.0f,-1.0f,0.0f);
+    geom->setNormalArray(normals);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    
+    geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,4));
+    
+    osg::Geode* geom_geode = new osg::Geode;
+    geom_geode->addDrawable(geom);
+    group->addChild(geom_geode);
+    
+    
+    // set up the texture state.    
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
+    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    
+    osg::StateSet* stateset = geom->getOrCreateStateSet();
+    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+    
+    // create the text label.
+    
+    osgText::Text* text = new osgText::Text;
+    text->setFont("fonts/arial.ttf");
+    text->setPosition(center);
+    text->setCharacterSize(height*0.03f);
+    text->setAlignment(osgText::Text::CENTER_CENTER);
+    text->setAxisAlignment(osgText::Text::XZ_PLANE);
+    
+    osg::Geode* text_geode = new osg::Geode;
+    text_geode->addDrawable(text);
+    
+    osg::StateSet* text_stateset = text_geode->getOrCreateStateSet();
+    text_stateset->setAttributeAndModes(new osg::PolygonOffset(-1.0f,-1.0f),osg::StateAttribute::ON);
+    
+    group->addChild(text_geode);
+
+    // set the update callback to cycle through the various min and mag filter modes.
+    group->setUpdateCallback(new ImageUpdateCallback(texture,text));
+    
+    return group;
+    
 }
 
 
@@ -496,13 +645,16 @@ osg::Node* createModel()
 
     // create the root node which will hold the model.
     osg::Group* root = new osg::Group();
+    
+    // turn off lighting 
+    root->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
     osg::BoundingBox bb(0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
 
     root->addChild(createFilterWall(bb,"Images/lz.rgb"));
-    root->addChild(createAnisotripicWall(bb,"Images/tank.rgb"));
+    root->addChild(createAnisotripicWall(bb,"Images/primitives.gif"));
     root->addChild(createWrapWall(bb,"Images/tree0.rgba"));
-    root->addChild(createSubloadWall(bb,"Images/tree0.rgba"));
+    root->addChild(createSubloadWall(bb));
     
     return root;
 }

@@ -19,7 +19,7 @@ OSG News (most significant items from ChangeLog)
     configuration of threading and multiple camera views can all be done
     via ASCII configuration files, no need to recompile. 
 
-    Improvemnts to the Makefle system.
+    Improvements to the Makefle system.
 
     Added support for early abort of rendering, useful for interactive
     applications which occasional have rendering that takes that long
@@ -42,8 +42,14 @@ OSG News (most significant items from ChangeLog)
     the rest of the core libraries, virtual of this osgText now compiles 
     by default on platforms.
     
-    Automatic subloading of textures when images are updated.
+    New osg::TextureRectangle texture class which encapsulates the
+    NV_texture_rectangle and EXT_texture_rectange extensions.
+
+    Added automatic subloading of textures when images are updated.
     
+    Added the option of automatic unref'ing of texture image data once the data has
+    been download to OpenGL to active graphics contexts.
+
     New database cache in the osgDB library.
     
     Clean up of memory management in the OpenFlight loader.

@@ -522,7 +522,7 @@ pfGeoState* ConvertToPerformer::visitStateSet(osg::StateSet* stateset)
 		img->getPixelFormat() == GL_RGB  ? 3 :
 		img->getPixelFormat() == GL_RGBA ? 4 : 3;
 
-  	uint *uim = (uint *)pfMalloc( ns * nt * ncomp, pfGetSharedArena() );
+  	unsigned int *uim = (unsigned int *)pfMalloc( ns * nt * ncomp, pfGetSharedArena() );
 
 	memcpy( uim, img->data(), ns * nt * ncomp );
 

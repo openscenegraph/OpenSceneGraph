@@ -60,6 +60,18 @@ bool Billboard_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr[0].matchWord("Normal"))
+    {
+        float x,y,z;
+        if (fr[1].getFloat(x) && fr[2].getFloat(y) && fr[3].getFloat(z))
+        {
+            billboard.setNormal(Vec3(x,y,z));
+            fr+=4;
+            iteratorAdvanced = true;
+        }
+    }
+
+
     // read the position data.
     bool matchFirst = false;
     if ((matchFirst=fr.matchSequence("Positions {")) || fr.matchSequence("Positions %i {"))
@@ -119,9 +131,13 @@ bool Billboard_writeLocalData(const Object& obj, Output& fw)
     const Vec3& axis = billboard.getAxis();
     fw.indent() << "Axis " << axis[0] << " "<<axis[1]<<" "<<axis[2]<<std::endl;
 
+    const Vec3& normal = billboard.getNormal();
+    fw.indent() << "Normal " << normal[0] << " "<<normal[1]<<" "<<normal[2]<<std::endl;
+
     fw.indent() << "Positions {"<<std::endl;
     fw.moveIn();
-    
+
+
     Billboard::PositionList positionList = billboard.getPositionList();
     for(Billboard::PositionList::iterator piter = positionList.begin();
         piter != positionList.end();

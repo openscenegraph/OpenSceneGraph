@@ -14,6 +14,7 @@
 #include <osg/Sequence>
 #include <osg/Switch>
 #include <osg/Geode>
+#include <osg/LineWidth>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
 #include <osg/Material>
@@ -44,10 +45,7 @@
 #include "osgGeoStructs.h"
 #include "osgGeoNodes.h"
 #include "osgGeoAction.h"
-
-#ifdef USETEXT // buggy text feb 2003
 #include <osgText/Text> // needed for text nodes
-#endif
 
 
 //
@@ -305,17 +303,19 @@ private:
 class geoInfo { // identifies properties required to make a new Geometry, and holds collection of vertices, indices, etc
 public:
     geoInfo(const int txidx=-2, const int sm=1, const bool bs=true) { texture=txidx; // will be -1 or 0-number of textures
-        geom=NULL; nstart=0;
+        geom=NULL; nstart=0; linewidth=1;
         bothsides=bs; shademodel=sm;
     }
     virtual ~geoInfo() { };
-    inline int getShademodel() const { return shademodel;}
-    inline bool getBothsides() const { return bothsides;}
-    inline int getTexture() const { return texture;}
-    inline vertexInfo *getVinf() { return &vinf;}
+    inline int getShademodel(void) const { return shademodel;}
+    inline bool getBothsides(void) const { return bothsides;}
+    inline int getTexture(void) const { return texture;}
+    inline vertexInfo *getVinf(void) { return &vinf;}
     void setPools(const std::vector<osg::Vec3> *coord_pool, const std::vector<osg::Vec3> *normal_pool) {
         vinf.setPools(coord_pool,normal_pool);
     }
+	float getlinewidth(void) const { return linewidth;}
+	void setlineWidth(const int w) { linewidth=w;}
     void setGeom(osg::Geometry *nugeom) { geom=nugeom;}
     osg::Geometry *getGeom() const { return geom;}
     osg::Geometry *getGeom() { return geom;}
@@ -331,6 +331,7 @@ private:
     int texture; // texture index
     bool bothsides; 
     int shademodel;
+	int linewidth;
     vertexInfo vinf;
     uint nstart; // start vertex for a primitive
     osg::Geometry *geom; // the geometry created for this vinf and texture
@@ -358,7 +359,6 @@ class ReaderWriterGEO : public ReaderWriter
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
-            //std::ofstream fdup("geodup.geo", std::ios::binary | std::ios::out );
             if (fin.is_open() )
             { // read the input file.
                 typedef std::vector<osg::Node*> NodeList;
@@ -372,7 +372,7 @@ class ReaderWriterGEO : public ReaderWriter
                 {
                     georecord gr;
                     gr.readfile(fin);
-                    //if (gr.getType() != DB_DSK_INSTANCE) gr.writefile(fdup); // create a duplicate file
+//			osg::notify(osg::WARN) << "end of record " << (int)gr.getType() << std::endl;
                     if (gr.getType() == DB_DSK_NORMAL_POOL) {
                         geoField *gfff=gr.getModField(GEO_DB_NORMAL_POOL_VALUES);
                         gfff->uncompress();// uncompress the normals
@@ -380,19 +380,15 @@ class ReaderWriterGEO : public ReaderWriter
                     recs.push_back(gr); // add to a list of all records
                 }
                 fin.close();
-                //fdup.close();
                 // now sort the records so that any record followed by a PUSh has a child set = next record, etc
                 std::vector<georecord *> sorted=sort(recs); // tree-list of sorted record pointers
-//#ifdef _DEBUG
+/*#ifdef _DEBUG
                 osgDB::Output fout("georex.txt"); //, std::ios_base::out );
                 fout << "Debug file " << fileName << std::endl;
                 output(fout,sorted);
                 fout.close();
-//#endif
-
-                nodeList=makeosg(sorted); // make a list of osg nodes
-
-                
+#endif */
+                nodeList=makeosg(sorted); // make a list of osg nodes           
                 recs.clear();
                 geotxlist.clear();
                 geomatlist.clear(); 
@@ -642,6 +638,9 @@ class ReaderWriterGEO : public ReaderWriter
                     }
                 }
             }
+			osg::LineWidth *lw=new osg::LineWidth;
+			lw->setWidth(ginf.getlinewidth());
+			dstate->setAttributeAndModes(lw,osg::StateAttribute::ON);
             nug->setStateSet( dstate );
             ginf.setGeom(nug);
             return nug;
@@ -702,7 +701,6 @@ class ReaderWriterGEO : public ReaderWriter
         }
         osg::MatrixTransform *makeText(georecord *gr) { // make transform, geode & text
             osg::MatrixTransform *numt=NULL;
-#ifdef USETEXT // buggy text feb 2003
             std::string    ttfPath("fonts/times.ttf");
             int    gFontSize1=2;
             osgText::PolygonFont*    polygonFont= new  osgText::PolygonFont(ttfPath,
@@ -777,7 +775,6 @@ class ReaderWriterGEO : public ReaderWriter
                     }
                 }
             }
-#endif
             return numt;
         }
         void addPolyActions(std::vector< georecord *>bhv, geoInfo &gi , const uint nv) {
@@ -973,6 +970,11 @@ class ReaderWriterGEO : public ReaderWriter
                 int shademodel=gfd ? gfd->getInt() : GEO_POLY_SHADEMODEL_LIT_GOURAUD;
                 geoInfo gi(txidx,shademodel, bothsides);
                 gi.setPools(&coord_pool, &normal_pool);
+		        gfd=grec->getField(GEO_DB_POLY_LINE_WIDTH); // integer line width...
+				if (gfd) {
+					int w=gfd->getInt();
+					gi.setlineWidth(w);
+				}
                 osg::Geometry *nugeom=makeNewGeometry(grec, gi, imat);
                 nug->addDrawable(nugeom);
                 igeom=ia->size();
@@ -1058,7 +1060,6 @@ class ReaderWriterGEO : public ReaderWriter
                         igeom++;
                     }
                 }
-                // osg::notify(osg::WARN) << vinf;
             }
             return;
         }
@@ -1666,6 +1667,12 @@ class ReaderWriterGEO : public ReaderWriter
                             holder=makePage(gr);
                             (*itr)->setNode(holder);
                             break;
+                        case DB_DSK_PERSPECTIVE_GRID_INFO: 
+							{ // relates to how model is viewed in Geo modeller
+								osg::Group *gp=new Group;
+								holder=gp;
+                            }
+                            break;
                         case DB_DSK_FLOAT_VAR:
                         case DB_DSK_INT_VAR:
                         case DB_DSK_LONG_VAR:
@@ -1691,8 +1698,8 @@ class ReaderWriterGEO : public ReaderWriter
                         case DB_DSK_STRING_CONTENT_ACTION:
                         default: {
                             osg::Group *gp=new Group;
-                            std::cout << "Unhandled item " << gr->getType() << std::endl;
-                            std::cout << "Unhandled item " << (*itr) << std::endl;
+                            std::cout << "Unhandled item " << gr->getType() <<
+								"address " << (*itr) << std::endl;
                             holder=gp;
                             }
                             break;
@@ -1784,11 +1791,12 @@ class ReaderWriterGEO : public ReaderWriter
             }
             return NULL;
         }
+						
 private:
     geoRecordList recs; // the records read from file
     std::vector<osg::Vec3> coord_pool; // current vertex ooords
     std::vector<osg::Vec3> normal_pool; // current pool of normal vectors
-    geoHeaderGeo *theHeader; // has animation vars etc
+    geoHeaderGeo *theHeader; // an OSG class - has animation vars etc
     std::vector<georecord *> geotxlist; // list of geo::textures for this model
     std::vector<georecord *> geomatlist; // list of geo::materials for this model
     std::vector<osg::Texture2D *> txlist; // list of osg::textures for this model
@@ -1917,6 +1925,63 @@ void internalVars::update(const osg::FrameStamp *_frameStamp) {
         }
     }
     //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
+}
+
+void geoField::parseExt(std::ifstream &fin) const { // Feb 2003 parse onme extension fields
+	static int nread=0; // debug only
+	geoExtensionDefRec *geoExt=(geoExtensionDefRec *)storage;
+	for (uint i=0; i<numItems; i++) {
+		geoExtensionDefRec rec;
+			fin.read((char *)&rec,sizeof(rec));
+			geoField ginner; // inside reading
+			ginner.readfile(fin,0);
+	}
+	nread++;
+}
+void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a record id 
+	unsigned char tokid, type;
+	unsigned short nits;
+	if (!fin.eof()) {
+		fin.read((char *)&tokid,1);fin.read((char *)&type,1);
+		fin.read((char *)&nits,sizeof(unsigned short));
+	//	osg::notify(osg::WARN) << "geoField " << (int)tokid << " type " << (int)type << " nit " << (int)nits << std::endl;
+		if (type == GEO_DB_EXTENDED_FIELD) { // change for true extended type
+			fin.read((char *)&tokenId,sizeof(tokenId));fin.read((char *)&TypeId,sizeof(TypeId));
+			fin.read((char *)&numItems,sizeof(unsigned int));
+		} else {
+			tokenId=tokid; TypeId=type;
+			numItems=nits;
+		}
+		if (id== 0 && tokenId == GEO_DB_USER_EXT_VALUE_FIELD && numItems==1) { // Feb 2003 parse extension template records
+			if (TypeId == DB_SHORT ||
+				TypeId == DB_USHORT) {
+				short upad;
+				fin.read((char *)&upad,SIZEOF_SHORT); // skip the padding on extension template
+				upad=1;
+			} else if (TypeId == DB_CHAR ||
+				TypeId == DB_UCHAR) {
+				char cpad[4];
+				fin.read(cpad,SIZEOF_CHAR); // skip the padding
+			} else {
+			}
+		}
+		if (id== DB_DSK_HEADER && tokenId == GEO_DB_HDR_EXT_TEMPLATE) { // Feb 2003 parse extension records
+		//	osg::notify(osg::WARN) << "header extension template " << (int)getType() << std::endl;
+			parseExt(fin); // multiple structs occur here
+		} else {
+			if (numItems>0) {
+				storageRead(fin); // allocate & fill the storage
+				if (tokenId == GEO_DB_USER_EXT_VALUE_FIELD) {
+					if (id==DB_DSK_POLYGON || id==DB_DSK_GEODE || id==DB_DSK_GROUP
+						 || id==DB_DSK_LOD || id==DB_DSK_MESH || id==DB_DSK_CUBE
+						 || id==DB_DSK_SPHERE || id==DB_DSK_CONE || id==DB_DSK_CYLINDER
+						 || id==DB_DSK_TEXTURE || id==DB_DSK_MATERIAL || id==DB_DSK_VIEW) {
+						if (TypeId == DB_SHORT ||TypeId == DB_USHORT) fin.ignore(2); // skip padding
+					}
+				}
+			}
+		}
+	}
 }
 
 // now register with Registry to instantiate the above

@@ -35,7 +35,7 @@
 #include <osg/Timer>
 
 
-void geoArithBehaviour::setType(uint iop) {
+void geoArithBehaviour::setType(unsigned int iop) {
     switch (iop) {
     case 1: op=addv; break; /* op=addv; addv is a function so the operation can be accessed without a switch(type)... */
     case 2: op=subv; break;
@@ -64,7 +64,7 @@ bool geoArithBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeade
                 out=theHeader->getVar(fid); // returns address of output var with fid
                 //std::cout<< " Output " <<  fid << " : " << theHeader->getVarname(fid) << std::endl;
                 gfd=grec->getField(GEO_DB_ARITHMETIC_ACTION_OP_TYPE);
-                uint iop=gfd?gfd->getUInt():1;
+                unsigned int iop=gfd?gfd->getUInt():1;
                 setType(iop); // default add?
                 gfd=grec->getField(GEO_DB_ARITHMETIC_ACTION_OPERAND_VALUE);
                 if (gfd) {
@@ -82,7 +82,7 @@ bool geoArithBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeade
     return ok;
 }
 
-void geoAr3Behaviour::setType(uint iact) {
+void geoAr3Behaviour::setType(unsigned int iact) {
     switch (iact) {
     case DB_DSK_LINEAR_ACTION: op=linear; break; /* op=addv; */
     case DB_DSK_INVERSE_ACTION: op=lininv; break;
@@ -122,7 +122,7 @@ void geoAr3Behaviour::doaction(osg::Node *) { // do math operation
 bool geoAr3Behaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
     bool ok=false;
     const geoField *gfd=grec->getField(GEO_DB_EQUATION_ACTION_INPUT_VAR);
-	const uint act=grec->getType();
+	const unsigned int act=grec->getType();
     if (gfd) {
         unsigned fid= gfd->getUInt(); // field identifier
         in=theHeader->getVar(fid); // returns address of input var with fid
@@ -172,7 +172,7 @@ bool geoAr3Behaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader)
     return ok;
 }
 
-void geoCompareBehaviour::setType(uint iop) {
+void geoCompareBehaviour::setType(unsigned int iop) {
     switch (iop) {
     case 1: oper=LESS;break;
     case 2: oper=LESSOREQ; break;
@@ -207,7 +207,7 @@ bool geoCompareBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHea
                 fid= gfd->getUInt(); // field identifier
                 out=theHeader->getVar(fid); // returns address of output var with fid
                 gfd=grec->getField(GEO_DB_COMPARE_ACTION_OP_TYPE);
-                uint iop=gfd?gfd->getUInt():1;
+                unsigned int iop=gfd?gfd->getUInt():1;
                 setType(iop); // default add?
                 gfd=grec->getField(GEO_DB_COMPARE_ACTION_OPERAND_VALUE);
                 if (gfd) {
@@ -313,8 +313,8 @@ bool geoDiscreteBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHe
                 fid= gfd->getUInt(); // field identifier
                 out=theHeader->getVar(fid); // returns address of output var with fid
                 gfd=grec->getField(GEO_DB_DISCRETE_ACTION_NUM_ITEMS);
-                uint nr=gfd?gfd->getUInt():1;
-                uint i;
+                unsigned int nr=gfd?gfd->getUInt():1;
+                unsigned int i;
                 for (i=0; i<nr; i++) {
                     geoRange gr;
                     rangelist.push_back(gr);
@@ -364,7 +364,7 @@ void geoMoveBehaviour::doaction(osg::Node *node) {
 
 bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) {
     bool ok=false;
-	const uint act=grec->getType();
+	const unsigned int act=grec->getType();
     setType(act);
     if (act==DB_DSK_ROTATE_ACTION) {
         const geoField *gfd=grec->getField(GEO_DB_ROTATE_ACTION_INPUT_VAR);
@@ -433,7 +433,7 @@ void geoMoveVertexBehaviour::doaction(osg::Matrix *mtr) {
 
 bool geoMoveVertexBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader)
 {
-	const uint act=grec->getType();
+	const unsigned int act=grec->getType();
     bool ok=false;
     setType(act);
     if (act==DB_DSK_ROTATE_ACTION) {
@@ -524,14 +524,14 @@ void geoColourBehaviour::doaction(osg::Drawable *dr)
 { // do visibility operation on Node
     if (getVar()) {
 		double val=getValue();
-        uint idx=(uint)val;
+        unsigned int idx=(unsigned int)val;
         osg::Geometry *gm=dynamic_cast<osg::Geometry *>(dr);
         if (gm) {
             osg::Vec4Array* cla = dynamic_cast<osg::Vec4Array*>(gm->getColorArray());
             if (cla) { // traps a colour behaviour added when using material for colour.
-                for (uint i=nstart; i<(nend); i++) {
+                for (unsigned int i=nstart; i<(nend); i++) {
                     unsigned char col[4];
-                    uint idxtop=idx/128;
+                    unsigned int idxtop=idx/128;
                     (*colours)[idxtop].get(col); // from the colour palette
                     float frac=(float)(idx-idxtop*128)/128.0f;
                     (*cla)[i].set(col[0]*frac/255.0,col[1]*frac/255.0,col[2]*frac/255.0,1);
@@ -564,7 +564,7 @@ void geoStrContentBehaviour::doaction(osg::Drawable *node) { // do new text
     txt->setText(std::string(content));
 #endif
 }
-bool geoStrContentBehaviour::makeBehave(const georecord *grec, geoHeaderGeo *theHeader) {
+bool geoStrContentBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) {
     bool ok=false;
     const geoField *gfd=grec->getField(GEO_DB_STRING_CONTENT_ACTION_INPUT_VAR);
     if (gfd) {

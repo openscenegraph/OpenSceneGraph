@@ -238,7 +238,7 @@ public:
     geoVisibBehaviour() { }
     virtual ~geoVisibBehaviour() { }
 
-    bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
+    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
     virtual void doaction(osg::Node *node);
 private:
 };
@@ -267,7 +267,7 @@ public:
         PAD_FOR_SIGN=0; vt=UNKNOWN; }
     virtual ~geoStrContentBehaviour() { delete [] format;}
     virtual void doaction(osg::Drawable *node); // do new text
-    virtual bool makeBehave(const georecord *grec, geoHeaderGeo *theHeader);
+    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader);
     enum valuetype {UNKNOWN, INT, FLOAT, DOUBLE, CHAR};
 private:
     char *format;

@@ -204,7 +204,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
         PhotoHeader& photoHeader = *pitr;
         
         
-        std::cout<<"Processng image "<<photoCount<<" of "<< photoIndex.size()<<" filename="<< photoHeader.filename << std::endl;
+        std::cout<<"Processing image "<<photoCount<<" of "<< photoIndex.size()<<" filename="<< photoHeader.filename << std::endl;
         std::cout<<"    reading image...";std::cout.flush();
         
         osg::ref_ptr<osg::Image> image = osgDB::readImageFile(photoHeader.filename);

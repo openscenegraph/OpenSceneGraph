@@ -92,25 +92,25 @@ void Matrix_implementation::set(const Quat& q)
     // methodology.  The matrix assignment has been altered in the next
     // few lines of code to do the right thing.
     // Don Burns - Oct 13, 2001
-    _mat[0][0] = 1.0f - (yy + zz);
+    _mat[0][0] = 1.0 - (yy + zz);
     _mat[1][0] = xy - wz;
     _mat[2][0] = xz + wy;
-    _mat[3][0] = 0.0f;
+    _mat[3][0] = 0.0;
 
     _mat[0][1] = xy + wz;
-    _mat[1][1] = 1.0f - (xx + zz);
+    _mat[1][1] = 1.0 - (xx + zz);
     _mat[2][1] = yz - wx;
-    _mat[3][1] = 0.0f;
+    _mat[3][1] = 0.0;
 
     _mat[0][2] = xz - wy;
     _mat[1][2] = yz + wx;
-    _mat[2][2] = 1.0f - (xx + yy);
-    _mat[3][2] = 0.0f;
+    _mat[2][2] = 1.0 - (xx + yy);
+    _mat[3][2] = 0.0;
 
-    _mat[0][3] = 0;
-    _mat[1][3] = 0;
-    _mat[2][3] = 0;
-    _mat[3][3] = 1;
+    _mat[0][3] = 0.0;
+    _mat[1][3] = 0.0;
+    _mat[2][3] = 0.0;
+    _mat[3][3] = 1.0;
 }
 
 void Matrix_implementation::get( Quat& q ) const
@@ -131,8 +131,8 @@ void Matrix_implementation::get( Quat& q ) const
     if (tr > 0.0)
     {
         s = (value_type)sqrt (tr + 1.0);
-        QW = s / 2.0f;
-        s = 0.5f / s;
+        QW = s / 2.0;
+        s = 0.5 / s;
         QX = (_mat[1][2] - _mat[2][1]) * s;
         QY = (_mat[2][0] - _mat[0][2]) * s;
         QZ = (_mat[0][1] - _mat[1][0]) * s;
@@ -150,10 +150,10 @@ void Matrix_implementation::get( Quat& q ) const
 
         s = (value_type)sqrt ((_mat[i][i] - (_mat[j][j] + _mat[k][k])) + 1.0);
 
-        tq[i] = s * 0.5f;
+        tq[i] = s * 0.5;
 
-        if (s != 0.0f)
-            s = 0.5f / s;
+        if (s != 0.0)
+            s = 0.5 / s;
 
         tq[3] = (_mat[j][k] - _mat[k][j]) * s;
         tq[j] = (_mat[i][j] + _mat[j][i]) * s;
@@ -600,26 +600,26 @@ void Matrix_implementation::makeOrtho(double left, double right,
     double tx = -(right+left)/(right-left);
     double ty = -(top+bottom)/(top-bottom);
     double tz = -(zFar+zNear)/(zFar-zNear);
-    SET_ROW(0, 2.0f/(right-left),              0.0f,               0.0f, 0.0f )
-    SET_ROW(1,              0.0f, 2.0f/(top-bottom),               0.0f, 0.0f )
-    SET_ROW(2,              0.0f,              0.0f, -2.0f/(zFar-zNear), 0.0f )
-    SET_ROW(3,                tx,                ty,                 tz, 1.0f )
+    SET_ROW(0, 2.0/(right-left),               0.0,               0.0, 0.0 )
+    SET_ROW(1,              0.0,  2.0/(top-bottom),               0.0, 0.0 )
+    SET_ROW(2,              0.0,               0.0,  -2.0/(zFar-zNear), 0.0 )
+    SET_ROW(3,               tx,                ty,                 tz, 1.0 )
 }
 
 bool Matrix_implementation::getOrtho(double& left, double& right,
                       double& bottom, double& top,
                       double& zNear, double& zFar)
 {
-    if (_mat[0][3]!=0.0f || _mat[1][3]==!0.0f || _mat[2][3]!=0.0f || _mat[3][3]!=1.0f) return false;
+    if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=0.0 || _mat[3][3]!=1.0) return false;
 
-    zNear = (_mat[3][2]+1.0f) / _mat[2][2];
-    zFar = (_mat[3][2]-1.0f) / _mat[2][2];
+    zNear = (_mat[3][2]+1.0) / _mat[2][2];
+    zFar = (_mat[3][2]-1.0) / _mat[2][2];
     
-    left = -(1.0f+_mat[3][0]) / _mat[0][0];
-    right = (1.0f-_mat[3][0]) / _mat[0][0];
+    left = -(1.0+_mat[3][0]) / _mat[0][0];
+    right = (1.0-_mat[3][0]) / _mat[0][0];
 
-    bottom = -(1.0f+_mat[3][1]) / _mat[1][1];
-    top = (1.0f-_mat[3][1]) / _mat[1][1];
+    bottom = -(1.0+_mat[3][1]) / _mat[1][1];
+    top = (1.0-_mat[3][1]) / _mat[1][1];
     
     return true;
 }            
@@ -634,27 +634,27 @@ void Matrix_implementation::makeFrustum(double left, double right,
     double B = (top+bottom)/(top-bottom);
     double C = -(zFar+zNear)/(zFar-zNear);
     double D = -2.0*zFar*zNear/(zFar-zNear);
-    SET_ROW(0, 2.0f*zNear/(right-left),                    0.0f, 0.0f,  0.0f )
-    SET_ROW(1,                    0.0f, 2.0f*zNear/(top-bottom), 0.0f,  0.0f )
-    SET_ROW(2,                       A,                       B,    C, -1.0f )
-    SET_ROW(3,                    0.0f,                   0.0f,     D,  0.0f )
+    SET_ROW(0, 2.0*zNear/(right-left),                    0.0, 0.0,  0.0 )
+    SET_ROW(1,                    0.0, 2.0*zNear/(top-bottom), 0.0,  0.0 )
+    SET_ROW(2,                      A,                      B,   C, -1.0 )
+    SET_ROW(3,                    0.0,                    0.0,   D,  0.0 )
 }
 
 bool Matrix_implementation::getFrustum(double& left, double& right,
                                        double& bottom, double& top,
                                        double& zNear, double& zFar)
 {
-    if (_mat[0][3]!=0.0f || _mat[1][3]==!0.0f || _mat[2][3]!=-1.0f || _mat[3][3]!=0.0f) return false;
+    if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=-1.0 || _mat[3][3]!=0.0) return false;
 
 
-    zNear = _mat[3][2] / (_mat[2][2]-1.0f);
-    zFar = _mat[3][2] / (1.0f+_mat[2][2]);
+    zNear = _mat[3][2] / (_mat[2][2]-1.0);
+    zFar = _mat[3][2] / (1.0+_mat[2][2]);
     
-    left = zNear * (_mat[2][0]-1.0f) / _mat[0][0];
-    right = zNear * (1.0f+_mat[2][0]) / _mat[0][0];
+    left = zNear * (_mat[2][0]-1.0) / _mat[0][0];
+    right = zNear * (1.0+_mat[2][0]) / _mat[0][0];
 
-    top = zNear * (1.0f+_mat[2][1]) / _mat[1][1];
-    bottom = zNear * (_mat[2][1]-1.0f) / _mat[1][1];
+    top = zNear * (1.0+_mat[2][1]) / _mat[1][1];
+    bottom = zNear * (_mat[2][1]-1.0) / _mat[1][1];
     
     return true;
 }                 
@@ -698,10 +698,10 @@ void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const 
     u.normalize();
 
     set(
-        s[0],     u[0],     -f[0],     0.0f,
-        s[1],     u[1],     -f[1],     0.0f,
-        s[2],     u[2],     -f[2],     0.0f,
-        0.0f,     0.0f,     0.0f,      1.0f);
+        s[0],     u[0],     -f[0],     0.0,
+        s[1],     u[1],     -f[1],     0.0,
+        s[2],     u[2],     -f[2],     0.0,
+        0.0,     0.0,     0.0,      1.0);
 
     preMult(Matrix_implementation::translate(-eye));
 }
@@ -710,9 +710,9 @@ void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type
 {
     Matrix_implementation inv;
     inv.invert(*this);
-    eye = osg::Vec3(0.0f,0.0f,0.0f)*inv;
-    up = transform3x3(*this,osg::Vec3(0.0f,1.0f,0.0f));
-    center = transform3x3(*this,osg::Vec3(0.0f,0.0f,-1));
+    eye = osg::Vec3(0.0,0.0,0.0)*inv;
+    up = transform3x3(*this,osg::Vec3(0.0,1.0,0.0));
+    center = transform3x3(*this,osg::Vec3(0.0,0.0,-1));
     center.normalize();
     center = eye + center*lookDistance;
 }

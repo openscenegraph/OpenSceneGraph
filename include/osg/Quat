@@ -125,10 +125,10 @@ class SG_EXPORT Quat
         inline value_type & z() { return _v[2]; }
         inline value_type & w() { return _v[3]; }
 
-        inline float x() const { return _v[0]; }
-        inline float y() const { return _v[1]; }
-        inline float z() const { return _v[2]; }
-        inline float w() const { return _v[3]; }
+        inline value_type x() const { return _v[0]; }
+        inline value_type y() const { return _v[1]; }
+        inline value_type z() const { return _v[2]; }
+        inline value_type w() const { return _v[3]; }
 
     	/** return true if the Quat represents a zero rotation, and therefore can be ignored in computations.*/
     	bool zeroRotation() const { return _v[0]==0.0 && _v[1]==0.0 && _v[2]==0.0 && _v[3]==1.0; } 
@@ -142,13 +142,13 @@ class SG_EXPORT Quat
 	Also define methods for conjugate and the multiplicative inverse.		    
 	------------------------------------------------------------- */
 	/// Multiply by scalar 
-        inline const Quat operator * (float rhs) const
+        inline const Quat operator * (value_type rhs) const
         {
             return Quat(_v[0]*rhs, _v[1]*rhs, _v[2]*rhs, _v[3]*rhs);
         }
 
 	/// Unary multiply by scalar 
-        inline Quat& operator *= (float rhs)
+        inline Quat& operator *= (value_type rhs)
         {
             _v[0]*=rhs;
             _v[1]*=rhs;
@@ -182,14 +182,14 @@ class SG_EXPORT Quat
 	}
 
 	/// Divide by scalar 
-        inline Quat operator / (float rhs) const
+        inline Quat operator / (value_type rhs) const
         {
             value_type div = 1.0/rhs;
             return Quat(_v[0]*div, _v[1]*div, _v[2]*div, _v[3]*div);
         }
 
 	/// Unary divide by scalar 
-        inline Quat& operator /= (float rhs)
+        inline Quat& operator /= (value_type rhs)
         {
             value_type div = 1.0/rhs;
             _v[0]*=div;

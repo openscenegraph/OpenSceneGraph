@@ -6,7 +6,6 @@ CXXFILES =\
 	GliderManipulator.cpp\
 	osghangglide.cpp\
 	hat.cpp\
-	ReaderWriterFLY.cpp\
 	sky.cpp\
 	tank.cpp\
 	terrain.cpp\

@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- *    FILE:            ReaderWriterdds.cpp
+ *    FILE:           ReaderWriterdds.cpp
  *
  *    DESCRIPTION:    Class for reading a DDS file into an osg::Image.
  *
@@ -9,11 +9,11 @@
  *                    ARB_texture_compression.pdf
  *                    Author: Sébastien Dominé, NVIDIA Corporation
  *
- *    CREATED BY:        Rune Schmidt Jensen, rsj@uni-dk
+ *    CREATED BY:     Rune Schmidt Jensen, rune@schmidt-jensen.com
  *
  *    HISTORY:        Created 31.03.2003
  *
-  **********************************************************************/
+ **********************************************************************/
 
 #include <osg/Texture>
 #include <osg/Notify>
@@ -159,6 +159,10 @@ osg::Image* ReadDDSFile(const char *filename)
     unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1 ? 2: 4) : ddsd.dwLinearSize;
     //###################unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * 2 : ddsd.dwLinearSize;
 
+	if(size <= 0){
+		osg::notify(osg::WARN)<<"Warning:: dwLinearSize is not defined in dds file, image not loaded."<<std::endl;
+        return NULL;
+	}
     
 	unsigned char* imageData = new unsigned char [size];
     fread(imageData, 1, size, fp);

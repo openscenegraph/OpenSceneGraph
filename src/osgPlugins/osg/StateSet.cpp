@@ -467,6 +467,13 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     return iteratorAdvanced;
 }
 
+// visual studio 6.0 doesn't appear to define std::max?!? So do our own here.. 
+template<class T>
+T mymax(const T& a,const T& b)
+{
+	return (((a) > (b)) ? (a) : (b));
+}
+
 bool StateSet_writeLocalData(const Object& obj, Output& fw)
 {
 
@@ -528,7 +535,7 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
     
     const StateSet::TextureModeList& tml = stateset.getTextureModeList();    
     const StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
-    unsigned int maxUnit = std::max(tml.size(),tal.size());
+    unsigned int maxUnit = mymax(tml.size(),tal.size());
     for(unsigned int unit=0;unit<maxUnit;++unit)
     {
         fw.indent()<<"textureUnit "<<unit<<" {"<< std::endl;

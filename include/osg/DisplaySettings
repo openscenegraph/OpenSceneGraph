@@ -127,8 +127,8 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         bool getStencilBuffer() const { return _minimumNumberStencilBits!=0; }
 
 
-        void setMaxNumberOfGraphicsContexts(int num) { _maxNumOfGraphicsContexts = num; }
-        int getMaxNumberOfGraphicsContexts() const { return _maxNumOfGraphicsContexts; }
+        void setMaxNumberOfGraphicsContexts(unsigned int num) { _maxNumOfGraphicsContexts = num; }
+        unsigned int getMaxNumberOfGraphicsContexts() const { return _maxNumOfGraphicsContexts; }
 
 
     protected:
@@ -152,7 +152,7 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int                    _minimumNumberAlphaBits;
         unsigned int                    _minimumNumberStencilBits;
 
-        int                             _maxNumOfGraphicsContexts;
+        unsigned int                    _maxNumOfGraphicsContexts;
 
 };
 

@@ -27,6 +27,9 @@ SceneView::SceneView(DisplaySettings* ds)
     _LODBias = 1.0f;
     _smallFeatureCullingPixelSize = 3.0f;
 
+    _fusionDistanceMode = USE_CAMERA_FUSION_DISTANCE;
+    _fusionDistanceValue = 1.0f;
+
     _lightingMode=HEADLIGHT;
     
     _prioritizeTextures = false;
@@ -217,12 +220,22 @@ void SceneView::cull()
     {
 
         float fusionDistance = _displaySettings->getScreenDistance();
-
-        if (_camera.valid())
+        switch(_fusionDistanceMode)
         {
-            fusionDistance = _camera->getFusionDistance();
+            case(USE_CAMERA_FUSION_DISTANCE):
+                if (_camera.valid())
+                {
+                    fusionDistance = _camera->getFusionDistance();
+                }
+                break;
+            case(USE_FUSION_DISTANCE_VALUE):
+                fusionDistance = _fusionDistanceValue;
+                break;
+            case(PROPORTIONAL_TO_SCREEN_DISTANCE):
+                fusionDistance *= _fusionDistanceValue;
+                break;
         }
-        
+
         float iod = _displaySettings->getEyeSeparation();
         float sd = _displaySettings->getScreenDistance();
         float es = 0.5f*iod*(fusionDistance/sd);

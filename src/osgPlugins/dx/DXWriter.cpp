@@ -213,7 +213,7 @@ class MessageBin
       char msg[1024];
       va_list args;
       va_start(args, fmt);
-      int ret = vsnprintf(msg, sizeof(msg), fmt, args);
+      vsnprintf(msg, sizeof(msg), fmt, args);
       va_end(args);
 
       msg_list.push_back( std::string( msg ) );      
@@ -380,18 +380,15 @@ class DXArrayWriter
                       const char opacities_name[], const char opacitymap_name[],
                       int do_opacities, const char *dep, int &wrote_maps );
 
-    void WritePerVertexNormals( const osg::GeoSet &geoset,
-                                const char name[], const char *attr=0 );
+    void WritePerVertexNormals( const osg::GeoSet &geoset, const char name[] );
     void WritePerVertexColors( const osg::GeoSet &geoset, 
                                const char colors_name[], 
                                const char colormap_name[],
                                const char opacities_name[],
                                const char opacitymap_name[],
                                int do_opacities, // FIXME 
-                               int &wrote_maps,
-                               const char *attr=0 );
-    void WritePerVertexTCoords( const osg::GeoSet &geoset,
-                                const char name[], const char *attr=0 );
+                               int &wrote_maps );
+    void WritePerVertexTCoords( const osg::GeoSet &geoset, const char name[] );
 };
 
 //----------------------------------------------------------------------------
@@ -426,7 +423,7 @@ class MyStateSet
     // TEXENV
     osg::TexEnv::Mode texture_func;
 
-    MyStateSet( MessageBin &msg_bin ) : image(0), msg_bin(msg_bin) {}
+    MyStateSet( MessageBin &msg_bin ) : msg_bin(msg_bin), image(0) {}
 
     // CULLFACE
     osg::CullFace::Mode cullface_mode;
@@ -491,8 +488,7 @@ class DXWriter
 
     std::string WriteImage( const osg::Image &image );
 
-    void WritePolylineConnections( const std::string &field_name, 
-                                   osg::GeoSet &geoset,
+    void WritePolylineConnections( osg::GeoSet &geoset,
                                    DXField &field );
     std::string WriteGeoSetField( const std::string &field_name, 
                                   osg::GeoSet &geoset,
@@ -530,7 +526,7 @@ void GetParms( int argc, char *argv[],
 
   /*  Parse user args  */
   int   c, i, errflg = 0;
-  char *arg;
+  char *arg = NULL;
 
   /*  We'd use getopt(), but we have args with leading minus chars...  */
   for ( i = 1; i < argc && !errflg; i++ ) {
@@ -984,7 +980,7 @@ void DXArrayWriter::WriteColors(
 
 void DXArrayWriter::WritePerVertexNormals( 
                                 const osg::GeoSet &geoset,
-                                const char name[], const char *attr )
+                                const char name[] )
   // throws 1
 {
   // FIXME:
@@ -1088,8 +1084,7 @@ void DXArrayWriter::WritePerVertexColors(
                                const char opacities_name[],
                                const char opacitymap_name[],
                                int do_opacities, 
-                               int &wrote_maps,
-                               const char *attr )
+                               int &wrote_maps )
   // throws 1
 {
   // FIXME:
@@ -1160,8 +1155,7 @@ void DXArrayWriter::WritePerVertexColors(
 //----------------------------------------------------------------------------
 
 void DXArrayWriter::WritePerVertexTCoords( 
-                                const osg::GeoSet &geoset,
-                                const char name[], const char *attr )
+                                const osg::GeoSet &geoset, const char name[] )
   // throws 1
 {
   // FIXME:
@@ -1332,9 +1326,9 @@ std::string DXWriter::BuildStateSetAttributes( MyStateSet &sset,
        { GL_NEAREST_MIPMAP_LINEAR , "nearest_mipmap_linear"   },  
        { GL_LINEAR_MIPMAP_NEAREST , "linear_mipmap_nearest"   },  
        { GL_LINEAR_MIPMAP_LINEAR  , "linear_mipmap_linear"    } };
-    int i;
+    unsigned i;
     for ( i = 0; i < ARRAY_LEN(filter_to_str); i++ )
-      if ( filter_to_str[i].val == sset.min_filter )
+      if ( filter_to_str[i].val == (GLenum) sset.min_filter )
         break;
     if ( i >= ARRAY_LEN(filter_to_str) )
       msg_bin.Add( "WARNING:  Bad texture min filter: %d\n", sset.min_filter );
@@ -1345,7 +1339,7 @@ std::string DXWriter::BuildStateSetAttributes( MyStateSet &sset,
     }
 
     for ( i = 0; i < ARRAY_LEN(filter_to_str); i++ )
-      if ( filter_to_str[i].val == sset.mag_filter )
+      if ( filter_to_str[i].val == (GLenum) sset.mag_filter )
         break;
     if ( i >= ARRAY_LEN(filter_to_str) )
       msg_bin.Add( "WARNING:  Bad texture mag filter: %d\n", sset.mag_filter );
@@ -1521,9 +1515,7 @@ std::string DXWriter::WriteImage( const osg::Image &image )
 
 //----------------------------------------------------------------------------
 
-// FIXME:  field_name never referenced
-void DXWriter::WritePolylineConnections( const std::string &field_name, 
-                                         osg::GeoSet &geoset,
+void DXWriter::WritePolylineConnections( osg::GeoSet &geoset,
                                          DXField &field )
   // Writes the "edges" and "polylines" field components for LINE_STRIPs,
   //   FLAT_LINE_STRIPs, and LINE_LOOPs.
@@ -1533,8 +1525,6 @@ void DXWriter::WritePolylineConnections( const std::string &field_name,
           geoset.getPrimType() == osg::GeoSet::LINE_LOOP );
 
   int num_prims     = geoset.getNumPrims();
-  int num_points    = geoset.getNumCoords();       // FIXME:  Never referenced
-  int num_pindices  = geoset.getNumCoordIndices(); // FIXME:  Never referenced
   const int *prim_lengths = geoset.getPrimLengths();
   int line_loops = geoset.getPrimType() == osg::GeoSet::LINE_LOOP;
   int i,j;
@@ -1695,7 +1685,7 @@ std::string DXWriter::WriteGeoSetField( const std::string &field_name,
     //   dep on them in the OVERALL or PERPRIM cases
     conn_dep_name = "positions";
   else if ( polylines ) {
-    WritePolylineConnections( field_name, geoset, field );
+    WritePolylineConnections( geoset, field );
     conn_dep_name = "polylines";
   }
   else {

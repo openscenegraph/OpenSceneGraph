@@ -36,12 +36,15 @@ WRAPPER_DIRS = \
 # Directories traversed in the TOPDIR/src/osgPlugins directory
 
 PLUGIN_DIRS = \
+	3dc\
 	ac3d\
 	bmp\
-	directx\
 	dds\
+	directx\
 	dw\
 	flt\
+	hdr\
+	ive\
 	lib3ds\
 	logo\
 	lwo\
@@ -49,26 +52,24 @@ PLUGIN_DIRS = \
 	md2\
 	net\
 	obj\
-	osgParticle\
-	osgText\
-	osgSim\
-	osgFX\
 	osg\
 	osga\
+	osgFX\
+	osgParticle\
+	osgSim\
+	osgText\
 	osgtgz\
 	pic\
 	pnm\
 	rgb\
-	tga\
-	tgz\
-	txp\
-	zip\
-	3dc\
-	ive\
 	rot\
 	scale\
 	stl\
+	tga\
+	tgz\
 	trans\
+	txp\
+	zip\
 
 
 ifeq ($(GDAL_INSTALLED),yes)

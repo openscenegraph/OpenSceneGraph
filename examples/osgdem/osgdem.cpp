@@ -195,6 +195,21 @@ int main( int argc, char **argv )
             currentCS = def;
             std::cout<<"--wkt "<<currentCS<<std::endl;
         }
+        else if (arguments.read(pos, "--wkt_file",def))
+        {
+            std::ifstream in(def.c_str());
+            if (in)
+            {   
+                currentCS = "";
+                while (!in.eof())
+                {
+                    std::string line;
+                    in >> line;
+                    currentCS += line;
+                }
+                std::cout<<"--wkt_file "<<currentCS<<std::endl;
+            }
+        }
         else if (arguments.read(pos, "--geocentric"))
         {
             dataset->setConvertFromGeographicToGeocentric(true);

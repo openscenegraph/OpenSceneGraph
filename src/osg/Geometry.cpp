@@ -359,8 +359,8 @@ class DrawFogCoord : public osg::ConstValueVisitor
 };
 
 Geometry::ArrayData::ArrayData(const ArrayData& data,const CopyOp& copyop):
-    array(data.array.valid()?dynamic_cast<osg::Array*>(data.array->clone(copyop)):0),
-    indices(data.indices.valid()?dynamic_cast<osg::IndexArray*>(data.indices->clone(copyop)):0),
+    array(copyop(data.array.get())),
+    indices(dynamic_cast<osg::IndexArray*>(copyop(data.indices.get()))),
     binding(data.binding),
     normalize(data.normalize),
     offset(data.offset)
@@ -368,8 +368,8 @@ Geometry::ArrayData::ArrayData(const ArrayData& data,const CopyOp& copyop):
 }
 
 Geometry::Vec3ArrayData::Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& copyop):
-    array(data.array.valid()?dynamic_cast<osg::Vec3Array*>(data.array->clone(copyop)):0),
-    indices(data.indices.valid()?dynamic_cast<osg::IndexArray*>(data.indices->clone(copyop)):0),
+    array(dynamic_cast<osg::Vec3Array*>(copyop(data.array.get()))),
+    indices(dynamic_cast<osg::IndexArray*>(copyop(data.indices.get()))),
     binding(data.binding),
     normalize(data.normalize),
     offset(data.offset)
@@ -698,7 +698,7 @@ bool Geometry::computeFastPathsUsed()
     //
     // Set up tex coords if required.
     //
-    for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
+    for(unsigned int unit=0;unit<_texCoordList.size();++unit)
     {
         const ArrayData& texcoordData = _texCoordList[unit];
         if (texcoordData.array.valid() && texcoordData.array->getNumElements()>0)

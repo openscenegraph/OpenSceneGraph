@@ -126,12 +126,9 @@ int main( int argc, char **argv )
     float socketNumber=8100.0f;
     while (arguments.read("-n",socketNumber)) ;
 
-    float camera_fov=45.0f;
+    float camera_fov=-1.0f;
     while (arguments.read("-f",camera_fov)) 
     {
-        std::cout << "setting lens perspective : original "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
-        viewer.setLensPerspective(camera_fov,camera_fov*viewer.getLensVerticalFov()/viewer.getLensHorizontalFov(),1.0f,1000.0f);
-        std::cout << "setting lens perspective : new "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
     }
 
     float camera_offset=45.0f;
@@ -171,6 +168,18 @@ int main( int argc, char **argv )
 
     // create the windows and run the threads.
     viewer.realize();
+
+
+    // set up the lens after realize as the Producer lens is not set up properly before this.... will need to inveestigate this at a later date.
+    if (camera_fov>0.0f)
+    {
+        float aspectRatio = tan( osg::DegreesToRadians(viewer.getLensVerticalFov()*0.5)) / tan(osg::DegreesToRadians(viewer.getLensHorizontalFov()*0.5));
+        float new_fovy = osg::RadiansToDegrees(atan( aspectRatio * tan( osg::DegreesToRadians(camera_fov*0.5))))*2.0f;
+        std::cout << "setting lens perspective : original "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
+        viewer.setLensPerspective(camera_fov,new_fovy,1.0f,1000.0f);
+        std::cout << "setting lens perspective : new "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
+    }
+
 
     // objects for managing the broadcasting and recieving of camera packets.
     Broadcaster     bc;

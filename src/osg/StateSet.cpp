@@ -21,6 +21,17 @@ StateSet::StateSet()
     setRendingBinToInherit();
 }
 
+StateSet::StateSet(const StateSet& rhs):Object()
+{
+    _modeList = rhs._modeList;
+    _attributeList = rhs._attributeList;
+    
+    _renderingHint = rhs._renderingHint;
+
+    _binMode = rhs._binMode;
+    _binNum = rhs._binNum;
+    _binName = rhs._binName;
+}
 
 StateSet::~StateSet()
 {

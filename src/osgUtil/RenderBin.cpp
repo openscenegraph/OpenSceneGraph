@@ -160,15 +160,16 @@ void RenderBin::draw_local(osg::State& state,RenderLeaf*& previous)
         }
     }
 }
+
 // stats
-#include <osg/GeoSet>
-void RenderBin::getPrims(osg::Statistics *primStats)
+void RenderBin::getStats(Statistics& primStats)
 {
     for(RenderBinList::iterator itr = _bins.begin();
     itr!=_bins.end();
     ++itr)
     {
-                primStats->nbins++;
+        primStats.nbins++;
+        itr->second->getStats(primStats); // gwm 19.08.01 - multi-pass rendering uses these bins too.
     }
     
     for(RenderGraphList::iterator oitr=_renderGraphList.begin();
@@ -182,16 +183,10 @@ void RenderBin::getPrims(osg::Statistics *primStats)
         {
             RenderLeaf* rl = dw_itr->get();
             Drawable* dw= rl->_drawable;
-            primStats->numOpaque++; // number of geosets
-            if (rl->_matrix.get()) primStats->nummat++; // number of matrices
+            primStats.numOpaque++; // number of geosets
+            if (rl->_matrix.get()) primStats.nummat++; // number of matrices
             if (dw) { // then tot up the types 1-14
-                GeoSet *gs=dynamic_cast<osg::GeoSet*>(dw);
-                if (gs)
-                {
-                    primStats->addstat(gs);
-                    //        rl->getPrims(state,previous);??
-                    //        previous = rl;
-                }
+                dw->getStats(primStats); // use sub-class to find the stats for each drawable
             }
         }
     }

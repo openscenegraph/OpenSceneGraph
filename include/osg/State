@@ -46,6 +46,9 @@ class SG_EXPORT State : public Referenced
         /** pop drawstate off state stack.*/
         void popStateSet();
        
+        /** copy the modes and attributes which captures the current state.*/
+        void captureCurrentState(StateSet& stateset) const;
+
         /** reset the state object to an empty stack.*/
         void reset();
 

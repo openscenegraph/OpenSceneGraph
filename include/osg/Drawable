@@ -29,6 +29,19 @@ class Vec4;
     for a Drawable are maintained in StateSet which the Drawable maintains
     a referenced counted pointer to.  Both Drawable's and StateSet's can 
     be shared for optimal memory usage and graphics performance.
+
+    Subclasses should provide an instance of getStats(Statistics *st) if the subclass
+    contains drawing primitives.  This member function should add the primitives it 
+    draws into the Statistics class; for example add the number of quads, triangles etc
+    created.  For an example see GeoSet.cpp:
+     getStats(osgUtil::Statistics *stat).
+    Failure to implement this routine will only result in the stats displayed for
+    your drawable being wrong.
+    Another example is in the InfinitePlane class- this draws a normal geoset AND
+    its own special set of quads, so this case of getPrims calls:
+    the normal geoset stats gs->getStats(..), and then adds the number of quads 
+    rendered directly (it is rendered in a display list, but we do know how many
+    quads are in the display list).
 */
 class SG_EXPORT Drawable : public Object
 {
@@ -136,14 +149,6 @@ class SG_EXPORT Drawable : public Object
             COLORS              = 0x4,
             TEXTURE_COORDS      = 0x8,
             TEXTURE_COORDS_0    = TEXTURE_COORDS,
-	    /*
-	     * Robert,
-	     * These would have kept you up late if you were
-	     * trying to use these as bitmasks
-            TEXTURE_COORDS_1    = 0x16,
-            TEXTURE_COORDS_2    = 0x32,
-            TEXTURE_COORDS_3    = 0x64
-	     */
             TEXTURE_COORDS_1    = 0x10,
             TEXTURE_COORDS_2    = 0x20,
             TEXTURE_COORDS_3    = 0x40

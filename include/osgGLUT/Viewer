@@ -119,7 +119,7 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         void setFocusedViewport(unsigned int pos);
         int mapWindowXYToSceneView(int x, int y);
         
-        void showStats(void);
+        void showStats(const unsigned int i); // gwm 24.09.01 pass the viewport to collect sta for each viewport
 
         static Viewer*    s_theViewer;
 

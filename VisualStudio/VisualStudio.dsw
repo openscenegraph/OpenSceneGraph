@@ -2102,6 +2102,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgSim
+    End Project Dependency
 }}}
 
 ###############################################################################

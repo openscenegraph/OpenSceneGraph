@@ -23,6 +23,13 @@
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 
+#include <osgSim/Sector>
+#include <osgSim/LightPoint>
+#include <osgSim/LightPointNode>
+#include <osgSim/BlinkSequence>
+#include <osg/Point>
+#include <osg/BlendFunc>
+
 #include "trpage_geom.h"
 #include "trpage_read.h"
 #include "trpage_write.h"
@@ -368,6 +375,113 @@ void TrPageArchive::LoadMaterials()
         }
     }
 }
+
+void TrPageArchive::LoadLightAttributes()
+{
+	int num;
+	lightTable.GetNumLightAttrs(num);
+	for ( int attr_num = 0; attr_num < num; attr_num++	){
+
+		trpgLightAttr* ref = const_cast<trpgLightAttr*>(lightTable.GetLightAttrRef(attr_num));
+
+		osgSim::LightPointNode* osgLight = new osgSim::LightPointNode();
+
+		osg::Point* osgPoint = new osg::Point();
+
+		osgSim::LightPoint lp ;
+		lp._on = true;
+
+		trpgColor col;
+		ref->GetFrontColor(col);
+		lp._color = osg::Vec4(col.red, col.green,col.blue, 1.0);
+
+		float64 inten;
+		ref->GetFrontIntensity(inten);
+		lp._intensity = inten;
+
+		trpgLightAttr::PerformerAttr perfAttr;
+		ref->GetPerformerAttr(perfAttr);
+
+		// point part
+		osgPoint->setSize(perfAttr.actualSize);
+		osgPoint->setMaxSize(perfAttr.maxPixelSize);
+		osgPoint->setMinSize(perfAttr.minPixelSize);	
+        osgPoint->setFadeThresholdSize(perfAttr.transparentFallofExp);
+        //numbers that are going to appear are "experimental"
+        osgPoint->setDistanceAttenuation(osg::Vec3(0.0001, 0.0005, 0.00000025));
+//        osgPoint->setDistanceAttenuation(osg::Vec3(1.0, 0.0, 1.0));
+
+		osg::StateSet* stateSet = new osg::StateSet();
+	    stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+	    stateSet->setMode(GL_POINT_SMOOTH, osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(osgPoint, osg::StateAttribute::ON );
+        stateSet->setAttributeAndModes(new osg::BlendFunc, osg::StateAttribute::ON);
+
+		osgLight->setMaxPixelSize(perfAttr.maxPixelSize);
+		osgLight->setMinPixelSize(perfAttr.minPixelSize);	
+
+//		float64 clamp;
+//		ref->GetPerformerTpClamp(clamp);
+//		osgLight->setMaxVisibleDistance2(clamp);
+
+		trpg3dPoint normal;
+		ref->GetNormal(normal);
+
+//		lp._radius = clamp;
+
+		trpgLightAttr::LightDirectionality direc;
+		ref->GetDirectionality(direc);
+		if( direc == trpgLightAttr::trpg_Unidirectional){
+			osgSim::AzimElevationSector*  sec = new osgSim::AzimElevationSector();
+			float64 tmp;
+			ref->GetHLobeAngle(tmp);
+			float64 tmpfade;
+			ref->GetLobeFalloff(tmpfade);
+			sec->setAzimuthRange(-tmp/2.0,tmp/2.0,tmpfade);
+
+			ref->GetVLobeAngle(tmp);
+			sec->setElevationRange(0,tmp, tmpfade);
+
+			lp._sector = sec;
+			osgLight->addLightPoint(lp);
+		}
+		else if( direc == trpgLightAttr::trpg_Bidirectional ){
+			osgSim::AzimElevationSector*  front = new osgSim::AzimElevationSector();
+			float64 tmp;
+			ref->GetHLobeAngle(tmp);
+			float64 tmpfade;
+			ref->GetLobeFalloff(tmpfade);
+			front->setAzimuthRange(-tmp/2.0,tmp/2.0,tmpfade);
+
+			ref->GetVLobeAngle(tmp);
+			front->setElevationRange(0,tmp, tmpfade);
+
+			lp._sector = front;
+			osgLight->addLightPoint(lp);
+
+			osgSim::AzimElevationSector*  back = new osgSim::AzimElevationSector();
+			back->setAzimuthRange(osg::PI-tmp/2.0,osg::PI+tmp/2.0,tmpfade);
+			back->setElevationRange(0,tmp, tmpfade);
+			lp._sector = back;
+			osgLight->addLightPoint(lp);
+		} 
+		else{
+			osgLight->addLightPoint(lp);
+		}
+
+		AddLightAttribute(osgLight, stateSet, osg::Vec3(normal.x,normal.y,normal.z));
+	}
+}
+
+void TrPageArchive::AddLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback, const osg::Vec3& att)
+{
+	DefferedLightAttribute la;
+	la.lightPoint = lpn;
+	la.fallback = fallback;
+	la.attitude = att;
+	lightAttrTable.push_back(la);
+}
+
 
 bool TrPageArchive::LoadModels()
 {

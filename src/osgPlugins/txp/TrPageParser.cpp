@@ -35,6 +35,10 @@
 #include <osg/Light>
 #include <osg/Notify>
 #include <osg/PolygonOffset>
+#include <osg/MatrixTransform>
+
+#include <osgSim/LightPointNode>
+#include <osg/Point>
 
 #include "TrPageParser.h"
 #include "TrPageArchive.h"
@@ -867,6 +871,76 @@ void* tileHeaderRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 }
 
 
+//----------------------------------------------------------------------------
+//
+// light Reader Class
+//
+//----------------------------------------------------------------------------
+lightRead::lightRead (TrPageParser *in_parse)
+{
+    parse = in_parse;
+}
+
+//----------------------------------------------------------------------------
+void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
+{
+    trpgLight light;
+    if (!light.Read(buf))
+        return NULL;
+	int attr_index;
+	light.GetAttrIndex(attr_index);
+
+	DefferedLightAttribute& dla = parse->GetLightAttribute(attr_index); 
+	osgSim::LightPointNode* node = dla.lightPoint.get();
+
+	uint32 nvert;
+	light.GetNumVertices(nvert);
+
+	if( node->getLightPoint(0)._sector.valid() ) // osgSim::LigthPoint is a must
+	{
+		for(unsigned int i = 0; i < nvert; i++){
+			trpg3dPoint pt;
+			light.GetVertex(i, pt);
+			osg::Matrix matrix;
+	//        matrix.makeTranslate(pt.x,pt.y,pt.z);
+			matrix.makeRotate(osg::Quat(0.0,dla.attitude));
+			matrix.setTrans(pt.x,pt.y,pt.z);
+			osg::MatrixTransform* trans = new osg::MatrixTransform();
+			trans->setMatrix(matrix);
+			trans->addChild(node);
+			parse->AddIntoSceneGraph(trans);
+		}
+	}
+	else { //Fall back to osg::Points
+	    Vec3Array* vertices = new Vec3Array(nvert);
+	    Vec4Array* colors = new Vec4Array(nvert);
+
+		for(unsigned int i = 0; i < nvert; i++){
+			trpg3dPoint pt;
+			light.GetVertex(i, pt);
+			(*vertices)[i] = osg::Vec3(pt.x,pt.y,pt.z);
+			(*colors)[i] = node->getLightPoint(0)._color;
+		}
+
+		osg::Geometry* geom = new osg::Geometry();
+        geom->addPrimitiveSet(new DrawArrays(PrimitiveSet::POINTS,0,nvert));
+		geom->setVertexArray(vertices);
+		geom->setColorArray(colors);
+		geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+		geom->setUseDisplayList(false);
+		geom->setStateSet(dla.fallback.get());
+
+	    GeodeGroup *top = parse->GetCurrTop();
+		Geode *geode = top->GetGeode();
+		geode->addDrawable(geom);
+		
+	}
+
+    return (void *) 1;
+}
+
+
 /* ********************************** */
 
 //----------------------------------------------------------------------------
@@ -889,6 +963,9 @@ TrPageParser::TrPageParser(TrPageArchive* parent)
     AddCallback(TRPG_MODELREF,new modelRefRead(this));
     AddCallback(TRPG_LAYER,new layerRead(this));
     AddCallback(TRPGTILEHEADER,new tileHeaderRead(this));
+    AddCallback(TRPG_LIGHT,new lightRead(this));
+//    AddCallback(TRPGLIGHTATTR,new lightAttrRead(this));
+//    AddCallback(TRPGLIGHTTABLE,new lightTableRead(this));
 }
 
 //----------------------------------------------------------------------------
@@ -1249,4 +1326,9 @@ void TrPageParser::AddIntoSceneGraph(osg::Node* node)
 Layer *TrPageParser::GetCurrLayer()
 {
     return currLayer;
+}
+
+DefferedLightAttribute& TrPageParser::GetLightAttribute(int idx)
+{
+	return parent_->GetLightAttribute(idx);
 }

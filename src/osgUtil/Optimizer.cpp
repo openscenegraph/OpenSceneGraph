@@ -18,6 +18,13 @@ using namespace osgUtil;
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
 
+    if (options & COMBINE_ADJACENT_LODS)
+    {
+        CombineLODsVisitor clv;
+        node->accept(clv);        
+        clv.combineLODs();
+    }
+    
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
         FlattenStaticTransformsVisitor fstv;
@@ -30,13 +37,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         RemoveRedundentNodesVisitor rrnv;
         node->accept(rrnv);
         rrnv.removeRedundentNodes();
-    }
-    
-    if (options & COMBINE_ADJACENT_LODS)
-    {
-        CombineLODsVisitor clv;
-        node->accept(clv);        
-        clv.combineLODs();
     }
     
     if (options & SHARE_DUPLICATE_STATE)

@@ -23,112 +23,115 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.1">Material</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.1">Material</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.2">META_StateAttribute</A></B>(<!1><A HREF="Material.html">Material</A>, <!1><A HREF="StateAttribute.html#DOC.2.96.6.6">MATERIAL</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.2">Material</A></B>(const <!1><A HREF="Material.html#DOC.2.52.2">Material</A>&amp; mat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.51.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.52.3">META_StateAttribute</A></B>(<!1><A HREF="Material.html">Material</A>, <!1><A HREF="StateAttribute.html#DOC.2.101.6.6">MATERIAL</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.52.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.51.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.96.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.52.5">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.101.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.51.5">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.52.6">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.51.8">setColorMode</A></B>(const <!1><A HREF="Material.html#DOC.2.51.7">ColorMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.52.9">setColorMode</A></B>(const <!1><A HREF="Material.html#DOC.2.52.8">ColorMode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Material.html#DOC.2.51.7">ColorMode</A> <B><A HREF="#DOC.2.51.9">getColorMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Material.html#DOC.2.52.8">ColorMode</A> <B><A HREF="#DOC.2.52.10">getColorMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.10">setAmbient</A></B>( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.11">setAmbient</A></B>( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.51.11">getAmbient</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.52.12">getAmbient</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.51.12">getAmbientFrontAndBack</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.52.13">getAmbientFrontAndBack</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.13">setDiffuse</A></B>( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.14">setDiffuse</A></B>( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.51.14">getDiffuse</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.52.15">getDiffuse</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.51.15">getDiffuseFrontAndBack</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.52.16">getDiffuseFrontAndBack</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.16">setSpecular</A></B>( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.17">setSpecular</A></B>( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )
 <DD><I>Set specular value of specified face(s) of the material,  valid specular[03] range is 00 to 10</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.51.17">getSpecular</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.52.18">getSpecular</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const 
 <DD><I>Get the specular value for specified face</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.51.18">getSpecularFrontAndBack</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.52.19">getSpecularFrontAndBack</A></B>() const 
 <DD><I>Get the whether specular values are equal for front and back faces</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.19">setEmission</A></B>( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; emission )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.20">setEmission</A></B>( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; emission )
 <DD><I>Set emission value of specified face(s) of the material,  valid emmison[03] range is 00 to 10</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.51.20">getEmission</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.52.21">getEmission</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const 
 <DD><I>Get the emmsion value for specified face</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.51.21">getEmissionFrontAndBack</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.52.22">getEmissionFrontAndBack</A></B>() const 
 <DD><I>Get the whether emission values are equal for front and back faces</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.22">setShininess</A></B>( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, float shininess )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.23">setShininess</A></B>( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, float shininess )
 <DD><I>Set shininess of specified face(s) of the material, valid shininess range is 00 to 10</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.51.23">getShininess</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.52.24">getShininess</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const 
 <DD><I>Get the shininess value for specified face</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.51.24">getShininessFrontAndBack</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.52.25">getShininessFrontAndBack</A></B>() const 
 <DD><I>Get the whether shininess values are equal for front and back faces</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.25">setTransparency</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, float trans)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.26">setTransparency</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, float trans)
 <DD><I>Set the alpha value of ambient,diffuse,specular and emission colors,  of specified face, to 1-transparency.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.51.26">setAlpha</A></B>(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, float alpha)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.52.27">setAlpha</A></B>(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, float alpha)
 <DD><I>Set the alpha value of ambient,diffuse,specular and emission colors.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.51.6">Face</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.52.7">Face</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.51.7">ColorMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.52.8">ColorMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Material.html#DOC.2.51.7">ColorMode</A> <B><A HREF="#DOC.2.51.28">_colorMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Material.html#DOC.2.52.8">ColorMode</A> <B><A HREF="#DOC.2.52.29">_colorMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.51.29">_ambientFrontAndBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.52.30">_ambientFrontAndBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.30">_ambientFront</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.31">_ambientFront</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.31">_ambientBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.32">_ambientBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.51.32">_diffuseFrontAndBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.52.33">_diffuseFrontAndBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.33">_diffuseFront</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.34">_diffuseFront</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.34">_diffuseBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.35">_diffuseBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.51.35">_specularFrontAndBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.52.36">_specularFrontAndBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.36">_specularFront</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.37">_specularFront</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.37">_specularBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.38">_specularBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.51.38">_emissionFrontAndBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.52.39">_emissionFrontAndBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.39">_emissionFront</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.40">_emissionFront</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.51.40">_emissionBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.52.41">_emissionBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.51.41">_shininessFrontAndBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.52.42">_shininessFrontAndBack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.51.42">_shininessFront</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.52.43">_shininessFront</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.51.43">_shininessBack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.52.44">_shininessBack</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.51.27">~Material</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.52.28">~Material</A></B>()
 </DL></P>
 
 </DL>
@@ -136,13 +139,15 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp;) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.96.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.101.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
@@ -199,231 +204,236 @@
 <DL>
 
 <A NAME="Material"></A>
-<A NAME="DOC.2.51.1"></A>
+<A NAME="DOC.2.52.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Material()</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="Material"></A>
+<A NAME="DOC.2.52.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Material(const <!1><A HREF="Material.html#DOC.2.52.2">Material</A>&amp; mat, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.51.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="Material.html">Material</A>, <!1><A HREF="StateAttribute.html#DOC.2.96.6.6">MATERIAL</A>)</B></TT>
+<A NAME="DOC.2.52.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="Material.html">Material</A>, <!1><A HREF="StateAttribute.html#DOC.2.101.6.6">MATERIAL</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.51.3"></A>
+<A NAME="DOC.2.52.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.51.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.96.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.52.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.101.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.51.5"></A>
+<A NAME="DOC.2.52.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Face"></A>
-<A NAME="DOC.2.51.6"></A>
+<A NAME="DOC.2.52.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Face</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="FRONT"></A>
-<A NAME="DOC.2.51.6.1"></A>
+<A NAME="DOC.2.52.7.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRONT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BACK"></A>
-<A NAME="DOC.2.51.6.2"></A>
+<A NAME="DOC.2.52.7.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BACK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FRONT_AND_BACK"></A>
-<A NAME="DOC.2.51.6.3"></A>
+<A NAME="DOC.2.52.7.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRONT_AND_BACK</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="ColorMode"></A>
-<A NAME="DOC.2.51.7"></A>
+<A NAME="DOC.2.52.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ColorMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="AMBIENT"></A>
-<A NAME="DOC.2.51.7.1"></A>
+<A NAME="DOC.2.52.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AMBIENT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DIFFUSE"></A>
-<A NAME="DOC.2.51.7.2"></A>
+<A NAME="DOC.2.52.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DIFFUSE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SPECULAR"></A>
-<A NAME="DOC.2.51.7.3"></A>
+<A NAME="DOC.2.52.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SPECULAR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EMISSION"></A>
-<A NAME="DOC.2.51.7.4"></A>
+<A NAME="DOC.2.52.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EMISSION</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AMBIENT_AND_DIFFUSE"></A>
-<A NAME="DOC.2.51.7.5"></A>
+<A NAME="DOC.2.52.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AMBIENT_AND_DIFFUSE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="OFF"></A>
-<A NAME="DOC.2.51.7.6"></A>
+<A NAME="DOC.2.52.8.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OFF</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setColorMode"></A>
-<A NAME="DOC.2.51.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColorMode(const <!1><A HREF="Material.html#DOC.2.51.7">ColorMode</A> mode)</B></TT>
+<A NAME="DOC.2.52.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColorMode(const <!1><A HREF="Material.html#DOC.2.52.8">ColorMode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getColorMode"></A>
-<A NAME="DOC.2.51.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Material.html#DOC.2.51.7">ColorMode</A> getColorMode() const </B></TT>
+<A NAME="DOC.2.52.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Material.html#DOC.2.52.8">ColorMode</A> getColorMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAmbient"></A>
-<A NAME="DOC.2.51.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAmbient( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )</B></TT>
+<A NAME="DOC.2.52.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAmbient( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAmbient"></A>
-<A NAME="DOC.2.51.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getAmbient(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const </B></TT>
+<A NAME="DOC.2.52.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getAmbient(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAmbientFrontAndBack"></A>
-<A NAME="DOC.2.51.12"></A>
+<A NAME="DOC.2.52.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getAmbientFrontAndBack() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDiffuse"></A>
-<A NAME="DOC.2.51.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDiffuse( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )</B></TT>
+<A NAME="DOC.2.52.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDiffuse( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDiffuse"></A>
-<A NAME="DOC.2.51.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getDiffuse(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const </B></TT>
+<A NAME="DOC.2.52.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getDiffuse(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDiffuseFrontAndBack"></A>
-<A NAME="DOC.2.51.15"></A>
+<A NAME="DOC.2.52.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getDiffuseFrontAndBack() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSpecular"></A>
-<A NAME="DOC.2.51.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpecular( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )</B></TT>
+<A NAME="DOC.2.52.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpecular( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )</B></TT>
 <DD>Set specular value of specified face(s) of the material, 
 valid specular[03] range is 00 to 10
 <DL><DT><DD></DL><P>
 <A NAME="getSpecular"></A>
-<A NAME="DOC.2.51.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getSpecular(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const </B></TT>
+<A NAME="DOC.2.52.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getSpecular(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const </B></TT>
 <DD>Get the specular value for specified face
 <DL><DT><DD></DL><P>
 <A NAME="getSpecularFrontAndBack"></A>
-<A NAME="DOC.2.51.18"></A>
+<A NAME="DOC.2.52.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getSpecularFrontAndBack() const </B></TT>
 <DD>Get the whether specular values are equal for front and back faces
 <DL><DT><DD></DL><P>
 <A NAME="setEmission"></A>
-<A NAME="DOC.2.51.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEmission( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; emission )</B></TT>
+<A NAME="DOC.2.52.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEmission( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, const <!1><A HREF="Vec4.html">Vec4</A>&amp; emission )</B></TT>
 <DD>Set emission value of specified face(s) of the material, 
 valid emmison[03] range is 00 to 10
 <DL><DT><DD></DL><P>
 <A NAME="getEmission"></A>
-<A NAME="DOC.2.51.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getEmission(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const </B></TT>
+<A NAME="DOC.2.52.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Vec4.html">Vec4</A>&amp; getEmission(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const </B></TT>
 <DD>Get the emmsion value for specified face
 <DL><DT><DD></DL><P>
 <A NAME="getEmissionFrontAndBack"></A>
-<A NAME="DOC.2.51.21"></A>
+<A NAME="DOC.2.52.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getEmissionFrontAndBack() const </B></TT>
 <DD>Get the whether emission values are equal for front and back faces
 <DL><DT><DD></DL><P>
 <A NAME="setShininess"></A>
-<A NAME="DOC.2.51.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setShininess( const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, float shininess )</B></TT>
+<A NAME="DOC.2.52.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setShininess( const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, float shininess )</B></TT>
 <DD>Set shininess of specified face(s) of the material, valid shininess range is 00 to 10
 <DL><DT><DD></DL><P>
 <A NAME="getShininess"></A>
-<A NAME="DOC.2.51.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getShininess(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face) const </B></TT>
+<A NAME="DOC.2.52.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getShininess(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face) const </B></TT>
 <DD>Get the shininess value for specified face
 <DL><DT><DD></DL><P>
 <A NAME="getShininessFrontAndBack"></A>
-<A NAME="DOC.2.51.24"></A>
+<A NAME="DOC.2.52.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getShininessFrontAndBack() const </B></TT>
 <DD>Get the whether shininess values are equal for front and back faces
 <DL><DT><DD></DL><P>
 <A NAME="setTransparency"></A>
-<A NAME="DOC.2.51.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTransparency(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, float trans)</B></TT>
+<A NAME="DOC.2.52.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTransparency(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, float trans)</B></TT>
 <DD>Set the alpha value of ambient,diffuse,specular and emission colors, 
 of specified face, to 1-transparency. Valid transparency range is 0.0 to 1.0.
 <DL><DT><DD></DL><P>
 <A NAME="setAlpha"></A>
-<A NAME="DOC.2.51.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAlpha(const <!1><A HREF="Material.html#DOC.2.51.6">Face</A> face, float alpha)</B></TT>
+<A NAME="DOC.2.52.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAlpha(const <!1><A HREF="Material.html#DOC.2.52.7">Face</A> face, float alpha)</B></TT>
 <DD>Set the alpha value of ambient,diffuse,specular and emission colors.
 Valid transparency range is 0.0 to 1.0.
 <DL><DT><DD></DL><P>
 <A NAME="~Material"></A>
-<A NAME="DOC.2.51.27"></A>
+<A NAME="DOC.2.52.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Material()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_colorMode"></A>
-<A NAME="DOC.2.51.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Material.html#DOC.2.51.7">ColorMode</A> _colorMode</B></TT>
+<A NAME="DOC.2.52.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Material.html#DOC.2.52.8">ColorMode</A> _colorMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ambientFrontAndBack"></A>
-<A NAME="DOC.2.51.29"></A>
+<A NAME="DOC.2.52.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _ambientFrontAndBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ambientFront"></A>
-<A NAME="DOC.2.51.30"></A>
+<A NAME="DOC.2.52.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _ambientFront</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ambientBack"></A>
-<A NAME="DOC.2.51.31"></A>
+<A NAME="DOC.2.52.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _ambientBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_diffuseFrontAndBack"></A>
-<A NAME="DOC.2.51.32"></A>
+<A NAME="DOC.2.52.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _diffuseFrontAndBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_diffuseFront"></A>
-<A NAME="DOC.2.51.33"></A>
+<A NAME="DOC.2.52.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _diffuseFront</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_diffuseBack"></A>
-<A NAME="DOC.2.51.34"></A>
+<A NAME="DOC.2.52.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _diffuseBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_specularFrontAndBack"></A>
-<A NAME="DOC.2.51.35"></A>
+<A NAME="DOC.2.52.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _specularFrontAndBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_specularFront"></A>
-<A NAME="DOC.2.51.36"></A>
+<A NAME="DOC.2.52.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _specularFront</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_specularBack"></A>
-<A NAME="DOC.2.51.37"></A>
+<A NAME="DOC.2.52.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _specularBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_emissionFrontAndBack"></A>
-<A NAME="DOC.2.51.38"></A>
+<A NAME="DOC.2.52.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _emissionFrontAndBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_emissionFront"></A>
-<A NAME="DOC.2.51.39"></A>
+<A NAME="DOC.2.52.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _emissionFront</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_emissionBack"></A>
-<A NAME="DOC.2.51.40"></A>
+<A NAME="DOC.2.52.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _emissionBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_shininessFrontAndBack"></A>
-<A NAME="DOC.2.51.41"></A>
+<A NAME="DOC.2.52.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _shininessFrontAndBack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_shininessFront"></A>
-<A NAME="DOC.2.51.42"></A>
+<A NAME="DOC.2.52.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _shininessFront</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_shininessBack"></A>
-<A NAME="DOC.2.51.43"></A>
+<A NAME="DOC.2.52.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _shininessBack</B></TT>
 <DL><DT><DD></DL><P></DL>
 

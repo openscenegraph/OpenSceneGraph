@@ -26,6 +26,7 @@ FreeTypeLibrary::FreeTypeLibrary()
 
 FreeTypeLibrary::~FreeTypeLibrary()
 {
+#ifdef USE_LOCAL_CACHE
     // need to remove the implementations from the Fonts here
     // just in case the Fonts continue to have external references
     // to them, otherwise they will try to point to an object thats
@@ -38,6 +39,7 @@ FreeTypeLibrary::~FreeTypeLibrary()
         osgText::Font* font = itr->second.get();
         font->setImplementation(0);
     }
+#endif
     
     FT_Done_FreeType( _ftlibrary);
 }
@@ -51,8 +53,10 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
 osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index)
 {
 
+#ifdef USE_LOCAL_CACHE
     FontMap::iterator itr = _fontMap.find(fontfile);
     if (itr!=_fontMap.end()) return itr->second.get();
+#endif
 
     FT_Face face;      /* handle to face object */
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
@@ -71,7 +75,10 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
     
     FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face);
     osgText::Font* font = new osgText::Font(fontImp);
+
+#ifdef USE_LOCAL_CACHE
     _fontMap[fontfile]=font;
+#endif
     
     return font;
 

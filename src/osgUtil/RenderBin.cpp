@@ -162,19 +162,12 @@ void RenderBin::draw_local(osg::State& state,RenderLeaf*& previous)
 }
 
 // stats
-void RenderBin::getStats(Statistics& primStats)
-{
-    for(RenderBinList::iterator itr = _bins.begin();
-    itr!=_bins.end();
-    ++itr)
-    {
-        primStats.nbins++;
-        itr->second->getStats(primStats); // gwm 19.08.01 - multi-pass rendering uses these bins too.
-    }
-    
+bool RenderBin::getStats(osg::Statistics* primStats)
+{ // different by return type - collects the stats in this renderrBin
+    bool somestats=false;
     for(RenderGraphList::iterator oitr=_renderGraphList.begin();
-    oitr!=_renderGraphList.end();
-    ++oitr)
+        oitr!=_renderGraphList.end();
+        ++oitr)
     {
         
         for(RenderGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
@@ -183,11 +176,55 @@ void RenderBin::getStats(Statistics& primStats)
         {
             RenderLeaf* rl = dw_itr->get();
             Drawable* dw= rl->_drawable;
-            primStats.numOpaque++; // number of geosets
-            if (rl->_matrix.get()) primStats.nummat++; // number of matrices
+            primStats->addOpaque(); // number of geosets
+            if (rl->_matrix.get()) primStats->addMatrix(); // number of matrices
             if (dw) { // then tot up the types 1-14
-                dw->getStats(primStats); // use sub-class to find the stats for each drawable
+                dw->getStats(*primStats); // use sub-class to find the stats for each drawable
             }
         }
+        somestats=true;
     }
+    return somestats;
+}
+
+void RenderBin::getPrims(osg::Statistics* primStats)
+{
+    static int ndepth;
+    ndepth++;
+    for(RenderBinList::iterator itr = _bins.begin();
+        itr!=_bins.end();
+        ++itr)
+    {
+        primStats->addBins(1);
+        itr->second->getPrims(primStats);
+    }
+    getStats(primStats);
+    ndepth--;
+
+}
+
+bool RenderBin::getPrims(osg::Statistics* primStats, const int nbin)
+{ // collect stats for array of bins, maximum nbin 
+    // (which will be modified on next call if array of primStats is too small);
+    // return 1 for OK;
+    static int ndepth;
+    bool ok=false;
+    ndepth++;
+    int nb=primStats[0].getBins();
+    if (nb<nbin)
+    { // if statement to protect against writing to bins beyond the maximum seen before
+        primStats[nb].setBinNo(nb);
+        primStats[nb].setDepth(ndepth);
+        getStats(primStats+nb);
+    }
+    primStats[0].addBins(1);
+    for(RenderBinList::iterator itr = _bins.begin();
+        itr!=_bins.end();
+        ++itr)
+    {
+        if (itr->second->getPrims(primStats, nbin)) ok = true;
+    }
+    ok=true;
+    ndepth--;
+    return ok;
 }

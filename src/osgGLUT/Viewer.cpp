@@ -65,7 +65,7 @@ static osg::PolygonMode::Mode polymodes [] = { osg::PolygonMode::FILL, osg::Poly
 // forward declare functions to be used in stats.
 GLuint makeRasterFont(void);
 void displaytext(int x, int y, char *s);
-void writePrims( const int ypos, osg::Statistics& stats);
+int writePrims( const int ypos, osg::Statistics& stats);
 
 using namespace osg;
 using namespace osgUtil;
@@ -448,6 +448,7 @@ void Viewer::keyboardCB(unsigned char key, int x, int y)
 
 void Viewer::showStats(const unsigned int viewport)
 { // collect stats for viewport
+    static int maxbins=1; // count number of bins
     static GLfloat tmax=100;
     glViewport(0,0,ww,wh);
     float vh = wh;
@@ -495,7 +496,7 @@ void Viewer::showStats(const unsigned int viewport)
         displaytext(0,(int)(0.98f*vh),clin);
     }
     
-    if (_printStats>=Statistics::STAT_GRAPHS  && _printStats!=Statistics::STAT_PRIMSPERVIEW) { // more stats - graphs this time
+    if (_printStats>=Statistics::STAT_GRAPHS  && _printStats!=Statistics::STAT_PRIMSPERVIEW  && _printStats!=Statistics::STAT_PRIMSPERBIN) { // more stats - graphs this time
     
         int sampleIndex = 2;
         float timeApp=times[sampleIndex].timeApp;
@@ -584,9 +585,38 @@ void Viewer::showStats(const unsigned int viewport)
             ++itr)
         {
             osgUtil::RenderStage *stage = itr->sceneView->getRenderStage();
-            stage->getStats(primStats);
+            stage->getPrims(&primStats);
         }
+        primStats.setType(Statistics::STAT_PRIMS); // full print out required
         writePrims((int)(0.86f*vh),primStats);
+        maxbins=(primStats.getBins()>maxbins)?primStats.getBins():maxbins;
+
+    }
+    if (_printStats==Statistics::STAT_PRIMSPERBIN) { // more stats - add triangles, number of strips... as seen per bin
+    /* 
+       * Use the new renderStage.  Required mods to RenderBin.cpp, and RenderStage.cpp (add getPrims)
+       * also needed to define a new class called Statistic (see osgUtil/Statistic).
+       * RO, July 2001.
+        */
+        
+        Statistics *primStats=new Statistics[maxbins]; // array of bin stats
+        ViewportList::iterator itr;
+        for(itr=_viewportList.begin();
+            itr!=_viewportList.end();
+            ++itr)
+        {
+            osgUtil::RenderStage *stage = itr->sceneView->getRenderStage();
+            stage->getPrims(primStats, maxbins);
+        }
+        int nbinsUsed=(primStats[0].getBins()<maxbins)?primStats[0].getBins():maxbins;
+        int ntop=0; // offset
+        for (int i=0; i<nbinsUsed; i++) {
+            primStats[i].setType(Statistics::STAT_PRIMSPERBIN); // cuts out vertices & triangles to save space on screen
+            ntop+=writePrims((int)(0.96f*vh-ntop),primStats[i]);
+             osg::notify(osg::INFO) << "ntop "<< ntop<<endl;
+        }
+        maxbins=(primStats[0].getBins()>maxbins)?primStats[0].getBins():maxbins;
+        delete [] primStats; // free up
     }
     if (_printStats==Statistics::STAT_DC) { // yet more stats - read the depth complexity
         int wid=ww, ht=wh; // temporary local screen size - must change during this section
@@ -1408,7 +1438,7 @@ void displaytext(int x, int y, char *s)
     glListBase(0);
     //    glPopAttrib ();
 }
-
+/*
 void writePrims( const int ypos, osg::Statistics& stats)
 {
     char clin[100]; // buffer to print
@@ -1463,4 +1493,73 @@ void writePrims( const int ypos, osg::Statistics& stats)
         }
     }
     displaytext(0,ypos-60,clin);
+}
+*/
+int writePrims( const int ypos, osg::Statistics& stats)
+{
+    char clin[100]; // buffer to print
+    char ctmp[12];
+    int i; // a counter
+    int npix=0; // offset from ypos
+    char intro[12]; // start of first line
+    static char *prtypes[]={"Total", 
+            "   Pt", "   Ln", " Lstr", " LSTf", " Llop", // 1- 5
+            " Tris", " TStr", " TSfl", " TFan", " TFnf", // 6-10
+            " Quad", " QStr", " Pols", "", "", // 11-15
+            "", "", "", "", ""};
+    glColor3f(.9f,.9f,0.0f);
+
+    if (stats.depth==1) sprintf(intro,"==> Bin %2d", stats._binNo);
+    else         sprintf(intro,"          ");
+    sprintf(clin,"%s %d Prims %d Matxs %d Gsets %d nlts %d bins %d imps", 
+        intro ,stats.nprims, stats.nummat, stats.numOpaque, stats.nlights, stats.nbins, stats.nimpostor);
+    displaytext(0,ypos-npix,clin);
+    npix+=12;
+    strcpy(clin,"           ");
+    for (i=0; i<=osg::Statistics::POLYGON; i++) {
+        if (i==0 || stats.primtypes[i]) {
+            strcat(clin, prtypes[i]);
+        }
+    }
+    displaytext(0,ypos-npix,clin);
+    npix+=12;
+    strcpy(clin,"GSet type: ");
+    for (i=0; i<=osg::Statistics::POLYGON; i++) {
+        if (stats.primtypes[i]) {
+            sprintf(ctmp,"%5d", stats.primtypes[i]);
+            strcat(clin, ctmp);
+        }
+    }
+    displaytext(0,ypos-npix,clin);
+    npix+=12;
+    strcpy(clin,"Prims:     ");
+    for (i=0; i<=osg::Statistics::POLYGON; i++) {
+        if (stats.primtypes[i]) {
+            sprintf(ctmp,"%5d", stats.numprimtypes[i]);
+            strcat(clin, ctmp);
+        }
+    }
+    displaytext(0,ypos-npix,clin);
+    npix+=12;
+    strcpy(clin,"Triangles: ");
+    for (i=0; i<=osg::Statistics::POLYGON; i++) {
+        if (stats.primtypes[i]) {
+            sprintf(ctmp,"%5d", stats.primlens[i]);
+            strcat(clin, ctmp);
+        }
+    }
+    displaytext(0,ypos-npix,clin);
+    npix+=12;
+    strcpy(clin,"Vertices:  ");
+    for (i=0; i<=osg::Statistics::POLYGON; i++) {
+        if (stats.primtypes[i]) {
+            sprintf(ctmp,"%5d", stats.primverts[i]);
+            strcat(clin, ctmp);
+        }
+    }
+    displaytext(0,ypos-npix,clin);
+    npix+=12;
+    if (stats.stattype!=osg::Statistics::STAT_PRIMSPERBIN) {
+    }
+    return npix;
 }

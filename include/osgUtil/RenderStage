@@ -116,7 +116,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         void addToDependencyList(RenderStage* rs);
 
         /** extract stats for current draw list. */
-        void getStats(osg::Statistics& primStats); 
+        bool getStats(osg::Statistics* primStats); 
         
     public:
         

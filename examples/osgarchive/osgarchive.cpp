@@ -13,6 +13,8 @@
 #include <osg/ApplicationUsage>
 
 #include <osgDB/Archive>
+#include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <iostream>
 
@@ -91,8 +93,56 @@ int main( int argc, char **argv )
         std::cout<<"Please specify an operation on the archive, either --insert, --extract or --list"<<std::endl;
         return 1;
     }
+    
+    if (insert && extract)
+    {
+        std::cout<<"Cannot insert and extract files from the archive at one time, please use either --insert or --extract."<<std::endl;
+        return 1;
+    }
 
+    osgDB::Archive archive;
 
+    if (insert)
+    {
+        osgDB::Archive archive;
+        archive.create(archiveFilename);
+        
+        for (FileNameList::iterator itr=files.begin();
+            itr!=files.end();
+            ++itr)
+        {
+            osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
+            if (obj.valid())
+            {
+                archive.writeObject(*obj, *itr);
+            }
+        }
+    }
+    else 
+    {
+        archive.open(archiveFilename,osgDB::Archive::READ);
+        
+        if (extract)
+        {
+            for (FileNameList::iterator itr=files.begin();
+                itr!=files.end();
+                ++itr)
+            {
+                osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(*itr);
+                if (obj.valid())
+                {
+                    if (obj.valid()) osgDB::writeObjectFile(*obj, *itr);
+                }
+            }
+        }
+    }
+
+    if (list)
+    {        
+        std::cout<<"Cannot list at present."<<std::endl;
+    }
+    
+    
     return 0;
 }
 

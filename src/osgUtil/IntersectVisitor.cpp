@@ -555,7 +555,7 @@ void IntersectVisitor::apply(Transform& node)
 {
     if (!enterNode(node)) return;
 
-    pushMatrix(node.getMatrix());
+    pushMatrix(node.getLocalToWorldMatrix());
 
     traverse(node);
 

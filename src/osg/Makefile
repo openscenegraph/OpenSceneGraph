@@ -41,6 +41,7 @@ C++FILES = \
 	Point.cpp\
 	PolygonMode.cpp\
 	PolygonOffset.cpp\
+	PositionAttitudeTransform.cpp\
 	Quat.cpp\
 	ShadeModel.cpp\
 	State.cpp\
@@ -108,6 +109,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Point\
 	osg/PolygonMode\
 	osg/PolygonOffset\
+	osg/PositionAttitudeTransform\
 	osg/Plane\
 	osg/Quat\
 	osg/Referenced\

@@ -330,11 +330,11 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
     {        
         if (_matrixStack.empty())
         {
-            _matrixStack.push_back(transform.getMatrix());
+            _matrixStack.push_back(transform.getLocalToWorldMatrix());
         }
         else
         {
-            _matrixStack.push_back(transform.getMatrix()*_matrixStack.back());
+            _matrixStack.push_back(transform.getLocalToWorldMatrix()*_matrixStack.back());
         }
 
         _transformStack.push_back(&transform);

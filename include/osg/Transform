@@ -50,50 +50,40 @@ class SG_EXPORT Transform : public Group
         /** Get the Transform Type.*/
         inline const Type getType() const { return _type; }
         
+
+
+        enum Mode
+        {
+            VIEW,
+            MODEL
+        };
+
+        inline void setMode(Mode mode) { _mode = mode; }
         
+        inline const Mode getMode() const { return _mode; }
         
-        /** Get the transform's matrix. */
-        inline const Matrix& getMatrix() const { if (_matrixDirty) computeMatrix(); return *_matrix; }
 
+        /** Get the transformation matrix which moves from local coords to world coords.*/
+        inline const Matrix& getLocalToWorldMatrix() const { if (_localToWorldDirty) computeLocalToWorld(); return *_localToWorld; }
 
-        /** Get the inverse of the transform's matrix.
-          * Automatically compute the inverse if it is not up to date. */
-        inline const Matrix& getInverse() const { if (_inverseDirty) computeInverse(); return *_inverse; }
+        /** Get the transformation matrix which moves from world coords to local coords.*/
+        inline const Matrix& getWorldToLocalMatrix() const { if (_worldToLocalDirty) computeWorldToLocal(); return *_worldToLocal; }
 
+        
 
         /** Set the transform's matrix.*/
-        inline void setMatrix(const Matrix& mat )
-        {
-            (*_matrix) = mat;
+        void setMatrix(const Matrix& mat);
+        
+        /** Get the transform's matrix. */
+        inline const Matrix& getMatrix() const { if (_mode==MODEL) return *_localToWorld; else return *_worldToLocal; }
 
-            _matrixDirty = false; // matrix is valid, so no need to compute
-            _inverseDirty = true; // inverse is now invalid, so will need to recompute.
-            
-            dirtyBound();
-        }
-
-        /** preMult trasforms relative to the childrens coordinate system.*/
-        inline void preMult( const Matrix& mat )
-        {
-            (*_matrix) =  mat * (*_matrix);
-            
-            _matrixDirty = false; // matrix is valid, so no need to compute
-            _inverseDirty = true; // inverse is now invalid, so will need to recompute.
-            
-            dirtyBound();
-        }
-
-        /** postMult trasforms relative to the parents coordinate system.*/
-        inline void postMult( const Matrix& mat )
-        {
-            (*_matrix) =  (*_matrix) * mat;
-
-            _matrixDirty = false; // matrix is valid, so no need to compute
-            _inverseDirty = true; // inverse is now invalid, so will need to recompute.
-
-            dirtyBound();
-        }
+        /** preMult transform.*/
+        void preMult(const Matrix& mat);
+        
+        /** postMult transform.*/
+        void postMult(const Matrix& mat);
     
+
     protected :
     
         virtual ~Transform();
@@ -103,24 +93,23 @@ class SG_EXPORT Transform : public Group
           * the underlying matrix (calling computeMatrix if required.) */
         virtual const bool computeBound() const;
         
-        /** If you subclass from osg::Transform you must override computeMatrix() to provide your own mechanism for
+        /** If you subclass from osg::Transform you must override computeLocalToWorld() to provide your own mechanism for
           * setting up the 4x4 matrix. An example of a subclass might a PositionAttitudeTransfrom which is its own
           * Vec3 and Quat to calculate the matrix.*/
-        virtual void computeMatrix() const { _matrixDirty = false; }
+        virtual void computeLocalToWorld() const;
 
-        /** If you subclass from osg::Transform it is safe to rely on this default implementation which uses osg::Matrix::invert(getMatrix())
-          * to compute the inverse.  However, you may wish to override this method too since there may well be a more optimal way to
-          * compute the inverse rather than rely on the brute force method of osg::Matrix::invert(..).*/
-        virtual void computeInverse() const { if (_inverseDirty) _inverse->invert(getMatrix()); _inverseDirty = false; }
+        /** If you subclass from osg::Transform it must also override computeWorldToLocal() to provide your own mechanism for
+          * setting up the 4x4 matrix.*/
+        virtual void computeWorldToLocal() const;
 
         Type                    _type;
+        Mode                    _mode;
         
-        mutable bool            _matrixDirty;
-        mutable ref_ptr<Matrix> _matrix;
-
-        mutable bool            _inverseDirty;
-        mutable ref_ptr<Matrix> _inverse;
+        mutable bool            _localToWorldDirty;
+        mutable ref_ptr<Matrix> _localToWorld;
         
+        mutable bool            _worldToLocalDirty;
+        mutable ref_ptr<Matrix> _worldToLocal;
 };
 
 };

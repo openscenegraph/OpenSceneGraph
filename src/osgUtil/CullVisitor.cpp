@@ -1054,7 +1054,7 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    pushCullViewState(&node.getMatrix());
+    pushCullViewState(&node.getLocalToWorldMatrix());
 
     traverse(node);
 

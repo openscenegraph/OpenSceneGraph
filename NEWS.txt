@@ -3,6 +3,30 @@ OSG News (most significant items from ChangeLog)
 
 23rd July 2003 - OpenSceneGraph-0.9.5
 
+    >>> Support added for OpenGL2.0 shaders, native multi-threaded Database paging,
+    >>> high peformance binary format reading and writing,  .dds compressed image
+    >>> loader and ARB_fragment_program and ARB_vertex_buffer_object extensions,
+    >>> improvements to the Terrex .txp and OpenFlight .flt loaders.
+
+    The most signicifant feature of the 0.9.5 release is the combination of native
+    constant frame rate database paging support, providived by the new osg::PageLOD and 
+    osgDB::DatabasePager classes,  and the new native .ive binary plugin which supports 
+    both reading and writing of all core osg nodes, including inlining of compressed 
+    and non compressed imagery. 
+    
+    The native database paging support achieves constant frame rate through threading 
+    of the database reading, and time based incremental compile and delete of display 
+    lists, vertex_buffer_objects and texture objects. A new TextureObjectManager class
+    also caches a list of expired texture objects for reuse, and allows new newly loading
+    imagery to reuse expired texture objects, with the imagery automatically subloaded
+    to the reused texture objects.  This reuse happens transparently and benifits other
+    OSG usages such as the OSG's Terrapage loader.
+    
+    The new .ive binary plugin was developed by Uni-C's VR-Center, and kindly
+    submitted as open source, adds support for binary reading and writing OSG nodes
+    drawable and state (including compressed/mipmapped) textures.  The .ive
+    format produces a much faster load time and smaller file size then .osg 
+    
     New osgGL2 library
 
     Adoption of OpenThreads for cross platform threading support.

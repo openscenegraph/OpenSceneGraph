@@ -272,6 +272,6 @@ inline bool heap_array<T, CmpT>::Less(const linker & a, const linker & b) const 
 
 
 
-}; // namespace common_structures
+} // namespace common_structures
 
 #endif

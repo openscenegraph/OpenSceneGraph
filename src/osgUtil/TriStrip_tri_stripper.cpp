@@ -199,7 +199,7 @@ void tri_stripper::Stripify()
 
 
 
-inline tri_stripper::triangle_strip tri_stripper::FindBestStrip()
+inline triangle_strip tri_stripper::FindBestStrip()
 {
     triangle_strip BestStrip;
     size_t BestStripDegree = 0;
@@ -282,7 +282,7 @@ inline tri_stripper::triangle_strip tri_stripper::FindBestStrip()
 
 
 
-tri_stripper::triangle_strip tri_stripper::ExtendTriToStrip(const size_t StartTriPos, const triangle_strip::start_order StartOrder)
+triangle_strip tri_stripper::ExtendTriToStrip(const size_t StartTriPos, const triangle_strip::start_order StartOrder)
 {
     typedef triangles_graph::const_out_arc_iterator const_tri_link_iter;
     typedef triangles_graph::node_iterator tri_node_iter;
@@ -360,7 +360,7 @@ tri_stripper::triangle_strip tri_stripper::ExtendTriToStrip(const size_t StartTr
 
 
 
-inline tri_stripper::triangle_edge tri_stripper::GetLatestEdge(const triangle & Triangle, const triangle_strip::start_order Order) const
+inline triangle_edge tri_stripper::GetLatestEdge(const triangle & Triangle, const triangle_strip::start_order Order) const
 {
     switch (Order) {
     case triangle_strip::ABC:

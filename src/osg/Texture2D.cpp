@@ -86,13 +86,18 @@ void Texture2D::apply(State& state) const
 
     if (handle != 0)
     {
-
         glBindTexture( GL_TEXTURE_2D, handle );
-        if (getTextureParameterDirty(state.getContextID())) applyTexParameters(GL_TEXTURE_2D,state);
+        if (getTextureParameterDirty(state.getContextID()))
+            applyTexParameters(GL_TEXTURE_2D,state);
 
         if (_subloadCallback.valid())
         {
             _subloadCallback->subload(*this,state);
+        }
+        else if(getModifiedTag(contextID) != _image->getModifiedTag())
+        {
+            applyTexImage2D(GL_TEXTURE_2D,_image.get(),state,
+                            _textureWidth, _textureHeight, _numMimpmapLevels);
         }
 
     }
@@ -121,7 +126,8 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
-        applyTexImage2D(GL_TEXTURE_2D,_image.get(),state, _textureWidth, _textureHeight, _numMimpmapLevels);
+        applyTexImage2D(GL_TEXTURE_2D,_image.get(),state,
+                        _textureWidth, _textureHeight, _numMimpmapLevels);
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures

@@ -15,22 +15,29 @@ OSG News (most significant items from ChangeLog)
     to do is load the database and the paging then happens automatically -
     without any need for intervention by the users application.
 
+    Addition of osgSim which is NodeKit designed for visual simulation
+    market, currently features high fidelity light points support.  Light
+    point sectors, blink sequences and groups, and light point fading are 
+    all supported.
+
+    From Brede Johansen, support added for the ARB VertexProgram extension
+    with osgvertexprogram demo showing reflection and reflection in action, and 
+    osgpbuffer demo for Win32.
+    
+    From Ulrich Hertlein, new DirectX .x model loader.
+
+    From Tree, Support for encoded text types in osgText.
+    
+    New osgshadowtexture demo which illustrates how to create
+    dynamic shadow textures in your scene.
+
+    New osglogo demo - features anti-aliased TrueType text and animation.
+    
     The app phase of operations on the scene graph has been renamed
     the update phase to make its function clearer. The main phases are now
     named now does update, cull, draw.  The AppVisitor, set/getAppCallback etc
     have be renamed UpdateVisitor, set/getUpdateCallback etc.
 
-    Added new osgshadowtexture demo which illustrates how to create
-    dynamic shadow textures in your scene.
-
-    Addition osgSim which is NodeKit designed for visual simulation
-    market, currently features high fidelity light points support.
-
-    From Brede Johansen, new ARB VertexProgram StateAttribute class and
-    osgpbuffer demo for Win32.
-    
-    New osglogo demo.
-    
     Removed the osg/ManagerManger and associated #define osgNew's, this has
     been done to simplify users code and to solve the lack of thread safety 
     that was causing problems with the MemoryManager.
@@ -44,9 +51,6 @@ OSG News (most significant items from ChangeLog)
     
     Improvements to the GEO loaders.
     
-    From Tree, Support for encoded text types in osgText.
-    
-    From Ulrich Hertlein, new DirectX .x model loader.
 
 
 13th November 2002 - OpenSceneGraph-0.9.2.tar.gz

@@ -42,7 +42,7 @@ namespace osgParticle
             QUAD_TRIANGLESTRIP,    // uses GL_TRIANGLE_STRIP as primitive, but each particle needs a glBegin/glEnd pair
             HEXAGON            // may save some filling time, but uses more triangles
         };
-
+        
         Particle();
 
         /// Get the shape of the particle.
@@ -167,7 +167,7 @@ namespace osgParticle
         inline void beginRender();
         
         /// Render the particle. Called automatically by particle systems.
-        void render(const osg::Matrix &modelview, float scale = 1.0f) const;
+        void render(const osg::Vec3 &xpos, const osg::Vec3 &px, const osg::Vec3 &py, float scale = 1.0f) const;
         
         /// Perform some post-rendering tasks. Called automatically by particle systems.
         inline void endRender();
@@ -397,7 +397,7 @@ namespace osgParticle
     
     inline float Particle::getCurrentSize() const
     {
-		return current_size_;
+        return current_size_;
     }
 
 

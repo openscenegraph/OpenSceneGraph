@@ -136,9 +136,12 @@ class OSGTEXT_EXPORT RasterFont:public Font
 class OSGTEXT_EXPORT VectorFont:public Font
 {
     public:
-        VectorFont():Font(){}
+        VectorFont():Font(),_precision(0.0) {}
+        
         VectorFont(const VectorFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Font(font,copyop) {}
+            Font(font,copyop),
+            _precision(font._precision)  {}
+            
         VectorFont(const std::string& /*font*/):Font(){}
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const VectorFont *>(obj)!=NULL; } 

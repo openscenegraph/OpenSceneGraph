@@ -32,11 +32,37 @@ namespace osgParticle
     */
     class OSGPARTICLE_EXPORT ParticleSystem: public osg::Drawable {
     public:
+    
+        enum Alignment {
+            BILLBOARD,
+            FIXED
+        };
 
         ParticleSystem();
         ParticleSystem(const ParticleSystem &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgParticle, ParticleSystem);
+        
+        /// Get the alignment type of particles.
+        inline Alignment getParticleAlignment() const;
+        
+        /// Set the alignment type of particles.
+        inline void setParticleAlignment(Alignment a);
+        
+        /// Get the X-axis alignment vector.
+        inline const osg::Vec3 &getAlignVectorX() const;
+        
+        /// Set the X-axis alignment vector.
+        inline void setAlignVectorX(const osg::Vec3 &v);
+
+        /// Get the Y-axis alignment vector.
+        inline const osg::Vec3 &getAlignVectorY() const;
+        
+        /// Set the Y-axis alignment vector.
+        inline void setAlignVectorY(const osg::Vec3 &v);
+        
+        /// Set the alignment vectors.
+        inline void setAlignVectors(const osg::Vec3 &X, const osg::Vec3 &Y);
 
         /// Get the default bounding box
         inline const osg::BoundingBox &getDefaultBoundingBox() const;        
@@ -125,7 +151,7 @@ namespace osgParticle
         inline virtual const bool computeBound() const;
         virtual void drawImmediateMode(osg::State &state);
         inline void update_bounds(const osg::Vec3 &p, float r);
-        void single_pass_render(const osg::Matrix &modelview);
+        void single_pass_render(osg::State &state, const osg::Matrix &modelview);
 
     private:
         typedef std::vector<Particle> Particle_vector;
@@ -135,6 +161,10 @@ namespace osgParticle
         Death_stack deadparts_;
         
         osg::BoundingBox def_bbox_;
+        
+        Alignment alignment_;
+        osg::Vec3 align_X_axis_;
+        osg::Vec3 align_Y_axis_;
 
         bool doublepass_;
         bool frozen_;
@@ -156,6 +186,42 @@ namespace osgParticle
     };
     
     // INLINE FUNCTIONS
+    
+    inline ParticleSystem::Alignment ParticleSystem::getParticleAlignment() const
+    {
+        return alignment_;
+    }
+    
+    inline void ParticleSystem::setParticleAlignment(Alignment a)
+    {
+        alignment_ = a;
+    }
+    
+    inline const osg::Vec3 &ParticleSystem::getAlignVectorX() const
+    {
+        return align_X_axis_;
+    }
+    
+    inline void ParticleSystem::setAlignVectorX(const osg::Vec3 &v)
+    {
+        align_X_axis_ = v;
+    }
+
+    inline const osg::Vec3 &ParticleSystem::getAlignVectorY() const
+    {
+        return align_Y_axis_;
+    }
+    
+    inline void ParticleSystem::setAlignVectorY(const osg::Vec3 &v)
+    {
+        align_Y_axis_ = v;
+    }
+    
+    inline void ParticleSystem::setAlignVectors(const osg::Vec3 &X, const osg::Vec3 &Y)
+    {
+        align_X_axis_ = X;
+        align_Y_axis_ = Y;
+    }
 
     inline bool ParticleSystem::isFrozen() const
     {

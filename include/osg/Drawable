@@ -100,7 +100,7 @@ class SG_EXPORT Drawable : public Object
         /** Get the attached const StateSet, 
           * if one is not already attach create one, 
           * attach it to the drawable and return a pointer to it.*/
-        inline StateSet* getOrCreateStateSet();
+        StateSet* getOrCreateStateSet();
 
 
         /** Set the drawable to it can or cannot be used in conjunction with OpenGL

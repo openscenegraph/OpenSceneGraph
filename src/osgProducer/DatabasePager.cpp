@@ -45,6 +45,24 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
     if (!foundEntry)
     {
+        _dataToMergeListMutex.lock();
+
+            for(DatabaseRequestList::iterator litr = _dataToMergeList.begin();
+                litr != _dataToMergeList.end() && !foundEntry;
+                ++litr)
+            {
+                if ((*litr)->_fileName==fileName)
+                {
+                    foundEntry = true;
+                    ++((*litr)->_numOfRequests);
+                }
+            }        
+
+        _dataToMergeListMutex.unlock();
+    }
+    
+    if (!foundEntry)
+    {
     
         _fileRequestListMutex.lock();
 

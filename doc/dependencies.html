@@ -6,7 +6,7 @@
    <title>Compilation dependencies</title>
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
-<img SRC="images/OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
+<img SRC="images/OpenSceneGraphBanner_Distribution.jpg">
 <table>
 <tr>
 <td><a href="index.html">Index</a></td>
@@ -36,9 +36,9 @@
 <h2>
 <a NAME="Scene graph dependencies"></a><u>Scene graph dependencies</u></h2>
 The OpenSceneGraph is composed of core scene graph libraries, plugins libraries
-and demo programs. The core scene graph libraries (osg, osgDB, osgUtil)
+and demo programs. The core scene graph libraries (osg, osgDB, osgUtil, osgText, osgParticle, osgSim)
 are only dependent upon OpenGL and Standard C++ so should compile straight
-out of the box on most systems. To run the demos one will also need to
+out of the box on most systems. To run the examples one will also need to
 compile osgProducer which adds the dependency of Producer, and if true type text
 is required then the freetype library will be required. The plugins which
 are used to read and write various file formats have their own sets of
@@ -72,16 +72,16 @@ and dll.</li>
 <a NAME="Core library dependencies"></a><u>Core library dependencies</u></h3>
 
 <ul>
-<li>
-src/osgText - The osgText library supports true type fonts via the freetype
-library.</li>
-
-<ul><i><a href="http://www.freetype.org/">http://www.freetype.org/</a></i></ul>
 
 <li>
 src/osgProducer - The osgProducer library depends upon, you guessed it, Producer...</li>
 
-<ul><i><a href="http://www.andesengineering.com/Producer">"http://www.andesengineering.com/Producer</a></i></ul>
+<ul><i><a href="http://www.andesengineering.com/Producer">http://www.andesengineering.com/Producer</a></i></ul>
+<br>
+The examples which are included with the distribution depend upon osgProducer (and hence Producer)
+but if you don't need the examples or osgProducer you need to compile them, and can remove
+references to osgProducer and the examples by editing your VisualStudio workspace files or
+Make/makedirdefs approrpiately.
 </ul>
 
 <hr>
@@ -95,7 +95,17 @@ so will compile straight of the bag. Under Linux the majority of the dependencie
 below come as standard with distributions so you may not need to download
 them at all. Its best to try out a straight compile of the osg, if you
 get missing includes/libs errors then chase up the below.
+<br>
 <ul>
+
+<br>
+<li>
+src/osgPlugins/freetype - The osgText library supports true type fonts via the freetype
+library.</li>
+
+<ul><i><a href="http://www.freetype.org/">http://www.freetype.org/</a></i></ul>
+<br>
+
 <li>
 src/osgPlugins/pfb</li>
 
@@ -106,6 +116,7 @@ to be installed and therefore is not compiled by default. If you have Performer
 under the plugin. Performer can be downloaded from :
 <ul><i><a href="http://www.sgi.com/">http://www.sgi.com/</a></i></ul>
 
+<br>
 <li>
 src/osgPlugins/png</li>
 
@@ -115,6 +126,7 @@ and install it. Project home pages are:
 <ul><i><a href="http://www.libpng.org/pub/png/libpng.html">http://www.libpng.org/pub/png/libpng.html</a></i>
 <br><i><a href="http://www.info-zip.org/pub/infozip/zlib/">http://www.info-zip.org/pub/infozip/zlib/</a></i></ul>
 
+<br>
 <li>
 src/osgPlugins/gif</li>
 
@@ -125,6 +137,7 @@ home page is:
 Ftp download at :
 <ul><i><a href="ftp://prtr-13.ucsc.edu/pub/libungif/">ftp://prtr-13.ucsc.edu/pub/libungif/</a></i></ul>
 
+<br>
 <li>
 src/osgPlugins/jpeg</li>
 
@@ -133,6 +146,7 @@ have it installed, you'll need to download, compile and install it. Project
 home page is:
 <ul><i><a href="http://www.ijg.org/">http://www.ijg.org/</a></i></ul>
 
+<br>
 <li>
 src/osgPlugins/tiff</li>
 
@@ -141,6 +155,7 @@ have it installed, you'll need to download, compile and install it. Project
 home page is:
 <ul><i><a href="http://www.libtiff.org">http://www.libtiff.org</a></i></ul>
 
+<br>
 <li>
 src/osgPlugins/zip</li>
 
@@ -149,6 +164,7 @@ being available on your system. If it is not then you'll be able to find
 binaries at:
 <ul><i><a href="http://www.freesoftware.com/pub/infozip/">http://www.freesoftware.com/pub/infozip/</a></i></ul>
 
+<br>
 <li>
 src/osgPlugins/tgz</li>
 
@@ -158,6 +174,7 @@ binaries at:
 <ul><i><a href="http://www.gzip.org/">http://www.gzip.org/</a></i>
 <br><a href="ftp://prep.ai.mit.edu/pub/gnu/tar/">ftp://prep.ai.mit.edu/pub/gnu/tar/</a></ul>
 
+<br>
 <li>
 src/osgPlugins/osgtgz</li>
 

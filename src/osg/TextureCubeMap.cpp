@@ -209,6 +209,9 @@ void TextureCubeMap::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
+        else
+        {
+        }
 
     }
     else if (_subloadCallback.valid())
@@ -238,7 +241,8 @@ void TextureCubeMap::apply(State& state) const
 
         for (int n=0; n<6; n++)
         {
-            applyTexImage2D( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+            //applyTexImage2D( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+            applyTexImage2D_load( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
         }
 
 

@@ -24,6 +24,7 @@ Texture2D::Texture2D():
             _textureHeight(0),
             _numMimpmapLevels(0)
 {
+    setUseHardwareMipMapGeneration(true);
 }
 
 Texture2D::Texture2D(const Texture2D& text,const CopyOp& copyop):
@@ -80,7 +81,10 @@ int Texture2D::compare(const StateAttribute& sa) const
 void Texture2D::setImage(Image* image)
 {
     // delete old texture objects.
-    dirtyTextureObject();
+    // dirtyTextureObject();
+
+    // replace dirtyTextureObject() with reseting the modified tag.
+    _modifiedTag.setAllElementsTo(0);
 
     _image = image;
 }
@@ -108,8 +112,8 @@ void Texture2D::apply(State& state) const
         }
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
-            applyTexImage2D(GL_TEXTURE_2D,_image.get(),state,
-                            _textureWidth, _textureHeight, _numMimpmapLevels);
+            applyTexImage2D_subload(GL_TEXTURE_2D,_image.get(),state,
+                                    _textureWidth, _textureHeight, _numMimpmapLevels);
         }
 
     }
@@ -138,8 +142,8 @@ void Texture2D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
-        applyTexImage2D(GL_TEXTURE_2D,_image.get(),state,
-                        _textureWidth, _textureHeight, _numMimpmapLevels);
+        applyTexImage2D_load(GL_TEXTURE_2D,_image.get(),state,
+                             _textureWidth, _textureHeight, _numMimpmapLevels);
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures

@@ -153,6 +153,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** Get the maximum anisotropy value.*/
         inline float getMaxAnisotropy() const { return _maxAnisotropy; }
 
+        /** Set the hint of whether to use hardware mip map generation where available.*/
+        inline void setUseHardwareMipMapGeneration(bool useHardwareMipMapGeneration) { _useHardwareMipMapGeneration = useHardwareMipMapGeneration; }
+
+        /** Get the hint of whether to use hardware mip map generation where available.*/
+        inline bool getUseHardwareMipMapGeneration() const { return _useHardwareMipMapGeneration; }
+
         enum InternalFormatMode {
             USE_IMAGE_DATA_FORMAT,
             USE_USER_DEFINED_FORMAT,
@@ -257,6 +263,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
 
                 void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const;
+                void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data) const;
 
             protected:
 
@@ -273,6 +280,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 GLint   _maxTextureSize;
 
                 void*   _glCompressedTexImage2D;
+                void*   _glCompressedTexSubImage2D;
 
         };
         
@@ -289,6 +297,14 @@ class SG_EXPORT Texture : public osg::StateAttribute
           * but need to ensure that they all use the same low common denominator extensions.*/
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
+        /** Helper method which does the creation of the texture itself, but does not set or use texture binding. 
+          * Note, do not call this method directly unless you are implementing your own Subload callback*/
+        void applyTexImage2D_load(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+        
+        /** Helper method which subloads images to the texture itself, but does not set or use texture binding. 
+          * Note, do not call this method directly unless you are implementing your own Subload callback*/
+        void applyTexImage2D_subload(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+
     protected :
 
         virtual ~Texture();
@@ -302,9 +318,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** Helper method which does setting of texture paramters. */
         void applyTexParameters(GLenum target, State& state) const;
 
-        /** Helper method which does the creation of the texture itself, and
-          * does not set or use texture binding. */
-        void applyTexImage2D(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compareTexture(const Texture& rhs) const;
@@ -325,6 +338,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         FilterMode      _min_filter;
         FilterMode      _mag_filter;
         float           _maxAnisotropy;
+        bool            _useHardwareMipMapGeneration;
 
         Vec4 _borderColor;
 

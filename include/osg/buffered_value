@@ -36,6 +36,8 @@ class buffered_value
             _array = rhs._array;
             return *this;
         }
+        
+        inline void setAllElementsTo(const T& t) { std::fill(_array.begin(),_array.end(),t); }
 
         inline void clear() { _array.clear(); }
 
@@ -77,6 +79,8 @@ class buffered_object
             _array = rhs._array;
             return *this;
         }
+
+        inline void setAllElementsTo(const T& t) { std::fill(_array.begin(),_array.end(),t); }
 
         inline void clear() { _array.clear(); }
 

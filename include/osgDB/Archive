@@ -56,7 +56,9 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         virtual bool fileExists(const std::string& filename) const;
         
         typedef std::istream::pos_type pos_type;
-        typedef std::map<std::string, pos_type> FileNamePositionMap;
+        typedef std::istream::off_type size_type;
+        typedef std::pair<pos_type, size_type> PositionSizePair;
+        typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
 
         const FileNamePositionMap& getFileNamePositionMap() const { return _indexMap; }
 
@@ -98,13 +100,13 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             
             void write(std::ostream& out);
             
-            inline bool spaceAvailable(pos_type position, const std::string& filename) const
+            inline bool spaceAvailable(pos_type position, size_type size, const std::string& filename) const
             {
                 unsigned requiredSize = sizeof(position)+sizeof(unsigned int)+filename.size();
                 return (_offsetOfNextAvailableSpace + requiredSize)<_blockSize;
             }
             
-            bool addFileReference(pos_type position, const std::string& filename);
+            bool addFileReference(pos_type position, size_type size, const std::string& filename);
             
 
 
@@ -128,7 +130,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         
         void writeIndexBlocks();
         
-        bool addFileReference(pos_type position, const std::string& fileName);
+        bool addFileReference(pos_type position, size_type size, const std::string& fileName);
         
         static float        s_currentSupportedVersion;
         float               _version;

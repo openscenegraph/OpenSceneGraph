@@ -36,14 +36,14 @@ class Block: public osg::Referenced {
     public:
         Block():_released(false) {}
 
-        void block()
+        inline void block()
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             if( !_released )
                 _cond.wait(&_mut);
         }
 
-        void release()
+        inline void release()
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             if (!_released)
@@ -53,10 +53,19 @@ class Block: public osg::Referenced {
             }
         }
 
-        void reset()
+        inline void reset()
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
             _released = false;
+        }
+        
+        inline void set(bool doRelease)
+        {
+            if (doRelease!=_released)
+            {
+                if (doRelease) release();
+                else reset();
+            }
         }
 
     protected:
@@ -184,7 +193,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
     public:
 
-        typedef std::vector< osg::ref_ptr<osg::PagedLOD> > PagedLODList;
+        typedef std::set< osg::ref_ptr<osg::PagedLOD> >     PagedLODList;
 
         typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> > DrawableList;
@@ -221,6 +230,15 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
     protected :
 
         virtual ~DatabasePager();
+        
+        osg::ref_ptr<Block>             _databasePagerThreadBlock;
+
+        inline void updateDatabasePagerThreadBlock()
+        {
+            _databasePagerThreadBlock->set(
+                !_fileRequestList.empty() || !_childrenToDeleteList.empty());
+        }
+        
 
         bool                            _useFrameBlock;
         osg::ref_ptr<Block>             _frameBlock;
@@ -231,7 +249,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         DatabaseRequestList             _fileRequestList;
         OpenThreads::Mutex              _fileRequestListMutex;
-        osg::ref_ptr<Block>             _fileRequestListEmptyBlock;
         
         DatabaseRequestList             _dataToCompileList;
         OpenThreads::Mutex              _dataToCompileListMutex;

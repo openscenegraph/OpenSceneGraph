@@ -68,6 +68,9 @@ void write_usage(std::ostream& out,const std::string& name)
     out <<"                          done with -l above, as it automatically expands to"<< std::endl;
     out <<"                          the full library name appropriate for each platform."<< std::endl;
     out <<std::endl;
+    out <<"    -O \"options string\" - create an options string to pass to the reader/wrter "<< std::endl;
+    out <<"                          for controlling reading and writing parameters."<< std::endl;
+    out <<std::endl;
     out <<"    -stereo             - switch on stereo rendering, using the default of,"<< std::endl;
     out <<"                          ANAGLYPHIC or the value set in the OSG_STEREO_MODE "<< std::endl;
     out <<"                          environmental variable. See doc/stereo.html for "<< std::endl;

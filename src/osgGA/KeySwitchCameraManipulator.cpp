@@ -21,6 +21,26 @@ void KeySwitchCameraManipulator::addNumberedCameraManipulator(CameraManipulator 
     addCameraManipulator('1'+_manips.size(),"camera",cm);
 }
 
+void KeySwitchCameraManipulator::selectCameraManipulator(unsigned int num)
+{
+    unsigned int manipNo = 0;
+    KeyManipMap::iterator itr;
+    for(itr=_manips.begin();
+        manipNo!=num && itr!=_manips.end();
+        ++itr,++manipNo)
+    {
+    }
+    
+    if (itr!=_manips.end())
+    {
+        if (_current.valid())
+        {
+            itr->second.second->setNode(_current->getNode());
+            itr->second.second->setCamera(_current->getCamera());
+        }
+        _current = itr->second.second;
+    }
+}
 
 bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {

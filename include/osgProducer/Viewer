@@ -38,12 +38,7 @@ class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAda
 
         Viewer(const std::string& configFile);
 
-        Viewer(int& argc, char** argv);
-
         virtual ~Viewer() {}
-
-
-        bool readCommandLine(int& argc, char** argv);
 
 
         enum ViewerOptions
@@ -69,15 +64,19 @@ class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAda
 
         virtual void update();
 
-        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
-
-        EventHandlerList& getEventHandlerList() { return _eventHandlerList; }
         
         virtual void realize( ThreadingModel thread_model= SingleThreaded );
 
         virtual void requestRedraw() {}
         virtual void requestContinuousUpdate(bool) {}
         virtual void requestWarpPointer(int x,int y);
+
+        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
+        EventHandlerList& getEventHandlerList() { return _eventHandlerList; }
+
+        unsigned int addCameraManipulator(osgGA::CameraManipulator* cm);
+        void selectCameraManipulator(unsigned int no);
+
 
     protected :
 

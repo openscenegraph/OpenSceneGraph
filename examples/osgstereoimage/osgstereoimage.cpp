@@ -526,7 +526,7 @@ int main( int argc, char **argv )
         // call all node update callbacks and animations.
         viewer.update();
          
-        viewer.setView(homePosition.ptr());
+        viewer.setView(homePosition);
 
         // fire off the cull and draw traversals of the scene.
         viewer.frame();

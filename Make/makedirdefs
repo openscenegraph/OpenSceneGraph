@@ -69,6 +69,7 @@ PLUGIN_DIRS += tiff
 # Directories traversed in the TOPDIR/src/Demos directory
 
 DEMOS_DIRS = \
+	osganimate\
 	osgbillboard\
 	osgcallback\
 	osgclip\

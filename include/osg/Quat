@@ -29,9 +29,21 @@ class SG_EXPORT Quat
 	---------------------------------------------------------- */
 	Vec4 _fv;	// a four-vector
 
-	Quat(): _fv(0.0f,0.0f,0.0f,1.0f) {}
-	Quat( float x, float y, float z, float w ):  _fv(x,y,z,w) {}
-	Quat( const Vec4& v ): _fv(v) {}
+	inline Quat(): _fv(0.0f,0.0f,0.0f,1.0f) {}
+	inline Quat( float x, float y, float z, float w ):  _fv(x,y,z,w) {}
+	inline Quat( const Vec4& v ): _fv(v) {}
+
+        inline Quat( float angle, const Vec3& axis)
+        {
+            makeRotate(angle,axis);
+        }
+
+        inline Quat( float angle1, const Vec3& axis1, 
+                     float angle2, const Vec3& axis2,
+                     float angle3, const Vec3& axis3)
+        {
+            makeRotate(angle1,axis1,angle2,axis2,angle3,axis3);
+        }
 
      /* ----------------------------------
 	   Methods to access data members

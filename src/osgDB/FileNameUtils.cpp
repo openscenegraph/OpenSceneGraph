@@ -49,6 +49,11 @@ std::string osgDB::getStrippedName(const std::string& fileName)
 {
     std::string::size_type slash = fileName.find_last_of('/');
     std::string::size_type dot = fileName.find_last_of('.');
+
+    // Ignore '.'s that aren't in the last component
+    if (slash != std::string::npos && dot < slash)
+      dot = std::string::npos;
+
     if (slash==std::string::npos)
     {
         if (dot==std::string::npos) return fileName;

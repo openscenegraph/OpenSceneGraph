@@ -65,10 +65,17 @@ Registry::Registry()
     addFileExtensionAlias("inta", "rgb");
     addFileExtensionAlias("bw",   "rgb");
     
+#if defined(__DARWIN_OSX__)
+    addFileExtensionAlias("jpg",  "qt");
+    addFileExtensionAlias("jpe",  "qt");
+    addFileExtensionAlias("jpeg", "qt");
+    addFileExtensionAlias("tif",  "qt");
+    addFileExtensionAlias("tiff", "qt");
+#else
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");
-
     addFileExtensionAlias("tif",  "tiff");
+#endif
 
     // remove geo to lwo alias as the new Carbon Graphics GEO format
     // also uses the .geo. It is still possible to load light wave .geo

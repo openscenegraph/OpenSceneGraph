@@ -85,14 +85,24 @@ class DrawTexCoord : public osg::ConstValueVisitor
         const IndexArray*   _indices;
 };
 
+typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
+typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
 class DrawMultiTexCoord : public osg::ConstValueVisitor
 {
     public:
     
-        DrawMultiTexCoord(GLenum target,const Array* texcoords,const IndexArray* indices):
+        DrawMultiTexCoord(GLenum target,const Array* texcoords,const IndexArray* indices,
+                          MultiTexCoord1fProc glMultiTexCoord1f,
+                          MultiTexCoordfvProc glMultiTexCoord2fv,
+                          MultiTexCoordfvProc glMultiTexCoord3fv,
+                          MultiTexCoordfvProc glMultiTexCoord4fv):
             _target(target),
             _texcoords(texcoords),
-            _indices(indices) {}
+            _indices(indices),
+            _glMultiTexCoord1f(glMultiTexCoord1f),
+            _glMultiTexCoord2fv(glMultiTexCoord2fv),
+            _glMultiTexCoord3fv(glMultiTexCoord3fv),
+            _glMultiTexCoord4fv(glMultiTexCoord4fv) {}
 
         void operator () (unsigned int pos)
         {
@@ -100,14 +110,18 @@ class DrawMultiTexCoord : public osg::ConstValueVisitor
             else _texcoords->accept(pos,*this);
         }
 
-        virtual void apply(const GLfloat& v){ glMultiTexCoord1f(_target,v); }
-        virtual void apply(const Vec2& v)   { glMultiTexCoord2fv(_target,v.ptr()); }
-        virtual void apply(const Vec3& v)   { glMultiTexCoord3fv(_target,v.ptr()); }
-        virtual void apply(const Vec4& v)   { glMultiTexCoord4fv(_target,v.ptr()); }
+        virtual void apply(const GLfloat& v){ _glMultiTexCoord1f(_target,v); }
+        virtual void apply(const Vec2& v)   { _glMultiTexCoord2fv(_target,v.ptr()); }
+        virtual void apply(const Vec3& v)   { _glMultiTexCoord3fv(_target,v.ptr()); }
+        virtual void apply(const Vec4& v)   { _glMultiTexCoord4fv(_target,v.ptr()); }
         
         GLenum _target;
         const Array*        _texcoords;
         const IndexArray*   _indices;
+        MultiTexCoord1fProc _glMultiTexCoord1f;
+        MultiTexCoordfvProc _glMultiTexCoord2fv;
+        MultiTexCoordfvProc _glMultiTexCoord3fv;
+        MultiTexCoordfvProc _glMultiTexCoord4fv;
 };
 
 
@@ -242,6 +256,15 @@ void IndexedGeometry::drawImmediateMode(State& state)
     static FogCoordProc s_glFogCoordfv =
             (FogCoordProc) osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT");
 
+    static MultiTexCoord1fProc s_glMultiTexCoord1f =
+            (MultiTexCoord1fProc) osg::getGLExtensionFuncPtr("glMultiTexCoord1f","glMultiTexCoord1fARB");
+    static MultiTexCoordfvProc s_glMultiTexCoord2fv =
+            (MultiTexCoordfvProc) osg::getGLExtensionFuncPtr("glMultiTexCoord2fv","glMultiTexCoord2fvARB");
+    static MultiTexCoordfvProc s_glMultiTexCoord3fv =
+            (MultiTexCoordfvProc) osg::getGLExtensionFuncPtr("glMultiTexCoord3fv","glMultiTexCoord3fvARB");
+    static MultiTexCoordfvProc s_glMultiTexCoord4fv =
+            (MultiTexCoordfvProc) osg::getGLExtensionFuncPtr("glMultiTexCoord4fv","glMultiTexCoord4fvARB");
+
     DrawVertex         drawVertex(_vertexArray.get(),_vertexIndices.get());
     DrawNormal         drawNormal(_normalArray.get(),_normalIndices.get());
     DrawColor          drawColor(_colorArray.get(),_colorIndices.get());
@@ -251,33 +274,11 @@ void IndexedGeometry::drawImmediateMode(State& state)
                                 s_glFogCoordfv);
 
 
-    typedef std::vector<DrawMultiTexCoord*> DrawTexCoordList;
-    DrawTexCoordList drawTexCoordList;
-    for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
-    {
-        TexCoordArrayPair& texcoordPair = _texCoordList[unit];
-        if (texcoordPair.first.valid() && !texcoordPair.first->empty())
-        {
-            if (texcoordPair.second.valid())
-            {
-                if (!texcoordPair.second->empty()) drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),texcoordPair.second.get()));
-            }
-            else
-            {
-                drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),0));
-            }
-        }
-    }
-
-
-    state.disableAllVertexArrays();
-    
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // set up normals if required.
     //
-
     unsigned int normalIndex = 0;
     AttributeBinding normalBinding = _normalBinding;
     if (!_normalArray.valid() ||
@@ -338,18 +339,118 @@ void IndexedGeometry::drawImmediateMode(State& state)
     }
 
 
-    // pass the values onto OpenGL.
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // check to see if fast path can be used.
+    //
+    bool fastPath = true;
+    if (normalBinding==BIND_PER_PRIMITIVE || (normalBinding!=BIND_OFF && _normalIndices.valid())) fastPath = false;
+    else if (colorBinding==BIND_PER_PRIMITIVE || (colorBinding!=BIND_OFF && _colorIndices.valid())) fastPath = false;
+    else if (secondaryColorBinding==BIND_PER_PRIMITIVE || (secondaryColorBinding!=BIND_OFF && _secondaryColorIndices.valid())) fastPath = false;
+    else if (fogCoordBinding==BIND_PER_PRIMITIVE || (fogCoordBinding!=BIND_OFF && _fogCoordIndices.valid())) fastPath = false;
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Set up tex coords if required.
+    //
+    typedef std::vector<DrawMultiTexCoord*> DrawTexCoordList;
+    DrawTexCoordList drawTexCoordList;
+    drawTexCoordList.reserve(_texCoordList.size());
+    for(unsigned int unit=0;unit!=_texCoordList.size();++unit)
+    {
+        TexCoordArrayPair& texcoordPair = _texCoordList[unit];
+        if (texcoordPair.first.valid() && !texcoordPair.first->empty())
+        {
+            if (texcoordPair.second.valid())
+            {
+                if (!texcoordPair.second->empty())
+                {
+                    drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),texcoordPair.second.get(),
+                                                                     s_glMultiTexCoord1f,
+                                                                     s_glMultiTexCoord2fv,
+                                                                     s_glMultiTexCoord3fv,
+                                                                     s_glMultiTexCoord4fv));
+
+                    fastPath = false;           
+                }
+            }
+            else
+            {
+                drawTexCoordList.push_back(new DrawMultiTexCoord(GL_TEXTURE0_ARB+unit,texcoordPair.first.get(),0,
+                                                                 s_glMultiTexCoord1f,
+                                                                 s_glMultiTexCoord2fv,
+                                                                 s_glMultiTexCoord3fv,
+                                                                 s_glMultiTexCoord4fv));
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // set up vertex arrays if appropriate.
+    //
+    if (fastPath)
+    {
+        state.setVertexPointer(3,GL_FLOAT,0,_vertexArray->getDataPointer());
+    
+        if (normalBinding==BIND_PER_VERTEX)
+            state.setNormalPointer(GL_FLOAT,0,_normalArray->getDataPointer());
+        else
+            state.disableNormalPointer();
+            
+        if (colorBinding==BIND_PER_VERTEX)
+            state.setColorPointer(_colorArray->getDataSize(),_colorArray->getDataType(),0,_colorArray->getDataPointer());
+        else
+            state.disableColorPointer();
+          
+        if (secondaryColorBinding==BIND_PER_VERTEX)
+            state.setSecondaryColorPointer(_secondaryColorArray->getDataSize(),_secondaryColorArray->getDataType(),0,_secondaryColorArray->getDataPointer());
+        else
+            state.disableSecondaryColorPointer();
+
+        if (fogCoordBinding==BIND_PER_VERTEX)
+            state.setFogCoordPointer(GL_FLOAT,0,_fogCoordArray->getDataPointer());
+        else
+            state.disableFogCoordPointer();
+
+        unsigned int unit;
+        for(unit=0;unit<_texCoordList.size();++unit)
+        {
+            Array* array = _texCoordList[unit].first.get();
+            if (array)
+                state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
+            else
+                state.disableTexCoordPointer(unit);
+        }
+        state.disableTexCoordPointersAboveAndIncluding(unit);
+    }
+    else
+    {   
+        // disable all the vertex arrays in the slow path as we are
+        // sending everything using glVertex etc.
+        state.disableAllVertexArrays();
+    }
+    
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // pass the overall binding values onto OpenGL.
+    //
     if (normalBinding==BIND_OVERALL)            drawNormal(normalIndex++);
     if (colorBinding==BIND_OVERALL)             drawColor(colorIndex++);
     if (secondaryColorBinding==BIND_OVERALL)    drawSecondaryColor(secondaryColorIndex++);
     if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
+
+
 
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // draw the primitives themselves.
     //
-    
     for(PrimitiveSetList::iterator itr=_primitives.begin();
         itr!=_primitives.end();
         ++itr)
@@ -359,54 +460,26 @@ void IndexedGeometry::drawImmediateMode(State& state)
         if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
         if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
     
-        //(*itr)->draw();
-        
-        PrimitiveSet* primitiveset = itr->get();
-        switch(primitiveset->getType())
+        if (fastPath)
         {
-            case(PrimitiveSet::DrawArraysPrimitiveType):
+            (*itr)->draw();
+        }
+        else
+        {
+            // draw primtives by the more flexible "slow" path,
+            // sending OpenGL glBegin/glVertex.../glEnd().
+            PrimitiveSet* primitiveset = itr->get();
+            switch(primitiveset->getType())
             {
-                DrawArrays* drawArray = static_cast<DrawArrays*>(primitiveset);
-                glBegin(primitiveset->getMode());
-                
-                unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
-                for(unsigned int vindex=drawArray->getFirst();
-                    vindex!=indexEnd;
-                    ++vindex)
+                case(PrimitiveSet::DrawArraysPrimitiveType):
                 {
-                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
-                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
-                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
-                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+                    const DrawArrays* drawArray = static_cast<const DrawArrays*>(primitiveset);
+                    glBegin(primitiveset->getMode());
 
-                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
-                        texItr!=drawTexCoordList.end();
-                        ++texItr)
-                    {
-                        (*(*texItr))(vindex);
-                    }
-
-                    drawVertex(vindex);
-                }
-    
-                glEnd();
-                break;
-            }
-            case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
-            {
-                DrawArrayLengths* drawArrayLengths = static_cast<DrawArrayLengths*>(primitiveset);
-                GLenum mode = primitiveset->getMode();
-                
-                unsigned int vindex=drawArrayLengths->getFirst();
-                for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
-                    primItr!=drawArrayLengths->end();
-                    ++primItr)
-                {
-                    glBegin(mode);
-                
-                    for(GLsizei count=0;
-                        count<*primItr;
-                        ++count,++vindex)
+                    unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
+                    for(unsigned int vindex=drawArray->getFirst();
+                        vindex!=indexEnd;
+                        ++vindex)
                     {
                         if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
                         if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
@@ -424,105 +497,140 @@ void IndexedGeometry::drawImmediateMode(State& state)
                     }
 
                     glEnd();
-                    
+                    break;
                 }
-                break;
-            }
-            case(PrimitiveSet::DrawElementsUBytePrimitiveType):
-            {
-                DrawElementsUByte* drawElements = static_cast<DrawElementsUByte*>(primitiveset);
-                glBegin(primitiveset->getMode());
-                
-                for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
-                    primItr!=drawElements->end();
-                    ++primItr)
+                case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
                 {
+                    const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                    GLenum mode = primitiveset->getMode();
 
-                    unsigned int vindex=*primItr;
-
-                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
-                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
-                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
-                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
-
-                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
-                        texItr!=drawTexCoordList.end();
-                        ++texItr)
+                    unsigned int vindex=drawArrayLengths->getFirst();
+                    for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                        primItr!=drawArrayLengths->end();
+                        ++primItr)
                     {
-                        (*(*texItr))(vindex);
+                        glBegin(mode);
+
+                        for(GLsizei count=0;
+                            count<*primItr;
+                            ++count,++vindex)
+                        {
+                            if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                            if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                            if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                            if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                            for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                                texItr!=drawTexCoordList.end();
+                                ++texItr)
+                            {
+                                (*(*texItr))(vindex);
+                            }
+
+                            drawVertex(vindex);
+                        }
+
+                        glEnd();
+
+                    }
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUBytePrimitiveType):
+                {
+                    const DrawElementsUByte* drawElements = static_cast<const DrawElementsUByte*>(primitiveset);
+                    glBegin(primitiveset->getMode());
+
+                    for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
+                    {
+
+                        unsigned int vindex=*primItr;
+
+                        if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                        if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                        if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                        if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                        for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                            texItr!=drawTexCoordList.end();
+                            ++texItr)
+                        {
+                            (*(*texItr))(vindex);
+                        }
+
+                        drawVertex(vindex);
                     }
 
-                    drawVertex(vindex);
+                    glEnd();
+                    break;
                 }
-    
-                glEnd();
-                break;
-            }
-            case(PrimitiveSet::DrawElementsUShortPrimitiveType):
-            {
-                DrawElementsUShort* drawElements = static_cast<DrawElementsUShort*>(primitiveset);
-                glBegin(primitiveset->getMode());
-                
-                for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
-                    primItr!=drawElements->end();
-                    ++primItr)
+                case(PrimitiveSet::DrawElementsUShortPrimitiveType):
                 {
+                    const DrawElementsUShort* drawElements = static_cast<const DrawElementsUShort*>(primitiveset);
+                    glBegin(primitiveset->getMode());
 
-                    unsigned int vindex=*primItr;
-
-                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
-                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
-                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
-                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
-
-                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
-                        texItr!=drawTexCoordList.end();
-                        ++texItr)
+                    for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
                     {
-                        (*(*texItr))(vindex);
+
+                        unsigned int vindex=*primItr;
+
+                        if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                        if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                        if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                        if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                        for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                            texItr!=drawTexCoordList.end();
+                            ++texItr)
+                        {
+                            (*(*texItr))(vindex);
+                        }
+
+                        drawVertex(vindex);
                     }
 
-                    drawVertex(vindex);
+                    glEnd();
+                    break;
                 }
-    
-                glEnd();
-                break;
-            }
-            case(PrimitiveSet::DrawElementsUIntPrimitiveType):
-            {
-                DrawElementsUInt* drawElements = static_cast<DrawElementsUInt*>(primitiveset);
-                glBegin(primitiveset->getMode());
-                
-                for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
-                    primItr!=drawElements->end();
-                    ++primItr)
+                case(PrimitiveSet::DrawElementsUIntPrimitiveType):
                 {
+                    const DrawElementsUInt* drawElements = static_cast<const DrawElementsUInt*>(primitiveset);
+                    glBegin(primitiveset->getMode());
 
-                    unsigned int vindex=*primItr;
-
-                    if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
-                    if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
-                    if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
-                    if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
-
-                    for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
-                        texItr!=drawTexCoordList.end();
-                        ++texItr)
+                    for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
                     {
-                        (*(*texItr))(vindex);
+
+                        unsigned int vindex=*primItr;
+
+                        if (normalBinding==BIND_PER_VERTEX)            drawNormal(vindex);
+                        if (colorBinding==BIND_PER_VERTEX)             drawColor(vindex);
+                        if (secondaryColorBinding==BIND_PER_VERTEX)    drawSecondaryColor(vindex);
+                        if (fogCoordBinding==BIND_PER_VERTEX)          drawFogCoord(vindex);
+
+                        for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
+                            texItr!=drawTexCoordList.end();
+                            ++texItr)
+                        {
+                            (*(*texItr))(vindex);
+                        }
+
+                        drawVertex(vindex);
                     }
 
-                    drawVertex(vindex);
+                    glEnd();
+                    break;
                 }
-    
-                glEnd();
-                break;
+                default:
+                {
+                    break;
+                }
             }
-            default:
-            {
-                break;
-            }
-        }        
+        }
     }
 
 }

@@ -43,7 +43,7 @@ void UFOManipulator::setNode( osg::Node *node )
     if (getAutoComputeHomePosition()) 
         computeHomePosition();
 
-    _home();
+    home();
 }
 
 const osg::Node* UFOManipulator::getNode() const
@@ -142,10 +142,10 @@ void UFOManipulator::computeHomePosition()
 
 void UFOManipulator::home(const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) 
 {
-    _home();
+    home();
 }
 
-void UFOManipulator::_home() 
+void UFOManipulator::home() 
 {
     if (getAutoComputeHomePosition()) 
         computeHomePosition();
@@ -194,6 +194,7 @@ bool UFOManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAda
 
 void UFOManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
+    /** Way too busy.  This needs to wait until we have a scrollable window 
     usage.addKeyboardMouseBinding("UFO Manipulator: <SpaceBar>",        "Reset the viewing angle to 0.0");
     usage.addKeyboardMouseBinding("UFO Manipulator: <UpArrow>",         "Acceleration forward.");
     usage.addKeyboardMouseBinding("UFO Manipulator: <DownArrow>",       "Acceleration backward (or deceleration forward");
@@ -209,7 +210,10 @@ void UFOManipulator::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("UFO Manipulator: <Ctrl/DownArrow>",  "Rotate view (but not direction of travel) down.");
     usage.addKeyboardMouseBinding("UFO Manipulator: <Ctrl/LeftArrow>",  "Rotate view (but not direction of travel) left.");
     usage.addKeyboardMouseBinding("UFO Manipulator: <Ctrl/RightArrow>", "Rotate view (but not direction of travel) right.");
-    usage.addKeyboardMouseBinding("UFO Manipulator: 'H'", "go to Home position.");
+    */
+    usage.addKeyboardMouseBinding("UFO: ", "Please see http://www.openscenegraph.org/html/UFOCameraManipulator.html");
+    // Keep this one as it might be confusing
+    usage.addKeyboardMouseBinding("UFO: H", "Reset the viewing position to home");
 }
 
 
@@ -368,7 +372,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             break;
 
         case 'H':
-            _home();
+            home();
             break;
     }
 }
@@ -432,16 +436,26 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
 
     if( _straightenOffset )
     {
-        _pitchOffsetRate = 0.0;
-        _yawOffsetRate   = 0.0;
-        _pitchOffset *= 0.99;
-        _yawOffset *= 0.99;
-
-        if( fabs(_pitchOffset ) < 0.01 )
+        if( _shift )
+        {
             _pitchOffset = 0.0;
-        if( fabs(_yawOffset ) < 0.01 )
-            _pitchOffset = 0.0;
+            _yawOffset = 0.0;
+            _pitchOffsetRate = 0.0;
+            _yawOffsetRate   = 0.0;
+        }
+        else
+        {
+            _pitchOffsetRate = 0.0;
+            _yawOffsetRate   = 0.0;
+            _pitchOffset *= 0.99;
+            _yawOffset *= 0.99;
 
+            if( fabs(_pitchOffset ) < 0.01 )
+                _pitchOffset = 0.0;
+            if( fabs(_yawOffset ) < 0.01 )
+                _pitchOffset = 0.0;
+
+        }
         if( _pitchOffset == 0.0 && _yawOffset == 0.0 )
             _straightenOffset = false;
     }
@@ -510,3 +524,11 @@ void UFOManipulator::_stop()
     _upSpeed = 0.0;
     _directionRotationRate = 0.0;
 }
+
+void UFOManipulator::getCurrentPositionAsLookAt( osg::Vec3 &eye, osg::Vec3 &center, osg::Vec3 &up )
+{
+    eye = _position;
+    center = _position + _direction;
+    up.set( 0, 0, 1 );
+}
+

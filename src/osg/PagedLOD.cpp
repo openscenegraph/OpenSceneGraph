@@ -32,7 +32,6 @@ PagedLOD::PagedLOD()
 
 PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
     LOD(plod,copyop),
-    _radius(plod._radius),
     _numChildrenThatCannotBeExpired(plod._numChildrenThatCannotBeExpired),
     _perRangeDataList(plod._perRangeDataList)
 {
@@ -108,21 +107,6 @@ void PagedLOD::traverse(NodeVisitor& nv)
     }
 }
 
-bool PagedLOD::computeBound() const
-{
-    if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
-    {
-        _bsphere._center = _userDefinedCenter;
-        _bsphere._radius = _radius;
-        _bsphere_computed = true;
-
-        return true;
-    }
-    else
-    {
-        return LOD::computeBound();
-    }
-}
 
 void PagedLOD::childRemoved(unsigned int pos, unsigned int numChildrenToRemove)
 {

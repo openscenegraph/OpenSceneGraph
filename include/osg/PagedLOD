@@ -77,14 +77,6 @@ class SG_EXPORT PagedLOD : public LOD
         unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
 
 
-        /** Set the object-space reference radius of the volume enclosed by the PagedLOD. 
-          * Used to detmine the bounding sphere of the PagedLOD in the absense of any children.*/
-        inline void setRadius(float radius) { _radius = radius; }
-        
-        /** Get the object-space radius of the volume enclosed by the PagedLOD.*/
-        inline float getRadius() const { return _radius; }
-
-
         /** Set the number of children that the PagedLOD must keep around, even if thay are older than their expiry time.*/
         inline void setNumChildrenThatCannotBeExpired(unsigned int num) { _numChildrenThatCannotBeExpired = num; }
 
@@ -100,8 +92,6 @@ class SG_EXPORT PagedLOD : public LOD
     
         virtual ~PagedLOD() {}
 
-        virtual bool computeBound() const;
-
         virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
         virtual void childInserted(unsigned int pos);
 
@@ -110,7 +100,6 @@ class SG_EXPORT PagedLOD : public LOD
         
         void expandPerRangeDataTo(unsigned int pos);
 
-        float           _radius;
         unsigned int    _numChildrenThatCannotBeExpired;
 
         PerRangeDataList    _perRangeDataList;

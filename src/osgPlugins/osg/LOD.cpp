@@ -39,6 +39,15 @@ bool LOD_readLocalData(Object& obj, Input& fr)
         fr+=4;
     }
 
+    float radius;
+    if (fr[0].matchWord("Radius") && fr[1].getFloat(radius))
+    {
+        lod.setRadius(radius);
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+
     // For backwards compatibility with old style LOD's (pre October 2002).
     bool matchFirst = false;
     if ((matchFirst=fr.matchSequence("Ranges {")) || fr.matchSequence("Ranges %i {"))
@@ -122,6 +131,8 @@ bool LOD_writeLocalData(const Object& obj, Output& fw)
     const LOD& lod = static_cast<const LOD&>(obj);
 
     if (lod.getCenterMode()==osg::LOD::USER_DEFINED_CENTER) fw.indent() << "Center "<< lod.getCenter() << std::endl;
+
+    fw.indent() << "Radius "<<lod.getRadius()<<std::endl;
 
     fw.indent() << "RangeList "<<lod.getNumRanges()<<" {"<< std::endl;
     fw.moveIn();

@@ -30,9 +30,14 @@ void LOD::write(DataOutputStream* out){
 		throw Exception("LOD::write(): Could not cast this osg::LOD to an osg::Group.");
 	// Write LOD's properties.
 
+        out->writeFloat(getRadius());
+
 	// Write centermode
 	out->writeInt(getCenterMode());
 	out->writeVec3(getCenter());
+
+        out->writeInt(getRangeMode());
+
     // Write rangelist
 	int size = getNumRanges();
 	out->writeInt(size);
@@ -57,9 +62,14 @@ void LOD::read(DataInputStream* in){
 			throw Exception("LOD::read(): Could not cast this osg::LOD to an osg::Group.");
 		// Read LOD's properties
 
+                setRadius(in->readFloat());
+
 		// Read centermode
 		setCenterMode((osg::LOD::CenterMode)in->readInt());
 		setCenter(in->readVec3());
+
+                setRangeMode((RangeMode)in->readInt());
+
 		// Read rangelist
 		int size = in->readInt();;
 		for(int i=0;i<size;i++){

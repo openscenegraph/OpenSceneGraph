@@ -59,13 +59,15 @@ CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem*
     OGRSpatialReference lhsSR;
     lhsSR.importFromWkt(&importString);
     
-    free(projection_string);
-    
+     
     
     std::cout<<"getCoordinateSystemType("<<projection_string<<")"<<std::endl;
     std::cout<<"    lhsSR.IsGeographic()="<<lhsSR.IsGeographic()<<std::endl;
     std::cout<<"    lhsSR.IsProjected()="<<lhsSR.IsProjected()<<std::endl;
     std::cout<<"    lhsSR.IsLocal()="<<lhsSR.IsLocal()<<std::endl;
+
+    free(projection_string);
+
     if (strcmp(lhsSR.GetRoot()->GetValue(),"GEOCCS")==0) std::cout<<"    lhsSR. is GEOCENTRIC "<<std::endl;
     
 
@@ -159,7 +161,7 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
               <<"RHS = "<<rhs->getWKT()<<std::endl
               <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
 #endif
-    return result;
+	 return result ? true : false;
 }
 
 DataSet::SourceData* DataSet::SourceData::readData(Source* source)
@@ -449,7 +451,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             GDALDataType targetGDALType = GDT_Byte;
 
             int pixelSpace=3*numBytesPerPixel;
-            int lineSpace=-destination._image->getRowSizeInBytes();
+            int lineSpace=-(int)(destination._image->getRowSizeInBytes());
 
             unsigned char* imageData = destination._image->data(destX,destY+destHeight-1);
             std::cout << "reading RGB"<<std::endl;
@@ -1934,8 +1936,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 
     color[0].set(255,255,255,255);
 
-    osg::Vec3Array* n = new osg::Vec3Array(numVertices);
-    
+    osg::ref_ptr<osg::Vec3Array> n = new osg::Vec3Array(numVertices); // must use ref_ptr so the array isn't removed when smooothvisitor is used    
     
     float skirtRatio = 0.01f;
     osg::Matrixd localToWorld;
@@ -2030,7 +2031,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
             }
 
             // note normal will need rotating.
-            if (n) (*n)[vi] = grid->getNormal(c,r);
+            if (n.valid()) (*(n.get()))[vi] = grid->getNormal(c,r);
 
 	    t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
 	    t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
@@ -2042,9 +2043,9 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     //geometry->setUseDisplayList(false);
     geometry->setVertexArray(&v);
 
-    if (n)
+    if (n.valid())
     {
-        geometry->setNormalArray(n);
+        geometry->setNormalArray(n.get());
         geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     }
 
@@ -2091,8 +2092,14 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     	}
     }
 
+#if 1    
     osgUtil::SmoothingVisitor sv;
-    sv.smooth(*geometry);
+    sv.smooth(*geometry);  // this will replace the normal vector with a new one
+
+    // now we have to reassign the normals back to the orignal pointer.
+    n = geometry->getNormalArray();
+    if (n.valid() && n->size()!=numVertices) n->resize(numVertices);
+#endif
 
     if (numVerticesInSkirt>0)
     {
@@ -2107,7 +2114,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
-            if (n) (*n)[vi] = (*n)[r*numColumns+c];
+            if (n.valid()) (*n)[vi] = (*n)[r*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         // create right skirt vertices
@@ -2117,7 +2124,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
-            if (n) (*n)[vi] = (*n)[(r)*numColumns+c];
+            if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         // create top skirt vertices
@@ -2127,7 +2134,7 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
-            if (n) (*n)[vi] = (*n)[(r)*numColumns+c];
+            if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         // create left skirt vertices
@@ -2137,12 +2144,19 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
-            if (n) (*n)[vi] = (*n)[(r)*numColumns+c];
+            if (n.valid()) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         skirtDrawElements[ei++] = 0;
         skirtDrawElements[ei++] = firstSkirtVertexIndex;
-    }    
+    }
+
+    if (n.valid())
+    {
+        geometry->setNormalArray(n.get());
+        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    }
+
 
 #if 0
     osgUtil::TriStripVisitor tsv;

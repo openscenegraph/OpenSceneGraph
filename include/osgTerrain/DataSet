@@ -26,10 +26,12 @@
 
 #include <gdal_priv.h>
 
+#include <osgTerrain/Export>
+
 namespace osgTerrain
 {
 
-class DataSet : public osg::Referenced
+class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 {
     public:
 

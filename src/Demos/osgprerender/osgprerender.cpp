@@ -102,9 +102,7 @@ void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
     osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
 
     // set up the background color and clear mask.
-    osg::Vec4 clear_color = previous_stage->getClearColor();
-    clear_color[3] = 0.0f; // set the alpha to zero.
-    rtts->setClearColor(clear_color);
+    rtts->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
     rtts->setClearMask(previous_stage->getClearMask());
 
     // set up to charge the same RenderStageLighting is the parent previous stage.
@@ -331,7 +329,9 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
 
     // pass the created vertex array to the points geometry object.
     polyGeom->setVertexArray(vertices);
+    
     polyGeom->setTexCoordArray(0,texcoords);
+    
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -352,6 +352,22 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph)
     texture->setSubloadMode(osg::Texture::IF_DIRTY);
     texture->setImage(image);
     stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
+
+    {    
+        // set up the second tex coord array for the an additional texture
+        // to add texture to the flag.
+        polyGeom->setTexCoordArray(1,texcoords);
+
+        osg::Image* overlay_image = osgDB::readImageFile("lz.rgb");
+        osg::Texture* overlay_texture = new osg::Texture;
+        overlay_texture->setImage(overlay_image);
+        stateset->setTextureAttributeAndModes(1, overlay_texture,osg::StateAttribute::ON);
+        
+        osg::TexEnv* overlay_texenv = new osg::TexEnv;
+        overlay_texenv->setMode(osg::TexEnv::BLEND);
+        overlay_texenv->setColor(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
+        stateset->setTextureAttribute(1, overlay_texenv);
+    }    
 
     polyGeom->setStateSet(stateset);
 

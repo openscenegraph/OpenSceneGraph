@@ -589,7 +589,7 @@ namespace lwo2
 			if (tag == "BLOK") {
 				FORM::SURF::BLOK *chk = new FORM::SURF::BLOK;
 				std::string hid;
-				for (Iter tempit=it; tempit<(it+4); ++tempit) hid.push_back(*tempit);
+				for (Iter tempit=it; tempit<(it+4); ++tempit) hid += *tempit;
 				chk->header = parse_subchunk(it, "FORM::SURF::BLOK");
 				while (it < end) {
 					chk->attributes.push_back(parse_subchunk(it, "FORM::SURF::BLOK::" + hid));
@@ -891,7 +891,7 @@ namespace lwo2
 	LP_TMP iff::Chunk *Parser<Iter>::parse_subchunk(Iter &it, const std::string &context)
 	{
 		std::string tag;
-		for (int i=0; i<4; ++i) tag.push_back(*(it++));
+		for (int i=0; i<4; ++i) tag += *(it++);
 		unsigned int len = ((static_cast<unsigned int>(*(it++)) & 0xFF) << 8) |
 			(static_cast<unsigned int>(*(it++)) & 0xFF);
 		os() << "DEBUG INFO: lwo2parser: reading subchunk " << tag << ", length = " << len << ", context = " << context << "\n";

@@ -66,6 +66,11 @@ void Group::traverse(NodeVisitor& nv)
 
 bool Group::addChild( Node *child )
 {
+    return Group::insertChild( _children.size(), child );
+}
+
+bool Group::insertChild( unsigned int index, Node *child )
+{
     if (!child) return false;
     
 #if ENSURE_CHILD_IS_UNIQUE    
@@ -79,7 +84,14 @@ bool Group::addChild( Node *child )
     if (child)
     {
         // note ref_ptr<> automatically handles incrementing child's reference count.
-        _children.push_back(child);
+        if (index >= _children.size())
+        {
+            _children.push_back(child);
+        }
+        else
+        {
+            _children.insert(_children.begin()+index, child);
+        }
 
         // register as parent of child.
         child->addParent(this);

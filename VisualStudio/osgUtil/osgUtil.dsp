@@ -105,7 +105,7 @@ SOURCE=..\..\src\osgUtil\DelaunayTriangulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
+SOURCE=..\..\src\osgUtil\GLObjectsVisitor.cpp
 # End Source File
 # Begin Source File
 
@@ -217,7 +217,7 @@ SOURCE=..\..\Include\osgUtil\DelaunayTriangulator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\DisplayListVisitor
+SOURCE=..\..\Include\osgUtil\GLObjectsVisitor
 # End Source File
 # Begin Source File
 

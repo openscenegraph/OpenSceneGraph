@@ -26,7 +26,13 @@
 
 #include <string.h>
 #include <fcntl.h>
-#include <unistd.h>
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+#  include <io.h>
+#else
+#  include <unistd.h>
+#endif
+
 #include <sys/stat.h>
 
 #include <assert.h>
@@ -54,7 +60,7 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterMD2> g_readerWriter_MD2_Proxy;
 
 osgDB::ReaderWriter::ReadResult
 ReaderWriterMD2::readNode (const std::string& filename,
-			   const osgDB::ReaderWriter::Options* options)
+			   const osgDB::ReaderWriter::Options*)
 {
     return load_md2 (filename.data());
 }
@@ -138,7 +144,7 @@ load_md2 (const char *filename)
 {
     struct stat st;
     void *mapbase;
-    void *p;
+//    void *p;
     int file_fd;
     osg::Node* result = NULL;
 
@@ -374,7 +380,7 @@ load_md2 (const char *filename)
 	geode->addDrawable (geom);
 
 	current_sequence->addChild (geode);
-	current_sequence->setTime (sequence_frame, 0.2);
+	current_sequence->setTime (sequence_frame, 0.2f);
 	sequence_frame++;
 
 	last_frame_name = frame->name;

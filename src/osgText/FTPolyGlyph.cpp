@@ -92,7 +92,7 @@ FTPolyGlyph::FTPolyGlyph( FT_Glyph glyph)
     contourFlag = vectoriser->ContourFlag();
     advance = glyph->advance.x >> 16;
 
-    osgDelete vectoriser;
+    vectoriser=0; // delete it, using ref_ptr.
 
     if ( ( numContours < 1) || ( numPoints < 3))
         return;

@@ -3,6 +3,8 @@
 
 #include "FTGL.h"
 
+#include <osg/Referenced>
+
 #include <vector>
 
 #include <ft2build.h>
@@ -10,6 +12,8 @@
 #include FT_GLYPH_H
 
 #include "FTGlyph.h"
+
+
 
 using namespace std;
 
@@ -140,7 +144,7 @@ class FTGL_EXPORT FTContour
  * @see    ftPoint
  *
  */
-class FTGL_EXPORT FTVectoriser
+class FTGL_EXPORT FTVectoriser : public osg::Referenced
 {
     public:
         /**

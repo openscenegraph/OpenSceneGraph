@@ -7,10 +7,13 @@
 
 // mrn@changes
 FTFont::FTFont():
+    face(),
     numFaces(0),
     numGlyphs(0),
     err(0)
 {
+
+
     _contextGlyphList.resize(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),NULL);
 
     pen.x = 0;

@@ -46,7 +46,7 @@ FTOutlineGlyph::FTOutlineGlyph( FT_Glyph glyph)
     
     advance = glyph->advance.x >> 16;
 
-    osgDelete vectoriser;
+    vectoriser=0;
     
     if ( ( numContours < 1) || ( numPoints < 3))
         return;

@@ -338,7 +338,7 @@ class SG_EXPORT State : public Referenced
         {
             if (setClientActiveTextureUnit(unit))
             {
-                if ( unit > _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
+                if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
                 EnabledArrayPair& eap = _texCoordArrayList[unit];
 
                 if (eap._enabled)

@@ -737,10 +737,6 @@ SOURCE=..\..\Include\Osg\MatrixTransform
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\mem_ptr
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osg\Multisample
 # End Source File
 # Begin Source File

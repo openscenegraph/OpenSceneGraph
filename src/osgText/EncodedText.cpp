@@ -231,3 +231,28 @@ void EncodedText::setOverrideEncoding(EncodedText::Encoding encoding)
         //NB As the original text is not cached we cannot confirm any ENCODING_SIGNATURE until text is set again
     }
 }
+
+std::string EncodedText::convertWideString(const wchar_t* text)
+{
+    std::string utf8string;
+    const wchar_t* pChars = text;
+    int currentChar = *pChars;
+    while (currentChar)
+    {
+        if (currentChar < 0x80)
+            utf8string+=(char)currentChar;
+        else if (currentChar < 0x800)
+        {
+            utf8string+=(char)(0xc0 | (currentChar>>6));
+            utf8string+=(char)(0x80 | currentChar & 0x3f);
+        }
+        else
+        {
+            utf8string+=(char)(0xe0 | (currentChar>>12));
+            utf8string+=(char)(0x80 | (currentChar>>6) & 0x3f);
+            utf8string+=(char)(0x80 | currentChar & 0x3f);
+        }
+        currentChar = *(++pChars);
+    }
+    return utf8string;
+}

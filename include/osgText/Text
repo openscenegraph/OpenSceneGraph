@@ -123,6 +123,7 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         void setText(const char* text);
         void setText(const std::string& text);
         const std::string& getText() const { return _text; }
+        void setText(const wchar_t* text);
 
         virtual bool supports(PrimitiveFunctor& pf) const;
         virtual void accept(PrimitiveFunctor& pf) const;

@@ -33,10 +33,10 @@
 #define OSGTEXT_ENCODEDTEXT 1 
 
 #include <osg/Referenced>
+#include <osgText/Export>
 
 #include <vector>
-
-#include <osgText/Export>
+#include <string>
 
 namespace osgText {
 
@@ -67,13 +67,16 @@ class OSGTEXT_EXPORT EncodedText : public osg::Referenced
         Encoding getOverrideEncoding() const { return _overrideEncoding; }
         Encoding getEncoding() const { return _encoding; }
 
-        void setText(const unsigned char* text, int length = -1);
-
         std::vector<int>::const_iterator begin() const { return _unicodeText.begin(); } 
         std::vector<int>::const_iterator end() const { return _unicodeText.end(); } 
 
     protected:
     
+        friend class Text;
+    
+        std::string convertWideString(const char* text);
+        std::string convertWideString(const wchar_t* text);
+        void setText(const unsigned char* text, int length = -1);
         int getNextCharacter(const unsigned char*& charString) const;
         
         /// This method will extract any ZWNBSP signature at the start of the string

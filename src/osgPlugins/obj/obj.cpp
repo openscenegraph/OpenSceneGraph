@@ -88,6 +88,13 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
         
         
     }
+    
+    // strip trailing spaces
+    while (ptr>line && *(ptr-1)==' ')
+    {
+        --ptr;
+    }
+
     *ptr = 0;
     
     return true;

@@ -3,7 +3,7 @@
 #endif
 
 #include <stdlib.h>
-#if !defined(WIN32) && !defined(macintosh)
+#if (!defined(WIN32) && !defined(macintosh)) || defined(__CYGWIN__)
 #include <unistd.h>
 #include <sys/time.h>
 #endif
@@ -50,7 +50,7 @@
 
 #include <osgGLUT/glut>
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 #include <sys/timeb.h>
 #else
 #endif

@@ -1,4 +1,4 @@
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 #include <Io.h>
 #include <Windows.h>
 #include <Winbase.h>
@@ -25,7 +25,7 @@ DynamicLibrary::~DynamicLibrary()
 {
     if (_handle)
     {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
         FreeLibrary((HMODULE)_handle);
 #elif !defined(macintosh)
         dlclose(_handle);
@@ -39,7 +39,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     char* fullLibraryName = osgDB::findDSO( libraryName.c_str() );
     if (fullLibraryName==NULL) return NULL;
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     HANDLE handle = LoadLibrary( fullLibraryName );
     if (handle) return new DynamicLibrary(libraryName,handle);
     notify(WARN) << "DynamicLibrary::failed loading "<<fullLibraryName<<std::endl;
@@ -55,7 +55,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
 DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& procName)
 {
     if (_handle==NULL) return NULL;
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     return GetProcAddress( (HMODULE)_handle,  procName.c_str() );
 #elif !defined(macintosh)
     return dlsym( _handle,  procName.c_str() );

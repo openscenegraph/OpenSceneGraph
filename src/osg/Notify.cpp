@@ -26,7 +26,7 @@ bool osg::initNotifyLevel()
     g_NotifyInit = true;
 
     // set up global notify null stream for inline notify
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     g_NotifyNulStream = new std::ofstream ("nul");
 #else
     g_NotifyNulStream = new std::ofstream ("/dev/null");

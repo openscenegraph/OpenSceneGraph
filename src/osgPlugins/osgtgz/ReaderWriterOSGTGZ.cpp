@@ -13,7 +13,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #include <direct.h>
 #else
 #include <unistd.h>
@@ -40,7 +40,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             char dirname[128];
             char command[1024];
 
-        #ifdef _WIN32
+		#if defined(_WIN32) && !defined(__CYGWIN__)
             sprintf( dirname, "C:/Windows/Temp/.osgdb_osgtgz");
             // note, the following C option under windows does not seem to work...
             // will pursue an better tar.exe later. RO.
@@ -50,7 +50,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             mkdir( dirname);
         #endif
 
-        #ifdef __linux
+        #if defined(__linux) || defined(__CYGWIN__)
             sprintf( dirname, "/tmp/.osg%06d", getpid());
             sprintf( command,
                 "tar xfCz %s %s",
@@ -86,7 +86,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
                 }
             }
 
-        #ifdef _WIN32
+		#if defined(_WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
             sprintf( command, "erase %s", dirname );

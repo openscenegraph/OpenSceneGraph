@@ -1,4 +1,4 @@
-#ifdef WIN32
+#if defined(WIN32) &&!defined(__CYGWIN__)
 #include <Io.h>
 #include <Windows.h>
 #include <Winbase.h>
@@ -41,7 +41,7 @@ inline static char* strdup(const char *src)
 #endif
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) &&!defined(__CYGWIN__)
 char *PathDelimitor = ";";
 static const char *s_default_file_path = ".;";
 static const char *s_default_dso_path = "C:/Windows/System/;";
@@ -59,11 +59,15 @@ static char *s_filePath = ".:";
 #else
 char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
+#if defined(__CYGWIN__)
 static const char *s_default_dso_path = "/usr/lib/:/usr/local/lib/:";
+#else
+static const char *s_default_dso_path = "/usr/lib/:/usr/local/lib/:";
+#endif // __CYGWIN__
 static char *s_filePath = ".:";
 #endif
 
-#if defined (WIN32)
+#if defined(WIN32) &&!defined(__CYGWIN__)
 #define F_OK 4
 #endif
 
@@ -195,7 +199,7 @@ char *osgDB::findDSO( const char *name )
 {
 #ifndef macintosh
 
-    #ifdef __linux
+    #if defined(__linux) || defined(__CYGWIN__)
     if( access( name, F_OK ) == 0 ) 
     {
         if (name[0]!='/')
@@ -259,7 +263,7 @@ char *osgDB::findDSO( const char *name )
     }
     #endif
 
-#elif WIN32
+#elif defined(WIN32)
 
     if ((ptr = getenv( "PATH" )))
     {
@@ -268,13 +272,13 @@ char *osgDB::findDSO( const char *name )
         strcat( path, ptr );
     }
 
-    #else
+#else
     if( (ptr = getenv( "LD_LIBRARY_PATH" )))
     {
         strcat( path, PathDelimitor );
         strcat( path, ptr );
     }
-    #endif
+#endif
 
     // check existance of dso assembled direct paths.
     char* fileFound = NULL;
@@ -341,7 +345,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 }
 
 
-#ifdef WIN32
+#if defined(WIN32) &&!defined(__CYGWIN__)
 
 #include <io.h>
 #include <direct.h>

@@ -222,6 +222,7 @@ std::string Registry::createLibraryNameForExt(const std::string& ext)
     if (itr!=_extAliasMap.end()) return createLibraryNameForExt(itr->second);
 
 #if defined(WIN32)
+// !! recheck evolving Cygwin DLL extension naming protocols !! NHV
 #   ifdef _DEBUG
     return "osgdb_"+ext+"d.dll";
 #   else

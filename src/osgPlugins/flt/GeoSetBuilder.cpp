@@ -1,6 +1,6 @@
 // GeoSetBuilder.cpp
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 #pragma warning( disable : 4786 )
 #endif
 

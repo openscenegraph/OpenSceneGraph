@@ -214,6 +214,8 @@ void Drawable::setAppCallback(AppCallback* ac)
     int delta = 0;
     if (_appCallback.valid()) --delta;
     if (ac) ++delta;
+
+    _appCallback = ac;
     
     if (delta!=0)
     {

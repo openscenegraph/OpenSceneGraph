@@ -268,19 +268,27 @@ int main( int argc, char **argv )
     {
         osgDB::Registry::instance()->loadLibrary(libName);
     }
+#if 0 
 
-    while (arguments.read("-t",str))
-    {
-        osg::Vec3 trans(0,0,0);
-        if( sscanf( str.c_str(), "%f,%f,%f",
-                &trans[0], &trans[1], &trans[2] ) != 3 )
-        {
-            usage( argv[0], "Translation argument format incorrect." );
-            return false;
-        }
-        oc.setTranslation( trans );
-        do_convert = true;
-    }
+                        if( nexti < argc )
+                        {
+                            osg::Vec3 scale(0,0,0);
+                            if( sscanf( argv[nexti++], "%f,%f,%f",
+                                    &scale[0], &scale[1], &scale[2] ) != 3 )
+                            {
+                                usage( argv[0], "Scale argument format incorrect." );
+                                return false;
+                            }
+                            oc.setScale( scale );
+                            do_convert = true;
+                        }
+                        else
+                        {
+                            usage( argv[0], "Scale conversion option requires an argument." );
+                            return false;
+                        }
+                        break;
+#endif
 
     while (arguments.read("-o",str))
     {
@@ -297,7 +305,7 @@ int main( int argc, char **argv )
                     &degrees, &axis[0], &axis[1], &axis[2]  ) != 4 )
             {
                 usage( argv[0], "Orientation argument format incorrect." );
-                return false;
+                return 1;
             }
             else
             {
@@ -310,8 +318,34 @@ int main( int argc, char **argv )
             oc.setRotation( from, to );
             do_convert = true;
         }
-
     }    
+
+    while (arguments.read("-s",str))
+    {
+        osg::Vec3 scale(0,0,0);
+        if( sscanf( str.c_str(), "%f,%f,%f",
+                &scale[0], &scale[1], &scale[2] ) != 3 )
+        {
+            usage( argv[0], "Scale argument format incorrect." );
+            return 1;
+        }
+        oc.setScale( scale );
+        do_convert = true;
+    }
+
+    while (arguments.read("-t",str))
+    {
+        osg::Vec3 trans(0,0,0);
+        if( sscanf( str.c_str(), "%f,%f,%f",
+                &trans[0], &trans[1], &trans[2] ) != 3 )
+        {
+            usage( argv[0], "Translation argument format incorrect." );
+            return 1;
+        }
+        oc.setTranslation( trans );
+        do_convert = true;
+    }
+
 
     while (arguments.read("--compressed"))
     {

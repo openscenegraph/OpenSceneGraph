@@ -80,8 +80,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Set the DisplaySettings. */
         inline void setDisplaySettings(osg::DisplaySettings* vs) { _displaySettings = vs; }
         
-        /** Get the DisplaySettings */
+        /** Get the const DisplaySettings */
         inline const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
+
+        /** Get the DisplaySettings */
+        inline osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
 
 
         /** Set the background color used in glClearColor().

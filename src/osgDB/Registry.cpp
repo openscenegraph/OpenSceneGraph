@@ -477,7 +477,12 @@ Image* Registry::readImage(Input& fr)
 
     }
 
-    return dynamic_cast<Image*>(readObject(_imageWrapperMap,fr));
+    osg::Object* obj = readObject(_imageWrapperMap,fr);
+    osg::Image* image = dynamic_cast<Image*>(obj);
+    if (image) return image;
+    else if (obj) obj->unref();
+    
+    return NULL;
 }
 
 
@@ -498,7 +503,12 @@ Drawable* Registry::readDrawable(Input& fr)
 
     }
 
-    return dynamic_cast<Drawable*>(readObject(_drawableWrapperMap,fr));
+    osg::Object* obj = readObject(_drawableWrapperMap,fr);
+    osg::Drawable* drawable = dynamic_cast<Drawable*>(obj);
+    if (drawable) return drawable;
+    else if (obj) obj->unref();
+    
+    return NULL;
 }
 
 //
@@ -539,7 +549,12 @@ Node* Registry::readNode(Input& fr)
 
     }
 
-    return dynamic_cast<Node*>(readObject(_nodeWrapperMap,fr));
+    osg::Object* obj = readObject(_nodeWrapperMap,fr);
+    osg::Node* node = dynamic_cast<Node*>(obj);
+    if (node) return node;
+    else if (obj) obj->unref();
+    
+    return NULL;
 }
 
 //

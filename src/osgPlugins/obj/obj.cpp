@@ -93,7 +93,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
 
 bool Model::readMTL(std::istream& fin)
 {
-    osg::notify(osg::NOTICE)<<"Reading MTL file"<<std::endl;
+    osg::notify(osg::INFO)<<"Reading MTL file"<<std::endl;
 
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
@@ -255,7 +255,7 @@ bool Model::readMTL(std::istream& fin)
 
 bool Model::readOBJ(std::istream& fin)
 {
-    osg::notify(osg::NOTICE)<<"Reading OBJ file"<<std::endl;
+    osg::notify(osg::INFO)<<"Reading OBJ file"<<std::endl;
 
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
@@ -306,6 +306,8 @@ bool Model::readOBJ(std::istream& fin)
                                                 (line[0]=='l') ? Element::POLYLINE :
                                                 Element::POLYGON );
 
+                // osg::notify(osg::NOTICE)<<"face"<<ptr<<std::endl;
+
                 int vi=0, ti=0, ni=0;
                 while(*ptr!=0)
                 {
@@ -314,22 +316,26 @@ bool Model::readOBJ(std::istream& fin)
                     
                     if (sscanf(ptr, "%d/%d/%d", &vi, &ti, &ni) == 3)
                     {
+                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<"/ti="<<ti<<"/ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                         element->normalIndices.push_back(remapNormalIndex(ni));
                         element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d//%d", &vi, &ni) == 2)
                     {
+                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<"//ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                         element->normalIndices.push_back(remapNormalIndex(ni));
                     }
                     else if (sscanf(ptr, "%d/%d", &vi, &ti) == 2)
                     {
+                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<"/ti="<<ti<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                         element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d", &vi) == 1)
                     {
+                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                     }
 
@@ -420,13 +426,13 @@ bool Model::readOBJ(std::istream& fin)
         }
 
     }
-
+#if 0
     osg::notify(osg::NOTICE) <<"vertices :"<<vertices.size()<<std::endl;
     osg::notify(osg::NOTICE) <<"normals :"<<normals.size()<<std::endl;
     osg::notify(osg::NOTICE) <<"texcoords :"<<texcoords.size()<<std::endl;
     osg::notify(osg::NOTICE) <<"materials :"<<materialMap.size()<<std::endl;
     osg::notify(osg::NOTICE) <<"elementStates :"<<elementStateMap.size()<<std::endl;
-/*    
+    
     unsigned int pos=0;
     for(ElementStateMap::iterator itr=elementStateMap.begin();
         itr!=elementStateMap.end();
@@ -442,7 +448,7 @@ bool Model::readOBJ(std::istream& fin)
         osg::notify(osg::NOTICE)<<"    ElementList ="<<el.size()<<std::endl;
         
     }
-*/
+#endif
     return true;
 }
 

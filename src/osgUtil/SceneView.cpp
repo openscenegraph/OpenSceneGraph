@@ -358,12 +358,12 @@ void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil
     // traverse the scene graph to generate the rendergraph.
     _sceneData->accept(*cullVisitor);
 
-    if (_globalState.valid()) cullVisitor->popStateSet();
-    
     cullVisitor->popModelViewMatrix();
     cullVisitor->popProjectionMatrix();
     cullVisitor->popViewport();
 
+    if (_globalState.valid()) cullVisitor->popStateSet();
+    
 
     const osg::EarthSky* earthSky = cullVisitor->getEarthSky();
     if (earthSky)
@@ -520,6 +520,7 @@ void SceneView::draw()
         default:
             {
                 osg::notify(osg::NOTICE)<<"Warning: stereo camera mode not implemented yet."<< std::endl;
+                _globalState->setAttribute(_viewport.get());
                 drawStage(_renderStageLeft.get());
             }
             break;

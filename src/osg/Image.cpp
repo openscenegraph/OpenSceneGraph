@@ -835,56 +835,63 @@ void Image::ensureValidSizeForTexturing(GLint maxTextureSize)
     }
 }
 
+
+template <typename T>    
+bool _findLowerAlphaValueInRow(unsigned int num, T* data,T value, unsigned int delta)
+{
+    for(unsigned int i=0;i<num;++i)
+    {
+        if (*data<value) return true;
+        data += delta;
+    }
+    return false;
+}
+
 bool Image::isImageTranslucent() const
 {
-    
-
-    if (getPixelFormat()==GL_LUMINANCE_ALPHA)
+    unsigned int offset = 0;
+    unsigned int delta = 1;
+    switch(_pixelFormat)
     {
-        return true;
-
-        
-        // unfinished code so commenting out right now...
-//         switch(type)
-//         {
-//             case(GL_BYTE):
-//             {
-//                 int rowSizeInBytes = getRowSizeInBytes();
-//                 int imageSizeInBytes = getImageSizeInBytes();
-//                 
-//                 for (int r=0;r<_r,++r)
-//                 {
-//                     for (int t=0;t<int _t,++t)
-//                     {
-//                         char* ptr = _data+r*getRowSizeInBytes()+image*getImageSizeInBytes();
-//                         for (int s=0;s<_s,++s)
-//                         {
-// 
-//                         }
-//                     }
-//                 }
-//                 break
-//             }    
-//             case(GL_UNSIGNED_BYTE): return 8*computeNumComponents(format);
-// 
-//             case(GL_SHORT):
-//             case(GL_UNSIGNED_SHORT): return 16*computeNumComponents(format);
-// 
-//             case(GL_INT):
-//             case(GL_UNSIGNED_INT):
-//             case(GL_FLOAT): return 32*computeNumComponents(format);
-// 
-//             default: return 0;
-//         }    
-
+        case(GL_ALPHA):
+            offset = 0;
+            delta = 1;
+            break;
+        case(GL_LUMINANCE_ALPHA):
+            offset = 1;
+            delta = 2;
+            break;
+        case(GL_RGBA):
+            offset = 3;
+            delta = 4;
+            break;
+        case(GL_BGRA):
+            offset = 3;
+            delta = 4;
+            break;
+        default:
+            return false;
     }
-    else if (getPixelFormat()==GL_RGBA)
+
+    for(int ir=0;ir<r();++ir)
     {
-        return true;
+        for(int it=0;it<t();++it)
+        {
+            unsigned char* d = data(0,it,ir);
+            switch(_dataType)
+            {
+                case(GL_BYTE):              return _findLowerAlphaValueInRow(s(), (char*)d +offset,            (char)127, delta);
+                case(GL_UNSIGNED_BYTE):     return _findLowerAlphaValueInRow(s(), (unsigned char*)d + offset,  (unsigned char)255, delta);
+                case(GL_SHORT):             return _findLowerAlphaValueInRow(s(), (short*)d + offset,          (short)32767, delta);
+                case(GL_UNSIGNED_SHORT):    return _findLowerAlphaValueInRow(s(), (unsigned short*)d + offset, (unsigned short)65535, delta);
+                case(GL_INT):               return _findLowerAlphaValueInRow(s(), (int*)d + offset,            (int)2147483647, delta);
+                case(GL_UNSIGNED_INT):      return _findLowerAlphaValueInRow(s(), (unsigned int*)d + offset,   (unsigned int)4294967295, delta);
+                case(GL_FLOAT):             return _findLowerAlphaValueInRow(s(), (float*)d + offset,           1.0f, delta);
+            }
+        }
     }
 
     return false;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////

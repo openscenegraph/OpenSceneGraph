@@ -13,6 +13,7 @@
 
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/CameraManipulator>
+#include <osgGA/GUIEventHandler>
 
 #include <osgUtil/SceneView>
 
@@ -81,7 +82,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         void selectCameraManipulator(unsigned int pos, 
 				     unsigned int viewport = 0);
 
-        void setEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
+        void addEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0);
 
         // derived from osgGA::GUIActionAdapter
         virtual void requestRedraw() {} // redraw always by idle callback done.
@@ -96,6 +97,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
         typedef std::vector<osg::ref_ptr<osgGA::CameraManipulator> > CameraManipList;
+        typedef std::vector<osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
 
     protected:
 
@@ -124,8 +126,7 @@ class OSGGLUT_EXPORT Viewer : public Window, public osgGA::GUIActionAdapter
             osg::ref_ptr<osgGA::CameraManipulator>      _cameraManipulator;
             CameraManipList                             _cameraManipList;
             
-            osg::ref_ptr<osgGA::GUIEventHandler>           _eventHandler;
-            
+	    EventHandlerList                            _eventHandlerList;
         };
 
         typedef std::vector<ViewportDef> ViewportList;

@@ -317,10 +317,10 @@ unsigned int Viewer::registerCameraManipulator(osgGA::CameraManipulator* cm,
     return pos;
 }
 
-void Viewer::setEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport)
+void Viewer::addEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport)
 {
     ViewportDef &viewp = _viewportList[viewport];
-    viewp._eventHandler = handler;
+    viewp._eventHandlerList.push_back( handler );
 }
 
 void Viewer::setFocusedViewport(unsigned int pos)
@@ -369,13 +369,18 @@ float Viewer::app(unsigned int viewport)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptFrame(_frameStamp->getReferenceTime());
 
-    if (_viewportList[viewport]._eventHandler.valid() && _viewportList[viewport]._eventHandler->handle(*ea,*this))
-    {
-        // event handler handle this call.
+    bool handled = false;
+    for ( EventHandlerList::iterator eh =
+            _viewportList[viewport]._eventHandlerList.begin();
+            eh != _viewportList[viewport]._eventHandlerList.end(); eh++ ) {
+        if ( eh->valid() ) {
+            if ( (*eh)->handle(*ea,*this) ) {
+                handled = true;
+            }
+        }
     }
-    else if (_viewportList[viewport]._cameraManipulator->handle(*ea,*this))
-    {
-        //        osg::notify(osg::INFO) << "Handled update frame"<< std::endl;
+    if ( !handled ) {
+        _viewportList[viewport]._cameraManipulator->handle(*ea,*this);
     }
 
 
@@ -744,9 +749,13 @@ void Viewer::reshape(GLint w, GLint h)
         {
             //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
-        if (itr->_eventHandler.valid() && itr->_eventHandler->handle(*ea,*this))
-        {
-            // event handler handle this call.
+        for ( EventHandlerList::iterator eh = itr->_eventHandlerList.begin();
+                eh != itr->_eventHandlerList.end(); eh++ ) {
+            if ( eh->valid() ) {
+                if ( (*eh)->handle(*ea,*this) ) {
+                    // event handler handle this call.
+                }
+            }
         }
     
     }
@@ -758,13 +767,22 @@ void Viewer::mouseMotion(int x, int y)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptMouseMotion(clockSeconds(),x,y);
 
-    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
-    {
-        // event handler handle this call.
+    bool handled = false;
+    for ( EventHandlerList::iterator eh =
+            _viewportList[_focusedViewport]._eventHandlerList.begin();
+            eh != _viewportList[_focusedViewport]._eventHandlerList.end();
+            eh++ ) {
+        if ( eh->valid() ) {
+            if ( (*eh)->handle(*ea,*this) ) {
+                handled = true;
+            }
+        }
     }
-    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
-    {
-        //        osg::notify(osg::INFO) << "Handled mouseMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
+    if ( !handled ) {
+        if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
+                    *ea,*this) ) {
+            //        osg::notify(osg::INFO) << "Handled mouseMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
+        }
     }
 
     _mx = x;
@@ -786,13 +804,22 @@ void Viewer::mousePassiveMotion(int x, int y)
           setFocusedViewport(focus);
     }
 
-    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
-    {
-        // event handler handle this call.
+    bool handled = false;
+    for ( EventHandlerList::iterator eh =
+            _viewportList[_focusedViewport]._eventHandlerList.begin();
+            eh != _viewportList[_focusedViewport]._eventHandlerList.end();
+            eh++ ) {
+        if ( eh->valid() ) {
+            if ( (*eh)->handle(*ea,*this) ) {
+                handled = true;
+            }
+        }
     }
-    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
-    {
-        //        osg::notify(osg::INFO) << "Handled mousePassiveMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
+    if ( !handled ) {
+        if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
+                    *ea,*this) ) {
+            //        osg::notify(osg::INFO) << "Handled mousePassiveMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
+        }
     }
 }
 
@@ -814,13 +841,22 @@ void Viewer::mouse(int button, int state, int x, int y)
           setFocusedViewport(focus);
     }
 
-    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
-    {
-        // event handler handle this call.
+    bool handled = false;
+    for ( EventHandlerList::iterator eh =
+            _viewportList[_focusedViewport]._eventHandlerList.begin();
+            eh != _viewportList[_focusedViewport]._eventHandlerList.end();
+            eh++ ) {
+        if ( eh->valid() ) {
+            if ( (*eh)->handle(*ea,*this) ) {
+                handled = true;
+            }
+        }
     }
-    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
-    {
+    if ( !handled ) {
+        if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
+                    *ea,*this) ) {
         //        osg::notify(osg::INFO) << "Handled mouse "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
+        }
     }
 
 }
@@ -832,16 +868,23 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptKeyboard(clockSeconds(),key,x,y);
 
-    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
-    {
-        return;
+    bool handled = false;
+    for ( EventHandlerList::iterator eh =
+            _viewportList[_focusedViewport]._eventHandlerList.begin();
+            eh != _viewportList[_focusedViewport]._eventHandlerList.end();
+            eh++ ) {
+        if ( eh->valid() ) {
+            if ( (*eh)->handle(*ea,*this) ) {
+                return;
+            }
+        }
     }
-    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
-    {
-        return;
+    if ( !handled ) {
+        if ( _viewportList[_focusedViewport]._cameraManipulator->handle(
+                    *ea,*this) ) {
+            return;
+        }
     }
-
-
 
     if (key>='1' && key<='3')
     {

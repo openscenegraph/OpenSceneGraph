@@ -155,7 +155,7 @@ class SG_EXPORT TextureCubeMap : public Texture
         
         virtual void computeInternalFormat() const;
 
-        mutable ref_ptr<Image> _images[6];
+        ref_ptr<Image> _images[6];
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight;

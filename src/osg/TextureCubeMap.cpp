@@ -221,7 +221,7 @@ void TextureCubeMap::apply(State& state) const
         {
             for (int n=0; n<6; n++)
             {
-                osg::Image* image = _images[n].get();
+                const osg::Image* image = _images[n].get();
                 if (image && getModifiedTag((Face)n,contextID) != image->getModifiedTag())
                 {
                     applyTexImage2D_subload( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
@@ -264,13 +264,36 @@ void TextureCubeMap::apply(State& state) const
 
         for (int n=0; n<6; n++)
         {
-            osg::Image* image = _images[n].get();
+            const osg::Image* image = _images[n].get();
             if (image)
             {
                 applyTexImage2D_load( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
                 getModifiedTag((Face)n,contextID) = image->getModifiedTag();
             }
+
+
         }
+
+        if (_unrefImageDataAfterApply)
+        {
+            // only unref image once all the graphics contexts has been set up.
+            unsigned int numLeftToBind=0;
+            for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
+            {
+                if (_handleList[i]==0) ++numLeftToBind;
+            }
+            if (numLeftToBind==0)
+            {
+                TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
+                for (int n=0; n<6; n++)
+                {
+                    non_const_this->_images[n] = 0;
+                }
+            }
+        }
+
+
+
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures

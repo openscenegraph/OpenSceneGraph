@@ -12,6 +12,9 @@
 */
 
 #include <osg/ApplicationUsage>
+#include <osg/Timer>
+#include <osg/Notify>
+
 #include <osgUtil/DisplayRequirementsVisitor>
 #include <osgDB/FileUtils>
 
@@ -19,8 +22,6 @@
 
 using namespace Producer;
 using namespace osgProducer;
-
-
 
 
 class RenderSurfaceRealizeCallback : public Producer::RenderSurface::Callback
@@ -33,11 +34,20 @@ public:
     
     virtual void operator()( const Producer::RenderSurface & rs)
     {
+    
+        osg::Timer timer;
+        osg::Timer_t start_t = timer.tick();
+    
         if (_cameraGroup->getRealizeCallback())
         {
             (*(_cameraGroup->getRealizeCallback()))(*_cameraGroup,*_sceneHandler,rs);
         }
         else if (_sceneHandler) _sceneHandler->init();
+
+        osg::Timer_t end_t = timer.tick();
+        double time = timer.delta_m(start_t,end_t);
+        osg::notify(osg::INFO) << "Time to init = "<<time<<std::endl;
+
     }
 
     OsgCameraGroup* _cameraGroup;

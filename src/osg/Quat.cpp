@@ -15,10 +15,10 @@ using namespace osg;
 
 /// Set the elements of the Quat to represent a rotation of angle
 /// (radians) around the axis (x,y,z)
-void Quat::makeRotate( const float angle,
-const float x,
-const float y,
-const float z    )
+void Quat::makeRotate( float angle,
+float x,
+float y,
+float z    )
 {
     float inversenorm  = 1.0/sqrt( x*x + y*y + z*z );
     float coshalfangle = cos( 0.5*angle );
@@ -31,7 +31,7 @@ const float z    )
 }
 
 
-void Quat::makeRotate( const float angle, const Vec3& vec )
+void Quat::makeRotate( float angle, const Vec3& vec )
 {
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
@@ -139,7 +139,7 @@ void Quat::getRotate( float& angle, float& x, float& y, float& z ) const
 /// Reference: Shoemake at SIGGRAPH 89
 /// See also
 /// http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
-void Quat::slerp( const float t, const Quat& from, const Quat& to )
+void Quat::slerp( float t, const Quat& from, const Quat& to )
 {
     const double epsilon = 0.00001;
     double omega, cosomega, sinomega, scale_from, scale_to ;

@@ -134,7 +134,7 @@ void MpegImageStream::load(const char* fileName)
     }
     if (mpeg3_has_audio(mpg))
     {
-        osg::notify(NOTICE) << "Stream has audio" << std::endl;
+        osg::notify(INFO) << "Stream has audio" << std::endl;
     }
 
     _mpg = (void*)mpg;

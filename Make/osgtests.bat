@@ -37,6 +37,9 @@ osggeometry
 echo osgprerender dumptruck.osg
 osgprerender dumptruck.osg
 
+echo osgshadowtexture cessna.osg
+osgshadowtexture cessna.osg
+
 echo osgparticle
 osgparticle
 

@@ -1,0 +1,11 @@
+TOPDIR = ../..
+include $(TOPDIR)/Make/makedefs
+
+CXXFILES =\
+	osgshadowtexture.cpp\
+
+LIBS     += $(OSG_LIBS) $(GLUT_LIB) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+
+EXEC = osgshadowtexture
+
+include $(TOPDIR)/Make/makerules

@@ -2,8 +2,10 @@
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
+#include <osg/Texture2D>
 
 #include <osgUtil/Optimizer>
+#include <osgUtil/RenderToTextureStage>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -15,6 +17,168 @@
 
 #include <osgGLUT/glut>
 #include <osgGLUT/Viewer>
+
+
+class MyCullCallback : public osg::NodeCallback
+{
+    public:
+    
+        MyCullCallback(osg::Node* subgraph,osg::Texture2D* texture):
+            _subgraph(subgraph),
+            _texture(texture) {}
+
+        MyCullCallback(osg::Node* subgraph,osg::Image* image):
+            _subgraph(subgraph),
+            _image(image) {}
+        
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+
+            osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
+            if (cullVisitor && (_texture.valid()|| _image.valid()) && _subgraph.valid())
+            {            
+                doPreRender(*node,*cullVisitor);
+
+                // must traverse the subgraph            
+                traverse(node,nv);
+
+            }
+            else
+            {
+                // must traverse the subgraph            
+                traverse(node,nv);
+            }
+        }
+        
+        void doPreRender(osg::Node& node, osgUtil::CullVisitor& cv);
+        
+        osg::ref_ptr<osg::Node>      _subgraph;
+        osg::ref_ptr<osg::Texture2D> _texture;
+        osg::ref_ptr<osg::Image>     _image;
+
+    
+};
+
+void MyCullCallback::doPreRender(osg::Node&, osgUtil::CullVisitor& cv)
+{   
+
+    const osg::BoundingSphere& bs = _subgraph->getBound();
+    if (!bs.valid())
+    {
+        osg::notify(osg::WARN) << "bb invalid"<<_subgraph.get()<<std::endl;
+        return;
+    }
+    
+
+    // create the render to texture stage.
+    osg::ref_ptr<osgUtil::RenderToTextureStage> rtts = osgNew osgUtil::RenderToTextureStage;
+
+    // set up lighting.
+    // currently ignore lights in the scene graph itself..
+    // will do later.
+    osgUtil::RenderStage* previous_stage = cv.getCurrentRenderBin()->_stage;
+
+    // set up the background color and clear mask.
+    rtts->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,0.0f));
+    rtts->setClearMask(previous_stage->getClearMask());
+
+    // set up to charge the same RenderStageLighting is the parent previous stage.
+    rtts->setRenderStageLighting(previous_stage->getRenderStageLighting());
+
+
+    // record the render bin, to be restored after creation
+    // of the render to text
+    osgUtil::RenderBin* previousRenderBin = cv.getCurrentRenderBin();
+
+    // set the current renderbin to be the newly created stage.
+    cv.setCurrentRenderBin(rtts.get());
+
+
+    float znear = 1.0f*bs.radius();
+    float zfar  = 3.0f*bs.radius();
+        
+    // 2:1 aspect ratio as per flag geomtry below.
+    float top   = 0.25f*znear;
+    float right = 0.5f*znear;
+
+    znear *= 0.9f;
+    zfar *= 1.1f;
+
+    // set up projection.
+    osg::Matrix* projection = osgNew osg::Matrix;
+    projection->makeFrustum(-right,right,-top,top,znear,zfar);
+
+    cv.pushProjectionMatrix(projection);
+
+    osg::Matrix* matrix = new osg::Matrix;
+    matrix->makeLookAt(bs.center()+osg::Vec3(0.0f,2.0f,0.0f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+
+    cv.pushModelViewMatrix(matrix);
+
+    osg::ref_ptr<osg::StateSet> dummyState = osgNew osg::StateSet;
+
+    cv.pushStateSet(dummyState.get());
+
+    {
+
+        // traverse the subgraph
+        _subgraph->accept(cv);
+
+    }
+
+    cv.popStateSet();
+
+    // restore the previous model view matrix.
+    cv.popModelViewMatrix();
+
+    // restore the previous model view matrix.
+    cv.popProjectionMatrix();
+
+    // restore the previous renderbin.
+    cv.setCurrentRenderBin(previousRenderBin);
+
+    if (rtts->_renderGraphList.size()==0 && rtts->_bins.size()==0)
+    {
+        // getting to this point means that all the subgraph has been
+        // culled by small feature culling or is beyond LOD ranges.
+        return;
+    }
+
+
+
+    int height = 256;
+    int width  = 512;
+
+
+    const osg::Viewport& viewport = *cv.getViewport();
+
+    // offset the impostor viewport from the center of the main window
+    // viewport as often the edges of the viewport might be obscured by
+    // other windows, which can cause image/reading writing problems.
+    int center_x = viewport.x()+viewport.width()/2;
+    int center_y = viewport.y()+viewport.height()/2;
+
+    osg::Viewport* new_viewport = new osg::Viewport;
+    new_viewport->setViewport(center_x-width/2,center_y-height/2,width,height);
+    rtts->setViewport(new_viewport);
+    
+    dummyState->setAttribute(new_viewport);
+
+    // and the render to texture stage to the current stages
+    // dependancy list.
+    cv.getCurrentRenderBin()->_stage->addToDependencyList(rtts.get());
+
+    // if one exist attach texture to the RenderToTextureStage.
+    if (_texture.valid()) rtts->setTexture(_texture.get());
+
+    // if one exist attach image to the RenderToTextureStage.
+    if (_image.valid()) rtts->setImage(_image.get());
+
+}
+
+
+
+
 
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
@@ -117,7 +281,10 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
     osg::Geode* geode = osgNew osg::Geode;
     geode->addDrawable(geom);
     
-    return geode;
+    osg::Group* group = osgNew osg::Group;
+    group->addChild(geode);
+    
+    return group;
 }
 
 osg::Node* createMovingModel(const osg::Vec3& center, float radius)
@@ -180,9 +347,24 @@ osg::Node* createModel()
 
     osg::Group* root = osgNew osg::Group;
 
-    root->addChild(createMovingModel(center,radius*0.8f));
+    // the occluder subgraph
+    osg::Node* occluder = createMovingModel(center,radius*0.8f);
 
-    root->addChild(createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius));
+    // the occludee subgraph
+    osg::Node* occludee = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius);
+    
+    // now add a state with a texture for the shadow
+    osg::Texture2D* texture = new osg::Texture2D;
+    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+
+    osg::StateSet* stateset = occludee->getOrCreateStateSet();
+//    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+    occludee->setCullCallback(new MyCullCallback(occluder,texture));
+
+    root->addChild(occluder);
+    root->addChild(occludee);
+
 
     return root;
 }

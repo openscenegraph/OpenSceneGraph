@@ -3,13 +3,15 @@
 using namespace osg;
 
 Transform::Transform()
+#ifdef USE_DEPRECATED_API
+    :_deprecated_inverseDirty(false)
+#endif
 {
     _referenceFrame = RELATIVE_TO_PARENTS;
 
 #ifdef USE_DEPRECATED_API
     _deprecated_matrix = osgNew Matrix;
     _deprecated_inverse = osgNew Matrix;
-    _deprecated_inverseDirty = false;
 #endif
 }
 

@@ -37,7 +37,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Set the data which to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
-        void setSceneData(osg::Node* node) { _sceneData = node; _need_compile = true;}
+        void setSceneData(osg::Node* node) { _sceneData = node; }
         /** Get the scene data which to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
@@ -291,11 +291,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
 
-
         osg::ref_ptr<osg::FrameStamp> _frameStamp;
-
-        bool _need_compile;
-
 
         osg::Vec4 _backgroundColor;
 

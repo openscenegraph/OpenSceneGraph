@@ -147,6 +147,7 @@ void Field::addChar(char c)
     {
         if (_fieldCacheCapacity<MIN_CACHE_SIZE) _fieldCacheCapacity=MIN_CACHE_SIZE;
         _fieldCache = osgNew char[_fieldCacheCapacity];
+        memset(_fieldCache,0,_fieldCacheCapacity);
         _fieldCacheSize = 0;
     }
     else if (_fieldCacheSize>=_fieldCacheCapacity-1)
@@ -155,6 +156,7 @@ void Field::addChar(char c)
         while (_fieldCacheSize>=_fieldCacheCapacity-1) _fieldCacheCapacity *= 2;
         char* tmp_str = _fieldCache;
         _fieldCache = osgNew char[_fieldCacheCapacity];
+        memset(_fieldCache,0,_fieldCacheCapacity);
         strncpy(_fieldCache,tmp_str,_fieldCacheSize);
         osgDelete [] tmp_str;
 

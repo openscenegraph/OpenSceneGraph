@@ -133,16 +133,15 @@ void ImpostorSprite::accept(PrimitiveFunctor& functor)
 // Helper class for managing the reuse of ImpostorSprite resources.
 ///////////////////////////////////////////////////////////////////////////
 
-ImpostorSpriteManager::ImpostorSpriteManager()
+ImpostorSpriteManager::ImpostorSpriteManager():
+    _first(NULL),
+    _last(NULL)
 {
     _texenv = osgNew TexEnv;
     _texenv->setMode(TexEnv::REPLACE);
 
     _alphafunc = osgNew osg::AlphaFunc;
     _alphafunc->setFunction( AlphaFunc::GREATER, 0.000f );
-
-    _first = NULL;
-    _last = NULL;
 }
 
 

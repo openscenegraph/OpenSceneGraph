@@ -42,12 +42,18 @@ GeoSet::GeoSet()
     _primLengths = (int *)0;
 
     _numcoords = 0;
+    _numnormals = 0;
+    _numcolors = 0;
+    _numtcoords = 0;
 
     _normal_binding = BIND_OFF;
     _color_binding  = BIND_OFF;
     _texture_binding  = BIND_OFF;
 
     _fast_path = 1;
+
+    _primlength = 0;
+    _flat_shaded_skip = 0;
 
 }
 

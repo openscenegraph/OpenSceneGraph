@@ -9,7 +9,8 @@ CullStack::CullStack()
     _LODBias = 1.0f;
     _smallFeatureCullingPixelSize = 2.0f;
     _frustumVolume=-1.0f;
-
+    _bbCornerNear = 0;
+    _bbCornerFar = 7;
 }
 
 

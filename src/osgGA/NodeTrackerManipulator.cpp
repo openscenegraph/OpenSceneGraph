@@ -1,4 +1,4 @@
-#include <osgGA/TrackerManipulator>
+#include <osgGA/NodeTrackerManipulator>
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/Transform>
@@ -28,7 +28,7 @@ public:
     NodePathList _nodePaths;
 };
 
-TrackerManipulator::TrackerManipulator()
+NodeTrackerManipulator::NodeTrackerManipulator()
 {
     _rotationMode =ELEVATION_AZIM; 
     _distance = 1.0;
@@ -38,19 +38,19 @@ TrackerManipulator::TrackerManipulator()
 }
 
 
-TrackerManipulator::~TrackerManipulator()
+NodeTrackerManipulator::~NodeTrackerManipulator()
 {
 }
 
 
-void TrackerManipulator::setRotationMode(RotationMode mode)
+void NodeTrackerManipulator::setRotationMode(RotationMode mode)
 {
     _rotationMode = mode;
 
     // need to correct rotation.
 }
 
-void TrackerManipulator::setNode(osg::Node* node)
+void NodeTrackerManipulator::setNode(osg::Node* node)
 {
     _node = node;
     
@@ -68,19 +68,19 @@ void TrackerManipulator::setNode(osg::Node* node)
 }
 
 
-const osg::Node* TrackerManipulator::getNode() const
+const osg::Node* NodeTrackerManipulator::getNode() const
 {
     return _node.get();
 }
 
 
-osg::Node* TrackerManipulator::getNode()
+osg::Node* NodeTrackerManipulator::getNode()
 {
     return _node.get();
 }
 
 
-void TrackerManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
+void NodeTrackerManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 {
     if (getAutoComputeHomePosition()) computeHomePosition();
 
@@ -89,20 +89,20 @@ void TrackerManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 }
 
 
-void TrackerManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
+void NodeTrackerManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
 {
     flushMouseEventStack();
 }
 
 
-void TrackerManipulator::getUsage(osg::ApplicationUsage& usage) const
+void NodeTrackerManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("Trackball: Space","Reset the viewing position to home");
     usage.addKeyboardMouseBinding("Trackball: +","When in stereo, increase the fusion distance");
     usage.addKeyboardMouseBinding("Trackball: -","When in stereo, reduse the fusion distance");
 }
 
-bool TrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
+bool NodeTrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     switch(ea.getEventType())
     {
@@ -188,7 +188,7 @@ bool TrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 }
 
 
-bool TrackerManipulator::isMouseMoving()
+bool NodeTrackerManipulator::isMouseMoving()
 {
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
@@ -203,20 +203,20 @@ bool TrackerManipulator::isMouseMoving()
 }
 
 
-void TrackerManipulator::flushMouseEventStack()
+void NodeTrackerManipulator::flushMouseEventStack()
 {
     _ga_t1 = NULL;
     _ga_t0 = NULL;
 }
 
 
-void TrackerManipulator::addMouseEvent(const GUIEventAdapter& ea)
+void NodeTrackerManipulator::addMouseEvent(const GUIEventAdapter& ea)
 {
     _ga_t1 = _ga_t0;
     _ga_t0 = &ea;
 }
 
-void TrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
+void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
 
     osg::Vec3 lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
@@ -314,13 +314,13 @@ void TrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
     clampOrientation();
 }
 
-osg::Vec3d TrackerManipulator::computeCenter() const
+osg::Vec3d NodeTrackerManipulator::computeCenter() const
 {
     if (_trackNode.valid())
     {
         CollectParentPaths cpp;
 
-        TrackerManipulator* non_const_this = const_cast<TrackerManipulator*>(this);
+        NodeTrackerManipulator* non_const_this = const_cast<NodeTrackerManipulator*>(this);
         
         non_const_this->_trackNode->accept(cpp);
 
@@ -336,17 +336,17 @@ osg::Vec3d TrackerManipulator::computeCenter() const
     return osg::Vec3d(0.0,0.0,0.0);
 }
 
-osg::Matrixd TrackerManipulator::getMatrix() const
+osg::Matrixd NodeTrackerManipulator::getMatrix() const
 {
     return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(computeCenter());
 }
 
-osg::Matrixd TrackerManipulator::getInverseMatrix() const
+osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
 {
     return osg::Matrix::translate(-computeCenter())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
-void TrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
+void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
 {
     if (!_node) return;
 
@@ -409,7 +409,7 @@ void TrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     clampOrientation();
 }
 
-bool TrackerManipulator::calcMovement()
+bool NodeTrackerManipulator::calcMovement()
 {
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
@@ -569,7 +569,7 @@ bool TrackerManipulator::calcMovement()
             if (!hitFound)
             {
                 // ??
-                osg::notify(INFO)<<"TrackerManipulator unable to intersect with Tracker."<<std::endl;
+                osg::notify(INFO)<<"NodeTrackerManipulator unable to intersect with Tracker."<<std::endl;
             }
 
             coordinateFrame = getCoordinateFrame(_center);
@@ -619,7 +619,7 @@ bool TrackerManipulator::calcMovement()
     return false;
 }
 
-void TrackerManipulator::clampOrientation()
+void NodeTrackerManipulator::clampOrientation()
 {
     if (_rotationMode==ELEVATION_AZIM)
     {
@@ -679,7 +679,7 @@ const float TRACKBALLSIZE = 0.8f;
  * It is assumed that the arguments to this routine are in the range
  * (-1.0 ... 1.0)
  */
-void TrackerManipulator::trackball(osg::Vec3& axis,double & angle, double  p1x, double  p1y, double  p2x, double  p2y)
+void NodeTrackerManipulator::trackball(osg::Vec3& axis,double & angle, double  p1x, double  p1y, double  p2x, double  p2y)
 {
     /*
      * First, figure out z-coordinates for projection of P1 and P2 to
@@ -728,7 +728,7 @@ axis = p2^p1;
  * Project an x,y pair onto a sphere of radius r OR a hyperbolic sheet
  * if we are away from the center of the sphere.
  */
-double TrackerManipulator::tb_project_to_sphere(double  r, double  x, double  y)
+double NodeTrackerManipulator::tb_project_to_sphere(double  r, double  x, double  y)
 {
     float d, t, z;
 

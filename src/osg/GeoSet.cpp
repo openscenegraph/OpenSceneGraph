@@ -244,7 +244,7 @@ void GeoSet::setTextureBinding( const BindingType binding )
     set_fast_path();
 }
 
-void GeoSet::drawImmediateMode(State&)
+void GeoSet::drawImmediateMode(State& state)
 {
     if( _coords == (Vec3 *)0 && _iaformat == IA_OFF ) return;
 
@@ -253,9 +253,9 @@ void GeoSet::drawImmediateMode(State&)
         computeNumVerts();
 
     if( _fast_path )
-        draw_fast_path();
+        draw_fast_path(state);
     else
-        draw_alternate_path();
+        draw_alternate_path(state);
 }
 
 void GeoSet::computeNumVerts() const

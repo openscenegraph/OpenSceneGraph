@@ -81,7 +81,7 @@ void GeoSet::set_fast_path( void )
 }
 
 
-void GeoSet::draw_fast_path( void )
+void GeoSet::draw_fast_path( State& state )
 {
     IndexPointer ocindex = _cindex;
 
@@ -93,79 +93,112 @@ void GeoSet::draw_fast_path( void )
             break;
 
         case (V_ON) :
-            glDisableClientState( GL_COLOR_ARRAY );
-            glDisableClientState( GL_NORMAL_ARRAY );
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+        
+            state.disableNormalPointer();
+            state.disableColorPointer();
+            state.disableTexCoordPointer(0);
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glDisableClientState( GL_COLOR_ARRAY );
+//             glDisableClientState( GL_NORMAL_ARRAY );
+//             glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (T_ON|V_ON) :
-            glDisableClientState( GL_COLOR_ARRAY );
-            glDisableClientState( GL_NORMAL_ARRAY );
-            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-            glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.disableNormalPointer();
+            state.disableColorPointer();
+            state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glDisableClientState( GL_COLOR_ARRAY );
+//             glDisableClientState( GL_NORMAL_ARRAY );
+//             glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (N_ON|V_ON) :
-            glDisableClientState( GL_COLOR_ARRAY );
-            glEnableClientState( GL_NORMAL_ARRAY );
-            glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.disableColorPointer();
+            state.disableTexCoordPointer(0);
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+            state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+//             glDisableClientState( GL_COLOR_ARRAY );
+//             glEnableClientState( GL_NORMAL_ARRAY );
+//             glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+//             glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (N_ON|T_ON|V_ON) :
-            glDisableClientState( GL_COLOR_ARRAY );
-            glEnableClientState( GL_NORMAL_ARRAY );
-            glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
-            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-            glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.disableColorPointer();
+            state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+            state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glDisableClientState( GL_COLOR_ARRAY );
+//             glEnableClientState( GL_NORMAL_ARRAY );
+//             glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+//             glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (C_ON|V_ON) :
-            glEnableClientState( GL_COLOR_ARRAY );
-            glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
-            glDisableClientState( GL_NORMAL_ARRAY );
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.disableNormalPointer();
+            state.disableTexCoordPointer(0);
+            state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glEnableClientState( GL_COLOR_ARRAY );
+//             glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+//             glDisableClientState( GL_NORMAL_ARRAY );
+//             glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (C_ON|T_ON|V_ON) :
-            glEnableClientState( GL_COLOR_ARRAY );
-            glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
-            glDisableClientState( GL_NORMAL_ARRAY );
-            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-            glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.disableNormalPointer();
+            state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+            state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glEnableClientState( GL_COLOR_ARRAY );
+//             glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+//             glDisableClientState( GL_NORMAL_ARRAY );
+//             glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (C_ON|N_ON|V_ON) :
-            glEnableClientState( GL_COLOR_ARRAY );
-            glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
-            glEnableClientState( GL_NORMAL_ARRAY );
-            glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.disableTexCoordPointer(0);
+            state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+            state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glEnableClientState( GL_COLOR_ARRAY );
+//             glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+//             glEnableClientState( GL_NORMAL_ARRAY );
+//             glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+//             glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
 
         case (C_ON|N_ON|T_ON|V_ON) :
-            glEnableClientState( GL_COLOR_ARRAY );
-            glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
-            glEnableClientState( GL_NORMAL_ARRAY );
-            glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
-            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-            glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+            state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+            state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+            state.setTexCoordPointer(0, 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+            state.setVertexPointer(3, GL_FLOAT, 0,_coords);
+//             glEnableClientState( GL_COLOR_ARRAY );
+//             glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+//             glEnableClientState( GL_NORMAL_ARRAY );
+//             glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+//             glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//             glTexCoordPointer( 2, GL_FLOAT, 0, (GLfloat *)_tcoords );
+//             glEnableClientState( GL_VERTEX_ARRAY );
+//             glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
             break;
     }
 
@@ -227,16 +260,18 @@ void GeoSet::draw_fast_path( void )
 }
 
 
-void GeoSet::draw_alternate_path( void )
+void GeoSet::draw_alternate_path( State& state  )
 {
     if( (_color_binding == BIND_PERVERTEX) && (_colindex.null() || _colindex ==_cindex) && (_flat_shaded_skip == 0) )
     {
-        glEnableClientState( GL_COLOR_ARRAY );
-        glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+//         glEnableClientState( GL_COLOR_ARRAY );
+//         glColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
+        state.setColorPointer( 4, GL_FLOAT, 0, (GLfloat *)_colors );
     }
     else
     {
-        glDisableClientState( GL_COLOR_ARRAY );
+//        glDisableClientState( GL_COLOR_ARRAY );
+        state.disableColorPointer();
         if( _color_binding == BIND_OVERALL )
         {
             if( _colindex.valid() )
@@ -248,12 +283,14 @@ void GeoSet::draw_alternate_path( void )
 
     if( (_normal_binding == BIND_PERVERTEX) && (_nindex.null() || _nindex ==_cindex) && (_flat_shaded_skip == 0) )
     {
-        glEnableClientState( GL_NORMAL_ARRAY );
-        glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+//         glEnableClientState( GL_NORMAL_ARRAY );
+//         glNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
+        state.setNormalPointer( GL_FLOAT, 0, (GLfloat *)_normals );
     }
     else
     {
-        glDisableClientState( GL_NORMAL_ARRAY );
+        state.disableNormalPointer();
+//        glDisableClientState( GL_NORMAL_ARRAY );
         if( _normal_binding == BIND_OVERALL )
         {
             if( _nindex.valid() )
@@ -265,14 +302,17 @@ void GeoSet::draw_alternate_path( void )
 
     if( (_texture_binding == BIND_PERVERTEX) && (_tindex.null()) )
     {
-        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-        glTexCoordPointer( 2, GL_FLOAT, 0, _tcoords );
+//         glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//         glTexCoordPointer( 2, GL_FLOAT, 0, _tcoords );
+        state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, _tcoords );
     }
     else
-        glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+        state.disableTexCoordPointer(0);
+//        glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+//     glEnableClientState( GL_VERTEX_ARRAY );
+//     glVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
+    state.setVertexPointer( 3, GL_FLOAT, 0, (GLfloat *)_coords );
 
     if( _needprimlen )           // LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP,
         // TRIANGLE_FAN, QUAD_STRIP, POLYGONS

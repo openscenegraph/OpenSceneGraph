@@ -394,8 +394,8 @@ class SG_EXPORT GeoSet : public Drawable
         int         _fast_path;
         
 	void set_fast_path( void );
-	void draw_fast_path( void );
-	void draw_alternate_path( void );
+	void draw_fast_path( State& state );
+	void draw_alternate_path( State& state );
 
 };
 

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -48,7 +48,7 @@
 
 namespace osg {
 
-/** macro for use with osg::StateAttribute::apply methods for detecting and 
+/** macro for use with osg::StateAttribute::apply methods for detecting and
   * reporting OpenGL error messages.*/
 #define OSG_GL_DEBUG(message) \
     if (state.getFineGrainedErrorDetection()) \
@@ -60,13 +60,25 @@ namespace osg {
         }\
     }
 
-/** State class for managing a state stack.
-  * Lazy state updating is used to minimize state changes.
+/** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,.
+  * implements lazy state updating and provides accessors for querrying the current state.
+  . The venerable Red Book says that "OpenGL is a state machine", and this class
+  * represents the OpenGL state in OSG. Furthermore, \c State also has other
+  * important features:
+  * - It works as a stack of states (see \c pushStateSet() and
+  *   \c popStateSet()). Manipulating this stack of OpenGL states manually is
+  *   seldom needed, since OSG does this is the most common situations.
+  * - It implements lazy state updating. This means that, if one requests a
+  *   state change and that particular state is already in the requested stated, no OpenGL
+  *   call will be made, this ensures that OpenGL pipeline is not stalled by unncessary state changes.
+  * - It allows to query the current OpenGL state without calls to \c glGet*(),
+  *   which typically stall the graphics pipeline (see, for instance,
+  *   \c captureCurrentState() and \c getModelViewMatrix()).
   */
 class SG_EXPORT State : public Referenced
 {
     public :
-    
+
         State();
 
         /** Push stateset onto state stack.*/
@@ -74,7 +86,7 @@ class SG_EXPORT State : public Referenced
 
         /** Pop stateset off state stack.*/
         void popStateSet();
-       
+
         /** pop all statesets off state stack, ensuring it is empty ready for the next frame.
           * Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
         void popAllStateSets();
@@ -84,12 +96,12 @@ class SG_EXPORT State : public Referenced
 
         /** reset the state object to an empty stack.*/
         void reset();
-        
+
         inline const Viewport* getCurrentViewport() const
         {
             return static_cast<const Viewport*>(getLastAppliedAttribute(osg::StateAttribute::VIEWPORT));
         }
-        
+
 
         void setInitialViewMatrix(const osg::RefMatrix* matrix);
 
@@ -101,7 +113,7 @@ class SG_EXPORT State : public Referenced
             if (_projection!=matrix)
             {
                 glMatrixMode( GL_PROJECTION );
-                if (matrix) 
+                if (matrix)
                 {
                     _projection=matrix;
                     glLoadMatrix(matrix->ptr());
@@ -114,7 +126,7 @@ class SG_EXPORT State : public Referenced
                 glMatrixMode( GL_MODELVIEW );
             }
         }
-        
+
         inline const osg::Matrix& getProjectionMatrix() const
         {
             return *_projection;
@@ -129,7 +141,7 @@ class SG_EXPORT State : public Referenced
                     _modelView=matrix;
                     glLoadMatrix(matrix->ptr());
                 }
-                else 
+                else
                 {
                     _modelView=_identity;
                     glLoadIdentity();
@@ -149,7 +161,10 @@ class SG_EXPORT State : public Referenced
         /** Apply stateset.*/
         void apply(const StateSet* dstate);
 
-        /** Apply the state.*/
+        /** Updates the OpenGL state so that it matches the \c StateSet at the
+          * top of the stack of <tt>StateSet</tt>s maintained internally by a
+          * \c State.
+         */
         void apply();
 
 
@@ -165,11 +180,19 @@ class SG_EXPORT State : public Referenced
         }
 
 
-        /** Apply an OpenGL mode if required. */
+        /** Apply an OpenGL mode if required. This is a wrapper around
+          * \c glEnable() and \c glDisable(), that just actually calls these
+          * functions if the \c enabled flag is different than the current
+          * state.
+          * @return \c true if the state was actually changed. \c false
+          *         otherwise. Notice that a \c false return does not indicate
+          *         an error, it just means that the mode was already set to the
+          *         same value as the \c enabled parameter.
+        */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled)
         {
             ModeStack& ms = _modeMap[mode];
-            ms.changed = true;    
+            ms.changed = true;
             return applyMode(mode,enabled,ms);
         }
 
@@ -247,10 +270,10 @@ class SG_EXPORT State : public Referenced
             else
                 return false;
         }
-       
+
         /** Mode has been set externally, update state to reflect this setting.*/
         void haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
-        
+
         /** Mode has been set externally, therefore dirty the associated mode in osg::State
           * so it is applied on next call to osg::State::apply(..)*/
         void haveAppliedMode(StateAttribute::GLMode mode);
@@ -269,13 +292,13 @@ class SG_EXPORT State : public Referenced
 
         /** Get whether the current specified mode is enabled (true) or disabled (false).*/ 
         bool getLastAppliedMode(StateAttribute::GLMode mode) const;
-        
+
         /** Get the current specified attribute, return NULL if one has not yet been applied.*/ 
         const StateAttribute* getLastAppliedAttribute(StateAttribute::Type type, unsigned int member=0) const;
-        
+
         /** texture Mode has been set externally, update state to reflect this setting.*/
         void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
-        
+
         /** texture Mode has been set externally, therefore dirty the associated mode in osg::State
           * so it is applied on next call to osg::State::apply(..)*/
         void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode);
@@ -283,8 +306,8 @@ class SG_EXPORT State : public Referenced
         /** texture Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedTextureAttribute(unsigned int unit, const StateAttribute* attribute);
 
-        /** texture Attribute has been applied externally, 
-          * and therefore this attribute type has been dirtied 
+        /** texture Attribute has been applied externally,
+          * and therefore this attribute type has been dirtied
           * and will need to be re-appplied on next osg::State.apply(..).
           * note, if you have an osg::StateAttribute which you have applied externally
           * then use the have_applied(attribute) method as this will the osg::State to
@@ -292,10 +315,10 @@ class SG_EXPORT State : public Referenced
           * that only changed state will be applied.*/
         void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member=0);
 
-        /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/ 
+        /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/
         bool getLastAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode) const;
-        
-        /** Get the current specified texture attribute, return NULL if one has not yet been applied.*/ 
+
+        /** Get the current specified texture attribute, return NULL if one has not yet been applied.*/
         const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member=0) const;
 
 
@@ -335,7 +358,7 @@ class SG_EXPORT State : public Referenced
             }
             _vertexArray._dirty = false;
         }
-        
+
         /** wrapper around glDisableClientState(GL_VERTEX_ARRAY).
           * note, only updates values that change.*/
         inline void disableVertexPointer()
@@ -350,8 +373,8 @@ class SG_EXPORT State : public Referenced
 
         inline void dirtyVertexPointer()
         {
-            _vertexArray._pointer = 0; 
-            _vertexArray._dirty = true; 
+            _vertexArray._pointer = 0;
+            _vertexArray._dirty = true;
         }
 
         /** wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(..);
@@ -421,7 +444,7 @@ class SG_EXPORT State : public Referenced
         }
 
         inline void dirtyColorPointer()
-        { 
+        {
             _colorArray._pointer = 0;
             _colorArray._dirty = true;
         }
@@ -594,7 +617,7 @@ class SG_EXPORT State : public Referenced
             }
         }
 
-        /** Set the current tex coord array texture unit, return true if selected, 
+        /** Set the current tex coord array texture unit, return true if selected,
 		  * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
@@ -604,19 +627,19 @@ class SG_EXPORT State : public Referenced
 		  * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setActiveTextureUnit( unsigned int unit );
-        
+
         /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
           * note, only updates values that change.*/
         void setVertexAttribPointer( unsigned int index,
-                                     GLint size, GLenum type, GLboolean normalized, 
+                                     GLint size, GLenum type, GLboolean normalized,
                                      GLsizei stride, const GLvoid *ptr );
-        
+
         /** wrapper around DisableVertexAttribArrayARB(index);
           * note, only updates values that change.*/
         void disableVertexAttribPointer( unsigned int index );
-      
+
         void disableVertexAttribPointersAboveAndIncluding( unsigned int index );
-        
+
         inline void dirtyVertexAttribPointersAboveAndIncluding( unsigned int index )
         {
             while (index<_vertexAttribArrayList.size())
@@ -640,37 +663,37 @@ class SG_EXPORT State : public Referenced
             arrays that they maintain for the purpose.
             Typical settings for contextID are 0,1,2,3... up to the maximum
             number of graphics contexts you have set up.
-            By default contextID is 0.*/ 
+            By default contextID is 0.*/
         inline void setContextID(unsigned int contextID) { _contextID=contextID; }
 
-        /** Get the current OpenGL context unique ID.*/ 
+        /** Get the current OpenGL context unique ID.*/
         inline unsigned int getContextID() const { return _contextID; }
-        
-        
+
+
         /** Set the frame stamp for the current frame.*/
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
 
         /** Get the frame stamp for the current frame.*/
         inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
-        
-                
+
+
         /** Set the DisplaySettings. Note, nothing is applied, the visual settings are just
           * used in the State object to pass the current visual settings to Drawables
           * during rendering. */
         inline void setDisplaySettings(DisplaySettings* vs) { _displaySettings = vs; }
-        
+
         /** Get the DisplaySettings */
         inline const DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
         typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
         typedef std::vector<AttributePair>                                      AttributeVec;
         typedef std::vector<StateAttribute::GLModeValue>                        ValueVec;
-        
-        
+
+
         /** Set flag for early termination of the draw traversal.*/
         void setAbortRenderingPtr(bool* abortPtr) { _abortRenderingPtr = abortPtr; }
 
-        /** Get flag for early termination of the draw traversal, 
+        /** Get flag for early termination of the draw traversal,
           * if true steps should be taken to complete rendering early.*/
         bool getAbortRendering() const { return _abortRenderingPtr!=0?(*_abortRenderingPtr):false; }
 
@@ -687,16 +710,16 @@ class SG_EXPORT State : public Referenced
 
         unsigned int                _contextID;
         ref_ptr<FrameStamp>         _frameStamp;
-        
+
         ref_ptr<const RefMatrix>    _identity;
         ref_ptr<const RefMatrix>    _initialViewMatrix;
         ref_ptr<const RefMatrix>    _projection;
         ref_ptr<const RefMatrix>    _modelView;
-        
+
         Matrix                      _initialInverseViewMatrix;
 
         ref_ptr<DisplaySettings>    _displaySettings;
-        
+
         bool*                       _abortRenderingPtr;
         bool                        _reportGLErrors;
 
@@ -708,7 +731,7 @@ class SG_EXPORT State : public Referenced
                 last_applied_value = false;
                 global_default_value = false;
             }
-        
+
             bool        changed;
             bool        last_applied_value;
             bool        global_default_value;
@@ -732,9 +755,17 @@ class SG_EXPORT State : public Referenced
             ref_ptr<const StateAttribute> global_default_attribute;
             AttributeVec            attributeVec;
         };
-        
 
-        /** apply an OpenGL mode if required, passing in mode, enable flag and appropriate mode stack */
+
+        /** Apply an OpenGL mode if required, passing in mode, enable flag and
+          * appropriate mode stack. This is a wrapper around \c glEnable() and
+          * \c glDisable(), that just actually calls these functions if the
+          * \c enabled flag is different than the current state.
+          * @return \c true if the state was actually changed. \c false
+          *         otherwise. Notice that a \c false return does not indicate
+          *         an error, it just means that the mode was already set to the
+          *         same value as the \c enabled parameter.
+        */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled,ModeStack& ms)
         {
             if (ms.last_applied_value != enabled)
@@ -762,9 +793,9 @@ class SG_EXPORT State : public Referenced
 
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
-                
+
                 if (_reportGLErrors) checkGLErrors(attribute);
-                
+
                 return true;
             }
             else
@@ -786,7 +817,7 @@ class SG_EXPORT State : public Referenced
             else
                 return false;
         }
-        
+
 
         typedef std::map<StateAttribute::GLMode,ModeStack>              ModeMap;
         typedef std::vector<ModeMap>                                    TextureModeMapList;
@@ -802,21 +833,21 @@ class SG_EXPORT State : public Referenced
 
         TextureModeMapList                                              _textureModeMapList;
         TextureAttributeMapList                                         _textureAttributeMapList;
-       
+
         StateSetStack                                                   _drawStateStack;
-        
+
         struct EnabledArrayPair
         {
             EnabledArrayPair():_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
             EnabledArrayPair(const EnabledArrayPair& eap):_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
             EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
-            
+
             bool            _dirty;
             bool            _enabled;
             GLboolean       _normalized;
             const GLvoid*   _pointer;
         };
-        
+
         typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
         typedef std::vector<EnabledArrayPair>                   EnabledVertexAttribArrayList;
 
@@ -831,29 +862,29 @@ class SG_EXPORT State : public Referenced
 
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
-        
+
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)
-        {        
+        {
             if (unit>=_textureModeMapList.size()) _textureModeMapList.resize(unit+1);
             return _textureModeMapList[unit];
         }
 
 
         inline AttributeMap& getOrCreateTextureAttributeMap(unsigned int unit)
-        {        
+        {
             if (unit>=_textureAttributeMapList.size()) _textureAttributeMapList.resize(unit+1);
             return _textureAttributeMapList[unit];
         }
-        
+
         inline void pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void pushAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
-        
+
         inline void popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void popAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
 
         inline void applyModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
-        
+
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);
 
@@ -892,12 +923,12 @@ inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeL
             // first pair so simply push incoming pair to back.
             ms.valueVec.push_back(mitr->second);
         }
-        else if ((ms.valueVec.back() & StateAttribute::OVERRIDE) && !(mitr->second & StateAttribute::PROTECTED)) // check the existing override flag 
+        else if ((ms.valueVec.back() & StateAttribute::OVERRIDE) && !(mitr->second & StateAttribute::PROTECTED)) // check the existing override flag
         {
             // push existing back since override keeps the previous value.
             ms.valueVec.push_back(ms.valueVec.back());
         }
-        else 
+        else
         {
             // no override on so simply push incoming pair to back.
             ms.valueVec.push_back(mitr->second);
@@ -920,12 +951,12 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
             as.attributeVec.push_back(
                 AttributePair(aitr->second.first.get(),aitr->second.second));
         }
-        else if ((as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag 
+        else if ((as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag
         {
             // push existing back since override keeps the previous value.
             as.attributeVec.push_back(as.attributeVec.back());
         }
-        else 
+        else
         {
             // no override on so simply push incoming pair to back.
             as.attributeVec.push_back(
@@ -1002,7 +1033,7 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
         else if (ds_mitr->first<this_mitr->first)
         {
 
-            // ds_mitr->first is a new mode, therefore 
+            // ds_mitr->first is a new mode, therefore
             // need to insert a new mode entry for ds_mistr->first.
             ModeStack& ms = modeMap[ds_mitr->first];
 
@@ -1072,7 +1103,7 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
             }
 
         }
-    }        
+    }
 
     // iterator over the remaining incoming modes to apply any new mode.
     for(;
@@ -1122,7 +1153,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         else if (ds_aitr->first<this_aitr->first)
         {
 
-            // ds_aitr->first is a new attribute, therefore 
+            // ds_aitr->first is a new attribute, therefore
             // need to insert a new attribute entry for ds_aitr->first.
             AttributeStack& as = attributeMap[ds_aitr->first];
 
@@ -1188,14 +1219,14 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
                 applyGlobalDefaultAttribute(as);
             }
         }
-    }        
+    }
 
     // iterator over the remaining incoming modes to apply any new mode.
     for(;
         ds_aitr!=attributeList.end();
         ++ds_aitr)
     {
-        // ds_aitr->first is a new attribute, therefore 
+        // ds_aitr->first is a new attribute, therefore
         // need to insert a new attribute entry for ds_aitr->first.
         AttributeStack& as = attributeMap[ds_aitr->first];
 
@@ -1229,9 +1260,9 @@ inline void State::applyModeMap(ModeMap& modeMap)
                 // assume default of disabled.
                 applyMode(mitr->first,ms.global_default_value,ms);
             }
-            
+
         }
-    }        
+    }
 }
 
 inline void State::applyAttributeMap(AttributeMap& attributeMap)
@@ -1253,9 +1284,9 @@ inline void State::applyAttributeMap(AttributeMap& attributeMap)
             {
                 applyGlobalDefaultAttribute(as);
             }
-            
+
         }
-    }        
+    }
 }
 
 }

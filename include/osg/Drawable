@@ -364,12 +364,11 @@ class SG_EXPORT Drawable : public Object
 
 
 
-        /** Draw the \c Geometry "directly", that is, by issuing all the OpenGL
-          * calls needed to draw it. Contrast this with \c draw(), that can
-          * compile and use an OpenGL display list to do the rendering.
-          * <p> This is the internal draw method which does the drawing itself,
-          * and is the method to override when deriving from \c Drawable.
-          */
+        /** drawImplementation(State&) is a pure virtaul method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
+          * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
+          * drawImplementation(State&) is called from the draw(State&) method, with the draw method handling management of OpenGL display lists,
+          * and drawImplementation(State&) handling the actuall drawing itself.  
+          * @param state The osg::State object that encapulates the current OpenGL state for the current graphics context. */
         virtual void drawImplementation(State& state) const = 0;
 
 

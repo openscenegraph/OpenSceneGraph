@@ -21,12 +21,12 @@
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
-
-#include <osg/GeoSet>
+#include <osg/Texture>
+#include <osg/Geometry>
 #include <osg/StateSet>
-#include <osg/Material>
 
 #include <osgDB/Registry>
+#include <osgDB/ReadFile>
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tesselator>
@@ -53,6 +53,31 @@ protected:
 osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
 
 
+// collect all the data relavent to a particular osg::Geometry being created.
+struct GeometryCollection
+{
+    GeometryCollection():
+        _numPrimitives(0),
+        _numPrimitivesWithTexCoords(0),
+        _numPoints(0),
+        _texturesActive(false),
+        _vertices(0),
+        _texcoords(0),
+        _coordCount(0),
+        _geom(0) {}
+
+    int                         _numPrimitives;
+    int                         _numPrimitivesWithTexCoords;
+    int                         _numPoints;
+    bool                        _texturesActive;
+    osg::Vec3Array::iterator    _vertices;
+    osg::Vec2Array::iterator    _texcoords;
+    int                         _coordCount;
+    osg::Geometry*              _geom;
+};
+
+
+
 // read file and convert to OSG.
 osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
@@ -64,75 +89,89 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
     osg::notify(osg::INFO) << "materials " << lw->material_cnt << std::endl;
     osg::notify(osg::INFO) << "vertices " << lw->vertex_cnt << std::endl;
 
-    // shared coordinates
-    typedef std::map<int,osgUtil::Tesselator::IndexVec> MaterialTriangles;
-    MaterialTriangles mts;
+    typedef std::map<int,GeometryCollection> MaterialToGeometryCollectionMap;
+    MaterialToGeometryCollectionMap mtgcm;
     
-
-    osgUtil::Tesselator tess;
-    for (int i = 0; i < lw->face_cnt; i++)
+    // bin the indices for each material into the mtis;
+    int i;
+    for (i = 0; i < lw->face_cnt; ++i)
     {
-        if (lw->face[i].index_cnt>=3)
+        lwFace& face = lw->face[i];
+        if (face.index_cnt>=3)
         {
-            tess.tesselate((osg::Vec3*)lw->vertex,lw->face[i].index_cnt,lw->face[i].index,osgUtil::Tesselator::CLOCK_WISE);
-            osgUtil::Tesselator::IndexVec& iv = mts[lw->face[i].material];
-            const osgUtil::Tesselator::IndexVec& result = tess.getResult();
-            iv.insert(iv.end(),result.begin(),result.end());
+            GeometryCollection& gc = mtgcm[face.material];
+            gc._numPoints += face.index_cnt;
+            gc._numPrimitives += 1;
+            if (face.texcoord) gc._numPrimitivesWithTexCoords += 1;
         }
     }
     
-    typedef std::vector<int> CoordIndexMap;
-    CoordIndexMap cim(lw->vertex_cnt,-1);
-    
-    // create geode, to fill in for loop below, a geoset per material.
-    osg::Geode* geode = new osg::Geode;
-
-    osgUtil::SmoothingVisitor smoother;
-
-    for(MaterialTriangles::iterator itr=mts.begin();
-        itr!=mts.end();
+    MaterialToGeometryCollectionMap::iterator itr;
+    for(itr=mtgcm.begin();
+        itr!=mtgcm.end();
         ++itr)
     {
-        // set up material
-        lwMaterial& lw_material = lw->material[itr->first];
-        osg::Material* osg_material = new osg::Material;
+        GeometryCollection& gc = itr->second;
 
-        osg::Vec4 diffuse(lw_material.r,
-                          lw_material.g,
-                          lw_material.b,
-                          1.0f);
-        osg::Vec4 ambient(lw_material.r * 0.25f,
-                          lw_material.g * 0.25f,
-                          lw_material.b * 0.25f,
-                          1.0f);
-
-        osg_material->setAmbient(osg::Material::FRONT_AND_BACK, ambient);
-        osg_material->setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
-
-        // create state
-        osg::StateSet* state = new osg::StateSet;
-        state->setAttribute(osg_material);
-        
-        // intialize cim vector with -1 to represent unassigned vertices.
-        std::fill(cim.begin(),cim.end(),-1);
-        
-        osgUtil::Tesselator::IndexVec& iv = itr->second;
-        
-        // first fill in the references.
-        int vertexCount = 0;
-        osgUtil::Tesselator::IndexVec::iterator iv_itr;
-        for(iv_itr=iv.begin();
-            iv_itr!=iv.end();
-            ++iv_itr)
+        if (gc._numPrimitives)        
         {
-            int i = *iv_itr;
-            if (cim[i]<0) cim[i] = vertexCount++;
-        }
+            lwMaterial& lw_material = lw->material[itr->first];
 
-        // copy across lw shared coords into local osg coords.
-        osg::Vec3* coord = new osg::Vec3[vertexCount];
-        for (int i=0;i<lw->vertex_cnt;++i)
+            gc._geom = new osg::Geometry;
+            
+            osg::Vec3Array* vertArray = new osg::Vec3Array(gc._numPoints);
+            gc._vertices = vertArray->begin();
+            gc._geom->setVertexArray(vertArray);
+
+            // set up color.
+            osg::Vec4Array* colors = new osg::Vec4Array(1);
+            (*colors)[0].set(lw_material.r,
+                             lw_material.g,
+                             lw_material.b,
+                             1.0f);
+                             
+            gc._geom->setColorArray(colors);
+            gc._geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    
+            // set up texture if needed.
+            if (gc._numPrimitivesWithTexCoords==gc._numPrimitives)
+            {
+                if (strlen(lw_material.name)!=0)
+                {
+                    osg::Image* image = osgDB::readImageFile(lw_material.name);
+                    if (image)
+                    {
+                        // create state
+                        osg::StateSet* stateset = new osg::StateSet;
+
+                        osg::Texture* texture = new osg::Texture;
+                        texture->setImage(image);
+                        
+                        stateset->setAttributeAndModes(texture,osg::StateAttribute::ON);
+                        gc._texturesActive=true;
+                        
+                        gc._geom->setStateSet(stateset);
+
+                        osg::Vec2Array* texcoordArray = new osg::Vec2Array(gc._numPoints);
+                        gc._texcoords = texcoordArray->begin();
+                        gc._geom->setTexCoordArray(0,texcoordArray);
+                    }
+                }
+            }
+        }        
+    }
+    
+    
+    for (i = 0; i < lw->face_cnt; ++i)
+    {
+        lwFace& face = lw->face[i];
+        if (face.index_cnt>=3)
         {
+            GeometryCollection& gc = mtgcm[face.material];
+            
+            gc._geom->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,gc._coordCount,face.index_cnt));
+            gc._coordCount += face.index_cnt;
+
             // From the spec_low.lxt :
             //   "By convention, the +X direction is to the right or east, the +Y
             //    direction is upward, and the +Z direction is forward or north"
@@ -140,33 +179,37 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
             // z upwards, x is the same - rigth/east.  To handle this difference
             // simple exchange osg_z for lwo_y, and osg_y for lwo_z.
 
-            if (cim[i]>=0) coord[cim[i]].set(lw->vertex[i*3], lw->vertex[i*3+2], lw->vertex[i*3+1]);
+            // add the corners in reverse order to reverse the windings, to keep the anticlockwise rotation of polys.
+            int j;
+            for(j=face.index_cnt-1;j>=0;--j)
+            {
+                (*gc._vertices++).set(lw->vertex[face.index[j]*3], lw->vertex[face.index[j]*3+2], lw->vertex[face.index[j]*3+1]);
+            }
+            
+            if (gc._texcoords && face.texcoord)
+            {
+                for(j=face.index_cnt-1;j>=0;--j)
+                {
+                    (*gc._texcoords++).set(face.texcoord[j*2],face.texcoord[j*2+1]);
+                }            
+            }            
         }
+    }
 
-        // copy across indices and remap them to the local coords offsets.        
-        osg::ushort* cindex = new osg::ushort[iv.size()];
-        osg::ushort* cindex_ptr = cindex;
-        for (iv_itr=iv.begin();
-            iv_itr!=iv.end();
-            ++iv_itr)
+    osg::Geode* geode = new osg::Geode;
+    
+    // add everthing into the Geode.    
+    osgUtil::SmoothingVisitor smoother;
+    for(itr=mtgcm.begin();
+        itr!=mtgcm.end();
+        ++itr)
+    {
+        GeometryCollection& gc = itr->second;
+        if (gc._geom)
         {
-            (*cindex_ptr) = cim[*iv_itr];
-            ++cindex_ptr;
+            smoother.smooth(*gc._geom);
+            geode->addDrawable(gc._geom);
         }
-        
-        int numPrim = iv.size()/3;
-        
-        // create geoset
-        
-        osg::GeoSet* gset = new osg::GeoSet;
-        gset->setPrimType(osg::GeoSet::TRIANGLES);
-        gset->setNumPrims(numPrim);
-        gset->setCoords(coord, cindex);
-        gset->setStateSet(state);
-
-        // smoother.smooth(*gset);
-
-        geode->addDrawable(gset);
 
     }
 

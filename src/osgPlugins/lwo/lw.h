@@ -29,6 +29,14 @@ struct lwMaterial
 {
   char name[LW_MAX_NAME_LEN];
   GLfloat r,g,b;
+  
+  lwMaterial()
+  {
+    r=1.0f;
+    g=1.0f;
+    b=1.0f;
+    name[0] = 0;
+  }
 };
 
 struct lwFace

@@ -7,12 +7,6 @@ osglogo
 echo osgfxbrowser dumptruck.osg
 osgfxbrowser dumptruck.osg
 
-echo slideshow3D -a introduction.xml
-slideshow3D introduction.xml
-
-echo slideshow3D -a models.xml
-slideshow3D models.xml
-
 echo osgviewer cow.osg
 osgviewer cow.osg
 

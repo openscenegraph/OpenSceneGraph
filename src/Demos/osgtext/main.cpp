@@ -60,7 +60,7 @@ void set2dScene(osg::Group* rootNode)
     osg::Geode*        geode;
     osg::Material*    textMaterial;
     osg::StateSet*  textState;
-    double            xOffset=250;
+    double            xOffset=150;
     double            yOffset=gFontSize+10;
 
     ///////////////////////////////////////////////////////////////////////////

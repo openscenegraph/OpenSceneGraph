@@ -222,7 +222,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
     osg::Vec3Array::iterator coords = coordArray->begin();
     geom->setVertexArray(coordArray);
     
-    osg::Vec3Array::iterator normals = 0;
+    osg::Vec3Array::iterator normals = osg::Vec3Array::iterator();// dummy assignment to get round stupid compiler warnings.
     if (needNormals)
     {
         osg::Vec3Array* normalArray = new osg::Vec3Array(3*ntris);
@@ -231,7 +231,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable(GLMmodel* obj,
         normals = normalArray->begin();
     }
 
-    osg::Vec2Array::iterator texcoords = 0;
+    osg::Vec2Array::iterator texcoords = osg::Vec2Array::iterator(); // dummy assignment to get round stupid compiler warnings.
     if (needTexcoords)
     {
         osg::Vec2Array* texCoordArray = new osg::Vec2Array(3*ntris);

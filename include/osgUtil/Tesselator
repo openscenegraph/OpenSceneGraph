@@ -70,7 +70,7 @@ class OSGUTIL_EXPORT Tesselator
         
         void begin(GLenum mode);
         void vertex(osg::Vec3* vertex);
-        void combine(osg::Vec3* vertex);
+        void combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4]);
         void end();
         void error(GLenum errorCode);
 
@@ -90,11 +90,63 @@ class OSGUTIL_EXPORT Tesselator
         };
 
 
+        struct NewVertex
+        {
+        
+            NewVertex():
+                _f1(0),
+                _v1(0),
+                _f2(0),
+                _v2(0),
+                _f3(0),
+                _v3(0),
+                _f4(0),
+                _v4(0) {}
+            
+            NewVertex(const NewVertex& nv):
+                _f1(nv._f1),
+                _v1(nv._v1),
+                _f2(nv._f2),
+                _v2(nv._v2),
+                _f3(nv._f3),
+                _v3(nv._v3),
+                _f4(nv._f4),
+                _v4(nv._v4) {}
+
+            NewVertex(float f1,osg::Vec3* v1,
+                      float f2,osg::Vec3* v2,
+                      float f3,osg::Vec3* v3,
+                      float f4,osg::Vec3* v4):
+                _f1(f1),
+                _v1(v1),
+                _f2(f2),
+                _v2(v2),
+                _f3(f3),
+                _v3(v3),
+                _f4(f4),
+                _v4(v4) {}
+        
+            float       _f1;
+            osg::Vec3*  _v1;
+
+            float       _f2;
+            osg::Vec3*  _v2;
+
+            float       _f3;
+            osg::Vec3*  _v3;
+
+            float       _f4;
+            osg::Vec3*  _v4;
+            
+        };
+        
+        typedef std::map<osg::Vec3*,NewVertex> NewVertexList;
         typedef std::vector<Vec3d*> Vec3dList;
 
         GLUtesselator*  _tobj;
         PrimList        _primList;
         Vec3dList       _coordData;
+        NewVertexList   _newVertexList;
         GLenum          _errorCode;
 
 };

@@ -12,7 +12,7 @@ CXXFILES =\
         Depth.cpp\
         DOFTransform.cpp\
         Drawable.cpp\
-        EarthSky.cpp\
+        ClearNode.cpp\
         Fog.cpp\
         FrontFace.cpp\
         Geode.cpp\

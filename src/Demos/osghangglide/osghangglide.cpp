@@ -2,7 +2,7 @@
 #include <osg/Notify>
 #include <osg/Depth>
 #include <osg/StateSet>
-#include <osg/EarthSky>
+#include <osg/ClearNode>
 #include <osg/Transform>
 
 #include <osgUtil/CullVisitor>
@@ -86,8 +86,8 @@ int main( int argc, char **argv )
         // osg::Depth, and setting their bin numbers to less than 0,
         // to force them to draw before the rest of the scene.
   
-        osg::EarthSky* earthSky = osgNew osg::EarthSky;
-        earthSky->setRequiresClear(false); // we've got base and sky to do it.
+        osg::ClearNode* clearNode = osgNew osg::ClearNode;
+        clearNode->setRequiresClear(false); // we've got base and sky to do it.
         
         // use a transform to make the sky and base around with the eye point.
         osg::Transform* transform = osgNew osg::Transform;
@@ -108,10 +108,10 @@ int main( int argc, char **argv )
         transform->addChild(makeBase()); // bin number -1 so draw second.      
         
         // add the transform to the earth sky.
-        earthSky->addChild(transform);
+        clearNode->addChild(transform);
         
         // add to earth sky to the scene.
-        group->addChild(earthSky);
+        group->addChild(clearNode);
 
         // the rest of the scene drawn after the base and sky above.
         group->addChild(makeTrees()); // will drop into a transparent, depth sorted bin (1)

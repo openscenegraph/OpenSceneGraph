@@ -26,7 +26,7 @@ CXXFILES =\
 	DOFTransform.cpp\
 	Drawable.cpp\
 	DrawPixels.cpp\
-	EarthSky.cpp\
+	ClearNode.cpp\
 	Fog.cpp\
 	FrameStamp.cpp\
 	FrontFace.cpp\

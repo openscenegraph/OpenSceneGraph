@@ -1,4 +1,4 @@
-#include "osg/EarthSky"
+#include "osg/ClearNode"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -8,24 +8,34 @@ using namespace osg;
 using namespace osgDB;
 
 // forward declare functions to use later.
-bool EarthSky_readLocalData(Object& obj, Input& fr);
-bool EarthSky_writeLocalData(const Object& obj, Output& fw);
+bool ClearNode_readLocalData(Object& obj, Input& fr);
+bool ClearNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
+
 RegisterDotOsgWrapperProxy g_EarthSkyProxy
 (
-    osgNew osg::EarthSky,
+    osgNew osg::ClearNode,
     "EarthSky",
     "Object Node EarthSky Group",
-    &EarthSky_readLocalData,
-    &EarthSky_writeLocalData
+    &ClearNode_readLocalData,
+    &ClearNode_writeLocalData
 );
 
-bool EarthSky_readLocalData(Object& obj, Input& fr)
+RegisterDotOsgWrapperProxy g_ClearNodeProxy
+(
+    osgNew osg::ClearNode,
+    "ClearNode",
+    "Object Node ClearNode Group",
+    &ClearNode_readLocalData,
+    &ClearNode_writeLocalData
+);
+
+bool ClearNode_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
 
-    EarthSky& es = static_cast<EarthSky&>(obj);
+    ClearNode& es = static_cast<ClearNode&>(obj);
 
     if (fr.matchSequence("requiresClear"))
     {
@@ -60,9 +70,9 @@ bool EarthSky_readLocalData(Object& obj, Input& fr)
 }
 
 
-bool EarthSky_writeLocalData(const Object& obj, Output& fw)
+bool ClearNode_writeLocalData(const Object& obj, Output& fw)
 {
-    const EarthSky& es = static_cast<const EarthSky&>(obj);
+    const ClearNode& es = static_cast<const ClearNode&>(obj);
 
     fw.indent() << "requiresClear ";
     if (es.getRequiresClear())

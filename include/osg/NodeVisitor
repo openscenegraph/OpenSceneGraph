@@ -24,7 +24,7 @@ class Projection;
 class LOD;
 class Switch;
 class Impostor;
-class EarthSky;
+class ClearNode;
 class OccluderNode;
 class Sequence;
 
@@ -210,7 +210,7 @@ class SG_EXPORT NodeVisitor : public Referenced
         virtual void apply(Sequence& node)                  { apply((Switch&)node); }
         virtual void apply(LOD& node)                       { apply((Group&)node); }
         virtual void apply(Impostor& node)                  { apply((LOD&)node); }
-        virtual void apply(EarthSky& node)                  { apply((Group&)node); }
+        virtual void apply(ClearNode& node)                 { apply((Group&)node); }
         virtual void apply(OccluderNode& node)              { apply((Group&)node); }
 
 

@@ -13,7 +13,7 @@
 #include <osg/StateSet>
 #include <osg/State>
 #include <osg/Impostor>
-#include <osg/EarthSky>
+#include <osg/ClearNode>
 #include <osg/Notify>
 #include <osg/Notify>
 
@@ -59,12 +59,12 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual void apply(osg::Projection& node);
         virtual void apply(osg::Switch& node);
         virtual void apply(osg::LOD& node);
-        virtual void apply(osg::EarthSky& node);
+        virtual void apply(osg::ClearNode& node);
         virtual void apply(osg::OccluderNode& node);
         virtual void apply(osg::Impostor& node);
 
-        void setEarthSky(const osg::EarthSky* earthSky) { _earthSky = earthSky; }
-        const osg::EarthSky* getEarthSky() const { return _earthSky.get(); }
+        void setClearNode(const osg::ClearNode* earthSky) { _clearNode = earthSky; }
+        const osg::ClearNode* getClearNode() const { return _clearNode.get(); }
 
 
         /** Switch the creation of Impostors on or off.
@@ -243,7 +243,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         float               _computed_znear;
         float               _computed_zfar;
         
-        osg::ref_ptr<const osg::EarthSky> _earthSky;
+        osg::ref_ptr<const osg::ClearNode> _clearNode;
 
         TransparencySortMode _tsm;
 	

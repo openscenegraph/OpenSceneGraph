@@ -36,7 +36,7 @@
 // UNSUPPORTED:
 //
 //   - OSG Scene Graph Node Types:
-//       LightSource, Transform, Imposter, EarthSky, 
+//       LightSource, Transform, Imposter, ClearNode, 
 //       Switch - only active child written
 //       LOD - only most detailed child  written
 //       Billboard - only static translation transform parenting child written,
@@ -2404,7 +2404,7 @@ class StateSetActionVisitor : public osg::NodeVisitor
     void apply(osg::Switch& node)     { NodeVisitor::apply(node); }
     void apply(osg::LOD& node)        { NodeVisitor::apply(node); }
     void apply(osg::Impostor& node)   { NodeVisitor::apply(node); }
-    void apply(osg::EarthSky& node)   { NodeVisitor::apply(node); }
+    void apply(osg::ClearNode& node)   { NodeVisitor::apply(node); }
 
 
     const osg::StateSet &GetActiveStateSet()
@@ -2488,7 +2488,7 @@ class DXWriteVisitor : public StateSetActionVisitor
     MessageBin &msg_bin;
 
     enum NodeTypes { LOD, BILLBOARD, LIGHTSOURCE, TRANSFORM, SWITCH, 
-                     IMPOSTER, EARTHSKY };
+                     IMPOSTER, CLEARNODE };
 
     typedef std::map< NodeTypes, int > StringMap;
     StringMap problem_nodes;
@@ -2612,8 +2612,8 @@ class DXWriteVisitor : public StateSetActionVisitor
          { problem_nodes[ TRANSFORM ]++;   apply((osg::Group&)node); }
     void apply(osg::Impostor& node)   
          { problem_nodes[ IMPOSTER ]++;    apply((osg::LOD&)node); }
-    void apply(osg::EarthSky& node)   
-         { problem_nodes[ EARTHSKY ]++;    apply((osg::Group&)node); }
+    void apply(osg::ClearNode& node)   
+         { problem_nodes[ CLEARNODE ]++;    apply((osg::Group&)node); }
 
     void ReportProblems();
 };
@@ -2652,8 +2652,8 @@ void DXWriteVisitor::ReportProblems()
                  msg_bin.Add( "WARNING:  %d Imposter(s) found ... Skipped.\n",
                               smitr->second );
                  break;
-      case EARTHSKY    :
-                 msg_bin.Add( "WARNING:  %d EarthSky(s) found ... Skipped.\n",
+      case CLEARNODE    :
+                 msg_bin.Add( "WARNING:  %d ClearNode(s) found ... Skipped.\n",
                               smitr->second );
                  break;
     }

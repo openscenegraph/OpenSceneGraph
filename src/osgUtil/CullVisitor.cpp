@@ -521,10 +521,10 @@ void CullVisitor::apply(LOD& node)
     popCurrentMask();
 }
 
-void CullVisitor::apply(osg::EarthSky& node)
+void CullVisitor::apply(osg::ClearNode& node)
 {
     // simply override the current earth sky.
-    setEarthSky(&node);
+    setClearNode(&node);
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();

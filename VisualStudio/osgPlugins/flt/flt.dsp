@@ -120,7 +120,7 @@ SOURCE=..\..\..\src\osgPlugins\flt\ExtensionRecord.cpp
 SOURCE=..\..\..\src\osgPlugins\flt\ExternalRecord.cpp
 # End Source File
 # Begin Source File
-\
+
 SOURCE=..\..\..\src\osgPlugins\flt\FaceRecord.cpp
 # End Source File
 # Begin Source File

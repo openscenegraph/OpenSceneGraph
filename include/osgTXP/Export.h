@@ -24,6 +24,4 @@
 	#  define OSGTXP_EXPORT
 #endif  
 
-#include <osg/MemoryManager>
-
 #endif

@@ -212,8 +212,8 @@ class SG_EXPORT Geometry : public Drawable
         const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
 
         void setFogCoordData(const ArrayData& arrayData) { _fogCoordData = arrayData; }
-        ArrayData& setFogCoordData() { return _fogCoordData; }
-        const ArrayData& setFogCoordData() const { return _fogCoordData; }
+        ArrayData& getFogCoordData() { return _fogCoordData; }
+        const ArrayData& getFogCoordData() const { return _fogCoordData; }
         
         
 

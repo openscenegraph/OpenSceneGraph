@@ -1,9 +1,37 @@
+/*
+ * Lightwave Object version 2 loader for Open Scene Graph
+ * Version 2 introduced in Lightwave v6.0
+ *
+ * Copyright (C) 2002 Pavel Moloshtan <pasha@moloshtan.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ *
+ * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
+ * real-time rendering of large 3D photo-realistic models. 
+ * The OSG homepage is http://www.openscenegraph.org/
+ */
+
 #include <iostream>
 #include <fstream>
 
 #include <osg/Notify>
 #include <osg/Geode>
+#include <osg/Group>
 #include <osg/Texture>
+#include <osg/Material>
+#include <osg/CullFace>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -13,6 +41,7 @@
 
 Lwo2::Lwo2()
 {
+  _successfully_read = false;
 };
 
 Lwo2::~Lwo2()
@@ -88,49 +117,49 @@ Lwo2::ReadFile( const string& filename )
 
     if (current_tag_name == tag_TAGS) 
       {
-	_read_tag_strings(current_tag_size);
+    _read_tag_strings(current_tag_size);
       } 
     else if (current_tag_name == tag_LAYR) 
       {
-	_read_layer(current_tag_size);
+    _read_layer(current_tag_size);
       }
     else if (current_tag_name == tag_PNTS) 
       {
-	_read_points(current_tag_size);
+    _read_points(current_tag_size);
       }
     else if (current_tag_name == tag_VMAP) 
       {
-	_read_vertex_mapping(current_tag_size);
+    _read_vertex_mapping(current_tag_size);
       }
     else if (current_tag_name == tag_VMAD) 
       {
-	_read_polygons_mapping(current_tag_size);
+    _read_polygons_mapping(current_tag_size);
       }
     else if (current_tag_name == tag_POLS) 
       {
-	_read_polygons(current_tag_size);
+    _read_polygons(current_tag_size);
       }
     else if (current_tag_name == tag_PTAG) 
       {
-	_read_polygon_tag_mapping(current_tag_size);
+    _read_polygon_tag_mapping(current_tag_size);
       }
     else if (current_tag_name == tag_CLIP) 
       {
-	_read_image_definition(current_tag_size);
+    _read_image_definition(current_tag_size);
       }
     else if (current_tag_name == tag_SURF) 
       {
-	_read_surface(current_tag_size);
+    _read_surface(current_tag_size);
       } 
     else 
       {
-	_fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+    _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
       }
   }
 
   _fin.close();
 
-  return true;
+  return _successfully_read = true;
 }
 
 unsigned char 
@@ -192,23 +221,23 @@ Lwo2::_read_string(string& str)
 void 
 Lwo2::_print_tag(unsigned int tag, unsigned int size) {
   notify(DEBUG_INFO) << "Found tag " 
-		     << char(tag >> 24) 
-		     << char(tag >> 16) 
-		     << char(tag >>  8) 
-		     << char(tag) 
-		     << " size " << size << " bytes" 
-		     << endl;
+             << char(tag >> 24) 
+             << char(tag >> 16) 
+             << char(tag >>  8) 
+             << char(tag) 
+             << " size " << size << " bytes" 
+             << endl;
 }
 
 // print 4-char type
 void 
 Lwo2::_print_type(unsigned int type) {
   notify(DEBUG_INFO) << "  type   \t" 
-		     << char(type >> 24) 
-		     << char(type >> 16) 
-		     << char(type >>  8) 
-		     << char(type) 
-		     << endl;
+             << char(type >> 24) 
+             << char(type >> 16) 
+             << char(type >>  8) 
+             << char(type) 
+             << endl;
 }
 
 // read TAGS info
@@ -286,19 +315,19 @@ Lwo2::_read_polygons(unsigned long size)
       unsigned short vertex_count;
 
       while (size > 0)
-	{
-	  vertex_count = _read_short() & 0x03FF;
-	  size -= 2;
+    {
+      vertex_count = _read_short() & 0x03FF;
+      size -= 2;
 
           PointsList* points_list = new PointsList;
           _current_layer->_polygons.push_back(points_list);
       
-	  while (vertex_count--)
-	    {
-	      points_list->push_back(_read_short());
-	      size -= 2;
-	    }     
-	}
+      while (vertex_count--)
+        {
+          points_list->push_back(_read_short());
+          size -= 2;
+        }     
+    }
     }
   else 
     {
@@ -338,12 +367,12 @@ Lwo2::_read_vertex_mapping(unsigned long size)
       float u;
       float v;
       while (count--)
-	{
-	  n = _read_short();
-	  u = _read_float();
-	  v = _read_float();
-	  _current_layer->_points_map[n].set(u, v);
-	}
+    {
+      n = _read_short();
+      u = _read_float();
+      v = _read_float();
+      _current_layer->_points_map[n].set(u, v);
+    }
     }
   else 
     {
@@ -352,7 +381,7 @@ Lwo2::_read_vertex_mapping(unsigned long size)
       notify(DEBUG_INFO) << "  skipping..." << endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
-	 
+     
 }
 
 // read VMAD info
@@ -385,16 +414,16 @@ Lwo2::_read_polygons_mapping(unsigned long size)
       float u;
       float v;
       while (count--)
-	{
-	  point_index = _read_short();
-	  polygon_index = _read_short();
-	  u = _read_float();
-	  v = _read_float();
+    {
+      point_index = _read_short();
+      polygon_index = _read_short();
+      u = _read_float();
+      v = _read_float();
 
-	  Lwo2PolygonMapping pm(polygon_index, Vec2(u, v));
-	  _current_layer->_polygons_map.insert(PairVMAD(point_index, pm));
+      Lwo2PolygonMapping pm(polygon_index, Vec2(u, v));
+      _current_layer->_polygons_map.insert(PairVMAD(point_index, pm));
 
-	}
+    }
     }
   else 
     {
@@ -403,7 +432,7 @@ Lwo2::_read_polygons_mapping(unsigned long size)
       notify(DEBUG_INFO) << "  skipping..." << endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
-	 
+     
 }
 
 // read PTAG info
@@ -425,11 +454,11 @@ Lwo2::_read_polygon_tag_mapping(unsigned long size)
       short tag_index;
 
       while (count--)
-	{
-	  polygon_index = _read_short();
-	  tag_index = _read_short();
-	  _current_layer->_polygons_tag[polygon_index] = tag_index;
-	}
+    {
+      polygon_index = _read_short();
+      tag_index = _read_short();
+      _current_layer->_polygons_tag[polygon_index] = tag_index;
+    }
     }
   else 
     {
@@ -465,14 +494,14 @@ Lwo2::_read_image_definition(unsigned long size)
       string name;
       _read_string(name);
       size -= name.length() + name.length() % 2; 
-		
+        
       if (index + 1 > _images.size())
-	{
-	  _images.resize(index + 1);
-	}
-		
+    {
+      _images.resize(index + 1);
+    }
+        
       _images[index] = name.c_str();
-		
+        
       notify(DEBUG_INFO) << "  name   \t'" << name << "'" << endl;
     }
 }
@@ -483,6 +512,8 @@ void
 Lwo2::_read_surface(unsigned long size)
 {
   Lwo2Surface* surface = new Lwo2Surface();
+  surface->image_index = -1;
+  surface->state_set = NULL;
 
   _read_string(surface->name);
   size -= surface->name.length() + surface->name.length() % 2; 
@@ -496,7 +527,7 @@ Lwo2::_read_surface(unsigned long size)
   unsigned long current_tag_name;
   unsigned short current_tag_size;
 
-  while (size > 0) 
+  while (size > 0 && !_fin.eof()) 
     {
       current_tag_name = _read_long();
       size -= 4;
@@ -506,63 +537,74 @@ Lwo2::_read_surface(unsigned long size)
       _print_tag(current_tag_name, current_tag_size);
     
       if (current_tag_name == tag_BLOK) 
-	{
+    {
 
-	  // BLOK
-	  int blok_size = current_tag_size;
-	  size -= blok_size;
-	  while (blok_size > 0) 
-	    {
-	      current_tag_name = _read_long();
-	      blok_size -= 4;
-	      current_tag_size = _read_short();
-	      blok_size -= 2;
-	      notify(DEBUG_INFO) << "  ";
-	      _print_tag(current_tag_name, current_tag_size);
+      // BLOK
+      int blok_size = current_tag_size;
+      size -= blok_size;
+      while (blok_size > 0) 
+        {
+          current_tag_name = _read_long();
+          blok_size -= 4;
+          current_tag_size = _read_short();
+          blok_size -= 2;
+          notify(DEBUG_INFO) << "  ";
+          _print_tag(current_tag_name, current_tag_size);
 
-	      if (current_tag_name == tag_IMAG)
-		{
-		  surface->image_index = _read_short();
-		  notify(DEBUG_INFO) << "    image index\t" << surface->image_index << endl;
-		  blok_size -= 2;
-		}
-	      else if (current_tag_name == tag_IMAP) 
-		{
+          if (current_tag_name == tag_IMAG)
+        {
+          surface->image_index = _read_short();
+          notify(DEBUG_INFO) << "    image index\t" << surface->image_index << endl;
+          blok_size -= 2;
+        }
+          else if (current_tag_name == tag_IMAP) 
+        {
            
-		  // IMAP
-		  int imap_size = current_tag_size;
-		  blok_size -= imap_size;
+          // IMAP
+          int imap_size = current_tag_size;
+          blok_size -= imap_size;
             
-		  string ordinal;
-		  _read_string(ordinal);
-		  imap_size -= ordinal.length() + ordinal.length() % 2; 
-		  notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal << "'" << endl;
+          string ordinal;
+          _read_string(ordinal);
+          imap_size -= ordinal.length() + ordinal.length() % 2; 
+          notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal << "'" << endl;
 
-		  while(imap_size > 0)
-		    {
-		      current_tag_name = _read_long();
-		      imap_size -= 4;
-		      current_tag_size = _read_short();
-		      imap_size -= 2;
-		      notify(DEBUG_INFO) << "    ";
-		      _print_tag(current_tag_name, current_tag_size);
+          while(imap_size > 0)
+            {
+              current_tag_name = _read_long();
+              imap_size -= 4;
+              current_tag_size = _read_short();
+              imap_size -= 2;
+              notify(DEBUG_INFO) << "    ";
+              _print_tag(current_tag_name, current_tag_size);
 
                       _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-		      imap_size -= current_tag_size + current_tag_size % 2;
-		    }
-		}
-	      else 
-		{
-		  _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-		  blok_size -= current_tag_size + current_tag_size % 2;
-		}
-	    }
-	}
+              imap_size -= current_tag_size + current_tag_size % 2;
+            }
+        }
+          else 
+        {
+          _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+          blok_size -= current_tag_size + current_tag_size % 2;
+        }
+        }
+    }
+      else if (current_tag_name == tag_COLR)
+    {
+      surface->color = Vec3(_read_float(), _read_float(), _read_float());
+          notify(DEBUG_INFO) << "  color   \t" << surface->color << endl;
+      current_tag_size -= 12;
+      size -= 12;
+
+      // skip ununderstooded envelope
+      _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+      size -= current_tag_size + current_tag_size % 2;
+    }
       else 
-	{
-	  _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-	  size -= current_tag_size + current_tag_size % 2;
-	}
+    {
+      _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+      size -= current_tag_size + current_tag_size % 2;
+    }
     }
 
   _surfaces[surface->name] = surface;
@@ -571,58 +613,71 @@ Lwo2::_read_surface(unsigned long size)
 // Generation OSG Geode object from parsed LWO2 file
 
 bool 
-Lwo2::GenerateGeode( Geode& geode )
+Lwo2::GenerateGroup( Group& group )
 {
+  if (!_successfully_read) return false;
 
-  // loading images
-  vector< Image* > _loaded_images;
-  osg::notify(DEBUG_INFO) << "  images:\t" << _images.size() << endl;
-  IteratorString string_itr;
-  for (string_itr = _images.begin(); string_itr != _images.end(); string_itr++)
-    {
-      string name = *string_itr;
-      if (name.length() > 1)
-	{
-	  notify(DEBUG_INFO) << "\tloading '" << name << "'" << endl;
-	  Image* image = osgDB::readImageFile(name);
-	  notify(DEBUG_INFO) << "\tresult - " << image << endl;
-	  _loaded_images.push_back(image);
-	}
-      else
-	{
-	  _loaded_images.push_back(0);
-	}
-    }
+  // generate StateSets for each surface
+  _generate_statesets_from_surfaces();
 
   // create geometry from all layers
   for (IteratorLayers itr = _layers.begin(); itr != _layers.end(); itr++)
     {
-      osg::Geometry* geometry = new osg::Geometry();
-      (*itr).second->GenerateGeometry(*geometry);
+      osg::Geode* geode = new osg::Geode();
+      (*itr).second->GenerateGeode(*geode, _tags.size());
 
       // assign StateSet for each PTAG group
+      for (unsigned int i = 0; i < geode->getNumDrawables(); i++)
+     {
+       geode->getDrawable(i)->setStateSet(_surfaces[_tags[i]]->state_set);
+     }
 
-      // simple case with one texture only
-      if (_tags.size() == 1)
-	{
-	  Image* image = _loaded_images[_surfaces[_tags[0]]->image_index];
-	  if (image)
-	    {
-	      StateSet* state_set = new osg::StateSet;
-
-	      Texture* texture = new osg::Texture;
-	      texture->setImage(image);
-                        
-	      state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);
-                        
-	      geometry->setStateSet(state_set);
-	    }
-	}
-
-      geode.addDrawable(geometry);
+      group.addChild(geode);
     }
 
   return true;
+}
+
+// generate StateSets for each surface
+void
+Lwo2::_generate_statesets_from_surfaces()
+{
+  for (IteratorSurfaces itr_surf = _surfaces.begin(); itr_surf != _surfaces.end(); itr_surf++)
+    {
+      Lwo2Surface* surface = (*itr_surf).second;
+      StateSet* state_set = new osg::StateSet;
+
+      // check if exist texture image for this surface
+      if (surface->image_index >= 0) 
+    {
+      notify(DEBUG_INFO) << "\tloading image '" << _images[surface->image_index] << "'" << endl;
+      Image* image = osgDB::readImageFile(_images[surface->image_index]);
+      notify(DEBUG_INFO) << "\tresult - " << image << endl;
+      if (image)
+        {
+          Texture* texture = new osg::Texture;
+          texture->setImage(image);
+          state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
+        }
+    }
+
+      // set color
+      Material* material = new Material();
+      Vec4 color(surface->color[0], 
+         surface->color[1], 
+         surface->color[2], 
+         1.0f);
+      material->setDiffuse(Material::FRONT_AND_BACK, color);
+      state_set->setAttribute(material);
+
+      // setup culling
+      CullFace* cull = new CullFace();
+      cull->setMode(CullFace::BACK);
+      state_set->setAttribute(cull);
+      state_set->setMode(GL_CULL_FACE, StateAttribute::ON);
+
+      surface->state_set = state_set;
+    }
 }
 
 // makes 4-byte integer tag from four chars 

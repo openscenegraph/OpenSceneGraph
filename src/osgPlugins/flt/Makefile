@@ -45,16 +45,17 @@ C++FILES = \
 
 TARGET_BASENAME = osgdb_flt
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(DL_EXT)
 
-LIB = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+LIB = 
+LOADABLE = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
 
-TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(DL_EXT)
 
 LIBS    =  $(GL_LIBS) -losg -losgDB
+MACOSXLIBS = -L$(OSGHOME)/lib -losg -losgDB -lstdc++
 
-C++FLAGS += -I. -I$(OSGHOME)/include 
-
+C++FLAGS += -I. -I$(OSGHOME)/include
 LDFLAGS += -L$(OSGHOME)/lib
 
 include $(OSGHOME)/Make/makerules

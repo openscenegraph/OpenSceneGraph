@@ -74,6 +74,10 @@
     #define fabsf (float)fabs
     #endif
 
+    #ifndef atan2f
+    #define atan2f (float)atan2
+    #endif
+
 #endif
 
 #if (defined(WIN32) && !(defined(_MSC_VER) && (_MSC_VER >= 1300)) && !defined(__MINGW32__) ) || \

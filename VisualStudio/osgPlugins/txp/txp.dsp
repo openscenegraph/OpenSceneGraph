@@ -186,10 +186,6 @@ SOURCE=..\..\..\src\osgPlugins\txp\TrPageParser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\txp\TrPageViewer.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\txp\TrPagePageManager.cpp
 # End Source File
 # End Group

@@ -89,10 +89,18 @@ LINK32=link.exe
 
 SOURCE=..\..\..\src\Demos\osgtxp\osgtxp.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Demos\txp\TrPageViewer.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\src\Demos\txp\TrPageViewer.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

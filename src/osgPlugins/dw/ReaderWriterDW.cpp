@@ -44,7 +44,7 @@ public:
         opacity=1; specular=0; specexp=0; fname="";TextureWidth=1; TextureHeight=1;
         ctx=NULL; tx=NULL; id=0; dstate=NULL;colour[0]=colour[1]=colour[2]=colour[3]=1;
         bright=halfIn=halfOut=falloff=0;atyp=NONE;
-        _lightnum=0;
+        _lightnum=1;
     }
     ~dwmaterial() { }
     void settexture() {
@@ -503,13 +503,14 @@ public:
             gset->setCoords( verts, nusidx );
             if (themat->isType(dwmaterial::PointLight) || themat->isType(dwmaterial::SpotLight)) {
                 Vec4 pos;
-                pos.set(0,0,0,1);
+                pos.set(0.0f,0.0f,0.0f,0.0f);
                 for (int i=0; i<nverts; i++) {
                     pos[0]+=verts[i].x();
                     pos[1]+=verts[i].y();
                     pos[2]+=verts[i].z();
                 }
                 pos/=nverts;
+                pos[3]=1.0f;
                 LightSource *ls=themat->makeLight(pos);
                 grp->addChild(ls);
             } else {

@@ -26,6 +26,7 @@ CullSettings::CullSettings(const CullSettings& cs)
 
 void CullSettings::setDefaults()
 {
+    _inheritanceMask = ALL_VARIABLES;
     _cullingMode = DEFAULT_CULLING;
     _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 2.0f;
@@ -45,21 +46,23 @@ void CullSettings::setDefaults()
     //_nearFarRatio = 0.00005f;
 }
 
-void CullSettings::setCullSettings(const CullSettings& settings)
+void CullSettings::inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask)
 {
-    _computeNearFar = settings._computeNearFar;
-    _nearFarRatio = settings._nearFarRatio;
-    _impostorActive = settings._impostorActive;
-    _depthSortImpostorSprites = settings._depthSortImpostorSprites;
-    _impostorPixelErrorThreshold = settings._impostorPixelErrorThreshold;
-    _numFramesToKeepImpostorSprites = settings._numFramesToKeepImpostorSprites;
-    _cullMask = settings._cullMask;
-    _cullMaskLeft = settings._cullMaskLeft;
-    _cullMaskRight = settings._cullMaskRight;
-    _cullingMode = settings._cullingMode;
-    _LODScale = settings._LODScale;
-    _smallFeatureCullingPixelSize = settings._smallFeatureCullingPixelSize;
+    if (inheritanceMask & COMPUTE_NEAR_FAR_MODE) _computeNearFar = settings._computeNearFar;
+    if (inheritanceMask & NEAR_FAR_RATIO) _nearFarRatio = settings._nearFarRatio;
+    if (inheritanceMask & IMPOSTOR_ACTIVE) _impostorActive = settings._impostorActive;
+    if (inheritanceMask & DEPTH_SORT_IMPOSTOR_SPRITES) _depthSortImpostorSprites = settings._depthSortImpostorSprites;
+    if (inheritanceMask & IMPOSTOR_PIXEL_ERROR_THRESHOLD) _impostorPixelErrorThreshold = settings._impostorPixelErrorThreshold;
+    if (inheritanceMask & NUM_FRAMES_TO_KEEP_IMPOSTORS_SPRITES) _numFramesToKeepImpostorSprites = settings._numFramesToKeepImpostorSprites;
+    if (inheritanceMask & CULL_MASK) _cullMask = settings._cullMask;
+    if (inheritanceMask & CULL_MASK_LEFT) _cullMaskLeft = settings._cullMaskLeft;
+    if (inheritanceMask & CULL_MASK_RIGHT) _cullMaskRight = settings._cullMaskRight;
+    if (inheritanceMask & CULLING_MODE) _cullingMode = settings._cullingMode;
+    if (inheritanceMask & LOD_SCALE) _LODScale = settings._LODScale;
+    if (inheritanceMask & SMALL_FEATURE_CULLING_PIXEL_SIZE) _smallFeatureCullingPixelSize = settings._smallFeatureCullingPixelSize;
+    if (inheritanceMask & CLAMP_PROJECTION_MATRIX_CALLBACK) _clampProjectionMatrixCallback = settings._clampProjectionMatrixCallback;
 }
+
 
 static ApplicationUsageProxy ApplicationUsageProxyCullSettings_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_COMPUTE_NEAR_FAR_MODE <mode>","DO_NOT_COMPUTE_NEAR_FAR | COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES | COMPUTE_NEAR_FAR_USING_PRIMITIVES");
 static ApplicationUsageProxy ApplicationUsageProxyCullSettings_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NEAR_FAR_RATIO <float>","Set the ratio between near and far planes - must greater than 0.0 but less than 1.0.");

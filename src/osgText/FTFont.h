@@ -96,7 +96,7 @@ class FTGL_EXPORT FTFont
          * @return    Descender height
          */
         virtual int    Descender() const;
-        
+      
         /**
          * Gets the advance width for a string.
          *
@@ -108,10 +108,18 @@ class FTGL_EXPORT FTFont
         /**
          * Gets the advance width for a string.
          *
-         * param string    a char string
+         * @param string    a char string
          * @return        advance width
          */
         float Advance( const char* string);
+
+        /**
+         * Gets the advance width for a string.
+         *
+         * @param string    a pointer to an array of decoded unicode characters
+         * @return        advance width
+         */
+        float Advance( std::vector<int>::const_iterator string);
 
         /**
          * Renders a string of characters
@@ -120,6 +128,14 @@ class FTGL_EXPORT FTFont
          */
         // mrn@changes
         virtual void render( const char* string , unsigned int renderContext=0);
+
+        /**
+         * Renders a string of characters
+         * 
+         * @param string    unicode string to be output.     
+         */
+        // mrn@changes
+        virtual void render( std::vector<int>::const_iterator string , unsigned int renderContext=0);
 
         /**
          * Renders a string of characters
@@ -135,7 +151,6 @@ class FTGL_EXPORT FTFont
          * @return    The current error code.
          */
         virtual FT_Error Error() const { return err;}
-
 
     protected:
         /**

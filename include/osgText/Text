@@ -26,6 +26,7 @@
 #include <osg/Vec2>
 
 #include <osgText/Font>
+#include <osgText/EncodedText>
 
 #include <string>
 
@@ -107,8 +108,8 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         Font* getFont() { return _font.get(); }
         const Font* getFont() const { return _font.get(); }
 
-        void setText(const char* text)    { _text=text; _initAlignment=false; }
-        void setText(const std::string& text) { _text=text; _initAlignment=false; }
+        void setText(const char* text);
+        void setText(const std::string& text);
         const std::string& getText() const { return _text; }
 
         virtual bool supports(PrimitiveFunctor& pf) const;
@@ -120,6 +121,8 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
 
         const osg::Vec3& getAlignmentPos() const { return _alignmentPos; };
 
+		void setEncodedText(EncodedText* encodedText) { _encodedText = encodedText; }
+		const EncodedText* getEncodedText() const { return _encodedText.get(); }
 
     protected:
 
@@ -152,6 +155,8 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         int                 _boundingBoxType;
         AxisAlignment       _axisAlignment;
 
+        osg::ref_ptr<EncodedText>	_encodedText;
+        
         osg::Vec3           _pos;        
         osg::Vec3           _alignmentPos;
         osg::Vec4           _color;

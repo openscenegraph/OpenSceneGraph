@@ -45,7 +45,7 @@ namespace osgText {
         virtual const char* libraryName() const { return #library; } \
         virtual const char* className() const { return #name; } \
 
-
+class EncodedText;
 
 class OSGTEXT_EXPORT Font : public osg::Object
 {
@@ -73,12 +73,12 @@ class OSGTEXT_EXPORT Font : public osg::Object
 
         virtual bool create(osg::State& state,int  pointSize, unsigned int res = 72 );
         virtual bool create(osg::State& state);
-        virtual void output(osg::State& state,const char* text) const;
+        virtual void output(osg::State& state, const EncodedText* text) const;
 
         virtual bool isOk(void) const { return _init; }
         virtual bool isCreated(void) const { return isOk() && _created; }
 
-        virtual float getWidth(const char* text) const;
+        virtual float getWidth(const EncodedText* text) const;
         virtual int getHeight() const;
         virtual int getDescender() const;
         virtual int getAscender() const;

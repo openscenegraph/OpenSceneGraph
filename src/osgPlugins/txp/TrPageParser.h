@@ -34,9 +34,11 @@
 #include <vector>
 #include "trpage_read.h"
 
+
 namespace txp
 {
     class TrPageArchive;
+    struct DefferedLightAttribute;
     
 	// Group ID Info
 	// Used to keep track of which groups are which IDs for parents
@@ -155,8 +157,9 @@ namespace txp
 		int  getBillboardType() { return billboard_type; }
 		void setBillboardCenter(trpg3dPoint center) { billboard_center = center; }
 		osg::Vec3 getBillboardCenter() { return osg::Vec3(billboard_center.x, billboard_center.y, billboard_center.z); }
-		
-		
+	
+		DefferedLightAttribute& GetLightAttribute(int attr_index);
+
     protected:
 		// Called on start children
         bool StartChildren(void *);
@@ -231,7 +234,7 @@ namespace txp
 		// Geometry			Geometry
 		// It is tested on this kind of archive and it works. 
 		// nick@terrex.com
-		std::vector<osg::Node*>				deadNodes;
+		std::vector<osg::Node*>			deadNodes;
     };
 
 	// Gets local texture via the image helper
@@ -311,6 +314,16 @@ namespace txp
     protected:
         TrPageParser*parse;
     };
+
+	//----------------------------------------------------------------------------
+    class lightRead: public trpgr_Callback {
+    public:
+        lightRead(TrPageParser*in_parse);
+        void *Parse(trpgToken tok,trpgReadBuffer &buf);
+    protected:
+        TrPageParser*parse;
+    };
+
     
 } // namespace txp
 #endif

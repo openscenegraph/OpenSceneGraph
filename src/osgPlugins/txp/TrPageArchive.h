@@ -35,8 +35,19 @@
 #include <vector>
 #include <memory> // for auto_ptr
 
+namespace osgSim{
+	class LightPointNode;
+}
+
 namespace txp
 {
+	// this one handles different placement of light direction in osg and terrapage
+	struct DefferedLightAttribute{
+		// light point at (0,0,0) looking in (0,0,0) direction
+		osg::ref_ptr<osgSim::LightPointNode> lightPoint;
+		osg::ref_ptr<osg::StateSet> fallback;
+		osg::Vec3 attitude;
+	};
     /// main class for loading terrapage archives  
     class TrPageArchive : public trpgr_Archive
     {
@@ -53,7 +64,15 @@ namespace txp
 
         /// Load and create models, usualy OpenFlight models
         bool LoadModels();
-        
+
+		void LoadLightAttributes();
+
+		void AddLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
+
+		DefferedLightAttribute& GetLightAttribute(std::size_t i) {
+			return lightAttrTable[i];
+		};
+ 
         /** Load a TXP tile and 
         @param x Tile location input - x dimension.
         @param y Tile location input - y dimension.
@@ -100,6 +119,9 @@ namespace txp
         std::vector< osg::ref_ptr<osg::Texture2D> >   m_textures;
         std::vector< osg::ref_ptr<osg::StateSet> >  m_gstates;
         std::vector< osg::ref_ptr<osg::Node> >      m_models;
+		// light attributes vector
+        std::vector<DefferedLightAttribute>	lightAttrTable;
+
         std::string   m_alternate_path;
 		trpgMemReadBuffer buf;
     };

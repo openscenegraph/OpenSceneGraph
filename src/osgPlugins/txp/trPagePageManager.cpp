@@ -157,7 +157,7 @@ bool OSGPageManager::EndThread()
         // then wait for the the thread to stop running.
         while(pagingThread.isRunning())
         {
-            std::cout<<"Waiting for TXP pager thread to cancel"<<std::endl;
+            osg::notify(osg::INFO)<<"Waiting for TXP pager thread to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
        

@@ -63,6 +63,9 @@ bool TerrapageNode::loadDatabase()
     // Note: Should be checking the return values
     txpArchive->LoadModels();
 
+    // Note: Should be checking the return values
+    txpArchive->LoadLightAttributes();
+
     // get the exents of the archive
     const trpgHeader *head = txpArchive->GetHeader();
     trpg2dPoint sw,ne;

@@ -37,7 +37,7 @@ CXXFILES =\
 
 INC += -I$(THISDIR)
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += -losgSim $(OSG_LIBS) $(OTHER_LIBS)
 
 PLUGIN_TARGET_BASENAME = txp
 include $(TOPDIR)/Make/cygwin_plugin_def

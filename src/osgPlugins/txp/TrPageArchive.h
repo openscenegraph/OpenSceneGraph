@@ -31,13 +31,11 @@
 
 #include "TrPageParser.h"
 
+#include <osgSim/LightPointNode>
+
 #include <string>
 #include <vector>
 #include <memory> // for auto_ptr
-
-namespace osgSim{
-    class LightPointNode;
-}
 
 namespace txp
 {

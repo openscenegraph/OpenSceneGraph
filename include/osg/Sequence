@@ -34,7 +34,8 @@ public :
     const float getTime(int frame) const;
 
     /** Interval modes */
-    enum LoopMode {
+    enum LoopMode
+    {
         LOOP,
         SWING
     };
@@ -43,7 +44,8 @@ public :
     void setInterval(LoopMode mode, int begin, int end);
 
     /** Get sequence mode & interval. */
-    inline void getInterval(LoopMode& mode, int& begin, int& end) const {
+    inline void getInterval(LoopMode& mode, int& begin, int& end) const
+    {
         mode = _loopMode;
         begin = _begin;
         end = _end;
@@ -53,13 +55,15 @@ public :
     void setDuration(float speed, int nreps = -1);
 
     /** Get duration */
-    inline void getDuration(float& speed, int& nreps) const {
+    inline void getDuration(float& speed, int& nreps) const
+    {
         speed = _speed;
         nreps = _nreps;
     }
 
     /** Sequence modes */
-    enum SequenceMode {
+    enum SequenceMode
+    {
         START,
         STOP,
         PAUSE,

@@ -8,26 +8,31 @@ using namespace osg;
 Sequence::Sequence() :
     Switch(),
     _last(-1.0f),
-    _step(1)
+    _step(1),
+    _loopMode(LOOP),
+    _begin(0),
+    _end(-1),
+    _speed(0),
+    _nreps(0),
+    _nrepsremain(0),
+    _mode(STOP)
 {
-    _frameTime.clear();
-    setInterval(LOOP, 0, -1);
-    setMode(STOP);
-
     setNumChildrenRequiringAppTraversal(1);
 }
 
 Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
     Switch(seq, copyop),
     _last(seq._last),
-    _frameTime(seq._frameTime),
-    _step(seq._step)
+    _step(seq._step),
+    _loopMode(seq._loopMode),
+    _begin(seq._begin),
+    _end(seq._end),
+    _speed(seq._speed),
+    _nreps(seq._nreps),
+    _nrepsremain(seq._nrepsremain),
+    _mode(seq._mode)
 {
-    setInterval(seq._loopMode, seq._begin, seq._end);
-    setDuration(seq._speed, seq._nreps);
-    setMode(seq._mode);
-
-    setNumChildrenRequiringAppTraversal(1);
+    setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()+1);            
 }
 
 void Sequence::setTime(int frame, float t)

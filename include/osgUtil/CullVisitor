@@ -24,6 +24,8 @@
 #include <map>
 #include <vector>
 
+#include <osg/Vec3>
+
 namespace osgUtil {
 
 /**
@@ -182,6 +184,16 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         
         const float getCalculatedFarPlane() const { return _calculated_zfar; }
 
+	//SandB
+	/**sets the flag for detailed culling*/
+	void setDetailedCulling(bool detailed) {_detailedCulling = detailed;}
+
+	/**gets the status of detailed culling*/
+	const bool getDetailedCulling() const {return _detailedCulling;}
+
+        /**calculates unit directions of vectors that are intersections of cameras' clipping planes*/
+        void calcClippingDirections() const;
+
     protected:
 
         /** prevent unwanted copy construction.*/
@@ -232,6 +244,24 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 	void updateCalculatedNearFar(const osg::BoundingBox& bb);
 
     	void updateCalculatedNearFar(const osg::Vec3& pos);
+		
+
+        //SandB added: ////////////////////////////////////////////////////////////////////////////////
+        /**updates near and far clipping values for case of detailed culling*/
+        void updateCalculatedNearFar(osg::Drawable* pDrawable);
+
+        /**calculates near for "global" vertex in scene*/
+        double calculateZNear(const osg::Vec3& position, const osg::Vec3& eye, const osg::Vec3& look);
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+        /**unit vector of direction along intersection of cameras left and top clipping planes in "global" coordinates*/
+        mutable osg::Vec3 _LeftUp;
+        /**unit vector of direction along intersection of cameras right and top clipping planes in "global" coordinates*/
+        mutable osg::Vec3 _RightUp;
+        /**unit vector of direction along intersection of cameras left and down clipping planes in "global" coordinates*/
+        mutable osg::Vec3 _LeftDown;
+        /**unit vector of direction along intersection of cameras right and down clipping planes in "global" coordinates*/
+        mutable osg::Vec3 _RightDown;
 
 
         /** Add a drawable to current render graph.*/
@@ -271,6 +301,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** create an impostor sprite by setting up a pre-rendering stage
           * to generate the impostor texture. */
         osg::ImpostorSprite* createImpostorSprite(osg::Impostor& node);
+
+		bool _detailedCulling;
 
         typedef std::vector< osg::ref_ptr<CullViewState> > CullViewStateStack;
         CullViewStateStack          _viewStateStack;

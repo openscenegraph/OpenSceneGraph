@@ -16,7 +16,7 @@ OSG News (most significant items from ChangeLog)
     library which provides support for true type font rendering, as textured,
     polygonal, pixmap, bitmap and 3D fonts.
     
-    An new osg::Matrix class has been implemented which cleans its interface.
+    We now have new osg::Matrix implementation which cleans up its interface.
     Also all angular paramters are now based on radians rather than degrees
     as before (and as in Performer), this has been done to be more consistent
     with the basic trignometric functions and standard maths conventions.
@@ -39,10 +39,10 @@ OSG News (most significant items from ChangeLog)
     src/Demos/osgcluster has been added to demonstrate how easy it is
     to set up a graphics cluster across a standard networked PC's.
 
-    There have been many minor code changes to fix bugs, bottlenecks or 
-    hinderances to extensibility have been addressed, there are too many 
-    to list, but it does represent a significant step towards API maturity
-    and a beta release which is now not far away.
+    There have been many minor code changes to fix bugs and address 
+    performance bottlenecks or to improve extensibility was, representing
+    a significant step towards API maturity and a beta release which is 
+    now not far away.
 
 
 9th August 2001 - osg-0.8.42.tar.gz

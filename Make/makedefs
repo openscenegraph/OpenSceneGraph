@@ -134,8 +134,6 @@ endif
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm
 
-  
-
 endif
 
 #### Linux specific definitions
@@ -149,6 +147,7 @@ ifeq ($(OS),Linux)
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
+  LIBS              = -lstdc++
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype

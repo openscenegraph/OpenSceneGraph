@@ -703,10 +703,8 @@ class ReaderWriterGEO : public ReaderWriter
             osg::MatrixTransform *numt=NULL;
             std::string    ttfPath("fonts/times.ttf");
             int    gFontSize1=2;
-            osgText::PolygonFont*    polygonFont= new  osgText::PolygonFont(ttfPath,
-                                                                 gFontSize1,
-                                                                 3);
-            osgText::Text *text= new  osgText::Text(polygonFont);
+            osgText::Text *text= new  osgText::Text;
+            text->setFont(ttfPath);
             const geoField *gfd=gr->getField(GEO_DB_TEXT_NAME);
             //const char *name=gfd ? gfd->getChar() : "a text";
             gfd=gr->getField(GEO_DB_TEXT_STRING);

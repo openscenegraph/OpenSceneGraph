@@ -10,269 +10,188 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
-//Distributed under the terms of the GNU Library General Public License (LGPL)
-//as published by the Free Software Foundation.
-
-/* --------------------------------------------------------------------------
- *
- *    openscenegraph textLib / FTGL wrapper
- *
- * --------------------------------------------------------------------------
- *    
- *    prog:    max rheiner;mrn@paus.ch
- *    date:    4/25/2001    (m/d/y)
- *
- * --------------------------------------------------------------------------
- *
- * --------------------------------------------------------------------------
- */
-
 
 #ifndef OSGTEXT_FONT
-#define OSGTEXT_FONT 1 
+#define OSGTEXT_FONT 1
 
-#include <osg/Object>
-#include <osg/State>
+#include <osg/Vec2>
+#include <osg/Image>
+#include <osg/Texture2D>
+#include <osg/StateSet>
+#include <osg/buffered_value>
 
 #include <osgText/Export>
-#include <osgText/EncodedText>
 
 #include <string>
 
-// http://homepages.paradise.net.nz/henryj/code/
-
-class FTFont;
-
 namespace osgText {
 
-/** META_Font macro define the standard clone, isSameKindAs,
-  * className and getType methods.
-  * Use when subclassing from Object to make it more convinient to define 
-  * the standard pure virtual methods which are required for all Object 
-  * subclasses.*/
-#define META_Font(library,name) \
-        virtual osg::Object* cloneType() const { return new name(); } \
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new name (*this,copyop); } \
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
-        virtual const char* libraryName() const { return #library; } \
-        virtual const char* className() const { return #name; } \
+class Font;
 
+/** read a font from specified file.*/
+extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
+
+
+/** Pure virtual base class for fonts.
+  * Concrete implementation are the DefaultFont found in src/osgText/DefaultFont.cpp
+  * and FreeTypeFont found in src/osgPlugins/freetype/FreeTypeFont.cpp*/
 class OSGTEXT_EXPORT Font : public osg::Object
 {
-    public:
-
-        Font();
-        Font(const Font& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Object(font,copyop),
-            _init(false),
-            _created(false),
-            _font(0L),
-            _fontName(font._fontName),
-            _pointSize(font._pointSize),
-            _res(font._res),
-            _textureSize(font._textureSize)
-            {}
-
-
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Font *>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osgText"; }
-        virtual const char* className() const { return "Font"; } 
-
-        bool open(const char* font);
-        bool open(const std::string& font);
-
-        virtual bool create(osg::State& state,int  pointSize, unsigned int res = 72 );
-        virtual bool create(osg::State& state);
-        virtual void output(osg::State& state, const EncodedText* text) const;
-
-        virtual bool isOk(void) const { return _init; }
-        virtual bool isCreated(void) const { return isOk() && _created; }
-
-        virtual float getWidth(const EncodedText* text) const;
-        virtual int getHeight() const;
-        virtual int getDescender() const;
-        virtual int getAscender() const;
-
-        int        getPointSize(void) const    { return _pointSize; }
-        int        getTextureSize(void) const    { return _textureSize; }
-        const std::string& getFontName() const { return _fontName; }
-        
-        /// Transfer font settings to another Font object and invalidate this one.
-        void copyAndInvalidate(Font &dest);
-
-        FTFont*     getFont(void) { return _font; }
-
-    protected:
-
-        virtual    ~Font();
-
-        virtual void    clear();
-
-        virtual FTFont* createFontObj(void)=0;
-
-        bool init(const std::string& font);
-
-        bool            _init;
-        bool            _created;
-
-        FTFont*            _font;
-        std::string        _fontName;
-        int                _pointSize;
-        int                _res;
-        int 		_textureSize;
-};
-
-
-
-class OSGTEXT_EXPORT RasterFont:public Font
-{
-    public:
-
-        RasterFont():Font(){}
-        RasterFont(const RasterFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Font(font,copyop) {}            
-        RasterFont(const std::string& /*font*/):Font() {}
-
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RasterFont *>(obj)!=NULL; } 
-        virtual const char* libraryName() const { return "osgText"; }
-        virtual const char* className() const { return "RasterFont"; } 
-
-    protected:
-
-};
-
-
-
-class OSGTEXT_EXPORT VectorFont:public Font
-{
-    public:
-        VectorFont():Font(),_precision(0.0) {}
-        
-        VectorFont(const VectorFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Font(font,copyop),
-            _precision(font._precision)  {}
-            
-        VectorFont(const std::string& /*font*/):Font(){}
-
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const VectorFont *>(obj)!=NULL; } 
-        virtual const char* libraryName() const { return "osgText"; }
-        virtual const char* className() const { return "VectorFont"; } 
-
-    protected:
-        double    _precision;
-};
-
-
-
-class OSGTEXT_EXPORT BitmapFont:public RasterFont
-{
-    public:
-
-
-        BitmapFont() {}
-        BitmapFont(const BitmapFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            RasterFont(font,copyop) {}
-        BitmapFont(const std::string&    font, 
-                   int                    point_size);
-
-        META_Font(osgText,BitmapFont);
-
-    protected:
-
-
-        virtual FTFont* createFontObj(void);
-};
-
-
-class OSGTEXT_EXPORT PixmapFont:public RasterFont
-{
-    public:
-
-        PixmapFont() {}
-        PixmapFont(const PixmapFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            RasterFont(font,copyop) {}
-
-        PixmapFont(const std::string&    font, 
-                   int                    point_size);
-
-        META_Font(osgText,PixmapFont);
-
-    protected:
-
-        virtual FTFont* createFontObj(void);
-
-};
-
-
-class OSGTEXT_EXPORT TextureFont:public RasterFont
-{
-    public:
-
-        TextureFont() {}
-        TextureFont(const TextureFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            RasterFont(font,copyop) {}
-
-        TextureFont(const std::string&    font, 
-                   int                    point_size);
-
-        TextureFont(const std::string&    font, 
-                   int                    point_size,
-		    int textureSize );
-
-        META_Font(osgText,TextureFont);
-
-    protected:
-
-        virtual FTFont* createFontObj(void);
-
-};
-
-class OSGTEXT_EXPORT OutlineFont:public VectorFont
-{
-    public:
-
-        OutlineFont() {}
-        OutlineFont(const OutlineFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            VectorFont(font,copyop) {}
-
-        OutlineFont(const std::string&    font, 
-                    int                    point_size,
-                    double                precision);
-
-        META_Font(osgText,OutlineFont);
-
-    protected:
-
-        virtual FTFont* createFontObj(void);
-
-
-};
-
-class OSGTEXT_EXPORT PolygonFont:public VectorFont
-{
+// declare the interface to a font.
 public:
 
-    PolygonFont() {}
-    PolygonFont(const PolygonFont& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-        VectorFont(font,copyop) {}
+    // forward declare nested classes.
+    class Glyph;
+    class GlyphTexture;
+
+    Font();
+
+    virtual osg::Object* cloneType() const { return 0; } // cloneType() not appropriate
+    virtual osg::Object* clone(const osg::CopyOp&) const { return 0; } // clone() not appropriate
+    virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Font*>(obj)!=NULL; }
+    virtual const char* className() const { return "Font"; }
+    virtual const char* libraryName() const { return "osgText"; }
+
+    virtual std::string getFileName() const = 0;
+
+    /** Set the pixel width and height */
+    virtual void setSize(unsigned int width, unsigned int height) = 0;
     
-    PolygonFont(const std::string&    font, 
-                int                    point_size,
-                double                precision);
+    unsigned int getWidth() { return _width; }
+    unsigned int getHeight() { return _height; }
+
+    virtual Glyph* getGlyph(unsigned int charcode) = 0;
     
-    PolygonFont(const char* font, 
-                int         point_size,
-                double      precision);
+    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode) = 0;
     
-    META_Font(osgText,PolygonFont);
+    virtual bool hasVertical() const = 0;
+
 
 protected:
 
-    virtual FTFont* createFontObj(void);
+    virtual ~Font();
+    
+    void addGlyph(unsigned int charcode, Glyph* glyph);
+    
+    typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
+    typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
+    typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
+    
+    GlyphMap            _glyphMap;
+    GlyphTextureList    _glyphTextureList;
+    StateSetList        _stateSetList;
+    
+    // current active size of font
+    unsigned int _width;
+    unsigned int _height;
+
+    
+// declare the nested classes.
+public:
+
+    class OSGTEXT_EXPORT GlyphTexture : public osg::Texture2D
+    {
+    public:
+
+        GlyphTexture();
+
+        void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
+        osg::StateSet* getStateSet() { return _stateset; }
+        const osg::StateSet* getStateSet() const { return _stateset; }
+
+        bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
+        
+        void addGlyph(Glyph* glyph,int posX, int posY);
+        
+        virtual void apply(osg::State& state) const;
+
+    protected:
+    
+        virtual ~GlyphTexture();
+
+        osg::StateSet* _stateset;
+        
+        // parameter used to compute the size and position of empty space
+        // in the texture which could accomodate new glyphs.
+        int _usedY;
+        int _partUsedX;
+        int _partUsedY;
+
+        typedef std::vector<Glyph*> GlyphList;
+        typedef osg::buffered_object<GlyphList> GlyphBuffer;
+        
+        GlyphList   _glyphs;
+        mutable GlyphBuffer _glyphsToSubload;
+
+    };
+
+    class OSGTEXT_EXPORT Glyph : public osg::Image
+    {
+    public:
+
+        Glyph();
+        virtual ~Glyph();
+
+        unsigned int getGlyphCode() const { return _glyphCode; }
+
+        void setFont(Font* font) { _font = font; }
+        Font* getFont() const { return _font; }
+
+        void setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
+        const osg::Vec2& getHorizontalBearing() const { return _horizontalBearing; }
+
+        void setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
+        float getHorizontalAdvance() const { return _horizontalAdvance; }
+
+        void setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
+        const osg::Vec2& getVerticalBearing() const { return _verticalBearing; }
+
+        void setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
+        float getVerticalAdvance() const { return _verticalAdvance; }
+
+
+        void setTexture(GlyphTexture* texture) { _texture = texture; }
+        GlyphTexture* getTexture() { return _texture.get(); }
+        const GlyphTexture* getTexture() const { return _texture.get(); }
+
+        osg::StateSet* getStateSet() { return _texture.valid()?_texture->getStateSet():0; }
+        const osg::StateSet* getStateSet() const { return _texture.valid()?_texture->getStateSet():0; }
+
+        void setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
+        int getTexturePositionX() const { return _texturePosX; }
+        int getTexturePositionY() const { return _texturePosY; }
+
+        void setMinTexCoord(const osg::Vec2& coord) { _minTexCoord=coord; }
+        const osg::Vec2& getMinTexCoord() const { return _minTexCoord; }
+
+        void setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
+        const osg::Vec2& getMaxTexCoord() const { return _maxTexCoord; }
+        
+        void subload();
+
+    protected:
+
+        Font*                       _font;
+        unsigned int                _glyphCode;
+
+        osg::Vec2                   _horizontalBearing;
+        float                       _horizontalAdvance;
+
+        osg::Vec2                   _verticalBearing;
+        float                       _verticalAdvance;
+
+        osg::ref_ptr<GlyphTexture>  _texture;
+        int                         _texturePosX;
+        int                         _texturePosY;
+        osg::Vec2                   _minTexCoord;
+        osg::Vec2                   _maxTexCoord;
+
+    };
+
 
 };
 
 }
 
-#endif // OSGTEXT_FONT
+
+#endif

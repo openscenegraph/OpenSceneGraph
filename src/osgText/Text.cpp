@@ -1,82 +1,56 @@
-/* --------------------------------------------------------------------------
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
  *
- *    openscenegraph textLib / FTGL wrapper (http://homepages.paradise.net.nz/henryj/code/)
- *
- * --------------------------------------------------------------------------
- *    
- *    prog:    max rheiner;mrn@paus.ch
- *    date:    4/25/2001    (m/d/y)
- *
- * ----------------------------------------------------------------------------
- *
- * --------------------------------------------------------------------------
- */
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 
 
+#include <osg/GL>
 #include <osgText/Text>
 
-#include <osgDB/FileUtils>
+#include "DefaultFont.h"
 
-#include "FTFace.h"
-#include "FTGLBitmapFont.h"
-#include "FTGLPixmapFont.h"
-#include "FTGLOutlineFont.h"
-#include "FTGLPolygonFont.h"
-#include "FTGLTextureFont.h"
-
-//#define BUILD_NO_TEXT
-
-using namespace osg;
 using namespace osgText;
 
-///////////////////////////////////////////////////////////////////////////////
-// Text
-Text::Text()
+Text::Text():
+    _fontWidth(32),
+    _fontHeight(32),
+    _characterHeight(32),
+    _characterAspectRatio(1.0f),
+    _alignment(BASE_LINE),
+    _axisAlignment(XY_PLANE),
+    _rotation(),
+    _layout(LEFT_TO_RIGHT),
+    _color(1.0f,1.0f,1.0f,1.0f),
+    _drawMode(TEXT)
 {
-    setDefaults();
+    setUseDisplayList(false);
 }
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
-        Drawable(text,copyop),
-        _font(dynamic_cast<Font*>(copyop(text._font.get()))),
-        _init(text._init),
-        _initAlignment(text._initAlignment),
-        _text(text._text),
-        _fontType(text._fontType),
-        _alignment(text._alignment),
-        _drawMode(text._drawMode),
-        _boundingBoxType(text._boundingBoxType),
-        _axisAlignment(text._axisAlignment),
-        _encodedText(text._encodedText),
-        _pos(text._pos),
-        _alignmentPos(text._alignmentPos),
-        _color(text._color)
+    Drawable(text,copyop),
+    _font(text._font),
+    _fontWidth(text._fontWidth),
+    _fontHeight(text._fontHeight),
+    _characterHeight(text._characterHeight),
+    _characterAspectRatio(text._characterAspectRatio),
+    _text(text._text),
+    _position(text._position),
+    _alignment(text._alignment),
+    _axisAlignment(text._axisAlignment),
+    _rotation(text._rotation),
+    _layout(text._layout),
+    _color(text._color),
+    _drawMode(text._drawMode)
 {
 }
-
-Text::Text(Font* font)
-{
-    setDefaults();
-
-    if(font && font->isOk())
-    {
-        _init=true;
-        _font=font;
-
-        if(dynamic_cast<PolygonFont*>(_font.get()))
-            _fontType=POLYGON;
-        else if(dynamic_cast<BitmapFont*>(_font.get()))
-            _fontType=BITMAP;
-        else if(dynamic_cast<PixmapFont*>(_font.get()))
-            _fontType=PIXMAP;
-        else if(dynamic_cast<TextureFont*>(_font.get()))
-            _fontType=TEXTURE;
-        else if(dynamic_cast<OutlineFont*>(_font.get()))
-            _fontType=OUTLINE;
-
-    }
-}
-
 
 Text::~Text()
 {
@@ -84,476 +58,350 @@ Text::~Text()
 
 void Text::setFont(Font* font)
 {
-    if (_font==font) return;
-    
-    if(font && font->isOk())
-    {
-    _init=true;
-    _font=font;
-
-    if(dynamic_cast<PolygonFont*>(_font.get()))
-        _fontType=POLYGON;
-    else if(dynamic_cast<BitmapFont*>(_font.get()))
-        _fontType=BITMAP;
-    else if(dynamic_cast<PixmapFont*>(_font.get()))
-        _fontType=PIXMAP;
-    else if(dynamic_cast<TextureFont*>(_font.get()))
-        _fontType=TEXTURE;
-    else if(dynamic_cast<OutlineFont*>(_font.get()))
-        _fontType=OUTLINE;
-
-        _initAlignment = false;
-        dirtyBound();            
-
-    }
+    _font = font;
+    computeGlyphRepresentation();
 }
 
-void Text::
-setDefaults()
+void Text::setFont(const std::string& fontfile)
 {
-    _init=false;
-    
-    _pos.set(0,0,0);
-    _alignmentPos.set(0,0,0);
-    
-    _color.set(1.0f,1.0f,1.0f,1.0f);
-    
-    _fontType=UNDEF;
-    _alignment=LEFT_BOTTOM;
-    _drawMode=DEFAULT;
+    setFont(readFontFile(fontfile));
+}
 
-    _boundingBoxType=GLYPH;
-    _boundingBoxType=GEOMETRY;
+void Text::setFontSize(unsigned int width, unsigned int height)
+{
+    _fontWidth = width;
+    _fontHeight = height;
+    computeGlyphRepresentation();
+}
 
-    _axisAlignment = XY_PLANE;
 
-    _initAlignment=false;
+void Text::setCharacterSize(float height,float ascpectRatio=1.0f)
+{
+    _characterHeight = height;
+    _characterAspectRatio = ascpectRatio;
+    computeGlyphRepresentation();
+}
 
-     _useDisplayList=false;
 
-    _encodedText = new EncodedText();
+void Text::setText(const TextString& text)
+{
+    _text = text;
+    computeGlyphRepresentation();
+}
+
+void Text::setText(const std::string& text)
+{
+    _text.clear();
+    _text.insert(_text.end(),text.begin(),text.end());
+    computeGlyphRepresentation();
+}
+
+void Text::setText(const wchar_t* text)
+{
+    _text.clear();
+    if (text)
+    {
+        // find the end of wchar_t string
+        const wchar_t* endOfText = text;
+        while (*endOfText) ++endOfText;
+        
+        // pass it to the _text field.
+        _text.insert(_text.end(),text,endOfText);
+    }
+    computeGlyphRepresentation();
+}
+
+void Text::setPosition(const osg::Vec3& pos)
+{
+    _position = pos;
+}
+
+void Text::setAlignment(AlignmentType alignment)
+{
+    _alignment = alignment;
+}
+
+void Text::setAxisAlignment(AxisAlignment axis)
+{
+    _axisAlignment = axis;
+}
+
+void Text::setRotation(const osg::Quat& quat)
+{
+    _rotation = quat;
+}
+
+void Text::setLayout(Layout layout)
+{
+    _layout = layout;
+    computeGlyphRepresentation();
+}
+
+void Text::setColor(const osg::Vec4& color)
+{
+    _color = color;
 }
 
 bool Text::computeBound() const
 {
-#ifndef BUILD_NO_TEXT
-    if(!_init)
-    {
-        _bbox_computed=false;
-        return true;
-    }
-
-    // culling
-    if(_font->isCreated())
-    {    // ready to get the siz
-        _bbox.init();
-
-        Vec3 min,max;
-        calcBounds(&min,&max);
-
-        _bbox.expandBy(min);
-        _bbox.expandBy(max);
-
-        _bbox_computed=true;
-    }
-    else
-    {    // have to wait for the init.
-        _bbox.init();
-
-        // to be sure that the obj isn't culled
-//        _bbox.expandBy(_pos);
-
-        _bbox.expandBy(_pos + Vec3(-100,-100,-100));
-        _bbox.expandBy(_pos + Vec3(100,100,100));
-
-        /*
-        _bbox.expandBy(Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX));
-        _bbox.expandBy(Vec3(FLT_MAX,FLT_MAX,FLT_MAX));
-        */
-        _bbox_computed=true;
-
-    }
-#else
     _bbox.init();
-    _bbox_computed=true;
-#endif
+    _textBB.init();
 
+    osg::Matrix matrix;
+    matrix.makeTranslate(_position);
+
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        const GlyphQuads& glyphquad = titr->second;
+        
+        for(GlyphQuads::Coords::const_iterator citr = glyphquad._coords.begin();
+            citr != glyphquad._coords.end();
+            ++citr)
+        {
+            _textBB.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f));
+            _bbox.expandBy(osg::Vec3(citr->x(),citr->y(),0.0f)*matrix);
+        }
+    }
+    
+    _bbox_computed = true;
     return true;
 }
 
-bool Text::supports(PrimitiveFunctor&) const
+Font* Text::getActiveFont()
 {
-    return true;
+    return _font.valid() ? _font.get() : DefaultFont::instance();
 }
 
-void Text::accept(PrimitiveFunctor& functor) const
+const Font* Text::getActiveFont() const
 {
-#ifndef BUILD_NO_TEXT
-    Vec3 boundingVertices[4];
-    boundingVertices[0].set(_bbox._min._v[0],_bbox._max._v[1],_bbox._min._v[2]);
-    boundingVertices[1] = _bbox._min;
-    boundingVertices[2].set(_bbox._max._v[0],_bbox._min._v[1],_bbox._max._v[2]);
-    boundingVertices[3] = _bbox._max;
-
-    functor.setVertexArray(4,boundingVertices);
-    functor.drawArrays( GL_QUADS, 0, 4);
-#endif
+    return _font.valid() ? _font.get() : DefaultFont::instance();
 }
 
-void Text::compile(State& state) const
+void Text::computeGlyphRepresentation()
 {
-#ifndef BUILD_NO_TEXT
-    // ahhhh, this is bit doddy, the draw is potentially
-    // modifying the text object, this isn't thread safe.
-    Text* this_non_const = const_cast<Text*>(this);
+    Font* activefont = getActiveFont();
+    if (!activefont) return;
     
-    if(!_font->isCreated() || !(this_non_const->_font->getFont()->Created(state.getContextID())))
-    {
-        this_non_const->_font->create(state);
-        this_non_const->dirtyBound();
-    }
-
-    if(!_initAlignment)
-    {
-        this_non_const->initAlignment();
-    }
-#endif
-}
-
-void Text::drawImplementation(State& state) const
-{
-#ifndef BUILD_NO_TEXT
-
-    if(!_init)
-        return;
+    _textureGlyphQuadMap.clear();
     
-    // ahhhh, this is bit doddy, the draw is potentially
-    // modifying the text object, this isn't thread safe.
-    Text* this_non_const = const_cast<Text*>(this);
+    osg::Vec2 cursor(0.0f,0.0f);
+    osg::Vec2 local(0.0f,0.0f);
     
-    if(!_font->isCreated() || !(this_non_const->_font->getFont()->Created(state.getContextID())))
-    {
-        this_non_const->_font->create(state);
-        this_non_const->dirtyBound();
-    }
+    unsigned int previous_charcode = 0;
+    bool horizontal = _layout!=VERTICAL;
+    bool kerning = true;
 
-    if(!_initAlignment)
-    {
-        this_non_const->initAlignment();
-    }
-
-    // we must disable all the vertex arrays to prevent any state
-    // propagating into text.        
-    state.disableAllVertexArrays();
-    state.setActiveTextureUnit(0);
+    activefont->setSize(_fontWidth,_fontHeight);
     
-    // draw boundingBox
-    if(_drawMode & BOUNDINGBOX)
-        drawBoundingBox();
-    // draw alignment
-    if(_drawMode & ALIGNMENT)
-        drawAlignment();
+    float hr = _characterHeight/(float)activefont->getHeight();
+    float wr = hr/_characterAspectRatio;
 
-    // draw boundingBox
-    if(_drawMode & TEXT)
+    for(TextString::iterator itr=_text.begin();
+        itr!=_text.end();
+        ++itr)
     {
-        glColor3fv(_color.ptr());
+        unsigned int charcode = *itr;
+        
+        Font::Glyph* glyph = activefont->getGlyph(charcode);
+        if (glyph)
+        {
 
-        Vec3    drawPos(_pos+_alignmentPos);
-        glPushMatrix();
-            switch(_fontType)
+            float width = (float)glyph->s() * wr;
+            float height = (float)glyph->t() * hr;
+
+            if (_layout==RIGHT_TO_LEFT)
             {
-                case POLYGON:
-                    glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
-                    if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
-                    else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
-                    _font->output(state,getEncodedText());
+                cursor.x() -= glyph->getHorizontalAdvance() * wr;
+            }
+
+            // adjust cursor position w.r.t any kerning.
+            if (kerning && previous_charcode)
+            {
+                switch(_layout)
+                {
+                  case LEFT_TO_RIGHT:
+                  {
+                    osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode));
+                    cursor.x() += delta.x() * wr;
+                    cursor.y() += delta.y() * hr;
                     break;
-                case OUTLINE:
-                    glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
-                    if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
-                    else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
-                    _font->output(state,getEncodedText());
+                  }
+                  case RIGHT_TO_LEFT:
+                  {
+                    osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode));
+                    cursor.x() -= delta.x() * wr;
+                    cursor.y() -= delta.y() * hr;
                     break;
-                case BITMAP:
-                    glRasterPos3f(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(state,getEncodedText());
-                    break;
-                case PIXMAP:
-                    glRasterPos3f(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(state,getEncodedText());
-                    break;
-                case TEXTURE:
-                    glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
-                    if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
-                    else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
-                    _font->output(state,getEncodedText());
-                    break;
-
-            };
-        glPopMatrix();
-    }
-
-#endif
-}
-
-void Text::drawBoundingBox(void) const
-{
-    if(!_init)
-        return;
-
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT );
-        glDisable(GL_TEXTURE_2D);
-        glColor3f(0,1,0);
-        glBegin(GL_LINE_LOOP);
-            glVertex3f(_bbox.xMin(),_bbox.yMin(),_bbox.zMin());
-            glVertex3f(_bbox.xMax(),_bbox.yMin(),_bbox.zMin());
-            glVertex3f(_bbox.xMax(),_bbox.yMax(),_bbox.zMin());
-            glVertex3f(_bbox.xMin(),_bbox.yMax(),_bbox.zMin());
-        glEnd();
-    glPopAttrib();
-}
-
-void Text::drawAlignment(void) const
-{
-    if(!_init)
-        return;
-
-    double        size=_font->getPointSize()/4;
-
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT );
-        glDisable(GL_TEXTURE_2D);
-        glColor3f(1,0,0);
-        glBegin(GL_LINES);
-            glVertex3f(_pos.x() - size,_pos.y(),_pos.z());
-            glVertex3f(_pos.x() + size,_pos.y(),_pos.z());
+                  }
+                  case VERTICAL:
+                    break; // no kerning when vertical.
+                }
+            }
+        
+            local = cursor;
+        
+            osg::Vec2 bearing(horizontal?glyph->getHorizontalBearing():glyph->getVerticalBearing());
+            local.x() += bearing.x() * wr;
+            local.y() += bearing.y() * hr;
             
-            glVertex3f(_pos.x(),_pos.y() - size,_pos.z());
-            glVertex3f(_pos.x(),_pos.y() + size,_pos.z());
- 
+        
+            GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
+            
+            // set up the coords of the quad
+            glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
+            glyphquad._coords.push_back(local+osg::Vec2(0.0f,0.0f));
+            glyphquad._coords.push_back(local+osg::Vec2(width,0.0f));
+            glyphquad._coords.push_back(local+osg::Vec2(width,height));
+            
+            // set up the tex coords of the quad
+            const osg::Vec2& mintc = glyph->getMinTexCoord();
+            const osg::Vec2& maxtc = glyph->getMaxTexCoord();
+            
+            glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),maxtc.y()));
+            glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),mintc.y()));
+            glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),mintc.y()));
+            glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),maxtc.y()));
+            
+            // move the cursor onto the next character.
+            switch(_layout)
+            {
+              case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
+              case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance() *hr; break;
+              case RIGHT_TO_LEFT: break; // nop.
+            }            
+        }
+        
+        previous_charcode = charcode;
+    }
+
+    if (!_textureGlyphQuadMap.empty()) 
+    {
+        setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
+    }
+
+    dirtyBound();    
+}
+
+void Text::drawImplementation(osg::State& state) const
+{
+    
+
+    osg::Vec3 offset;
+    switch(_alignment)
+    {
+    case LEFT_TOP:      offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
+    case LEFT_CENTER:   offset.set(_textBB.xMin(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+    case LEFT_BOTTOM:   offset.set(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()); break;
+
+    case CENTER_TOP:    offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMax(),_textBB.zMin()); break;
+    case CENTER_CENTER: offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+    case CENTER_BOTTOM: offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,_textBB.yMin(),_textBB.zMin()); break;
+
+    case RIGHT_TOP:     offset.set(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()); break;
+    case RIGHT_CENTER:  offset.set(_textBB.xMax(),(_textBB.yMax()+_textBB.yMin())*0.5f,_textBB.zMin()); break;
+    case RIGHT_BOTTOM:  offset.set(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()); break;
+    case BASE_LINE:     offset.set(0.0f,0.0f,0.0f);
+    }
+    
+    
+    glPushMatrix();
+    glTranslatef(_position.x(),_position.y(),_position.z());
+    glTranslatef(-offset.x(),-offset.y(),-offset.z());
+
+    switch(_axisAlignment)
+    {
+    case XZ_PLANE: glRotatef(90.0f,1.0f,0.0f,0.0f); break;
+    case YZ_PLANE: glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f); break;
+    case XY_PLANE: break; // nop - already on XY plane.
+    case SCREEN: 
+        {
+            osg::Matrix mv = state.getModelViewMatrix();
+            mv.setTrans(0.0f,0.0f,0.0f);
+            osg::Matrix mat3x3;
+            mat3x3.invert(mv);
+
+            glMultMatrixf(mat3x3.ptr());
+            
+        }
+        break;
+    }
+    
+    if (!_rotation.zeroRotation())
+    {
+        osg::Matrix matrix;
+        _rotation.get(matrix);
+        glMultMatrixf(matrix.ptr());
+    }
+                    
+    glNormal3f(0.0f,0.0,1.0f);
+    glColor4fv(_color.ptr());
+
+    if (_drawMode & TEXT)
+    {
+
+        bool first = true;
+
+        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+            titr!=_textureGlyphQuadMap.end();
+            ++titr)
+        {
+            // need to set the texture here...
+
+            if (!first)
+            {
+                state.apply(titr->first.get());
+            }
+
+            const GlyphQuads& glyphquad = titr->second;
+
+            state.setVertexPointer( 2, GL_FLOAT, 0, &(glyphquad._coords.front()));
+            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+
+            glDrawArrays(GL_QUADS,0,glyphquad._coords.size());
+
+            first = false;
+
+        }
+    }
+    
+    if (_drawMode & BOUNDINGBOX)
+    {
+    
+        if (_textBB.valid())
+        {
+            state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+        
+            glColor4f(1.0f,1.0f,0.0f,1.0f);
+            glBegin(GL_LINE_LOOP);
+                glVertex3f(_textBB.xMin(),_textBB.yMin(),_textBB.zMin());
+                glVertex3f(_textBB.xMax(),_textBB.yMin(),_textBB.zMin());
+                glVertex3f(_textBB.xMax(),_textBB.yMax(),_textBB.zMin());
+                glVertex3f(_textBB.xMin(),_textBB.yMax(),_textBB.zMin());
+            glEnd();
+        }
+    }    
+
+    if (_drawMode & ALIGNMENT)
+    {
+        glColor4f(1.0f,0.0f,1.0f,1.0f);
+        glTranslatef(offset.x(),offset.y(),offset.z());
+        
+        state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+        
+        float cursorsize = _characterHeight*0.5f;
+        
+        glBegin(GL_LINES);
+            glVertex3f(-cursorsize,0.0f,0.0f);
+            glVertex3f(cursorsize,0.0f,0.0f);
+            glVertex3f(0.0f,-cursorsize,0.0f);
+            glVertex3f(0.0f,cursorsize,0.0f);
         glEnd();
-    glPopAttrib();
-}
-    
-void Text::
-setPosition(const Vec3& pos)
-{ 
-    _pos=pos;
-    dirtyBound();
+        
+    }    
+
+
+    glPopMatrix();
 }
 
-void Text::
-setPosition(const Vec2& pos)
-{  
-    setPosition(Vec3(pos.x(),pos.y(),0)); 
-}
-
-void Text::
-calcBounds(Vec3* min,Vec3* max) const
-{
-    if(!_init)
-        return;
-
-    float h=_font->getHeight();
-    float w=_font->getWidth(getEncodedText());
-    float descender=_font->getDescender();
-
-    min->set(0,descender,0);
-    max->set(w,h + descender ,0);
-}
-
-bool Text::
-initAlignment(void)
-{
-#ifndef BUILD_NO_TEXT
-    if(!_init)
-        return false;
-
-    // culling
-    if(_font->isCreated())
-    {    // ready to get the siz
-        _bbox.init();
-
-        Vec3 min,max;
-        initAlignment(&min,&max);
-
-        _bbox.expandBy(min);
-        _bbox.expandBy(max);
-
-        _bbox_computed=true;
-
-        _initAlignment=true;
-    }
-    else
-    {    // have to wait for the init.
-        _bbox.init();
-
-        // to be sure that the obj isn't culled
-        _bbox.expandBy(Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX));
-        _bbox.expandBy(Vec3(FLT_MAX,FLT_MAX,FLT_MAX));
-
-        _bbox_computed=true;
-    }
-#endif
-    return true;
-}
-
-void Text::
-initAlignment(Vec3* min,Vec3* max)
-{
-#ifndef BUILD_NO_TEXT
-    if(!_init)
-        return;
-
-    float h=_font->getHeight();
-    float w=_font->getWidth(getEncodedText());
-    float descender=_font->getDescender();
-
-    min->set(0,descender,0);
-    max->set(w,h + descender ,0);
-
-    switch(_boundingBoxType)
-    {
-        case GLYPH:
-            h+=descender;
-            switch(_alignment)
-            {
-                case LEFT_TOP:
-                    _alignmentPos.set(0.0,h,0.0);
-                    break;
-                case LEFT_CENTER:
-                    _alignmentPos.set(0.0,h/2.0,0.0);
-                    break;
-                case LEFT_BOTTOM:
-                    _alignmentPos.set(0.0,0.0,0.0);
-                    break;
-
-                case CENTER_TOP:
-                    _alignmentPos.set(w/2.0,h,0.0);
-                    break;
-                case CENTER_CENTER:
-                    _alignmentPos.set(w/2.0,h/2.0,0.0);
-                    break;
-                case CENTER_BOTTOM:
-                    _alignmentPos.set(w/2.0,0.0,0.0);
-                    break;
-
-                case RIGHT_TOP:
-                    _alignmentPos.set(w,h,0.0);
-                    break;
-                case RIGHT_CENTER:
-                    _alignmentPos.set(w,h/2.0,0.0);
-                    break;
-                case RIGHT_BOTTOM:
-                    _alignmentPos.set(w,0.0,0.0);
-                    break;
-            };
-            _alignmentPos=-_alignmentPos;
-
-            *min+=_pos+_alignmentPos;
-            *max+=_pos+_alignmentPos;
-            break;
-
-        case GEOMETRY:
-            switch(_alignment)
-            {
-                case LEFT_TOP:
-                    _alignmentPos.set(0.0,h + descender,0.0);
-                    break;
-                case LEFT_CENTER:
-                    _alignmentPos.set(0.0,(max->y()-min->y()) /2.0 + descender,0.0);
-                    break;
-                case LEFT_BOTTOM:
-                    _alignmentPos.set(0.0,descender,0.0);
-                    break;
-
-                case CENTER_TOP:
-                    _alignmentPos.set(w/2.0,h + descender,0.0);
-                    break;
-                case CENTER_CENTER:
-                    _alignmentPos.set(w/2.0,(max->y()-min->y()) /2.0 + descender,0.0);
-                    break;
-                case CENTER_BOTTOM:
-                    _alignmentPos.set(w/2.0,descender,0.0);
-                    break;
-
-                case RIGHT_TOP:
-                    _alignmentPos.set(w,h + descender,0.0);
-                    break;
-                case RIGHT_CENTER:
-                    _alignmentPos.set(w,(max->y()-min->y()) /2.0 + descender,0.0);
-                    break;
-                case RIGHT_BOTTOM:
-                    _alignmentPos.set(w,descender,0.0);
-                    break;
-            };
-            _alignmentPos=-_alignmentPos;
-
-            *min+=_pos+_alignmentPos;
-            *max+=_pos+_alignmentPos;
-            break;
-    };
-
-    
-
-    switch(_fontType)
-    {
-        case BITMAP:
-            break;
-        case PIXMAP:
-            break;
-
-    };
-#endif
-}
-
-
-void Text::
-setAlignment(int alignment)
-{
-    _alignment=alignment;
-    
-    if(!_init || !_font->isCreated())
-        return;
-
-    initAlignment();
-}
-
-void Text::
-setBoundingBox(int mode)
-{
-    _boundingBoxType=mode;
-    
-    if(!_init || !_font->isCreated())
-        return;
-
-    initAlignment();
-}
-
-void Text::
-setText(const char* text)
-{ 
-    _text=text; 
-    _initAlignment=false;
-    _encodedText->setText((const unsigned char*)text);
-}
-
-void Text::
-setText(const std::string& text)
-{ 
-    _text=text; 
-    _initAlignment=false;
-    _encodedText->setText((const unsigned char*)_text.data(),_text.size());
-}
-
-void Text::
-setText(const wchar_t* text)
-{ 
-    _encodedText->setOverrideEncoding(EncodedText::ENCODING_UTF8);
-    _text=_encodedText->convertWideString(text); 
-    _initAlignment=false;
-    _encodedText->setText((const unsigned char*)_text.data(),_text.size());
-}
-
-// Text
-///////////////////////////////////////////////////////////////////////////////

@@ -93,87 +93,11 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgText\DefaultFont.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgText\Font.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTBitmapGlyph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTCharmap.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTFace.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTFont.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLBitmapFont.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLOutlineFont.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLPixmapFont.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLPolygonFont.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLTextureFont.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGlyph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGlyphContainer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTLibrary.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTOutlineGlyph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTPixmapGlyph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTPolyGlyph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTSize.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTTextureGlyph.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTVectoriser.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\EncodedText.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\Paragraph.cpp
 # End Source File
 # Begin Source File
 
@@ -194,90 +118,6 @@ SOURCE=..\..\include\osgText\Export
 # Begin Source File
 
 SOURCE=..\..\include\osgText\Font
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTBitmapGlyph.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTCharmap.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTFace.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTFont.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGL.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLBitmapFont.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLOutlineFont.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLPixmapFont.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLPolygonFont.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGLTextureFont.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGlyph.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTGlyphContainer.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTLibrary.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTOutlineGlyph.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTPixmapGlyph.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTPolyGlyph.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTSize.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTTextureGlyph.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgText\FTVectoriser.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgText\EncodedText
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osgText\Paragraph
 # End Source File
 # Begin Source File
 

@@ -211,7 +211,7 @@ SOURCE=..\..\..\examples\slideshow3D\ReaderWriterXML.cpp
 
 
 
-SOURCE=..\..\..\examples\slideshow3D\lideShowConstructor.cpp
+SOURCE=..\..\..\examples\slideshow3D\SlideShowConstructor.cpp
 
 # End Source File
 

@@ -5,7 +5,7 @@ C++FILES = \
         ReaderWriterJPEG.cpp\
 
 
-TARGET_BASENAME = osgdb_jpg
+TARGET_BASENAME = osgdb_jpeg
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 

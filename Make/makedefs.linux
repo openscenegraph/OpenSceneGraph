@@ -18,6 +18,7 @@ CPPFLAGS  = ${CFLAGS}
 LDFLAGS = -O2 -W -Wall -L/usr/X11R6/lib
 #LDFLAGS = -g -W -Wall -L/usr/X11R6/lib
 
+LINKERARGS =  -Xlinker
 DYNAMICLIBRARYLIB = -ldl
 PFLOADERPATH = /usr/lib/libpfdb
 

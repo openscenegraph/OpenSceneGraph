@@ -390,7 +390,7 @@ CullVisitor::CullVisitor()
     // is a least this one value on the stack, therefore they never
     // check whether the stack is empty. This shouldn't be a problem
     // unless there is bug somewhere...
-    _cullingModeStack.push_back(CullViewState::ENALBE_ALL_CULLING);
+    _cullingModeStack.push_back(CullViewState::ENABLE_ALL_CULLING);
 
     _tvs = new CullViewState;
     _tvs->_eyePoint.set(0.0f,0.0f,1.0f);

@@ -257,8 +257,11 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
         }
     }
 
-    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
-
+    if (ea.getEventType()!=GUIEventAdapter::RESIZE)
+    {
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    }
+    
     computeLocalDataFromCamera();
 }
 

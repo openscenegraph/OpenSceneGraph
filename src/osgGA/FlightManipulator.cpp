@@ -78,7 +78,10 @@ void FlightManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     _velocity = 0.0f;
 
-    us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    if (ea.getEventType()!=GUIEventAdapter::RESIZE)
+    {
+        us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2,(ea.getYmin()+ea.getYmax())/2);
+    }
 
     computeLocalDataFromCamera();
 }

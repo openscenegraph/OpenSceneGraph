@@ -438,34 +438,19 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             unsigned int numBytesPerZvalue = 4;
             int lineSpace=-(hf->getNumColumns()*numBytesPerZvalue); //and work down (note - sign)
 
+            std::cout<<"reading height field"<<std::endl;
             bandSelected->RasterIO(GF_Read,windowX,_numValuesY-(windowY+windowHeight),windowWidth,windowHeight,floatdata,destWidth,destHeight,GDT_Float32,numBytesPerZvalue,lineSpace);
 
-            bool doFlip = false;
-            if (doFlip)
-            {
-	        // now need to flip since the OSG's origin is in lower left corner.
-                std::cout<<"flipping"<<std::endl;
-                unsigned int copy_r = hf->getNumRows()-1;
-	        for(unsigned int r=0;r<copy_r;++r,--copy_r)
-	        {
-		    for(unsigned int c=0;c<hf->getNumColumns();++c)
-		    {
-                        float temp = hf->getHeight(c,r);
-                        hf->setHeight(c,r,hf->getHeight(c,copy_r)*heightRatio);
-                        hf->setHeight(c,copy_r,temp*heightRatio);
-		    }
-	        }
-            }
-            else
-            {
-	        for(int r=destY;r<destY+destHeight;++r)
-	        {
-		    for(int c=destX;c<destX+destWidth;++c)
-		    {
-                        hf->setHeight(c,r,hf->getHeight(c,r)*heightRatio);
-		    }
-	        }
-            }
+            std::cout<<"    scaling height field"<<std::endl;
+	    for(int r=destY;r<destY+destHeight;++r)
+	    {
+		for(int c=destX;c<destX+destWidth;++c)
+		{
+//                    if (hf->getHeight(c,r)==0.0) std::cout<<".";
+//                    else std::cout<<"** "<<hf->getHeight(c,r)<<" **"<<std::endl;
+                    hf->setHeight(c,r,hf->getHeight(c,r)*heightRatio);
+		}
+	    }
         }
 
 
@@ -515,7 +500,7 @@ bool DataSet::Source::needReproject(const osgTerrain::CoordinateSystem* cs, doub
     if (_sourceData->_hasGCPs) return true;
 
     bool csTheSame = (_sourceData->_cs == cs) ||
-                     (_sourceData->_cs.valid() && cs && (*(_sourceData->_cs) != *cs));
+                     (_sourceData->_cs.valid() && cs && (*(_sourceData->_cs) == *cs));
                      
                      
     if (!csTheSame) return true;
@@ -541,18 +526,12 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
     
     std::cout<<"reprojecting to file "<<filename<<std::endl;
 
-    GDALDriverH hDriver = GDALGetDriverByName( osgDB::getFileExtension(filename).c_str() );
-    if( hDriver == NULL) 
-    {
-        std::cout<<"Unable to load driver for "<<filename<<std::endl;
+    GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
         
-        hDriver = GDALGetDriverByName( "GTiff" );
-        
-        if (hDriver == NULL)
-        {       
-        std::cout<<"Unable to load driver for "<<"GTiff"<<std::endl;
-            return 0;
-        }
+    if (hDriver == NULL)
+    {       
+    std::cout<<"Unable to load driver for "<<"GTiff"<<std::endl;
+        return 0;
     }
     
     if (GDALGetMetadataItem( hDriver, GDAL_DCAP_CREATE, NULL ) == NULL )
@@ -1789,6 +1768,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
                 if (sd->_cs.valid())
                 {
                     _coordinateSystem = sd->_cs;
+                    std::cout<<"Setting coordinate system to "<<_coordinateSystem->getProjectionRef()<<std::endl;
                     break;
                 }
             }
@@ -1812,14 +1792,14 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     unsigned int imageSize = 256;
     unsigned int terrainSize = 64;
 
-     _destinationGraph = createDestinationGraph(_coordinateSystem.get(),
-                                                extents,
-                                                imageSize,
-                                                terrainSize,
-                                                0,
-                                                0,
-                                                0,
-                                                numLevels);
+    _destinationGraph = createDestinationGraph(_coordinateSystem.get(),
+                                               extents,
+                                               imageSize,
+                                               terrainSize,
+                                               0,
+                                               0,
+                                               0,
+                                               numLevels);
                                                            
         
 
@@ -1933,7 +1913,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             Source* source = itr->get();
-            source->buildOverviews();
+            //source->buildOverviews();
         }
     }
 

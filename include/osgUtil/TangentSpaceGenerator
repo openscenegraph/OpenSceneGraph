@@ -58,7 +58,7 @@ namespace osgUtil
 		virtual ~TangentSpaceGenerator() {}
 		TangentSpaceGenerator &operator=(const TangentSpaceGenerator &) { return *this; }
 
-		void compute_basis_vectors(osg::PrimitiveSet *pset, const osg::Array *vx, const osg::Array *tx, int iA, int iB, int iC);
+		void compute_basis_vectors(osg::PrimitiveSet *pset, const osg::Array *vx, const osg::Array *nx, const osg::Array *tx, int iA, int iB, int iC);
 
 	private:
 		osg::ref_ptr<osg::Vec4Array> T_;

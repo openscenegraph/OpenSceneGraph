@@ -3,24 +3,23 @@ include ../../Make/makedefs
 
 C++FILES = \
 	FTBitmapGlyph.cpp \
-        FTGLOutlineFont.cpp \
-        FTGlyphContainer.cpp \
-        FTSize.cpp \
 	FTCharmap.cpp \
-        FTGLPixmapFont.cpp \
-        FTLibrary.cpp \
-        FTTextureGlyph.cpp \
 	FTFace.cpp \
-        FTGLPolygonFont.cpp \
-        FTOutlineGlyph.cpp \
-        FTVectoriser.cpp \
 	FTFont.cpp \
-        FTGLTextureFont.cpp \
-        FTPixmapGlyph.cpp \
 	FTGLBitmapFont.cpp \
+        FTGLOutlineFont.cpp \
+        FTGLPixmapFont.cpp \
+        FTGLPolygonFont.cpp \
+        FTGLTextureFont.cpp \
+        FTGlyphContainer.cpp \
         FTGlyph.cpp \
+        FTLibrary.cpp \
+        FTOutlineGlyph.cpp \
+        FTPixmapGlyph.cpp \
         FTPolyGlyph.cpp \
-        FTVectorGlyph.cpp \
+        FTSize.cpp \
+        FTTextureGlyph.cpp \
+        FTVectoriser.cpp \
         Text.cpp \
         Version.cpp
 

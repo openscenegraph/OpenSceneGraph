@@ -32,7 +32,7 @@ class FTGL_EXPORT FTTextureGlyph : public FTGlyph
 		 * @param u			The texture co-ord for this glyph
 		 * @param v			The texture co-ord for this glyph
 		 */
-		FTTextureGlyph( FT_Glyph glyph, int id, unsigned char* data, int stride, int height, float u, float v);
+		FTTextureGlyph( FT_Glyph glyph, int id, unsigned char* data, GLsizei stride, GLsizei height, float u, float v);
 
 		/**
 		 * Destructor
@@ -50,11 +50,11 @@ class FTGL_EXPORT FTTextureGlyph : public FTGlyph
 		/**
 		 * The texture index of the currently active texture
 		 *
-		 * Because a a full set of glyphs may not fit on one glyph we need
-		 * to keep track of the current active texture to try to reduce the
-		 * number of texture bind operations
+		 * We call glGetIntegerv( GL_TEXTURE_2D_BINDING, activeTextureID);
+		 * to get the currently active texture to try to reduce the number
+		 * of texture bind operations
 		 */
-		static int activeTextureID;
+		GLint activeTextureID;
 		
 	private:
 		/**

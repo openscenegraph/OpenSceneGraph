@@ -5,9 +5,9 @@
 
 
 FTFace::FTFace()
-:	ftFace(0),
+:	charMap(0),
+	ftFace(0),
 	numCharMaps(0),
-	charMap(0),
 	numGlyphs(0),
 	err(0)
 {}

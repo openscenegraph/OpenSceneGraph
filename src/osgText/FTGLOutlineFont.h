@@ -52,10 +52,5 @@ class FTGL_EXPORT FTGLOutlineFont : public FTFont
 		 */
 		bool MakeGlyphList();
 		
-		/**
-		 * A temporary FTOutlineGlyph used for building the glyphList
-		 */
-		FTOutlineGlyph* tempGlyph;
-	
 };
 #endif // __FTGLOutlineFont__

@@ -51,11 +51,6 @@ class FTGL_EXPORT FTGLPixmapFont : public FTFont
 		 */
 		bool MakeGlyphList();
 		
-		/**
-		 * A temporary FTPixmapGlyph used for building the glyphList
-		 */
-		FTPixmapGlyph* tempGlyph;
-		
 };
 
 

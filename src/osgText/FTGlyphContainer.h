@@ -31,12 +31,12 @@ class FTGL_EXPORT FTGlyphContainer
 		 * @param p			A flag to indicate preprocessing of glyphs.
 		 *					Not used.
 		 */
-		FTGlyphContainer( FTFace* face, int numGlyphs, bool p = false);
+		FTGlyphContainer( FTFace* face, unsigned int numGlyphs, bool p = false);
 
 		/**
 		 * Destructor
 		 */
-		~FTGlyphContainer();
+		virtual ~FTGlyphContainer();
 
 		/**
 		 * Adds a glyph to this glyph list.
@@ -49,9 +49,9 @@ class FTGL_EXPORT FTGlyphContainer
 		/**
 		* Returns the kerned advance width for a glyph.
 		*
-		* param index	glyph index of the character
-		* param next	the next glyph in a string
-		* return 		advance width
+		* @param index	glyph index of the character
+		* @param next	the next glyph in a string
+		* @return 		advance width
 		*/
 		float Advance( unsigned int index, unsigned int next);
 		
@@ -60,7 +60,7 @@ class FTGL_EXPORT FTGlyphContainer
 		 * @param index	the glyph to be rendered
 		 * @param next	the next glyph in the string. Used for kerning.
 		 * @param pen	the position to render the glyph
-		 * return 		The distance to advance the pen position after rendering
+		 * @return 		The distance to advance the pen position after rendering
 		 */
 		FT_Vector& render( unsigned int index, unsigned int next, FT_Vector pen);
 		

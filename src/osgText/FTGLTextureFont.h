@@ -28,12 +28,12 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
 		/**
 		 * Get the total width of the texture that holds this font
 		 */
-		virtual int TextureWidth() const { return textureWidth;}
+		virtual GLsizei TextureWidth() const { return textureWidth;}
 		
 		/**
 		 * Get the total height of the texture that holds this font
 		 */
-		virtual int TextureHeight() const { return textureHeight;}
+		virtual GLsizei TextureHeight() const { return textureHeight;}
 		
 		/**
 		 * Renders a string of characters
@@ -73,7 +73,7 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
 		 * @param textureHeight	The texture height
 		 * @param textMem		A pointer to the texture memory.
 		 */
-		unsigned int FillGlyphs( unsigned int glyphStart, int textID, int textureWidth, int textureHeight, unsigned char* textMem);
+		unsigned int FillGlyphs( unsigned int glyphStart, GLuint textID, GLsizei textureWidth, GLsizei textureHeight, unsigned char* textMem);
 
 		/**
 		 * Get the size of a block of memory required to layout the glyphs
@@ -97,28 +97,22 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
 		 * @param height	The number of rows of bytes.
 		 * @param data		A pointer to the texture data
 		 */
-		void CreateTexture( int id, int width, int height, unsigned char* data);
-		
-		/**
-		 * A temporary FTTextureGlyph used for building the glyphList
-		 */
-		FTTextureGlyph* tempGlyph;
-		
+		void CreateTexture( GLuint id, GLsizei width, GLsizei height, unsigned char* data);
 		
 		/**
 		 * The maximum texture dimension on this OpenGL implemetation
 		 */
-		long maxTextSize;
+		GLsizei maxTextSize;
 		
 		/**
 		 * The minimum texture width required to hold the glyphs
 		 */
-		int textureWidth;
+		GLsizei textureWidth;
 		
 		/**
 		 * The minimum texture height required to hold the glyphs
 		 */
-		int textureHeight;
+		GLsizei textureHeight;
 		
 		/**
 		 * An array of texture ids

@@ -2,9 +2,7 @@
 #include	"FTGL.h"
 
 
-int FTTextureGlyph::activeTextureID = 0;
-
-FTTextureGlyph::FTTextureGlyph( FT_Glyph glyph, int id, unsigned char* data, int stride, int height, float u, float v)
+FTTextureGlyph::FTTextureGlyph( FT_Glyph glyph, int id, unsigned char* data, GLsizei stride, GLsizei height, float u, float v)
 :	FTGlyph(),
 	destWidth(0),
 	destHeight(0),
@@ -72,20 +70,20 @@ FTTextureGlyph::~FTTextureGlyph()
 
 float FTTextureGlyph::Render( const FT_Vector& pen)
 {
-	// This could be really ugly!!
+	glGetIntegerv( GL_TEXTURE_2D_BINDING_EXT, &activeTextureID);
 	if( activeTextureID != glTextureID)
 	{
-		glEnd();
 		glBindTexture( GL_TEXTURE_2D, (GLuint)glTextureID);
-		activeTextureID = glTextureID;
-		glBegin( GL_QUADS);
 	}
 	
+	glBegin( GL_QUADS);
 	glTexCoord2f( uv[0].x, uv[0].y); glVertex2f( pen.x + pos.x,				pen.y + pos.y);
 	glTexCoord2f( uv[1].x, uv[0].y); glVertex2f( pen.x + destWidth + pos.x,	pen.y + pos.y);
 	glTexCoord2f( uv[1].x, uv[1].y); glVertex2f( pen.x + destWidth + pos.x,	pen.y + pos.y - destHeight);
 	glTexCoord2f( uv[0].x, uv[1].y); glVertex2f( pen.x + pos.x,				pen.y + pos.y - destHeight);
+	glEnd();
 
 	return advance;
+
 }
 

@@ -36,12 +36,6 @@ class FTGL_EXPORT FTGLPolygonFont : public FTFont
 		 */
 		bool MakeGlyphList();
 		
-		/**
-		 * A temporary FTPolyGlyph used for building the glyphList
-		 */
-		FTPolyGlyph* tempGlyph;
-
-		
 };
 
 

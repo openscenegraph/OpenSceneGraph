@@ -4,9 +4,7 @@
 
 using namespace std;
 
-typedef unsigned long	UInt32; // a mac thing?
-
-inline UInt32 NextPowerOf2( UInt32 in)
+inline GLuint NextPowerOf2( GLuint in)
 {
      in -= 1;
 
@@ -21,15 +19,14 @@ inline UInt32 NextPowerOf2( UInt32 in)
 
 
 FTGLTextureFont::FTGLTextureFont()
-:	numTextures(1),
-	textMem(0),
-	padding(1),
-	tempGlyph(0),
-	maxTextSize(0),
+:	maxTextSize(0),
 	textureWidth(0),
 	textureHeight(0),
+	numTextures(1),
+	textMem(0),
 	glyphHeight(0),
-	glyphWidth(0)
+	glyphWidth(0),
+	padding(1)
 {}
 
 
@@ -41,8 +38,6 @@ FTGLTextureFont::~FTGLTextureFont()
 
 bool FTGLTextureFont::MakeGlyphList()
 {
-	glEnable( GL_TEXTURE_2D);
-	
 	if( !maxTextSize)
 		glGetIntegerv( GL_MAX_TEXTURE_SIZE, (GLint*)&maxTextSize);
 		
@@ -50,7 +45,7 @@ bool FTGLTextureFont::MakeGlyphList()
 	glyphWidth = ( charSize.Width()) + padding;
 	
 	GetSize();
-	int totalMem;
+	GLuint totalMem;
 	
 	if( textureHeight > maxTextSize)
 	{
@@ -58,7 +53,7 @@ bool FTGLTextureFont::MakeGlyphList()
 		if( numTextures > 15) // FIXME
 			numTextures = 15;
 		
-		int heightRemain = NextPowerOf2( textureHeight % maxTextSize);
+		GLsizei heightRemain = NextPowerOf2( textureHeight % maxTextSize);
 		totalMem = ((maxTextSize * ( numTextures - 1)) + heightRemain) * textureWidth;
 
 		glGenTextures( numTextures, (GLuint*)&glTextureID[0]);
@@ -101,7 +96,7 @@ bool FTGLTextureFont::MakeGlyphList()
 }
 
 
-unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, int id, int width, int height, unsigned char* textdata)
+unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, GLuint id, GLsizei width, GLsizei height, unsigned char* textdata)
 {
 	int currentTextX = padding;
 	int currentTextY = padding;// + padding;
@@ -109,7 +104,6 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, int id, int w
 	float currTextU = (float)padding / (float)width;
 	float currTextV = (float)padding / (float)height;
 	
-//	numGlyphs = 256; // FIXME hack
 	unsigned int n;
 	
 	for( n = glyphStart; n <= numGlyphs; ++n)
@@ -122,7 +116,7 @@ unsigned int FTGLTextureFont::FillGlyphs( unsigned int glyphStart, int id, int w
 			
 			currTextU = (float)currentTextX / (float)width;
 			
-			tempGlyph = new FTTextureGlyph( *ftGlyph, id, data, width, height, currTextU, currTextV);
+			FTTextureGlyph* tempGlyph = new FTTextureGlyph( *ftGlyph, id, data, width, height, currTextU, currTextV);
 			glyphList->Add( tempGlyph);
 
 			currentTextX += glyphWidth;
@@ -160,14 +154,14 @@ void FTGLTextureFont::GetSize()
 }
 
 
-void FTGLTextureFont::CreateTexture( int id, int width, int height, unsigned char* data)
+void FTGLTextureFont::CreateTexture( GLuint id, GLsizei width, GLsizei height, unsigned char* data)
 {
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1); //What does this do exactly?
 	glBindTexture( GL_TEXTURE_2D, glTextureID[id]);
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
 }
@@ -180,13 +174,8 @@ void FTGLTextureFont::render( const char* string)
 	glEnable(GL_BLEND);
  	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_ONE
  	
-	glBindTexture( GL_TEXTURE_2D, (GLuint)FTTextureGlyph::activeTextureID);
+ 	FTFont::render( string);
 
- 	// QUADS are faster!? Less function call overhead?
- 	glBegin( GL_QUADS);
- 		FTFont::render( string);
- 	glEnd();
-	
 	glPopAttrib();
 }
 
@@ -198,12 +187,7 @@ void FTGLTextureFont::render( const wchar_t* string)
 	glEnable(GL_BLEND);
  	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_ONE
  	
-	glBindTexture( GL_TEXTURE_2D, (GLuint)FTTextureGlyph::activeTextureID);
-
- 	// QUADS are faster!? Less function call overhead?
- 	glBegin( GL_QUADS);
- 		FTFont::render( string);
- 	glEnd();
+ 	FTFont::render( string);
 	
 	glPopAttrib();
 }

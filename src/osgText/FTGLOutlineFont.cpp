@@ -5,7 +5,6 @@
 
 
 FTGLOutlineFont::FTGLOutlineFont()
-:	tempGlyph(0)
 {}
 
 
@@ -21,7 +20,7 @@ bool FTGLOutlineFont::MakeGlyphList()
 		
 		if( ftGlyph)
 		{
-			tempGlyph = new FTOutlineGlyph( *ftGlyph);
+			FTOutlineGlyph* tempGlyph = new FTOutlineGlyph( *ftGlyph);
 			glyphList->Add( tempGlyph);
 		}
 		else

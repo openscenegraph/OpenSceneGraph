@@ -28,8 +28,8 @@ void FTContour::AddPoint( const float x, const float y)
 
 
 FTVectoriser::FTVectoriser( const FT_Glyph glyph)
-:	contourFlag(0),
-	contour(0),
+:	contour(0),
+	contourFlag(0),
 	kBSTEPSIZE( 0.2)
 {
 	FT_OutlineGlyph outline = (FT_OutlineGlyph)glyph;
@@ -62,7 +62,7 @@ int FTVectoriser::points()
 }
 
 
-bool FTVectoriser::Ingest()
+bool FTVectoriser::Process()
 {
 	short first = 0;
 	short last;
@@ -208,7 +208,7 @@ void FTVectoriser::evaluateCurve( const int n)
 }
 
 
-void FTVectoriser::Output( double* data)
+void FTVectoriser::MakeOutline( double* data)
 {
 	int i = 0;
 	
@@ -225,3 +225,4 @@ void FTVectoriser::Output( double* data)
 		}
 	}
 }
+

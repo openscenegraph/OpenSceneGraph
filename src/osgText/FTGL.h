@@ -14,7 +14,19 @@
 
     // non windows, doesn't require nonesense as seen below :-)    
     #ifndef __gl_h_
-        #include <GL/gl.h>
+        #ifdef __APPLE_CC__
+            #include <OpenGL/gl.h>
+            #include <OpenGL/glu.h>
+            #ifndef GL_TEXTURE_2D_BINDING_EXT
+            	#include <OpenGL/glext.h>
+            #endif
+        #else
+	    	#include <GL/gl.h>
+	    	#include <GL/glu.h>
+            #ifndef GL_TEXTURE_2D_BINDING_EXT
+            	#include <GL/glext.h>
+            #endif
+		#endif
     #endif
 
     // required for compatibility with glext.h style function definitions of 
@@ -64,22 +76,25 @@
 
     #ifndef __gl_h_
         #include <GL/gl.h>
+        #include <GL/glu.h>
+            #ifndef GL_TEXTURE_2D_BINDING_EXT
+            	#include <GL/glext.h>
+            #endif
     #endif
 
 #endif
 
-
-// #if defined(_MSC_VER)
-// 	#  ifdef FTGL_LIBRARY_STATIC		// staticLib
-// 	#    define FTGL_EXPORT
-// 	#  elif FTGL_LIBRARY				// dynamicLib
-// 	#    define FTGL_EXPORT   __declspec(dllexport)
-// 	#  else
-// 	#    define FTGL_EXPORT   __declspec(dllimport)
-// 	#  endif /* FTGL_LIBRARY */
-// #else
+#if defined(_MSC_VER)
+	#  ifdef FTGL_LIBRARY_STATIC		// staticLib
+	#    define FTGL_EXPORT
+	#  elif FTGL_LIBRARY				// dynamicLib
+	#    define FTGL_EXPORT   __declspec(dllexport)
+	#  else
+	#    define FTGL_EXPORT   __declspec(dllimport)
+	#  endif /* FTGL_LIBRARY */
+#else
 	#  define FTGL_EXPORT
-// #endif  
+#endif  
 
 
 #endif	//	__FTGL__

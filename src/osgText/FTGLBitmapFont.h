@@ -52,10 +52,5 @@ class FTGL_EXPORT FTGLBitmapFont : public FTFont
 		 */
 		bool MakeGlyphList();
 		
-		/**
-		 * Temp variable for a FTBitmapGlyph
-		 */
-		FTBitmapGlyph* tempGlyph;
-		
 };
 #endif	//	__FTGLBitmapFont__

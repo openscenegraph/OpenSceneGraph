@@ -124,6 +124,9 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         void setEncodedText(EncodedText* encodedText) { _encodedText = encodedText; }
         const EncodedText* getEncodedText() const { return _encodedText.get(); }
 
+        /// override the compile to set up the alignment etc.
+        virtual void compile(osg::State& state) const;
+
     protected:
 
         enum FontType

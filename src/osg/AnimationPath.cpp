@@ -87,7 +87,7 @@ void AnimationPath::read(std::istream& in)
     while (!in.eof())
     {
         double time;
-        osg::Vec3 position;
+        osg::Vec3d position;
         osg::Quat rotation;
         in >> time >> position.x() >> position.y() >> position.z() >> rotation.x() >> rotation.y() >> rotation.z() >> rotation.w();
         if(!in.eof())
@@ -97,6 +97,9 @@ void AnimationPath::read(std::istream& in)
 
 void AnimationPath::write(std::ostream& fout) const
 {
+    int prec = fout.precision();
+    fout.precision(15);
+
     const TimeControlPointMap& tcpm = getTimeControlPointMap();
     for(TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();
         tcpmitr!=tcpm.end();
@@ -105,6 +108,8 @@ void AnimationPath::write(std::ostream& fout) const
         const ControlPoint& cp = tcpmitr->second;
         fout<<tcpmitr->first<<" "<<cp._position<<" "<<cp._rotation<<std::endl;
     }
+
+    fout.precision(prec);
 }
 
 class AnimationPathCallbackVisitor : public NodeVisitor

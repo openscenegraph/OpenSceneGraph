@@ -57,7 +57,7 @@ bool Depth_readLocalData(Object& obj, Input& fr)
     }
 
     double znear,zfar;
-    if (fr[0].matchWord("range") && fr[1].getDouble(znear) && fr[2].getDouble(zfar))
+    if (fr[0].matchWord("range") && fr[1].getFloat(znear) && fr[2].getFloat(zfar))
     {
         depth.setRange(znear,zfar);
         fr+=2;

@@ -360,34 +360,12 @@ bool Field::getFloat(float& f) const
     }
 }
 
-
-bool Field::isDouble() const
-{
-    getFieldType();
-    return _fieldType==REAL || _fieldType==INTEGER;
-}
-
-
-bool Field::matchDouble(double d) const
+bool Field::getFloat(double& f) const
 {
     getFieldType();
     if (_fieldType==REAL || _fieldType==INTEGER)
     {
-        return atof(_fieldCache)==d;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
-bool Field::getDouble(double& d) const
-{
-    getFieldType();
-    if (_fieldType==REAL || _fieldType==INTEGER)
-    {
-        d = atof(_fieldCache);
+        f = (float)atof(_fieldCache);
         return true;
     }
     else

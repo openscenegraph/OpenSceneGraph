@@ -49,31 +49,28 @@ void Quat::get(Matrixd& matrix) const
 
 /// Set the elements of the Quat to represent a rotation of angle
 /// (radians) around the axis (x,y,z)
-void Quat::makeRotate( float angle,
-float x,
-float y,
-float z    )
+void Quat::makeRotate( value_type angle, value_type x, value_type y, value_type z )
 {
-    float inversenorm  = 1.0/sqrt( x*x + y*y + z*z );
-    float coshalfangle = cos( 0.5*angle );
-    float sinhalfangle = sin( 0.5*angle );
+    value_type inversenorm  = 1.0/sqrt( x*x + y*y + z*z );
+    value_type coshalfangle = cos( 0.5*angle );
+    value_type sinhalfangle = sin( 0.5*angle );
 
-    _fv[0] = x * sinhalfangle * inversenorm;
-    _fv[1] = y * sinhalfangle * inversenorm;
-    _fv[2] = z * sinhalfangle * inversenorm;
-    _fv[3] = coshalfangle;
+    _v[0] = x * sinhalfangle * inversenorm;
+    _v[1] = y * sinhalfangle * inversenorm;
+    _v[2] = z * sinhalfangle * inversenorm;
+    _v[3] = coshalfangle;
 }
 
 
-void Quat::makeRotate( float angle, const Vec3& vec )
+void Quat::makeRotate( value_type angle, const Vec3& vec )
 {
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
 
-void Quat::makeRotate ( float angle1, const Vec3& axis1, 
-                        float angle2, const Vec3& axis2,
-                        float angle3, const Vec3& axis3)
+void Quat::makeRotate ( value_type angle1, const Vec3& axis1, 
+                        value_type angle2, const Vec3& axis2,
+                        value_type angle3, const Vec3& axis3)
 {
     Quat q1; q1.makeRotate(angle1,axis1);
     Quat q2; q2.makeRotate(angle2,axis2);
@@ -89,13 +86,13 @@ void Quat::makeRotate ( float angle1, const Vec3& axis1,
 // are co-incident or opposite in direction.
 void Quat::makeRotate( const Vec3& from, const Vec3& to )
 {
-    const float epsilon = 0.00001f;
+    const value_type epsilon = 0.00001;
 
-    float length1  = from.length();
-    float length2  = to.length();
+    value_type length1  = from.length();
+    value_type length2  = to.length();
     
     // dot product vec1*vec2
-    float cosangle = from*to/(length1*length2);
+    value_type cosangle = from*to/(length1*length2);
 
     if ( fabs(cosangle - 1) < epsilon )
     {
@@ -120,10 +117,10 @@ void Quat::makeRotate( const Vec3& from, const Vec3& to )
         Vec3 axis(from^tmp);
         axis.normalize();
         
-        _fv[0] = axis[0]; // sin of half angle of PI is 1.0.
-        _fv[1] = axis[1]; // sin of half angle of PI is 1.0.
-        _fv[2] = axis[2]; // sin of half angle of PI is 1.0.
-        _fv[3] = 0; // cos of half angle of PI is zero.
+        _v[0] = axis[0]; // sin of half angle of PI is 1.0.
+        _v[1] = axis[1]; // sin of half angle of PI is 1.0.
+        _v[2] = axis[2]; // sin of half angle of PI is 1.0.
+        _v[3] = 0; // cos of half angle of PI is zero.
 
     }
     else
@@ -131,37 +128,41 @@ void Quat::makeRotate( const Vec3& from, const Vec3& to )
         // This is the usual situation - take a cross-product of vec1 and vec2
         // and that is the axis around which to rotate.
         Vec3 axis(from^to);
-        float angle = acos( cosangle );
+        value_type angle = acos( cosangle );
         makeRotate( angle, axis );
     }
 }
 
 
-void Quat::getRotate( float& angle, Vec3& vec ) const
+void Quat::getRotate( value_type& angle, Vec3& vec ) const
 {
-    getRotate(angle,vec[0],vec[1],vec[2]);
+    value_type x,y,z;
+    getRotate(angle,x,y,z);
+    vec[0]=x;
+    vec[1]=y;
+    vec[2]=z;
 }
 
 
 // Get the angle of rotation and axis of this Quat object.
 // Won't give very meaningful results if the Quat is not associated
 // with a rotation!
-void Quat::getRotate( float& angle, float& x, float& y, float& z ) const
+void Quat::getRotate( value_type& angle, value_type& x, value_type& y, value_type& z ) const
 {
-    float sinhalfangle = sqrt( _fv[0]*_fv[0] + _fv[1]*_fv[1] + _fv[2]*_fv[2] );
+    value_type sinhalfangle = sqrt( _v[0]*_v[0] + _v[1]*_v[1] + _v[2]*_v[2] );
 
-    angle = 2 * atan2( sinhalfangle, _fv[3] );
+    angle = 2.0 * atan2( sinhalfangle, _v[3] );
     if(sinhalfangle)
     {
-        x = _fv[0] / sinhalfangle;
-        y = _fv[1] / sinhalfangle;
-        z = _fv[2] / sinhalfangle;
+        x = _v[0] / sinhalfangle;
+        y = _v[1] / sinhalfangle;
+        z = _v[2] / sinhalfangle;
     }
     else
     {
-        x = 0.0f;
-        y = 0.0f;
-        z = 1.0f;
+        x = 0.0;
+        y = 0.0;
+        z = 1.0;
     }
 
 }
@@ -172,7 +173,7 @@ void Quat::getRotate( float& angle, float& x, float& y, float& z ) const
 /// Reference: Shoemake at SIGGRAPH 89
 /// See also
 /// http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
-void Quat::slerp( float t, const Quat& from, const Quat& to )
+void Quat::slerp( value_type t, const Quat& from, const Quat& to )
 {
     const double epsilon = 0.00001;
     double omega, cosomega, sinomega, scale_from, scale_to ;
@@ -185,7 +186,7 @@ void Quat::slerp( float t, const Quat& from, const Quat& to )
     if ( cosomega <0.0 )
     { 
         cosomega = -cosomega; 
-        quatTo.set(-to._fv);
+        quatTo = -to;
     }
 
     if( (1.0 - cosomega) > epsilon )
@@ -207,21 +208,20 @@ void Quat::slerp( float t, const Quat& from, const Quat& to )
         scale_to = t ;
     }
 
-                                 // use Vec4 arithmetic
-    _fv = (from._fv*scale_from) + (quatTo._fv*scale_to);
+    *this = (from*scale_from) + (quatTo*scale_to);
     
     // so that we get a Vec4
 }
 
 
-#define QX  _fv[0]
-#define QY  _fv[1]
-#define QZ  _fv[2]
-#define QW  _fv[3]
+#define QX  _v[0]
+#define QY  _v[1]
+#define QZ  _v[2]
+#define QW  _v[3]
 
 
 #ifdef OSG_USE_UNIT_TESTS
-void test_Quat_Eueler(float heading,float pitch,float roll)
+void test_Quat_Eueler(value_type heading,value_type pitch,value_type roll)
 {
     osg::Quat q;
     q.makeRotate(heading,pitch,roll);

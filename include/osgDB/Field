@@ -88,10 +88,7 @@ class OSGDB_EXPORT Field
         bool isFloat() const;
         bool matchFloat(float f) const;
         bool getFloat(float& f) const;
-
-        bool isDouble() const;
-        bool matchDouble(double f) const;
-        bool getDouble(double& d) const;
+        bool getFloat(double& f) const;
 
         static FieldType calculateFieldType(const char* str,bool withinQuotes=false);
 

@@ -45,8 +45,6 @@ class Lwo2Layer;
 struct Lwo2Surface;
 struct Lwo2PolygonMapping;
 
-typedef vector< short > PointsList;
-
 typedef vector< string >::iterator IteratorString;
 typedef map< int, Lwo2Layer* >::iterator IteratorLayers;
 typedef map< string, Lwo2Surface* >::iterator IteratorSurfaces;
@@ -67,7 +65,6 @@ class Lwo2
   vector< string > _tags;
   vector< string > _images;
   ifstream _fin;
-  Geode* _geode;
 
   unsigned char _read_char();
   unsigned short _read_short();

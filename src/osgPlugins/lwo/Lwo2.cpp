@@ -41,7 +41,6 @@
 
 Lwo2::Lwo2():
   _current_layer(0),
-  _geode(0),
   _successfully_read(false)
 {
 }
@@ -83,27 +82,25 @@ Lwo2::ReadFile( const string& filename )
     }
   else 
     {
-      notify(INFO) << "Detected EA-IFF85 format" << std::endl;
+      notify(NOTICE) << "Detected EA-IFF85 format" << std::endl;
     }
 
   unsigned long form_size = _read_long();
-  notify(DEBUG_INFO) << "Form size: " << form_size << std::endl;
+  notify(INFO) << "Form size: " << form_size << std::endl;
 
   // checking LWO2 format 
   // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/lwo2.html
   if (_read_long() != tag_LWO2) 
     {
       unsigned long make_id(const char*);
-      notify(DEBUG_INFO) << "File '" << filename << "' is not LWO2 format file." << std::endl;
+      notify(NOTICE) << "File '" << filename << "' is not LWO2 format file." << std::endl;
       _fin.close();
       return false;
     }
   else 
     {
-      notify(INFO) << "Detected LWO2 format" << std::endl;
+      notify(NOTICE) << "Detected LWO2 format" << std::endl;
     }
-
-  _geode = osgNew osg::Geode();
 
   unsigned long read_bytes = 4;
   unsigned long current_tag_name;
@@ -119,43 +116,43 @@ Lwo2::ReadFile( const string& filename )
 
     if (current_tag_name == tag_TAGS) 
       {
-    _read_tag_strings(current_tag_size);
+	_read_tag_strings(current_tag_size);
       } 
     else if (current_tag_name == tag_LAYR) 
       {
-    _read_layer(current_tag_size);
+	_read_layer(current_tag_size);
       }
     else if (current_tag_name == tag_PNTS) 
       {
-    _read_points(current_tag_size);
+	_read_points(current_tag_size);
       }
     else if (current_tag_name == tag_VMAP) 
       {
-    _read_vertex_mapping(current_tag_size);
+	_read_vertex_mapping(current_tag_size);
       }
     else if (current_tag_name == tag_VMAD) 
       {
-    _read_polygons_mapping(current_tag_size);
+	_read_polygons_mapping(current_tag_size);
       }
     else if (current_tag_name == tag_POLS) 
       {
-    _read_polygons(current_tag_size);
+	_read_polygons(current_tag_size);
       }
     else if (current_tag_name == tag_PTAG) 
       {
-    _read_polygon_tag_mapping(current_tag_size);
+	_read_polygon_tag_mapping(current_tag_size);
       }
     else if (current_tag_name == tag_CLIP) 
       {
-    _read_image_definition(current_tag_size);
+	_read_image_definition(current_tag_size);
       }
     else if (current_tag_name == tag_SURF) 
       {
-    _read_surface(current_tag_size);
+	_read_surface(current_tag_size);
       } 
     else 
       {
-    _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+	_fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
       }
   }
 
@@ -224,23 +221,23 @@ Lwo2::_read_string(string& str)
 void 
 Lwo2::_print_tag(unsigned int tag, unsigned int size) {
   notify(DEBUG_INFO) << "Found tag " 
-             << char(tag >> 24) 
-             << char(tag >> 16) 
-             << char(tag >>  8) 
-             << char(tag) 
-             << " size " << size << " bytes" 
-             << std::endl;
+		     << char(tag >> 24) 
+		     << char(tag >> 16) 
+		     << char(tag >>  8) 
+		     << char(tag) 
+		     << " size " << size << " bytes" 
+		     << std::endl;
 }
 
 // print 4-char type
 void 
 Lwo2::_print_type(unsigned int type) {
   notify(DEBUG_INFO) << "  type   \t" 
-             << char(type >> 24) 
-             << char(type >> 16) 
-             << char(type >>  8) 
-             << char(type) 
-             << std::endl;
+		     << char(type >> 24) 
+		     << char(type >> 16) 
+		     << char(type >>  8) 
+		     << char(type) 
+		     << std::endl;
 }
 
 // read TAGS info
@@ -302,49 +299,14 @@ Lwo2::_read_points(unsigned long size)
 
   while (count--)
     {
-        float x = _read_float();
-        float y = _read_float();
-        float z = _read_float();
-      _current_layer->_points.push_back(Vec3(x, y,z));
+      PointData point;
+
+      float x = _read_float();
+      float y = _read_float();
+      float z = _read_float();
+      point.coord = Vec3(x, y, z);
+      _current_layer->_points.push_back(point);
     } 
-}
-
-// read POLS info
-
-void 
-Lwo2::_read_polygons(unsigned long size) 
-{
-  unsigned int type = _read_long();
-  size -= 4;
-
-  _print_type(type);
-
-  if (type == tag_FACE) 
-    {
-      unsigned short vertex_count;
-
-      while (size > 0)
-    {
-      vertex_count = _read_short() & 0x03FF;
-      size -= 2;
-
-          PointsList* points_list = osgNew PointsList;
-          _current_layer->_polygons.push_back(points_list);
-      
-      while (vertex_count--)
-        {
-          points_list->push_back(_read_short());
-          size -= 2;
-        }     
-    }
-    }
-  else 
-    {
-  
-      // not recognized yet
-      notify(DEBUG_INFO) << "  skipping..." << std::endl;
-      _fin.seekg(size + size % 2, ios::cur);
-    }
 }
 
 // read VMAP info
@@ -370,18 +332,21 @@ Lwo2::_read_vertex_mapping(unsigned long size)
   if (type == tag_TXUV && dimension == 2) 
     {
       int count = size / 10;
-      _current_layer->_points_map.resize(count);
-
-      short n;
+      unsigned short n;
       float u;
       float v;
       while (count--)
-    {
-      n = _read_short();
-      u = _read_float();
-      v = _read_float();
-      _current_layer->_points_map[n].set(u, v);
-    }
+	{
+	  n = _read_short();
+	  u = _read_float();
+	  v = _read_float();
+
+	  // point coords must be read previously
+	  if (n < _current_layer->_points.size())
+	    {
+	      _current_layer->_points[n].texcoord = Vec2(u, v);
+	    }
+	}
     }
   else 
     {
@@ -390,7 +355,85 @@ Lwo2::_read_vertex_mapping(unsigned long size)
       notify(DEBUG_INFO) << "  skipping..." << std::endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
-     
+}
+
+// read POLS info
+
+void 
+Lwo2::_read_polygons(unsigned long size) 
+{
+  unsigned int type = _read_long();
+  size -= 4;
+
+  _print_type(type);
+
+  if (type == tag_FACE) 
+    {
+      unsigned short vertex_count;
+
+      while (size > 0)
+	{
+	  PointData point;
+	  vertex_count = _read_short() & 0x03FF;
+	  size -= 2;
+
+          PointsList points_list;
+      
+	  while (vertex_count--)
+	    {
+	      unsigned short point_index = _read_short();
+
+	      point = _current_layer->_points[point_index];
+	      point.point_index = point_index;
+
+	      points_list.push_back(point);
+	      size -= 2;
+	    }     
+
+          _current_layer->_polygons.push_back(points_list);
+	}
+    }
+  else 
+    {
+  
+      // not recognized yet
+      notify(DEBUG_INFO) << "  skipping..." << std::endl;
+      _fin.seekg(size + size % 2, ios::cur);
+    }
+}
+
+// read PTAG info
+
+void 
+Lwo2::_read_polygon_tag_mapping(unsigned long size) 
+{
+  unsigned int type = _read_long();
+  size -= 4;
+
+  _print_type(type);
+
+  if (type == tag_SURF) 
+    {
+      int count = size / 4;
+      _current_layer->_polygons_tag.resize(count);
+
+      short polygon_index;
+      short tag_index;
+
+      while (count--)
+	{
+	  polygon_index = _read_short();
+	  tag_index = _read_short();
+	  _current_layer->_polygons_tag[polygon_index] = tag_index;
+	}
+    }
+  else 
+    {
+  
+      // not recognized yet
+      notify(DEBUG_INFO) << "  skipping..." << std::endl;
+      _fin.seekg(size + size % 2, ios::cur);
+    }
 }
 
 // read VMAD info
@@ -415,24 +458,35 @@ Lwo2::_read_polygons_mapping(unsigned long size)
 
   if (type == tag_TXUV && dimension == 2) 
     {
+      notify(DEBUG_INFO) << "  polygons mappings:" << endl;
+      notify(DEBUG_INFO) << "\tpoint\tpolygon\ttexcoord" <<  endl;
+      notify(DEBUG_INFO) << "\t=====\t=======\t========" <<  endl;
+  
       int count = size / 12;
-      //      _current_layer->_points_map.resize(count);
 
       short point_index;
       short polygon_index;
       float u;
       float v;
       while (count--)
-    {
-      point_index = _read_short();
-      polygon_index = _read_short();
-      u = _read_float();
-      v = _read_float();
+	{
+	  point_index = _read_short();
+	  polygon_index = _read_short();
+	  u = _read_float();
+	  v = _read_float();
 
-      Lwo2PolygonMapping pm(polygon_index, Vec2(u, v));
-      _current_layer->_polygons_map.insert(PairVMAD(point_index, pm));
+	  notify(DEBUG_INFO) << "    \t" << point_index << "\t" << polygon_index << "\t" << Vec2(u, v) << endl;
 
-    }
+	  // apply texture coordinates 
+          PointsList& points_list = _current_layer->_polygons[polygon_index];
+	  for (unsigned int i = 0; i < points_list.size(); i++)
+	    {
+	      if (points_list[i].point_index == point_index)
+		{
+		  points_list[i].texcoord = Vec2(u, v);
+		}
+	    }
+	}
     }
   else 
     {
@@ -442,40 +496,6 @@ Lwo2::_read_polygons_mapping(unsigned long size)
       _fin.seekg(size + size % 2, ios::cur);
     }
      
-}
-
-// read PTAG info
-
-void 
-Lwo2::_read_polygon_tag_mapping(unsigned long size) 
-{
-  unsigned int type = _read_long();
-  size -= 4;
-
-  _print_type(type);
-
-  if (type == tag_SURF) 
-    {
-      int count = size / 4;
-      _current_layer->_polygons_tag.resize(count);
-
-      short polygon_index;
-      short tag_index;
-
-      while (count--)
-    {
-      polygon_index = _read_short();
-      tag_index = _read_short();
-      _current_layer->_polygons_tag[polygon_index] = tag_index;
-    }
-    }
-  else 
-    {
-  
-      // not recognized yet
-      notify(DEBUG_INFO) << "  skipping..." << std::endl;
-      _fin.seekg(size + size % 2, ios::cur);
-    }
 }
 
 // read CLIP info
@@ -505,9 +525,9 @@ Lwo2::_read_image_definition(unsigned long size)
       size -= name.length() + name.length() % 2; 
         
       if (index + 1 > _images.size())
-    {
-      _images.resize(index + 1);
-    }
+	{
+	  _images.resize(index + 1);
+	}
         
       _images[index] = name.c_str();
         
@@ -546,77 +566,77 @@ Lwo2::_read_surface(unsigned long size)
       _print_tag(current_tag_name, current_tag_size);
     
       if (current_tag_name == tag_BLOK) 
-    {
+	{
 
-      // BLOK
-      int blok_size = current_tag_size;
-      size -= blok_size;
-      while (blok_size > 0) 
-        {
-          current_tag_name = _read_long();
-          blok_size -= 4;
-          current_tag_size = _read_short();
-          blok_size -= 2;
-          notify(DEBUG_INFO) << "  ";
-          _print_tag(current_tag_name, current_tag_size);
+	  // BLOK
+	  int blok_size = current_tag_size;
+	  size -= blok_size;
+	  while (blok_size > 0) 
+	    {
+	      current_tag_name = _read_long();
+	      blok_size -= 4;
+	      current_tag_size = _read_short();
+	      blok_size -= 2;
+	      notify(DEBUG_INFO) << "  ";
+	      _print_tag(current_tag_name, current_tag_size);
 
-          if (current_tag_name == tag_IMAG)
-        {
-          surface->image_index = _read_short();
-          notify(DEBUG_INFO) << "    image index\t" << surface->image_index << std::endl;
-          blok_size -= 2;
-        }
-          else if (current_tag_name == tag_IMAP) 
-        {
+	      if (current_tag_name == tag_IMAG)
+		{
+		  surface->image_index = _read_short();
+		  notify(DEBUG_INFO) << "    image index\t" << surface->image_index << std::endl;
+		  blok_size -= 2;
+		}
+	      else if (current_tag_name == tag_IMAP) 
+		{
            
-          // IMAP
-          int imap_size = current_tag_size;
-          blok_size -= imap_size;
+		  // IMAP
+		  int imap_size = current_tag_size;
+		  blok_size -= imap_size;
             
-          string ordinal;
-          _read_string(ordinal);
-          imap_size -= ordinal.length() + ordinal.length() % 2; 
-          notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal.c_str() << "'" << std::endl;
+		  string ordinal;
+		  _read_string(ordinal);
+		  imap_size -= ordinal.length() + ordinal.length() % 2; 
+		  notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal.c_str() << "'" << std::endl;
 
-          while(imap_size > 0)
-            {
-              current_tag_name = _read_long();
-              imap_size -= 4;
-              current_tag_size = _read_short();
-              imap_size -= 2;
-              notify(DEBUG_INFO) << "    ";
-              _print_tag(current_tag_name, current_tag_size);
+		  while(imap_size > 0)
+		    {
+		      current_tag_name = _read_long();
+		      imap_size -= 4;
+		      current_tag_size = _read_short();
+		      imap_size -= 2;
+		      notify(DEBUG_INFO) << "    ";
+		      _print_tag(current_tag_name, current_tag_size);
 
                       _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-              imap_size -= current_tag_size + current_tag_size % 2;
-            }
-        }
-          else 
-        {
-          _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-          blok_size -= current_tag_size + current_tag_size % 2;
-        }
-        }
-    }
+		      imap_size -= current_tag_size + current_tag_size % 2;
+		    }
+		}
+	      else 
+		{
+		  _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+		  blok_size -= current_tag_size + current_tag_size % 2;
+		}
+	    }
+	}
       else if (current_tag_name == tag_COLR)
-    {
-        float r = _read_float();
-        float g = _read_float();
-        float b = _read_float();
-      surface->color.set(r,g,b);
+	{
+	  float r = _read_float();
+	  float g = _read_float();
+	  float b = _read_float();
+	  surface->color.set(r,g,b);
           notify(DEBUG_INFO) << "  color   \t" << surface->color << std::endl;
-      current_tag_size -= 12;
-      size -= 12;
+	  current_tag_size -= 12;
+	  size -= 12;
 
-      // skip ununderstooded envelope
-      _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-      size -= current_tag_size + current_tag_size % 2;
-    }
+	  // skip ununderstooded envelope
+	  _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+	  size -= current_tag_size + current_tag_size % 2;
+	}
       else 
-    {
-      _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
-      size -= current_tag_size + current_tag_size % 2;
-    }
+	{
+	  _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
+	  size -= current_tag_size + current_tag_size % 2;
+	}
     }
 
   _surfaces[surface->name] = surface;
@@ -634,15 +654,22 @@ Lwo2::GenerateGroup( Group& group )
 
   // create geometry from all layers
   for (IteratorLayers itr = _layers.begin(); itr != _layers.end(); itr++)
+  //  IteratorLayers itr = _layers.begin();
+  //  itr++;
+  //  itr++;
     {
       osg::Geode* geode = osgNew osg::Geode();
-      (*itr).second->GenerateGeode(*geode, _tags.size());
+
+      notify(DEBUG_INFO) << "Generate geode for layer " << (*itr).first << std::endl;
+      DrawableToTagMapping tag_mapping;
+      (*itr).second->GenerateGeode(*geode, _tags.size(), tag_mapping);
 
       // assign StateSet for each PTAG group
       for (unsigned int i = 0; i < geode->getNumDrawables(); i++)
-     {
-       geode->getDrawable(i)->setStateSet(_surfaces[_tags[i]]->state_set);
-     }
+	{
+	  notify(DEBUG_INFO) << "  Assigning surface " << _tags[tag_mapping[i]] << " to drawable " << i << std::endl;
+	  geode->getDrawable(i)->setStateSet(_surfaces[_tags[tag_mapping[i]]]->state_set);
+	}
 
       group.addChild(geode);
     }
@@ -659,26 +686,28 @@ Lwo2::_generate_statesets_from_surfaces()
       Lwo2Surface* surface = (*itr_surf).second;
       StateSet* state_set = osgNew osg::StateSet;
 
+      notify(DEBUG_INFO) << "\tcreating surface " << (*itr_surf).first << std::endl;
+
       // check if exist texture image for this surface
       if (surface->image_index >= 0) 
-    {
-      notify(DEBUG_INFO) << "\tloading image '" << _images[surface->image_index] << "'" << std::endl;
-      Image* image = osgDB::readImageFile(_images[surface->image_index]);
-      notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
-      if (image)
-        {
-          Texture2D* texture = osgNew osg::Texture2D;
-          texture->setImage(image);
-          state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
-        }
-    }
+	{
+	  Image* image = osgDB::readImageFile(_images[surface->image_index]);
+	  notify(DEBUG_INFO) << "\tloaded image '" << _images[surface->image_index] << "'" << std::endl;
+	  notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
+	  if (image)
+	    {
+	      Texture2D* texture = osgNew osg::Texture2D;
+	      texture->setImage(image);
+	      state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
+	    }
+	}
 
       // set color
       Material* material = osgNew Material();
       Vec4 color(surface->color[0], 
-         surface->color[1], 
-         surface->color[2], 
-         1.0f);
+		 surface->color[1], 
+		 surface->color[2], 
+		 1.0f);
       material->setDiffuse(Material::FRONT_AND_BACK, color);
       state_set->setAttribute(material);
 
@@ -687,6 +716,8 @@ Lwo2::_generate_statesets_from_surfaces()
       cull->setMode(CullFace::BACK);
       state_set->setAttribute(cull);
       state_set->setMode(GL_CULL_FACE, StateAttribute::ON);
+
+      state_set->setMode(GL_NORMALIZE, StateAttribute::ON);
 
       surface->state_set = state_set;
     }

@@ -77,6 +77,7 @@ CXXFILES =\
 	PositionAttitudeTransform.cpp\
 	PrimitiveSet.cpp\
 	Projection.cpp\
+	ProxyNode.cpp\
 	Quat.cpp\
 	Referenced.cpp\
 	Sequence.cpp\

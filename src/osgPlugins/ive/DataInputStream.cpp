@@ -37,6 +37,7 @@
 #include "FragmentProgram.h"
 #include "VertexProgram.h"
 #include "LightModel.h"
+#include "ProxyNode.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -930,6 +931,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEVISIBILITYGROUP){
         node = new osgSim::VisibilityGroup();
         ((ive::VisibilityGroup*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEPROXYNODE){
+        node = new osg::ProxyNode();
+        ((ive::ProxyNode*)(node))->read(this);
     }
     else if(nodeTypeID== IVEGROUP){
         node = new osg::Group();

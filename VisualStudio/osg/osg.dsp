@@ -388,6 +388,10 @@ SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ProxyNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Quat.cpp
 # End Source File
 # Begin Source File
@@ -850,6 +854,10 @@ SOURCE=..\..\Include\Osg\Projection
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Program
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ProxyNode
 # End Source File
 # Begin Source File
 

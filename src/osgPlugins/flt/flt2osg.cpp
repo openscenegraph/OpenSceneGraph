@@ -31,6 +31,7 @@
 #include <osg/Sequence>
 #include <osg/ShapeDrawable>
 #include <osg/Quat>
+#include <osg/ProxyNode>
 
 #include <osgSim/MultiSwitch>
 #include <osgSim/DOFTransform>
@@ -88,6 +89,8 @@
 
 static int dprint = 0 ;
 #define DPRINT if(dprint)fprintf
+
+#define USE_PROXYNODE_FOR_EXTERNAL_FILES
 
 using namespace flt;
 
@@ -2424,11 +2427,19 @@ osg::Group* ConvertFromFLT::visitMatrix(osg::Group& osgParent, const osg::Group&
 
 osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord* rec)
 {
-    
     FltFile* pFile = rec->getExternal();
     osg::Group* external = NULL;
     if (pFile)
     {
+#ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
+        external = dynamic_cast<osg::Group*> (osgDB::Registry::instance()->getFromObjectCache(rec->getFilename()));
+        if(external)
+        {
+            osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
+            tempParent->addChild(external);
+            return 0;
+        }
+#endif
         pFile->setDesiredUnits( rec->getFltFile()->getDesiredUnits() );
         external = pFile->convert();
         if (external)
@@ -2450,8 +2461,16 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
           std::string modelName = rec->getModelName();
           if ( modelName.empty() )
           {
-            // Add the entire externally referenced file
-            tempParent->addChild(external);
+#ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
+               // Add the entire externally referenced file
+                osg::ProxyNode *proxynode = new osg::ProxyNode;
+                proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+                proxynode->addChild(external, rec->getFilename());
+                tempParent->addChild(proxynode);
+                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), external);
+#else
+                tempParent->addChild(external);
+#endif
           }
           else
           {
@@ -2462,7 +2481,15 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
             osg::Node *model = findExternalModelVisitor.getModel();
             if (model)
             {
-              tempParent->addChild(model);
+#ifdef USE_PROXYNODE_FOR_EXTERNAL_FILES
+                osg::ProxyNode *proxynode = new osg::ProxyNode;
+                proxynode->setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+                proxynode->addChild(model, rec->getFilename());
+                tempParent->addChild(proxynode);
+                osgDB::Registry::instance()->addEntryToObjectCache(rec->getFilename(), model);
+#else
+                //tempParent->addChild(model);
+#endif
             }
             else
             {
@@ -2474,7 +2501,6 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
           }
         }
     }
-
     return external;
 }
 

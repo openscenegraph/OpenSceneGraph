@@ -76,8 +76,13 @@ class IVEReaderWriter : public ReaderWriter
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
+            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+            if(local_opt->getDatabasePathList().empty())
+                local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
             std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
-            WriteResult result = writeNode(node, fout, options);
+            WriteResult result = writeNode(node, fout, local_opt.get());
             fout.close();
             return result;
         }
@@ -95,12 +100,8 @@ class IVEReaderWriter : public ReaderWriter
             {
                 ive::DataOutputStream out(&fout);
 
-                if (options)
-                {
-                    out.setIncludeImageData(options->getOptionString().find("noTexturesInIVEFile")==std::string::npos);
-                    osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageData()=" << out.getIncludeImageData() << std::endl;
-                }
-                
+                out.setOptions(options);
+
                 out.writeNode(const_cast<osg::Node*>(&node));
                 return WriteResult::FILE_SAVED;
             }

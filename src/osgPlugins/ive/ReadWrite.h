@@ -33,6 +33,7 @@ namespace ive {
 #define IVEELLIPSOIDMODEL               0x00000024
 #define IVETEXGENNODE                   0x00000025
 #define IVECLIPNODE                     0x00000026
+#define IVEPROXYNODE                    0x00000027
 
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050

@@ -1568,6 +1568,13 @@ void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* o
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
 }
+osg::Object* Registry::getFromObjectCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+    ObjectCache::iterator itr = _objectCache.find(fileName);
+    if (itr!=_objectCache.end()) return itr->second.first.get();
+    else return 0;
+}
 
 void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime)
 {

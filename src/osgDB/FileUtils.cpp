@@ -27,7 +27,7 @@
     #include <direct.h> // for _mkdir
     
     #define mkdir(x,y) _mkdir((x))
-    #define stat64 _stat64
+    #define stat64 _stati64
 
     // set up for windows so acts just like unix access().
     #define F_OK 4

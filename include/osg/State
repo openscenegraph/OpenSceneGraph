@@ -223,6 +223,12 @@ class SG_EXPORT State : public Referenced
         const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type) const;
 
 
+        /** Dirty the modes previously applied in osg::State.*/
+        void dirtyAllModes();
+
+        /** Dirty the modes attributes previously applied in osg::State.*/
+        void dirtyAllAttributes();
+
         /** disable the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
         void disableAllVertexArrays();
 

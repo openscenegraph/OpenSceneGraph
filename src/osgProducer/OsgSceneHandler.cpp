@@ -51,7 +51,7 @@ void OsgSceneHandler::cullImplementation(Producer::Camera &cam)
 
     int x, y;
     unsigned int w, h;
-    cam.getProjectionRect( x, y, w, h );
+    cam.getProjectionRectangle( x, y, w, h );
 
     setViewport( x, y, w, h );
 

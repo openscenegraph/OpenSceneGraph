@@ -152,22 +152,24 @@ EventAdapter* KeyboardMouseCallback::createEventAdapter()
         float minY = FLT_MAX;
         float maxX = -FLT_MAX;
         float maxY = -FLT_MAX;
-        int numInputRectangle = ia->getNumInputRectangle();
-        for (int i=0;i<numInputRectangle;++i)
+        //int numInputRectangle = ia->getNumInputRectangle();
+        int numRenderSurfaces = ia->getNumRenderSurfaces();
+        for (int i=0;i<numRenderSurfaces;++i)
         {
-            Producer::InputRectangle* ir = ia->getInputRectangle(i);
+            const Producer::RenderSurface::InputRectangle &ir = 
+                ia->getRenderSurface(i)->getInputRectangle();
 
-            minX = osg::minimum(minX,ir->left());
-            minX = osg::minimum(minX,ir->left()+ir->width());
+            minX = osg::minimum(minX,ir.left());
+            minX = osg::minimum(minX,ir.left()+ir.width());
             
-            minY = osg::minimum(minY,ir->bottom());
-            minY = osg::minimum(minY,ir->bottom()+ir->height());
+            minY = osg::minimum(minY,ir.bottom());
+            minY = osg::minimum(minY,ir.bottom()+ir.height());
 
-            maxX = osg::maximum(maxX,ir->left());
-            maxX = osg::maximum(maxX,ir->left()+ir->width());
+            maxX = osg::maximum(maxX,ir.left());
+            maxX = osg::maximum(maxX,ir.left()+ir.width());
             
-            maxY = osg::maximum(maxY,ir->bottom());
-            maxY = osg::maximum(maxY,ir->bottom()+ir->height());
+            maxY = osg::maximum(maxY,ir.bottom());
+            maxY = osg::maximum(maxY,ir.bottom()+ir.height());
         }
         ea->setWindowSize(minX,minY,maxX,maxY);
     }

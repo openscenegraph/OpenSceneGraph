@@ -32,7 +32,7 @@
 #include "trpage_write.h"
 #include "trpage_scene.h"
 #include "trpage_managers.h"
-#include <WaitBlock.h>
+#include "WaitBlock.h"
 #include "TrPageArchive.h"
 
 namespace txp

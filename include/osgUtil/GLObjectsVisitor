@@ -33,12 +33,14 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         /** Operation modes of the.*/
         enum ModeValues
         {
-            SWITCH_ON_DISPLAY_LISTS = 0x1,
-            SWITCH_OFF_DISPLAY_LISTS = 0x2,
-            COMPILE_DISPLAY_LISTS = 0x4,
-            COMPILE_STATE_ATTRIBUTES = 0x8,
-            RELEASE_DISPLAY_LISTS = 0x10,
-            RELEASE_STATE_ATTRIBUTES = 0x20
+            SWITCH_ON_DISPLAY_LISTS             = 0x1,
+            SWITCH_OFF_DISPLAY_LISTS            = 0x2,
+            COMPILE_DISPLAY_LISTS               = 0x4,
+            COMPILE_STATE_ATTRIBUTES            = 0x8,
+            RELEASE_DISPLAY_LISTS               = 0x10,
+            RELEASE_STATE_ATTRIBUTES            = 0x20,
+            SWITCH_ON_VERTEX_BUFFER_OBJECTS     = 0x40,
+            SWITCH_OFF_VERTEX_BUFFER_OBJECTS    = 0x80
         };
         
         typedef unsigned int Mode;
@@ -83,7 +85,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
     protected:
 
         Mode _mode;
-        
+
         osg::ref_ptr<osg::State> _state;
 
 };

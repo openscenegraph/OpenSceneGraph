@@ -34,7 +34,7 @@
 //  The constructors of isockinet, osockinet and iosockinet are changed.
 
 #include "sockinet.h"
-#if defined(__APPLE__)
+#if defined(__APPLE__) 
 typedef int socklen_t;
 #endif
 
@@ -163,7 +163,11 @@ sockinetaddr sockinetbuf::localaddr() const
 {
   sockinetaddr sin;
   int len = sin.size();
+#ifdef __sgi
+  if (::getsockname(rep->sock, sin.addr (), (int *) // LN
+#else
   if (::getsockname(rep->sock, sin.addr (), (socklen_t*) // LN
+#endif
                     &len) == -1)
     throw sockerr (errno, "sockinetbuf::localaddr");
   return sin;
@@ -187,7 +191,11 @@ sockinetaddr sockinetbuf::peeraddr() const
 {
   sockinetaddr sin;
   int len = sin.size();
+#ifdef __sgi
+  if (::getpeername(rep->sock, sin.addr (), (int *) // LN
+#else
   if (::getpeername(rep->sock, sin.addr (), (socklen_t*) // LN
+#endif
                     &len) == -1)
     throw sockerr (errno, "sockinetbuf::peeraddr");
   return sin;

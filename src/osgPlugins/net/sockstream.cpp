@@ -63,7 +63,8 @@
 #include "sockstream.h"
 #include <sstream>
 #include <string>
-#if defined(__APPLE__)
+
+#if defined(__APPLE__) 
 typedef int socklen_t;
 #endif
 
@@ -126,6 +127,10 @@ extern "C" {
 #ifdef __sun
 #include <sys/sockio.h>
 #include <sys/filio.h>
+#endif
+
+#ifdef __sgi
+#define socklen_t int
 #endif
 
 #ifndef BUFSIZ

@@ -35,7 +35,7 @@ int ReentrantMutex::lock()
     }
     else
     {
-        int result = Mutex::lock();
+        int result = OpenThreads::Mutex::lock();
         if (result==0)
         {
             _threadHoldingMutex = OpenThreads::Thread::CurrentThread();
@@ -50,7 +50,7 @@ int ReentrantMutex::unlock()
     if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
     {
         --_lockCount;
-        if (_lockCount<=0) return Mutex::unlock();
+        if (_lockCount<=0) return OpenThreads::Mutex::unlock();
     }
     return 0;
 }
@@ -64,7 +64,7 @@ int ReentrantMutex::trylock()
     }
     else
     {
-        int result = Mutex::trylock();
+        int result = OpenThreads::Mutex::trylock();
         if (result==0)
         {
             _threadHoldingMutex = OpenThreads::Thread::CurrentThread();

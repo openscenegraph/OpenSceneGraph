@@ -57,9 +57,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fil
         
     }
 
-    osg::ref_ptr<ReaderWriter::Options> local_options = options ? 
-                static_cast<ReaderWriter::Options*>(options->clone(osg::CopyOp(osg::CopyOp::SHALLOW_COPY))) : 
-                new ReaderWriter::Options;
+    osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? 
+                static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp(osg::CopyOp::SHALLOW_COPY))) : 
+                new osgDB::ReaderWriter::Options;
     local_options->setDatabasePath(osgDB::getFilePath(fileName));
     read->setOptions(local_options.get());
 

@@ -3,7 +3,6 @@
 // Simple example of use of Producer::RenderSurface to create an OpenGL
 // graphics window, and OSG for rendering.
 
-#include <Producer/RenderSurface>
 #include <osg/Timer>
 #include <osgUtil/SceneView>
 #include <osgDB/ReadFile>

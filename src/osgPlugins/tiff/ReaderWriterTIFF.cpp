@@ -230,7 +230,10 @@ int *numComponents_ret)
 
     if (TIFFGetField(in, TIFFTAG_SAMPLESPERPIXEL, &samplesperpixel) == 1)
     {
-        if (samplesperpixel != 1 && samplesperpixel != 3 && samplesperpixel != 4)
+        if (samplesperpixel != 1 &&
+            samplesperpixel != 2 &&
+            samplesperpixel != 3 &&
+            samplesperpixel != 4)
         {
             /* Bad samples/pixel */
             tifferror = ERR_UNSUPPORTED;

@@ -156,8 +156,8 @@ Node *makeTank( void )
     tex->setImage(osgDB::readImageFile("Images/tank.rgb"));
 
     StateSet *dstate = new StateSet;
-    dstate->setAttributeAndModes( tex, StateAttribute::ON );
-    dstate->setAttribute( new TexEnv );
+    dstate->setTextureAttributeAndModes(0, tex, StateAttribute::ON );
+    dstate->setTextureAttribute(0, new TexEnv );
 
     gset->setStateSet( dstate );
     geode->addDrawable( gset );

@@ -53,7 +53,7 @@ osg::StateSet* createMirrorTexturedState(const std::string& filename)
     {
         osg::Texture* texture = new osg::Texture;
         texture->setImage(image);
-        dstate->setAttributeAndModes(texture,osg::StateAttribute::ON);
+        dstate->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
     }
     
     return dstate;

@@ -930,39 +930,39 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
         {
             case(PFTG_OBJECT_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::OBJECT_LINEAR);
-                osgStateSet->setAttribute(osgTexGen);
-                osgStateSet->setMode(GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-                osgStateSet->setMode(GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+                osgStateSet->setTextureAttribute(0,osgTexGen);
+                osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+                osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_EYE_LINEAR_IDENT) :
                 std::cerr << "TexGen Mode PFTG_EYE_LINEAR_IDENT not currently supported by the OSG,"<<std::endl;
                 std::cerr << "       assuming osg::TexGen::EYE_LINEAR."<<std::endl;
             case(PFTG_EYE_LINEAR) :
                 osgTexGen->setMode(osg::TexGen::EYE_LINEAR);
-                osgStateSet->setAttribute(osgTexGen);
-                osgStateSet->setMode(GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-                osgStateSet->setMode(GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+                osgStateSet->setTextureAttribute(0,osgTexGen);
+                osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+                osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_SPHERE_MAP) :
                 osgTexGen->setMode(osg::TexGen::SPHERE_MAP);
-                osgStateSet->setAttribute(osgTexGen);
-                osgStateSet->setMode(GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
-                osgStateSet->setMode(GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+                osgStateSet->setTextureAttribute(0,osgTexGen);
+                osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+                osgStateSet->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
                 break;
             case(PFTG_OFF) :
-                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
             case(PFTG_OBJECT_DISTANCE_TO_LINE) :
                 std::cerr << "TexGen Mode PFTG_OBJECT_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
-                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
             case(PFTG_EYE_DISTANCE_TO_LINE) :
                 std::cerr << "TexGen Mode PFTG_EYE_DISTANCE_TO_LINE not currently supported by the OSG."<<std::endl;
-                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
             default:
                 std::cerr << "TexGen Mode "<<mode<<" not currently supported by the OSG."<<std::endl;
-                osgTexGen->setStateSetModes(*osgStateSet,osg::StateAttribute::OFF);
+                osgStateSet->setAssociatedTextureModes(0,osgTexGen,osg::StateAttribute::OFF);
                 break;
         }
     }
@@ -977,7 +977,7 @@ osg::StateSet* ConvertFromPerformer::visitGeoState(osg::Drawable* osgDrawable,pf
 
         osg::TexMat* osgTexMat = new osg::TexMat();
         osgTexMat->setMatrix(osgMatrix);
-        osgStateSet->setAttribute(osgTexMat);
+        osgStateSet->setTextureAttribute(0,osgTexMat);
     }
 
     return osgStateSet;
@@ -1123,7 +1123,7 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTe
 
     osg::Texture* osgTexture = dynamic_cast<osg::Texture*>(getOsgObject(tex));
     if (osgTexture) {
-        if (osgStateSet) osgStateSet->setAttribute(osgTexture);
+        if (osgStateSet) osgStateSet->setTextureAttribute(0,osgTexture);
         return osgTexture;
     }
 
@@ -1131,7 +1131,7 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTe
     registerPfObjectForOsgObject(tex, osgTexture);
     //_pfToOsgMap[tex] = osgTexture;
 
-    if (osgStateSet) osgStateSet->setAttribute(osgTexture);
+    if (osgStateSet) osgStateSet->setTextureAttribute(0,osgTexture);
 
     int repeat_r = tex->getRepeat(PFTEX_WRAP_R);
     int repeat_s = tex->getRepeat(PFTEX_WRAP_S);

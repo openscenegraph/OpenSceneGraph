@@ -147,7 +147,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode(const std::string& fil
                         osg::Texture* texture = new osg::Texture;
                         texture->setImage(image);
                         
-                        stateset->setAttributeAndModes(texture,osg::StateAttribute::ON);
+                        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
                         gc._texturesActive=true;
                         
                         gc._geom->setStateSet(stateset);

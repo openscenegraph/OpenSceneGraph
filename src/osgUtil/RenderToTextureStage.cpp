@@ -30,4 +30,7 @@ void RenderToTextureStage::draw(osg::State& state,RenderLeaf*& previous)
     if (_texture.valid())
         _texture->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
     
+    if (_image.valid())
+        _image->readPixels(_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height(),GL_RGBA,GL_UNSIGNED_BYTE);
+
 }

@@ -98,7 +98,7 @@ osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture* texture,osg:
     // create the StateSet to store the texture data
     osg::StateSet* stateset = osgNew osg::StateSet;
 
-    stateset->setAttributeAndModes(texture,osg::StateAttribute::ON);
+    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
     // turn the face culling off so you can see the texture from
     // all angles.

@@ -65,12 +65,11 @@ public:
                     }
                     osg::TexEnv* texenv = new osg::TexEnv;
                     texenv->setMode(osg::TexEnv::MODULATE);
-                    dstate->setAttribute( texenv );
+                    dstate->setTextureAttribute(0, texenv );
                 }
             }
             if (ctx && tx) { // texture exists
-                dstate->setAttributeAndModes(tx,osg::StateAttribute::ON);
-                dstate->setMode(GL_TEXTURE_2D,StateAttribute::ON);
+                dstate->setTextureAttributeAndModes(0,tx,osg::StateAttribute::ON);
             }
         }
     }

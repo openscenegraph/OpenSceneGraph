@@ -221,8 +221,8 @@ Node *makeTrees( void )
 
     StateSet *dstate = new StateSet;
     
-    dstate->setAttributeAndModes( tex, StateAttribute::ON );
-    dstate->setAttribute( new TexEnv );
+    dstate->setTextureAttributeAndModes(0, tex, StateAttribute::ON );
+    dstate->setTextureAttribute(0, new TexEnv );
 
     dstate->setAttributeAndModes( new Transparency, StateAttribute::ON );
 

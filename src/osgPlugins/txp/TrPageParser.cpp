@@ -672,7 +672,7 @@ void TrPageParser::LoadLocalMaterials()
                 break;
             }
             
-            osg_state_set->setAttribute(osg_texenv);
+            osg_state_set->setTextureAttribute(0,osg_texenv);
             
             Texture* osg_texture = GetLocalTexture(image_helper,&locmat, tex);
 
@@ -687,7 +687,7 @@ void TrPageParser::LoadLocalMaterials()
                         osg_state_set->setRenderingHint(StateSet::TRANSPARENT_BIN);
                     }
                 }
-                osg_state_set->setAttributeAndModes(osg_texture, StateAttribute::ON);
+                osg_state_set->setTextureAttributeAndModes(0,osg_texture, StateAttribute::ON);
 
                 int wrap_s, wrap_t;   
                 texEnv.GetWrap(wrap_s, wrap_t);

@@ -104,8 +104,8 @@ Node *makeSky( void )
 
     StateSet *dstate = new StateSet;
 
-    dstate->setAttributeAndModes( tex, StateAttribute::OFF );
-    dstate->setAttribute( new TexEnv );
+    dstate->setTextureAttributeAndModes(0, tex, StateAttribute::OFF );
+    dstate->setTextureAttribute(0, new TexEnv );
     dstate->setMode( GL_LIGHTING, StateAttribute::OFF );
     dstate->setMode( GL_CULL_FACE, StateAttribute::ON );
     

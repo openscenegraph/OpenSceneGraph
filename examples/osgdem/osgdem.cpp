@@ -18,6 +18,7 @@
 #include <osgDB/WriteFile>
 #include <osgDB/ImageOptions>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/TriStripVisitor>
@@ -108,6 +109,56 @@ void ellipsodeTransformTest(double latitude, double longitude, double height)
     std::cout<<"lat = "<<osg::RadiansToDegrees(newLat)<<"\tlong="<<osg::RadiansToDegrees(newLong)<<"\t"<<newHeight<<std::endl;  
 }
 
+void processFile(std::string filename,
+		   osgTerrain::DataSet::Source::Type type,
+		   std::string currentCS, 
+		   osg::Matrixd &geoTransform,
+		   bool geoTransformSet,
+		   bool geoTransformScale,
+		   osg::ref_ptr<osgTerrain::DataSet> dataset) {
+
+    if(filename.empty()) return;
+
+    if(osgDB::fileType(filename) == osgDB::REGULAR_FILE) {
+	
+	osgTerrain::DataSet::Source* source = new osgTerrain::DataSet::Source(type, filename);                
+	if (source)
+	{
+	    if (!currentCS.empty())
+	    {
+		std::cout<<"source->setCoordySystem "<<currentCS<<std::endl;
+		source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+		source->setCoordinateSystem(currentCS);
+	    } 
+	    
+	    if (geoTransformSet)
+	    {
+		std::cout<<"source->setGeoTransform "<<geoTransform<<std::endl;
+		source->setGeoTransformPolicy(geoTransformScale ? 
+					      osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION : 
+					      osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+		source->setGeoTransform(geoTransform);
+	    }
+	    
+	    dataset->addSource(source);
+	}
+    } else if (osgDB::fileType(filename) == osgDB::DIRECTORY) {
+
+	osgDB::DirectoryContents dirContents= osgDB::getDirectoryContents(filename);
+	
+	// loop through directory contents and call processFile
+	std::vector<std::string>::iterator i;
+	std::string fullfilename;
+	for(i = dirContents.begin(); i != dirContents.end(); ++i) {
+	    if((*i != ".") && (*i != "..")) {
+		fullfilename = filename + '/' + *i;
+		processFile(fullfilename, type, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
+	    }
+	}
+    }
+}
+
+
 int main( int argc, char **argv )
 {
 
@@ -197,7 +248,6 @@ int main( int argc, char **argv )
     while(pos<arguments.argc())
     {
         std::string def;
-        osgTerrain::DataSet::Source* source = 0;
 
         if (arguments.read(pos, "--cs",def))
         {
@@ -358,28 +408,18 @@ int main( int argc, char **argv )
 
         else if (arguments.read(pos, "-d",filename))
         {
-            if (!filename.empty())
-            {
-                std::cout<<"-d "<<filename<<std::endl;
-            
-                source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::HEIGHT_FIELD,filename);                
-            }
+	    std::cout<<"-d "<<filename<<std::endl;
+	    processFile(filename, osgTerrain::DataSet::Source::HEIGHT_FIELD, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
         }
         else if (arguments.read(pos, "-t",filename))
         {
-            if (!filename.empty())
-            {
-                std::cout<<"-t "<<filename<<std::endl;
-                source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE,filename);
-            }
+	    std::cout<<"-t "<<filename<<std::endl;
+	    processFile(filename, osgTerrain::DataSet::Source::IMAGE, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
         }
         else if (arguments.read(pos, "-m",filename))
         {
-            if (!filename.empty())
-            {
-                std::cout<<"-m "<<filename<<std::endl;
-                source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::MODEL,filename);
-            }
+	    std::cout<<"-m "<<filename<<std::endl;
+	    processFile(filename, osgTerrain::DataSet::Source::MODEL, currentCS, geoTransform, geoTransformSet, geoTransformScale, dataset);
         }
         else if (arguments.read(pos, "-o",filename)) 
         {
@@ -400,29 +440,6 @@ int main( int argc, char **argv )
             // if no argument read advance to next argument.
             ++pos;
         }
-
-        if (source)
-        {
-            if (!currentCS.empty())
-            {
-                std::cout<<"source->setCoordySystem "<<currentCS<<std::endl;
-                source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
-                source->setCoordinateSystem(currentCS);
-            } 
-
-            if (geoTransformSet)
-            {
-                std::cout<<"source->setGeoTransform "<<geoTransform<<std::endl;
-                source->setGeoTransformPolicy(geoTransformScale ? 
-                                osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION : 
-                                osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
-                source->setGeoTransform(geoTransform);
-            }
-
-            dataset->addSource(source);
-        }
-        
-
     }
     
     // any option left unread are converted into errors to write out later.

@@ -12,7 +12,7 @@
 */
 
 /* file:	src/osgGL2/ProgramObject.cpp
- * author:	Mike Weiblen 2004-07-08
+ * author:	Mike Weiblen 2004-11-09
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -205,6 +205,11 @@ int ProgramObject::compare(const osg::StateAttribute& sa) const
     }
 
     return 0; // passed all the above comparison macro's, must be equal.
+}
+
+
+void ProgramObject::compileGLObjects(osg::State& state) const
+{
 }
 
 

@@ -72,7 +72,7 @@ void BlinkSequence::read(DataInputStream* in){
 		// Read in phase shift.
 		setPhaseShift(in->readDouble());
 		// Read in SequenceGroup
-		setSequenceGroup(new SequenceGroup(in->readDouble()));
+		setSequenceGroup(new osgSim::SequenceGroup(in->readDouble()));
 
 	}
 	else{

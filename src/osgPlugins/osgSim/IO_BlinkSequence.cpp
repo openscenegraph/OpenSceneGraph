@@ -51,8 +51,8 @@ bool BlinkSequence_readLocalData(osg::Object &obj, osgDB::Input &fr)
         iteratorAdvanced = true;
     }
 
-    BlinkSequence::SequenceGroup * sg = static_cast<BlinkSequence::SequenceGroup *>
-        (fr.readObjectOfType(osgDB::type_wrapper<BlinkSequence::SequenceGroup>()));
+    SequenceGroup * sg = static_cast<SequenceGroup *>
+        (fr.readObjectOfType(osgDB::type_wrapper<SequenceGroup>()));
 
     if (sg) {
         seq.setSequenceGroup(sg);
@@ -88,9 +88,9 @@ bool BlinkSequence_SequenceGroup_writeLocalData(const osg::Object &obj, osgDB::O
 
 osgDB::RegisterDotOsgWrapperProxy BlinkSequence_SequenceGroup_Proxy
 (
-    new BlinkSequence::SequenceGroup,
-    "BlinkSequence::SequenceGroup",
-    "Object BlinkSequence::SequenceGroup",
+    new SequenceGroup,
+    "SequenceGroup",
+    "Object SequenceGroup",
     &BlinkSequence_SequenceGroup_readLocalData,
     &BlinkSequence_SequenceGroup_writeLocalData,
     osgDB::DotOsgWrapper::READ_AND_WRITE
@@ -99,7 +99,7 @@ osgDB::RegisterDotOsgWrapperProxy BlinkSequence_SequenceGroup_Proxy
 bool BlinkSequence_SequenceGroup_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     bool iteratorAdvanced = false;
-    BlinkSequence::SequenceGroup &sg = static_cast<BlinkSequence::SequenceGroup &>(obj);
+    SequenceGroup &sg = static_cast<SequenceGroup &>(obj);
 
     if (fr.matchSequence("baseTime %f"))
     {
@@ -113,7 +113,7 @@ bool BlinkSequence_SequenceGroup_readLocalData(osg::Object &obj, osgDB::Input &f
 
 bool BlinkSequence_SequenceGroup_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
-    const BlinkSequence::SequenceGroup &sg = static_cast<const BlinkSequence::SequenceGroup &>(obj);
+    const SequenceGroup &sg = static_cast<const SequenceGroup &>(obj);
 
     fw.indent()<<"baseTime "<< sg._baseTime << std::endl;
     return true;

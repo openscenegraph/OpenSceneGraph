@@ -36,7 +36,7 @@ public:
     META_Object(osgStereImageApp,SlideEventHandler);
 
 
-    void set(osg::Switch* sw, osg::TexMat* texmat,float timePerSlide, bool autoSteppingActive);
+    void set(osg::Switch* sw, float offsetX, float offsetY, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float timePerSlide, bool autoSteppingActive);
 
     virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
 
@@ -52,8 +52,11 @@ public:
     
     void scaleImage(float s);
     
+    void offsetImage(float ds,float dt);
+
     void rotateImage(float rx,float ry);
 
+    void initTexMatrices();
 
 protected:
 
@@ -61,18 +64,24 @@ protected:
     SlideEventHandler(const SlideEventHandler&,const osg::CopyOp&) {}
 
     osg::ref_ptr<osg::Switch>   _switch;
-    osg::ref_ptr<osg::TexMat>   _texmat;
+    osg::ref_ptr<osg::TexMat>   _texmatLeft;
+    osg::ref_ptr<osg::TexMat>   _texmatRight;
     bool                        _firstTraversal;
     unsigned int                _activeSlide;
     double                      _previousTime;
     double                      _timePerSlide;
     bool                        _autoSteppingActive;
+    float                       _initSeperationX;
+    float                       _currentSeperationX;
+    float                       _initSeperationY;
+    float                       _currentSeperationY;
         
 };
 
 SlideEventHandler::SlideEventHandler():
     _switch(0),
-    _texmat(0),
+    _texmatLeft(0),
+    _texmatRight(0),
     _firstTraversal(true),
     _activeSlide(0),
     _previousTime(-1.0f),
@@ -81,15 +90,25 @@ SlideEventHandler::SlideEventHandler():
 {
 }
 
-void SlideEventHandler::set(osg::Switch* sw, osg::TexMat* texmat,float timePerSlide, bool autoSteppingActive)
+void SlideEventHandler::set(osg::Switch* sw, float offsetX, float offsetY, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float timePerSlide, bool autoSteppingActive)
 {
     _switch = sw;
     _switch->setUpdateCallback(this);
 
-    _texmat = texmat;
+    _texmatLeft = texmatLeft;
+    _texmatRight = texmatRight;
 
     _timePerSlide = timePerSlide;
     _autoSteppingActive = autoSteppingActive;    
+    
+    _initSeperationX = offsetX;
+    _currentSeperationX = _initSeperationX;
+
+    _initSeperationY = offsetY;
+    _currentSeperationY = _initSeperationY;
+
+    initTexMatrices();
+
 }
 
 bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
@@ -114,19 +133,39 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 previousSlide();
                 return true;
             }
-            else if (ea.getKey()=='z')
+            else if (ea.getKey()=='w')
             {
                 scaleImage(0.99f);
                 return true;
             }
-            else if (ea.getKey()=='x')
+            else if (ea.getKey()=='s')
             {
                 scaleImage(1.01f);
                 return true;
             }
+            else if (ea.getKey()=='j')
+            {
+                offsetImage(-0.001f,0.0f);
+                return true;
+            }
+            else if (ea.getKey()=='k')
+            {
+                offsetImage(0.001f,0.0f);
+                return true;
+            }
+            else if (ea.getKey()=='i')
+            {
+                offsetImage(0.0f,-0.001f);
+                return true;
+            }
+            else if (ea.getKey()=='m')
+            {
+                offsetImage(0.0f,0.001f);
+                return true;
+            }
             else if (ea.getKey()==' ')
             {
-                if (_texmat.valid()) _texmat->setMatrix(osg::Matrix::identity());
+                initTexMatrices();
                 return true;
             }
             return false;
@@ -134,11 +173,11 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         case(osgGA::GUIEventAdapter::DRAG):
         case(osgGA::GUIEventAdapter::MOVE):
         {
-            static int px = ea.getX();
-            static int py = ea.getY();
+            static float px = ea.getX();
+            static float py = ea.getY();
             
-            int dx = ea.getX()-px;
-            int dy = ea.getY()-py;
+            float dx = ea.getX()-px;
+            float dy = ea.getY()-py;
             
             px = ea.getX();
             py = ea.getY();
@@ -159,8 +198,12 @@ void SlideEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("a","Toggle on/off the automatic advancement for image to image");
     usage.addKeyboardMouseBinding("n","Advance to next image");
     usage.addKeyboardMouseBinding("p","Move to previous image");
-    usage.addKeyboardMouseBinding("z","Zoom into the image");
-    usage.addKeyboardMouseBinding("x","Zoom out of the image");
+    usage.addKeyboardMouseBinding("q","Zoom into the image");
+    usage.addKeyboardMouseBinding("a","Zoom out of the image");
+    usage.addKeyboardMouseBinding("j","Reduce horizontal offset");
+    usage.addKeyboardMouseBinding("k","Increase horizontal offset");
+    usage.addKeyboardMouseBinding("m","Reduce vertical offset");
+    usage.addKeyboardMouseBinding("i","Increase vertical offset");
 }
 
 void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
@@ -208,22 +251,34 @@ void SlideEventHandler::previousSlide()
 
 void SlideEventHandler::scaleImage(float s)
 {
-    if (_texmat.valid())
-    {
-        _texmat->setMatrix(_texmat->getMatrix()*osg::Matrix::translate(-0.5f,-0.5f,0.0f)*osg::Matrix::scale(s,s,1.0f)*osg::Matrix::translate(0.5f,0.5f,0.0f));
-    }
+    _texmatLeft->setMatrix(_texmatLeft->getMatrix()*osg::Matrix::translate(-0.5f,-0.5f,0.0f)*osg::Matrix::scale(s,s,1.0f)*osg::Matrix::translate(0.5f,0.5f,0.0f));
+    _texmatRight->setMatrix(_texmatRight->getMatrix()*osg::Matrix::translate(-0.5f,-0.5f,0.0f)*osg::Matrix::scale(s,s,1.0f)*osg::Matrix::translate(0.5f,0.5f,0.0f));
+}
+
+void SlideEventHandler::offsetImage(float ds,float dt)
+{
+    _currentSeperationX+=ds;
+    _currentSeperationY+=dt;
+    osg::notify(osg::NOTICE)<<"image offset x = "<<_currentSeperationX<<"  y ="<<_currentSeperationY<<std::endl;
+    _texmatLeft->setMatrix(_texmatLeft->getMatrix()*osg::Matrix::translate(ds,dt,0.0f));
+    _texmatRight->setMatrix(_texmatRight->getMatrix()*osg::Matrix::translate(-ds,-dt,0.0f));
 }
 
 void SlideEventHandler::rotateImage(float rx,float ry)
 {
-    if (_texmat.valid())
-    {
-        const float scale = 0.5f;
-        _texmat->setMatrix(_texmat->getMatrix()*osg::Matrix::translate(-rx*scale,ry*scale,0.0f));
-    }
+    const float scale = 0.5f;
+    _texmatLeft->setMatrix(_texmatLeft->getMatrix()*osg::Matrix::translate(-rx*scale,ry*scale,0.0f));
+    _texmatRight->setMatrix(_texmatRight->getMatrix()*osg::Matrix::translate(-rx*scale,ry*scale,0.0f));
 }
 
-osg::Geode* createSectorForImage(osg::Image* image,float s,float t, float radius, float height, float length)
+void SlideEventHandler::initTexMatrices()
+{
+    _texmatLeft->setMatrix(osg::Matrix::translate(_initSeperationX,_initSeperationY,0.0f));
+    _texmatRight->setMatrix(osg::Matrix::translate(-_initSeperationX,-_initSeperationY,0.0f));
+}
+
+
+osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s,float t, float radius, float height, float length)
 {
 
     int numSegments = 20;
@@ -243,6 +298,7 @@ osg::Geode* createSectorForImage(osg::Image* image,float s,float t, float radius
     dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
     dstate->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     dstate->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
+    dstate->setTextureAttribute(0, texmat);
 
     // set up the geoset.
     osg::Geometry* geom = new osg::Geometry;
@@ -289,7 +345,7 @@ osg::Geode* createSectorForImage(osg::Image* image,float s,float t, float radius
 
 // create a switch containing a set of child each containing a 
 // stereo image pair.
-osg::Switch* createScene(const FileList& fileList, float radius, float height, float length)
+osg::Switch* createScene(const FileList& fileList, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float radius, float height, float length)
 {
     osg::Switch* sw = new osg::Switch;
 
@@ -303,10 +359,10 @@ osg::Switch* createScene(const FileList& fileList, float radius, float height, f
             float average_s = (imageLeft->s()+imageRight->s())*0.5f;
             float average_t = (imageLeft->t()+imageRight->t())*0.5f;
 
-            osg::Geode* geodeLeft = createSectorForImage(imageLeft.get(),average_s,average_t, radius, height, length);
+            osg::Geode* geodeLeft = createSectorForImage(imageLeft.get(),texmatLeft,average_s,average_t, radius, height, length);
             geodeLeft->setNodeMask(0x01);
 
-            osg::Geode* geodeRight = createSectorForImage(imageRight.get(),average_s,average_t, radius, height, length);
+            osg::Geode* geodeRight = createSectorForImage(imageRight.get(),texmatRight,average_s,average_t, radius, height, length);
             geodeRight->setNodeMask(0x02);
 
             osg::ref_ptr<osg::Group> imageGroup = new osg::Group;
@@ -342,6 +398,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] image_file_left_eye image_file_right_eye");
     arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in sceonds between the display of successive image pairs when in auto advance mode.");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Enter auto advance of image pairs on start up.");
+    arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
+    arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
 
@@ -366,6 +424,11 @@ int main( int argc, char **argv )
     bool autoSteppingActive = false;
     while (arguments.read("-a")) autoSteppingActive = true;
 
+    float offsetX=0.0f;
+    while (arguments.read("-x",offsetX)) {}
+
+    float offsetY=0.0f;
+    while (arguments.read("-y",offsetY)) {}
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -419,13 +482,13 @@ int main( int argc, char **argv )
     float height = 2*radius*tan(fovy*0.5f);
     float length = osg::PI*radius;  // half a cylinder.
 
-    // creat the scene from the file list.
-    osg::ref_ptr<osg::Switch> rootNode = createScene(fileList,radius,height,length);
-
     // use a texure matrix to control the placement of the image.
-    osg::StateSet* stateset = rootNode->getOrCreateStateSet();
-    osg::TexMat* texmat = new osg::TexMat;
-    stateset->setTextureAttribute(0,texmat);
+    osg::TexMat* texmatLeft = new osg::TexMat;
+    osg::TexMat* texmatRight = new osg::TexMat;
+
+    // creat the scene from the file list.
+    osg::ref_ptr<osg::Switch> rootNode = createScene(fileList,texmatLeft,texmatRight,radius,height,length);
+
 
     //osgDB::writeNodeFile(*rootNode,"test.osg");
 
@@ -448,7 +511,7 @@ int main( int argc, char **argv )
 
 
     // set up the SlideEventHandler.
-    seh->set(rootNode.get(),texmat,timeDelayBetweenSlides,autoSteppingActive);
+    seh->set(rootNode.get(),offsetX,offsetY,texmatLeft,texmatRight,timeDelayBetweenSlides,autoSteppingActive);
     
     
     osg::Matrix homePosition;

@@ -110,8 +110,6 @@ protected:
 
     osg::Vec3   _textOrigin;
     osg::Vec3   _imageOrigin;
-    osg::Vec3   _modelLeft;
-    osg::Vec3   _modelRight;
     
     osg::Vec3 _textCursor;
     osg::Vec3 _imageCursor;

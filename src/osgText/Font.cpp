@@ -17,6 +17,8 @@
 
 #include <osg/State>
 #include <osg/Notify>
+#include <osg/TexEnv>
+
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osg/GLU>
@@ -87,6 +89,7 @@ Font::Font(FontImplementation* implementation):
     _magFilterHint(osg::Texture::LINEAR)
 {
     setImplementation(implementation);
+    _texEnv = new osg::TexEnv(osg::TexEnv::BLEND);
 }
 
 Font::~Font()
@@ -259,6 +262,7 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
         glyphTexture->setStateSet(stateset);
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setTextureAttributeAndModes(0,glyphTexture,osg::StateAttribute::ON);
+        if (_texEnv.valid()) stateset->setTextureAttribute(0,_texEnv.get());
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
         if (!glyphTexture->getSpaceForGlyph(glyph,posX,posY))

@@ -17,6 +17,12 @@ class SG_EXPORT Transparency : public StateAttribute
 
         Transparency();
         
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Transparency(const Transparency& trans,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(trans,cloner),
+            _source_factor(trans._source_factor),
+            _destination_factor(trans._destination_factor) {}
+
         META_StateAttribute(Transparency,TRANSPARENCY);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

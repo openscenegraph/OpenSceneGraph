@@ -69,6 +69,27 @@ class SG_EXPORT Texture : public StateAttribute
         
         Texture();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Texture(const Texture& text,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(text,cloner),
+            _handleList(text._handleList),
+            _modifiedTag(text._modifiedTag),
+            _textureObjectSize(text._textureObjectSize),
+            _image(cloner(text._image.get())),
+            _textureUnit(text._textureUnit),
+            _wrap_s(text._wrap_s),
+            _wrap_t(text._wrap_t),
+            _wrap_r(text._wrap_r),
+            _min_filter(text._min_filter),
+            _mag_filter(text._mag_filter),
+            _internalFormatMode(text._internalFormatMode),
+            _internalFormatValue(text._internalFormatValue),
+            _textureWidth(text._textureWidth),
+            _textureHeight(text._textureHeight),
+            _subloadMode(text._subloadMode),
+            _subloadOffsX(text._subloadOffsX),
+            _subloadOffsY(text._subloadOffsY) {}
+
         META_StateAttribute(Texture,(Type)(TEXTURE_0+_textureUnit));
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

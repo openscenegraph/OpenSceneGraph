@@ -553,7 +553,12 @@ void Optimizer::RemoveRedundentNodesVisitor::apply(osg::Group& group)
     {
         if (group.getNumParents()>0 && group.getNumChildren()<=1)
         {
-            _redundentNodeList.insert(&group);
+            if (!group.getUserData() &&
+                !group.getAppCallback() &&
+                !group.getStateSet())
+            {
+                _redundentNodeList.insert(&group);
+            }
         }
     }
     traverse(group);

@@ -23,7 +23,8 @@ class Group;
   * and accept methods.  Use when subclassing from Node to make it
   * more convinient to define the required pure virtual methods.*/
 #define META_Node(name) \
-        virtual osg::Object* clone() const { return new name (); } \
+        virtual osg::Object* cloneType() const { return new name (); } \
+        virtual osg::Object* clone(const osg::Cloner& cloner) const { return new name (*this,cloner); } \
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
         virtual const char* className() const { return #name; } \
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) nv.apply(*this); } \
@@ -41,8 +42,14 @@ class SG_EXPORT Node : public Object
             bounding sphere dirty flag to true.*/
         Node();
 
-        /** return a shallow copy of a node, with Object* return type.*/
-        virtual Object* clone() const { return new Node(); }
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Node(const Node&,const Cloner& cloner=ShallowCopy());
+
+        /** clone the an object of the same type as the node.*/
+        virtual Object* cloneType() const { return new Node(); }
+
+        /** return a clone of a node, with Object* return type.*/
+        virtual Object* clone(const Cloner& cloner) const { return new Node(*this,cloner); }
 
         /** return true if this and obj are of the same kind of object.*/
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Node*>(obj)!=NULL; }
@@ -74,7 +81,7 @@ class SG_EXPORT Node : public Object
 
         /** Get the a copy of parent list of node. A copy is returned to 
           * prevent modification of the parent list.*/
-//        inline ParentList getParents() { return _parents; }
+        inline ParentList getParents() { return _parents; }
 
         inline Group* getParent(const int i)  { return _parents[i]; }
         /**

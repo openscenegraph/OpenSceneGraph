@@ -49,6 +49,97 @@ GeoSet::GeoSet()
 
 }
 
+
+GeoSet::GeoSet(const GeoSet& geoset,const Cloner& cloner):
+    Drawable(geoset,cloner)
+{
+    // ensure that the num of vertices etc have been set up before we copy.
+    geoset.computeNumVerts();
+
+    _adf = geoset._adf;
+
+    _numprims = geoset._numprims;
+    _primtype = geoset._primtype;
+    _needprimlen = geoset._needprimlen;
+    _oglprimtype = geoset._oglprimtype;
+    _primlength = geoset._primlength;
+    _flat_shaded_skip = geoset._flat_shaded_skip;
+    if (geoset._primLengths)
+    {
+        _primLengths = new int [_primlength];
+        memcpy(_primLengths,geoset._primLengths,_primlength);
+    }
+    else
+    {
+        _primLengths = 0L;
+    }
+
+    _numcoords = geoset._numcoords;
+    _cindex = geoset._cindex;
+    if (geoset._coords)
+    {
+        _coords = new Vec3 [_numcoords];
+        memcpy(_coords,geoset._coords,_numcoords);
+    }
+    else
+    {
+        _coords = 0L;
+    }
+    
+    _normal_binding = geoset._normal_binding;
+    _numnormals = geoset._numnormals;
+    _nindex = geoset._nindex;
+    if (geoset._normals)
+    {
+        _normals = new Vec3 [_numnormals];
+        memcpy(_normals,geoset._normals,_numnormals);
+    }
+    else
+    {
+        _normals = 0L;
+    }
+    
+    _color_binding = geoset._color_binding;
+    _numcolors = geoset._numcolors;
+    _colindex = geoset._colindex;
+    if (geoset._colors)
+    {
+        _colors = new Vec4 [_numcolors];
+        memcpy(_colors,geoset._colors,_numcolors);
+    }
+    else
+    {
+        _colors = 0L;
+    }
+
+    _texture_binding = geoset._texture_binding;
+    _numtcoords = geoset._numtcoords;
+    _tindex = geoset._tindex;
+    if (geoset._tcoords)
+    {
+        _tcoords = new Vec2 [_numtcoords];
+        memcpy(_tcoords,geoset._tcoords,_numtcoords);
+    }
+    else
+    {
+        _tcoords = 0L;
+    }
+
+    _iaindex = geoset._iaindex;
+    _iaformat = geoset._iaformat;
+    _ogliaformat = geoset._ogliaformat;
+    _fast_path = geoset._fast_path;
+    if (geoset._iarray)
+    {
+        _iarray = 0L;
+        osg::notify(osg::WARN)<<"Warning :: GeoSet copy constructor error, copying of interleaved arrays unsupported."<<endl; 
+    }
+    else
+    {
+        _iarray = 0L;
+    }
+}
+
 #define INDEX_ARRAY_DELETE(A) if (A._is_ushort) ushortList.insert(A._ptr._ushort); else uintList.insert(A._ptr._uint);
 
 void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)

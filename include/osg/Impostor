@@ -53,6 +53,11 @@ class SG_EXPORT Impostor : public LOD
     public :
         Impostor();
 
+        Impostor(const Impostor& es, const Cloner& cloner=ShallowCopy()):
+            LOD(es,cloner),
+            _impostorSpriteList(),
+            _impostorThreshold(es._impostorThreshold) {}
+            
         META_Node(Impostor);
 
         typedef std::vector< ref_ptr<ImpostorSprite> > ImpostorSpriteList;

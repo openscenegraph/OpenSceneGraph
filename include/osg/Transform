@@ -26,7 +26,12 @@ namespace osg {
 class SG_EXPORT Transform : public Group
 {
     public :
+
         Transform();
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Transform(const Transform&,const Cloner& cloner=ShallowCopy());
+
         Transform(const Matrix& matix);
 
         META_Node(Transform);

@@ -26,7 +26,7 @@ using namespace osg;
 
 Matrix::Matrix() : Object(), fully_realized(false) {}
 
-Matrix::Matrix( const Matrix& other ) : Object()
+Matrix::Matrix( const Matrix& other) : Object()
 {
     set( (const float *) other._mat );
 }

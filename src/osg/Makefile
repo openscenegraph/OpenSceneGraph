@@ -77,6 +77,7 @@ TARGET_INCLUDE_FILES = \
 	osg/ColorMatrix\
 	osg/CullFace\
 	osg/Depth\
+	osg/DeepCopy\
 	osg/DisplaySettings\
 	osg/Drawable\
 	osg/EarthSky\
@@ -113,6 +114,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Plane\
 	osg/Quat\
 	osg/Referenced\
+	osg/ShallowCopy\
 	osg/State\
 	osg/StateAttribute\
 	osg/StateSet\

@@ -19,6 +19,11 @@ class SG_EXPORT CullFace : public StateAttribute
     
         CullFace();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        CullFace(const CullFace& cf,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(cf,cloner),
+            _mode(cf._mode) {}
+
         META_StateAttribute(CullFace, CULLFACE);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

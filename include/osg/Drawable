@@ -55,6 +55,16 @@ class SG_EXPORT Drawable : public Object
 
         Drawable();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Drawable(const Drawable& drawable,const Cloner& cloner=ShallowCopy()):
+            Object(drawable,cloner),
+            _dstate(cloner(drawable._dstate.get())),
+            _supportsDisplayList(drawable._supportsDisplayList),
+            _useDisplayList(drawable._useDisplayList),
+            _globjList(drawable._globjList),
+            _bbox(drawable._bbox),
+            _bbox_computed(drawable._bbox_computed) {}
+
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Drawable*>(obj)!=NULL; }
         virtual const char* className() const { return "Drawable"; }
 

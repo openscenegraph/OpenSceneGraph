@@ -20,6 +20,18 @@ class SG_EXPORT Stencil : public StateAttribute
     
         Stencil();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Stencil(const Stencil& stencil,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(stencil,cloner),
+            _func(stencil._func),
+            _funcRef(stencil._funcRef),
+            _funcMask(stencil._funcMask),
+            _sfail(stencil._sfail),
+            _zfail(stencil._zfail),
+            _zpass(stencil._zpass),
+            _writeMask(stencil._writeMask) {}
+
+
         META_StateAttribute(Stencil, STENCIL);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

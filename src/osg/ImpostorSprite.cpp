@@ -29,11 +29,8 @@ ImpostorSprite::ImpostorSprite()
 
     _texture = NULL;
     _s = 0;
-    _t = 0;
-    
-    
+    _t = 0;        
 }
-
 
 ImpostorSprite::~ImpostorSprite()
 {

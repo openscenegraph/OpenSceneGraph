@@ -2,4 +2,5 @@
 
 using namespace osg;
 
-// no non inline functions yet for Object...
+Object::Object(const Object&,const Cloner&): 
+    Referenced() {}

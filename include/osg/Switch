@@ -31,6 +31,9 @@ class SG_EXPORT Switch : public Group
 
         Switch();
 
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Switch(const Switch&,const Cloner& cloner=ShallowCopy());
+
         META_Node(Switch);
 
         virtual void traverse(NodeVisitor& nv);

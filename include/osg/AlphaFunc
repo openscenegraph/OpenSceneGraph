@@ -19,6 +19,12 @@ class SG_EXPORT AlphaFunc : public StateAttribute
     
         AlphaFunc();
         
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        AlphaFunc(const AlphaFunc& af,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(af,cloner),
+            _comparisonFunc(af._comparisonFunc),
+            _referenceValue(af._referenceValue) {}
+        
         META_StateAttribute(AlphaFunc,ALPHAFUNC);
         
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

@@ -14,6 +14,12 @@ Billboard::Billboard()
     setCachedMode();
 }
 
+Billboard::Billboard(const Billboard& billboard,const Cloner& cloner):
+        Geode(billboard,cloner),
+        _mode(billboard._mode),
+        _axis(billboard._axis),
+        _positionList(billboard._positionList),
+        _cachedMode(billboard._cachedMode) {}
 
 Billboard::~Billboard()
 {
@@ -91,7 +97,7 @@ const bool Billboard::removeDrawable( Drawable *gset )
     return false;
 }
 
-void Billboard::calcTransform(const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local, Matrix& mat) const 
+void Billboard::calcTransform(const Vec3& eye_local, const Vec3& /*up_local*/, const Vec3& pos_local, Matrix& mat) const 
 {
     Vec3 ev(pos_local-eye_local);
     switch(_cachedMode)

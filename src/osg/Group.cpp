@@ -13,6 +13,17 @@ Group::Group()
 {
 }
 
+Group::Group(const Group& group,const Cloner& cloner):
+    Node(group,cloner)
+{
+    for(ChildList::const_iterator itr=group._children.begin();
+        itr!=group._children.end();
+        ++itr)
+    {
+        Node* child = cloner(itr->get());
+        if (child) _children.push_back(child);
+    }
+}
 
 Group::~Group()
 {

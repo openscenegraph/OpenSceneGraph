@@ -26,7 +26,11 @@ namespace osg {
 class SG_EXPORT LOD : public Group
 {
     public :
+    
         LOD() {}
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        LOD(const LOD&,const Cloner& cloner=ShallowCopy());
 
         META_Node(LOD);
 

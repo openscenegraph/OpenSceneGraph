@@ -96,8 +96,8 @@ open(const std::string& font)
 {
     clear();
         
-        std::string filename = findFontFile(font);
-        if (filename.empty()) return false;
+    std::string filename = findFontFile(font);
+    if (filename.empty()) return false;
 
     _font=createFontObj();
     if( _font!=NULL && _font->Open(filename.c_str()) )
@@ -110,9 +110,10 @@ open(const std::string& font)
         return false;
 }
 
-bool  Font::
-open(const char* font)
- { return open(std::string(font)); }
+bool  Font::open(const char* font)
+{
+    return open(std::string(font));
+}
 
 bool Font::
 create(osg::State& state,int pointSize,const unsigned int res)
@@ -123,8 +124,7 @@ create(osg::State& state,int pointSize,const unsigned int res)
     return create(state);
 }
 
-bool  Font::
-create(osg::State& state)
+bool  Font::create(osg::State& state)
 {
     if(_init)
     {
@@ -143,8 +143,7 @@ create(osg::State& state)
         return false;
 }
 
-void Font::
-output(osg::State& state,const char* text)
+void Font::output(osg::State& state,const char* text)
 {
     if(_created)
         _font->render(text,state.getContextID());
@@ -152,8 +151,7 @@ output(osg::State& state,const char* text)
         create(state,_pointSize);
 }
 
-void  Font::
-clear()
+void  Font::clear()
 {
     _init=false;
     

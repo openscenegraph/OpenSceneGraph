@@ -21,8 +21,11 @@ StateSet::StateSet()
     setRendingBinToInherit();
 }
 
-StateSet::StateSet(const StateSet& rhs):Object()
+StateSet::StateSet(const StateSet& rhs,const Cloner& cloner):Object(rhs,cloner)
 {
+    // shallow copy right now, we should go through each attribute and 
+    // use the cloner instead of attribute list copy.. on the TODO list.  Robert. Jan 2002.
+
     _modeList = rhs._modeList;
     _attributeList = rhs._attributeList;
     

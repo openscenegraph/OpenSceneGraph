@@ -16,6 +16,16 @@ Transform::Transform()
     _worldToLocalDirty = false;
 }
 
+Transform::Transform(const Transform& transform,const Cloner& cloner):
+    Group(transform,cloner),
+    _type(transform._type),
+    _mode(transform._mode),
+    _localToWorldDirty(transform._localToWorldDirty),
+    _localToWorld(transform._localToWorld),
+    _worldToLocalDirty(transform._worldToLocalDirty),
+    _worldToLocal(transform._localToWorld) 
+{    
+}
 
 Transform::Transform(const Matrix& mat )
 {

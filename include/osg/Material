@@ -18,6 +18,26 @@ class SG_EXPORT Material : public StateAttribute
 
 
         Material();
+        
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        Material(const Material& mat,const Cloner& cloner=ShallowCopy()):
+            StateAttribute(mat,cloner),
+            _colorMode(mat._colorMode),
+            _ambientFrontAndBack(mat._ambientFrontAndBack),
+            _ambientFront(mat._ambientFront),
+            _ambientBack(mat._ambientBack),
+            _diffuseFrontAndBack(mat._diffuseFrontAndBack),
+            _diffuseFront(mat._diffuseFront),
+            _diffuseBack(mat._diffuseBack),
+            _specularFrontAndBack(mat._specularFrontAndBack),
+            _specularFront(mat._specularFront),
+            _specularBack(mat._specularBack),
+            _emissionFrontAndBack(mat._emissionFrontAndBack),
+            _emissionFront(mat._emissionFront),
+            _emissionBack(mat._emissionBack),
+            _shininessFrontAndBack(mat._shininessFrontAndBack),
+            _shininessFront(mat._shininessFront),
+            _shininessBack(mat._shininessBack) {}
 
         META_StateAttribute(Material, MATERIAL);
         

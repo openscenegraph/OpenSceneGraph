@@ -28,9 +28,10 @@ class SG_EXPORT StateSet : public Object
     
             
         StateSet();
-        StateSet(const StateSet&);
+        StateSet(const StateSet&,const Cloner& cloner=ShallowCopy());
 
-        virtual Object* clone() const { return new StateSet(); }
+        virtual Object* cloneType() const { return new StateSet(); }
+        virtual Object* clone(const Cloner& cloner) const { return new StateSet(*this,cloner); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const StateSet*>(obj)!=NULL; }
         virtual const char* className() const { return "StateSet"; }
 

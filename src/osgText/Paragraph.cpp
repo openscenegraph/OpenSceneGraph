@@ -8,6 +8,16 @@ Paragraph::Paragraph()
     _maxCharsPerLine = 80;
 }
 
+Paragraph::Paragraph(const Paragraph& paragraph,const osg::Cloner& cloner):
+    Geode(paragraph,cloner),
+    _position(paragraph._position),
+    _text(paragraph._text),
+    _font(dynamic_cast<Font*>(cloner(paragraph._font.get()))),
+    _alignment(paragraph._alignment),
+    _maxCharsPerLine(paragraph._maxCharsPerLine)
+{
+}
+
 Paragraph::Paragraph(const osg::Vec3& position,const std::string& text,osgText::Font* font)
 {
     _maxCharsPerLine = 80;

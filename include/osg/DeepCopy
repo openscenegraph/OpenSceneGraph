@@ -1,0 +1,58 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_DEEPWCOPY
+#define OSG_DEEPWCOPY 1
+
+#include <osg/Node>
+#include <osg/StateSet>
+#include <osg/Texture>
+
+namespace osg {
+
+
+/** Cloner Functor used to control the whether shallow or deep copy is used
+  * during copy construction and clone operation. The base Cloner acts as
+  * a shallow copy simply passing back the same pointer as passed in.*/
+struct DeepCopy : public Cloner
+{
+
+    enum CopyOptions
+    {
+        DEEP_COPY_OBJECTS = 1,
+        DEEP_COPY_NODES = 2,
+        DEEP_COPY_DRAWABLES = 4,
+        DEEP_COPY_STATESETS = 8,
+        DEEP_COPY_STATEATTRIBUTES = 16,
+        DEEP_COPY_TEXTURES = 32,
+        DEEP_COPY_IMAGES = 64,
+        DEEP_COPY_ALL = 0xffffffff
+    };
+    
+    typedef unsigned int CopyFlags;
+
+    DeepCopy(CopyFlags flags=DEEP_COPY_NODES):_flags(flags) {}
+
+    virtual ~DeepCopy() {};
+
+     // note can't clone a refernced object since it doens't have clone
+     // method so we have to assume shallow copy and pass back the pointer.
+    virtual Referenced*     operator() (const Referenced* ref) const { return ref; }
+    
+    virtual Object*         operator() (const Object* obj) const { if (obj && _flags&DEEP_COPY_OBJECTS) return obj->clone(*this); else return NULL; }
+    virtual Node*           operator() (const Node* node) const { if (obj && _flags&DEEP_COPY_NODES) return node->clone(*this); }
+    virtual Drawable*       operator() (const Drawable* drawable) const { if (drawable && _flags&DEEP_COPY_DRAWABLES) return drawable->clone(*this); }
+    virtual StateSet*       operator() (const StateSet* stateset) const { if (stateset && _flags&DEEP_COPY_STATESETS) return stateset->clone(*this); }
+    virtual StateAttribute* operator() (const StateAttribute* attr) const { if (attr && _flags&DEEP_COPY_STATEATTRIBUTES) return attr->clone(*this); }
+    virtual Texture*        operator() (const Texture* text) const { if (text && _flags&DEEP_COPY_TEXTURES) return text->clone(*this); }
+    virtual Image*          operator() (const Image* image) const { if (image && _flags&DEEP_COPY_IMAGES) return image->clone(*this); }
+    
+    protected:
+    
+    CopyFlags _flags;
+};
+
+};
+
+#endif

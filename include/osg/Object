@@ -6,6 +6,7 @@
 #define OSG_OBJECT 1
 
 #include <osg/Referenced>
+#include <osg/ShallowCopy>
 
 namespace osg {
 
@@ -13,10 +14,11 @@ namespace osg {
   * Use when subclassing from Object to make it more convinient to define 
   * the standard pure virtual clone, isSameKindAs and className methods 
   * which are required for all Object subclasses.*/
-#define META_Object(name) \
-        virtual osg::Object* clone() const { return new name (); } \
-        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
-        virtual const char* className() const { return #name; }
+#define META_Object(T) \
+        virtual osg::Object* cloneType() const { return new T (); } \
+        virtual osg::Object* clone(const osg::Cloner& cloner) const { return new T (*this,cloner); } \
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const T *>(obj)!=NULL; } \
+        virtual const char* className() const { return #T; }
 
 
 /** Base class/standard interface for objects which require IO support, 
@@ -26,15 +28,25 @@ namespace osg {
 class SG_EXPORT Object : public Referenced
 {
     public:
+
+
         /** Construct an object. Note Object is a pure virtual base class
             and therefore cannot be constructed on its own, only derived
             classes which override the clone and className methods are
             concrete classes and can be constructed.*/
         Object() {}
 
-        /** return a shallow copy of a node, with Object* return type.
+        /** Copy constructor, optional Cloner object can be used to control
+          * shallow vs deep copying of dynamic data.*/
+        Object(const Object&,const Cloner& cloner=ShallowCopy());
+
+        /** Clone the type of an object, with Object* return type.
             Must be defined by derived classes.*/
-        virtual Object* clone() const = 0;
+        virtual Object* cloneType() const = 0;
+
+        /** Clone the an object, with Object* return type.
+            Must be defined by derived classes.*/
+        virtual Object* clone(const Cloner&) const = 0;
 
         virtual bool isSameKindAs(const Object*) const { return true; }
 
@@ -55,8 +67,7 @@ class SG_EXPORT Object : public Referenced
 
     private:
 
-        /** disallow any form of deep copy.*/
-        Object(Object&): Referenced() {}
+        /** disallow any copy operator.*/
         Object& operator = (const Object&) { return *this; }
 };
 

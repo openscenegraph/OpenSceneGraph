@@ -4,6 +4,15 @@
 
 using namespace osg;
 
+LOD::LOD(const LOD& lod,const Cloner& cloner):
+        Group(lod,cloner),
+        _rangeList(lod._rangeList),
+        _rangeList2(lod._rangeList2),
+        _center(lod._center)
+{
+}
+
+
 void LOD::traverse(NodeVisitor& nv)
 {
     switch(nv.getTraversalMode())

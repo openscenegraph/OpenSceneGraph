@@ -146,8 +146,16 @@ class SG_EXPORT GeoSet : public Drawable
         };
 
         GeoSet();
-        virtual Object* clone() const { return new GeoSet(); }
+
+        /** Copy constructor using Cloner to manage deep vs shallow copy.*/
+        GeoSet(const GeoSet& geoset,const Cloner& cloner=ShallowCopy());
+            
+        virtual Object* cloneType() const { return new GeoSet(); }
+
+        virtual Object* clone(const Cloner& cloner) const { return new GeoSet(*this,cloner); }
+        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const GeoSet*>(obj)!=NULL; }
+        
         virtual const char* className() const { return "GeoSet"; }
 
 
@@ -165,7 +173,6 @@ class SG_EXPORT GeoSet : public Drawable
         void computeNumVerts() const;
 
         /** get the number of coords required by the defined primitives. */
-       // inline const int getNumCoords() const                    
         inline const int getNumCoords()  const
 	{ if( _numcoords == 0 ) computeNumVerts(); return _numcoords; }
         /** get a pointer to Vec3 coord array. */

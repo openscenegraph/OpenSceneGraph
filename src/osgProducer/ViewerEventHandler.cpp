@@ -762,7 +762,12 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
             }
             case 'v' :
             {
-                _cg->setBlockOnVsync(!_cg->getBlockOnVsync());
+                bool block = !_cg->getBlockOnVsync();
+                _cg->setBlockOnVsync(block);
+                for(unsigned int i=0;i<_cg->getNumberOfCameras();++i)
+                {
+                    _cg->getCamera(i)->setBlockOnVsync(block);
+                }
                 return true;
             }
 

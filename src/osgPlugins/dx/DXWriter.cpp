@@ -136,6 +136,10 @@
 	#endif
 #endif
 
+#if defined(WIN32) && !defined(__CYGWIN__)
+#define vsnprintf _vsnprintf
+#endif
+
 namespace dx {
 
 //----------------------------------------------------------------------------

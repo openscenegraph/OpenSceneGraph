@@ -5,6 +5,7 @@
 #ifndef OSG_CAMERA
 #define OSG_CAMERA 1
 
+#include <osg/Export>
 #include <osg/ref_ptr>
 #include <osg/Referenced>
 #include <osg/Matrix>

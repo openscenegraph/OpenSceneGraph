@@ -79,7 +79,7 @@ class SG_EXPORT StateAttribute : public Object
         /** Override is used to specified the override behavior of StateAttributes
           * from from parent to children. 
           * See enum Value description for more details.*/
-        typedef unsigned int	OverrideValue;
+        typedef unsigned int    OverrideValue;
 
         /** list values which can be used in to set either GLModeValues
           * or OverrideValues. When using in conjunction with GLModeValues
@@ -151,6 +151,9 @@ class SG_EXPORT StateAttribute : public Object
             COLORMASK,
             DEPTH,
             VIEWPORT,
+            BLENDCOLOR,
+            MULTISAMPLE,
+
             
             CLIPPLANE,
             CLIPPLANE_0     =CLIPPLANE,

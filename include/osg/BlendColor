@@ -1,0 +1,121 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_BLENDCOLOR
+#define OSG_BLENDCOLOR 1
+
+#include <osg/GL>
+#include <osg/StateAttribute>
+#include <osg/ref_ptr>
+#include <osg/buffered_value>
+#include <osg/Vec4>
+
+
+
+namespace osg {
+
+/** BlendColor - encapsulates the OpenGL blend/transparency state.*/
+class SG_EXPORT BlendColor : public StateAttribute
+{
+    public :
+
+        BlendColor();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        BlendColor(const BlendColor& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            StateAttribute(trans,copyop),
+            _constantColor(trans._constantColor) {}
+
+        META_StateAttribute(osg, BlendColor,BLENDCOLOR);
+        
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(BlendColor,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_constantColor)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
+        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
+        {
+            modes.push_back(GL_BLEND);
+        }
+
+        void setConstantColor(osg::Vec4& color) { _constantColor = color; }
+        inline osg::Vec4 getConstantColor() const { return _constantColor; }
+
+        virtual void apply(State& state) const;
+
+
+
+
+        /** Extensions class which encapsulates the querring of extensions and
+          * associated function pointers, and provide convinience wrappers to 
+          * check for the extensions or use the associated functions.*/        
+        class SG_EXPORT Extensions : public osg::Referenced
+        {
+            public:
+                Extensions();
+
+                Extensions(const Extensions& rhs);
+                
+                void lowestCommonDenominator(const Extensions& rhs);
+                
+                void setupGLExtenions();
+
+                void setBlendColorSupported(bool flag) { _isBlendColorSupported=flag; }
+                bool isBlendColorSupported() const { return _isBlendColorSupported; }
+                
+                void setBlendColorProc(void* ptr) { _glBlendColor = ptr; }
+                void glBlendColor(GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha) const;
+
+            protected:
+
+                ~Extensions() {}
+                
+                bool    _isBlendColorSupported;
+
+                void*   _glBlendColor;
+
+        };
+        
+        /** Function to call to get the extension of a specified context.
+          * If the Exentsion object for that context has not yet been created then 
+          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+          * If 'createIfNotInitalized' is true then the Extensions object is 
+          * automatically created.  However, in this case the extension object 
+          * only be created with the graphics context associated with ContextID..*/
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+          * typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+
+
+    protected :
+
+        virtual ~BlendColor();
+
+        osg::Vec4 _constantColor;
+};
+
+}
+
+#endif

@@ -16,6 +16,17 @@
 
 #include <osg/StateAttribute>
 
+
+#ifndef GL_VERSION_1_2
+#define GL_CONSTANT_COLOR                 0x8001
+#define GL_ONE_MINUS_CONSTANT_COLOR       0x8002
+#define GL_CONSTANT_ALPHA                 0x8003
+#define GL_ONE_MINUS_CONSTANT_ALPHA       0x8004
+#define GL_BLEND_COLOR                    0x8005
+#endif
+
+
+
 namespace osg {
 
 /** BlendFunc - encapsulates the OpenGL blend/transparency state.*/
@@ -55,17 +66,19 @@ class SG_EXPORT BlendFunc : public StateAttribute
         }
 
         enum BlendFuncMode {
-            DST_ALPHA            = GL_DST_ALPHA,
-            DST_COLOR            = GL_DST_COLOR,
-            ONE                  = GL_ONE,
-            ONE_MINUS_DST_ALPHA  = GL_ONE_MINUS_DST_ALPHA,
-            ONE_MINUS_DST_COLOR  = GL_ONE_MINUS_DST_COLOR,
-            ONE_MINUS_SRC_ALPHA  = GL_ONE_MINUS_SRC_ALPHA,
-            ONE_MINUS_SRC_COLOR  = GL_ONE_MINUS_SRC_COLOR,
-            SRC_ALPHA            = GL_SRC_ALPHA,
-            SRC_ALPHA_SATURATE   = GL_SRC_ALPHA_SATURATE,
-            SRC_COLOR            = GL_SRC_COLOR,
-            ZERO                 = GL_ZERO
+            DST_ALPHA                = GL_DST_ALPHA,
+            DST_COLOR                = GL_DST_COLOR,
+            ONE                      = GL_ONE,
+            ONE_MINUS_DST_ALPHA      = GL_ONE_MINUS_DST_ALPHA,
+            ONE_MINUS_DST_COLOR      = GL_ONE_MINUS_DST_COLOR,
+            ONE_MINUS_SRC_ALPHA      = GL_ONE_MINUS_SRC_ALPHA,
+            ONE_MINUS_SRC_COLOR      = GL_ONE_MINUS_SRC_COLOR,
+            SRC_ALPHA                = GL_SRC_ALPHA,
+            SRC_ALPHA_SATURATE       = GL_SRC_ALPHA_SATURATE,
+            SRC_COLOR                = GL_SRC_COLOR,
+            CONSTANT_ALPHA           = GL_CONSTANT_ALPHA,
+            ONE_MINUS_CONSTANT_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
+            ZERO                     = GL_ZERO
         };
 
         inline void setFunction( GLenum source, GLenum destination )

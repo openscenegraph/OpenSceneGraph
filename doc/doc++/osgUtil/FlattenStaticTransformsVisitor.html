@@ -23,48 +23,48 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.16.4.1">FlattenStaticTransformsVisitor</A></B>(bool ignoreDynamicTransforms=true)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.4.1">FlattenStaticTransformsVisitor</A></B>(bool ignoreDynamicTransforms=true)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.4.2">apply</A></B>(osg::Geode&amp; geode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.4.2">apply</A></B>(osg::Geode&amp; geode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.4.3">apply</A></B>(osg::Billboard&amp; billboard)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.4.3">apply</A></B>(osg::Billboard&amp; billboard)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.4.4">apply</A></B>(osg::LOD&amp; lod)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.4.4">apply</A></B>(osg::LOD&amp; lod)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.4.5">apply</A></B>(osg::Transform&amp; transform)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.4.5">apply</A></B>(osg::Transform&amp; transform)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.16.4.6">removeTransforms</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.4.6">removeTransforms</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.16.4.13">_ignoreDynamicTransforms</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.15.4.13">_ignoreDynamicTransforms</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MatrixStack <B><A HREF="#DOC.2.16.4.14">_matrixStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MatrixStack <B><A HREF="#DOC.2.15.4.14">_matrixStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TransformStack <B><A HREF="#DOC.2.16.4.15">_transformStack</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TransformStack <B><A HREF="#DOC.2.15.4.15">_transformStack</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TransformMap <B><A HREF="#DOC.2.16.4.16">_transformMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TransformMap <B><A HREF="#DOC.2.15.4.16">_transformMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ObjectMap <B><A HREF="#DOC.2.16.4.17">_objectMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ObjectMap <B><A HREF="#DOC.2.15.4.17">_objectMap</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;osg::Object*,<!1><A HREF="FlattenStaticTransformsVisitor.html#DOC.2.16.4.8">ObjectStruct</A>&gt; ObjectMap void <B><A HREF="#DOC.2.16.4.9">disableObject</A></B>(osg::Object* object)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;osg::Object*,<!1><A HREF="FlattenStaticTransformsVisitor.html#DOC.2.15.4.8">ObjectStruct</A>&gt; ObjectMap void <B><A HREF="#DOC.2.15.4.9">disableObject</A></B>(osg::Object* object)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.16.4.10">disableObject</A></B>(ObjectMap::iterator itr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.4.10">disableObject</A></B>(ObjectMap::iterator itr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.16.4.11">disableTransform</A></B>(osg::Transform* transform)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.4.11">disableTransform</A></B>(osg::Transform* transform)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.16.4.12">doTransform</A></B>(osg::Object* obj, osg::Matrix&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.4.12">doTransform</A></B>(osg::Object* obj, osg::Matrix&amp; matrix)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::Matrix&gt; MatrixStackstruct  <B><A HREF="#DOC.2.16.4.7">TransformStruct</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::Matrix&gt; MatrixStackstruct  <B><A HREF="#DOC.2.15.4.7">TransformStruct</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.16.4.8">ObjectStruct</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.15.4.8">ObjectStruct</A></B>
 </DL></P>
 
 </DL>
@@ -78,119 +78,119 @@ now redundent transforms</BLOCKQUOTE>
 <DL>
 
 <A NAME="FlattenStaticTransformsVisitor"></A>
-<A NAME="DOC.2.16.4.1"></A>
+<A NAME="DOC.2.15.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FlattenStaticTransformsVisitor(bool ignoreDynamicTransforms=true)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.16.4.2"></A>
+<A NAME="DOC.2.15.4.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; geode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.16.4.3"></A>
+<A NAME="DOC.2.15.4.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Billboard&amp; billboard)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.16.4.4"></A>
+<A NAME="DOC.2.15.4.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; lod)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.16.4.5"></A>
+<A NAME="DOC.2.15.4.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Transform&amp; transform)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="removeTransforms"></A>
-<A NAME="DOC.2.16.4.6"></A>
+<A NAME="DOC.2.15.4.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeTransforms()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TransformStruct"></A>
-<A NAME="DOC.2.16.4.7"></A>
+<A NAME="DOC.2.15.4.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::Matrix&gt; MatrixStackstruct  TransformStruct</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="TransformStruct"></A>
-<A NAME="DOC.2.16.4.7.1"></A>
+<A NAME="DOC.2.15.4.7.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::set&lt;osg::Object*&gt; ObjectSet TransformStruct()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="add"></A>
-<A NAME="DOC.2.16.4.7.2"></A>
+<A NAME="DOC.2.15.4.7.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void add(osg::Object* obj)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_canBeApplied"></A>
-<A NAME="DOC.2.16.4.7.3"></A>
+<A NAME="DOC.2.15.4.7.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _canBeApplied</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_objectSet"></A>
-<A NAME="DOC.2.16.4.7.4"></A>
+<A NAME="DOC.2.15.4.7.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ObjectSet _objectSet</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="ObjectStruct"></A>
-<A NAME="DOC.2.16.4.8"></A>
+<A NAME="DOC.2.15.4.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ObjectStruct</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ObjectStruct"></A>
-<A NAME="DOC.2.16.4.8.1"></A>
+<A NAME="DOC.2.15.4.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::set&lt;osg::Transform*&gt; TransformSet ObjectStruct()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="add"></A>
-<A NAME="DOC.2.16.4.8.2"></A>
+<A NAME="DOC.2.15.4.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void add(TransformStack&amp; transforms, osg::Matrix&amp; matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_canBeApplied"></A>
-<A NAME="DOC.2.16.4.8.3"></A>
+<A NAME="DOC.2.15.4.8.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _canBeApplied</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrixSet"></A>
-<A NAME="DOC.2.16.4.8.4"></A>
+<A NAME="DOC.2.15.4.8.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _matrixSet</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_moreThanOneMatrixRequired"></A>
-<A NAME="DOC.2.16.4.8.5"></A>
+<A NAME="DOC.2.15.4.8.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _moreThanOneMatrixRequired</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.16.4.8.6"></A>
+<A NAME="DOC.2.15.4.8.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix _matrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_transformSet"></A>
-<A NAME="DOC.2.16.4.8.7"></A>
+<A NAME="DOC.2.15.4.8.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TransformSet _transformSet</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="disableObject"></A>
-<A NAME="DOC.2.16.4.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;osg::Object*,<!1><A HREF="FlattenStaticTransformsVisitor.html#DOC.2.16.4.8">ObjectStruct</A>&gt; ObjectMap void disableObject(osg::Object* object)</B></TT>
+<A NAME="DOC.2.15.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;osg::Object*,<!1><A HREF="FlattenStaticTransformsVisitor.html#DOC.2.15.4.8">ObjectStruct</A>&gt; ObjectMap void disableObject(osg::Object* object)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="disableObject"></A>
-<A NAME="DOC.2.16.4.10"></A>
+<A NAME="DOC.2.15.4.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void disableObject(ObjectMap::iterator itr)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="disableTransform"></A>
-<A NAME="DOC.2.16.4.11"></A>
+<A NAME="DOC.2.15.4.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void disableTransform(osg::Transform* transform)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="doTransform"></A>
-<A NAME="DOC.2.16.4.12"></A>
+<A NAME="DOC.2.15.4.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void doTransform(osg::Object* obj, osg::Matrix&amp; matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ignoreDynamicTransforms"></A>
-<A NAME="DOC.2.16.4.13"></A>
+<A NAME="DOC.2.15.4.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _ignoreDynamicTransforms</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrixStack"></A>
-<A NAME="DOC.2.16.4.14"></A>
+<A NAME="DOC.2.15.4.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MatrixStack _matrixStack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_transformStack"></A>
-<A NAME="DOC.2.16.4.15"></A>
+<A NAME="DOC.2.15.4.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TransformStack _transformStack</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_transformMap"></A>
-<A NAME="DOC.2.16.4.16"></A>
+<A NAME="DOC.2.15.4.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TransformMap _transformMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_objectMap"></A>
-<A NAME="DOC.2.16.4.17"></A>
+<A NAME="DOC.2.15.4.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ObjectMap _objectMap</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -23,27 +23,27 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.16.7.1">StateVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.7.1">StateVisitor</A></B>()
 <DD><I>default to traversing all children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.7.2">reset</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7.2">reset</A></B>()
 <DD><I>empty visitor, make it ready for next traversal</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.7.3">apply</A></B>(osg::Node&amp; node)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7.3">apply</A></B>(osg::Node&amp; node)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.16.7.4">apply</A></B>(osg::Geode&amp; geode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7.4">apply</A></B>(osg::Geode&amp; geode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.16.7.5">optimize</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.7.5">optimize</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.16.7.6">addStateSet</A></B>(osg::StateSet* stateset, osg::Object* obj)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.7.6">addStateSet</A></B>(osg::StateSet* stateset, osg::Object* obj)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;osg::StateSet*,ObjectSet&gt; StateSetMap StateSetMap <B><A HREF="#DOC.2.16.7.7">_statesets</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;osg::StateSet*,ObjectSet&gt; StateSetMap StateSetMap <B><A HREF="#DOC.2.15.7.7">_statesets</A></B>
 </DL></P>
 
 </DL>
@@ -57,33 +57,33 @@ and whole StateSets</BLOCKQUOTE>
 <DL>
 
 <A NAME="StateVisitor"></A>
-<A NAME="DOC.2.16.7.1"></A>
+<A NAME="DOC.2.15.7.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> StateVisitor()</B></TT>
 <DD>default to traversing all children
 <DL><DT><DD></DL><P>
 <A NAME="reset"></A>
-<A NAME="DOC.2.16.7.2"></A>
+<A NAME="DOC.2.15.7.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reset()</B></TT>
 <DD>empty visitor, make it ready for next traversal
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.16.7.3"></A>
+<A NAME="DOC.2.15.7.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Node&amp; node)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.16.7.4"></A>
+<A NAME="DOC.2.15.7.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; geode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="optimize"></A>
-<A NAME="DOC.2.16.7.5"></A>
+<A NAME="DOC.2.15.7.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void optimize()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addStateSet"></A>
-<A NAME="DOC.2.16.7.6"></A>
+<A NAME="DOC.2.15.7.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addStateSet(osg::StateSet* stateset, osg::Object* obj)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_statesets"></A>
-<A NAME="DOC.2.16.7.7"></A>
+<A NAME="DOC.2.15.7.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;osg::StateSet*,ObjectSet&gt; StateSetMap StateSetMap _statesets</B></TT>
 <DL><DT><DD></DL><P></DL>
 

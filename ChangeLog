@@ -1,3 +1,432 @@
+2003-10-02 15:28  robert
+
+	* doc/doc++/osg/AlphaFunc.html, doc/doc++/osg/AnimationPath.html,
+	doc/doc++/osg/AnimationPathCallback.html,
+	doc/doc++/osg/ApplicationUsage.html, doc/doc++/osg/Array.html,
+	doc/doc++/osg/AutoTransform.html, doc/doc++/osg/Billboard.html,
+	doc/doc++/osg/BlendFunc.html, doc/doc++/osg/BoundingBox.html,
+	doc/doc++/osg/BoundingSphere.html, doc/doc++/osg/Box.html,
+	doc/doc++/osg/ClearNode.html, doc/doc++/osg/ClipNode.html,
+	doc/doc++/osg/ClipPlane.html,
+	doc/doc++/osg/CollectOccludersVisitor.html,
+	doc/doc++/osg/ColorMask.html, doc/doc++/osg/ColorMatrix.html,
+	doc/doc++/osg/CompositeShape.html, doc/doc++/osg/Cone.html,
+	doc/doc++/osg/ConstShapeVisitor.html,
+	doc/doc++/osg/ConvexHull.html,
+	doc/doc++/osg/ConvexPlanarOccluder.html,
+	doc/doc++/osg/ConvexPlanarPolygon.html, doc/doc++/osg/CopyOp.html,
+	doc/doc++/osg/CullFace.html, doc/doc++/osg/CullStack.html,
+	doc/doc++/osg/CullingSet.html, doc/doc++/osg/Cylinder.html,
+	doc/doc++/osg/DOFTransform.html,
+	doc/doc++/osg/DatabaseRequestHandler.html,
+	doc/doc++/osg/DeleteHandler.html, doc/doc++/osg/Depth.html,
+	doc/doc++/osg/DisplaySettings.html,
+	doc/doc++/osg/DrawArrayLengths.html, doc/doc++/osg/DrawArrays.html,
+	doc/doc++/osg/DrawElementsUByte.html,
+	doc/doc++/osg/DrawElementsUInt.html,
+	doc/doc++/osg/DrawElementsUShort.html,
+	doc/doc++/osg/DrawPixels.html, doc/doc++/osg/Drawable.html,
+	doc/doc++/osg/Extensions.2.html, doc/doc++/osg/Extensions.3.html,
+	doc/doc++/osg/Extensions.4.html, doc/doc++/osg/Extensions.5.html,
+	doc/doc++/osg/Extensions.6.html, doc/doc++/osg/Extensions.html,
+	doc/doc++/osg/Fog.html, doc/doc++/osg/FragmentProgram.html,
+	doc/doc++/osg/FrontFace.html, doc/doc++/osg/General.html,
+	doc/doc++/osg/Geode.html, doc/doc++/osg/Geometry.html,
+	doc/doc++/osg/Grid.html, doc/doc++/osg/Group.html,
+	doc/doc++/osg/HIER.html, doc/doc++/osg/HIERjava.html,
+	doc/doc++/osg/HeightField.html, doc/doc++/osg/Image.html,
+	doc/doc++/osg/Impostor.html, doc/doc++/osg/ImpostorSprite.html,
+	doc/doc++/osg/IndexArray.html, doc/doc++/osg/InfinitePlane.html,
+	doc/doc++/osg/LOD.html, doc/doc++/osg/Light.html,
+	doc/doc++/osg/LightModel.html, doc/doc++/osg/LightSource.html,
+	doc/doc++/osg/LineSegment.html, doc/doc++/osg/LineStipple.html,
+	doc/doc++/osg/LineWidth.html, doc/doc++/osg/META_Node.html,
+	doc/doc++/osg/META_Object.html, doc/doc++/osg/META_Shape.html,
+	doc/doc++/osg/META_StateAttribute.html,
+	doc/doc++/osg/Material.html, doc/doc++/osg/MatrixTransform.html,
+	doc/doc++/osg/Matrixd.html, doc/doc++/osg/Matrixf.html,
+	doc/doc++/osg/Node.html, doc/doc++/osg/NodeAcceptOp.html,
+	doc/doc++/osg/NodeCallback.html, doc/doc++/osg/NodeVisitor.html,
+	doc/doc++/osg/NotifySeverity.html, doc/doc++/osg/Object.html,
+	doc/doc++/osg/OccluderNode.html, doc/doc++/osg/PagedLOD.html,
+	doc/doc++/osg/Plane.html, doc/doc++/osg/Point.html,
+	doc/doc++/osg/PolygonMode.html, doc/doc++/osg/PolygonOffset.html,
+	doc/doc++/osg/PolygonStipple.html, doc/doc++/osg/Polytope.html,
+	doc/doc++/osg/PositionAttitudeTransform.html,
+	doc/doc++/osg/PrimitiveFunctor.html,
+	doc/doc++/osg/PrimitiveSet.html, doc/doc++/osg/Projection.html,
+	doc/doc++/osg/QualifiedTestPrinter.html, doc/doc++/osg/Quat.html,
+	doc/doc++/osg/RefMatrixd.html, doc/doc++/osg/RefMatrixf.html,
+	doc/doc++/osg/Referenced.html, doc/doc++/osg/Sequence.html,
+	doc/doc++/osg/ShadeModel.html,
+	doc/doc++/osg/ShadowVolumeOccluder.html, doc/doc++/osg/Shape.html,
+	doc/doc++/osg/ShapeDrawable.html, doc/doc++/osg/ShapeVisitor.html,
+	doc/doc++/osg/Sphere.html, doc/doc++/osg/State.html,
+	doc/doc++/osg/StateAttribute.html, doc/doc++/osg/StateSet.html,
+	doc/doc++/osg/Stencil.html, doc/doc++/osg/SubloadCallback.2.html,
+	doc/doc++/osg/SubloadCallback.3.html,
+	doc/doc++/osg/SubloadCallback.4.html,
+	doc/doc++/osg/SubloadCallback.5.html,
+	doc/doc++/osg/SubloadCallback.html, doc/doc++/osg/Switch.html,
+	doc/doc++/osg/TemplateArray.html,
+	doc/doc++/osg/TemplateIndexArray.html,
+	doc/doc++/osg/TessellationHints.html, doc/doc++/osg/Test.html,
+	doc/doc++/osg/TestCase.html, doc/doc++/osg/TestCase_.html,
+	doc/doc++/osg/TestContext.html, doc/doc++/osg/TestErrorX.html,
+	doc/doc++/osg/TestFailureX.html, doc/doc++/osg/TestGraph.html,
+	doc/doc++/osg/TestQualifier.html, doc/doc++/osg/TestRecord.html,
+	doc/doc++/osg/TestReport.html, doc/doc++/osg/TestRunner.html,
+	doc/doc++/osg/TestSuite.html,
+	doc/doc++/osg/TestSuiteAutoRegistrationAgent.html,
+	doc/doc++/osg/TestVisitor.html, doc/doc++/osg/TestX.html,
+	doc/doc++/osg/TexEnv.html, doc/doc++/osg/TexEnvCombine.html,
+	doc/doc++/osg/TexGen.html, doc/doc++/osg/TexMat.html,
+	doc/doc++/osg/Texture.html, doc/doc++/osg/Texture1D.html,
+	doc/doc++/osg/Texture2D.html, doc/doc++/osg/Texture3D.html,
+	doc/doc++/osg/TextureCubeMap.html,
+	doc/doc++/osg/TextureObject.html,
+	doc/doc++/osg/TextureObjectManager.html,
+	doc/doc++/osg/TextureRectangle.html, doc/doc++/osg/Timer.html,
+	doc/doc++/osg/TraceStream.html, doc/doc++/osg/Transform.html,
+	doc/doc++/osg/TriangleFunctor.html,
+	doc/doc++/osg/TriangleMesh.html, doc/doc++/osg/UByte4.html,
+	doc/doc++/osg/Vec2.html, doc/doc++/osg/Vec3.html,
+	doc/doc++/osg/Vec4.html, doc/doc++/osg/VectorSizei.html,
+	doc/doc++/osg/VectorUByte.html, doc/doc++/osg/VectorUInt.html,
+	doc/doc++/osg/VectorUShort.html, doc/doc++/osg/VertexProgram.html,
+	doc/doc++/osg/Viewport.html, doc/doc++/osg/buffered_object.html,
+	doc/doc++/osg/buffered_value.html,
+	doc/doc++/osg/clampArray3BetweenRange.html,
+	doc/doc++/osg/clampArray3GEQUAL.html,
+	doc/doc++/osg/clampArray3LEQUAL.html,
+	doc/doc++/osg/clampArray4BetweenRange.html,
+	doc/doc++/osg/clampArray4GEQUAL.html,
+	doc/doc++/osg/clampArray4LEQUAL.html,
+	doc/doc++/osg/clampArrayElementBetweenRange.html,
+	doc/doc++/osg/clampArrayElementGEQUAL.html,
+	doc/doc++/osg/clampArrayElementLEQUAL.html,
+	doc/doc++/osg/clampArrayElementsBetweenRange.html,
+	doc/doc++/osg/clampArrayElementsGEQUAL.html,
+	doc/doc++/osg/clampArrayElementsLEQUAL.html,
+	doc/doc++/osg/clampBetweenRange.html,
+	doc/doc++/osg/clampGEQUAL.html, doc/doc++/osg/clampLEQUAL.html,
+	doc/doc++/osg/createTexturedQuadGeometry.html,
+	doc/doc++/osg/fast_back_stack.html, doc/doc++/osg/index.html,
+	doc/doc++/osg/osg.html, doc/doc++/osg/ref_ptr.html,
+	doc/doc++/osgDB/Field.html, doc/doc++/osgDB/Options.html,
+	doc/doc++/osgDB/ReadResult.html, doc/doc++/osgDB/ReaderWriter.html,
+	doc/doc++/osgDB/RegisterDotOsgWrapperProxy.html,
+	doc/doc++/osgDB/RegisterReaderWriterProxy.html,
+	doc/doc++/osgDB/Registry.html, doc/doc++/osgDB/WriteResult.html,
+	doc/doc++/osgDB/basic_type_wrapper.html,
+	doc/doc++/osgDB/osgDB.html, doc/doc++/osgDB/readImageFile.html,
+	doc/doc++/osgDB/readNodeFile.html,
+	doc/doc++/osgDB/readNodeFiles.2.html,
+	doc/doc++/osgDB/readNodeFiles.html,
+	doc/doc++/osgDB/readObjectFile.html,
+	doc/doc++/osgDB/type_wrapper.html,
+	doc/doc++/osgGA/AnimationPathManipulator.html,
+	doc/doc++/osgText/Text.html,
+	doc/doc++/osgUtil/CombineLODsVisitor.html,
+	doc/doc++/osgUtil/CullVisitor.html,
+	doc/doc++/osgUtil/DelaunayTriangulator.html,
+	doc/doc++/osgUtil/DisplayListVisitor.html,
+	doc/doc++/osgUtil/DisplayRequirementsVisitor.html,
+	doc/doc++/osgUtil/FlattenStaticTransformsVisitor.html,
+	doc/doc++/osgUtil/General.html, doc/doc++/osgUtil/HIER.html,
+	doc/doc++/osgUtil/HIERjava.html,
+	doc/doc++/osgUtil/HalfWayMapGenerator.html,
+	doc/doc++/osgUtil/HighlightMapGenerator.html,
+	doc/doc++/osgUtil/Hit.html,
+	doc/doc++/osgUtil/InsertImpostorsVisitor.html,
+	doc/doc++/osgUtil/IntersectState.html,
+	doc/doc++/osgUtil/IntersectVisitor.html,
+	doc/doc++/osgUtil/LeafDepthSortFunctor.html,
+	doc/doc++/osgUtil/MergeGeometryVisitor.html,
+	doc/doc++/osgUtil/Optimizer.html,
+	doc/doc++/osgUtil/ReflectionMapGenerator.html,
+	doc/doc++/osgUtil/RegisterRenderBinProxy.html,
+	doc/doc++/osgUtil/RemoveEmptyNodesVisitor.html,
+	doc/doc++/osgUtil/RemoveRedundantNodesVisitor.html,
+	doc/doc++/osgUtil/RenderBin.html,
+	doc/doc++/osgUtil/RenderGraph.html,
+	doc/doc++/osgUtil/RenderLeaf.html,
+	doc/doc++/osgUtil/RenderStage.html,
+	doc/doc++/osgUtil/RenderStageLighting.html,
+	doc/doc++/osgUtil/RenderToTextureStage.html,
+	doc/doc++/osgUtil/SceneView.html,
+	doc/doc++/osgUtil/SmoothingVisitor.html,
+	doc/doc++/osgUtil/StateVisitor.html,
+	doc/doc++/osgUtil/Statistics.html,
+	doc/doc++/osgUtil/Tesselator.html,
+	doc/doc++/osgUtil/TransformAttributeFunctor.html,
+	doc/doc++/osgUtil/TransformCallback.html,
+	doc/doc++/osgUtil/TriStripVisitor.html,
+	doc/doc++/osgUtil/UpdateVisitor.html,
+	doc/doc++/osgUtil/osgUtil.html,
+	src/osgPlugins/ive/ReaderWriterIVE.cpp: Updated docs for 0.9.6-2
+	release
+
+2003-10-02 15:11  robert
+
+	* NEWS.txt, src/osgPlugins/ive/TextureCubeMap.cpp,
+	src/osgPlugins/ive/TextureCubeMap.h: Updated NEWS
+	
+	Added support for inline/nonlining of texture cube maps.
+
+2003-10-02 14:26  robert
+
+	* include/osgDB/ReadFile, include/osgDB/Registry,
+	src/osgDB/Registry.cpp: Added
+	osgDB::Registry::s/getUseObjectCacheHint()
+
+2003-10-01 22:59  robert
+
+	* src/osgPlugins/lib3ds/ReaderWriter3DS.cpp: Added a check against
+	opaque textures, when detected turn the material white as per specs
+	for 3ds.
+
+2003-10-01 21:48  robert
+
+	* VisualStudio/: VisualStudio.dsw,
+	examples/osgcameragroup/osgcamergroup.dsp: Added osgcameragroup to
+	the Windows apps list.
+
+2003-10-01 21:41  robert
+
+	* runexamples.bat,
+	VisualStudio/examples/osgprerendercubemap/osgprerendercubemap.dsp:
+	Removed afterescher reference from runexamples.bat.
+
+2003-10-01 16:56  robert
+
+	* include/osg/DisplaySettings, include/osgUtil/SceneView,
+	src/osg/DisplaySettings.cpp, src/osgUtil/SceneView.cpp: Introduced
+	new DisplaySettings::set/getDisplayType() and environemtal
+	variables to and command line arguments to set it.
+	
+	Added support for using the DisplaySettings::getDisplayType() to
+	detect use of a Head Mounted Display when doing stereo so that the
+	asymtric frustum can be switched off.
+
+2003-10-01 14:12  robert
+
+	* include/osgDB/Registry, src/osgDB/Registry.cpp: Added
+	addEntryToObjectCache method to osgDB::Registry
+
+2003-10-01 10:46  robert
+
+	* VisualStudio/examples/:
+	osgprerendercubemap/osgprerendercubemap.dsp,
+	osgtexturerectangle/osgtexturerectangle.dsp: Rewrote the
+	osgtexturerectangle and osgprerendercubemap
+
+2003-10-01 10:18  robert
+
+	* src/osg/Geometry.cpp: From Tree, added missing setTextureData
+	method.
+
+2003-09-30 22:30  robert
+
+	* src/osgGA/DriveManipulator.cpp: Removed debugging comments.
+
+2003-09-30 20:42  robert
+
+	* VisualStudio/osg/osg.dsp: Add /Zm200 option to osg library,
+
+2003-09-30 20:24  robert
+
+	* VisualStudio/VisualStudio.dsw: Added osgText dependancy to the
+	osgforest project.
+
+2003-09-30 20:09  robert
+
+	* src/osgFX/BumpMapping.cpp: Changed std::vector<>::at to [].
+
+2003-09-30 16:50  robert
+
+	* examples/osgforest/osgforest.cpp: Added text hud instructions.
+
+2003-09-30 14:48  robert
+
+	* examples/osgforest/osgforest.cpp: Added quad tree support into
+	osgforest
+
+2003-09-29 15:42  robert
+
+	* src/osgGA/DriveManipulator.cpp: Fixed DriveManipulator::init(,)
+	method so that used a Matrix::set(Quat) rather than the
+	inappropriate usage Matrix::get(Quat).
+
+2003-09-29 15:07  robert
+
+	* src/osg/Geometry.cpp: Fixed the Geometry::verifyBindings &&
+	computeCorrectBindingsAndArraySizes so they correctly check the
+	indices and array elements.
+
+2003-09-29 14:35  robert
+
+	* include/osg/Quat, include/osgDB/Field, src/osg/Quat.cpp,
+	src/osgDB/Field.cpp, src/osgPlugins/osg/ClipPlane.cpp,
+	src/osgPlugins/osg/DOFTransform.cpp, src/osgPlugins/osg/Depth.cpp,
+	src/osgPlugins/osg/Matrix.cpp, src/osgPlugins/osg/TexMat.cpp,
+	src/osgPlugins/osgSim/IO_BlinkSequence.cpp: Made osg::Quat support
+	either float or double internal representation, defaulting to
+	double.
+	
+	Generalised the osgDB::Field so that its getFloat() method can be
+	used with either doubles or floats governed by the type passed in -
+	this helps support either float/double Quat and Matrix classes
+	seemlessly.
+
+2003-09-29 14:14  robert
+
+	* examples/osgunittests/osgunittests.cpp, include/osg/Matrixd,
+	include/osg/Matrixf, include/osgUtil/SceneView,
+	src/osg/Matrix_implementation.cpp, src/osgUtil/SceneView.cpp: Added
+	getPerspective() method to Matrix* and SceneView
+
+2003-09-29 09:03  robert
+
+	* examples/osgdemeter/osgdemeter.cpp: From Clay Fowler, fixes to
+	osgdemeter so that the whole terrain model can be visualised at
+	once.
+
+2003-09-28 11:15  robert
+
+	* AUTHORS.txt, include/osg/CullingSet,
+	src/osgPlugins/ive/TextureCubeMap.cpp: Added equals operator to
+	CUllingSet.
+	
+	Update AUTHORS file.
+	
+	Change tabs to 4 spaces in ive/TextureCubeMap.cpp
+
+2003-09-28 10:34  robert
+
+	* examples/slideshow3D/slideshow3D.cpp: Added a using namespace
+	osgGA to keep things compiling under MipsPro + VS6.0 at them same
+	time.
+
+2003-09-28 10:23  robert
+
+	* include/osg/Image: Fixed nameing of getAllocationMode()
+
+2003-09-26 21:14  robert
+
+	* src/osgUtil/TangentSpaceGenerator.cpp: Changed
+	std::vector<>::at(i) array access usage to straight [i] to keep
+	things compiling on gcc 2.x serious
+
+2003-09-26 17:02  robert
+
+	* Make/makedirdefs, VisualStudio/osgPlugins/jp2/jp2.dsp,
+	src/osgPlugins/jp2/GNUmakefile,
+	src/osgPlugins/jp2/ReaderWriterJP2.cpp: From Michael Gronager, jp2
+	plugin for reading and writing JPEG2000 files.
+
+2003-09-26 12:20  robert
+
+	* examples/osgforest/osgforest.cpp, include/osg/CullStack,
+	include/osgGA/AnimationPathManipulator, src/osg/CullStack.cpp,
+	src/osg/Geometry.cpp, src/osgGA/AnimationPathManipulator.cpp,
+	src/osgPlugins/ive/ReaderWriterIVE.cpp: Improves to CullStack.
+	
+	From M.Grngr. options support for f=switching off internal imagery
+	in .ive files
+
+2003-09-25 22:54  robert
+
+	* runexamples.bat, Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/examples/osgforest/osgforest.dsp,
+	examples/osgforest/GNUmakefile,
+	examples/osgforest/GNUmakefile.inst,
+	examples/osgforest/osgforest.cpp,
+	examples/osggeometry/osggeometry.cpp, include/osg/BlendColor,
+	include/osg/CullStack, include/osg/CullingSet,
+	include/osg/TriangleFunctor, src/osgSim/LightPointNode.cpp,
+	src/osgUtil/IntersectVisitor.cpp, src/osgUtil/SmoothingVisitor.cpp,
+	src/osgUtil/TriStripVisitor.cpp: Added the beginnings of a new
+	osgforest example.
+	
+	Added support into osg::TriangleFunctor for specifying whether the
+	vertices being generates are temporary or not.
+
+2003-09-24 19:54  robert
+
+	* examples/osgpbuffer/: RenderToTextureStage.cpp,
+	RenderToTextureStage.h: Added a local osg::State to the pbuffer
+	implementation.
+
+2003-09-24 19:53  robert
+
+	* include/osgUtil/UpdateVisitor: Made the calling of drawable
+	update callbacks always happen when a geode is traversed in the
+	update traversal.
+
+2003-09-24 16:54  robert
+
+	* include/osg/Geometry, include/osgUtil/Optimizer,
+	src/osg/Geometry.cpp, src/osgUtil/Optimizer.cpp: Improved the
+	Geometry::verifyBinding() and computeCorrectBindingsAndArraySizes()
+	methods to check all atributes and to report warnigns when errors
+	are detected.
+	
+	Added a CheckGeomtryVisitor to osgUtil::Optimizer to detect
+	eroneous Geometry before rendering.
+
+2003-09-23 15:42  robert
+
+	* src/osgPlugins/pfb/ConvertFromPerformer.cpp: From Tom Jolly,
+	added support for TexEnv to pfb plugin.
+
+2003-09-22 22:22  robert
+
+	* Make/makedefs: From Bob Kuehne, added extra include for freetype
+	to find it on OSX.
+
+2003-09-22 18:09  robert
+
+	* doc/install.html: Changed reference to osgPluins/GNUmakefile to
+	Make/makedirdefs
+
+2003-09-22 10:13  robert
+
+	* include/osg/Image, src/osg/Image.cpp: Renamed instance of
+	variables called format to pixelFormat to make a clearer
+	distinction between pixelFormat and internalTextureFormat.
+
+2003-09-17 16:48  robert
+
+	* VisualStudio/VisualStudio.dsw: Added osgUtil to dependencies of
+	the obj plugin.
+
+2003-09-17 13:04  robert
+
+	* Make/makedefs, VisualStudio/osg/osg.dsp, include/osg/BlendColor,
+	include/osg/BlendFunc, include/osg/Multisample,
+	include/osg/StateAttribute, src/osg/BlendColor.cpp,
+	src/osg/GNUmakefile, src/osg/Multisample.cpp: From Alberto Farre,
+	added support for GL_EXT_blend_color, GL_ARB_multisample,
+	GL_NV_multisample_filter_hint extension in the form of
+	osg::BlendColor and osg::Multisample state attribute classes.
+
+2003-09-16 23:26  robert
+
+	* NEWS.txt: Updated release data of 0.9.6 from 15th to 16th.
+
+2003-09-16 22:26  robert
+
+	* Make/makedefs: Updated Make/makedefs version number to 0.9.6-1.
+
+2003-09-16 22:25  robert
+
+	* ChangeLog, src/osg/Version.cpp, src/osgDB/Version.cpp,
+	src/osgGA/Version.cpp, src/osgParticle/Version.cpp,
+	src/osgProducer/Version.cpp, src/osgSim/Version.cpp,
+	src/osgText/Version.cpp, src/osgUtil/Version.cpp: Updated version
+	numbers and ChangeLog for the release.
+
 2003-09-16 20:56  robert
 
 	* examples/slideshow3D/SlideEventHandler.h,

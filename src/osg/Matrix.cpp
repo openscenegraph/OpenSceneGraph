@@ -188,6 +188,7 @@ void Matrix::makeRot( float angle, float x, float y, float z ) {
     angle = DEG2RAD(angle);
 #endif
 
+#if 0
     float sin_half = sin( angle/2 );
     float cos_half = cos( angle/2 );
 
@@ -195,6 +196,9 @@ void Matrix::makeRot( float angle, float x, float y, float z ) {
             sin_half * (y/d),
             sin_half * (z/d),
             cos_half );//NOTE: original used a private quaternion made of doubles
+#endif
+    Quat q;
+    q.makeRot( angle, x, y, z);
     makeRot( q );        // but Quat stores the values in a Vec4 made of floats.  
 }
 
@@ -216,9 +220,17 @@ void Matrix::makeRot( const Quat& q ) {
     double wy = ys * v.w();
     double wz = zs * v.w();
 
+/*
+ * This is inverted - Don Burns
     SET_ROW(0,    1.0-(yy+zz),    xy - wz,    xz + wy,    0.0 )
     SET_ROW(1,    xy + wz,        1.0-(xx+zz),yz - wx,    0.0 )
     SET_ROW(2,    xz - wy,        yz + wx,    1.0-(xx+yy),0.0 )
+    SET_ROW(3,    0.0,            0.0,        0.0,        1.0 )
+ */
+
+    SET_ROW(0,    1.0-(yy+zz),    xy + wz,    xz - wy,    0.0 )
+    SET_ROW(1,    xy - wz,        1.0-(xx+zz),yz + wx,    0.0 )
+    SET_ROW(2,    xz + wy,        yz - wx,    1.0-(xx+yy),0.0 )
     SET_ROW(3,    0.0,            0.0,        0.0,        1.0 )
 
     fully_realized = true;

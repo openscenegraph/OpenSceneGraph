@@ -20,11 +20,11 @@
 #ifndef trpage_sys_h_
 #define trpage_sys_h_
 
-#ifndef PATHSEPERATOR
+#ifndef PATHSEPARATOR
 #ifdef macintosh
-#define PATHSEPERATOR ":"
+#define PATHSEPARATOR ":"
 #else
-#define PATHSEPERATOR "/"
+#define PATHSEPARATOR "/"
 #endif
 #endif
 

@@ -150,7 +150,7 @@ void Image::ensureDimensionsArePowerOfTwo()
     float rounded_tp2 = floorf(tp2+0.5f);
     int new_t = (int)(powf(2.0f,rounded_tp2));
     
-    static int max_size=256;
+    static GLint max_size=256;
 
     static bool init = true;
     if (init)

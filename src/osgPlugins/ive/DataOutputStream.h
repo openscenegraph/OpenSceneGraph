@@ -12,6 +12,7 @@
 #include <osg/Array>
 #include <osg/Matrix>
 #include <osg/Geometry>
+#include <osg/Shape>
 
 #include "IveVersion.h"
 #include "DataTypeSize.h"
@@ -60,6 +61,7 @@ public:
 	void writeStateSet(const osg::StateSet* stateset);
 	void writeStateAttribute(const osg::StateAttribute* sa);
 	void writeDrawable(const osg::Drawable* sa);
+	void writeShape(const osg::Shape* sa);
 	void writeNode(const osg::Node* sa);
 
 	// Set and get include image data in stream
@@ -75,11 +77,13 @@ private:
 	typedef std::map<const osg::StateSet*,int>        StateSetMap;
 	typedef std::map<const osg::StateAttribute*,int>  StateAttributeMap;
 	typedef std::map<const osg::Drawable*,int>        DrawableMap;
+	typedef std::map<const osg::Shape*,int>        ShapeMap;
 	typedef std::map<const osg::Node*,int>            NodeMap;
         
         StateSetMap         _stateSetMap;
         StateAttributeMap   _stateAttributeMap;
         DrawableMap         _drawableMap;
+        ShapeMap            _shapeMap;
         NodeMap             _nodeMap;
 
 	bool                _includeImageData;

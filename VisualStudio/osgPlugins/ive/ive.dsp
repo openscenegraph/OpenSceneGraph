@@ -258,6 +258,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\ShadeModel.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Shape.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ShapeDrawable.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.cpp
 # End Source File
 # Begin Source File
@@ -515,6 +523,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\ShadeModel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Shape.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ShapeDrawable.h
 # End Source File
 # Begin Source File
 

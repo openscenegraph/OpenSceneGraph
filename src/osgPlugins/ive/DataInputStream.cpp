@@ -53,6 +53,8 @@
 #include "VisibilityGroup.h"
 
 #include "Geometry.h"
+#include "ShapeDrawable.h"
+#include "Shape.h"
 
 #include <osg/Endian>
 #include <osgDB/ReadFile>
@@ -699,9 +701,15 @@ osg::Drawable* DataInputStream::readDrawable()
 
     int drawableTypeID = peekInt();
     osg::Drawable* drawable;
-    if(drawableTypeID == IVEGEOMETRY){
+    if(drawableTypeID == IVEGEOMETRY)
+    {
         drawable = new osg::Geometry();                
         ((Geometry*)(drawable))->read(this);
+    }
+    else if(drawableTypeID == IVESHAPEDRAWABLE)
+    {
+        drawable = new osg::ShapeDrawable();                
+        ((ShapeDrawable*)(drawable))->read(this);
     }
     else
         throw Exception("Unknown drawable drawableTypeIDentification in Geode::read()");
@@ -714,6 +722,62 @@ osg::Drawable* DataInputStream::readDrawable()
     if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<id<<"]"<<std::endl;
     
     return drawable;
+}
+
+osg::Shape* DataInputStream::readShape()
+{
+    // Read stateattributes unique ID.
+    int id = readInt();
+    // See if stateattribute is already in the list.
+    ShapeMap::iterator itr= _shapeMap.find(id);
+    if (itr!=_shapeMap.end()) return itr->second.get();
+
+    // stateattribute is not in list.
+    // Create a new stateattribute,
+
+    int shapeTypeID = peekInt();
+    osg::Shape* shape;
+    if(shapeTypeID == IVESPHERE)
+    {
+        shape = new osg::Sphere();                
+        ((Sphere*)(shape))->read(this);
+    }
+    else if(shapeTypeID == IVEBOX)
+    {
+        shape = new osg::Box();
+        ((Box*)(shape))->read(this);
+    }
+    else if(shapeTypeID == IVECONE)
+    {
+        shape = new osg::Cone();
+        ((Cone*)(shape))->read(this);
+    }
+    else if(shapeTypeID == IVECYLINDER)
+    {
+        shape = new osg::Cylinder();
+        ((Cylinder*)(shape))->read(this);
+    }
+    else if(shapeTypeID == IVECAPSULE)
+    {
+        shape = new osg::Capsule();
+        ((Capsule*)(shape))->read(this);
+    }
+    else if(shapeTypeID == IVEHEIGHTFIELD)
+    {
+        shape = new osg::HeightField();                
+        ((HeightField*)(shape))->read(this);
+    }
+    else
+        throw Exception("Unknown shape shapeTypeIDentification in Shape::read()");
+
+       
+    // and add it to the stateattribute map,
+    _shapeMap[id] = shape;
+        
+
+    if (_verboseOutput) std::cout<<"read/writeShape() ["<<id<<"]"<<std::endl;
+    
+    return shape;
 }
 
 osg::Node* DataInputStream::readNode()

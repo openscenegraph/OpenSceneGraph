@@ -58,8 +58,18 @@ namespace ive {
 #define IVEVERTEXPROGRAM				0x0000012F
 
 // Drawables
-#define IVEDRAWABLE						0x00001000
-#define IVEGEOMETRY						0x00001001
+#define IVEDRAWABLE					0x00001000
+#define IVEGEOMETRY					0x00001001
+#define IVESHAPEDRAWABLE				0x00001002
+
+// Shapes
+#define IVESHAPE					0x00002000
+#define IVESPHERE					0x00002001
+#define IVEBOX					        0x00002002
+#define IVECONE					        0x00002004
+#define IVECYLINDER					0x00002005
+#define IVECAPSULE					0x00002006
+#define IVEHEIGHTFIELD					0x00002007
 
 // Primitive set
 #define IVEPRIMITIVESET					0x00010000

@@ -43,6 +43,8 @@ CXXFILES =\
 	PrimitiveSet.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
+	Shape.cpp\
+	ShapeDrawable.cpp\
 	Switch.cpp\
 	StateSet.cpp\
 	TexEnv.cpp\

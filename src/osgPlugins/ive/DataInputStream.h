@@ -43,6 +43,7 @@ public:
 	double readDouble();
 	std::string readString();
 	void readCharArray(char* data, int size);
+        
 	osg::Vec2 readVec2();
 	osg::Vec3 readVec3();
 	osg::Vec4 readVec4();
@@ -65,12 +66,14 @@ public:
 	osg::StateSet* readStateSet();
 	osg::StateAttribute* readStateAttribute();
 	osg::Drawable* readDrawable();
+	osg::Shape* readShape();
 	osg::Node* readNode();
 
 	typedef std::map<std::string, osg::ref_ptr<osg::Image> >    ImageMap;
 	typedef std::map<int,osg::ref_ptr<osg::StateSet> >          StateSetMap;
 	typedef std::map<int,osg::ref_ptr<osg::StateAttribute> >    StateAttributeMap;
 	typedef std::map<int,osg::ref_ptr<osg::Drawable> >          DrawableMap;
+	typedef std::map<int,osg::ref_ptr<osg::Shape> >             ShapeMap;
 	typedef std::map<int,osg::ref_ptr<osg::Node> >              NodeMap;
 
         bool                _verboseOutput;
@@ -84,9 +87,10 @@ private:
 	StateSetMap         _statesetMap;
 	StateAttributeMap   _stateAttributeMap;
 	DrawableMap         _drawableMap;
+	ShapeMap            _shapeMap;
 	NodeMap             _nodeMap;
    
-   int                 _byteswap ;
+       int                  _byteswap ;
 };
 
 }

@@ -66,7 +66,7 @@ void Matrix_implementation::set(const Quat& q_in)
 {
     Quat q(q_in);
     double length2 = q.length2();
-    if (length2!=1.0)
+	if (length2!=1.0 && length2!=0)
     {
         // normalize quat if required.
         q /= sqrt(length2);

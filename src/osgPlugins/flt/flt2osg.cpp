@@ -978,34 +978,42 @@ osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec
 
     osgSwitch->setName(pSSwitch->szIdent);
     visitAncillary(osgParent, *osgSwitch, rec)->addChild( osgSwitch );
-    visitPrimaryNode(*osgSwitch, (PrimNodeRecord*)rec);
-
+    osg::ref_ptr<osg::Group> allChildrenGroup = new osg::Group;
+    visitPrimaryNode(*allChildrenGroup, (PrimNodeRecord*)rec);
 
     unsigned int totalNumChildren = (unsigned int)rec->getNumChildren();
-    if (totalNumChildren!=osgSwitch->getNumChildren())
+    if (totalNumChildren!=allChildrenGroup->getNumChildren())
     {
         // only convert the children we agree on,
         // however, there could be a chance that ordering of children might
         // be different if there a children that hanvn't mapped across...
-        if (totalNumChildren>osgSwitch->getNumChildren()) totalNumChildren=osgSwitch->getNumChildren();
-
-            
+        if (totalNumChildren>allChildrenGroup->getNumChildren()) totalNumChildren=allChildrenGroup->getNumChildren();        
         osg::notify(osg::INFO)<<"Warning::OpenFlight loader has come across an incorrectly handled switch."<<std::endl;
         osg::notify(osg::INFO)<<"         The number of OpenFlight children ("<<rec->getNumChildren()<<") "<<std::endl;
-        osg::notify(osg::INFO)<<"         exceeds the number converted to OSG ("<<osgSwitch->getNumChildren()<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"         exceeds the number converted to OSG ("<<allChildrenGroup->getNumChildren()<<")"<<std::endl;
     }
 
-    for(unsigned int nChild=0; nChild<totalNumChildren; nChild++)
+    // for each mask in the FLT Switch node
+    for (int itMask=0; itMask<pSSwitch->nMasks; ++itMask) 
     {
-        unsigned int nMaskBit = nChild % 32;
-        unsigned int nMaskWord = pSSwitch->nCurrentMask * pSSwitch->nWordsInMask + nChild / 32;
-
-        if (nChild<osgSwitch->getNumChildren())
+        // create a osg group node
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+        osgSwitch->addChild( group.get() );
+        // for each child in the FLT Switch node
+        for (unsigned itChild=0; itChild<totalNumChildren; ++itChild)
         {
-            osgSwitch->setValue(nChild,(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit))!=0);
+            // test if this child is active in the current mask (itMask)
+            unsigned int nMaskBit = itChild % 32;
+            unsigned int nMaskWord = itMask * pSSwitch->nWordsInMask + itChild / 32;
+            if ( (pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit))!=0 )
+            {
+                // add this child in the group
+                group->addChild( allChildrenGroup->getChild(itChild) );
+            }
         }
+        // now the group contain all the childrens that are active in the current mask (itMask)
     }
-
+    osgSwitch->setSingleChildOn(pSSwitch->nCurrentMask);   
     return osgSwitch;
 }
 

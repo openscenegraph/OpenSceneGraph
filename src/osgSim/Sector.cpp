@@ -232,7 +232,9 @@ void DirectionalSector::computeMatrix()
 {
    float cR = cos(_rollAngle) ;
    float sR = sin(_rollAngle) ;
-   osg::Vec3 &D(_direction) ; // Just for clarity
+
+   // Just for clarity
+   #define D _direction
    
    _local_to_LP.set(
       cR*D[1]+sR*D[0]*D[2],    -cR*D[0]+sR*D[1]*D[2],   -sR*(D[0]*D[0]+D[1]*D[1]),    0.0,

@@ -11,41 +11,40 @@
 namespace osgGA{
 
 
-/** Pure virtual base class for adapting platform specific events into
-  * generic keyboard and mouse events. 
-  *
-  * Used as GUI toolkit independent input into the osgUtil::CameraManipualor's.
-  * For an example of how GUIEventAdapter is specialised for a particular GUI
-  * Toolkit see osgGLUT::GLUTEventAdapter.
-  */
-class GUIEventAdapter : public osg::Referenced
+/**
+Pure virtual base class for adapting platform specific events into
+generic keyboard and mouse events. 
+
+Used as GUI toolkit-independent input into GUIEventAdapters. Viewer
+writers should subclass this base class to implement the functionality
+to translate one of their GUI events, e.g. a Qt Event or an MFC Event,
+as appropriate.
+*/
+class OSGGA_EXPORT GUIEventAdapter : public osg::Referenced
 {
-    public:
-
-        GUIEventAdapter() {}
-
+public:
 
         enum MouseButtonMask { 
-            LEFT_MOUSE_BUTTON=1,
-            MIDDLE_MOUSE_BUTTON=2,
-            RIGHT_MOUSE_BUTTON=4
+                LEFT_MOUSE_BUTTON=1,
+                MIDDLE_MOUSE_BUTTON=2,
+                RIGHT_MOUSE_BUTTON=4
         };
 
         enum EventType {
-            PUSH,
-            RELEASE,
-            DRAG,
-            MOVE,
-            KEYBOARD,
-            FRAME,
-            RESIZE,
-            NONE
+                PUSH,
+                RELEASE,
+                DRAG,
+                MOVE,
+                KEYBOARD,
+                FRAME,
+                RESIZE,
+                NONE
         };
 
         /** Get the EventType of the GUI event.*/
         virtual EventType getEventType() const = 0;
 
-        /** key pressed, return -1 if inappropriate for this event. */
+        /** key pressed, return -1 if inappr   opriate for this event. */
         virtual int getKey() const = 0;
 
         /** button pressed/released, return -1 if inappropriate for this event.*/
@@ -60,7 +59,7 @@ class GUIEventAdapter : public osg::Referenced
         /** window minimum y. */
         virtual int getYmin() const = 0;
 
-        /** window maximum y. */
+        /** window maximum y. */   
         virtual int getYmax() const = 0;
 
         /** current mouse x position.*/
@@ -75,9 +74,10 @@ class GUIEventAdapter : public osg::Referenced
         /** time in seconds of event. */
         virtual double time() const = 0;
 
+protected:
 
-    protected:
-    
+        GUIEventAdapter() {}
+
         /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter() {}
 
@@ -86,4 +86,3 @@ class GUIEventAdapter : public osg::Referenced
 }
 
 #endif
-

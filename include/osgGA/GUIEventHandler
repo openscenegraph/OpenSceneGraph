@@ -38,21 +38,19 @@ This request is made via the GUIActionAdapter class.
 
 class OSGGA_EXPORT GUIEventHandler : public osg::Referenced
 {
-    public:
+public:
 
-        /** Handle events, return true if handled, false otherwise.*/
+        /** Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us)=0;
 
-        /** Is this const GUIEventHandler a composite? */
+        /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */
         virtual const CompositeGUIEventHandler* getComposite() const { return 0; }
 
-        /** Is this non-const GUIEventHandler a composite? */
+        /** Returns 0 if this GUIEventHandler is not a CompositeGUIEventHandler. */
         virtual CompositeGUIEventHandler* getComposite() { return 0; }
 
         /** Accept visits from GUIEventHandler visitors */
         virtual void accept(GUIEventHandlerVisitor&) = 0;
-        //virtual void accept(GUIEventHandlerVisitor&) { }
-
 };
 
 
@@ -62,7 +60,7 @@ CompositeGUIEventHandler allows GUIEventHandlers to be composed into hierarchies
 
 class OSGGA_EXPORT CompositeGUIEventHandler : public GUIEventHandler
 {
-    public:
+public:
 
         typedef std::vector< osg::ref_ptr<GUIEventHandler> > ChildList;
 
@@ -74,9 +72,7 @@ class OSGGA_EXPORT CompositeGUIEventHandler : public GUIEventHandler
 
         virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
 
-
-
-        /* Composite-specific methods below */
+        // Composite-specific methods below
 
         virtual bool addChild(GUIEventHandler *geh);
 
@@ -90,28 +86,27 @@ class OSGGA_EXPORT CompositeGUIEventHandler : public GUIEventHandler
 
         bool containsNode( const GUIEventHandler* node ) const
         {
-            
-            for (ChildList::const_iterator itr=_children.begin();
-                 itr!=_children.end();
-                 ++itr)
-            {
-                if (itr->get()==node) return true;
-            }
-            return false;
+                for (ChildList::const_iterator itr=_children.begin();
+                        itr!=_children.end();
+                        ++itr)
+                {
+                        if (itr->get()==node) return true;
+                }
+                return false;
         }
 
         ChildList::iterator findChild( const GUIEventHandler* node )
         {
-            for (ChildList::iterator itr=_children.begin();
-                 itr!=_children.end();
-                 ++itr)
-            {
-                if (itr->get()==node) return itr;
-            }
-            return _children.end();
+                for (ChildList::iterator itr=_children.begin();
+                        itr!=_children.end();
+                        ++itr)
+                {
+                        if (itr->get()==node) return itr;
+                }
+                return _children.end();
         }
 
-    private:
+private:
 
         ChildList   _children;
 

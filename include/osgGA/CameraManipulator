@@ -15,56 +15,67 @@
 
 namespace osgGA{
 
+/**
+
+CameraManipulator is an abstract base class defining the interface, and a certain
+amount of default functionality, for classes which wish to control OSG cameras
+in response to GUI events.
+
+*/
 class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
 {
-    public:
+public:
 
-	CameraManipulator();
-	virtual ~CameraManipulator();
+        /** Attach a camera to the manipulator to be used for specifying view.*/
+        virtual void setCamera(osg::Camera*);
 
-        /** attach a camera to the manipulator to be used for specifying view.*/
-	virtual void setCamera(osg::Camera*);
+        /** Get the attached camera.*/
+        virtual const osg::Camera * getCamera() const;
 
-        /** get the attached camera.*/
-	virtual const osg::Camera * getCamera() const;
+        /** Get the attached camera.*/
+        virtual osg::Camera * getCamera();
 
-        /** get the attached camera.*/
-	virtual osg::Camera * getCamera();
-
-        /** Attach a node to the manipulator. 
-            Automatically detaches previously attached node.
-            setNode(NULL) detaches previously nodes.
-            Is ignored by manipulators which do not require a reference model.*/
+        /**
+        Attach a node to the manipulator, automatically detaching any previously attached node.
+        setNode(NULL) detaches previous nodes.
+        May be ignored by manipulators which do not require a reference model.
+        */
         virtual void setNode(osg::Node*) {}
 
-        /** Return node if attached.*/
+        /** Return const node if attached.*/
         virtual const osg::Node* getNode() const { return NULL; }
 
         /** Return node if attached.*/
         virtual osg::Node* getNode() { return NULL; }
 
-        /** Move the camera to the default position. 
-            May be ignored by manipulators if home functionality is not appropriate.*/
+        /**
+        Move the camera to the default position. 
+        May be ignored by manipulators if home functionality is not appropriate.
+        */
         virtual void home(const GUIEventAdapter& ,GUIActionAdapter&) {}
-        
-        /** Start/restart the manipulator.*/
+
+        /**
+        Start/restart the manipulator.
+        FIXME: what does this actually mean? Provide examples.
+        */
         virtual void init(const GUIEventAdapter& ,GUIActionAdapter&) {}
 
-        /** Handle events, return true if handled, false otherwise.*/
-	virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+        /** Handle events, return true if handled, false otherwise. */
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
         /** Handle visitations */
         virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
 
+protected:
 
-    protected:
+        CameraManipulator();
+        virtual ~CameraManipulator();
 
-	// Reference pointer to a camera
-	osg::ref_ptr<osg::Camera>	_camera;
+        // Reference pointer to a camera
+        osg::ref_ptr<osg::Camera>        _camera;
 
 };
 
 }
 
 #endif
-

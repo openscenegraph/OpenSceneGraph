@@ -370,11 +370,22 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get whether the Registry::ObjectCache should be used by default.*/
         CacheHintOptions getUseObjectCacheHint() const { return _useObjectCacheHint; }
 
+
+        /** Add archive to archive cache so that future calls reference this archive.*/
+        void addToArchiveCache(const std::string& fileName, osgDB::Archive* archive);
+
+        /** Remove archive from cache.*/
+        void removeFromArchiveCache(const std::string& fileName);
+        
+        /** Get an archive from the archive cache*/ 
+        osgDB::Archive* getFromArchiveCache(const std::string& fileName);
+        
+        /** Remove all archives from the archive cache.*/
+        void clearArchiveCache();
+
+
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
-
-        typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
-        
         
         /** Set the DatabasePager.*/
         void setDatabasePager(DatabasePager* databasePager) { _databasePager = databasePager; }
@@ -400,12 +411,14 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         virtual ~Registry();
 
+        typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
         typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
         
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
+        typedef std::map<std::string, osg::ref_ptr<osgDB::Archive> >    ArchiveCache;
 
         /** constructor is private, as its a singleton, preventing
             construction other than via the instance() method and
@@ -437,6 +450,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             const ReaderWriter::Options* _options;
         };
 
+        // forward declare helper classes
         struct ReadObjectFunctor;
         struct ReadImageFunctor;
         struct ReadHeightFieldFunctor;
@@ -444,7 +458,12 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         struct ReadArchiveFunctor;
 
         ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
-        ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,CacheHintOptions useObjectCache);
+        ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,bool useObjectCache);
+
+
+        // forward declar helper class
+        class AvailableReaderWriterIterator;
+
 
         osg::ref_ptr<ReadFileCallback>      _readFileCallback;
         osg::ref_ptr<WriteFileCallback>     _writeFileCallback;
@@ -474,6 +493,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         CacheHintOptions                    _useObjectCacheHint;        
         ObjectCache                         _objectCache;
         OpenThreads::Mutex                  _objectCacheMutex;
+        
+        ArchiveCache                        _archiveCache;
+        OpenThreads::Mutex                  _archiveCacheMutex;
+        
         
         osg::ref_ptr<DatabasePager>         _databasePager;
         osg::ref_ptr<SharedStateManager>    _sharedStateManager;

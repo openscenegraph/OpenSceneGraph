@@ -48,6 +48,7 @@ PLUGIN_DIRS = \
 	osgSim\
 	osgFX\
 	osg\
+	osga\
 	osgtgz\
 	pic\
 	pnm\

@@ -121,7 +121,7 @@ Ruben Lopez <ryu@gpul.org>
         - Inventor ascii/VRML 1.0 loader.
 
 Pavel Moloshtan <pasha@moloshtan.com>
-        - Support for LWO2 format in the light wave loader.
+        - Support for LWO2 format in the LightWave loader.
 
 Alberto Barbati <abarbati@iaanus.com>
         - lazy evaluation of the inverse in the MatrixTransform.

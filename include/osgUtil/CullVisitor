@@ -183,6 +183,20 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** prevent unwanted copy operator.*/
         CullVisitor& operator = (const CullVisitor&) { return *this; }
         
+        inline void handle_cull_callbacks_and_traverse(osg::Node& node)
+        {
+            osg::NodeCallback* callback = node.getCullCallback();
+            if (callback) (*callback)(&node,this);
+            else traverse(node);
+        }
+
+        inline void handle_cull_callbacks_and_accept(osg::Node& node,osg::Node* acceptNode)
+        {
+            osg::NodeCallback* callback = node.getCullCallback();
+            if (callback) (*callback)(&node,this);
+            else acceptNode->accept(*this);
+        }
+
         inline osg::Matrix* getCurrentMatrix()
         {
             return _modelviewStack.back().get();

@@ -261,7 +261,19 @@ void set2dScene(osg::Group* rootNode)
     
 }
 
+struct MyCallback : public osg::NodeCallback
+{
 
+    MyCallback(const std::string& str):_message(str) {}
+
+    virtual void operator() (osg::Node* node,osg::NodeVisitor* nv)
+    {
+        std::cout<<"In my callback '"<<_message<<"'"<<std::endl;
+        traverse(node,nv);
+    }
+    
+    std::string _message;
+};
 
 
 
@@ -328,6 +340,8 @@ int main( int argc, char **argv )
     set2dScene(modelview_abs);
 
     projection->addChild(modelview_abs);
+    projection->setAppCallback(osgNew MyCallback("App callback"));
+    projection->setCullCallback(osgNew MyCallback("Cull callback"));
 
     group->addChild(projection);
     

@@ -89,11 +89,7 @@ Font::Font(FontImplementation* implementation):
     _magFilterHint(osg::Texture::LINEAR)
 {
     setImplementation(implementation);
-#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
-    _texEnv = new osg::TexEnv(osg::TexEnv::MODULATE);
-#else
     _texEnv = new osg::TexEnv(osg::TexEnv::BLEND);
-#endif
 }
 
 Font::~Font()
@@ -398,19 +394,17 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
+    
+    bool newTextureObject = (textureObject == 0);
 
-    if (textureObject == 0)
+    if (newTextureObject)
     {
         
         // being bound for the first time, need to allocate the texture
 
-#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
-                contextID,GL_TEXTURE_2D,1,GL_LUMINANCE_ALPHA,getTextureWidth(), getTextureHeight(),1,0);
-#else
         _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
                 contextID,GL_TEXTURE_2D,1,GL_ALPHA,getTextureWidth(), getTextureHeight(),1,0);
-#endif
+
         textureObject->bind();
 
 
@@ -436,19 +430,11 @@ void Font::GlyphTexture::apply(osg::State& state) const
         }
                
         // allocate the texture memory.
-#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA,
-                getTextureWidth(), getTextureHeight(), 0,
-                GL_LUMINANCE_ALPHA,
-                GL_UNSIGNED_BYTE,
-                0 );
-#else
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
                 getTextureWidth(), getTextureHeight(), 0,
                 GL_ALPHA,
                 GL_UNSIGNED_BYTE,
                 0 );
-#endif                
     
     }
     else
@@ -461,24 +447,6 @@ void Font::GlyphTexture::apply(osg::State& state) const
             applyTexParameters(GL_TEXTURE_2D,state);
         }
 
-//         // need to look at generate mip map extension if mip mapping required.
-//         switch(_min_filter)
-//         {
-//         case NEAREST_MIPMAP_NEAREST:
-//         case NEAREST_MIPMAP_LINEAR:
-//         case LINEAR_MIPMAP_NEAREST:
-//         case LINEAR_MIPMAP_LINEAR:
-//             if (generateMipMapSupported)
-//             {
-//                 glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-//                 generateMipMapOn = true;
-//             }
-//             else glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, LINEAR);
-//             break;
-//         default:
-//             // not mip mapping so no problems.
-//             break;
-//         }
 
     }
     
@@ -500,22 +468,32 @@ void Font::GlyphTexture::apply(osg::State& state) const
     // now subload the glyphs that are outstanding for this graphics context.
     GlyphPtrList& glyphsWereSubloading = _glyphsToSubload[contextID];
 
-    if (!glyphsWereSubloading.empty())
+    if (!glyphsWereSubloading.empty() || newTextureObject)
     {
     
         if (!s_subloadAllGlyphsTogether)
         {
-            // default way of subloading as required.
-            
-            //std::cout<<"subloading"<<std::endl;
-
-            for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
-                itr!=glyphsWereSubloading.end();
-                ++itr)
+            if (newTextureObject)
             {
-                (*itr)->subload();
+                for(GlyphRefList::const_iterator itr=_glyphs.begin();
+                    itr!=_glyphs.end();
+                    ++itr)
+                {
+                    (*itr)->subload();
+                }
             }
-
+            else // just subload the new entries.
+            {            
+                // default way of subloading as required.
+                //std::cout<<"subloading"<<std::endl;
+                for(GlyphPtrList::iterator itr=glyphsWereSubloading.begin();
+                    itr!=glyphsWereSubloading.end();
+                    ++itr)
+                {
+                    (*itr)->subload();
+                }
+            }
+            
             // clear the list since we have now subloaded them.
             glyphsWereSubloading.clear();
             
@@ -529,49 +507,6 @@ void Font::GlyphTexture::apply(osg::State& state) const
             // so to get round this copy all glyphs into a temporary image and
             // then subload the whole lot in one go.
 
-#ifdef OSG_FONT_USE_LUMINANCE_ALPHA
-            int tsize = 2 * getTextureHeight() * getTextureWidth();
-            unsigned char *local_data = new unsigned char[tsize];
-            memset( local_data, 0L, tsize);
-
-            for(GlyphRefList::const_iterator itr=_glyphs.begin();
-                itr!=_glyphs.end();
-                ++itr)
-            {
-                //(*itr)->subload();
-
-                // Rather than subloading to graphics, we'll write the values
-                // of the glyphs into some intermediate data and subload the
-                // whole thing at the end
-                for( int t = 0; t < (*itr)->t(); t++ )
-                {
-                    for( int s = 0; s < (*itr)->s(); s++ )
-                    {
-                        int sindex = 2 * (t*(*itr)->s()+s);
-                        int dindex = 2 * 
-                            ((((*itr)->getTexturePositionY()+t) * getTextureWidth()) +
-                            ((*itr)->getTexturePositionX()+s));
-
-                        const unsigned char *sptr = &(*itr)->data()[sindex];
-                        unsigned char *dptr       = &local_data[dindex];
-
-                        (*dptr++) = (*sptr++);
-                        (*dptr)   = (*sptr);
-                    }
-                }
-            }
-
-            // clear the list since we have now subloaded them.
-            glyphsWereSubloading.clear();
-
-            // Subload the image once
-            glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 
-                    getTextureWidth(),
-                    getTextureHeight(),
-                    GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, local_data );
-
-            delete [] local_data;
-#else
             int tsize = getTextureHeight() * getTextureWidth();
             unsigned char *local_data = new unsigned char[tsize];
             memset( local_data, 0L, tsize);
@@ -612,7 +547,6 @@ void Font::GlyphTexture::apply(osg::State& state) const
                     GL_ALPHA, GL_UNSIGNED_BYTE, local_data );
 
             delete [] local_data;
-#endif
 
         }
     }

@@ -11,8 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*-
-
 #ifndef OSG_IMAGE
 #define OSG_IMAGE 1
 
@@ -100,14 +98,14 @@ class SG_EXPORT Image : public Object
             
         /** Read pixels from current frame buffer at specified position and size, using glReadPixels.
           * Create memory for storage if required, reuse existing pixel coords if possible.
-		*/
+        */
         void readPixels(int x,int y,int width,int height,
                         GLenum pixelFormat,GLenum type);
             
 
         /** Read the contents of the current bound texture, handling compressed pixelFormats if present.
           * Create memory for storage if required, reuse existing pixel coords if possible.
-		*/
+        */
         void readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable);
 
 
@@ -123,7 +121,7 @@ class SG_EXPORT Image : public Object
           * If this Image is empty then image data is created to
           * accomodate the source image in its offset position.
           * If source is NULL then no operation happens, this Image is left unchanged.
-		*/
+        */
         void copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source);
 
 
@@ -194,7 +192,7 @@ class SG_EXPORT Image : public Object
           * Mipmapped textures require the image dimensions to be
           * power of two and are within the maxiumum texture size for
           * the host machine.
-		*/
+        */
         void ensureValidSizeForTexturing(GLint maxTextureSize);
       
         /** Dirty the image, which increments the modified flag, to force osg::Texture to reload the image. */
@@ -238,14 +236,14 @@ class SG_EXPORT Image : public Object
         };
         
         inline unsigned char* getMipmapData(unsigned int mipmapLevel)
-	{
-	   return _data+getMipmapOffset(mipmapLevel);
-	}
+        {
+           return _data+getMipmapOffset(mipmapLevel);
+        }
 
         inline const unsigned char* getMipmapData(unsigned int mipmapLevel) const
-	{
-	   return _data+getMipmapOffset(mipmapLevel);
-	}
+        {
+           return _data+getMipmapOffset(mipmapLevel);
+        }
         
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         bool isImageTranslucent() const;

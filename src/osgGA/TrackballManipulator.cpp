@@ -230,7 +230,6 @@ void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3&
 
 bool TrackballManipulator::calcMovement()
 {
-
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 

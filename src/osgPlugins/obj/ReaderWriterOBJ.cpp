@@ -55,8 +55,9 @@ public:
         return osgDB::equalCaseInsensitive(extension,"obj");
     }
 
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options);
 
+    virtual ReadResult readNode(std::istream& fin, const Options* options);
 
 
 protected:
@@ -459,3 +460,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     return ReadResult::FILE_NOT_HANDLED;
 }
 
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, const Options*)
+{
+    if (fin)
+    {
+        obj::Model model;
+        model.readOBJ(fin);
+        
+        osg::Node* node = convertModelToSceneGraph(model);
+        return node;
+    }
+    
+    return ReadResult::FILE_NOT_HANDLED;
+}

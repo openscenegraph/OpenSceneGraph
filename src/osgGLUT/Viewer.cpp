@@ -854,7 +854,9 @@ void Viewer::mouse(int button, int state, int x, int y)
          mask == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
         int focus = mapWindowXYToViewport(x,y);
-        if (focus >= 0 && focus != int(_focusedViewport))
+        if (focus >= 0
+                && _viewportList[(unsigned int)focus]._focusable
+                && focus != int(_focusedViewport))
           setFocusedViewport(focus);
     }
 

@@ -11,16 +11,19 @@ Billboard::Billboard()
 {
     _mode = AXIAL_ROT;
     _axis.set(0.0f,0.0f,1.0f);
-    setCachedMode();
+    _normal.set(0.0f,-1.0f,0.0f);
+    updateCache();
 }
 
 Billboard::Billboard(const Billboard& billboard,const CopyOp& copyop):
         Geode(billboard,copyop),
         _mode(billboard._mode),
         _axis(billboard._axis),
+        _normal(billboard._normal),
         _positionList(billboard._positionList),
         _computeBillboardCallback(_computeBillboardCallback),
-        _cachedMode(billboard._cachedMode) {}
+        _cachedMode(billboard._cachedMode),
+        _side(billboard._side) {}
 
 Billboard::~Billboard()
 {
@@ -29,25 +32,37 @@ Billboard::~Billboard()
 void Billboard::setMode(const Mode mode)
 {
     _mode = mode;
-    setCachedMode();
+    _cachedMode = CACHE_DIRTY;
+    updateCache();
 }
 
 void Billboard::setAxis(const Vec3& axis)
 {
     _axis = axis;
-    setCachedMode();
+    _axis.normalize();
+    updateCache();
 }
 
-void Billboard::setCachedMode()
+void Billboard::setNormal(const Vec3& normal)
+{
+    _normal = normal;
+    _normal.normalize();
+    updateCache();
+}
+
+void Billboard::updateCache()
 {
     if (_mode==AXIAL_ROT)
     {
-        if (_axis==osg::Vec3(1.0f,0.0,0.0f))      _cachedMode = AXIAL_ROT_X_AXIS;
-        else if (_axis==osg::Vec3(0.0f,1.0,0.0f)) _cachedMode = AXIAL_ROT_Y_AXIS;
-        else if (_axis==osg::Vec3(0.0f,0.0,1.0f)) _cachedMode = AXIAL_ROT_Z_AXIS;
-        else                                      _cachedMode = AXIAL_ROT;
+        if      (_axis==Vec3(1.0f,0.0,0.0f) && _normal==Vec3(0.0f,-1.0,0.0f)) _cachedMode = AXIAL_ROT_X_AXIS;
+        else if (_axis==Vec3(0.0f,1.0,0.0f) && _normal==Vec3(1.0f, 0.0,0.0f)) _cachedMode = AXIAL_ROT_Y_AXIS;
+        else if (_axis==Vec3(0.0f,0.0,1.0f) && _normal==Vec3(0.0f,-1.0,0.0f)) _cachedMode = AXIAL_ROT_Z_AXIS;
+        else                                                                  _cachedMode = AXIAL_ROT;
     }
     else _cachedMode = _mode;
+    
+    _side = _axis^_normal;
+    _side.normalize();    
 }
 
 const bool Billboard::addDrawable(Drawable *gset)
@@ -104,14 +119,12 @@ const bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, co
 
     Matrix matrix;
 
-    Vec3 ev(pos_local-eye_local);
+    Vec3 ev(eye_local-pos_local);
     switch(_cachedMode)
     {
-        case(AXIAL_ROT): // need to implement 
         case(AXIAL_ROT_Z_AXIS): // need to implement 
-        case(AXIAL_ROT_Y_AXIS): // need to implement 
-        case(AXIAL_ROT_X_AXIS): // implemented correctly..
         {
+
             ev.z() = 0.0f;
             float ev_length = ev.length();
             if (ev_length>0.0f)
@@ -121,16 +134,56 @@ const bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, co
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
-                float c = ev.y()*inv;
                 float s = ev.x()*inv;
+                float c = -ev.y()*inv;
                 matrix(0,0) = c;
-                matrix(0,1) = -s;
-                matrix(1,0) = s;
+                matrix(1,0) = -s;
+                matrix(0,1) = s;
                 matrix(1,1) = c;
             }
             break;
         }
+        case(AXIAL_ROT_Y_AXIS): // need to implement 
+        {
+            ev.y() = 0.0f;
+            float ev_length = ev.length();
+            if (ev_length>0.0f)
+            {
 
+                matrix.makeIdentity();
+                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                float inv = 1.0f/ev_length;
+                float s = -ev.z()*inv;
+                float c = ev.x()*inv;
+                matrix(0,0) = c;
+                matrix(2,0) = s;
+                matrix(0,2) = -s;
+                matrix(2,2) = c;
+            }
+            break;
+        }
+        case(AXIAL_ROT_X_AXIS): // implemented correctly..
+        {
+            ev.x() = 0.0f;
+            float ev_length = ev.length();
+            if (ev_length>0.0f)
+            {
+
+                matrix.makeIdentity();
+                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                float inv = 1.0f/ev_length;
+                float s = -ev.z()*inv;
+                float c = -ev.y()*inv;
+                matrix(1,1) = c;
+                matrix(2,1) = -s;
+                matrix(1,2) = s;
+                matrix(2,2) = c;
+            }
+            break;
+        }
+        case(AXIAL_ROT): // need to implement 
         case(POINT_ROT_WORLD):
         case(POINT_ROT_EYE):
         {
@@ -146,8 +199,8 @@ const bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, co
             {
                 ev /= ev_len;
 
-                Vec3 cp(ev^Vec3(0.0f,1.0f,0.0f));
-                float dot = ev*Vec3(0.0f,1.0f,0.0f);
+                Vec3 cp(ev^_normal);
+                float dot = ev*_normal;
 
                 float cp_len = cp.length();
                 if (cp_len != 0.0f)

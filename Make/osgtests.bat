@@ -34,8 +34,8 @@ osgprerender dumptruck.osg
 echo osgparticle
 osgparticle
 
-echo osgbillboard lz.rgb
-osgbillboard lz.rgb
+echo osgbillboard
+osgbillboard
 
 echo osgcube
 osgcube

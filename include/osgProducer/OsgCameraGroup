@@ -110,6 +110,9 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         void setLODScale( float scale );
 
+        float getLODScale() const { return _LODScale; }
+
+
         void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f);
 
 

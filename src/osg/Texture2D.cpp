@@ -188,7 +188,7 @@ void Texture2D::apply(State& state) const
         getModifiedTag(contextID) = _image->getModifiedTag();
 
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && getDataVariance()==STATIC)
         {
             Texture2D* non_const_this = const_cast<Texture2D*>(this);
             non_const_this->_image = 0;

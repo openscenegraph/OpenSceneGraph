@@ -55,6 +55,19 @@ class SG_EXPORT Texture3D : public Texture
             return _modifiedTag[contextID];
         }
 
+        /** Set the texture image, ignoring face. as there is only one image*/
+        virtual void setImage(unsigned int, Image* image) { setImage(image); }
+
+        /** Get the texture image, ignoring face value as there is only one image. */
+        virtual Image* getImage(unsigned int) { return _image.get(); }
+
+        /** Get the const texture image , ignoring face value as there is only one image. */
+        virtual const Image* getImage(unsigned int) const { return _image.get(); }
+
+        /** Get the number of images that can be assigned to the Texture. */
+        virtual unsigned int getNumImages() const { return 1; }
+
+
         /** Set the texture width and height. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
         inline void setTextureSize(int width, int height, int depth) const

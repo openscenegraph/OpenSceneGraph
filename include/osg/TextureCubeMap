@@ -54,15 +54,18 @@ class SG_EXPORT TextureCubeMap : public Texture
         };
 
         /** Set the texture image for specified face. */
-        void setImage(Face, Image* image);
+        virtual void setImage(unsigned int face, Image* image);
 
         /** Get the texture image for specified face. */
-        Image* getImage(Face);
+        virtual Image* getImage(unsigned int face);
 
         /** Get the const texture image for specified face. */
-        const Image* getImage(Face) const;
+        virtual const Image* getImage(unsigned int face) const;
 
-        inline unsigned int& getModifiedTag(Face face,unsigned int contextID) const
+        /** Get the number of images that can be assigned to the Texture. */
+        virtual unsigned int getNumImages() const { return 6; }
+
+        inline unsigned int& getModifiedTag(unsigned int face,unsigned int contextID) const
         {
             // get the modified tag for the current contextID.
             return _modifiedTag[face][contextID];

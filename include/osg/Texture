@@ -315,6 +315,20 @@ class SG_EXPORT Texture : public osg::StateAttribute
         void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
         float getShadowAmbient() { return _shadow_ambient; }
         
+
+        /** Set the texture image for specified face. */
+        virtual void setImage(unsigned int face, Image* image) = 0;
+
+        /** Get the texture image for specified face. */
+        virtual Image* getImage(unsigned int face) = 0;
+
+        /** Get the const texture image for specified face. */
+        virtual const Image* getImage(unsigned int face) const = 0;
+
+        /** Get the number of images that can be assigned to the Texture. */
+        virtual unsigned int getNumImages() const = 0;
+
+
         /** Texture is pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;
 

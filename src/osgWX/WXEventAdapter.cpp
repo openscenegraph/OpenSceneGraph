@@ -104,27 +104,27 @@ void WXEventAdapter::adaptMouse(float time, wxMouseEvent *event)
 
     if ( type == wxEVT_LEFT_DOWN ) {
         _eventType = PUSH;
-        _s_accumulatedButtonMask = _s_accumulatedButtonMask | LEFT_BUTTON; 
+        _s_accumulatedButtonMask = _s_accumulatedButtonMask | LEFT_MOUSE_BUTTON; 
     }
     else if ( type == wxEVT_LEFT_UP ) {
         _eventType = RELEASE;
-        _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~LEFT_BUTTON; 
+        _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~LEFT_MOUSE_BUTTON; 
     }
     else if ( type == wxEVT_MIDDLE_DOWN ) {
         _eventType = PUSH;
-        _s_accumulatedButtonMask = _s_accumulatedButtonMask | MIDDLE_BUTTON; 
+        _s_accumulatedButtonMask = _s_accumulatedButtonMask | MIDDLE_MOUSE_BUTTON; 
     }
     else if ( type == wxEVT_MIDDLE_UP ) {
         _eventType = RELEASE;
-        _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~MIDDLE_BUTTON; 
+        _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~MIDDLE_MOUSE_BUTTON; 
     }
     else if ( type == wxEVT_RIGHT_DOWN ) {
         _eventType = PUSH;
-        _s_accumulatedButtonMask = _s_accumulatedButtonMask | RIGHT_BUTTON; 
+        _s_accumulatedButtonMask = _s_accumulatedButtonMask | RIGHT_MOUSE_BUTTON; 
     }
     else if ( type == wxEVT_RIGHT_UP ) {
         _eventType = RELEASE;
-        _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~RIGHT_BUTTON; 
+        _s_accumulatedButtonMask = _s_accumulatedButtonMask & ~RIGHT_MOUSE_BUTTON; 
     }
     else if ( type == wxEVT_MOTION ) {
         if (event->ButtonIsDown(-1))

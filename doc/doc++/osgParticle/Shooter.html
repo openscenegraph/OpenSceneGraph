@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  osgParticle::Shooter</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -23,25 +23,25 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.25.1">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.33.1">libraryName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.25.2">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.33.2">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.25.3">isSameKindAs</A></B>(const osg::Object* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.33.3">isSameKindAs</A></B>(const osg::Object* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.25.4">shoot</A></B>(<!1><A HREF="Particle.html">Particle</A>* P) const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.33.4">shoot</A></B>(<!1><A HREF="Particle.html">Particle</A>* P) const 
 <DD><I>Shoot a particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.25.7">Shooter</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.33.7">Shooter</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.25.8">Shooter</A></B>(const <!1><A HREF="Shooter.html#DOC.2.25.8">Shooter</A> &amp;copy, const osg::CopyOp &amp;copyop)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.33.8">Shooter</A></B>(const <!1><A HREF="Shooter.html#DOC.2.33.8">Shooter</A> &amp;copy, const osg::CopyOp &amp;copyop)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.25.5">~Shooter</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.33.5">~Shooter</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Shooter.html">Shooter</A>&amp; <B><A HREF="#DOC.2.25.6">operator=</A></B>(const <!1><A HREF="Shooter.html">Shooter</A> &amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Shooter.html">Shooter</A>&amp; <B><A HREF="#DOC.2.33.6">operator=</A></B>(const <!1><A HREF="Shooter.html">Shooter</A> &amp;)
 </DL></P>
 
 </DL>
@@ -54,39 +54,39 @@ Descendants of this class must override the <CODE>shoot()</CODE> method.</BLOCKQ
 <DL>
 
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.25.1"></A>
+<A NAME="DOC.2.33.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.25.2"></A>
+<A NAME="DOC.2.33.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.25.3"></A>
+<A NAME="DOC.2.33.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="shoot"></A>
-<A NAME="DOC.2.25.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void shoot(<!1><A HREF="Particle.html">Particle</A>* P) const  = 0</B></TT>
+<A NAME="DOC.2.33.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void shoot(<!1><A HREF="Particle.html">Particle</A>* P) const </B></TT>
 <DD>Shoot a particle. Must be overriden by descendants.
 This method should only set the velocity vector of particle <CODE>P</CODE>, leaving other
 attributes unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="~Shooter"></A>
-<A NAME="DOC.2.25.5"></A>
+<A NAME="DOC.2.33.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Shooter()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator="></A>
-<A NAME="DOC.2.25.6"></A>
+<A NAME="DOC.2.33.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Shooter.html">Shooter</A>&amp; operator=(const <!1><A HREF="Shooter.html">Shooter</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Shooter"></A>
-<A NAME="DOC.2.25.7"></A>
+<A NAME="DOC.2.33.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Shooter()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Shooter"></A>
-<A NAME="DOC.2.25.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Shooter(const <!1><A HREF="Shooter.html#DOC.2.25.8">Shooter</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
+<A NAME="DOC.2.33.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Shooter(const <!1><A HREF="Shooter.html#DOC.2.33.8">Shooter</A> &amp;copy, const osg::CopyOp &amp;copyop)</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
@@ -95,6 +95,6 @@ attributes unchanged.
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

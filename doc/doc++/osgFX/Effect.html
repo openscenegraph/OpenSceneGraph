@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGFX_EXPORT osgFX::Effect</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,6 +22,11 @@
 
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.4.10">TechniqueSelection</A></B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.1">Effect</A></B>()
 <DT>
@@ -33,13 +38,13 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual inline   const char* <B><A HREF="#DOC.2.4.5">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.6">effectName</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.6">effectName</A></B>() const 
 <DD><I>get the name of this effect </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.7">effectDescription</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.7">effectDescription</A></B>() const 
 <DD><I>get a brief description of this effect </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.8">effectAuthor</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.8">effectAuthor</A></B>() const 
 <DD><I>get the effect author's name </I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   void <B><A HREF="#DOC.2.4.9">setUpDemo</A></B>()
@@ -80,17 +85,12 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.4.10">TechniqueSelection</A></B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.12">~Effect</A></B>()
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Effect.html">Effect</A>&amp; <B><A HREF="#DOC.2.4.13">operator=</A></B>(const <!1><A HREF="Effect.html">Effect</A> &amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.14">define_techniques</A></B>() = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.14">define_techniques</A></B>()
 <DD><I> abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect.</I>
 </DL></P>
 
@@ -143,17 +143,17 @@ soon as all rendering contexts support it.</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="effectName"></A>
 <A NAME="DOC.2.4.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectName() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectName() const </B></TT>
 <DD>get the name of this effect 
 <DL><DT><DD></DL><P>
 <A NAME="effectDescription"></A>
 <A NAME="DOC.2.4.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectDescription() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectDescription() const </B></TT>
 <DD>get a brief description of this effect 
 <DL><DT><DD></DL><P>
 <A NAME="effectAuthor"></A>
 <A NAME="DOC.2.4.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectAuthor() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectAuthor() const </B></TT>
 <DD>get the effect author's name 
 <DL><DT><DD></DL><P>
 <A NAME="setUpDemo"></A>
@@ -189,7 +189,7 @@ is to do nothing.
 <DL><DT><DD></DL><P>
 <A NAME="define_techniques"></A>
 <A NAME="DOC.2.4.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool define_techniques() = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool define_techniques()</B></TT>
 <DD>
 abstract method to be implemented in derived classes; its purpose
 if to create the techniques that can be used for obtaining the
@@ -257,6 +257,6 @@ this method.
 
 <DL><DT><DT><B>Friends:</B><DD>  class <!1><A HREF="Validator.html">Validator</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

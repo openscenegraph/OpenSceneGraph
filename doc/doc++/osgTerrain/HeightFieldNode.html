@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGTERRAIN_EXPORT osgTerrain::HeightFieldNode</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGTERRAIN_EXPORT <A HREF="#DOC.DOCU">osgTerrain::HeightFieldNode</A></H2></H2><BLOCKQUOTE>Terrain provides a framework for loosly coupling height field data with height rendering algorithms.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Group,M,CHeightFieldNode,MHeightFieldNode.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.1">HeightFieldNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.2">HeightFieldNode</A></B>(const <!1><A HREF="HeightFieldNode.html#DOC.2.3.2">HeightFieldNode</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">META_Node</A></B>(<!1><A HREF="osgTerrain.html">osgTerrain</A>, <!1><A HREF="HeightFieldNode.html">HeightFieldNode</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.4">traverse</A></B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.5">setHeightField</A></B>(osg::HeightField* heightField)
+<DD><I>Set the HeightField for this HeightFieldNode.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::HeightField* <B><A HREF="#DOC.2.3.6">getHeightField</A></B>()
+<DD><I>Get the HeightField</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::HeightField* <B><A HREF="#DOC.2.3.7">getHeightField</A></B>() const 
+<DD><I>Get the const HeightField</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.8">heightFieldHasBeenModified</A></B>()
+<DD><I>Tell the Renderer that the height field has been modified, so that any cached data will need updating</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.9">setRenderer</A></B>(<!1><A HREF="HeightFieldRenderer.html">osgTerrain::HeightFieldRenderer</A>* renderer)
+<DD><I>Set the Renderer</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="HeightFieldRenderer.html">HeightFieldRenderer</A>* <B><A HREF="#DOC.2.3.10">getRenderer</A></B>()
+<DD><I>Get the Renderer</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="HeightFieldRenderer.html">HeightFieldRenderer</A>* <B><A HREF="#DOC.2.3.11">getRenderer</A></B>() const 
+<DD><I>Get the const Renderer</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.12">setBaseTextureImage</A></B>(osg::Image* image)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.3.13">getBaseTextureImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Image* <B><A HREF="#DOC.2.3.14">getBaseTextureImage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.15">setDetailTextureImage</A></B>(osg::Image* image)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.3.16">getDetailTextureImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Image* <B><A HREF="#DOC.2.3.17">getDetailTextureImage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.18">setCloudShadowTextureImage</A></B>(osg::Image* image)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.3.19">getCloudShadowTextureImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Image* <B><A HREF="#DOC.2.3.20">getCloudShadowTextureImage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.21">setNormalMapImage</A></B>(osg::Image* image)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Image* <B><A HREF="#DOC.2.3.22">getNormalMapImage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Image* <B><A HREF="#DOC.2.3.23">getNormalMapImage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.24">computeNormalMap</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::HeightField&gt;  <B><A HREF="#DOC.2.3.26">_heightField</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="HeightFieldRenderer.html">HeightFieldRenderer</A>&gt;  <B><A HREF="#DOC.2.3.27">_renderer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Image&gt;  <B><A HREF="#DOC.2.3.28">_baseTextureImage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Image&gt;  <B><A HREF="#DOC.2.3.29">_detailTextureImage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Image&gt;  <B><A HREF="#DOC.2.3.30">_cloudShadowTextureImage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Image&gt;  <B><A HREF="#DOC.2.3.31">_normalMapImage</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.25">~HeightFieldNode</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Terrain provides a framework for loosly coupling height field data with height rendering algorithms.
+This allows renderer's to be pluged in at runtime.</BLOCKQUOTE>
+<DL>
+
+<A NAME="HeightFieldNode"></A>
+<A NAME="DOC.2.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HeightFieldNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="HeightFieldNode"></A>
+<A NAME="DOC.2.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HeightFieldNode(const <!1><A HREF="HeightFieldNode.html#DOC.2.3.2">HeightFieldNode</A>&amp;, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgTerrain.html">osgTerrain</A>, <!1><A HREF="HeightFieldNode.html">HeightFieldNode</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(osg::NodeVisitor&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setHeightField"></A>
+<A NAME="DOC.2.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setHeightField(osg::HeightField* heightField)</B></TT>
+<DD>Set the HeightField for this HeightFieldNode.
+If a Renderer is attached then this will be notified.
+<DL><DT><DD></DL><P>
+<A NAME="getHeightField"></A>
+<A NAME="DOC.2.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::HeightField* getHeightField()</B></TT>
+<DD>Get the HeightField
+<DL><DT><DD></DL><P>
+<A NAME="getHeightField"></A>
+<A NAME="DOC.2.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::HeightField* getHeightField() const </B></TT>
+<DD>Get the const HeightField
+<DL><DT><DD></DL><P>
+<A NAME="heightFieldHasBeenModified"></A>
+<A NAME="DOC.2.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void heightFieldHasBeenModified()</B></TT>
+<DD>Tell the Renderer that the height field has been modified, so
+that any cached data will need updating
+<DL><DT><DD></DL><P>
+<A NAME="setRenderer"></A>
+<A NAME="DOC.2.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderer(<!1><A HREF="HeightFieldRenderer.html">osgTerrain::HeightFieldRenderer</A>* renderer)</B></TT>
+<DD>Set the Renderer
+<DL><DT><DD></DL><P>
+<A NAME="getRenderer"></A>
+<A NAME="DOC.2.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="HeightFieldRenderer.html">HeightFieldRenderer</A>* getRenderer()</B></TT>
+<DD>Get the Renderer
+<DL><DT><DD></DL><P>
+<A NAME="getRenderer"></A>
+<A NAME="DOC.2.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="HeightFieldRenderer.html">HeightFieldRenderer</A>* getRenderer() const </B></TT>
+<DD>Get the const Renderer
+<DL><DT><DD></DL><P>
+<A NAME="setBaseTextureImage"></A>
+<A NAME="DOC.2.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setBaseTextureImage(osg::Image* image)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getBaseTextureImage"></A>
+<A NAME="DOC.2.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Image* getBaseTextureImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getBaseTextureImage"></A>
+<A NAME="DOC.2.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Image* getBaseTextureImage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDetailTextureImage"></A>
+<A NAME="DOC.2.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDetailTextureImage(osg::Image* image)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDetailTextureImage"></A>
+<A NAME="DOC.2.3.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Image* getDetailTextureImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDetailTextureImage"></A>
+<A NAME="DOC.2.3.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Image* getDetailTextureImage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCloudShadowTextureImage"></A>
+<A NAME="DOC.2.3.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCloudShadowTextureImage(osg::Image* image)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCloudShadowTextureImage"></A>
+<A NAME="DOC.2.3.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Image* getCloudShadowTextureImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCloudShadowTextureImage"></A>
+<A NAME="DOC.2.3.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Image* getCloudShadowTextureImage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNormalMapImage"></A>
+<A NAME="DOC.2.3.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormalMapImage(osg::Image* image)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNormalMapImage"></A>
+<A NAME="DOC.2.3.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Image* getNormalMapImage()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNormalMapImage"></A>
+<A NAME="DOC.2.3.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Image* getNormalMapImage() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeNormalMap"></A>
+<A NAME="DOC.2.3.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeNormalMap()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~HeightFieldNode"></A>
+<A NAME="DOC.2.3.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~HeightFieldNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_heightField"></A>
+<A NAME="DOC.2.3.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::HeightField&gt;  _heightField</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_renderer"></A>
+<A NAME="DOC.2.3.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="HeightFieldRenderer.html">HeightFieldRenderer</A>&gt;  _renderer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_baseTextureImage"></A>
+<A NAME="DOC.2.3.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _baseTextureImage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_detailTextureImage"></A>
+<A NAME="DOC.2.3.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _detailTextureImage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cloudShadowTextureImage"></A>
+<A NAME="DOC.2.3.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _cloudShadowTextureImage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_normalMapImage"></A>
+<A NAME="DOC.2.3.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _normalMapImage</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

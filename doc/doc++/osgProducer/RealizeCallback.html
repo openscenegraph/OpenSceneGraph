@@ -3,11 +3,11 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGPRODUCER_EXPORT osgProducer::OsgCameraGroup::RealizeCallback</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  OSGPRODUCER_EXPORT <A HREF="#DOC.DOCU">RealizeCallback</A></H2></H2><BLOCKQUOTE>RealizeCallback class one should override to provide an the implemention of realize callbacks.</BLOCKQUOTE>
+<H2>class  OSGPRODUCER_EXPORT <A HREF="#DOC.DOCU">osgProducer::OsgCameraGroup::RealizeCallback</A></H2></H2><BLOCKQUOTE>RealizeCallback class one should override to provide an the implemention of realize callbacks.RealizeCallback class one should override to provide an the implemention of realize callbacks.</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
@@ -23,12 +23,12 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.37.1">operator()</A></B>( <!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>&amp; cg, <!1><A HREF="OsgSceneHandler.html">OsgSceneHandler</A>&amp; sh, const Producer::RenderSurface &amp; rs) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.41.1">operator()</A></B>( <!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>&amp; cg, <!1><A HREF="OsgSceneHandler.html">OsgSceneHandler</A>&amp; sh, const Producer::RenderSurface &amp; rs)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.37.2">~RealizeCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.3.41.2">~RealizeCallback</A></B>()
 </DL></P>
 
 </DL>
@@ -39,15 +39,18 @@
 <BLOCKQUOTE>RealizeCallback class one should override to provide an the implemention of realize callbacks.
 Note, this callback overrides the normal call to OsgSceneHandler::init() so it become the your
 responisibility to call this within your callback if required, it is a safe assumption to
+always call OsgSceneHandler::init() within your callback..RealizeCallback class one should override to provide an the implemention of realize callbacks.
+Note, this callback overrides the normal call to OsgSceneHandler::init() so it become the your
+responisibility to call this within your callback if required, it is a safe assumption to
 always call OsgSceneHandler::init() within your callback..</BLOCKQUOTE>
 <DL>
 
 <A NAME="operator()"></A>
-<A NAME="DOC.2.3.37.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operator()( <!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>&amp; cg, <!1><A HREF="OsgSceneHandler.html">OsgSceneHandler</A>&amp; sh, const Producer::RenderSurface &amp; rs) = 0</B></TT>
+<A NAME="DOC.2.3.41.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void operator()( <!1><A HREF="OsgCameraGroup.html">OsgCameraGroup</A>&amp; cg, <!1><A HREF="OsgSceneHandler.html">OsgSceneHandler</A>&amp; sh, const Producer::RenderSurface &amp; rs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~RealizeCallback"></A>
-<A NAME="DOC.2.3.37.2"></A>
+<A NAME="DOC.2.3.41.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RealizeCallback()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -55,6 +58,6 @@ always call OsgSceneHandler::init() within your callback..</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

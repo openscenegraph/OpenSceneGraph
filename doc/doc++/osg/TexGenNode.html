@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::TexGenNode</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::TexGenNode</A></H2></H2><BLOCKQUOTE>Node for defining the position of TexGen in the scene</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CTexGenNode,MTexGenNode.html">
+<param name=before value="M,M,M,M,M">
+<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3,4">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.238.1">TexGenNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.238.2">TexGenNode</A></B>(<!1><A HREF="TexGen.html">TexGen</A>* texgen)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.238.3">TexGenNode</A></B>(const <!1><A HREF="TexGenNode.html#DOC.2.238.3">TexGenNode</A>&amp; tgb, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.238.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="TexGenNode.html">TexGenNode</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.238.5">setTextureUnit</A></B>(unsigned int textureUnit)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.238.6">getTextureUnit</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.238.7">setTexGen</A></B>(<!1><A HREF="TexGen.html">TexGen</A>* texgen)
+<DD><I>Set the TexGen</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="TexGen.html">TexGen</A>* <B><A HREF="#DOC.2.238.8">getTexGen</A></B>()
+<DD><I>Get the TexGen</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="TexGen.html">TexGen</A>* <B><A HREF="#DOC.2.238.9">getTexGen</A></B>() const 
+<DD><I>Get the const TexGen</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.238.11">_textureUnit</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>StateAttribute::GLModeValue <B><A HREF="#DOC.2.238.12">_value</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="TexGen.html">TexGen</A>&gt;  <B><A HREF="#DOC.2.238.13">_texgen</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.238.10">~TexGenNode</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Group.html">Group</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>insertChild</B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>(unsigned int pos, unsigned int numChildrenToRemove=1)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>setChild</B>( unsigned int i, <!1><A HREF="Node.html">Node</A>* node )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( unsigned int i )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( unsigned int i ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getChildIndex</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.117">NodeList</A> <B>_children</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>childRemoved</B>(unsigned int , unsigned int )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>childInserted</B>(unsigned int )
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Transform.html">Transform</A>* <B>asTransform</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Transform.html">Transform</A>* <B>asTransform</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.246.1.3">name</A> )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.246.1.3">name</A> )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.155.18">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.18">ParentList</A> <B>getParents</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUpdateCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenRequiringUpdateTraversal</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getCullCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getCullCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullingActive</B>(bool active)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getCullingActive</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenWithCullingDisabled</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isCullingActive</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenWithOccluderNodes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> nm)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> <B>getNodeMask</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   std::string&amp; <B>getDescription</B>(unsigned int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getOrCreateStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt;  <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>NodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt;  <B>DescriptionList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bsphere_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.18">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenRequiringUpdateTraversal</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_cullCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_cullingActive</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithCullingDisabled</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> <B>_nodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A> <B>_descriptions</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenRequiringUpdateTraversal</B>(unsigned int num)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithCullingDisabled</B>(unsigned int num)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithOccluderNodes</B>(unsigned int num)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Node for defining the position of TexGen in the scene</BLOCKQUOTE>
+<DL>
+
+<A NAME="TexGenNode"></A>
+<A NAME="DOC.2.238.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGenNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TexGenNode"></A>
+<A NAME="DOC.2.238.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGenNode(<!1><A HREF="TexGen.html">TexGen</A>* texgen)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TexGenNode"></A>
+<A NAME="DOC.2.238.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexGenNode(const <!1><A HREF="TexGenNode.html#DOC.2.238.3">TexGenNode</A>&amp; tgb, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.238.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="TexGenNode.html">TexGenNode</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTextureUnit"></A>
+<A NAME="DOC.2.238.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureUnit(unsigned int textureUnit)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTextureUnit"></A>
+<A NAME="DOC.2.238.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getTextureUnit() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTexGen"></A>
+<A NAME="DOC.2.238.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTexGen(<!1><A HREF="TexGen.html">TexGen</A>* texgen)</B></TT>
+<DD>Set the TexGen
+<DL><DT><DD></DL><P>
+<A NAME="getTexGen"></A>
+<A NAME="DOC.2.238.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="TexGen.html">TexGen</A>* getTexGen()</B></TT>
+<DD>Get the TexGen
+<DL><DT><DD></DL><P>
+<A NAME="getTexGen"></A>
+<A NAME="DOC.2.238.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="TexGen.html">TexGen</A>* getTexGen() const </B></TT>
+<DD>Get the const TexGen
+<DL><DT><DD></DL><P>
+<A NAME="~TexGenNode"></A>
+<A NAME="DOC.2.238.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TexGenNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_textureUnit"></A>
+<A NAME="DOC.2.238.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _textureUnit</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_value"></A>
+<A NAME="DOC.2.238.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>StateAttribute::GLModeValue _value</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_texgen"></A>
+<A NAME="DOC.2.238.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="TexGen.html">TexGen</A>&gt;  _texgen</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGSIM_EXPORT osgSim::ColorRange</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -23,13 +23,16 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.1">ColorRange</A></B>(float min, float max, const std::vector&lt;osg::Vec4&gt;&amp; colors = std::vector&lt;osg::Vec4&gt;())
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.1">ColorRange</A></B>(float min, float max)
+<DD><I>Constructor for a ColorRange with a default list of colors set to Red-Yellow-Green-Blue-Cyan </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.2">ColorRange</A></B>(float min, float max, const std::vector&lt;osg::Vec4&gt;&amp; colors)
 <DD><I>Constructor for a ColorRange </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.2">setColors</A></B>(const std::vector&lt;osg::Vec4&gt;&amp; colors)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.3">setColors</A></B>(const std::vector&lt;osg::Vec4&gt;&amp; colors)
 <DD><I>Set the range of colors.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.2.3">getColor</A></B>(float scalar) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.3.4">getColor</A></B>(float scalar) const 
 <DD><I>Get the color for a given scalar value.</I>
 </DL></P>
 
@@ -57,20 +60,27 @@ By default, the color range will run Red-Yellow-Green-Cyan-Blue.</BLOCKQUOTE>
 <DL>
 
 <A NAME="ColorRange"></A>
-<A NAME="DOC.2.2.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorRange(float min, float max, const std::vector&lt;osg::Vec4&gt;&amp; colors = std::vector&lt;osg::Vec4&gt;())</B></TT>
+<A NAME="DOC.2.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorRange(float min, float max)</B></TT>
+<DD>Constructor for a ColorRange with a default list of colors set to Red-Yellow-Green-Blue-Cyan
+
+<DL><DT><DT><B>Parameters:</B><DD><B>min</B> -       minimum scalar value
+<BR><B>max</B> -       maximum scalar value<BR><DD></DL><P>
+<A NAME="ColorRange"></A>
+<A NAME="DOC.2.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorRange(float min, float max, const std::vector&lt;osg::Vec4&gt;&amp; colors)</B></TT>
 <DD>Constructor for a ColorRange
 
 <DL><DT><DT><B>Parameters:</B><DD><B>min</B> -       minimum scalar value
 <BR><B>max</B> -       maximum scalar value
-<BR><B>colors</B> -    optional range of colors, defaulting to Red-Yellow-Green-Blue-Cyan<BR><DD></DL><P>
+<BR><B>colors</B> -    optional range of colors, <BR><DD></DL><P>
 <A NAME="setColors"></A>
-<A NAME="DOC.2.2.2"></A>
+<A NAME="DOC.2.3.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setColors(const std::vector&lt;osg::Vec4&gt;&amp; colors)</B></TT>
 <DD>Set the range of colors. 
 <DL><DT><DD></DL><P>
 <A NAME="getColor"></A>
-<A NAME="DOC.2.2.3"></A>
+<A NAME="DOC.2.3.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 getColor(float scalar) const </B></TT>
 <DD>Get the color for a given scalar value. 
 <DL><DT><DD></DL><P></DL>
@@ -79,6 +89,6 @@ By default, the color range will run Red-Yellow-Green-Cyan-Blue.</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgTerrain::DataSet::DestinationTile</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgTerrain::DataSet::DestinationTile</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MSpatialProperties,M,Mosg::Referenced,M,CDestinationTile,MDestinationTile.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.7.1">Position</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html">DataSet</A>* <B><A HREF="#DOC.2.2.7.25">_dataSet</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.7.26">_name</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.27">_level</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.28">_tileX</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.29">_tileY</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&gt;  <B><A HREF="#DOC.2.2.7.30">_imagery</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&gt;  <B><A HREF="#DOC.2.2.7.31">_terrain</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&gt;  <B><A HREF="#DOC.2.2.7.32">_models</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DestinationTile.html">DestinationTile</A>* <B><A HREF="#DOC.2.2.7.33">_neighbour</A></B>[<!1><A HREF="DestinationTile.html#DOC.2.2.7.1.9">NUMBER_OF_POSITIONS</A>]
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.7.34">_equalized</A></B>[<!1><A HREF="DestinationTile.html#DOC.2.2.7.1.9">NUMBER_OF_POSITIONS</A>]
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.35">_maxSourceLevel</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.36">_imagery_maxNumColumns</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.37">_imagery_maxNumRows</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.7.38">_imagery_maxSourceResolutionX</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.7.39">_imagery_maxSourceResolutionY</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.40">_terrain_maxNumColumns</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.7.41">_terrain_maxNumRows</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.7.42">_terrain_maxSourceResolutionX</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.7.43">_terrain_maxSourceResolutionY</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.7.44">_complete</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.7.2">DestinationTile</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.3">computeNeighboursFromQuadMap</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.4">setNeighbours</A></B>(<!1><A HREF="DestinationTile.html">DestinationTile</A>* left, <!1><A HREF="DestinationTile.html">DestinationTile</A>* left_below, <!1><A HREF="DestinationTile.html">DestinationTile</A>* below, <!1><A HREF="DestinationTile.html">DestinationTile</A>* below_right, <!1><A HREF="DestinationTile.html">DestinationTile</A>* right, <!1><A HREF="DestinationTile.html">DestinationTile</A>* right_above, <!1><A HREF="DestinationTile.html">DestinationTile</A>* above, <!1><A HREF="DestinationTile.html">DestinationTile</A>* above_left)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.5">checkNeighbouringTiles</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.6">setMaximumImagerySize</A></B>(unsigned int maxNumColumns, unsigned int maxNumRows)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.7">setMaximumTerrainSize</A></B>(unsigned int maxNumColumns, unsigned int maxNumRows)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.8">computeMaximumSourceResolution</A></B>(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.7.9">computeImageResolution</A></B>(unsigned int&amp; numColumns, unsigned int&amp; numRows, double&amp; resX, double&amp; resY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.7.10">computeTerrainResolution</A></B>(unsigned int&amp; numColumns, unsigned int&amp; numRows, double&amp; resX, double&amp; resY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.11">allocate</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.12">addRequiredResolutions</A></B>(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.13">readFrom</A></B>(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.14">equalizeCorner</A></B>(<!1><A HREF="DestinationTile.html#DOC.2.2.7.1">Position</A> position)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.15">equalizeEdge</A></B>(<!1><A HREF="DestinationTile.html#DOC.2.2.7.1">Position</A> position)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.16">equalizeBoundaries</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.17">setTileComplete</A></B>(bool complete)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.7.18">getTileComplete</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.19">optimizeResolution</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.7.20">createScene</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.2.2.7.21">createStateSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.7.22">createHeightField</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.7.23">createPolygonal</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.7.24">unrefData</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="Position"></A>
+<A NAME="DOC.2.2.7.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Position</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="LEFT"></A>
+<A NAME="DOC.2.2.7.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LEFT_BELOW"></A>
+<A NAME="DOC.2.2.7.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT_BELOW</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="BELOW"></A>
+<A NAME="DOC.2.2.7.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BELOW</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="BELOW_RIGHT"></A>
+<A NAME="DOC.2.2.7.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BELOW_RIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RIGHT"></A>
+<A NAME="DOC.2.2.7.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RIGHT_ABOVE"></A>
+<A NAME="DOC.2.2.7.1.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RIGHT_ABOVE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ABOVE"></A>
+<A NAME="DOC.2.2.7.1.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ABOVE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ABOVE_LEFT"></A>
+<A NAME="DOC.2.2.7.1.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ABOVE_LEFT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NUMBER_OF_POSITIONS"></A>
+<A NAME="DOC.2.2.7.1.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NUMBER_OF_POSITIONS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="DestinationTile"></A>
+<A NAME="DOC.2.2.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DestinationTile()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeNeighboursFromQuadMap"></A>
+<A NAME="DOC.2.2.7.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeNeighboursFromQuadMap()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNeighbours"></A>
+<A NAME="DOC.2.2.7.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNeighbours(<!1><A HREF="DestinationTile.html">DestinationTile</A>* left, <!1><A HREF="DestinationTile.html">DestinationTile</A>* left_below, <!1><A HREF="DestinationTile.html">DestinationTile</A>* below, <!1><A HREF="DestinationTile.html">DestinationTile</A>* below_right, <!1><A HREF="DestinationTile.html">DestinationTile</A>* right, <!1><A HREF="DestinationTile.html">DestinationTile</A>* right_above, <!1><A HREF="DestinationTile.html">DestinationTile</A>* above, <!1><A HREF="DestinationTile.html">DestinationTile</A>* above_left)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="checkNeighbouringTiles"></A>
+<A NAME="DOC.2.2.7.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void checkNeighbouringTiles()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaximumImagerySize"></A>
+<A NAME="DOC.2.2.7.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaximumImagerySize(unsigned int maxNumColumns, unsigned int maxNumRows)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaximumTerrainSize"></A>
+<A NAME="DOC.2.2.7.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaximumTerrainSize(unsigned int maxNumColumns, unsigned int maxNumRows)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeMaximumSourceResolution"></A>
+<A NAME="DOC.2.2.7.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeMaximumSourceResolution(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeImageResolution"></A>
+<A NAME="DOC.2.2.7.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeImageResolution(unsigned int&amp; numColumns, unsigned int&amp; numRows, double&amp; resX, double&amp; resY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeTerrainResolution"></A>
+<A NAME="DOC.2.2.7.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeTerrainResolution(unsigned int&amp; numColumns, unsigned int&amp; numRows, double&amp; resX, double&amp; resY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="allocate"></A>
+<A NAME="DOC.2.2.7.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void allocate()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addRequiredResolutions"></A>
+<A NAME="DOC.2.2.7.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addRequiredResolutions(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readFrom"></A>
+<A NAME="DOC.2.2.7.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readFrom(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="equalizeCorner"></A>
+<A NAME="DOC.2.2.7.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void equalizeCorner(<!1><A HREF="DestinationTile.html#DOC.2.2.7.1">Position</A> position)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="equalizeEdge"></A>
+<A NAME="DOC.2.2.7.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void equalizeEdge(<!1><A HREF="DestinationTile.html#DOC.2.2.7.1">Position</A> position)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="equalizeBoundaries"></A>
+<A NAME="DOC.2.2.7.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void equalizeBoundaries()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setTileComplete"></A>
+<A NAME="DOC.2.2.7.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTileComplete(bool complete)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTileComplete"></A>
+<A NAME="DOC.2.2.7.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getTileComplete() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="optimizeResolution"></A>
+<A NAME="DOC.2.2.7.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void optimizeResolution()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createScene"></A>
+<A NAME="DOC.2.2.7.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* createScene()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createStateSet"></A>
+<A NAME="DOC.2.2.7.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::StateSet* createStateSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createHeightField"></A>
+<A NAME="DOC.2.2.7.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* createHeightField()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createPolygonal"></A>
+<A NAME="DOC.2.2.7.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* createPolygonal()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="unrefData"></A>
+<A NAME="DOC.2.2.7.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void unrefData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataSet"></A>
+<A NAME="DOC.2.2.7.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html">DataSet</A>* _dataSet</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_name"></A>
+<A NAME="DOC.2.2.7.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _name</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_level"></A>
+<A NAME="DOC.2.2.7.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _level</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tileX"></A>
+<A NAME="DOC.2.2.7.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _tileX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tileY"></A>
+<A NAME="DOC.2.2.7.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _tileY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_imagery"></A>
+<A NAME="DOC.2.2.7.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&gt;  _imagery</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_terrain"></A>
+<A NAME="DOC.2.2.7.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&gt;  _terrain</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_models"></A>
+<A NAME="DOC.2.2.7.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&gt;  _models</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_neighbour"></A>
+<A NAME="DOC.2.2.7.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DestinationTile.html">DestinationTile</A>* _neighbour[<!1><A HREF="DestinationTile.html#DOC.2.2.7.1.9">NUMBER_OF_POSITIONS</A>]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_equalized"></A>
+<A NAME="DOC.2.2.7.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _equalized[<!1><A HREF="DestinationTile.html#DOC.2.2.7.1.9">NUMBER_OF_POSITIONS</A>]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxSourceLevel"></A>
+<A NAME="DOC.2.2.7.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _maxSourceLevel</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_imagery_maxNumColumns"></A>
+<A NAME="DOC.2.2.7.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _imagery_maxNumColumns</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_imagery_maxNumRows"></A>
+<A NAME="DOC.2.2.7.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _imagery_maxNumRows</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_imagery_maxSourceResolutionX"></A>
+<A NAME="DOC.2.2.7.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _imagery_maxSourceResolutionX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_imagery_maxSourceResolutionY"></A>
+<A NAME="DOC.2.2.7.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _imagery_maxSourceResolutionY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_terrain_maxNumColumns"></A>
+<A NAME="DOC.2.2.7.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _terrain_maxNumColumns</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_terrain_maxNumRows"></A>
+<A NAME="DOC.2.2.7.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _terrain_maxNumRows</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_terrain_maxSourceResolutionX"></A>
+<A NAME="DOC.2.2.7.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _terrain_maxSourceResolutionX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_terrain_maxSourceResolutionY"></A>
+<A NAME="DOC.2.2.7.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _terrain_maxSourceResolutionY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_complete"></A>
+<A NAME="DOC.2.2.7.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _complete</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

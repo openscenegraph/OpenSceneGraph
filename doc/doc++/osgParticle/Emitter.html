@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGPARTICLE_EXPORT osgParticle::Emitter</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -56,21 +56,26 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Emitter.html">Emitter</A>&amp; <B><A HREF="#DOC.2.5.8">operator=</A></B>(const <!1><A HREF="Emitter.html">Emitter</A> &amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.9">emit</A></B>(double dt) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.5.9">emit</A></B>(double dt)
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="ParticleProcessor.html">ParticleProcessor</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>ReferenceFrame</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.15.1">ReferenceFrame</A> <B>getReferenceFrame</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.18.1">ReferenceFrame</A> <B>getReferenceFrame</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>traverse</B>(osg::NodeVisitor &amp;nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ParticleProcessor::ReferenceFrame <B>getReferenceFrame</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setReferenceFrame</B>(<!1><A HREF="ParticleProcessor.html#DOC.2.15.1">ReferenceFrame</A> rf)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setReferenceFrame</B>(<!1><A HREF="ParticleProcessor.html#DOC.2.18.1">ReferenceFrame</A> rf)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>isEnabled</B>() const 
 <DT>
@@ -115,11 +120,8 @@
 <IMG ALT="o" SRC=icon2.gif>inline   osg::Vec3 <B>rotateLocalToWorld</B>(const osg::Vec3 &amp;P)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   osg::Vec3 <B>rotateWorldToLocal</B>(const osg::Vec3 &amp;P)
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>ReferenceFrame</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isAlive</B>() const 
 </DL></P>
 
 </DL>
@@ -167,7 +169,7 @@ to the emitter.</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="emit"></A>
 <A NAME="DOC.2.5.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void emit(double dt) = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void emit(double dt)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getParticleTemplate"></A>
 <A NAME="DOC.2.5.12"></A>
@@ -202,6 +204,6 @@ particle system's default template is used instead.
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

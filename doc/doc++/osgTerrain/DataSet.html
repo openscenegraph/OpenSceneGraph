@@ -1,0 +1,900 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGTERRAIN_EXPORT osgTerrain::DataSet</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGTERRAIN_EXPORT <A HREF="#DOC.DOCU">osgTerrain::DataSet</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Referenced,M,CDataSet,MDataSet.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.1">SpatialProperties</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.2">DestinationData</A></B>: public osg::Referenced, <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.3">SourceData</A></B>: public osg::Referenced, public <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>
+<DT>
+class  <B><A HREF="Source.html">Source</A></B>: public osg::Referenced, public <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.5">CompositeType</A></B>
+<DT>
+class  <B><A HREF="CompositeSource.html">CompositeSource</A></B>: public osg::Referenced, public <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>
+<DT>
+class  <B><A HREF="DestinationTile.html">DestinationTile</A></B>: public osg::Referenced, public <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>
+<DT>
+class  <B><A HREF="CompositeDestination.html">CompositeDestination</A></B>: public osg::Referenced, public <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.50">DatabaseType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.53">GeometryType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.56">TextureType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.61">MipMappingMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.12">insertTileToQuadMap</A></B>(<!1><A HREF="CompositeDestination.html">CompositeDestination</A>* tile)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DestinationTile.html">DestinationTile</A>* <B><A HREF="#DOC.2.2.13">getTile</A></B>(unsigned int level, unsigned int X, unsigned int Y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeDestination.html">CompositeDestination</A>* <B><A HREF="#DOC.2.2.14">getComposite</A></B>(unsigned int level, unsigned int X, unsigned int Y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; <B><A HREF="#DOC.2.2.15">getRow</A></B>(unsigned int level, unsigned int Y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.16">DataSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.17">addSource</A></B>(<!1><A HREF="Source.html">Source</A>* source)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.18">addSource</A></B>(<!1><A HREF="CompositeSource.html">CompositeSource</A>* composite)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.19">loadSources</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.20">setMaximumTileImageSize</A></B>(unsigned int size)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.21">getMaximumTileImageSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.22">setMaximumTileTerrainSize</A></B>(unsigned int size)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.23">getMaximumTileTerrainSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.24">setMaximumVisibleDistanceOfTopLevel</A></B>(float d)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.25">getMaximumVisibleDistanceOfTopLevel</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.26">setRadiusToMaxVisibleDistanceRatio</A></B>(float ratio)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.27">getRadiusToMaxVisibleDistanceRatio</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.28">setVerticalScale</A></B>(float verticalScale)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.29">getVerticalScale</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.30">setSkirtRatio</A></B>(float skirtRatio)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.31">getSkirtRatio</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.32">setDefaultColor</A></B>(const osg::Vec4&amp; defaultColor)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.2.33">getDefaultColor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.34">setDestinationCoordinateSystem</A></B>(const std::string&amp; wellKnownText)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.35">setDestinationCoordinateSystem</A></B>(osg::CoordinateSystemNode* cs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CoordinateSystemNode* <B><A HREF="#DOC.2.2.36">getDestinationCoordinateSystem</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.37">setIntermediateCoordinateSystem</A></B>(const std::string&amp; wellKnownText)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.38">setIntermediateCoordinateSystem</A></B>(osg::CoordinateSystemNode* cs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CoordinateSystemNode* <B><A HREF="#DOC.2.2.39">getIntermediateCoordinateSystem</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.40">setConvertFromGeographicToGeocentric</A></B>(bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.41">getConvertFromGeographicToGeocentric</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.42">setEllipsoidModel</A></B>(osg::EllipsoidModel* et)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::EllipsoidModel* <B><A HREF="#DOC.2.2.43">getEllipsoidModel</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.44">setDestinationExtents</A></B>(const osg::BoundingBox&amp; extents)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.45">setDestinationGeoTransform</A></B>(const osg::Matrixd&amp; geoTransform)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.46">setDestinationTileBaseName</A></B>(const std::string&amp; basename)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.2.47">getDestinationTileBaseName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.48">setDestinationTileExtension</A></B>(const std::string&amp; extension)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.2.49">getDestinationTileExtension</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.51">setDatabaseType</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.50">DatabaseType</A> type)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.50">DatabaseType</A> <B><A HREF="#DOC.2.2.52">getDatabaseType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.54">setGeometryType</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.53">GeometryType</A> type)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.53">GeometryType</A> <B><A HREF="#DOC.2.2.55">getGeometryType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.57">setTextureType</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.56">TextureType</A> type)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.56">TextureType</A> <B><A HREF="#DOC.2.2.58">getTextureType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.59">setMaxAnisotropy</A></B>(float d)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.60">getMaxAnisotropy</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.62">setMipMappingMode</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.61">MipMappingMode</A> mipMappingMode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.61">MipMappingMode</A> <B><A HREF="#DOC.2.2.63">getMipMappingMode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.64">setUseLocalTileTransform</A></B>(bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.65">getUseLocalTileTransform</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.66">setDecorateGeneratedSceneGraphWithCoordinateSystemNode</A></B>(bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.67">getDecorateGeneratedSceneGraphWithCoordinateSystemNode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.68">setCommentString</A></B>(const std::string&amp; comment)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.2.69">getCommentString</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeDestination.html">CompositeDestination</A>* <B><A HREF="#DOC.2.2.70">createDestinationGraph</A></B>(<!1><A HREF="CompositeDestination.html">CompositeDestination</A>* parent, osg::CoordinateSystemNode* cs, const osg::BoundingBox&amp; extents, unsigned int maxImageSize, unsigned int maxTerrainSize, unsigned int currentLevel, unsigned int currentX, unsigned int currentY, unsigned int maxNumLevels)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.71">computeDestinationGraphFromSources</A></B>(unsigned int numLevels)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.72">updateSourcesForDestinationGraphNeeds</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.73">populateDestinationGraphFromSources</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.74">createDestination</A></B>(unsigned int numLevels)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.75">writeDestination</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.76">getDestinationRootNode</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;unsigned int,<!1><A HREF="CompositeDestination.html">CompositeDestination</A>*&gt;  <B><A HREF="#DOC.2.2.9">Row</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;unsigned int,<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&gt;  <B><A HREF="#DOC.2.2.10">Level</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;unsigned int,<!1><A HREF="DataSet.html#DOC.2.2.10">Level</A>&gt;  <B><A HREF="#DOC.2.2.11">QuadMap</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CompositeSource.html">CompositeSource</A>&gt;  <B><A HREF="#DOC.2.2.83">_sourceGraph</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CompositeDestination.html">CompositeDestination</A>&gt;  <B><A HREF="#DOC.2.2.84">_destinationGraph</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.11">QuadMap</A> <B><A HREF="#DOC.2.2.85">_quadMap</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.86">_maximumTileImageSize</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.87">_maximumTileTerrainSize</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.88">_maximumVisiableDistanceOfTopLevel</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.89">_radiusToMaxVisibleDistanceRatio</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.90">_verticalScale</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.91">_skirtRatio</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::CoordinateSystemNode&gt;  <B><A HREF="#DOC.2.2.92">_destinationCoordinateSystem</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::CoordinateSystemNode&gt;  <B><A HREF="#DOC.2.2.93">_intermediateCoordinateSystem</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.94">_convertFromGeographicToGeocentric</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::EllipsoidModel&gt;  <B><A HREF="#DOC.2.2.95">_ellipsoidModel</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.2.96">_geoTransform</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::BoundingBox <B><A HREF="#DOC.2.2.97">_extents</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.98">_tileBasename</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.99">_tileExtension</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.2.100">_defaultColor</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.50">DatabaseType</A> <B><A HREF="#DOC.2.2.101">_databaseType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.53">GeometryType</A> <B><A HREF="#DOC.2.2.102">_geometryType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.56">TextureType</A> <B><A HREF="#DOC.2.2.103">_textureType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.104">_maxAnisotropy</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.61">MipMappingMode</A> <B><A HREF="#DOC.2.2.105">_mipMappingMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.106">_useLocalTileTransform</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.107">_decorateWithCoordinateSystemNode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.108">_comment</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.2.109">_rootNode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.77">~DataSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.78">_readRow</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; row)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.79">_equalizeRow</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; row)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.80">_writeRow</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; row)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.81">decorateWithCoordinateSystemNode</A></B>(osg::Node* subgraph)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.82">init</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="SpatialProperties"></A>
+<A NAME="DOC.2.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SpatialProperties</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="SpatialProperties"></A>
+<A NAME="DOC.2.2.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SpatialProperties()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SpatialProperties"></A>
+<A NAME="DOC.2.2.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SpatialProperties(const <!1><A HREF="DataSet.html#DOC.2.2.1.2">SpatialProperties</A>&amp; sp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SpatialProperties"></A>
+<A NAME="DOC.2.2.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SpatialProperties(osg::CoordinateSystemNode* cs, const osg::BoundingBox&amp; extents)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="assignSpatialProperties"></A>
+<A NAME="DOC.2.2.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&amp; assignSpatialProperties(const <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&amp; sp)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeExtents"></A>
+<A NAME="DOC.2.2.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeExtents()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cs"></A>
+<A NAME="DOC.2.2.1.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::CoordinateSystemNode&gt;  _cs</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_geoTransform"></A>
+<A NAME="DOC.2.2.1.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd _geoTransform</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_extents"></A>
+<A NAME="DOC.2.2.1.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::BoundingBox _extents</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numValuesX"></A>
+<A NAME="DOC.2.2.1.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _numValuesX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numValuesY"></A>
+<A NAME="DOC.2.2.1.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _numValuesY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numValuesZ"></A>
+<A NAME="DOC.2.2.1.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _numValuesZ</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="DestinationData"></A>
+<A NAME="DOC.2.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  DestinationData: public osg::Referenced, <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A></B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="DestinationData"></A>
+<A NAME="DOC.2.2.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DestinationData(<!1><A HREF="DataSet.html">DataSet</A>* dataSet)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ModelList"></A>
+<A NAME="DOC.2.2.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::Node&gt; &gt;  ModelList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataSet"></A>
+<A NAME="DOC.2.2.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html">DataSet</A>* _dataSet</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_minDistance"></A>
+<A NAME="DOC.2.2.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _minDistance</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxDistance"></A>
+<A NAME="DOC.2.2.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maxDistance</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_image"></A>
+<A NAME="DOC.2.2.2.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _image</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_heightField"></A>
+<A NAME="DOC.2.2.2.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::HeightField&gt;  _heightField</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_models"></A>
+<A NAME="DOC.2.2.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.2.2">ModelList</A> _models</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="SourceData"></A>
+<A NAME="DOC.2.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  SourceData: public osg::Referenced, public <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A></B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="SourceData"></A>
+<A NAME="DOC.2.2.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SourceData(<!1><A HREF="Source.html">Source</A>* source=0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~SourceData"></A>
+<A NAME="DOC.2.2.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~SourceData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readData"></A>
+<A NAME="DOC.2.2.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="DataSet.html#DOC.2.2.3">SourceData</A>* readData(<!1><A HREF="Source.html">Source</A>* source)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getExtents"></A>
+<A NAME="DOC.2.2.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::BoundingBox getExtents(const osg::CoordinateSystemNode* cs) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeSpatialProperties"></A>
+<A NAME="DOC.2.2.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&amp; computeSpatialProperties(const osg::CoordinateSystemNode* cs) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="intersects"></A>
+<A NAME="DOC.2.2.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool intersects(const <!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&amp; sp) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="read"></A>
+<A NAME="DOC.2.2.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void read(<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&amp; destination)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readImage"></A>
+<A NAME="DOC.2.2.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readImage(<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&amp; destination)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readHeightField"></A>
+<A NAME="DOC.2.2.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readHeightField(<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&amp; destination)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readModels"></A>
+<A NAME="DOC.2.2.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readModels(<!1><A HREF="DataSet.html#DOC.2.2.2">DestinationData</A>&amp; destination)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_source"></A>
+<A NAME="DOC.2.2.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Source.html">Source</A>* _source</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_hasGCPs"></A>
+<A NAME="DOC.2.2.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _hasGCPs</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_model"></A>
+<A NAME="DOC.2.2.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _model</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_gdalDataSet"></A>
+<A NAME="DOC.2.2.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GDALDataset* _gdalDataSet</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SpatialPropertiesMap"></A>
+<A NAME="DOC.2.2.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;const osg::CoordinateSystemNode*,<!1><A HREF="DataSet.html#DOC.2.2.1">SpatialProperties</A>&gt;  SpatialPropertiesMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_spatialPropertiesMap"></A>
+<A NAME="DOC.2.2.3.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="DataSet.html#DOC.2.2.3.15">SpatialPropertiesMap</A> _spatialPropertiesMap</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="CompositeType"></A>
+<A NAME="DOC.2.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  CompositeType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="GROUP"></A>
+<A NAME="DOC.2.2.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GROUP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LOD"></A>
+<A NAME="DOC.2.2.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PAGED_LOD"></A>
+<A NAME="DOC.2.2.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PAGED_LOD</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="Row"></A>
+<A NAME="DOC.2.2.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;unsigned int,<!1><A HREF="CompositeDestination.html">CompositeDestination</A>*&gt;  Row</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Level"></A>
+<A NAME="DOC.2.2.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;unsigned int,<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&gt;  Level</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="QuadMap"></A>
+<A NAME="DOC.2.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;unsigned int,<!1><A HREF="DataSet.html#DOC.2.2.10">Level</A>&gt;  QuadMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="insertTileToQuadMap"></A>
+<A NAME="DOC.2.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void insertTileToQuadMap(<!1><A HREF="CompositeDestination.html">CompositeDestination</A>* tile)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTile"></A>
+<A NAME="DOC.2.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DestinationTile.html">DestinationTile</A>* getTile(unsigned int level, unsigned int X, unsigned int Y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getComposite"></A>
+<A NAME="DOC.2.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeDestination.html">CompositeDestination</A>* getComposite(unsigned int level, unsigned int X, unsigned int Y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRow"></A>
+<A NAME="DOC.2.2.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; getRow(unsigned int level, unsigned int Y)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DataSet"></A>
+<A NAME="DOC.2.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DataSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addSource"></A>
+<A NAME="DOC.2.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addSource(<!1><A HREF="Source.html">Source</A>* source)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addSource"></A>
+<A NAME="DOC.2.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addSource(<!1><A HREF="CompositeSource.html">CompositeSource</A>* composite)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="loadSources"></A>
+<A NAME="DOC.2.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void loadSources()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaximumTileImageSize"></A>
+<A NAME="DOC.2.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaximumTileImageSize(unsigned int size)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaximumTileImageSize"></A>
+<A NAME="DOC.2.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getMaximumTileImageSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaximumTileTerrainSize"></A>
+<A NAME="DOC.2.2.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaximumTileTerrainSize(unsigned int size)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaximumTileTerrainSize"></A>
+<A NAME="DOC.2.2.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getMaximumTileTerrainSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaximumVisibleDistanceOfTopLevel"></A>
+<A NAME="DOC.2.2.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaximumVisibleDistanceOfTopLevel(float d)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaximumVisibleDistanceOfTopLevel"></A>
+<A NAME="DOC.2.2.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getMaximumVisibleDistanceOfTopLevel() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRadiusToMaxVisibleDistanceRatio"></A>
+<A NAME="DOC.2.2.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRadiusToMaxVisibleDistanceRatio(float ratio)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRadiusToMaxVisibleDistanceRatio"></A>
+<A NAME="DOC.2.2.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getRadiusToMaxVisibleDistanceRatio() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setVerticalScale"></A>
+<A NAME="DOC.2.2.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setVerticalScale(float verticalScale)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getVerticalScale"></A>
+<A NAME="DOC.2.2.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getVerticalScale() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSkirtRatio"></A>
+<A NAME="DOC.2.2.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSkirtRatio(float skirtRatio)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSkirtRatio"></A>
+<A NAME="DOC.2.2.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSkirtRatio() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDefaultColor"></A>
+<A NAME="DOC.2.2.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaultColor(const osg::Vec4&amp; defaultColor)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDefaultColor"></A>
+<A NAME="DOC.2.2.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getDefaultColor() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDestinationCoordinateSystem"></A>
+<A NAME="DOC.2.2.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestinationCoordinateSystem(const std::string&amp; wellKnownText)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDestinationCoordinateSystem"></A>
+<A NAME="DOC.2.2.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestinationCoordinateSystem(osg::CoordinateSystemNode* cs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDestinationCoordinateSystem"></A>
+<A NAME="DOC.2.2.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CoordinateSystemNode* getDestinationCoordinateSystem()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setIntermediateCoordinateSystem"></A>
+<A NAME="DOC.2.2.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setIntermediateCoordinateSystem(const std::string&amp; wellKnownText)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setIntermediateCoordinateSystem"></A>
+<A NAME="DOC.2.2.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setIntermediateCoordinateSystem(osg::CoordinateSystemNode* cs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getIntermediateCoordinateSystem"></A>
+<A NAME="DOC.2.2.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CoordinateSystemNode* getIntermediateCoordinateSystem()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setConvertFromGeographicToGeocentric"></A>
+<A NAME="DOC.2.2.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setConvertFromGeographicToGeocentric(bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getConvertFromGeographicToGeocentric"></A>
+<A NAME="DOC.2.2.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getConvertFromGeographicToGeocentric() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setEllipsoidModel"></A>
+<A NAME="DOC.2.2.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEllipsoidModel(osg::EllipsoidModel* et)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEllipsoidModel"></A>
+<A NAME="DOC.2.2.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::EllipsoidModel* getEllipsoidModel()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDestinationExtents"></A>
+<A NAME="DOC.2.2.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestinationExtents(const osg::BoundingBox&amp; extents)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDestinationGeoTransform"></A>
+<A NAME="DOC.2.2.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestinationGeoTransform(const osg::Matrixd&amp; geoTransform)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDestinationTileBaseName"></A>
+<A NAME="DOC.2.2.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestinationTileBaseName(const std::string&amp; basename)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDestinationTileBaseName"></A>
+<A NAME="DOC.2.2.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getDestinationTileBaseName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDestinationTileExtension"></A>
+<A NAME="DOC.2.2.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDestinationTileExtension(const std::string&amp; extension)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDestinationTileExtension"></A>
+<A NAME="DOC.2.2.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getDestinationTileExtension() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DatabaseType"></A>
+<A NAME="DOC.2.2.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  DatabaseType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="LOD_DATABASE"></A>
+<A NAME="DOC.2.2.50.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOD_DATABASE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PagedLOD_DATABASE"></A>
+<A NAME="DOC.2.2.50.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PagedLOD_DATABASE</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setDatabaseType"></A>
+<A NAME="DOC.2.2.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDatabaseType(<!1><A HREF="DataSet.html#DOC.2.2.50">DatabaseType</A> type)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDatabaseType"></A>
+<A NAME="DOC.2.2.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.50">DatabaseType</A> getDatabaseType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="GeometryType"></A>
+<A NAME="DOC.2.2.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  GeometryType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="HEIGHT_FIELD"></A>
+<A NAME="DOC.2.2.53.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEIGHT_FIELD</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="POLYGONAL"></A>
+<A NAME="DOC.2.2.53.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POLYGONAL</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setGeometryType"></A>
+<A NAME="DOC.2.2.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGeometryType(<!1><A HREF="DataSet.html#DOC.2.2.53">GeometryType</A> type)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getGeometryType"></A>
+<A NAME="DOC.2.2.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.53">GeometryType</A> getGeometryType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TextureType"></A>
+<A NAME="DOC.2.2.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TextureType</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="RGB_24_BIT"></A>
+<A NAME="DOC.2.2.56.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RGB_24_BIT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RGB_16_BIT"></A>
+<A NAME="DOC.2.2.56.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RGB_16_BIT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COMPRESSED_TEXTURE"></A>
+<A NAME="DOC.2.2.56.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPRESSED_TEXTURE</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setTextureType"></A>
+<A NAME="DOC.2.2.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setTextureType(<!1><A HREF="DataSet.html#DOC.2.2.56">TextureType</A> type)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getTextureType"></A>
+<A NAME="DOC.2.2.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.56">TextureType</A> getTextureType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMaxAnisotropy"></A>
+<A NAME="DOC.2.2.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMaxAnisotropy(float d)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMaxAnisotropy"></A>
+<A NAME="DOC.2.2.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getMaxAnisotropy() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MipMappingMode"></A>
+<A NAME="DOC.2.2.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  MipMappingMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_MIP_MAPPING"></A>
+<A NAME="DOC.2.2.61.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_MIP_MAPPING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="MIP_MAPPING_HARDWARE"></A>
+<A NAME="DOC.2.2.61.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MIP_MAPPING_HARDWARE</B></TT>
+<DD>disable mip mapping - use LINEAR, LINEAR filters
+<DL><DT><DD></DL><P>
+<A NAME="MIP_MAPPING_IMAGERY"></A>
+<A NAME="DOC.2.2.61.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MIP_MAPPING_IMAGERY</B></TT>
+<DD>use mip mapping, dynamically compute them in hardware if supported
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setMipMappingMode"></A>
+<A NAME="DOC.2.2.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMipMappingMode(<!1><A HREF="DataSet.html#DOC.2.2.61">MipMappingMode</A> mipMappingMode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMipMappingMode"></A>
+<A NAME="DOC.2.2.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.61">MipMappingMode</A> getMipMappingMode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setUseLocalTileTransform"></A>
+<A NAME="DOC.2.2.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUseLocalTileTransform(bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUseLocalTileTransform"></A>
+<A NAME="DOC.2.2.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getUseLocalTileTransform() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDecorateGeneratedSceneGraphWithCoordinateSystemNode"></A>
+<A NAME="DOC.2.2.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDecorateGeneratedSceneGraphWithCoordinateSystemNode(bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDecorateGeneratedSceneGraphWithCoordinateSystemNode"></A>
+<A NAME="DOC.2.2.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getDecorateGeneratedSceneGraphWithCoordinateSystemNode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCommentString"></A>
+<A NAME="DOC.2.2.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCommentString(const std::string&amp; comment)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCommentString"></A>
+<A NAME="DOC.2.2.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getCommentString() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createDestinationGraph"></A>
+<A NAME="DOC.2.2.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeDestination.html">CompositeDestination</A>* createDestinationGraph(<!1><A HREF="CompositeDestination.html">CompositeDestination</A>* parent, osg::CoordinateSystemNode* cs, const osg::BoundingBox&amp; extents, unsigned int maxImageSize, unsigned int maxTerrainSize, unsigned int currentLevel, unsigned int currentX, unsigned int currentY, unsigned int maxNumLevels)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeDestinationGraphFromSources"></A>
+<A NAME="DOC.2.2.71"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeDestinationGraphFromSources(unsigned int numLevels)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="updateSourcesForDestinationGraphNeeds"></A>
+<A NAME="DOC.2.2.72"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateSourcesForDestinationGraphNeeds()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="populateDestinationGraphFromSources"></A>
+<A NAME="DOC.2.2.73"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void populateDestinationGraphFromSources()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createDestination"></A>
+<A NAME="DOC.2.2.74"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void createDestination(unsigned int numLevels)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="writeDestination"></A>
+<A NAME="DOC.2.2.75"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void writeDestination()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDestinationRootNode"></A>
+<A NAME="DOC.2.2.76"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* getDestinationRootNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~DataSet"></A>
+<A NAME="DOC.2.2.77"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DataSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_readRow"></A>
+<A NAME="DOC.2.2.78"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _readRow(<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; row)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_equalizeRow"></A>
+<A NAME="DOC.2.2.79"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _equalizeRow(<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; row)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_writeRow"></A>
+<A NAME="DOC.2.2.80"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _writeRow(<!1><A HREF="DataSet.html#DOC.2.2.9">Row</A>&amp; row)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="decorateWithCoordinateSystemNode"></A>
+<A NAME="DOC.2.2.81"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* decorateWithCoordinateSystemNode(osg::Node* subgraph)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init"></A>
+<A NAME="DOC.2.2.82"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void init()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sourceGraph"></A>
+<A NAME="DOC.2.2.83"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="CompositeSource.html">CompositeSource</A>&gt;  _sourceGraph</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationGraph"></A>
+<A NAME="DOC.2.2.84"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="CompositeDestination.html">CompositeDestination</A>&gt;  _destinationGraph</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_quadMap"></A>
+<A NAME="DOC.2.2.85"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.11">QuadMap</A> _quadMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maximumTileImageSize"></A>
+<A NAME="DOC.2.2.86"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _maximumTileImageSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maximumTileTerrainSize"></A>
+<A NAME="DOC.2.2.87"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _maximumTileTerrainSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maximumVisiableDistanceOfTopLevel"></A>
+<A NAME="DOC.2.2.88"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maximumVisiableDistanceOfTopLevel</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_radiusToMaxVisibleDistanceRatio"></A>
+<A NAME="DOC.2.2.89"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _radiusToMaxVisibleDistanceRatio</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_verticalScale"></A>
+<A NAME="DOC.2.2.90"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _verticalScale</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_skirtRatio"></A>
+<A NAME="DOC.2.2.91"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _skirtRatio</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationCoordinateSystem"></A>
+<A NAME="DOC.2.2.92"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::CoordinateSystemNode&gt;  _destinationCoordinateSystem</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_intermediateCoordinateSystem"></A>
+<A NAME="DOC.2.2.93"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::CoordinateSystemNode&gt;  _intermediateCoordinateSystem</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_convertFromGeographicToGeocentric"></A>
+<A NAME="DOC.2.2.94"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _convertFromGeographicToGeocentric</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ellipsoidModel"></A>
+<A NAME="DOC.2.2.95"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::EllipsoidModel&gt;  _ellipsoidModel</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_geoTransform"></A>
+<A NAME="DOC.2.2.96"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd _geoTransform</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_extents"></A>
+<A NAME="DOC.2.2.97"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::BoundingBox _extents</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tileBasename"></A>
+<A NAME="DOC.2.2.98"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _tileBasename</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tileExtension"></A>
+<A NAME="DOC.2.2.99"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _tileExtension</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_defaultColor"></A>
+<A NAME="DOC.2.2.100"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _defaultColor</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_databaseType"></A>
+<A NAME="DOC.2.2.101"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.50">DatabaseType</A> _databaseType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_geometryType"></A>
+<A NAME="DOC.2.2.102"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.53">GeometryType</A> _geometryType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_textureType"></A>
+<A NAME="DOC.2.2.103"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.56">TextureType</A> _textureType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxAnisotropy"></A>
+<A NAME="DOC.2.2.104"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maxAnisotropy</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mipMappingMode"></A>
+<A NAME="DOC.2.2.105"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.61">MipMappingMode</A> _mipMappingMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_useLocalTileTransform"></A>
+<A NAME="DOC.2.2.106"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useLocalTileTransform</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_decorateWithCoordinateSystemNode"></A>
+<A NAME="DOC.2.2.107"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _decorateWithCoordinateSystemNode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_comment"></A>
+<A NAME="DOC.2.2.108"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _comment</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_rootNode"></A>
+<A NAME="DOC.2.2.109"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _rootNode</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

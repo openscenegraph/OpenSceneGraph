@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgTerrain::DataSet::CompositeDestination</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgTerrain::DataSet::CompositeDestination</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MSpatialProperties,M,Mosg::Referenced,M,CCompositeDestination,MCompositeDestination.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html">DataSet</A>* <B><A HREF="#DOC.2.2.8.18">_dataSet</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeDestination.html">CompositeDestination</A>* <B><A HREF="#DOC.2.2.8.19">_parent</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.8.20">_name</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.8.21">_level</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.8.22">_tileX</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.2.8.23">_tileY</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> <B><A HREF="#DOC.2.2.8.24">_type</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeDestination.html#DOC.2.2.8.16">TileList</A> <B><A HREF="#DOC.2.2.8.25">_tiles</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeDestination.html#DOC.2.2.8.17">ChildList</A> <B><A HREF="#DOC.2.2.8.26">_children</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.8.27">_maxVisibleDistance</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.8.28">_subTileGenerated</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.8.1">CompositeDestination</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.8.2">CompositeDestination</A></B>(osg::CoordinateSystemNode* cs, const osg::BoundingBox&amp; extents)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.3">computeNeighboursFromQuadMap</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.4">addRequiredResolutions</A></B>(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.5">readFrom</A></B>(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.6">equalizeBoundaries</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.8.7">createScene</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.8.8">areSubTilesComplete</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.8.9">getSubTileName</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.8.10">createPagedLODScene</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.2.8.11">createSubTileScene</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.12">unrefSubTileData</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.13">unrefLocalData</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8.14">setSubTilesGenerated</A></B>(bool generated)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.8.15">getSubTilesGenerated</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DestinationTile.html">DestinationTile</A>&gt; &gt;  <B><A HREF="#DOC.2.2.8.16">TileList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="CompositeDestination.html">CompositeDestination</A>&gt; &gt;  <B><A HREF="#DOC.2.2.8.17">ChildList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="CompositeDestination"></A>
+<A NAME="DOC.2.2.8.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CompositeDestination()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CompositeDestination"></A>
+<A NAME="DOC.2.2.8.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CompositeDestination(osg::CoordinateSystemNode* cs, const osg::BoundingBox&amp; extents)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeNeighboursFromQuadMap"></A>
+<A NAME="DOC.2.2.8.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeNeighboursFromQuadMap()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addRequiredResolutions"></A>
+<A NAME="DOC.2.2.8.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addRequiredResolutions(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readFrom"></A>
+<A NAME="DOC.2.2.8.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readFrom(<!1><A HREF="CompositeSource.html">CompositeSource</A>* sourceGraph)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="equalizeBoundaries"></A>
+<A NAME="DOC.2.2.8.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void equalizeBoundaries()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createScene"></A>
+<A NAME="DOC.2.2.8.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* createScene()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="areSubTilesComplete"></A>
+<A NAME="DOC.2.2.8.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool areSubTilesComplete()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSubTileName"></A>
+<A NAME="DOC.2.2.8.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string getSubTileName()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createPagedLODScene"></A>
+<A NAME="DOC.2.2.8.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* createPagedLODScene()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createSubTileScene"></A>
+<A NAME="DOC.2.2.8.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* createSubTileScene()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="unrefSubTileData"></A>
+<A NAME="DOC.2.2.8.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void unrefSubTileData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="unrefLocalData"></A>
+<A NAME="DOC.2.2.8.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void unrefLocalData()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSubTilesGenerated"></A>
+<A NAME="DOC.2.2.8.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSubTilesGenerated(bool generated)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSubTilesGenerated"></A>
+<A NAME="DOC.2.2.8.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getSubTilesGenerated() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TileList"></A>
+<A NAME="DOC.2.2.8.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DestinationTile.html">DestinationTile</A>&gt; &gt;  TileList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ChildList"></A>
+<A NAME="DOC.2.2.8.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="CompositeDestination.html">CompositeDestination</A>&gt; &gt;  ChildList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataSet"></A>
+<A NAME="DOC.2.2.8.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html">DataSet</A>* _dataSet</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_parent"></A>
+<A NAME="DOC.2.2.8.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeDestination.html">CompositeDestination</A>* _parent</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_name"></A>
+<A NAME="DOC.2.2.8.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _name</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_level"></A>
+<A NAME="DOC.2.2.8.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _level</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tileX"></A>
+<A NAME="DOC.2.2.8.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _tileX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tileY"></A>
+<A NAME="DOC.2.2.8.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _tileY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_type"></A>
+<A NAME="DOC.2.2.8.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> _type</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_tiles"></A>
+<A NAME="DOC.2.2.8.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeDestination.html#DOC.2.2.8.16">TileList</A> _tiles</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_children"></A>
+<A NAME="DOC.2.2.8.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeDestination.html#DOC.2.2.8.17">ChildList</A> _children</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_maxVisibleDistance"></A>
+<A NAME="DOC.2.2.8.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _maxVisibleDistance</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_subTileGenerated"></A>
+<A NAME="DOC.2.2.8.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _subTileGenerated</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

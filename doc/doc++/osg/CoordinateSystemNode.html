@@ -1,0 +1,427 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::CoordinateSystemNode</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::CoordinateSystemNode</A></H2></H2><BLOCKQUOTE>CoordinateSystem encapsulate the coordinate system that associated with objects in a scene.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=155>
+<param name=classes value="CReferenced,MReferenced.html,CObject,MObject.html,CNode,MNode.html,CGroup,MGroup.html,CCoordinateSystemNode,MCoordinateSystemNode.html">
+<param name=before value="M,M,M,M,M">
+<param name=after value="Md_SPSPSP,Md_SPSP,Md_SP,Md_,M">
+<param name=indent value="0,1,2,3,4">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.1">CoordinateSystemNode</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.2">CoordinateSystemNode</A></B>(const std::string&amp; format, const std::string&amp; cs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.3">CoordinateSystemNode</A></B>(const <!1><A HREF="CoordinateSystemNode.html#DOC.2.78.3">CoordinateSystemNode</A>&amp;, const <!1><A HREF="CopyOp.html">osg::CopyOp</A>&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="CoordinateSystemNode.html">CoordinateSystemNode</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.5">set</A></B>(const <!1><A HREF="CoordinateSystemNode.html">CoordinateSystemNode</A>&amp; csn)
+<DD><I>Set the coordinate system node up by copy the format, coordinate system string, and ellipsoid model of another coordinate system node</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.6">setFormat</A></B>(const std::string&amp; format)
+<DD><I>Set the coordinate system format string.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.78.7">getFormat</A></B>() const 
+<DD><I>Get the coordinate system format string</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.8">setCoordinateSystem</A></B>(const std::string&amp; cs)
+<DD><I>Set the CoordinateSystem reference string, should be stored form consistent with the Format</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const std::string&amp; <B><A HREF="#DOC.2.78.9">getCoordinateSystem</A></B>() const 
+<DD><I>Get the CoordinateSystem reference string</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.78.10">setEllipsoidModel</A></B>(<!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>* ellipsode)
+<DD><I>set EllipsoidModel to describe the model used to map lat, long and height into geocentric XYZ and back.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>* <B><A HREF="#DOC.2.78.11">getEllipsoidModel</A></B>()
+<DD><I>get the EllipsoidModel</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>* <B><A HREF="#DOC.2.78.12">getEllipsoidModel</A></B>() const 
+<DD><I>get the const EllipsoidModel</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CoordinateFrame.html">CoordinateFrame</A> <B><A HREF="#DOC.2.78.13">computeLocalCoordinateFrame</A></B>(const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; position) const 
+<DD><I>compute the local coorindate frame for specified point</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3d.html">osg::Vec3d</A> <B><A HREF="#DOC.2.78.14">computeLocalUpVector</A></B>(const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; position) const 
+<DD><I>compute the local coorindate frame for specified point</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.78.16">_format</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.78.17">_cs</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>&gt;  <B><A HREF="#DOC.2.78.18">_ellipsoidModel</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.78.15">~CoordinateSystemNode</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Group.html">Group</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>insertChild</B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.18.17">index</A>, <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( <!1><A HREF="Node.html">Node</A>* child )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>(unsigned int pos, unsigned int numChildrenToRemove=1)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>setChild</B>( unsigned int i, <!1><A HREF="Node.html">Node</A>* node )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( unsigned int i )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B>getChild</B>( unsigned int i ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getChildIndex</B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.117">NodeList</A> <B>_children</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>childRemoved</B>(unsigned int , unsigned int )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>childInserted</B>(unsigned int )
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Node.html">Node</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Transform.html">Transform</A>* <B>asTransform</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Transform.html">Transform</A>* <B>asTransform</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.246.1.3">name</A> )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.246.1.3">name</A> )
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.155.18">ParentList</A>&amp; <B>getParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.18">ParentList</A> <B>getParents</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumParents</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUpdateCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenRequiringUpdateTraversal</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getCullCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getCullCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullingActive</B>(bool active)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getCullingActive</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenWithCullingDisabled</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>isCullingActive</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenWithOccluderNodes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> nm)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> <B>getNodeMask</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   std::string&amp; <B>getDescription</B>(unsigned int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumDescriptions</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addDescription</B>(const std::string&amp; desc)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setStateSet</B>(<!1><A HREF="StateSet.html">osg::StateSet</A>* dstate)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getOrCreateStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="StateSet.html">osg::StateSet</A>* <B>getStateSet</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; <B>getBound</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>dirtyBound</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt;  <B>ParentList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>NodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt;  <B>DescriptionList</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingSphere.html">BoundingSphere</A> <B>_bsphere</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable bool <B>_bsphere_computed</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.18">ParentList</A> <B>_parents</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenRequiringUpdateTraversal</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_cullCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_cullingActive</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithCullingDisabled</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> <B>_nodeMask</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A> <B>_descriptions</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>removeParent</B>(<!1><A HREF="Group.html">osg::Group</A>* node)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenRequiringUpdateTraversal</B>(unsigned int num)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithCullingDisabled</B>(unsigned int num)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setNumChildrenWithOccluderNodes</B>(unsigned int num)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>CoordinateSystem encapsulate the coordinate system that associated with objects in a scene.
+For an overview of common earth bases coordinate systems see http://www.colorado.edu/geography/gcraft/notes/coordsys/coordsys_f.html </BLOCKQUOTE>
+<DL>
+
+<A NAME="CoordinateSystemNode"></A>
+<A NAME="DOC.2.78.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CoordinateSystemNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CoordinateSystemNode"></A>
+<A NAME="DOC.2.78.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CoordinateSystemNode(const std::string&amp; format, const std::string&amp; cs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CoordinateSystemNode"></A>
+<A NAME="DOC.2.78.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CoordinateSystemNode(const <!1><A HREF="CoordinateSystemNode.html#DOC.2.78.3">CoordinateSystemNode</A>&amp;, const <!1><A HREF="CopyOp.html">osg::CopyOp</A>&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.78.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="CoordinateSystemNode.html">CoordinateSystemNode</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.78.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(const <!1><A HREF="CoordinateSystemNode.html">CoordinateSystemNode</A>&amp; csn)</B></TT>
+<DD>Set the coordinate system node up by copy the format, coordinate system string, and ellipsoid model of another coordinate system node
+<DL><DT><DD></DL><P>
+<A NAME="setFormat"></A>
+<A NAME="DOC.2.78.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFormat(const std::string&amp; format)</B></TT>
+<DD>Set the coordinate system format string. Typical values would be WKT, PROJ4, USGS etc.
+<DL><DT><DD></DL><P>
+<A NAME="getFormat"></A>
+<A NAME="DOC.2.78.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getFormat() const </B></TT>
+<DD>Get the coordinate system format string
+<DL><DT><DD></DL><P>
+<A NAME="setCoordinateSystem"></A>
+<A NAME="DOC.2.78.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCoordinateSystem(const std::string&amp; cs)</B></TT>
+<DD>Set the CoordinateSystem reference string, should be stored form consistent with the Format
+<DL><DT><DD></DL><P>
+<A NAME="getCoordinateSystem"></A>
+<A NAME="DOC.2.78.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const std::string&amp; getCoordinateSystem() const </B></TT>
+<DD>Get the CoordinateSystem reference string
+<DL><DT><DD></DL><P>
+<A NAME="setEllipsoidModel"></A>
+<A NAME="DOC.2.78.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEllipsoidModel(<!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>* ellipsode)</B></TT>
+<DD>set EllipsoidModel to describe the model used to map lat, long and height into geocentric XYZ and back. 
+<DL><DT><DD></DL><P>
+<A NAME="getEllipsoidModel"></A>
+<A NAME="DOC.2.78.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>* getEllipsoidModel()</B></TT>
+<DD>get the EllipsoidModel
+<DL><DT><DD></DL><P>
+<A NAME="getEllipsoidModel"></A>
+<A NAME="DOC.2.78.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>* getEllipsoidModel() const </B></TT>
+<DD>get the const EllipsoidModel
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalCoordinateFrame"></A>
+<A NAME="DOC.2.78.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CoordinateFrame.html">CoordinateFrame</A> computeLocalCoordinateFrame(const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; position) const </B></TT>
+<DD>compute the local coorindate frame for specified point
+<DL><DT><DD></DL><P>
+<A NAME="computeLocalUpVector"></A>
+<A NAME="DOC.2.78.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3d.html">osg::Vec3d</A> computeLocalUpVector(const <!1><A HREF="Vec3d.html">Vec3d</A>&amp; position) const </B></TT>
+<DD>compute the local coorindate frame for specified point
+<DL><DT><DD></DL><P>
+<A NAME="~CoordinateSystemNode"></A>
+<A NAME="DOC.2.78.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~CoordinateSystemNode()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_format"></A>
+<A NAME="DOC.2.78.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _format</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cs"></A>
+<A NAME="DOC.2.78.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _cs</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_ellipsoidModel"></A>
+<A NAME="DOC.2.78.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="EllipsoidModel.html">EllipsoidModel</A>&gt;  _ellipsoidModel</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

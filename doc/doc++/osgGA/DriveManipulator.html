@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGGA_EXPORT osgGA::DriveManipulator</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -45,72 +45,121 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.2.9">getNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.10">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.10">computeHomePosition</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.11">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.11">home</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.12">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.12">init</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.13">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.13">handle</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.2.14">getUsage</A></B>(osg::ApplicationUsage&amp; usage) const 
 <DD><I>Get the keyboard and mouse usage of this manipulator</I>
 </DL></P>
 
 <P><DL>
+<DT><H3>Protected Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.27">SpeedControlMode</A></B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.2.19">_ga_t1</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.2.20">_ga_t1</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.2.20">_ga_t0</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  <B><A HREF="#DOC.2.2.21">_ga_t0</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.2.21">_node</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.2.22">_node</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.22">_modelScale</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.23">_modelScale</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.23">_velocity</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.24">_velocity</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.24">_height</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.25">_height</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.25">_buffer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.26">_buffer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DriveManipulator.html#DOC.2.2.26">SpeedControlMode</A> <B><A HREF="#DOC.2.2.27">_speedMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DriveManipulator.html#DOC.2.2.27">SpeedControlMode</A> <B><A HREF="#DOC.2.2.28">_speedMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3 <B><A HREF="#DOC.2.2.28">_eye</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3d <B><A HREF="#DOC.2.2.29">_eye</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.2.29">_rotation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Quat <B><A HREF="#DOC.2.2.30">_rotation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.2.30">_distance</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.31">_distance</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.14">~DriveManipulator</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.15">~DriveManipulator</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.15">flushMouseEventStack</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.16">flushMouseEventStack</A></B>()
 <DD><I>Reset the internal GUIEvent stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.16">addMouseEvent</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.17">addMouseEvent</A></B>(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)
 <DD><I>Add the current mouse GUIEvent to internal stack</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.17">computePosition</A></B>(const osg::Vec3&amp; eye, const osg::Vec3&amp; lv, const osg::Vec3&amp; up)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.18">computePosition</A></B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; lv, const osg::Vec3d&amp; up)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.18">calcMovement</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.19">calcMovement</A></B>()
 <DD><I>For the give mouse movement calculate the movement of the camera.</I>
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.26">SpeedControlMode</A></B>
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="MatrixManipulator.html">MatrixManipulator</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+class  <B><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A></B>: public osg::Referenced
+<DD><I>callback class to use to allow matrix manipulators to querry the application for the local coordinate frame</I>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setMinimumDistance</B>(float minimumDistance)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>getMinimumDistance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setCoordinateFrameCallback</B>(<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* cb)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B>getCoordinateFrameCallback</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>* <B>getCoordinateFrameCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::CoordinateFrame <B>getCoordinateFrame</B>(const osg::Vec3d&amp; position) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>getSideVector</B>(const osg::CoordinateFrame&amp; cf) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>getFrontVector</B>(const osg::CoordinateFrame&amp; cf) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>getUpVector</B>(const osg::CoordinateFrame&amp; cf) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   osgUtil::SceneView::FusionDistanceMode <B>getFusionDistanceMode</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   float <B>getFusionDistanceValue</B>() const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setHomePosition</B>(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; center, const osg::Vec3d&amp; up)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>getHomePosition</B>(osg::Vec3d&amp; eye, osg::Vec3d&amp; center, osg::Vec3d&amp; up)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>setAutoComputeHomePosition</B>(bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>getAutoComputeHomePosition</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="GUIEventHandlerVisitor.html">GUIEventHandlerVisitor</A>&amp; v)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>double <B>_minimumDistance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_autoComputeHomePosition</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>_homeEye</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>_homeCenter</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Vec3d <B>_homeUp</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="CoordinateFrameCallback.html">CoordinateFrameCallback</A>&gt;  <B>_coordinateFrameCallback</B>
 </DL></P>
 
 </DL>
@@ -175,110 +224,114 @@ right simultaneously) stops dead.</BLOCKQUOTE>
 <A NAME="DOC.2.2.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* getNode()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="home"></A>
+<A NAME="computeHomePosition"></A>
 <A NAME="DOC.2.2.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void computeHomePosition()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="home"></A>
+<A NAME="DOC.2.2.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void home(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.2.11"></A>
+<A NAME="DOC.2.2.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="handle"></A>
-<A NAME="DOC.2.2.12"></A>
+<A NAME="DOC.2.2.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool handle(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea, <!1><A HREF="GUIActionAdapter.html">GUIActionAdapter</A>&amp; us)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUsage"></A>
-<A NAME="DOC.2.2.13"></A>
+<A NAME="DOC.2.2.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getUsage(osg::ApplicationUsage&amp; usage) const </B></TT>
 <DD>Get the keyboard and mouse usage of this manipulator
 <DL><DT><DD></DL><P>
 <A NAME="~DriveManipulator"></A>
-<A NAME="DOC.2.2.14"></A>
+<A NAME="DOC.2.2.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DriveManipulator()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="flushMouseEventStack"></A>
-<A NAME="DOC.2.2.15"></A>
+<A NAME="DOC.2.2.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flushMouseEventStack()</B></TT>
 <DD>Reset the internal GUIEvent stack
 <DL><DT><DD></DL><P>
 <A NAME="addMouseEvent"></A>
-<A NAME="DOC.2.2.16"></A>
+<A NAME="DOC.2.2.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addMouseEvent(const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&amp; ea)</B></TT>
 <DD>Add the current mouse GUIEvent to internal stack
 <DL><DT><DD></DL><P>
 <A NAME="computePosition"></A>
-<A NAME="DOC.2.2.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computePosition(const osg::Vec3&amp; eye, const osg::Vec3&amp; lv, const osg::Vec3&amp; up)</B></TT>
+<A NAME="DOC.2.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computePosition(const osg::Vec3d&amp; eye, const osg::Vec3d&amp; lv, const osg::Vec3d&amp; up)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="calcMovement"></A>
-<A NAME="DOC.2.2.18"></A>
+<A NAME="DOC.2.2.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool calcMovement()</B></TT>
 <DD>For the give mouse movement calculate the movement of the camera.
 Return true is camera has moved and a redraw is required.
 <DL><DT><DD></DL><P>
 <A NAME="_ga_t1"></A>
-<A NAME="DOC.2.2.19"></A>
+<A NAME="DOC.2.2.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  _ga_t1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ga_t0"></A>
-<A NAME="DOC.2.2.20"></A>
+<A NAME="DOC.2.2.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;const <!1><A HREF="GUIEventAdapter.html">GUIEventAdapter</A>&gt;  _ga_t0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_node"></A>
-<A NAME="DOC.2.2.21"></A>
+<A NAME="DOC.2.2.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _node</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modelScale"></A>
-<A NAME="DOC.2.2.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _modelScale</B></TT>
+<A NAME="DOC.2.2.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _modelScale</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_velocity"></A>
-<A NAME="DOC.2.2.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _velocity</B></TT>
+<A NAME="DOC.2.2.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _velocity</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_height"></A>
-<A NAME="DOC.2.2.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _height</B></TT>
+<A NAME="DOC.2.2.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _height</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_buffer"></A>
-<A NAME="DOC.2.2.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _buffer</B></TT>
+<A NAME="DOC.2.2.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _buffer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SpeedControlMode"></A>
-<A NAME="DOC.2.2.26"></A>
+<A NAME="DOC.2.2.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SpeedControlMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="USE_MOUSE_Y_FOR_SPEED"></A>
-<A NAME="DOC.2.2.26.1"></A>
+<A NAME="DOC.2.2.27.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_MOUSE_Y_FOR_SPEED</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="USE_MOUSE_BUTTONS_FOR_SPEED"></A>
-<A NAME="DOC.2.2.26.2"></A>
+<A NAME="DOC.2.2.27.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_MOUSE_BUTTONS_FOR_SPEED</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="_speedMode"></A>
-<A NAME="DOC.2.2.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DriveManipulator.html#DOC.2.2.26">SpeedControlMode</A> _speedMode</B></TT>
+<A NAME="DOC.2.2.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DriveManipulator.html#DOC.2.2.27">SpeedControlMode</A> _speedMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_eye"></A>
-<A NAME="DOC.2.2.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3 _eye</B></TT>
+<A NAME="DOC.2.2.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3d _eye</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rotation"></A>
-<A NAME="DOC.2.2.29"></A>
+<A NAME="DOC.2.2.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Quat _rotation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_distance"></A>
-<A NAME="DOC.2.2.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _distance</B></TT>
+<A NAME="DOC.2.2.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _distance</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

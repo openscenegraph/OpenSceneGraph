@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGDB_EXPORT osgDB::ImageOptions</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGDB_EXPORT <A HREF="#DOC.DOCU">osgDB::ImageOptions</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Referenced,M,COptions,MOptions.html,CImageOptions,MImageOptions.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.33.3">RatioWindow</A></B>
+<DD><I>RatioWindow stores the window (as ratios of 00 to 10) from the overall imagery from which to extract the osg::Image</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.33.4">PixelWindow</A></B>
+<DD><I>PixelWindow stores the window (in exact pixels) from the overall imagery from which to extract the osg::Image</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.33.5">ImageWindowMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.33.6">ImageSamplingMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.33.7">TexCoordRange</A></B>: public osg::Referenced
+<DD><I>Used as UserData attached to generated osg::Image's</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.6">ImageSamplingMode</A> <B><A HREF="#DOC.2.33.8">_sourceImageSamplingMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.5">ImageWindowMode</A> <B><A HREF="#DOC.2.33.9">_sourceImageWindowMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.3">RatioWindow</A> <B><A HREF="#DOC.2.33.10">_sourceRatioWindow</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.4">PixelWindow</A> <B><A HREF="#DOC.2.33.11">_sourcePixelWindow</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Image&gt;  <B><A HREF="#DOC.2.33.12">_destinationImage</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.5">ImageWindowMode</A> <B><A HREF="#DOC.2.33.13">_destinationImageWindowMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.3">RatioWindow</A> <B><A HREF="#DOC.2.33.14">_destinationRatioWindow</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImageOptions.html#DOC.2.33.4">PixelWindow</A> <B><A HREF="#DOC.2.33.15">_destinationPixelWindow</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.33.16">_destinationDataType</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.33.17">_destinationPixelFormat</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.33.1">ImageOptions</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.33.2">ImageOptions</A></B>(const std::string&amp; str)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.33.18">init</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Options.html">Options</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setOptionString</B>(const std::string&amp; str)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const std::string&amp; <B>getOptionString</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>std::string <B>_str</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="ImageOptions"></A>
+<A NAME="DOC.2.33.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImageOptions()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ImageOptions"></A>
+<A NAME="DOC.2.33.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ImageOptions(const std::string&amp; str)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RatioWindow"></A>
+<A NAME="DOC.2.33.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  RatioWindow</B></TT>
+<DD>RatioWindow stores the window (as ratios of 00 to 10) from the overall imagery from which to extract the osg::Image
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="RatioWindow"></A>
+<A NAME="DOC.2.33.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RatioWindow()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.33.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(double x, double y, double w, double h)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowX"></A>
+<A NAME="DOC.2.33.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double windowX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowY"></A>
+<A NAME="DOC.2.33.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double windowY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowWidth"></A>
+<A NAME="DOC.2.33.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double windowWidth</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowHeight"></A>
+<A NAME="DOC.2.33.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double windowHeight</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="PixelWindow"></A>
+<A NAME="DOC.2.33.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  PixelWindow</B></TT>
+<DD>PixelWindow stores the window (in exact pixels) from the overall imagery from which to extract the osg::Image
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="PixelWindow"></A>
+<A NAME="DOC.2.33.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PixelWindow()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.33.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(unsigned int x, unsigned int y, unsigned int w, unsigned int h)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowX"></A>
+<A NAME="DOC.2.33.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int windowX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowY"></A>
+<A NAME="DOC.2.33.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int windowY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowWidth"></A>
+<A NAME="DOC.2.33.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int windowWidth</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="windowHeight"></A>
+<A NAME="DOC.2.33.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int windowHeight</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ImageWindowMode"></A>
+<A NAME="DOC.2.33.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ImageWindowMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="ALL_IMAGE"></A>
+<A NAME="DOC.2.33.5.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_IMAGE</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="RATIO_WINDOW"></A>
+<A NAME="DOC.2.33.5.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RATIO_WINDOW</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PIXEL_WINDOW"></A>
+<A NAME="DOC.2.33.5.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PIXEL_WINDOW</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ImageSamplingMode"></A>
+<A NAME="DOC.2.33.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ImageSamplingMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NEAREST"></A>
+<A NAME="DOC.2.33.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEAREST</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINEAR"></A>
+<A NAME="DOC.2.33.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINEAR</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CUBIC"></A>
+<A NAME="DOC.2.33.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CUBIC</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="TexCoordRange"></A>
+<A NAME="DOC.2.33.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  TexCoordRange: public osg::Referenced</B></TT>
+<DD>Used as UserData attached to generated osg::Image's
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="TexCoordRange"></A>
+<A NAME="DOC.2.33.7.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TexCoordRange()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.33.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(double x, double y, double w, double h)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_x"></A>
+<A NAME="DOC.2.33.7.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _x</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_y"></A>
+<A NAME="DOC.2.33.7.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double  _y</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_w"></A>
+<A NAME="DOC.2.33.7.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double   _w</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_h"></A>
+<A NAME="DOC.2.33.7.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double    _h</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="_sourceImageSamplingMode"></A>
+<A NAME="DOC.2.33.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.6">ImageSamplingMode</A> _sourceImageSamplingMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sourceImageWindowMode"></A>
+<A NAME="DOC.2.33.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.5">ImageWindowMode</A> _sourceImageWindowMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sourceRatioWindow"></A>
+<A NAME="DOC.2.33.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.3">RatioWindow</A> _sourceRatioWindow</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sourcePixelWindow"></A>
+<A NAME="DOC.2.33.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.4">PixelWindow</A> _sourcePixelWindow</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationImage"></A>
+<A NAME="DOC.2.33.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Image&gt;  _destinationImage</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationImageWindowMode"></A>
+<A NAME="DOC.2.33.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.5">ImageWindowMode</A> _destinationImageWindowMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationRatioWindow"></A>
+<A NAME="DOC.2.33.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.3">RatioWindow</A> _destinationRatioWindow</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationPixelWindow"></A>
+<A NAME="DOC.2.33.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImageOptions.html#DOC.2.33.4">PixelWindow</A> _destinationPixelWindow</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationDataType"></A>
+<A NAME="DOC.2.33.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _destinationDataType</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_destinationPixelFormat"></A>
+<A NAME="DOC.2.33.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _destinationPixelFormat</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="init"></A>
+<A NAME="DOC.2.33.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void init()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

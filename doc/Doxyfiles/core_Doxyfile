@@ -319,12 +319,11 @@ WARN_LOGFILE           =
 INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgDB \
                          $(OSGHOME)/include/osgGA \
-                         $(OSGHOME)/include/osgParticle \
                          $(OSGHOME)/include/osgProducer \
-                         $(OSGHOME)/include/osgSim \
-                         $(OSGHOME)/include/osgGL2 \
-                         $(OSGHOME)/include/osgFX \
+                         $(OSGHOME)/include/osgParticle \
                          $(OSGHOME)/include/osgText \
+                         $(OSGHOME)/include/osgTerrain \
+                         $(OSGHOME)/include/osgFX \
                          $(OSGHOME)/include/osgUtil \
                          $(OSGHOME)/doc/Doxyfiles/auto_Mainpage
 

@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::ClusterCullingCallback</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::ClusterCullingCallback</A></H2></H2><BLOCKQUOTE>Drawable CullCallback for adding cluster culling to cull back facing drawables</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="MDrawable::CullCallback,M,CClusterCullingCallback,MClusterCullingCallback.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.68.1">ClusterCullingCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.68.2">ClusterCullingCallback</A></B>(const <!1><A HREF="ClusterCullingCallback.html#DOC.2.68.2">ClusterCullingCallback</A>&amp; ccc, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.68.3">ClusterCullingCallback</A></B>(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; controlPoint, const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; normal, float deviation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.68.4">ClusterCullingCallback</A></B>(const <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TessellationHints.html#DOC.2.218.3">META_Object</A> <B><A HREF="#DOC.2.68.5">(osg, ClusterCullingCallback)</A></B>(const <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.68.6">set</A></B>(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; controlPoint, const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; normal, float deviation, float <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.68.7">setControlPoint</A></B>(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; controlPoint)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; <B><A HREF="#DOC.2.68.8">getControlPoint</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.68.9">setNormal</A></B>(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; normal)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; <B><A HREF="#DOC.2.68.10">getNormal</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.68.11">setRadius</A></B>(float <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.68.12">getRadius</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.68.13">setDeviation</A></B>(float deviation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.68.14">getDeviation</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.68.15">cull</A></B>(<!1><A HREF="NodeVisitor.html">osg::NodeVisitor</A>*, <!1><A HREF="Drawable.html">osg::Drawable</A>*, <!1><A HREF="State.html">osg::State</A>*) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.68.17">_controlPoint</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B><A HREF="#DOC.2.68.18">_normal</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.68.19">_radius</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.68.20">_deviation</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.68.16">~ClusterCullingCallback</A></B>()
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Drawable CullCallback for adding cluster culling to cull back facing
+drawables</BLOCKQUOTE>
+<DL>
+
+<A NAME="ClusterCullingCallback"></A>
+<A NAME="DOC.2.68.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClusterCullingCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ClusterCullingCallback"></A>
+<A NAME="DOC.2.68.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClusterCullingCallback(const <!1><A HREF="ClusterCullingCallback.html#DOC.2.68.2">ClusterCullingCallback</A>&amp; ccc, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ClusterCullingCallback"></A>
+<A NAME="DOC.2.68.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClusterCullingCallback(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; controlPoint, const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; normal, float deviation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ClusterCullingCallback"></A>
+<A NAME="DOC.2.68.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClusterCullingCallback(const <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="(osg, ClusterCullingCallback)"></A>
+<A NAME="DOC.2.68.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TessellationHints.html#DOC.2.218.3">META_Object</A> (osg, ClusterCullingCallback)(const <!1><A HREF="Drawable.html">osg::Drawable</A>* drawable)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="set"></A>
+<A NAME="DOC.2.68.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; controlPoint, const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; normal, float deviation, float <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setControlPoint"></A>
+<A NAME="DOC.2.68.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setControlPoint(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; controlPoint)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getControlPoint"></A>
+<A NAME="DOC.2.68.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; getControlPoint() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNormal"></A>
+<A NAME="DOC.2.68.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormal(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; normal)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNormal"></A>
+<A NAME="DOC.2.68.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; getNormal() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRadius"></A>
+<A NAME="DOC.2.68.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRadius(float <!1><A HREF="BoundingSphere.html#DOC.2.47.10">radius</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRadius"></A>
+<A NAME="DOC.2.68.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getRadius() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDeviation"></A>
+<A NAME="DOC.2.68.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDeviation(float deviation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDeviation"></A>
+<A NAME="DOC.2.68.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getDeviation() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="cull"></A>
+<A NAME="DOC.2.68.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool cull(<!1><A HREF="NodeVisitor.html">osg::NodeVisitor</A>*, <!1><A HREF="Drawable.html">osg::Drawable</A>*, <!1><A HREF="State.html">osg::State</A>*) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ClusterCullingCallback"></A>
+<A NAME="DOC.2.68.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ClusterCullingCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_controlPoint"></A>
+<A NAME="DOC.2.68.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _controlPoint</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_normal"></A>
+<A NAME="DOC.2.68.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> _normal</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_radius"></A>
+<A NAME="DOC.2.68.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _radius</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_deviation"></A>
+<A NAME="DOC.2.68.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _deviation</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::ShadowVolumeOccluder</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -13,74 +13,74 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.168.2">ShadowVolumeOccluder</A></B>(const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.2">ShadowVolumeOccluder</A>&amp; svo)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.201.2">ShadowVolumeOccluder</A></B>(const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.2">ShadowVolumeOccluder</A>&amp; svo)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.168.3">ShadowVolumeOccluder</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.201.3">ShadowVolumeOccluder</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.4">operator < </A></B>(const <!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&amp; svo) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.201.4">operator < </A></B>(const <!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&amp; svo) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.5">computeOccluder</A></B>(const <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath, const <!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>&amp; occluder, <!1><A HREF="CullStack.html">CullStack</A>&amp; cullStack, bool createDrawables=false)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.201.5">computeOccluder</A></B>(const <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath, const <!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>&amp; occluder, <!1><A HREF="CullStack.html">CullStack</A>&amp; cullStack, bool createDrawables=false)
 <DD><I>compute the shadow volume occluder.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.6">matchProjectionMatrix</A></B>(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; matrix) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.201.6">matchProjectionMatrix</A></B>(const <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A>&amp; matrix) const 
 <DD><I>return true if the matrix passed in matches the projection matrix that this ShaowVolumeOccluder is associated with</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.168.7">setNodePath</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.201.7">setNodePath</A></B>(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)
 <DD><I>Set the NodePath which describes the which node in the scene graph that this occluder was attached to</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="NodePath.html">NodePath</A>&amp; <B><A HREF="#DOC.2.168.8">getNodePath</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="NodePath.html">NodePath</A>&amp; <B><A HREF="#DOC.2.201.8">getNodePath</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="NodePath.html">NodePath</A>&amp; <B><A HREF="#DOC.2.168.9">getNodePath</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="NodePath.html">NodePath</A>&amp; <B><A HREF="#DOC.2.201.9">getNodePath</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.168.10">getVolume</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.201.10">getVolume</A></B>() const 
 <DD><I>get the volume of the occluder minus its holes, in eye coords, the volume is normalized by dividing by  the volume of the view frustum in eye coords</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.168.11">getOccluder</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.201.11">getOccluder</A></B>()
 <DD><I>return the occluder polytope</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.168.12">getOccluder</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Polytope.html">Polytope</A>&amp; <B><A HREF="#DOC.2.201.12">getOccluder</A></B>() const 
 <DD><I>return the const occluder polytope</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.1">HoleList</A>&amp; <B><A HREF="#DOC.2.168.13">getHoleList</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.1">HoleList</A>&amp; <B><A HREF="#DOC.2.201.13">getHoleList</A></B>()
 <DD><I>return the list of holes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.1">HoleList</A>&amp; <B><A HREF="#DOC.2.168.14">getHoleList</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.1">HoleList</A>&amp; <B><A HREF="#DOC.2.201.14">getHoleList</A></B>() const 
 <DD><I>return the const list of holes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.15">contains</A></B>(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.201.15">contains</A></B>(const std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;&amp; vertices)
 <DD><I>return true if the specified vertex list is contaned entirely within this shadow occluder volume</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.16">contains</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bound)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.201.16">contains</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bound)
 <DD><I>return true if the specified bounding sphere is contaned entirely within this shadow occluder volume</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.17">contains</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bound)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.201.17">contains</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bound)
 <DD><I>return true if the specified bounding box is contained entirely within this shadow occluder volume</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.168.18">transformProvidingInverse</A></B>(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.201.18">transformProvidingInverse</A></B>(const <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A>&amp; matrix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.168.24">disableResultMasks</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.201.24">disableResultMasks</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.168.25">pushCurrentMask</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.201.25">pushCurrentMask</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.168.26">popCurrentMask</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.201.26">popCurrentMask</A></B>()
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Polytope.html">Polytope</A>&gt; <B><A HREF="#DOC.2.168.1">HoleList</A></B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Polytope.html">Polytope</A>&gt;  <B><A HREF="#DOC.2.201.1">HoleList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.168.19">_volume</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.201.19">_volume</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodePath.html">NodePath</A> <B><A HREF="#DOC.2.168.20">_nodePath</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="NodePath.html">NodePath</A> <B><A HREF="#DOC.2.201.20">_nodePath</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.168.21">_projectionMatrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.135">RefMatrix</A>&gt;  <B><A HREF="#DOC.2.201.21">_projectionMatrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A> <B><A HREF="#DOC.2.168.22">_occluderVolume</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Polytope.html">Polytope</A> <B><A HREF="#DOC.2.201.22">_occluderVolume</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.1">HoleList</A> <B><A HREF="#DOC.2.168.23">_holeList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.1">HoleList</A> <B><A HREF="#DOC.2.201.23">_holeList</A></B>
 </DL></P>
 
 </DL>
@@ -92,124 +92,124 @@
 <DL>
 
 <A NAME="HoleList"></A>
-<A NAME="DOC.2.168.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Polytope.html">Polytope</A>&gt; HoleList</B></TT>
+<A NAME="DOC.2.201.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Polytope.html">Polytope</A>&gt;  HoleList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ShadowVolumeOccluder"></A>
-<A NAME="DOC.2.168.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShadowVolumeOccluder(const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.2">ShadowVolumeOccluder</A>&amp; svo)</B></TT>
+<A NAME="DOC.2.201.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShadowVolumeOccluder(const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.2">ShadowVolumeOccluder</A>&amp; svo)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ShadowVolumeOccluder"></A>
-<A NAME="DOC.2.168.3"></A>
+<A NAME="DOC.2.201.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShadowVolumeOccluder()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator < "></A>
-<A NAME="DOC.2.168.4"></A>
+<A NAME="DOC.2.201.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool operator < (const <!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&amp; svo) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeOccluder"></A>
-<A NAME="DOC.2.168.5"></A>
+<A NAME="DOC.2.201.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeOccluder(const <!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath, const <!1><A HREF="ConvexPlanarOccluder.html">ConvexPlanarOccluder</A>&amp; occluder, <!1><A HREF="CullStack.html">CullStack</A>&amp; cullStack, bool createDrawables=false)</B></TT>
 <DD>compute the shadow volume occluder. 
 <DL><DT><DD></DL><P>
 <A NAME="matchProjectionMatrix"></A>
-<A NAME="DOC.2.168.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchProjectionMatrix(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; matrix) const </B></TT>
+<A NAME="DOC.2.201.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool matchProjectionMatrix(const <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A>&amp; matrix) const </B></TT>
 <DD>return true if the matrix passed in matches the projection matrix that this ShaowVolumeOccluder is
 associated with
 <DL><DT><DD></DL><P>
 <A NAME="setNodePath"></A>
-<A NAME="DOC.2.168.7"></A>
+<A NAME="DOC.2.201.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setNodePath(<!1><A HREF="NodePath.html">NodePath</A>&amp; nodePath)</B></TT>
 <DD>Set the NodePath which describes the which node in the scene graph
 that this occluder was attached to
 <DL><DT><DD></DL><P>
 <A NAME="getNodePath"></A>
-<A NAME="DOC.2.168.8"></A>
+<A NAME="DOC.2.201.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="NodePath.html">NodePath</A>&amp; getNodePath()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNodePath"></A>
-<A NAME="DOC.2.168.9"></A>
+<A NAME="DOC.2.201.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="NodePath.html">NodePath</A>&amp; getNodePath() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getVolume"></A>
-<A NAME="DOC.2.168.10"></A>
+<A NAME="DOC.2.201.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getVolume() const </B></TT>
 <DD>get the volume of the occluder minus its holes, in eye coords, the volume is normalized by dividing by 
 the volume of the view frustum in eye coords
 <DL><DT><DD></DL><P>
 <A NAME="getOccluder"></A>
-<A NAME="DOC.2.168.11"></A>
+<A NAME="DOC.2.201.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Polytope.html">Polytope</A>&amp; getOccluder()</B></TT>
 <DD>return the occluder polytope
 <DL><DT><DD></DL><P>
 <A NAME="getOccluder"></A>
-<A NAME="DOC.2.168.12"></A>
+<A NAME="DOC.2.201.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Polytope.html">Polytope</A>&amp; getOccluder() const </B></TT>
 <DD>return the const occluder polytope
 <DL><DT><DD></DL><P>
 <A NAME="getHoleList"></A>
-<A NAME="DOC.2.168.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.1">HoleList</A>&amp; getHoleList()</B></TT>
+<A NAME="DOC.2.201.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.1">HoleList</A>&amp; getHoleList()</B></TT>
 <DD>return the list of holes
 <DL><DT><DD></DL><P>
 <A NAME="getHoleList"></A>
-<A NAME="DOC.2.168.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.1">HoleList</A>&amp; getHoleList() const </B></TT>
+<A NAME="DOC.2.201.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.1">HoleList</A>&amp; getHoleList() const </B></TT>
 <DD>return the const list of holes
 <DL><DT><DD></DL><P>
 <A NAME="contains"></A>
-<A NAME="DOC.2.168.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool contains(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)</B></TT>
+<A NAME="DOC.2.201.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool contains(const std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;&amp; vertices)</B></TT>
 <DD>return true if the specified vertex list is contaned entirely
 within this shadow occluder volume
 <DL><DT><DD></DL><P>
 <A NAME="contains"></A>
-<A NAME="DOC.2.168.16"></A>
+<A NAME="DOC.2.201.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool contains(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bound)</B></TT>
 <DD>return true if the specified bounding sphere is contaned entirely
 within this shadow occluder volume
 <DL><DT><DD></DL><P>
 <A NAME="contains"></A>
-<A NAME="DOC.2.168.17"></A>
+<A NAME="DOC.2.201.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool contains(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bound)</B></TT>
 <DD>return true if the specified bounding box is contained entirely
 within this shadow occluder volume
 <DL><DT><DD></DL><P>
 <A NAME="transformProvidingInverse"></A>
-<A NAME="DOC.2.168.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void transformProvidingInverse(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; matrix)</B></TT>
+<A NAME="DOC.2.201.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void transformProvidingInverse(const <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A>&amp; matrix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_volume"></A>
-<A NAME="DOC.2.168.19"></A>
+<A NAME="DOC.2.201.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _volume</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nodePath"></A>
-<A NAME="DOC.2.168.20"></A>
+<A NAME="DOC.2.201.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="NodePath.html">NodePath</A> _nodePath</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_projectionMatrix"></A>
-<A NAME="DOC.2.168.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt;  _projectionMatrix</B></TT>
+<A NAME="DOC.2.201.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;const <!1><A HREF="osg.html#DOC.2.135">RefMatrix</A>&gt;  _projectionMatrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_occluderVolume"></A>
-<A NAME="DOC.2.168.22"></A>
+<A NAME="DOC.2.201.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Polytope.html">Polytope</A> _occluderVolume</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_holeList"></A>
-<A NAME="DOC.2.168.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.168.1">HoleList</A> _holeList</B></TT>
+<A NAME="DOC.2.201.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ShadowVolumeOccluder.html#DOC.2.201.1">HoleList</A> _holeList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="disableResultMasks"></A>
-<A NAME="DOC.2.168.24"></A>
+<A NAME="DOC.2.201.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableResultMasks()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="pushCurrentMask"></A>
-<A NAME="DOC.2.168.25"></A>
+<A NAME="DOC.2.201.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushCurrentMask()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="popCurrentMask"></A>
-<A NAME="DOC.2.168.26"></A>
+<A NAME="DOC.2.201.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popCurrentMask()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -217,6 +217,6 @@ within this shadow occluder volume
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::Fog</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,76 +22,85 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.73.1">Fog</A></B>()
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.103.6">Mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.73.2">Fog</A></B>(const <!1><A HREF="Fog.html#DOC.2.73.2">Fog</A>&amp; fog, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
-<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.73.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Fog.html">Fog</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.9">FOG</A>)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.73.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
-<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.73.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.73.7">setMode</A></B>( <!1><A HREF="Fog.html#DOC.2.73.6">Mode</A> mode )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Fog.html#DOC.2.73.6">Mode</A> <B><A HREF="#DOC.2.73.8">getMode</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.73.9">setDensity</A></B>( float density )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.73.10">getDensity</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.73.11">setStart</A></B>( float <!1><A HREF="LineSegment.html#DOC.2.98.6">start</A> )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.73.12">getStart</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.73.13">setEnd</A></B>( float <!1><A HREF="TriangleFunctor.html#DOC.2.221.18">end</A> )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.73.14">getEnd</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.73.15">setColor</A></B>( const <!1><A HREF="Vec4.html">Vec4</A> &amp;color )
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.73.16">getColor</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.73.18">setFogCoordinateSource</A></B>(GLint source)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLint <B><A HREF="#DOC.2.73.19">getFogCoordinateSource</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.73.20">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.103.17">FogCoordinateSource</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.73.6">Mode</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.103.1">Fog</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.73.17">FogCoordinateSource</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.103.2">Fog</A></B>(const <!1><A HREF="Fog.html#DOC.2.103.2">Fog</A>&amp; fog, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.103.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Fog.html">Fog</A>, <!1><A HREF="StateAttribute.html#DOC.2.229.6.9">FOG</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.103.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.103.5">getModeUsage</A></B>(<!1><A HREF="StateAttribute.html#DOC.2.229.20">ModeUsage</A>&amp; usage) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.103.7">setMode</A></B>( <!1><A HREF="Fog.html#DOC.2.103.6">Mode</A> mode )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Fog.html#DOC.2.103.6">Mode</A> <B><A HREF="#DOC.2.103.8">getMode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.103.9">setDensity</A></B>( float density )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.103.10">getDensity</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.103.11">setStart</A></B>( float <!1><A HREF="LineSegment.html#DOC.2.129.6">start</A> )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.103.12">getStart</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.103.13">setEnd</A></B>( float <!1><A HREF="TriangleIndexFunctor.html#DOC.2.257.4">end</A> )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.103.14">getEnd</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.103.15">setColor</A></B>( const <!1><A HREF="osg.html#DOC.2.270">Vec4</A> &amp;color )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; <B><A HREF="#DOC.2.103.16">getColor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.103.18">setFogCoordinateSource</A></B>(GLint source)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLint <B><A HREF="#DOC.2.103.19">getFogCoordinateSource</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.103.20">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Fog.html#DOC.2.73.6">Mode</A> <B><A HREF="#DOC.2.73.22">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Fog.html#DOC.2.103.6">Mode</A> <B><A HREF="#DOC.2.103.22">_mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.73.23">_density</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.103.23">_density</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.73.24">_start</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.103.24">_start</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.73.25">_end</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.103.25">_end</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.73.26">_color</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.270">Vec4</A> <B><A HREF="#DOC.2.103.26">_color</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.73.27">_fogCoordinateSource</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.103.27">_fogCoordinateSource</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.73.21">~Fog</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.103.21">~Fog</A></B>()
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="StateAttribute.html">StateAttribute</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>ModeUsage</B>
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
@@ -104,7 +113,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.195.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.229.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -114,32 +123,35 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compileGLObjects</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>releaseGLObjects</B>(<!1><A HREF="State.html">State</A>* =0) const 
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  GLenum <B>GLMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>GLModeValue</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>OverrideValue</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
-<DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -149,13 +161,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -165,7 +172,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -182,6 +189,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -194,137 +203,137 @@
 <DL>
 
 <A NAME="Fog"></A>
-<A NAME="DOC.2.73.1"></A>
+<A NAME="DOC.2.103.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Fog()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Fog"></A>
-<A NAME="DOC.2.73.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Fog(const <!1><A HREF="Fog.html#DOC.2.73.2">Fog</A>&amp; fog, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.103.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Fog(const <!1><A HREF="Fog.html#DOC.2.103.2">Fog</A>&amp; fog, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.73.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Fog.html">Fog</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.9">FOG</A>)</B></TT>
+<A NAME="DOC.2.103.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Fog.html">Fog</A>, <!1><A HREF="StateAttribute.html#DOC.2.229.6.9">FOG</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.73.4"></A>
+<A NAME="DOC.2.103.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
-<A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.73.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<A NAME="getModeUsage"></A>
+<A NAME="DOC.2.103.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool getModeUsage(<!1><A HREF="StateAttribute.html#DOC.2.229.20">ModeUsage</A>&amp; usage) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Mode"></A>
-<A NAME="DOC.2.73.6"></A>
+<A NAME="DOC.2.103.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="LINEAR"></A>
-<A NAME="DOC.2.73.6.1"></A>
+<A NAME="DOC.2.103.6.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINEAR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EXP"></A>
-<A NAME="DOC.2.73.6.2"></A>
+<A NAME="DOC.2.103.6.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EXP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EXP2"></A>
-<A NAME="DOC.2.73.6.3"></A>
+<A NAME="DOC.2.103.6.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EXP2</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setMode"></A>
-<A NAME="DOC.2.73.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode( <!1><A HREF="Fog.html#DOC.2.73.6">Mode</A> mode )</B></TT>
+<A NAME="DOC.2.103.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode( <!1><A HREF="Fog.html#DOC.2.103.6">Mode</A> mode )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
-<A NAME="DOC.2.73.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Fog.html#DOC.2.73.6">Mode</A> getMode() const </B></TT>
+<A NAME="DOC.2.103.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Fog.html#DOC.2.103.6">Mode</A> getMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDensity"></A>
-<A NAME="DOC.2.73.9"></A>
+<A NAME="DOC.2.103.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDensity( float density )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDensity"></A>
-<A NAME="DOC.2.73.10"></A>
+<A NAME="DOC.2.103.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getDensity() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setStart"></A>
-<A NAME="DOC.2.73.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setStart( float <!1><A HREF="LineSegment.html#DOC.2.98.6">start</A> )</B></TT>
+<A NAME="DOC.2.103.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setStart( float <!1><A HREF="LineSegment.html#DOC.2.129.6">start</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStart"></A>
-<A NAME="DOC.2.73.12"></A>
+<A NAME="DOC.2.103.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getStart() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setEnd"></A>
-<A NAME="DOC.2.73.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnd( float <!1><A HREF="TriangleFunctor.html#DOC.2.221.18">end</A> )</B></TT>
+<A NAME="DOC.2.103.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnd( float <!1><A HREF="TriangleIndexFunctor.html#DOC.2.257.4">end</A> )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getEnd"></A>
-<A NAME="DOC.2.73.14"></A>
+<A NAME="DOC.2.103.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getEnd() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setColor"></A>
-<A NAME="DOC.2.73.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColor( const <!1><A HREF="Vec4.html">Vec4</A> &amp;color )</B></TT>
+<A NAME="DOC.2.103.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColor( const <!1><A HREF="osg.html#DOC.2.270">Vec4</A> &amp;color )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getColor"></A>
-<A NAME="DOC.2.73.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getColor() const </B></TT>
+<A NAME="DOC.2.103.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; getColor() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FogCoordinateSource"></A>
-<A NAME="DOC.2.73.17"></A>
+<A NAME="DOC.2.103.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  FogCoordinateSource</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="FOG_COORDINATE"></A>
-<A NAME="DOC.2.73.17.1"></A>
+<A NAME="DOC.2.103.17.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FOG_COORDINATE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FRAGMENT_DEPTH"></A>
-<A NAME="DOC.2.73.17.2"></A>
+<A NAME="DOC.2.103.17.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRAGMENT_DEPTH</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setFogCoordinateSource"></A>
-<A NAME="DOC.2.73.18"></A>
+<A NAME="DOC.2.103.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFogCoordinateSource(GLint source)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFogCoordinateSource"></A>
-<A NAME="DOC.2.73.19"></A>
+<A NAME="DOC.2.103.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   GLint getFogCoordinateSource() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.73.20"></A>
+<A NAME="DOC.2.103.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Fog"></A>
-<A NAME="DOC.2.73.21"></A>
+<A NAME="DOC.2.103.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Fog()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mode"></A>
-<A NAME="DOC.2.73.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Fog.html#DOC.2.73.6">Mode</A> _mode</B></TT>
+<A NAME="DOC.2.103.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Fog.html#DOC.2.103.6">Mode</A> _mode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_density"></A>
-<A NAME="DOC.2.73.23"></A>
+<A NAME="DOC.2.103.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _density</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_start"></A>
-<A NAME="DOC.2.73.24"></A>
+<A NAME="DOC.2.103.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _start</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_end"></A>
-<A NAME="DOC.2.73.25"></A>
+<A NAME="DOC.2.103.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _end</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_color"></A>
-<A NAME="DOC.2.73.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _color</B></TT>
+<A NAME="DOC.2.103.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.270">Vec4</A> _color</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fogCoordinateSource"></A>
-<A NAME="DOC.2.73.27"></A>
+<A NAME="DOC.2.103.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _fogCoordinateSource</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -332,6 +341,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

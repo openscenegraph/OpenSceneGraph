@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGUTIL_EXPORT osgUtil::RenderStageLighting</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -23,7 +23,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.19.9">AttrMatrixList</A> <B><A HREF="#DOC.2.19.12">_attrList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.19.9">AttrMatrixList</A> <B><A HREF="#DOC.2.19.14">_attrList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStageLighting.html#DOC.2.19.10">TexUnitAttrMatrixListMap</A> <B><A HREF="#DOC.2.19.15">_texAttrListMap</A></B>
 </DL></P>
 
 <P><DL>
@@ -42,21 +44,25 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.7">reset</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.10">addPositionedAttribute</A></B>(osg::RefMatrix* matrix, const osg::StateAttribute* attr)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.11">addPositionedAttribute</A></B>(osg::RefMatrix* matrix, const osg::StateAttribute* attr)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.11">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.12">addPositionedTextureAttribute</A></B>(unsigned int textureUnit, osg::RefMatrix* matrix, const osg::StateAttribute* attr)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.19.13">draw</A></B>(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt; const osg::StateAttribute*, osg::ref_ptr&lt;osg::RefMatrix&gt; &gt; <B><A HREF="#DOC.2.19.8">AttrMatrixPair</A></B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt; osg::ref_ptr&lt;const osg::StateAttribute&gt; , osg::ref_ptr&lt;osg::RefMatrix&gt; &gt;  <B><A HREF="#DOC.2.19.8">AttrMatrixPair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="RenderStageLighting.html#DOC.2.19.8">AttrMatrixPair</A> &gt; <B><A HREF="#DOC.2.19.9">AttrMatrixList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="RenderStageLighting.html#DOC.2.19.8">AttrMatrixPair</A> &gt;  <B><A HREF="#DOC.2.19.9">AttrMatrixList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; unsigned int, <!1><A HREF="RenderStageLighting.html#DOC.2.19.9">AttrMatrixList</A> &gt;  <B><A HREF="#DOC.2.19.10">TexUnitAttrMatrixListMap</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.19.13">~RenderStageLighting</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.19.16">~RenderStageLighting</A></B>()
 </DL></P>
 
 </DL>
@@ -98,26 +104,38 @@ RenderBin base class</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="AttrMatrixPair"></A>
 <A NAME="DOC.2.19.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt; const osg::StateAttribute*, osg::ref_ptr&lt;osg::RefMatrix&gt; &gt; AttrMatrixPair</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt; osg::ref_ptr&lt;const osg::StateAttribute&gt; , osg::ref_ptr&lt;osg::RefMatrix&gt; &gt;  AttrMatrixPair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AttrMatrixList"></A>
 <A NAME="DOC.2.19.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="RenderStageLighting.html#DOC.2.19.8">AttrMatrixPair</A> &gt; AttrMatrixList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="RenderStageLighting.html#DOC.2.19.8">AttrMatrixPair</A> &gt;  AttrMatrixList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="TexUnitAttrMatrixListMap"></A>
+<A NAME="DOC.2.19.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; unsigned int, <!1><A HREF="RenderStageLighting.html#DOC.2.19.9">AttrMatrixList</A> &gt;  TexUnitAttrMatrixListMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addPositionedAttribute"></A>
-<A NAME="DOC.2.19.10"></A>
+<A NAME="DOC.2.19.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addPositionedAttribute(osg::RefMatrix* matrix, const osg::StateAttribute* attr)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="addPositionedTextureAttribute"></A>
+<A NAME="DOC.2.19.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix, const osg::StateAttribute* attr)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.19.11"></A>
+<A NAME="DOC.2.19.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(osg::State&amp; state, <!1><A HREF="RenderLeaf.html">RenderLeaf</A>*&amp; previous)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_attrList"></A>
-<A NAME="DOC.2.19.12"></A>
+<A NAME="DOC.2.19.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.19.9">AttrMatrixList</A> _attrList</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_texAttrListMap"></A>
+<A NAME="DOC.2.19.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStageLighting.html#DOC.2.19.10">TexUnitAttrMatrixListMap</A> _texAttrListMap</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="~RenderStageLighting"></A>
-<A NAME="DOC.2.19.13"></A>
+<A NAME="DOC.2.19.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~RenderStageLighting()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -125,6 +143,6 @@ RenderBin base class</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

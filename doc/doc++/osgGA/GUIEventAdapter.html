@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGGA_EXPORT osgGA::GUIEventAdapter</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,56 +22,7 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.5.2">EventType</A> <B><A HREF="#DOC.2.5.5">getEventType</A></B>() const  = 0
-<DD><I>Get the EventType of the GUI event</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.5.6">getKey</A></B>() const  = 0
-<DD><I>key pressed, return -1 if inappr   opriate for this event.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.5.7">getButton</A></B>() const  = 0
-<DD><I>button pressed/released, return -1 if inappropriate for this event</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.9">setMouseYOrientation</A></B>(<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> myo)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> <B><A HREF="#DOC.2.5.10">getMouseYOrientation</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.11">getXmin</A></B>() const  = 0
-<DD><I>manimum x mouse position.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.12">getXmax</A></B>() const  = 0
-<DD><I>maximum x mouse position.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.13">getYmin</A></B>() const  = 0
-<DD><I>minimum y mouse position.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.14">getYmax</A></B>() const  = 0
-<DD><I>maximum y mouse position.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.15">getX</A></B>() const  = 0
-<DD><I>current mouse x position</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.16">getY</A></B>() const  = 0
-<DD><I>current mouse y position</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.17">getButtonMask</A></B>() const  = 0
-<DD><I>current mouse button state </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.18">getModKeyMask</A></B>() const  = 0
-<DD><I>current modkey state </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.2.5.19">time</A></B>() const  = 0
-<DD><I>time in seconds of event.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.20">getXnormalized</A></B>() const 
-<DD><I>return the getX() value normalised to the range of -1 to 1.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.21">getYnormalized</A></B>() const 
-<DD><I>return the getY() value normalised to the range of -1 to 1.</I>
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public Classes</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.1">MouseButtonMask</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.2">EventType</A></B>
@@ -81,6 +32,55 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.4">ModKeyMask</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.8">MouseYOrientation</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.5.2">EventType</A> <B><A HREF="#DOC.2.5.5">getEventType</A></B>() const 
+<DD><I>Get the EventType of the GUI event</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.5.6">getKey</A></B>() const 
+<DD><I>key pressed, return -1 if inappr   opriate for this event.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.5.7">getButton</A></B>() const 
+<DD><I>button pressed/released, return -1 if inappropriate for this event</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.9">setMouseYOrientation</A></B>(<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> myo)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> <B><A HREF="#DOC.2.5.10">getMouseYOrientation</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.11">getXmin</A></B>() const 
+<DD><I>manimum x mouse position.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.12">getXmax</A></B>() const 
+<DD><I>maximum x mouse position.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.13">getYmin</A></B>() const 
+<DD><I>minimum y mouse position.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.14">getYmax</A></B>() const 
+<DD><I>maximum y mouse position.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.15">getX</A></B>() const 
+<DD><I>current mouse x position</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.16">getY</A></B>() const 
+<DD><I>current mouse y position</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.17">getButtonMask</A></B>() const 
+<DD><I>current mouse button state </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.18">getModKeyMask</A></B>() const 
+<DD><I>current modkey state </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.2.5.19">time</A></B>() const 
+<DD><I>time in seconds of event.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.20">getXnormalized</A></B>() const 
+<DD><I>return the getX() value normalised to the range of -1 to 1.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.21">getYnormalized</A></B>() const 
+<DD><I>return the getY() value normalised to the range of -1 to 1.</I>
 </DL></P>
 
 <P><DL>
@@ -749,17 +749,17 @@ as appropriate.</BLOCKQUOTE>
 
 <A NAME="getEventType"></A>
 <A NAME="DOC.2.5.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.5.2">EventType</A> getEventType() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.5.2">EventType</A> getEventType() const </B></TT>
 <DD>Get the EventType of the GUI event
 <DL><DT><DD></DL><P>
 <A NAME="getKey"></A>
 <A NAME="DOC.2.5.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int getKey() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int getKey() const </B></TT>
 <DD>key pressed, return -1 if inappr   opriate for this event. 
 <DL><DT><DD></DL><P>
 <A NAME="getButton"></A>
 <A NAME="DOC.2.5.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int getButton() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int getButton() const </B></TT>
 <DD>button pressed/released, return -1 if inappropriate for this event
 <DL><DT><DD></DL><P>
 <A NAME="MouseYOrientation"></A>
@@ -786,47 +786,47 @@ as appropriate.</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="getXmin"></A>
 <A NAME="DOC.2.5.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getXmin() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getXmin() const </B></TT>
 <DD>manimum x mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getXmax"></A>
 <A NAME="DOC.2.5.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getXmax() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getXmax() const </B></TT>
 <DD>maximum x mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getYmin"></A>
 <A NAME="DOC.2.5.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getYmin() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getYmin() const </B></TT>
 <DD>minimum y mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getYmax"></A>
 <A NAME="DOC.2.5.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getYmax() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getYmax() const </B></TT>
 <DD>maximum y mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getX"></A>
 <A NAME="DOC.2.5.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getX() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getX() const </B></TT>
 <DD>current mouse x position
 <DL><DT><DD></DL><P>
 <A NAME="getY"></A>
 <A NAME="DOC.2.5.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getY() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getY() const </B></TT>
 <DD>current mouse y position
 <DL><DT><DD></DL><P>
 <A NAME="getButtonMask"></A>
 <A NAME="DOC.2.5.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getButtonMask() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getButtonMask() const </B></TT>
 <DD>current mouse button state 
 <DL><DT><DD></DL><P>
 <A NAME="getModKeyMask"></A>
 <A NAME="DOC.2.5.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getModKeyMask() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getModKeyMask() const </B></TT>
 <DD>current modkey state 
 <DL><DT><DD></DL><P>
 <A NAME="time"></A>
 <A NAME="DOC.2.5.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   double time() const  = 0</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   double time() const </B></TT>
 <DD>time in seconds of event. 
 <DL><DT><DD></DL><P>
 <A NAME="getXnormalized"></A>
@@ -863,6 +863,6 @@ as appropriate.</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

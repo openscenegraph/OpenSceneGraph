@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGPARTICLE_EXPORT osgParticle::ParticleProcessor</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,107 +22,110 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.2">ParticleProcessor</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.15.3">ParticleProcessor</A></B>(const <!1><A HREF="ParticleProcessor.html#DOC.2.15.3">ParticleProcessor</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.15.4">libraryName</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.15.5">className</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.15.6">isSameKindAs</A></B>(const osg::Object* obj) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.7">accept</A></B>(osg::NodeVisitor&amp; nv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.15.1">ReferenceFrame</A> <B><A HREF="#DOC.2.15.8">getReferenceFrame</A></B>() const 
-<DD><I>Get the reference frame</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.15.9">traverse</A></B>(osg::NodeVisitor &amp;nv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ParticleProcessor::ReferenceFrame <B><A HREF="#DOC.2.15.27">getReferenceFrame</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.28">setReferenceFrame</A></B>(<!1><A HREF="ParticleProcessor.html#DOC.2.15.1">ReferenceFrame</A> rf)
-<DD><I>Set the reference frame</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.29">isEnabled</A></B>() const 
-<DD><I>Get whether this processor is enabled or not</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.30">setEnabled</A></B>(bool v)
-<DD><I>Set whether this processor is enabled or not</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B><A HREF="#DOC.2.15.31">getParticleSystem</A></B>()
-<DD><I>Get a pointer to the destination particle system</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B><A HREF="#DOC.2.15.32">getParticleSystem</A></B>() const 
-<DD><I>Get a const pointer to the destination particle system</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.33">setParticleSystem</A></B>(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>* ps)
-<DD><I>Set the destination particle system</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.34">setEndless</A></B>(bool type)
-<DD><I>Set the endless flag of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.35">isEndless</A></B>() const 
-<DD><I>Check whether this processor is endless</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.36">setLifeTime</A></B>(double t)
-<DD><I>Set the lifetime of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.15.37">getLifeTime</A></B>() const 
-<DD><I>Get the lifetime of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.38">setStartTime</A></B>(double t)
-<DD><I>Set the start time of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.15.39">getStartTime</A></B>() const 
-<DD><I>Get the start time of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.40">setCurrentTime</A></B>(double t)
-<DD><I>Set the current time of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.15.41">getCurrentTime</A></B>() const 
-<DD><I>Get the current time of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.15.42">setResetTime</A></B>(double t)
-<DD><I>Set the reset time of this processor.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.15.43">getResetTime</A></B>() const 
-<DD><I>Get the reset time of this processor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.15.44">computeBound</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Matrix&amp; <B><A HREF="#DOC.2.15.45">getLocalToWorldMatrix</A></B>()
-<DD><I>Get the current local-to-world transformation matrix (valid only during cull traversal)</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Matrix&amp; <B><A HREF="#DOC.2.15.46">getWorldToLocalMatrix</A></B>()
-<DD><I>Get the current world-to-local transformation matrix (valid only during cull traversal)</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.15.47">transformLocalToWorld</A></B>(const osg::Vec3 &amp;P)
-<DD><I>Transform a point from local to world coordinates (valid only during cull traversal)</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.15.48">transformWorldToLocal</A></B>(const osg::Vec3 &amp;P)
-<DD><I>Transform a point from world to local coordinates (valid only during cull traversal)</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.15.49">rotateLocalToWorld</A></B>(const osg::Vec3 &amp;P)
-<DD><I>Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal)</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.15.50">rotateWorldToLocal</A></B>(const osg::Vec3 &amp;P)
-<DD><I>Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal)</I>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.18.1">ReferenceFrame</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.15.1">ReferenceFrame</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.18.2">ParticleProcessor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.18.3">ParticleProcessor</A></B>(const <!1><A HREF="ParticleProcessor.html#DOC.2.18.3">ParticleProcessor</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.18.4">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.18.5">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.18.6">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.18.7">accept</A></B>(osg::NodeVisitor&amp; nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.18.1">ReferenceFrame</A> <B><A HREF="#DOC.2.18.8">getReferenceFrame</A></B>() const 
+<DD><I>Get the reference frame</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.18.9">traverse</A></B>(osg::NodeVisitor &amp;nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ParticleProcessor::ReferenceFrame <B><A HREF="#DOC.2.18.27">getReferenceFrame</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.28">setReferenceFrame</A></B>(<!1><A HREF="ParticleProcessor.html#DOC.2.18.1">ReferenceFrame</A> rf)
+<DD><I>Set the reference frame</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.18.29">isEnabled</A></B>() const 
+<DD><I>Get whether this processor is enabled or not</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.30">setEnabled</A></B>(bool v)
+<DD><I>Set whether this processor is enabled or not</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B><A HREF="#DOC.2.18.31">getParticleSystem</A></B>()
+<DD><I>Get a pointer to the destination particle system</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* <B><A HREF="#DOC.2.18.32">getParticleSystem</A></B>() const 
+<DD><I>Get a const pointer to the destination particle system</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.33">setParticleSystem</A></B>(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>* ps)
+<DD><I>Set the destination particle system</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.34">setEndless</A></B>(bool type)
+<DD><I>Set the endless flag of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.18.35">isEndless</A></B>() const 
+<DD><I>Check whether this processor is endless</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.36">setLifeTime</A></B>(double t)
+<DD><I>Set the lifetime of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.18.37">getLifeTime</A></B>() const 
+<DD><I>Get the lifetime of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.38">setStartTime</A></B>(double t)
+<DD><I>Set the start time of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.18.39">getStartTime</A></B>() const 
+<DD><I>Get the start time of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.40">setCurrentTime</A></B>(double t)
+<DD><I>Set the current time of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.18.41">getCurrentTime</A></B>() const 
+<DD><I>Get the current time of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.18.42">setResetTime</A></B>(double t)
+<DD><I>Set the reset time of this processor.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.18.43">getResetTime</A></B>() const 
+<DD><I>Get the reset time of this processor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.18.44">computeBound</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Matrix&amp; <B><A HREF="#DOC.2.18.45">getLocalToWorldMatrix</A></B>()
+<DD><I>Get the current local-to-world transformation matrix (valid only during cull traversal)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Matrix&amp; <B><A HREF="#DOC.2.18.46">getWorldToLocalMatrix</A></B>()
+<DD><I>Get the current world-to-local transformation matrix (valid only during cull traversal)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.18.47">transformLocalToWorld</A></B>(const osg::Vec3 &amp;P)
+<DD><I>Transform a point from local to world coordinates (valid only during cull traversal)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.18.48">transformWorldToLocal</A></B>(const osg::Vec3 &amp;P)
+<DD><I>Transform a point from world to local coordinates (valid only during cull traversal)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.18.49">rotateLocalToWorld</A></B>(const osg::Vec3 &amp;P)
+<DD><I>Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Vec3 <B><A HREF="#DOC.2.18.50">rotateWorldToLocal</A></B>(const osg::Vec3 &amp;P)
+<DD><I>Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.18.51">isAlive</A></B>() const 
+<DD><I> Check whether the processor is alive with respect to start time and life duration.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.15.10">~ParticleProcessor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.18.10">~ParticleProcessor</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ParticleProcessor.html">ParticleProcessor</A>&amp; <B><A HREF="#DOC.2.15.11">operator=</A></B>(const <!1><A HREF="ParticleProcessor.html">ParticleProcessor</A> &amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ParticleProcessor.html">ParticleProcessor</A>&amp; <B><A HREF="#DOC.2.18.11">operator=</A></B>(const <!1><A HREF="ParticleProcessor.html">ParticleProcessor</A> &amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.15.12">process</A></B>(double dt) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.18.12">process</A></B>(double dt)
 </DL></P>
 
 </DL>
@@ -138,181 +141,191 @@ transformations when needed.</BLOCKQUOTE>
 <DL>
 
 <A NAME="ReferenceFrame"></A>
-<A NAME="DOC.2.15.1"></A>
+<A NAME="DOC.2.18.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ReferenceFrame</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="RELATIVE_TO_PARENTS"></A>
-<A NAME="DOC.2.15.1.1"></A>
+<A NAME="DOC.2.18.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RELATIVE_TO_PARENTS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RELATIVE_TO_ABSOLUTE"></A>
-<A NAME="DOC.2.15.1.2"></A>
+<A NAME="DOC.2.18.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RELATIVE_TO_ABSOLUTE</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="ParticleProcessor"></A>
-<A NAME="DOC.2.15.2"></A>
+<A NAME="DOC.2.18.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleProcessor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ParticleProcessor"></A>
-<A NAME="DOC.2.15.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleProcessor(const <!1><A HREF="ParticleProcessor.html#DOC.2.15.3">ParticleProcessor</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.18.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ParticleProcessor(const <!1><A HREF="ParticleProcessor.html#DOC.2.18.3">ParticleProcessor</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.15.4"></A>
+<A NAME="DOC.2.18.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.15.5"></A>
+<A NAME="DOC.2.18.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.15.6"></A>
+<A NAME="DOC.2.18.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const osg::Object* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
-<A NAME="DOC.2.15.7"></A>
+<A NAME="DOC.2.18.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(osg::NodeVisitor&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getReferenceFrame"></A>
-<A NAME="DOC.2.15.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.15.1">ReferenceFrame</A> getReferenceFrame() const </B></TT>
+<A NAME="DOC.2.18.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="ParticleProcessor.html#DOC.2.18.1">ReferenceFrame</A> getReferenceFrame() const </B></TT>
 <DD>Get the reference frame
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.15.9"></A>
+<A NAME="DOC.2.18.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void traverse(osg::NodeVisitor &amp;nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~ParticleProcessor"></A>
-<A NAME="DOC.2.15.10"></A>
+<A NAME="DOC.2.18.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ParticleProcessor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator="></A>
-<A NAME="DOC.2.15.11"></A>
+<A NAME="DOC.2.18.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ParticleProcessor.html">ParticleProcessor</A>&amp; operator=(const <!1><A HREF="ParticleProcessor.html">ParticleProcessor</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="process"></A>
-<A NAME="DOC.2.15.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void process(double dt) = 0</B></TT>
+<A NAME="DOC.2.18.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void process(double dt)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getReferenceFrame"></A>
-<A NAME="DOC.2.15.27"></A>
+<A NAME="DOC.2.18.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ParticleProcessor::ReferenceFrame getReferenceFrame() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setReferenceFrame"></A>
-<A NAME="DOC.2.15.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setReferenceFrame(<!1><A HREF="ParticleProcessor.html#DOC.2.15.1">ReferenceFrame</A> rf)</B></TT>
+<A NAME="DOC.2.18.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setReferenceFrame(<!1><A HREF="ParticleProcessor.html#DOC.2.18.1">ReferenceFrame</A> rf)</B></TT>
 <DD>Set the reference frame
 <DL><DT><DD></DL><P>
 <A NAME="isEnabled"></A>
-<A NAME="DOC.2.15.29"></A>
+<A NAME="DOC.2.18.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isEnabled() const </B></TT>
 <DD>Get whether this processor is enabled or not
 <DL><DT><DD></DL><P>
 <A NAME="setEnabled"></A>
-<A NAME="DOC.2.15.30"></A>
+<A NAME="DOC.2.18.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnabled(bool v)</B></TT>
 <DD>Set whether this processor is enabled or not
 <DL><DT><DD></DL><P>
 <A NAME="getParticleSystem"></A>
-<A NAME="DOC.2.15.31"></A>
+<A NAME="DOC.2.18.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* getParticleSystem()</B></TT>
 <DD>Get a pointer to the destination particle system
 <DL><DT><DD></DL><P>
 <A NAME="getParticleSystem"></A>
-<A NAME="DOC.2.15.32"></A>
+<A NAME="DOC.2.18.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="ParticleSystem.html">ParticleSystem</A>* getParticleSystem() const </B></TT>
 <DD>Get a const pointer to the destination particle system
 <DL><DT><DD></DL><P>
 <A NAME="setParticleSystem"></A>
-<A NAME="DOC.2.15.33"></A>
+<A NAME="DOC.2.18.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setParticleSystem(<!1><A HREF="ParticleSystem.html">ParticleSystem</A>* ps)</B></TT>
 <DD>Set the destination particle system
 <DL><DT><DD></DL><P>
 <A NAME="setEndless"></A>
-<A NAME="DOC.2.15.34"></A>
+<A NAME="DOC.2.18.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEndless(bool type)</B></TT>
 <DD>Set the endless flag of this processor
 <DL><DT><DD></DL><P>
 <A NAME="isEndless"></A>
-<A NAME="DOC.2.15.35"></A>
+<A NAME="DOC.2.18.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isEndless() const </B></TT>
 <DD>Check whether this processor is endless
 <DL><DT><DD></DL><P>
 <A NAME="setLifeTime"></A>
-<A NAME="DOC.2.15.36"></A>
+<A NAME="DOC.2.18.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLifeTime(double t)</B></TT>
 <DD>Set the lifetime of this processor
 <DL><DT><DD></DL><P>
 <A NAME="getLifeTime"></A>
-<A NAME="DOC.2.15.37"></A>
+<A NAME="DOC.2.18.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getLifeTime() const </B></TT>
 <DD>Get the lifetime of this processor
 <DL><DT><DD></DL><P>
 <A NAME="setStartTime"></A>
-<A NAME="DOC.2.15.38"></A>
+<A NAME="DOC.2.18.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setStartTime(double t)</B></TT>
 <DD>Set the start time of this processor
 <DL><DT><DD></DL><P>
 <A NAME="getStartTime"></A>
-<A NAME="DOC.2.15.39"></A>
+<A NAME="DOC.2.18.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getStartTime() const </B></TT>
 <DD>Get the start time of this processor
 <DL><DT><DD></DL><P>
 <A NAME="setCurrentTime"></A>
-<A NAME="DOC.2.15.40"></A>
+<A NAME="DOC.2.18.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCurrentTime(double t)</B></TT>
 <DD>Set the current time of this processor
 <DL><DT><DD></DL><P>
 <A NAME="getCurrentTime"></A>
-<A NAME="DOC.2.15.41"></A>
+<A NAME="DOC.2.18.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getCurrentTime() const </B></TT>
 <DD>Get the current time of this processor
 <DL><DT><DD></DL><P>
 <A NAME="setResetTime"></A>
-<A NAME="DOC.2.15.42"></A>
+<A NAME="DOC.2.18.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setResetTime(double t)</B></TT>
 <DD>Set the reset time of this processor. A value of 0 disables reset.
 <DL><DT><DD></DL><P>
 <A NAME="getResetTime"></A>
-<A NAME="DOC.2.15.43"></A>
+<A NAME="DOC.2.18.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getResetTime() const </B></TT>
 <DD>Get the reset time of this processor
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.15.44"></A>
+<A NAME="DOC.2.18.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLocalToWorldMatrix"></A>
-<A NAME="DOC.2.15.45"></A>
+<A NAME="DOC.2.18.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Matrix&amp; getLocalToWorldMatrix()</B></TT>
 <DD>Get the current local-to-world transformation matrix (valid only during cull traversal)
 <DL><DT><DD></DL><P>
 <A NAME="getWorldToLocalMatrix"></A>
-<A NAME="DOC.2.15.46"></A>
+<A NAME="DOC.2.18.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Matrix&amp; getWorldToLocalMatrix()</B></TT>
 <DD>Get the current world-to-local transformation matrix (valid only during cull traversal)
 <DL><DT><DD></DL><P>
 <A NAME="transformLocalToWorld"></A>
-<A NAME="DOC.2.15.47"></A>
+<A NAME="DOC.2.18.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec3 transformLocalToWorld(const osg::Vec3 &amp;P)</B></TT>
 <DD>Transform a point from local to world coordinates (valid only during cull traversal)
 <DL><DT><DD></DL><P>
 <A NAME="transformWorldToLocal"></A>
-<A NAME="DOC.2.15.48"></A>
+<A NAME="DOC.2.18.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec3 transformWorldToLocal(const osg::Vec3 &amp;P)</B></TT>
 <DD>Transform a point from world to local coordinates (valid only during cull traversal)
 <DL><DT><DD></DL><P>
 <A NAME="rotateLocalToWorld"></A>
-<A NAME="DOC.2.15.49"></A>
+<A NAME="DOC.2.18.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec3 rotateLocalToWorld(const osg::Vec3 &amp;P)</B></TT>
 <DD>Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal)
 <DL><DT><DD></DL><P>
 <A NAME="rotateWorldToLocal"></A>
-<A NAME="DOC.2.15.50"></A>
+<A NAME="DOC.2.18.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Vec3 rotateWorldToLocal(const osg::Vec3 &amp;P)</B></TT>
 <DD>Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal)
+<DL><DT><DD></DL><P>
+<A NAME="isAlive"></A>
+<A NAME="DOC.2.18.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isAlive() const </B></TT>
+<DD>
+Check whether the processor is alive with respect to start time and
+life duration. Note that this method may return true even if the 
+processor has been disabled by calling setEnabled(false). To test
+whether the processor is actually processing particles or not, you
+should evaluate (isEnabled() && isAlive()).
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
@@ -322,6 +335,6 @@ transformations when needed.</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -3,11 +3,11 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGUTIL_EXPORT osgUtil::Optimizer::CombineLODsVisitor</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">CombineLODsVisitor</A></H2></H2><BLOCKQUOTE>Optimize the LOD groups, by combining adjacent LOD's which have complementary ranges</BLOCKQUOTE>
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::Optimizer::CombineLODsVisitor</A></H2></H2><BLOCKQUOTE>Optimize the LOD groups, by combining adjacent LOD's which have complementary ranges</BLOCKQUOTE>
 <HR>
 
 <H2>Inheritance:</H2>
@@ -23,21 +23,25 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CombineLODsVisitor.html#DOC.2.11.7.1">GroupList</A> <B><A HREF="#DOC.2.11.7.2">_groupList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CombineLODsVisitor.html#DOC.2.11.19.1">GroupList</A> <B><A HREF="#DOC.2.11.19.2">_groupList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Optimizer.html">Optimizer</A>* <B><A HREF="#DOC.2.11.19.7">_optimizer</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.7.3">CombineLODsVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.19.3">CombineLODsVisitor</A></B>(<!1><A HREF="Optimizer.html">Optimizer</A>* optimizer=0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.7.4">apply</A></B>(osg::LOD&amp; lod)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.11.19.4">apply</A></B>(osg::LOD&amp; lod)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.7.5">combineLODs</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.19.5">combineLODs</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.11.19.6">isOperationPermissableForObject</A></B>(const osg::Object* object) const 
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::set&lt;osg::Group*&gt; <B><A HREF="#DOC.2.11.7.1">GroupList</A></B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::set&lt;osg::Group*&gt;  <B><A HREF="#DOC.2.11.19.1">GroupList</A></B>
 </DL></P>
 
 </DL>
@@ -50,30 +54,38 @@ complementary ranges</BLOCKQUOTE>
 <DL>
 
 <A NAME="GroupList"></A>
-<A NAME="DOC.2.11.7.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::set&lt;osg::Group*&gt; GroupList</B></TT>
+<A NAME="DOC.2.11.19.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::set&lt;osg::Group*&gt;  GroupList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_groupList"></A>
-<A NAME="DOC.2.11.7.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CombineLODsVisitor.html#DOC.2.11.7.1">GroupList</A> _groupList</B></TT>
+<A NAME="DOC.2.11.19.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CombineLODsVisitor.html#DOC.2.11.19.1">GroupList</A> _groupList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CombineLODsVisitor"></A>
-<A NAME="DOC.2.11.7.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CombineLODsVisitor()</B></TT>
+<A NAME="DOC.2.11.19.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CombineLODsVisitor(<!1><A HREF="Optimizer.html">Optimizer</A>* optimizer=0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.11.7.4"></A>
+<A NAME="DOC.2.11.19.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::LOD&amp; lod)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="combineLODs"></A>
-<A NAME="DOC.2.11.7.5"></A>
+<A NAME="DOC.2.11.19.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void combineLODs()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isOperationPermissableForObject"></A>
+<A NAME="DOC.2.11.19.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isOperationPermissableForObject(const osg::Object* object) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_optimizer"></A>
+<A NAME="DOC.2.11.19.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Optimizer.html">Optimizer</A>* _optimizer</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

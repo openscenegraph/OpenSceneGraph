@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::Billboard</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,93 +22,100 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.2">Billboard</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.3">Billboard</A></B>(const <!1><A HREF="Billboard.html#DOC.2.27.3">Billboard</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
-<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Billboard.html">Billboard</A>)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.5">setMode</A></B>(<!1><A HREF="Billboard.html#DOC.2.27.1">Mode</A> mode)
-<DD><I>Set the billboard rotation mode.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Billboard.html#DOC.2.27.1">Mode</A> <B><A HREF="#DOC.2.27.6">getMode</A></B>() const 
-<DD><I>Get the billboard rotation mode.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.7">setAxis</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)
-<DD><I>Set the axis about which all the billboard's drawable rotate.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.27.8">getAxis</A></B>() const 
-<DD><I>Get the axis about which all the billboard's drawable rotate.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.9">setNormal</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; normal)
-<DD><I>Set the normal which defines the billboard's drawable front face, when unrotated.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.27.10">getNormal</A></B>() const 
-<DD><I>Get the normal of billboard's drawable front face.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.27.11">setPos</A></B>(unsigned int i, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
-<DD><I>Set the position of specified drawable.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.27.12">getPos</A></B>(unsigned int i) const 
-<DD><I>Get the position of specified drawable.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Billboard.html#DOC.2.27.13">PositionList</A>&amp; <B><A HREF="#DOC.2.27.14">getPositionList</A></B>()
-<DD><I>Get the PositionList from the billboard</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Billboard.html#DOC.2.27.13">PositionList</A>&amp; <B><A HREF="#DOC.2.27.15">getPositionList</A></B>() const 
-<DD><I>Get a const PositionList from the billboard</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.27.16">addDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* gset )
-<DD><I>Add Drawable to Billboard with default position(0,0,0); If gset not NULL and is not contained in Billboard then increment its  reference count, and dirty the bounding box to cause it to recompute on  next getBound() and return true for success.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.27.17">addDrawable</A></B>(<!1><A HREF="Drawable.html">Drawable</A>* gset, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)
-<DD><I>Add Drawable to Geode at position pos.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.27.18">removeDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* gset )
-<DD><I>Remove Drawable and associated position from Billboard.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.27.19">getMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.27.20">computeMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const 
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.43.1">Mode</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.27.1">Mode</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.43.2">Billboard</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; <B><A HREF="#DOC.2.27.13">PositionList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.43.3">Billboard</A></B>(const <!1><A HREF="Billboard.html#DOC.2.43.3">Billboard</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.43.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Billboard.html">Billboard</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.5">setMode</A></B>(<!1><A HREF="Billboard.html#DOC.2.43.1">Mode</A> mode)
+<DD><I>Set the billboard rotation mode.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Billboard.html#DOC.2.43.1">Mode</A> <B><A HREF="#DOC.2.43.6">getMode</A></B>() const 
+<DD><I>Get the billboard rotation mode.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.7">setAxis</A></B>(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; axis)
+<DD><I>Set the axis about which all the billboard's drawable rotate.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; <B><A HREF="#DOC.2.43.8">getAxis</A></B>() const 
+<DD><I>Get the axis about which all the billboard's drawable rotate.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.9">setNormal</A></B>(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; normal)
+<DD><I>Set the normal which defines the billboard's drawable front face, when unrotated.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; <B><A HREF="#DOC.2.43.10">getNormal</A></B>() const 
+<DD><I>Get the normal of billboard's drawable front face.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.43.11">setPos</A></B>(unsigned int i, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos)
+<DD><I>Set the position of specified drawable.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; <B><A HREF="#DOC.2.43.12">getPos</A></B>(unsigned int i) const 
+<DD><I>Get the position of specified drawable.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.43.13">setPosition</A></B>(unsigned int i, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos)
+<DD><I>Set the position of specified drawable.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; <B><A HREF="#DOC.2.43.14">getPosition</A></B>(unsigned int i) const 
+<DD><I>Get the position of specified drawable.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Billboard.html#DOC.2.43.15">PositionList</A>&amp; <B><A HREF="#DOC.2.43.16">getPositionList</A></B>()
+<DD><I>Get the PositionList from the billboard</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Billboard.html#DOC.2.43.15">PositionList</A>&amp; <B><A HREF="#DOC.2.43.17">getPositionList</A></B>() const 
+<DD><I>Get a const PositionList from the billboard</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.43.18">addDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* gset )
+<DD><I>Add Drawable to Billboard with default position(0,0,0); If gset not NULL and is not contained in Billboard then increment its  reference count, and dirty the bounding box to cause it to recompute on  next getBound() and return true for success.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.43.19">addDrawable</A></B>(<!1><A HREF="Drawable.html">Drawable</A>* gset, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos)
+<DD><I>Add Drawable to Geode at position pos.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.43.20">removeDrawable</A></B>( <!1><A HREF="Drawable.html">Drawable</A>* gset )
+<DD><I>Remove Drawable and associated position from Billboard.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.43.21">computeMatrix</A></B>(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; modelview, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; eye_local, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos_local) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;  <B><A HREF="#DOC.2.43.15">PositionList</A></B>
 <DD><I>PositionList represents a list of pivot points for each drawable</I>
 </DL></P>
 
 <P><DL>
+<DT><H3>Protected Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.43.24">AxisAligned</A></B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Billboard.html#DOC.2.27.1">Mode</A> <B><A HREF="#DOC.2.27.24">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Billboard.html#DOC.2.43.1">Mode</A> <B><A HREF="#DOC.2.43.25">_mode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.27.25">_axis</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.43.26">_axis</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.27.26">_normal</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.43.27">_normal</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Billboard.html#DOC.2.27.13">PositionList</A> <B><A HREF="#DOC.2.27.27">_positionList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Billboard.html#DOC.2.43.15">PositionList</A> <B><A HREF="#DOC.2.43.28">_positionList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.27.28">_cachedMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.43.29">_cachedMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.27.29">_side</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.262">Vec3</A> <B><A HREF="#DOC.2.43.30">_side</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.27.21">~Billboard</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.43.22">~Billboard</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.27.22">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.43.23">computeBound</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.30">updateCache</A></B>()
-</DL></P>
-
-<P><DL>
-<DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.27.23">AxisAligned</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.31">updateCache</A></B>()
 </DL></P>
 
 </DL>
@@ -131,16 +138,20 @@
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getDrawableIndex</B>( const <!1><A HREF="Drawable.html">Drawable</A>* node ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>compileDrawables</B>(<!1><A HREF="State.html">State</A>&amp; state)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; <B>getBoundingBox</B>() const 
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html">Drawable</A>&gt; &gt; <B>DrawableList</B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html">Drawable</A>&gt; &gt;  <B>DrawableList</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Geode.html#DOC.2.83.1">DrawableList</A> <B>_drawables</B>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="BoundingBox.html">osg::BoundingBox</A> <B>_bbox</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Geode.html#DOC.2.107.1">DrawableList</A> <B>_drawables</B>
 </DL></P>
 
 </DL>
@@ -172,15 +183,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.202.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.246.1.3">name</A> )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.202.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.246.1.3">name</A> )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.119.18">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.155.18">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.119.18">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.18">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -214,13 +225,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.119.37">NodeMask</A> nm)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> nm)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.119.37">NodeMask</A> <B>getNodeMask</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.119.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.119.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
 <DT>
@@ -244,12 +255,12 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt; <B>ParentList</B>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="Group.html">Group</A>*&gt;  <B>ParentList</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>NodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt; <B>DescriptionList</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;std::string&gt;  <B>DescriptionList</B>
 </DL></P>
 
 <P><DL>
@@ -260,7 +271,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.119.18">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.18">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
@@ -274,9 +285,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.119.37">NodeMask</A> <B>_nodeMask</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.37">NodeMask</A> <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.119.40">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.155.40">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 </DL></P>
@@ -298,10 +309,15 @@
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -311,13 +327,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -327,7 +338,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -344,6 +355,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -357,93 +370,103 @@ the eye point.  Typical uses are for trees, or particle explosions.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Mode"></A>
-<A NAME="DOC.2.27.1"></A>
+<A NAME="DOC.2.43.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="POINT_ROT_EYE"></A>
-<A NAME="DOC.2.27.1.1"></A>
+<A NAME="DOC.2.43.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT_ROT_EYE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="POINT_ROT_WORLD"></A>
-<A NAME="DOC.2.27.1.2"></A>
+<A NAME="DOC.2.43.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT_ROT_WORLD</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AXIAL_ROT"></A>
-<A NAME="DOC.2.27.1.3"></A>
+<A NAME="DOC.2.43.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AXIAL_ROT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Billboard"></A>
-<A NAME="DOC.2.27.2"></A>
+<A NAME="DOC.2.43.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Billboard()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Billboard"></A>
-<A NAME="DOC.2.27.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Billboard(const <!1><A HREF="Billboard.html#DOC.2.27.3">Billboard</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.43.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Billboard(const <!1><A HREF="Billboard.html#DOC.2.43.3">Billboard</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.27.4"></A>
+<A NAME="DOC.2.43.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Billboard.html">Billboard</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMode"></A>
-<A NAME="DOC.2.27.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="Billboard.html#DOC.2.27.1">Mode</A> mode)</B></TT>
+<A NAME="DOC.2.43.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMode(<!1><A HREF="Billboard.html#DOC.2.43.1">Mode</A> mode)</B></TT>
 <DD>Set the billboard rotation mode. 
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
-<A NAME="DOC.2.27.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Billboard.html#DOC.2.27.1">Mode</A> getMode() const </B></TT>
+<A NAME="DOC.2.43.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Billboard.html#DOC.2.43.1">Mode</A> getMode() const </B></TT>
 <DD>Get the billboard rotation mode. 
 <DL><DT><DD></DL><P>
 <A NAME="setAxis"></A>
-<A NAME="DOC.2.27.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAxis(const <!1><A HREF="Vec3.html">Vec3</A>&amp; axis)</B></TT>
+<A NAME="DOC.2.43.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAxis(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; axis)</B></TT>
 <DD>Set the axis about which all the billboard's drawable rotate. Only utlized when mode==AXIAL_ROT
 <DL><DT><DD></DL><P>
 <A NAME="getAxis"></A>
-<A NAME="DOC.2.27.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getAxis() const </B></TT>
+<A NAME="DOC.2.43.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; getAxis() const </B></TT>
 <DD>Get the axis about which all the billboard's drawable rotate. 
 <DL><DT><DD></DL><P>
 <A NAME="setNormal"></A>
-<A NAME="DOC.2.27.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormal(const <!1><A HREF="Vec3.html">Vec3</A>&amp; normal)</B></TT>
+<A NAME="DOC.2.43.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNormal(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; normal)</B></TT>
 <DD>Set the normal which defines the billboard's drawable front face, when unrotated. 
 <DL><DT><DD></DL><P>
 <A NAME="getNormal"></A>
-<A NAME="DOC.2.27.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getNormal() const </B></TT>
+<A NAME="DOC.2.43.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; getNormal() const </B></TT>
 <DD>Get the normal of billboard's drawable front face. 
 <DL><DT><DD></DL><P>
 <A NAME="setPos"></A>
-<A NAME="DOC.2.27.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPos(unsigned int i, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)</B></TT>
+<A NAME="DOC.2.43.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPos(unsigned int i, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos)</B></TT>
 <DD>Set the position of specified drawable. 
 <DL><DT><DD></DL><P>
 <A NAME="getPos"></A>
-<A NAME="DOC.2.27.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getPos(unsigned int i) const </B></TT>
+<A NAME="DOC.2.43.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; getPos(unsigned int i) const </B></TT>
+<DD>Get the position of specified drawable. 
+<DL><DT><DD></DL><P>
+<A NAME="setPosition"></A>
+<A NAME="DOC.2.43.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPosition(unsigned int i, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos)</B></TT>
+<DD>Set the position of specified drawable. 
+<DL><DT><DD></DL><P>
+<A NAME="getPosition"></A>
+<A NAME="DOC.2.43.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; getPosition(unsigned int i) const </B></TT>
 <DD>Get the position of specified drawable. 
 <DL><DT><DD></DL><P>
 <A NAME="PositionList"></A>
-<A NAME="DOC.2.27.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; PositionList</B></TT>
+<A NAME="DOC.2.43.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;  PositionList</B></TT>
 <DD>PositionList represents a list of pivot points for each drawable
 <DL><DT><DD></DL><P>
 <A NAME="getPositionList"></A>
-<A NAME="DOC.2.27.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Billboard.html#DOC.2.27.13">PositionList</A>&amp; getPositionList()</B></TT>
+<A NAME="DOC.2.43.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Billboard.html#DOC.2.43.15">PositionList</A>&amp; getPositionList()</B></TT>
 <DD>Get the PositionList from the billboard
 <DL><DT><DD></DL><P>
 <A NAME="getPositionList"></A>
-<A NAME="DOC.2.27.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Billboard.html#DOC.2.27.13">PositionList</A>&amp; getPositionList() const </B></TT>
+<A NAME="DOC.2.43.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Billboard.html#DOC.2.43.15">PositionList</A>&amp; getPositionList() const </B></TT>
 <DD>Get a const PositionList from the billboard
 <DL><DT><DD></DL><P>
 <A NAME="addDrawable"></A>
-<A NAME="DOC.2.27.16"></A>
+<A NAME="DOC.2.43.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addDrawable( <!1><A HREF="Drawable.html">Drawable</A>* gset )</B></TT>
 <DD>Add Drawable to Billboard with default position(0,0,0);
 If gset not NULL and is not contained in Billboard then increment its 
@@ -451,15 +474,15 @@ reference count, and dirty the bounding box to cause it to recompute on
 next getBound() and return true for success.  Otherwise return false.
 <DL><DT><DD></DL><P>
 <A NAME="addDrawable"></A>
-<A NAME="DOC.2.27.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addDrawable(<!1><A HREF="Drawable.html">Drawable</A>* gset, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos)</B></TT>
+<A NAME="DOC.2.43.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addDrawable(<!1><A HREF="Drawable.html">Drawable</A>* gset, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos)</B></TT>
 <DD>Add Drawable to Geode at position pos.
 If gset not NULL and is not contained in Billboard then increment its 
 reference count, and dirty the bounding box to cause it to recompute on 
 next getBound() and return true for success.  Otherwise return false.
 <DL><DT><DD></DL><P>
 <A NAME="removeDrawable"></A>
-<A NAME="DOC.2.27.18"></A>
+<A NAME="DOC.2.43.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeDrawable( <!1><A HREF="Drawable.html">Drawable</A>* gset )</B></TT>
 <DD>Remove Drawable and associated position from Billboard.
 If gset is contained in Billboard then remove it from the geoset
@@ -468,70 +491,66 @@ bounding box to cause it to recompute on next getBound() and
 return true for success.  If gset is not found then return false
 and do not the reference count of gset is left unchanged.
 <DL><DT><DD></DL><P>
-<A NAME="getMatrix"></A>
-<A NAME="DOC.2.27.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getMatrix(<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="computeMatrix"></A>
-<A NAME="DOC.2.27.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeMatrix(<!1><A HREF="osg.html#DOC.2.102">Matrix</A>&amp; modelview, const <!1><A HREF="Vec3.html">Vec3</A>&amp; eye_local, const <!1><A HREF="Vec3.html">Vec3</A>&amp; pos_local) const </B></TT>
+<A NAME="DOC.2.43.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool computeMatrix(<!1><A HREF="osg.html#DOC.2.134">Matrix</A>&amp; modelview, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; eye_local, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; pos_local) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Billboard"></A>
-<A NAME="DOC.2.27.21"></A>
+<A NAME="DOC.2.43.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Billboard()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.27.22"></A>
+<A NAME="DOC.2.43.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AxisAligned"></A>
-<A NAME="DOC.2.27.23"></A>
+<A NAME="DOC.2.43.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AxisAligned</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="AXIAL_ROT_X_AXIS"></A>
-<A NAME="DOC.2.27.23.1"></A>
+<A NAME="DOC.2.43.24.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AXIAL_ROT_X_AXIS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AXIAL_ROT_Y_AXIS"></A>
-<A NAME="DOC.2.27.23.2"></A>
+<A NAME="DOC.2.43.24.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AXIAL_ROT_Y_AXIS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AXIAL_ROT_Z_AXIS"></A>
-<A NAME="DOC.2.27.23.3"></A>
+<A NAME="DOC.2.43.24.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AXIAL_ROT_Z_AXIS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="CACHE_DIRTY"></A>
-<A NAME="DOC.2.27.23.4"></A>
+<A NAME="DOC.2.43.24.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CACHE_DIRTY</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="_mode"></A>
-<A NAME="DOC.2.27.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Billboard.html#DOC.2.27.1">Mode</A> _mode</B></TT>
+<A NAME="DOC.2.43.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Billboard.html#DOC.2.43.1">Mode</A> _mode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_axis"></A>
-<A NAME="DOC.2.27.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _axis</B></TT>
+<A NAME="DOC.2.43.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">Vec3</A> _axis</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normal"></A>
-<A NAME="DOC.2.27.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _normal</B></TT>
+<A NAME="DOC.2.43.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">Vec3</A> _normal</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_positionList"></A>
-<A NAME="DOC.2.27.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Billboard.html#DOC.2.27.13">PositionList</A> _positionList</B></TT>
+<A NAME="DOC.2.43.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Billboard.html#DOC.2.43.15">PositionList</A> _positionList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cachedMode"></A>
-<A NAME="DOC.2.27.28"></A>
+<A NAME="DOC.2.43.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _cachedMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_side"></A>
-<A NAME="DOC.2.27.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _side</B></TT>
+<A NAME="DOC.2.43.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.262">Vec3</A> _side</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="updateCache"></A>
-<A NAME="DOC.2.27.30"></A>
+<A NAME="DOC.2.43.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void updateCache()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -539,6 +558,6 @@ and do not the reference count of gset is left unchanged.
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

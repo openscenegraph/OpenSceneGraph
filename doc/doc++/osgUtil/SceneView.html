@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGUTIL_EXPORT osgUtil::SceneView</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -11,403 +11,385 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
-<param name=classes value="Mosg::Referenced,M,CSceneView,MSceneView.html">
-<param name=before value="M,M">
-<param name=after value="Md_,M">
-<param name=indent value="0,1">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::CullSettings,M,Mosg::Referenced,M,CSceneView,MSceneView.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.21.1">SceneView</A></B>(osg::DisplaySettings* ds=NULL)
-<DD><I>Construct a default scene view</I>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.21.2">Options</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.2">setDefaults</A></B>()
-<DD><I>Set scene view to use default global state, light, camera and render visitor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.3">setSceneData</A></B>(osg::Node* node)
-<DD><I>Set the data which to view.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.21.4">getSceneData</A></B>()
-<DD><I>Get the scene data which to view.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Node* <B><A HREF="#DOC.2.21.5">getSceneData</A></B>() const 
-<DD><I>Get the const scene data which to view.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.6">setViewport</A></B>(osg::Viewport* viewport)
-<DD><I>Set the viewport of the scene view to use specfied osg::Viewport.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.7">setViewport</A></B>(int x, int y, int width, int height)
-<DD><I>Set the viewport of the scene view to specified dimensions.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Viewport* <B><A HREF="#DOC.2.21.8">getViewport</A></B>() const 
-<DD><I>Get the const viewport.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Viewport* <B><A HREF="#DOC.2.21.9">getViewport</A></B>()
-<DD><I>Get the viewport.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.10">getViewport</A></B>(int&amp; x, int&amp; y, int&amp; width, int&amp; height)
-<DD><I>Get the viewport of the scene view.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.11">setDisplaySettings</A></B>(osg::DisplaySettings* vs)
-<DD><I>Set the DisplaySettings.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::DisplaySettings* <B><A HREF="#DOC.2.21.12">getDisplaySettings</A></B>() const 
-<DD><I>Get the const DisplaySettings </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::DisplaySettings* <B><A HREF="#DOC.2.21.13">getDisplaySettings</A></B>()
-<DD><I>Get the DisplaySettings </I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.14">setBackgroundColor</A></B>(const osg::Vec4&amp; color)
-<DD><I>Set the background color used in glClearColor().</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.21.15">getBackgroundColor</A></B>() const 
-<DD><I>Get the background color</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.16">setGlobalStateSet</A></B>(osg::StateSet* state)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.2.21.17">getGlobalStateSet</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::StateSet* <B><A HREF="#DOC.2.21.18">getGlobalStateSet</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.19">setLocalStateSet</A></B>(osg::StateSet* state)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.2.21.20">getLocalStateSet</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::StateSet* <B><A HREF="#DOC.2.21.21">getLocalStateSet</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.23">setLightingMode</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.22">LightingMode</A> mode)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.22">LightingMode</A> <B><A HREF="#DOC.2.21.24">getLightingMode</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.25">setLight</A></B>(osg::Light* light)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Light* <B><A HREF="#DOC.2.21.26">getLight</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Light* <B><A HREF="#DOC.2.21.27">getLight</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.28">setState</A></B>(osg::State* state)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::State* <B><A HREF="#DOC.2.21.29">getState</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::State* <B><A HREF="#DOC.2.21.30">getState</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.31">setProjectionMatrix</A></B>(const osg::Matrixf&amp; matrix)
-<DD><I>Set the projection matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.32">setProjectionMatrix</A></B>(const osg::Matrixd&amp; matrix)
-<DD><I>Set the projection matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.33">setProjectionMatrixAsOrtho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
-<DD><I>Set to a orthographic projection.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.34">setProjectionMatrixAsOrtho2D</A></B>(double left, double right, double bottom, double top)
-<DD><I>Set to a 2D orthographic projection.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.35">setProjectionMatrixAsFrustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
-<DD><I>Set to a perspective projection.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.36">setProjectionMatrixAsPerspective</A></B>(double fovy, double aspectRatio, double zNear, double zFar)
-<DD><I>Create a symmetrical perspective projection, See OpenGL gluPerspective documentation for further details.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd&amp; <B><A HREF="#DOC.2.21.37">getProjectionMatrix</A></B>()
-<DD><I>Get the projection matrix</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrixd&amp; <B><A HREF="#DOC.2.21.38">getProjectionMatrix</A></B>() const 
-<DD><I>Get the const projection matrix</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.39">getProjectionMatrixAsOrtho</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
-<DD><I>Get the othorgraphic settings of the orthographic projection matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.40">getProjectionMatrixAsFrustum</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
-<DD><I>Get the frustum setting of a perspective projection matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.41">getProjectionMatrixAsPerspective</A></B>(double&amp; fovy, double&amp; aspectRatio, double&amp; zNear, double&amp; zFar)
-<DD><I>Get the frustum setting of a symetric perspective projection matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.42">setViewMatrix</A></B>(const osg::Matrixf&amp; matrix)
-<DD><I>Set the view matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.43">setViewMatrix</A></B>(const osg::Matrixd&amp; matrix)
-<DD><I>Set the view matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.44">setViewMatrixAsLookAt</A></B>(const osg::Vec3&amp; eye, const osg::Vec3&amp; center, const osg::Vec3&amp; up)
-<DD><I>Set to the position and orientation of view matrix, using the same convention as gluLookAt.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd&amp; <B><A HREF="#DOC.2.21.45">getViewMatrix</A></B>()
-<DD><I>Get the view matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrixd&amp; <B><A HREF="#DOC.2.21.46">getViewMatrix</A></B>() const 
-<DD><I>Get the const view matrix.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.47">getViewMatrixAsLookAt</A></B>(osg::Vec3&amp; eye, osg::Vec3&amp; center, osg::Vec3&amp; up, float lookDistance=1.0f)
-<DD><I>Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.48">setInitVisitor</A></B>(osg::NodeVisitor* av)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::NodeVisitor* <B><A HREF="#DOC.2.21.49">getInitVisitor</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::NodeVisitor* <B><A HREF="#DOC.2.21.50">getInitVisitor</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.51">setUpdateVisitor</A></B>(osg::NodeVisitor* av)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::NodeVisitor* <B><A HREF="#DOC.2.21.52">getUpdateVisitor</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::NodeVisitor* <B><A HREF="#DOC.2.21.53">getUpdateVisitor</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.54">setCullVisitor</A></B>(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.55">getCullVisitor</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.56">getCullVisitor</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.57">setCullVisitorLeft</A></B>(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.58">getCullVisitorLeft</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.59">getCullVisitorLeft</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.60">setCullVisitorRight</A></B>(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.61">getCullVisitorRight</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.62">getCullVisitorRight</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.63">setRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.64">getRenderGraph</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.65">getRenderGraph</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.66">setRenderGraphLeft</A></B>(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.67">getRenderGraphLeft</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.68">getRenderGraphLeft</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.69">setRenderGraphRight</A></B>(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.70">getRenderGraphRight</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.71">getRenderGraphRight</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.72">setRenderStage</A></B>(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.73">getRenderStage</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.74">getRenderStage</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.75">setRenderStageLeft</A></B>(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.76">getRenderStageLeft</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.77">getRenderStageLeft</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.78">setRenderStageRight</A></B>(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.79">getRenderStageRight</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.80">getRenderStageRight</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.81">setCullMask</A></B>(const osg::Node::NodeMask nm)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.82">getCullMask</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.83">setCullMaskLeft</A></B>(const osg::Node::NodeMask nm)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.84">getCullMaskLeft</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.85">setCullMaskRight</A></B>(const osg::Node::NodeMask nm)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.86">getCullMaskRight</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.87">setLODScale</A></B>(float bias)
-<DD><I>Set the LOD bias for the CullVisitor to use</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.88">getLODScale</A></B>() const 
-<DD><I>Get the LOD bias</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.89">setSmallFeatureCullingPixelSize</A></B>(float value)
-<DD><I>Set the Small Feature Culling Pixel Size</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.90">getSmallFeatureCullingPixelSize</A></B>() const 
-<DD><I>Get the Small Feature Culling Pixel Size</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.91">setCullingMode</A></B>(osg::CullStack::CullingMode mode)
-<DD><I>Set the culling mode for the CullVisitor to use</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CullStack::CullingMode <B><A HREF="#DOC.2.21.92">getCullingMode</A></B>() const 
-<DD><I>Returns the current CullingMode</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.93">setComputeNearFarMode</A></B>(CullVisitor::ComputeNearFarMode cnfm)
-<DD><I>Set the ComputeNearFarMode for the CullVisitor to use</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullVisitor::ComputeNearFarMode <B><A HREF="#DOC.2.21.94">getComputeNearFarMode</A></B>() const 
-<DD><I>Get the ComputeNearFarMode</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.96">setFusionDistance</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.95">FusionDistanceMode</A> mode, float value=1.0f)
-<DD><I>Set the FusionDistanceMode and Value.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.95">FusionDistanceMode</A> <B><A HREF="#DOC.2.21.97">getFusionDistanceMode</A></B>() const 
-<DD><I>Get the FusionDistanceMode</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.98">getFusionDistanceValue</A></B>() const 
-<DD><I>Get the FusionDistanceValue.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.99">setPrioritizeTextures</A></B>(bool pt)
-<DD><I>set whether the draw method should call renderer->prioritizeTexture</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.100">getPrioritizeTextures</A></B>() const 
-<DD><I>get whether the draw method should call renderer->prioritizeTexture</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.101">projectWindowIntoObject</A></B>(const osg::Vec3&amp; window, osg::Vec3&amp; object) const 
-<DD><I>Calculate, via glUnProject, the object coordinates of a window point.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.102">projectWindowXYIntoObject</A></B>(int x, int y, osg::Vec3&amp; near_point, osg::Vec3&amp; far_point) const 
-<DD><I>Calculate, via glUnProject, the object coordinates of a window x,y when projected onto the near and far planes.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.103">projectObjectIntoWindow</A></B>(const osg::Vec3&amp; object, osg::Vec3&amp; window) const 
-<DD><I>Calculate, via glProject, the object coordinates of a window.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.104">setFrameStamp</A></B>(osg::FrameStamp* fs)
-<DD><I>Set the frame stamp for the current frame</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::FrameStamp* <B><A HREF="#DOC.2.21.105">getFrameStamp</A></B>() const 
-<DD><I>Set the frame stamp for the current frame</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.107">setComputeStereoMatricesCallback</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* callback)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* <B><A HREF="#DOC.2.21.108">getComputeStereoMatricesCallback</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* callback)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* <B><A HREF="#DOC.2.21.109">getComputeStereoMatricesCallback</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.110">computeLeftEyeProjection</A></B>(const osg::Matrixd&amp; projection) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.111">computeLeftEyeView</A></B>(const osg::Matrixd&amp; view) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.112">computeRightEyeProjection</A></B>(const osg::Matrixd&amp; projection) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.113">computeRightEyeView</A></B>(const osg::Matrixd&amp; view) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.114">computeLeftEyeProjectionImplementation</A></B>(const osg::Matrixd&amp; projection) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.115">computeLeftEyeViewImplementation</A></B>(const osg::Matrixd&amp; view) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.116">computeRightEyeProjectionImplementation</A></B>(const osg::Matrixd&amp; projection) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.117">computeRightEyeViewImplementation</A></B>(const osg::Matrixd&amp; view) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.118">init</A></B>()
-<DD><I>Do init traversal of attached scene graph using Init NodeVisitor.</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.119">update</A></B>()
-<DD><I>Do app traversal of attached scene graph using App NodeVisitor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.120">cull</A></B>()
-<DD><I>Do cull traversal of attached scene graph using Cull NodeVisitor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.121">draw</A></B>()
-<DD><I>Do draw traversal of draw bins generated by cull traversal</I>
-</DL></P>
-
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.21.22">LightingMode</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.21.95">FusionDistanceMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.21.89">FusionDistanceMode</A></B>
 <DD><I>FusionDistanceMode is used only when working in stereo</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.21.106">ComputeStereoMatricesCallback</A></B>: public osg::Referenced
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.21.95">ComputeStereoMatricesCallback</A></B>: public osg::Referenced
 <DD><I>callback for overidding the default method for compute the offset projection and view matrices</I>
 </DL></P>
 
 <P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.21.1">SceneView</A></B>(osg::DisplaySettings* ds=NULL)
+<DD><I>Construct a default scene view</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.3">setDefaults</A></B>(unsigned int options = <!1><A HREF="SceneView.html#DOC.2.21.2.5">STANDARD_SETTINGS</A>)
+<DD><I>Set scene view to use default global state, light, camera and render visitor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.4">setSceneData</A></B>(osg::Node* node)
+<DD><I>Set the data which to view.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node* <B><A HREF="#DOC.2.21.5">getSceneData</A></B>()
+<DD><I>Get the scene data which to view.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Node* <B><A HREF="#DOC.2.21.6">getSceneData</A></B>() const 
+<DD><I>Get the const scene data which to view.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.7">setViewport</A></B>(osg::Viewport* viewport)
+<DD><I>Set the viewport of the scene view to use specfied osg::Viewport.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.8">setViewport</A></B>(int x, int y, int width, int height)
+<DD><I>Set the viewport of the scene view to specified dimensions.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Viewport* <B><A HREF="#DOC.2.21.9">getViewport</A></B>() const 
+<DD><I>Get the const viewport.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Viewport* <B><A HREF="#DOC.2.21.10">getViewport</A></B>()
+<DD><I>Get the viewport.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.11">getViewport</A></B>(int&amp; x, int&amp; y, int&amp; width, int&amp; height) const 
+<DD><I>Get the viewport of the scene view.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.12">setDisplaySettings</A></B>(osg::DisplaySettings* vs)
+<DD><I>Set the DisplaySettings.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::DisplaySettings* <B><A HREF="#DOC.2.21.13">getDisplaySettings</A></B>() const 
+<DD><I>Get the const DisplaySettings </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::DisplaySettings* <B><A HREF="#DOC.2.21.14">getDisplaySettings</A></B>()
+<DD><I>Get the DisplaySettings </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.15">setBackgroundColor</A></B>(const osg::Vec4&amp; color)
+<DD><I>Set the background color used in glClearColor().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.21.16">getBackgroundColor</A></B>() const 
+<DD><I>Get the background color</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.17">setClearColor</A></B>(const osg::Vec4&amp; color)
+<DD><I>Set the color used in glClearColor().</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.21.18">getClearColor</A></B>() const 
+<DD><I>Get the color usinged in glClearColor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.19">setGlobalStateSet</A></B>(osg::StateSet* state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.2.21.20">getGlobalStateSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::StateSet* <B><A HREF="#DOC.2.21.21">getGlobalStateSet</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.22">setLocalStateSet</A></B>(osg::StateSet* state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.2.21.23">getLocalStateSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::StateSet* <B><A HREF="#DOC.2.21.24">getLocalStateSet</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.26">setLightingMode</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.25">LightingMode</A> mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.25">LightingMode</A> <B><A HREF="#DOC.2.21.27">getLightingMode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.28">setLight</A></B>(osg::Light* light)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Light* <B><A HREF="#DOC.2.21.29">getLight</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Light* <B><A HREF="#DOC.2.21.30">getLight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.31">setState</A></B>(osg::State* state)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::State* <B><A HREF="#DOC.2.21.32">getState</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::State* <B><A HREF="#DOC.2.21.33">getState</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.34">setProjectionMatrix</A></B>(const osg::Matrixf&amp; matrix)
+<DD><I>Set the projection matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.35">setProjectionMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<DD><I>Set the projection matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.36">setProjectionMatrixAsOrtho</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
+<DD><I>Set to a orthographic projection.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.37">setProjectionMatrixAsOrtho2D</A></B>(double left, double right, double bottom, double top)
+<DD><I>Set to a 2D orthographic projection.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.38">setProjectionMatrixAsFrustum</A></B>(double left, double right, double bottom, double top, double zNear, double zFar)
+<DD><I>Set to a perspective projection.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.39">setProjectionMatrixAsPerspective</A></B>(double fovy, double aspectRatio, double zNear, double zFar)
+<DD><I>Create a symmetrical perspective projection, See OpenGL gluPerspective documentation for further details.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd&amp; <B><A HREF="#DOC.2.21.40">getProjectionMatrix</A></B>()
+<DD><I>Get the projection matrix</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrixd&amp; <B><A HREF="#DOC.2.21.41">getProjectionMatrix</A></B>() const 
+<DD><I>Get the const projection matrix</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.42">getProjectionMatrixAsOrtho</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
+<DD><I>Get the othorgraphic settings of the orthographic projection matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.43">getProjectionMatrixAsFrustum</A></B>(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)
+<DD><I>Get the frustum setting of a perspective projection matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.44">getProjectionMatrixAsPerspective</A></B>(double&amp; fovy, double&amp; aspectRatio, double&amp; zNear, double&amp; zFar)
+<DD><I>Get the frustum setting of a symetric perspective projection matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.45">setViewMatrix</A></B>(const osg::Matrixf&amp; matrix)
+<DD><I>Set the view matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.46">setViewMatrix</A></B>(const osg::Matrixd&amp; matrix)
+<DD><I>Set the view matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.47">setViewMatrixAsLookAt</A></B>(const osg::Vec3&amp; eye, const osg::Vec3&amp; center, const osg::Vec3&amp; up)
+<DD><I>Set to the position and orientation of view matrix, using the same convention as gluLookAt.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd&amp; <B><A HREF="#DOC.2.21.48">getViewMatrix</A></B>()
+<DD><I>Get the view matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrixd&amp; <B><A HREF="#DOC.2.21.49">getViewMatrix</A></B>() const 
+<DD><I>Get the const view matrix.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.50">getViewMatrixAsLookAt</A></B>(osg::Vec3&amp; eye, osg::Vec3&amp; center, osg::Vec3&amp; up, float lookDistance=1.0f)
+<DD><I>Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.51">setInitVisitor</A></B>(osg::NodeVisitor* av)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::NodeVisitor* <B><A HREF="#DOC.2.21.52">getInitVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::NodeVisitor* <B><A HREF="#DOC.2.21.53">getInitVisitor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.54">setUpdateVisitor</A></B>(osg::NodeVisitor* av)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::NodeVisitor* <B><A HREF="#DOC.2.21.55">getUpdateVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::NodeVisitor* <B><A HREF="#DOC.2.21.56">getUpdateVisitor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.57">setCullVisitor</A></B>(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.58">getCullVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.59">getCullVisitor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.60">setCullVisitorLeft</A></B>(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.61">getCullVisitorLeft</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.62">getCullVisitorLeft</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.63">setCullVisitorRight</A></B>(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.64">getCullVisitorRight</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* <B><A HREF="#DOC.2.21.65">getCullVisitorRight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.66">setCollectOccludersVisitor</A></B>(osg::CollectOccludersVisitor* cov)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CollectOccludersVisitor* <B><A HREF="#DOC.2.21.67">getCollectOccludersVisitor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::CollectOccludersVisitor* <B><A HREF="#DOC.2.21.68">getCollectOccludersVisitor</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.69">setRenderGraph</A></B>(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.70">getRenderGraph</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.71">getRenderGraph</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.72">setRenderGraphLeft</A></B>(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.73">getRenderGraphLeft</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.74">getRenderGraphLeft</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.75">setRenderGraphRight</A></B>(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.76">getRenderGraphRight</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* <B><A HREF="#DOC.2.21.77">getRenderGraphRight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.78">setRenderStage</A></B>(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.79">getRenderStage</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.80">getRenderStage</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.81">setRenderStageLeft</A></B>(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.82">getRenderStageLeft</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.83">getRenderStageLeft</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.84">setRenderStageRight</A></B>(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.85">getRenderStageRight</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* <B><A HREF="#DOC.2.21.86">getRenderStageRight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.87">setDrawBufferValue</A></B>( GLenum drawBufferValue )
+<DD><I>Set the draw buffer value used at the start of each frame draw.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.21.88">getDrawBufferValue</A></B>() const 
+<DD><I>Get the draw buffer value used at the start of each frame draw.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.90">setFusionDistance</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.89">FusionDistanceMode</A> mode, float value=1.0f)
+<DD><I>Set the FusionDistanceMode and Value.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.89">FusionDistanceMode</A> <B><A HREF="#DOC.2.21.91">getFusionDistanceMode</A></B>() const 
+<DD><I>Get the FusionDistanceMode</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.92">getFusionDistanceValue</A></B>() const 
+<DD><I>Get the FusionDistanceValue.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.93">setPrioritizeTextures</A></B>(bool pt)
+<DD><I>set whether the draw method should call renderer->prioritizeTexture</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.94">getPrioritizeTextures</A></B>() const 
+<DD><I>get whether the draw method should call renderer->prioritizeTexture</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.96">setComputeStereoMatricesCallback</A></B>(<!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>* callback)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>* <B><A HREF="#DOC.2.21.97">getComputeStereoMatricesCallback</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>* <B><A HREF="#DOC.2.21.98">getComputeStereoMatricesCallback</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.99">projectWindowIntoObject</A></B>(const osg::Vec3&amp; window, osg::Vec3&amp; object) const 
+<DD><I>Calculate, via glUnProject, the object coordinates of a window point.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.100">projectWindowXYIntoObject</A></B>(int x, int y, osg::Vec3&amp; near_point, osg::Vec3&amp; far_point) const 
+<DD><I>Calculate, via glUnProject, the object coordinates of a window x,y when projected onto the near and far planes.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.101">projectObjectIntoWindow</A></B>(const osg::Vec3&amp; object, osg::Vec3&amp; window) const 
+<DD><I>Calculate, via glProject, the object coordinates of a window.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.21.102">setFrameStamp</A></B>(osg::FrameStamp* fs)
+<DD><I>Set the frame stamp for the current frame</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::FrameStamp* <B><A HREF="#DOC.2.21.103">getFrameStamp</A></B>() const 
+<DD><I>Set the frame stamp for the current frame</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.104">computeLeftEyeProjection</A></B>(const osg::Matrixd&amp; projection) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.105">computeLeftEyeView</A></B>(const osg::Matrixd&amp; view) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.106">computeRightEyeProjection</A></B>(const osg::Matrixd&amp; projection) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Matrixd <B><A HREF="#DOC.2.21.107">computeRightEyeView</A></B>(const osg::Matrixd&amp; view) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.108">computeLeftEyeProjectionImplementation</A></B>(const osg::Matrixd&amp; projection) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.109">computeLeftEyeViewImplementation</A></B>(const osg::Matrixd&amp; view) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.110">computeRightEyeProjectionImplementation</A></B>(const osg::Matrixd&amp; projection) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Matrixd <B><A HREF="#DOC.2.21.111">computeRightEyeViewImplementation</A></B>(const osg::Matrixd&amp; view) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.112">init</A></B>()
+<DD><I>Do init traversal of attached scene graph using Init NodeVisitor.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.113">update</A></B>()
+<DD><I>Do app traversal of attached scene graph using App NodeVisitor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.114">cull</A></B>()
+<DD><I>Do cull traversal of attached scene graph using Cull NodeVisitor</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.115">draw</A></B>()
+<DD><I>Do draw traversal of draw bins generated by cull traversal</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.116">flushDeletedGLObjects</A></B>(double&amp; availableTime)
+<DD><I>Flush all the OpenGL objects, such as texture objects, display lists etc</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="SceneView.html#DOC.2.21.2">Options</A> <B><A HREF="#DOC.2.21.25">LightingMode</A></B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.21.126">_sceneData</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.21.121">_localStateSet</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.21.127">_globalStateSet</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.21.122">_state</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.21.128">_localStateSet</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.21.123">_projectionMatrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Light&gt;  <B><A HREF="#DOC.2.21.129">_light</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.21.124">_viewMatrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.21.130">_projectionMatrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.125">_initCalled</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.21.131">_viewMatrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::NodeVisitor&gt;  <B><A HREF="#DOC.2.21.126">_initVisitor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.2.21.132">_displaySettings</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::NodeVisitor&gt;  <B><A HREF="#DOC.2.21.127">_updateVisitor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::State&gt;  <B><A HREF="#DOC.2.21.133">_state</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  <B><A HREF="#DOC.2.21.128">_cullVisitor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.134">_initCalled</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  <B><A HREF="#DOC.2.21.129">_rendergraph</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::NodeVisitor&gt;  <B><A HREF="#DOC.2.21.135">_initVisitor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  <B><A HREF="#DOC.2.21.130">_renderStage</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::NodeVisitor&gt;  <B><A HREF="#DOC.2.21.136">_updateVisitor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>&gt;  <B><A HREF="#DOC.2.21.131">_computeStereoMatricesCallback</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.137">_cullMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  <B><A HREF="#DOC.2.21.132">_cullVisitorLeft</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  <B><A HREF="#DOC.2.21.138">_cullVisitor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  <B><A HREF="#DOC.2.21.133">_rendergraphLeft</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  <B><A HREF="#DOC.2.21.139">_rendergraph</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  <B><A HREF="#DOC.2.21.134">_renderStageLeft</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  <B><A HREF="#DOC.2.21.140">_renderStage</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  <B><A HREF="#DOC.2.21.135">_cullVisitorRight</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>&gt;  <B><A HREF="#DOC.2.21.141">_computeStereoMatricesCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  <B><A HREF="#DOC.2.21.136">_rendergraphRight</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.142">_cullMaskLeft</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  <B><A HREF="#DOC.2.21.137">_renderStageRight</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  <B><A HREF="#DOC.2.21.143">_cullVisitorLeft</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::CollectOccludersVisitor&gt;  <B><A HREF="#DOC.2.21.138">_collectOccludersVisistor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  <B><A HREF="#DOC.2.21.144">_rendergraphLeft</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.2.21.139">_frameStamp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  <B><A HREF="#DOC.2.21.145">_renderStageLeft</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.21.140">_sceneData</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Node::NodeMask <B><A HREF="#DOC.2.21.146">_cullMaskRight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.21.141">_globalStateSet</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  <B><A HREF="#DOC.2.21.147">_cullVisitorRight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Light&gt;  <B><A HREF="#DOC.2.21.142">_light</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  <B><A HREF="#DOC.2.21.148">_rendergraphRight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.2.21.143">_displaySettings</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  <B><A HREF="#DOC.2.21.149">_renderStageRight</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.21.144">_clearColor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.2.21.150">_frameStamp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.89">FusionDistanceMode</A> <B><A HREF="#DOC.2.21.145">_fusionDistanceMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.21.151">_backgroundColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.146">_fusionDistanceValue</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullVisitor::ComputeNearFarMode <B><A HREF="#DOC.2.21.152">_computeNearFar</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Viewport&gt;  <B><A HREF="#DOC.2.21.147">_viewport</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::CullStack::CullingMode <B><A HREF="#DOC.2.21.153">_cullingMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.25">LightingMode</A> <B><A HREF="#DOC.2.21.148">_lightingMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.154">_LODScale</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.149">_prioritizeTextures</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.155">_smallFeatureCullingPixelSize</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.21.150">_drawBufferValue</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.95">FusionDistanceMode</A> <B><A HREF="#DOC.2.21.156">_fusionDistanceMode</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.21.157">_fusionDistanceValue</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Viewport&gt;  <B><A HREF="#DOC.2.21.158">_viewport</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SceneView.html#DOC.2.21.22">LightingMode</A> <B><A HREF="#DOC.2.21.159">_lightingMode</A></B>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.160">_prioritizeTextures</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.21.151">_requiresFlush</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.21.122">~SceneView</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.21.117">~SceneView</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.123">cullStage</A></B>(const osg::Matrixd&amp; projection, const osg::Matrixd&amp; modelview, <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cullVisitor, <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rendergraph, <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* renderStage)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.21.118">cullStage</A></B>(const osg::Matrixd&amp; projection, const osg::Matrixd&amp; modelview, <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cullVisitor, <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rendergraph, <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* renderStage)
 <DD><I>Do cull traversal of attached scene graph using Cull NodeVisitor</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrix <B><A HREF="#DOC.2.21.124">computeMVPW</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrix <B><A HREF="#DOC.2.21.119">computeMVPW</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.125">clearArea</A></B>(int x, int y, int width, int height, const osg::Vec4&amp; color)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.21.120">clearArea</A></B>(int x, int y, int width, int height, const osg::Vec4&amp; color)
 </DL></P>
 
 </DL>
@@ -426,210 +408,233 @@ methods for setting up the view and rendering it.</BLOCKQUOTE>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SceneView(osg::DisplaySettings* ds=NULL)</B></TT>
 <DD>Construct a default scene view
 <DL><DT><DD></DL><P>
-<A NAME="setDefaults"></A>
+<A NAME="Options"></A>
 <A NAME="DOC.2.21.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaults()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Options</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_SCENEVIEW_LIGHT"></A>
+<A NAME="DOC.2.21.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_SCENEVIEW_LIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="HEADLIGHT"></A>
+<A NAME="DOC.2.21.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEADLIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SKY_LIGHT"></A>
+<A NAME="DOC.2.21.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SKY_LIGHT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="COMPILE_GLOBJECTS_AT_INIT"></A>
+<A NAME="DOC.2.21.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> COMPILE_GLOBJECTS_AT_INIT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="STANDARD_SETTINGS"></A>
+<A NAME="DOC.2.21.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> STANDARD_SETTINGS</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setDefaults"></A>
+<A NAME="DOC.2.21.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaults(unsigned int options = <!1><A HREF="SceneView.html#DOC.2.21.2.5">STANDARD_SETTINGS</A>)</B></TT>
 <DD>Set scene view to use default global state, light, camera
 and render visitor
 <DL><DT><DD></DL><P>
 <A NAME="setSceneData"></A>
-<A NAME="DOC.2.21.3"></A>
+<A NAME="DOC.2.21.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSceneData(osg::Node* node)</B></TT>
 <DD>Set the data which to view. The data will typically be
 an osg::Scene but can be any osg::Node type.
 <DL><DT><DD></DL><P>
 <A NAME="getSceneData"></A>
-<A NAME="DOC.2.21.4"></A>
+<A NAME="DOC.2.21.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node* getSceneData()</B></TT>
 <DD>Get the scene data which to view. The data will typically be
 an osg::Scene but can be any osg::Node type.
 <DL><DT><DD></DL><P>
 <A NAME="getSceneData"></A>
-<A NAME="DOC.2.21.5"></A>
+<A NAME="DOC.2.21.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Node* getSceneData() const </B></TT>
 <DD>Get the const scene data which to view. The data will typically be
 an osg::Scene but can be any osg::Node type.
 <DL><DT><DD></DL><P>
 <A NAME="setViewport"></A>
-<A NAME="DOC.2.21.6"></A>
+<A NAME="DOC.2.21.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setViewport(osg::Viewport* viewport)</B></TT>
 <DD>Set the viewport of the scene view to use specfied osg::Viewport. 
 <DL><DT><DD></DL><P>
 <A NAME="setViewport"></A>
-<A NAME="DOC.2.21.7"></A>
+<A NAME="DOC.2.21.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setViewport(int x, int y, int width, int height)</B></TT>
 <DD>Set the viewport of the scene view to specified dimensions. 
 <DL><DT><DD></DL><P>
 <A NAME="getViewport"></A>
-<A NAME="DOC.2.21.8"></A>
+<A NAME="DOC.2.21.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Viewport* getViewport() const </B></TT>
 <DD>Get the const viewport. 
 <DL><DT><DD></DL><P>
 <A NAME="getViewport"></A>
-<A NAME="DOC.2.21.9"></A>
+<A NAME="DOC.2.21.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Viewport* getViewport()</B></TT>
 <DD>Get the viewport. 
 <DL><DT><DD></DL><P>
 <A NAME="getViewport"></A>
-<A NAME="DOC.2.21.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getViewport(int&amp; x, int&amp; y, int&amp; width, int&amp; height)</B></TT>
+<A NAME="DOC.2.21.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getViewport(int&amp; x, int&amp; y, int&amp; width, int&amp; height) const </B></TT>
 <DD>Get the viewport of the scene view. 
 <DL><DT><DD></DL><P>
 <A NAME="setDisplaySettings"></A>
-<A NAME="DOC.2.21.11"></A>
+<A NAME="DOC.2.21.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDisplaySettings(osg::DisplaySettings* vs)</B></TT>
 <DD>Set the DisplaySettings. 
 <DL><DT><DD></DL><P>
 <A NAME="getDisplaySettings"></A>
-<A NAME="DOC.2.21.12"></A>
+<A NAME="DOC.2.21.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::DisplaySettings* getDisplaySettings() const </B></TT>
 <DD>Get the const DisplaySettings 
 <DL><DT><DD></DL><P>
 <A NAME="getDisplaySettings"></A>
-<A NAME="DOC.2.21.13"></A>
+<A NAME="DOC.2.21.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::DisplaySettings* getDisplaySettings()</B></TT>
 <DD>Get the DisplaySettings 
 <DL><DT><DD></DL><P>
 <A NAME="setBackgroundColor"></A>
-<A NAME="DOC.2.21.14"></A>
+<A NAME="DOC.2.21.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setBackgroundColor(const osg::Vec4&amp; color)</B></TT>
 <DD>Set the background color used in glClearColor().
 Defaults to an off blue color.
 <DL><DT><DD></DL><P>
 <A NAME="getBackgroundColor"></A>
-<A NAME="DOC.2.21.15"></A>
+<A NAME="DOC.2.21.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getBackgroundColor() const </B></TT>
 <DD>Get the background color
 <DL><DT><DD></DL><P>
+<A NAME="setClearColor"></A>
+<A NAME="DOC.2.21.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearColor(const osg::Vec4&amp; color)</B></TT>
+<DD>Set the color used in glClearColor().
+Defaults to an off blue color.
+<DL><DT><DD></DL><P>
+<A NAME="getClearColor"></A>
+<A NAME="DOC.2.21.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec4&amp; getClearColor() const </B></TT>
+<DD>Get the color usinged in glClearColor
+<DL><DT><DD></DL><P>
 <A NAME="setGlobalStateSet"></A>
-<A NAME="DOC.2.21.16"></A>
+<A NAME="DOC.2.21.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGlobalStateSet(osg::StateSet* state)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getGlobalStateSet"></A>
-<A NAME="DOC.2.21.17"></A>
+<A NAME="DOC.2.21.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::StateSet* getGlobalStateSet()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getGlobalStateSet"></A>
-<A NAME="DOC.2.21.18"></A>
+<A NAME="DOC.2.21.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::StateSet* getGlobalStateSet() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setLocalStateSet"></A>
-<A NAME="DOC.2.21.19"></A>
+<A NAME="DOC.2.21.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLocalStateSet(osg::StateSet* state)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLocalStateSet"></A>
-<A NAME="DOC.2.21.20"></A>
+<A NAME="DOC.2.21.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::StateSet* getLocalStateSet()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLocalStateSet"></A>
-<A NAME="DOC.2.21.21"></A>
+<A NAME="DOC.2.21.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::StateSet* getLocalStateSet() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LightingMode"></A>
-<A NAME="DOC.2.21.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  LightingMode</B></TT>
-<DL><DT><DD></DL><P><DL>
-
-<A NAME="HEADLIGHT"></A>
-<A NAME="DOC.2.21.22.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEADLIGHT</B></TT>
+<A NAME="DOC.2.21.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="SceneView.html#DOC.2.21.2">Options</A> LightingMode</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="SKY_LIGHT"></A>
-<A NAME="DOC.2.21.22.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SKY_LIGHT</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="NO_SCENEVIEW_LIGHT"></A>
-<A NAME="DOC.2.21.22.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_SCENEVIEW_LIGHT</B></TT>
-<DL><DT><DD></DL><P></DL>
-
 <A NAME="setLightingMode"></A>
-<A NAME="DOC.2.21.23"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightingMode(<!1><A HREF="SceneView.html#DOC.2.21.22">LightingMode</A> mode)</B></TT>
+<A NAME="DOC.2.21.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightingMode(<!1><A HREF="SceneView.html#DOC.2.21.25">LightingMode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLightingMode"></A>
-<A NAME="DOC.2.21.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.22">LightingMode</A> getLightingMode() const </B></TT>
+<A NAME="DOC.2.21.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.25">LightingMode</A> getLightingMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setLight"></A>
-<A NAME="DOC.2.21.25"></A>
+<A NAME="DOC.2.21.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLight(osg::Light* light)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLight"></A>
-<A NAME="DOC.2.21.26"></A>
+<A NAME="DOC.2.21.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Light* getLight()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLight"></A>
-<A NAME="DOC.2.21.27"></A>
+<A NAME="DOC.2.21.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Light* getLight() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setState"></A>
-<A NAME="DOC.2.21.28"></A>
+<A NAME="DOC.2.21.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setState(osg::State* state)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getState"></A>
-<A NAME="DOC.2.21.29"></A>
+<A NAME="DOC.2.21.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::State* getState()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getState"></A>
-<A NAME="DOC.2.21.30"></A>
+<A NAME="DOC.2.21.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::State* getState() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setProjectionMatrix"></A>
-<A NAME="DOC.2.21.31"></A>
+<A NAME="DOC.2.21.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setProjectionMatrix(const osg::Matrixf&amp; matrix)</B></TT>
 <DD>Set the projection matrix. Can be thought of as setting the lens of a camera. 
 <DL><DT><DD></DL><P>
 <A NAME="setProjectionMatrix"></A>
-<A NAME="DOC.2.21.32"></A>
+<A NAME="DOC.2.21.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setProjectionMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>Set the projection matrix. Can be thought of as setting the lens of a camera. 
 <DL><DT><DD></DL><P>
 <A NAME="setProjectionMatrixAsOrtho"></A>
-<A NAME="DOC.2.21.33"></A>
+<A NAME="DOC.2.21.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setProjectionMatrixAsOrtho(double left, double right, double bottom, double top, double zNear, double zFar)</B></TT>
 <DD>Set to a orthographic projection. See OpenGL glOrtho for documentation further details.
 <DL><DT><DD></DL><P>
 <A NAME="setProjectionMatrixAsOrtho2D"></A>
-<A NAME="DOC.2.21.34"></A>
+<A NAME="DOC.2.21.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setProjectionMatrixAsOrtho2D(double left, double right, double bottom, double top)</B></TT>
 <DD>Set to a 2D orthographic projection. See OpenGL glOrtho2D documentation for further details.
 <DL><DT><DD></DL><P>
 <A NAME="setProjectionMatrixAsFrustum"></A>
-<A NAME="DOC.2.21.35"></A>
+<A NAME="DOC.2.21.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setProjectionMatrixAsFrustum(double left, double right, double bottom, double top, double zNear, double zFar)</B></TT>
 <DD>Set to a perspective projection. See OpenGL glFrustum documentation for further details.
 <DL><DT><DD></DL><P>
 <A NAME="setProjectionMatrixAsPerspective"></A>
-<A NAME="DOC.2.21.36"></A>
+<A NAME="DOC.2.21.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setProjectionMatrixAsPerspective(double fovy, double aspectRatio, double zNear, double zFar)</B></TT>
 <DD>Create a symmetrical perspective projection, See OpenGL gluPerspective documentation for further details.
 Aspect ratio is defined as width/height.
 <DL><DT><DD></DL><P>
 <A NAME="getProjectionMatrix"></A>
-<A NAME="DOC.2.21.37"></A>
+<A NAME="DOC.2.21.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd&amp; getProjectionMatrix()</B></TT>
 <DD>Get the projection matrix
 <DL><DT><DD></DL><P>
 <A NAME="getProjectionMatrix"></A>
-<A NAME="DOC.2.21.38"></A>
+<A NAME="DOC.2.21.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Matrixd&amp; getProjectionMatrix() const </B></TT>
 <DD>Get the const projection matrix
 <DL><DT><DD></DL><P>
 <A NAME="getProjectionMatrixAsOrtho"></A>
-<A NAME="DOC.2.21.39"></A>
+<A NAME="DOC.2.21.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getProjectionMatrixAsOrtho(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)</B></TT>
 <DD>Get the othorgraphic settings of the orthographic projection matrix. 
 Returns false if matrix is not an orthographic matrix, where parameter values are undefined.
 <DL><DT><DD></DL><P>
 <A NAME="getProjectionMatrixAsFrustum"></A>
-<A NAME="DOC.2.21.40"></A>
+<A NAME="DOC.2.21.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getProjectionMatrixAsFrustum(double&amp; left, double&amp; right, double&amp; bottom, double&amp; top, double&amp; zNear, double&amp; zFar)</B></TT>
 <DD>Get the frustum setting of a perspective projection matrix.
 Returns false if matrix is not a perspective matrix, where parameter values are undefined.
 <DL><DT><DD></DL><P>
 <A NAME="getProjectionMatrixAsPerspective"></A>
-<A NAME="DOC.2.21.41"></A>
+<A NAME="DOC.2.21.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getProjectionMatrixAsPerspective(double&amp; fovy, double&amp; aspectRatio, double&amp; zNear, double&amp; zFar)</B></TT>
 <DD>Get the frustum setting of a symetric perspective projection matrix.
 Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
@@ -638,275 +643,268 @@ Asymetric metrices occur when stereo, power walls, caves and reality center disp
 In these configuration one should use the AsFrustum method instead.
 <DL><DT><DD></DL><P>
 <A NAME="setViewMatrix"></A>
-<A NAME="DOC.2.21.42"></A>
+<A NAME="DOC.2.21.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setViewMatrix(const osg::Matrixf&amp; matrix)</B></TT>
 <DD>Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. 
 <DL><DT><DD></DL><P>
 <A NAME="setViewMatrix"></A>
-<A NAME="DOC.2.21.43"></A>
+<A NAME="DOC.2.21.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setViewMatrix(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. 
 <DL><DT><DD></DL><P>
 <A NAME="setViewMatrixAsLookAt"></A>
-<A NAME="DOC.2.21.44"></A>
+<A NAME="DOC.2.21.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setViewMatrixAsLookAt(const osg::Vec3&amp; eye, const osg::Vec3&amp; center, const osg::Vec3&amp; up)</B></TT>
 <DD>Set to the position and orientation of view matrix, using the same convention as gluLookAt. 
 <DL><DT><DD></DL><P>
 <A NAME="getViewMatrix"></A>
-<A NAME="DOC.2.21.45"></A>
+<A NAME="DOC.2.21.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd&amp; getViewMatrix()</B></TT>
 <DD>Get the view matrix. 
 <DL><DT><DD></DL><P>
 <A NAME="getViewMatrix"></A>
-<A NAME="DOC.2.21.46"></A>
+<A NAME="DOC.2.21.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Matrixd&amp; getViewMatrix() const </B></TT>
 <DD>Get the const view matrix. 
 <DL><DT><DD></DL><P>
 <A NAME="getViewMatrixAsLookAt"></A>
-<A NAME="DOC.2.21.47"></A>
+<A NAME="DOC.2.21.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getViewMatrixAsLookAt(osg::Vec3&amp; eye, osg::Vec3&amp; center, osg::Vec3&amp; up, float lookDistance=1.0f)</B></TT>
 <DD>Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. 
 <DL><DT><DD></DL><P>
 <A NAME="setInitVisitor"></A>
-<A NAME="DOC.2.21.48"></A>
+<A NAME="DOC.2.21.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInitVisitor(osg::NodeVisitor* av)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInitVisitor"></A>
-<A NAME="DOC.2.21.49"></A>
+<A NAME="DOC.2.21.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::NodeVisitor* getInitVisitor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInitVisitor"></A>
-<A NAME="DOC.2.21.50"></A>
+<A NAME="DOC.2.21.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::NodeVisitor* getInitVisitor() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setUpdateVisitor"></A>
-<A NAME="DOC.2.21.51"></A>
+<A NAME="DOC.2.21.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUpdateVisitor(osg::NodeVisitor* av)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUpdateVisitor"></A>
-<A NAME="DOC.2.21.52"></A>
+<A NAME="DOC.2.21.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::NodeVisitor* getUpdateVisitor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUpdateVisitor"></A>
-<A NAME="DOC.2.21.53"></A>
+<A NAME="DOC.2.21.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::NodeVisitor* getUpdateVisitor() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCullVisitor"></A>
-<A NAME="DOC.2.21.54"></A>
+<A NAME="DOC.2.21.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullVisitor(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullVisitor"></A>
-<A NAME="DOC.2.21.55"></A>
+<A NAME="DOC.2.21.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* getCullVisitor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullVisitor"></A>
-<A NAME="DOC.2.21.56"></A>
+<A NAME="DOC.2.21.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* getCullVisitor() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCullVisitorLeft"></A>
-<A NAME="DOC.2.21.57"></A>
+<A NAME="DOC.2.21.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullVisitorLeft(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullVisitorLeft"></A>
-<A NAME="DOC.2.21.58"></A>
+<A NAME="DOC.2.21.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* getCullVisitorLeft()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullVisitorLeft"></A>
-<A NAME="DOC.2.21.59"></A>
+<A NAME="DOC.2.21.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* getCullVisitorLeft() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCullVisitorRight"></A>
-<A NAME="DOC.2.21.60"></A>
+<A NAME="DOC.2.21.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullVisitorRight(<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullVisitorRight"></A>
-<A NAME="DOC.2.21.61"></A>
+<A NAME="DOC.2.21.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* getCullVisitorRight()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullVisitorRight"></A>
-<A NAME="DOC.2.21.62"></A>
+<A NAME="DOC.2.21.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* getCullVisitorRight() const </B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="setCollectOccludersVisitor"></A>
+<A NAME="DOC.2.21.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCollectOccludersVisitor(osg::CollectOccludersVisitor* cov)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCollectOccludersVisitor"></A>
+<A NAME="DOC.2.21.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CollectOccludersVisitor* getCollectOccludersVisitor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCollectOccludersVisitor"></A>
+<A NAME="DOC.2.21.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::CollectOccludersVisitor* getCollectOccludersVisitor() const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="setRenderGraph"></A>
-<A NAME="DOC.2.21.63"></A>
+<A NAME="DOC.2.21.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderGraph(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderGraph"></A>
-<A NAME="DOC.2.21.64"></A>
+<A NAME="DOC.2.21.70"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* getRenderGraph()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderGraph"></A>
-<A NAME="DOC.2.21.65"></A>
+<A NAME="DOC.2.21.71"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* getRenderGraph() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRenderGraphLeft"></A>
-<A NAME="DOC.2.21.66"></A>
+<A NAME="DOC.2.21.72"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderGraphLeft(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderGraphLeft"></A>
-<A NAME="DOC.2.21.67"></A>
+<A NAME="DOC.2.21.73"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* getRenderGraphLeft()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderGraphLeft"></A>
-<A NAME="DOC.2.21.68"></A>
+<A NAME="DOC.2.21.74"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* getRenderGraphLeft() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRenderGraphRight"></A>
-<A NAME="DOC.2.21.69"></A>
+<A NAME="DOC.2.21.75"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderGraphRight(<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rg)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderGraphRight"></A>
-<A NAME="DOC.2.21.70"></A>
+<A NAME="DOC.2.21.76"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* getRenderGraphRight()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderGraphRight"></A>
-<A NAME="DOC.2.21.71"></A>
+<A NAME="DOC.2.21.77"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* getRenderGraphRight() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRenderStage"></A>
-<A NAME="DOC.2.21.72"></A>
+<A NAME="DOC.2.21.78"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderStage(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStage"></A>
-<A NAME="DOC.2.21.73"></A>
+<A NAME="DOC.2.21.79"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* getRenderStage()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStage"></A>
-<A NAME="DOC.2.21.74"></A>
+<A NAME="DOC.2.21.80"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* getRenderStage() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRenderStageLeft"></A>
-<A NAME="DOC.2.21.75"></A>
+<A NAME="DOC.2.21.81"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderStageLeft(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStageLeft"></A>
-<A NAME="DOC.2.21.76"></A>
+<A NAME="DOC.2.21.82"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* getRenderStageLeft()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStageLeft"></A>
-<A NAME="DOC.2.21.77"></A>
+<A NAME="DOC.2.21.83"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* getRenderStageLeft() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRenderStageRight"></A>
-<A NAME="DOC.2.21.78"></A>
+<A NAME="DOC.2.21.84"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRenderStageRight(<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* rs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStageRight"></A>
-<A NAME="DOC.2.21.79"></A>
+<A NAME="DOC.2.21.85"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* getRenderStageRight()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRenderStageRight"></A>
-<A NAME="DOC.2.21.80"></A>
+<A NAME="DOC.2.21.86"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* getRenderStageRight() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setCullMask"></A>
-<A NAME="DOC.2.21.81"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullMask(const osg::Node::NodeMask nm)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getCullMask"></A>
-<A NAME="DOC.2.21.82"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask getCullMask() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="setCullMaskLeft"></A>
-<A NAME="DOC.2.21.83"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullMaskLeft(const osg::Node::NodeMask nm)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getCullMaskLeft"></A>
-<A NAME="DOC.2.21.84"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask getCullMaskLeft() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="setCullMaskRight"></A>
-<A NAME="DOC.2.21.85"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullMaskRight(const osg::Node::NodeMask nm)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getCullMaskRight"></A>
-<A NAME="DOC.2.21.86"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask getCullMaskRight() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="setLODScale"></A>
+<A NAME="setDrawBufferValue"></A>
 <A NAME="DOC.2.21.87"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODScale(float bias)</B></TT>
-<DD>Set the LOD bias for the CullVisitor to use
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawBufferValue( GLenum drawBufferValue )</B></TT>
+<DD>Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode 
 <DL><DT><DD></DL><P>
-<A NAME="getLODScale"></A>
+<A NAME="getDrawBufferValue"></A>
 <A NAME="DOC.2.21.88"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getLODScale() const </B></TT>
-<DD>Get the LOD bias
-<DL><DT><DD></DL><P>
-<A NAME="setSmallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.21.89"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSmallFeatureCullingPixelSize(float value)</B></TT>
-<DD>Set the Small Feature Culling Pixel Size
-<DL><DT><DD></DL><P>
-<A NAME="getSmallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.21.90"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSmallFeatureCullingPixelSize() const </B></TT>
-<DD>Get the Small Feature Culling Pixel Size
-<DL><DT><DD></DL><P>
-<A NAME="setCullingMode"></A>
-<A NAME="DOC.2.21.91"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullingMode(osg::CullStack::CullingMode mode)</B></TT>
-<DD>Set the culling mode for the CullVisitor to use
-<DL><DT><DD></DL><P>
-<A NAME="getCullingMode"></A>
-<A NAME="DOC.2.21.92"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CullStack::CullingMode getCullingMode() const </B></TT>
-<DD>Returns the current CullingMode
-<DL><DT><DD></DL><P>
-<A NAME="setComputeNearFarMode"></A>
-<A NAME="DOC.2.21.93"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setComputeNearFarMode(CullVisitor::ComputeNearFarMode cnfm)</B></TT>
-<DD>Set the ComputeNearFarMode for the CullVisitor to use
-<DL><DT><DD></DL><P>
-<A NAME="getComputeNearFarMode"></A>
-<A NAME="DOC.2.21.94"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullVisitor::ComputeNearFarMode getComputeNearFarMode() const </B></TT>
-<DD>Get the ComputeNearFarMode
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum getDrawBufferValue() const </B></TT>
+<DD>Get the draw buffer value used at the start of each frame draw. 
 <DL><DT><DD></DL><P>
 <A NAME="FusionDistanceMode"></A>
-<A NAME="DOC.2.21.95"></A>
+<A NAME="DOC.2.21.89"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  FusionDistanceMode</B></TT>
 <DD>FusionDistanceMode is used only when working in stereo
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="USE_FUSION_DISTANCE_VALUE"></A>
-<A NAME="DOC.2.21.95.1"></A>
+<A NAME="DOC.2.21.89.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_FUSION_DISTANCE_VALUE</B></TT>
 <DD>Use fusion distance from the value set on the SceneView
 <DL><DT><DD></DL><P>
 <A NAME="PROPORTIONAL_TO_SCREEN_DISTANCE"></A>
-<A NAME="DOC.2.21.95.2"></A>
+<A NAME="DOC.2.21.89.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PROPORTIONAL_TO_SCREEN_DISTANCE</B></TT>
 <DD>Compute the fusion distance by multiplying the screen distance by the  fusion distance value
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setFusionDistance"></A>
-<A NAME="DOC.2.21.96"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFusionDistance(<!1><A HREF="SceneView.html#DOC.2.21.95">FusionDistanceMode</A> mode, float value=1.0f)</B></TT>
+<A NAME="DOC.2.21.90"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFusionDistance(<!1><A HREF="SceneView.html#DOC.2.21.89">FusionDistanceMode</A> mode, float value=1.0f)</B></TT>
 <DD>Set the FusionDistanceMode and Value. Note, is used only when working in stereo.
 <DL><DT><DD></DL><P>
 <A NAME="getFusionDistanceMode"></A>
-<A NAME="DOC.2.21.97"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.95">FusionDistanceMode</A> getFusionDistanceMode() const </B></TT>
+<A NAME="DOC.2.21.91"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.89">FusionDistanceMode</A> getFusionDistanceMode() const </B></TT>
 <DD>Get the FusionDistanceMode
 <DL><DT><DD></DL><P>
 <A NAME="getFusionDistanceValue"></A>
-<A NAME="DOC.2.21.98"></A>
+<A NAME="DOC.2.21.92"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getFusionDistanceValue() const </B></TT>
 <DD>Get the FusionDistanceValue. Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes.
 <DL><DT><DD></DL><P>
 <A NAME="setPrioritizeTextures"></A>
-<A NAME="DOC.2.21.99"></A>
+<A NAME="DOC.2.21.93"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPrioritizeTextures(bool pt)</B></TT>
 <DD>set whether the draw method should call renderer->prioritizeTexture
 <DL><DT><DD></DL><P>
 <A NAME="getPrioritizeTextures"></A>
-<A NAME="DOC.2.21.100"></A>
+<A NAME="DOC.2.21.94"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getPrioritizeTextures() const </B></TT>
 <DD>get whether the draw method should call renderer->prioritizeTexture
 <DL><DT><DD></DL><P>
+<A NAME="ComputeStereoMatricesCallback"></A>
+<A NAME="DOC.2.21.95"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ComputeStereoMatricesCallback: public osg::Referenced</B></TT>
+<DD>callback for overidding the default method for compute the offset projection and view matrices
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="computeLeftEyeProjection"></A>
+<A NAME="DOC.2.21.95.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeLeftEyeProjection(const osg::Matrixd&amp; projection) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeLeftEyeView"></A>
+<A NAME="DOC.2.21.95.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeLeftEyeView(const osg::Matrixd&amp; view) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeRightEyeProjection"></A>
+<A NAME="DOC.2.21.95.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeRightEyeProjection(const osg::Matrixd&amp; projection) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeRightEyeView"></A>
+<A NAME="DOC.2.21.95.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeRightEyeView(const osg::Matrixd&amp; view) const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setComputeStereoMatricesCallback"></A>
+<A NAME="DOC.2.21.96"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setComputeStereoMatricesCallback(<!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>* callback)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getComputeStereoMatricesCallback"></A>
+<A NAME="DOC.2.21.97"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>* getComputeStereoMatricesCallback()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getComputeStereoMatricesCallback"></A>
+<A NAME="DOC.2.21.98"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>* getComputeStereoMatricesCallback() const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="projectWindowIntoObject"></A>
-<A NAME="DOC.2.21.101"></A>
+<A NAME="DOC.2.21.99"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool projectWindowIntoObject(const osg::Vec3&amp; window, osg::Vec3&amp; object) const </B></TT>
 <DD>Calculate, via glUnProject, the object coordinates of a window point.
 Note, current implementation requires that SceneView::draw() has been previously called
@@ -915,7 +913,7 @@ windows coordinates are calculated relative to the bottom left of the window.
 Returns true on successful projection.
 <DL><DT><DD></DL><P>
 <A NAME="projectWindowXYIntoObject"></A>
-<A NAME="DOC.2.21.102"></A>
+<A NAME="DOC.2.21.100"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool projectWindowXYIntoObject(int x, int y, osg::Vec3&amp; near_point, osg::Vec3&amp; far_point) const </B></TT>
 <DD>Calculate, via glUnProject, the object coordinates of a window x,y
 when projected onto the near and far planes.
@@ -925,7 +923,7 @@ windows coordinates are calculated relative to the bottom left of the window.
 Returns true on successful projection.
 <DL><DT><DD></DL><P>
 <A NAME="projectObjectIntoWindow"></A>
-<A NAME="DOC.2.21.103"></A>
+<A NAME="DOC.2.21.101"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool projectObjectIntoWindow(const osg::Vec3&amp; object, osg::Vec3&amp; window) const </B></TT>
 <DD>Calculate, via glProject, the object coordinates of a window.
 Note, current implementation requires that SceneView::draw() has been previously called
@@ -936,84 +934,49 @@ so you may need to pass in (mouseX,window_height-mouseY,...).
 Returns true on successful projection.
 <DL><DT><DD></DL><P>
 <A NAME="setFrameStamp"></A>
-<A NAME="DOC.2.21.104"></A>
+<A NAME="DOC.2.21.102"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFrameStamp(osg::FrameStamp* fs)</B></TT>
 <DD>Set the frame stamp for the current frame
 <DL><DT><DD></DL><P>
 <A NAME="getFrameStamp"></A>
-<A NAME="DOC.2.21.105"></A>
+<A NAME="DOC.2.21.103"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::FrameStamp* getFrameStamp() const </B></TT>
 <DD>Set the frame stamp for the current frame
 <DL><DT><DD></DL><P>
-<A NAME="ComputeStereoMatricesCallback"></A>
-<A NAME="DOC.2.21.106"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ComputeStereoMatricesCallback: public osg::Referenced</B></TT>
-<DD>callback for overidding the default method for compute the offset projection and view matrices
-<DL><DT><DD></DL><P><DL>
-
 <A NAME="computeLeftEyeProjection"></A>
-<A NAME="DOC.2.21.106.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeLeftEyeProjection(const osg::Matrixd&amp; projection) const  = 0</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="computeLeftEyeView"></A>
-<A NAME="DOC.2.21.106.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeLeftEyeView(const osg::Matrixd&amp; view) const  = 0</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="computeRightEyeProjection"></A>
-<A NAME="DOC.2.21.106.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeRightEyeProjection(const osg::Matrixd&amp; projection) const  = 0</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="computeRightEyeView"></A>
-<A NAME="DOC.2.21.106.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeRightEyeView(const osg::Matrixd&amp; view) const  = 0</B></TT>
-<DL><DT><DD></DL><P></DL>
-
-<A NAME="setComputeStereoMatricesCallback"></A>
-<A NAME="DOC.2.21.107"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setComputeStereoMatricesCallback(<!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* callback)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getComputeStereoMatricesCallback"></A>
-<A NAME="DOC.2.21.108"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* getComputeStereoMatricesCallback(<!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* callback)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getComputeStereoMatricesCallback"></A>
-<A NAME="DOC.2.21.109"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>* getComputeStereoMatricesCallback() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="computeLeftEyeProjection"></A>
-<A NAME="DOC.2.21.110"></A>
+<A NAME="DOC.2.21.104"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Matrixd computeLeftEyeProjection(const osg::Matrixd&amp; projection) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeLeftEyeView"></A>
-<A NAME="DOC.2.21.111"></A>
+<A NAME="DOC.2.21.105"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Matrixd computeLeftEyeView(const osg::Matrixd&amp; view) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeRightEyeProjection"></A>
-<A NAME="DOC.2.21.112"></A>
+<A NAME="DOC.2.21.106"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Matrixd computeRightEyeProjection(const osg::Matrixd&amp; projection) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeRightEyeView"></A>
-<A NAME="DOC.2.21.113"></A>
+<A NAME="DOC.2.21.107"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Matrixd computeRightEyeView(const osg::Matrixd&amp; view) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeLeftEyeProjectionImplementation"></A>
-<A NAME="DOC.2.21.114"></A>
+<A NAME="DOC.2.21.108"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeLeftEyeProjectionImplementation(const osg::Matrixd&amp; projection) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeLeftEyeViewImplementation"></A>
-<A NAME="DOC.2.21.115"></A>
+<A NAME="DOC.2.21.109"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeLeftEyeViewImplementation(const osg::Matrixd&amp; view) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeRightEyeProjectionImplementation"></A>
-<A NAME="DOC.2.21.116"></A>
+<A NAME="DOC.2.21.110"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeRightEyeProjectionImplementation(const osg::Matrixd&amp; projection) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeRightEyeViewImplementation"></A>
-<A NAME="DOC.2.21.117"></A>
+<A NAME="DOC.2.21.111"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd&amp; view) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.21.118"></A>
+<A NAME="DOC.2.21.112"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init()</B></TT>
 <DD>Do init traversal of attached scene graph using Init NodeVisitor.
 The init traversal is called once for each SceneView, and should
@@ -1024,182 +987,171 @@ elsewhere. Also init() should only ever be called within a valid
 graphics context.
 <DL><DT><DD></DL><P>
 <A NAME="update"></A>
-<A NAME="DOC.2.21.119"></A>
+<A NAME="DOC.2.21.113"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void update()</B></TT>
 <DD>Do app traversal of attached scene graph using App NodeVisitor
 <DL><DT><DD></DL><P>
 <A NAME="cull"></A>
-<A NAME="DOC.2.21.120"></A>
+<A NAME="DOC.2.21.114"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void cull()</B></TT>
 <DD>Do cull traversal of attached scene graph using Cull NodeVisitor
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.21.121"></A>
+<A NAME="DOC.2.21.115"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw()</B></TT>
 <DD>Do draw traversal of draw bins generated by cull traversal
 <DL><DT><DD></DL><P>
+<A NAME="flushDeletedGLObjects"></A>
+<A NAME="DOC.2.21.116"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void flushDeletedGLObjects(double&amp; availableTime)</B></TT>
+<DD>Flush all the OpenGL objects, such as texture objects, display lists etc
+<DL><DT><DD></DL><P>
 <A NAME="~SceneView"></A>
-<A NAME="DOC.2.21.122"></A>
+<A NAME="DOC.2.21.117"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~SceneView()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cullStage"></A>
-<A NAME="DOC.2.21.123"></A>
+<A NAME="DOC.2.21.118"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void cullStage(const osg::Matrixd&amp; projection, const osg::Matrixd&amp; modelview, <!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>* cullVisitor, <!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>* rendergraph, <!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>* renderStage)</B></TT>
 <DD>Do cull traversal of attached scene graph using Cull NodeVisitor
 <DL><DT><DD></DL><P>
 <A NAME="computeMVPW"></A>
-<A NAME="DOC.2.21.124"></A>
+<A NAME="DOC.2.21.119"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Matrix computeMVPW() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clearArea"></A>
-<A NAME="DOC.2.21.125"></A>
+<A NAME="DOC.2.21.120"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void clearArea(int x, int y, int width, int height, const osg::Vec4&amp; color)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_sceneData"></A>
-<A NAME="DOC.2.21.126"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _sceneData</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_globalStateSet"></A>
-<A NAME="DOC.2.21.127"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::StateSet&gt;  _globalStateSet</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_localStateSet"></A>
-<A NAME="DOC.2.21.128"></A>
+<A NAME="DOC.2.21.121"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::StateSet&gt;  _localStateSet</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_light"></A>
-<A NAME="DOC.2.21.129"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Light&gt;  _light</B></TT>
+<A NAME="_state"></A>
+<A NAME="DOC.2.21.122"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _state</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_projectionMatrix"></A>
-<A NAME="DOC.2.21.130"></A>
+<A NAME="DOC.2.21.123"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd _projectionMatrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_viewMatrix"></A>
-<A NAME="DOC.2.21.131"></A>
+<A NAME="DOC.2.21.124"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd _viewMatrix</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_displaySettings"></A>
-<A NAME="DOC.2.21.132"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::DisplaySettings&gt;  _displaySettings</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_state"></A>
-<A NAME="DOC.2.21.133"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::State&gt;  _state</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_initCalled"></A>
-<A NAME="DOC.2.21.134"></A>
+<A NAME="DOC.2.21.125"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _initCalled</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_initVisitor"></A>
-<A NAME="DOC.2.21.135"></A>
+<A NAME="DOC.2.21.126"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::NodeVisitor&gt;  _initVisitor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_updateVisitor"></A>
-<A NAME="DOC.2.21.136"></A>
+<A NAME="DOC.2.21.127"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::NodeVisitor&gt;  _updateVisitor</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_cullMask"></A>
-<A NAME="DOC.2.21.137"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask _cullMask</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_cullVisitor"></A>
-<A NAME="DOC.2.21.138"></A>
+<A NAME="DOC.2.21.128"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  _cullVisitor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rendergraph"></A>
-<A NAME="DOC.2.21.139"></A>
+<A NAME="DOC.2.21.129"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  _rendergraph</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_renderStage"></A>
-<A NAME="DOC.2.21.140"></A>
+<A NAME="DOC.2.21.130"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  _renderStage</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_computeStereoMatricesCallback"></A>
-<A NAME="DOC.2.21.141"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="SceneView.html#DOC.2.21.106">ComputeStereoMatricesCallback</A>&gt;  _computeStereoMatricesCallback</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="_cullMaskLeft"></A>
-<A NAME="DOC.2.21.142"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask _cullMaskLeft</B></TT>
+<A NAME="DOC.2.21.131"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="SceneView.html#DOC.2.21.95">ComputeStereoMatricesCallback</A>&gt;  _computeStereoMatricesCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cullVisitorLeft"></A>
-<A NAME="DOC.2.21.143"></A>
+<A NAME="DOC.2.21.132"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  _cullVisitorLeft</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rendergraphLeft"></A>
-<A NAME="DOC.2.21.144"></A>
+<A NAME="DOC.2.21.133"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  _rendergraphLeft</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_renderStageLeft"></A>
-<A NAME="DOC.2.21.145"></A>
+<A NAME="DOC.2.21.134"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  _renderStageLeft</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_cullMaskRight"></A>
-<A NAME="DOC.2.21.146"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Node::NodeMask _cullMaskRight</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="_cullVisitorRight"></A>
-<A NAME="DOC.2.21.147"></A>
+<A NAME="DOC.2.21.135"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="CullVisitor.html">osgUtil::CullVisitor</A>&gt;  _cullVisitorRight</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rendergraphRight"></A>
-<A NAME="DOC.2.21.148"></A>
+<A NAME="DOC.2.21.136"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderGraph.html">osgUtil::RenderGraph</A>&gt;  _rendergraphRight</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_renderStageRight"></A>
-<A NAME="DOC.2.21.149"></A>
+<A NAME="DOC.2.21.137"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RenderStage.html">osgUtil::RenderStage</A>&gt;  _renderStageRight</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_collectOccludersVisistor"></A>
+<A NAME="DOC.2.21.138"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::CollectOccludersVisitor&gt;  _collectOccludersVisistor</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_frameStamp"></A>
-<A NAME="DOC.2.21.150"></A>
+<A NAME="DOC.2.21.139"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::FrameStamp&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_backgroundColor"></A>
-<A NAME="DOC.2.21.151"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _backgroundColor</B></TT>
+<A NAME="_sceneData"></A>
+<A NAME="DOC.2.21.140"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _sceneData</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_computeNearFar"></A>
-<A NAME="DOC.2.21.152"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullVisitor::ComputeNearFarMode _computeNearFar</B></TT>
+<A NAME="_globalStateSet"></A>
+<A NAME="DOC.2.21.141"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::StateSet&gt;  _globalStateSet</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_cullingMode"></A>
-<A NAME="DOC.2.21.153"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::CullStack::CullingMode _cullingMode</B></TT>
+<A NAME="_light"></A>
+<A NAME="DOC.2.21.142"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Light&gt;  _light</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_LODScale"></A>
-<A NAME="DOC.2.21.154"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODScale</B></TT>
+<A NAME="_displaySettings"></A>
+<A NAME="DOC.2.21.143"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::DisplaySettings&gt;  _displaySettings</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_smallFeatureCullingPixelSize"></A>
-<A NAME="DOC.2.21.155"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _smallFeatureCullingPixelSize</B></TT>
+<A NAME="_clearColor"></A>
+<A NAME="DOC.2.21.144"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _clearColor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fusionDistanceMode"></A>
-<A NAME="DOC.2.21.156"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.95">FusionDistanceMode</A> _fusionDistanceMode</B></TT>
+<A NAME="DOC.2.21.145"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.89">FusionDistanceMode</A> _fusionDistanceMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fusionDistanceValue"></A>
-<A NAME="DOC.2.21.157"></A>
+<A NAME="DOC.2.21.146"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _fusionDistanceValue</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_viewport"></A>
-<A NAME="DOC.2.21.158"></A>
+<A NAME="DOC.2.21.147"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Viewport&gt;  _viewport</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_lightingMode"></A>
-<A NAME="DOC.2.21.159"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.22">LightingMode</A> _lightingMode</B></TT>
+<A NAME="DOC.2.21.148"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SceneView.html#DOC.2.21.25">LightingMode</A> _lightingMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_prioritizeTextures"></A>
-<A NAME="DOC.2.21.160"></A>
+<A NAME="DOC.2.21.149"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _prioritizeTextures</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_drawBufferValue"></A>
+<A NAME="DOC.2.21.150"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _drawBufferValue</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_requiresFlush"></A>
+<A NAME="DOC.2.21.151"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _requiresFlush</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

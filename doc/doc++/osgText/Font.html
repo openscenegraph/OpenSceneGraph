@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGTEXT_EXPORT osgText::Font</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -21,6 +21,15 @@
 <HR>
 
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+class  <B><A HREF="FontImplementation.html">FontImplementation</A></B>: public osg::Referenced
+<DT>
+class  OSGTEXT_EXPORT <B><A HREF="GlyphTexture.html">GlyphTexture</A></B>: public osg::Texture2D
+<DT>
+class  OSGTEXT_EXPORT <B><A HREF="Glyph.html">Glyph</A></B>: public osg::Image
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.3.1">Font</A></B>(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation=0)
@@ -40,9 +49,9 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.3.8">setSize</A></B>(unsigned int width, unsigned int height)
 <DD><I>Set the pixel width and height hint</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.9">getWidth</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.9">getWidth</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.10">getHeight</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.10">getHeight</A></B>() const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.6.3.11">getKerning</A></B>(unsigned int leftcharcode, unsigned int rightcharcode, <!1><A HREF="KerningType.html">KerningType</A> kerningType)
 <DD><I>Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, wrt the current font size hint</I>
@@ -83,15 +92,6 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-class  <B><A HREF="FontImplementation.html">FontImplementation</A></B>: public osg::Referenced
-<DT>
-class  OSGTEXT_EXPORT <B><A HREF="GlyphTexture.html">GlyphTexture</A></B>: public osg::Texture2D
-<DT>
-class  OSGTEXT_EXPORT <B><A HREF="Glyph.html">Glyph</A></B>: public osg::Image
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html#DOC.6.3.32">SizeGlyphMap</A> <B><A HREF="#DOC.6.3.33">_sizeGlyphMap</A></B>
 <DT>
@@ -113,7 +113,9 @@ class  OSGTEXT_EXPORT <B><A HREF="Glyph.html">Glyph</A></B>: public osg::Image
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Texture::FilterMode <B><A HREF="#DOC.6.3.42">_magFilterHint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  <B><A HREF="#DOC.6.3.43">_implementation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::TexEnv &gt;  <B><A HREF="#DOC.6.3.43">_texEnv</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  <B><A HREF="#DOC.6.3.44">_implementation</A></B>
 </DL></P>
 
 <P><DL>
@@ -124,16 +126,16 @@ class  OSGTEXT_EXPORT <B><A HREF="Glyph.html">Glyph</A></B>: public osg::Image
 </DL></P>
 
 <P><DL>
-<DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt; <B><A HREF="#DOC.6.3.28">GlyphTextureList</A></B>
+<DT><H3>Protected</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt;  <B><A HREF="#DOC.6.3.28">GlyphTextureList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; <B><A HREF="#DOC.6.3.29">StateSetList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt;  <B><A HREF="#DOC.6.3.29">StateSetList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; <B><A HREF="#DOC.6.3.30">GlyphMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt;  <B><A HREF="#DOC.6.3.30">GlyphMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt; unsigned int, unsigned int &gt; <B><A HREF="#DOC.6.3.31">SizePair</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt; unsigned int, unsigned int &gt;  <B><A HREF="#DOC.6.3.31">SizePair</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt; <B><A HREF="#DOC.6.3.32">SizeGlyphMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt;  <B><A HREF="#DOC.6.3.32">SizeGlyphMap</A></B>
 </DL></P>
 
 </DL>
@@ -181,11 +183,11 @@ and FreeTypeFont found in src/osgPlugins/freetype/FreeTypeFont.cpp</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="getWidth"></A>
 <A NAME="DOC.6.3.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getWidth()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getWidth() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getHeight"></A>
 <A NAME="DOC.6.3.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getHeight()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getHeight() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getKerning"></A>
 <A NAME="DOC.6.3.11"></A>
@@ -269,23 +271,23 @@ Note, this doesn't affect already created Texture Glhph's.
 <DL><DT><DD></DL><P>
 <A NAME="GlyphTextureList"></A>
 <A NAME="DOC.6.3.28"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt; GlyphTextureList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt;  GlyphTextureList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="StateSetList"></A>
 <A NAME="DOC.6.3.29"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; StateSetList</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt;  StateSetList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GlyphMap"></A>
 <A NAME="DOC.6.3.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; GlyphMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt;  GlyphMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SizePair"></A>
 <A NAME="DOC.6.3.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt; unsigned int, unsigned int &gt; SizePair</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt; unsigned int, unsigned int &gt;  SizePair</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SizeGlyphMap"></A>
 <A NAME="DOC.6.3.32"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt; SizeGlyphMap</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt;  SizeGlyphMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_sizeGlyphMap"></A>
 <A NAME="DOC.6.3.33"></A>
@@ -327,8 +329,12 @@ Note, this doesn't affect already created Texture Glhph's.
 <A NAME="DOC.6.3.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Texture::FilterMode _magFilterHint</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_implementation"></A>
+<A NAME="_texEnv"></A>
 <A NAME="DOC.6.3.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::TexEnv &gt;  _texEnv</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_implementation"></A>
+<A NAME="DOC.6.3.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  _implementation</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -336,6 +342,6 @@ Note, this doesn't affect already created Texture Glhph's.
 
 <DL><DT><DT><B>Friends:</B><DD>  class <!1><A HREF="FontImplementation.html">FontImplementation</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

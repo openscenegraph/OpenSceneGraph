@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::Depth</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,60 +22,69 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.59.2">Depth</A></B>(<!1><A HREF="Depth.html#DOC.2.59.1">Function</A> func=<!1><A HREF="Depth.html#DOC.2.59.1.2">LESS</A>, double zNear=0.0, double zFar=1.0, bool writeMask=true)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.59.3">Depth</A></B>(const <!1><A HREF="Depth.html#DOC.2.59.3">Depth</A>&amp; dp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
-<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.59.4">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Depth.html">Depth</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.32">DEPTH</A>)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.59.5">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
-<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.6">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.59.7">setFunction</A></B>(<!1><A HREF="Depth.html#DOC.2.59.1">Function</A> func)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Depth.html#DOC.2.59.1">Function</A> <B><A HREF="#DOC.2.59.8">getFunction</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.59.9">setRange</A></B>(double zNear, double zFar)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.59.10">getZNear</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.59.11">getZFar</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.59.12">setWriteMask</A></B>(bool mask)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.59.13">getWriteMask</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.59.14">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.84.1">Function</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.59.1">Function</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.84.2">Depth</A></B>(<!1><A HREF="Depth.html#DOC.2.84.1">Function</A> func=<!1><A HREF="Depth.html#DOC.2.84.1.2">LESS</A>, double zNear=0.0, double zFar=1.0, bool writeMask=true)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.84.3">Depth</A></B>(const <!1><A HREF="Depth.html#DOC.2.84.3">Depth</A>&amp; dp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.84.4">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Depth.html">Depth</A>, <!1><A HREF="StateAttribute.html#DOC.2.229.6.32">DEPTH</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.84.5">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.84.6">getModeUsage</A></B>(<!1><A HREF="StateAttribute.html#DOC.2.229.20">ModeUsage</A>&amp; usage) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.84.7">setFunction</A></B>(<!1><A HREF="Depth.html#DOC.2.84.1">Function</A> func)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Depth.html#DOC.2.84.1">Function</A> <B><A HREF="#DOC.2.84.8">getFunction</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.84.9">setRange</A></B>(double zNear, double zFar)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.84.10">getZNear</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.84.11">getZFar</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.84.12">setWriteMask</A></B>(bool mask)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.84.13">getWriteMask</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.84.14">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Depth.html#DOC.2.59.1">Function</A> <B><A HREF="#DOC.2.59.16">_func</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Depth.html#DOC.2.84.1">Function</A> <B><A HREF="#DOC.2.84.16">_func</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.59.17">_zNear</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.84.17">_zNear</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.59.18">_zFar</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.84.18">_zFar</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.59.19">_depthWriteMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.84.19">_depthWriteMask</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.59.15">~Depth</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.84.15">~Depth</A></B>()
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="StateAttribute.html">StateAttribute</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>ModeUsage</B>
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
@@ -88,7 +97,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.195.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.229.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -98,32 +107,35 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compileGLObjects</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>releaseGLObjects</B>(<!1><A HREF="State.html">State</A>* =0) const 
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  GLenum <B>GLMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>GLModeValue</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>OverrideValue</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
-<DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -133,13 +145,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -149,7 +156,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -166,6 +173,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -178,115 +187,115 @@
 <DL>
 
 <A NAME="Function"></A>
-<A NAME="DOC.2.59.1"></A>
+<A NAME="DOC.2.84.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Function</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="NEVER"></A>
-<A NAME="DOC.2.59.1.1"></A>
+<A NAME="DOC.2.84.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEVER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LESS"></A>
-<A NAME="DOC.2.59.1.2"></A>
+<A NAME="DOC.2.84.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LESS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EQUAL"></A>
-<A NAME="DOC.2.59.1.3"></A>
+<A NAME="DOC.2.84.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LEQUAL"></A>
-<A NAME="DOC.2.59.1.4"></A>
+<A NAME="DOC.2.84.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GREATER"></A>
-<A NAME="DOC.2.59.1.5"></A>
+<A NAME="DOC.2.84.1.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GREATER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NOTEQUAL"></A>
-<A NAME="DOC.2.59.1.6"></A>
+<A NAME="DOC.2.84.1.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NOTEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GEQUAL"></A>
-<A NAME="DOC.2.59.1.7"></A>
+<A NAME="DOC.2.84.1.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ALWAYS"></A>
-<A NAME="DOC.2.59.1.8"></A>
+<A NAME="DOC.2.84.1.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALWAYS</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Depth"></A>
-<A NAME="DOC.2.59.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Depth(<!1><A HREF="Depth.html#DOC.2.59.1">Function</A> func=<!1><A HREF="Depth.html#DOC.2.59.1.2">LESS</A>, double zNear=0.0, double zFar=1.0, bool writeMask=true)</B></TT>
+<A NAME="DOC.2.84.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Depth(<!1><A HREF="Depth.html#DOC.2.84.1">Function</A> func=<!1><A HREF="Depth.html#DOC.2.84.1.2">LESS</A>, double zNear=0.0, double zFar=1.0, bool writeMask=true)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Depth"></A>
-<A NAME="DOC.2.59.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Depth(const <!1><A HREF="Depth.html#DOC.2.59.3">Depth</A>&amp; dp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.84.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Depth(const <!1><A HREF="Depth.html#DOC.2.84.3">Depth</A>&amp; dp, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.59.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Depth.html">Depth</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.32">DEPTH</A>)</B></TT>
+<A NAME="DOC.2.84.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Depth.html">Depth</A>, <!1><A HREF="StateAttribute.html#DOC.2.229.6.32">DEPTH</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.59.5"></A>
+<A NAME="DOC.2.84.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
-<A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.59.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<A NAME="getModeUsage"></A>
+<A NAME="DOC.2.84.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool getModeUsage(<!1><A HREF="StateAttribute.html#DOC.2.229.20">ModeUsage</A>&amp; usage) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFunction"></A>
-<A NAME="DOC.2.59.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(<!1><A HREF="Depth.html#DOC.2.59.1">Function</A> func)</B></TT>
+<A NAME="DOC.2.84.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(<!1><A HREF="Depth.html#DOC.2.84.1">Function</A> func)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFunction"></A>
-<A NAME="DOC.2.59.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Depth.html#DOC.2.59.1">Function</A> getFunction() const </B></TT>
+<A NAME="DOC.2.84.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Depth.html#DOC.2.84.1">Function</A> getFunction() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRange"></A>
-<A NAME="DOC.2.59.9"></A>
+<A NAME="DOC.2.84.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRange(double zNear, double zFar)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getZNear"></A>
-<A NAME="DOC.2.59.10"></A>
+<A NAME="DOC.2.84.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getZNear() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getZFar"></A>
-<A NAME="DOC.2.59.11"></A>
+<A NAME="DOC.2.84.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getZFar() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setWriteMask"></A>
-<A NAME="DOC.2.59.12"></A>
+<A NAME="DOC.2.84.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setWriteMask(bool mask)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getWriteMask"></A>
-<A NAME="DOC.2.59.13"></A>
+<A NAME="DOC.2.84.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getWriteMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.59.14"></A>
+<A NAME="DOC.2.84.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Depth"></A>
-<A NAME="DOC.2.59.15"></A>
+<A NAME="DOC.2.84.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Depth()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_func"></A>
-<A NAME="DOC.2.59.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Depth.html#DOC.2.59.1">Function</A> _func</B></TT>
+<A NAME="DOC.2.84.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Depth.html#DOC.2.84.1">Function</A> _func</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_zNear"></A>
-<A NAME="DOC.2.59.17"></A>
+<A NAME="DOC.2.84.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _zNear</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_zFar"></A>
-<A NAME="DOC.2.59.18"></A>
+<A NAME="DOC.2.84.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _zFar</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_depthWriteMask"></A>
-<A NAME="DOC.2.59.19"></A>
+<A NAME="DOC.2.84.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _depthWriteMask</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -294,6 +303,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgTerrain::DataSet::CompositeSource</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgTerrain::DataSet::CompositeSource</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MSpatialProperties,M,Mosg::Referenced,M,CCompositeSource,MCompositeSource.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+class  <B><A HREF="iterator.html">iterator</A></B>
+<DT>
+template&lt;class T&gt; class  <B><A HREF="base_source_iterator.html">base_source_iterator</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.6.10">DefaultSourceAdvancer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.6.11">LODSourceAdvancer</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> <B><A HREF="#DOC.2.2.6.14">_type</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeSource.html#DOC.2.2.6.2">SourceList</A> <B><A HREF="#DOC.2.2.6.15">_sourceList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CompositeSource.html#DOC.2.2.6.3">ChildList</A> <B><A HREF="#DOC.2.2.6.16">_children</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.6.1">CompositeSource</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> type=<!1><A HREF="DataSet.html#DOC.2.2.5.1">GROUP</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.6.4">setType</A></B>(<!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> type)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> <B><A HREF="#DOC.2.2.6.5">getType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.6.6">setSortValueFromSourceDataResolution</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.6.7">sort</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Source.html">Source</A>&gt; &gt;  <B><A HREF="#DOC.2.2.6.2">SourceList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt; <!1><A HREF="CompositeSource.html">CompositeSource</A>&gt; &gt;  <B><A HREF="#DOC.2.2.6.3">ChildList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="base_source_iterator.html">base_source_iterator</A>&lt;<!1><A HREF="CompositeSource.html#DOC.2.2.6.10">DefaultSourceAdvancer</A>&gt;  <B><A HREF="#DOC.2.2.6.12">source_iterator</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="base_source_iterator.html">base_source_iterator</A>&lt;<!1><A HREF="CompositeSource.html#DOC.2.2.6.11">LODSourceAdvancer</A>&gt;  <B><A HREF="#DOC.2.2.6.13">source_lod_iterator</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="CompositeSource"></A>
+<A NAME="DOC.2.2.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CompositeSource(<!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> type=<!1><A HREF="DataSet.html#DOC.2.2.5.1">GROUP</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SourceList"></A>
+<A NAME="DOC.2.2.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Source.html">Source</A>&gt; &gt;  SourceList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ChildList"></A>
+<A NAME="DOC.2.2.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt; <!1><A HREF="CompositeSource.html">CompositeSource</A>&gt; &gt;  ChildList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setType"></A>
+<A NAME="DOC.2.2.6.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setType(<!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> type)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getType"></A>
+<A NAME="DOC.2.2.6.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> getType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSortValueFromSourceDataResolution"></A>
+<A NAME="DOC.2.2.6.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSortValueFromSourceDataResolution()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="sort"></A>
+<A NAME="DOC.2.2.6.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void sort()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DefaultSourceAdvancer"></A>
+<A NAME="DOC.2.2.6.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  DefaultSourceAdvancer</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="DefaultSourceAdvancer"></A>
+<A NAME="DOC.2.2.6.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DefaultSourceAdvancer()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isActive"></A>
+<A NAME="DOC.2.2.6.10.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isActive(const <!1><A HREF="CompositeSource.html">CompositeSource</A>&amp; composite, int index)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="advanceToNextSource"></A>
+<A NAME="DOC.2.2.6.10.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool advanceToNextSource(const <!1><A HREF="CompositeSource.html">CompositeSource</A>&amp; composite, int&amp; index)</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="LODSourceAdvancer"></A>
+<A NAME="DOC.2.2.6.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  LODSourceAdvancer</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="LODSourceAdvancer"></A>
+<A NAME="DOC.2.2.6.11.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LODSourceAdvancer(float targetResolution=0.0f)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="advanceToNextSource"></A>
+<A NAME="DOC.2.2.6.11.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool advanceToNextSource(const <!1><A HREF="CompositeSource.html">CompositeSource</A>&amp; composite, int&amp; index)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_targetResolution"></A>
+<A NAME="DOC.2.2.6.11.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _targetResolution</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="source_iterator"></A>
+<A NAME="DOC.2.2.6.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="base_source_iterator.html">base_source_iterator</A>&lt;<!1><A HREF="CompositeSource.html#DOC.2.2.6.10">DefaultSourceAdvancer</A>&gt;  source_iterator</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="source_lod_iterator"></A>
+<A NAME="DOC.2.2.6.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="base_source_iterator.html">base_source_iterator</A>&lt;<!1><A HREF="CompositeSource.html#DOC.2.2.6.11">LODSourceAdvancer</A>&gt;  source_lod_iterator</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_type"></A>
+<A NAME="DOC.2.2.6.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DataSet.html#DOC.2.2.5">CompositeType</A> _type</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_sourceList"></A>
+<A NAME="DOC.2.2.6.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeSource.html#DOC.2.2.6.2">SourceList</A> _sourceList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_children"></A>
+<A NAME="DOC.2.2.6.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CompositeSource.html#DOC.2.2.6.3">ChildList</A> _children</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
+</HTML>

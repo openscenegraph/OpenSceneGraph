@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>namespace osgParticle</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -24,6 +24,10 @@ class  <B><A HREF="Counter.html">Counter</A></B>: public osg::Object
 <DT>
 class  OSGPARTICLE_EXPORT <B><A HREF="Emitter.html">Emitter</A></B>: public <!1><A HREF="ParticleProcessor.html">ParticleProcessor</A>
 <DD><I>An abstract base class for particle emitters.</I>
+<DT>
+class  OSGPARTICLE_EXPORT <B><A HREF="ExplosionEffect.html">ExplosionEffect</A></B>: public <!1><A HREF="ParticleEffect.html">ParticleEffect</A>
+<DT>
+class  OSGPARTICLE_EXPORT <B><A HREF="FireEffect.html">FireEffect</A></B>: public <!1><A HREF="ParticleEffect.html">ParticleEffect</A>
 <DT>
 class  OSGPARTICLE_EXPORT <B><A HREF="FluidFrictionOperator.html">FluidFrictionOperator</A></B>: public <!1><A HREF="Operator.html">Operator</A>
 <DD><I>An operator that simulates the friction of a fluid.</I>
@@ -52,6 +56,8 @@ class  <B><A HREF="Operator.html">Operator</A></B>: public osg::Object
 class  OSGPARTICLE_EXPORT <B><A HREF="Particle.html">Particle</A></B>
 <DD><I>Implementation of a <B>particle</B>.</I>
 <DT>
+class  OSGPARTICLE_EXPORT <B><A HREF="ParticleEffect.html">ParticleEffect</A></B>: public osg::Group
+<DT>
 class  OSGPARTICLE_EXPORT <B><A HREF="ParticleProcessor.html">ParticleProcessor</A></B>: public osg::Node
 <DD><I>A common base interface for those classes which need to do something on particles.</I>
 <DT>
@@ -75,6 +81,21 @@ class  <B><A HREF="RadialShooter.html">RadialShooter</A></B>: public <!1><A HREF
 <DT>
 class  <B><A HREF="RandomRateCounter.html">RandomRateCounter</A></B>: public <!1><A HREF="VariableRateCounter.html">VariableRateCounter</A>
 <DT>
+template&lt;class T_&gt; struct  <B><A HREF="range.html">range</A></B>
+<DD><I> A simple struct template useful to store ranges of values as min/max pairs.</I>
+<DT>
+typedef  <!1><A HREF="range.html">range</A>&lt;float&gt;  <B><A HREF="rangef.html">rangef</A></B>
+<DD><I>Range of floats</I>
+<DT>
+typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec2&gt;  <B><A HREF="rangev2.html">rangev2</A></B>
+<DD><I>Range of osg::Vec2s</I>
+<DT>
+typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec3&gt;  <B><A HREF="rangev3.html">rangev3</A></B>
+<DD><I>Range of osg::Vec3s</I>
+<DT>
+typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec4&gt;  <B><A HREF="rangev4.html">rangev4</A></B>
+<DD><I>Range of osg::Vec4s</I>
+<DT>
 class  <B><A HREF="SectorPlacer.html">SectorPlacer</A></B>: public <!1><A HREF="CenteredPlacer.html">CenteredPlacer</A>
 <DD><I>A sector-shaped particle placer.</I>
 <DT>
@@ -84,22 +105,9 @@ class  <B><A HREF="SegmentPlacer.html">SegmentPlacer</A></B>: public <!1><A HREF
 class  <B><A HREF="Shooter.html">Shooter</A></B>: public osg::Object
 <DD><I>An abstract base class used by ModularEmitter to "shoot" the particles after they have been placed.</I>
 <DT>
+class  OSGPARTICLE_EXPORT <B><A HREF="SmokeEffect.html">SmokeEffect</A></B>: public <!1><A HREF="ParticleEffect.html">ParticleEffect</A>
+<DT>
 class  <B><A HREF="VariableRateCounter.html">VariableRateCounter</A></B>: public <!1><A HREF="Counter.html">Counter</A>
-<DT>
-template&lt;class T_&gt; struct  <B><A HREF="range.html">range</A></B>
-<DD><I> A simple struct template useful to store ranges of values as min/max pairs.</I>
-<DT>
-typedef  <!1><A HREF="range.html">range</A>&lt;float&gt; <B><A HREF="rangef.html">rangef</A></B>
-<DD><I>Range of floats</I>
-<DT>
-typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec2&gt; <B><A HREF="rangev2.html">rangev2</A></B>
-<DD><I>Range of osg::Vec2s</I>
-<DT>
-typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec3&gt; <B><A HREF="rangev3.html">rangev3</A></B>
-<DD><I>Range of osg::Vec3s</I>
-<DT>
-typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec4&gt; <B><A HREF="rangev4.html">rangev4</A></B>
-<DD><I>Range of osg::Vec4s</I>
 </DL></P>
 
 
@@ -110,6 +118,6 @@ typedef  <!1><A HREF="range.html">range</A>&lt;osg::Vec4&gt; <B><A HREF="rangev4
 </DL>
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

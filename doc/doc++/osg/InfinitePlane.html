@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  osg::InfinitePlane</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,16 +22,16 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.178.1">InfinitePlane</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.212.1">InfinitePlane</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.178.2">InfinitePlane</A></B>(const <!1><A HREF="InfinitePlane.html#DOC.2.178.2">InfinitePlane</A>&amp; plane, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.212.2">InfinitePlane</A></B>(const <!1><A HREF="InfinitePlane.html#DOC.2.212.2">InfinitePlane</A>&amp; plane, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.178.3">META_Shape</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="InfinitePlane.html">InfinitePlane</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.212.3">META_Shape</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="InfinitePlane.html">InfinitePlane</A>)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.178.4">~InfinitePlane</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.212.4">~InfinitePlane</A></B>()
 </DL></P>
 
 </DL>
@@ -58,10 +58,15 @@
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -71,13 +76,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -87,7 +87,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -104,6 +104,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -114,15 +116,15 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="Plane.html">Plane</A>&amp; pl)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(float <!1><A HREF="UByte4.html#DOC.2.222.15">a</A>, float <!1><A HREF="UByte4.html#DOC.2.222.14">b</A>, float c, float d)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(float <!1><A HREF="UByte4.html#DOC.2.258.15">a</A>, float <!1><A HREF="UByte4.html#DOC.2.258.14">b</A>, float c, float d)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; vec)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; vec)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; norm, float d)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; norm, float d)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v1, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v2, const <!1><A HREF="Vec3.html">Vec3</A>&amp; v3)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; v1, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; v2, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; v3)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; norm, const <!1><A HREF="Vec3.html">Vec3</A>&amp; point)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>set</B>(const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; norm, const <!1><A HREF="osg.html#DOC.2.262">Vec3</A>&amp; point)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>flip</B>()
 <DT>
@@ -142,32 +144,32 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const float* <B>ptr</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>asVec4</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; <B>asVec4</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B>asVec4</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="osg.html#DOC.2.270">Vec4</A>&amp; <B>asVec4</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   float&amp; <B>operator [] </B>(unsigned int i)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   float <B>operator [] </B>(unsigned int i) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Vec3.html">osg::Vec3</A> <B>getNormal</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A> <B>getNormal</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   float <B>distance</B>(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; v) const 
+<IMG ALT="o" SRC=icon2.gif>inline   float <B>distance</B>(const <!1><A HREF="osg.html#DOC.2.262">osg::Vec3</A>&amp; v) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   int <B>intersect</B>(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices) const 
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>intersect</B>(const std::vector&lt;<!1><A HREF="osg.html#DOC.2.262">Vec3</A>&gt;&amp; vertices) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>intersect</B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   int <B>intersect</B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>transform</B>(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; matrix)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>transform</B>(const <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A>&amp; matrix)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>transformProvidingInverse</B>(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; matrix)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>transformProvidingInverse</B>(const <!1><A HREF="osg.html#DOC.2.134">osg::Matrix</A>&amp; matrix)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Vec4.html">Vec4</A> <B>_fv</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.270">Vec4</A> <B>_fv</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_upperBBCorner</B>
 <DT>
@@ -182,19 +184,19 @@
 <DL>
 
 <A NAME="InfinitePlane"></A>
-<A NAME="DOC.2.178.1"></A>
+<A NAME="DOC.2.212.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> InfinitePlane()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="InfinitePlane"></A>
-<A NAME="DOC.2.178.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> InfinitePlane(const <!1><A HREF="InfinitePlane.html#DOC.2.178.2">InfinitePlane</A>&amp; plane, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.212.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> InfinitePlane(const <!1><A HREF="InfinitePlane.html#DOC.2.212.2">InfinitePlane</A>&amp; plane, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Shape"></A>
-<A NAME="DOC.2.178.3"></A>
+<A NAME="DOC.2.212.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Shape(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="InfinitePlane.html">InfinitePlane</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~InfinitePlane"></A>
-<A NAME="DOC.2.178.4"></A>
+<A NAME="DOC.2.212.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~InfinitePlane()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -202,6 +204,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

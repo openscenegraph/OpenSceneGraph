@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  SG_EXPORT osg::AlphaFunc</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -22,48 +22,63 @@
 
 <DL>
 <P><DL>
-<DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.1">AlphaFunc</A></B>()
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.2">AlphaFunc</A></B>(const <!1><A HREF="AlphaFunc.html#DOC.2.1.2">AlphaFunc</A>&amp; af, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
-<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AlphaFunc.html">AlphaFunc</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.5">ALPHAFUNC</A>)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.1.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
-<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.7">setFunction</A></B>(<!1><A HREF="AlphaFunc.html#DOC.2.1.6">ComparisonFunction</A> func, float <!1><A HREF="Referenced.html#DOC.2.164.6">ref</A>)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="AlphaFunc.html#DOC.2.1.6">ComparisonFunction</A> <B><A HREF="#DOC.2.1.8">getFunction</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.1.9">getReferenceValue</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.10">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.1.1">ComparisonFunction</A></B>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.1.6">ComparisonFunction</A></B>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.2">AlphaFunc</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.3">AlphaFunc</A></B>(<!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> func, float <!1><A HREF="Referenced.html#DOC.2.196.6">ref</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.4">AlphaFunc</A></B>(const <!1><A HREF="AlphaFunc.html#DOC.2.1.4">AlphaFunc</A>&amp; af, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.5">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AlphaFunc.html">AlphaFunc</A>, <!1><A HREF="StateAttribute.html#DOC.2.229.6.5">ALPHAFUNC</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.1.6">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.1.7">getModeUsage</A></B>(<!1><A HREF="StateAttribute.html#DOC.2.229.20">ModeUsage</A>&amp; usage) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.8">setFunction</A></B>(<!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> func, float <!1><A HREF="Referenced.html#DOC.2.196.6">ref</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.9">setFunction</A></B>(<!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> func)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> <B><A HREF="#DOC.2.1.10">getFunction</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.1.11">setReferenceValue</A></B>(float value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.1.12">getReferenceValue</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.13">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AlphaFunc.html#DOC.2.1.6">ComparisonFunction</A> <B><A HREF="#DOC.2.1.12">_comparisonFunc</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> <B><A HREF="#DOC.2.1.15">_comparisonFunc</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.13">_referenceValue</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.1.16">_referenceValue</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.1.11">~AlphaFunc</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.1.14">~AlphaFunc</A></B>()
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="StateAttribute.html">StateAttribute</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>struct  <B>ModeUsage</B>
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>cloneType</B>() const 
@@ -76,7 +91,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.195.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.229.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -86,32 +101,35 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>compileGLObjects</B>(<!1><A HREF="State.html">State</A>&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>releaseGLObjects</B>(<!1><A HREF="State.html">State</A>* =0) const 
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
+<DT><H3>Public</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  GLenum <B>GLMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>GLModeValue</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>OverrideValue</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
-<DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="Object.html">Object</A>:</H3>
 <DL>
 <P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
+</DL></P>
+
+<P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -121,13 +139,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>DataVariance</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.136.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.167.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -137,7 +150,7 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(const <!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
 <DT>
@@ -154,6 +167,8 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable OpenThreads::Mutex <B>_refMutex</B>
+<DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
 </DL></P>
 
@@ -165,92 +180,104 @@
 <BLOCKQUOTE>Encapsulate OpenGL glAlphaFunc</BLOCKQUOTE>
 <DL>
 
-<A NAME="AlphaFunc"></A>
-<A NAME="DOC.2.1.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AlphaFunc()</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="AlphaFunc"></A>
-<A NAME="DOC.2.1.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AlphaFunc(const <!1><A HREF="AlphaFunc.html#DOC.2.1.2">AlphaFunc</A>&amp; af, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
-<DD>Copy constructor using CopyOp to manage deep vs shallow copy
-<DL><DT><DD></DL><P>
-<A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.1.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AlphaFunc.html">AlphaFunc</A>, <!1><A HREF="StateAttribute.html#DOC.2.195.6.5">ALPHAFUNC</A>)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="compare"></A>
-<A NAME="DOC.2.1.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
-<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
-<DL><DT><DD></DL><P>
-<A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.1.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.195.1">GLMode</A>&gt;&amp; modes) const </B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="ComparisonFunction"></A>
-<A NAME="DOC.2.1.6"></A>
+<A NAME="DOC.2.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ComparisonFunction</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="NEVER"></A>
-<A NAME="DOC.2.1.6.1"></A>
+<A NAME="DOC.2.1.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEVER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LESS"></A>
-<A NAME="DOC.2.1.6.2"></A>
+<A NAME="DOC.2.1.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LESS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EQUAL"></A>
-<A NAME="DOC.2.1.6.3"></A>
+<A NAME="DOC.2.1.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LEQUAL"></A>
-<A NAME="DOC.2.1.6.4"></A>
+<A NAME="DOC.2.1.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GREATER"></A>
-<A NAME="DOC.2.1.6.5"></A>
+<A NAME="DOC.2.1.1.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GREATER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NOTEQUAL"></A>
-<A NAME="DOC.2.1.6.6"></A>
+<A NAME="DOC.2.1.1.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NOTEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GEQUAL"></A>
-<A NAME="DOC.2.1.6.7"></A>
+<A NAME="DOC.2.1.1.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ALWAYS"></A>
-<A NAME="DOC.2.1.6.8"></A>
+<A NAME="DOC.2.1.1.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALWAYS</B></TT>
 <DL><DT><DD></DL><P></DL>
 
-<A NAME="setFunction"></A>
+<A NAME="AlphaFunc"></A>
+<A NAME="DOC.2.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AlphaFunc()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AlphaFunc"></A>
+<A NAME="DOC.2.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AlphaFunc(<!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> func, float <!1><A HREF="Referenced.html#DOC.2.196.6">ref</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AlphaFunc"></A>
+<A NAME="DOC.2.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AlphaFunc(const <!1><A HREF="AlphaFunc.html#DOC.2.1.4">AlphaFunc</A>&amp; af, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_StateAttribute"></A>
+<A NAME="DOC.2.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AlphaFunc.html">AlphaFunc</A>, <!1><A HREF="StateAttribute.html#DOC.2.229.6.5">ALPHAFUNC</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compare"></A>
+<A NAME="DOC.2.1.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
+<DL><DT><DD></DL><P>
+<A NAME="getModeUsage"></A>
 <A NAME="DOC.2.1.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(<!1><A HREF="AlphaFunc.html#DOC.2.1.6">ComparisonFunction</A> func, float <!1><A HREF="Referenced.html#DOC.2.164.6">ref</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool getModeUsage(<!1><A HREF="StateAttribute.html#DOC.2.229.20">ModeUsage</A>&amp; usage) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFunction"></A>
+<A NAME="DOC.2.1.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(<!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> func, float <!1><A HREF="Referenced.html#DOC.2.196.6">ref</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setFunction"></A>
+<A NAME="DOC.2.1.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(<!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> func)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFunction"></A>
-<A NAME="DOC.2.1.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="AlphaFunc.html#DOC.2.1.6">ComparisonFunction</A> getFunction() const </B></TT>
+<A NAME="DOC.2.1.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> getFunction() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setReferenceValue"></A>
+<A NAME="DOC.2.1.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setReferenceValue(float value)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getReferenceValue"></A>
-<A NAME="DOC.2.1.9"></A>
+<A NAME="DOC.2.1.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getReferenceValue() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.1.10"></A>
+<A NAME="DOC.2.1.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~AlphaFunc"></A>
-<A NAME="DOC.2.1.11"></A>
+<A NAME="DOC.2.1.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~AlphaFunc()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_comparisonFunc"></A>
-<A NAME="DOC.2.1.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AlphaFunc.html#DOC.2.1.6">ComparisonFunction</A> _comparisonFunc</B></TT>
+<A NAME="DOC.2.1.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AlphaFunc.html#DOC.2.1.1">ComparisonFunction</A> _comparisonFunc</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_referenceValue"></A>
-<A NAME="DOC.2.1.13"></A>
+<A NAME="DOC.2.1.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _referenceValue</B></TT>
 <DL><DT><DD></DL><P></DL>
 
@@ -258,6 +285,6 @@
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

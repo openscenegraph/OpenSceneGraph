@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
    <TITLE>class  OSGFX_EXPORT osgFX::Cartoon</TITLE>
-   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.6">
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
@@ -27,7 +27,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.2">Cartoon</A></B>(const <!1><A HREF="Cartoon.html#DOC.2.3.2">Cartoon</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">META_Effect</A></B>( <!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Cartoon.html">Cartoon</A>, "<!1><A HREF="Cartoon.html">Cartoon</A>", "This effect implements a technique called 'Cel-Shading' to produce a " "cartoon-style (non photorealistic) rendering. Two passes are required: " "the first one draws solid surfaces, the second one draws the outlines. " "A vertex program is used to setup texture coordinates for a sharp lighting " "texture on unit 0 which is generated on-the-fly.\n" "This effect requires the ARB_vertex_program extension.", "Marco Jez")
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.3.3">META_Effect</A></B>( <!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Cartoon.html">Cartoon</A>, "<!1><A HREF="Cartoon.html">Cartoon</A>", "This effect implements a technique called 'Cel-Shading' to produce a " "cartoon-style (non photorealistic) rendering. Two passes are required: " "the first one draws solid surfaces, the second one draws the outlines. " "A vertex program is used to setup texture coordinates for a sharp lighting " "texture on unit 0 which is generated on-the-fly.\n" "This effect requires the ARB_vertex_program extension " "or OpenGL Shading Language.", "Marco Jez; OGLSL port by Mike Weiblen")
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec4&amp; <B><A HREF="#DOC.2.3.10">getOutlineColor</A></B>() const 
 <DD><I>get the outline color </I>
@@ -60,6 +60,11 @@
 </DL>
 <HR><H3>Inherited from <A HREF="Effect.html">Effect</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Classes</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>TechniqueSelection</B>
+</DL></P>
+
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>virtual inline   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
@@ -99,11 +104,6 @@
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>inherited_traverse</B>(osg::NodeVisitor &amp;nv)
 </DL></P>
 
-<P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>TechniqueSelection</B>
-</DL></P>
-
 </DL>
 
 <A NAME="DOC.DOCU"></A>
@@ -128,7 +128,7 @@ This effect requires the ARB_vertex_program extension.</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="META_Effect"></A>
 <A NAME="DOC.2.3.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Effect( <!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Cartoon.html">Cartoon</A>, "<!1><A HREF="Cartoon.html">Cartoon</A>", "This effect implements a technique called 'Cel-Shading' to produce a " "cartoon-style (non photorealistic) rendering. Two passes are required: " "the first one draws solid surfaces, the second one draws the outlines. " "A vertex program is used to setup texture coordinates for a sharp lighting " "texture on unit 0 which is generated on-the-fly.\n" "This effect requires the ARB_vertex_program extension.", "Marco Jez")</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Effect( <!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="Cartoon.html">Cartoon</A>, "<!1><A HREF="Cartoon.html">Cartoon</A>", "This effect implements a technique called 'Cel-Shading' to produce a " "cartoon-style (non photorealistic) rendering. Two passes are required: " "the first one draws solid surfaces, the second one draws the outlines. " "A vertex program is used to setup texture coordinates for a sharp lighting " "texture on unit 0 which is generated on-the-fly.\n" "This effect requires the ARB_vertex_program extension " "or OpenGL Shading Language.", "Marco Jez; OGLSL port by Mike Weiblen")</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Cartoon"></A>
 <A NAME="DOC.2.3.4"></A>
@@ -177,6 +177,6 @@ This effect requires the ARB_vertex_program extension.</BLOCKQUOTE>
 
 <DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
-This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
 </BODY>
 </HTML>

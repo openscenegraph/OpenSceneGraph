@@ -301,7 +301,7 @@ SOURCE=..\..\src\osg\Viewport.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\VisualsSettings.cpp
+SOURCE=..\..\src\osg\DisplaySettings.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -581,7 +581,7 @@ SOURCE=..\..\include\osg\Viewport
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\VisualsSettings
+SOURCE=..\..\include\osg\DisplaySettings
 # End Source File
 # End Group
 # Begin Group "Resource Files"

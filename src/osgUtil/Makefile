@@ -7,6 +7,7 @@ C++FILES = \
 	CullVisitor.cpp\
 	CullViewState.cpp\
 	DisplayListVisitor.cpp\
+	DisplayRequirementsVisitor.cpp\
 	DepthSortedBin.cpp\
 	DriveManipulator.cpp\
 	FlightManipulator.cpp\
@@ -29,7 +30,6 @@ C++FILES = \
         TransformCallback.cpp\
         TriStripVisitor.cpp\
         Version.cpp\
-	VisualsRequirementsVisitor.cpp\
 
 
 TARGET_BASENAME = osgUtil
@@ -48,6 +48,7 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/CullViewState\
 	osgUtil/DepthSortedBin\
 	osgUtil/DisplayListVisitor\
+	osgUtil/DisplayRequirementsVisitor\
 	osgUtil/DriveManipulator\
 	osgUtil/Export\
 	osgUtil/FlightManipulator\
@@ -72,7 +73,6 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/TransformCallback\
 	osgUtil/TriStripVisitor\
 	osgUtil/Version\
-	osgUtil/VisualsRequirementsVisitor\
 
 
 C++FLAGS += -I ../../include

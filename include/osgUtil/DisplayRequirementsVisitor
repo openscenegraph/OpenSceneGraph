@@ -2,12 +2,12 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSGUTIL_VISUALSREQUIREMENTSVISITOR
-#define OSGUTIL_VISUALSREQUIREMENTSVISITOR 1
+#ifndef OSGUTIL_DISPLAYEQUIREMENTSVISITOR
+#define OSGUTIL_DISPLAYREQUIREMENTSVISITOR 1
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
-#include <osg/VisualsSettings>
+#include <osg/DisplaySettings>
 
 #include <osgUtil/Export>
 
@@ -18,21 +18,21 @@ namespace osgUtil {
   * applications to set up there windows with the correct visuals.  Have a look at
   * src/osgGLUT/Viewer.cpp's Viewer::open() method for an example how to use it.
   */
-class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT DisplayRequirementsVisitor : public osg::NodeVisitor
 {
     public:
 
         /** Default to traversing all children, and reqiresDoubleBuffer,
           * requiresRGB and requiresDepthBuffer to true and with
           * alpha and stencil off.*/
-        VisualsRequirementsVisitor();
+        DisplayRequirementsVisitor();
         
 
-        /** Set the VisualsSettings. */
-        inline void setVisualsSettings(osg::VisualsSettings* vs) { _vs = vs; }
+        /** Set the DisplaySettings. */
+        inline void setDisplaySettings(osg::DisplaySettings* ds) { _ds = ds; }
         
-        /** Get the VisualsSettings */
-        inline const osg::VisualsSettings* getVisualsSettings() const { return _vs.get(); }
+        /** Get the DisplaySettings */
+        inline const osg::DisplaySettings* getDisplaySettings() const { return _ds.get(); }
         
         virtual void applyStateSet(osg::StateSet& stateset);
 
@@ -44,7 +44,7 @@ class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor
         
     protected:
     
-        osg::ref_ptr<osg::VisualsSettings> _vs;
+        osg::ref_ptr<osg::DisplaySettings> _ds;
     
 };
 

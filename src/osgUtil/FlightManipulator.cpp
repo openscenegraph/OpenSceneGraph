@@ -85,27 +85,27 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
-
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::RELEASE):
         {
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
-
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::DRAG):
         {
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
-
+            return true;
         }
-        return true;
+
         case(GUIEventAdapter::MOVE):
         {
 
@@ -113,8 +113,8 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             us.requestContinuousUpdate(true);
             if (calcMovement()) us.requestRedraw();
 
+            return true;
         }
-        return true;
 
         case(GUIEventAdapter::KEYBOARD):
             if (ea.getKey()==' ')
@@ -125,17 +125,28 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 us.requestContinuousUpdate(false);
                 return true;
             }
+            else if (ea.getKey()=='+')
+            {
+                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()*1.25f);
+                return true;
+            }
+            else if (ea.getKey()=='-')
+            {
+                _camera->setFusionDistanceRatio(_camera->getFusionDistanceRatio()/1.25f);
+                return true;
+            }
             return false;
+
         case(GUIEventAdapter::FRAME):
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();
             return true;
+
         case(GUIEventAdapter::RESIZE):
-        {
             init(ea,us);
             us.requestRedraw();
-        }
-        return true;
+            return true;
+
         default:
             return false;
     }
@@ -158,10 +169,11 @@ void FlightManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 bool FlightManipulator::calcMovement()
 {
+    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE);
+
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    _camera->setFusionDistanceFunction(osg::Camera::PROPORTIONAL_TO_SCREEN_DISTANCE,1.0f);
 
     float dt = _ga_t0->time()-_ga_t1->time();
 

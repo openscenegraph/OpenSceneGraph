@@ -10,7 +10,7 @@
 #include <osg/Light>
 #include <osg/Camera>
 #include <osg/FrameStamp>
-#include <osg/VisualsSettings>
+#include <osg/DisplaySettings>
 
 #include <osgUtil/CullVisitor>
 
@@ -26,7 +26,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
     public:
 
         /** Construct a default scene view.*/
-        SceneView();
+        SceneView(osg::DisplaySettings* ds=NULL);
 
         /** Set scene view to use default global state, light, camera
          *  and render visitor.
@@ -77,11 +77,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
             _viewport->getViewport(x,y,width,height);
         }
 
-        /** Set the VisualsSettings. */
-        inline void setVisualsSettings(osg::VisualsSettings* vs) { _visualsSettings = vs; }
+        /** Set the DisplaySettings. */
+        inline void setDisplaySettings(osg::DisplaySettings* vs) { _displaySettings = vs; }
         
-        /** Get the VisualsSettings */
-        inline const osg::VisualsSettings* getVisualsSettings() const { return _visualsSettings.get(); }
+        /** Get the DisplaySettings */
+        inline const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
 
         /** Set the background color used in glClearColor().
@@ -218,7 +218,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::StateSet>                 _globalState;
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::Camera>                   _camera;
-        osg::ref_ptr<osg::VisualsSettings>          _visualsSettings;
+        osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         osg::ref_ptr<osg::State>                    _state;
         
         bool                                        _initCalled;

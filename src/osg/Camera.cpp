@@ -6,16 +6,20 @@
 
 using namespace osg;
 
-#define DEG2RAD(x)	((x)*M_PI/180.0)
-#define RAD2DEG(x)	((x)*180.0/M_PI)
-
-Camera::Camera()
+Camera::Camera(DisplaySettings* ds)
 {
 
     _adjustAspectRatioMode = ADJUST_HORIZONTAL;
 
     // projection details.
-    setPerspective(45.0,1.0,1.0,1000.0);
+    
+    float fovy = 45.0f;
+    if (ds)
+    {
+        fovy = 2.0f*RadiansToDegrees(atan(ds->getScreenHeight()*0.5/ds->getScreenDistance()));
+    }
+        
+    setPerspective(fovy,1.0,1.0,1000.0);
         
     // look at details.
     _lookAtType =USE_HOME_POSITON;
@@ -30,7 +34,10 @@ Camera::Camera()
     _useEyeOffset = false;
     _eyeOffset.set(0.0f,0.0f,0.0f);
 
-    _screenDistance = 1.0f;
+
+    if (ds) _screenDistance = ds->getScreenDistance();
+    else _screenDistance = 0.33f;
+
     _fusionDistanceMode = PROPORTIONAL_TO_LOOK_DISTANCE;
     _fusionDistanceRatio = 1.0f;
 }
@@ -172,7 +179,7 @@ void Camera::setPerspective(const double fovy,const double aspectRatio,
     // subsequent changes in zNear do not affect them.
 
     // calculate the appropriate left, right etc.
-    double tan_fovy = tan(DEG2RAD(fovy*0.5));
+    double tan_fovy = tan(DegreesToRadians(fovy*0.5));
     _right  =  tan_fovy * aspectRatio;
     _left   = -_right;
     _top    =  tan_fovy;
@@ -195,8 +202,8 @@ void Camera::setFOV(const double fovx,const double fovy,
     // subsequent changes in zNear do not affect them.
 
     // calculate the appropriate left, right etc.
-    double tan_fovx = tan(DEG2RAD(fovx*0.5));
-    double tan_fovy = tan(DEG2RAD(fovy*0.5));
+    double tan_fovx = tan(DegreesToRadians(fovx*0.5));
+    double tan_fovy = tan(DegreesToRadians(fovy*0.5));
     _right  =  tan_fovx;
     _left   = -_right;
     _top    =  tan_fovy;
@@ -304,7 +311,7 @@ const double Camera::calc_fovy() const
 {
      // note, _right & _left are prescaled by znear so 
      // no need to account for it.
-    return RAD2DEG(atan(_top)-atan(_bottom));
+    return RadiansToDegrees(atan(_top)-atan(_bottom));
 }
 
 
@@ -315,7 +322,7 @@ const double Camera::calc_fovx() const
 {
      // note, _right & _left are prescaled by znear so 
      // no need to account for it.
-    return RAD2DEG(atan(_right)-atan(_left));
+    return RadiansToDegrees(atan(_right)-atan(_left));
 }
 
 

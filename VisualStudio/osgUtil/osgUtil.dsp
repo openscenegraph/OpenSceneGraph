@@ -201,7 +201,7 @@ SOURCE=..\..\src\osgUtil\Version.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\VisualsRequirementsVisitor.cpp
+SOURCE=..\..\src\osgUtil\DisplayRequirementsVisitor.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -333,7 +333,7 @@ SOURCE=..\..\Include\osgUtil\Version
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgUtil\VisualsRequirementsVisitor
+SOURCE=..\..\Include\osgUtil\DisplayRequirementsVisitor
 # End Source File
 # End Group
 # Begin Group "Resource Files"

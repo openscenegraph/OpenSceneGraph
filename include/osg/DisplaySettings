@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_VISUALSSETTINGS
-#define OSG_VISUALSSETTINGS 1
+#ifndef OSG_DisplaySettings
+#define OSG_DisplaySettings 1
 
 #include <osg/Referenced>
 
@@ -12,33 +12,33 @@
 
 namespace osg {
 
-/** VisualsSettings class for encapsulating what visuals are required and
+/** DisplaySettings class for encapsulating what visuals are required and
   * have been set up, and the status of stereo viewing.*/
-class SG_EXPORT VisualsSettings : public osg::Referenced
+class SG_EXPORT DisplaySettings : public osg::Referenced
 {
 
     public:
 
-        VisualsSettings()
+        DisplaySettings()
         {
             setDefaults();
             readEnvironmentalVariables();
         }
         
-        VisualsSettings(std::vector<std::string>& commandLine)
+        DisplaySettings(std::vector<std::string>& commandLine)
         {
             setDefaults();
             readEnvironmentalVariables();
             readCommandLine(commandLine);
         }
 
-        VisualsSettings(const VisualsSettings& vs);
+        DisplaySettings(const DisplaySettings& vs);
         
-        virtual ~VisualsSettings();
+        virtual ~DisplaySettings();
 
-        VisualsSettings& operator = (const VisualsSettings& vs);
+        DisplaySettings& operator = (const DisplaySettings& vs);
         
-        void merge(const VisualsSettings& vs);
+        void merge(const DisplaySettings& vs);
 
         void setDefaults();
         
@@ -70,6 +70,9 @@ class SG_EXPORT VisualsSettings : public osg::Referenced
         const float getScreenDistance() const { return _screenDistance; }
 
 
+        void setScreenHeight(const float height) { _screenHeight = height; }
+        const float getScreenHeight() const { return _screenHeight; }
+
 
         void setDoubleBuffer(const bool flag) { _doubleBuffer = flag; }
         const bool getDoubleBuffer() const { return _doubleBuffer; }
@@ -94,12 +97,13 @@ class SG_EXPORT VisualsSettings : public osg::Referenced
 
     protected:
     
-        void copy(const VisualsSettings& vs);
+        void copy(const DisplaySettings& vs);
 
         bool            _stereo;
         StereoMode      _stereoMode;
         float           _eyeSeperation;
         float           _screenDistance;
+        float           _screenHeight;
     
         bool            _doubleBuffer;
         bool            _RGB;

@@ -34,7 +34,7 @@
 #include <osgUtil/DisplayListVisitor>
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/TriStripVisitor>
-#include <osgUtil/VisualsRequirementsVisitor>
+#include <osgUtil/DisplayRequirementsVisitor>
 
 #include <osgUtil/TrackballManipulator>
 #include <osgUtil/FlightManipulator>
@@ -128,7 +128,7 @@ Viewer::Viewer()
     
     _frameStamp = new osg::FrameStamp;
     
-    _visualsSettings = new osg::VisualsSettings;
+    _displaySettings = new osg::DisplaySettings;
 }
 
 
@@ -139,7 +139,7 @@ Viewer::~Viewer()
 /** read the command line string list, removing any matched control sequences.*/
 void Viewer::readCommandLine(std::vector<std::string>& commandLine)
 {
-    _visualsSettings->readCommandLine(commandLine);
+    _displaySettings->readCommandLine(commandLine);
 }
 
 /**
@@ -207,21 +207,21 @@ bool Viewer::open()
             //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
 
-        const osg::VisualsSettings* vs = sceneView->getVisualsSettings();
+        const osg::DisplaySettings* vs = sceneView->getDisplaySettings();
         if (vs)
         {
-            _visualsSettings->merge(*vs);
+            _displaySettings->merge(*vs);
         }
         else
         {
             // one does not already exist so attach the viewers visualsSettins to the SceneView
-            sceneView->setVisualsSettings(_visualsSettings.get());
+            sceneView->setDisplaySettings(_displaySettings.get());
         }
 
     }
     
-    if (_visualsSettings->getStereo() && 
-        _visualsSettings->getStereoMode()==osg::VisualsSettings::QUAD_BUFFER) needQuadBufferStereo = true;
+    if (_displaySettings->getStereo() && 
+        _displaySettings->getStereoMode()==osg::DisplaySettings::QUAD_BUFFER) needQuadBufferStereo = true;
 
     //glutInit( &argc, argv );    // I moved this into main to avoid passing
     // argc and argv to the Viewer
@@ -230,21 +230,21 @@ bool Viewer::open()
 
 
     // traverse the scene graphs gathering the requirements of the OpenGL buffers.
-    osgUtil::VisualsRequirementsVisitor vrv;
-    vrv.setVisualsSettings(_visualsSettings.get());
+    osgUtil::DisplayRequirementsVisitor drv;
+    drv.setDisplaySettings(_displaySettings.get());
     for(itr=_viewportList.begin();
         itr!=_viewportList.end();
         ++itr)
     {
         Node* node = itr->sceneView->getSceneData();
-        if (node) node->accept(vrv);
+        if (node) node->accept(drv);
     }
 
     // set up each render stage to clear the appropriate buffers.
     GLbitfield clear_mask=0;
-    if (_visualsSettings->getRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;
-    if (_visualsSettings->getDepthBuffer())      clear_mask |= GL_DEPTH_BUFFER_BIT;
-    if (_visualsSettings->getStencilBuffer())    clear_mask |= GL_STENCIL_BUFFER_BIT;
+    if (_displaySettings->getRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;
+    if (_displaySettings->getDepthBuffer())      clear_mask |= GL_DEPTH_BUFFER_BIT;
+    if (_displaySettings->getStencilBuffer())    clear_mask |= GL_STENCIL_BUFFER_BIT;
 
     for(itr=_viewportList.begin();
         itr!=_viewportList.end();
@@ -257,12 +257,12 @@ bool Viewer::open()
 
     // set the GLUT display mode bit mask up to handle it.
     unsigned int displayMode=0;
-    if (_visualsSettings->getDoubleBuffer())     displayMode |= GLUT_DOUBLE;
+    if (_displaySettings->getDoubleBuffer())     displayMode |= GLUT_DOUBLE;
     else                                         displayMode |= GLUT_SINGLE;
-    if (_visualsSettings->getRGB())              displayMode |= GLUT_RGB;
-    if (_visualsSettings->getDepthBuffer())      displayMode |= GLUT_DEPTH;
-    if (_visualsSettings->getAlphaBuffer())      displayMode |= GLUT_ALPHA;
-    if (_visualsSettings->getStencilBuffer())    displayMode |= GLUT_STENCIL;
+    if (_displaySettings->getRGB())              displayMode |= GLUT_RGB;
+    if (_displaySettings->getDepthBuffer())      displayMode |= GLUT_DEPTH;
+    if (_displaySettings->getAlphaBuffer())      displayMode |= GLUT_ALPHA;
+    if (_displaySettings->getStencilBuffer())    displayMode |= GLUT_STENCIL;
     if (needQuadBufferStereo)                    displayMode |= GLUT_STEREO;
 
     // and we'll add in multisample so that on systems like Onyx's can
@@ -1319,7 +1319,7 @@ void Viewer::addViewport(osgUtil::SceneView* sv,
 void Viewer::addViewport(osg::Node* rootnode,
                          float x, float y, float width, float height) 
 {
-    osgUtil::SceneView *sceneView = new osgUtil::SceneView;
+    osgUtil::SceneView *sceneView = new osgUtil::SceneView(_displaySettings.get());
     sceneView->setDefaults();
     sceneView->setSceneData(rootnode);
 

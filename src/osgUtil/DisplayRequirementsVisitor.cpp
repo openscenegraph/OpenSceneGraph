@@ -8,19 +8,19 @@
 
 #include <osg/GeoSet>
 
-#include <osgUtil/VisualsRequirementsVisitor>
+#include <osgUtil/DisplayRequirementsVisitor>
 
 using namespace osg;
 using namespace osgUtil;
 
-VisualsRequirementsVisitor::VisualsRequirementsVisitor()
+DisplayRequirementsVisitor::DisplayRequirementsVisitor()
 {
     setTraversalMode(NodeVisitor::TRAVERSE_ALL_CHILDREN);
 }
 
-void VisualsRequirementsVisitor::applyStateSet(StateSet& stateset)
+void DisplayRequirementsVisitor::applyStateSet(StateSet& stateset)
 {
-    if (!_vs) _vs = new osg::VisualsSettings;
+    if (!_ds) _ds = new osg::DisplaySettings;
 
    unsigned int min = 0; // assume stencil not needed by this stateset.
    
@@ -34,14 +34,14 @@ void VisualsRequirementsVisitor::applyStateSet(StateSet& stateset)
         min = 1; // number stencil bits we need at least.
    }
    
-   if (min>_vs->getMinimumNumStencilBits())
+   if (min>_ds->getMinimumNumStencilBits())
    {
         // only update if new minimum exceeds previous minimum.
-        _vs->setMinimumNumStencilBits(min);
+        _ds->setMinimumNumStencilBits(min);
    }    
 }
 
-void VisualsRequirementsVisitor::apply(Node& node)
+void DisplayRequirementsVisitor::apply(Node& node)
 {
     osg::StateSet* stateset = node.getStateSet();
     if (stateset) applyStateSet(*stateset);
@@ -49,7 +49,7 @@ void VisualsRequirementsVisitor::apply(Node& node)
     traverse(node);
 }
 
-void VisualsRequirementsVisitor::apply(Geode& geode)
+void DisplayRequirementsVisitor::apply(Geode& geode)
 {
     osg::StateSet* geode_stateset = geode.getStateSet();
     if (geode_stateset) applyStateSet(*geode_stateset);
@@ -61,15 +61,15 @@ void VisualsRequirementsVisitor::apply(Geode& geode)
     }
 }
 
-void VisualsRequirementsVisitor::apply(Impostor& impostor)
+void DisplayRequirementsVisitor::apply(Impostor& impostor)
 {
-    if (!_vs) _vs = new osg::VisualsSettings;
+    if (!_ds) _ds = new osg::DisplaySettings;
 
     unsigned int min = 1; // number alpha bits we need at least.
-    if (min>_vs->getMinimumNumAlphaBits())
+    if (min>_ds->getMinimumNumAlphaBits())
     {
         // only update if new minimum exceeds previous minimum.
-        _vs->setMinimumNumAlphaBits(min);
+        _ds->setMinimumNumAlphaBits(min);
     }
     
     apply((Node&)impostor);

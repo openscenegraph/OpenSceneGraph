@@ -78,7 +78,7 @@ private:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-	class TraceStream{
+	class SG_EXPORT TraceStream{
 
 	public:
 		TraceStream(std::ostream& o=std::cout, TraceLevel tl=Results);

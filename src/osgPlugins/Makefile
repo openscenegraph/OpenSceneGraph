@@ -13,7 +13,7 @@ DIRS += png
 DIRS += jpeg
 
 # comment in if you have libungif installed.
-DIRS += gif
+#DIRS += gif
 
 # comment in if you have libtiff installed.
 DIRS += tiff

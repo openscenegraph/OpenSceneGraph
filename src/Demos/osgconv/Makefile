@@ -1,12 +1,12 @@
 #!smake
-include ../../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
 	osgconv.cpp\
 	OrientationConverter.cpp
 
 
-TARGET = ../../../bin/osgconv
+TARGET = $(TOP)/bin/osgconv
 
 TARGET_BIN_FILES = osgconv
 
@@ -14,9 +14,9 @@ TARGET_BIN_FILES = osgconv
 #LIBS = ${PFLIBS} -losgDB -losg -lGLU -lGL  -lm -lXmu  -lX11 -lXi
 
 #note, standard library list. 
-LIBS = -losgDB -losg -lGLU -lGL  -lm -lXmu  -lX11 -lXi
+LIBS = -losgDB -losg $(GL_LIBS) $(X_LIBS)
 
-C++FLAGS += -I../../../include
-LDFLAGS += -L../../../lib
+C++FLAGS += -I$(TOP)/include
+LDFLAGS += -L$(TOP)/lib
 
-include ../../../Make/makerules
+include $(TOP)/Make/makerules

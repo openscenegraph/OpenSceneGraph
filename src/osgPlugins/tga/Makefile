@@ -1,18 +1,22 @@
 #!smake
-include ../../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
         ReaderWriterTGA.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_tga.so
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_tga.so
+TARGET_BASENAME = osgdb_tga
 
-LIBS = 
-C++FLAGS += -I. -I../../../include 
-LDFLAGS += -L../../../lib
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
-include ../../../Make/makerules
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
+LIBS    =  $(GL_LIBS) -losg -losgDB
+
+C++FLAGS += -I. -I$(TOP)/include 
+LDFLAGS += -L$(TOP)/lib
+
+include $(TOP)/Make/makerules
 

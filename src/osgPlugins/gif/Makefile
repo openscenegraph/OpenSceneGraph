@@ -4,9 +4,9 @@ include ../../../Make/makedefs
 C++FILES = \
         ReaderWriterGIF.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_gif.so
+LIB = ../../../lib/osgPlugins/osgdb_gif.$(SO_EXT)
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_gif.so
+TARGET_LOADER_FILES = osgPlugins/osgdb_gif.$(SO_EXT)
 
 LIBS = -lungif
 

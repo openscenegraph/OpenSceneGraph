@@ -1,5 +1,5 @@
 #!smake
-include ../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
 	FTBitmapGlyph.cpp \
@@ -7,34 +7,34 @@ C++FILES = \
 	FTFace.cpp \
 	FTFont.cpp \
 	FTGLBitmapFont.cpp \
-        FTGLOutlineFont.cpp \
-        FTGLPixmapFont.cpp \
-        FTGLPolygonFont.cpp \
-        FTGLTextureFont.cpp \
-        FTGlyphContainer.cpp \
-        FTGlyph.cpp \
-        FTLibrary.cpp \
-        FTOutlineGlyph.cpp \
-        FTPixmapGlyph.cpp \
-        FTPolyGlyph.cpp \
-        FTSize.cpp \
-        FTTextureGlyph.cpp \
-        FTVectoriser.cpp \
-        Font.cpp \
-        Paragraph.cpp \
-        Text.cpp \
-        Version.cpp
+	FTGLOutlineFont.cpp \
+	FTGLPixmapFont.cpp \
+	FTGLPolygonFont.cpp \
+	FTGLTextureFont.cpp \
+	FTGlyphContainer.cpp \
+	FTGlyph.cpp \
+	FTLibrary.cpp \
+	FTOutlineGlyph.cpp \
+	FTPixmapGlyph.cpp \
+	FTPolyGlyph.cpp \
+	FTSize.cpp \
+	FTTextureGlyph.cpp \
+	FTVectoriser.cpp \
+	Font.cpp \
+	Paragraph.cpp \
+	Text.cpp \
+	Version.cpp
 
 
 TARGET_BASENAME = osgText
 
 
-LIBS    = -L../../lib -lfreetype -losgDB -losg -lGLU -lGL -lm
+LIBS    = -L$(TOP)/lib -lfreetype -losgDB -losg $(GL_LIBS)
 
-LIB	= ../../lib/lib$(TARGET_BASENAME).so
-#LIB	= ../../lib/lib$(TARGET_BASENAME).a
+LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
 	osgText/Export\
 	osgText/Font\
@@ -42,14 +42,15 @@ TARGET_INCLUDE_FILES = \
 	osgText/Text\
 	osgText/Version
 
-C++FLAGS += -I../../include \
+C++FLAGS += -I$(TOP)/include \
 		-I/usr/include/freetype2 \
 		-I/usr/local/include \
 		-I/usr/local/include/freetype2  \
-		-I/usr/freeware/include\
-		-I/usr/freeware/include/freetype2
+		-I/usr/freeware/include \
+		-I/usr/freeware/include/freetype2 \
+		-DOSGTEXT_LIBRARY
 
 LDFLAGS += -L/usr/local/lib -L/usr/freeware/lib32
 
-include ../../Make/makerules
+include $(TOP)/Make/makerules
 

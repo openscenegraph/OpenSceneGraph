@@ -1,5 +1,5 @@
 #!smake
-include ../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
 	GLUTEventAdapter.cpp\
@@ -10,12 +10,12 @@ C++FILES = \
 TARGET_BASENAME = osgGLUT
 
 
-LIBS    = -L../../lib -losgDB -losgUtil -losg $(GLUTLIB) -lGLU -lGL -lm
+LIBS    = -L$(TOP)/lib -losgDB -losgUtil -losg $(GLUTLIB) $(GL_LIBS)
 
-LIB	= ../../lib/lib$(TARGET_BASENAME).so
-#LIB	= ../../lib/lib$(TARGET_BASENAME).a
+LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
 	osgGLUT/Export\
 	osgGLUT/GLUTEventAdapter\
@@ -25,7 +25,7 @@ TARGET_INCLUDE_FILES = \
 	osgGLUT/glut\
 	
 
-C++FLAGS += -I ../../include
+C++FLAGS += -I $(TOP)/include -DOSGGLUT_LIBRARY
 
-include ../../Make/makerules
+include $(TOP)/Make/makerules
 

@@ -1,5 +1,5 @@
 #!smake
-include ../../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
         atmosphere.cpp \
@@ -23,15 +23,20 @@ C++FILES = \
         vector.cpp \
         ReaderWriter3DS.cpp\
 
-LIB = ../../../lib/osgPlugins/osgdb_3ds.so
+TARGET_BASENAME = osgdb_3ds
 
-TARGET_LOADER_FILES = osgPlugins/osgdb_3ds.so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
-LIBS = 
-C++FLAGS += -I. -I../../../include
-LDFLAGS += -L../../../lib
+LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
-include ../../../Make/makerules
+TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+
+LIBS    =  $(GL_LIBS) -losg -losgDB
+
+C++FLAGS += -I. -I$(TOP)/include
+LDFLAGS += -L$(TOP)/lib
+
+include $(TOP)/Make/makerules
 
 
 

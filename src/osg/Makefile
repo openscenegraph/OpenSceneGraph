@@ -1,5 +1,5 @@
 #!smake
-include ../../Make/makedefs
+include $(TOP)/Make/makedefs
 
 C++FILES = \
 	AlphaFunc.cpp\
@@ -12,7 +12,7 @@ C++FILES = \
 	ColorMatrix.cpp \
 	CullFace.cpp\
 	Depth.cpp \
-        DisplaySettings.cpp\
+	DisplaySettings.cpp\
 	Drawable.cpp\
 	EarthSky.cpp\
 	Fog.cpp\
@@ -21,27 +21,27 @@ C++FILES = \
 	Geode.cpp\
 	GeoSet.cpp\
 	GeoSet_ogl.cpp\
-        GLExtensions.cpp\
+	GLExtensions.cpp\
 	Group.cpp\
 	Image.cpp\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
 	Light.cpp\
 	LightSource.cpp\
-        LineSegment.cpp\
-        LineWidth.cpp\
+	LineSegment.cpp\
+	LineWidth.cpp\
 	LOD.cpp\
 	Material.cpp\
 	Matrix.cpp\
 	Node.cpp\
 	NodeCallback.cpp\
 	NodeVisitor.cpp\
-        Notify.cpp\
+	Notify.cpp\
 	Object.cpp\
-        Point.cpp\
+	Point.cpp\
 	PolygonMode.cpp\
-        PolygonOffset.cpp\
-        Quat.cpp\
+	PolygonOffset.cpp\
+	Quat.cpp\
 	State.cpp\
 	StateSet.cpp\
 	Stencil.cpp \
@@ -53,15 +53,16 @@ C++FILES = \
 	Timer.cpp\
 	Transform.cpp\
 	Transparency.cpp\
-        Version.cpp\
-        Viewport.cpp\
+	Version.cpp\
+	Viewport.cpp\
         
 
 TARGET_BASENAME = osg
 
-TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
+TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
 TARGET_INCLUDE_FILES = \
+	osg/Notify\
 	osg/AlphaFunc\
 	osg/Billboard\
 	osg/BoundingBox\
@@ -74,7 +75,7 @@ TARGET_INCLUDE_FILES = \
 	osg/ColorMatrix\
 	osg/CullFace\
 	osg/Depth\
-        osg/DisplaySettings\
+	osg/DisplaySettings\
 	osg/Drawable\
 	osg/EarthSky\
 	osg/Export\
@@ -102,7 +103,6 @@ TARGET_INCLUDE_FILES = \
 	osg/Node\
 	osg/NodeCallback\
 	osg/NodeVisitor\
-	osg/Notify\
 	osg/Object\
 	osg/Point\
 	osg/PolygonMode\
@@ -133,12 +133,14 @@ TARGET_INCLUDE_FILES = \
 	osg/ref_ptr\
 
 
-LIBS    =  -lGLU -lGL -lm
+LIBS    =  $(GL_LIBS)
 
-LIB	= ../../lib/lib$(TARGET_BASENAME).so
-#LIB	= ../../lib/lib$(TARGET_BASENAME).a
+LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
 
-C++FLAGS += -I ../../include
+C++FLAGS += -I $(TOP)/include -DSG_LIBRARY
 
-include ../../Make/makerules
+#LDFLAGS += -Wl,--out-implib,./../lib/lib$(TARGET_BASENAME).a
+
+include $(TOP)/Make/makerules
 

@@ -70,7 +70,7 @@ class OSGReaderWriter : public ReaderWriter
             }
         }
 
-        virtual bool writeObject(const Object& obj,const std::string& fileName)
+        virtual bool writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             Output fout;
             fout.open(fileName.c_str());
@@ -83,7 +83,7 @@ class OSGReaderWriter : public ReaderWriter
             return false;
         }
 
-        virtual bool writeNode(const Node& node,const std::string& fileName)
+        virtual bool writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             Output fout;
             fout.open(fileName.c_str());

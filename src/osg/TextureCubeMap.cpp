@@ -204,9 +204,9 @@ void TextureCubeMap::apply(State& state) const
                     (_subloadMode == IF_DIRTY && modifiedTag != _images[n]->getModifiedTag()))
                 {
                 
-                    if (rowwidth != _images[n]->getRowSizeInBytes())
+                    if (rowwidth != _images[n]->s())
                     {
-                        rowwidth = _images[n]->getRowSizeInBytes();
+                        rowwidth = _images[n]->s();
                         glPixelStorei(GL_UNPACK_ROW_LENGTH,rowwidth);
                     }
 

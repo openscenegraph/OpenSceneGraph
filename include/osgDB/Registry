@@ -334,13 +334,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Add a filename,object,timestamp tripple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
         
-        /** Set whether the Registry::ObjectCache should be used by default.*/
-        void setUseObjectCacheHint(ReaderWriter::Options::CacheHintOptions useObjectCache) { _useObjectCacheHint = useObjectCache; }
-
-        /** Get whether the Registry::ObjectCache should be used by default.*/
-        ReaderWriter::Options::CacheHintOptions getUseObjectCacheHint() const { return _useObjectCacheHint; }
-
-
         /** Add archive to archive cache so that future calls reference this archive.*/
         void addToArchiveCache(const std::string& fileName, osgDB::Archive* archive);
 
@@ -469,7 +462,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         FilePathList                            _dataFilePath;
         FilePathList                            _libraryFilePath;
 
-        ReaderWriter::Options::CacheHintOptions _useObjectCacheHint;        
         ObjectCache                             _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;
         

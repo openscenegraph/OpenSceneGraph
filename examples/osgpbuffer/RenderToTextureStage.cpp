@@ -12,6 +12,7 @@
 MyRenderToTextureStage::MyRenderToTextureStage()
 {
     _pbuffer = 0L;
+    _localState = new osg::State;
 }
 
 MyRenderToTextureStage::~MyRenderToTextureStage()
@@ -46,7 +47,7 @@ void MyRenderToTextureStage::draw(osg::State& state, osgUtil::RenderLeaf*& previ
         _pbuffer->makeCurrent();
 
         // Render in p-buffer.
-        RenderStage::draw(state,previous);
+        RenderStage::draw(*_localState,previous);
 
         // restore window's context as current.
         if (!::wglMakeCurrent(hdc, hglrc))

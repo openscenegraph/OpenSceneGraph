@@ -377,7 +377,7 @@ sMStats    m_getMemoryStatistics()
         // addresses will be on four-, eight- or even sixteen-byte boundaries. If we didn't do this, the hash index would not have
         // very good coverage.
 
-        unsigned int    hashIndex = ((unsigned int) reportedAddress >> 4) & (hashSize - 1);
+        unsigned long    hashIndex = ((unsigned long) reportedAddress >> 4) & (hashSize - 1);
         sAllocUnit    *ptr = hashTable[hashIndex];
         while(ptr)
         {
@@ -577,10 +577,14 @@ sMStats    m_getMemoryStatistics()
             sAllocUnit *ptr = hashTable[i];
             while(ptr)
             {
+#ifdef ARCH64
+                fprintf(fp, "%06d 0x%08lX 0x%08lX 0x%08lX 0x%08lX 0x%08X %-8s    %c       %c    %s\r\n",
+#else
                 fprintf(fp, "%06d 0x%08X 0x%08X 0x%08X 0x%08X 0x%08X %-8s    %c       %c    %s\r\n",
+#endif
                     ptr->allocationNumber,
-                    (unsigned int) ptr->reportedAddress, ptr->reportedSize,
-                    (unsigned int) ptr->actualAddress, ptr->actualSize,
+                    (unsigned long) ptr->reportedAddress, ptr->reportedSize,
+                    (unsigned long) ptr->actualAddress, ptr->actualSize,
                     m_calcUnused(ptr),
                     allocationTypes[ptr->allocationType],
                     ptr->breakOnDealloc ? 'Y':'N',
@@ -1126,7 +1130,7 @@ sMStats    m_getMemoryStatistics()
 
             // Insert the new allocation into the hash table
 
-            unsigned int    hashIndex = ((unsigned int) au->reportedAddress >> 4) & (hashSize - 1);
+            unsigned long    hashIndex = ((unsigned long) au->reportedAddress >> 4) & (hashSize - 1);
             if (hashTable[hashIndex]) hashTable[hashIndex]->prev = au;
             au->next = hashTable[hashIndex];
             au->prev = NULL;
@@ -1308,7 +1312,7 @@ sMStats    m_getMemoryStatistics()
                 // Remove this allocation unit from the hash table
 
                 {
-                    unsigned int    hashIndex = ((unsigned int) oldReportedAddress >> 4) & (hashSize - 1);
+                    unsigned long    hashIndex = ((unsigned long) oldReportedAddress >> 4) & (hashSize - 1);
                     if (hashTable[hashIndex] == au)
                     {
                         hashTable[hashIndex] = hashTable[hashIndex]->next;
@@ -1322,7 +1326,7 @@ sMStats    m_getMemoryStatistics()
 
                 // Re-insert it back into the hash table
 
-                hashIndex = ((unsigned int) au->reportedAddress >> 4) & (hashSize - 1);
+                hashIndex = ((unsigned long) au->reportedAddress >> 4) & (hashSize - 1);
                 if (hashTable[hashIndex]) hashTable[hashIndex]->prev = au;
                 au->next = hashTable[hashIndex];
                 au->prev = NULL;
@@ -1446,7 +1450,7 @@ sMStats    m_getMemoryStatistics()
 
             // Remove this allocation unit from the hash table
 
-            unsigned int    hashIndex = ((unsigned int) au->reportedAddress >> 4) & (hashSize - 1);
+            unsigned long    hashIndex = ((unsigned long) au->reportedAddress >> 4) & (hashSize - 1);
             if (hashTable[hashIndex] == au)
             {
                 hashTable[hashIndex] = au->next;

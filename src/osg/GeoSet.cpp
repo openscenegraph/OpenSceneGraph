@@ -595,7 +595,7 @@ void GeoSet::setCoords( Vec3 *cp )
 {
     _coords = cp;
     _cindex.setToNull();
-    _bbox_computed = false;
+    dirtyBound();
     set_fast_path();
 }
 
@@ -606,7 +606,7 @@ void GeoSet::setCoords( Vec3 *cp, GLushort *ci )
     // note the size of cindex defaults 0, but will be recalculated
     // automatically by computeNumVerts().
     _cindex.set(0,ci);
-    _bbox_computed = false;
+    dirtyBound();
     set_fast_path();
 }
 
@@ -617,7 +617,7 @@ void GeoSet::setCoords( Vec3 *cp, GLuint *ci )
     // note the size of cindex defaults 0, but will be recalculated
     // automatically by computeNumVerts().
     _cindex.set(0,ci);
-    _bbox_computed = false;
+    dirtyBound();
     set_fast_path();
 }
 
@@ -625,7 +625,7 @@ void GeoSet::setCoords( Vec3 *cp, IndexPointer& ip )
 {
     _coords = cp;
     _cindex = ip;
-    _bbox_computed = false;
+    dirtyBound();
     set_fast_path();
 }
 

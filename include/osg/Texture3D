@@ -100,6 +100,12 @@ class SG_EXPORT Texture3D : public Texture
             public:
                 Extensions();
 
+                Extensions(const Extensions& rhs);
+                
+                void lowestCommonDenominator(const Extensions& rhs);
+                
+                void setupGLExtenions();
+
                 bool isTexture3DSupported() const { return _isTexture3DSupported; }
                 bool isTexture3DFast() const { return _isTexture3DFast; }
                 GLint maxTexture3DSize() const { return _maxTexture3DSize; }
@@ -113,11 +119,6 @@ class SG_EXPORT Texture3D : public Texture
 
                 ~Extensions() {}
                 
-                typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-                typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-                typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-                typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
-
                 bool    _isTexture3DSupported;
                 bool    _isTexture3DFast;
                 GLint   _maxTexture3DSize;
@@ -136,6 +137,11 @@ class SG_EXPORT Texture3D : public Texture
           * automatically created.  However, in this case the extension object 
           * only be created with the graphics context associated with ContextID..*/
         static const Extensions* getExtensions(uint contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+          * typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(uint contextID,Extensions* extensions);
 
     protected :
 

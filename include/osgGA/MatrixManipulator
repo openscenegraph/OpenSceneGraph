@@ -159,6 +159,14 @@ public:
         virtual void home(const GUIEventAdapter& ,GUIActionAdapter&) {}
 
         /**
+        Move the camera to the default position. 
+        This version does not require GUIEventAdapter and GUIActionAdapter so may be
+        called from somewhere other than a handle() method in GUIEventHandler.  Application
+        must be aware of implications.
+        */
+        virtual void home(double /*currentTime*/) {}
+
+        /**
         Start/restart the manipulator.
         FIXME: what does this actually mean? Provide examples.
         */

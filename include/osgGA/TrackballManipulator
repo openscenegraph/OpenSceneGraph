@@ -67,6 +67,7 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         /** Move the camera to the default position. 
             May be ignored by manipulators if home functionality is not appropriate.*/
         virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
+        virtual void home(double);
         
         /** Start/restart the manipulator.*/
         virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);

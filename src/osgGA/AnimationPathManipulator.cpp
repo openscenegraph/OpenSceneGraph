@@ -44,17 +44,20 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
     
 }
 
-void AnimationPathManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter&)
+void AnimationPathManipulator::home(double currentTime)
 {
     if (_animationPath.valid())
     {
-        _timeOffset = _animationPath->getFirstTime()-ea.time();
+        _timeOffset = _animationPath->getFirstTime()-currentTime; 
 
     }
-
     // reset the timing of the animation.
     _numOfFramesSinceStartOfTimedPeriod=-1;
-                
+}
+
+void AnimationPathManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter&)
+{
+    home(ea.time());
 }
 
 void AnimationPathManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& aa)

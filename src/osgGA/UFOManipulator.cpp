@@ -47,7 +47,7 @@ void UFOManipulator::setNode( osg::Node *node )
     if (getAutoComputeHomePosition()) 
         computeHomePosition();
 
-    home();
+    home(0.0);
 }
 
 const osg::Node* UFOManipulator::getNode() const
@@ -106,7 +106,6 @@ void UFOManipulator::computeHomePosition()
 
     if( (B-A).length() == 0.0)
     {
-        puts( "DOH" ); fflush(stdout);
         return;
     }
 
@@ -135,7 +134,7 @@ void UFOManipulator::computeHomePosition()
     }
     else
     {
-        osg::notify(osg::INFO)<<"UFOManipulator : I can't find the ground!"<<std::endl;
+        osg::notify(osg::WARN)<<"UFOManipulator : I can't find the ground!"<<std::endl;
         ground = 0.0;
     }
 
@@ -144,12 +143,17 @@ void UFOManipulator::computeHomePosition()
     setHomePosition( p, p + osg::Vec3(0,1,0), osg::Vec3(0,0,1) );
 }
 
-void UFOManipulator::home(const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) 
+void UFOManipulator::init(const GUIEventAdapter& ea, GUIActionAdapter&)
 {
-    home();
+    home(ea.time());
 }
 
-void UFOManipulator::home() 
+void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&) 
+{
+    home(ea.time());
+}
+
+void UFOManipulator::home(double) 
 {
     if (getAutoComputeHomePosition()) 
         computeHomePosition();
@@ -376,7 +380,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             break;
 
         case 'H':
-            home();
+            home(ea.time());
             break;
     }
 }

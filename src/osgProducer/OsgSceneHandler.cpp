@@ -90,7 +90,8 @@ void OsgSceneHandler::drawImplementation(Producer::Camera &)
         double minimumTargetMaxFrameTime = 0.010; // 10ms.
         double targetMaxFrameTime = osg::minimum(timeForPreviousFrame, minimumTargetMaxFrameTime);
         
-        double maximumAvailableTime = 0.0025; // 2.5ms.
+		// Unused variable warning
+        //double maximumAvailableTime = 0.0025; // 2.5ms.
         double drawCostFactor = 2.0; // must be greater than 1 to account for the extra cost of emptying the OpenGL fifo.
         double frameFactor = 0.9; // must be less than 1, to compensate for extra time spent in update and swap buffers etc.
         double timeLeftTillEndOfFrame = targetMaxFrameTime*frameFactor - timeForCullAndDraw*drawCostFactor;

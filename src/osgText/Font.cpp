@@ -215,7 +215,7 @@ void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     // set up the details of where to place glyph's image in the texture.
     glyph->setTexture(this);
     glyph->setTexturePosition(posX,posY);
-    glyph->setMinTexCoord(osg::Vec2((float)posX/((float)getTextureWidth()-1.0f),(float)posY/((float)getTextureHeight()-1.0f)));
+    glyph->setMinTexCoord(osg::Vec2(((float)posX-1.0f)/((float)getTextureWidth()-1.0f),((float)posY-1)/((float)getTextureHeight()-1.0f)));
     glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s())/((float)getTextureWidth()-1.0f),(float)(posY+glyph->t())/((float)getTextureHeight()-1.0f)));
 }
 

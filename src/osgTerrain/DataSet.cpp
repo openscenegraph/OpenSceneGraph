@@ -2165,11 +2165,6 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     }
 
 
-#if 0
-    osgUtil::TriStripVisitor tsv;
-    tsv.stripify(*geometry);
-#endif
-
     osg::StateSet* stateset = createStateSet();
     if (stateset)
     {
@@ -2185,11 +2180,17 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     }
     
 #if 1
-    osgUtil::Simplifier simplifier(1.0f,geometry->getBound().radius()/2000.0f);
+    osgUtil::Simplifier simplifier(0.5f,geometry->getBound().radius()/2000.0f);
 //    osgUtil::Simplifier simplifier(1.0f,1.0f);
     
     simplifier.simplify(*geometry);  // this will replace the normal vector with a new one
 #endif
+
+#if 1
+    osgUtil::TriStripVisitor tsv;
+    tsv.stripify(*geometry);
+#endif
+
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);

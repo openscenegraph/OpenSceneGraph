@@ -31,10 +31,8 @@ public:
 NodeTrackerManipulator::NodeTrackerManipulator()
 {
     _trackerMode = NODE_CENTER_AND_ROTATION; 
-    _trackerMode = NODE_CENTER_AND_AZMIM_ROTATION;
+    _rotationMode = TRACKBALL; 
 
-    _rotationMode = ELEVATION_AZIM; 
-    // _rotationMode = ELEVATION_AZIM_ROLL; 
     _distance = 1.0;
 
     _thrown = false;
@@ -234,100 +232,6 @@ void NodeTrackerManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
-
-    osg::Vec3 lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
-    osg::Vec3 eye(matrix(3,0),matrix(3,1),matrix(3,2));
-    
-    osg::notify(INFO)<<"eye point "<<eye<<std::endl;
-    osg::notify(INFO)<<"lookVector "<<lookVector<<std::endl;
-
-    if (!_node)
-    {
-        _center = eye+ lookVector;
-        _distance = lookVector.length();
-        matrix.get(_rotation);
-        return;
-    }
-
-
-    // need to reintersect with the Tracker
-    osgUtil::IntersectVisitor iv;
-
-    const osg::BoundingSphere& bs = _node->getBound();
-    float distance = (eye-bs.center()).length() + _node->getBound().radius();
-    osg::Vec3d start_segment = eye;
-    osg::Vec3d end_segment = eye + lookVector*distance;
-
-    //CoordinateFrame coordinateFrame = getCoordinateFrame(_center.x(), _center.y(), _center.z());
-    //osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
-
-    osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-    segLookVector->set(start_segment,end_segment);
-    iv.addLineSegment(segLookVector.get());
-
-    _node->accept(iv);
-
-    bool hitFound = false;
-    if (iv.hits())
-    {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-        if (!hitList.empty())
-        {
-            notify(INFO) << "Hit Tracker ok A"<< std::endl;
-            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-
-            _center = ip;
-
-            _distance = (eye-ip).length();
-            
-            osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
-                                          matrix*
-                                          osg::Matrixd::translate(-_center);
-
-            rotation_matrix.get(_rotation);
-
-            hitFound = true;
-        }
-    }
-
-    if (!hitFound)
-    {
-        CoordinateFrame eyePointCoordFrame = getCoordinateFrame( eye );
-        
-        // clear the intersect visitor ready for a new test
-        iv.reset(); 
-               
-        osg::ref_ptr<osg::LineSegment> segDowVector = new osg::LineSegment;
-        segLookVector->set(eye+getUpVector(eyePointCoordFrame)*distance,
-                           eye-getUpVector(eyePointCoordFrame)*distance);
-        iv.addLineSegment(segLookVector.get());
-
-        _node->accept(iv);
-        
-        hitFound = false;
-        if (iv.hits())
-        {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-            if (!hitList.empty())
-            {
-                notify(INFO) << "Hit Tracker ok B"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-
-                _center = ip;
-
-                _distance = (eye-ip).length();
-
-                _rotation.set(0,0,0,1);
-
-                hitFound = true;
-            }
-        }
-    }    
-
-    CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
-    _previousUp = getUpVector(coordinateFrame);
-
-    clampOrientation();
 }
 
 void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const
@@ -349,21 +253,28 @@ void NodeTrackerManipulator::computeNodeLocalToWorld(osg::Matrixd& localToWorld)
 
 void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter, osg::Quat& nodeRotation) const
 {
-    osg::Matrixd localToWorld;
+    osg::Matrixd localToWorld, worldToLocal;
     computeNodeLocalToWorld(localToWorld);
+    computeNodeWorldToLocal(worldToLocal);
     
     if (validateNodePath())
         nodeCenter = osg::Vec3d(_trackNodePath.back()->getBound().center())*localToWorld;
     else
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
 
-
+    
     switch(_trackerMode)
     {
-        case(NODE_CENTER_AND_AZMIM_ROTATION):
+        case(NODE_CENTER_AND_AZIM):
         {
-            double azim = atan2(-localToWorld(0,1),localToWorld(0,0));
-            nodeRotation.makeRotate(-azim,0.0,0.0,1.0);
+            CoordinateFrame coordinateFrame = getCoordinateFrame(nodeCenter);
+            osg::Matrixd localToFrame(localToWorld*osg::Matrixd::inverse(coordinateFrame));
+
+            double azim = atan2(-localToFrame(0,1),localToFrame(0,0));
+            osg::Quat nodeRotationRelToFrame, rotationOfFrame;
+            nodeRotationRelToFrame.makeRotate(-azim,0.0,0.0,1.0);
+            coordinateFrame.get(rotationOfFrame);
+            nodeRotation = nodeRotationRelToFrame*rotationOfFrame;
             break;
         }
         case(NODE_CENTER_AND_ROTATION):
@@ -380,7 +291,8 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
         case(NODE_CENTER):
         default:
         {
-            nodeRotation = osg::Quat();
+            CoordinateFrame coordinateFrame = getCoordinateFrame(nodeCenter);
+            coordinateFrame.get(nodeRotation);
             break;
         }
     }
@@ -393,8 +305,7 @@ osg::Matrixd NodeTrackerManipulator::getMatrix() const
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter,nodeRotation);
-//    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
-    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(nodeRotation)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(nodeCenter);
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
 }
 
 osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
@@ -402,8 +313,7 @@ osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter,nodeRotation);
-    //return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
-    return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
@@ -413,60 +323,6 @@ void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Ve
     // compute rotation matrix
     osg::Vec3 lv(center-eye);
     _distance = lv.length();
-    _center = center;
-    
-    osg::notify(osg::INFO) << "In compute"<< std::endl;
-
-    if (_node.valid())
-    {
-        bool hitFound = false;
-
-        float distance = lv.length();
-        float maxDistance = distance+2*(eye-_node->getBound().center()).length();
-        osg::Vec3 farPosition = eye+lv*(maxDistance/distance);
-        osg::Vec3 endPoint = center;
-        for(int i=0;
-            !hitFound && i<2;
-            ++i, endPoint = farPosition)
-        {
-            // compute the itersection with the scene.
-            osgUtil::IntersectVisitor iv;
-
-            osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-            segLookVector->set(eye,endPoint );
-            iv.addLineSegment(segLookVector.get());
-
-            _node->accept(iv);
-
-            if (iv.hits())
-            {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-                if (!hitList.empty())
-                {
-                    osg::notify(osg::INFO) << "Hit Tracker ok C"<< std::endl;
-                    osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-
-                    _center = ip;
-                    _distance = (ip-eye).length();
-
-                    hitFound = true;
-                }
-            }
-        }
-    }
-
-    // note LookAt = inv(CF)*inv(RM)*inv(T) which is equivilant to:
-    // inv(R) = CF*LookAt.
-
-    osg::Matrixd rotation_matrix = osg::Matrixd::lookAt(eye,center,up);
-
-    rotation_matrix.get(_rotation);
-    _rotation = _rotation.inverse();
-
-    CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
-    _previousUp = getUpVector(coordinateFrame);
-
-    clampOrientation();
 }
 
 bool NodeTrackerManipulator::calcMovement()
@@ -486,23 +342,14 @@ bool NodeTrackerManipulator::calcMovement()
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter, nodeRotation);
 
-    if (validateNodePath())
-    {
-        osg::Matrix localToWorld;
-        localToWorld = osg::computeLocalToWorld(_trackNodePath);
-
-        _center = _trackNodePath.back()->getBound().center() * localToWorld;
-    }
-
     unsigned int buttonMask = _ga_t1->getButtonMask();
 
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
-        if (_rotationMode==ELEVATION_AZIM_ROLL)
+        if (_rotationMode==TRACKBALL)
         {
 
-            osg::notify(osg::NOTICE)<<"ELEVATION_AZIM_ROLL"<<std::endl;
             // rotate camera.
             osg::Vec3 axis;
             double angle;
@@ -523,18 +370,14 @@ bool NodeTrackerManipulator::calcMovement()
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"!!!!ELEVATION_AZIM_ROLL"<<std::endl;
             osg::Matrix rotation_matrix;
-            rotation_matrix.set(nodeRotation*_rotation);
+            rotation_matrix.set(_rotation);
 
             osg::Vec3d lookVector = -getUpVector(rotation_matrix);
             osg::Vec3d sideVector = getSideVector(rotation_matrix);
             osg::Vec3d upVector = getFrontVector(rotation_matrix);
             
-            CoordinateFrame coordinateFrame = getCoordinateFrame(nodeCenter);
-            osg::Vec3d localUp = getUpVector(coordinateFrame);
-            //osg::Vec3d localUp = _previousUp;
-            
+            osg::Vec3d localUp(0.0f,0.0f,1.0f);
 
             osg::Vec3d forwardVector = localUp^sideVector;
             sideVector = forwardVector^localUp;
@@ -558,97 +401,6 @@ bool NodeTrackerManipulator::calcMovement()
     else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
         buttonMask==(GUIEventAdapter::LEFT_MOUSE_BUTTON|GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
-/*
-        // pan model.
-        double scale = -0.3f*_distance;
-
-        osg::Matrix rotation_matrix;
-        rotation_matrix.set(_rotation);
-
-
-        // compute look vector.
-        osg::Vec3d lookVector = -getUpVector(rotation_matrix);
-        osg::Vec3d sideVector = getSideVector(rotation_matrix);
-        osg::Vec3d upVector = getFrontVector(rotation_matrix);
-
-        // CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
-        // osg::Vec3d localUp = getUpVector(coordinateFrame);
-        osg::Vec3d localUp = _previousUp;
-
-        osg::Vec3d forwardVector =localUp^sideVector;
-        sideVector = forwardVector^localUp;
-
-        forwardVector.normalize();
-        sideVector.normalize();
-
-        osg::Vec3d dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
-
-        _center += dv;
-
-        // need to recompute the itersection point along the look vector.
-        
-        if (_node.valid())
-        {
-
-            // now reorientate the coordinate frame to the frame coords.
-            CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
-
-            // need to reintersect with the Tracker
-            osgUtil::IntersectVisitor iv;
-
-            double distance = _node->getBound().radius()*0.1f;
-            osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
-            osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
-
-            osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
-
-            osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-            segLookVector->set(start_segment,end_segment);
-            iv.addLineSegment(segLookVector.get());
-
-            _node->accept(iv);
-
-            bool hitFound = false;
-            if (iv.hits())
-            {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-                if (!hitList.empty())
-                {
-                    notify(INFO) << "Hit Tracker ok"<< std::endl;
-                    osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                    _center = ip;
-
-                    hitFound = true;
-                }
-            }
-
-            if (!hitFound)
-            {
-                // ??
-                osg::notify(INFO)<<"NodeTrackerManipulator unable to intersect with Tracker."<<std::endl;
-            }
-
-            coordinateFrame = getCoordinateFrame(_center);
-            osg::Vec3d new_localUp = getUpVector(coordinateFrame);
-
-
-            osg::Quat pan_rotation;
-            pan_rotation.makeRotate(localUp,new_localUp);
-
-            if (!pan_rotation.zeroRotation())
-            {
-                _rotation = _rotation * pan_rotation;
-                _previousUp = new_localUp;
-                //osg::notify(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
-
-                //clampOrientation();
-            }
-            else
-            {
-                osg::notify(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
-            }
-        }        
-*/
         return true;
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
@@ -677,40 +429,6 @@ bool NodeTrackerManipulator::calcMovement()
 
 void NodeTrackerManipulator::clampOrientation()
 {
-    if (_rotationMode==ELEVATION_AZIM)
-    {
-        osg::Matrix rotation_matrix;
-        rotation_matrix.set(_rotation);
-
-        osg::Vec3d lookVector = -getUpVector(rotation_matrix);
-        osg::Vec3d upVector = getFrontVector(rotation_matrix);
-
-        CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
-        osg::Vec3d localUp = getUpVector(coordinateFrame);
-        //osg::Vec3d localUp = _previousUp;
-
-        osg::Vec3d sideVector = lookVector ^ localUp;
-
-        if (sideVector.length()<0.1)
-        {
-            osg::notify(osg::INFO)<<"Side vector short "<<sideVector.length()<<std::endl;
-
-            sideVector = upVector^localUp;
-            sideVector.normalize();
-        
-        }
-
-        Vec3d newUpVector = sideVector^lookVector;
-        newUpVector.normalize();
-
-        osg::Quat rotate_roll;
-        rotate_roll.makeRotate(upVector,newUpVector);
-
-        if (!rotate_roll.zeroRotation())
-        {
-            _rotation = _rotation * rotate_roll;
-        }
-    }
 }
 
 

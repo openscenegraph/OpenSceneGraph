@@ -197,6 +197,61 @@ int main(int argc, char **argv)
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
+    osg::Quat rotation;
+    osg::Vec4 vec4;
+    while (arguments.read("--rotate-model",vec4[0],vec4[1],vec4[2],vec4[3]))
+    {
+        osg::Quat local_rotate;
+        local_rotate.makeRotate(osg::DegreesToRadians(vec4[0]),vec4[1],vec4[2],vec4[3]);
+        
+        rotation = rotation * local_rotate;
+    }
+
+    osg::NodeCallback* nc = 0;
+    std::string flightpath_filename;
+    while (arguments.read("--flight-path",flightpath_filename))
+    {
+        std::fstream fin(flightpath_filename.c_str());
+        if (fin)
+        {
+            osg::AnimationPath* path = new osg::AnimationPath;
+            path->read(fin);
+            nc = new osg::AnimationPathCallback(path);
+        }
+    }
+    
+    osgGA::NodeTrackerManipulator::TrackerMode trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
+    std::string mode;
+    while (arguments.read("--tracker-mode",mode))
+    {
+        if (mode=="NODE_CENTER_AND_ROTATION") trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
+        else if (mode=="NODE_CENTER_AND_AZIM") trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_AZIM;
+        else if (mode=="NODE_CENTER") trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER;
+        else
+        {
+            std::cout<<"Unrecognized --tracker-mode option "<<mode<<", valid options are:"<<std::endl;
+            std::cout<<"    NODE_CENTER_AND_ROTATION"<<std::endl;
+            std::cout<<"    NODE_CENTER_AND_AZIM"<<std::endl;
+            std::cout<<"    NODE_CENTER"<<std::endl;
+            return 1;
+        }
+    }
+    
+    
+    osgGA::NodeTrackerManipulator::RotationMode rotationMode = osgGA::NodeTrackerManipulator::TRACKBALL;
+    while (arguments.read("--rotation-mode",mode))
+    {
+        if (mode=="TRACKBALL") rotationMode = osgGA::NodeTrackerManipulator::TRACKBALL;
+        else if (mode=="ELEVATION_AZIM") rotationMode = osgGA::NodeTrackerManipulator::ELEVATION_AZIM;
+        else
+        {
+            std::cout<<"Unrecognized --rotation-mode option "<<mode<<", valid options are:"<<std::endl;
+            std::cout<<"    TRACKBALL"<<std::endl;
+            std::cout<<"    ELEVATION_AZIM"<<std::endl;
+            return 1;
+        }
+    }
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -231,16 +286,22 @@ int main(int argc, char **argv)
         
             osg::MatrixTransform* scaler = new osg::MatrixTransform;
             scaler->addChild(cessna);
-            scaler->setMatrix(osg::Matrixd::scale(s,s,s));
+            scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
             scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
         
             osg::MatrixTransform* mt = new osg::MatrixTransform;
             mt->addChild(scaler);
-            mt->setUpdateCallback(new ModelPositionCallback);
+
+
+            if (!nc) nc = new ModelPositionCallback;
+
+            mt->setUpdateCallback(nc);
 
             csn->addChild(mt);
 
             osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm->setTrackerMode(trackerMode);
+            tm->setRotationMode(rotationMode);
             tm->setTrackNode(scaler);
 
             unsigned int num = viewer.addCameraManipulator(tm);

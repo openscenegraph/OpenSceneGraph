@@ -18,8 +18,8 @@
 using namespace osg;
 
 ProxyNode::ProxyNode() : 
-	_centerMode(USER_DEFINED_CENTER),
-	_radius(-1)
+    _centerMode(USER_DEFINED_CENTER),
+    _radius(-1)
 {
 } 
 
@@ -56,11 +56,11 @@ void ProxyNode::traverse(NodeVisitor& nv)
 {
     if (_filenameList.size()>_children.size() && nv.getVisitorType()==NodeVisitor::CULL_VISITOR)
     {
-        for(unsigned int i=_children.size()-1; i<_filenameList.size(); ++i)
-		{
+        for(unsigned int i=_children.size(); i<_filenameList.size(); ++i)
+        {
             nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i], this, 1.0f, nv.getFrameStamp());
-		}
-	}
+        }
+    }
     else
     {
         Group::traverse(nv);

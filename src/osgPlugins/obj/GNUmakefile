@@ -2,7 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	glm.cpp\
+        obj.cpp\
 	ReaderWriterOBJ.cpp\
 
 

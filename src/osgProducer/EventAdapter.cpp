@@ -68,6 +68,20 @@ void EventAdapter::adaptResize(double time, float Xmin, float Ymin, float Xmax, 
     copyStaticVariables();
 }
 
+void EventAdapter::adaptMouseScroll(double time, Producer::KeyboardMouseCallback::ScrollingMotion sm)
+{
+    _time = time;
+
+    if (sm == Producer::KeyboardMouseCallback::ScrollUp)
+	_eventType = SCROLLUP;
+    else if (sm == Producer::KeyboardMouseCallback::ScrollDown)
+	_eventType = SCROLLDOWN;
+    else
+	_eventType = NONE;
+
+    copyStaticVariables();
+}
+
 void EventAdapter::adaptButtonPress(double time,float x, float y, unsigned int button)
 {
     _time = time;

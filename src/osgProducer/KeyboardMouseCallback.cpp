@@ -5,6 +5,16 @@
 
 using namespace osgProducer;
 
+void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm )
+{
+	osg::ref_ptr<EventAdapter> event = createEventAdapter();
+	event->adaptMouseScroll(getTime(), sm);
+
+    _eventQueueMutex.lock();
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
 void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutton ) 
 {
     _mx = mx;

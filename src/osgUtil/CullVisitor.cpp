@@ -364,7 +364,7 @@ void CullVisitor::apply(Geode& node)
         }
         else
         {
-            if (isCulled(bb)) continue;
+            if (node.isCullingActive() && isCulled(bb)) continue;
         }
 
 

@@ -598,6 +598,7 @@ void for_each_triangle(GeoSet& gset,T& op)
             
         }
         break;
+    case(GeoSet::FLAT_TRIANGLE_FAN):
     case(GeoSet::TRIANGLE_FAN):
     case(GeoSet::POLYGON):
         {

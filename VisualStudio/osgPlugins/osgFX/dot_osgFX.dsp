@@ -40,10 +40,11 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "../../../bin"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 F90=df.exe
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GZ /c
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
 # ADD BASE RSC /l 0x409
@@ -54,7 +55,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib osgd.lib osgDBd.lib /nologo /subsystem:windows /dll /pdb:"..\..\..\bin\dot_osgFXd.pdb" /debug /machine:IX86 /out:"..\..\..\bin\osgdb_osgFXd.dll" /implib:"../../../lib/osgdb_osgFXd.lib" /pdbtype:sept
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /pdb:"..\..\..\bin\dot_osgFXd.pdb" /debug /machine:IX86 /out:"..\..\..\bin\osgdb_osgFXd.dll" /implib:"../../../lib/osgdb_osgFXd.lib" /pdbtype:sept
+# ADD LINK32 OpenThreadsWin32d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /pdb:"..\..\..\bin\dot_osgFXd.pdb" /debug /machine:IX86 /out:"..\..\..\bin\osgdb_osgFXd.dll" /implib:"../../../lib/osgdb_osgFXd.lib" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "osgPlugin osgFX - Win32 Release"
@@ -68,10 +69,11 @@ LINK32=link.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "../../../bin"
 # PROP Intermediate_Dir "Release"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 F90=df.exe
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
-# ADD CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Zi /O2 /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "DOT_OSGNV_EXPORTS" /D "_MBCS" /GF /c
 # ADD BASE MTL /nologo /win32
 # ADD MTL /nologo /win32
 # ADD BASE RSC /l 0x409
@@ -81,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib osg.lib osgDB.lib /nologo /subsystem:windows /dll /debug /machine:IX86 /out:"..\..\..\bin\osgdb_osgFX.dll" /implib:"../../../lib/osgdb_osgFX.lib" /pdbtype:sept /opt:ref /opt:icf
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:IX86 /out:"..\..\..\bin\osgdb_osgFX.dll" /implib:"../../../lib/osgdb_osgFX.lib" /pdbtype:sept /opt:ref /opt:icf
+# ADD LINK32 OpenThreadsWin32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:IX86 /out:"..\..\..\bin\osgdb_osgFX.dll" /implib:"../../../lib/osgdb_osgFX.lib" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib" /opt:ref /opt:icf
 
 !ENDIF 
 

@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SG_LIBRARY" /YX /FD /Zm200 /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../include" /I "../../../OpenThreads/include" /I "../../../Producer/include" /I "../../../3rdParty/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SG_LIBRARY" /YX /FD /Zm200 /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 OpenThreadsWin32.lib opengl32.lib glu32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../bin/osg.dll"
+# ADD LINK32 OpenThreadsWin32.lib opengl32.lib glu32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../bin/osg.dll" /libpath:"../../lib" /libpath:"../../../OpenThreads/lib/win32" /libpath:"../../../Producer/lib" /libpath:"../../../3rdParty/lib"
 
 !ELSEIF  "$(CFG)" == "Core osg - Win32 Debug"
 
@@ -71,7 +71,8 @@ LINK32=link.exe
 # PROP Target_Dir ""
 F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /D "_WINDOWS" /D "SG_LIBRARY" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /Zm200 /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../include" /I "../../../OpenThreads/include" /I "../../../Producer/include" /I "../../../3rdParty/include" /D "_WINDOWS" /D "SG_LIBRARY" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /Zm200 /c
+# SUBTRACT CPP /X
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -81,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 OpenThreadsWin32d.lib opengl32.lib glu32.lib /nologo /dll /pdb:"../../bin/osgd.pdb" /debug /machine:I386 /out:"../../bin/osgd.dll" /pdbtype:sept
+# ADD LINK32 OpenThreadsWin32d.lib opengl32.lib glu32.lib /nologo /dll /pdb:"../../bin/osgd.pdb" /debug /machine:I386 /out:"../../bin/osgd.dll" /pdbtype:sept /libpath:"../../lib" /libpath:"../../../OpenThreads/lib/win32" /libpath:"../../../Producer/lib" /libpath:"../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ENDIF 
@@ -151,7 +152,7 @@ SOURCE=..\..\src\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\TexGenNode.cpp
+SOURCE=..\..\src\osg\ClusterCullingCallback.cpp
 # End Source File
 # Begin Source File
 
@@ -183,10 +184,6 @@ SOURCE=..\..\src\osg\CopyOp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ClusterCullingCallback.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -195,11 +192,11 @@ SOURCE=..\..\src\osg\CullingSet.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\CullStack.cpp
+SOURCE=..\..\src\osg\CullSettings.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\CullSettings.cpp
+SOURCE=..\..\src\osg\CullStack.cpp
 # End Source File
 # Begin Source File
 
@@ -427,6 +424,10 @@ SOURCE=..\..\src\osg\TexGen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TexGenNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\TexMat.cpp
 # End Source File
 # Begin Source File
@@ -547,7 +548,7 @@ SOURCE=..\..\Include\Osg\ClipPlane
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\TexGenNode
+SOURCE=..\..\Include\Osg\ClusterCullingCallback
 # End Source File
 # Begin Source File
 
@@ -579,10 +580,6 @@ SOURCE=..\..\Include\Osg\CopyOp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ClusterCullingCallback
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\CullFace
 # End Source File
 # Begin Source File
@@ -591,11 +588,11 @@ SOURCE=..\..\Include\Osg\CullingSet
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\CullStack
+SOURCE=..\..\Include\Osg\CullSettings
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\CullSettings
+SOURCE=..\..\Include\Osg\CullStack
 # End Source File
 # Begin Source File
 
@@ -871,6 +868,10 @@ SOURCE=..\..\Include\Osg\TexGen
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\TexGenNode
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\TexMat
 # End Source File
 # Begin Source File
@@ -919,11 +920,7 @@ SOURCE=..\..\Include\Osg\Vec2
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Vec3
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Vec4
+SOURCE=..\..\Include\Osg\Vec2d
 # End Source File
 # Begin Source File
 
@@ -931,15 +928,7 @@ SOURCE=..\..\Include\Osg\Vec2f
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\Vec3f
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Vec4f
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\Vec2d
+SOURCE=..\..\Include\Osg\Vec3
 # End Source File
 # Begin Source File
 
@@ -947,7 +936,19 @@ SOURCE=..\..\Include\Osg\Vec3d
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\Vec3f
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec4
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Vec4d
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec4f
 # End Source File
 # Begin Source File
 

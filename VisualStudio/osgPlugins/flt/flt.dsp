@@ -42,8 +42,9 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLT_LIBRARY" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLT_LIBRARY" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x414 /d "NDEBUG"
@@ -53,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /pdb:none /machine:I386 /out:"../../../bin/osgdb_flt.dll" /libpath:"../../../lib"
+# ADD LINK32 OpenThreadsWin32.lib /nologo /dll /pdb:none /machine:I386 /out:"../../../bin/osgdb_flt.dll" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 
 !ELSEIF  "$(CFG)" == "osgPlugin flt - Win32 Debug"
 
@@ -68,8 +69,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLT_LIBRARY" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLT_LIBRARY" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x414 /d "_DEBUG"
@@ -79,7 +81,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /pdb:"../../../bin/osgdb_fltd.pdb" /debug /machine:I386 /out:"../../../bin/osgdb_fltd.dll" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 OpenThreadsWin32d.lib /nologo /dll /pdb:"../../../bin/osgdb_fltd.pdb" /debug /machine:I386 /out:"../../../bin/osgdb_fltd.dll" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /incremental:no
 
 !ENDIF 
@@ -93,11 +95,11 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\BSPRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\flt\BSPRecord.cpp
 # End Source File
 # Begin Source File
 
@@ -161,15 +163,15 @@ SOURCE=..\..\..\src\osgPlugins\flt\InstanceRecords.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\LightPointPaletteRecords.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\LightPointRecord.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\LightPointSystemRecord.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LightPointPaletteRecords.cpp
 # End Source File
 # Begin Source File
 
@@ -185,18 +187,6 @@ SOURCE=..\..\..\src\osgPlugins\flt\LocalVertexPoolRecord.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\MeshPrimitiveRecord.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\MeshRecord.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\MultiTextureRecord.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\flt\LodRecord.cpp
 # End Source File
 # Begin Source File
@@ -206,6 +196,18 @@ SOURCE=..\..\..\src\osgPlugins\flt\LongIDRecord.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\MaterialPaletteRecord.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\MeshPrimitiveRecord.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\MeshRecord.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\MultiTextureRecord.cpp
 # End Source File
 # Begin Source File
 
@@ -241,11 +243,11 @@ SOURCE=..\..\..\src\osgPlugins\flt\RecordVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\RoadRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\flt\Registry.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Registry.cpp
+SOURCE=..\..\..\src\osgPlugins\flt\RoadRecords.cpp
 # End Source File
 # Begin Source File
 
@@ -265,11 +267,11 @@ SOURCE=..\..\..\src\osgPlugins\flt\TransformationRecords.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\UVListRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\flt\UnknownRecord.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\UnknownRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\flt\UVListRecord.cpp
 # End Source File
 # Begin Source File
 
@@ -285,11 +287,11 @@ SOURCE=..\..\..\src\osgPlugins\flt\AttrData.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\BSPRecord.h
+SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.h
+SOURCE=..\..\..\src\osgPlugins\flt\BSPRecord.h
 # End Source File
 # Begin Source File
 
@@ -357,15 +359,15 @@ SOURCE=..\..\..\src\osgPlugins\flt\InstanceRecords.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\LightPointPaletteRecords.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\LightPointRecord.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\LightPointSystemRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LightPointPaletteRecords.h
 # End Source File
 # Begin Source File
 
@@ -381,14 +383,6 @@ SOURCE=..\..\..\src\osgPlugins\flt\LocalVertexPoolRecord.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\MeshPrimitiveRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\MeshRecord.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\flt\LodRecord.h
 # End Source File
 # Begin Source File
@@ -398,6 +392,14 @@ SOURCE=..\..\..\src\osgPlugins\flt\LongIDRecord.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\MaterialPaletteRecord.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\MeshPrimitiveRecord.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\MeshRecord.h
 # End Source File
 # Begin Source File
 
@@ -437,11 +439,11 @@ SOURCE=..\..\..\src\osgPlugins\flt\RecordVisitor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\RoadRecords.h
+SOURCE=..\..\..\src\osgPlugins\flt\Registry.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Registry.h
+SOURCE=..\..\..\src\osgPlugins\flt\RoadRecords.h
 # End Source File
 # Begin Source File
 
@@ -461,11 +463,11 @@ SOURCE=..\..\..\src\osgPlugins\flt\TransformationRecords.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\UVListRecord.h
+SOURCE=..\..\..\src\osgPlugins\flt\UnknownRecord.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\UnknownRecord.h
+SOURCE=..\..\..\src\osgPlugins\flt\UVListRecord.h
 # End Source File
 # Begin Source File
 

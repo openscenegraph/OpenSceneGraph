@@ -344,6 +344,9 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
                     case osg::Array::Vec3ArrayType:
                         cols3=dynamic_cast<osg::Vec3Array *> (colours);
                         break;
+                    default:
+                        // not handled cases 
+                        break;
                     }
 
                 }

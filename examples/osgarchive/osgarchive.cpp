@@ -24,35 +24,6 @@
 
 int main( int argc, char **argv )
 {
-/*
-    
-    std::fstream fout("test.data",std::ofstream::out | std::ofstream::binary);
-    unsigned int numCharacters = 26;
-    char baseCharacter = 'A';
-    
-    for(unsigned int i=0;i<numCharacters;++i)
-    {
-        char c = baseCharacter + i;
-        fout.write(&c,1);
-    }
-    fout.close();
-    
-    fout.open("test.data",std::ofstream::out | std::ofstream::in | std::ofstream::binary);
-    
-    char offset = 'a'-'A';
-    unsigned int start_range = 5;
-    unsigned int end_range = 15;
-    
-    fout.seekp(start_range);
-    for(unsigned int i=start_range;i<end_range;++i)
-    {
-        char c = (baseCharacter + i)+offset ;
-        fout.write(&c,1);
-    }
-    
-    fout.close();       
-
-*/
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -189,14 +160,19 @@ int main( int argc, char **argv )
     if (list)
     {        
         std::cout<<"List of files in archive:"<<std::endl;
-        const osgDB::Archive::FileNamePositionMap& indexMap = archive.getFileNamePositionMap();
-        for(osgDB::Archive::FileNamePositionMap::const_iterator itr=indexMap.begin();
-            itr!=indexMap.end();
-            ++itr)
+        osgDB::Archive::FileNameList fileNames;
+        if (archive.getFileNames(fileNames))
         {
-            std::cout<<"    "<<itr->first<<"\t"<<itr->second.first<<"\t"<<itr->second.second<<std::endl;
+            for(osgDB::Archive::FileNameList::const_iterator itr=fileNames.begin();
+                itr!=fileNames.end();
+                ++itr)
+            {
+                std::cout<<"    "<<*itr<<std::endl;
+            }
         }
-
+        
+        std::cout<<std::endl;
+        std::cout<<"Master file "<<archive.getMasterFileName()<<std::endl;
     }
     
     return 0;

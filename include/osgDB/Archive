@@ -45,54 +45,47 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         /** return true if file exists in archive.*/        
         virtual bool fileExists(const std::string& filename) const;
         
-        typedef std::istream::pos_type pos_type;
-        typedef std::istream::off_type size_type;
-        typedef std::pair<pos_type, size_type> PositionSizePair;
-        typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
+        /** Get the file name which represents the master file recorded in the Archive.*/
+        virtual std::string getMasterFileName() const;
+        
+        typedef std::vector<std::string> FileNameList;
+        
+        /** Get the full list of file names available in the archive.*/
+        virtual bool getFileNames(FileNameList& fileNameList) const;
 
-        const FileNamePositionMap& getFileNamePositionMap() const { return _indexMap; }
 
+        /** Read an osg::Object of specified file name from the Archive.*/
         virtual ReadResult readObject(const std::string& fileName,const Options* options=NULL);
+
+        /** Read an osg::Image of specified file name from the Archive.*/
         virtual ReadResult readImage(const std::string& fileName,const Options* options=NULL);
+
+        /** Read an osg::HeightField of specified file name from the Archive.*/
         virtual ReadResult readHeightField(const std::string& fileName,const Options* options=NULL);
+
+        /** Read an osg::Node of specified file name from the Archive.*/
         virtual ReadResult readNode(const std::string& fileName,const Options* options=NULL);
 
+        /** Write an osg::Object with specified file name to the Archive.*/
         virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL);
+
+        /** Write an osg::Image with specified file name to the Archive.*/
         virtual WriteResult writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL);
+
+        /** Write an osg::HeightField with specified file name to the Archive.*/
         virtual WriteResult writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL);
+
+        /** Write an osg::Node with specified file name to the Archive.*/
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL);
         
-        /** Functor used in internal implementations.*/
-        struct ReadFunctor
-        {
-            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
-                _filename(filename),
-                _options(options) {}
-
-            virtual ~ReadFunctor() {}
-            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const = 0;
-
-            std::string _filename;
-            const ReaderWriter::Options* _options;
-        };
-
-        /** Functor used in internal implementations.*/
-        struct WriteFunctor
-        {
-            WriteFunctor(const std::string& filename, const ReaderWriter::Options* options):
-                _filename(filename),
-                _options(options) {}
-
-            virtual ~WriteFunctor() {}
-            virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const = 0;
-
-            std::string _filename;
-            const ReaderWriter::Options* _options;
-        };
         
     protected:
     
         
+        typedef std::istream::pos_type pos_type;
+        typedef std::istream::off_type size_type;
+        typedef std::pair<pos_type, size_type> PositionSizePair;
+        typedef std::map<std::string, PositionSizePair> FileNamePositionMap;
 
         class IndexBlock : public osg::Referenced
         {
@@ -111,7 +104,9 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 
             static IndexBlock* read(std::istream& in);
             
-            bool getFileReferences(FileNamePositionMap& indexMap);
+            std::string getFirstFileName() const;
+
+            bool getFileReferences(FileNamePositionMap& indexMap) const;
             
 
             inline bool requiresWrite() const { return _requiresWrite; }
@@ -142,6 +137,45 @@ class OSGDB_EXPORT Archive : public ReaderWriter
             char*           _data;
         };
     
+        /** Functor used in internal implementations.*/
+        struct ReadFunctor
+        {
+            ReadFunctor(const std::string& filename, const ReaderWriter::Options* options):
+                _filename(filename),
+                _options(options) {}
+
+            virtual ~ReadFunctor() {}
+            virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const = 0;
+
+            std::string _filename;
+            const ReaderWriter::Options* _options;
+        };
+        
+        struct ReadObjectFunctor;
+        struct ReadImageFunctor;
+        struct ReadHeightFieldFunctor;
+        struct ReadNodeFunctor;
+
+        /** Functor used in internal implementations.*/
+        struct WriteFunctor
+        {
+            WriteFunctor(const std::string& filename, const ReaderWriter::Options* options):
+                _filename(filename),
+                _options(options) {}
+
+            virtual ~WriteFunctor() {}
+            virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const = 0;
+
+            std::string _filename;
+            const ReaderWriter::Options* _options;
+        };
+
+        struct WriteObjectFunctor;
+        struct WriteImageFunctor;
+        struct WriteHeightFieldFunctor;
+        struct WriteNodeFunctor;
+
+
         ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
         ReaderWriter::WriteResult write(const WriteFunctor& writeFunctor);
     
@@ -157,6 +191,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         std::ifstream       _input;
         std::fstream        _output;
         
+        std::string         _masterFileName;
         IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;
 

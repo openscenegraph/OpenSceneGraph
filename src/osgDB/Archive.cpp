@@ -17,6 +17,8 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Archive>
 
+#include <streambuf>
+
 using namespace osgDB;
 
 float Archive::s_currentSupportedVersion = 0.0;
@@ -91,7 +93,27 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in)
     
 }
 
-bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap)
+std::string Archive::IndexBlock::getFirstFileName() const
+{
+    char* ptr = _data;
+    char* end_ptr = _data + _offsetOfNextAvailableSpace;
+    if (ptr<end_ptr)
+    {
+        ptr += sizeof(pos_type);
+        ptr += sizeof(size_type);
+
+        unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
+        ptr += sizeof(unsigned int);
+
+        return std::string(ptr, ptr+filename_size);
+    }
+    else
+    {
+        return std::string();
+    }
+}
+
+bool Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap) const
 {
     if (!_data || _offsetOfNextAvailableSpace==0) return false;
     
@@ -194,7 +216,6 @@ Archive::~Archive()
 {
     close();
 }
-#include <sys/stat.h>
 
 bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned int indexBlockSize)
 {
@@ -229,6 +250,12 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
                 
                 // now need to build the filename map.
                 _indexMap.clear();                
+
+                if (!_indexBlockList.empty())
+                {
+                    _masterFileName = _indexBlockList.front()->getFirstFileName();
+                }
+
                 for(IndexBlockList::iterator itr=_indexBlockList.begin();
                     itr!=_indexBlockList.end();
                     ++itr)
@@ -321,6 +348,25 @@ void Archive::close()
     }
 }
 
+std::string Archive::getMasterFileName() const
+{
+    return _masterFileName;
+}
+
+bool Archive::getFileNames(FileNameList& fileNameList) const
+{
+    fileNameList.clear();
+    fileNameList.reserve(_indexMap.size());
+    for(FileNamePositionMap::const_iterator itr=_indexMap.begin();
+        itr!=_indexMap.end();
+        ++itr)
+    {
+        fileNameList.push_back(itr->first);
+    }
+    return !fileNameList.empty();
+}
+
+
 void Archive::writeIndexBlocks()
 {
     if (_status==WRITE)
@@ -356,6 +402,11 @@ bool Archive::addFileReference(pos_type position, size_type size, const std::str
         return false;
     }
     
+    
+    // if the masterFileName isn't set yet use this fileName
+    if (_masterFileName.empty()) _masterFileName = fileName;
+
+
     // get an IndexBlock with space available if possible
     unsigned int blockSize = 4096;
     osg::ref_ptr<IndexBlock> indexBlock = _indexBlockList.empty() ? 0 : _indexBlockList.back();
@@ -388,7 +439,6 @@ bool Archive::addFileReference(pos_type position, size_type size, const std::str
 }
 
 
-#include <streambuf>
 
 class proxy_streambuf : public std::streambuf
 {
@@ -434,27 +484,27 @@ class proxy_streambuf : public std::streambuf
       }
 };
 
-struct ArchiveReadObjectFunctor : public Archive::ReadFunctor
+struct Archive::ReadObjectFunctor : public Archive::ReadFunctor
 {
-    ArchiveReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    ReadObjectFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readObject(input, _options); }    
 };
 
-struct ArchiveReadImageFunctor : public Archive::ReadFunctor
+struct Archive::ReadImageFunctor : public Archive::ReadFunctor
 {
-    ArchiveReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+   ReadImageFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input)const  { return rw.readImage(input, _options); }    
 };
 
-struct ArchiveReadHeightFieldFunctor : public Archive::ReadFunctor
+struct Archive::ReadHeightFieldFunctor : public Archive::ReadFunctor
 {
-    ArchiveReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    ReadHeightFieldFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readHeightField(input, _options); }    
 };
 
-struct ArchiveReadNodeFunctor : public Archive::ReadFunctor
+struct Archive::ReadNodeFunctor : public Archive::ReadFunctor
 {
-    ArchiveReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    ReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
     virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readNode(input, _options); }    
 };
 
@@ -498,28 +548,26 @@ ReaderWriter::ReadResult Archive::read(const ReadFunctor& readFunctor)
 
 ReaderWriter::ReadResult Archive::readObject(const std::string& fileName,const Options* options)
 {
-    return read(ArchiveReadObjectFunctor(fileName, options));
+    return read(ReadObjectFunctor(fileName, options));
 }
 
 ReaderWriter::ReadResult Archive::readImage(const std::string& fileName,const Options* options)
 {
-    return read(ArchiveReadImageFunctor(fileName, options));
+    return read(ReadImageFunctor(fileName, options));
 }
 
 ReaderWriter::ReadResult Archive::readHeightField(const std::string& fileName,const Options* options)
 {
-    return read(ArchiveReadHeightFieldFunctor(fileName, options));
+    return read(ReadHeightFieldFunctor(fileName, options));
 }
 
 ReaderWriter::ReadResult Archive::readNode(const std::string& fileName,const Options* options)
 {
-    return read(ArchiveReadNodeFunctor(fileName, options));
+    return read(ReadNodeFunctor(fileName, options));
 }
 
 
-
-
-struct WriteObjectFunctor : public Archive::WriteFunctor
+struct Archive::WriteObjectFunctor : public Archive::WriteFunctor
 {
     WriteObjectFunctor(const osg::Object& object, const std::string& filename, const ReaderWriter::Options* options):
         WriteFunctor(filename,options),
@@ -529,7 +577,7 @@ struct WriteObjectFunctor : public Archive::WriteFunctor
     virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeObject(_object, output, _options); } 
 };
 
-struct WriteImageFunctor : public Archive::WriteFunctor
+struct Archive::WriteImageFunctor : public Archive::WriteFunctor
 {
     WriteImageFunctor(const osg::Image& object, const std::string& filename, const ReaderWriter::Options* options):
         WriteFunctor(filename,options),
@@ -539,7 +587,7 @@ struct WriteImageFunctor : public Archive::WriteFunctor
     virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output)const  { return rw.writeImage(_object, output, _options); }    
 };
 
-struct WriteHeightFieldFunctor : public Archive::WriteFunctor
+struct Archive::WriteHeightFieldFunctor : public Archive::WriteFunctor
 {
     WriteHeightFieldFunctor(const osg::HeightField& object, const std::string& filename, const ReaderWriter::Options* options):
         WriteFunctor(filename,options),
@@ -549,7 +597,7 @@ struct WriteHeightFieldFunctor : public Archive::WriteFunctor
     virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeHeightField(_object, output, _options); }    
 };
 
-struct WriteNodeFunctor : public Archive::WriteFunctor
+struct Archive::WriteNodeFunctor : public Archive::WriteFunctor
 {
     WriteNodeFunctor(const osg::Node& object, const std::string& filename, const ReaderWriter::Options* options):
         WriteFunctor(filename,options),

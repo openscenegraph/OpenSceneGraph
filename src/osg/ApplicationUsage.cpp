@@ -30,14 +30,16 @@ void ApplicationUsage::addUsageExplanation(Type type,const std::string& option,c
     }
 }
 
-void ApplicationUsage::addCommandLineOption(const std::string& option,const std::string& explanation)
+void ApplicationUsage::addCommandLineOption(const std::string& option,const std::string& explanation,const std::string& defaultValue)
 {
     _commandLineOptions[option]=explanation;
+    _commandLineOptionsDefaults[option]=defaultValue;
 }
 
-void ApplicationUsage::addEnvironmentalVariable(const std::string& option,const std::string& explanation)
+void ApplicationUsage::addEnvironmentalVariable(const std::string& option,const std::string& explanation, const std::string& defaultValue)
 {
     _environmentalVariables[option]=explanation;
+    _environmentalVariablesDefaults[option]=defaultValue;
 }
 
 void ApplicationUsage::addKeyboardMouseBinding(const std::string& option,const std::string& explanation)
@@ -45,7 +47,7 @@ void ApplicationUsage::addKeyboardMouseBinding(const std::string& option,const s
     _keyboardMouse[option]=explanation;
 }
 
-void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput)
+void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput,bool showDefaults,const UsageMap& ud)
 {
 
     unsigned int maxNumCharsInOptions = 0;
@@ -59,7 +61,13 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
     
     unsigned int fullWidth = widthOfOutput;
     unsigned int optionPos = 2;
-    unsigned int explanationPos = 2+maxNumCharsInOptions+2;
+    unsigned int explanationPos = optionPos+maxNumCharsInOptions+2;
+    unsigned int defaultPos = 0;
+    if (showDefaults)
+    {
+        defaultPos = explanationPos;
+        explanationPos = optionPos+8;
+    }
     unsigned int explanationWidth = fullWidth-explanationPos;
 
     std::string line;
@@ -70,6 +78,24 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
     {
         line.assign(fullWidth,' ');
         line.replace(optionPos,citr->first.length(),citr->first);
+
+        if (showDefaults)
+        {
+            UsageMap::const_iterator ditr = ud.find(citr->first);
+            if (ditr != ud.end())
+            {
+                line.replace(defaultPos, std::string::npos, "");
+                if (ditr->second != "")
+                {
+                    line += "[";
+                    line += ditr->second;
+                    line += "]";
+                }
+                str += line;
+                str += "\n";
+                line.assign(fullWidth,' ');
+            }
+        }
         
         const std::string& explanation = citr->second;
         std::string::size_type pos = 0;
@@ -141,14 +167,14 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
     }
 }
 
-void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::UsageMap& um,unsigned int widthOfOutput)
+void ApplicationUsage::write(std::ostream& output, const ApplicationUsage::UsageMap& um,unsigned int widthOfOutput,bool showDefaults,const ApplicationUsage::UsageMap& ud)
 {
     std::string str;
-    getFormatedString(str, um, widthOfOutput);
+    getFormattedString(str, um, widthOfOutput, showDefaults, ud);
     output << str << std::endl;
 }
 
-void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned int widthOfOutput)
+void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned int widthOfOutput, bool showDefaults)
 {
 
     output << "Usage: "<<getCommandLineUsage()<<std::endl;
@@ -156,16 +182,20 @@ void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned i
     if ((type&COMMAND_LINE_OPTION) && !getCommandLineOptions().empty())
     {
         if (needspace) output << std::endl;
-        output << "Options:"<<std::endl;
-        write(output,getCommandLineOptions(),widthOfOutput);
+        output << "Options";
+        if (showDefaults) output << " [and default value]";
+        output << ":"<<std::endl;
+        write(output,getCommandLineOptions(),widthOfOutput,showDefaults,getCommandLineOptionsDefaults());
         needspace = true;
     }
     
     if ((type&ENVIRONMENTAL_VARIABLE) && !getEnvironmentalVariables().empty())
     {
         if (needspace) output << std::endl;
-        output << "Environmental Variables:"<<std::endl;
-        write(output,getEnvironmentalVariables(),widthOfOutput);
+        output << "Environmental Variables";
+        if (showDefaults) output << " [and default value]";
+        output << ":"<<std::endl;
+        write(output,getEnvironmentalVariables(),widthOfOutput,showDefaults,getEnvironmentalVariablesDefaults());
         needspace = true;
     }
 

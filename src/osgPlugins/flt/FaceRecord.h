@@ -29,8 +29,8 @@ struct SFace
     uint8    swDrawFlag;                // How to draw the polygon
                                         // = 0 Draw solid backfaced
                                         // = 1 Draw solid no backface
-                                        // = 2 Draw wireframe and not closed
-                                        // = 3 Draw closed wireframe
+                                        // = 2 Draw closed wireframe (swapped in documentation)
+                                        // = 3 Draw wireframe and not closed (swapped in documentation)
                                         // = 4 Surround with wireframe in alternate color
                                         // = 8 Omni-directional light
                                         // = 9 Unidirectional light
@@ -89,8 +89,8 @@ class FaceRecord : public PrimNodeRecord
         enum DrawFlag {
             SOLID_BACKFACED = 0,
             SOLID_NO_BACKFACE = 1,
-            WIREFRAME_NOT_CLOSED = 2,
-            WIREFRAME_CLOSED = 3,
+            WIREFRAME_CLOSED = 2,
+            WIREFRAME_NOT_CLOSED = 3,
             SURROUND_ALTERNATE_COLOR = 4,
             OMNIDIRECTIONAL_LIGHT = 8,
             UNIDIRECTIONAL_LIGHT = 9,

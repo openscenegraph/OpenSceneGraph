@@ -687,7 +687,8 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
 
     stateset->setAttribute(material);
 
-    bool decal = true;
+    bool decal = false;
+    //bool decal = true;
     bool textureTransparancy=false;
     osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
     if (texture1_map)

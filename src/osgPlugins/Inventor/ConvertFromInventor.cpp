@@ -573,6 +573,9 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
             case SoTexture2::BLEND:
                 texEnv->setMode(osg::TexEnv::BLEND);
                 break;
+            case SoTexture2::REPLACE:
+                texEnv->setMode(osg::TexEnv::REPLACE);
+                break;
         }
         stateSet->setTextureAttributeAndModes(0,texEnv,osg::StateAttribute::ON);
     }

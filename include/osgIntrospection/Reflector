@@ -245,7 +245,7 @@ namespace osgIntrospection
 				pi->addAttribute(new PropertyTypeAttribute(typeof(VT)));
 			}
 
-			addProperty(pi);
+			this->addProperty(pi);
 		}
 	};
 
@@ -326,7 +326,7 @@ namespace osgIntrospection
 				pi->addAttribute(new PropertyTypeAttribute(typeof(VT)));
 			}
 
-			addProperty(pi);
+			this->addProperty(pi);
 		}
 	};
 
@@ -371,7 +371,7 @@ namespace osgIntrospection
 				typeid(typename T::first_type).before(typeid(PT1)))
 				pi1->addAttribute(new PropertyTypeAttribute(typeof(PT1)));
 
-			addProperty(pi1);
+			this->addProperty(pi1);
 
 			PropertyInfo *pi2 = new PropertyInfo(typeof(T), typeof(typename T::second_type), "second", 0, 0);
 			pi2->addAttribute(new CustomPropertyGetAttribute(new Accessor(1)));
@@ -381,7 +381,7 @@ namespace osgIntrospection
 				typeid(typename T::second_type).before(typeid(PT2)))
 				pi2->addAttribute(new PropertyTypeAttribute(typeof(PT2)));
 
-			addProperty(pi2);
+			this->addProperty(pi2);
 		}
 	};
 

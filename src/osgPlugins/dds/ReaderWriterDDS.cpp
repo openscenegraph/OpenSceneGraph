@@ -164,45 +164,36 @@ typedef struct _DDSURFACEDESC2
 #define FOURCC_DXT5  (MAKEFOURCC('D','X','T','5'))
 
 
-osg::Image* ReadDDSFile(const char *filename)
+osg::Image* ReadDDSFile(std::istream& _istream)
 {
 
     DDSURFACEDESC2 ddsd;
 
     char filecode[4];
-    FILE *fp;
-
-    // Open file.
-    fp = fopen(filename, "rb");
-    if (fp == NULL)
-        return NULL;
-
-    // Verify that this is a DDS file.
-    fread(filecode, 1, 4, fp);
+    
+	_istream.read(filecode, 4);
     if (strncmp(filecode, "DDS ", 4) != 0) {
-        fclose(fp);
         return NULL;
     }
-
     // Get the surface desc.
-    fread(&ddsd, sizeof(ddsd), 1, fp);
+    _istream.read((char*)(&ddsd), sizeof(ddsd));
+
 
     // Size of 2d images - 3d images don't set dwLinearSize
-    unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1 ? 2: 4) : ddsd.dwLinearSize;
+	//###[afarre_051904]
+	/*unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1 ? 2: 4) : ddsd.dwLinearSize;
 
     if(size <= 0)
     {
         osg::notify(osg::WARN)<<"Warning:: dwLinearSize is not defined in dds file, image not loaded."<<std::endl;
         return NULL;
-    }
+    }*/
 
     osg::ref_ptr<osg::Image> osgImage = new osg::Image();    
-    osgImage->setFileName(filename);
-
-    //Check valid structure sizes
+    
+	//Check valid structure sizes
     if(ddsd.dwSize != 124 && ddsd.ddpfPixelFormat.dwSize != 32)
     {
-        fclose(fp);
         return NULL;
     }
 
@@ -281,34 +272,43 @@ osg::Image* ReadDDSFile(const char *filename)
             return NULL; 
         }
     }
-    else
+    else 
     {
         osg::notify(osg::WARN)<<"Warning:: unhandled pixel format in dds file, image not loaded."<<std::endl;
         return NULL;
     }
 
-    if (is3dImage)
+	//###[afarre_051904]
+    /*if (is3dImage)
         size = osg::Image::computeNumComponents(pixelFormat) * ddsd.dwWidth * ddsd.dwHeight * depth;
+
 
     //delayed allocation og image data after all checks
     unsigned char* imageData = new unsigned char [size];
-    
-    // Read image data
-    int bytesRead = fread(imageData, 1, size, fp);
-    // Close the file.
-    fclose(fp);
+    if(!imageData)
+	{
+        return NULL;
+	}
 
-    // NOTE: We need to set the image data before setting the mipmap data, this
+    // Read image data
+    _istream.read((char*)imageData, size);
+
+	
+	// NOTE: We need to set the image data before setting the mipmap data, this
     // is because the setImage method clears the _mipmapdata vector in osg::Image.
     // Set image data and properties.
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+	*/
 
+    // Now set mipmap data (offsets into image raw data)
+	//###[afarre_051904]
+    osg::Image::MipmapDataType mipmaps; 
 
     // Take care of mipmaps if any.
     if (ddsd.dwMipMapCount>1)
     {
         // Now set mipmap data (offsets into image raw data).
-        osg::Image::MipmapDataType mipmaps;
+        //###[afarre_051904]osg::Image::MipmapDataType mipmaps;
 
         //This is to complete mipmap sequence until level Nx1
 
@@ -337,13 +337,12 @@ osg::Image* ReadDDSFile(const char *filename)
                     width = 1;
                 if (height == 0)
                     height = 1;
-                size = ((width+3)/4) * ((height+3)/4) * blockSize;
-                offset += size;
+                offset += (((width+3)/4) * ((height+3)/4) * blockSize);
                 mipmaps[k-1] = offset;
                 width >>= 1;
                 height >>= 1;
             }
-            osgImage->setMipmapData(mipmaps);
+            //###[afarre_051904] osgImage->setMipmapData(mipmaps);
         }
         // Handle uncompressed mipmaps
         if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
@@ -357,19 +356,74 @@ osg::Image* ReadDDSFile(const char *filename)
                     width = 1;
                 if (height == 0)
                     height = 1;
-                size = width*height*(ddsd.ddpfPixelFormat.dwRGBBitCount/8);
-                offset += size;
+                offset += (width*height*(ddsd.ddpfPixelFormat.dwRGBBitCount/8));
                 mipmaps[k-1] = offset;
                 width >>= 1;
                 height >>= 1;
             }
-            osgImage->setMipmapData(mipmaps);
+            //###[afarre_051904] osgImage->setMipmapData(mipmaps);
         }
     }
 
-    // Return Image.
+
+	
+
+	//###[afarre_051904]
+	unsigned int size = 0;
+    if (is3dImage)
+	{
+        size = osg::Image::computeNumComponents(pixelFormat) * ddsd.dwWidth * ddsd.dwHeight * depth;
+	}
+	else
+	{
+		osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
+		if (mipmaps.size()>0)  osgImage->setMipmapData(mipmaps);
+		size = 	osgImage->getTotalSizeInBytesIncludingMipmaps();
+	}
+
+    if(size <= 0)
+    {
+        return NULL;
+    }
+
+    unsigned char* imageData = new unsigned char [size];
+    if(!imageData)
+	{
+        return NULL;
+	}
+
+    // Read image data
+    _istream.read((char*)imageData, size);
+
+	osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
+	if (mipmaps.size()>0)  osgImage->setMipmapData(mipmaps);
+ 
+
+
+
+		
+	// Return Image.
     return osgImage.release();
 }
+
+
+/*
+osg::Image::MipmapDataType mipmaps;
+osgImage->setMipmapData(mipmaps);
+osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
+printf("INVENTO===> gtsibim:%d  grsib:%d   mi_size:%d   lPitch%d\n", 
+	osgImage->getTotalSizeInBytesIncludingMipmaps(), 
+	osgImage->getRowSizeInBytes(), size, ddsd.lPitch);
+printf("CORRECTO**> gtsibim:%d  grsib:%d   mi_size:%d   lPitch%d\n", 
+	osgImage->getTotalSizeInBytesIncludingMipmaps(), 
+	osgImage->getRowSizeInBytes(), size, ddsd.lPitch);
+
+ */
+
+
+
+
+
 
 bool WriteDDSFile(const osg::Image *img, const char *filename)
 {
@@ -614,7 +668,7 @@ public:
         return osgDB::equalCaseInsensitive(extension,"dds"); 
     }
 
-    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*)
+    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
     {
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -622,11 +676,19 @@ public:
         std::string fileName = osgDB::findDataFile( file );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
         
-        osg::Image* osgImage = ReadDDSFile(fileName.c_str());
+		std::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
+		if(!stream) return ReadResult::FILE_NOT_HANDLED;
+		ReadResult rr = readImage(stream, options);
+		if(rr.validImage()) rr.getImage()->setFileName(file);
+		return rr;
+    }
+
+    virtual ReadResult readImage(std::istream& fin, const Options* options)
+	{
+        osg::Image* osgImage = ReadDDSFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
         return osgImage;
-
-    }
+	}
 
     virtual WriteResult writeImage(const osg::Image &img,const std::string& file, const osgDB::ReaderWriter::Options*)
     {

@@ -146,6 +146,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
               case(PNG_COLOR_TYPE_GRAY): pixelFormat =GL_LUMINANCE ; break;
               case(PNG_COLOR_TYPE_GRAY_ALPHA): pixelFormat = GL_LUMINANCE_ALPHA; break;
               case(PNG_COLOR_TYPE_RGB): pixelFormat = GL_RGB; break;
+              case(PNG_COLOR_TYPE_PALETTE): pixelFormat = GL_RGB; break;
               case(PNG_COLOR_TYPE_RGB_ALPHA): pixelFormat = GL_RGBA; break;
               default: break;                
             }

@@ -84,9 +84,17 @@ class TemplateArray : public AttributeArray, public std::vector<T>
             AttributeArray(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(ptr,ptr+no) {}
 
+
+#ifdef __STL_MEMBER_TEMPLATES
+        template <class InputIterator>
+        TemplateArray(InputIterator first,InputIterator last) : 
+            AttributeArray(ARRAYTYPE,DataSize,DataType),
+            std::vector<T>(first,last) {}        
+#else
         TemplateArray(T* first,T* last) : 
             AttributeArray(ARRAYTYPE,DataSize,DataType),
             std::vector<T>(first,last) {}
+#endif
 
         virtual Object* cloneType() const { return osgNew TemplateArray(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew TemplateArray(*this,copyop); }        
@@ -239,11 +247,18 @@ class DrawElements : public Primitive, public std::vector<T>
             std::vector<T>(no),
             _dataType(DataType) {}
 
+#ifdef __STL_MEMBER_TEMPLATES
+        template <class InputIterator>
+        DrawElements(GLenum mode, InputIterator first,InputIterator last) : 
+            Primitive(PRIMTYPE,mode),
+            std::vector<T>(first,last),
+            _dataType(DataType) {}
+#else
         DrawElements(GLenum mode, T* first,T* last) : 
             Primitive(PRIMTYPE,mode),
             std::vector<T>(first,last),
             _dataType(DataType) {}
-
+#endif
         virtual Object* cloneType() const { return osgNew DrawElements(); }
         virtual Object* clone(const CopyOp& copyop) const { return osgNew DrawElements(*this,copyop); }        
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const DrawElements*>(obj)!=NULL; }

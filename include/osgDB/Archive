@@ -69,11 +69,10 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 };
 
 /** Open an archive for reading or writing.*/
-Archive* openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
+OSGDB_EXPORT Archive* openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
 
 /** Open an archive for reading or writing.*/
-Archive* openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,Registry::CacheHintOptions useObjectCache);
-
+OSGDB_EXPORT Archive* openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,Registry::CacheHintOptions useObjectCache);
 }
 
 #endif // OSGDB_ARCHIVE

@@ -30,6 +30,8 @@ OSG News (most significant items from ChangeLog)
     osg::DOFTransformNode implemented.
 
     osg::AnimationPath improved.
+    
+    Support for writing osg::Image's to .rgb format added.
 
 July 2002 - OpenSceneGraph-0.9.0.tar.gz
 

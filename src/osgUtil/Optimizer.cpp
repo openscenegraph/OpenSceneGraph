@@ -50,6 +50,7 @@ static bool isNodeEmpty(const osg::Node& node)
     if (node.getNumDescriptions()>0) return false;
     if (node.getStateSet()) return false;
     if (node.getNodeMask()!=0xffffffff) return false;
+    if (!node.getName().empty()) return false;
     return true;
 }
 

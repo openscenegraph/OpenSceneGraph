@@ -164,7 +164,6 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     computeLocalDataFromCamera();
 }
 
-
 void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     flushMouseEventStack();
@@ -358,6 +357,15 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
         default:
             return false;
     }
+}
+
+void DriveManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("Drive: Space","Reset the viewing position to home");
+    usage.addKeyboardMouseBinding("Drive: +","When in stereo, increase the fusion distance");
+    usage.addKeyboardMouseBinding("Drive: -","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("Drive: q","Use mouse y for controlling speed");
+    usage.addKeyboardMouseBinding("Drive: a","Use mouse middle,right mouse buttons for speed");
 }
 
 

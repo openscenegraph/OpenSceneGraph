@@ -69,6 +69,14 @@ void TrackballManipulator::init(const GUIEventAdapter& ,GUIActionAdapter& )
     computeLocalDataFromCamera();
 }
 
+
+void TrackballManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("Trackball: Space","Reset the viewing position to home");
+    usage.addKeyboardMouseBinding("Trackball: +","When in stereo, increase the fusion distance");
+    usage.addKeyboardMouseBinding("Trackball: -","When in stereo, reduse the fusion distance");
+}
+
 bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     if(!_camera.get()) return false;

@@ -83,6 +83,11 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
     return retval;
 }
 
+void AnimationPathManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("AnimationPath: Space","Reset the viewing position to start of animation");
+}
+
 void AnimationPathManipulator::handleFrame( double time )
 {
     osg::AnimationPath::ControlPoint cp;

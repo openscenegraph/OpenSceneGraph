@@ -67,6 +67,13 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
     return false;
 }
 
+void StateSetManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("b","Toggle backface culling");
+    usage.addKeyboardMouseBinding("l","Toggle lighting");
+    usage.addKeyboardMouseBinding("t","Toggle texturing");
+}
+
 void StateSetManipulator::accept(GUIEventHandlerVisitor& gehv)
 {
     gehv.visit(*this);

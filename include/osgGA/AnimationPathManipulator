@@ -39,6 +39,7 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
 
 	AnimationPathManipulator( const std::string& filename );
         
+        virtual const char* className() const { return "AnimationPath"; }
         
         void setAnimationPath( osg::AnimationPath* animationPath ) { _animationPath=animationPath; }
         
@@ -53,6 +54,9 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
         void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
             
     private:
 

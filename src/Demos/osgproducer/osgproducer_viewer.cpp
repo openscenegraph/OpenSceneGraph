@@ -1,6 +1,15 @@
-//C++ source file - Open Producer - Copyright (C) 2002 Don Burns
-//Distributed under the terms of the GNU LIBRARY GENERAL PUBLIC LICENSE (LGPL)
-//as published by the Free Software Foundation.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
 
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
@@ -21,11 +30,15 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getProgramName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
+
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+
+    // get details on keyboard and mouse bindings used by the viewer.
+    viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

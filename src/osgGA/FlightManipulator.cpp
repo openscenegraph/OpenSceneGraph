@@ -175,6 +175,14 @@ bool FlightManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
     }
 }
 
+void FlightManipulator::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("Flight: Space","Reset the viewing position to home");
+    usage.addKeyboardMouseBinding("Flight: +","When in stereo, increase the fusion distance");
+    usage.addKeyboardMouseBinding("Flight: -","When in stereo, reduse the fusion distance");
+    usage.addKeyboardMouseBinding("Flight: q","Automatically yaw when banked (default)");
+    usage.addKeyboardMouseBinding("Flight: a","No yaw when banked");
+}
 
 void FlightManipulator::flushMouseEventStack()
 {

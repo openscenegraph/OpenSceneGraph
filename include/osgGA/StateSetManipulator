@@ -34,6 +34,8 @@ public:
         StateSetManipulator();
         virtual ~StateSetManipulator();
 
+        virtual const char* className() { return "StateSetManipulator"; }
+
         /** attach a geostate to the manipulator to be used for specifying view.*/
         virtual void setStateSet(osg::StateSet*);
 
@@ -48,6 +50,9 @@ public:
 
         /** Handle visitations */
         virtual void accept(GUIEventHandlerVisitor&);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
 
 protected:
 

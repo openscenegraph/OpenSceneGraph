@@ -64,3 +64,33 @@ void LightPointRecord::endian()
     ENDIAN( pSLightPoint->sfFlags );
     pSLightPoint->animRot.endian();
 }
+
+
+
+////////////////////////////////////////////////////////////////////
+//
+//                      Indexed LightPointRecord
+//
+////////////////////////////////////////////////////////////////////
+
+RegisterRecordProxy<LightPointIndexRecord> g_LightPointIndexdProxy;
+
+LightPointIndexRecord::LightPointIndexRecord()
+{
+}
+
+
+// virtual
+LightPointIndexRecord::~LightPointIndexRecord()
+{
+}
+
+
+void LightPointIndexRecord::endian()
+{
+    SLightPointIndex *pSLightPointIndex = (SLightPointIndex*)getData();
+
+    ENDIAN( pSLightPointIndex->iAppearanceIndex );
+    ENDIAN( pSLightPointIndex->iAnimationIndex );
+    ENDIAN( pSLightPointIndex->iDrawOrder );
+}

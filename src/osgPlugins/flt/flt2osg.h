@@ -30,6 +30,7 @@ class ColorPaletteRecord;
 class MaterialPaletteRecord;
 class OldMaterialPaletteRecord;
 class TexturePaletteRecord;
+class LtPtAppearancePaletteRecord;
 class VertexPaletteRecord;
 class VertexRecord;
 class NormalVertexRecord;
@@ -48,6 +49,7 @@ class MatrixRecord;
 class GeneralMatrixRecord;
 class ExternalRecord;
 class LightPointRecord;
+class LightPointIndexRecord;
 class VertexListRecord;
 class LocalVertexPoolRecord;
 class LongIDRecord;
@@ -133,6 +135,7 @@ class ConvertFromFLT
         void visitMaterialPalette(osg::Group& osgParent, MaterialPaletteRecord* rec);
         void visitOldMaterialPalette(osg::Group& osgParent, OldMaterialPaletteRecord* rec);
         void visitTexturePalette(osg::Group& osgParent, TexturePaletteRecord* rec);
+        void visitLtPtAppearancePalette(osg::Group& osgParent, LtPtAppearancePaletteRecord* rec);
         void visitVertexPalette(osg::Group& osgParent, VertexPaletteRecord* rec);
         void visitVertex(osg::Group& osgParent, VertexRecord* rec);
         void visitNormalVertex(osg::Group& osgParent, NormalVertexRecord* rec);
@@ -158,7 +161,8 @@ class ConvertFromFLT
         void visitMesh(osg::Group& osgParent,GeoSetBuilder* pParent, MeshRecord* rec);
         void visitMeshPrimitive(osg::Group& osgParent, MeshPrimitiveRecord* rec);
         void visitLightPoint(GeoSetBuilder* pBuilder, LightPointRecord* rec);
-	void visitLightPoint(osg::Group& osgParent, LightPointRecord* rec);
+        void visitLightPoint(osg::Group& osgParent, LightPointRecord* rec);
+        void visitLightPointIndex(osg::Group& osgParent, LightPointIndexRecord* rec);
         int  visitVertexList(GeoSetBuilder* pParent, VertexListRecord* rec);
         int  visitLocalVertexPool(GeoSetBuilder* pBuilder, LocalVertexPoolRecord* rec);
 

@@ -106,8 +106,6 @@ struct SLightPoint
     float32x3   animRot;            // Axis of rotation for rotating animation
 };
 
-
-
 class LightPointRecord : public PrimNodeRecord
 {
     public:
@@ -126,6 +124,38 @@ class LightPointRecord : public PrimNodeRecord
 
         virtual void endian();
 };
+
+
+
+struct SLightPointIndex
+{
+    SRecHeader  RecHeader;
+    char        szIdent[8];         // 7 char ASCII ID; 0 terminates
+    int32       iAppearanceIndex;   // Index into lt pt appearance palette
+    int32       iAnimationIndex;    // Index into lt pt animation palette
+    int32       iDrawOrder;         // Calligraphic draw order
+	int32       iReserved_0;        // Reserved
+};
+
+class LightPointIndexRecord : public PrimNodeRecord
+{
+    public:
+        LightPointIndexRecord();
+
+        virtual Record* clone() const { return new LightPointIndexRecord(); }
+        virtual const char* className() const { return "LightPointIndexRecord"; }
+        virtual int classOpcode() const { return INDEXED_LIGHT_PT_OP; }
+        virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
+//      virtual void traverse(RecordVisitor& rv);
+
+        virtual SLightPointIndex* getData() const { return (SLightPointIndex*)_pData; }
+
+    protected:
+        virtual ~LightPointIndexRecord();
+
+        virtual void endian();
+};
+
 
 
 

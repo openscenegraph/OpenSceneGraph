@@ -25,7 +25,8 @@ struct SExternalReference
                                 // 3 = Line Palette Override
                                 // 4 = Sound Palette Override
                                 // 5 = Light source Palette Override
-                                // 6-31 Spare
+                                // 6 = Light point Palette Override
+                                // 7-31 Spare
 //    int16    iReserved;       // Reserved
 };
 

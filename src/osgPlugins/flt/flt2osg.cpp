@@ -33,6 +33,8 @@
 #include <osgSim/MultiSwitch>
 #include <osgSim/DOFTransform>
 #include <osgSim/LightPointNode>
+#include <osgSim/Sector>
+#include <osgSim/BlinkSequence>
 
 
 #include <osgDB/FileUtils>
@@ -52,6 +54,7 @@
 #include "MaterialPaletteRecord.h"
 #include "OldMaterialPaletteRecord.h"
 #include "TexturePaletteRecord.h"
+#include "LightPointPaletteRecords.h"
 #include "VertexPoolRecords.h"
 #include "OldVertexRecords.h"
 #include "GroupRecord.h"
@@ -230,6 +233,10 @@ osg::Group* ConvertFromFLT::visitAncillary(osg::Group& osgParent, osg::Group& os
             visitTexturePalette(osgPrimary, (TexturePaletteRecord*)child);
             break;
 
+        case LIGHT_PT_APPEARANCE_PALETTE_OP:
+            visitLtPtAppearancePalette(osgPrimary, (LtPtAppearancePaletteRecord*)child);
+            break;
+
         case VERTEX_PALETTE_OP:
             visitVertexPalette(osgPrimary, (VertexPaletteRecord*)child);
             break;
@@ -304,6 +311,9 @@ osg::Group* ConvertFromFLT::visitPrimaryNode(osg::Group& osgParent, PrimNodeReco
 #else
                 visitLightPoint(osgParent, (LightPointRecord*)child);
 #endif
+                break;
+            case INDEXED_LIGHT_PT_OP:
+                visitLightPointIndex(osgParent, (LightPointIndexRecord*)child);
                 break;
             case GROUP_OP:
                 osgPrim = visitGroup(osgParent, (GroupRecord*)child);
@@ -730,6 +740,29 @@ void ConvertFromFLT::visitTexturePalette(osg::Group& , TexturePaletteRecord* rec
     pTexturePool->addTextureName(nIndex, textureName);
 
     CERR<<"pTexturePool->addTextureName("<<nIndex<<", "<<textureName<<")"<<std::endl;
+}
+
+
+void ConvertFromFLT::visitLtPtAppearancePalette(osg::Group& osgParent, LtPtAppearancePaletteRecord* rec)
+{
+    SLightPointAppearancePalette* ltPtApp = (SLightPointAppearancePalette*)rec->getData();
+    LtPtAppearancePool* pool = rec->getFltFile()->getLtPtAppearancePool();
+    assert( pool );
+    if (ltPtApp && pool)
+    {
+        LtPtAppearancePool::PoolLtPtAppearance* entry = new LtPtAppearancePool::PoolLtPtAppearance;
+
+        entry->_iBackColorIdx = ltPtApp->backColor;
+        entry->_bIntensity = ltPtApp->intensity;
+        entry->_sfMinPixelSize = ltPtApp->minPixelSize;
+        entry->_sfMaxPixelSize = ltPtApp->maxPixelSize;
+        entry->_sfActualSize = ltPtApp->actualSize;
+        entry->_iDirectionality = ltPtApp->directionality;
+        entry->_sfHLobeAngle = ltPtApp->horizLobeAngle;
+        entry->_sfVLobeAngle = ltPtApp->vertLobeAngle;
+
+        pool->add(ltPtApp->index, entry);
+    }
 }
 
                                  /*osgParent*/
@@ -2186,6 +2219,130 @@ void ConvertFromFLT::visitLightPoint(osg::Group& osgParent, LightPointRecord* re
     }
 
     osgParent.addChild( lpNode);
+}
+
+
+// OpenFlight 15.8 (1580)
+// Light point records contain indices into appearance and animation palettes.
+//   Need to look up the palette entries to determine how the light points
+//   look (and behave).
+void ConvertFromFLT::visitLightPointIndex(osg::Group& osgParent, LightPointIndexRecord* rec)
+{
+    SLightPointIndex *ltPtIdx = (SLightPointIndex*)rec->getData();
+    LtPtAppearancePool* appPool = rec->getFltFile()->getLtPtAppearancePool();
+    LtPtAppearancePool::PoolLtPtAppearance* ltPtApp = appPool->get( ltPtIdx->iAppearanceIndex );
+    if (!ltPtApp)
+        // Appearance index out of range
+        return;
+
+    // TBD also get ltPtAnim record.
+    // LightPointAnimation not currently implemented
+
+    GeoSetBuilder pBuilder;
+    DynGeoSet* dgset = pBuilder.getDynGeoSet();
+    dgset->setPrimType(osg::PrimitiveSet::POINTS);
+    dgset->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    dgset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+    osgSim::LightPointNode *lpNode = new osgSim::LightPointNode();
+
+    for (int i=0; i < rec->getNumChildren(); i++)
+    {
+        Record* child = rec->getChild(i);
+        if( child->classOpcode() == COMMENT_OP) visitComment(*lpNode, (CommentRecord*)child);
+    }
+
+    lpNode->setMinPixelSize( ltPtApp->_sfMinPixelSize );
+    lpNode->setMaxPixelSize( ltPtApp->_sfMaxPixelSize );
+
+    addVertices(&pBuilder, rec);
+
+    const DynGeoSet::CoordList& coords = dgset->getCoordList();
+    const DynGeoSet::ColorList& colors = dgset->getColorList();
+    const DynGeoSet::NormalList& norms = dgset->getNormalList();
+
+    bool directional = false;
+    int numInternalLightPoints = 0; // Number of osgSim::LightPoint objects to add per OpenFlight light point vertex
+    switch (ltPtApp->_iDirectionality)
+    {
+    case 0: // Omnidirectional;
+        directional = false;
+        numInternalLightPoints = 1;
+        break;
+    case 1: // Unidirectional;
+        directional = true;
+        numInternalLightPoints = 1;
+        break;
+    case 2: // Bidirectional;
+        directional = true;
+        numInternalLightPoints = 2;
+        break;
+    }
+
+    float lobeVert=0.f, lobeHorz=0.f;
+    if ( directional)
+    {
+        lobeVert = osg::DegreesToRadians( ltPtApp->_sfVLobeAngle );
+        lobeHorz = osg::DegreesToRadians( ltPtApp->_sfHLobeAngle );
+    }
+    float pointRadius =  ltPtApp->_sfActualSize * _unitScale;
+
+    for (unsigned int nl = 0; nl < coords.size(); nl++)
+    {
+        // Could add 1 or 2 internal light points, 2 for bidirectional
+        for (int i=0; i<numInternalLightPoints; i++)
+        {
+            osg::Vec4 color( 1.0f, 1.0f, 1.0f, 1.0f);
+            if ( (i==0) && (nl < colors.size()) )
+                color = colors[nl];
+            else if (i==1)
+            {
+                // Get back color
+                ColorPool* pColorPool = rec->getFltFile()->getColorPool();
+                color = pColorPool->getColor( ltPtApp->_iBackColorIdx );
+            }
+
+            osgSim::LightPoint lp( true, coords[nl], color, 1.0f, pointRadius);
+
+            if (directional)
+            {
+                // calc elevation angles
+                osg::Vec3 normal( 1.0f, 0.0f, 0.0f);
+                if (nl < norms.size())
+                    normal = norms[nl];
+                if (i==1)
+                    // Negate the normal for the back facing internal light point
+                    normal = -normal;
+
+                float elevAngle = osg::PI_2 - acos( normal.z() );
+                if (normal.z() < 0.0f)
+                    elevAngle = -elevAngle;
+                float minElevation = elevAngle - lobeVert/2.0f;
+                float maxElevation = elevAngle + lobeVert/2.0f;
+
+                // calc azimuth angles
+                osg::Vec2 pNormal( normal.x(), normal.y() );
+                float lng = pNormal.normalize();
+                float azimAngle = 0.0f;
+                if( lng > 0.0000001)
+                {
+                    azimAngle = acos( pNormal.y() );
+                    if (pNormal.x() < 0.0f)
+                        azimAngle = -azimAngle;
+                }
+
+                float minAzimuth = azimAngle - lobeHorz/2.0f;
+                float maxAzimuth = azimAngle + lobeHorz/2.0f;
+
+                float fadeRange = 0.0f;
+                lp._sector = new osgSim::AzimElevationSector( minAzimuth, maxAzimuth, minElevation, maxElevation, fadeRange);
+            }
+
+            lpNode->addLightPoint(lp);
+        }
+    }
+
+    osgParent.addChild(lpNode);
 }
 
 

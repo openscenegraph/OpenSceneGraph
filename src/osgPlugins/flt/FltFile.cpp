@@ -74,7 +74,9 @@ FltFile::FltFile(
 
     // instances are always internally defined 
     setInstancePool( new InstancePool );
-    
+
+    // Light point appearances are always internally defined 
+    setLtPtAppearancePool( new LtPtAppearancePool );
 }
 
 

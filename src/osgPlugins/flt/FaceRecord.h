@@ -64,7 +64,8 @@ struct SFace
                                         // 3 = Packed color
                                         // 4 = Terrain culture cutout (footprint)
                                         // 5 = Hidden (not drawn)
-                                        // 6-31 Spare
+                                        // 6 = Hidden (not drawn)
+                                        // 7-31 Spare
     uint8    swLightMode;               // Lightmode
                                         // = 0 use face color, not illuminated
                                         // = 1 use vertex color, not illuminated

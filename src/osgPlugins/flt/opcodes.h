@@ -4,7 +4,7 @@
 #ifndef __FLT_OPCODE_H
 #define __FLT_OPCODE_H
 
-#define OF_VERSION                      1520    //OpenFlight version
+#define OF_VERSION                      1580    //OpenFlight version
 
 #define UNKNOWN_OP                       0
 
@@ -80,9 +80,9 @@
 #define POP_ATTRIBUTE_OP                123 // ignored
 #define CURVE_OP                        126 // ignored
 #define ROAD_CONSTRUCTION_OP            127
-#define LIGHT_PT_APPEARANCE_PALETTE_OP  128 // ignored
+#define LIGHT_PT_APPEARANCE_PALETTE_OP  128
 #define LIGHT_PT_ANIMATION_PALETTE_OP   129 // ignored
-#define INDEXED_LIGHT_PT_OP             130 // ignored
+#define INDEXED_LIGHT_PT_OP             130
 #define LIGHT_PT_SYSTEM_OP              131 // ignored
 #define INDEXED_STRING_OP               132 // ignored
 

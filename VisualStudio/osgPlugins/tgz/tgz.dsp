@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\tgz\ReaderWriterTGZ.cpp
 # End Group
 # End Target
 # End Project
+\c

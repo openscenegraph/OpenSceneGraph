@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\bmp\ReaderWriterBMP.cpp
 # End Group
 # End Target
 # End Project
+\c

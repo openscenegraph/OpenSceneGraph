@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\tiff\ReaderWriterTIFF.cpp
 # End Group
 # End Target
 # End Project
+\c

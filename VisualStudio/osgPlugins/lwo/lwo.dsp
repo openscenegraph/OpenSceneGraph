@@ -119,3 +119,4 @@ SOURCE=..\..\..\Src\osgPlugins\lwo\lw.h
 # PROP Default_Filter ""
 # End Group
 # End Project
+\c

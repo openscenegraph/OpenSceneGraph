@@ -267,3 +267,4 @@ SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Viewport.h
 # End Group
 # End Target
 # End Project
+\c

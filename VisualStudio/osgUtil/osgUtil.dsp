@@ -334,3 +334,4 @@ SOURCE=..\..\Include\osgUtil\Version
 # End Group
 # End Target
 # End Project
+\c

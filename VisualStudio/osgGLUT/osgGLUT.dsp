@@ -142,3 +142,4 @@ SOURCE=..\..\Include\osgGLUT\Window
 # End Group
 # End Target
 # End Project
+\c

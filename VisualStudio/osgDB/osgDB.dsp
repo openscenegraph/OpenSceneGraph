@@ -214,3 +214,4 @@ SOURCE=..\..\Include\osgDB\WriteFile
 # End Group
 # End Target
 # End Project
+\c

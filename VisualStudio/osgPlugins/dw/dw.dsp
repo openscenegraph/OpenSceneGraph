@@ -111,3 +111,4 @@ SOURCE=..\..\..\src\osgPlugins\dw\ReaderWriterDW.cpp
 # PROP Default_Filter ""
 # End Group
 # End Project
+\c

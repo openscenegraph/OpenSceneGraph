@@ -107,3 +107,4 @@ SOURCE=..\..\..\src\osgPlugins\jpeg\ReaderWriterJPEG.cpp
 # End Group
 # End Target
 # End Project
+\c

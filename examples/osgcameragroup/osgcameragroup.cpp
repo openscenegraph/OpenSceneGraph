@@ -147,7 +147,7 @@ int main( int argc, char **argv )
     cg.setSceneData(loadedModel.get());
 
     Producer::Trackball tb;
-    tb.setOrientation( Producer::Trackball::Y_UP );
+    tb.setOrientation( Producer::Trackball::Z_UP );
 
     // create the windows and run the threads.
     cg.realize();
@@ -156,7 +156,7 @@ int main( int argc, char **argv )
 
     while( !kbmcb.done() )
     {
-        // syncronize to screen refresh.
+        // syncronize to the when cull and draw threads have completed.
         cg.sync();
 
         // update the scene by traversing it with the the update visitor which will
@@ -171,6 +171,10 @@ int main( int argc, char **argv )
         // fire off the cull and draw traversals of the scene.
         cg.frame();
     }
+
+    // syncronize to the when cull and draw threads have completed.
+    cg.sync();
+
     return 0;
 }
 

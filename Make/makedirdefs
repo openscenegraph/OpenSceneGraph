@@ -119,6 +119,7 @@ EXAMPLE_DIRS = \
 	osgmultitexture\
 	osgoccluder\
 	osgparticle\
+	osgpick\
 	osgprerender\
 	osgreflect\
 	osgscribe\

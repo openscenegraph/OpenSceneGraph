@@ -328,7 +328,8 @@ endif
 #### MacOS X specific definitions
 ifeq ($(OS),Darwin)
   C++               = c++
-  INC               += 
+  INC               += -I/usr/X11R6/include
+  LDFLAGS	    += -L/usr/X11R6/lib
   DEF               += -Wall -D__DARWIN_OSX__
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
@@ -343,7 +344,7 @@ ifeq ($(OS),Darwin)
   FREETYPE_LIB      = -lfreetype
   CARBON_LIB        = -framework Carbon
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
-  X_LIBS            = 
+  X_LIBS            = -lX11 
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc
   LIB_EXT           = dylib

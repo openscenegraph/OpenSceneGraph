@@ -36,20 +36,11 @@
 <h2>
 <u>Compiling and installing the OpenSceneGraph</u></h2>
 The scene graph depends upon Standard C++, STL and OpenGL so you need a
-C++ compiler up to the task and OpenGL or Mesa installed. The viewer depends
-upon Producer which you'll need to download and install from the Producer website.
-The OSG has it own native ascii file format, and .rgb image reader inbuilt
+C++ compiler up to the task and OpenGL or Mesa installed. The example applications depend
+upon Open Producer which you'll need to download and install from the Producer website.
+The OSG has it own native ascii file format, and .rgb image reader
 which allows you read the example data with any dependencies other than
 C++, STL and OpenGL.
-<p>The osgText library adds the dependency of the freetype library for
-support of true type fonts, however it is not essential to the core library,
-so you can comment it out from compilation by modifying the src/Makefile,
-and examples/Makefile. I you wish to use fonts then you can download freetype
-from www.freetype.org. The osgText library also requires an up to date
-GLU implementation which supports GLU1.2 tessellation routines. If you
-your current GLU is out of date you'll need to download the latest, for
-instance the sgi's sample implementation for GLU from the www.opengl.org
-website.
 <p>The OSG also has a set of plug-ins which support non-native 3d database
 and image formats, several have no dependencies on external libraries (flt,3ds,obj,
 lwo,dw, tga &amp; pic), while others (pfb,jpeg,gif,tiff) require other

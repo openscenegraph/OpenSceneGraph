@@ -37,7 +37,7 @@
 <u>Plans for future developments</u></h2>
 Now we have reached the beta phase (0.9.x) of OpenScenegGraph project,
 and are now working towards the full 1.0 release, with a likely 
-release date in fall 2002.
+release date in second half of 2003.
 
 <h3>
 Fturue work include:</h3>
@@ -45,28 +45,27 @@ Fturue work include:</h3>
 <ul>
 
 <li>
-Multi-pass fallback for when multi-texturing is not supported.</li>
+StateSet composite structure for managing multi-pass effects and alternate rendering implemations.  
+This will allow one to manage the use of extensions and provide effecient fallback rendering paths.</li>
 
 <li>
 Clean up the API for managing multi-stage and multi-pass rendering within
 the scene graph.</li>
 
 <li>
-Open Producer - cross platform library for transparently managing mulitpipe and
-cluster graphics systems. Similar in concept to OpenGL multipipe SDK, except
-cross platform and with support of graphics clusters.</li>
+Support for clustering in Open Producer and osgProducer.</li>
 
 <li>
-osgSim - cross platform library for the visual simulation market with support for light points,
-small target anti-aliasing, geometry correction and clip mapping.</li>
+Enhance osgDB and plugins to allow them to be used with alternate input streams.  Add support for native binary 
+file format for rapid loading and saving of scene graphs.
+</li>
 
 <li>
-Replace osgProducer with Open Producer for the demos.  Open Producer is a much cleaner and more scalable
-windowing API. Move osgProducer out of the distribution and into the bazaar.</li>
+Development of virtual texture support for rendering in real-time massive images, such as whole earth textures.</li>
 
 <li>
-Introduce a new library osgEnv/osgShapes, which adds support for creating
-shapes and environmental effects such as stars, planets, cloud layers and
+Introduce a new library osgEnvironment, which adds support for creating
+shapes and environmental effects such as stars, planets, cloud layers, oceans and
 ground planes.</li>
 
 <li>

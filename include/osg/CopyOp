@@ -31,7 +31,7 @@ class Array;
 class PrimitiveSet;
 class Shape;
 
-/** Copy Op(erator) used to control the whether shallow or deep copy is used
+/** Copy Op(erator) used to control whether shallow or deep copy is used
   * during copy construction and clone operation.*/
 class SG_EXPORT CopyOp
 {

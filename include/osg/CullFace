@@ -19,8 +19,8 @@
 
 namespace osg {
 
-/** Class to globally enable/disable OpenGL's polygon culling mode=.
-*/     
+/** Class to globally enable/disable OpenGL's polygon culling mode.
+ */     
 class SG_EXPORT CullFace : public StateAttribute
 {
     public :
@@ -45,10 +45,10 @@ class SG_EXPORT CullFace : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macro's below.
             COMPARE_StateAttribute_Types(CullFace,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_mode)
 
             return 0; // passed all the above comparison macro's, must be equal.

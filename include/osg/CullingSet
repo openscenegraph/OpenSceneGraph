@@ -20,7 +20,7 @@
 
 namespace osg {
 
-/** A CullingSet class which contains a frustum and a list of occluder. */
+/** A CullingSet class which contains a frustum and a list of occluders. */
 class SG_EXPORT CullingSet : public Referenced
 {
 
@@ -147,7 +147,7 @@ class SG_EXPORT CullingSet : public Referenced
         /** Compute the pixel of an object at position v, with specified radius.*/
         float pixelSize(const Vec3& v,float radius) const { return radius/(v*_pixelSizeVector); }
 
-        /** Compute the pixel of an bounding sphere.*/
+        /** Compute the pixel of a bounding sphere.*/
         float pixelSize(const BoundingSphere& bs) const { return bs.radius()/(bs.center()*_pixelSizeVector); }
 
 

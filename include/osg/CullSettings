@@ -83,13 +83,13 @@ class SG_EXPORT CullSettings
         void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
 
         /** Get whether ImpostorSprite's are depth sorted bin for rendering.*/
-        bool setDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
+        bool getDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
 
-        /** Set the number of frames that an ImpostorSprite's is kept whilst not being beyond,
+        /** Set the number of frames that an ImpostorSprite is kept whilst not being beyond,
           * before being recycled.*/
         void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
 
-        /** Get the number of frames that an ImpostorSprite's is kept whilst not being beyond,
+        /** Get the number of frames that an ImpostorSprite is kept whilst not being beyond,
           * before being recycled.*/
         int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
 

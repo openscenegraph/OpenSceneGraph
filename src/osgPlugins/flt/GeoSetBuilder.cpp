@@ -1,5 +1,9 @@
 // GeoSetBuilder.cpp
 
+// Modify DynGeoSet::addToGeometry to generate texture coordinates for texture unit 1 
+// that is used to detail texture
+// Julian Ortiz, June 18th 2003.
+
 #if defined(WIN32) && !defined(__CYGWIN__)
 #pragma warning( disable : 4786 )
 #endif
@@ -9,6 +13,7 @@
 #include "Pool.h"
 #include "opcodes.h"
 #include "GeoSetBuilder.h"
+#include "AttrData.h"
 
 #include <osg/Object>
 #include <osg/LOD>
@@ -159,6 +164,24 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
         {
             texcoords = new osg::Vec2Array(_tcoordList.begin(),_tcoordList.end());
             geom->setTexCoordArray(0,texcoords);
+
+            // If we got detail texture defined for this geometry, we need to setup new texcoord 
+            // related on base texture ones. Using txDetail_m and  txDetail_n values we read in 
+            // ReaderWriterATTR and we got in AttrData class.
+            // 
+            // We apply those values multiplying original texcoord.x by txDetail_m and texcoord.y 
+            // by txDetail_n to get detail texture repeated.
+            //
+            // Julian Ortiz, June 18th 2003.
+
+            if (_attrdata != NULL ) {                
+                osg::Vec2Array *texcoords2 = new osg::Vec2Array(_tcoordList.begin(),_tcoordList.end());
+                for(unsigned int index=0;index<texcoords2->size();index++) {
+                    (*texcoords2)[index][0]=(*texcoords)[index][0]*_attrdata->txDetail_m;
+                    (*texcoords2)[index][1]=(*texcoords)[index][1]*_attrdata->txDetail_n;
+                }                
+                geom->setTexCoordArray(1,texcoords2);
+            }                                                    
         }
     }
     
@@ -243,13 +266,13 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
         itr!=_dynGeoSetList.end();
         ++itr)
     {
-	DynGeoSet* dgset = itr->get();
-	osg::Geometry* geom = dgset->getGeometry();
+    DynGeoSet* dgset = itr->get();
+    osg::Geometry* geom = dgset->getGeometry();
         geode->addDrawable(geom);
         dgset->addToGeometry(geom);
 
-	osg::StateSet* stateset = dgset->getStateSet();
-	assert( stateset == geom->getStateSet() );
+    osg::StateSet* stateset = dgset->getStateSet();
+    assert( stateset == geom->getStateSet() );
     }
 
     osgUtil::Tesselator tesselator;

@@ -256,21 +256,21 @@ bool PrimNodeRecord::readLocalData(Input& fr)
     while (pRec && pRec->isAncillaryRecord())
     {
         addChild(pRec);
-	if ( pRec->getOpcode() == 52 ) {
-	    CERR << "Multitexture added to " << this << "(opcode: "
-		<< getOpcode() << ")\n";
-	}
-	if ( pRec->getOpcode() == 53 ) {
-	    CERR << "UV list added to " << this << "(opcode: "
-		<< getOpcode() << ")\n";
-	    UVListRecord* mtr =
-		dynamic_cast<UVListRecord*>(pRec);
-	    assert( mtr );
-	    assert( mtr->isAncillaryRecord() );
-	    SUVList* mt =
-		reinterpret_cast<SUVList*>(mtr->getData());
-	    assert( mt );
-	}
+    if ( pRec->getOpcode() == 52 ) {
+        CERR << "Multitexture added to " << this << "(opcode: "
+        << getOpcode() << ")\n";
+    }
+    if ( pRec->getOpcode() == 53 ) {
+        CERR << "UV list added to " << this << "(opcode: "
+        << getOpcode() << ")\n";
+        UVListRecord* mtr =
+        dynamic_cast<UVListRecord*>(pRec);
+        assert( mtr );
+        assert( mtr->isAncillaryRecord() );
+        SUVList* mt =
+        reinterpret_cast<SUVList*>(mtr->getData());
+        assert( mt );
+    }
         pRec = readRecord(fr);
     }
 

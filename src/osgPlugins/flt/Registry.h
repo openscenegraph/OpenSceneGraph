@@ -1,3 +1,6 @@
+// Modify Registry to store a flt::AttrData object instead of a osg::StateSet
+// Julian Ortiz, June 18th 2003.
+
 #ifndef __FLT_REGISTRY_H
 #define __FLT_REGISTRY_H
 
@@ -10,6 +13,7 @@
 #include <osg/StateSet>
 
 #include "FltFile.h"
+#include "AttrData.h"
  
 #include <map>
 #include <vector>
@@ -47,8 +51,10 @@ class Registry
         void addPrototype(Record* rec);
         Record* getPrototype(const int opcode);
 
-        void addTexture(const std::string& name, osg::StateSet* texture);
-        osg::StateSet* getTexture(const std::string name);
+        //void addTexture(const std::string& name, osg::StateSet* texture);
+        void addTexture(const std::string& name, AttrData* texture);
+        //osg::StateSet* getTexture(const std::string name);
+        AttrData * getTexture(const std::string name);
 
         void addFltFile(const std::string& name, FltFile* file);
         FltFile* getFltFile(const std::string& name);
@@ -60,7 +66,8 @@ class Registry
     private:
 
         typedef std::map<int, osg::ref_ptr<Record> > RecordProtoMap;
-        typedef std::map<std::string, osg::ref_ptr<osg::StateSet> > TextureMap;
+        //typedef std::map<std::string, osg::ref_ptr<osg::StateSet> > TextureMap;
+        typedef std::map<std::string, osg::ref_ptr<AttrData> > TextureMap;
         typedef std::map<std::string, osg::ref_ptr<FltFile> > FltFileMap;
         
         typedef std::vector<osg::ref_ptr<Record> > RecordsForFutureDeleteList;

@@ -1,6 +1,9 @@
 #ifndef __FLT_POOL_H
 #define __FLT_POOL_H
 
+// Modify TexturePool to store a flt::AttrData object instead of a osg::StateSet
+// Julian Ortiz, June 18th 2003.
+
 #include "flt.h"
 
 #include <osg/ref_ptr>
@@ -10,6 +13,8 @@
 #include <osg/StateSet>
 #include <osg/Light>
 #include <osg/Group>
+
+#include "AttrData.h"
 
 #include <string>
 #include <algorithm>
@@ -60,9 +65,9 @@ class TexturePool : public osg::Referenced
 
         TexturePool() {}
 
-        osg::StateSet* getTexture(int nIndex, int fltVersion);
-    	std::string* getTextureName(int nIndex);
-        void addTexture(int nIndex, osg::StateSet* stateset);
+        flt::AttrData* getTexture(int nIndex, int fltVersion);
+        std::string* getTextureName(int nIndex);
+        void addTexture(int nIndex, flt::AttrData* attrdata);
         void addTextureName(int nIndex, const std::string& name);
 
     protected :
@@ -71,7 +76,7 @@ class TexturePool : public osg::Referenced
 
     private :
 
-        typedef std::map<int,osg::ref_ptr<osg::StateSet> > TexturePaletteMap;
+        typedef std::map<int,osg::ref_ptr<flt::AttrData> > TexturePaletteMap;
         TexturePaletteMap _textureMap;
         typedef std::map<int,std::string > TextureNameMap;
         TextureNameMap _textureNameMap;

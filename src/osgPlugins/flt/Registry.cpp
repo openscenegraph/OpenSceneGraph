@@ -1,4 +1,7 @@
 ;
+// Modify Registry to store a flt::AttrData object instead of a osg::StateSet
+// Julian Ortiz, June 18th 2003.
+
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Notify>
@@ -9,6 +12,7 @@
 #include "Record.h"
 #include "Input.h"
 #include "FltFile.h"
+#include "AttrData.h"
 #include "Registry.h"
 
 using namespace flt;
@@ -37,7 +41,7 @@ Record* Registry::getPrototype(const int opcode)
         return (*itr).second.get();
     }
     osg::notify( osg::INFO )
-	<< "flt::Registry::getPrototype: Unkown opcode: " << opcode << "\n";
+    << "flt::Registry::getPrototype: Unkown opcode: " << opcode << "\n";
 
     return NULL;
 
@@ -47,14 +51,14 @@ Record* Registry::getPrototype(const int opcode)
 ///////////////////////////////////////////////////////////////////
 
 
-void Registry::addTexture(const std::string& name, osg::StateSet* texture)
+void Registry::addTexture(const std::string& name, AttrData* texture)
 {
     if (texture == NULL) return;
     _textureMap[name] = texture;
 }
 
 
-osg::StateSet* Registry::getTexture(const std::string name)
+AttrData* Registry::getTexture(const std::string name)
 {
     TextureMap::iterator itr = _textureMap.find(name);
     if (itr != _textureMap.end())

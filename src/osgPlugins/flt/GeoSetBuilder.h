@@ -1,6 +1,9 @@
 #ifndef __FLT_GEOSETBUILDER_H
 #define __FLT_GEOSETBUILDER_H
 
+// Added DynGeoSet::setDetailTextureAttrData that is used to store texture Attributes
+// Julian Ortiz, June 18th 2003.
+
 #include <osg/ref_ptr>
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -9,6 +12,8 @@
 #include <osg/Geode>
 #include <osg/Material>
 #include <osg/StateSet>
+
+#include "AttrData.h"
 
 #include <map>
 #include <vector>
@@ -97,9 +102,9 @@ class DynGeoSet : public osg::Referenced
         bool operator != (const DynGeoSet& rhs) const { return compare(rhs)!=0; }
 
         void setStateSet(osg::StateSet* stateset) {
-	    _stateset = stateset;
-	    _geom->setStateSet( stateset );
-	}
+        _stateset = stateset;
+        _geom->setStateSet( stateset );
+    }
         osg::StateSet* getStateSet() { return _stateset.get(); }
         const osg::StateSet* getStateSet() const { return _stateset.get(); }
         
@@ -130,8 +135,9 @@ class DynGeoSet : public osg::Referenced
         inline const int normalListSize() const { return _normalList.size(); }
         inline const int colorListSize() const { return _colorList.size(); }
         inline const int tcoordListSize() const { return _tcoordList.size(); }
+    inline void setDetailTextureAttrData(AttrData *attrdata) {_attrdata=attrdata; }
 
-	osg::Geometry* getGeometry() {
+    osg::Geometry* getGeometry() {
             CERR  << "_geom.get(): " << _geom.get()
                 << "; referenceCount: " << _geom.get()->referenceCount()<<"\n";
             return _geom.get();
@@ -163,6 +169,8 @@ class DynGeoSet : public osg::Referenced
 
         osg::Geometry::AttributeBinding _texture_binding;
         TcoordList                  _tcoordList;
+
+        AttrData                    *_attrdata;
 };
 
 

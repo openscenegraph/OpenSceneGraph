@@ -103,12 +103,21 @@ class SG_EXPORT Geode : public Node
         /** compile OpenGL Display List for each drawable.*/
         void compileDrawables(State& state);
         
+        /** return the Geode's bounding box, which the union of all the
+          * bounding boxes of the geode's drawables.*/
+        inline const BoundingBox& getBoundingBox() const
+        {
+            if(!_bsphere_computed) computeBound();
+            return _bbox;
+        }
+        
     protected:
 
         virtual ~Geode();
 
         virtual bool computeBound() const;
 
+        mutable osg::BoundingBox        _bbox;
         DrawableList                    _drawables;
 
 };

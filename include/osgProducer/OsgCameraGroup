@@ -105,11 +105,15 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         const osg::StateSet *getGlobalStateSet() const { return _global_stateset.get(); }
 
 
-        void setBackgroundColor( const osg::Vec4& backgroundColor );
+#ifdef USE_DEPRECATED_API
+        void setBackgroundColor( const osg::Vec4& backgroundColor) { setClearColor(backgroundColor); }
 
-        osg::Vec4& getBackgroundColor() { return _background_color; }
+        const osg::Vec4& getBackgroundColor() const { return getClearColor(); }
+#endif
 
-        const osg::Vec4& getBackgroundColor() const { return _background_color; }
+        void setClearColor( const osg::Vec4& clearColor );
+
+        const osg::Vec4& getClearColor() const;
 
 
         void setLODScale( float scale );
@@ -184,7 +188,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         osg::ref_ptr<osg::Group>                _scene_decorator;
 
         osg::ref_ptr<osg::StateSet>             _global_stateset;
-        osg::Vec4                               _background_color;
+        osg::Vec4                               _clear_color;
         float                                   _LODScale;
         
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;

@@ -54,6 +54,10 @@ void OsgSceneHandler::cullImplementation(Producer::Camera &cam)
 
     _sceneView->setViewport( x, y, w, h );
 
+    osg::Vec4 clear_color;
+    cam.getClearColor(clear_color[0],clear_color[1],clear_color[2],clear_color[3]);
+    _sceneView->setClearColor(clear_color);
+
     _sceneView->cull();
 }
 

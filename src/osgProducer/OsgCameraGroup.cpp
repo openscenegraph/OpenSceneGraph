@@ -212,7 +212,7 @@ void OsgCameraGroup::_init()
 
     _scene_data = NULL;
     _global_stateset = NULL;
-    _background_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
+    _clear_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
     _LODScale = 1.0f;
 
     _fusionDistanceMode = osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE;
@@ -295,7 +295,6 @@ void OsgCameraGroup::setUpSceneViewsWithData()
         
         sv->setFrameStamp( _frameStamp.get() );
         sv->setGlobalStateSet( _global_stateset.get() );
-        sv->setClearColor( _background_color );
         sv->setLODScale( _LODScale );
         sv->setFusionDistance( _fusionDistanceMode, _fusionDistanceValue );
     }
@@ -315,10 +314,19 @@ void OsgCameraGroup::setGlobalStateSet( osg::StateSet *sset )
     setUpSceneViewsWithData();
 }
 
-void OsgCameraGroup::setBackgroundColor( const osg::Vec4& backgroundColor ) 
+void OsgCameraGroup::setClearColor( const osg::Vec4& clearColor ) 
 {
-    _background_color = backgroundColor;
-    setUpSceneViewsWithData();
+    _clear_color = clearColor;
+    for(unsigned int i=0;i<getNumberOfCameras();++i)
+    {
+        Producer::Camera *cam = _cfg->getCamera(i);
+        cam->setClearColor(_clear_color[0],_clear_color[1],_clear_color[2],_clear_color[3]);
+    }
+}
+
+const osg::Vec4& OsgCameraGroup::getClearColor() const
+{
+    return _clear_color;
 }
 
 void OsgCameraGroup::setLODScale( float scale )
@@ -423,6 +431,8 @@ bool OsgCameraGroup::realize()
     {
         Producer::Camera *cam = _cfg->getCamera(i);
         Producer::RenderSurface* rs = cam->getRenderSurface();
+        
+        cam->setClearColor(_clear_color[0],_clear_color[1],_clear_color[2],_clear_color[3]);
         
         // create the scene handler.
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());

@@ -84,6 +84,7 @@
 #include "LightSourcePaletteRecord.h"
 #include "AttrData.h"
 #include "BSPRecord.h"
+#include "FindExternalModelVisitor.h"
 
 static int dprint = 0 ;
 #define DPRINT if(dprint)fprintf
@@ -2448,7 +2449,47 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
         pFile->setDesiredUnits( rec->getFltFile()->getDesiredUnits() );
         external = pFile->convert();
         if (external)
-            visitAncillary(osgParent, *external, rec)->addChild(external);
+        {
+          osg::Group *tempParent = visitAncillary(osgParent, *external, rec);
+
+          // In the situation in which only one model is required from an
+          // externally referenced file, it would be more efficient to only
+          // convert that one model from the FltFile records.  (This would be
+          // the preferred method if this loader is rewritten.)  However, 
+          // since this situation is fairly rare and it is currently much 
+          // more straight forward to work with the OSG structure, we will 
+          // just pull out the part of the OSG tree that is needed at this 
+          // point.
+
+          // If a model name was specified, find and add the node with
+          // that name.  Otherwise, add the entire tree.
+
+          std::string modelName = rec->getModelName();
+          if ( modelName.empty() )
+          {
+            // Add the entire externally referenced file
+            tempParent->addChild(external);
+          }
+          else
+          {
+            // Find the specified model
+            FindExternalModelVisitor findExternalModelVisitor;
+            findExternalModelVisitor.setModelName( modelName );
+            external->accept( findExternalModelVisitor );
+            osg::Node *model = findExternalModelVisitor.getModel();
+            if (model)
+            {
+              tempParent->addChild(model);
+            }
+            else
+            {
+              osg::notify(osg::WARN) << "In ConvertFromFLT::visitExternal,"
+                        << " the requested model " << modelName 
+                        << " was not found in external file " 
+                        << rec->getFilename() << std::endl;
+            }
+          }
+        }
     }
 
     return external;

@@ -60,6 +60,5 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
     EnumLabel(osg::StateAttribute::TEXTURE_SHADER);
     EnumLabel(osg::StateAttribute::VERTEX_PROGRAM);
     EnumLabel(osg::StateAttribute::REGISTER_COMBINERS);
-    EnumLabel(osg::StateAttribute::PROGRAM);
     EnumLabel(osg::StateAttribute::PROGRAM_PARSER);
 END_REFLECTOR

@@ -55,8 +55,8 @@ Shader::Shader(Type type, const char* sourceText) :
     setShaderSource( sourceText );
 }
 
-Shader::Shader(const Shader& rhs, const osg::CopyOp& /*copyop*/):
-    Referenced( rhs ),
+Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
+    Object( rhs, copyop ),
     _type(rhs._type)
 {
     /*TODO*/

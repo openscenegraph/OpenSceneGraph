@@ -18,7 +18,10 @@
 #include <osg/ShadowVolumeOccluder>
 #include <osg/Referenced>
 
+
 namespace osg {
+
+#define COMPILE_WITH_SHADOW_OCCLUSION_CULLING
 
 /** A CullingSet class which contains a frustum and a list of occluders. */
 class SG_EXPORT CullingSet : public Referenced
@@ -222,7 +225,7 @@ class SG_EXPORT CullingSet : public Referenced
             {
                 if (((bs.center()*_pixelSizeVector)*_smallFeatureCullingPixelSize)>bs.radius()) return true;
             }
-
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
             if (_mask&SHADOW_OCCLUSION_CULLING)
             {
                 // is it in one of the shadow occluder volumes.
@@ -236,7 +239,7 @@ class SG_EXPORT CullingSet : public Referenced
                     }
                 }
             }
-            
+#endif            
             return false;
         }
         
@@ -244,6 +247,7 @@ class SG_EXPORT CullingSet : public Referenced
         {
             _frustum.pushCurrentMask();
             
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
             if (!_occluderList.empty())
             {
                 for(OccluderList::iterator itr=_occluderList.begin();
@@ -253,12 +257,14 @@ class SG_EXPORT CullingSet : public Referenced
                     itr->pushCurrentMask();
                 }
             }
+#endif
         }
         
         inline void popCurrentMask()
         {
             _frustum.popCurrentMask();
 
+#ifdef COMPILE_WITH_SHADOW_OCCLUSION_CULLING
             if (!_occluderList.empty())
             {
                 for(OccluderList::iterator itr=_occluderList.begin();
@@ -268,6 +274,7 @@ class SG_EXPORT CullingSet : public Referenced
                     itr->popCurrentMask();
                 }
             }
+#endif
         }
         
         void disableAndPushOccludersCurrentMask(NodePath& nodePath);

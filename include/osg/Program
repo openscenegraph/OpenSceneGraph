@@ -24,8 +24,6 @@
 #ifndef OSG_PROGRAM
 #define OSG_PROGRAM 1
 
-#include <osg/State>
-#include <osg/StateAttribute>
 #include <osg/buffered_value>
 #include <osg/ref_ptr>
 #include <osg/Vec2>
@@ -40,6 +38,8 @@
 
 
 namespace osg {
+
+class State;
 
 class SG_EXPORT GL2Extensions : public osg::Referenced
 {
@@ -312,7 +312,7 @@ typedef std::vector< ShaderPtr > ShaderList;
   * configuration.
   */
 
-class SG_EXPORT Program : public osg::StateAttribute
+class SG_EXPORT Program : public osg::Object
 {
     public:
         Program();
@@ -320,10 +320,10 @@ class SG_EXPORT Program : public osg::StateAttribute
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Program(const Program& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_StateAttribute(osg, Program, PROGRAM);
+        META_Object(osg, Program);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const osg::StateAttribute& sa) const;
+        virtual int compare(const osg::Program& sa) const;
 
 	/** If enabled, activate our program in the GL pipeline,
 	  * performing any rebuild operations that might be pending. */

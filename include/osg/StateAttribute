@@ -176,10 +176,6 @@ class SG_EXPORT StateAttribute : public Object
             REGISTER_COMBINERS,
             // osgNVParse
             PROGRAM_PARSER,
-
-	    /// core GLSL
-	    PROGRAM,
-	    UNIFORM,
         };
         
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

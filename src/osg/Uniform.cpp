@@ -424,30 +424,10 @@ Uniform::Uniform( const char* name, int i ) :
 
 
 Uniform::Uniform( const Uniform& gu, const CopyOp& copyop ) :
-    StateAttribute(gu,copyop),
+    Object(gu,copyop),
     _value( gu._value )
 {
 }
-
-
-void Uniform::apply( State& /*state*/ ) const
-{
-    // The definition of apply() for Uniforms is unique among
-    // osg::StateAttributes...
-    // If a Program is not active, then cannot apply the uniform value,
-    // but must wait for a Program to do that itself later when it
-    // does become active.
-    // If a Program is active, then the Uniform may be applied
-    // immediately.
-    // something like...
-    //
-    // Program* program = state->getActiveProgram();
-    // if( program )
-    // {
-    //     program->applyUniform( this );
-    // }
-}
-
 
 
 bool Uniform::set( float f )

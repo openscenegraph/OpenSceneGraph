@@ -29,7 +29,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Matrix>
-#include <osg/StateAttribute>
+#include <osg/GL>
 
 #include <string>
 
@@ -127,9 +127,9 @@ typedef char GLchar;
 namespace osg {
 
 ///////////////////////////////////////////////////////////////////////////
-/** Uniform is an osg::StateAttribute to encapsulate glUniform values */
+/** Uniform encapsulates glUniform values */
 
-class SG_EXPORT Uniform : public StateAttribute
+class SG_EXPORT Uniform : public Object
 {
     public:
 	class Value
@@ -146,7 +146,7 @@ class SG_EXPORT Uniform : public StateAttribute
 		    INT_VEC4 = GL_INT_VEC4,
 		    BOOL = GL_BOOL,
 		    BOOL_VEC2 = GL_BOOL_VEC2,
-		    BOOL_VEC3 = GL_BOOL_VEC3,
+ 		    BOOL_VEC3 = GL_BOOL_VEC3,
 		    BOOL_VEC4 = GL_BOOL_VEC4,
 		    FLOAT_MAT2 = GL_FLOAT_MAT2,
 		    FLOAT_MAT3 = GL_FLOAT_MAT3,
@@ -162,6 +162,7 @@ class SG_EXPORT Uniform : public StateAttribute
 
 		Value( const char* name, Type type );
 		Value( const Value& rhs );
+                
 
 		/** Get the name of glUniform. */
 		const std::string& getName() const { return _name; }
@@ -249,19 +250,21 @@ class SG_EXPORT Uniform : public StateAttribute
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Uniform(const Uniform& gu,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_StateAttribute(osg, Uniform, UNIFORM);
+        META_Object(osg, Uniform);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
-        virtual int compare(const StateAttribute& sa) const
+        virtual int compare(const Uniform& rhs) const
         {
-            // check if the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Parameter macros below.
-            COMPARE_StateAttribute_Types(Uniform,sa)
-
 	    return _value.compare( rhs._value );
         }
 
-        virtual void apply( State& state ) const;
+        bool operator < (const Uniform& rhs) const
+        {
+            if (_value.getName()<rhs._value.getName()) return true;
+            return false;
+        }
+
+        const std::string& getName() const { return _value.getName(); }
 
 	/** assignment */
 	bool set( float f );

@@ -15,18 +15,20 @@
 
 using namespace osgTerrain;
 
-CoordinateSystem::CoordinateSystem()
+CoordinateSystem::CoordinateSystem():
+    _type(GEOGRAPHIC)
 {
 }
 
-CoordinateSystem::CoordinateSystem(const std::string& projectionRef):
-    _projectionRef(projectionRef)
+CoordinateSystem::CoordinateSystem(const std::string& WKT, Type type):
+    _type(type),
+    _WKT(WKT)
 {
 }
 
 CoordinateSystem::CoordinateSystem(const CoordinateSystem& cs,const osg::CopyOp& copyop):
     Object(cs,copyop),
-    _projectionRef(cs._projectionRef)
+    _WKT(cs._WKT)
 {
 }
 

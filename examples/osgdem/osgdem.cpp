@@ -174,6 +174,12 @@ int main( int argc, char **argv )
             currentCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
             std::cout<<"--cs "<<currentCS<<std::endl;
         }
+        else if (arguments.read(pos, "--wtk",def))
+        {
+            argumentRead = true;
+            currentCS = def;
+            std::cout<<"--wtk "<<currentCS<<std::endl;
+        }
         else if (arguments.read(pos, "--identity"))
         {
             geoTransformSet = false;

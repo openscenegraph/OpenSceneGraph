@@ -50,13 +50,19 @@ enum CoordinateSystemType
 CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem* lhs)
 {
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* projection_string = strdup(lhs->getWKT().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
     lhsSR.importFromWkt(&importString);
     
     free(projection_string);
+    
+    std::cout<<"getCoordinateSystemType("<<projection_string<<")"<<std::endl;
+    std::cout<<"    lhsSR.IsGeographic()="<<lhsSR.IsGeographic()<<std::endl;
+    std::cout<<"    lhsSR.IsProjected()="<<lhsSR.IsProjected()<<std::endl;
+    std::cout<<"    lhsSR.IsLocal()="<<lhsSR.IsLocal()<<std::endl;
+    
 
     if (lhsSR.IsGeographic()) return GEOGRAPHIC;
     if (lhsSR.IsProjected()) return PROJECTED;
@@ -67,7 +73,7 @@ CoordinateSystemType getCoordinateSystemType(const osgTerrain::CoordinateSystem*
 double getAngularUnits(const osgTerrain::CoordinateSystem* lhs)
 {
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* projection_string = strdup(lhs->getWKT().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -85,7 +91,7 @@ double getAngularUnits(const osgTerrain::CoordinateSystem* lhs)
 double getLinearUnits(const osgTerrain::CoordinateSystem* lhs)
 {
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* projection_string = strdup(lhs->getWKT().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -120,7 +126,7 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     if (*lhs == *rhs) return true;
     
     // set up LHS SpatialReference
-    char* projection_string = strdup(lhs->getProjectionRef().c_str());
+    char* projection_string = strdup(lhs->getWKT().c_str());
     char* importString = projection_string;
     
     OGRSpatialReference lhsSR;
@@ -129,7 +135,7 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     free(projection_string);
 
     // set up RHS SpatialReference
-    projection_string = strdup(rhs->getProjectionRef().c_str());
+    projection_string = strdup(rhs->getWKT().c_str());
     importString = projection_string;
 
     OGRSpatialReference rhsSR;
@@ -143,8 +149,8 @@ bool areCoordinateSystemEquivilant(const osgTerrain::CoordinateSystem* lhs,const
     int result2 = lhsSR.IsSameGeogCS(&rhsSR);
 
      std::cout<<"areCoordinateSystemEquivilant "<<std::endl
-              <<"LHS = "<<lhs->getProjectionRef()<<std::endl
-              <<"RHS = "<<rhs->getProjectionRef()<<std::endl
+              <<"LHS = "<<lhs->getWKT()<<std::endl
+              <<"RHS = "<<rhs->getWKT()<<std::endl
               <<"result = "<<result<<"  result2 = "<<result2<<std::endl;
 #endif
     return result;
@@ -301,8 +307,8 @@ const DataSet::SpatialProperties& DataSet::SourceData::computeSpatialProperties(
             /*      destination coordinate system.                                  */
             /* -------------------------------------------------------------------- */
             void *hTransformArg = 
-                GDALCreateGenImgProjTransformer( _gdalDataSet,_cs->getProjectionRef().c_str(),
-                                                 NULL, cs->getProjectionRef().c_str(),
+                GDALCreateGenImgProjTransformer( _gdalDataSet,_cs->getWKT().c_str(),
+                                                 NULL, cs->getWKT().c_str(),
                                                  TRUE, 0.0, 1 );
 
             if (!hTransformArg)
@@ -783,8 +789,8 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
 /*      destination coordinate system.                                  */
 /* -------------------------------------------------------------------- */
     void *hTransformArg = 
-         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getProjectionRef().c_str(),
-                                          NULL, cs->getProjectionRef().c_str(),
+         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getWKT().c_str(),
+                                          NULL, cs->getWKT().c_str(),
                                           TRUE, 0.0, 1 );
 
     if (!hTransformArg)
@@ -853,21 +859,21 @@ DataSet::Source* DataSet::Source::doReproject(const std::string& filename, osgTe
 /* -------------------------------------------------------------------- */
 /*      Write out the projection definition.                            */
 /* -------------------------------------------------------------------- */
-    GDALSetProjection( hDstDS, cs->getProjectionRef().c_str() );
+    GDALSetProjection( hDstDS, cs->getWKT().c_str() );
     GDALSetGeoTransform( hDstDS, adfDstGeoTransform );
 
 
 // Set up the transformer along with the new datasets.
 
     hTransformArg = 
-         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getProjectionRef().c_str(),
-                                          hDstDS, cs->getProjectionRef().c_str(),
+         GDALCreateGenImgProjTransformer( _sourceData->_gdalDataSet,_sourceData->_cs->getWKT().c_str(),
+                                          hDstDS, cs->getWKT().c_str(),
                                           TRUE, 0.0, 1 );
 
     GDALTransformerFunc pfnTransformer = GDALGenImgProjTransform;
 
     
-    std::cout<<"Setting projection "<<cs->getProjectionRef()<<std::endl;
+    std::cout<<"Setting projection "<<cs->getWKT()<<std::endl;
 
 /* -------------------------------------------------------------------- */
 /*      Copy the color table, if required.                              */
@@ -1835,6 +1841,9 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 
     color[0].set(255,255,255,255);
 
+    osg::Vec3Array* n = new osg::Vec3Array(numVertices);
+
+
     unsigned int vi=0;
     unsigned int r,c;
     for(r=0;r<numRows;++r)
@@ -1842,13 +1851,24 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 	for(c=0;c<numColumns;++c)
 	{
 	    v[vi] = grid->getVertex(c,r);
+
+            if (n) (*n)[vi] = grid->getNormal(c,r);
+            
 	    t[vi].x() = (float)(c)/(float)(numColumns);
 	    t[vi].y() = (float)(r)/(float)(numRows);
+            
             ++vi;
 	}
     }
 
     geometry->setVertexArray(&v);
+
+    if (n)
+    {
+        geometry->setNormalArray(n);
+        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    }
+
     geometry->setColorArray(&color);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     geometry->setTexCoordArray(0,&t);
@@ -1905,6 +1925,7 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
+            if (n) (*n)[vi] = (*n)[r*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         // create right skirt vertices
@@ -1914,6 +1935,7 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
+            if (n) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         // create top skirt vertices
@@ -1923,6 +1945,7 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
+            if (n) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         // create left skirt vertices
@@ -1932,6 +1955,7 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 	    skirtDrawElements[ei++] = (r)*numColumns+c;
 	    skirtDrawElements[ei++] = vi;
             v[vi] = v[(r)*numColumns+c]+skirtVector;
+            if (n) (*n)[vi] = (*n)[(r)*numColumns+c];
             t[vi++] = t[(r)*numColumns+c];
         }
         skirtDrawElements[ei++] = 0;
@@ -2623,7 +2647,7 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
                 if (sd->_cs.valid())
                 {
                     _coordinateSystem = sd->_cs;
-                    std::cout<<"Setting coordinate system to "<<_coordinateSystem->getProjectionRef()<<std::endl;
+                    std::cout<<"Setting coordinate system to "<<_coordinateSystem->getWKT()<<std::endl;
                     break;
                 }
             }

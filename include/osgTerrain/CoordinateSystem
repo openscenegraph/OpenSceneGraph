@@ -28,9 +28,16 @@ class CoordinateSystem : public osg::Object
 {
     public:
 
+        enum Type
+        {
+            GEOCENTRIC,
+            GEOGRAPHIC,
+            PROJECTED
+        };
+        
         CoordinateSystem();
 
-        CoordinateSystem(const std::string& projectionRef);
+        CoordinateSystem(const std::string& WTK, Type type=GEOCENTRIC);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         CoordinateSystem(const CoordinateSystem&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -40,20 +47,25 @@ class CoordinateSystem : public osg::Object
         inline bool operator == (const CoordinateSystem& cs) const
         {
             if (this == &cs) return true;
-            if (_projectionRef == cs._projectionRef) return true;
-            return false;
+            if (_type!=cs._type) return false;
+            if (_WKT != cs._WKT) return false;
+            return true;
         }
         
         inline bool operator != (const CoordinateSystem& cs) const
         {
             return !(*this==cs);
         }
-
-        /** Set the CoordinateSystem projection reference string, should be stored in OpenGIS Well Know Text form.*/
-        void setProjectionRef(const std::string& projectionRef) { _projectionRef = projectionRef; }
+                
+        void setType(Type type) { _type = type; }
+        Type getType() const { return _type; }
         
-        /** Get the CoordinateSystem projection reference string.*/
-        const std::string& getProjectionRef() const { return _projectionRef; }
+
+        /** Set the CoordinateSystem reference string, should be stored in OpenGIS Well Know Text form.*/
+        void setWKT(const std::string& WKT) { _WKT = WKT; }
+        
+        /** Get the CoordinateSystem reference string.*/
+        const std::string& getWKT() const { return _WKT; }
         
         
         /** CoordinateTransformation is a helper class for transforming between two different CoodinateSystems.
@@ -86,9 +98,9 @@ class CoordinateSystem : public osg::Object
     protected:
 
         virtual ~CoordinateSystem() {}
-        
-        
-        std::string _projectionRef;
+                
+        Type        _type;
+        std::string _WKT;
 
 };
 

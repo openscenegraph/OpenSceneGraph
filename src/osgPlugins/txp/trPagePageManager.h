@@ -37,7 +37,12 @@
 
 // Dec 2002, Robert Osfield -> comment out now, as we actually do want to delete in the main thread
 // as the deletion of the display and texture object isn't thread safe.
-// #define USE_THREADLOOP_DELETE
+// Jan 2002, Robert osfield -> comment back in now, as I've changed the way the
+// glDelete part is handled so that its much less likely to hit a race condtion,
+// in theory its still not thread safe, but a point swap should be much faster
+// and less likely to encounter a race condition on the static caches of display
+// and texture object lists.
+#define USE_THREADLOOP_DELETE
 
 namespace txp
 {

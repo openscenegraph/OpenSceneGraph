@@ -33,6 +33,25 @@
 
 #include <ogr_spatialref.h>
 
+class GraphicsContext {
+    public:
+        GraphicsContext()
+        {
+            rs = new Producer::RenderSurface;
+            rs->setWindowRectangle(0,0,1,1);
+            rs->useBorder(false);
+            rs->useConfigEventThread(false);
+            rs->realize();
+            std::cout<<"Realized window"<<std::endl;
+        }
+
+        virtual ~GraphicsContext()
+        {
+        }
+        
+    private:
+        Producer::ref_ptr<Producer::RenderSurface> rs;
+};
 
 char *SanitizeSRS( const char *pszUserInput )
 
@@ -93,6 +112,16 @@ int main( int argc, char **argv )
         dataset->setDestinationExtents(osg::BoundingBox(x,y,0.0f,x+w,y+h,0.0f));
     }
     
+    while (arguments.read("--HEIGHT_FIELD"))
+    {
+        dataset->setGeometryType(osgTerrain::DataSet::HEIGHT_FIELD);
+    }
+
+    while (arguments.read("--POLYGONAL"))
+    {
+        dataset->setGeometryType(osgTerrain::DataSet::POLYGONAL);
+    }
+
     while (arguments.read("--LOD"))
     {
         dataset->setDatabaseType(osgTerrain::DataSet::LOD_DATABASE);
@@ -294,11 +323,16 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    dataset->loadSources();
+    // generate the database
+    {
+        GraphicsContext context;
 
-    dataset->createDestination((unsigned int)numLevels);
-    
-    dataset->writeDestination();
+        dataset->loadSources();
+
+        dataset->createDestination((unsigned int)numLevels);
+
+        dataset->writeDestination();        
+    }
 
     return 0;
 }

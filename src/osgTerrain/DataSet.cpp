@@ -476,7 +476,9 @@ void DataSet::SourceData::readImage(DestinationData& destination)
         const float resizeTolerance = 1.1;
         
         bool interpolateSourceImagery = true;
-        if (interpolateSourceImagery && (destWindowWidthRatio>resizeTolerance || destWindowHeightRatio>resizeTolerance))
+        if (interpolateSourceImagery && 
+            (destWindowWidthRatio>resizeTolerance || destWindowHeightRatio>resizeTolerance) &&
+            windowWidth>=2 && windowHeight>=2)
         {
             readWidth = windowWidth;
             readHeight = windowHeight;
@@ -711,9 +713,6 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 delete [] tempImage;  
                 tempImage = destImage;
             }
-
-
-
 
             // now copy into destination image
             unsigned char* sourceRowPtr = tempImage;
@@ -2197,12 +2196,20 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
         bool compressedImageSupported = inlineImageFile || imageExension==".dds";
         bool mipmapImageSupported = inlineImageFile;
-
+        
+        int minumCompressedTextureSize = 64;
+        int minumDXT3CompressedTextureSize = 256;
+        
         if (compressedImageSupported && 
+            image->s()>=minumCompressedTextureSize && image->t()>=minumCompressedTextureSize &&
             _dataSet->getTextureType()==COMPRESSED_TEXTURE &&
             (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA))
         {
-            texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+        
+            if (image->s()>=minumDXT3CompressedTextureSize && image->t()>=minumDXT3CompressedTextureSize)
+                texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
+            else
+                texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT5_COMPRESSION);
 
             osg::ref_ptr<osg::State> state = new osg::State;
 
@@ -2236,7 +2243,20 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
 
             if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
             {
-                my_notify(osg::NOTICE)<<"Non compressed mipmapped not yet supported yet"<<std::endl;        
+
+                osg::ref_ptr<osg::State> state = new osg::State;
+
+                // get OpenGL driver to create texture from image.
+                texture->apply(*state);
+
+                image->readImageFromCurrentTexture(0,true);
+
+                texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
+
+                texture->dirtyTextureObject();
+
+                my_notify(osg::INFO)<<">>>>>>>>>>>>>>>mip mapped image.<<<<<<<<<<<<<<"<<std::endl;
+
             }
         }
     }

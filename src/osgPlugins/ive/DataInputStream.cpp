@@ -252,7 +252,10 @@ osg::UByte4 DataInputStream::readUByte4(){
 
 osg::Quat DataInputStream::readQuat(){
     osg::Quat q;
-    q.set(readFloat(), readFloat(), readFloat(), readFloat());
+    q.x()=readFloat();
+    q.y()=readFloat();
+    q.z()=readFloat();
+    q.w()=readFloat();
 
     if (_verboseOutput) std::cout<<"read/writeQuat() ["<<q<<"]"<<std::endl;
     

@@ -813,14 +813,13 @@ public:
 
         //osg::notify(osg::NOTICE)<<"  pNew="<<pNew<<"\tedge_p1"<<edge_p1.get()<<"\tedge_p2"<<edge_p2.get()<<std::endl;
         
-        // we copy the edge's _triangles to and interate the copy of the triangle set to avoid invalidating iterators.
+        // we copy the edge's _triangles and interate the copy of the triangle set to avoid invalidating iterators.
         TriangleSet trianglesToRemove = edge->_triangles;
         for(TriangleSet::iterator teitr=trianglesToRemove.begin();
             teitr!=trianglesToRemove.end();
             ++teitr)
         {
             Triangle* triangle = const_cast<Triangle*>(teitr->get());
-            //osg::notify(osg::NOTICE)<<"  edge removed T("<<triangle->_p1.get()<<"\t"<<triangle->_p2.get()<<"\t"<<triangle->_p3.get()<<")"<<std::endl;
             removeTriangle(triangle);
         }
 

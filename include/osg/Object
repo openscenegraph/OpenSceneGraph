@@ -7,6 +7,7 @@
 
 #include <osg/Referenced>
 #include <osg/CopyOp>
+#include <osg/ref_ptr>
 
 namespace osg {
 
@@ -77,6 +78,21 @@ class SG_EXPORT Object : public Referenced
         inline const DataVariance getDataVariance() const { return _dataVariance; }
 
 
+        /**
+         * Set user data, data must be subclased from Referenced to allow
+         * automatic memory handling.  If you own data isn't directly 
+         * subclassed from Referenced then create and adapter object
+         * which points to your own objects and handles the memory addressing.
+         */
+        inline void setUserData(Referenced* obj) { _userData = obj; }
+        
+        /** Get user data.*/
+        inline Referenced* getUserData() { return _userData.get(); }
+        
+        /** Get const user data.*/
+        inline const Referenced* getUserData() const { return _userData.get(); }
+
+
     protected:
 
         /** Object destructor. Note, is protected so that Objects cannot
@@ -89,6 +105,8 @@ class SG_EXPORT Object : public Referenced
         virtual ~Object() {}
         
          DataVariance _dataVariance;
+
+        ref_ptr<Referenced> _userData;
 
     private:
 

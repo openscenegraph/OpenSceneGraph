@@ -53,7 +53,7 @@ bool Geode_writeLocalData(const osg::Object& obj, Output& fw)
 
     fw.indent() << "num_drawables " << geode.getNumDrawables() << std::endl;
     
-    for(int i=0;i<geode.getNumDrawables();++i)
+    for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         fw.writeObject(*geode.getDrawable(i));
     }

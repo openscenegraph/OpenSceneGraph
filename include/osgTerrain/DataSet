@@ -865,6 +865,12 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         void loadSources();
         
+        void setMaximumTileImageSize(unsigned int size) { _maximumTileImageSize = size; }
+        unsigned int getMaximumTileImageSize() const { return _maximumTileImageSize; }
+
+        void setMaximumTileTerrainSize(unsigned int size) { _maximumTileTerrainSize = size; }
+        unsigned int getMaximumTileTerrainSize() const { return _maximumTileTerrainSize; }
+
         void setMaximumVisibleDistanceOfTopLevel(float d) { _maximumVisiableDistanceOfTopLevel = d; }
         float getMaximumVisibleDistanceOfTopLevel() const { return _maximumVisiableDistanceOfTopLevel; }
 
@@ -951,7 +957,10 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         void setDecorateGeneratedSceneGraphWithCoordinateSystemNode(bool flag) { _decorateWithCoordinateSystemNode = flag; }
         bool getDecorateGeneratedSceneGraphWithCoordinateSystemNode() const { return _decorateWithCoordinateSystemNode; }
-        
+
+
+        void setCommentString(const std::string& comment) { _comment = comment; }        
+        const std::string& getCommentString() const { return _comment; }        
 
 
         CompositeDestination* createDestinationGraph(CompositeDestination* parent,
@@ -997,6 +1006,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         QuadMap                                     _quadMap;
 
 
+
+        unsigned int                                _maximumTileImageSize;
+        unsigned int                                _maximumTileTerrainSize;
         float                                       _maximumVisiableDistanceOfTopLevel;
 	float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
@@ -1022,6 +1034,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         bool                                        _useLocalTileTransform;
 
         bool                                        _decorateWithCoordinateSystemNode;
+        
+        std::string                                 _comment;
         
         osg::ref_ptr<osg::Node>                     _rootNode;
         

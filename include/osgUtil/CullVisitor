@@ -127,6 +127,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         /** Returns the current CullingMode.*/
         CullingMode getCullingMode() const;
         
+        void setSmallFeatureCullingPixelSize(float s) { _smallFeatureCullingPixelSize=s; }
+        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
 
         void pushViewport(osg::Viewport* viewport);
         void popViewport();
@@ -235,8 +237,42 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             return !_modelviewClippingVolumeStack.back().contains(bb,mode);
         }
         
-        void setSmallFeatureCullingPixelSize(float s) { _smallFeatureCullingPixelSize=s; }
-        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
+	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable);
+    	void updateCalculatedNearFar(const osg::Vec3& pos);
+		
+        /** Add a drawable to current render graph.*/
+        inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
+        {
+            if (_currentRenderGraph->leaves_empty())
+            {
+                // this is first leaf to be added to RenderGraph
+                // and therefore should not already know to current render bin,
+                // so need to add it.
+                _currentRenderBin->addRenderGraph(_currentRenderGraph);
+            }
+            //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix));
+    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
+        }
+
+        /** Add a drawable and depth to current render graph.*/
+        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth)
+        {
+            if (_currentRenderGraph->leaves_empty())
+            {
+                // this is first leaf to be added to RenderGraph
+                // and therefore should not already know to current render bin,
+                // so need to add it.
+                _currentRenderBin->addRenderGraph(_currentRenderGraph);
+            }
+            //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
+    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
+        }
+
+        /** Add an attribute which is positioned related to the modelview matrix.*/
+        inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
+        {
+            _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
+        }
 
     protected:
 
@@ -275,42 +311,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
 
 
 	
-	void updateCalculatedNearFar(const osg::Matrix& matrix,const osg::Drawable& drawable);
-    	void updateCalculatedNearFar(const osg::Vec3& pos);
-		
-        /** Add a drawable to current render graph.*/
-        inline void addDrawable(osg::Drawable* drawable,osg::Matrix* matrix)
-        {
-            if (_currentRenderGraph->leaves_empty())
-            {
-                // this is first leaf to be added to RenderGraph
-                // and therefore should not already know to current render bin,
-                // so need to add it.
-                _currentRenderBin->addRenderGraph(_currentRenderGraph);
-            }
-            //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix));
-    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix));
-        }
-
-        /** Add a drawable and depth to current render graph.*/
-        inline void addDrawableAndDepth(osg::Drawable* drawable,osg::Matrix* matrix,const float depth)
-        {
-            if (_currentRenderGraph->leaves_empty())
-            {
-                // this is first leaf to be added to RenderGraph
-                // and therefore should not already know to current render bin,
-                // so need to add it.
-                _currentRenderBin->addRenderGraph(_currentRenderGraph);
-            }
-            //_currentRenderGraph->addLeaf(new RenderLeaf(drawable,matrix,depth));
-    	    _currentRenderGraph->addLeaf(createOrReuseRenderLeaf(drawable,_projectionStack.back().get(),matrix,depth));
-        }
-
-        /** Add an attribute which is positioned related to the modelview matrix.*/
-        inline void addPositionedAttribute(osg::Matrix* matrix,const osg::StateAttribute* attr)
-        {
-            _currentRenderBin->_stage->addPositionedAttribute(matrix,attr);
-        }
 
 
         /** create an impostor sprite by setting up a pre-rendering stage

@@ -47,7 +47,8 @@ void Texture::flushDeletedTextureObjects(unsigned int contextID)
     if (citr!=s_deletedTextureObjectCache.end())
     {
         TextureObjectVector textureObjectSet;
-
+        textureObjectSet.reserve(1000);
+        
         // this swap will transfer the content of and empty citr->second
         // in one quick pointer change.
         textureObjectSet.swap(citr->second);

@@ -268,7 +268,7 @@ class SG_EXPORT State : public Referenced
                 _vertexArray._enabled = true;
                 glEnableClientState(GL_VERTEX_ARRAY);
             }
-            if (_vertexArray._pointer!=ptr || _vertexArray._dirty)
+            //if (_vertexArray._pointer!=ptr || _vertexArray._dirty)
             {
                 _vertexArray._pointer=ptr;
                 glVertexPointer( size, type, stride, ptr );
@@ -304,7 +304,7 @@ class SG_EXPORT State : public Referenced
                 _normalArray._enabled = true;
                 glEnableClientState(GL_NORMAL_ARRAY);
             }
-            if (_normalArray._pointer!=ptr || _normalArray._dirty)
+            //if (_normalArray._pointer!=ptr || _normalArray._dirty)
             {
                 _normalArray._pointer=ptr;
                 glNormalPointer( type, stride, ptr );
@@ -340,7 +340,7 @@ class SG_EXPORT State : public Referenced
                 _colorArray._enabled = true;
                 glEnableClientState(GL_COLOR_ARRAY);
             }
-            if (_colorArray._pointer!=ptr || _colorArray._dirty)
+            //if (_colorArray._pointer!=ptr || _colorArray._dirty)
             {
                 _colorArray._pointer=ptr;
                 glColorPointer( size, type, stride, ptr );
@@ -367,7 +367,7 @@ class SG_EXPORT State : public Referenced
         }
 
 
-        inline bool isSecondaryColorSupported() const { return _isSecondColorSupportResolved?_isSecondColorSupported:computeSecondaryColorSupported(); }
+        inline bool isSecondaryColorSupported() const { return _isSecondaryColorSupportResolved?_isSecondaryColorSupported:computeSecondaryColorSupported(); }
 
         /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
           * note, only updates values that change.*/
@@ -401,7 +401,7 @@ class SG_EXPORT State : public Referenced
                 _indexArray._enabled = true;
                 glEnableClientState(GL_INDEX_ARRAY);
             }
-            if (_indexArray._pointer!=ptr || _indexArray._dirty)
+            //if (_indexArray._pointer!=ptr || _indexArray._dirty)
             {
                 _indexArray._pointer=ptr;
                 glIndexPointer( type, stride, ptr );
@@ -469,7 +469,7 @@ class SG_EXPORT State : public Referenced
                     eap._enabled = true;
                     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                 }
-                if (eap._pointer!=ptr || eap._dirty)
+                //if (eap._pointer!=ptr || eap._dirty)
                 {
                     glTexCoordPointer( size, type, stride, ptr );
                     eap._pointer = ptr;
@@ -566,6 +566,8 @@ class SG_EXPORT State : public Referenced
             }
         }
 
+        bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
+
 
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to
@@ -617,6 +619,7 @@ class SG_EXPORT State : public Referenced
         bool checkGLErrors(const char* str) const;
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
+
 
 
     protected:
@@ -800,13 +803,18 @@ class SG_EXPORT State : public Referenced
         const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type) const;
 
 
-        mutable bool _isSecondColorSupportResolved;
-        mutable bool _isSecondColorSupported;
+        mutable bool _isSecondaryColorSupportResolved;
+        mutable bool _isSecondaryColorSupported;
         bool computeSecondaryColorSupported() const;
 
         mutable bool _isFogCoordSupportResolved;
         mutable bool _isFogCoordSupported;
         bool computeFogCoordSupported() const;
+
+        mutable bool _isVertexBufferObjectSupportResolved;
+        mutable bool _isVertexBufferObjectSupported;
+        bool computeVertexBufferObjectSupported() const;
+
 };
 
 inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)

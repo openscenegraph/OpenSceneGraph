@@ -1070,7 +1070,18 @@ void Texture::compileGLObjects(State& state) const
 
 void Texture::releaseGLObjects(State* state) const
 {
-    const_cast<Texture*>(this)->dirtyTextureObject();
+    if (!state) const_cast<Texture*>(this)->dirtyTextureObject();
+    else
+    {
+        unsigned int contextID = state->getContextID();
+        if (_textureObjectBuffer[contextID].valid()) 
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getTextureObjectManager()->_mutex);
+            
+            getTextureObjectManager()->_textureObjectListMap[contextID].push_back(_textureObjectBuffer[contextID]);
+            _textureObjectBuffer[contextID] = 0;
+        }
+    }
 }
 
 typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;

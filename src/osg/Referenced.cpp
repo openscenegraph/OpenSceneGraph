@@ -23,7 +23,11 @@ static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 
 void Referenced::setDeleteHandler(DeleteHandler* handler)
 {
-//    s_deleteHandler.reset(handler);
+#if defined(_MSC_VER) && (_MSC_VER <= 1200) // 1200 == VC++ 6.0
+    s_deleteHandler = handler;
+#else
+    s_deleteHandler.reset(handler);
+#endif
 }
 
 DeleteHandler* Referenced::getDeleteHandler()

@@ -91,6 +91,10 @@ echo osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 more memleaks.log
 
+echo osgteapot
+osgteapot
+more memleaks.log
+
 echo osgtext
 osgtext
 more memleaks.log

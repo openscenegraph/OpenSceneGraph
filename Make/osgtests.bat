@@ -64,6 +64,9 @@ osgscribe cow.osg
 echo osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 
+echo osgteapot
+osgteapot
+
 echo osgtext
 osgtext
 

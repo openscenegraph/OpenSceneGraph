@@ -195,11 +195,8 @@ void DatabasePager::run()
     // by keeping deleted texture objects around for 10 seconds after being deleted.
     osg::Texture::getTextureObjectManager()->setExpiryDelay(10.0f);
     
-    while(true)
+    do
     {
-    
-        // test to see if we need to exit.
-        testCancel();
     
         //
         // delete any children if required.
@@ -296,7 +293,7 @@ void DatabasePager::run()
         // go to sleep till our the next time our thread gets scheduled.
         YieldCurrentThread();
 
-    }
+    } while (!testCancel());
     
     cancel();
     join();   

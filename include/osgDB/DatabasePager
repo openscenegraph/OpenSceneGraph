@@ -92,8 +92,26 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Add a request to load a node file to end the the database request list.*/
         virtual void requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const osg::FrameStamp* framestamp);
 
-        /** run does the database paging.*/        
+        /** Run does the database paging.*/        
         virtual void run();
+        
+        /** Cancel the database pager thread.*/        
+        virtual int cancel();
+        
+        /** Clear all internally cached structures.*/
+        void clear();
+        
+        /** Set whether the database pager thread should be paused or not.*/
+        void setDatabasePagerThreadPause(bool pause);
+        
+        /** Get whether the database pager thread should is paused or not.*/
+        bool getDatabasePagerThreadPause() const { return _databasePagerThreadPaused; }
+        
+        /** Set whether new database request calls are accepted or ignored.*/
+        void setAcceptNewDatabaseRequests(bool acceptNewRequests) { _acceptNewRequests = acceptNewRequests; }
+        
+        /** Get whether new database request calls are accepted or ignored.*/
+        bool getAcceptNewDatabaseRequests() const { return _acceptNewRequests; }
         
         /** Set the use of the frame block which, if enabled, blocks the DatabasePager 
           * from executing which the current frame is being drawn.  
@@ -236,10 +254,14 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         inline void updateDatabasePagerThreadBlock()
         {
             _databasePagerThreadBlock->set(
-                !_fileRequestList.empty() || !_childrenToDeleteList.empty());
+                (!_fileRequestList.empty() || !_childrenToDeleteList.empty()) && !_databasePagerThreadPaused);
         }
-        
 
+
+        bool                            _done;
+        bool                            _acceptNewRequests;
+        bool                            _databasePagerThreadPaused;
+    
         bool                            _useFrameBlock;
         osg::ref_ptr<Block>             _frameBlock;
         int                             _frameNumber;

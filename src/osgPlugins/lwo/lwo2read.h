@@ -79,7 +79,7 @@ S0 read_S0(Iter &it)
 {
 	S0 value;
 	while (*it) {
-		value.push_back(*(it++));
+		value += *(it++);
 	}
 	++it;
 	if (value.length() % 2 == 0) ++it;

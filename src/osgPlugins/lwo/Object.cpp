@@ -61,8 +61,8 @@ void Object::build(const iff::Chunk_list &data)
 	clips_.clear();
 	surfaces_.clear();
 	layers_.clear();
-	comment_.clear();
-	description_.clear();
+	comment_ = "";
+	description_ = "";
 
 	osg::notify(osg::INFO) << "INFO: lwosg::Object: scanning clips\n";
 	scan_clips(data);

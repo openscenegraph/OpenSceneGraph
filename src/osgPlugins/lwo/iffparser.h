@@ -91,7 +91,7 @@ namespace iff
 	IP_TMP Chunk *GenericParser<Iter>::parse_chunk(Iter &it, const std::string &context)
 	{
 		std::string tag;
-		for (int i=0; i<4; ++i) tag.push_back(*(it++));
+		for (int i=0; i<4; ++i) tag += *(it++);
 		unsigned int len = ((static_cast<unsigned int>(*(it++)) & 0xFF) << 24) |
 			((static_cast<unsigned int>(*(it++)) & 0xFF) << 16) |
 			((static_cast<unsigned int>(*(it++)) & 0xFF) << 8) |

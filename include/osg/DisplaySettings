@@ -64,6 +64,19 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         /** read the commandline arguments.*/
         void readCommandLine(ArgumentParser& arguments);
         
+        
+        enum DisplayType
+        {
+            MONITOR,
+            POWERWALL,
+            REALITY_CENTER,
+            HEAD_MOUNTED_DISPLAY
+        };
+
+        void setDisplayType(DisplayType type) { _displayType = type; }
+        
+        DisplayType getDisplayType() const { return _displayType; }
+
 
         void setStereo(bool on) { _stereo = on; }
         bool getStereo() const { return _stereo; }
@@ -151,6 +164,7 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
         void copy(const DisplaySettings& vs);
 
+        DisplayType                     _displayType;
         bool                            _stereo;
         StereoMode                      _stereoMode;
         float                           _eyeSeparation;

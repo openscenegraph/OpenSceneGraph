@@ -121,6 +121,38 @@ make_package()
 }
 
 
+intro()
+{
+    echo; echo;
+    echo "============ Building the $OS Distribution Package ==================="
+    echo ""
+    echo "    Please note that this script requires that" 
+    echo 
+    echo "        'make install' "
+    echo 
+    echo "    be previously run.  Please run "
+    echo 
+    echo "        'make distribution' "
+    echo 
+    echo "    with the same arguments (if any) as 'make install'"
+    echo
+    repeat=1
+    while [ $repeat = 1 ] 
+    do 
+      printf "    Continue? (y/n) [y]: "
+      read resp
+      case $resp in  
+       ""|Yes|YES|yes|Y|y) repeat=0 ;; 
+	        n|N|no|NO) return 1; repeat=0;;
+                *)         repeat=1;; 
+      esac
+   done
+
+   return 0
+}
+
+intro || exit 0
+
 OS=$1
 TOPDIR=$2
 INST_LIBS=$3

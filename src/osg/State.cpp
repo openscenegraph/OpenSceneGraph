@@ -563,13 +563,41 @@ void State::haveAppliedAttribute(const StateAttribute::Type type)
     if (itr!=_attributeMap.end())
     {
         AttributeStack& as = itr->second;
-
         as.last_applied_attribute = 0L;
 
         // will need to update this attribute on next apply so set it to changed.
         as.changed = true;
     }
 }
+
+const bool State::getCurrentMode(const StateAttribute::GLMode mode) const
+{
+    ModeMap::const_iterator itr = _modeMap.find(mode);
+    if (itr!=_modeMap.end())
+    {
+        const ModeStack& ms = itr->second;
+        return ms.last_applied_value;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+const StateAttribute* State::getCurrentAttribute(const StateAttribute::Type type) const
+{
+    AttributeMap::const_iterator itr = _attributeMap.find(type);
+    if (itr!=_attributeMap.end())
+    {
+        const AttributeStack& as = itr->second;
+        return as.last_applied_attribute;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
 
 ClippingVolume State::getClippingVolume() const
 {

@@ -10,6 +10,8 @@
 
 namespace osg {
 
+class BoundingBox;
+
 /** General purpose bounding sphere class for enclosing nodes/objects/vertices.
     Used to bound internal osg::Node's in the scene,
     to assist in view frustum culling etc.  Similar in function to BoundingBox
@@ -39,6 +41,10 @@ class SG_EXPORT BoundingSphere
         /** return true if the bounding sphere contains valid values,
             false if the bounding sphere is effectively unset.*/
         inline const bool isValid() const { return _radius>=0.0f; }
+
+        /** return true if the bounding sphere contains valid values,
+            false if the bounding sphere is effectively unset.*/
+        inline const bool valid() const { return _radius>=0.0f; }
 
         /** set bounding sphere.*/ 
         inline void set(const Vec3& center,float radius)
@@ -85,6 +91,17 @@ class SG_EXPORT BoundingSphere
             Unlike update, does not move the center, just increasing the radius.
             If this sphere is empty then move the centrer to v and set radius to 0. */
         void expandRadiusBy(const BoundingSphere& sh);
+
+        /** If incomming box is outwith the sphere expand to ecompass incomming box.
+            calculates the combination of movement of center and radius which
+            minimizes the radius increase. If this boz is empty then
+            move the centrer to v and set radius to 0.*/
+        void expandBy(const BoundingBox& bb);
+
+        /** If incomming box is outwith the sphere expand radius to ecompass incomming box.
+            Unlike update, does not move the center, just increasing the radius.
+            If this sphere is empty then move the centrer to v and set radius to 0. */
+        void expandRadiusBy(const BoundingBox& bb);
 
         /** return true is vertex v is within the sphere.*/
         inline const bool contains(const Vec3& v) const

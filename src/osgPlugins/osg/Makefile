@@ -6,7 +6,7 @@ CXXFILES =\
         Billboard.cpp\
         ClipPlane.cpp\
         ColorMask.cpp\
-        ColorMatrix.cpp\
+        ConvexPlanerOccluder.cpp\
         CullFace.cpp\
         Depth.cpp\
         Drawable.cpp\

@@ -38,6 +38,20 @@ bool TexEnv_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr.matchSequence("color %f %f %f %f"))
+    {
+        osg::Vec4 color;
+        fr[1].getFloat(color[0]);
+        fr[2].getFloat(color[1]);
+        fr[3].getFloat(color[2]);
+        fr[4].getFloat(color[3]);
+    
+        texenv.setColor(color);
+        
+        fr+=5;
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -46,6 +60,18 @@ bool TexEnv_writeLocalData(const Object& obj, Output& fw)
     const TexEnv& texenv = static_cast<const TexEnv&>(obj);
 
     fw.indent() << "mode " << TexEnv_getModeStr(texenv.getMode()) << std::endl;
+    
+    switch(texenv.getMode())
+    {
+        case(TexEnv::DECAL):
+        case(TexEnv::MODULATE):
+        case(TexEnv::REPLACE):
+            break;
+        case(TexEnv::BLEND):
+        default:
+            fw.indent() << "color " << texenv.getColor() << std::endl;
+            break;
+    }
 
     return true;
 }

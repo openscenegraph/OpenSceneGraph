@@ -112,6 +112,8 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
 
 void OsgCameraGroup::_init()
 {
+    _thread_model = ThreadPerCamera;
+
     _scene_data = NULL;
     _global_stateset = NULL;
     _background_color.set( 0.2f, 0.2f, 0.4f, 1.0f );
@@ -230,10 +232,39 @@ void OsgCameraGroup::advance()
     CameraGroup::advance();        
 }
 
-void OsgCameraGroup::realize( ThreadingModel thread_model)
+bool OsgCameraGroup::realize( ThreadingModel thread_model )
 {
-    if( _initialized ) return;
+    if( _realized ) return _realized;
+    _thread_model = thread_model;
+    return realize();
+}
 
+
+// small visitor to check for the existance of particle systems,
+// which currently arn't thread safe, so we would need to disable
+// multithreading of cull and draw.
+class SearchForParticleNodes : public osg::NodeVisitor
+{
+public:
+    SearchForParticleNodes():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _foundParticles(false)        
+    {
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        if (strcmp(node.libraryName(),"osgParticle")==0) _foundParticles = true;
+        if (!_foundParticles) traverse(node);
+    }
+    
+    
+    bool _foundParticles;
+};
+
+bool OsgCameraGroup::realize()
+{
+    if( _initialized ) return _realized;
 
     if (!_ds) _ds = osg::DisplaySettings::instance();
 
@@ -319,9 +350,22 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
     }
 
     setUpSceneViewsWithData();
+    
+    if (getTopMostSceneData() && _thread_model!=Producer::CameraGroup::SingleThreaded)
+    {
+        SearchForParticleNodes sfpn;
+        getTopMostSceneData()->accept(sfpn);
+        if (sfpn._foundParticles)
+        {
+            osg::notify(osg::NOTICE)<<"Warning: disabling multi-threading of cull and draw"<<std::endl;
+            osg::notify(osg::NOTICE)<<"         to avoid threading problems in osgParticle."<<std::endl;
+            _thread_model = Producer::CameraGroup::SingleThreaded;
+        }
+    }
 
-    CameraGroup::realize( thread_model );        
-    _initialized = true;
+    _initialized = CameraGroup::realize();
+    
+    return _initialized;
 }
 
 osg::Node* OsgCameraGroup::getTopMostSceneData()

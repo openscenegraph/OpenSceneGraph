@@ -172,16 +172,23 @@ unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)
     return num;
 }
 
-
-void Viewer::realize( ThreadingModel thread_model)
+bool Viewer::realize( ThreadingModel thread_model )
 {
+    if( _realized ) return _realized;
+    _thread_model = thread_model;
+    return realize();
+}
 
-    OsgCameraGroup::realize( thread_model );
+bool Viewer::realize()
+{
+    if (_realized) return _realized;
+
+    OsgCameraGroup::realize();
     
     // force a sync before we intialize the keyswitch manipulator to home
     // so that Producer has a chance to set up the windows before we do
     // any work on them.
-    //OsgCameraGroup::sync();
+    OsgCameraGroup::sync();
  
     if (_keyswitchManipulator.valid() && _keyswitchManipulator->getCurrentCameraManipulator())
     {
@@ -201,6 +208,7 @@ void Viewer::realize( ThreadingModel thread_model)
         (*p)->setCamera(_old_style_osg_camera.get());
     }
     
+    return _realized;
 }
 
 void Viewer::sync()

@@ -46,6 +46,7 @@ namespace osgParticle
         ParticleProcessor();
         ParticleProcessor(const ParticleProcessor &copy, const osg::CopyOp &copyop = osg::CopyOp::SHALLOW_COPY);
 
+        virtual const char *libraryName() const { return "osgParticle"; }
         virtual const char *className() const { return "ParticleProcessor"; }
         virtual bool isSameKindAs(const osg::Object *obj) const { return dynamic_cast<const ParticleProcessor*>(obj) != 0; }
         virtual void accept(osg::NodeVisitor& nv) { if (nv.validNodeMask(*this)) { nv.pushOntoNodePath(this); nv.apply(*this); nv.popFromNodePath(); } }        

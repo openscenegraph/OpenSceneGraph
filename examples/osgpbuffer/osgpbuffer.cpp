@@ -647,7 +647,7 @@ int main( int argc, char **argv )
     viewer.setSceneData(rootNode);
 
     // create the windows and run the threads.
-    viewer.realize(Producer::CameraGroup::ThreadPerCamera);
+    viewer.realize();
 
     g_pPixelBuffer = new PBuffer(512,512);
     g_pPixelBuffer->initialize();

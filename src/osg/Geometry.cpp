@@ -328,7 +328,7 @@ bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemo
             // asking to delete too many elements, report a warning, and delete to
             // the end of the primitive list.
             notify(WARN)<<"Warning: osg::Geometry::removePrimitiveSet(i,numElementsToRemove) has been asked to remove more elements than are available,"<<std::endl;
-            notify(WARN)<<"         removing on from i to the end of the list of primitive sets."<<endl;
+            notify(WARN)<<"         removing on from i to the end of the list of primitive sets."<<std::endl;
             _primitives.erase(_primitives.begin()+i,_primitives.end());
         }
     

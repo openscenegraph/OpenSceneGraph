@@ -244,7 +244,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
 
 // set up a light source with the shadower and shodower subgraphs below it
 // with the appropriate callbacks set up.
-osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const osg::Vec3& lightPosition,float radius,unsigned int textureUnit=1)
+osg::Group* createShadowedScene(osg::Node* shadower,osg::Node* shadowed,const osg::Vec3& lightPosition,float radius,unsigned int textureUnit)
 {
     osg::LightSource* lightgroup = new osg::LightSource;
 

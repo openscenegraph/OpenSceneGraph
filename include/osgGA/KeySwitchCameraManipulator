@@ -24,17 +24,8 @@ class OSGGA_EXPORT KeySwitchCameraManipulator : public CameraManipulator
 
         void addCameraManipulator(int key, std::string name, CameraManipulator *cm);
 
-        //typedef void (* Callback)(KeySwitchCameraManipulator *);
+        void addNumberedCameraManipulator(CameraManipulator *cm);
 
-//         class Callback: public osgUtil::CallbackList<KeySwitchCameraManipulator>::Callback {
-//             public:
-//                 virtual ~Callback() {};
-//                 virtual void operator()(KeySwitchCameraManipulator *) = 0;
-//         };
-// 
-//         void addCallback(Callback*);
-// 
-//         void removeCallback(Callback*);
 
         // Overrides from CameraManipulator...
 
@@ -63,9 +54,6 @@ class OSGGA_EXPORT KeySwitchCameraManipulator : public CameraManipulator
         KeyManipMap _manips;
 
         osg::ref_ptr<CameraManipulator> _current;
-
-        // Callbacks
-        //CallbackList<KeySwitchCameraManipulator>    _cameraManipChangeCallbacks;
 
 };
 

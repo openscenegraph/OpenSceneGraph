@@ -290,6 +290,11 @@ unsigned int Viewer::registerCameraManipulator(osgGA::CameraManipulator* cm,
     return pos;
 }
 
+void Viewer::setEventHandler(osgGA::GUIEventHandler* handler,unsigned int viewport = 0)
+{
+    ViewportDef &viewp = _viewportList[viewport];
+    viewp._eventHandler = handler;
+}
 
 void Viewer::setFocusedViewport(unsigned int pos)
 {
@@ -337,10 +342,15 @@ float Viewer::app(unsigned int viewport)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptFrame(_frameStamp->getReferenceTime());
 
-    if (_viewportList[viewport]._cameraManipulator->handle(*ea,*this))
+    if (_viewportList[viewport]._eventHandler.valid() && _viewportList[viewport]._eventHandler->handle(*ea,*this))
+    {
+        // event handler handle this call.
+    }
+    else if (_viewportList[viewport]._cameraManipulator->handle(*ea,*this))
     {
         //        osg::notify(osg::INFO) << "Handled update frame"<< std::endl;
     }
+
 
     // do app traversal.
     
@@ -704,6 +714,11 @@ void Viewer::reshape(GLint w, GLint h)
         {
             //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
+        if (itr->_eventHandler.valid() && itr->_eventHandler->handle(*ea,*this))
+        {
+            // event handler handle this call.
+        }
+    
     }
 }
 
@@ -713,7 +728,11 @@ void Viewer::mouseMotion(int x, int y)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptMouseMotion(clockSeconds(),x,y);
 
-    if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
+    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
+    {
+        // event handler handle this call.
+    }
+    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
     {
         //        osg::notify(osg::INFO) << "Handled mouseMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
@@ -737,7 +756,11 @@ void Viewer::mousePassiveMotion(int x, int y)
           setFocusedViewport(focus);
     }
 
-    if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
+    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
+    {
+        // event handler handle this call.
+    }
+    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
     {
         //        osg::notify(osg::INFO) << "Handled mousePassiveMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
@@ -761,7 +784,11 @@ void Viewer::mouse(int button, int state, int x, int y)
           setFocusedViewport(focus);
     }
 
-    if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
+    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
+    {
+        // event handler handle this call.
+    }
+    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
     {
         //        osg::notify(osg::INFO) << "Handled mouse "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
@@ -775,8 +802,14 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptKeyboard(clockSeconds(),key,x,y);
 
-    if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this)) 
-      return;
+    if (_viewportList[_focusedViewport]._eventHandler.valid() && _viewportList[_focusedViewport]._eventHandler->handle(*ea,*this))
+    {
+        return;
+    }
+    else if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
+    {
+        return;
+    }
 
 
 

@@ -13,6 +13,13 @@ void KeySwitchCameraManipulator::addCameraManipulator(int key, std::string name,
     }
 }
 
+void KeySwitchCameraManipulator::addNumberedCameraManipulator(CameraManipulator *cm)
+{
+    if(!cm) return;
+    addCameraManipulator('1'+_manips.size(),"camera",cm);
+}
+
+
 bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
     if(ea.getEventType()==GUIEventAdapter::KEYBOARD){

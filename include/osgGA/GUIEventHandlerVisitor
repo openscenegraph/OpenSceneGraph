@@ -9,6 +9,7 @@ namespace osgGA{
 
 // Some forward declarations
 class GUIActionAdapter;
+class GUIEventHandler;
 class CompositeGUIEventHandler;
 class CameraManipulator;
 class StateSetManipulator;
@@ -26,6 +27,7 @@ class OSGGA_EXPORT GUIEventHandlerVisitor
 {
     public:
 
+        virtual void visit(GUIEventHandler&) {}
         virtual void visit(CompositeGUIEventHandler&);
         virtual void visit(CameraManipulator&) {};
         virtual void visit(StateSetManipulator&) {};

@@ -66,8 +66,14 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
 
 	osg::ref_ptr<osg::AnimationPath> _animationPath;
         
-        double _timeOffset;
-        double _timeScale;
+        double  _timeOffset;
+        double  _timeScale;
+        double  _pauseTime;
+        bool    _isPaused;
+        
+        double  _realStartOfTimedPeriod;
+        double  _animStartOfTimedPeriod;
+        int     _numOfFramesSinceStartOfTimedPeriod;
 
 };
 

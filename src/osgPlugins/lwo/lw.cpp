@@ -35,6 +35,22 @@
 #define ID_POLS MK_ID('P','O','L','S')
 #define ID_COLR MK_ID('C','O','L','R')
 
+#define ID_CTEX MK_ID('C','T','E','X')
+#define ID_DTEX MK_ID('D','T','E','X')
+#define ID_STEX MK_ID('S','T','E','X')
+#define ID_RTEX MK_ID('R','T','E','X')
+#define ID_TTEX MK_ID('T','T','E','X')
+#define ID_BTEX MK_ID('B','T','E','X')
+
+#define ID_TIMG MK_ID('T','I','M','G')
+#define ID_TFLG MK_ID('T','F','L','G')
+#define ID_TSIZ MK_ID('T','S','I','Z')
+#define ID_TCTR MK_ID('T','C','T','R')
+#define ID_TFAL MK_ID('T','F','A','L')
+#define ID_TVEL MK_ID('T','V','E','L')
+#define ID_TWRP MK_ID('T','W','R','P')
+
+
 #define FALSE 0
 #define TRUE  1
 
@@ -132,6 +148,8 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
   }
   g_return_if_fail(material != NULL);
 
+  lwTexture* tex = NULL;
+
   /* read values */
   while (nbytes > 0) {
     gint id = read_long(f);
@@ -144,6 +162,88 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
       material->g = read_char(f) / 255.0f;
       material->b = read_char(f) / 255.0f;
       read_char(f); /* dummy */
+      break;
+    case ID_CTEX:
+    case ID_DTEX:
+    case ID_STEX:
+    case ID_RTEX:
+    case ID_TTEX:
+    case ID_BTEX:
+      len -= read_string(f, name);
+      if (id == ID_CTEX) {
+        tex = &material->ctex;
+      }
+      else
+        tex = NULL;
+      break;
+    case ID_TIMG: {
+      len -= read_string(f, name);
+      if (tex) {
+        /* last component of path */
+        char* slash = strrchr(name, '/');
+        if (!slash)
+          slash = strrchr(name, '\\');
+        if (slash)
+          strcpy(tex->name, slash+1);
+        else
+          strcpy(tex->name, name);
+        //printf("tex name=%s\n", tex->name);
+      }
+    } break;
+    case ID_TFLG:
+      if (tex) {
+        tex->flags = read_short(f);
+      }
+      else
+        fseek(f, len+(len%2), SEEK_CUR);
+      break;
+    case ID_TSIZ:
+      if (tex) {
+        tex->sx = read_float(f);
+        tex->sy = read_float(f);
+        tex->sz = read_float(f);
+      }
+      else
+        fseek(f, len+(len%2), SEEK_CUR);
+      break;
+    case ID_TCTR:
+      if (tex) {
+        tex->cx = read_float(f);
+        tex->cy = read_float(f);
+        tex->cz = read_float(f);
+      }
+      else
+        fseek(f, len+(len%2), SEEK_CUR);
+      break;
+    case ID_TFAL:
+        if (tex) {
+            float vx,vy,vz;
+            vx = read_float(f);
+            vy = read_float(f);
+            vz = read_float(f);
+            //printf("fal %.2f %.2f %.2f\n", vx,vy,vz);
+        }
+        else
+            fseek(f, len+(len%2), SEEK_CUR);
+        break;
+    case ID_TVEL:
+        if (tex) {
+            float vx,vy,vz;
+            vx = read_float(f);
+            vy = read_float(f);
+            vz = read_float(f);
+            //printf("vel %.2f %.2f %.2f\n", vx,vy,vz);
+        }
+        else
+            fseek(f, len+(len%2), SEEK_CUR);
+        break;
+    case ID_TWRP:
+      if (tex) {
+        tex->u_wrap = (lwTextureWrap) read_short(f);
+        tex->v_wrap = (lwTextureWrap) read_short(f);
+      }
+      else
+        fseek(f, len+(len%2), SEEK_CUR);
       break;
     default:
       fseek(f, len+(len%2), SEEK_CUR);
@@ -175,7 +275,7 @@ static void read_pols(FILE *f, int nbytes, lwObject *lwo)
 
     /* allocate space for points */
     face->index = (int*) g_malloc0(sizeof(int)*face->index_cnt);
-    
+ 
     /* read points in */
     for (i=0; i<face->index_cnt; i++) {
       face->index[i] = read_short(f);
@@ -271,7 +371,6 @@ lwObject *lw_object_read(const char *lw_file, std::ostream& output)
 
   /* create new lwObject */
   lw_object = (lwObject*) g_malloc0(sizeof(lwObject));
-
   lw_object->init();
 
   /* read chunks */
@@ -299,6 +398,45 @@ lwObject *lw_object_read(const char *lw_file, std::ostream& output)
   }
 
   fclose(f);
+
+  for (int i = 0; i < lw_object->face_cnt; i++) {
+      int mati = lw_object->face[i].material;
+      if (mati == 0)
+          continue;
+
+      /* fetch material */
+      lwMaterial* mat = &lw_object->material[mati];
+      unsigned int flags = mat->ctex.flags;
+      if (flags == 0)
+          continue;
+
+      /* calculate texture coordinates */
+      lwFace* face = &lw_object->face[i];
+      face->texcoord = (float*) g_malloc0(face->index_cnt * sizeof(float) * 2);
+      for (int j = 0; j < face->index_cnt; j++) {
+          int vi = face->index[j];
+          GLfloat* vtx = &lw_object->vertex[vi*3];
+
+          GLfloat u,v;
+          u = v = 0.0f;
+          if (flags & X_AXIS) {
+              u = (vtx[1] - mat->ctex.cy) / mat->ctex.sy;
+              v = (vtx[2] - mat->ctex.cz) / mat->ctex.sz;
+          }
+          else if (flags & Y_AXIS) {
+              u = (vtx[0] - mat->ctex.cx) / mat->ctex.sx;
+              v = (vtx[2] - mat->ctex.cz) / mat->ctex.sz;
+          }
+          else if (flags & Z_AXIS) {
+              u = (vtx[0] - mat->ctex.cx) / mat->ctex.sx;
+              v = (vtx[1] - mat->ctex.cy) / mat->ctex.sy;
+          }
+          face->texcoord[j*2] = u + 0.5f;
+          face->texcoord[j*2+1] = v + 0.5f;
+          //printf("%.2f %.2f\n", u,v);
+      }
+  }
+
   return lw_object;
 }
 
@@ -314,8 +452,11 @@ void lw_object_free(lwObject *lw_object)
  
   if (lw_object->face) {
     int i;
-    for (i=0; i<lw_object->face_cnt; i++)
+    for (i=0; i<lw_object->face_cnt; i++) {
       g_free(lw_object->face[i].index);
+      if (lw_object->face[i].texcoord)
+          g_free(lw_object->face[i].texcoord);
+    }
     g_free(lw_object->face);
   }
   g_free(lw_object->material);

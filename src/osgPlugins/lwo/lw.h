@@ -26,10 +26,45 @@
 #define LW_MAX_POINTS   200
 #define LW_MAX_NAME_LEN 500
 
+enum lwTextureFlags {
+  X_AXIS = 0x01,
+  Y_AXIS = 0x02,
+  Z_AXIS = 0x04,
+  WORLD_COORDS = 0x10,
+  NEGATIVE_IMAGE = 0x20,
+  PIXEL_BLENDING = 0x40,
+  ANTIALIASING = 0x80
+};
+
+enum lwTextureWrap {
+  BLACK = 0,
+  CLAMP = 1,
+  REPEAT = 2,
+  MIRROR_REPEAT = 3
+};
+
+struct lwTexture
+{
+  char name[LW_MAX_NAME_LEN];
+  unsigned int flags;
+  lwTextureWrap u_wrap, v_wrap;
+  GLfloat sx,sy,sz;
+  GLfloat cx,cy,cz;
+
+  void init() {
+    name[0] = 0;
+    flags = 0;
+    u_wrap = v_wrap = REPEAT;
+    sx = sy = sz = 0.0f;
+    cx = cy = cz = 0.0f;
+  }
+};
+
 struct lwMaterial
 {
   char name[LW_MAX_NAME_LEN];
   GLfloat r,g,b;
+  struct lwTexture ctex;
   
   lwMaterial()
   {
@@ -37,6 +72,7 @@ struct lwMaterial
     g=1.0f;
     b=1.0f;
     name[0] = 0;
+    ctex.init();
   }
 };
 
@@ -49,10 +85,10 @@ struct lwFace
   
   void init()
   {
-    material = 0;         /* material of this face */
-    index_cnt = 0;        /* number of vertices */
-    index = 0;           /* index to vertex */
-    texcoord = 0;      /* u,v texture coordinates */
+    material = 0;       /* material of this face */
+    index_cnt = 0;      /* number of vertices */
+    index = 0;          /* index to vertex */
+    texcoord = 0;       /* u,v texture coordinates */
   }
   
 };
@@ -79,7 +115,6 @@ struct lwObject
     vertex_cnt=0;
     vertex = 0;
   }
-
 };
 
 

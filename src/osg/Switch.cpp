@@ -47,7 +47,17 @@ void Switch::traverse(NodeVisitor& nv)
 
 bool Switch::addChild( Node *child )
 {
-    return addChild(child,_newChildDefaultValue);
+    if (Group::addChild(child))
+    {
+        if (_children.size()>_values.size())
+	{
+	    _values.resize(_children.size(),_newChildDefaultValue);
+	}
+        // note, we don't override any pre-existing _values[childPosition] setting
+        // like in addChild(child,value) below.
+	return true;
+    }
+    return false;
 }
 
 bool Switch::addChild( Node *child, bool value )

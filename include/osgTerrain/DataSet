@@ -697,7 +697,7 @@ class DataSet : public osg::Referenced
             
             osg::Geometry* createDrawablePolygonal();
 
-            void empty();
+            void unrefData();
             
             
             DataSet*                                    _dataSet;
@@ -767,6 +767,9 @@ class DataSet : public osg::Referenced
             std::string getSubTileName();
             osg::Node* createPagedLODScene();
             osg::Node* createSubTileScene();
+
+            void unrefSubTileData();
+            void unrefLocalData();
 
             void setSubTilesGenerated(bool generated) { _subTileGenerated=generated; }
             bool getSubTilesGenerated() const { return _subTileGenerated; }
@@ -912,7 +915,6 @@ class DataSet : public osg::Referenced
         void _readRow(Row& row);
         void _equalizeRow(Row& row);
         void _writeRow(Row& row);
-        void _emptyRow(Row& row);
         
         void init();
 

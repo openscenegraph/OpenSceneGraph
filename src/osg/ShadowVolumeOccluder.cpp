@@ -162,7 +162,7 @@ float computePolytopeVolume(const PointList& front, const PointList& back)
     return volume;
 }
 
-bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool /*createDrawables*/)
+bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanarOccluder& occluder,CullStack& cullStack,bool /*createDrawables*/)
 {
 
 
@@ -239,7 +239,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         _volume = computePolytopeVolume(points,farPoints)/volumeview;
 
         
-        for(ConvexPlanerOccluder::HoleList::const_iterator hitr=occluder.getHoleList().begin();
+        for(ConvexPlanarOccluder::HoleList::const_iterator hitr=occluder.getHoleList().begin();
             hitr!=occluder.getHoleList().end();
             ++hitr)
         {

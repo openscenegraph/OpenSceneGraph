@@ -2,8 +2,8 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-#ifndef OSG_CONVEXPLANERPOLYGON
-#define OSG_CONVEXPLANERPOLYGON 1
+#ifndef OSG_CONVEXPLANARPOLYGON
+#define OSG_CONVEXPLANARPOLYGON 1
 
 #include <osg/Plane>
 
@@ -16,12 +16,12 @@ class BoundingSphere;
 
 /** A class for representing convex clipping volumes made up.
   * When adding planes, their normals should point inwards (into the volume) */
-class SG_EXPORT ConvexPlanerPolygon
+class SG_EXPORT ConvexPlanarPolygon
 {
 
     public:
 
-        ConvexPlanerPolygon();
+        ConvexPlanarPolygon();
                 
         typedef std::vector<osg::Vec3> VertexList;
 

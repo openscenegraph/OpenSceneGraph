@@ -114,7 +114,7 @@ SOURCE=..\..\..\src\osgPlugins\osg\ColorMatrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\ConvexPlanerOccluder.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\ConvexPlanarOccluder.cpp
 # End Source File
 # Begin Source File
 

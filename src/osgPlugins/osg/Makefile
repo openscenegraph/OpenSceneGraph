@@ -7,7 +7,7 @@ CXXFILES =\
         BlendFunc.cpp\
         ClipPlane.cpp\
         ColorMask.cpp\
-        ConvexPlanerOccluder.cpp\
+        ConvexPlanarOccluder.cpp\
         CullFace.cpp\
         Depth.cpp\
         DOFTransform.cpp\

@@ -444,7 +444,7 @@ bool Viewer::computePixelCoords(float x,float y,unsigned int cameraNum,float& pi
     return false;
 }
 
-bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Vec3& near, osg::Vec3& far)
+bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Vec3& near_point, osg::Vec3& far_point)
 {
     if (cameraNum>=getSceneHandlerList().size()) return false;
 
@@ -453,7 +453,7 @@ bool Viewer::computeNearFarPoints(float x,float y,unsigned int cameraNum,osg::Ve
     float pixel_x,pixel_y;
     if (computePixelCoords(x,y,cameraNum,pixel_x,pixel_y))
     {
-        return scenehandler->projectWindowXYIntoObject(pixel_x,pixel_y,near,far);
+        return scenehandler->projectWindowXYIntoObject(pixel_x,pixel_y,near_point,far_point);
     }
     return false;
 

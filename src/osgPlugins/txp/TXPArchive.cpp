@@ -295,7 +295,7 @@ bool TXPArchive::loadMaterials()
 
 bool TXPArchive::loadTexture(int i)
 {
-	if (_textures[i].get()) return true;
+    if (_textures[i].get()) return true;
 
     trpgrImageHelper image_helper(this->GetEndian(),getDir(),materialTable,texTable);
 
@@ -622,6 +622,7 @@ osg::Group* TXPArchive::getTileContent(
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     tileCenter = _parser->getTileCenter();
 
+#if 1
     // Prune
     unsigned int i = 0;
     for (i = 0; i < _gstates.size(); i++) 
@@ -633,7 +634,7 @@ osg::Group* TXPArchive::getTileContent(
     {
         if (_textures[i].valid() && (_textures[i]->referenceCount()==1)) _textures[i] = 0;
     }
-
+#endif
     return tileGroup;
 }
 

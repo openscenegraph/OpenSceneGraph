@@ -108,7 +108,7 @@ osg::Image* ImageReaderWriter::readImage_DynamicSampling(DataReference& dr, floa
 osgDB::ReaderWriter::ReadResult ImageReaderWriter::readNode(const std::string& fileName, const Options*)
 {
     DataReferenceMap::iterator itr = _dataReferences.find(fileName);
-    if (itr==_dataReferences.end()) return ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+    if (itr==_dataReferences.end()) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 
     DataReference& dr = itr->second;
 
@@ -216,7 +216,7 @@ osgDB::ReaderWriter::ReadResult ImageReaderWriter::readNode(const std::string& f
     }
     else
     {
-        return ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+        return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
     }
 
 

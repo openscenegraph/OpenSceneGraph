@@ -3,12 +3,12 @@
 using namespace txp;
 
 TXPPagedLOD::TXPPagedLOD():
-    PagedLOD()
+    osg::PagedLOD()
 {
 }
 
 TXPPagedLOD::TXPPagedLOD(const TXPPagedLOD& plod,const osg::CopyOp& copyop):
-    PagedLOD(plod,copyop),
+    osg::PagedLOD(plod,copyop),
     _tileIdentifier(plod._tileIdentifier)
 {
 }

@@ -17,6 +17,7 @@
 #include <osgUtil/IntersectVisitor>
 
 using namespace osgSim;
+using namespace osg;
 
 VisibilityGroup::VisibilityGroup():
     _volumeIntersectionMask(0xFFFFFFFF),

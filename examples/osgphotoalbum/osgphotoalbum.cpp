@@ -26,6 +26,8 @@
 
 #include "ImageReaderWriter.h"
 
+using namespace osg;
+
 // now register with Registry to instantiate the above reader/writer,
 // declaring in main so that the code to set up PagedLOD can get a handle
 // to the ImageReaderWriter's 

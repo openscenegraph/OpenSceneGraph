@@ -24,6 +24,7 @@
 #include <math.h>
 
 using namespace osgSim;
+using osgSim::ScalarBar;
 
 osg::Node* createScalarBar()
 {

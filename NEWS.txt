@@ -1,13 +1,13 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
-17th August 2004 - OpenSceneGraph-0.9.7-2
+18th August 2004 - OpenSceneGraph-0.9.7-2
 
     Build fixes for VisualStudio6.0.  
     Fixes for osgFX registry support. 
     Fixes to osg::Image::flipVertical() adding support for mipmaps and
     compressed textures.  
-    DDS plugin now can vertically flip images by using "flip" Options string.
+    DDS plugin now can vertically flip images by using "dds_flip" Options string.
     Added support in osgTerrain for reading imagery with color tables. 
     
 

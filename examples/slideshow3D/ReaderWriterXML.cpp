@@ -189,6 +189,12 @@ void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr d
         {
             parseModel(constructor, doc,cur);
         }
+        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            if (key) constructor.setLayerDuration(atof((const char*)key));
+            xmlFree(key);
+        }
         cur = cur->next;
     }
 }
@@ -220,6 +226,12 @@ void ReaderWriterSS3D::parseSlide (SlideShowConstructor& constructor, xmlDocPtr 
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"layer")))
         {
             parseLayer (constructor, doc, cur);
+        }
+        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            if (key) constructor.setSlideDuration(atof((const char*)key));
+            xmlFree(key);
         }
         cur = cur->next;
     }
@@ -288,6 +300,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& fi
         {
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) constructor.setTextColor(mapStringToColor((const char*)key));
+            xmlFree(key);
+        }
+        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"duration")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            if (key) constructor.setPresentationDuration(atof((const char*)key));
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"slide")))

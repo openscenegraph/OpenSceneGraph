@@ -22,6 +22,14 @@ SlideShowConstructor::SlideShowConstructor()
     _backgroundColor.set(0.0f,0.0f,0.0f,1.0f);
     _textColor.set(1.0f,1.0f,1.0f,1.0f);
     _textFont = "fonts/arial.ttf";
+    
+    _titlePositionRatios = osg::Vec3(0.5f,0.0f,0.92f);
+    _titleAlignment = osgText::Text::CENTER_BASE_LINE;
+
+    _titlePositionRatios = osg::Vec3(0.1f,0.0f,0.92f);
+    _titleAlignment = osgText::Text::LEFT_BASE_LINE;
+
+    _presentationDuration = 0.0;
 
 }
 
@@ -50,7 +58,7 @@ void SlideShowConstructor::createPresentation()
 {
     _titleHeight = _slideHeight*0.06f;
     _titleWidth = _slideWidth*0.8f;
-    _titleOrigin = _slideOrigin + osg::Vec3(_slideWidth*0.5f,0.0f,_slideHeight*0.98f-_titleHeight);
+    _titleOrigin = _slideOrigin + osg::Vec3(_titlePositionRatios.x()*_slideWidth,_titlePositionRatios.y()*1.0f,_titlePositionRatios.z()*_slideHeight);
 
     _textHeight = _slideHeight*0.04f;
     _textWidth = _slideWidth*0.8f;
@@ -76,6 +84,11 @@ void SlideShowConstructor::createPresentation()
     hp->eye = slideCenter+osg::Vec3(0.0f,-distanceToHeightRatio*_slideHeight,0.0f);
     hp->center = slideCenter;
     hp->up.set(0.0f,0.0f,1.0f);
+    
+    if (_presentationDuration!=0.0)
+    {
+        _presentationSwitch->setUserData(new Duration(_presentationDuration));
+    }
      
     _root->setUserData(hp);
     
@@ -98,6 +111,14 @@ void SlideShowConstructor::setPresentationName(const std::string& name)
     if (_presentationSwitch.valid()) _presentationSwitch->setName(std::string("Presentation_")+_presentationName);
 }
 
+void SlideShowConstructor::setPresentationDuration(double duration)
+{
+    _presentationDuration = duration;
+    if (_presentationDuration!=0.0 && _presentationSwitch.valid())
+    {
+        _presentationSwitch->setUserData(new Duration(_presentationDuration));
+    }
+}
 
 void SlideShowConstructor::addSlide()
 {
@@ -115,6 +136,17 @@ void SlideShowConstructor::addSlide()
 
     _previousLayer = 0;
     _currentLayer = 0;    
+}
+
+
+void SlideShowConstructor::setSlideDuration(double duration)
+{
+    if (!_slide) addSlide();
+
+    if (_slide.valid())
+    {
+        _slide->setUserData(new Duration(duration));
+    }
 }
 
 void SlideShowConstructor::addLayer()
@@ -162,7 +194,7 @@ void SlideShowConstructor::addLayer()
             text->setCharacterSize(_titleHeight);
             text->setMaximumWidth(_titleWidth);
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
-            text->setAlignment(osgText::Text::CENTER_BASE_LINE);
+            text->setAlignment(_titleAlignment);
             text->setPosition(_titleOrigin);
 
             text->setText(_slideTitle);
@@ -183,6 +215,17 @@ void SlideShowConstructor::addLayer()
     }
 
 }
+
+void SlideShowConstructor::setLayerDuration(double duration)
+{
+    if (!_currentLayer) addLayer();
+
+    if (_currentLayer.valid())
+    {
+        _currentLayer->setUserData(new Duration(duration));
+    }
+}
+
 
 void SlideShowConstructor::addBullet(const std::string& bullet)
 {

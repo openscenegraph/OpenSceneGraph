@@ -573,18 +573,41 @@ osg::Matrixd OsgCameraGroup::getViewMatrix() const
     return matrix;
 }
 
+static osg::Timer_t _last_frame_tick = 0;
+static osg::Timer_t _previous_previous_frame_tick = 0;
+static osg::Timer_t _previous_frame_tick = 0;
+static bool _useStartOfUpdateForFrameTime = true;
+
 void OsgCameraGroup::sync()
 {
     CameraGroup::sync();
 
     // set the frame stamp for the new frame.
-    double time_since_start = _timer.delta_s(_start_tick,_timer.tick());
     _frameStamp->setFrameNumber(_frameNumber++);
-    _frameStamp->setReferenceTime(time_since_start);
+    
+    if (_useStartOfUpdateForFrameTime)
+    {
+        double time_since_start = _timer.delta_s(_start_tick,_timer.tick());
+        _frameStamp->setReferenceTime(time_since_start);
+    }
+    else
+    {   
+        osg::Timer_t endOfNewFrameTick = _last_frame_tick + (_last_frame_tick-_previous_previous_frame_tick);
+        double estimatedSwapTimeForFrame = _timer.delta_s(_start_tick,endOfNewFrameTick);
+
+        _frameStamp->setReferenceTime(estimatedSwapTimeForFrame);
+    }
 }        
 
 void OsgCameraGroup::frame()
 {
+    if (!_useStartOfUpdateForFrameTime)
+    {
+        _previous_previous_frame_tick = _previous_frame_tick;
+        _previous_frame_tick = _last_frame_tick;
+        _last_frame_tick = _timer.tick();
+    }
+    
     osg::Node* node = getTopMostSceneData();
     if (node) node->getBound();
 

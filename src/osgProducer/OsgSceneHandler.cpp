@@ -23,6 +23,8 @@ using namespace osgProducer;
 OsgSceneHandler::OsgSceneHandler( osg::DisplaySettings *ds) :
     _sceneView(new osgUtil::SceneView(ds))
 {
+    _frameStartTick = 0;
+    _previousFrameStartTick = 0;
 }
 
 void OsgSceneHandler::init()
@@ -41,6 +43,7 @@ void OsgSceneHandler::init()
 
 void OsgSceneHandler::clearImplementation(Producer::Camera& /*camera*/)
 {
+    _previousFrameStartTick = _frameStartTick;
     _frameStartTick = osg::Timer::instance()->tick();
 
     osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
@@ -81,19 +84,40 @@ void OsgSceneHandler::drawImplementation(Producer::Camera &)
     osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
     if (dp)
     {
+        double timeForPreviousFrame = osg::Timer::instance()->delta_s(_previousFrameStartTick, _frameStartTick);
         double timeForCullAndDraw = osg::Timer::instance()->delta_s(_frameStartTick, osg::Timer::instance()->tick());
 
-        double targetMaxFrameTime = 0.010; // 10ms.
+        double minimumTargetMaxFrameTime = 0.010; // 10ms.
+        double targetMaxFrameTime = osg::minimum(timeForPreviousFrame, minimumTargetMaxFrameTime);
         
-        double availableTime = targetMaxFrameTime-timeForCullAndDraw;
-        // availableTime = 0.1; //  2.5 ms
+        double maximumAvailableTime = 0.0025; // 2.5ms.
+        double drawCostFactor = 2.0; // must be greater than 1 to account for the extra cost of emptying the OpenGL fifo.
+        double frameFactor = 0.9; // must be less than 1, to compensate for extra time spent in update and swap buffers etc.
+        double timeLeftTillEndOfFrame = targetMaxFrameTime*frameFactor - timeForCullAndDraw*drawCostFactor;
+        double availableTime = timeLeftTillEndOfFrame / drawCostFactor; // account for the fifo when download texture objects.
+
+        static unsigned int _numFramesThatNoTimeAvailable = 0;
+        static unsigned int _maxNumFramesThatNoTimeAvailable = 10;
+
+        if (_numFramesThatNoTimeAvailable>_maxNumFramesThatNoTimeAvailable)
+        {
+            availableTime = 0.0025; // 2.5ms.
+        }
 
         if (availableTime>0.0)
         {
+            _numFramesThatNoTimeAvailable = 0;
+        
+            // osg::notify(osg::NOTICE)<<"Time available = "<<availableTime<<std::endl;
+        
             dp->compileGLObjects(*(getSceneView()->getState()),availableTime);
 
             // flush deleted GL objects.
             getSceneView()->flushDeletedGLObjects(availableTime);
+        }
+        else
+        {
+            ++_numFramesThatNoTimeAvailable;
         }
 
         dp->signalEndFrame();

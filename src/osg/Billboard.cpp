@@ -73,7 +73,7 @@ void Billboard::updateCache()
     else _cachedMode = _mode;
     
     _side = _axis^_normal;
-    _side.normalize();    
+    _side.normalize();   
 }
 
 bool Billboard::addDrawable(Drawable *gset)
@@ -140,8 +140,6 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             float ev_length = ev.length();
             if (ev_length>0.0f)
             {
-
-                matrix.makeIdentity();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
@@ -160,8 +158,6 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             float ev_length = ev.length();
             if (ev_length>0.0f)
             {
-
-                matrix.makeIdentity();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
@@ -181,7 +177,6 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             if (ev_length>0.0f)
             {
 
-                matrix.makeIdentity();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
@@ -195,6 +190,13 @@ bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Ve
             break;
         }
         case(AXIAL_ROT): // need to implement 
+        {
+            float ev_side = ev*_side;
+            float ev_normal = ev*_normal;
+            float rotation = atan2f(ev_side,ev_normal);
+            matrix.makeRotate(rotation,_axis);
+            break;
+        }
         case(POINT_ROT_WORLD):
         case(POINT_ROT_EYE):
         {

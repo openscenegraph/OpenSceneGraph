@@ -1,0 +1,515 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::CullStack</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::CullStack</A></H2></H2><BLOCKQUOTE>A CullStack class which accumulates the current project, modelview matrices and the CullingSet.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CCullStack,MCullStack.html,CCollectOccludersVisitor,MCollectOccludersVisitor.html">
+<param name=before value="M,M^_">
+<param name=after value="M,M">
+<param name=indent value="0,0">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.36.1">CullStack</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.36.2">~CullStack</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int CullingMode void <B><A HREF="#DOC.2.36.4">reset</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.5">setOccluderList</A></B>(const ShadowVolumeOccluderList&amp; svol)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ShadowVolumeOccluderList&amp; <B><A HREF="#DOC.2.36.6">getOccluderList</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const ShadowVolumeOccluderList&amp; <B><A HREF="#DOC.2.36.7">getOccluderList</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.8">pushViewport</A></B>(<!1><A HREF="Viewport.html">osg::Viewport</A>* viewport)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.9">popViewport</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.10">pushProjectionMatrix</A></B>(<!1><A HREF="Matrix.html">osg::Matrix</A>* matrix)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.11">popProjectionMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.12">pushModelViewMatrix</A></B>(<!1><A HREF="Matrix.html">osg::Matrix</A>* matrix)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.13">popModelViewMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.36.14">getFrustumVolume</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.15">setCullingMode</A></B>(CullingMode mode)
+<DD><I>Sets the current CullingMode</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingMode <B><A HREF="#DOC.2.36.16">getCullingMode</A></B>() const 
+<DD><I>Returns the current CullingMode</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.17">setLODBias</A></B>(const float bias)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.36.18">getLODBias</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.19">setSmallFeatureCullingPixelSize</A></B>(float value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.36.20">getSmallFeatureCullingPixelSize</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.36.21">pixelSize</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.9.11">radius</A>) const 
+<DD><I>Compute the pixel of an object at position v, with specified radius</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.36.22">pixelSize</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const 
+<DD><I>Compute the pixel of an bounding sphere</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.36.23">disableAndPushOccludersCurrentMask</A></B>(NodePath&amp; nodePath)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.36.24">popOccludersCurrentMask</A></B>(NodePath&amp; nodePath)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.36.25">isCulled</A></B>(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.36.26">isCulled</A></B>(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.36.27">isCulled</A></B>(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.36.28">isCulled</A></B>(const osg::Node&amp; node)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.36.29">pushCurrentMask</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.36.30">popCurrentMask</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="CullingSet.html">CullingSet</A>&gt; &gt; CullingStack CullingStack&amp; <B><A HREF="#DOC.2.36.31">getClipSpaceCullingStack</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingStack&amp; <B><A HREF="#DOC.2.36.32">getProjectionCullingStack</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingStack&amp; <B><A HREF="#DOC.2.36.33">getModelViewCullingStack</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullingSet.html">CullingSet</A>&amp; <B><A HREF="#DOC.2.36.34">getCurrentCullingSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Viewport.html">osg::Viewport</A>* <B><A HREF="#DOC.2.36.35">getViewport</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.36.36">getModelViewMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.36.37">getProjectionMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A> <B><A HREF="#DOC.2.36.38">getWindowMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; <B><A HREF="#DOC.2.36.39">getMVPW</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <B><A HREF="#DOC.2.36.40">getEyeLocal</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A> <B><A HREF="#DOC.2.36.41">getUpLocal</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A> <B><A HREF="#DOC.2.36.42">getLookVectorLocal</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Viewport.html">Viewport</A>* <B><A HREF="#DOC.2.36.65">getViewport</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.36.66">getModelViewMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.36.67">getProjectionMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.36.68">getWindowMatrix</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.36.69">getMVPW</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A>* <B><A HREF="#DOC.2.36.70">createOrReuseMatrix</A></B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt; OccluderListenum  <B><A HREF="#DOC.2.36.3">CullingModeValues</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingMode <B><A HREF="#DOC.2.36.45">_cullingMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.36.46">_LODBias</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.36.47">_smallFeatureCullingPixelSize</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ShadowVolumeOccluderList <B><A HREF="#DOC.2.36.48">_occluderList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MatrixStack <B><A HREF="#DOC.2.36.50">_modelviewStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MatrixStack <B><A HREF="#DOC.2.36.51">_MVPW_Stack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingStack <B><A HREF="#DOC.2.36.54">_clipspaceCullingStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingStack <B><A HREF="#DOC.2.36.55">_projectionCullingStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CullingStack <B><A HREF="#DOC.2.36.56">_modelviewCullingStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.36.58">_frustumVolume</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.36.59">_bbCornerNear</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.36.60">_bbCornerFar</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Matrix.html">osg::Matrix</A> <B><A HREF="#DOC.2.36.61">_identity</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.36.63">_currentReuseMatrixIndex</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.43">pushCullingSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.44">popCullingSet</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.36.57">computeFrustumVolume</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>* <B><A HREF="#DOC.2.36.64">createOrReuseMatrix</A></B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt; &gt; MatrixStack MatrixStack <B><A HREF="#DOC.2.36.49">_projectionStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Viewport.html">Viewport</A>&gt; &gt; ViewportStack ViewportStack <B><A HREF="#DOC.2.36.52">_viewportStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; EyePointStack EyePointStack <B><A HREF="#DOC.2.36.53">_eyePointStack</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="Matrix.html">osg::Matrix</A>&gt; &gt; MatrixList MatrixList <B><A HREF="#DOC.2.36.62">_reuseMatrixList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>A CullStack class which accumulates the current project, modelview matrices
+and the CullingSet. </BLOCKQUOTE>
+<DL>
+
+<A NAME="CullStack"></A>
+<A NAME="DOC.2.36.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullStack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~CullStack"></A>
+<A NAME="DOC.2.36.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ~CullStack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="CullingModeValues"></A>
+<A NAME="DOC.2.36.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ShadowVolumeOccluder.html">ShadowVolumeOccluder</A>&gt; OccluderListenum  CullingModeValues</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="NO_CULLING"></A>
+<A NAME="DOC.2.36.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="VIEW_FRUSTUM_CULLING"></A>
+<A NAME="DOC.2.36.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VIEW_FRUSTUM_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="NEAR_PLANE_CULLING"></A>
+<A NAME="DOC.2.36.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEAR_PLANE_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FAR_PLANE_CULLING"></A>
+<A NAME="DOC.2.36.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FAR_PLANE_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SMALL_FEATURE_CULLING"></A>
+<A NAME="DOC.2.36.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SMALL_FEATURE_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SHADOW_OCCLUSION_CULLING"></A>
+<A NAME="DOC.2.36.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SHADOW_OCCLUSION_CULLING</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ENABLE_ALL_CULLING"></A>
+<A NAME="DOC.2.36.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ENABLE_ALL_CULLING</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="reset"></A>
+<A NAME="DOC.2.36.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int CullingMode void reset()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setOccluderList"></A>
+<A NAME="DOC.2.36.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setOccluderList(const ShadowVolumeOccluderList&amp; svol)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOccluderList"></A>
+<A NAME="DOC.2.36.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ShadowVolumeOccluderList&amp; getOccluderList()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getOccluderList"></A>
+<A NAME="DOC.2.36.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const ShadowVolumeOccluderList&amp; getOccluderList() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushViewport"></A>
+<A NAME="DOC.2.36.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushViewport(<!1><A HREF="Viewport.html">osg::Viewport</A>* viewport)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popViewport"></A>
+<A NAME="DOC.2.36.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popViewport()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushProjectionMatrix"></A>
+<A NAME="DOC.2.36.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushProjectionMatrix(<!1><A HREF="Matrix.html">osg::Matrix</A>* matrix)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popProjectionMatrix"></A>
+<A NAME="DOC.2.36.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popProjectionMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushModelViewMatrix"></A>
+<A NAME="DOC.2.36.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushModelViewMatrix(<!1><A HREF="Matrix.html">osg::Matrix</A>* matrix)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popModelViewMatrix"></A>
+<A NAME="DOC.2.36.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popModelViewMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFrustumVolume"></A>
+<A NAME="DOC.2.36.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getFrustumVolume()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setCullingMode"></A>
+<A NAME="DOC.2.36.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullingMode(CullingMode mode)</B></TT>
+<DD>Sets the current CullingMode
+<DL><DT><DD></DL><P>
+<A NAME="getCullingMode"></A>
+<A NAME="DOC.2.36.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingMode getCullingMode() const </B></TT>
+<DD>Returns the current CullingMode
+<DL><DT><DD></DL><P>
+<A NAME="setLODBias"></A>
+<A NAME="DOC.2.36.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLODBias(const float bias)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLODBias"></A>
+<A NAME="DOC.2.36.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getLODBias() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSmallFeatureCullingPixelSize"></A>
+<A NAME="DOC.2.36.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSmallFeatureCullingPixelSize(float value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getSmallFeatureCullingPixelSize"></A>
+<A NAME="DOC.2.36.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getSmallFeatureCullingPixelSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pixelSize"></A>
+<A NAME="DOC.2.36.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float pixelSize(const <!1><A HREF="Vec3.html">Vec3</A>&amp; v, float <!1><A HREF="BoundingSphere.html#DOC.2.9.11">radius</A>) const </B></TT>
+<DD>Compute the pixel of an object at position v, with specified radius
+<DL><DT><DD></DL><P>
+<A NAME="pixelSize"></A>
+<A NAME="DOC.2.36.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float pixelSize(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs) const </B></TT>
+<DD>Compute the pixel of an bounding sphere
+<DL><DT><DD></DL><P>
+<A NAME="disableAndPushOccludersCurrentMask"></A>
+<A NAME="DOC.2.36.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void disableAndPushOccludersCurrentMask(NodePath&amp; nodePath)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popOccludersCurrentMask"></A>
+<A NAME="DOC.2.36.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popOccludersCurrentMask(NodePath&amp; nodePath)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled"></A>
+<A NAME="DOC.2.36.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const std::vector&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt;&amp; vertices)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled"></A>
+<A NAME="DOC.2.36.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const <!1><A HREF="BoundingBox.html">BoundingBox</A>&amp; bb)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled"></A>
+<A NAME="DOC.2.36.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const <!1><A HREF="BoundingSphere.html">BoundingSphere</A>&amp; bs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isCulled"></A>
+<A NAME="DOC.2.36.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isCulled(const osg::Node&amp; node)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushCurrentMask"></A>
+<A NAME="DOC.2.36.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void pushCurrentMask()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popCurrentMask"></A>
+<A NAME="DOC.2.36.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void popCurrentMask()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getClipSpaceCullingStack"></A>
+<A NAME="DOC.2.36.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="CullingSet.html">CullingSet</A>&gt; &gt; CullingStack CullingStack&amp; getClipSpaceCullingStack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getProjectionCullingStack"></A>
+<A NAME="DOC.2.36.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingStack&amp; getProjectionCullingStack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getModelViewCullingStack"></A>
+<A NAME="DOC.2.36.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingStack&amp; getModelViewCullingStack()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getCurrentCullingSet"></A>
+<A NAME="DOC.2.36.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullingSet.html">CullingSet</A>&amp; getCurrentCullingSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getViewport"></A>
+<A NAME="DOC.2.36.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Viewport.html">osg::Viewport</A>* getViewport()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getModelViewMatrix"></A>
+<A NAME="DOC.2.36.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; getModelViewMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getProjectionMatrix"></A>
+<A NAME="DOC.2.36.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; getProjectionMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getWindowMatrix"></A>
+<A NAME="DOC.2.36.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A> getWindowMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMVPW"></A>
+<A NAME="DOC.2.36.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; getMVPW()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEyeLocal"></A>
+<A NAME="DOC.2.36.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; getEyeLocal() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getUpLocal"></A>
+<A NAME="DOC.2.36.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A> getUpLocal() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLookVectorLocal"></A>
+<A NAME="DOC.2.36.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A> getLookVectorLocal() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="pushCullingSet"></A>
+<A NAME="DOC.2.36.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void pushCullingSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="popCullingSet"></A>
+<A NAME="DOC.2.36.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void popCullingSet()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_cullingMode"></A>
+<A NAME="DOC.2.36.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingMode _cullingMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_LODBias"></A>
+<A NAME="DOC.2.36.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODBias</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_smallFeatureCullingPixelSize"></A>
+<A NAME="DOC.2.36.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _smallFeatureCullingPixelSize</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_occluderList"></A>
+<A NAME="DOC.2.36.48"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ShadowVolumeOccluderList _occluderList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_projectionStack"></A>
+<A NAME="DOC.2.36.49"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt; &gt; MatrixStack MatrixStack _projectionStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modelviewStack"></A>
+<A NAME="DOC.2.36.50"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MatrixStack _modelviewStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_MVPW_Stack"></A>
+<A NAME="DOC.2.36.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MatrixStack _MVPW_Stack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_viewportStack"></A>
+<A NAME="DOC.2.36.52"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Viewport.html">Viewport</A>&gt; &gt; ViewportStack ViewportStack _viewportStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eyePointStack"></A>
+<A NAME="DOC.2.36.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; EyePointStack EyePointStack _eyePointStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_clipspaceCullingStack"></A>
+<A NAME="DOC.2.36.54"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingStack _clipspaceCullingStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_projectionCullingStack"></A>
+<A NAME="DOC.2.36.55"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingStack _projectionCullingStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_modelviewCullingStack"></A>
+<A NAME="DOC.2.36.56"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CullingStack _modelviewCullingStack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeFrustumVolume"></A>
+<A NAME="DOC.2.36.57"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeFrustumVolume()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frustumVolume"></A>
+<A NAME="DOC.2.36.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _frustumVolume</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bbCornerNear"></A>
+<A NAME="DOC.2.36.59"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _bbCornerNear</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_bbCornerFar"></A>
+<A NAME="DOC.2.36.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _bbCornerFar</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_identity"></A>
+<A NAME="DOC.2.36.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Matrix.html">osg::Matrix</A> _identity</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_reuseMatrixList"></A>
+<A NAME="DOC.2.36.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="Matrix.html">osg::Matrix</A>&gt; &gt; MatrixList MatrixList _reuseMatrixList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_currentReuseMatrixIndex"></A>
+<A NAME="DOC.2.36.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _currentReuseMatrixIndex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createOrReuseMatrix"></A>
+<A NAME="DOC.2.36.64"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">osg::Matrix</A>* createOrReuseMatrix(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getViewport"></A>
+<A NAME="DOC.2.36.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Viewport.html">Viewport</A>* getViewport()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getModelViewMatrix"></A>
+<A NAME="DOC.2.36.66"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; getModelViewMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getProjectionMatrix"></A>
+<A NAME="DOC.2.36.67"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A>&amp; getProjectionMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getWindowMatrix"></A>
+<A NAME="DOC.2.36.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A> getWindowMatrix()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMVPW"></A>
+<A NAME="DOC.2.36.69"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getMVPW()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="createOrReuseMatrix"></A>
+<A NAME="DOC.2.36.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A>* createOrReuseMatrix(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)</B></TT>
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="CollectOccludersVisitor.html">CollectOccludersVisitor</A><BR>
+</DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

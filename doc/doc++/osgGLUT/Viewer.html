@@ -42,11 +42,11 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.7.2.9">run</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.2.10">app</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.2.10">app</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.2.11">cull</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.2.11">cull</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.2.12">draw</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.7.2.12">draw</A></B>(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>long <B><A HREF="#DOC.7.2.13">initClock</A></B>()
 <DT>
@@ -60,103 +60,105 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.18">help</A></B>(std::ostream&amp; fout)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.2.19">registerCameraManipulator</A></B>(osgGA::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.2.19">registerCameraManipulator</A></B>(osgGA::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A> = 0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.20">selectCameraManipulator</A></B>(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.20">selectCameraManipulator</A></B>(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A> = 0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.21">requestRedraw</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.21">setEventHandler</A></B>(osgGA::GUIEventHandler* handler, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A> = 0)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.22">requestContinuousUpdate</A></B>(bool )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.22">requestRedraw</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.23">requestWarpPointer</A></B>(int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.23">requestContinuousUpdate</A></B>(bool )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.24">readCommandLine</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.24">requestWarpPointer</A></B>(int x, int y)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.25">readCommandLine</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
 <DD><I>read the command line string list, removing any matched control sequences</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.25">setDisplaySettings</A></B>(osg::DisplaySettings* ds)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.26">setDisplaySettings</A></B>(osg::DisplaySettings* ds)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::DisplaySettings* <B><A HREF="#DOC.7.2.26">getDisplaySettings</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::DisplaySettings* <B><A HREF="#DOC.7.2.27">getDisplaySettings</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::DisplaySettings* <B><A HREF="#DOC.7.2.27">getDisplaySettings</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::DisplaySettings* <B><A HREF="#DOC.7.2.28">getDisplaySettings</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Viewer.html">Viewer</A>* <B><A HREF="#DOC.7.2.38">s_theViewer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="Viewer.html">Viewer</A>* <B><A HREF="#DOC.7.2.39">s_theViewer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.2.41">_focusedViewport</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.7.2.42">_focusedViewport</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.7.2.42">_saveFileName</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.7.2.43">_saveFileName</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.2.43">_viewFrustumCullingActive</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.2.44">_viewFrustumCullingActive</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.2.44">_smallFeatureCullingActive</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.2.45">_smallFeatureCullingActive</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.45">polymode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.46">polymode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.46">texture</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.47">texture</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.47">backface</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.48">backface</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.48">lighting</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.49">lighting</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.49">flat_shade</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.50">flat_shade</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.7.2.50">frRate</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.7.2.51">frRate</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.51">_printStats</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.52">_printStats</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.2.53">_useDisplayLists</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.7.2.54">_useDisplayLists</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer <B><A HREF="#DOC.7.2.54">_timer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer <B><A HREF="#DOC.7.2.55">_timer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.55">_tickRatePerSecond</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.56">_tickRatePerSecond</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.56">_initialTick</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.57">_initialTick</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.57">_lastFrameTick</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.58">_lastFrameTick</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.58">_frameTick</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.59">_frameTick</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.7.2.61">_frameStamp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.7.2.62">_frameStamp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.7.2.62">_displaySettings</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.7.2.63">_displaySettings</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::ref_ptr&lt;osgGA::CameraManipulator&gt; &gt;virtual  CameraManipList void <B><A HREF="#DOC.7.2.28">clear</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;osg::ref_ptr&lt;osgGA::CameraManipulator&gt; &gt;virtual  CameraManipList void <B><A HREF="#DOC.7.2.29">clear</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.29">display</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.30">display</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.30">reshape</A></B>(GLint w, GLint h)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.31">reshape</A></B>(GLint w, GLint h)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.31">mouseMotion</A></B>(int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.32">mouseMotion</A></B>(int x, int y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.32">mousePassiveMotion</A></B>(int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.33">mousePassiveMotion</A></B>(int x, int y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.33">mouse</A></B>(int button, int state, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.34">mouse</A></B>(int button, int state, int x, int y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.34">keyboard</A></B>(unsigned char key, int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.7.2.35">keyboard</A></B>(unsigned char key, int x, int y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.35">setFocusedViewport</A></B>(unsigned int pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.36">setFocusedViewport</A></B>(unsigned int pos)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.36">mapWindowXYToSceneView</A></B>(int x, int y)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.7.2.37">mapWindowXYToSceneView</A></B>(int x, int y)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.37">showStats</A></B>(const unsigned int i)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.7.2.38">showStats</A></B>(const unsigned int i)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.59">clockTick</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.60">clockTick</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.60">frameTick</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.7.2.61">frameTick</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.7.2.39">ViewportDef</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.7.2.40">ViewportDef</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Viewer.html#DOC.7.2.39">ViewportDef</A>&gt; ViewportList ViewportList <B><A HREF="#DOC.7.2.40">_viewportList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="Viewer.html#DOC.7.2.40">ViewportDef</A>&gt; ViewportList ViewportList <B><A HREF="#DOC.7.2.41">_viewportList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct <B><A HREF="#DOC.7.2.52"></A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct <B><A HREF="#DOC.7.2.53"></A></B>
 </DL></P>
 
 </DL>
@@ -299,15 +301,15 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="app"></A>
 <A NAME="DOC.7.2.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float app(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float app(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cull"></A>
 <A NAME="DOC.7.2.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float cull(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float cull(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
 <A NAME="DOC.7.2.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float draw(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float draw(unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="initClock"></A>
 <A NAME="DOC.7.2.13"></A>
@@ -335,219 +337,227 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="registerCameraManipulator"></A>
 <A NAME="DOC.7.2.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int registerCameraManipulator(osgGA::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int registerCameraManipulator(osgGA::CameraManipulator* cm, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A> = 0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="selectCameraManipulator"></A>
 <A NAME="DOC.7.2.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void selectCameraManipulator(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.39.2">viewport</A> = 0)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void selectCameraManipulator(unsigned int pos, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A> = 0)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setEventHandler"></A>
+<A NAME="DOC.7.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEventHandler(osgGA::GUIEventHandler* handler, unsigned int <!1><A HREF="Viewer.html#DOC.7.2.40.2">viewport</A> = 0)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="requestRedraw"></A>
-<A NAME="DOC.7.2.21"></A>
+<A NAME="DOC.7.2.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestRedraw()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="requestContinuousUpdate"></A>
-<A NAME="DOC.7.2.22"></A>
+<A NAME="DOC.7.2.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestContinuousUpdate(bool )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="requestWarpPointer"></A>
-<A NAME="DOC.7.2.23"></A>
+<A NAME="DOC.7.2.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestWarpPointer(int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readCommandLine"></A>
-<A NAME="DOC.7.2.24"></A>
+<A NAME="DOC.7.2.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readCommandLine(std::vector&lt;std::string&gt;&amp; commandLine)</B></TT>
 <DD>read the command line string list, removing any matched control sequences
 <DL><DT><DD></DL><P>
 <A NAME="setDisplaySettings"></A>
-<A NAME="DOC.7.2.25"></A>
+<A NAME="DOC.7.2.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDisplaySettings(osg::DisplaySettings* ds)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDisplaySettings"></A>
-<A NAME="DOC.7.2.26"></A>
+<A NAME="DOC.7.2.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::DisplaySettings* getDisplaySettings()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDisplaySettings"></A>
-<A NAME="DOC.7.2.27"></A>
+<A NAME="DOC.7.2.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::DisplaySettings* getDisplaySettings() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clear"></A>
-<A NAME="DOC.7.2.28"></A>
+<A NAME="DOC.7.2.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;osg::ref_ptr&lt;osgGA::CameraManipulator&gt; &gt;virtual  CameraManipList void clear()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="display"></A>
-<A NAME="DOC.7.2.29"></A>
+<A NAME="DOC.7.2.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void display()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="reshape"></A>
-<A NAME="DOC.7.2.30"></A>
+<A NAME="DOC.7.2.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void reshape(GLint w, GLint h)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mouseMotion"></A>
-<A NAME="DOC.7.2.31"></A>
+<A NAME="DOC.7.2.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouseMotion(int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mousePassiveMotion"></A>
-<A NAME="DOC.7.2.32"></A>
+<A NAME="DOC.7.2.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mousePassiveMotion(int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mouse"></A>
-<A NAME="DOC.7.2.33"></A>
+<A NAME="DOC.7.2.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void mouse(int button, int state, int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="keyboard"></A>
-<A NAME="DOC.7.2.34"></A>
+<A NAME="DOC.7.2.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void keyboard(unsigned char key, int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setFocusedViewport"></A>
-<A NAME="DOC.7.2.35"></A>
+<A NAME="DOC.7.2.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFocusedViewport(unsigned int pos)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="mapWindowXYToSceneView"></A>
-<A NAME="DOC.7.2.36"></A>
+<A NAME="DOC.7.2.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int mapWindowXYToSceneView(int x, int y)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="showStats"></A>
-<A NAME="DOC.7.2.37"></A>
+<A NAME="DOC.7.2.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void showStats(const unsigned int i)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="s_theViewer"></A>
-<A NAME="DOC.7.2.38"></A>
+<A NAME="DOC.7.2.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="Viewer.html">Viewer</A>* s_theViewer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ViewportDef"></A>
-<A NAME="DOC.7.2.39"></A>
+<A NAME="DOC.7.2.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  ViewportDef</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="sceneView"></A>
-<A NAME="DOC.7.2.39.1"></A>
+<A NAME="DOC.7.2.40.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgUtil::SceneView&gt;  sceneView</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="viewport"></A>
-<A NAME="DOC.7.2.39.2"></A>
+<A NAME="DOC.7.2.40.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float viewport[4]</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cameraManipulator"></A>
-<A NAME="DOC.7.2.39.3"></A>
+<A NAME="DOC.7.2.40.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgGA::CameraManipulator&gt;  _cameraManipulator</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cameraManipList"></A>
-<A NAME="DOC.7.2.39.4"></A>
+<A NAME="DOC.7.2.40.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CameraManipList _cameraManipList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eventHandler"></A>
+<A NAME="DOC.7.2.40.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgGA::GUIEventHandler&gt;  _eventHandler</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="_viewportList"></A>
-<A NAME="DOC.7.2.40"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Viewer.html#DOC.7.2.39">ViewportDef</A>&gt; ViewportList ViewportList _viewportList</B></TT>
+<A NAME="DOC.7.2.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="Viewer.html#DOC.7.2.40">ViewportDef</A>&gt; ViewportList ViewportList _viewportList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_focusedViewport"></A>
-<A NAME="DOC.7.2.41"></A>
+<A NAME="DOC.7.2.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _focusedViewport</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_saveFileName"></A>
-<A NAME="DOC.7.2.42"></A>
+<A NAME="DOC.7.2.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _saveFileName</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_viewFrustumCullingActive"></A>
-<A NAME="DOC.7.2.43"></A>
+<A NAME="DOC.7.2.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _viewFrustumCullingActive</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_smallFeatureCullingActive"></A>
-<A NAME="DOC.7.2.44"></A>
+<A NAME="DOC.7.2.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _smallFeatureCullingActive</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="polymode"></A>
-<A NAME="DOC.7.2.45"></A>
+<A NAME="DOC.7.2.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int polymode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="texture"></A>
-<A NAME="DOC.7.2.46"></A>
+<A NAME="DOC.7.2.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int texture</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="backface"></A>
-<A NAME="DOC.7.2.47"></A>
+<A NAME="DOC.7.2.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int backface</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="lighting"></A>
-<A NAME="DOC.7.2.48"></A>
+<A NAME="DOC.7.2.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int lighting</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="flat_shade"></A>
-<A NAME="DOC.7.2.49"></A>
+<A NAME="DOC.7.2.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int flat_shade</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="frRate"></A>
-<A NAME="DOC.7.2.50"></A>
+<A NAME="DOC.7.2.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float frRate</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_printStats"></A>
-<A NAME="DOC.7.2.51"></A>
+<A NAME="DOC.7.2.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _printStats</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME=""></A>
-<A NAME="DOC.7.2.52"></A>
+<A NAME="DOC.7.2.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct </B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="timeApp"></A>
-<A NAME="DOC.7.2.52.1"></A>
+<A NAME="DOC.7.2.53.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float timeApp</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="timeCull"></A>
-<A NAME="DOC.7.2.52.2"></A>
+<A NAME="DOC.7.2.53.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float  timeCull</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="timeDraw"></A>
-<A NAME="DOC.7.2.52.3"></A>
+<A NAME="DOC.7.2.53.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float   timeDraw</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="timeFrame"></A>
-<A NAME="DOC.7.2.52.4"></A>
+<A NAME="DOC.7.2.53.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float    timeFrame</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="frameend"></A>
-<A NAME="DOC.7.2.52.5"></A>
+<A NAME="DOC.7.2.53.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t frameend</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="_useDisplayLists"></A>
-<A NAME="DOC.7.2.53"></A>
+<A NAME="DOC.7.2.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _useDisplayLists</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timer"></A>
-<A NAME="DOC.7.2.54"></A>
+<A NAME="DOC.7.2.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer _timer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_tickRatePerSecond"></A>
-<A NAME="DOC.7.2.55"></A>
+<A NAME="DOC.7.2.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _tickRatePerSecond</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_initialTick"></A>
-<A NAME="DOC.7.2.56"></A>
+<A NAME="DOC.7.2.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _initialTick</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_lastFrameTick"></A>
-<A NAME="DOC.7.2.57"></A>
+<A NAME="DOC.7.2.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _lastFrameTick</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameTick"></A>
-<A NAME="DOC.7.2.58"></A>
+<A NAME="DOC.7.2.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _frameTick</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clockTick"></A>
-<A NAME="DOC.7.2.59"></A>
+<A NAME="DOC.7.2.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t clockTick()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="frameTick"></A>
-<A NAME="DOC.7.2.60"></A>
+<A NAME="DOC.7.2.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t frameTick()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameStamp"></A>
-<A NAME="DOC.7.2.61"></A>
+<A NAME="DOC.7.2.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::FrameStamp&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_displaySettings"></A>
-<A NAME="DOC.7.2.62"></A>
+<A NAME="DOC.7.2.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::DisplaySettings&gt;  _displaySettings</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -233,19 +233,13 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="GeoSet.html#DOC.2.50.79">AttributeDeleteFunctor</A>* <B><A HREF="#DOC.2.50.82">getAttributeDeleteFunctor</A></B>() const 
 <DD><I>get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.83">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A> &amp;)
-<DD><I>Statistics collection for each drawable- 260901</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.83">accept</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)
+<DD><I>accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   AttributeBitMask <B><A HREF="#DOC.2.50.84">suppportsAttributeOperation</A></B>() const 
-<DD><I>return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.84">accept</A></B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf)
+<DD><I>accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   AttributeBitMask <B><A HREF="#DOC.2.50.85">applyAttributeOperation</A></B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; auf)
-<DD><I>return the attributes successully applied in applyAttributeUpdate</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.86">applyPrimitiveOperation</A></B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; functor)
-<DD><I>apply the internal geometry as basic primitives to a PrimitiveFunctor</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html">Geometry</A>* <B><A HREF="#DOC.2.50.87">convertToGeometry</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Geometry.html">Geometry</A>* <B><A HREF="#DOC.2.50.85">convertToGeometry</A></B>()
 <DD><I>convinience function for converting GeoSet's to equivilant Geometry nodes</I>
 </DL></P>
 
@@ -265,76 +259,76 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html#DOC.2.50.79">AttributeDeleteFunctor</A>&gt;  <B><A HREF="#DOC.2.50.91">_adf</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html#DOC.2.50.79">AttributeDeleteFunctor</A>&gt;  <B><A HREF="#DOC.2.50.89">_adf</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.92">_numprims</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.90">_numprims</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.1">PrimitiveType</A> <B><A HREF="#DOC.2.50.93">_primtype</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.1">PrimitiveType</A> <B><A HREF="#DOC.2.50.91">_primtype</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.94">_needprimlen</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.92">_needprimlen</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.50.95">_oglprimtype</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.50.93">_oglprimtype</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int* <B><A HREF="#DOC.2.50.96">_primLengths</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int* <B><A HREF="#DOC.2.50.94">_primLengths</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable unsigned char <B><A HREF="#DOC.2.50.97">_primlength</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable unsigned char <B><A HREF="#DOC.2.50.95">_primlength</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char <B><A HREF="#DOC.2.50.98">_flat_shaded_skip</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char <B><A HREF="#DOC.2.50.96">_flat_shaded_skip</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.99">_numcoords</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.97">_numcoords</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.50.100">_coords</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.50.98">_coords</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.101">_cindex</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.99">_cindex</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> <B><A HREF="#DOC.2.50.102">_normal_binding</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> <B><A HREF="#DOC.2.50.100">_normal_binding</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.103">_numnormals</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.101">_numnormals</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.50.104">_normals</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A>* <B><A HREF="#DOC.2.50.102">_normals</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.105">_nindex</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.103">_nindex</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> <B><A HREF="#DOC.2.50.106">_color_binding</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> <B><A HREF="#DOC.2.50.104">_color_binding</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.107">_numcolors</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.105">_numcolors</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>* <B><A HREF="#DOC.2.50.108">_colors</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A>* <B><A HREF="#DOC.2.50.106">_colors</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.109">_colindex</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.107">_colindex</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> <B><A HREF="#DOC.2.50.110">_texture_binding</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> <B><A HREF="#DOC.2.50.108">_texture_binding</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.111">_numtcoords</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.50.109">_numtcoords</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.50.112">_tcoords</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec2.html">Vec2</A>* <B><A HREF="#DOC.2.50.110">_tcoords</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.113">_tindex</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.111">_tindex</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.50.114">_iarray</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.2.50.112">_iarray</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.115">_iaindex</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> <B><A HREF="#DOC.2.50.113">_iaindex</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.3">InterleaveArrayType</A> <B><A HREF="#DOC.2.50.116">_iaformat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html#DOC.2.50.3">InterleaveArrayType</A> <B><A HREF="#DOC.2.50.114">_iaformat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.50.117">_ogliaformat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.50.115">_ogliaformat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.118">_fast_path</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.50.116">_fast_path</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html">GeoSet</A>&amp; <B><A HREF="#DOC.2.50.88">operator = </A></B>(const <!1><A HREF="GeoSet.html">GeoSet</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GeoSet.html">GeoSet</A>&amp; <B><A HREF="#DOC.2.50.86">operator = </A></B>(const <!1><A HREF="GeoSet.html">GeoSet</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.89">~GeoSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.87">~GeoSet</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.50.90">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.50.88">computeBound</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.119">set_fast_path</A></B>( void )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.117">set_fast_path</A></B>( void )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.120">draw_fast_path</A></B>( <!1><A HREF="State.html">State</A>&amp; state )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.118">draw_fast_path</A></B>( <!1><A HREF="State.html">State</A>&amp; state )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.121">draw_alternate_path</A></B>( <!1><A HREF="State.html">State</A>&amp; state )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.50.119">draw_alternate_path</A></B>( <!1><A HREF="State.html">State</A>&amp; state )
 </DL></P>
 
 </DL>
@@ -409,7 +403,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  uint AttributeBitMaskenum  <B>AttributeBitMaskValues</B>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>AttributeType</B>
 <DT>
 class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 <DT>
@@ -459,6 +453,12 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> dv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>getDataVariance</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Referenced.html">Referenced</A>* <B>getUserData</B>() const 
 </DL></P>
 
 <P><DL>
@@ -469,6 +469,8 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.87.8">DataVariance</A> <B>_dataVariance</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
 
 </DL>
@@ -1110,165 +1112,155 @@ a specify your own memory deletion operation.
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="GeoSet.html#DOC.2.50.79">AttributeDeleteFunctor</A>* getAttributeDeleteFunctor() const </B></TT>
 <DD>get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset
 <DL><DT><DD></DL><P>
-<A NAME="getStats"></A>
+<A NAME="accept"></A>
 <A NAME="DOC.2.50.83"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getStats(<!1><A HREF="Statistics.html">Statistics</A> &amp;)</B></TT>
-<DD>Statistics collection for each drawable- 260901
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; af)</B></TT>
+<DD>accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has
 <DL><DT><DD></DL><P>
-<A NAME="suppportsAttributeOperation"></A>
+<A NAME="accept"></A>
 <A NAME="DOC.2.50.84"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   AttributeBitMask suppportsAttributeOperation() const </B></TT>
-<DD>return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask
-<DL><DT><DD></DL><P>
-<A NAME="applyAttributeOperation"></A>
-<A NAME="DOC.2.50.85"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   AttributeBitMask applyAttributeOperation(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp; auf)</B></TT>
-<DD>return the attributes successully applied in applyAttributeUpdate
-<DL><DT><DD></DL><P>
-<A NAME="applyPrimitiveOperation"></A>
-<A NAME="DOC.2.50.86"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void applyPrimitiveOperation(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; functor)</B></TT>
-<DD>apply the internal geometry as basic primitives to a PrimitiveFunctor
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp; pf)</B></TT>
+<DD>accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has
 <DL><DT><DD></DL><P>
 <A NAME="convertToGeometry"></A>
-<A NAME="DOC.2.50.87"></A>
+<A NAME="DOC.2.50.85"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Geometry.html">Geometry</A>* convertToGeometry()</B></TT>
 <DD>convinience function for converting GeoSet's to equivilant Geometry nodes
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.50.88"></A>
+<A NAME="DOC.2.50.86"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html">GeoSet</A>&amp; operator = (const <!1><A HREF="GeoSet.html">GeoSet</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~GeoSet"></A>
-<A NAME="DOC.2.50.89"></A>
+<A NAME="DOC.2.50.87"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~GeoSet()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.50.90"></A>
+<A NAME="DOC.2.50.88"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_adf"></A>
-<A NAME="DOC.2.50.91"></A>
+<A NAME="DOC.2.50.89"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="GeoSet.html#DOC.2.50.79">AttributeDeleteFunctor</A>&gt;  _adf</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numprims"></A>
-<A NAME="DOC.2.50.92"></A>
+<A NAME="DOC.2.50.90"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _numprims</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_primtype"></A>
-<A NAME="DOC.2.50.93"></A>
+<A NAME="DOC.2.50.91"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.1">PrimitiveType</A> _primtype</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_needprimlen"></A>
-<A NAME="DOC.2.50.94"></A>
+<A NAME="DOC.2.50.92"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _needprimlen</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_oglprimtype"></A>
-<A NAME="DOC.2.50.95"></A>
+<A NAME="DOC.2.50.93"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _oglprimtype</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_primLengths"></A>
-<A NAME="DOC.2.50.96"></A>
+<A NAME="DOC.2.50.94"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int* _primLengths</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_primlength"></A>
-<A NAME="DOC.2.50.97"></A>
+<A NAME="DOC.2.50.95"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable unsigned char _primlength</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_flat_shaded_skip"></A>
-<A NAME="DOC.2.50.98"></A>
+<A NAME="DOC.2.50.96"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char _flat_shaded_skip</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numcoords"></A>
-<A NAME="DOC.2.50.99"></A>
+<A NAME="DOC.2.50.97"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numcoords</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_coords"></A>
-<A NAME="DOC.2.50.100"></A>
+<A NAME="DOC.2.50.98"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A>* _coords</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cindex"></A>
-<A NAME="DOC.2.50.101"></A>
+<A NAME="DOC.2.50.99"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> _cindex</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normal_binding"></A>
-<A NAME="DOC.2.50.102"></A>
+<A NAME="DOC.2.50.100"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> _normal_binding</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numnormals"></A>
-<A NAME="DOC.2.50.103"></A>
+<A NAME="DOC.2.50.101"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numnormals</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_normals"></A>
-<A NAME="DOC.2.50.104"></A>
+<A NAME="DOC.2.50.102"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A>* _normals</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_nindex"></A>
-<A NAME="DOC.2.50.105"></A>
+<A NAME="DOC.2.50.103"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> _nindex</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_color_binding"></A>
-<A NAME="DOC.2.50.106"></A>
+<A NAME="DOC.2.50.104"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> _color_binding</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numcolors"></A>
-<A NAME="DOC.2.50.107"></A>
+<A NAME="DOC.2.50.105"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numcolors</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_colors"></A>
-<A NAME="DOC.2.50.108"></A>
+<A NAME="DOC.2.50.106"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A>* _colors</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_colindex"></A>
-<A NAME="DOC.2.50.109"></A>
+<A NAME="DOC.2.50.107"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> _colindex</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_texture_binding"></A>
-<A NAME="DOC.2.50.110"></A>
+<A NAME="DOC.2.50.108"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.2">BindingType</A> _texture_binding</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_numtcoords"></A>
-<A NAME="DOC.2.50.111"></A>
+<A NAME="DOC.2.50.109"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _numtcoords</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_tcoords"></A>
-<A NAME="DOC.2.50.112"></A>
+<A NAME="DOC.2.50.110"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec2.html">Vec2</A>* _tcoords</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_tindex"></A>
-<A NAME="DOC.2.50.113"></A>
+<A NAME="DOC.2.50.111"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> _tindex</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_iarray"></A>
-<A NAME="DOC.2.50.114"></A>
+<A NAME="DOC.2.50.112"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* _iarray</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_iaindex"></A>
-<A NAME="DOC.2.50.115"></A>
+<A NAME="DOC.2.50.113"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.4">IndexPointer</A> _iaindex</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_iaformat"></A>
-<A NAME="DOC.2.50.116"></A>
+<A NAME="DOC.2.50.114"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GeoSet.html#DOC.2.50.3">InterleaveArrayType</A> _iaformat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ogliaformat"></A>
-<A NAME="DOC.2.50.117"></A>
+<A NAME="DOC.2.50.115"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _ogliaformat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fast_path"></A>
-<A NAME="DOC.2.50.118"></A>
+<A NAME="DOC.2.50.116"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _fast_path</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set_fast_path"></A>
-<A NAME="DOC.2.50.119"></A>
+<A NAME="DOC.2.50.117"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void set_fast_path( void )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw_fast_path"></A>
-<A NAME="DOC.2.50.120"></A>
+<A NAME="DOC.2.50.118"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void draw_fast_path( <!1><A HREF="State.html">State</A>&amp; state )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw_alternate_path"></A>
-<A NAME="DOC.2.50.121"></A>
+<A NAME="DOC.2.50.119"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void draw_alternate_path( <!1><A HREF="State.html">State</A>&amp; state )</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -162,16 +162,16 @@ void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
 {
     if (framestamp)
     {
-        osg::notify(osg::INFO) << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
+        //osg::notify(osg::INFO) << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
         _frameNumber = framestamp->getFrameNumber();
-    } else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
+    } //else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
 
     _frameBlock->reset();
 }
 
 void DatabasePager::signalEndFrame()
 {
-    osg::notify(osg::INFO) << "signalEndFrame <<<<<<<<<<<<<<<<<<<< "<<std::endl;
+    //osg::notify(osg::INFO) << "signalEndFrame <<<<<<<<<<<<<<<<<<<< "<<std::endl;
     _frameBlock->release();
 }
 

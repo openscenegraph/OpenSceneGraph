@@ -32,7 +32,7 @@
 using namespace osg;
 using namespace osgDB;
 
-class AvailableReaderWriterIterator
+class Registry::AvailableReaderWriterIterator
 {
 public:
     AvailableReaderWriterIterator(Registry::ReaderWriterList& rwList):
@@ -138,7 +138,7 @@ Registry::Registry()
     _createNodeFromImage = false;
     _openingLibrary = false;
     
-    _useObjectCacheHint = CACHE_NONE;
+    _useObjectCacheHint = CACHE_ARCHIVES;
 
     initFilePathLists();
 
@@ -220,6 +220,8 @@ Registry::~Registry()
     // even some issue with objects be allocated by a plugin that is
     // mainted after that plugin is deleted...  Robert Osfield, Jan 2004.
     clearObjectCache();
+    clearArchiveCache();
+    
 
     // unload all the plugin before we finally destruct.
     closeAllLibraries();
@@ -1183,30 +1185,16 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         osg::notify(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
         osg::notify(osg::INFO)<<"         filename : "<<fileName<<std::endl;
         
-        //ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, CACHE_ARCHIVES);
-        //osgDB::Archive* archive = result.takeArchive();
-
+        ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, CACHE_ARCHIVES);
         
-        static osg::ref_ptr<Archive> s_archive;
-        if (!s_archive)
-        {
-            s_archive = new Archive;
-            s_archive->open(archiveName,ReaderWriter::READ, 4096);
-        }
+        if (!result.validArchive()) return result;
+
+        osgDB::Archive* archive = result.getArchive();
         
         osg::ref_ptr<ReaderWriter::Options> options = new ReaderWriter::Options;
         options->setDatabasePath(archiveName);
 
-        if (s_archive.valid())
-        {        
-            osg::notify(osg::INFO)<<"      archive loaded"<<fileName<<std::endl;
-            return s_archive->readObject(fileName,options.get());
-        }
-        else
-        {   
-            osg::notify(osg::INFO)<<"      no archive loaded"<<fileName<<std::endl;
-            return NULL;
-        }
+        return archive->readObject(fileName,options.get());
     }
 
     // if filename contains archive
@@ -1308,11 +1296,11 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFunctor, CacheHintOptions useObjectCache)
+ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFunctor, bool useObjectCache)
 {
     std::string file(readFunctor._filename);
 
-    if (useObjectCache & CACHE_OBJECTS)
+    if (useObjectCache)
     {
         // search for entry in the object cache.
         {
@@ -1335,13 +1323,16 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
             notify(INFO)<<"Adding to object cache "<<file<<std::endl;
             addEntryToObjectCache(file,rr.getObject());
         }
-        
+        else
+        {
+            notify(INFO)<<"No valid object found for "<<file<<std::endl;
+        }
+
         return rr;
 
     }
     else
     {
-    
         ObjectCache tmpObjectCache;
         
         {
@@ -1365,13 +1356,28 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 
 ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache)
 {
-    return readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, _options.get()),useObjectCache);
+    if (useObjectCache&CACHE_ARCHIVES)
+    {
+        osgDB::Archive* archive = getFromArchiveCache(fileName);
+        if (archive) return archive;
+
+        ReaderWriter::ReadResult result = readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, _options.get()),false);
+        if (result.validArchive())
+        {
+            addToArchiveCache(fileName,result.getArchive());
+        }
+        return result;
+    }
+    else
+    {
+        return readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, _options.get()),false);
+    }
 }
 
 
 ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    return readImplementation(ReadObjectFunctor(fileName, _options.get()),useObjectCache);
+    return readImplementation(ReadObjectFunctor(fileName, _options.get()),(useObjectCache&CACHE_OBJECTS)!=0);
 }
 
 ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName)
@@ -1413,7 +1419,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
 
 ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    return readImplementation(ReadImageFunctor(fileName, _options.get()),useObjectCache);
+    return readImplementation(ReadImageFunctor(fileName, _options.get()),(useObjectCache&CACHE_IMAGES)!=0);
 }
 
 ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName)
@@ -1454,7 +1460,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
 
 ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    return readImplementation(ReadHeightFieldFunctor(fileName, _options.get()),useObjectCache);
+    return readImplementation(ReadHeightFieldFunctor(fileName, _options.get()),(useObjectCache&CACHE_HEIGHTFIELDS)!=0);
 }
 
 ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName)
@@ -1495,7 +1501,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 
 ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,CacheHintOptions useObjectCache)
 {
-    return readImplementation(ReadNodeFunctor(fileName, _options.get()),useObjectCache);
+    return readImplementation(ReadNodeFunctor(fileName, _options.get()),(useObjectCache&CACHE_NODES)!=0);
 }
 
 ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName)
@@ -1560,6 +1566,8 @@ void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double curre
 
 void Registry::removeExpiredObjectsInCache(double expiryTime)
 {
+    return;
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
     typedef std::vector<std::string> ObjectsToRemove;
@@ -1593,6 +1601,37 @@ void Registry::clearObjectCache()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     _objectCache.clear();
+}
+
+void Registry::addToArchiveCache(const std::string& fileName, osgDB::Archive* archive)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
+    _archiveCache[fileName] = archive;
+}
+
+/** Remove archive from cache.*/
+void Registry::removeFromArchiveCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
+    ArchiveCache::iterator itr = _archiveCache.find(fileName);
+    if (itr!=_archiveCache.end()) 
+    {
+        _archiveCache.erase(itr);
+    }
+}
+
+osgDB::Archive* Registry::getFromArchiveCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
+    ArchiveCache::iterator itr = _archiveCache.find(fileName);
+    if (itr!=_archiveCache.end()) return itr->second.get();
+    else return 0;
+}
+
+void Registry::clearArchiveCache()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
+    _archiveCache.clear();
 }
 
 DatabasePager* Registry::getOrCreateDatabasePager()

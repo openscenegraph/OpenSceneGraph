@@ -23,6 +23,8 @@ class SG_EXPORT GeoSet : public Drawable
 {
     public:
 
+
+        
         enum PrimitiveType {
             NO_TYPE,
             POINTS,
@@ -290,6 +292,28 @@ class SG_EXPORT GeoSet : public Drawable
 
         const bool check() const;
 
+
+        /** function object which is used to handling the clean up of attribute arrays
+          * associated with GeoSet's.  A default is provided which assumes that all
+          * momory attached to the GeoSet is owned by this GeoSet and can be deleted
+          * using delete [].  If this is not the cause derive your own AttributeDeleteFunctor
+          * a specify your own memory deletion operation.*/
+        struct AttributeDeleteFunctor : public osg::Referenced
+        {
+            // see GeoSet.cpp for implemention.
+            virtual void operator() (GeoSet* gset);
+        };
+
+        /** set an alternative AttributeDeleteFunction to handle attribute arrays attached to this Geoset.*/
+        void setAttributeDeleteFunctor(AttributeDeleteFunctor* adf) { _adf = adf; }
+        
+        /** get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset.*/
+        AttributeDeleteFunctor* getAttributeDeleteFunctor() { return _adf.get(); }
+
+        /** get the current AttributeDeleteFunction to handle attribute arrays attached to this Geoset.*/
+        const AttributeDeleteFunctor* getAttributeDeleteFunctor() const { return _adf.get(); }
+        
+
         /** Statistics collection for each drawable- 26.09.01
          */
         bool getStats(Statistics &);
@@ -302,6 +326,7 @@ class SG_EXPORT GeoSet : public Drawable
         virtual AttributeBitMask applyAttributeOperation(AttributeFunctor& auf);
 
 
+
     protected:
 
         GeoSet(const GeoSet&):Drawable() {}
@@ -311,6 +336,8 @@ class SG_EXPORT GeoSet : public Drawable
 
         virtual const bool computeBound() const;
             
+        ref_ptr<AttributeDeleteFunctor> _adf;
+
         int             _numprims;
         PrimitiveType   _primtype;
 	int             _needprimlen;
@@ -342,6 +369,7 @@ class SG_EXPORT GeoSet : public Drawable
         IndexPointer    _iaindex;
 	InterleaveArrayType _iaformat;
 	unsigned int    _ogliaformat;
+
 
         int         _fast_path;
         

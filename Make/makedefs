@@ -442,7 +442,7 @@ ifeq ($(OS),CYGWIN)
   JPEG_LIBS         = -ljpeg
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
-  FREETYPE_LIB      = -lfreetype2
+  FREETYPE_LIB      = -lfreetype
   LIB_PREFIX        = cyg
   LIB_EXT           = dll
   PLUGIN_EXT        = dll

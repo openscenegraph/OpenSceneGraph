@@ -266,7 +266,7 @@ class SG_EXPORT GeoSet : public Drawable
         /** get a const pointer to interleaved float array. */
         inline const void* getInterleavedArray() const          { return _iarray; }
         /** get the number of texture coord indices required by the defined primitives and texture binding.*/
-        inline const int getNumIterleavedIndices() const              { return _iaindex._size; }
+        inline const int getNumInterleavedIndices() const              { return _iaindex._size; }
         /** get the texture index array. */
         inline IndexPointer& getInterleavedIndices()             { return _iaindex; }
         /** get the interleaved index array. */

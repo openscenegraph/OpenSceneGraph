@@ -55,6 +55,20 @@ class SG_EXPORT CullingSet : public Referenced
             }
         }
         
+        CullingSet& operator = (const CullingSet& cs)
+        {
+            if (this==&cs) return *this;
+            
+            _mask = cs._mask;
+            _frustum = cs._frustum;
+            _occluderList = cs._occluderList;
+            _pixelSizeVector = cs._pixelSizeVector;
+            _smallFeatureCullingPixelSize = cs._smallFeatureCullingPixelSize;
+            
+            return *this;
+        }
+
+
         inline void set(const CullingSet& cs)
         {
             _mask = cs._mask;

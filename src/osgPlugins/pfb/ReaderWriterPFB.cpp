@@ -13,6 +13,11 @@
 #include <Performer/pfdu.h>
 #include <Performer/pr/pfTexture.h>
 
+extern "C" {
+extern pfNode *pfdLoadFile_pfb( const char *);
+extern int pfdStoreFile_pfb( pfNode *, const char *);
+}
+
 class ReaderWriterPFB : public osgDB::ReaderWriter
 {
 
@@ -67,13 +72,12 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             return NULL;
         }
 
-        virtual osg::Node* readNode(const std::string& fileName)
+        virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
 
             initPerformer();
-
-            pfNode* root = pfdLoadFile(fileName.c_str());
+            pfNode* root = pfdLoadFile_pfb(fileName.c_str());
 
             ConvertFromPerformer converter;
             return converter.convert(root);
@@ -82,16 +86,13 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         virtual bool writeNode(const osg::Node& node,const std::string& fileName)
         {
-
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
-
             initPerformer();
-
             ConvertToPerformer converter;
             pfNode* root = converter.convert(&node);
             if (root)
             {
-                return pfdStoreFile(root,fileName.c_str())!=0;
+                return pfdStoreFile_pfb(root,fileName.c_str())!=0;
             }
             else
             {

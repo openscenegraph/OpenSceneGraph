@@ -715,6 +715,10 @@ void SceneView::draw()
     }
     else
     {
+
+	// Need to restore draw buffer when toggling Stereo off.
+	glDrawBuffer(GL_BACK);
+
         _localStateSet->setAttribute(_viewport.get());
         osg::ref_ptr<osg::ColorMask> cmask = new osg::ColorMask;
         cmask->setMask(true,true,true,true);

@@ -24,8 +24,6 @@ using namespace osgUtil;
 
 #define DEG2RAD(x)    ((x)*M_PI/180.0)
 
-static bool g_debugging2 = false;
-
 inline float MAX_F(float a, float b)
     { return a>b?a:b; }
 inline int EQUAL_F(float a, float b)
@@ -876,13 +874,6 @@ void CullVisitor::apply(Geode& node)
             }
             Vec3 delta_center = center-_tvs->_eyePoint;
 
-            if (g_debugging2)
-            {
-                notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<< std::endl;
-                notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<< std::endl;
-                notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<< std::endl;
-            }
-
             float depth;
             switch(_tsm)
             {
@@ -953,16 +944,16 @@ void CullVisitor::apply(Billboard& node)
         Matrix* billboard_matrix = createOrReuseMatrix();
         node.calcTransform(eye_local,up_local,pos,*billboard_matrix);
 
+        if (matrix)
+        {
+            billboard_matrix->postMult(*matrix);
+        }
+
         StateSet* stateset = drawable->getStateSet();
         
         bool isTransparent = stateset && stateset->getRenderingHint()==osg::StateSet::TRANSPARENT_BIN;
         if (isTransparent)
         {
-
-            if (matrix)
-            {
-                billboard_matrix->mult(*billboard_matrix,*matrix);
-            }
 
             Vec3 center;
             if (matrix)
@@ -974,13 +965,6 @@ void CullVisitor::apply(Billboard& node)
                 center = pos;
             }
             Vec3 delta_center = center-_tvs->_eyePoint;
-
-            if (g_debugging2)
-            {
-                notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<< std::endl;
-                notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<< std::endl;
-                notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<< std::endl;
-            }
 
             float depth;
             switch(_tsm)
@@ -1234,13 +1218,6 @@ void CullVisitor::apply(Impostor& node)
                     center = node.getCenter();
                 }
                 Vec3 delta_center = center-_tvs->_eyePoint;
-
-                if (g_debugging2)
-                {
-                    notify(INFO) << "center ["<<center.x()<<","<<center.y()<<","<<center.z()<<"]"<< std::endl;
-                    notify(INFO) << "delta_center ["<<delta_center.x()<<","<<delta_center.y()<<","<<delta_center.z()<<"]"<< std::endl;
-                    notify(INFO) << "_lookVector ["<<_tvs->_lookVector.x()<<","<<_tvs->_lookVector.y()<<","<<_tvs->_lookVector.z()<<"]"<< std::endl;
-                }
 
                 float depth;
                 switch(_tsm)

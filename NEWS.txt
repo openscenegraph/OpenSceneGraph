@@ -19,19 +19,14 @@ OSG News (most significant items from ChangeLog)
     configuration of threading and multiple camera views can all be done
     via ASCII configuration files, no need to recompile. 
 
-    Improvements to the Makefle system.
+    Added Linux 64 bit support for IA64 (Intel Itanium) and x86-64 (AMD Opteron)
+    which augments the existing support for Solaris and IRIX 64 bit compilation.
+    64 bit supports allows the use of very large data set, and potential 
+    peformance improvemnts.
 
-    Added support for early abort of rendering, useful for interactive
-    applications which occasional have rendering that takes that long
-    enough (i.e. several second) that end users may wish to abort 
-    during the drawing.
-
-    Improved thread safety when working multipipe systems.
-
-    New MD2 plugin which allows Quake animated characters to be loaded
-    into the OSG.
-    
-    New DDS plugin for loading compressed and non-compressed images.
+    Improvements to the makefile system, all makefiles are now named
+    GNUmakefile which ensures that they are only run by gmake.  The new system
+    allow multiple build targets to be built from one source code install.
 
     Completely new osgText implemention which is simpler to use, faster, and
     thread safe.  Support for high quality true type fonts has now been moved
@@ -41,6 +36,13 @@ OSG News (most significant items from ChangeLog)
     the text library to be just dependant on OpenGL and Standard C++ like
     the rest of the core libraries, virtual of this osgText now compiles 
     by default on platforms.
+
+    Improved thread safety when working multipipe systems.
+
+    New DDS plugin for loading compressed and non-compressed images.
+
+    New MD2 plugin which allows Quake animated characters to be loaded
+    into the OSG.
     
     New osg::TextureRectangle texture class which encapsulates the
     NV_texture_rectangle and EXT_texture_rectange extensions.
@@ -52,8 +54,14 @@ OSG News (most significant items from ChangeLog)
 
     New database cache in the osgDB library.
     
+    Added support for early abort of rendering, useful for interactive
+    applications which occasional have rendering that takes that long
+    enough (i.e. several seconds) that end users may wish to abort 
+    during the drawing.
+
     Clean up of memory management in the OpenFlight loader.
 
+    Various API clean ups and bug fixes.
 
 24th January 2003 - OpenSceneGraph-0.9.3.tar.gz
 

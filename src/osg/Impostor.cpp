@@ -22,12 +22,14 @@ Impostor::Impostor()
 }
 
 
-ImpostorSprite* Impostor::findBestImpostorSprite(const osg::Vec3& currLocalEyePoint)
+ImpostorSprite* Impostor::findBestImpostorSprite(unsigned int contextID, const osg::Vec3& currLocalEyePoint) const
 {
+    ImpostorSpriteList& impostorSpriteList = _impostorSpriteListBuffer[contextID];
+
     float min_distance2 = FLT_MAX;
     ImpostorSprite* impostorSprite = NULL;
-    for(ImpostorSpriteList::iterator itr=_impostorSpriteList.begin();
-        itr!=_impostorSpriteList.end();
+    for(ImpostorSpriteList::iterator itr=impostorSpriteList.begin();
+        itr!=impostorSpriteList.end();
         ++itr)
     {
         float distance2 = (currLocalEyePoint-(*itr)->getStoredLocalEyePoint()).length2();
@@ -40,18 +42,20 @@ ImpostorSprite* Impostor::findBestImpostorSprite(const osg::Vec3& currLocalEyePo
     return impostorSprite;
 }
 
-void Impostor::addImpostorSprite(ImpostorSprite* is)
+void Impostor::addImpostorSprite(unsigned int contextID, ImpostorSprite* is)
 {
     if (is && is->getParent()!=this)
     {
+        ImpostorSpriteList& impostorSpriteList = _impostorSpriteListBuffer[contextID];
+
         // add it to my impostor list first, so it remains referenced
         // when its reference in the previous_owner is removed.
-        _impostorSpriteList.push_back(is);
+        impostorSpriteList.push_back(is);
 
         if (is->getParent())
         {
             Impostor* previous_owner = is->getParent();
-            ImpostorSpriteList& isl = previous_owner->_impostorSpriteList;
+            ImpostorSpriteList& isl = previous_owner->_impostorSpriteListBuffer[contextID];
             
             // find and erase reference to is.
             for(ImpostorSpriteList::iterator itr=isl.begin();

@@ -580,6 +580,9 @@ void CullVisitor::apply(Impostor& node)
     if (node_state) pushStateSet(node_state);
 
     const BoundingSphere& bs = node.getBound();
+    
+    unsigned int contextID = 0;
+    if (_state.valid()) contextID = _state->getContextID();
 
     float distance2 = (eyeLocal-bs.center()).length2();
     if (!_impostorActive ||
@@ -605,7 +608,7 @@ void CullVisitor::apply(Impostor& node)
         RefMatrix& matrix = getModelViewMatrix();
 
         // search for the best fit ImpostorSprite;
-        ImpostorSprite* impostorSprite = node.findBestImpostorSprite(eyeLocal);
+        ImpostorSprite* impostorSprite = node.findBestImpostorSprite(contextID,eyeLocal);
         
         if (impostorSprite)
         {
@@ -673,6 +676,9 @@ void CullVisitor::apply(Impostor& node)
 ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
 {
    
+    unsigned int contextID = 0;
+    if (_state.valid()) contextID = _state->getContextID();
+
     // default to true right now, will dertermine if perspective from the
     // projection matrix...
     bool isPerspectiveProjection = true;
@@ -905,9 +911,10 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // update frame number to show that impostor is in action.
     impostorSprite->setLastFrameUsed(getTraversalNumber());
 
+
     // have successfully created an impostor sprite so now need to
     // add it into the impostor.
-    node.addImpostorSprite(impostorSprite);
+    node.addImpostorSprite(contextID,impostorSprite);
 
     if (_depthSortImpostorSprites)
     {

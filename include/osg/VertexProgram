@@ -17,6 +17,7 @@
 #include <osg/StateAttribute>
 #include <osg/Vec4>
 #include <osg/Matrix>
+#include <osg/buffered_value>
 
 #include <map>
 #include <string>
@@ -130,7 +131,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
             COMPARE_StateAttribute_Types(VertexProgram,sa)
 
             // compare each paramter in turn against the rhs.
-            COMPARE_StateAttribute_Parameter(_vertexProgramId)
+            COMPARE_StateAttribute_Parameter(_vertexProgram)
 
             return 0; // passed all the above comparison macro's, must be equal.
         }
@@ -141,6 +142,12 @@ class SG_EXPORT VertexProgram : public StateAttribute
         }
 
         // data access methods.
+
+        /** Get the handle to the vertex program id for the current context.*/
+        inline GLuint& getVertexProgramID(unsigned int contextID) const
+        {
+            return _vertexProgramIDList[contextID];
+        }
 
         /** Set the vertex program using C++ style string.*/
         inline void setVertexProgram( const std::string& program ) { _vertexProgram = program; }
@@ -168,7 +175,9 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
         virtual ~VertexProgram();
 
-        mutable GLuint  _vertexProgramId;
+        typedef buffered_value<GLuint> VertexProgramIDList;
+        mutable VertexProgramIDList _vertexProgramIDList;
+
         std::string     _vertexProgram;
 
         typedef std::map<GLuint,Vec4> LocalParamList;

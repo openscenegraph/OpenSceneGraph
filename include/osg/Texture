@@ -202,17 +202,15 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
 
         /** Get the handle to the texture object for the current context.*/
-        /** return the OpenGL texture object for specified context.*/
         inline GLuint& getTextureObject(unsigned int contextID) const
         {
-            // get the globj for the current contextID.
             return _handleList[contextID];
         }
 
 
+        /** get the dirty flag for the current contextID.*/
         inline unsigned int& getTextureParameterDirty(unsigned int contextID) const
         {
-            // get the dirty flag for the current contextID.
             return _texParametersDirtyList[contextID];
         }
 

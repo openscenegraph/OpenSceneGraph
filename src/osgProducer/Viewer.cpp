@@ -231,12 +231,15 @@ void Viewer::update()
         }
     }
     
-    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+    if (_updateVisitor.valid())
+    {
+        _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
 
-    // update the scene by traversing it with the the update visitor which will
-    // call all node update callbacks and animations.
-    getSceneData()->accept(*_updateVisitor);
-
+        // update the scene by traversing it with the the update visitor which will
+        // call all node update callbacks and animations.
+        getSceneData()->accept(*_updateVisitor);
+    }
+    
     // update the main producer camera
     if (_old_style_osg_camera.valid()) setView(_old_style_osg_camera->getModelViewMatrix().ptr());
 }

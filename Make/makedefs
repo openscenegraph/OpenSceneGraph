@@ -297,18 +297,19 @@ ifeq ($(OS),Darwin)
                         Demos
   LIBVERSION	    =  -dylib_current_version 0.9.1
 
-  # Plugins which require external libs: gif jpeg png tiff
-  PLUGIN_DIRS       = bmp dw flt \
-                        lib3ds logos lwo obj \
-                        osg osgtgz pic \
-                        quicktime rgb tga tgz \
-                        txp zip
+  # Plugins which require external libs: gif jpeg png tiff osgText
+    PLUGIN_DIRS       = bmp dw flt \
+                      lib3ds logos lwo obj \
+                      osg osgParticle osgtgz pic \
+                      quicktime rgb tga tgz \
+                      txp zip
   # Demos which require external libs: osghud osgtext
   DEMOS_DIRS        = osgbillboard osgcallback osgclip \
-                        osgcluster osgconv osgcopy osgcube osggeometry \
-                        osghangglide osgimpostor osgmultitexture osgoccluder \
-                        osgparticle osgprerender osgreflect osgscribe osgstereoimage \
-                         osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv
+                      osgcluster osgconv osgcopy osgcube osggeometry \
+                      osghangglide osgimpostor osgmultitexture osgoccluder \
+                      osgparticle osgprerender osgreflect osgscribe osgstereoimage \
+                      osgtexture1D osgtexture2D osgtexture3D osgversion osgviews sgv \
+                      osgshape osganimate osgteapot
 endif
 
 #### Cygwin/Mingw specific definitions

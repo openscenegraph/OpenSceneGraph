@@ -93,6 +93,7 @@ class OSGGA_EXPORT FlightManipulator : public MatrixManipulator
         osg::ref_ptr<osg::Node>       _node;
 
         double _modelScale;
+        double _acceleration;
         double _velocity;
 
         YawControlMode _yawMode;

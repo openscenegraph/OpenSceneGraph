@@ -17,7 +17,7 @@ using namespace osgUtil;
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
-
+   
     if (options & COMBINE_ADJACENT_LODS)
     {
         CombineLODsVisitor clv;
@@ -568,15 +568,35 @@ void Optimizer::RemoveRedundentNodesVisitor::removeRedundentNodes()
         osg::ref_ptr<osg::Group> group = dynamic_cast<osg::Group*>(*itr);
         if (group.valid())
         {
-
-            for(int j=group->getNumParents()-1;j>=0;--j)
+            // take a copy of parents list since subsequent removes will modify the original one.
+            osg::Node::ParentList parents = group->getParents();
+            
+            if (group->getNumChildren()==0)
             {
-                for(int i=0;i<group->getNumChildren();++i)
+                for(osg::Node::ParentList::iterator pitr=parents.begin();
+                    pitr!=parents.end();
+                    ++pitr)
                 {
-                    group->getParent(j)->addChild(group->getChild(i));
-                }
-                group->getParent(j)->removeChild(group.get());
+                    (*pitr)->removeChild(group.get());
+                }                
             }
+            else if (group->getNumChildren()==1)
+            {
+                osg::Node* child = group->getChild(0);
+                for(osg::Node::ParentList::iterator pitr=parents.begin();
+                    pitr!=parents.end();
+                    ++pitr)
+                {
+                    (*pitr)->replaceChild(group.get(),child);
+                }
+            
+            }
+            else // (group->getNumChildren()>1)
+            {
+                osg::notify(osg::WARN)<<"Warning: Optimizer::RemoveRedundentNodesVisitor has incorrectly assigned Group to remove."<<std::endl;
+                osg::notify(osg::WARN)<<"         Safely ignoring remove operation for this group."<<std::endl;
+            }
+            
         }                                
     }
     _redundentNodeList.clear();

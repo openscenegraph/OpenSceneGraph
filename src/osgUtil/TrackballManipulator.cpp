@@ -145,6 +145,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
             }
             return false;
         case(GUIEventAdapter::FRAME):
+            _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE);
             if (_thrown)
             {
                 if (calcMovement()) us.requestRedraw();
@@ -188,7 +189,6 @@ void TrackballManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 bool TrackballManipulator::calcMovement()
 {
-    _camera->setFusionDistanceMode(osg::Camera::PROPORTIONAL_TO_LOOK_DISTANCE);
 
     // return if less then two events have been added.
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;

@@ -128,7 +128,7 @@ void osgParticle::Particle::render(const osg::Vec3 &xpos, const osg::Vec3 &px, c
     case QUAD_TRIANGLESTRIP:
         glPushMatrix();
         glTranslatef(xpos.x(), xpos.y(), xpos.z());
-        R.glMultMatrix();
+        glMultMatrix(R.ptr());
         // we must glBegin() and glEnd() here, because each particle is a single strip
         glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1, 1);
@@ -146,7 +146,7 @@ void osgParticle::Particle::render(const osg::Vec3 &xpos, const osg::Vec3 &px, c
     case HEXAGON:
         glPushMatrix();
         glTranslatef(xpos.x(), xpos.y(), xpos.z());
-        R.glMultMatrix();        
+        glMultMatrix(R.ptr());        
         // we must glBegin() and glEnd() here, because each particle is a single fan
         glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f(0.5f, 0.5f);

@@ -19,6 +19,7 @@
 #include <osg/Quat>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Object>
 #include <osg/ref_ptr>
 
 #include <vector>

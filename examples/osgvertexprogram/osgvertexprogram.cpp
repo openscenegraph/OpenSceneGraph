@@ -183,7 +183,7 @@ public:
                                   osg::Matrix::rotate( osg::DegreesToRadians(90.0f), 1.0f,0.0f,0.0f);
 
             osg::Quat q;
-            q.set(MV);
+            MV.get(q);
             const osg::Matrix C = osg::Matrix::rotate( q.inverse() );
 
             _texMat.setMatrix( C*R );

@@ -13,7 +13,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__)
 #include <direct.h>
 #else
 #include <unistd.h>
@@ -40,11 +40,13 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             char dirname[128];
             char command[1024];
 
-		#if defined(_WIN32) && !defined(__CYGWIN__)
-            strcpy(dirname, "C:/Windows/Temp/.osgdb_zip");
+        #if defined(WIN32) && !defined(__CYGWIN__)
+            strcpy(dirname, getenv("TEMP"));
+            strcat(dirname, "\\.osgdb_zip");
+
             mkdir(dirname);
             sprintf( command,
-                "unzip %s -d %s",
+                "unzip -o -qq %s -d %s",
                 fileName.c_str(), dirname);
 
             system( command );
@@ -84,10 +86,10 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
             osgDB::Registry::instance()->setCreateNodeFromImage(prevCreateNodeFromImage);
 
-		#if defined(_WIN32) && !defined(__CYGWIN__)
+        #if defined(WIN32) && !defined(__CYGWIN__)
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
-            sprintf( command, "erase %s", dirname );
+            sprintf( command, "erase /S /Q %s", dirname );
             system( command );
         #else
 

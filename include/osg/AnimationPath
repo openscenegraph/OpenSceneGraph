@@ -74,14 +74,14 @@ class SG_EXPORT AnimationPath : public virtual osg::Object
             inline void getMatrix(Matrix& matrix) const
             {
                 matrix.makeScale(_scale);
-                matrix.postMult(_rotation.getMatrix());
+                matrix.postMult(osg::Matrix::rotate(_rotation));
                 matrix.postMult(osg::Matrix::translate(_position));
             }
 
             inline void getInverse(Matrix& matrix) const
             {
                 matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
-                matrix.postMult(_rotation.inverse().getMatrix());
+                matrix.postMult(osg::Matrix::rotate(_rotation.inverse()));
                 matrix.postMult(osg::Matrix::translate(-_position));
             }
         };

@@ -14,9 +14,9 @@
 #ifndef OSG_QUAT
 #define OSG_QUAT 1
 
+#include <osg/Export>
 #include <osg/Vec3>
 #include <osg/Vec4>
-#include <osg/Matrix>
 
 namespace osg {
 
@@ -265,21 +265,7 @@ class SG_EXPORT Quat
         /** Spherical Linear Interpolation.
 	    As t goes from 0 to 1, the Quat object goes from "from" to "to". */
         void slerp   ( float t, const Quat& from, const Quat& to);
-        
-        /** Set quaternion to be equivalent to specified matrix.*/
-        void set( const Matrix& m );
-
-        /** Get the equivalent matrix for this quaternion.*/
-        void get( Matrix& m ) const;
-
-        /** Get the equivalent matrix for this quaternion.*/
-        Matrix getMatrix() const
-        {
-            Matrix matrix;
-            get(matrix);
-            return matrix;
-        }
-        
+               
         friend inline std::ostream& operator << (std::ostream& output, const Quat& vec);
         
     protected:

@@ -184,7 +184,7 @@ void GliderManipulator::addMouseEvent(const GUIEventAdapter& ea)
 void GliderManipulator::setByMatrix(const osg::Matrix& matrix)
 {
     _eye = matrix.getTrans();
-    _rotation.set(matrix);
+    matrix.get(_rotation);
     _distance = 1.0f;
 }
 
@@ -214,7 +214,7 @@ void GliderManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv
                    
     _eye = eye;
     _distance = lv.length();
-    _rotation.set(rotation_matrix);
+    rotation_matrix.get(_rotation);
     _rotation = _rotation.inverse();
 }
 

@@ -20,6 +20,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Math>
+#include <osg/Object>
 
 namespace osgSim {
 

@@ -11,20 +11,10 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_MATRIX
-#define OSG_MATRIX 1
-
 #include <osg/Matrixd>
-#include <osg/Matrixf>
 
-namespace osg {
+// specialise Matrix_implementaiton to be Matrixd
+#define  Matrix_implementation Matrixd
 
-
-    typedef Matrixd Matrix;
-    typedef RefMatrixd RefMatrix;
-
-
-} //namespace osg
-
-
-#endif
+// now compile up Matrix via Matrix_implementation
+#include "Matrix_implementation.cpp"

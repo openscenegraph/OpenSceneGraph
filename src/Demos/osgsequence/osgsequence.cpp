@@ -20,19 +20,23 @@
 class MyEventHandler : public osgGA::GUIEventHandler {
 public:
     /// Constructor.
-    MyEventHandler(std::vector<osg::Sequence*>* seq) : GUIEventHandler() {
+    MyEventHandler(std::vector<osg::Sequence*>* seq) 
+    {
         _seq = seq;
     }
 
     /// Handle events.
     virtual bool handle(const osgGA::GUIEventAdapter& ea,
-                        osgGA::GUIActionAdapter&) {
+                        osgGA::GUIActionAdapter&)
+    {
         bool handled = false;
 
-        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYBOARD) {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYBOARD)
+        {
             const char keys[] = "!@#$%^&*()";
             for (unsigned int i = 0; i < (sizeof(keys) / sizeof(keys[0])); i++) {
-                if (i < _seq->size() && ea.getKey() == keys[i]) {
+                if (i < _seq->size() && ea.getKey() == keys[i])
+                {
                     // toggle sequence
                     osg::Sequence* seq = (*_seq)[i];
                     osg::Sequence::SequenceMode mode = seq->getMode();
@@ -49,7 +53,7 @@ public:
                     default:
                         break;
                     }
-                    cerr << "Toggled sequence " << i << endl;
+                    std::cerr << "Toggled sequence " << i << std::endl;
                     handled = true;
                 }
             }
@@ -59,7 +63,7 @@ public:
     }
 
     /// accept visits.
-    virtual void accept(osgGA::GUIEventHandlerVisitor&) { }
+    virtual void accept(osgGA::GUIEventHandlerVisitor&) {}
 
 private:
     std::vector<osg::Sequence*>* _seq;
@@ -135,7 +139,7 @@ int main( int argc, char **argv )
     // assumes any remaining parameters are models
     std::vector<osg::Node*> model;
     for (unsigned int i = 0; i < commandLine.size(); i++) {
-        cerr << "Loading " << commandLine[i] << endl;
+        std::cerr << "Loading " << commandLine[i] << std::endl;
         osg::Node* node = osgDB::readNodeFile(commandLine[i]);
         if (node)
             model.push_back(node);

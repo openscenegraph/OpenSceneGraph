@@ -157,8 +157,11 @@ void Image::ensureDimensionsArePowerOfTwo()
     {
         init = false;
         glGetIntegerv(GL_MAX_TEXTURE_SIZE,&max_size);
-        std::cout<<"Max texture size "<<max_size<<std::endl;
+        notify(INFO) << "Max texture size "<<max_size<<std::endl;
     }
+    
+    //max_size = 64;
+    
     if (new_s>max_size) new_s = max_size;
     if (new_t>max_size) new_t = max_size;
     

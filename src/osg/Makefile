@@ -49,7 +49,6 @@ CXXFILES =\
 	Material.cpp\
 	Matrix.cpp\
 	MatrixTransform.cpp\
-	MemoryManager.cpp\
 	Node.cpp\
 	NodeCallback.cpp\
 	NodeVisitor.cpp\
@@ -64,6 +63,7 @@ CXXFILES =\
 	PrimitiveSet.cpp\
 	Projection.cpp\
 	Quat.cpp\
+	Referenced.cpp\
 	Sequence.cpp\
 	ShadeModel.cpp\
 	ShadowVolumeOccluder.cpp\

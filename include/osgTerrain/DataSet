@@ -673,15 +673,22 @@ class DataSet : public osg::Referenced
             void equalizeEdge(Position position);
             
             void equalizeBoundaries();
+            
+            void setTileComplete(bool complete) { _complete = complete; }
+            bool getTileComplete() const { return _complete; }
 
             void optimizeResolution();
 
             osg::Node* createScene();
+
+            void empty();
             
-            
-            std::string                                 _name;
             
             DataSet*                                    _dataSet;
+            std::string                                 _name;
+            unsigned int                                _level;
+            unsigned int                                _tileX;
+            unsigned int                                _tileY;
             
             osg::ref_ptr<DestinationData>               _imagery;
             osg::ref_ptr<DestinationData>               _terrain;
@@ -701,9 +708,7 @@ class DataSet : public osg::Referenced
             float                                       _terrain_maxSourceResolutionX;
             float                                       _terrain_maxSourceResolutionY;
             
-            unsigned int                                _level;
-            unsigned int                                _tileX;
-            unsigned int                                _tileY;
+            bool                                        _complete;
 
         };
 
@@ -712,13 +717,25 @@ class DataSet : public osg::Referenced
         public:   
         
             CompositeDestination():
+                _dataSet(0),
+                _parent(0),
+                _level(0),
+                _tileX(0),
+                _tileY(0),
                 _type(GROUP),
-                _maxVisibleDistance(FLT_MAX) {}
+                _maxVisibleDistance(FLT_MAX),
+                _subTileGenerated(false) {}
         
             CompositeDestination(osgTerrain::CoordinateSystem* cs, const osg::BoundingBox& extents):
                 SpatialProperties(cs,extents),
+                _dataSet(0),
+                _parent(0),
+                _level(0),
+                _tileX(0),
+                _tileY(0),
                 _type(GROUP),
-                _maxVisibleDistance(FLT_MAX) {}
+                _maxVisibleDistance(FLT_MAX),
+                _subTileGenerated(false)  {}
           
             void computeNeighboursFromQuadMap();
 
@@ -729,28 +746,52 @@ class DataSet : public osg::Referenced
             void equalizeBoundaries();
 
             osg::Node* createScene();
+            
+            bool areSubTilesComplete();
+            std::string getSubTileName();
+            osg::Node* createPagedLODScene();
+            osg::Node* createSubTileScene();
+
+            void setSubTilesGenerated(bool generated) { _subTileGenerated=generated; }
+            bool getSubTilesGenerated() const { return _subTileGenerated; }
+            
 
             typedef std::vector< osg::ref_ptr<DestinationTile> > TileList;
             typedef std::vector< osg::ref_ptr<CompositeDestination> > ChildList;
 
-            CompositeType   _type;
-            TileList        _tiles;
-            ChildList       _children;
-            float           _maxVisibleDistance;
+            DataSet*                _dataSet;
+            CompositeDestination*   _parent;
+            std::string             _name;
+            unsigned int            _level;
+            unsigned int            _tileX;
+            unsigned int            _tileY;
+            CompositeType           _type;
+            TileList                _tiles;
+            ChildList               _children;
+            float                   _maxVisibleDistance;
+            bool                    _subTileGenerated;
             
         };
 
 
-        typedef std::map<unsigned int,DestinationTile*> Row;
+        typedef std::map<unsigned int,CompositeDestination*> Row;
         typedef std::map<unsigned int,Row> Level;
         typedef std::map<unsigned int,Level> QuadMap;
         
-        void insertTileToQuadMap(DestinationTile* tile)
+        void insertTileToQuadMap(CompositeDestination* tile)
         {
             _quadMap[tile->_level][tile->_tileY][tile->_tileX] = tile;
         }
         
         DestinationTile* getTile(unsigned int level,unsigned int X, unsigned int Y)
+        {
+            CompositeDestination* cd = getComposite(level,X,Y);
+            if (!cd) return 0;            
+            if (cd->_tiles.empty()) return 0; 
+            return (cd->_tiles).front().get();
+        }
+
+        CompositeDestination* getComposite(unsigned int level,unsigned int X, unsigned int Y)
         {
             QuadMap::iterator levelItr = _quadMap.find(level);
             if (levelItr==_quadMap.end()) return 0;
@@ -794,9 +835,13 @@ class DataSet : public osg::Referenced
         void setDestinationGeoTransform(const osg::Matrixd& geoTransform) { _geoTransform = geoTransform; }
         
         void setDestinationTileBaseName(const std::string& basename) { _tileBasename = basename; }
-        void setDestinationTileExtension(const std::string& extension) { _tileExtension = extension; }
+        const std::string& getDestinationTileBaseName() const { return _tileBasename; }
         
-        CompositeDestination* createDestinationGraph(osgTerrain::CoordinateSystem* cs,
+        void setDestinationTileExtension(const std::string& extension) { _tileExtension = extension; }
+        const std::string& getDestinationTileExtension() const { return _tileExtension; }
+        
+        CompositeDestination* createDestinationGraph(CompositeDestination* parent,
+                                                     osgTerrain::CoordinateSystem* cs,
                                                      const osg::BoundingBox& extents,
                                                      unsigned int maxImageSize,
                                                      unsigned int maxTerrainSize,
@@ -829,6 +874,11 @@ class DataSet : public osg::Referenced
     protected:
 
         virtual ~DataSet() {}
+        
+        void _readRow(Row& row);
+        void _equalizeRow(Row& row);
+        void _writeRow(Row& row);
+        void _emptyRow(Row& row);
         
         void init();
 

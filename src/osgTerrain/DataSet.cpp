@@ -1072,6 +1072,9 @@ void DataSet::Source::buildOverviews()
 
 DataSet::DestinationTile::DestinationTile():
     _dataSet(0),
+    _level(0),
+    _tileX(0),
+    _tileY(0),
     _imagery_maxNumColumns(4096),
     _imagery_maxNumRows(4096),
     _imagery_maxSourceResolutionX(0.0f),
@@ -1079,7 +1082,8 @@ DataSet::DestinationTile::DestinationTile():
     _terrain_maxNumColumns(1024),
     _terrain_maxNumRows(1024),
     _terrain_maxSourceResolutionX(0.0f),
-    _terrain_maxSourceResolutionY(0.0f)
+    _terrain_maxSourceResolutionY(0.0f),
+    _complete(false)
 {
     for(int i=0;i<NUMBER_OF_POSITIONS;++i)
     {
@@ -1749,6 +1753,13 @@ void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 
 }
 
+void DataSet::DestinationTile::empty()
+{
+    _imagery = 0;
+    _terrain = 0;
+    _models = 0;
+}
+
 void DataSet::DestinationTile::addRequiredResolutions(CompositeSource* sourceGraph)
 {
     for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
@@ -1868,7 +1879,6 @@ osg::Node* DataSet::CompositeDestination::createScene()
     if (_children.empty() && _tiles.size()==1) return _tiles.front()->createScene();
     
     if (_tiles.empty() && _children.size()==1) return _children.front()->createScene();
-    
 
     if (_type==GROUP)
     {
@@ -1916,8 +1926,7 @@ osg::Node* DataSet::CompositeDestination::createScene()
         if (node) rangeNodeListMap[(*citr)->_maxVisibleDistance].push_back(node);
     }
 
-    osg::PagedLOD* pagedLOD = (_type==PAGED_LOD) ? new osg::PagedLOD : 0;
-    osg::LOD* lod = (pagedLOD) ? pagedLOD : new osg::LOD;
+    osg::LOD* lod = new osg::LOD;
     
     unsigned int childNum = 0;
     for(RangeNodeListMap::reverse_iterator rnitr=rangeNodeListMap.rbegin();
@@ -1958,20 +1967,139 @@ osg::Node* DataSet::CompositeDestination::createScene()
         if (child)
         {
             
-            if (pagedLOD)
-            {
-                std::cout<<"Need to set name of PagedLOD child"<<std::endl;
-                pagedLOD->addChild(child,0,maxVisibleDistance);
-            }
-            else
-            {
-                lod->addChild(child,0,maxVisibleDistance);
-            }
+            lod->addChild(child,0,maxVisibleDistance);
             
             ++childNum;
         }
     }
     return lod;
+}
+
+bool DataSet::CompositeDestination::areSubTilesComplete()
+{
+    for(TileList::iterator itr=_tiles.begin();
+        itr!=_tiles.end();
+        ++itr)
+    {
+        if (!(*itr)->getTileComplete()) return false;
+    }
+    return true;
+}
+
+std::string DataSet::CompositeDestination::getSubTileName()
+{
+    return _name+"_subtile"+_dataSet->getDestinationTileExtension();
+}
+
+osg::Node* DataSet::CompositeDestination::createPagedLODScene()
+{
+    if (_children.empty() && _tiles.empty()) return 0;
+    
+    if (_children.empty() && _tiles.size()==1) return _tiles.front()->createScene();
+    
+    if (_tiles.empty() && _children.size()==1) return _children.front()->createPagedLODScene();
+    
+
+    if (_type==GROUP)
+    {
+        osg::Group* group = new osg::Group;
+        for(TileList::iterator titr=_tiles.begin();
+            titr!=_tiles.end();
+            ++titr)
+        {
+            osg::Node* node = (*titr)->createScene();
+            if (node) group->addChild(node);
+        }
+
+        // handle chilren
+        for(ChildList::iterator citr=_children.begin();
+            citr!=_children.end();
+            ++citr)
+        {
+            osg::Node* node = (*citr)->createScene();
+            if (node) group->addChild(node);
+        }
+        return group;            
+    }
+
+    // must be either a LOD or a PagedLOD
+
+    typedef std::vector<osg::Node*>  NodeList;
+
+    // collect all the local tiles
+    NodeList tileNodes;
+    for(TileList::iterator titr=_tiles.begin();
+        titr!=_tiles.end();
+        ++titr)
+    {
+        osg::Node* node = (*titr)->createScene();
+        if (node) tileNodes.push_back(node);
+    }
+
+    osg::PagedLOD* pagedLOD = new osg::PagedLOD;
+ 
+    float farDistance = 1e8;
+    if (tileNodes.size()==1)
+    {
+        pagedLOD->addChild(tileNodes.front(),_maxVisibleDistance,farDistance);
+    }
+    else if (tileNodes.size()>1)
+    {
+        osg::Group* group = new osg::Group;
+        for(NodeList::iterator itr=tileNodes.begin();
+            itr != tileNodes.end();
+            ++itr)
+        {
+            group->addChild(*itr);
+        }
+        pagedLOD->addChild(group,_maxVisibleDistance,farDistance);
+    }
+    
+    pagedLOD->setFileName(1,getSubTileName());
+    pagedLOD->setRange(1,0,_maxVisibleDistance);
+    
+    if (pagedLOD->getNumChildren()>0)
+        pagedLOD->setCenter(pagedLOD->getBound().center());
+    
+    return pagedLOD;
+}
+
+osg::Node* DataSet::CompositeDestination::createSubTileScene()
+{
+    if (_type==GROUP ||
+        _children.empty() || 
+        _tiles.empty()) return 0;
+
+    // handle chilren
+    typedef std::vector<osg::Node*>  NodeList;
+    NodeList nodeList;
+    for(ChildList::iterator citr=_children.begin();
+        citr!=_children.end();
+        ++citr)
+    {
+        osg::Node* node = (*citr)->createPagedLODScene();
+        if (node) nodeList.push_back(node);
+    }
+
+    if (nodeList.size()==1)
+    {
+        return nodeList.front();
+    }
+    else if (nodeList.size()>1)
+    {
+        osg::Group* group = new osg::Group;
+        for(NodeList::iterator itr=nodeList.begin();
+            itr!=nodeList.end();
+            ++itr)
+        {
+            group->addChild(*itr);
+        }
+        return group;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2021,7 +2149,8 @@ void DataSet::loadSources()
     }
 }
 
-DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::CoordinateSystem* cs,
+DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestination* parent,
+                                                           osgTerrain::CoordinateSystem* cs,
                                                            const osg::BoundingBox& extents,
                                                            unsigned int maxImageSize,
                                                            unsigned int maxTerrainSize,
@@ -2041,23 +2170,27 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     std::ostringstream os;
     os << _tileBasename << "_L"<<currentLevel<<"_X"<<currentX<<"_Y"<<currentY;
 
-    //std::cout<<"Setting _tile._cs to "<<cs->getProjectionRef()<<std::endl;
-    
-    
+    destinationGraph->_parent = parent;
+    destinationGraph->_name = os.str();
+    destinationGraph->_level = currentLevel;
+    destinationGraph->_tileX = currentX;
+    destinationGraph->_tileY = currentY;
+    destinationGraph->_dataSet = this;
+
 
     DestinationTile* tile = new DestinationTile;
-    tile->_name = os.str();
-    tile->_dataSet = this;
-    tile->_cs = cs;
-    tile->_extents = extents;
+    tile->_name = destinationGraph->_name;
     tile->_level = currentLevel;
     tile->_tileX = currentX;
     tile->_tileY = currentY;
+    tile->_dataSet = this;
+    tile->_cs = cs;
+    tile->_extents = extents;
     tile->setMaximumImagerySize(maxImageSize,maxImageSize);
     tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
     tile->computeMaximumSourceResolution(_sourceGraph.get());
 
-    insertTileToQuadMap(tile);
+    insertTileToQuadMap(destinationGraph);
 
     if (currentLevel>=maxNumLevels-1)
     {    
@@ -2116,7 +2249,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
             osg::BoundingBox top_left(extents.xMin(),yCenter,extents.zMin(),xCenter,extents.yMax(),extents.zMax());
             osg::BoundingBox top_right(xCenter,yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          bottom_left,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2125,7 +2259,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                                          newY,
                                                                          maxNumLevels));
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          bottom_right,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2134,7 +2269,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                                          newY,
                                                                          maxNumLevels));
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          top_left,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2143,7 +2279,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                                          newY+1,
                                                                          maxNumLevels));
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          top_right,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2171,7 +2308,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
             osg::BoundingBox left(extents.xMin(),extents.yMin(),extents.zMin(),xCenter,extents.yMax(),extents.zMax());
             osg::BoundingBox right(xCenter,extents.yMin(),extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          left,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2180,7 +2318,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                                          newY,
                                                                          maxNumLevels));
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          right,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2209,7 +2348,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
             osg::BoundingBox top(extents.xMin(),yCenter,extents.zMin(),extents.xMax(),extents.yMax(),extents.zMax());
             osg::BoundingBox bottom(extents.xMin(),extents.yMin(),extents.zMin(),extents.xMax(),yCenter,extents.zMax());
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          bottom,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2218,7 +2358,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
                                                                          newY,
                                                                          maxNumLevels));
 
-            destinationGraph->_children.push_back(createDestinationGraph(cs,
+            destinationGraph->_children.push_back(createDestinationGraph(destinationGraph,
+                                                                         cs,
                                                                          top,
                                                                          maxImageSize,
                                                                          maxTerrainSize,
@@ -2245,19 +2386,6 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     }
     
     return destinationGraph;
-    
-#if 0    
-        // now get each tile to point to each other.
-        top_left_tile->setNeighbours(0,0,bottom_left_tile,bottom_right_tile,top_right_tile,0,0,0);
-        top_right_tile->setNeighbours(top_left_tile,bottom_left_tile,bottom_right_tile,0,0,0,0,0);
-        bottom_left_tile->setNeighbours(0,0,0,0,bottom_right_tile,top_right_tile,top_left_tile,0);
-        bottom_right_tile->setNeighbours(bottom_left_tile,0,0,0,0,0,top_right_tile,top_left_tile);
-        
-        top_left_tile->checkNeighbouringTiles();
-        top_right_tile->checkNeighbouringTiles();
-        bottom_left_tile->checkNeighbouringTiles();
-        bottom_right_tile->checkNeighbouringTiles();
-#endif    
 }
 
 void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
@@ -2307,7 +2435,8 @@ void DataSet::computeDestinationGraphFromSources(unsigned int numLevels)
     unsigned int imageSize = 256;
     unsigned int terrainSize = 64;
 
-    _destinationGraph = createDestinationGraph(_coordinateSystem.get(),
+    _destinationGraph = createDestinationGraph(0,
+                                               _coordinateSystem.get(),
                                                extents,
                                                imageSize,
                                                terrainSize,
@@ -2477,6 +2606,117 @@ void DataSet::populateDestinationGraphFromSources()
 }
 
 
+void DataSet::_readRow(Row& row)
+{
+    std::cout<<"_readRow "<<row.size()<<std::endl;
+    for(Row::iterator citr=row.begin();
+        citr!=row.end();
+        ++citr)
+    {
+        CompositeDestination* cd = citr->second;
+        for(CompositeDestination::TileList::iterator titr=cd->_tiles.begin();
+            titr!=cd->_tiles.end();
+            ++titr)
+        {
+            DestinationTile* tile = titr->get();
+            std::cout<<"   reading tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+            tile->readFrom(_sourceGraph.get());
+        }
+    }
+}
+
+void DataSet::_equalizeRow(Row& row)
+{
+    std::cout<<"_equalizeRow"<<row.size()<<std::endl;
+    for(Row::iterator citr=row.begin();
+        citr!=row.end();
+        ++citr)
+    {
+        CompositeDestination* cd = citr->second;
+        for(CompositeDestination::TileList::iterator titr=cd->_tiles.begin();
+            titr!=cd->_tiles.end();
+            ++titr)
+        {
+            DestinationTile* tile = titr->get();
+            std::cout<<"   equalizing tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+            tile->equalizeBoundaries();
+            tile->setTileComplete(true);
+        }
+    }
+}
+
+void DataSet::_writeRow(Row& row)
+{
+    std::cout<<"_writeRow"<<row.size()<<std::endl;
+    for(Row::iterator citr=row.begin();
+        citr!=row.end();
+        ++citr)
+    {
+        CompositeDestination* cd = citr->second;
+        CompositeDestination* parent = cd->_parent;
+        
+        if (parent)
+        {
+            if (!parent->getSubTilesGenerated() && parent->areSubTilesComplete())
+            {
+                osg::ref_ptr<osg::Node> node = parent->createSubTileScene();
+                std::string filename = parent->getSubTileName();
+                if (node.valid())
+                {
+                    std::cout<<"   writeSubTile filename="<<filename<<std::endl;
+                    osgDB::writeNodeFile(*node,filename);
+                    parent->setSubTilesGenerated(true);
+                }
+                else
+                {
+                    std::cout<<"   failed to writeSubTile node for tile, filename="<<filename<<std::endl;
+                }
+            }
+        }
+        else
+        {
+            osg::ref_ptr<osg::Node> node = cd->createPagedLODScene();
+            
+            //std::string filename = cd->_name + _tileExtension;
+            std::string filename = _tileBasename+_tileExtension;
+
+            if (node.valid())
+            {
+                std::cout<<"   writeNodeFile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
+                osgDB::writeNodeFile(*node,filename);
+            }
+            else
+            {
+                std::cout<<"   faild to write node for tile = "<<cd->_level<<" X="<<cd->_tileX<<" Y="<<cd->_tileY<<" filename="<<filename<<std::endl;
+            }
+        }
+    }
+}
+
+void DataSet::_emptyRow(Row& row)
+{
+    std::cout<<"_emptyRow"<<row.size()<<std::endl;
+
+    for(Row::iterator citr=row.begin();
+        citr!=row.end();
+        ++citr)
+    {
+        CompositeDestination* cd = citr->second;
+        for(CompositeDestination::TileList::iterator titr=cd->_tiles.begin();
+            titr!=cd->_tiles.end();
+            ++titr)
+        {
+            DestinationTile* tile = titr->get();
+            std::cout<<"   empty tile level="<<tile->_level<<" X="<<tile->_tileX<<" Y="<<tile->_tileY<<std::endl;
+            tile->empty();
+        }
+    }
+
+
+
+}
+
+
 void DataSet::createDestination(unsigned int numLevels)
 {
 
@@ -2485,34 +2725,63 @@ void DataSet::createDestination(unsigned int numLevels)
     computeDestinationGraphFromSources(numLevels);
     
     updateSourcesForDestinationGraphNeeds();
-    
-    populateDestinationGraphFromSources();
 
-    if (_destinationGraph.valid())
-    {
-        if (_databaseType==LOD_DATABASE)
-        {
-            _rootNode = _destinationGraph->createScene();
-        }
-        else
-        {
-            // create top most level?
-        }
-    }
 }
 
 void DataSet::writeDestination()
 {
-
-    std::string filename = _tileBasename+_tileExtension;
-    std::cout<<"DataSet::writeDestination("<<filename<<")"<<std::endl;
-    if (_rootNode.valid())
+    if (_destinationGraph.valid())
     {
-        osgDB::writeNodeFile(*_rootNode,filename);
+        std::string filename = _tileBasename+_tileExtension;
+        std::cout<<"DataSet::writeDestination("<<filename<<")"<<std::endl;
+
+        if (_databaseType==LOD_DATABASE)
+        {
+            populateDestinationGraphFromSources();
+            _rootNode = _destinationGraph->createScene();
+            osgDB::writeNodeFile(*_rootNode,filename);
+        }
+        else  // _databaseType==PagedLOD_DATABASE
+        {
+            // for each level build read and write the rows.
+            for(QuadMap::iterator qitr=_quadMap.begin();
+                qitr!=_quadMap.end();
+                ++qitr)
+            {
+                Level& level = qitr->second;
+                
+                // skip is level is empty.
+                if (level.empty()) continue;
+                
+                std::cout<<"New level"<<std::endl;
+
+                Level::iterator prev_itr = level.begin();
+                _readRow(prev_itr->second);
+                Level::iterator curr_itr = prev_itr;
+                ++curr_itr;
+                for(;
+                    curr_itr!=level.end();
+                    ++curr_itr)
+                {
+                    _readRow(curr_itr->second);
+                    
+                    _equalizeRow(prev_itr->second);
+                    _writeRow(prev_itr->second);
+                    _emptyRow(prev_itr->second);
+                    
+                    prev_itr = curr_itr;
+                }
+                
+                _equalizeRow(prev_itr->second);
+                _writeRow(prev_itr->second);
+                _emptyRow(prev_itr->second);
+            }
+        }
     }
     else
     {
         std::cout<<"Error: no scene graph to output, no file written."<<std::endl;
     }
+
 }
 

@@ -23,7 +23,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& f
 osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
-    return ReadResult::FILE_NOT_HANDLED;
+        return ReadResult::FILE_NOT_HANDLED;
 
     osg::ref_ptr<FltFile> read = new FltFile;
 

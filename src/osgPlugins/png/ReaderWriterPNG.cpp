@@ -1,9 +1,10 @@
 #include <osg/Image>
 #include "osg/Notify"
 #include <osg/Geode>
-#include "osg/GL"
+#include <osg/GL>
 
-#include "osgDB/Registry"
+#include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 using namespace osg;
 
@@ -34,6 +35,9 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
+
+            if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
+                return ReadResult::FILE_NOT_HANDLED;
 
             int trans = PNG_ALPHA;
             FILE *fp = NULL;

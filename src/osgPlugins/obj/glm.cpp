@@ -654,6 +654,8 @@ _glmFirstPass(GLMmodel* model, FILE* file)
       /* eat up rest of line */
       fgets(buf, sizeof(buf), file);
       break;
+    case 'o':                /* group */
+    case 's':                /* group */
     case 'g':                /* group */
       {
         /* eat up rest of line */
@@ -844,6 +846,8 @@ _glmSecondPass(GLMmodel* model, FILE* file)
       if (previousLineWas_g || firstGroup) group->material = material;
 
       break;
+    case 'o':                /* group */
+    case 's':                /* group */
     case 'g':                /* group */
       /* eat up rest of line */
       fgets(buf, sizeof(buf), file);

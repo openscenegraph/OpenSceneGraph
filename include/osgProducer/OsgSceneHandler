@@ -105,6 +105,7 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
         osg::ref_ptr<Callback> _drawCallback;
         
         osg::Timer_t           _frameStartTick;
+        osg::Timer_t           _previousFrameStartTick;
 };
 
 }

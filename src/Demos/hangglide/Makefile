@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	hangglide.cpp\
@@ -12,7 +12,7 @@ C++FILES = \
 	base.cpp\
 	trees.cpp\
 
-TARGET = $(TOP)/bin/hangglide
+TARGET = $(OSGHOME)/bin/hangglide
 
 TARGET_BIN_FILES = hangglide
 
@@ -22,7 +22,7 @@ TARGET_BIN_FILES = hangglide
 #note, standard library list. 
 LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
 # $(OSGDB_LIBS)
-C++FLAGS += -I. -I$(TOP)/include
-LDFLAGS += -L$(TOP)/lib
+C++FLAGS += -I. -I$(OSGHOME)/include
+LDFLAGS += -L$(OSGHOME)/lib
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules

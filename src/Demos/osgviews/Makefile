@@ -1,10 +1,10 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	osgviews.cpp
 
-TARGET = $(TOP)/bin/osgviews
+TARGET = $(OSGHOME)/bin/osgviews
 
 TARGET_BIN_FILES = osgviews
 
@@ -14,8 +14,8 @@ TARGET_BIN_FILES = osgviews
 #note, standard library list. 
 LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
 
-C++FLAGS += -I$(TOP)/include
-LDFLAGS += -L$(TOP)/lib
+C++FLAGS += -I$(OSGHOME)/include
+LDFLAGS += -L$(OSGHOME)/lib
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

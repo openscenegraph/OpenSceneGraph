@@ -1,10 +1,10 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	main.cpp
 
-TARGET = $(TOP)/bin/osgtext
+TARGET = $(OSGHOME)/bin/osgtext
 
 TARGET_BIN_FILES = osgtext
 
@@ -14,8 +14,8 @@ TARGET_BIN_FILES = osgtext
 #note, standard library list. 
 LIBS = -losgGLUT -losgText -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
 
-C++FLAGS += -I$(TOP)/include -g
-LDFLAGS += -L$(TOP)/lib -L/usr/freeware/lib32
+C++FLAGS += -I$(OSGHOME)/include -g
+LDFLAGS += -L$(OSGHOME)/lib -L/usr/freeware/lib32
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

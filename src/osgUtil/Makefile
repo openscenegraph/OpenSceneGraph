@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	AppVisitor.cpp\
@@ -35,10 +35,10 @@ C++FILES = \
 TARGET_BASENAME = osgUtil
 
 
-LIBS    = -L$(TOP)/lib -losg $(GL_LIBS)
+LIBS    = -L$(OSGHOME)/lib -losg $(GL_LIBS)
 
-LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
+LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 TARGET_INCLUDE_FILES = \
@@ -75,9 +75,9 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/Version\
 
 
-C++FLAGS += -I $(TOP)/include -DOSGUTIL_LIBRARY
+C++FLAGS += -I $(OSGHOME)/include -DOSGUTIL_LIBRARY
 
-#LDFLAGS += --out-implib $(TOP)/lib/lib$(TARGET_BASENAME).a
+#LDFLAGS += --out-implib $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

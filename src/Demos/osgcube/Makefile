@@ -1,15 +1,15 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	osgcube.cpp
 
-TARGET = $(TOP)/bin/osgcube
+TARGET = $(OSGHOME)/bin/osgcube
 
 TARGET_BIN_FILES = osgcube
 
 LIBS = -losgGLUT -losgDB -losgUtil -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
-C++FLAGS += -I$(TOP)/include
-LDFLAGS += -L$(TOP)/lib
+C++FLAGS += -I$(OSGHOME)/include
+LDFLAGS += -L$(OSGHOME)/lib
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules

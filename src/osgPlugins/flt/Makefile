@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	BoundingVolumeRecords.cpp\
@@ -47,15 +47,15 @@ TARGET_BASENAME = osgdb_flt
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).$(SO_EXT)
 
-LIB = $(TOP)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
+LIB = $(OSGHOME)/lib/osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
 TARGET_LOADER_FILES = osgPlugins/$(TARGET_BASENAME).$(SO_EXT)
 
 LIBS    =  $(GL_LIBS) -losg -losgDB
 
-C++FLAGS += -I. -I$(TOP)/include 
+C++FLAGS += -I. -I$(OSGHOME)/include 
 
-LDFLAGS += -L$(TOP)/lib
+LDFLAGS += -L$(OSGHOME)/lib
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

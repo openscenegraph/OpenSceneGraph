@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	DynamicLibrary.cpp\
@@ -39,15 +39,15 @@ TARGET_INCLUDE_FILES = \
 	osgDB/DotOsgWrapper\
 
 
-#LIBS    = -L$(TOP)/lib -losg -lGLU -lGL -lm -ldl
-LIBS    = -L$(TOP)/lib -losg $(GL_LIBS) $(DYNAMICLIBRARYLIB)
+#LIBS    = -L$(OSGHOME)/lib -losg -lGLU -lGL -lm -ldl
+LIBS    = -L$(OSGHOME)/lib -losg $(GL_LIBS) $(DYNAMICLIBRARYLIB)
 
-LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
+LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
 
-C++FLAGS += -I $(TOP)/include -DOSGDB_LIBRARY
+C++FLAGS += -I $(OSGHOME)/include -DOSGDB_LIBRARY
 
 #LDFLAGS += -Wl,--out-implib,./../lib/lib$(TARGET_BASENAME).a
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

@@ -1,10 +1,10 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	osgtexture.cpp
 
-TARGET = $(TOP)/bin/osgtexture
+TARGET = $(OSGHOME)/bin/osgtexture
 
 TARGET_BIN_FILES = osgtexture
 
@@ -14,7 +14,7 @@ TARGET_BIN_FILES = osgtexture
 #note, standard library list. 
 LIBS = -losgGLUT -losgUtil -losgDB -losg $(GLUTLIB) $(GL_LIBS) $(X_LIBS)
 
-C++FLAGS += -I$(TOP)/include
-LDFLAGS += -L$(TOP)/lib
+C++FLAGS += -I$(OSGHOME)/include
+LDFLAGS += -L$(OSGHOME)/lib
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules

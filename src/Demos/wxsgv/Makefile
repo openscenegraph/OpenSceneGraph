@@ -1,14 +1,14 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	$(wildcard *.cpp)
 
-TARGET = $(TOP)/bin/wxsgv
+TARGET = $(OSGHOME)/bin/wxsgv
 
 TARGET_BIN_FILES = wxsgv
 
-C++FLAGS += -I$(TOP)/include `wx-config --cflags`
+C++FLAGS += -I$(OSGHOME)/include `wx-config --cflags`
 
 #note, use this library list when using the Performer osgPlugin.
 #LIBS = ${PFLIBS} -losgWX -losgUtil -losgDB -losg \
@@ -20,8 +20,8 @@ LIBS = -losgWX -losgUtil -losgDB -losg \
        `wx-config --libs` -lwx_gtk_gl \
 	   $(GL_LIBS) $(X_LIBS)
 
-C++FLAGS += -I$(TOP)/include -I./icons
-LDFLAGS += -L$(TOP)/lib
+C++FLAGS += -I$(OSGHOME)/include -I./icons
+LDFLAGS += -L$(OSGHOME)/lib
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

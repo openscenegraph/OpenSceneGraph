@@ -3,11 +3,11 @@ SHELL=/bin/sh
 
 DIRS = sgv osgconv osgcube osgreflect osgtexture osgimpostor osgviews hangglide 
 
-# comment out if you don't have 
-#DIRS += osgcluster
-
 # comment out if you don't have the freetype and GLU1.3 library installed.
-#DIRS += osgtext 
+DIRS += osgtext 
+
+# comment out if you don't have support for networking.
+#DIRS += osgcluster
 
 # comment out if you don't have the wxWindows installed.
 # DIRS += wxsgv

@@ -1,5 +1,5 @@
 #!smake
-include $(TOP)/Make/makedefs
+include $(OSGHOME)/Make/makedefs
 
 C++FILES = \
 	AlphaFunc.cpp\
@@ -136,12 +136,12 @@ TARGET_INCLUDE_FILES = \
 
 LIBS    =  $(GL_LIBS)
 
-LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
-#LIB	= $(TOP)/lib/lib$(TARGET_BASENAME).a
+LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).$(SO_EXT)
+#LIB	= $(OSGHOME)/lib/lib$(TARGET_BASENAME).a
 
-C++FLAGS += -I $(TOP)/include -DSG_LIBRARY
+C++FLAGS += -I $(OSGHOME)/include -DSG_LIBRARY
 
 #LDFLAGS += -Wl,--out-implib,./../lib/lib$(TARGET_BASENAME).a
 
-include $(TOP)/Make/makerules
+include $(OSGHOME)/Make/makerules
 

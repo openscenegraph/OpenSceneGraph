@@ -6,7 +6,7 @@ DIRS = src
 
 VERSION = osg-0.8.43
 
-export TOP := $(shell pwd)
+export OSGHOME := $(shell pwd)
 
 all : $(MAKE_PREP)
 	for f in $(DIRS) ; do cd $$f; $(MAKE) || exit 1; cd ..; done
@@ -129,7 +129,7 @@ dev: $(MAKE_PREP)
 	(cd ..; tar cvf - $(VERSION) | gzip > osg-`date "+%Y%m%d"`.tar.gz)
 
 install instlinks instclean :
-	export OSGHOME=`pwd`; for f in $(DIRS)  ; do cd $$f; $(MAKE) $@; cd ..;  done
+	for f in $(DIRS)  ; do cd $$f; $(MAKE) $@; cd ..;  done
 
 instcheck :
 	diff -q include/osg/       /usr/include/osg/

@@ -12,6 +12,7 @@
 #include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/State>
+#include <osg/ClusterCullingCallback>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>

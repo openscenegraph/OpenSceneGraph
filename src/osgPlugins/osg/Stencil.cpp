@@ -106,13 +106,13 @@ bool Stencil_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << "function " << Stencil_getFuncStr(stencil.getFunction()) << endl;
     fw.indent() << "functionRef " << stencil.getFunctionRef() << endl;
-    fw.indent() << "functionMask 0x" << hex << stencil.getFunctionMask() << dec << endl;
+    fw.indent() << "functionMask 0x" << std::hex << stencil.getFunctionMask() << std::dec << endl;
     
     fw.indent() << "stencilFailOperation " << Stencil_getOperationStr(stencil.getStencilFailOperation()) << endl;
     fw.indent() << "stencilPassAndDepthFailOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthFailOperation()) << endl;
     fw.indent() << "stencilPassAndDepthPassOperation " << Stencil_getOperationStr(stencil.getStencilPassAndDepthPassOperation()) << endl;
     
-    fw.indent() << "writeMask 0x" << hex << stencil.getWriteMask() << dec << endl;
+    fw.indent() << "writeMask 0x" << std::hex << stencil.getWriteMask() << std::dec << endl;
 
     return true;
 }

@@ -15,6 +15,7 @@
 #else
 #include <iostream>
 using std::istream;
+using std::ifstream;
 #endif
 
 namespace osgDB {

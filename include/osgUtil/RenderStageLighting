@@ -40,7 +40,7 @@ class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
 
         virtual void reset();
         
-        typedef std::pair< const osg::StateAttribute*, osg::ref_ptr<osg::RefMatrix> >    AttrMatrixPair;
+        typedef std::pair< osg::ref_ptr<const osg::StateAttribute> , osg::ref_ptr<osg::RefMatrix> >    AttrMatrixPair;
         typedef std::vector< AttrMatrixPair >                                            AttrMatrixList;
         typedef std::map< unsigned int, AttrMatrixList >                                 TexUnitAttrMatrixListMap;
 

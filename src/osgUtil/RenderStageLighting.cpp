@@ -52,7 +52,7 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
         litr->first->apply(state);
         
         // tell state about.
-        state.haveAppliedAttribute(litr->first);
+        state.haveAppliedAttribute(litr->first.get());
             
     }
 
@@ -74,7 +74,7 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
             litr->first->apply(state);
 
             // tell state about.
-            state.haveAppliedTextureAttribute(titr->first, litr->first);
+            state.haveAppliedTextureAttribute(titr->first, litr->first.get());
 
         }
 

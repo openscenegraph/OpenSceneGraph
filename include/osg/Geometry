@@ -345,6 +345,11 @@ class SG_EXPORT Geometry : public Drawable
         /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
 
+        /** return true, osg::Geometry does support accept(PrimitiveIndexFunctor&) .*/
+        virtual bool supports(PrimitiveIndexFunctor&) const { return true; }
+
+        /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
+        virtual void accept(PrimitiveIndexFunctor& pf) const;
 
 
     protected:

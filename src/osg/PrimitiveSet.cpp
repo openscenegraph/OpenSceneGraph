@@ -24,6 +24,11 @@ void DrawArrays::accept(Drawable::PrimitiveFunctor& functor) const
     functor.drawArrays(_mode,_first,_count);
 }
 
+void DrawArrays::accept(Drawable::PrimitiveIndexFunctor& functor) const
+{
+    functor.drawArrays(_mode,_first,_count);
+}
+
 void DrawArrayLengths::draw() const
 {
     GLint first = _first;
@@ -37,6 +42,18 @@ void DrawArrayLengths::draw() const
 }
 
 void DrawArrayLengths::accept(Drawable::PrimitiveFunctor& functor) const
+{
+    GLint first = _first;
+    for(VectorSizei::const_iterator itr=begin();
+        itr!=end();
+        ++itr)
+    {
+        functor.drawArrays(_mode,first,*itr);
+        first += *itr;
+    }
+}
+
+void DrawArrayLengths::accept(Drawable::PrimitiveIndexFunctor& functor) const
 {
     GLint first = _first;
     for(VectorSizei::const_iterator itr=begin();
@@ -70,6 +87,11 @@ void DrawElementsUByte::accept(Drawable::PrimitiveFunctor& functor) const
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
+void DrawElementsUByte::accept(Drawable::PrimitiveIndexFunctor& functor) const
+{
+    if (!empty()) functor.drawElements(_mode,size(),&front());
+}
+
 void DrawElementsUByte::offsetIndices(int offset)
 {
     for(iterator itr=begin();
@@ -91,6 +113,11 @@ void DrawElementsUShort::accept(Drawable::PrimitiveFunctor& functor) const
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }
 
+void DrawElementsUShort::accept(Drawable::PrimitiveIndexFunctor& functor) const
+{
+    if (!empty()) functor.drawElements(_mode,size(),&front());
+}
+
 void DrawElementsUShort::offsetIndices(int offset)
 {
     for(iterator itr=begin();
@@ -108,6 +135,11 @@ void DrawElementsUInt::draw() const
 }
 
 void DrawElementsUInt::accept(Drawable::PrimitiveFunctor& functor) const
+{
+    if (!empty()) functor.drawElements(_mode,size(),&front());
+}
+
+void DrawElementsUInt::accept(Drawable::PrimitiveIndexFunctor& functor) const
 {
     if (!empty()) functor.drawElements(_mode,size(),&front());
 }

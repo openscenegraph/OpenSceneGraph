@@ -1976,6 +1976,142 @@ void Geometry::accept(PrimitiveFunctor& functor) const
     return;
 }
 
+void Geometry::accept(PrimitiveIndexFunctor& functor) const
+{
+    if (!_vertexData.array.valid() || _vertexData.array->getNumElements()==0) return;
+
+    switch(_vertexData.array->getType())
+    {
+    case(Array::Vec2ArrayType): 
+        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2*>(_vertexData.array->getDataPointer()));
+        break;
+    case(Array::Vec3ArrayType): 
+        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3*>(_vertexData.array->getDataPointer()));
+        break;
+    case(Array::Vec4ArrayType): 
+        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4*>(_vertexData.array->getDataPointer()));
+        break;
+    default:
+        notify(WARN)<<"Warning: Geometry::accept(PrimtiveIndexFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+        return;
+    }
+
+    if (!_vertexData.indices.valid())
+    {
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
+            itr!=_primitives.end();
+            ++itr)
+        {
+            (*itr)->accept(functor);
+        }
+    }
+    else
+    {
+        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
+            itr!=_primitives.end();
+            ++itr)
+        {
+            const PrimitiveSet* primitiveset = itr->get();
+            GLenum mode=primitiveset->getMode();
+            switch(primitiveset->getType())
+            {
+                case(PrimitiveSet::DrawArraysPrimitiveType):
+                {
+                    const DrawArrays* drawArray = static_cast<const DrawArrays*>(primitiveset);
+                    functor.begin(mode);
+
+                    unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
+                    for(unsigned int vindex=drawArray->getFirst();
+                        vindex<indexEnd;
+                        ++vindex)
+                    {
+                        functor.vertex(_vertexData.indices->index(vindex));
+                    }
+                    
+                    functor.end();
+                    break;
+                }
+                case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+                {
+
+                    const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                    unsigned int vindex=drawArrayLengths->getFirst();
+                    for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                        primItr!=drawArrayLengths->end();
+                        ++primItr)
+                    {
+
+                        functor.begin(mode);
+
+                        for(GLsizei primCount=0;primCount<*primItr;++primCount)
+                        {
+                            functor.vertex(_vertexData.indices->index(vindex));
+                            ++vindex;
+                        }
+                        
+                        functor.end();
+
+                    }
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUBytePrimitiveType):
+                {
+                    const DrawElementsUByte* drawElements = static_cast<const DrawElementsUByte*>(primitiveset);
+                    functor.begin(mode);
+
+                    unsigned int primCount=0;
+                    for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        unsigned int vindex=*primItr;
+                        functor.vertex(_vertexData.indices->index(vindex));
+                    }
+
+                    functor.end();
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUShortPrimitiveType):
+                {
+                    const DrawElementsUShort* drawElements = static_cast<const DrawElementsUShort*>(primitiveset);
+                    functor.begin(mode);
+
+                    for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
+                    {
+                        unsigned int vindex=*primItr;
+                        functor.vertex(_vertexData.indices->index(vindex));
+                    }
+
+                    functor.end();
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUIntPrimitiveType):
+                {
+                    const DrawElementsUInt* drawElements = static_cast<const DrawElementsUInt*>(primitiveset);
+                    functor.begin(mode);
+
+                    for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primItr)
+                    {
+                        unsigned int vindex=*primItr;
+                        functor.vertex(_vertexData.indices->index(vindex));
+                    }
+
+                    functor.end();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+    }
+    return;
+}
 
 unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
 {

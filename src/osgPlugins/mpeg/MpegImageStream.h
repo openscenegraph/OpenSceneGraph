@@ -105,10 +105,6 @@ namespace osg {
 
         OpenThreads::Mutex _mutex;
 
-        // Lock/unlock object.
-        inline void lock() { _mutex.lock(); }
-        inline void unlock() { _mutex.unlock(); }
-
         /// Set command.
         void setCmd(ThreadCommand cmd);
 

@@ -179,7 +179,8 @@ void CullVisitor::pushCullingSet()
     _windowToModelFactorDirty = true;
     
 
-    _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back()));
+    if (_modelviewStack.empty()) _modelviewCullingStack.push_back(_projectionCullingStack.back());
+    else _modelviewCullingStack.push_back(osgNew osg::CullingSet(*_projectionCullingStack.back(),*_modelviewStack.back()));
     
 }
 

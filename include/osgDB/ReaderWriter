@@ -171,4 +171,4 @@ class OSGDB_EXPORT ReaderWriter : public osg::Referenced
 
 }
 
-#endif // OSG_READERWRITER
+#endif // OSGDB_READERWRITER

@@ -101,7 +101,7 @@ ifeq ($(OS),SunOS)
   ifeq ($(COMPILER),gnu)
     C++               = g++
     DEPARG            = -M
-    INC               += -I/usr/local/glut-3.7/include
+    INC               += 
     DEF               += -W -Wall -fPIC -fpermissive
     OPTF              = -O2
     DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
@@ -113,7 +113,6 @@ ifeq ($(OS),SunOS)
   else
       ARCHARGS        = 
   endif
-    GLUT_LIB          = -L/usr/local/glut-3.7/lib/glut -lglut
     GIF_LIBS          = -lgif 
     TIFF_LIB	      = -ltiff 
     JPEG_LIBS         = -ljpeg 
@@ -138,7 +137,6 @@ ifeq ($(OS),SunOS)
       ARCHARGS        = 
       ARCHINST        = 
   endif
-    GLUT_LIB          = -lglut
     OTHER_LIBS        = -lCstd
     LINKARGS          =  
     GIF_LIBS          = /usr/local/lib/libgif.a
@@ -148,7 +146,7 @@ ifeq ($(OS),SunOS)
     FREETYPE_LIB      = /usr/local/lib/libfreetype.a
   endif 
     DYNAMICLIBRARYLIB = -ldl
-    OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+    OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
     GL_LIBS           = -lGLU -lGL 
     X_LIBS            = -lXext -lXmu -lXi -lX11 
     SOCKET_LIBS       = -lsocket -lnsl
@@ -193,8 +191,7 @@ ifeq ($(OS),IRIX)
   endif
 
   DYNAMICLIBRARYLIB = 
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-  GLUT_LIB          = -lglut
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXext -lXi -lXmu -lX11
   SOCKET_LIBS       = 
@@ -245,9 +242,8 @@ ifeq ($(OS),Linux)
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
   DYNAMICLIBRARYLIB = -ldl
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
-  GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXi -lXmu -lX11
   PF_XTRA_LIBS      = -L/usr/lib/libpfdb   -Xlinker -rpath /usr/lib/libpfdb \
@@ -275,9 +271,8 @@ ifeq ($(OS),FreeBSD)
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
   DYNAMICLIBRARYLIB = 
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
-  GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
   X_LIBS            = -lXmu -lX11
   SOCKET_LIBS       = 
@@ -300,9 +295,8 @@ ifeq ($(OS),Darwin)
   ARCHARGS          = 
   LINKARGS          =
   DYNAMICLIBRARYLIB =
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
-  GLUT_LIB          = -framework GLUT
   CARBON_LIB        = -framework Carbon
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
   X_LIBS            = 
@@ -338,9 +332,8 @@ ifeq ($(OS),CYGWIN)
   ARCHARGS          = 
   LINKARGS          = -W -Wall
   DYNAMICLIBRARYLIB =
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
-  GLUT_LIB          = -lglut32 $(GL_LIBS)
   X_LIBS            = -lgdi32 -luser32
   SOCKET_LIBS       = 
   OTHER_LIBS        = $(GL_LIBS)
@@ -383,9 +376,8 @@ ifeq ($(OS),MINGW)
   ARCHARGS          = 
   LINKARGS          = -W -Wall
   DYNAMICLIBRARYLIB =
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32
-  GLUT_LIB          = -lglut32 $(GL_LIBS)
   X_LIBS            = -lgdi32 -luser32
   SOCKET_LIBS       = 
   OTHER_LIBS        = $(GL_LIBS)
@@ -419,7 +411,7 @@ ifeq ($(OS),HP-UX)
 
   C++               = g++
   DEPARG            = -M
-  INC               += -I/opt/glut/include
+  INC               += 
   DEF               += -W -Wall -fPIC
   OPTF              = -O2 
   # gcc 3.1 uses DWARF as default, my GDB might not yet support this...
@@ -440,9 +432,7 @@ endif
   LIB_EXT           = sl
   PLUGIN_EXT        = sl
   DYNAMICLIBRARYLIB = -ldld
-  OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
-  # glut delivered with HP-UX is outdated
-  GLUT_LIB          = -L/opt/glut/lib -lglut
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   GL_LIBS           = -L/opt/graphics/OpenGL/lib -lGLU -lGL 
   X_LIBS            = -L/usr/lib/X11R6 -lXext -lXi -lX11 -L/usr/lib/X11R4 -lXmu
   SOCKET_LIBS       = 

@@ -12,13 +12,11 @@ SRC_DIRS = \
 	osgDB\
 	osgGA\
 	osgParticle\
-	osgGLUT\
 	osgProducer\
 	osgText\
 	osgSim\
 	osgPlugins\
-	../examples\
-#	src/Demos
+	../examples
 
 
 ################################################################
@@ -125,47 +123,3 @@ EXAMPLE_DIRS = \
 
 # comment in you want to compile the cluster demo.
 # EXAMPLE_DIRS += osgcluster
-
-################################################################
-# Directories traversed in the TOPDIR/src/Demos directory
-
-DEMOS_DIRS = \
-	osganimate\
-	osgbillboard\
-	osgcallback\
-	osgclip\
-	osgconv\
-	osgcopy\
-	osgcube\
-	osgcubemap\
-	osggeodemo\
-	osggeometry\
-	osghangglide\
-	osghud\
-	osgimpostor\
-	osglight\
-	osglightpoint\
-	osglogo\
-	osgmultitexture\
-	osgoccluder\
-	osgparticle\
-	osgprerender\
-	osgreflect\
-	osgscribe\
-	osgsequence\
-	osgshadowtexture\
-	osgshape\
-	osgstereoimage\
-	osgteapot\
-	osgtext\
-	osgtexture1D\
-	osgtexture2D\
-	osgtexture3D\
-	osgunittests\
-	osgversion\
-	osgvertexprogram\
-	osgviews\
-	sgv
-        
-# comment in you want to compile the cluster demo.
-# DEMOS_DIRS += osgcluster

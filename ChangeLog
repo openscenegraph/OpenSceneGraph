@@ -1,3 +1,2497 @@
+2002-07-19 10:52  robert
+
+	* doc/Doxyfiles/: all_Doxyfile, auto_Doxyfile, auto_Mainpage,
+	core_Doxyfile: Updated Doyxgen files.
+
+2002-07-19 10:19  robert
+
+	* include/osg/Geometry, include/osgUtil/Optimizer,
+	src/osgPlugins/flt/GeoSetBuilder.cpp: Updates to the Geometry to
+	add more access methods, and updates to Optimizer to add the new
+	merge primtives option.
+
+2002-07-19 09:49  robert
+
+	* src/osgUtil/Optimizer.cpp: Added primitve merging into the
+	osg::Geometry optimizer.
+
+2002-07-19 08:51  robert
+
+	* Make/: debugtests.bat, osgtests.bat: Removed the cow.osg paramter
+	for the osgparticle cow.osg in the test scripts
+
+2002-07-19 06:18  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp: Added
+	MatrixTransform.cpp.
+
+2002-07-19 05:10  robert
+
+	* src/Demos/osgmultitexture/osgmultitexture.cpp: Changed the
+	"reflect.rgb" path to "Images/reflect.rgb" to the help find the
+	file required.
+
+2002-07-18 18:35  robert
+
+	* NEWS, include/osg/BoundingBox, include/osg/Drawable,
+	include/osg/Geometry, src/osg/BoundingBox.cpp,
+	src/osg/Drawable.cpp, src/osg/GeoSet.cpp, src/osg/Geometry.cpp,
+	src/osgPlugins/flt/GeoSetBuilder.cpp: Updates NEWS file for 0.9.0
+	release.
+	
+	Added default computeBound() implementation to osg::Drawable which
+	uses a PrimtiveFunctor to compute the bounding box in a generic
+	way, that will work for all Drawable subclasses that implement the
+	accept(PrimitiveFunctor&).
+
+2002-07-18 18:34  robert
+
+	* Make/: debugtests.bat, osgtests.bat: Added osgoccluder to test
+	scripts.
+
+2002-07-18 15:54  robert
+
+	* src/osgGLUT/Viewer.cpp: Moved the 't' operation on texture modes
+	across to use the new StateSet::setTextureMode methods, this
+	enables 't' to work once more!
+
+2002-07-18 15:53  robert
+
+	* doc/doc++/: osg/AlphaFunc.html, osg/Array.html,
+	osg/ArrayVisitor.html, osg/AttributeFunctor.html,
+	osg/Billboard.html, osg/BlendFunc.html, osg/ClipNode.html,
+	osg/ClipPlane.html, osg/CollectOccludersVisitor.html,
+	osg/ColorMask.html, osg/ColorMatrix.html,
+	osg/ConvexPlanerOccluder.html, osg/ConvexPlanerPolygon.html,
+	osg/CullFace.html, osg/CullStack.html, osg/CullingSet.html,
+	osg/Depth.html, osg/DrawArrayLengths.html, osg/DrawArrays.html,
+	osg/DrawElementsUByte.html, osg/DrawElementsUInt.html,
+	osg/DrawElementsUShort.html, osg/DrawPixels.html,
+	osg/Drawable.html, osg/Fog.html, osg/FrontFace.html,
+	osg/GeoSet.html, osg/Geode.html, osg/Geometry.html, osg/HIER.html,
+	osg/HIERjava.html, osg/Image.html, osg/ImpostorSprite.html,
+	osg/Light.html, osg/LightModel.html, osg/LineStipple.html,
+	osg/LineWidth.html, osg/Material.html, osg/Matrix.html,
+	osg/MatrixTransform.html, osg/Object.html, osg/OccluderNode.html,
+	osg/Point.html, osg/PolygonMode.html, osg/PolygonOffset.html,
+	osg/Polytope.html, osg/Primitive.html, osg/PrimitiveFunctor.html,
+	osg/ShadeModel.html, osg/ShadowOccluderVolume.html,
+	osg/ShadowVolumeOccluder.html, osg/StateAttribute.html,
+	osg/StateSet.html, osg/Statistics.html, osg/Stencil.html,
+	osg/TemplateArray.html, osg/TexEnv.html, osg/TexGen.html,
+	osg/TexMat.html, osg/Texture.html, osg/TextureCubeMap.html,
+	osg/TriangleFunctor.html, osg/UByte4.html, osg/VectorSizei.html,
+	osg/VectorUByte.html, osg/VectorUInt.html, osg/VectorUShort.html,
+	osg/Viewport.html, osg/fast_back_stack.html,
+	osg/getGLExtensionFuncPtr.2.html, osg/globalnotifylevel..html,
+	osg/globalnotifynulstream..html, osg/operator.2.html,
+	osg/operator.html, osg/osg.html, osgDB/FilePathList.html,
+	osgDB/PushAndPopDataPath.html, osgDB/fileExists.html,
+	osgGA/GUIEventHandlerVisitor.html,
+	osgGA/KeySwitchCameraManipulator.html, osgGLUT/Viewer.html,
+	osgParticle/ParticleSystem.html,
+	osgUtil/ConvertGeoSetsToGeometryVisitor.html, osgUtil/General.html,
+	osgUtil/HIER.html, osgUtil/HIERjava.html,
+	osgUtil/LeafDepthSortFunctor.html, osgUtil/Optimizer.html,
+	osgUtil/RemoveEmptyNodesVisitor.html,
+	osgUtil/RemoveLowestStaticTransformsVisitor.html,
+	osgUtil/index.html: Updated docs ready for the release.
+
+2002-07-18 15:41  robert
+
+	* include/osg/Node, include/osg/Object, src/osg/Node.cpp,
+	src/osg/Object.cpp, src/osgPlugins/osg/Geode.cpp: Moved
+	get/setUserData from osg::Node into its superclass osg::Object to
+	allow other subclasses to add their own custom data.
+
+2002-07-18 11:36  robert
+
+	* include/osg/Drawable, include/osg/GeoSet, include/osg/Geometry,
+	include/osg/ImpostorSprite, include/osg/Primitive,
+	src/Demos/osggeometry/osggeometry.cpp,
+	src/Demos/osgprerender/osgprerender.cpp, src/osg/GeoSet.cpp,
+	src/osg/Geometry.cpp, src/osg/ImpostorSprite.cpp,
+	src/osg/Primitive.cpp, src/osgUtil/IntersectVisitor.cpp,
+	src/osgUtil/Optimizer.cpp, src/osgUtil/RenderBin.cpp,
+	src/osgUtil/SmoothingVisitor.cpp, src/osgUtil/TriStripVisitor.cpp:
+	Rewrote the osg::Drawable::AttributeFunctor and PrimtiveFunctor to
+	make them more consistent with each other. This does mean an API
+	change, so dependanct code in the OSG has been updated accordingly.
+
+2002-07-18 11:28  robert
+
+	* src/Demos/osghangglide/: sky.cpp, terrain.cpp: From Randall
+	Hopper, warning fixes for IRIX.
+
+2002-07-18 11:25  robert
+
+	* src/osgPlugins/flt/TexturePaletteRecord.cpp: From Brede Johansen,
+	fix the TexturePaletteRecord::endian() to handle old flt versions
+	(11, 12 & 13).
+
+2002-07-18 10:29  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: From Brede Johansen "I have found
+	one bug in the ConvertFromFLT::visitFace() function.  In the early
+	days of the Flight format, before the LightPoint record existed
+	they used face records with a light (-point) attribute."
+
+2002-07-18 10:19  robert
+
+	* include/osg/Drawable, include/osg/GeoSet, include/osg/Geometry,
+	include/osg/ImpostorSprite, include/osg/Statistics,
+	include/osgParticle/ParticleSystem, include/osgUtil/RenderBin,
+	src/osg/GeoSet.cpp, src/osg/Geometry.cpp,
+	src/osg/ImpostorSprite.cpp, src/osgGLUT/Viewer.cpp,
+	src/osgUtil/IntersectVisitor.cpp, src/osgUtil/RenderBin.cpp,
+	src/osgUtil/RenderStage.cpp: Rewrote osg:Statistics so that it is
+	PrimitiveFunctor as is now completely decoupled from osg::Drawable.
+	 The Drawable::getStats() virtual method no longer exists.
+	
+	Updated the Viewer to use the osg::Statistics incarnation and
+	reformated stats to clean it up.
+
+2002-07-18 06:55  robert
+
+	* src/osg/LightSource.cpp: Added code into osg::LightSource so it
+	correctly computes its bounding sphere, taking into account any
+	subgraph below, and the light itself if it is not a infinite light.
+
+2002-07-18 06:49  robert
+
+	* Make/: debugtests.bat, osgtests.bat: Updated the test scripts to
+	include cube mapping example and osglight demo.
+
+2002-07-18 06:41  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: Removed repeated return transform
+	in the visitDOF method.
+
+2002-07-18 06:38  robert
+
+	* src/: osgDB/Registry.cpp, osgPlugins/rgb/ReaderWriterRGB.cpp:
+	Added support for .sgi alias extension to the .rgb plugin.
+
+2002-07-18 06:06  robert
+
+	* src/: osgPlugins/dx/DXWriter.cpp, osgUtil/DisplayListVisitor.cpp,
+	osgUtil/DisplayRequirementsVisitor.cpp,
+	osgUtil/SmoothingVisitor.cpp, osgUtil/TriStripVisitor.cpp: Fixed
+	warnings.
+
+2002-07-18 05:55  robert
+
+	* include/osg/Material, src/osg/Material.cpp,
+	src/osgPlugins/dw/ReaderWriterDW.cpp,
+	src/osgPlugins/flt/flt2osg.cpp,
+	src/osgPlugins/obj/ReaderWriterOBJ.cpp,
+	src/osgPlugins/pfb/ConvertFromPerformer.cpp,
+	src/osgPlugins/txp/TrPageArchive.cpp,
+	src/osgPlugins/txp/TrPageParser.cpp: Converted the
+	osg::Material::set/getShininess option to use the standard OpenGL
+	range of 0.0 to 128.0 instead of the previous normalised shiniess
+	range. This brings it inline with the way the rest of the OSG uses
+	a 1 to 1 mapping to OpenGL.
+	
+	Converted the various loaders to use the new range, which is almost
+	all cases was simply removing the /128.0f which was required
+	before!
+
+2002-07-18 05:17  robert
+
+	* include/osgUtil/Optimizer, src/osgUtil/Optimizer.cpp: Added const
+	to LessGeometry functor to fix Win32 build.
+
+2002-07-17 20:55  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: Fixed spelling mistake.
+
+2002-07-17 20:52  robert
+
+	* doc/install.html, include/osg/Array, include/osg/Geode,
+	include/osg/Geometry, include/osg/Primitive,
+	include/osgUtil/AppVisitor, include/osgUtil/Optimizer,
+	src/Demos/osgcallback/osgcallback.cpp, src/osg/Geometry.cpp,
+	src/osg/Primitive.cpp, src/osgPlugins/flt/GeoSetBuilder.cpp,
+	src/osgPlugins/flt/GeoSetBuilder.h, src/osgPlugins/flt/flt2osg.cpp,
+	src/osgUtil/CullVisitor.cpp, src/osgUtil/Optimizer.cpp: Various
+	fixes to the flt loader, and knock on changes to the
+	osgUtil::Optimizer to better support removal of seperate
+	osg::Geometry instances where they share the same state and
+	bindings.
+
+2002-07-17 12:24  robert
+
+	* src/osg/CollectOccludersVisitor.cpp: Changed from a -> to *()
+	when using the object pointed to by a reverse iterator, to fix
+	problems with build under VS6/STLport.
+
+2002-07-17 08:21  robert
+
+	* src/osgGLUT/Viewer.cpp: Fix for Win32 build.
+
+2002-07-17 06:00  robert
+
+	* include/osgGA/GUIEventHandlerVisitor,
+	include/osgGA/KeySwitchCameraManipulator, include/osgGLUT/Viewer,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/osgGA/KeySwitchCameraManipulator.cpp, src/osgGLUT/Viewer.cpp,
+	src/osgUtil/Optimizer.cpp: Several items of work related to adding
+	a manual creation of occluders option to the osgoccluder demo.
+	
+	First the osgGA classes have been generalised a little to better
+	support new GUIEventHandler subclasses.
+	
+	Second osgGLUT has a new option for registering a user defined
+	event handler, the allows the application to add externally extra
+	options to the osgGLUT viewer.
+	
+	Third, the osgoccluder demo now works in two modes. The original
+	create four occluder sides to wrap an loaded model, the second an
+	interactive mode which allows the users to add occluders to the
+	model by pointing to points and pressing 'a' to add a point, the
+	'e' to end the occluder polygon, polygons must be convex, planer
+	and be defined in an anitclockwise order.  To start the osgoccluder
+	in this mode one simple runs it with the '-c' option.  Run
+	osgoccluder with no parameter to get a list of options.
+
+2002-07-16 16:06  robert
+
+	* include/: osgGA/CameraManipulator, osgGA/DriveManipulator,
+	osgGA/Export, osgGA/FlightManipulator, osgGA/GUIActionAdapter,
+	osgGA/GUIEventAdapter, osgGA/GUIEventHandler,
+	osgGA/KeySwitchCameraManipulator, osgGA/SetSceneViewVisitor,
+	osgGA/StateSetManipulator, osgGA/TrackballManipulator,
+	osgGA/Version, osgGLUT/Export, osgGLUT/GLUTEventAdapter,
+	osgGLUT/Version, osgGLUT/Viewer, osgGLUT/Window, osgGLUT/glut,
+	osgText/Export, osgText/Font, osgText/Paragraph, osgText/Text,
+	osgText/Version, osgUtil/AppVisitor, osgUtil/CullVisitor,
+	osgUtil/DepthSortedBin, osgUtil/DisplayListVisitor,
+	osgUtil/DisplayRequirementsVisitor, osgUtil/Export,
+	osgUtil/InsertImpostorsVisitor, osgUtil/IntersectVisitor,
+	osgUtil/Optimizer, osgUtil/RenderBin, osgUtil/RenderGraph,
+	osgUtil/RenderLeaf, osgUtil/RenderStage,
+	osgUtil/RenderStageLighting, osgUtil/RenderToTextureStage,
+	osgUtil/SceneView, osgUtil/SmoothingVisitor, osgUtil/Tesselator,
+	osgUtil/TriStripVisitor, osgUtil/Version: Updated docs and added
+	osgGA
+
+2002-07-16 16:03  robert
+
+	* AUTHORS, doc/documentation.html, doc/doc++/osg/AlphaFunc.html,
+	doc/doc++/osg/AnimationPath.html,
+	doc/doc++/osg/AttributeFunctor.html, doc/doc++/osg/Billboard.html,
+	doc/doc++/osg/BoundingBox.html, doc/doc++/osg/BoundingSphere.html,
+	doc/doc++/osg/Camera.html, doc/doc++/osg/ClipPlane.html,
+	doc/doc++/osg/ColorMask.html, doc/doc++/osg/ColorMatrix.html,
+	doc/doc++/osg/CopyOp.html, doc/doc++/osg/CullFace.html,
+	doc/doc++/osg/Depth.html, doc/doc++/osg/DisplaySettings.html,
+	doc/doc++/osg/DrawPixels.html, doc/doc++/osg/Drawable.html,
+	doc/doc++/osg/EarthSky.html, doc/doc++/osg/Fog.html,
+	doc/doc++/osg/FrameStamp.html, doc/doc++/osg/FrontFace.html,
+	doc/doc++/osg/General.html, doc/doc++/osg/GeoSet.html,
+	doc/doc++/osg/Geode.html, doc/doc++/osg/Group.html,
+	doc/doc++/osg/HIER.html, doc/doc++/osg/HIERjava.html,
+	doc/doc++/osg/Image.html, doc/doc++/osg/Impostor.html,
+	doc/doc++/osg/ImpostorSprite.html,
+	doc/doc++/osg/ImpostorSpriteManager.html, doc/doc++/osg/LOD.html,
+	doc/doc++/osg/Light.html, doc/doc++/osg/LightModel.html,
+	doc/doc++/osg/LightSource.html, doc/doc++/osg/LineSegment.html,
+	doc/doc++/osg/LineStipple.html, doc/doc++/osg/LineWidth.html,
+	doc/doc++/osg/META_Object.html,
+	doc/doc++/osg/META_StateAttribute.html,
+	doc/doc++/osg/Material.html, doc/doc++/osg/Matrix.html,
+	doc/doc++/osg/NodeAcceptOp.html, doc/doc++/osg/NodeCallback.html,
+	doc/doc++/osg/NodeVisitor.html, doc/doc++/osg/NotifySeverity.html,
+	doc/doc++/osg/Object.html, doc/doc++/osg/Plane.html,
+	doc/doc++/osg/Point.html, doc/doc++/osg/PolygonMode.html,
+	doc/doc++/osg/PolygonOffset.html,
+	doc/doc++/osg/PositionAttitudeTransform.html,
+	doc/doc++/osg/Projection.html, doc/doc++/osg/Quat.html,
+	doc/doc++/osg/Referenced.html, doc/doc++/osg/ShadeModel.html,
+	doc/doc++/osg/State.html, doc/doc++/osg/StateAttribute.html,
+	doc/doc++/osg/StateSet.html, doc/doc++/osg/Statistics.html,
+	doc/doc++/osg/Stencil.html, doc/doc++/osg/Switch.html,
+	doc/doc++/osg/TexEnv.html, doc/doc++/osg/TexGen.html,
+	doc/doc++/osg/TexMat.html, doc/doc++/osg/Texture.html,
+	doc/doc++/osg/TextureCubeMap.html, doc/doc++/osg/Timer.html,
+	doc/doc++/osg/Transform.html, doc/doc++/osg/Vec2.html,
+	doc/doc++/osg/Vec3.html, doc/doc++/osg/Vec4.html,
+	doc/doc++/osg/Viewport.html,
+	doc/doc++/osg/clampArray3BetweenRange.html,
+	doc/doc++/osg/clampArray3GEQUAL.html,
+	doc/doc++/osg/clampArray3LEQUAL.html,
+	doc/doc++/osg/clampArray4BetweenRange.html,
+	doc/doc++/osg/clampArray4GEQUAL.html,
+	doc/doc++/osg/clampArray4LEQUAL.html,
+	doc/doc++/osg/clampArrayElementBetweenRange.html,
+	doc/doc++/osg/clampArrayElementGEQUAL.html,
+	doc/doc++/osg/clampArrayElementLEQUAL.html,
+	doc/doc++/osg/clampArrayElementsBetweenRange.html,
+	doc/doc++/osg/clampArrayElementsGEQUAL.html,
+	doc/doc++/osg/clampArrayElementsLEQUAL.html,
+	doc/doc++/osg/clampBetweenRange.html,
+	doc/doc++/osg/clampGEQUAL.html, doc/doc++/osg/clampLEQUAL.html,
+	doc/doc++/osg/createGeodeForImage.2.html,
+	doc/doc++/osg/for_each_triangle.html, doc/doc++/osg/index.html,
+	doc/doc++/osg/notify.html, doc/doc++/osg/osg.html,
+	doc/doc++/osg/ref_ptr.html, doc/doc++/osg/tag_au.html,
+	doc/doc++/osgDB/HIER.html, doc/doc++/osgDB/HIERjava.html,
+	doc/doc++/osgDB/Input.html, doc/doc++/osgDB/Options.html,
+	doc/doc++/osgDB/Output.html, doc/doc++/osgDB/ReadResult.html,
+	doc/doc++/osgDB/ReaderWriter.html,
+	doc/doc++/osgDB/RegisterDotOsgWrapperProxy.html,
+	doc/doc++/osgDB/RegisterReaderWriterProxy.html,
+	doc/doc++/osgDB/Registry.html, doc/doc++/osgDB/WriteResult.html,
+	doc/doc++/osgDB/findFileInPath.html, doc/doc++/osgDB/osgDB.html,
+	doc/doc++/osgGA/CameraManipulator.html,
+	doc/doc++/osgGA/ClassGraph.class,
+	doc/doc++/osgGA/ClassGraphPanel.class,
+	doc/doc++/osgGA/ClassLayout.class,
+	doc/doc++/osgGA/CompositeGUIEventHandler.html,
+	doc/doc++/osgGA/DriveManipulator.html,
+	doc/doc++/osgGA/FlightManipulator.html,
+	doc/doc++/osgGA/GUIActionAdapter.html,
+	doc/doc++/osgGA/GUIEventAdapter.html,
+	doc/doc++/osgGA/GUIEventHandler.html,
+	doc/doc++/osgGA/GUIEventHandlerVisitor.html,
+	doc/doc++/osgGA/General.html, doc/doc++/osgGA/HIER.html,
+	doc/doc++/osgGA/HIERjava.html,
+	doc/doc++/osgGA/KeySwitchCameraManipulator.html,
+	doc/doc++/osgGA/NavigatorButton.class,
+	doc/doc++/osgGA/SetSceneViewVisitor.html,
+	doc/doc++/osgGA/StateSetManipulator.html,
+	doc/doc++/osgGA/TrackballManipulator.html,
+	doc/doc++/osgGA/icon1.gif, doc/doc++/osgGA/icon2.gif,
+	doc/doc++/osgGA/index.html, doc/doc++/osgGA/osgGA.html,
+	doc/doc++/osgGA/osgGAGetLibraryName.html,
+	doc/doc++/osgGA/osgGAGetVersion.html,
+	doc/doc++/osgGA/spaceosgGA.html,
+	doc/doc++/osgGLUT/GLUTEventAdapter.html,
+	doc/doc++/osgGLUT/HIERjava.html, doc/doc++/osgGLUT/Viewer.html,
+	doc/doc++/osgGLUT/osgGLUT.html,
+	doc/doc++/osgParticle/AccelOperator.html,
+	doc/doc++/osgParticle/CenteredPlacer.html,
+	doc/doc++/osgParticle/Counter.html,
+	doc/doc++/osgParticle/Emitter.html,
+	doc/doc++/osgParticle/FluidFrictionOperator.html,
+	doc/doc++/osgParticle/ForceOperator.html,
+	doc/doc++/osgParticle/Interpolator.html,
+	doc/doc++/osgParticle/LinearInterpolator.html,
+	doc/doc++/osgParticle/ModularEmitter.html,
+	doc/doc++/osgParticle/ModularProgram.html,
+	doc/doc++/osgParticle/MultiSegmentPlacer.html,
+	doc/doc++/osgParticle/Operator.html,
+	doc/doc++/osgParticle/Particle.html,
+	doc/doc++/osgParticle/ParticleProcessor.html,
+	doc/doc++/osgParticle/ParticleSystem.html,
+	doc/doc++/osgParticle/ParticleSystemUpdater.html,
+	doc/doc++/osgParticle/Placer.html,
+	doc/doc++/osgParticle/PointPlacer.html,
+	doc/doc++/osgParticle/Program.html,
+	doc/doc++/osgParticle/RadialShooter.html,
+	doc/doc++/osgParticle/RandomRateCounter.html,
+	doc/doc++/osgParticle/SectorPlacer.html,
+	doc/doc++/osgParticle/SegmentPlacer.html,
+	doc/doc++/osgParticle/Shooter.html,
+	doc/doc++/osgParticle/VariableRateCounter.html,
+	doc/doc++/osgText/BitmapFont.html, doc/doc++/osgText/Font.html,
+	doc/doc++/osgText/META_Font.html,
+	doc/doc++/osgText/OutlineFont.html,
+	doc/doc++/osgText/Paragraph.html,
+	doc/doc++/osgText/PixmapFont.html,
+	doc/doc++/osgText/PolygonFont.html,
+	doc/doc++/osgText/RasterFont.html, doc/doc++/osgText/Text.html,
+	doc/doc++/osgText/TextureFont.html,
+	doc/doc++/osgText/VectorFont.html, doc/doc++/osgText/osgText.html,
+	doc/doc++/osgUtil/AppVisitor.html,
+	doc/doc++/osgUtil/CombineLODsVisitor.html,
+	doc/doc++/osgUtil/CullVisitor.html,
+	doc/doc++/osgUtil/DepthSortedBin.html,
+	doc/doc++/osgUtil/DisplayListVisitor.html,
+	doc/doc++/osgUtil/DisplayRequirementsVisitor.html,
+	doc/doc++/osgUtil/FlattenStaticTransformsVisitor.html,
+	doc/doc++/osgUtil/General.html, doc/doc++/osgUtil/HIER.html,
+	doc/doc++/osgUtil/HIERjava.html, doc/doc++/osgUtil/Hit.html,
+	doc/doc++/osgUtil/InsertImpostorsVisitor.html,
+	doc/doc++/osgUtil/IntersectState.html,
+	doc/doc++/osgUtil/IntersectVisitor.html,
+	doc/doc++/osgUtil/Optimizer.html,
+	doc/doc++/osgUtil/RegisterRenderBinProxy.html,
+	doc/doc++/osgUtil/RemoveRedundentNodesVisitor.html,
+	doc/doc++/osgUtil/RenderBin.html,
+	doc/doc++/osgUtil/RenderGraph.html,
+	doc/doc++/osgUtil/RenderLeaf.html,
+	doc/doc++/osgUtil/RenderStage.html,
+	doc/doc++/osgUtil/RenderStageLighting.html,
+	doc/doc++/osgUtil/RenderToTextureStage.html,
+	doc/doc++/osgUtil/SceneView.html,
+	doc/doc++/osgUtil/SmoothingVisitor.html,
+	doc/doc++/osgUtil/StateVisitor.html,
+	doc/doc++/osgUtil/Tesselator.html,
+	doc/doc++/osgUtil/TransformCallback.html,
+	doc/doc++/osgUtil/TriStripVisitor.html,
+	doc/doc++/osgUtil/index.html, doc/doc++/osgUtil/osgUtil.html,
+	include/osg/AlphaFunc, include/osg/AnimationPath,
+	include/osg/Array, include/osg/Billboard, include/osg/BlendFunc,
+	include/osg/BoundingBox, include/osg/BoundingSphere,
+	include/osg/BoundsChecking, include/osg/Camera,
+	include/osg/ClipNode, include/osg/ClipPlane,
+	include/osg/CollectOccludersVisitor, include/osg/ColorMask,
+	include/osg/ColorMatrix, include/osg/ConvexPlanerOccluder,
+	include/osg/ConvexPlanerPolygon, include/osg/CopyOp,
+	include/osg/CullFace, include/osg/CullStack,
+	include/osg/CullingSet, include/osg/Depth,
+	include/osg/DisplaySettings, include/osg/DrawPixels,
+	include/osg/Drawable, include/osg/EarthSky, include/osg/Export,
+	include/osg/Fog, include/osg/FrameStamp, include/osg/FrontFace,
+	include/osg/GL, include/osg/GLExtensions, include/osg/GLU,
+	include/osg/GeoSet, include/osg/Geode, include/osg/Geometry,
+	include/osg/Group, include/osg/Image, include/osg/Impostor,
+	include/osg/ImpostorSprite, include/osg/LOD, include/osg/Light,
+	include/osg/LightModel, include/osg/LightSource,
+	include/osg/LineSegment, include/osg/LineStipple,
+	include/osg/LineWidth, include/osg/Material, include/osg/Math,
+	include/osg/Matrix, include/osg/MatrixTransform, include/osg/Node,
+	include/osg/NodeCallback, include/osg/NodeVisitor,
+	include/osg/Notify, include/osg/Object, include/osg/OccluderNode,
+	include/osg/Plane, include/osg/Point, include/osg/PolygonMode,
+	include/osg/PolygonOffset, include/osg/Polytope,
+	include/osg/PositionAttitudeTransform, include/osg/Primitive,
+	include/osg/Projection, include/osg/Quat, include/osg/Referenced,
+	include/osg/ShadeModel, include/osg/ShadowVolumeOccluder,
+	include/osg/State, include/osg/StateAttribute,
+	include/osg/StateSet, include/osg/Statistics, include/osg/Stencil,
+	include/osg/Switch, include/osg/TexEnv, include/osg/TexGen,
+	include/osg/TexMat, include/osg/Texture,
+	include/osg/TextureCubeMap, include/osg/Timer,
+	include/osg/Transform, include/osg/Transparency, include/osg/Types,
+	include/osg/UByte4, include/osg/Vec2, include/osg/Vec3,
+	include/osg/Vec4, include/osg/Version, include/osg/Viewport,
+	include/osg/fast_back_stack, include/osg/ref_ptr,
+	include/osgDB/DotOsgWrapper, include/osgDB/DynamicLibrary,
+	include/osgDB/Export, include/osgDB/Field,
+	include/osgDB/FieldReader, include/osgDB/FieldReaderIterator,
+	include/osgDB/FileNameUtils, include/osgDB/FileUtils,
+	include/osgDB/Input, include/osgDB/Output, include/osgDB/ReadFile,
+	include/osgDB/ReaderWriter, include/osgDB/Registry,
+	include/osgDB/Version, include/osgDB/WriteFile: Updated docs and
+	added osgGA
+
+2002-07-16 15:21  robert
+
+	* Make/makedefs, src/osg/GLExtensions.cpp,
+	src/osgDB/DynamicLibrary.cpp, src/osgDB/FileUtils.cpp: Updates from
+	Bob Kuehne and Kristopher Bixler to remove the fink dependency from
+	the MacOSX build.
+
+2002-07-16 15:19  robert
+
+	* src/osgPlugins/flt/flt2osg.cpp: Fix to DOF Record from Sasa
+	Bistrovic
+
+2002-07-16 15:17  robert
+
+	* src/Demos/osglight/osglight.cpp: Added SpotExponent to the spot
+	light.
+
+2002-07-16 14:56  robert
+
+	* src/osgPlugins/bmp/Makefile: Removed repeat line from Makefile.
+
+2002-07-16 11:43  robert
+
+	* NEWS, src/osg/Version.cpp, src/osgDB/Version.cpp,
+	src/osgGA/Version.cpp, src/osgGLUT/Version.cpp,
+	src/osgParticle/Version.cpp, src/osgText/Version.cpp,
+	src/osgUtil/Version.cpp: Bumped up the version numbers to 0.9.0 to
+	reflect the upcomming release.
+
+2002-07-16 11:28  robert
+
+	* src/osgUtil/Tesselator.cpp: Rewrote the apply_imp template method
+	so that it takes an initialization paramater.
+
+2002-07-16 11:13  robert
+
+	* Make/makedefs, Make/makedirdefs,
+	src/osgPlugins/dx/AreaGeoSetTriangulator.cpp,
+	src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/logos/Makefile,
+	src/osgPlugins/logos/ReaderWriterLOGO.cpp: Fixes for MacOSX build
+	from Bob Kuehne.
+
+2002-07-16 11:12  robert
+
+	* src/Demos/osglight/Makefile, src/Demos/osglight/Makefile.inst,
+	src/Demos/osglight/osglight.cpp, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osglight/osglight.dsp: Added the beginings of an
+	osglight demo.
+
+2002-07-16 07:33  robert
+
+	* src/osgPlugins/osg/Makefile: Added TextureCubeMap.cpp to the .osg
+	plugin Makefile.
+
+2002-07-16 06:20  robert
+
+	* include/osg/Array: Fixed the new TemplateArray desctructor.
+
+2002-07-16 06:16  robert
+
+	* include/osg/Array: Added protected destrcutor to TemplateArray.
+
+2002-07-15 18:23  robert
+
+	* include/osgUtil/Tesselator, src/osgPlugins/osg/Geometry.cpp,
+	src/osgUtil/Tesselator.cpp: Added support to osgUtil::Tesselator to
+	insert extra vertices and other attributes into an osg::Geometry
+	node.  Uses the new osg::ArrayVisitor.
+	
+	Converted the osg plugin Geometry support to use the new UByte4
+	class.
+
+2002-07-15 18:18  robert
+
+	* include/osg/: Array, UByte4, Vec4: Added osg::UByte4 class, which
+	can be used to represent packed colors.
+	
+	Changed osg::UByte4Array across to use the new osg::UByte4 class
+	rather than a GLuint as do previously.
+	
+	Cleaned up some of the paramters in osg::Vec4.
+
+2002-07-15 09:39  robert
+
+	* src/Demos/osgprerender/osgprerender.cpp: Removed the second
+	texture from the prerender demo so as not over complicate the final
+	image.
+
+2002-07-15 09:20  robert
+
+	* Make/debugtests.bat, Make/osgtests.bat,
+	src/osgUtil/SceneView.cpp: Fixed the orientation of the osgreflect
+	demo so that the reflection plane is orientated towards the viewer.
+	
+	Changed the lightmodel ambient level to 0.1,0.1,0.1 instead of 0.0,
+	so that a small amount of ambient lighting is available to render
+	back surfaces.	The osgreflect and osgprerender suffered unexpected
+	behaviors because of no lighting on the backfaces.
+
+2002-07-15 09:14  robert
+
+	* src/Demos/osgreflect/osgreflect.cpp: Added a MatrixTransform to
+	tilt the osgreflect demo so that the reflection plane is seen
+	clearly.
+
+2002-07-15 09:13  robert
+
+	* src/Demos/osgconv/OrientationConverter.cpp: Fixed the
+	optimization of the orientation conversion.
+
+2002-07-15 07:44  robert
+
+	* Make/debugtests.bat, Make/osgtests.bat,
+	src/osgDB/FieldReaderIterator.cpp: Fixed memory leak in
+	FieldReaderIterator.cpp.
+	
+	Updated the Make/osgtests.bat and Make/debugtests.bat scripts.
+
+2002-07-15 06:53  robert
+
+	* Make/makedirdefs, VisualStudio/VisualStudio.dsw: Renamed
+	hangglide to osghangglide
+
+2002-07-15 06:45  robert
+
+	* src/Demos/osghangglide/: GliderManipulator.cpp,
+	GliderManipulator.h, Makefile, Makefile.inst, ReaderWriterFLY.cpp,
+	base.cpp, hat.cpp, hat.h, osghangglide.cpp, sky.cpp, tank.cpp,
+	terrain.cpp, terrain_coords.h, terrain_normals.h,
+	terrain_texcoords.h, trees.cpp: Renamed osghangglide demo.
+
+2002-07-15 06:43  robert
+
+	* VisualStudio/Demos/osghangglide/osghangglide.dsp: Renamed the
+	hangglide demo osghangglide to make it consistent with the rest of
+	the demos.
+
+2002-07-15 06:03  robert
+
+	* include/osg/State, src/osg/GeoSet_ogl.cpp, src/osg/Geometry.cpp:
+	Added State::disableTexCoordPointersAboveAndIncluding( unit )
+	method so that all unsed texture units can be turned off simply
+	within Drawables such as Geometry and GeoSet. This can be used to
+	prevent bleed of arrays from one object to the next - which can
+	cause crashes.
+
+2002-07-15 00:42  don
+
+	* src/osgPlugins/logos/ReaderWriterLOGO.cpp: Changes for Sunos
+
+2002-07-14 17:49  don
+
+	* src/osgPlugins/logos/: Makefile, ReaderWriterLOGO.cpp: Added
+	Logos loader
+
+2002-07-14 16:51  robert
+
+	* src/osgPlugins/pfb/ConvertFromPerformer.cpp: Fixed unused
+	variable `osg::StateSet *osgStateSet' warning
+
+2002-07-14 16:48  robert
+
+	* src/Demos/osgcallback/osgcallback.cpp: Added
+	Drawable::AppCallback example and fixed a warning.
+
+2002-07-14 16:32  robert
+
+	* src/Demos/osgprerender/osgprerender.cpp: Tweaked the color and
+	aspect ratio settings of the pre rendering bin.
+
+2002-07-14 12:26  robert
+
+	* src/osgUtil/CullVisitor.cpp: Fixed computeNearFar bug in
+	CullVisitor::apply(Billboard&).
+
+2002-07-14 06:46  robert
+
+	* src/osgPlugins/osg/: MatrixTransform.cpp, Transform.cpp: Fixes to
+	read/write of MatrixTransform/Transform.
+
+2002-07-13 17:17  robert
+
+	* src/: Demos/osgclip/osgclip.cpp, Demos/osgtext/main.cpp,
+	osg/Geometry.cpp, osg/ShadowVolumeOccluder.cpp, osgDB/Output.cpp,
+	osgPlugins/flt/GeoSetBuilder.cpp, osgUtil/Tesselator.cpp: Fixed
+	various warnings which were appearing under MacOSX.
+
+2002-07-13 16:31  robert
+
+	* include/osg/GeoSet, src/osg/GeoSet.cpp, src/osg/GeoSet_ogl.cpp,
+	src/osgPlugins/osg/BlendFunc.cpp: Conveted GeoSet to use the new
+	state::set*Pointer/disable*Pointer methods to keep the current
+	state valid.
+
+2002-07-13 10:16  robert
+
+	* src/osgPlugins/txp/: TrPageArchive.cpp, TrPageParser.cpp: Support
+	added for multitextured TXP files, sent in by Boris Bralo.
+
+2002-07-12 22:46  don
+
+	* include/osgGLUT/Viewer: put a typedef in public area of class for
+	sun compilers
+
+2002-07-12 17:45  robert
+
+	* src/osgPlugins/osg/MatrixTransform.cpp: Added missing
+	MatrixTransform.cpp file
+
+2002-07-12 17:45  robert
+
+	* src/Demos/osgparticle/osgparticle.cpp: added glutInit to
+	osgparticle demo to fix crash under MacOSX.
+
+2002-07-12 17:42  robert
+
+	* src/Demos/osgprerender/osgprerender.cpp: Added second texture to
+	osgprerender demo to test out multitexture in osg::Geometry, it
+	works!!
+
+2002-07-12 17:08  robert
+
+	* include/osg/MatrixTransform, src/osg/MatrixTransform.cpp: Added
+	MatrixTransform header and source.
+
+2002-07-12 15:50  robert
+
+	* src/Demos/osgmultitexture/osgmultitexture.cpp: Changed the
+	osgmultitexture demo so that it uses a TexEnv::BLEND mode with a
+	colour.  This lightens the resultant models.
+
+2002-07-12 14:14  robert
+
+	* src/Demos/osgcluster/osgcluster.cpp: Added using namespace
+	osgUtil to get round IRIX/Windows compiler differences.
+
+2002-07-12 14:11  robert
+
+	* include/osg/Transform, src/Demos/osgbillboard/osgbillboard.cpp,
+	src/Demos/osgcallback/osgcallback.cpp,
+	src/Demos/osgclip/osgclip.cpp,
+	src/Demos/osgconv/OrientationConverter.cpp,
+	src/Demos/osgcopy/osgcopy.cpp, src/Demos/osgcube/osgcube.cpp,
+	src/Demos/osggeometry/osggeometry.cpp, src/Demos/osghud/osghud.cpp,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/Demos/osgprerender/osgprerender.cpp,
+	src/Demos/osgreflect/osgreflect.cpp,
+	src/Demos/osgscribe/osgscribe.cpp,
+	src/Demos/osgstereoimage/osgstereoimage.cpp,
+	src/Demos/osgtext/main.cpp, src/Demos/osgtexture/osgtexture.cpp,
+	src/Demos/sgv/sgv.cpp, src/osg/Makefile, src/osg/StateSet.cpp,
+	src/osgParticle/ParticleSystem.cpp,
+	src/osgPlugins/dw/ReaderWriterDW.cpp,
+	src/osgPlugins/flt/flt2osg.cpp,
+	src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
+	src/osgPlugins/obj/ReaderWriterOBJ.cpp,
+	src/osgPlugins/osg/Makefile, src/osgPlugins/osg/Transform.cpp,
+	src/osgPlugins/pfb/ConvertFromPerformer.cpp,
+	src/osgPlugins/txp/TrPageArchive.cpp,
+	src/osgPlugins/txp/TrPageParser.cpp, src/osgUtil/Optimizer.cpp,
+	src/osgUtil/TransformCallback.cpp: Ported distribution across to
+	use the new osg::MatrixTransform and osg::BlendFunc class instead
+	of osg::Transform and osg::Transparancy respectively.
+
+2002-07-12 10:24  robert
+
+	* VisualStudio/osg/osg.dsp,
+	VisualStudio/osgPlugins/osg/dot_osg.dsp, include/osg/BlendFunc,
+	include/osg/BoundingBox, include/osg/BoundingSphere,
+	include/osg/Export, include/osg/StateAttribute,
+	include/osg/Transform, include/osg/Transparency,
+	src/Demos/osghud/osghud.cpp, src/Demos/osgparticle/osgparticle.cpp,
+	src/Demos/osgscribe/osgscribe.cpp, src/Demos/osgtext/main.cpp,
+	src/osg/BlendFunc.cpp, src/osg/Makefile, src/osg/Transform.cpp,
+	src/osg/Transparency.cpp, src/osgPlugins/dw/ReaderWriterDW.cpp,
+	src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/dx/StateSetStr.cpp,
+	src/osgPlugins/osg/BlendFunc.cpp, src/osgPlugins/osg/Makefile,
+	src/osgPlugins/osg/Transparency.cpp,
+	src/osgPlugins/pfb/ConvertFromPerformer.cpp: 
+	Have added a #define USE_DEPRECATED_API to include/osg/Export, and
+	various osg header and source files to optional compile in
+	deprecated parts of the OSG API.
+	
+	Have renamed osg::Transparency osg::BlendFunc to bring it in line
+	with the rest of the OSG's StateAttribute classes which are named
+	after their OpenGL counterparts.  include/osg/Transparency still
+	exists and is simply a typedef to BlendFunc and is enclosed in a
+	#ifdef USE_DEPRECTATED_API block.
+	
+	The matrix methods in the osg::Transform class have been
+	moved/replicated in a osg::MatrixTransform sublcass from
+	osg::Transform.  The old matrix functionality is still present in
+	the osg::Transform class but is guard by #ifdef USG_DEPRECATED_API
+	blocks.  One should now think of osg::Transform as being a
+	Transform Node base class.  MatrixTransform has all the
+	functionality of the original Transform class, so should be used
+	instead.
+
+2002-07-12 09:00  robert
+
+	* src/osgUtil/SceneView.cpp: Fix, sent in by Macro Jez, to the set
+	of the camera with the computed near and far plane, so that it is
+	only updated when  _computeNearFar !=
+	CullVisitor::DO_NOT_COMPUTE_NEAR_FAR.
+
+2002-07-12 06:30  robert
+
+	* include/osg/TexEnv, src/osg/TexEnv.cpp,
+	src/osgPlugins/osg/TexEnv.cpp: Added blend color to osg::TexEnv
+
+2002-07-12 05:16  robert
+
+	* src/Demos/osgmultitexture/osgmultitexture.cpp: Fixed indenting.
+
+2002-07-12 04:48  robert
+
+	* src/osgPlugins/flt/: flt2osg.cpp, flt2osg.h: Addition of
+	RoadRecords from Yefei He.
+
+2002-07-11 19:30  don
+
+	* Make/makedefs: added -lpthread to the link line for Linux builds.
+	 Seems Red Hat 7.3 turns up undefined symbols without it.
+
+2002-07-11 17:08  robert
+
+	* include/osg/State, src/Demos/osgcluster/osgcluster.cpp,
+	src/Demos/osgmultitexture/osgmultitexture.cpp, src/osg/State.cpp:
+	Fixes for Win32 build
+
+2002-07-11 14:33  robert
+
+	* src/Demos/osgmultitexture/Makefile: Added Makefile for
+	osgmultitexture demos.
+
+2002-07-11 14:32  robert
+
+	* include/osg/State: Added #define for GL_TEXTURE0_ARB
+
+2002-07-11 12:12  robert
+
+	* Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osgmultitexture/osgmultitexture.dsp,
+	include/osg/GLExtensions, include/osg/State,
+	src/Demos/osgmultitexture/Makefile.inst,
+	src/Demos/osgmultitexture/osgmultitexture.cpp: Added support for
+	multitexturing to osg::State and added osgmultitexture demo which
+	adds as spherical environment map using texture 1 to any model.
+
+2002-07-11 10:32  robert
+
+	* include/osg/BoundingBox, include/osg/BoundingSphere,
+	include/osg/CullStack, include/osg/Node,
+	src/Demos/osgimpostor/osgimpostor.cpp, src/osg/BoundingBox.cpp,
+	src/osg/Group.cpp, src/osg/ImpostorSprite.cpp,
+	src/osg/LineSegment.cpp, src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/InsertImpostorsVisitor.cpp,
+	src/osgUtil/IntersectVisitor.cpp: Moved the code referencing
+	osg::BoundingBox::isValid() and osg::BoundingSphere::isValid()
+	across to use the valid() methods, the later being more consitent
+	with other classes such as osg::ref_ptr<>.
+
+2002-07-11 08:57  robert
+
+	* src/osgPlugins/osg/StateSet.cpp: Fixes for win32 build
+
+2002-07-11 07:36  robert
+
+	* include/osg/Primitive, src/osg/State.cpp: Fixes for Win32 build
+
+2002-07-11 07:33  robert
+
+	* include/osg/State: Fixed bug in disabledTexCoordPointer where a
+	'>' was being used where it should have been a '>='.
+
+2002-07-11 07:08  robert
+
+	* VisualStudio/VisualStudio.dsw: Fixed the pathname for the
+	osgprerender demo.
+
+2002-07-11 04:28  robert
+
+	* include/osg/Primitive: changed unsigned int/short/char*
+	references to GLuint,GLushort,GLubyte respectively.
+
+2002-07-10 18:38  robert
+
+	* src/osgPlugins/: osg/GeoSet.cpp, pfb/ConvertFromPerformer.cpp,
+	pfb/ConvertToPerformer.cpp: Updates for new use of GLushort instead
+	of osg::ushort in GeoSet index pointer.
+
+2002-07-10 18:33  robert
+
+	* include/osg/Drawable, include/osg/GeoSet, src/osg/GeoSet.cpp,
+	src/osg/State.cpp: Tidied up the types in osg::GeoSet so that the
+	index pointers use GLushort and GLuint to get round compile issues
+	under MacOSX.
+
+2002-07-10 16:30  robert
+
+	* include/osg/Drawable, src/Demos/osgprerender/osgprerender.cpp,
+	src/osg/Drawable.cpp: Updates to osg::Drawable::AppCallback and
+	osgprerender demo.
+
+2002-07-10 11:35  robert
+
+	* include/osg/Drawable, include/osg/Node,
+	include/osgUtil/AppVisitor, src/osg/Drawable.cpp,
+	src/osg/Geode.cpp: Added app callback to Drawable.
+
+2002-07-10 09:33  robert
+
+	* Make/debugtests.bat, Make/osgtests.bat,
+	VisualStudio/Demos/osgprerender/osgprerender.dsp,
+	src/Demos/osggeometry/osggeometry.cpp,
+	src/Demos/osgprerender/osgprerender.cpp, src/osgDB/Registry.cpp:
+	Updates to osgprerender to support use of rendering to an image,
+	rather then just a texture.
+
+2002-07-10 07:26  robert
+
+	* VisualStudio/Demos/osgprerender/osgprerender.dsp: Rejigged the
+	line endings.
+
+2002-07-10 07:22  robert
+
+	* include/osgUtil/RenderToTextureStage,
+	src/Demos/osgbillboard/osgbillboard.cpp,
+	src/Demos/osgreflect/osgreflect.cpp,
+	src/Demos/osgtexture/osgtexture.cpp, src/osg/Image.cpp,
+	src/osgPlugins/dw/ReaderWriterDW.cpp,
+	src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
+	src/osgPlugins/lwo/ReaderWriterLWO.cpp,
+	src/osgPlugins/obj/ReaderWriterOBJ.cpp,
+	src/osgPlugins/osg/StateSet.cpp,
+	src/osgPlugins/pfb/ConvertFromPerformer.cpp,
+	src/osgPlugins/txp/TrPageArchive.cpp,
+	src/osgPlugins/txp/TrPageParser.cpp,
+	src/osgUtil/RenderToTextureStage.cpp: Ported all the demos and
+	loaders across to use the new multitexturing API.
+
+2002-07-10 05:32  robert
+
+	* VisualStudio/osgPlugins/flt/flt.dsp, src/osgPlugins/flt/Makefile,
+	src/osgPlugins/flt/RoadRecords.cpp,
+	src/osgPlugins/flt/RoadRecords.h, src/osgPlugins/flt/opcodes.h:
+	Added Yefei He's RoadRecords to the flt loader, these records will
+	be ignored by the loader, but will allow the loader to skip over
+	them and continue reading the rest of the file correctly.
+
+2002-07-10 05:14  robert
+
+	* include/osgParticle/Particle, include/osgParticle/ParticleSystem,
+	src/osgParticle/ParticleSystem.cpp: Updates from Macro to support
+	the new multitexture API, and improve bounding box computation.
+
+2002-07-10 05:04  robert
+
+	* include/osgUtil/CullVisitor: Added setCurrentRenderBin() method.
+
+2002-07-09 15:23  robert
+
+	* src/: Demos/osggeometry/osggeometry.cpp,
+	Demos/osgprerender/osgprerender.cpp, osg/ImpostorSprite.cpp:
+	Implemented more code for the new osgprerender demo.
+
+2002-07-09 09:31  robert
+
+	* src/Demos/osgprerender/: Makefile, Makefile.inst,
+	osgprerender.cpp: Updates to the osgprerender code. Still doesn't
+	do anything interesting yet..
+
+2002-07-09 09:17  robert
+
+	* Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osgprerender/osgprerender.dsp,
+	src/Demos/osgprerender/Makefile,
+	src/Demos/osgprerender/Makefile.inst,
+	src/Demos/osgprerender/osgprerender.cpp: Added new demo
+	osgprerender to demonstrate how to prerender a scene and use the
+	result in the main rendering for special effects.
+
+2002-07-09 06:33  robert
+
+	* include/osgParticle/: Emitter, ParticleProcessor, Program:
+	Warnings fixes for IRIX - there was a missing "const" in the
+	sameKindAs(.) method.
+
+2002-07-09 06:23  robert
+
+	* src/: Demos/osgcluster/broadcaster.cpp,
+	osgPlugins/osg/Geometry.cpp,
+	osgPlugins/pfb/ConvertFromPerformer.cpp,
+	osgPlugins/pfb/ConvertFromPerformer.h: Fixes for IRIX build.
+
+2002-07-09 05:35  robert
+
+	* include/osg/AlphaFunc, include/osg/ClipPlane,
+	include/osg/ColorMask, include/osg/CullFace, include/osg/Depth,
+	include/osg/Drawable, include/osg/Fog, include/osg/Light,
+	include/osg/LightModel, include/osg/LineStipple,
+	include/osg/LineWidth, include/osg/Material, include/osg/Point,
+	include/osg/PolygonOffset, include/osg/ShadeModel,
+	include/osg/State, include/osg/StateAttribute,
+	include/osg/StateSet, include/osg/Stencil, include/osg/TexEnv,
+	include/osg/TexGen, include/osg/TexMat, include/osg/Texture,
+	include/osg/Transparency, include/osg/Viewport,
+	src/osg/ClipNode.cpp, src/osg/GeoSet.cpp, src/osg/LightSource.cpp,
+	src/osg/State.cpp, src/osg/StateSet.cpp, src/osg/Texture.cpp,
+	src/osgPlugins/flt/ReaderWriterATTR.cpp,
+	src/osgPlugins/flt/flt2osg.cpp, src/osgPlugins/osg/StateSet.cpp,
+	src/osgUtil/Optimizer.cpp, src/osgUtil/SceneView.cpp: Implemented
+	most of the changes required for supporting multitexturing in the
+	osg::State/osg::StateSet/osg::StateAttribute and related classes.
+
+2002-07-08 05:42  robert
+
+	* AUTHORS: Added Mike Connell to authors list.
+
+2002-07-07 18:12  robert
+
+	* include/osg/Primitive: Added comment to reflect Clay Fowlers
+	findings on getting VS to compile without the Vector wrapper
+	classes.
+
+2002-07-07 18:08  robert
+
+	* VisualStudio/Demos/osgcluster/osgcluster.dsp: Added winsock32
+	libs to osgcluster demo.
+
+2002-07-07 16:16  robert
+
+	* VisualStudio/Demos/osgcluster/osgcluster.dsp: Rehashed the
+	osgcluster project file to see if it solves the failure under
+	windows.
+
+2002-07-07 13:42  robert
+
+	* include/osg/Primitive, src/osg/StateSet.cpp: Fixes for Windows
+	build.
+
+2002-07-07 13:40  robert
+
+	* src/Demos/osgcluster/broadcaster.cpp: Added include<unistd.h> to
+	__DARWIN_OSX__ build.
+
+2002-07-07 13:30  robert
+
+	* VisualStudio/Demos/osgcluster/osgcluster.dsp: Did a to_dos on
+	osgcluster.dsp since it was original saved with unix file endings.
+
+2002-07-07 10:40  robert
+
+	* include/osg/Drawable, include/osg/Primitive, include/osg/State,
+	include/osg/StateAttribute, include/osg/StateSet,
+	include/osg/Texture, include/osg/TextureCubeMap,
+	src/osg/GeoSet.cpp, src/osg/Geometry.cpp, src/osg/Primitive.cpp,
+	src/osg/StateSet.cpp, src/osg/Texture.cpp,
+	src/osg/TextureCubeMap.cpp, src/osgPlugins/dx/DXWriter.cpp,
+	src/osgPlugins/dx/StateSetStr.cpp, src/osgPlugins/osg/Geometry.cpp,
+	src/osgUtil/SceneView.cpp, src/osgUtil/Tesselator.cpp: Work on
+	supporting multitexturing in
+	State/StateSet/StateAttribute/Geoemtry.
+
+2002-07-04 14:47  robert
+
+	* VisualStudio/: VisualStudio.dsw, Demos/osgcluster/osgcluster.dsp:
+	Added VisualStudio files for Win32 port of osgcluster demo.
+
+2002-07-04 14:41  robert
+
+	* src/Demos/osgcluster/: broadcaster.cpp, broadcaster.h,
+	osgcluster.cpp, receiver.cpp, receiver.h: Added support for Win32
+	broadcast and recience over lan.  Changes sent in by Michael
+	Gronager.
+
+2002-07-04 10:49  robert
+
+	* include/osg/: GeoSet, Primitive: Used typedef's for
+	std::vector<>'s used inside DrawElements implementations.
+	
+	Added deperecated comment to osg::GeoSet header.
+
+2002-07-04 10:23  robert
+
+	* Make/makedefs: Added osgGA to the MIGNW makedefs.
+
+2002-07-04 05:49  robert
+
+	* include/osg/Drawable, src/Demos/osggeometry/osggeometry.cpp:
+	Fixed the TriangleFunctor QUAD_STRIP code so that it produces
+	consistent results.
+
+2002-07-03 16:33  robert
+
+	* src/osg/Transform.cpp: Spotted by Neil Salter - missing
+	transform. in the Transform copy operator.
+
+2002-07-03 07:16  robert
+
+	* VisualStudio/VisualStudio.dsw: Added osgUtil dependency to the
+	flt project.
+
+2002-07-02 15:53  robert
+
+	* include/osg/CullStack, include/osg/Math,
+	include/osgUtil/SceneView, include/osgUtil/Tesselator,
+	src/Demos/osgtext/main.cpp, src/osg/CullStack.cpp,
+	src/osg/Geode.cpp, src/osgPlugins/pfb/ConvertFromPerformer.cpp,
+	src/osgUtil/SceneView.cpp: Reimplemted the
+	osgUtil::SceneView::setCalcNearFar() functionality to bring it
+	inline with the CullStack/CullVisitor implementation.  Also added
+	the setSmallFeatureCullingPixelSize() method and wired them up
+	inside SceneView.cpp so they set the corresponding CullVisitor
+	paramters.
+	
+	Intergrated pfImage copying change in the Performer plugin,
+	submission sent in by Ulrich Hertlein
+
+2002-07-02 11:01  don
+
+	* Make/: instrules, makedefs: -n32 and -64 entries were reversed in
+	makedefs
+
+2002-07-02 02:28  don
+
+	* src/Demos/osgcallback/osgcallback.cpp: osgcallback required fixes
+	for new osg::Drawable::CullCallback
+
+2002-07-02 02:22  don
+
+	* include/osg/Drawable, include/osgUtil/CullVisitor,
+	src/osgUtil/CullVisitor.cpp, src/osgUtil/SceneView.cpp: Added
+	support for CullVisitor to contain a osg::State.  This used when
+	cull Callbacks require the contextID for  doing operations on
+	texture objects, for example.  Modified CullVisitor SceneView and
+	Drawable
+
+2002-07-01 10:40  don
+
+	* Make/makedefs: More 64 bit build specifics in IRIX makedefs file
+
+2002-07-01 10:20  don
+
+	* Make/makedefs: Removed -ldl from makedefs for IRIX
+
+2002-06-28 18:41  robert
+
+	* include/osgUtil/Tesselator, src/osgPlugins/flt/GeoSetBuilder.cpp,
+	src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
+	src/osgPlugins/lwo/ReaderWriterLWO.cpp, src/osgUtil/Tesselator.cpp:
+	Rewrote the osgUtil::Tesselator so that it is easier to use, and
+	can also easily retesselate osg::Primitive::POLYGONS found in
+	Geometry objects.  Added calls to the tesselate to the lwo and flt
+	loaders.
+
+2002-06-28 16:54  robert
+
+	* src/osgPlugins/pfb/ReaderWriterPFB.cpp: A couple fixes to remove
+	Performer runtime warnings.
+
+2002-06-28 12:25  robert
+
+	* src/osgPlugins/pfb/: ConvertFromPerformer.cpp,
+	ConvertFromPerformer.h: Fixes from Ulrich Hertlein to build of pfb
+	plugin. Small mods to these by Robert.
+
+2002-06-28 10:42  robert
+
+	* src/Demos/osggeometry/osggeometry.cpp: Added to the osggeometry
+	demo.
+
+2002-06-28 07:11  robert
+
+	* src/Demos/osggeometry/osggeometry.cpp: Rewriting the osggeomtry
+	demo to illustrate more primitive types.
+
+2002-06-28 04:47  robert
+
+	* include/osg/: Geometry, Primitive: Removed commas from the end of
+	enum lists.
+
+2002-06-28 04:36  robert
+
+	* src/osgPlugins/obj/ReaderWriterOBJ.cpp: Change =0 to
+	osg::Vec2Array::iterator() in .obj loader to get round warnings
+	under gcc3.0.x
+
+2002-06-27 16:29  robert
+
+	* src/: osg/CollectOccludersVisitor.cpp, osg/Geometry.cpp,
+	osgPlugins/flt/GeoSetBuilder.cpp, osgPlugins/flt/GeoSetBuilder.h:
+	Ported the flt plugin across to use osg::Geometry, it still uses a
+	GeoSet internally, and I will remove this after some futher work.
+
+2002-06-27 11:18  robert
+
+	* include/osg/Primitive: Added SG_EXPORT which was missing.
+
+2002-06-27 09:15  robert
+
+	* include/osg/Array, include/osg/Geometry, include/osg/Primitive,
+	src/osg/Array.cpp, src/osg/Geometry.cpp, src/osg/Primitive.cpp,
+	src/osgPlugins/osg/Geometry.cpp: Converted the template
+	DrawElements primitive class into three seperate non templated
+	classes - UByteDrawElements, UShortDrawElements, UIntDrawElements.
+
+2002-06-27 06:50  robert
+
+	* VisualStudio/osg/osg.dsp, include/osg/Array,
+	include/osg/Geometry, include/osg/Primitive, src/osg/Array.cpp,
+	src/osg/Geometry.cpp, src/osg/Makefile, src/osg/Primitive.cpp:
+	Moved the AttributeArray and Primitive classes into their own
+	header and source files.
+
+2002-06-27 05:56  robert
+
+	* src/osgPlugins/lwo/ReaderWriterLWO.cpp: Removed the test aginst a
+	iterator as a bool.
+
+2002-06-26 17:11  robert
+
+	* include/osg/Export: Added comment to explain #ifdefs for member
+	templates.
+
+2002-06-26 17:10  robert
+
+	* include/osg/Export: Added #idef to Export to add check for
+	support for member templates.
+
+2002-06-26 17:08  robert
+
+	* src/osgPlugins/lwo/: ReaderWriterLWO.cpp, lw.h: Ported LWO loader
+	across to use osg::Geometry.  Work not quite complete, as we need
+	to retesselate any concave polygons that can exists in these
+	datasets.
+
+2002-06-26 13:48  robert
+
+	* include/osg/Geometry, src/osgPlugins/lib3ds/ReaderWriter3DS.cpp:
+	Added templated constructor to TemplateArray & DrawElements
+	template to handle VisualStudio7.0 build.
+	
+	Ported 3DS across to use osg::Geometry instead of osg::GeoSet.
+
+2002-06-26 10:34  robert
+
+	* src/osgPlugins/: obj/ReaderWriterOBJ.cpp,
+	pfb/ConvertFromPerformer.cpp, pfb/ConvertFromPerformer.h,
+	quicktime/ReaderWriterQT.cpp, rgb/ReaderWriterRGB.cpp,
+	txp/TrPageArchive.h, txp/TrPageParser.cpp: Ported pfb, txp and obj
+	loaders across to use osg::Geometry.
+
+2002-06-26 06:28  robert
+
+	* include/osg/Geometry, include/osgUtil/DisplayListVisitor,
+	include/osgUtil/SmoothingVisitor, include/osgUtil/TriStripVisitor,
+	src/Demos/osgbillboard/osgbillboard.cpp,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/Demos/osgreflect/osgreflect.cpp,
+	src/Demos/osgstereoimage/osgstereoimage.cpp,
+	src/Demos/osgtext/main.cpp, src/Demos/osgtexture/osgtexture.cpp,
+	src/osgGLUT/Viewer.cpp, src/osgPlugins/lwo/ReaderWriterLWO.cpp,
+	src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/DisplayRequirementsVisitor.cpp,
+	src/osgUtil/Optimizer.cpp, src/osgUtil/SmoothingVisitor.cpp: Ported
+	various demos and support classes over to use the new osg::Geometry
+	class thus removing dependancy on osg::Geoset from most of the OSG,
+	only loaders left to port now.
+
+2002-06-25 16:47  robert
+
+	* src/osgDB/: DynamicLibrary.cpp, FileUtils.cpp, Registry.cpp:
+	Fixes for Cygwin build from Norman Vine.
+
+2002-06-25 16:36  robert
+
+	* src/osg/Quat.cpp: Fix to Quat::slerp so that it interpolates
+	along the shortest path.
+
+2002-06-25 16:27  robert
+
+	* include/osg/BoundingBox, include/osg/Drawable,
+	include/osg/GeoSet, include/osg/Geometry, include/osg/Statistics,
+	include/osgUtil/IntersectVisitor, include/osgUtil/TriStripVisitor,
+	src/Demos/osgcube/osgcube.cpp,
+	src/Demos/osggeometry/osggeometry.cpp, src/osg/GeoSet.cpp,
+	src/osg/Geometry.cpp, src/osg/Image.cpp,
+	src/osg/ImpostorSprite.cpp, src/osg/ShadowVolumeOccluder.cpp,
+	src/osgGLUT/Viewer.cpp, src/osgPlugins/osg/Geometry.cpp,
+	src/osgUtil/IntersectVisitor.cpp, src/osgUtil/Optimizer.cpp,
+	src/osgUtil/SmoothingVisitor.cpp, src/osgUtil/TriStripVisitor.cpp:
+	Added osg::Drawable::PrimitiveFunctor and TriangleFunctor subclass
+	for querrying the primitive data inside Drawables.  Moved various
+	support classes over from being osg::GeoSet based to osg::Geometry
+	based.
+
+2002-06-24 17:44  robert
+
+	* include/osgText/Text, src/Demos/osghud/osghud.cpp,
+	src/Demos/osgtext/main.cpp, src/osgText/Text.cpp: Fixed
+	osgText::Text::DrawModeType::ALIGNEMENT spelling mistake, now is
+	ALIGNMENT.
+
+2002-06-24 17:37  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp, include/osg/Geometry,
+	src/osg/Geometry.cpp, src/osg/Texture.cpp,
+	src/osgPlugins/osg/Geometry.cpp, src/osgPlugins/osg/Makefile,
+	src/osgUtil/Optimizer.cpp: Checked in .osg support for the new
+	osg::Geometry class.
+
+2002-06-24 08:53  robert
+
+	* src/osgUtil/Optimizer.cpp: Added required std:: to front of endl
+	to fix Win32 build.
+
+2002-06-23 17:43  robert
+
+	* include/osg/GeoSet, include/osg/Geometry, include/osg/Texture,
+	include/osg/ref_ptr, include/osgUtil/Optimizer,
+	src/Demos/osggeometry/osggeometry.cpp, src/osg/GeoSet.cpp,
+	src/osg/Geometry.cpp, src/osgUtil/Optimizer.cpp,
+	src/osgUtil/Tesselator.cpp: Added conversion to
+	osg::GeoSet::converToGeometry() utility to help the migration to
+	and testing of the new osg::Geometry class.
+
+2002-06-22 11:46  robert
+
+	* VisualStudio/Demos/osggeometry/osggeometry.dsp,
+	src/osgPlugins/bmp/ReaderWriterBMP.cpp,
+	src/osgPlugins/lwo/ReaderWriterLWO.cpp: Compile Fixes for Win32.
+
+2002-06-21 15:24  robert
+
+	* src/osg/: Geometry.cpp, Texture.cpp: Temporarily removed the
+	references to multi-texturing calls.
+
+2002-06-21 12:45  robert
+
+	* include/osg/Geometry, src/osg/Geometry.cpp,
+	VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osggeometry/osggeometry.dsp,
+	src/Demos/osggeometry/Makefile,
+	src/Demos/osggeometry/Makefile.inst,
+	src/Demos/osggeometry/osggeometry.cpp, Make/makedirdefs: Added new
+	osggeometry demo to test the work on the new osg::Geometry
+	Drawable.
+
+2002-06-21 11:14  robert
+
+	* src/osgPlugins/bmp/ReaderWriterBMP.cpp: Bug fix to the size
+	calculation of bmp images, changed both the reading and writing of
+	images.
+
+2002-06-21 03:48  robert
+
+	* include/osg/Geometry: Fixed constructor for TemplateArray(const
+	TemplateArray& t,const CopyOp& copyop).
+
+2002-06-20 15:54  robert
+
+	* include/osg/Geometry, src/osg/Geometry.cpp, src/osg/Makefile,
+	VisualStudio/osg/osg.dsp: Addd new experimental osg::Geometry
+	Drawable which will eventually replace GeoSet.	Currently doesn't
+	draw anything, and is very much in the early design stages.
+
+2002-06-20 14:17  robert
+
+	* include/osg/MemoryManager, src/osg/MemoryManager.cpp: Mods to
+	MemoryManager to make the optimized build produce dummy
+	implementations for all the public functions found in the header,
+	this should prevent problems when not compiling in the
+	MemoryManager under IRIX 64 build.
+
+2002-06-19 16:38  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp: Fixed incorrect naming
+	of ConvexPlanerOccluder.
+
+2002-06-19 14:45  robert
+
+	* src/osg/Image.cpp: Added support for reading the new
+	OSG_MAX_TEXTURE_SIZE environmental variable inside the
+	osg::Image::ensureValidSizeForTexturing() method. The smallest of
+	GL_MAX_TEXTURE_SIZE and OSG_MAX_TEXTURE_SIZE is used for the final
+	max texture size.
+	
+	This new env. var. allows users to deliberate cap the size of their
+	textures so they can test whether their models are limited by
+	texture memory.  If reducing the max texture size increases
+	performance then you are limited by texture memory!
+
+2002-06-19 12:06  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp, include/osg/BoundingBox,
+	include/osg/BoundingSphere, include/osg/ConvexPlanerOccluder,
+	include/osg/OccluderNode,
+	src/osgPlugins/osg/ConvexPlanerOccluder.cpp,
+	src/osgPlugins/osg/Makefile, src/osgPlugins/osg/OccluderNode.cpp:
+	Added support for reading and writing OccluderNode's to the .osg
+	file format.
+
+2002-06-19 11:18  robert
+
+	* src/: Demos/osgoccluder/osgoccluder.cpp, osg/BoundingSphere.cpp,
+	osg/Geode.cpp, osg/OccluderNode.cpp: Added computation of the
+	bounding volume of osg::OccluderNodes.
+	
+	Added support for osg::BoundingSphere::expandBy*(osg::BoundingBox)
+	and have added osg::BoundingSphere/Box::valid() which deprecates
+	isValid(), this is to be more consistent with other classes in the
+	OSG.
+
+2002-06-19 06:19  robert
+
+	* include/osg/ShadowVolumeOccluder,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/osg/CollectOccludersVisitor.cpp,
+	src/osg/ShadowVolumeOccluder.cpp, src/osgUtil/SceneView.cpp: Added
+	support for occlusion of holes in occluders, and cleaned up the
+	interface to ShadowVolumeOccluders.
+
+2002-06-19 04:34  robert
+
+	* include/osg/LightSource, src/osg/LightSource.cpp,
+	src/osgPlugins/osg/LightSource.cpp, src/osgUtil/CullVisitor.cpp:
+	Changed the osg::LightSource so its Light attribute is now
+	generalised to be a StateAttribute.  This allows alternative
+	implementations of Lights other than the standard osg::Light.
+
+2002-06-18 18:35  robert
+
+	* include/osg/CollectOccludersVisitor, include/osg/Polytope,
+	include/osg/ShadowVolumeOccluder,
+	src/osg/CollectOccludersVisitor.cpp,
+	src/osg/ShadowVolumeOccluder.cpp, src/osgUtil/SceneView.cpp: Added
+	support for occluders occluding other occluders, which helps reduce
+	the number of occluder that will be used in cull traversal to only
+	the ones that will be effective. Note. Holes in occluders arn't
+	handled in this occluder occlusion test, will implement this later.
+
+2002-06-18 06:18  robert
+
+	* include/osg/Plane, include/osg/ShadowVolumeOccluder,
+	src/osg/ColorMatrix.cpp, src/osgDB/FileUtils.cpp,
+	src/osgDB/Registry.cpp, src/osgPlugins/flt/Input.cpp: Clean ups for
+	the Windows build.
+
+2002-06-18 05:09  robert
+
+	* src/osgDB/Registry.cpp: Added the length argument to a
+	std::string argument, under Linux it compiled with the default
+	value npos, under Windows it broke the build, add the npost
+	excpilicity should get round this difference in implementation.
+
+2002-06-17 17:50  robert
+
+	* include/osgDB/FileUtils, include/osgDB/Registry,
+	src/osgDB/DynamicLibrary.cpp, src/osgDB/FileNameUtils.cpp,
+	src/osgDB/FileUtils.cpp, src/osgDB/FileUtils_Mac.cpp,
+	src/osgDB/FileUtils_Unix.cpp, src/osgDB/FileUtils_Windows.cpp,
+	src/osgDB/Registry.cpp, src/osgPlugins/flt/FltFile.cpp,
+	src/osgPlugins/flt/Input.cpp,
+	src/osgPlugins/osgtgz/ReaderWriterOSGTGZ.cpp,
+	src/osgPlugins/tgz/ReaderWriterTGZ.cpp,
+	src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	src/osgPlugins/txp/TrPageArchive.cpp,
+	src/osgPlugins/zip/ReaderWriterZIP.cpp, src/osgText/Font.cpp:
+	Rewrote the FileUtils support for data and library file paths,
+	moving the storage of the path lists into osgDB::Registry, and
+	changed the data structor from a char* to a std::deque.  Changed a
+	names of couple of the convinience functions in osgDB/FileUtils to
+	better reflect the two public FilePathList's - DataFilePathList and
+	the LibraryFilePathList.
+	
+	Added support into the osgDB::Registry::readNode/Image/Object
+	methods for pushing and popping the path of the current file being
+	loaded.
+
+2002-06-17 05:10  robert
+
+	* include/osg/CullStack, include/osg/CullingSet,
+	include/osg/Polytope, include/osg/ShadowVolumeOccluder,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/CullingSet.cpp,
+	src/osg/ShadowVolumeOccluder.cpp, src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/SceneView.cpp: Fixes to the occluder culling code to
+	properly disable occluders to prevent self occlusion.
+
+2002-06-15 16:57  robert
+
+	* Make/cygwin_plugin_def, Make/makedefs, include/osg/Math,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/CullStack.cpp,
+	src/osg/Notify.cpp, src/osg/ShadowVolumeOccluder.cpp: Fixes for
+	Visual .NET and Mingw builds, and fix MacOSX notify() crash.
+
+2002-06-15 08:14  robert
+
+	* include/osg/CollectOccludersVisitor, include/osg/CullStack,
+	include/osg/CullingSet, include/osg/Math, include/osg/Polytope,
+	include/osg/ShadowVolumeOccluder,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/CullStack.cpp,
+	src/osg/CullingSet.cpp, src/osg/ShadowVolumeOccluder.cpp: Added
+	computation of occluders volume scaled relative to the frustum
+	volume, all volumes computed in eye coords.
+
+2002-06-14 12:28  robert
+
+	* src/osg/ShadowVolumeOccluder.cpp: Added computation of the
+	occluders volume, scale it to a ratio of the frustum.
+
+2002-06-14 10:50  robert
+
+	* src/Demos/osgoccluder/osgoccluder.cpp: Added occluder hole test
+	code into the osgoccluder demo.  The code works, but I've commented
+	it out right now as the Geode physically representing the occluder
+	doesn't yet have a hole in it - just a cosmetic thing.
+
+2002-06-14 09:49  robert
+
+	* include/osg/CollectOccludersVisitor,
+	src/osg/CollectOccludersVisitor.cpp,
+	src/osg/ShadowVolumeOccluder.cpp: Refined the
+	CollectOccluderVisitor so that it checks the subgraph below a node
+	contains occluders before traversing.
+
+2002-06-14 07:27  robert
+
+	* src/osg/ShadowVolumeOccluder.cpp: Improvements to the plane
+	clipping code.
+
+2002-06-14 04:45  robert
+
+	* src/: osgPlugins/osg/OccluderNode.cpp, osgUtil/CullVisitor.cpp,
+	osgUtil/SceneView.cpp: Further updates to the occlusion culling
+	code, also adding missing OccludeNode file the .osg plugin.
+
+2002-06-13 19:45  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp,
+	include/osg/CollectOccludersVisitor,
+	include/osg/ShadowVolumeOccluder,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/osg/CollectOccludersVisitor.cpp,
+	src/osg/ShadowVolumeOccluder.cpp, src/osgGLUT/Viewer.cpp,
+	src/osgPlugins/osg/Makefile, src/osgUtil/SceneView.cpp: Further
+	work on occlusion culling.
+
+2002-06-13 15:39  don
+
+	* src/osg/Timer.cpp: removed the use of gettimeofday for 32 bit
+	architectures...
+
+2002-06-13 15:34  robert
+
+	* include/osg/NodeCallback: Added #include <osg/ref_ptr> so that it
+	will compile properly regardless of include order.
+
+2002-06-13 15:10  robert
+
+	* src/osgGLUT/Makefile: Added -osgGA to the Makefile list.
+
+2002-06-13 14:27  robert
+
+	* include/osg/Timer, src/osg/Timer.cpp: Merge Randall's changes.
+
+2002-06-13 12:20  robert
+
+	* Make/makedefs, include/osg/CollectOccludersVisitor,
+	include/osg/CullStack, include/osg/CullingSet, include/osg/Plane,
+	include/osg/Polytope, include/osg/ShadowVolumeOccluder,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/CullStack.cpp,
+	src/osg/CullingSet.cpp, src/osg/ShadowVolumeOccluder.cpp,
+	src/osgUtil/CullVisitor.cpp, src/osgUtil/SceneView.cpp: Further
+	work on Occlusion Culling. Most of work is complete, just debugging
+	required now.
+
+2002-06-12 12:23  robert
+
+	* include/osg/Node: Removed inappropriate inline keyword which was
+	breaking the IRIX build.
+
+2002-06-12 11:43  robert
+
+	* src/Demos/osgparticle/osgparticle.cpp: IRIX build fix.
+
+2002-06-12 10:57  robert
+
+	* Make/makedefs, src/osgParticle/Makefile: Changes for MacOSX
+	build, send in by Bob Kuehne.
+
+2002-06-12 10:46  robert
+
+	* src/osgDB/FileNameUtils.cpp: Fixed the osgDB::getFilePath,
+	osgDB::getSimpleFileName() and osgDB::getStrippedName() so that
+	they check for both unix style '/' and windows style '\' slashes in
+	file names.
+
+2002-06-12 09:54  robert
+
+	* include/osg/CullingSet, include/osg/ShadowVolumeOccluder,
+	src/osg/CollectOccludersVisitor.cpp,
+	src/osg/ShadowVolumeOccluder.cpp: Fix for renaming of
+	ShadowOccluderVolume to ShadowVolumeOccluder.
+
+2002-06-12 05:22  robert
+
+	* VisualStudio/osg/osg.dsp, include/osg/CullStack,
+	include/osg/CullingSet, include/osg/Plane, include/osg/Polytope,
+	include/osg/ShadowOccluderVolume, include/osg/ShadowVolumeOccluder,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/Makefile,
+	src/osg/ShadowOccluderVolume.cpp, src/osg/ShadowVolumeOccluder.cpp:
+	Further work on occludision code.
+
+2002-06-11 15:52  robert
+
+	* AUTHORS, include/osg/CullStack, include/osgUtil/CullVisitor,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/CullStack.cpp,
+	src/osgUtil/CullVisitor.cpp: A little more work on Occlusion
+	culling.
+
+2002-06-11 14:41  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp,
+	VisualStudio/osgText/osgText.dsp, include/osg/Notify,
+	include/osgGLUT/Viewer, include/osgText/Font,
+	include/osgText/Paragraph, include/osgText/Text,
+	include/osgUtil/AppVisitor, src/Demos/osgparticle/osgparticle.cpp,
+	src/osg/Notify.cpp, src/osgDB/DotOsgWrapper.cpp,
+	src/osgPlugins/osg/Makefile, src/osgPlugins/osg/Projection.cpp,
+	src/osgPlugins/osg/Transform.cpp, src/osgText/Font.cpp,
+	src/osgText/IO_Font.cpp, src/osgText/IO_Paragraph.cpp,
+	src/osgText/IO_Text.cpp, src/osgText/Makefile,
+	src/osgText/Paragraph.cpp, src/osgUtil/SceneView.cpp: Checked in
+	Macro Jez's additions to osgText to support .osg IO make it a fully
+	functioning NodeKit.
+	
+	Also reimplement notify() to try an prevent a crash which has been
+	caused by to objects in notify.cpp being initiliazed twice, the
+	second time the auto_ptr holding the dev/null ofstream was being
+	initilized to 0.
+
+2002-06-10 09:50  robert
+
+	* NEWS, VisualStudio/osg/osg.dsp,
+	include/osg/CollectOccludersVisitor, include/osg/Node,
+	src/osg/CollectOccludersVisitor.cpp, src/osg/Group.cpp,
+	src/osg/Makefile, src/osg/Node.cpp, src/osgUtil/SceneView.cpp:
+	Added osg::CollectOccludersVisitor which is a helper class for
+	finding active occluder in the view frustum, to be used as pre cull
+	traversal.
+
+2002-06-10 07:21  robert
+
+	* VisualStudio/osg/osg.dsp, include/osg/CullStack,
+	include/osg/CullingSet, include/osg/ShadowOccluderVolume,
+	include/osgUtil/CullVisitor, src/osg/CullStack.cpp,
+	src/osg/Makefile, src/osg/ShadowOccluderVolume.cpp,
+	src/osgUtil/CullVisitor.cpp: Created new helper class
+	osg::CullStack to handle the accumulation of projection, modelview
+	and culling sets, to be used during travesal of the scene graph,
+	such as the cull traversal.
+
+2002-06-09 09:09  robert
+
+	* Make/makedefs, VisualStudio/osgUtil/osgUtil.dsp,
+	include/osgGA/GUIEventAdapter, include/osgGLUT/GLUTEventAdapter,
+	include/osgGLUT/Viewer, include/osgUtil/CameraManipulator,
+	include/osgUtil/DriveManipulator,
+	include/osgUtil/FlightManipulator,
+	include/osgUtil/GUIActionAdapter, include/osgUtil/GUIEventAdapter,
+	include/osgUtil/GUIEventHandler,
+	include/osgUtil/SceneViewManipulator,
+	include/osgUtil/StateSetManipulator,
+	include/osgUtil/TrackballManipulator,
+	src/Demos/osgbillboard/osgbillboard.cpp,
+	src/Demos/osgcallback/osgcallback.cpp,
+	src/Demos/osgclip/osgclip.cpp, src/Demos/osgcluster/osgcluster.cpp,
+	src/Demos/osgcopy/osgcopy.cpp, src/Demos/osgcube/osgcube.cpp,
+	src/Demos/osghud/osghud.cpp, src/Demos/osgimpostor/osgimpostor.cpp,
+	src/Demos/osgoccluder/osgoccluder.cpp,
+	src/Demos/osgparticle/osgparticle.cpp,
+	src/Demos/osgreflect/osgreflect.cpp,
+	src/Demos/osgscribe/osgscribe.cpp,
+	src/Demos/osgstereoimage/osgstereoimage.cpp,
+	src/Demos/osgtext/main.cpp, src/Demos/osgtexture/osgtexture.cpp,
+	src/Demos/osgviews/osgviews.cpp, src/Demos/sgv/sgv.cpp,
+	src/osgGA/DriveManipulator.cpp, src/osgGA/FlightManipulator.cpp,
+	src/osgGA/TrackballManipulator.cpp, src/osgGLUT/Viewer.cpp,
+	src/osgUtil/CameraManipulator.cpp,
+	src/osgUtil/DriveManipulator.cpp,
+	src/osgUtil/FlightManipulator.cpp, src/osgUtil/Makefile,
+	src/osgUtil/SceneViewManipulator.cpp,
+	src/osgUtil/StateSetManipulator.cpp,
+	src/osgUtil/TrackballManipulator.cpp: Checked in migration from
+	osgUtil based GUIAdapter code to Neil Salter's osgGA (Gui
+	Abstraction).  This may break users code, but all it should require
+	to fix the builds should be a change from
+	osgUtil::CameraManipulator (etc) to osgGA::CameraManipulator and
+	include <osgUtil/CameraManipulator (etc) to osgGA/CameraManipulator
+	and the extra dependency of the link line.
+
+2002-06-08 15:58  robert
+
+	* Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osgoccluder/osgoccluder.dsp, doc/demos.html,
+	include/osg/CullingSet, include/osg/Polytope,
+	include/osg/ShadowOccluderVolume, src/osgUtil/CullVisitor.cpp: More
+	more occlusion culling.
+
+2002-06-07 16:03  robert
+
+	* src/Demos/osgoccluder/: Makefile, Makefile.inst, osgoccluder.cpp:
+	Added osgoccluder demo, it creates a single quad occluder, but the
+	culling code is not complete yet, so it won't actually do any
+	occlusion culling, the demo is here so I can test the evolving
+	occlusion culling code.
+
+2002-06-07 10:54  don
+
+	* include/osgParticle/range: #ifdefed out cstdlib for irix
+
+2002-06-07 09:57  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Added default
+	IntersectVisitor::_hitReportingMode to be ONLY_NEAREST_HIT.
+
+2002-06-07 07:32  robert
+
+	* src/: osgDB/Registry.cpp, osgParticle/IO_ModularEmitter.cpp,
+	osgParticle/IO_ParticleProcessor.cpp: Fixed a couple of problems
+	with the NodeKit support.
+
+2002-06-07 06:03  robert
+
+	* include/osgDB/Registry, src/osgDB/FieldReaderIterator.cpp,
+	src/osgDB/Registry.cpp: Added support for NodeKits to the
+	osgDB::Registry.  Object names in .osg files which have the
+	library::class syntax will automatically invoke the dynamic loading
+	of either a nodekit or database plugin.
+
+2002-06-06 10:00  robert
+
+	* src/osgDB/Registry.cpp: Fixed crash in loading osg files which
+	have object types which arn't recognized.
+
+2002-06-06 09:25  robert
+
+	* NEWS, include/osg/AlphaFunc, include/osg/Billboard,
+	include/osg/ClipNode, include/osg/ClipPlane, include/osg/ColorMask,
+	include/osg/ColorMatrix, include/osg/CullFace, include/osg/Depth,
+	include/osg/DrawPixels, include/osg/Drawable, include/osg/EarthSky,
+	include/osg/Fog, include/osg/FrontFace, include/osg/GeoSet,
+	include/osg/Geode, include/osg/Group, include/osg/Image,
+	include/osg/Impostor, include/osg/ImpostorSprite, include/osg/LOD,
+	include/osg/Light, include/osg/LightModel, include/osg/LightSource,
+	include/osg/LineStipple, include/osg/LineWidth,
+	include/osg/Material, include/osg/Matrix, include/osg/Node,
+	include/osg/Object, include/osg/OccluderNode, include/osg/Point,
+	include/osg/PolygonMode, include/osg/PolygonOffset,
+	include/osg/PositionAttitudeTransform, include/osg/Projection,
+	include/osg/ShadeModel, include/osg/StateAttribute,
+	include/osg/StateSet, include/osg/Stencil, include/osg/Switch,
+	include/osg/TexEnv, include/osg/TexGen, include/osg/TexMat,
+	include/osg/Texture, include/osg/TextureCubeMap,
+	include/osg/Transform, include/osg/Transparency,
+	include/osg/Viewport, include/osgParticle/AccelOperator,
+	include/osgParticle/CenteredPlacer, include/osgParticle/Counter,
+	include/osgParticle/Emitter,
+	include/osgParticle/FluidFrictionOperator,
+	include/osgParticle/ForceOperator,
+	include/osgParticle/Interpolator,
+	include/osgParticle/LinearInterpolator,
+	include/osgParticle/ModularEmitter,
+	include/osgParticle/ModularProgram,
+	include/osgParticle/MultiSegmentPlacer,
+	include/osgParticle/Operator, include/osgParticle/ParticleSystem,
+	include/osgParticle/ParticleSystemUpdater,
+	include/osgParticle/Placer, include/osgParticle/PointPlacer,
+	include/osgParticle/Program, include/osgParticle/RadialShooter,
+	include/osgParticle/RandomRateCounter,
+	include/osgParticle/SectorPlacer,
+	include/osgParticle/SegmentPlacer, include/osgParticle/Shooter,
+	include/osgText/Font, include/osgText/Paragraph,
+	include/osgUtil/DepthSortedBin, include/osgUtil/RenderBin,
+	include/osgUtil/RenderStageLighting,
+	include/osgUtil/RenderToTextureStage, src/osgText/FTGL.h: Addd
+	libraryName() method to osg::Object in preperation for the osgDB
+	support for node kits plugins.
+
+2002-06-05 12:11  robert
+
+	* include/osg/Camera: Removed out of date comment on calling
+	dirtyTransform() which no longer exist in osg::Camera.
+
+2002-06-05 12:00  robert
+
+	* VisualStudio/: VisualStudio.dsw,
+	Demos/osgparticle/osgparticle.dsp,
+	Demos/osgparticle/osgparticledemo.dsp: Renamed the osgparticle demo
+	so that it wouldn't clash with the osgParticle library.
+
+2002-06-05 10:14  robert
+
+	* include/osgParticle/range, src/osgParticle/ParticleProcessor.cpp,
+	src/osgParticle/ParticleSystemUpdater.cpp: Fixed compile problems
+	under VisualStudio6.0
+
+2002-06-05 09:51  robert
+
+	* VisualStudio/osgParticle/osgParticle.dsp: Added
+	OSGPARTICLE_LIBRARY define.
+
+2002-06-05 09:11  robert
+
+	* VisualStudio/VisualStudio.dsw: Another try at fixing wayward
+	VisualStudio.dsw file.
+
+2002-06-05 09:06  robert
+
+	* VisualStudio/VisualStudio.dsw: Fixed typo.
+
+2002-06-05 09:00  robert
+
+	* VisualStudio/: VisualStudio.dsw,
+	Demos/osgparticle/osgparticle.dsp, osgParticle/osgParticle.dsp:
+	Updated VisualStudio files for osgParticle.
+
+2002-06-05 08:44  robert
+
+	* AUTHORS, Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osgparticle/osgparticle.dsp,
+	VisualStudio/osgParticle/osgParticle.dsp, doc/documentation.html,
+	doc/doc++/osgParticle/AccelOperator.html,
+	doc/doc++/osgParticle/CenteredPlacer.html,
+	doc/doc++/osgParticle/ClassGraph.class,
+	doc/doc++/osgParticle/ClassGraphPanel.class,
+	doc/doc++/osgParticle/ClassLayout.class,
+	doc/doc++/osgParticle/Counter.html,
+	doc/doc++/osgParticle/Emitter.html,
+	doc/doc++/osgParticle/FluidFrictionOperator.html,
+	doc/doc++/osgParticle/ForceOperator.html,
+	doc/doc++/osgParticle/General.html,
+	doc/doc++/osgParticle/HIER.html,
+	doc/doc++/osgParticle/HIERjava.html,
+	doc/doc++/osgParticle/Interpolator.html,
+	doc/doc++/osgParticle/LinearInterpolator.html,
+	doc/doc++/osgParticle/ModularEmitter.html,
+	doc/doc++/osgParticle/ModularProgram.html,
+	doc/doc++/osgParticle/MultiSegmentPlacer.html,
+	doc/doc++/osgParticle/NavigatorButton.class,
+	doc/doc++/osgParticle/OSGPARTICLE_SECTORPLACER_.html,
+	doc/doc++/osgParticle/Operator.html,
+	doc/doc++/osgParticle/Particle.html,
+	doc/doc++/osgParticle/ParticleProcessor.html,
+	doc/doc++/osgParticle/ParticleSystem.html,
+	doc/doc++/osgParticle/ParticleSystemUpdater.html,
+	doc/doc++/osgParticle/Placer.html,
+	doc/doc++/osgParticle/PointPlacer.html,
+	doc/doc++/osgParticle/Program.html,
+	doc/doc++/osgParticle/RadialShooter.html,
+	doc/doc++/osgParticle/RandomRateCounter.html,
+	doc/doc++/osgParticle/SectorPlacer.html,
+	doc/doc++/osgParticle/SegmentPlacer.html,
+	doc/doc++/osgParticle/Shooter.html,
+	doc/doc++/osgParticle/VariableRateCounter.html,
+	doc/doc++/osgParticle/icon1.gif, doc/doc++/osgParticle/icon2.gif,
+	doc/doc++/osgParticle/index.html,
+	doc/doc++/osgParticle/osgParticle.html,
+	doc/doc++/osgParticle/range.html,
+	doc/doc++/osgParticle/rangef.html,
+	doc/doc++/osgParticle/rangev2.html,
+	doc/doc++/osgParticle/rangev3.html,
+	include/osgParticle/AccelOperator,
+	include/osgParticle/CenteredPlacer, include/osgParticle/Counter,
+	include/osgParticle/Emitter, include/osgParticle/Export,
+	include/osgParticle/FluidFrictionOperator,
+	include/osgParticle/ForceOperator,
+	include/osgParticle/Interpolator,
+	include/osgParticle/LinearInterpolator,
+	include/osgParticle/ModularEmitter,
+	include/osgParticle/ModularProgram,
+	include/osgParticle/MultiSegmentPlacer,
+	include/osgParticle/Operator, include/osgParticle/Particle,
+	include/osgParticle/ParticleProcessor,
+	include/osgParticle/ParticleSystem,
+	include/osgParticle/ParticleSystemUpdater,
+	include/osgParticle/Placer, include/osgParticle/PointPlacer,
+	include/osgParticle/Program, include/osgParticle/RadialShooter,
+	include/osgParticle/RandomRateCounter,
+	include/osgParticle/SectorPlacer,
+	include/osgParticle/SegmentPlacer, include/osgParticle/Shooter,
+	include/osgParticle/VariableRateCounter,
+	include/osgParticle/Version, include/osgParticle/range,
+	src/Demos/osgparticle/Makefile,
+	src/Demos/osgparticle/Makefile.inst,
+	src/Demos/osgparticle/osgparticle.cpp, src/osgParticle/Emitter.cpp,
+	src/osgParticle/FluidFrictionOperator.cpp,
+	src/osgParticle/IO_AccelOperator.cpp,
+	src/osgParticle/IO_CenteredPlacer.cpp,
+	src/osgParticle/IO_Emitter.cpp,
+	src/osgParticle/IO_FluidFrictionOperator.cpp,
+	src/osgParticle/IO_ForceOperator.cpp,
+	src/osgParticle/IO_LinearInterpolator.cpp,
+	src/osgParticle/IO_ModularEmitter.cpp,
+	src/osgParticle/IO_ModularProgram.cpp,
+	src/osgParticle/IO_MultiSegmentPlacer.cpp,
+	src/osgParticle/IO_Particle.cpp,
+	src/osgParticle/IO_ParticleProcessor.cpp,
+	src/osgParticle/IO_ParticleSystem.cpp,
+	src/osgParticle/IO_ParticleSystemUpdater.cpp,
+	src/osgParticle/IO_PointPlacer.cpp, src/osgParticle/IO_Program.cpp,
+	src/osgParticle/IO_RadialShooter.cpp,
+	src/osgParticle/IO_RandomRateCounter.cpp,
+	src/osgParticle/IO_SectorPlacer.cpp,
+	src/osgParticle/IO_SegmentPlacer.cpp,
+	src/osgParticle/IO_VariableRateCounter.cpp,
+	src/osgParticle/Makefile, src/osgParticle/ModularEmitter.cpp,
+	src/osgParticle/ModularProgram.cpp,
+	src/osgParticle/MultiSegmentPlacer.cpp,
+	src/osgParticle/Particle.cpp,
+	src/osgParticle/ParticleProcessor.cpp,
+	src/osgParticle/ParticleSystem.cpp,
+	src/osgParticle/ParticleSystemUpdater.cpp,
+	src/osgParticle/Program.cpp, src/osgParticle/Version.cpp: Checked
+	in osgParticle, writtten by Marco Jez.
+
+2002-06-05 08:35  robert
+
+	* doc/doc++/: osg/AlphaFunc.html, osg/AnimationPath.html,
+	osg/AttributeFunctor.html, osg/Billboard.html, osg/Camera.html,
+	osg/ClipPlane.html, osg/ColorMask.html, osg/ColorMatrix.html,
+	osg/CopyOp.html, osg/CullFace.html, osg/Depth.html,
+	osg/DisplaySettings.html, osg/DrawPixels.html, osg/Drawable.html,
+	osg/EarthSky.html, osg/Fog.html, osg/FrameStamp.html,
+	osg/FrontFace.html, osg/General.html, osg/GeoSet.html,
+	osg/Geode.html, osg/Group.html, osg/HIER.html, osg/HIERjava.html,
+	osg/Image.html, osg/Impostor.html, osg/ImpostorSprite.html,
+	osg/ImpostorSpriteManager.html, osg/LOD.html, osg/Light.html,
+	osg/LightModel.html, osg/LightSource.html, osg/LineSegment.html,
+	osg/LineStipple.html, osg/LineWidth.html, osg/META_Object.html,
+	osg/Material.html, osg/Matrix.html, osg/NodeAcceptOp.html,
+	osg/NodeCallback.html, osg/NodeVisitor.html,
+	osg/NotifySeverity.html, osg/Object.html, osg/Plane.html,
+	osg/Point.html, osg/PolygonMode.html, osg/PolygonOffset.html,
+	osg/PositionAttitudeTransform.html, osg/Projection.html,
+	osg/Quat.html, osg/Referenced.html, osg/ShadeModel.html,
+	osg/State.html, osg/StateAttribute.html, osg/StateSet.html,
+	osg/Statistics.html, osg/Stencil.html, osg/Switch.html,
+	osg/TexEnv.html, osg/TexGen.html, osg/TexMat.html,
+	osg/Texture.html, osg/TextureCubeMap.html, osg/Timer.html,
+	osg/Transform.html, osg/Transparency.html, osg/Vec2.html,
+	osg/Vec3.html, osg/Vec4.html, osg/Viewport.html,
+	osg/clampArray3BetweenRange.html, osg/clampArray3GEQUAL.html,
+	osg/clampArray3LEQUAL.html, osg/clampArray4BetweenRange.html,
+	osg/clampArray4GEQUAL.html, osg/clampArray4LEQUAL.html,
+	osg/clampArrayElementBetweenRange.html,
+	osg/clampArrayElementGEQUAL.html, osg/clampArrayElementLEQUAL.html,
+	osg/clampArrayElementsBetweenRange.html,
+	osg/clampArrayElementsGEQUAL.html,
+	osg/clampArrayElementsLEQUAL.html, osg/clampBetweenRange.html,
+	osg/clampGEQUAL.html, osg/clampLEQUAL.html,
+	osg/createGeodeForImage.2.html, osg/for_each_triangle.html,
+	osg/index.html, osg/osg.html, osg/ref_ptr.html, osg/tag_au.html,
+	osgText/Text.html, osgUtil/CullVisitor.html,
+	osgUtil/DepthSortedBin.html, osgUtil/IntersectVisitor.html,
+	osgUtil/RenderBin.html, osgUtil/RenderGraph.html,
+	osgUtil/RenderLeaf.html, osgUtil/RenderStage.html,
+	osgUtil/RenderStageLighting.html,
+	osgUtil/RenderToTextureStage.html, osgUtil/SceneView.html,
+	osgUtil/SceneViewManipulator.html, osgUtil/SmoothingVisitor.html,
+	osgUtil/StateSetManipulator.html, osgUtil/Tesselator.html,
+	osgUtil/TrackballManipulator.html, osgUtil/TransformCallback.html,
+	osgUtil/TriStripVisitor.html, osgUtil/osgUtil.html: Updated docs.
+
+2002-06-05 05:38  robert
+
+	* VisualStudio/osg/osg.dsp, include/osg/Geode,
+	include/osg/NodeVisitor, include/osg/OccluderNode,
+	include/osgUtil/CullVisitor, src/osg/Geode.cpp, src/osg/Makefile,
+	src/osg/OccluderNode.cpp, src/osgUtil/CullVisitor.cpp: Added new
+	osg::OccluderNode which subclasses from osg::Group, and will
+	provide hooks for adding ConvexPlanerOccluders to the scene.
+
+2002-06-04 11:56  robert
+
+	* src/osgUtil/CullVisitor.cpp: Futher refinement of the new
+	CullingSet support.
+
+2002-06-04 11:21  robert
+
+	* include/osg/CullingSet, include/osg/ShadowOccluderVolume,
+	include/osg/Vec4, include/osgUtil/CullVisitor,
+	src/osg/CullingSet.cpp, src/osgUtil/CullVisitor.cpp: Further work
+	on moving culling functionality from CullVisitor into CullingSet,
+	in preperation for occlusion culling.
+
+2002-06-03 14:38  robert
+
+	* src/osgUtil/CullVisitor.cpp: Fix to CullVisitor::popCullingSet().
+
+2002-06-03 13:54  robert
+
+	* include/osg/fast_back_stack: Warning fix for Windows
+
+2002-06-03 13:49  robert
+
+	* include/osg/CullingSet, include/osg/ShadowOccluderVolume,
+	include/osgUtil/CullVisitor, src/osg/CullingSet.cpp,
+	src/osgUtil/CullVisitor.cpp: Updates to shadow occlusion culling
+	code.
+
+2002-06-03 11:39  robert
+
+	* VisualStudio/osg/osg.dsp, include/osg/Camera,
+	include/osg/ClippingVolume, include/osg/ConvexPlanerOccluder,
+	include/osg/ConvexPlanerPolygon, include/osg/Node,
+	include/osg/Polytope, include/osg/ShadowOccluderVolume,
+	include/osg/State, include/osg/Texture,
+	include/osg/fast_back_stack, include/osgUtil/CullVisitor,
+	src/osg/Camera.cpp, src/osg/CullingSet.cpp, src/osg/Makefile,
+	src/osg/ShadowOccluderVolume.cpp, src/osg/State.cpp,
+	src/osg/Texture.cpp, src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/SceneView.cpp: Additions for the support for
+	ConvexPlaneOccluder. Work still underway.
+
+2002-06-03 07:16  robert
+
+	* VisualStudio/: Demos/hangglide/hangglide.dsp,
+	Demos/osgbillboard/osgbillboard.dsp,
+	Demos/osgcallback/osgcallback.dsp, Demos/osgclip/osgclip.dsp,
+	Demos/osgconv/osgconv.dsp, Demos/osgcopy/osgcopy.dsp,
+	Demos/osgcube/osgcube.dsp, Demos/osghud/osghud.dsp,
+	Demos/osgimpostor/osgimpostor.dsp, Demos/osgreflect/osgreflect.dsp,
+	Demos/osgscribe/osgscribe.dsp,
+	Demos/osgstereoimage/osgstereoimage.dsp,
+	Demos/osgtext/osgtextdemo.dsp, Demos/osgtexture/osgstereoimage.dsp,
+	Demos/osgtexture/osgtexture.dsp, Demos/osgversion/osgversion.dsp,
+	Demos/osgviews/osgviews.dsp, Demos/sgv/sgv.dsp, osg/osg.dsp,
+	osgDB/osgDB.dsp, osgGA/osgGA.dsp, osgGLUT/osgGLUT.dsp,
+	osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp, osgPlugins/dx/dx.dsp,
+	osgPlugins/flt/flt.dsp, osgPlugins/gif/gif.dsp,
+	osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	osgPlugins/lwo/lwo.dsp, osgPlugins/obj/obj.dsp,
+	osgPlugins/osg/dot_osg.dsp, osgPlugins/osgtgz/osgtgz.dsp,
+	osgPlugins/pic/pic.dsp, osgPlugins/png/png.dsp,
+	osgPlugins/rgb/rgb.dsp, osgPlugins/tga/tga.dsp,
+	osgPlugins/tgz/tgz.dsp, osgPlugins/tiff/tiff.dsp,
+	osgPlugins/txp/txp.dsp, osgPlugins/zip/zip.dsp,
+	osgText/osgText.dsp, osgUtil/osgUtil.dsp: Did a to_dos on all the
+	VisualStudio project files, and changed them to use the cvs admin
+	-ko and each file to prevent keyword expansion.
+
+2002-06-03 06:44  robert
+
+	* src/osgDB/Registry.cpp: Changed the ReadResult handling in
+	readNode so that it better handled the case when a plugin hasn't
+	been found to load a plugin.
+
+2002-06-03 06:40  robert
+
+	* VisualStudio/: VisualStudio.dsw,
+	Demos/osgcallback/osgcallback.dsp: Changed file endings to dos.
+
+2002-05-29 15:34  robert
+
+	* VisualStudio/VisualStudio.dsw, include/osg/Math,
+	include/osgGA/GUIEventHandlerVisitor: Fixes for warnings under
+	VisualStudio
+
+2002-05-29 12:15  robert
+
+	* src/Demos/osgcallback/osgcallback.cpp: Fix for IRIX build.
+
+2002-05-29 12:05  robert
+
+	* VisualStudio/Demos/osgcallback/osgcallback.dsp: Changed the
+	endings to dos.
+
+2002-05-28 19:43  robert
+
+	* Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osgcallback/osgcallback.dsp,
+	VisualStudio/osg/osg.dsp, include/osg/Billboard,
+	include/osg/ConvexPlanerOccluder, include/osg/ConvexPlanerPolygon,
+	include/osg/Drawable, include/osg/Geode, include/osg/LOD,
+	include/osg/PositionAttitudeTransform,
+	include/osg/ShadowOccluderVolume, include/osg/Transform,
+	src/Demos/osgcallback/Makefile,
+	src/Demos/osgcallback/Makefile.inst,
+	src/Demos/osgcallback/osgcallback.cpp,
+	src/osg/ConvexPlanerOccluder.cpp, src/osg/ConvexPlanerPolygon.cpp,
+	src/osg/Drawable.cpp, src/osg/Geode.cpp, src/osg/Makefile,
+	src/osg/ShadowOccluderVolume.cpp: Added new osgcallback demo, and
+	updated small API changes to improve the flexiblity of callbacks.
+	
+	Added beginings of convex planer occlusions culling.
+
+2002-05-28 12:11  robert
+
+	* include/: osg/Export, osgDB/Export, osgGA/Export, osgGLUT/Export,
+	osgText/Export, osgUtil/Export: Added pragma to disable warning
+	under VisualStudio.NET.
+
+2002-05-28 11:17  robert
+
+	* src/osgDB/Registry.cpp: Fixed bug in the Use mechansim in
+	Registry.cpp, sumbitted by Macro Jez.
+
+2002-05-28 10:33  robert
+
+	* include/osgText/Text, src/osgText/Text.cpp: Adde
+	osgText::Text::setColor/getColor so that osg::Material's need not
+	be attached to set the text color.
+
+2002-05-28 09:06  robert
+
+	* AUTHORS: Added Norman Vine to the authors list for his work on
+	the Cygwin port.
+
+2002-05-28 07:40  robert
+
+	* include/osg/Export, include/osg/Timer, include/osgDB/Export,
+	include/osgText/Export, include/osgUtil/Export, src/osg/Image.cpp,
+	src/osgDB/FileUtils_Unix.cpp, src/osgPlugins/flt/Pool.cpp,
+	src/osgPlugins/flt/ReaderWriterFLT.cpp, src/osgText/FTGL.h,
+	src/osgText/Font.cpp: Changes for Cygwin build, sent in by Norman
+	Vine.
+
+2002-05-28 07:39  robert
+
+	* src/osgUtil/CullVisitor.cpp: Changed the method of expanding of
+	the near and far planes in CullVisitor::popProjectionMatrix so that
+	it better handled models of zero thickness orthogonal to the
+	viewing direction.
+
+2002-05-28 06:24  robert
+
+	* VisualStudio/osg/osg.dsp, include/osg/fast_back_stack,
+	include/osgUtil/CullVisitor, include/osgUtil/DepthSortedBin,
+	include/osgUtil/IntersectVisitor, include/osgUtil/RenderBin,
+	include/osgUtil/RenderGraph, src/osgUtil/CullVisitor.cpp: Various
+	updates to operations related to cull traversal.
+
+2002-05-27 02:37  robert
+
+	* include/osg/DisplaySettings: Removed , from end of enum.
+
+2002-05-25 05:30  robert
+
+	* src/osgDB/: FileUtils_Unix.cpp, FileUtils_Windows.cpp: Fixed
+	crash associated with searching in an empty filepath.
+
+2002-05-23 11:38  robert
+
+	* VisualStudio/LANGEXT.DAT: Added the patched verions
+	VisualStudio's langext.dat file, which can be used to replace
+	VisualStudio standard one, this enabled VS to reconginse OSG header
+	files as C++ files.
+
+2002-05-23 11:35  robert
+
+	* include/osg/ClippingVolume, src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/Optimizer.cpp: Fixed a bug in the
+	Optimizer::RemoveDuplicateNodesVisitor which was prevent removal of
+	node which could have been removed.
+	
+	Added so extra convinience methods to ClippingVolume and utilized
+	them in the CullVisitor to push and pop only culling planes that
+	are active.
+
+2002-05-22 15:58  don
+
+	* include/osg/FrameStamp, src/osg/FrameStamp.cpp: Fixed spelling
+	error Calander -> Calendar
+
+2002-05-22 08:18  robert
+
+	* VisualStudio/: Demos/hangglide/hangglide.dsp,
+	Demos/osgbillboard/osgbillboard.dsp, Demos/osgclip/osgclip.dsp,
+	Demos/osgconv/osgconv.dsp, Demos/osgcopy/osgcopy.dsp,
+	Demos/osgcube/osgcube.dsp, Demos/osghud/osghud.dsp,
+	Demos/osgimpostor/osgimpostor.dsp, Demos/osgreflect/osgreflect.dsp,
+	Demos/osgscribe/osgscribe.dsp,
+	Demos/osgstereoimage/osgstereoimage.dsp,
+	Demos/osgtext/osgtextdemo.dsp, Demos/osgtexture/osgtexture.dsp,
+	Demos/osgversion/osgversion.dsp, Demos/osgviews/osgviews.dsp,
+	Demos/sgv/sgv.dsp, osg/osg.dsp, osgDB/osgDB.dsp, osgGA/osgGA.dsp,
+	osgGLUT/osgGLUT.dsp, osgPlugins/bmp/bmp.dsp, osgPlugins/dw/dw.dsp,
+	osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
+	osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
+	osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
+	osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
+	osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
+	osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
+	osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
+	osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
+	Removed the usage of memory manager from the debug windows build.
+
+2002-05-22 08:01  robert
+
+	* include/osgUtil/CullVisitor, src/osgUtil/SceneView.cpp: Added
+	osgUtil::CullVisitor::getCurentRenderGraph() and
+	getRootRenderGraph() methods which replace getRenderGraph(). Small
+	changing of order of push/pop of StateSet's in SceneView to clean
+	things up.
+
+2002-05-22 06:04  robert
+
+	* include/osg/State: Changed the public osg::State::applyMode() and
+	applyAttribute methods so that they dirty the associated state,
+	this helps keep the OpenGL state valid once out of local drawing
+	routines.
+
+2002-05-22 04:50  robert
+
+	* doc/Doxyfiles/all_Doxyfile, doc/Doxyfiles/auto_Doxyfile,
+	doc/Doxyfiles/core_Doxyfile, include/osgGA/Export,
+	include/osgGA/StateSetManipulator: Updates for Doxygen and osgGA
+	headers from Neil.
+
+2002-05-21 15:34  robert
+
+	* doc/introduction.html: Typo and grammer fixes to
+	introduction.html from Neil Salter.
+
+2002-05-21 05:16  robert
+
+	* include/osg/State, src/osg/State.cpp: Renamed
+	osg::State::getCurrentMode/Attribute(..) to
+	getLastAppliedMode/Attribute() to make it more consistent with the
+	internal workings of osg::State.
+
+2002-05-21 04:59  robert
+
+	* include/osg/Math, include/osg/State, src/osg/State.cpp: Added
+	osg::State::getCurrentMode and osg::State::getCurrentAttribute().
+	
+	Aded osg::clampAbove(..) and osg::clampBelow() template functions
+	to include/osg/Math.
+
+2002-05-20 20:58  don
+
+	* Make/instrules: Modified instrules so that the functionality of 
+	instlinks is that system links are not made to point to links,
+	rather the real files.	So links installed on a system are pointing
+	to platform specific files rather than links that may be pointing
+	to files of the wrong platform type.
+
+2002-05-18 04:39  robert
+
+	* include/osg/ClippingVolume, include/osg/Vec4,
+	include/osgUtil/CullVisitor, include/osgUtil/RenderGraph,
+	src/osgUtil/CullVisitor.cpp: Various API updates to suppor light
+	points developments better, but should also benifit other
+	extensions to rendering.
+
+2002-05-18 04:37  robert
+
+	* src/osg/Texture.cpp: Made trilinear filtering the default mode
+	for osg::Texture's.
+
+2002-05-18 04:35  robert
+
+	* src/osgPlugins/flt/ReaderWriterATTR.cpp: Modified the setting of
+	min and mag texture filter modes to produce higher quality mip
+	maps.
+
+2002-05-15 15:58  robert
+
+	* src/osgUtil/: CullVisitor.cpp, TrackballManipulator.cpp: Fixed
+	problem with orhographic projections due to a bug in CullVisitor
+	where it automatically resets the near and far to the values
+	calculated during cull traversal.  The maths for converting the
+	computed far and near into clip coordinates was wrong, fixed this
+	and the problem goes away.
+
+2002-05-15 07:27  robert
+
+	* include/osgUtil/CullVisitor, src/osgUtil/CullVisitor.cpp: Exposed
+	the CullVisitor::setComputeNearFarMode
+
+2002-05-14 06:20  robert
+
+	* include/osg/MemoryManager, include/osgUtil/CullVisitor,
+	src/osg/Image.cpp: Fixes to new flipVertical/flipHorizontal.
+
+2002-05-14 05:34  robert
+
+	* include/osg/Image, src/osg/Image.cpp: Added
+	osg::Image::flipHorziontal and flipVertical, submitted by Brede
+	Johansen.
+
+2002-05-13 17:19  robert
+
+	* include/osg/: Math, Vec4: Added new template versions of a
+	commonly used maths functions.
+
+2002-05-13 03:30  robert
+
+	* src/osgPlugins/lib3ds/ReaderWriter3DS.cpp: Reverted change to use
+	decal flag.
+
+2002-05-10 15:30  robert
+
+	* Make/makedefs: Added image plugin library defs for IRIX,
+	submission from Randall Hopper.
+
+2002-05-10 11:42  robert
+
+	* src/osgText/Font.cpp: Fix for finding windows fonts.
+
+2002-05-09 18:48  don
+
+	* src/osgGA/KeySwitchCameraManipulator.cpp: Small std::cout fix
+
+2002-05-09 15:02  robert
+
+	* VisualStudio/osgGA/osgGA.dsp, src/osgGA/GUIEventHandler.cpp,
+	src/osgGA/KeySwitchCameraManipulator.cpp: Fix compile problems with
+	osgGA under Windows.
+
+2002-05-09 14:59  robert
+
+	* include/osgUtil/CullVisitor, src/osgUtil/CullVisitor.cpp: Added
+	pixelSize method to CullVisitor, and converted small feature
+	culling to use the pixelSize method instead of a ratio of radius to
+	distance from eye point.  setSmallFeatureCullingPixelSize() method
+	has also been added to provide the user with finer control of small
+	featyre culling.
+
+2002-05-09 06:30  robert
+
+	* Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/osgGA/osgGA.dsp, include/osgGA/CameraManipulator,
+	include/osgGA/DriveManipulator, include/osgGA/Export,
+	include/osgGA/FlightManipulator, include/osgGA/GUIActionAdapter,
+	include/osgGA/GUIEventAdapter, include/osgGA/GUIEventHandler,
+	include/osgGA/GUIEventHandlerVisitor,
+	include/osgGA/KeySwitchCameraManipulator,
+	include/osgGA/SetSceneViewVisitor,
+	include/osgGA/StateSetManipulator,
+	include/osgGA/TrackballManipulator, include/osgGA/Version,
+	src/osgGA/CameraManipulator.cpp, src/osgGA/DriveManipulator.cpp,
+	src/osgGA/FlightManipulator.cpp, src/osgGA/GUIEventHandler.cpp,
+	src/osgGA/GUIEventHandlerVisitor.cpp,
+	src/osgGA/KeySwitchCameraManipulator.cpp, src/osgGA/Makefile,
+	src/osgGA/SetSceneViewVisitor.cpp,
+	src/osgGA/StateSetManipulator.cpp,
+	src/osgGA/TrackballManipulator.cpp, src/osgGA/Version.cpp,
+	src/osgUtil/SceneView.cpp: Added new osgGA - GUI Adapter library
+	submitted by Neil Salter. This will replace the current GUI adapter
+	code inside osgUtil.
+
+2002-05-08 03:32  robert
+
+	* VisualStudio/osg/osg.dsp: Addded missing ClipNode references to
+	osg.dsp.
+
+2002-05-07 07:44  robert
+
+	* src/osg/: Camera.cpp, ClipNode.cpp: Fixed
+	osg::Camera::getModelViewMatrix() so that it handles the
+	EYE_TO_MODEL transform correctly.
+	
+	Fixed warning in ClipNode.cpp.
+
+2002-05-07 07:12  robert
+
+	* src/osgPlugins/flt/: SwitchRecord.cpp, SwitchRecord.h,
+	flt2osg.cpp: Support added for OpenFlight switch nodes, submission
+	from Brede Johansen.
+
+2002-05-07 07:08  robert
+
+	* include/osg/: Quat, Vec2, Vec3, Vec4: Added default values in the
+	constructors of Vec2,Vec3,Vec4 and Quat default constructors.
+
+2002-05-06 22:51  don
+
+	* Make/makedefs: Fixed rpath nonsense in makedefs for Irix
+
+2002-05-03 18:47  robert
+
+	* include/osg/Node, src/osg/Node.cpp: Added
+	osg::Node::getValidStateSet().
+
+2002-05-03 12:47  robert
+
+	* Make/debugtests.bat, Make/osgtests.bat, include/osg/LightSource,
+	src/osg/LightSource.cpp: Added support for the managing the
+	StateSet above a LightSource node, and made it an osg::Group so
+	that it can be used a decorator above a scene.
+	
+	Added osgclip demo to the test suite.
+
+2002-05-02 18:02  robert
+
+	* include/osg/Viewport: Made osg::Viewport::getViewport(..) const.
+
+2002-05-01 20:14  robert
+
+	* Make/makedefs, Make/makedirdefs, VisualStudio/VisualStudio.dsw,
+	VisualStudio/Demos/osgclip/osgclip.dsp, include/osg/ClipNode,
+	include/osg/ClipPlane, include/osg/Matrix, include/osg/NodeVisitor,
+	include/osgUtil/CullVisitor, include/osgUtil/RenderStage,
+	include/osgUtil/RenderStageLighting, src/Demos/osgclip/Makefile,
+	src/Demos/osgclip/Makefile.inst, src/Demos/osgclip/osgclip.cpp,
+	src/osg/ClipNode.cpp, src/osg/Makefile,
+	src/osgUtil/CullVisitor.cpp, src/osgUtil/RenderStage.cpp,
+	src/osgUtil/RenderStageLighting.cpp, src/osgUtil/SceneView.cpp:
+	dded osg::ClipNode class for managing OpenGL clipping planes, and
+	osgclip demo.
+
+2002-04-26 12:01  robert
+
+	* AUTHORS: Updated the AUTHORS file to mention the original authors
+	of the terrapage loader.
+
+2002-04-26 11:21  don
+
+	* VisualStudio/: VisualStudio.dsw, Demos/hangglide/hangglide.dsp,
+	Demos/osgbillboard/osgbillboard.dsp, Demos/osgconv/osgconv.dsp,
+	Demos/osgcopy/osgcopy.dsp, Demos/osgcube/osgcube.dsp,
+	Demos/osghud/osghud.dsp, Demos/osgimpostor/osgimpostor.dsp,
+	Demos/osgreflect/osgreflect.dsp, Demos/osgscribe/osgscribe.dsp,
+	Demos/osgstereoimage/osgstereoimage.dsp,
+	Demos/osgtext/osgtextdemo.dsp, Demos/osgtexture/osgstereoimage.dsp,
+	Demos/osgtexture/osgtexture.dsp, Demos/osgversion/osgversion.dsp,
+	Demos/osgviews/osgviews.dsp, Demos/sgv/sgv.dsp, osg/osg.dsp,
+	osgDB/osgDB.dsp, osgGLUT/osgGLUT.dsp, osgPlugins/bmp/bmp.dsp,
+	osgPlugins/dw/dw.dsp, osgPlugins/dx/dx.dsp, osgPlugins/flt/flt.dsp,
+	osgPlugins/gif/gif.dsp, osgPlugins/jpeg/jpeg.dsp,
+	osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/lwo/lwo.dsp,
+	osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	osgPlugins/osgtgz/osgtgz.dsp, osgPlugins/pic/pic.dsp,
+	osgPlugins/png/png.dsp, osgPlugins/rgb/rgb.dsp,
+	osgPlugins/tga/tga.dsp, osgPlugins/tgz/tgz.dsp,
+	osgPlugins/tiff/tiff.dsp, osgPlugins/txp/txp.dsp,
+	osgPlugins/zip/zip.dsp, osgText/osgText.dsp, osgUtil/osgUtil.dsp:
+	Testing .dsp and .dsw as binary files
+
+2002-04-26 09:49  robert
+
+	* NEWS: Added mention of MemoryManager to NEWS file.
+
+2002-04-26 09:44  robert
+
+	* NEWS, doc/doc++/osg/DrawPixels.html, doc/doc++/osg/Drawable.html,
+	doc/doc++/osg/EarthSky.html, doc/doc++/osg/GeoSet.html,
+	doc/doc++/osg/Group.html, doc/doc++/osg/Impostor.html,
+	doc/doc++/osg/ImpostorSprite.html, doc/doc++/osg/LOD.html,
+	doc/doc++/osg/PositionAttitudeTransform.html,
+	doc/doc++/osg/Projection.html, doc/doc++/osg/Switch.html,
+	doc/doc++/osg/Transform.html, src/osgPlugins/pfb/Makefile: Updated
+	docs.
+	
+	Fix to pfb Makefile for missing $.
+
+2002-04-26 08:06  robert
+
+	* src/osgUtil/Optimizer.cpp: Fix for CisualStudio6.0 build.
+
+2002-04-26 04:25  robert
+
+	* src/osgPlugins/dx/DXWriter.h: Fixed remaining MAX_PATH usuage,
+	replacing it with the new DX_MAX_PATH, this should solve compile
+	problems under VisualStudio .NET.
+
+2002-04-26 04:16  robert
+
+	* NEWS, include/osg/Drawable, include/osg/Group, include/osg/LOD,
+	include/osg/Node, src/osgPlugins/osg/Group.cpp,
+	src/osgPlugins/osg/LOD.cpp, src/osgUtil/InsertImpostorsVisitor.cpp,
+	src/osgUtil/Optimizer.cpp: Qarning fixes, and updated the date in
+	NEWS to reflect todays release of 0.8.45
+
+2002-04-25 18:09  robert
+
+	* Make/makedefs, include/osg/Node, src/osgPlugins/pfb/Makefile:
+	Fixes for IRIX build.
+	
+	Fix for a warning under VisualStudio.NET.
+
+2002-04-25 18:07  robert
+
+	* src/osgPlugins/dx/: DXWriter.cpp, DXWriter.h: Cygwin build fixes.
+
+2002-04-25 17:31  robert
+
+	* src/osgPlugins/txp/trpage_sys.h: Fix for window build.
+
+2002-04-25 11:54  don
+
+	* NEWS: Added small blurb for Solaris...
+
+2002-04-25 09:26  robert
+
+	* index.html, doc/contents.html, doc/demos.html,
+	doc/dependencies.html, doc/index.html, doc/install.html,
+	doc/introduction.html, doc/plan.html, doc/stereo.html: Ran the
+	spell checker through the new documentation.
+
+2002-04-25 08:35  robert
+
+	* ChangeLog: Updated change log for 0.8.45 release.
+
+2002-04-25 07:37  robert
+
+	* doc/plan.html: Added to the .plan.
+
 2002-04-25 07:30  robert
 
 	* src/osgPlugins/obj/: ReaderWriterOBJ.cpp, glm.cpp, glm.h: Fixes
@@ -306,11 +2800,6 @@
 	* src/Demos/osgcluster/osgcluster.cpp: Impleneted byte swap for use
 	between machines with different endians.
 
-2002-04-22 17:45  don
-
-	* src/Demos/hangglide/hangglide.cpp: Fixed couple of small errors
-	caught by Solaris compiler
-
 2002-04-22 17:18  robert
 
 	* include/osg/: ClippingVolume, Matrix, Plane: A couple of API
@@ -334,9 +2823,9 @@
 
 2002-04-22 15:41  robert
 
-	* include/osgUtil/CullVisitor, src/Demos/hangglide/hangglide.cpp:
-	Added code in hangglide to move the earth sky around with the eye
-	point, use osg::Transform::ComputeTransformCallback.
+	* include/osgUtil/CullVisitor: Added code in hangglide to move the
+	earth sky around with the eye point, use
+	osg::Transform::ComputeTransformCallback.
 
 2002-04-22 10:54  robert
 
@@ -561,11 +3050,8 @@
 
 2002-04-17 07:36  robert
 
-	* include/osg/ColorMatrix, include/osg/StateAttribute,
-	src/Demos/hangglide/terrain_coords.h,
-	src/Demos/hangglide/terrain_normals.h,
-	src/Demos/hangglide/terrain_texcoords.h: Fixes for warnings under
-	VisualStudio
+	* include/osg/: ColorMatrix, StateAttribute: Fixes for warnings
+	under VisualStudio
 
 2002-04-17 07:29  robert
 
@@ -643,12 +3129,6 @@
 2002-04-16 10:09  robert
 
 	* VisualStudio/Demos/hangglide/hangglide.dsp,
-	src/Demos/hangglide/Makefile, src/Demos/hangglide/hat.cpp,
-	src/Demos/hangglide/terrain.cpp,
-	src/Demos/hangglide/terrain_coords.h,
-	src/Demos/hangglide/terrain_data.h,
-	src/Demos/hangglide/terrain_normals.h,
-	src/Demos/hangglide/terrain_texcoords.h,
 	src/Demos/osgversion/osgversion.cpp, src/osg/Image.cpp,
 	src/osgPlugins/dw/ReaderWriterDW.cpp,
 	src/osgPlugins/dx/ReaderWriterDX.cpp,
@@ -1134,8 +3614,7 @@
 
 2002-04-09 11:51  don
 
-	* Make/instdemosrc, src/Demos/hangglide/Makefile.inst,
-	src/Demos/osgbillboard/Makefile.inst,
+	* Make/instdemosrc, src/Demos/osgbillboard/Makefile.inst,
 	src/Demos/osgcluster/Makefile.inst,
 	src/Demos/osgconv/Makefile.inst, src/Demos/osgcopy/Makefile.inst,
 	src/Demos/osgcube/Makefile.inst,
@@ -1156,16 +3635,15 @@
 	Make/makepkg, Make/makerpms, Make/makerules,
 	dist/PKG/OpenSceneGraph-0.8.44-SunOS-local,
 	dist/PKG/OpenSceneGraph-dev-0.8.44-SunOS-local, src/Demos/Makefile,
-	src/Demos/hangglide/Makefile, src/Demos/osgbillboard/Makefile,
-	src/Demos/osgcluster/Makefile, src/Demos/osgconv/Makefile,
-	src/Demos/osgcopy/Makefile, src/Demos/osgcube/Makefile,
-	src/Demos/osgimpostor/Makefile, src/Demos/osgreflect/Makefile,
-	src/Demos/osgscribe/Makefile, src/Demos/osgstereoimage/Makefile,
-	src/Demos/osgtext/Makefile, src/Demos/osgtexture/Makefile,
-	src/Demos/osgversion/Makefile, src/Demos/osgviews/Makefile,
-	src/Demos/sgv/Makefile, src/osgPlugins/Makefile,
-	src/osgText/FTVectoriser.cpp: Added pkgadd distribution for
-	Solaris.
+	src/Demos/osgbillboard/Makefile, src/Demos/osgcluster/Makefile,
+	src/Demos/osgconv/Makefile, src/Demos/osgcopy/Makefile,
+	src/Demos/osgcube/Makefile, src/Demos/osgimpostor/Makefile,
+	src/Demos/osgreflect/Makefile, src/Demos/osgscribe/Makefile,
+	src/Demos/osgstereoimage/Makefile, src/Demos/osgtext/Makefile,
+	src/Demos/osgtexture/Makefile, src/Demos/osgversion/Makefile,
+	src/Demos/osgviews/Makefile, src/Demos/sgv/Makefile,
+	src/osgPlugins/Makefile, src/osgText/FTVectoriser.cpp: Added pkgadd
+	distribution for Solaris.
 	
 	Added a cleaner way to install demo source so that installed
 	versions use a simplified makedefs/makerules.
@@ -1300,30 +3778,29 @@
 	Make/makerules.cyg, Make/makerules.freebsd, Make/makerules.irix,
 	Make/makerules.linux, Make/makerules.macosx, Make/makerules.mingw,
 	Make/makerules.new, dist/Irix/Makefile, src/Makefile,
-	src/Demos/Makefile, src/Demos/hangglide/Makefile,
-	src/Demos/osgbillboard/Makefile, src/Demos/osgcluster/Makefile,
-	src/Demos/osgconv/Makefile, src/Demos/osgcopy/Makefile,
-	src/Demos/osgcube/Makefile, src/Demos/osgimpostor/Makefile,
-	src/Demos/osgreflect/Makefile, src/Demos/osgscribe/Makefile,
-	src/Demos/osgstereoimage/Makefile, src/Demos/osgtext/Makefile,
-	src/Demos/osgtexture/Makefile, src/Demos/osgviews/Makefile,
-	src/Demos/sgv/Makefile, src/osg/Makefile, src/osgDB/Makefile,
-	src/osgGLUT/Makefile, src/osgPlugins/Makefile,
-	src/osgPlugins/bmp/Makefile, src/osgPlugins/dw/Makefile,
-	src/osgPlugins/dx/Makefile, src/osgPlugins/flt/Makefile,
-	src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
-	src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
-	src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
-	src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pfb/Makefile,
-	src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
-	src/osgPlugins/quicktime/Makefile, src/osgPlugins/rgb/Makefile,
-	src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
-	src/osgPlugins/tiff/Makefile, src/osgPlugins/txp/Makefile,
-	src/osgPlugins/zip/Makefile, src/osgText/Makefile,
-	src/osgUtil/Makefile: The new order for building OSG.  All
-	Makefiles are replaced and the Make directory is left with four
-	files only :	 makedefs     makerules     makedirrules    
-	instrules
+	src/Demos/Makefile, src/Demos/osgbillboard/Makefile,
+	src/Demos/osgcluster/Makefile, src/Demos/osgconv/Makefile,
+	src/Demos/osgcopy/Makefile, src/Demos/osgcube/Makefile,
+	src/Demos/osgimpostor/Makefile, src/Demos/osgreflect/Makefile,
+	src/Demos/osgscribe/Makefile, src/Demos/osgstereoimage/Makefile,
+	src/Demos/osgtext/Makefile, src/Demos/osgtexture/Makefile,
+	src/Demos/osgviews/Makefile, src/Demos/sgv/Makefile,
+	src/osg/Makefile, src/osgDB/Makefile, src/osgGLUT/Makefile,
+	src/osgPlugins/Makefile, src/osgPlugins/bmp/Makefile,
+	src/osgPlugins/dw/Makefile, src/osgPlugins/dx/Makefile,
+	src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
+	src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
+	src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
+	src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
+	src/osgPlugins/pfb/Makefile, src/osgPlugins/pic/Makefile,
+	src/osgPlugins/png/Makefile, src/osgPlugins/quicktime/Makefile,
+	src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
+	src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
+	src/osgPlugins/txp/Makefile, src/osgPlugins/zip/Makefile,
+	src/osgText/Makefile, src/osgUtil/Makefile: The new order for
+	building OSG.  All Makefiles are replaced and the Make directory is
+	left with four files only :	makedefs     makerules	  
+	makedirrules	 instrules
 	
 	These work for all platforms supported so far, which include :	  
 	Linux	  Irix	   Solaris     MacOSX	  Cygwin     FreeBSD
@@ -1570,13 +4047,12 @@
 	* Make/makedefs.freebsd, Make/makedefs.irix.std,
 	Make/makedefs.irix.std.64, Make/makedefs.linux,
 	Make/makedefs.macosx, VisualStudio/osg/osg.dsp,
-	include/osg/MemoryManager, src/Demos/hangglide/terrain.cpp,
-	src/Demos/osgreflect/osgreflect.cpp, src/osg/Image.cpp,
-	src/osg/Makefile, src/osg/MemoryManager.cpp: Added
-	osg::MemoryManger which is currently based on Paul Nettle's memory
-	manager published at flipcode.	I havn't adopted Paul's macro's for
-	new/delete etc, but use osg prefixed versions instead to allow
-	greater flexiblity in handling include ordering.
+	include/osg/MemoryManager, src/Demos/osgreflect/osgreflect.cpp,
+	src/osg/Image.cpp, src/osg/Makefile, src/osg/MemoryManager.cpp:
+	Added osg::MemoryManger which is currently based on Paul Nettle's
+	memory manager published at flipcode.  I havn't adopted Paul's
+	macro's for new/delete etc, but use osg prefixed versions instead
+	to allow greater flexiblity in handling include ordering.
 	
 	Have fixed a couple of new/delete[] problems which existed as a
 	result.
@@ -2082,28 +4558,27 @@
 2002-02-13 17:56  robert
 
 	* Makefile, Make/makedefs.irix.std.64, src/Makefile,
-	src/Demos/Makefile, src/Demos/hangglide/Makefile,
-	src/Demos/osgbillboard/Makefile, src/Demos/osgcluster/Makefile,
-	src/Demos/osgcopy/Makefile, src/Demos/osgcube/Makefile,
-	src/Demos/osgimpostor/Makefile, src/Demos/osgreflect/Makefile,
-	src/Demos/osgscribe/Makefile, src/Demos/osgtext/Makefile,
-	src/Demos/osgtexture/Makefile, src/Demos/osgviews/Makefile,
-	src/Demos/sgv/Makefile, src/osg/Makefile, src/osgDB/Makefile,
-	src/osgGLUT/Makefile, src/osgPlugins/Makefile,
-	src/osgPlugins/bmp/Makefile, src/osgPlugins/dw/Makefile,
-	src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
-	src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
-	src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
-	src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
-	src/osgPlugins/pfb/Makefile, src/osgPlugins/pic/Makefile,
-	src/osgPlugins/png/Makefile, src/osgPlugins/quicktime/Makefile,
-	src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
-	src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
-	src/osgPlugins/txp/Makefile, src/osgPlugins/zip/Makefile,
-	src/osgText/Makefile, src/osgUtil/Makefile: Updated the makefiles
-	to all have the #!gmake reference to force IRIX compilation using
-	gmake rather than pmake or smake.  This gets round issues with
-	exporting OSGHOME.
+	src/Demos/Makefile, src/Demos/osgbillboard/Makefile,
+	src/Demos/osgcluster/Makefile, src/Demos/osgcopy/Makefile,
+	src/Demos/osgcube/Makefile, src/Demos/osgimpostor/Makefile,
+	src/Demos/osgreflect/Makefile, src/Demos/osgscribe/Makefile,
+	src/Demos/osgtext/Makefile, src/Demos/osgtexture/Makefile,
+	src/Demos/osgviews/Makefile, src/Demos/sgv/Makefile,
+	src/osg/Makefile, src/osgDB/Makefile, src/osgGLUT/Makefile,
+	src/osgPlugins/Makefile, src/osgPlugins/bmp/Makefile,
+	src/osgPlugins/dw/Makefile, src/osgPlugins/flt/Makefile,
+	src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
+	src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
+	src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
+	src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pfb/Makefile,
+	src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
+	src/osgPlugins/quicktime/Makefile, src/osgPlugins/rgb/Makefile,
+	src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
+	src/osgPlugins/tiff/Makefile, src/osgPlugins/txp/Makefile,
+	src/osgPlugins/zip/Makefile, src/osgText/Makefile,
+	src/osgUtil/Makefile: Updated the makefiles to all have the #!gmake
+	reference to force IRIX compilation using gmake rather than pmake
+	or smake.  This gets round issues with exporting OSGHOME.
 
 2002-02-13 17:53  robert
 
@@ -2133,7 +4608,6 @@
 2002-02-12 18:49  robert
 
 	* Makefile, src/Makefile, src/Demos/Makefile,
-	src/Demos/hangglide/Makefile, src/Demos/hangglide/hangglide.cpp,
 	src/Demos/osgbillboard/Makefile,
 	src/Demos/osgbillboard/osgbillboard.cpp,
 	src/Demos/osgcluster/Makefile, src/Demos/osgcluster/osgcluster.cpp,
@@ -2628,8 +5102,7 @@
 
 2002-01-30 13:59  robert
 
-	* src/Demos/: hangglide/base.cpp, osgcopy/osgcopy.cpp: Fixes for
-	Windows build
+	* src/Demos/osgcopy/osgcopy.cpp: Fixes for Windows build
 
 2002-01-30 11:24  robert
 
@@ -2638,11 +5111,10 @@
 
 2002-01-30 10:27  robert
 
-	* include/osg/Math, src/Demos/hangglide/sky.cpp,
-	src/Demos/hangglide/tank.cpp, src/osg/Matrix.cpp,
-	src/osgPlugins/obj/glm.cpp, src/osgUtil/CullVisitor.cpp: Removed
-	the M_PI defines from include/osg/Math and have use a const double
-	osg::PI etc in its place.
+	* include/osg/Math, src/osg/Matrix.cpp, src/osgPlugins/obj/glm.cpp,
+	src/osgUtil/CullVisitor.cpp: Removed the M_PI defines from
+	include/osg/Math and have use a const double osg::PI etc in its
+	place.
 
 2002-01-30 10:02  robert
 
@@ -2938,7 +5410,6 @@
 2002-01-19 17:11  robert
 
 	* include/osgUtil/GUIEventAdapter,
-	src/Demos/hangglide/GliderManipulator.cpp,
 	src/osgGLUT/GLUTEventAdapter.cpp, src/osgGLUT/Viewer.cpp,
 	src/osgUtil/DriveManipulator.cpp,
 	src/osgUtil/FlightManipulator.cpp,
@@ -3111,8 +5582,8 @@
 
 	* Make/makerules.macosx, include/osg/GL, include/osg/GLU,
 	include/osg/Timer, include/osgText/Font,
-	src/Demos/hangglide/Makefile, src/Demos/osgconv/Makefile,
-	src/Demos/osgcube/Makefile, src/Demos/osgimpostor/Makefile,
+	src/Demos/osgconv/Makefile, src/Demos/osgcube/Makefile,
+	src/Demos/osgimpostor/Makefile,
 	src/Demos/osgimpostor/osgimpostor.cpp,
 	src/Demos/osgreflect/Makefile, src/Demos/osgtext/Makefile,
 	src/Demos/osgtext/main.cpp, src/Demos/osgtexture/Makefile,
@@ -3179,23 +5650,23 @@
 
 2002-01-04 15:44  robert
 
-	* Makefile, src/Demos/Makefile, src/Demos/hangglide/Makefile,
-	src/Demos/osgcluster/Makefile, src/Demos/osgconv/Makefile,
-	src/Demos/osgcube/Makefile, src/Demos/osgimpostor/Makefile,
-	src/Demos/osgreflect/Makefile, src/Demos/osgtext/Makefile,
-	src/Demos/osgtexture/Makefile, src/Demos/osgviews/Makefile,
-	src/Demos/sgv/Makefile, src/osg/Makefile, src/osgDB/Makefile,
-	src/osgGLUT/Makefile, src/osgPlugins/bmp/Makefile,
-	src/osgPlugins/dw/Makefile, src/osgPlugins/flt/Makefile,
-	src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
-	src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
-	src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
-	src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pic/Makefile,
-	src/osgPlugins/png/Makefile, src/osgPlugins/rgb/Makefile,
-	src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
-	src/osgPlugins/tiff/Makefile, src/osgPlugins/zip/Makefile,
-	src/osgText/Makefile, src/osgUtil/Makefile: Renamed the TOP
-	variable in the Makefiles to OSGHOME.
+	* Makefile, src/Demos/Makefile, src/Demos/osgcluster/Makefile,
+	src/Demos/osgconv/Makefile, src/Demos/osgcube/Makefile,
+	src/Demos/osgimpostor/Makefile, src/Demos/osgreflect/Makefile,
+	src/Demos/osgtext/Makefile, src/Demos/osgtexture/Makefile,
+	src/Demos/osgviews/Makefile, src/Demos/sgv/Makefile,
+	src/osg/Makefile, src/osgDB/Makefile, src/osgGLUT/Makefile,
+	src/osgPlugins/bmp/Makefile, src/osgPlugins/dw/Makefile,
+	src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
+	src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
+	src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
+	src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
+	src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
+	src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
+	src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
+	src/osgPlugins/zip/Makefile, src/osgText/Makefile,
+	src/osgUtil/Makefile: Renamed the TOP variable in the Makefiles to
+	OSGHOME.
 
 2002-01-04 15:43  robert
 
@@ -3233,25 +5704,24 @@
 2002-01-03 18:18  robert
 
 	* Makefile, src/Makefile, src/Demos/Makefile,
-	src/Demos/hangglide/Makefile, src/Demos/osgcluster/Makefile,
-	src/Demos/osgconv/Makefile, src/Demos/osgcube/Makefile,
-	src/Demos/osgimpostor/Makefile, src/Demos/osgreflect/Makefile,
-	src/Demos/osgtext/Makefile, src/Demos/osgtexture/Makefile,
-	src/Demos/osgviews/Makefile, src/Demos/sgv/Makefile,
-	src/osg/Makefile, src/osgDB/Makefile, src/osgGLUT/Makefile,
-	src/osgPlugins/Makefile, src/osgPlugins/bmp/Makefile,
-	src/osgPlugins/dw/Makefile, src/osgPlugins/flt/Makefile,
-	src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/Makefile,
-	src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/Makefile,
-	src/osgPlugins/obj/Makefile, src/osgPlugins/osg/Makefile,
-	src/osgPlugins/osgtgz/Makefile, src/osgPlugins/pfb/Makefile,
-	src/osgPlugins/pic/Makefile, src/osgPlugins/png/Makefile,
-	src/osgPlugins/rgb/Makefile, src/osgPlugins/tga/Makefile,
-	src/osgPlugins/tgz/Makefile, src/osgPlugins/tiff/Makefile,
-	src/osgPlugins/zip/Makefile, src/osgText/Makefile,
-	src/osgUtil/Makefile: Makefile changes to support Cywin port -
-	submission from Norman Vine, updates to fix case problems under
-	unix by Robert.
+	src/Demos/osgcluster/Makefile, src/Demos/osgconv/Makefile,
+	src/Demos/osgcube/Makefile, src/Demos/osgimpostor/Makefile,
+	src/Demos/osgreflect/Makefile, src/Demos/osgtext/Makefile,
+	src/Demos/osgtexture/Makefile, src/Demos/osgviews/Makefile,
+	src/Demos/sgv/Makefile, src/osg/Makefile, src/osgDB/Makefile,
+	src/osgGLUT/Makefile, src/osgPlugins/Makefile,
+	src/osgPlugins/bmp/Makefile, src/osgPlugins/dw/Makefile,
+	src/osgPlugins/flt/Makefile, src/osgPlugins/gif/Makefile,
+	src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/Makefile,
+	src/osgPlugins/lwo/Makefile, src/osgPlugins/obj/Makefile,
+	src/osgPlugins/osg/Makefile, src/osgPlugins/osgtgz/Makefile,
+	src/osgPlugins/pfb/Makefile, src/osgPlugins/pic/Makefile,
+	src/osgPlugins/png/Makefile, src/osgPlugins/rgb/Makefile,
+	src/osgPlugins/tga/Makefile, src/osgPlugins/tgz/Makefile,
+	src/osgPlugins/tiff/Makefile, src/osgPlugins/zip/Makefile,
+	src/osgText/Makefile, src/osgUtil/Makefile: Makefile changes to
+	support Cywin port - submission from Norman Vine, updates to fix
+	case problems under unix by Robert.
 
 2002-01-03 16:34  robert
 
@@ -3363,11 +5833,6 @@
 
 	* INSTALL: Added references to sgv -stereo and sgv -stencil to the
 	notes of running the demos.
-
-2001-12-30 11:58  robert
-
-	* src/Demos/hangglide/GliderManipulator.cpp: Updated the default
-	home position of so that a better view of the scene is seen.
 
 2001-12-30 10:24  robert
 
@@ -3548,10 +6013,10 @@
 2001-12-24 14:06  robert
 
 	* include/osgGLUT/Viewer, include/osgGLUT/Window,
-	src/Demos/hangglide/hangglide.cpp, src/Demos/sgv/Makefile,
-	src/osgGLUT/Viewer.cpp, src/osgGLUT/Window.cpp: Updated the
-	osgGLUT::Viewer to subclass from osgGLUT::Window as has been
-	intended since the development of osgGLUT::Window.
+	src/Demos/sgv/Makefile, src/osgGLUT/Viewer.cpp,
+	src/osgGLUT/Window.cpp: Updated the osgGLUT::Viewer to subclass
+	from osgGLUT::Window as has been intended since the development of
+	osgGLUT::Window.
 
 2001-12-24 10:12  robert
 
@@ -3560,10 +6025,7 @@
 2001-12-24 09:12  robert
 
 	* FAQ, INSTALL, Makefile, TODO, doc/stereo.html, src/Makefile,
-	src/Demos/Makefile, src/Demos/hangglide/base.cpp,
-	src/Demos/hangglide/sky.cpp, src/Demos/hangglide/tank.cpp,
-	src/Demos/hangglide/terrain.cpp, src/Demos/hangglide/trees.cpp,
-	src/Demos/osgimpostor/osgimpostor.cpp,
+	src/Demos/Makefile, src/Demos/osgimpostor/osgimpostor.cpp,
 	src/Demos/osgreflect/osgreflect.cpp, src/Demos/osgtext/main.cpp,
 	src/Demos/osgviews/osgviews.cpp, src/Demos/sgv/sgv.cpp,
 	src/osg/Light.cpp, src/osg/Matrix.cpp, src/osgPlugins/Makefile,
@@ -3590,11 +6052,10 @@
 
 2001-12-22 09:55  robert
 
-	* src/Demos/: hangglide/GliderManipulator.cpp,
-	osgimpostor/osgimpostor.cpp, osgreflect/osgreflect.cpp,
-	osgtexture/osgtexture.cpp, osgviews/osgviews.cpp, sgv/sgv.cpp:
-	Updated usage messages to include new stereo and stencil
-	commandline options.
+	* src/Demos/: osgimpostor/osgimpostor.cpp,
+	osgreflect/osgreflect.cpp, osgtexture/osgtexture.cpp,
+	osgviews/osgviews.cpp, sgv/sgv.cpp: Updated usage messages to
+	include new stereo and stencil commandline options.
 
 2001-12-21 17:48  robert
 
@@ -3648,10 +6109,10 @@
 
 2001-12-20 11:34  robert
 
-	* src/Demos/: hangglide/hangglide.cpp, osgimpostor/osgimpostor.cpp,
-	osgviews/osgviews.cpp, sgv/sgv.cpp: Added check for null models be
-	returned form osgDB::readNodeFiles(..) to prevent execution when no
-	models have been loaded.
+	* src/Demos/: osgimpostor/osgimpostor.cpp, osgviews/osgviews.cpp,
+	sgv/sgv.cpp: Added check for null models be returned form
+	osgDB::readNodeFiles(..) to prevent execution when no models have
+	been loaded.
 
 2001-12-20 07:12  robert
 
@@ -3826,8 +6287,7 @@
 	include/osg/Plane, include/osg/Quat, include/osg/Vec3,
 	include/osgDB/FieldReaderIterator, include/osgDB/Output,
 	include/osgGLUT/Viewer, include/osgUtil/CullVisitor,
-	src/Demos/hangglide/GliderManipulator.cpp,
-	src/Demos/hangglide/hangglide.cpp, src/Demos/osgconv/osgconv.cpp,
+	src/Demos/osgconv/osgconv.cpp,
 	src/Demos/osgimpostor/osgimpostor.cpp,
 	src/Demos/osgreflect/osgreflect.cpp,
 	src/Demos/osgviews/osgviews.cpp, src/Demos/sgv/sgv.cpp,
@@ -3950,8 +6410,7 @@
 2001-12-12 15:29  robert
 
 	* include/osg/Math, include/osg/Matrix, include/osg/Quat,
-	include/osg/Transform, src/Demos/hangglide/GliderManipulator.cpp,
-	src/Demos/osgcluster/osgcluster.cpp,
+	include/osg/Transform, src/Demos/osgcluster/osgcluster.cpp,
 	src/Demos/osgconv/OrientationConverter.cpp,
 	src/Demos/osgcube/osgcube.cpp, src/Demos/osgreflect/osgreflect.cpp,
 	src/Demos/osgtexture/osgtexture.cpp, src/osg/Billboard.cpp,
@@ -4393,11 +6852,10 @@
 
 2001-10-30 14:23  robert
 
-	* include/osgDB/Registry, src/Demos/hangglide/ReaderWriterFLY.cpp,
-	src/osg/Matrix.cpp, src/osgDB/Input.cpp, src/osgDB/ReadFile.cpp,
-	src/osgDB/Registry.cpp, src/osgDB/WriteFile.cpp: Further updates to
-	the ReaderWriter support in osgDB, and a fix to a small warning in
-	Matrix.cpp.
+	* include/osgDB/Registry, src/osg/Matrix.cpp, src/osgDB/Input.cpp,
+	src/osgDB/ReadFile.cpp, src/osgDB/Registry.cpp,
+	src/osgDB/WriteFile.cpp: Further updates to the ReaderWriter
+	support in osgDB, and a fix to a small warning in Matrix.cpp.
 
 2001-10-30 09:20  robert
 
@@ -4783,7 +7241,6 @@
 2001-10-15 11:50  robert
 
 	* include/osg/FrameStamp, include/osg/Timer,
-	src/Demos/hangglide/ReaderWriterFLY.cpp,
 	src/Demos/osgconv/OrientationConverter.cpp, src/Demos/sgv/sgv.cpp,
 	src/osg/Matrix.cpp, src/osgPlugins/bmp/ReaderWriterBMP.cpp,
 	src/osgPlugins/dw/ReaderWriterDW.cpp,
@@ -4807,12 +7264,6 @@
 	valus for that attribute.  This should prevent attribute bleed from
 	one stateset to the next when the global StateSet doesn't contain
 	an attribute used within the scene graph.
-
-2001-10-15 07:18  robert
-
-	* src/Demos/hangglide/GliderManipulator.cpp: Fixed rotations to
-	account to the fixes made to Quat and Matrix related to right hand
-	rule rotation.
 
 2001-10-15 04:40  robert
 
@@ -5191,7 +7642,6 @@
 	include/osg/Math, include/osg/Notify, include/osg/Timer,
 	include/osg/Types, include/osg/Vec2, include/osg/Vec3,
 	include/osg/Vec4, include/osgGLUT/glut,
-	src/Demos/hangglide/hangglide.cpp, src/Demos/hangglide/hat.cpp,
 	src/Demos/osgcube/osgcube.cpp, src/Demos/osgreflect/osgreflect.cpp,
 	src/Demos/sgv/sgv.cpp, src/osg/Image.cpp, src/osg/Notify.cpp,
 	src/osg/State.cpp, src/osg/Texture.cpp, src/osg/Timer.cpp,
@@ -5208,7 +7658,6 @@
 2001-10-02 11:59  robert
 
 	* ChangeLog, include/osg/EarthSky, include/osg/Types,
-	src/Demos/hangglide/GliderManipulator.cpp,
 	src/Demos/osgcluster/osgcluster.cpp, src/Demos/osgcube/osgcube.cpp,
 	src/Demos/osgreflect/osgreflect.cpp, src/osg/Billboard.cpp,
 	src/osg/EarthSky.cpp, src/osg/Matrix.cpp,
@@ -5225,12 +7674,12 @@
 2001-10-02 07:36  robert
 
 	* VisualStudio/osg/osg.dsp, include/osg/NodeVisitor,
-	include/osgUtil/CullVisitor, src/Demos/hangglide/hangglide.cpp,
-	src/osg/Makefile, src/osgPlugins/osg/Makefile,
-	src/osgUtil/CullVisitor.cpp, src/osgUtil/SceneView.cpp: Added
-	osg::EarthSky node to the core osg library, and added support for
-	it into osgUtil::SceneView, osg::CullVisitor, osgPlugin/osg and
-	updated the hangglide demo to use the new earth sky node.
+	include/osgUtil/CullVisitor, src/osg/Makefile,
+	src/osgPlugins/osg/Makefile, src/osgUtil/CullVisitor.cpp,
+	src/osgUtil/SceneView.cpp: Added osg::EarthSky node to the core osg
+	library, and added support for it into osgUtil::SceneView,
+	osg::CullVisitor, osgPlugin/osg and updated the hangglide demo to
+	use the new earth sky node.
 
 2001-10-01 19:02  robert
 
@@ -5269,12 +7718,11 @@
 
 2001-09-29 14:34  robert
 
-	* src/: Demos/hangglide/hangglide.cpp, osg/StateSet.cpp: Added
-	setAttributeAndModes(new Depth,StateAttribute::ON); to the
-	StateSet::setGlobalDefault() so that the correct default for the
-	glDepthFunc etc are set up for scene graphs, and allows override of
-	these value which risk of inheriting state on to the rest of the
-	scene graph.
+	* src/osg/StateSet.cpp: Added setAttributeAndModes(new
+	Depth,StateAttribute::ON); to the StateSet::setGlobalDefault() so
+	that the correct default for the glDepthFunc etc are set up for
+	scene graphs, and allows override of these value which risk of
+	inheriting state on to the rest of the scene graph.
 	
 	This has allowed the hangglide demo to be simplified since it now
 	doesn't need to set the global Depth instance itself.
@@ -5328,9 +7776,9 @@
 
 2001-09-27 12:34  robert
 
-	* ChangeLog, include/osg/Matrix, src/Demos/hangglide/tank.cpp,
-	src/osg/Billboard.cpp, src/osg/Matrix.cpp, src/osg/Quat.cpp,
-	src/osg/TexMat.cpp, src/osgPlugins/dw/ReaderWriterDW.cpp,
+	* ChangeLog, include/osg/Matrix, src/osg/Billboard.cpp,
+	src/osg/Matrix.cpp, src/osg/Quat.cpp, src/osg/TexMat.cpp,
+	src/osgPlugins/dw/ReaderWriterDW.cpp,
 	src/osgPlugins/flt/flt2osg.cpp, src/osgPlugins/osg/Matrix.cpp,
 	src/osgPlugins/osg/TexMat.cpp, src/osgUtil/RenderLeaf.cpp,
 	src/osgUtil/RenderStage.cpp, src/osgUtil/RenderStageLighting.cpp:
@@ -5338,18 +7786,15 @@
 
 2001-09-27 05:44  robert
 
-	* ChangeLog, include/osg/Matrix,
-	src/Demos/hangglide/GliderManipulator.cpp,
-	src/Demos/osgcube/osgcube.cpp, src/osg/Camera.cpp,
-	src/osg/Matrix.cpp, src/osg/Transform.cpp,
+	* ChangeLog, include/osg/Matrix, src/Demos/osgcube/osgcube.cpp,
+	src/osg/Camera.cpp, src/osg/Matrix.cpp, src/osg/Transform.cpp,
 	src/osgUtil/DriveManipulator.cpp,
 	src/osgUtil/FlightManipulator.cpp,
 	src/osgUtil/TrackballManipulator.cpp: [no log message]
 
 2001-09-26 08:23  anonymous
 
-	* src/Demos/: hangglide/base.cpp, hangglide/hangglide.cpp,
-	hangglide/sky.cpp, osgreflect/osgreflect.cpp: [no log message]
+	* src/Demos/osgreflect/osgreflect.cpp: [no log message]
 
 2001-09-25 13:55  robert
 
@@ -5484,12 +7929,11 @@
 
 2001-09-19 20:59  don
 
-	* src/: Demos/hangglide/Makedepend, Demos/osgcluster/Makedepend,
-	Demos/osgconv/Makedepend, Demos/osgcube/Makedepend,
-	Demos/osgimpostor/Makedepend, Demos/osgreflect/Makedepend,
-	Demos/osgtexture/Makedepend, Demos/osgviews/Makedepend,
-	Demos/sgv/Makedepend, osg/Makedepend, osgDB/Makedepend,
-	osgGLUT/Makedepend, osgPlugins/dw/Makedepend,
+	* src/: Demos/osgcluster/Makedepend, Demos/osgconv/Makedepend,
+	Demos/osgcube/Makedepend, Demos/osgimpostor/Makedepend,
+	Demos/osgreflect/Makedepend, Demos/osgtexture/Makedepend,
+	Demos/osgviews/Makedepend, Demos/sgv/Makedepend, osg/Makedepend,
+	osgDB/Makedepend, osgGLUT/Makedepend, osgPlugins/dw/Makedepend,
 	osgPlugins/flt/Makedepend, osgPlugins/gif/Makedepend,
 	osgPlugins/jpeg/Makedepend, osgPlugins/lib3ds/Makedepend,
 	osgPlugins/lwo/Makedepend, osgPlugins/obj/Makedepend,
@@ -5956,21 +8400,11 @@
 	include/osgUtil/GUIActionAdapter, include/osgUtil/GUIEventAdapter,
 	include/osgUtil/IntersectVisitor, include/osgUtil/SceneView,
 	include/osgUtil/TrackballManipulator, src/Makefile,
-	src/Demos/Makefile, src/Demos/hangglide/GliderManipulator.cpp,
-	src/Demos/hangglide/GliderManipulator.h,
-	src/Demos/hangglide/Makedepend, src/Demos/hangglide/Makefile,
-	src/Demos/hangglide/README,
-	src/Demos/hangglide/ReaderWriterFLY.cpp,
-	src/Demos/hangglide/base.cpp, src/Demos/hangglide/hangglide.cpp,
-	src/Demos/hangglide/hat.cpp, src/Demos/hangglide/hat.h,
-	src/Demos/hangglide/sky.cpp, src/Demos/hangglide/tank.cpp,
-	src/Demos/hangglide/terrain.cpp,
-	src/Demos/hangglide/terrain_data.h, src/Demos/hangglide/trees.cpp,
-	src/Demos/osgconv/Makedepend, src/Demos/osgconv/Makefile,
-	src/Demos/osgconv/osgconv.cpp, src/Demos/osgcube/Makedepend,
-	src/Demos/osgcube/Makefile, src/Demos/osgcube/osgcube.cpp,
-	src/Demos/osgimpostor/Makedepend, src/Demos/osgimpostor/Makefile,
-	src/Demos/osgimpostor/README,
+	src/Demos/Makefile, src/Demos/osgconv/Makedepend,
+	src/Demos/osgconv/Makefile, src/Demos/osgconv/osgconv.cpp,
+	src/Demos/osgcube/Makedepend, src/Demos/osgcube/Makefile,
+	src/Demos/osgcube/osgcube.cpp, src/Demos/osgimpostor/Makedepend,
+	src/Demos/osgimpostor/Makefile, src/Demos/osgimpostor/README,
 	src/Demos/osgimpostor/osgimpostor.cpp,
 	src/Demos/osgviews/Makedepend, src/Demos/osgviews/Makefile,
 	src/Demos/osgviews/README, src/Demos/osgviews/osgviews.cpp,

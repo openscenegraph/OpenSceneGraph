@@ -68,7 +68,8 @@ Texture::Texture():
             _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
             _mag_filter(LINEAR),
             _maxAnisotropy(1.0f),
-            _useHardwareMipMapGeneration(false),
+            _useHardwareMipMapGeneration(true),
+            _unrefImageDataAfterApply(false),
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
             _internalFormat(0)
@@ -84,6 +85,7 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _mag_filter(text._mag_filter),
             _maxAnisotropy(text._maxAnisotropy),
             _useHardwareMipMapGeneration(text._useHardwareMipMapGeneration),
+            _unrefImageDataAfterApply(text._unrefImageDataAfterApply),
             _borderColor(text._borderColor),
             _internalFormatMode(text._internalFormatMode),
             _internalFormat(text._internalFormat)

@@ -161,6 +161,21 @@ void Texture3D::apply(State& state) const
         // update the modified tag to show that it is upto date.
         getModifiedTag(contextID) = _image->getModifiedTag();
 
+        if (_unrefImageDataAfterApply)
+        {
+            // only unref image once all the graphics contexts has been set up.
+            unsigned int numLeftToBind=0;
+            for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
+            {
+                if (_handleList[i]==0) ++numLeftToBind;
+            }
+            if (numLeftToBind==0)
+            {
+                Texture3D* non_const_this = const_cast<Texture3D*>(this);
+                non_const_this->_image = 0;
+            }
+        }
+
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!

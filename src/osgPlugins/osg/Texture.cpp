@@ -91,13 +91,30 @@ bool Texture_readLocalData(Object& obj, Input& fr)
             fr +=2 ;
             iteratorAdvanced = true;
         }
-        else if (fr[1].matchWord("TRUE")) 
+        else if (fr[1].matchWord("FALSE")) 
         {
             texture.setUseHardwareMipMapGeneration(false);
             fr +=2 ;
             iteratorAdvanced = true;
         }
     }
+
+    if (fr[0].matchWord("unRefImageDataAfterApply"))
+    {
+        if (fr[1].matchWord("TRUE")) 
+        {
+            texture.setUnRefImageDataAfterApply(true);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+        else if (fr[1].matchWord("FALSE")) 
+        {
+            texture.setUnRefImageDataAfterApply(false);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+    }
+
 
     Texture::InternalFormatMode mode;
     if (fr[0].matchWord("internalFormatMode") && Texture_matchInternalFormatModeStr(fr[1].getStr(),mode))
@@ -135,6 +152,7 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
     
     fw.indent() << "useHardwareMipMapGeneration "<< (texture.getUseHardwareMipMapGeneration()?"TRUE":"FALSE") << std::endl;
+    fw.indent() << "unRefImageDataAfterApply "<< (texture.getUnRefImageDataAfterApply()?"TRUE":"FALSE") << std::endl;
             
     fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
 

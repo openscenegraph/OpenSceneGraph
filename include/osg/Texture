@@ -159,6 +159,14 @@ class SG_EXPORT Texture : public osg::StateAttribute
         /** Get the hint of whether to use hardware mip map generation where available.*/
         inline bool getUseHardwareMipMapGeneration() const { return _useHardwareMipMapGeneration; }
 
+        /** Set the automatic unreference of image data after the texture has been set up in apply, on (true) or off (false).
+          * If the image data is only referened by this Texture then the image data will be autoamtically deleted.*/
+        inline void setUnRefImageDataAfterApply(bool flag) { _unrefImageDataAfterApply = flag; }
+        
+        /** Get the automatic unreference of image data after the texture has been set up in apply.*/
+        inline bool getUnRefImageDataAfterApply() const { return _unrefImageDataAfterApply; }
+
+
         enum InternalFormatMode {
             USE_IMAGE_DATA_FORMAT,
             USE_USER_DEFINED_FORMAT,
@@ -333,6 +341,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         FilterMode      _mag_filter;
         float           _maxAnisotropy;
         bool            _useHardwareMipMapGeneration;
+        bool            _unrefImageDataAfterApply;
 
         Vec4 _borderColor;
 

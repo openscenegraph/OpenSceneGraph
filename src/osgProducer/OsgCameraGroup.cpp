@@ -12,6 +12,7 @@
 */
 
 #include <osg/ApplicationUsage>
+#include <osgUtil/DisplayRequirementsVisitor>
 #include <osgDB/FileUtils>
 
 #include <osgProducer/OsgCameraGroup>
@@ -224,16 +225,71 @@ void OsgCameraGroup::realize( ThreadingModel thread_model)
     _ds->setMaxNumberOfGraphicsContexts( _cfg->getNumberOfCameras() );
     
     _shvec.clear();
+    
+    osg::Node* node = getTopMostSceneData();
+    if (node)
+    {
+        // traverse the scene graphs gathering the requirements of the OpenGL buffers.
+        osgUtil::DisplayRequirementsVisitor drv;
+        drv.setDisplaySettings(_ds.get());
+        node->accept(drv);
+    }
+    
+    unsigned int numMultiSamples = 0;
+
+    #ifdef __sgi
+    // switch on anti-aliasing by default, just in case we have an Onyx :-)
+    numMultiSamples = 4;
+    #endif
+
+    // set up each render stage to clear the appropriate buffers.
+    GLbitfield clear_mask=0;
+    if (_ds->getRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;
+    if (_ds->getDepthBuffer())      clear_mask |= GL_DEPTH_BUFFER_BIT;
+    if (_ds->getStencilBuffer())    clear_mask |= GL_STENCIL_BUFFER_BIT;
 
     for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
     {
         Producer::Camera *cam = _cfg->getCamera(i);
+        
+        // create the scene handler.
         osgProducer::OsgSceneHandler *sh = new osgProducer::OsgSceneHandler(_ds.get());
         sh->setDefaults();
         _shvec.push_back( sh );
         cam->setSceneHandler( sh );
+        
+        // set up the clear mask.
+        osgUtil::RenderStage *stage = sh->getRenderStage();
+        if (stage) stage->setClearMask(clear_mask);
+
+        // set the realize callback.
         Producer::RenderSurface* rs = cam->getRenderSurface();
         rs->setRealizeCallback( new RenderSurfaceRealizeCallback(this, sh));
+        
+        // set up the visual chooser.
+        if (_ds.valid() || numMultiSamples!=0)
+        {
+            Producer::VisualChooser* rs_vc = rs->getVisualChooser();
+            if (!rs_vc)
+            {
+                rs_vc = new Producer::VisualChooser;
+                rs_vc->setSimpleConfiguration();
+                rs->setVisualChooser(rs_vc);
+            }
+            if (_ds->getStereo() && _ds->getStereoMode()==osg::DisplaySettings::QUAD_BUFFER) rs_vc->useStereo();
+            if (_ds->getStencilBuffer()) rs_vc->setStencilSize(_ds->getMinimumNumStencilBits());
+            if (_ds->getAlphaBuffer()) rs_vc->setAlphaSize(_ds->getMinimumNumAlphaBits());
+
+            if (numMultiSamples)
+            {
+                #if defined( GLX_SAMPLES_SGIS )
+                    rs_vc->addExtendedAttribute( GLX_SAMPLES_SGIS,  numMultiSamples);
+                #endif
+                #if defined( GLX_SAMPLES_BUFFER_SGIS )
+                    rs_vc->addExtendedAttribute( GLX_SAMPLES_BUFFER_SGIS,  1);
+                #endif
+            }
+        }        
     }
 
     if( _global_stateset == NULL && _shvec.size() > 0 )

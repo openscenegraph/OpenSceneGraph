@@ -95,10 +95,12 @@ int Image::compare(const Image& rhs) const
     COMPARE_StateAttribute_Parameter(_packing)
     COMPARE_StateAttribute_Parameter(_modifiedTag)
 
-    // still need implement checks for
-    // _data
-    // _mipmapData
-
+    if (_data<rhs._data) return -1;
+    if (_data>rhs._data) return 1;
+    
+    if (_mipmapData<rhs._mipmapData) return -1;
+    if (_mipmapData>rhs._mipmapData) return 1;
+    
     return 0;
 }
 

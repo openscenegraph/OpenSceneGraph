@@ -6,7 +6,6 @@ using namespace osg;
 
 class TransformFunctor : public osg::Drawable::AttributeFunctor
 {
-
     public:
     
         osg::Matrix _m;

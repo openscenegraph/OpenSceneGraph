@@ -136,9 +136,17 @@ class SG_EXPORT Drawable : public Object
             COLORS              = 0x4,
             TEXTURE_COORDS      = 0x8,
             TEXTURE_COORDS_0    = TEXTURE_COORDS,
+	    /*
+	     * Robert,
+	     * These would have kept you up late if you were
+	     * trying to use these as bitmasks
             TEXTURE_COORDS_1    = 0x16,
             TEXTURE_COORDS_2    = 0x32,
             TEXTURE_COORDS_3    = 0x64
+	     */
+            TEXTURE_COORDS_1    = 0x10,
+            TEXTURE_COORDS_2    = 0x20,
+            TEXTURE_COORDS_3    = 0x40
         };
         
         class AttributeFunctor

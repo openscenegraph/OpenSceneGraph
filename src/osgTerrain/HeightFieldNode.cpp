@@ -13,6 +13,7 @@
 
 #include <osgTerrain/HeightFieldNode>
 
+using namespace osg;
 using namespace osgTerrain;
 
 HeightFieldNode::HeightFieldNode()
@@ -56,7 +57,7 @@ void HeightFieldNode::traverse(osg::NodeVisitor& nv)
     }
 
     // otherwise fallback to the Group::traverse()
-    osg::Group::traverse(nv);
+    Group::traverse(nv);
 }
 
 void HeightFieldNode::setHeightField(osg::HeightField* heightField)

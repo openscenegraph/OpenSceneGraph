@@ -2689,7 +2689,7 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
 
     osg::PagedLOD* pagedLOD = new osg::PagedLOD;
  
-    float farDistance = 1e8;
+    float farDistance = _dataSet->getMaximumVisibleDistanceOfTopLevel();
     if (tileNodes.size()==1)
     {
         pagedLOD->addChild(tileNodes.front());
@@ -2784,6 +2784,8 @@ void DataSet::CompositeDestination::unrefLocalData()
 DataSet::DataSet()
 {
     init();
+    
+    _maximumVisiableDistanceOfTopLevel = 1e10;
     
     _radiusToMaxVisibleDistanceRatio = 7.0f;
     _verticalScale = 1.0f;
@@ -3206,16 +3208,17 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         _destinationGraph->addRequiredResolutions(_sourceGraph.get());
 
 
-        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
+        for(CompositeSource::source_iterator sitr(_sourceGraph.get());sitr.valid();++sitr)
         {
-            Source* source = itr->get();
+            Source* source = sitr->get();
             std::cout<<"Source File "<<source->getFileName()<<std::endl;
             
 
             const Source::ResolutionList& resolutions = source->getRequiredResolutions();
             std::cout<<"    resolutions.size() "<<resolutions.size()<<std::endl;
             std::cout<<"    { "<<std::endl;
-            for(Source::ResolutionList::const_iterator itr=resolutions.begin();
+            Source::ResolutionList::const_iterator itr;
+            for(itr=resolutions.begin();
                 itr!=resolutions.end();
                 ++itr)
             {
@@ -3227,7 +3230,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
             
             std::cout<<"    consolodated resolutions.size() "<<resolutions.size()<<std::endl;
             std::cout<<"    consolodated { "<<std::endl;
-            for(Source::ResolutionList::const_iterator itr=resolutions.begin();
+            for(itr=resolutions.begin();
                 itr!=resolutions.end();
                 ++itr)
             {

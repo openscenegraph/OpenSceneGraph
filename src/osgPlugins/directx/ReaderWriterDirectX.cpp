@@ -6,18 +6,18 @@
  * DirectX file converter for OpenSceneGraph.
  * Copyright (c)2002 Ulrich Hertlein <u.hertlein@sandbox.de>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -60,7 +60,7 @@ public:
                                 const osgDB::ReaderWriter::Options* options);
 
 private:
-    osg::Geode* convertFromDX(DX::Object& obj, bool flipTexture);
+    osg::Geode* convertFromDX(DX::Object& obj, bool flipTexture, float creaseAngle);
 };
 
 // Register with Registry to instantiate the above reader/writer.
@@ -80,17 +80,21 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     // Load DirectX mesh
     DX::Object obj;
     if (obj.load(fileName.c_str())) {
+
         // Options?
         bool flipTexture = true;
+        float creaseAngle = 80.0f;
         if (options) {
             const std::string option = options->getOptionString();
-            cerr << option << endl;
             if (option.find("flipTexture") != string::npos)
                 flipTexture = false;
+            if (option.find("creaseAngle") != string::npos) {
+                // TODO
+            }
         }
 
         // Convert to osg::Geode
-        osg::Geode* geode = convertFromDX(obj, flipTexture);
+        osg::Geode* geode = convertFromDX(obj, flipTexture, creaseAngle);
         if (!geode)
             return ReadResult::FILE_NOT_HANDLED;
 
@@ -101,7 +105,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
 }
 
 // Convert DirectX mesh to osg::Geode
-osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj, bool flipTexture)
+osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
+                                               bool flipTexture, float creaseAngle)
 {
     // Fetch mesh
     const DX::Mesh* mesh = obj.getMesh();
@@ -114,7 +119,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj, bool flipTexture
 
     const DX::MeshNormals* meshNormals = obj.getMeshNormals();
     if (!meshNormals) {
-        obj.generateNormals();
+        obj.generateNormals(creaseAngle);
         meshNormals = obj.getMeshNormals();
     }
     if (!meshNormals)
@@ -284,12 +289,6 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj, bool flipTexture
     osg::CullFace* cullFace = new osg::CullFace;
     cullFace->setMode(osg::CullFace::BACK);
     state->setAttributeAndModes(cullFace);
-
-    /*
-     * TODO:
-     * Smooth normals if we previously did a 'generateNormals'?
-     * (Would create a dependency on osgUtil.)
-     */
 
     return geode;
 }

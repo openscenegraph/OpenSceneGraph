@@ -6,18 +6,18 @@
  * Loader for DirectX .x files.
  * Copyright (c)2002 Ulrich Hertlein <u.hertlein@sandbox.de>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -35,8 +35,8 @@ using namespace std;
 
 
 // Tokenize a string
-void tokenize(const string& str, vector<string>& tokens,
-              const string& delimiters = " \t\r\n;,")
+static void tokenize(const string& str, vector<string>& tokens,
+                     const string& delimiters = " \t\r\n;,")
 {
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);
     string::size_type pos     = str.find_first_of(delimiters, lastPos);
@@ -50,21 +50,12 @@ void tokenize(const string& str, vector<string>& tokens,
 
 
 // Constructor
-Object::Object(const char* filename)
+Object::Object()
 {
     _textureCoords = NULL;
     _materialList = NULL;
     _normals = NULL;
     _mesh = NULL;
-
-    load(filename);
-}
-
-
-// Destructor
-Object::~Object()
-{
-    clear();
 }
 
 
@@ -120,7 +111,7 @@ bool Object::load(const char* filename)
 /*
  * Generate per-face normals
  */
-bool Object::generateNormals()
+bool Object::generateNormals(float /*creaseAngle*/)
 {
     if (!_mesh)
         return false;
@@ -131,22 +122,22 @@ bool Object::generateNormals()
         _normals = NULL;
     }
 
-    cerr << "*** GenerateNormals\n";
+    cout << "*** generateNormals\n";
 
-    // Create normals
-    _normals = new MeshNormals;
+    /*
+     * Calculate per-face normals from face vertices.
+     */
+    vector<Vector> faceNormals;
+    faceNormals.resize(_mesh->faces.size());
 
-    // Loop over MeshFaces
-    unsigned int i, fi;
-    for (fi = 0; fi < _mesh->faces.size(); fi++) {
+    for (unsigned int fi = 0; fi < _mesh->faces.size(); fi++) {
 
-        // Collect polygon vertices
         vector<Vector> poly;
         unsigned int n = _mesh->faces[fi].size();
 
         if (n < 3)
             continue;
-        for (i = 0; i < n; i++) {
+        for (unsigned int i = 0; i < n; i++) {
             unsigned int idx = _mesh->faces[fi][i];
             poly.push_back(_mesh->vertices[idx]);
         }
@@ -167,24 +158,54 @@ bool Object::generateNormals()
         normal.x = e0.y * e1.z - e0.z * e1.y;
         normal.y = e0.z * e1.x - e0.x * e1.z;
         normal.z = e0.x * e1.y - e0.y * e1.x;
+        normal.normalize();
 
-        // Normalize
-        float len = sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-        normal.x /= len;
-        normal.y /= len;
-        normal.z /= len;
-
-        // Add normal index
-        unsigned int ni = _normals->normals.size();
-        _normals->normals.push_back(normal);
-
-        // All vertices of this face share this vertex
-        MeshFace mf;
-        mf.resize(n);
-        for (i = 0; i < n; i++)
-            mf[i] = ni;
-        _normals->faceNormals.push_back(mf);
+        // Add to per-face normals
+        faceNormals[fi] = normal;
     }
+
+    /*
+     * Calculate per-vertex normals as average of all per-face normals that
+     * share this vertex. The index of the vertex normal is identical to the
+     * vertex index for now. This means each vertex only has a single normal...
+     */
+    _normals = new MeshNormals;
+    _normals->normals.resize(_mesh->vertices.size());
+
+    for (unsigned int vi = 0; vi < _mesh->vertices.size(); vi++) {
+
+        Vector normal = { 0.0f, 0.0f, 0.0f };
+        unsigned int polyCount = 0;
+
+        // Collect normals of polygons that share this vertex
+        for (unsigned int fi = 0; fi < _mesh->faces.size(); fi++)
+            for (unsigned int i = 0; i < _mesh->faces[fi].size(); i++) {
+                unsigned int idx = _mesh->faces[fi][i];
+                if (idx == vi) {
+                    normal.x += faceNormals[fi].x;
+                    normal.y += faceNormals[fi].y;
+                    normal.z += faceNormals[fi].z;
+                    polyCount++;
+                }
+            }
+
+        //cerr << "vertex " << vi << " used by " << polyCount << " faces\n";
+        if (polyCount > 1) {
+            float polyCountRecip = 1.0f / (float) polyCount;
+            normal.x *= polyCountRecip;
+            normal.y *= polyCountRecip;
+            normal.z *= polyCountRecip;
+            normal.normalize();
+        }
+
+        // Add vertex normal
+        _normals->normals[vi] = normal;
+    }
+
+    // Copy face mesh to normals mesh
+    _normals->faceNormals.resize(_mesh->faces.size());
+    for (unsigned int fi = 0; fi < _mesh->faces.size(); fi++)
+        _normals->faceNormals[fi] = _mesh->faces[fi];
 
     return true;
 }
@@ -202,7 +223,7 @@ void Object::readTexFilename(ifstream& fin, TextureFilename& texture)
     char buf[256];
     vector<string> token;
 
-    cerr << "*** TexFilename\n";
+    //cout << "*** TexFilename\n";
     while (fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -236,7 +257,7 @@ void Object::parseMaterial(ifstream& fin, Material& material)
 
     unsigned int i = 0;
 
-    //cerr << "*** Material\n";
+    //cout << "*** Material\n";
     while (fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -250,9 +271,8 @@ void Object::parseMaterial(ifstream& fin, Material& material)
         if (token[0] == "TextureFilename") {
             TextureFilename tf;
             readTexFilename(fin, tf);
-
             material.texture.push_back(tf);
-            //cerr << "num tex=" << material.texture.size() << endl;
+            //cerr << "* num tex=" << material.texture.size() << endl;
         }
         else
             switch (i) {
@@ -296,7 +316,7 @@ void Object::readCoords2d(ifstream& fin, vector<Coords2d>& v, unsigned int count
 
     unsigned int i = 0;
 
-    cerr << "*** Coords2d\n";
+    //cout << "*** Coords2d\n";
     while (i < count && fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -322,7 +342,7 @@ void Object::readMeshTexCoords(ifstream& fin)
 
     unsigned int nTextureCoords = 0;
 
-    cerr << "*** MeshTextureCoords\n";
+    //cout << "*** MeshTextureCoords\n";
     while (fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -342,8 +362,7 @@ void Object::readMeshTexCoords(ifstream& fin)
         nTextureCoords = atoi(token[0].c_str());
         readCoords2d(fin, *_textureCoords, nTextureCoords);
 
-        cerr << "nTextureCoords=" << nTextureCoords << "/" << _textureCoords->size() << endl;
-
+        cerr << "* nTextureCoords=" << _textureCoords->size() << endl;
         assert(nTextureCoords == _textureCoords->size());
     }
 }
@@ -357,7 +376,7 @@ void Object::readIndexList(ifstream& fin, vector<unsigned int>& v, unsigned int 
 
     unsigned int i = 0;
 
-    cerr << "*** IndexList\n";
+    //cout << "*** IndexList\n";
     while (i < count && fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -381,7 +400,7 @@ void Object::parseMeshMaterialList(ifstream& fin)
 
     unsigned int nMaterials = 0, nFaceIndices = 0;
 
-    cerr << "*** MeshMaterialList\n";
+    //cout << "*** MeshMaterialList\n";
     while (fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -398,7 +417,7 @@ void Object::parseMeshMaterialList(ifstream& fin)
                 parseMaterial(fin, mm);
 
                 _materialList->material.push_back(mm);
-                //cerr << "num mat=" << _materialList->material.size() << endl;
+                //cerr << "* num mat=" << _materialList->material.size() << endl;
             }
             else {
                 cerr << "!!! MeshMaterialList: Section " << token[0] << endl;
@@ -412,15 +431,14 @@ void Object::parseMeshMaterialList(ifstream& fin)
 
             // Materials
             nMaterials = atoi(token[0].c_str());
-            //cerr << "nMaterials=" << nMaterials << endl;
+            //cerr << "* nMaterials=" << nMaterials << endl;
         }
         else if (nFaceIndices == 0) {
             // Face indices
             nFaceIndices = atoi(token[0].c_str());
             readIndexList(fin, _materialList->faceIndices, nFaceIndices);
 
-            cerr << "nFaceIndices=" << nFaceIndices << "/" << _materialList->faceIndices.size() << endl;
-
+            cerr << "* nFaceIndices=" << _materialList->faceIndices.size() << endl;
             assert(nFaceIndices == _materialList->faceIndices.size());
         }
     }
@@ -437,7 +455,7 @@ void Object::readVector(ifstream& fin, vector<Vector>& v, unsigned int count)
 
     unsigned int i = 0;
 
-    cerr << "*** Vector\n";
+    //cout << "*** Vector\n";
     while (i < count && fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -464,7 +482,7 @@ void Object::readMeshFace(ifstream& fin, vector<MeshFace>& v, unsigned int count
 
     unsigned int i = 0;
 
-    cerr << "*** MeshFace\n";
+    //cout << "*** MeshFace\n";
     while (i < count && fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -494,7 +512,7 @@ void Object::parseMeshNormals(ifstream& fin)
 
     unsigned int nNormals = 0, nFaceNormals = 0;
 
-    cerr << "*** MeshNormals\n";
+    //cout << "*** MeshNormals\n";
     while (fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -514,7 +532,9 @@ void Object::parseMeshNormals(ifstream& fin)
             nNormals = atoi(token[0].c_str());
             readVector(fin, _normals->normals, nNormals);
 
-            cerr << "nNormals=" << nNormals << "/" << _normals->normals.size() << endl;
+            cerr << "* nNormals=" << _normals->normals.size() << endl;
+            assert(nNormals == _normals->normals.size());
+
 #ifdef NORMALIZE_NORMALS
             for (unsigned int i = 0; i < _normals->normals.size(); i++) {
                 DX::Vector vec = _normals->normals[i];
@@ -528,16 +548,13 @@ void Object::parseMeshNormals(ifstream& fin)
                 _normals->normals[i] = vec;
             }
 #endif
-
-            assert(nNormals == _normals->normals.size());
         }
         else if (nFaceNormals == 0) {
             // Face normals
             nFaceNormals = atoi(token[0].c_str());
             readMeshFace(fin, _normals->faceNormals, nFaceNormals);
 
-            cerr << "nFaceNormals=" << nFaceNormals << "/" << _normals->faceNormals.size() << endl;
-
+            cerr << "* nFaceNormals=" << _normals->faceNormals.size() << endl;
             assert(nFaceNormals == _normals->faceNormals.size());
         }
     }
@@ -552,7 +569,7 @@ void Object::parseMesh(ifstream& fin)
 
     unsigned int nVertices = 0, nFaces = 0;
 
-    cerr << "*** Mesh\n";
+    //cout << "*** Mesh\n";
     while (fin.getline(buf, sizeof(buf))) {
 
         // Tokenize
@@ -585,8 +602,7 @@ void Object::parseMesh(ifstream& fin)
             nVertices = atoi(token[0].c_str());
             readVector(fin, _mesh->vertices, nVertices);
 
-            cerr << "nVertices=" << nVertices << "/" << _mesh->vertices.size() << endl;
-
+            cerr << "* nVertices=" << _mesh->vertices.size() << endl;
             assert(nVertices == _mesh->vertices.size());
         }
         else if (nFaces == 0) {
@@ -594,8 +610,7 @@ void Object::parseMesh(ifstream& fin)
             nFaces = atoi(token[0].c_str());
             readMeshFace(fin, _mesh->faces, nFaces);
 
-            cerr << "nFaces=" << nFaces << "/" << _mesh->faces.size() << endl;
-
+            cerr << "* nFaces=" << _mesh->faces.size() << endl;
             assert(nFaces == _mesh->faces.size());
         }
         else

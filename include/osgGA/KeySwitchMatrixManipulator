@@ -47,7 +47,7 @@ public:
 	*/
         void addNumberedMatrixManipulator(MatrixManipulator *cm);
 
-        unsigned int getNumMatrixManipualtors() const { return _manips.size(); }
+        unsigned int getNumMatrixManipulators() const { return _manips.size(); }
 
         void selectMatrixManipulator(unsigned int num);
 

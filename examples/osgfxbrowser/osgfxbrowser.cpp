@@ -153,6 +153,9 @@ public:
 protected:
 	void rebuild_client_area(const Rect &client_rect)
 	{
+                float zPos = -0.1; // note from Robert, was 0.1f, but now must be -0.1f to keep text visible??#!? due
+                                   // to some other change in the OSG not tracked down yet...
+        
 		osg::ref_ptr<osgText::Font> arial = osgText::readFontFile("fonts/arial.ttf");
 
 		osg::ref_ptr<osgText::Text> hints = new osgText::Text;
@@ -161,7 +164,7 @@ protected:
 		hints->setAlignment(osgText::Text::CENTER_BOTTOM);
 		hints->setCharacterSize(13);
 		hints->setFontResolution(13, 13);
-		hints->setPosition(osg::Vec3((client_rect.x0+client_rect.x1)/2, client_rect.y0 + 4, 0.1f));
+		hints->setPosition(osg::Vec3((client_rect.x0+client_rect.x1)/2, client_rect.y0 + 4, zPos));
 		hints->setText("<RETURN> show/hide this panel      <LEFT> previous effect      <RIGHT> next effect      <DEL> enable/disable effects      'x' save to file      'r' rotate/stop");
 		addDrawable(hints.get());
 
@@ -193,7 +196,7 @@ protected:
 		ename->setAlignment(osgText::Text::CENTER_TOP);
 		ename->setCharacterSize(32);
 		ename->setFontResolution(32, 32);
-		ename->setPosition(osg::Vec3((client_rect.x0 + client_rect.x1) / 2, client_rect.y1 - 22, 0.1f));
+		ename->setPosition(osg::Vec3((client_rect.x0 + client_rect.x1) / 2, client_rect.y1 - 22, zPos));
 		ename->setText(effect_name);
 		addDrawable(ename.get());
 
@@ -204,7 +207,7 @@ protected:
 		edesc->setAlignment(osgText::Text::LEFT_TOP);
 		edesc->setCharacterSize(16);
 		edesc->setFontResolution(16, 16);
-		edesc->setPosition(osg::Vec3(client_rect.x0 + 8, client_rect.y1 - 60, 0.1f));
+		edesc->setPosition(osg::Vec3(client_rect.x0 + 8, client_rect.y1 - 60, zPos));
 		edesc->setText(effect_description);
 		addDrawable(edesc.get());
 	}

@@ -126,6 +126,14 @@ SOURCE=..\..\..\src\osgPlugins\osg\ConvexPlanarOccluder.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\CoordinateSystemNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\EllipsoidModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\CullFace.cpp
 # End Source File
 # Begin Source File

@@ -7,6 +7,14 @@
 
 #include <osg/Export>
 
+#if defined(WIN32)
+#include <windows.h>
+#elif defined(__DARWIN_OSX__)
+#include <mach-o/dyld.h>
+#else
+#include <dlfcn.h>
+#endif
+
 namespace osg {
 
 /** return true if OpenGL "extension" is supported.
@@ -17,8 +25,36 @@ SG_EXPORT extern const bool isGLExtensionSupported(const char *extension);
 
 /** return the address of the specified OpenGL function.
   * return NULL if function not supported by OpenGL library.
+  * Note, glGLExtensionFuncPtr is declared inline so that the code
+  * is compiled localy to the calling code.  This should get by Windows
+  * dumb implementation of having different GL function ptr's for each
+  * library when links to it. 
   */
-SG_EXPORT extern void* getGLExtensionFuncPtr(const char *funcName);
+inline void* getGLExtensionFuncPtr(const char *funcName)
+{
+#if defined(WIN32)
+    return wglGetProcAddress(funcName);
+#elif defined(__DARWIN_OSX__)
+    std::string temp( "_" );
+    temp += funcName;	// Mac OS X prepends an underscore on function names
+    if ( NSIsSymbolNameDefined( temp.c_str() ) )
+    {
+        NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
+        return NSAddressOfSymbol( symbol );
+    } else
+	return NULL;
+#else // all other unixes
+   // Note: although we use shl_load() etc. for Plugins on HP-UX, it's
+   // not neccessary here since we only used them because library
+   // intialization was not taking place with dlopen() which renders
+   // Plugins useless on HP-UX.
+   static void *lib = dlopen("libGL.so", RTLD_LAZY);
+   if (lib)
+      return dlsym(lib, funcName);
+   else
+      return NULL;
+#endif
+}
 
 /** return the address of the specified OpenGL function, if not found then
   * check a second function name, if this fails then return NULL as function is

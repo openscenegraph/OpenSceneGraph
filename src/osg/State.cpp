@@ -469,7 +469,7 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
                                       GLsizei stride, const GLvoid *ptr )
 {
     static SecondaryColorPointerProc s_glSecondaryColorPointer =
-            (SecondaryColorPointerProc) osg::getGLExtensionFuncPtr("glFogCoordPointer","glFogCoordPointerEXT");
+            (SecondaryColorPointerProc) osg::getGLExtensionFuncPtr("glSecondaryColorPointer","glSecondaryColorPointerEXT");
 
     if (s_glSecondaryColorPointer)
     {

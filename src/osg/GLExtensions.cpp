@@ -1,10 +1,3 @@
-#if defined(WIN32)
-#include <windows.h>
-#elif defined(__DARWIN_OSX__)
-#include <mach-o/dyld.h>
-#else
-#include <dlfcn.h>
-#endif
 
 #include <osg/GL>
 #include <osg/GLExtensions>
@@ -57,28 +50,4 @@ const bool osg::isGLExtensionSupported(const char *extension)
     else osg::notify(INFO)<<"OpenGL extension '"<<extension<<"' is not supported."<<std::endl;
 
     return result;
-}
-
-
-void* osg::getGLExtensionFuncPtr(const char *funcName)
-{
-#if defined(WIN32)
-   return wglGetProcAddress(funcName);
-#elif defined(__DARWIN_OSX__)
-    std::string temp( "_" );
-    NSSymbol symbol;
-    temp += funcName;	// Mac OS X prepends an underscore on function names
-    symbol = NSLookupAndBindSymbol( temp.c_str() );
-    return NSAddressOfSymbol( symbol );
-#else // all other unixes
-   // Note: although we use shl_load() etc. for Plugins on HP-UX, it's
-   // not neccessary here since we only used them because library
-   // intialization was not taking place with dlopen() which renders
-   // Plugins useless on HP-UX.
-   static void *lib = dlopen("libGL.so", RTLD_LAZY);
-   if (lib)
-      return dlsym(lib, funcName);
-   else
-      return NULL;
-#endif
 }

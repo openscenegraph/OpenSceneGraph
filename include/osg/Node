@@ -153,7 +153,7 @@ class SG_EXPORT Node : public Object
 
         /** Return true if this node can be culled by view frustum, occlusion or small feature culling during the cull traversal.
           * note, return true only if no children have culling disabled, and the local _cullingActive flag is true.*/
-        inline bool isCullingActive() const { return _numChildrenWithCullingDisabled==0 && _cullingActive && _bsphere.valid(); }
+        inline bool isCullingActive() const { return _numChildrenWithCullingDisabled==0 && _cullingActive && getBound().valid(); }
 
         /** Get the number of Children of this node which are or have OccluderNode's.*/
         inline unsigned int getNumChildrenWithOccluderNodes() const { return _numChildrenWithOccluderNodes; }

@@ -150,12 +150,12 @@ int main( int argc, char **argv )
 	osgGA::AnimationPathManipulator *apm = new osgGA::AnimationPathManipulator(pathfile);
 	if( apm->valid() ) 
         {
-            viewer.registerCameraManipulator(apm);
+            //viewer.registerCameraManipulator(apm);
             // selecting the animation path manipulator up front seems to disable view frustum 
             // in a heavy duty way that I'm do understand yet, so I'm commenting out for the
             // time being.  Simply pressing '4' will get you the animation path working correctly.
-            //unsigned int no = viewer.registerCameraManipulator(apm);
-            //viewer.selectCameraManipulator(no);
+            unsigned int no = viewer.registerCameraManipulator(apm);
+            viewer.selectCameraManipulator(no);
         }
 	else
 	    delete apm;

@@ -6,6 +6,7 @@
 #include <osg/Notify>
 
 #include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
 
 #include "ConvertToPerformer.h"
 #include "ConvertFromPerformer.h"

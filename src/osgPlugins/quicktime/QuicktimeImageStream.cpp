@@ -157,7 +157,6 @@ void QuicktimeImageStream::run()
 
 	float currentTime=0.0f;
 	
-        if (cmd != THREAD_IDLE)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_qtMutex);
 

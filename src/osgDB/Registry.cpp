@@ -371,7 +371,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 
             }
 
-            if (!iteratorAdvanced) ++fr;
+            if (!iteratorAdvanced) fr.advanceOverCurrentFieldOrBlock();
         }
         ++fr;                        // step over trailing '}'
         
@@ -439,7 +439,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
 
             }
 
-            if (!iteratorAdvanced) ++fr;
+            if (!iteratorAdvanced) fr.advanceOverCurrentFieldOrBlock();
         }
         ++fr;                        // step over trailing '}'
         

@@ -136,7 +136,7 @@ class Vec2
         /// Length of the vector = sqrt( vec . vec )
 	inline float length() const
 	{
-	    return sqrt( _v[0]*_v[0] + _v[1]*_v[1] );
+	    return sqrtf( _v[0]*_v[0] + _v[1]*_v[1] );
 	}
 
         /// Length squared of the vector = vec . vec

@@ -72,8 +72,8 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
         line.replace(optionPos,optionWidth,citr->first);
         
         const std::string& explanation = citr->second;
-        unsigned int pos = 0;
-        unsigned int offset = 0;
+        std::string::size_type pos = 0;
+        std::string::size_type offset = 0;
         bool firstInLine = true;
         while (pos<explanation.length())
         {
@@ -88,8 +88,8 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
             
             firstInLine = false;
         
-            unsigned int width = minimum((unsigned int)explanation.length()-pos,explanationWidth-offset);
-            unsigned int slashn_pos = explanation.find('\n',pos);
+            std::string::size_type width = minimum((std::string::size_type)(explanation.length()-pos),(std::string::size_type)(explanationWidth-offset));
+            std::string::size_type slashn_pos = explanation.find('\n',pos);
             unsigned int extraSkip = 0;
             bool concatinated = false;
             if (slashn_pos!=std::string::npos)

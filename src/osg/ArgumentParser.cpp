@@ -296,39 +296,14 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
             {
                 if (option[prevpos]=='-') 
                 {
-                    // verbose approach implemented for debugging string(const string&,unsigned int,unsigned int) operation on x86-64
-                    notify(INFO)<<"option=\""<<option<<"\" \tprevpos="<<prevpos<<" \tn="<<pos-prevpos<<"\tnpos="<<std::string::npos;
-
-                    std::string str(option,prevpos,pos-prevpos);
-                    
-                    notify(INFO)<<" \tstr=\""<<str<<"\"";
-                    
-                    options.insert(str);
-                    
-                    notify(INFO)<<" \tinserted into options set"<<std::endl;
-                    
-                    
-                    // original op which causes a crash under x86-64
-                    //options.insert(std::string(option,prevpos,pos-prevpos));
+                    options.insert(std::string(option,prevpos,pos-prevpos));
                 }
                 prevpos=pos+1;
             }
             if (option[prevpos]=='-') 
             {
 
-                // verbose approach implemented for debugging string(const string&,unsigned int,unsigned int) operation on x86-64
-                notify(INFO)<<"option=\""<<option<<"\"  \tprevpos="<<prevpos<<" \tn=npos="<<std::string::npos;
-
-                std::string str(option,prevpos,pos-prevpos);
-
-                notify(INFO)<<" \tstr=\""<<str<<"\"";
-
-                options.insert(str);
-
-                notify(INFO)<<" \tinserted into options set"<<std::endl;
-
-                // original op
-                //options.insert(std::string(option,prevpos,std::string::npos));
+                options.insert(std::string(option,prevpos,std::string::npos));
             }
         }
         

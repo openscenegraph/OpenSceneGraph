@@ -241,11 +241,11 @@ void Object::readTexFilename(ifstream& fin, TextureFilename& texture)
             break;
 
         // Strip " if present
-        string line = buf;
-        size_t pos = line.find('"');
+        std::string line = buf;
+        std::string::size_type pos = line.find('"');
         if (pos != string::npos) {
-            size_t end = line.rfind('"');
-            int len = (end != string::npos ? (end-pos-1) : (line.size()-pos));
+            std::string::size_type end = line.rfind('"');
+            int len = (end != std::string::npos ? (end-pos-1) : (line.size()-pos));
             texture = line.substr(pos+1, len);
         }
         else

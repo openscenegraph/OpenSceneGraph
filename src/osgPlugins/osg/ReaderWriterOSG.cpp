@@ -22,7 +22,9 @@ class OSGReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"osg");
         }
 
-        virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName,opt); }
+        virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName, opt); }
+
+        virtual ReadResult readObject(std::istream& fin, const Options* opt) { return readNode(fin, opt); }
 
         virtual ReadResult readNode(const std::string& file, const Options* opt)
         {
@@ -111,6 +113,24 @@ class OSGReaderWriter : public ReaderWriter
             return WriteResult("Unable to open file for output");
         }
 
+        virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        {
+            Output foutput;
+
+	    std::ios &fios = foutput;
+	    fios.rdbuf(fout.rdbuf());
+
+            if (fout)
+            {
+                setPrecision(foutput,options);
+
+                foutput.writeObject(obj);
+                return WriteResult::FILE_SAVED;
+            }
+            return WriteResult("Unable to write to output stream");
+        }
+
+
         virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = getFileExtension(fileName);
@@ -127,6 +147,23 @@ class OSGReaderWriter : public ReaderWriter
                 return WriteResult::FILE_SAVED;
             }
             return WriteResult("Unable to open file for output");
+        }
+
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        {
+            Output foutput;
+
+	    std::ios &fios = foutput;
+	    fios.rdbuf(fout.rdbuf());
+
+            if (fout)
+            {
+                setPrecision(foutput,options);
+
+                foutput.writeObject(node);
+                return WriteResult::FILE_SAVED;
+            }
+            return WriteResult("Unable to write to output stream");
         }
 
 };

@@ -1,0 +1,112 @@
+#ifndef OSGINTROSPECTION_CUSTOMATTRIBUTEPROVIDER_
+#define OSGINTROSPECTION_CUSTOMATTRIBUTEPROVIDER_
+
+#include <osgIntrospection/Export>
+#include <osgIntrospection/CustomAttribute>
+
+#include <vector>
+#include <typeinfo>
+
+namespace osgIntrospection
+{
+
+	// forward declarations
+	class Type;
+	class CustomAttribute;
+	class CustomAttributeProvider;
+
+	// vector of attributes
+	typedef std::vector<const CustomAttribute *> CustomAttributeList;
+
+	// vector of attribute providers
+	typedef std::vector<const CustomAttributeProvider *> CustomAttributeProviderList;
+
+
+	/// This is the base class for custom attribute providers, that is objects
+	/// that can be assigned a list of custom attributes. Methods defined in
+	/// this class provide the means for adding, retrieving and searching for
+	/// attributes.
+	class OSGINTROSPECTION_EXPORT CustomAttributeProvider
+	{
+	public:
+		/// Returns the const list of custom attributes.
+		inline const CustomAttributeList &getCustomAttributes() const
+		{
+			return attribs_;
+		}
+
+		/// Returns the list of custom attributes.
+		inline CustomAttributeList &getCustomAttributes() 
+		{
+			return attribs_;
+		}
+
+		/// Adds a new attribute to the list.
+		inline CustomAttributeProvider *addAttribute(const CustomAttribute *attr)
+		{
+			attribs_.push_back(attr);
+			return this;
+		}
+
+		/// Returns whether at least one attribute of the given type is
+		/// present in the attribute list. If the inherit parameter is
+		/// set to true, the search is forwarded to base types.
+		bool isDefined(const Type &type, bool inherit) const;
+
+		/// Returns whether at least one attribute of the given type is
+		/// present in the attribute list. If the inherit parameter is
+		/// set to true, the search is forwarded to base types.
+		/// [template version]
+		template<typename T> inline bool isDefined(bool inherit) const
+		{
+			for (CustomAttributeList::const_iterator i=attribs_.begin(); i!=attribs_.end(); ++i)
+				if (typeid(**i) == typeid(T)) return true;
+			if (inherit)
+			{
+				CustomAttributeProviderList providers;
+				getInheritedProviders(providers);
+				for (CustomAttributeProviderList::const_iterator i=providers.begin(); i!=providers.end(); ++i)
+				{
+					if ((*i)->isDefined<T>(true)) return true;
+				}
+			}
+			return false;
+		}
+
+		/// Searchs for an attribute of the given type and returns a pointer
+		/// to it if found, a null pointer otherwise. If the inherit parameter
+		/// is set to true, the search is forwarded to base types.
+		const CustomAttribute *getAttribute(const Type &type, bool inherit) const;
+
+		/// Searchs for an attribute of the given type and returns a pointer
+		/// to it if found, a null pointer otherwise. If the inherit parameter
+		/// is set to true, the search is forwarded to base types.
+		/// [template version]
+		template<typename T> inline const T *getAttribute(bool inherit) const
+		{
+			for (CustomAttributeList::const_iterator i=attribs_.begin(); i!=attribs_.end(); ++i)
+				if (typeid(**i) == typeid(T)) return static_cast<const T *>(*i);
+			if (inherit)
+			{
+				CustomAttributeProviderList providers;
+				getInheritedProviders(providers);
+				for (CustomAttributeProviderList::const_iterator i=providers.begin(); i!=providers.end(); ++i)
+				{
+					const T *ca = (*i)->getAttribute<T>(true);
+					if (ca) return ca;
+				}
+			}
+			return 0;
+		}
+
+	protected:
+		virtual void getInheritedProviders(CustomAttributeProviderList &providers) const = 0;
+		virtual ~CustomAttributeProvider() {}
+
+	private:
+		CustomAttributeList attribs_;
+	};
+
+}
+
+#endif

@@ -1,0 +1,408 @@
+#ifndef OSGINTROSPECTION_TYPE_
+#define OSGINTROSPECTION_TYPE_
+
+#include <osgIntrospection/Export>
+#include <osgIntrospection/Exceptions>
+#include <osgIntrospection/Value>
+#include <osgIntrospection/CustomAttributeProvider>
+
+#include <string>
+#include <typeinfo>
+#include <vector>
+#include <map>
+
+namespace osgIntrospection
+{
+
+	// forward declarations
+	class MethodInfo;
+	class PropertyInfo;
+	class ParameterInfo;
+	class ReaderWriter;
+
+	// typedefs for member info lists
+	typedef std::vector<const MethodInfo *> MethodInfoList;	
+	typedef std::vector<const PropertyInfo *> PropertyInfoList;	
+	typedef std::vector<const ParameterInfo *> ParameterInfoList;
+
+	// typedef for enum label map
+	typedef std::map<int, std::string> EnumLabelMap;
+
+	/// Base class for instance creators. An instance creator is
+	/// a lightweight object that creates a Value containing an
+	/// instance of some type. Every non-abstract Type object has
+	/// an instance creator that creates instances of that type.
+	/// This is an abstract interface, it must be derived to
+	/// provide the actual implementation of createInstance().
+	struct InstanceCreatorBase
+	{
+		virtual Value createInstance() const = 0;
+	};
+
+	/// This is an instance creator to be used with types that ought to
+	/// be created on the heap, for example all classes derived from
+	/// osg::Referenced.
+	template<typename T>
+	struct InstanceCreator: public InstanceCreatorBase
+	{
+		Value createInstance() const
+		{
+			return new T();
+		}
+	};
+
+	/// This is an instance creator to be used with types that can be
+	/// created on the stack (for example: int, std::string, or other
+	/// possibly small user-defined structs or classes).
+	template<typename T>
+	struct ValueInstanceCreator: public InstanceCreatorBase
+	{
+		Value createInstance() const
+		{
+			return T();
+		}
+	};
+
+	/// Objects of class Type are used to maintain information about
+	/// reflected types. They also provide a number of services, like
+	/// instance creation and dynamic calling of methods.
+	/// All details about the data type being described are available
+	/// at runtime, provided that the type was defined (and not just
+	/// declared) through a Reflector class.
+	/// It is not possible to modify a Type object once it has been
+	/// created, unless you are a class derived from Reflector (which
+	/// has firm friendship with this class).
+	class OSGINTROSPECTION_EXPORT Type: public CustomAttributeProvider
+	{
+	public:
+		/// Destructor. Note that this class is not meant to be subclassed.
+		~Type();
+
+		/// Returns a reference to the std::type_info instance associated 
+		/// to this Type.
+		inline const std::type_info &getStdTypeInfo() const;
+
+		/// Returns true if this Type is defined, false if it's just 
+		/// declared. See class Reflector if you want to create a new Type.
+		inline bool isDefined() const;
+
+		/// Returns the name of the reflected type.
+		inline const std::string &getName() const;
+
+		/// Returns the namespace of the reflected type.
+		inline const std::string &getNamespace() const;
+
+		/// Returns the qualified name of the reflected type. The qualified 
+		/// name is formed by the namespace, if present, plus other modifiers 
+		/// like 'const' and/or '*' (pointer) where applicable.
+		inline std::string getQualifiedName() const;
+
+		/// Returns the number of base types.
+		/// This number is zero if the type is not derived from any other 
+		/// type.
+		inline int getNumBaseTypes() const;
+
+		/// Returns the i-th base type.
+		inline const Type &getBaseType(int i) const;
+
+		/// Returns whether the reflected type is abstract.
+		inline bool isAbstract() const;
+
+		/// Returns whether the reflected type is "atomic", that is
+		/// it can be rendered to and decoded from a stream directly.
+		inline bool isAtomic() const;
+
+		/// Returns whether the reflected type is an enumeration.
+		inline bool isEnum() const;
+
+		/// Returns whether the reflected type is the type void.
+		inline bool isVoid() const;
+
+		/// Returns true if the reflected type is a pointer, false otherwise.
+		inline bool isPointer() const;
+
+		/// Returns true if the reflected type is a pointer AND it is const, 
+		/// false otherwise.
+		inline bool isConstPointer() const;
+
+		/// Returns true if the reflected type is a pointer AND it is not 
+		/// const, false otherwise.
+		inline bool isNonConstPointer() const;
+
+		/// Returns the pointed type. If the reflected type is not a pointer,
+		/// the object returned is typeof(void).
+		inline const Type &getPointedType() const;
+
+		/// Returns the list of properties defined for this type. The list
+		/// does not include properties inherited from base types.
+		inline const PropertyInfoList &getProperties() const;
+
+		/// Fills a list of properties that are either defined in this Type 
+		/// or in inherited types.
+		void getAllProperties(PropertyInfoList &props) const;
+
+		/// Returns the list of methods defined for this type. The list
+		/// does not include methods inherited from base types.
+		inline const MethodInfoList &getMethods() const;
+
+		/// Fills a list of methods that are either defined in this Type 
+		/// or in inherited types.
+		void getAllMethods(MethodInfoList &methods) const;
+
+		/// Returns the map of enumeration labels. If the type is not an
+		/// enumeration, an empty map is returned.
+		inline const EnumLabelMap &getEnumLabels() const;
+
+		/// Searches for a method that can be called with the given list of 
+		/// arguments without raising type conversion errors. If more than
+		/// one method are suitable for calling, the best match is returned.
+		const MethodInfo *getCompatibleMethod(const std::string &name, const ValueList &values, bool inherit) const;
+
+		/// Searches for a method whose parameters match exactly the given 
+		/// list of parameter descriptions.
+		const MethodInfo *getMethod(const std::string &name, const ParameterInfoList &params, bool inherit) const;
+
+		/// Searches for a property given its name, type and list of indices.
+		/// Only exact matches are returned.
+		const PropertyInfo *getProperty(const std::string &name, const Type &ptype, const ParameterInfoList &indices, bool inherit) const;
+
+		/// Searches for a suitable method and invokes it with the given list 
+		/// of arguments (const instance).
+		Value invokeMethod(const std::string &name, const Value &instance, ValueList &args, bool inherit) const;
+
+		/// Searches for a suitable method and invokes it with the given list 
+		/// of arguments.
+		Value invokeMethod(const std::string &name, Value &instance, ValueList &args, bool inherit) const;
+
+		/// Returns whether the reflected type is derived from another type.
+		bool isSubclassOf(const Type &type) const;
+
+		/// Returns the instance of the reader/writer object assigned to 
+		/// this type, if any. Otherwise it returns the null pointer.
+		inline const ReaderWriter *getReaderWriter() const;
+
+		/// Creates an instance of the reflected type. The returned Value 
+		/// can be casted to T*, where T is the reflected type. If the type 
+		///	is abstract, an exception is thrown.
+		inline Value createInstance() const;
+
+	protected:
+		Type(const std::type_info &ti)
+		:	ti_(ti), 
+			is_const_(false), 
+			pointed_type_(0), 
+			is_defined_(false), 
+			icb_(0), 
+			rw_(0) 
+		{
+		}
+
+		// throws an exception if the type is not defined.
+		void check_defined() const;
+
+		virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+
+		void set_instance_creator(const InstanceCreatorBase *icb)
+		{
+			delete icb_;
+			icb_ = icb;
+		}
+
+	private:
+		template<typename C> friend class Reflector;
+		friend class Reflection;
+
+		Type(const Type &copy): CustomAttributeProvider(copy), ti_(copy.ti_) {}
+
+		const std::type_info &ti_;
+
+		std::string name_;
+		std::string namespace_;
+
+		typedef std::vector<const Type *> TypeList;
+		TypeList base_;
+
+		bool is_const_;
+		const Type *pointed_type_;
+
+		PropertyInfoList props_;
+		MethodInfoList methods_;
+
+		EnumLabelMap labels_;
+		bool is_defined_;
+
+		const InstanceCreatorBase *icb_;
+		const ReaderWriter *rw_;
+	};
+
+	// OPERATORS
+
+	/// Equality test operator. Returns true if the two instances of Type
+	/// describe the same type, false otherwise.
+	inline bool operator==(const Type &t1, const Type &t2)
+	{
+		return (t1.getStdTypeInfo() == t2.getStdTypeInfo()) != 0;
+	}
+
+	/// Inequality test operator. Returns false if the two instances of Type
+	/// describe the same type, true otherwise.
+	inline bool operator!=(const Type &t1, const Type &t2)
+	{
+		return (t1.getStdTypeInfo() != t2.getStdTypeInfo()) != 0;
+	}
+
+	/// Less than operator. Returns true if the first type comes before the
+	/// second one. The actual ordering is implementation-dependent.
+	inline bool operator<(const Type &t1, const Type &t2)
+	{
+		return (t1.getStdTypeInfo().before(t2.getStdTypeInfo())) != 0;
+	}
+
+	/// Greater than or equal to operator. Returns !operator<().
+	inline bool operator>=(const Type &t1, const Type &t2)
+	{
+		return !operator<(t1, t2);
+	}
+
+	// INLINE METHODS
+
+	inline void Type::check_defined() const
+	{
+		if (!is_defined_)
+			throw TypeNotDefinedException(ti_);
+	}
+
+	inline const std::type_info &Type::getStdTypeInfo() const
+	{
+		return ti_;
+	}
+
+	inline const std::string &Type::getName() const
+	{
+		check_defined();
+		return name_;
+	}
+
+	inline const std::string &Type::getNamespace() const
+	{
+		check_defined();
+		return namespace_;
+	}
+
+	inline std::string Type::getQualifiedName() const
+	{
+		check_defined();
+		std::string qname;
+		if (is_const_) qname = "const ";
+		if (!namespace_.empty()) 
+		{
+			qname.append(namespace_);
+			qname.append("::");
+		}
+		qname.append(name_);
+		if (pointed_type_)
+			qname.append(" *");
+		return qname;
+	}
+
+	inline int Type::getNumBaseTypes() const
+	{
+		check_defined();
+		return static_cast<int>(base_.size());
+	}
+
+	inline bool Type::isConstPointer() const
+	{
+		check_defined();
+		return is_const_ && pointed_type_;
+	}
+
+	inline bool Type::isNonConstPointer() const
+	{
+		check_defined();
+		return !is_const_ && pointed_type_;
+	}
+
+	inline bool Type::isAbstract() const
+	{
+		check_defined();
+		return icb_ == 0;
+	}
+
+	inline bool Type::isAtomic() const
+	{
+		check_defined();
+		return rw_ != 0;
+	}
+
+	inline const PropertyInfoList &Type::getProperties() const
+	{
+		check_defined();
+		return props_;
+	}
+
+	inline const MethodInfoList &Type::getMethods() const
+	{
+		check_defined();
+		return methods_;
+	}
+
+	inline bool Type::isPointer() const
+	{
+		check_defined();
+		return pointed_type_ != 0;
+	}
+
+	inline bool Type::isVoid() const
+	{
+		return (ti_ == typeid(void)) != 0;
+	}
+
+	inline const Type &Type::getPointedType() const
+	{
+		check_defined();
+		if (pointed_type_)
+			return *pointed_type_;
+		return Reflection::type_void();
+	}
+
+	inline bool Type::isEnum() const
+	{
+		check_defined();
+		return !labels_.empty();
+	}
+
+	inline const EnumLabelMap &Type::getEnumLabels() const
+	{
+		check_defined();
+		return labels_;
+	}
+
+	inline bool Type::isDefined() const
+	{
+		return is_defined_;
+	}
+
+	inline const ReaderWriter *Type::getReaderWriter() const
+	{
+		check_defined();
+		return rw_;
+	}
+
+	inline const Type &Type::getBaseType(int i) const
+	{
+		check_defined();
+		return *base_.at(i);
+	}
+
+	inline Value Type::createInstance() const
+	{
+		check_defined();
+		if (!icb_)
+			throw TypeIsAbstractException(ti_);
+		return icb_->createInstance();
+	}
+
+}
+
+#endif

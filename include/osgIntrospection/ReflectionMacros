@@ -1,0 +1,323 @@
+#ifndef OSGINTROSPECTION_REFLECTIONMACROS_
+#define OSGINTROSPECTION_REFLECTIONMACROS_
+
+#include <osgIntrospection/Reflector>
+
+// --------------------------------------------------------------------------
+// "private" macros, not to be used outside this file
+// --------------------------------------------------------------------------
+
+#define OSG_RM_CONCATENATE_MACRO(x, y)   x##y
+#define OSG_RM_LINEID1(x, y)             OSG_RM_CONCATENATE_MACRO(x, y)
+#define OSG_RM_LINEID(x)                 OSG_RM_LINEID1(x, __LINE__)
+
+
+// --------------------------------------------------------------------------
+// QUICK REFLECTORS
+// --------------------------------------------------------------------------
+
+#define STD_VALUE_REFLECTOR(t)           static osgIntrospection::StdValueReflector<t > OSG_RM_LINEID(reflector) (#t);
+#define VALUE_REFLECTOR_WITH_RW(t, rw)   static osgIntrospection::ValueReflector<t > OSG_RM_LINEID(reflector) (#t, new rw);
+#define STD_PAIR_REFLECTOR(t)            static osgIntrospection::StdPairReflector<t, t::first_type, t::second_type > OSG_RM_LINEID(reflector) (#t);
+#define STD_PAIR_REFLECTOR_WITH_TYPES(t, pt1, pt2)  static osgIntrospection::StdPairReflector<t, pt1, pt2 > OSG_RM_LINEID(reflector) (#t);
+#define ABSTRACT_OBJECT_REFLECTOR(t)     static osgIntrospection::AbstractObjectReflector<t > OSG_RM_LINEID(reflector) (#t);
+#define STD_CONTAINER_REFLECTOR(t)       static osgIntrospection::StdContainerReflector<t, t::value_type> OSG_RM_LINEID(reflector) (#t);
+#define STD_CONTAINER_REFLECTOR_WITH_TYPES(t, vt)       static osgIntrospection::StdContainerReflector<t, vt > OSG_RM_LINEID(reflector) (#t);
+#define STD_MAP_REFLECTOR(t)             static osgIntrospection::StdMapReflector<t, t::key_type, t::mapped_type > OSG_RM_LINEID(reflector) (#t);
+#define STD_MAP_REFLECTOR_WITH_TYPES(t, it, vt)             static osgIntrospection::StdMapReflector<t, it, vt > OSG_RM_LINEID(reflector) (#t);
+
+
+// --------------------------------------------------------------------------
+// DETAILED REFLECTORS
+// --------------------------------------------------------------------------
+
+#define BEGIN_ENUM_REFLECTOR(c)  \
+	static struct OSG_RM_LINEID(reflector): public osgIntrospection::EnumReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+
+#define BEGIN_VALUE_REFLECTOR(c)  \
+	static struct OSG_RM_LINEID(reflector): public osgIntrospection::ValueReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c, 0) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+
+#define BEGIN_OBJECT_REFLECTOR(c)  \
+	static struct OSG_RM_LINEID(reflector): public osgIntrospection::ObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+
+#define BEGIN_ABSTRACT_OBJECT_REFLECTOR(c)  \
+	static struct OSG_RM_LINEID(reflector): public osgIntrospection::AbstractObjectReflector<c > { OSG_RM_LINEID(reflector)(): inherited(#c) { osgIntrospection::ParameterInfoList params; osgIntrospection::CustomAttributeProvider *cap = getType();
+
+#define END_REFLECTOR \
+	} } OSG_RM_LINEID(reflector_instance); 
+
+
+// --------------------------------------------------------------------------
+// ATTRIBUTES
+// --------------------------------------------------------------------------
+
+#define Attribute(c)                       cap->addAttribute(new c);
+
+
+// --------------------------------------------------------------------------
+// BASE TYPES
+// --------------------------------------------------------------------------
+
+#define BaseType(x)                        addBaseType(typeof(x));
+
+
+// --------------------------------------------------------------------------
+// PROPERTIES
+// --------------------------------------------------------------------------
+
+#define Property(t, n) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  Method0(t, get##n), \
+	  Method1(void, set##n, IN, t, value)))
+
+#define ReadOnlyProperty(t, n) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  Method0(t, get##n), \
+	  0))
+
+#define WriteOnlyProperty(t, n) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  0, \
+	  Method1(void, set##n, IN, t, value)))
+
+#define PropertyWithCustomAccessors(t, n) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  0, \
+	  0))
+
+#define ArrayProperty(t, n, np) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #np, \
+	  Method1(t, get##n, IN, unsigned int, index), \
+	  Method2(void, set##n, IN, unsigned int, index, IN, t, value), \
+      Method0(unsigned int, getNum##np), \
+	  Method1(void, add##n, IN, t, value)))
+
+#define ArrayPropertyWithCustomAccessors(t, n, np) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #np, \
+	  0, \
+	  0, \
+      0, \
+	  0))
+
+#define ArrayPropertyWithReturnType(t, n, np, r) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  Method1(t, get##n, IN, unsigned int, index), \
+	  Method2(r, set##n, IN, unsigned int, index, IN, t, value), \
+      Method0(unsigned int, getNum##np), \
+	  Method1(r, add##n, IN, t, value)))
+
+#define IndexedProperty IndexedProperty1
+
+#define IndexedProperty1(t, n, i0, n0) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  Method1(t, get##n, IN, i0, n0), \
+	  Method2(void, set##n, IN, i0, n0, IN, t, value)))
+
+#define IndexedProperty2(t, n, i0, n0, i1, n1) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  Method2(t, get##n, IN, i0, n0, IN, i1, n1), \
+	  Method3(void, set##n, IN, i0, n0, IN i1, n1, IN, t, value)))
+
+#define IndexedProperty3(t, n, i0, n0, i1, n1, i2, n2) \
+	cap=addProperty(new osgIntrospection::PropertyInfo(osgIntrospection::Reflection::getType(typeid(reflected_type)), osgIntrospection::Reflection::getType(typeid(t)), #n, \
+	  Method3(t, get##n, IN, i0, n0, IN, i1, n1, IN, i2, n2), \
+	  Method4(void, set##n, IN, i0, n0, IN i1, n1, IN, i2, n2, IN, t, value)))
+
+// --------------------------------------------------------------------------
+// ENUM LABELS
+// --------------------------------------------------------------------------
+
+#define EnumLabel(x)                       addEnumLabel(x, #x, true);
+
+
+// --------------------------------------------------------------------------
+// METHODS
+// --------------------------------------------------------------------------
+
+#define Method Method0
+
+#define Method0(ret, fn) (\
+    params.clear(), \
+    addMethod(new osgIntrospection::TypedMethodInfo0<reflected_type, ret>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method1(ret, fn, A0, P0, N0) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    addMethod(new osgIntrospection::TypedMethodInfo1<reflected_type, ret, P0>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method2(ret, fn, A0, P0, N0, A1, P1, N1) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    addMethod(new osgIntrospection::TypedMethodInfo2<reflected_type, ret, P0, P1>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method3(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    addMethod(new osgIntrospection::TypedMethodInfo3<reflected_type, ret, P0, P1, P2>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method4(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    addMethod(new osgIntrospection::TypedMethodInfo4<reflected_type, ret, P0, P1, P2, P3>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method5(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    addMethod(new osgIntrospection::TypedMethodInfo5<reflected_type, ret, P0, P1, P2, P3, P4>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method6(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    addMethod(new osgIntrospection::TypedMethodInfo6<reflected_type, ret, P0, P1, P2, P3, P4, P5>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method7(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    addMethod(new osgIntrospection::TypedMethodInfo7<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method8(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    addMethod(new osgIntrospection::TypedMethodInfo8<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method9(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    addMethod(new osgIntrospection::TypedMethodInfo9<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method10(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8, A9, P9, N9) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N9, osgIntrospection::Reflection::getType(typeid(P9)), 9, osgIntrospection::ParameterInfo::A9)), \
+    addMethod(new osgIntrospection::TypedMethodInfo10<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method11(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8, A9, P9, N9, A10, P10, N10) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N9, osgIntrospection::Reflection::getType(typeid(P9)), 9, osgIntrospection::ParameterInfo::A9)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N10, osgIntrospection::Reflection::getType(typeid(P10)), 10, osgIntrospection::ParameterInfo::A10)), \
+    addMethod(new osgIntrospection::TypedMethodInfo11<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method12(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8, A9, P9, N9, A10, P10, N10, A11, P11, N11) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N9, osgIntrospection::Reflection::getType(typeid(P9)), 9, osgIntrospection::ParameterInfo::A9)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N10, osgIntrospection::Reflection::getType(typeid(P10)), 10, osgIntrospection::ParameterInfo::A10)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N11, osgIntrospection::Reflection::getType(typeid(P11)), 11, osgIntrospection::ParameterInfo::A11)), \
+    addMethod(new osgIntrospection::TypedMethodInfo12<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method13(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8, A9, P9, N9, A10, P10, N10, A11, P11, N11, A12, P12, N12) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N9, osgIntrospection::Reflection::getType(typeid(P9)), 9, osgIntrospection::ParameterInfo::A9)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N10, osgIntrospection::Reflection::getType(typeid(P10)), 10, osgIntrospection::ParameterInfo::A10)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N11, osgIntrospection::Reflection::getType(typeid(P11)), 11, osgIntrospection::ParameterInfo::A11)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N12, osgIntrospection::Reflection::getType(typeid(P12)), 12, osgIntrospection::ParameterInfo::A12)), \
+    addMethod(new osgIntrospection::TypedMethodInfo13<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method14(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8, A9, P9, N9, A10, P10, N10, A11, P11, N11, A12, P12, N12, A13, P13, N13) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N9, osgIntrospection::Reflection::getType(typeid(P9)), 9, osgIntrospection::ParameterInfo::A9)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N10, osgIntrospection::Reflection::getType(typeid(P10)), 10, osgIntrospection::ParameterInfo::A10)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N11, osgIntrospection::Reflection::getType(typeid(P11)), 11, osgIntrospection::ParameterInfo::A11)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N12, osgIntrospection::Reflection::getType(typeid(P12)), 12, osgIntrospection::ParameterInfo::A12)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N13, osgIntrospection::Reflection::getType(typeid(P13)), 13, osgIntrospection::ParameterInfo::A13)), \
+    addMethod(new osgIntrospection::TypedMethodInfo14<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#define Method15(ret, fn, A0, P0, N0, A1, P1, N1, A2, P2, N2, A3, P3, N3, A4, P4, N4, A5, P5, N5, A6, P6, N6, A7, P7, N7, A8, P8, N8, A9, P9, N9, A10, P10, N10, A11, P11, N11, A12, P12, N12, A13, P13, N13, A14, P14, N14) (\
+    params.clear(), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N0, osgIntrospection::Reflection::getType(typeid(P0)), 0, osgIntrospection::ParameterInfo::A0)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N1, osgIntrospection::Reflection::getType(typeid(P1)), 1, osgIntrospection::ParameterInfo::A1)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N2, osgIntrospection::Reflection::getType(typeid(P2)), 2, osgIntrospection::ParameterInfo::A2)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N3, osgIntrospection::Reflection::getType(typeid(P3)), 3, osgIntrospection::ParameterInfo::A3)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N4, osgIntrospection::Reflection::getType(typeid(P4)), 4, osgIntrospection::ParameterInfo::A4)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N5, osgIntrospection::Reflection::getType(typeid(P5)), 5, osgIntrospection::ParameterInfo::A5)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N6, osgIntrospection::Reflection::getType(typeid(P6)), 6, osgIntrospection::ParameterInfo::A6)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N7, osgIntrospection::Reflection::getType(typeid(P7)), 7, osgIntrospection::ParameterInfo::A7)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N8, osgIntrospection::Reflection::getType(typeid(P8)), 8, osgIntrospection::ParameterInfo::A8)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N9, osgIntrospection::Reflection::getType(typeid(P9)), 9, osgIntrospection::ParameterInfo::A9)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N10, osgIntrospection::Reflection::getType(typeid(P10)), 10, osgIntrospection::ParameterInfo::A10)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N11, osgIntrospection::Reflection::getType(typeid(P11)), 11, osgIntrospection::ParameterInfo::A11)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N12, osgIntrospection::Reflection::getType(typeid(P12)), 12, osgIntrospection::ParameterInfo::A12)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N13, osgIntrospection::Reflection::getType(typeid(P13)), 13, osgIntrospection::ParameterInfo::A13)), \
+    params.push_back(new osgIntrospection::ParameterInfo(#N14, osgIntrospection::Reflection::getType(typeid(P14)), 14, osgIntrospection::ParameterInfo::A14)), \
+    addMethod(new osgIntrospection::TypedMethodInfo15<reflected_type, ret, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14>(qualifyName(#fn), &reflected_type::fn, params))) 
+
+#endif

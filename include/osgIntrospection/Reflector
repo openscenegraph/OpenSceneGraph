@@ -1,0 +1,523 @@
+#ifndef OSGINTROSPECTION_REFLECTOR_
+#define OSGINTROSPECTION_REFLECTOR_
+
+#include <osgIntrospection/Reflection>
+#include <osgIntrospection/Type>
+#include <osgIntrospection/PropertyInfo>
+#include <osgIntrospection/ReaderWriter>
+
+#include <string>
+#include <sstream>
+
+namespace osgIntrospection
+{
+
+	class CustomAttribute;
+	class CustomAttributeProvider;
+	class ReaderWriter;
+
+	/// A Reflector is a proxy class that is used to create a new description
+	/// of a given type. If the type to be described is simple and doesn't
+	/// require additional details such as properties and methods, it can be
+	/// reflected by simply creating a global instance of one of the classes
+	/// derived from Reflector, for example ValueReflector. Other types may
+	/// need further information and therefore it could be necessary to create
+	/// a new subclass of Reflector or extend one of the existing subclasses.
+	/// The reflected type can be set by calling Reflector's protected 
+	/// methods.
+	///
+	/// NOTE: when you create a Reflector for type T, it will automatically
+	/// create descriptions for types T* and const T*. You should NEVER
+	/// create reflectors for pointer types explicitely.
+	///
+	template<typename T>
+	class Reflector
+	{
+	public:
+		typedef T reflected_type;
+		typedef Reflector<T> inherited;
+
+		/// Virtual destructor.
+		virtual ~Reflector() {}
+
+	protected:
+		/// Direct initialization constructor. Parameter 'name' is the name
+		/// of the type being reflected, 'ns' is its namespace and 'rw' is
+		/// the ReaderWriter object associated to the type.
+		Reflector(const std::string &name, const std::string &ns, const ReaderWriter *rw);
+
+		/// Direct initialization constructor. Parameter 'qname' is the 
+		/// fully-qualified name of the type being reflected, i.e. containing
+		/// both the namespace and the name (separated by "::"). Parameter
+		/// 'rw' is the ReaderWriter object associated to the type.
+		Reflector(const std::string &qname, const ReaderWriter *rw);
+
+	protected:
+
+		/// Returns the Type object being described.
+		Type *getType() { return type_; }
+
+		/// Declares a new base type for the current type.
+		void addBaseType(const Type &type);
+
+		/// Adds a property description to the current type.
+		PropertyInfo *addProperty(PropertyInfo *pi);
+
+		/// Adds a method description to the current type.
+		MethodInfo *addMethod(MethodInfo *mi);
+
+		/// Adds an enumeration label to the current type.
+		void addEnumLabel(int v, const std::string &label, bool strip_namespace = true);
+
+		/// Sets the instance creator for the current type.
+		void setInstanceCreator(const InstanceCreatorBase *icb);
+
+		/// Returns a string containing the qualified version of 'name'.
+		std::string qualifyName(const std::string name) const;
+
+		/// Adds a custom attribute to the type being described.
+		CustomAttributeProvider *addAttribute(const CustomAttribute *attrib);
+
+		/// Sets the current type's ReaderWriter object.
+		void setReaderWriter(const ReaderWriter *rw);
+
+	private:
+		void init();
+
+		Type *type_;
+	};
+
+	/// This reflector ought to be used to describe types that can be
+	/// created on the stack. Such types are for example int, double,
+	/// std::string, or other (possibly small) user-defined structs or
+	/// classes. The instance creator associated to types created through
+	/// this reflector will create Value objects whose internal type is T.
+	template<typename T>
+	struct ValueReflector: public Reflector<T>
+	{
+		typedef ValueReflector<T> inherited;
+
+		ValueReflector(const std::string &name, const std::string &ns, const ReaderWriter *rw = 0)
+		:	Reflector<T>(name, ns, rw)
+		{
+			setInstanceCreator(new ValueInstanceCreator<T>);
+		}
+
+		ValueReflector(const std::string &qname, const ReaderWriter *rw = 0)
+		:	Reflector<T>(qname, rw)
+		{
+			setInstanceCreator(new ValueInstanceCreator<T>);
+		}	
+	};
+
+	/// This reflector is to be used to describe abstract types that can't
+	/// be created directly, and therefore can't have an InstanceCreator
+	/// object associated to them.
+	template<typename T>
+	struct AbstractObjectReflector: public Reflector<T>
+	{
+		typedef AbstractObjectReflector<T> inherited;
+
+		AbstractObjectReflector(const std::string &name, const std::string &ns)
+		:	Reflector<T>(name, ns, 0)
+		{
+		}
+
+		AbstractObjectReflector(const std::string &qname)
+		:	Reflector<T>(qname, 0)
+		{
+		}
+	};
+
+	/// This reflector is to be used to describe types that ought to be
+	/// created on the heap. Such types are for example all classes derived
+	/// from osg::Referenced. The instance creator associated to types 
+	/// created through this reflector will create Value objects whose 
+	/// internal type is T*.
+	template<typename T>
+	struct ObjectReflector: public Reflector<T>
+	{
+		typedef ObjectReflector<T> inherited;
+
+		ObjectReflector(const std::string &name, const std::string &ns)
+		:	Reflector<T>(name, ns, 0)
+		{
+			setInstanceCreator(new InstanceCreator<T>);
+		}
+
+		ObjectReflector(const std::string &qname)
+		:	Reflector<T>(qname, 0)
+		{
+			setInstanceCreator(new InstanceCreator<T>);
+		}
+	};
+
+
+	/// This reflector is a ValueReflector that should be used to define
+	/// types that can be read and written from/to streams using the <<
+	/// and >> operators. A StdReaderWriter is assigned by default.
+	template<typename T>
+	struct StdValueReflector: public ValueReflector<T>
+	{
+		StdValueReflector(const std::string &name, const std::string &ns)
+		:	ValueReflector<T>(name, ns, new StdReaderWriter<T>)
+		{
+		}
+
+		StdValueReflector(const std::string &qname)
+		:	ValueReflector<T>(qname, new StdReaderWriter<T>)
+		{
+		}
+	};
+
+
+	/// This reflector is a ValueReflector that should be used to define
+	/// enumerations. It assigns an EnumReaderWriter by default.
+	template<typename T>
+	struct EnumReflector: public ValueReflector<T>
+	{
+		typedef EnumReflector<T> inherited;
+
+		EnumReflector(const std::string &name, const std::string &ns)
+		:	ValueReflector<T>(name, ns, new EnumReaderWriter<T>)
+		{
+		}
+
+		EnumReflector(const std::string &qname)
+		:	ValueReflector<T>(qname, new EnumReaderWriter<T>)
+		{
+		}	
+	};
+
+
+	/// This class allows to define the means for reflecting STL containers
+	/// such as std::deque and std::vector.
+	template<typename T, typename VT>
+	struct StdContainerReflector: ValueReflector<T>
+	{
+		struct Getter: PropertyGetter
+		{
+			virtual Value get(const Value &instance, int i) const
+			{
+				const T &ctr = variant_cast<const T &>(instance);
+				return ctr.at(i);
+			}
+		};
+
+		struct Setter: PropertySetter
+		{
+			virtual void set(Value &instance, int i, const Value &v) const
+			{
+				T &ctr = variant_cast<T &>(instance);
+				ctr.at(i) = variant_cast<const typename T::value_type &>(v);
+			}
+		};
+
+		struct Counter: PropertyCounter
+		{
+			virtual int count(const Value &instance) const
+			{
+				const T &ctr = variant_cast<const T &>(instance);
+				return static_cast<int>(ctr.size());
+			}
+		};
+
+		struct Adder: PropertyAdder
+		{
+			virtual void add(Value &instance, const Value &v) const
+			{
+				T &ctr = variant_cast<T &>(instance);
+				ctr.push_back(variant_cast<const typename T::value_type &>(v));
+			}
+		};
+
+		StdContainerReflector(const std::string &name): ValueReflector<T>(name)
+		{
+			PropertyInfo *pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0, 0, 0);
+			pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
+			pi->addAttribute(new CustomPropertySetAttribute(new Setter));
+			pi->addAttribute(new CustomPropertyCountAttribute(new Counter));
+			pi->addAttribute(new CustomPropertyAddAttribute(new Adder));
+			
+			if (typeid(VT).before(typeid(typename T::value_type)) ||
+				typeid(typename T::value_type).before(typeid(VT)))
+			{
+				pi->addAttribute(new PropertyTypeAttribute(typeof(VT)));
+			}
+
+			addProperty(pi);
+		}
+	};
+
+	/// This class allows to define the means for reflecting STL associative
+	/// containers which hold pairs of key+value, such as std::map.
+	template<typename T, typename IT, typename VT>
+	struct StdMapReflector: ValueReflector<T>
+	{
+		typedef typename T::const_iterator const_iterator;
+		typedef typename T::key_type key_type;
+		typedef typename T::mapped_type mapped_type;
+
+		struct Getter: PropertyGetter
+		{
+			virtual Value get(const Value &instance, const ValueList &indices) const
+			{
+				const T& ctr = variant_cast<const T &>(instance);
+				const key_type& key = variant_cast<const key_type &>(indices.front());
+				
+				const_iterator i = ctr.find(key);
+				if (i == ctr.end()) return Value();
+				return i->second;
+			}
+		};
+
+		struct Setter: PropertySetter
+		{
+			virtual void set(Value &instance, const ValueList &indices, const Value &v) const
+			{
+				T &ctr = variant_cast<T &>(instance);
+				ctr.insert(std::make_pair(variant_cast<const key_type &>(indices.front()), variant_cast<const mapped_type &>(v)));
+			}
+		};
+
+		struct Indexer: IndexInfo
+		{
+			ParameterInfoList params_;
+			const Type &itype_;
+
+			Indexer()
+			:	itype_(typeof(IT))
+			{
+				params_.push_back(new ParameterInfo("key", typeof(key_type), 0, ParameterInfo::IN));
+			}
+
+			virtual ~Indexer()
+			{
+				delete params_.front();
+			}
+
+			virtual const ParameterInfoList &getIndexParameters() const
+			{
+				return params_;
+			}
+
+			virtual void getIndexValueSet(int whichindex, const Value &instance, ValueList &values) const
+			{
+				const T &ctr = variant_cast<const T &>(instance);
+				for (const_iterator i=ctr.begin(); 
+					i!=ctr.end(); 
+					++i)
+				{
+					values.push_back(Value(i->first).convertTo(itype_));
+				}
+			}
+		};
+
+		StdMapReflector(const std::string &name): ValueReflector<T>(name)
+		{
+			PropertyInfo *pi = new PropertyInfo(typeof(T), typeof(typename T::value_type), "Items", 0, 0);
+			pi->addAttribute(new CustomPropertyGetAttribute(new Getter));
+			pi->addAttribute(new CustomPropertySetAttribute(new Setter));
+			pi->addAttribute(new CustomIndexAttribute(new Indexer));
+
+			if (typeid(VT).before(typeid(typename T::mapped_type)) ||
+				typeid(typename T::mapped_type).before(typeid(VT)))
+			{
+				pi->addAttribute(new PropertyTypeAttribute(typeof(VT)));
+			}
+
+			addProperty(pi);
+		}
+	};
+
+	template<typename T, typename PT1, typename PT2>
+	struct StdPairReflector: ValueReflector<T>
+	{
+		struct Accessor: PropertyGetter, PropertySetter
+		{
+			Accessor(int i): i_(i) {}
+			
+			virtual Value get(const Value &instance) const
+			{
+				switch (i_)
+				{
+				case 0: return variant_cast<const T &>(instance).first;
+				case 1: return variant_cast<const T &>(instance).second;
+				default: return Value();
+				}
+			}
+
+			virtual void set(const Value &instance, const Value &v) const
+			{
+				T &ctr = variant_cast<T &>(instance);
+
+				switch (i_)
+				{				
+				case 0: ctr.first = variant_cast<const typename T::first_type &>(v); break;
+				case 1: ctr.second = variant_cast<const typename T::second_type &>(v); break;
+				}
+			}
+
+			int i_;
+		};
+
+		StdPairReflector(const std::string &name): ValueReflector<T>(name)
+		{
+			PropertyInfo *pi1 = new PropertyInfo(typeof(T), typeof(typename T::first_type), "first", 0, 0);
+			pi1->addAttribute(new CustomPropertyGetAttribute(new Accessor(0)));
+			pi1->addAttribute(new CustomPropertySetAttribute(new Accessor(0)));
+
+			if (typeid(PT1).before(typeid(typename T::first_type)) ||
+				typeid(typename T::first_type).before(typeid(PT1)))
+				pi1->addAttribute(new PropertyTypeAttribute(typeof(PT1)));
+
+			addProperty(pi1);
+
+			PropertyInfo *pi2 = new PropertyInfo(typeof(T), typeof(typename T::second_type), "second", 0, 0);
+			pi2->addAttribute(new CustomPropertyGetAttribute(new Accessor(1)));
+			pi2->addAttribute(new CustomPropertySetAttribute(new Accessor(1)));
+
+			if (typeid(PT2).before(typeid(typename T::second_type)) ||
+				typeid(typename T::second_type).before(typeid(PT2)))
+				pi2->addAttribute(new PropertyTypeAttribute(typeof(PT2)));
+
+			addProperty(pi2);
+		}
+	};
+
+
+	// TEMPLATE METHODS
+
+	template<typename T>
+	Reflector<T>::Reflector(const std::string &name, const std::string &ns, const ReaderWriter *rw)
+	:	type_(Reflection::registerOrReplaceType(typeid(T)))
+	{
+		type_->name_ = name;
+		type_->namespace_ = ns;
+		type_->rw_ = rw;
+		init();		
+	}
+
+	template<typename T>
+	Reflector<T>::Reflector(const std::string &qname, const ReaderWriter *rw)
+	:	type_(Reflection::registerOrReplaceType(typeid(T)))
+	{
+		std::string::size_type p = qname.rfind("::");
+		if (p != std::string::npos)
+		{
+			type_->namespace_ = qname.substr(0, p);
+			type_->name_ = qname.substr(p+2);
+		}
+		else
+		{
+			type_->name_ = qname;
+		}
+		type_->rw_ = rw;
+		init();
+	}
+
+	template<typename T>
+	void Reflector<T>::init()
+	{
+		// pointer type
+		if (!type_->pointed_type_)
+		{
+			Type *ptype = Reflection::registerOrReplaceType(typeid(T*));
+			ptype->name_ = type_->name_;
+			ptype->namespace_ = type_->namespace_;
+			ptype->pointed_type_ = type_;
+			ptype->is_defined_ = true;
+			ptype->set_instance_creator(new ValueInstanceCreator<T*>);
+			ptype->rw_ = new PtrReaderWriter<T*>();
+		}
+
+		// const pointer type
+		if (!type_->pointed_type_ || !type_->is_const_)
+		{
+			Type *cptype = Reflection::registerOrReplaceType(typeid(const T*));
+			cptype->name_ = type_->name_;
+			cptype->namespace_ = type_->namespace_;
+			cptype->is_const_ = true;
+			cptype->pointed_type_ = type_;
+			cptype->is_defined_ = true;
+			cptype->set_instance_creator(new ValueInstanceCreator<const T*>);
+			cptype->rw_ = new PtrReaderWriter<const T*>();
+		}
+
+		type_->is_defined_ = true;
+	}
+
+	template<typename T>
+	void Reflector<T>::addBaseType(const Type &type)
+	{
+		type_->base_.push_back(&type);
+	}
+
+	template<typename T>
+	PropertyInfo *Reflector<T>::addProperty(PropertyInfo *pi)
+	{
+		type_->props_.push_back(pi);
+		return pi;
+	}
+
+	template<typename T>
+	MethodInfo *Reflector<T>::addMethod(MethodInfo *mi)
+	{
+		type_->methods_.push_back(mi);
+		return mi;
+	}
+
+	template<typename T>
+	void Reflector<T>::addEnumLabel(int v, const std::string &label, bool strip_namespace)
+	{
+		if (strip_namespace)
+		{
+			std::string::size_type p = label.rfind("::");
+			if (p != std::string::npos)
+			{
+				type_->labels_.insert(std::make_pair(v, label.substr(p+2)));
+				return;
+			}
+		}
+		type_->labels_.insert(std::make_pair(v, label));
+	}
+
+	template<typename T>
+	void Reflector<T>::setInstanceCreator(const InstanceCreatorBase *icb)
+	{
+		type_->set_instance_creator(icb);
+	}
+
+	template<typename T>
+	std::string Reflector<T>::qualifyName(const std::string name) const
+	{
+		std::string s;
+		if (!type_->namespace_.empty())
+		{
+			s.append(type_->namespace_);
+			s.append("::");
+		}
+		if (!type_->name_.empty())
+		{
+			s.append(type_->name_);
+			s.append("::");
+		}
+		s.append(name);
+		return s;
+	}
+
+	template<typename T>
+	CustomAttributeProvider *Reflector<T>::addAttribute(const CustomAttribute *attrib)
+	{
+		return type_->addAttribute(attrib);
+	}
+
+	template<typename T>
+	void Reflector<T>::setReaderWriter(const ReaderWriter *rw)
+	{
+		type_->rw_ = rw;
+	}
+
+}
+
+#endif

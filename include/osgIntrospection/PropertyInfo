@@ -1,0 +1,262 @@
+#ifndef OSGINTROSPECTION_PROPERTYINFO_
+#define OSGINTROSPECTION_PROPERTYINFO_
+
+#include <osgIntrospection/Export>
+#include <osgIntrospection/Type>
+#include <osgIntrospection/MethodInfo>
+#include <osgIntrospection/Attributes>
+
+#include <string>
+#include <typeinfo>
+#include <iosfwd>
+#include <vector>
+
+namespace osgIntrospection
+{
+
+	/// This class keeps information about a class' property. A property is
+	/// defined by a name and a set of methods that store and retrieve
+	/// values. When the user wants to "get" the value of a property, the
+	/// getter method will be invoked and its value returned. When the user
+	/// wants to "set" the value of a property, the setter method will be
+	/// called. There are three kinds of property: simple (get/set), indexed
+	/// (get[i1, i2, ...]/set[i1, i2, ...]), and array (count/add/get[i]/
+	/// set[i]).
+	/// Objects of class PropertyInfo can't be modified once they have been
+	/// created, but they can be queried without restrictions. You can either
+	/// retrieve the accessor methods and invoke them manually, or you can
+	/// call getValue() / setValue() etc. methods to perform direct operations
+	/// on the property, given an instance of the declaring type to work on.
+	/// The latter technique is preferred because it checks for custom 
+	/// attributes associated to the PropertyInfo object and passes control 
+	/// to them when needed.
+	///
+	class OSGINTROSPECTION_EXPORT PropertyInfo: public CustomAttributeProvider
+	{
+	public:
+		/// Direct initialization constructor for simple and indexed
+		/// properties.
+		/// You must pass the Type object associated to the class that
+		/// declares the property, the Type object that describes the
+		/// type of the property's value, the property name and the
+		/// getter/setter methods. Either the setter or the getter can
+		/// be null, meaning a restricted access. If both are null, the
+		/// user is expected to add a custom accessor attribute to this
+		/// PropertyInfo object.
+		/// If the getter method has parameters, the property is considered
+		/// to be indexed. The same is true if the getter is null and the
+		/// setter has more than one parameter.
+		PropertyInfo(const Type &decltype, const Type &ptype, const std::string &name, const MethodInfo *getm, const MethodInfo *setm)
+		:	CustomAttributeProvider(),
+			decltype_(decltype),
+			ptype_(ptype),
+			name_(name),
+			getm_(getm),
+			setm_(setm),
+			numm_(0),
+			addm_(0),
+			is_array_(false)
+		{
+			if (getm_)
+			{
+				for (ParameterInfoList::size_type i=0; i<getm_->getParameters().size(); ++i)
+					indices_.push_back(getm_->getParameters().at(i));
+			}
+			else
+			{
+				if (setm_)
+				{
+					for (ParameterInfoList::size_type i=0; i<(setm_->getParameters().size()-1); ++i)
+						indices_.push_back(setm_->getParameters().at(i));
+				}
+			}
+		}
+
+		/// Direct initialization constructor for "array" properties.
+		/// You must pass the Type object associated to the type that
+		/// declares the property, the Type object that describes the
+		/// type of the property's value, the property name and the
+		/// getter/setter/counter/adder methods.
+		PropertyInfo(const Type &decltype, const Type &ptype, const std::string &name, const MethodInfo *getm, const MethodInfo *setm, const MethodInfo *numm, const MethodInfo *addm)
+		:	CustomAttributeProvider(),
+			decltype_(decltype),
+			ptype_(ptype),
+			name_(name),
+			getm_(getm),
+			setm_(setm),
+			numm_(numm),
+			addm_(addm),
+			is_array_(true)
+		{
+		}
+
+		/// Returns the number of indices
+		inline int getNumIndices() const
+		{
+			return static_cast<int>(getIndexParameters().size());
+		}
+
+		/// Returns the name of the property being described.
+		inline virtual const std::string &getName() const
+		{
+			return name_;
+		}
+
+		/// Returns the type that declares the property.
+		inline virtual const Type &getDeclaringType() const
+		{
+			return decltype_;
+		}
+
+		/// Returns the type of the reflected property.
+		inline const Type &getPropertyType() const
+		{
+			const PropertyTypeAttribute *pta = getAttribute<PropertyTypeAttribute>(false);
+			if (pta) return pta->getPropertyType();
+			return ptype_;
+		}
+
+		/// Returns the getter method.
+		inline const MethodInfo *getGetMethod() const
+		{
+			return getm_;
+		}
+
+		/// Returns the setter method.
+		inline const MethodInfo *getSetMethod() const
+		{
+			return setm_;
+		}
+
+		/// Returns the counter method.
+		inline const MethodInfo *getCountMethod() const
+		{
+			return numm_;
+		}
+
+		/// Returns the adder method.
+		inline const MethodInfo *getAddMethod() const
+		{
+			return addm_;
+		}
+
+		/// Returns whether the property's value can be retrieved.
+		inline bool canGet() const
+		{
+			return (getm_ != 0) || isDefined<CustomPropertyGetAttribute>(false);
+		}
+
+		/// Returns whether the property's value can be set.
+		inline bool canSet() const
+		{
+			return setm_ != 0 || isDefined<CustomPropertySetAttribute>(false);
+		}
+
+		/// Returns whether the property's array of values can be counted.
+		inline bool canCount() const
+		{
+			return numm_ != 0 || isDefined<CustomPropertyCountAttribute>(false);
+		}
+
+		/// Returns whether items can be added to the array property.
+		inline bool canAdd() const
+		{
+			return addm_ != 0 || isDefined<CustomPropertyAddAttribute>(false);
+		}
+
+		/// Returns whether the property is simple.
+		inline bool isSimple() const
+		{
+			return !isIndexed() && !isArray();
+		}
+
+		/// Returns whether the property is indexed.
+		inline bool isIndexed() const
+		{
+			return getNumIndices() > 0;
+		}
+
+		/// Returns whether the property is an array.
+		inline bool isArray() const
+		{
+			return is_array_;
+		}
+
+		/// Returns the list of index parameters.
+		/// If the property is not indexed, this list is empty. If neither
+		/// the get method nor the set method are defined, this list is
+		/// empty unless a custom indexing attribute is defined.
+		const ParameterInfoList &getIndexParameters() const;
+
+		/// Returns a list of valid values that can be used for the specified
+		/// index. If a custom indexing attribute is defined for this property,
+		/// then it will be queried for the index set, otherwise the index
+		/// will be treated as an enumeration and the set of enumeration 
+		/// values will be returned.
+		void getIndexValueSet(int whichindex, const Value &instance, ValueList &values) const;
+
+		/// Invokes the getter method on the given instance and
+		/// returns the property's value. If a custom getter attribute
+		/// is defined, it will be invoked instead.
+		Value getValue(const Value &instance) const;
+
+		/// Invokes the setter method on the given instance and
+		/// sets the property's value. If a custom setter attribute
+		/// is defined, it will be invoked instead.
+		void setValue(Value &instance, const Value &value) const;
+
+		/// Invokes the getter method on the given instance passing a list
+		/// of indices and returns the indexed property's value. If a custom
+		/// getter attribute is defined, it will be invoked instead.
+		Value getIndexedValue(const Value &instance, ValueList &indices) const;
+
+		/// Invokes the setter method on the given instance passing a list
+		/// of indices and sets the indexed property's value. If a custom
+		/// setter attribute is defined, it will be invoked instead.
+		void setIndexedValue(Value &instance, ValueList &indices, const Value &value) const;
+
+		/// Invokes the counter method on the given instance and returns 
+		/// the number of items of the array property. If a custom counter
+		/// attribute is defined, it will be invoked instead.
+		int getNumArrayItems(const Value &instance) const;
+
+		/// Invokes the getter method on the given instance and returns 
+		/// the i-th item of the array property. If a custom getter attribute
+		/// us defined, it will be invoked instead.
+		Value getArrayItem(const Value &instance, int i) const;
+
+		/// Invokes the setter method on the given instance and sets
+		/// the i-th item of the array property. If a custom setter attribute
+		/// is defined, it will be invoked instead.
+		void setArrayItem(Value &instance, int i, const Value &value) const;
+
+		/// Invokes the adder method on the given instance and adds
+		/// an item to the array property. If a custom adder attribute is
+		/// defined, it will be invoked instead.
+		void addArrayItem(Value &instance, const Value &value) const;
+
+		/// Returns the default value associated to the reflected property.
+		/// If no default value has been specified, this method tries to
+		/// create an instance of the property type and then returns its 
+		/// value. There are some attributes that change the behavior of
+		/// this method, for example NoDefaultValueAttribute.
+		Value getDefaultValue() const;
+
+	protected:			
+		virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+
+	private:
+		const Type &decltype_;
+		const Type &ptype_;
+		std::string name_;
+		const MethodInfo *getm_;
+		const MethodInfo *setm_;
+		const MethodInfo *numm_;
+		const MethodInfo *addm_;
+		ParameterInfoList indices_;
+		bool is_array_;
+	};
+
+}
+
+#endif

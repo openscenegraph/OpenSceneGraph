@@ -1,0 +1,126 @@
+#ifndef OSGINTROSPECTION_METHODINFO_
+#define OSGINTROSPECTION_METHODINFO_
+
+#include <osgIntrospection/Export>
+#include <osgIntrospection/CustomAttributeProvider>
+#include <osgIntrospection/Value>
+#include <osgIntrospection/Exceptions>
+#include <osgIntrospection/ParameterInfo>
+
+#include <cstdarg>
+#include <string>
+#include <vector>
+
+namespace osgIntrospection
+{
+
+	class Type;
+
+	/// Class MethodInfo stores information about a class method. It is an
+	/// abstract class, so it must be derived to provide the actual 
+	/// implementation of isConst() and invoke(). Instances of this class
+	/// can't be modified after their creation.
+	class OSGINTROSPECTION_EXPORT MethodInfo: public CustomAttributeProvider
+	{
+	public:
+		/// Direct initialization constructor.
+		inline MethodInfo(const std::string &qname, const Type &decltype, const Type &rtype, const ParameterInfoList &plist);
+
+		/// Returns the Type object associated to the type that
+		/// declares the reflected method.
+		inline virtual const Type &getDeclaringType() const;		
+
+		/// Returns the name of the reflected method.
+		inline virtual const std::string &getName() const;
+
+		/// Returns the return type of the reflected method.
+		inline const Type &getReturnType() const;
+
+		/// Returns a list of objects that describe the reflected
+		/// method's parameters.
+		inline const ParameterInfoList &getParameters() const;
+
+		/// Returns whether the reflected method is const or not.
+		virtual bool isConst() const = 0;
+
+		/// Invokes the reflected method dynamically on the given const
+		/// instance, passing it the arguments as a list of Value objects.
+		virtual Value invoke(const Value &instance, ValueList &args) const = 0;
+
+		/// Invokes the reflected method dynamically on the given instance,
+		/// passing it the arguments as a list of Value objects.
+		virtual Value invoke(Value &instance, ValueList &args) const = 0;
+
+		/// Invokes the reflected method dynamically on the given const
+		/// instance, without arguments.
+		inline Value invoke(const Value &instance) const;
+
+		/// Invokes the reflected method dynamically on the given
+		/// instance, without arguments.
+		inline Value invoke(Value &instance) const;
+
+	private:
+		inline std::string strip_namespace(const std::string &s) const;
+
+		virtual void getInheritedProviders(CustomAttributeProviderList &providers) const;
+
+		std::string name_;
+		const Type &decltype_;
+		const Type &rtype_;		
+		ParameterInfoList params_;
+	};
+
+	// INLINE METHODS
+	
+	inline MethodInfo::MethodInfo(const std::string &qname, const Type &decltype, const Type &rtype, const ParameterInfoList &plist)
+	:	CustomAttributeProvider(),
+		decltype_(decltype), 
+		rtype_(rtype),
+		params_(plist)
+	{
+		name_ = strip_namespace(qname);
+	}
+
+	inline std::string MethodInfo::strip_namespace(const std::string &s) const
+	{
+		std::string::size_type p = s.rfind("::");
+		if (p != std::string::npos)
+			return s.substr(p+2);
+		return s;
+	}
+
+	inline const std::string &MethodInfo::getName() const
+	{
+		return name_;
+	}
+
+	inline const Type &MethodInfo::getDeclaringType() const
+	{
+		return decltype_;
+	}
+
+	inline const Type &MethodInfo::getReturnType() const
+	{
+		return rtype_;
+	}
+
+	inline const ParameterInfoList &MethodInfo::getParameters() const
+	{
+		return params_;
+	}
+
+	inline Value MethodInfo::invoke(const Value &instance) const
+	{
+		ValueList args;
+		return invoke(instance, args);
+	}
+
+	inline Value MethodInfo::invoke(Value &instance) const
+	{
+		ValueList args;
+		return invoke(instance, args);
+	}
+
+}
+
+#endif

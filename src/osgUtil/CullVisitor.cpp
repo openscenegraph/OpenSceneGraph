@@ -169,8 +169,13 @@ void CullVisitor::reset()
 
 void CullVisitor::pushClippingVolume()
 {
-    _modelviewClippingVolumeStack.push_back(_projectionClippingVolumeStack.back());
-    if (!_modelviewStack.empty()) _modelviewClippingVolumeStack.back().transformProvidingInverse(*_modelviewStack.back());
+    _modelviewClippingVolumeStack.push_back(osg::ClippingVolume());
+    osg::ClippingVolume& cv = _modelviewClippingVolumeStack.back();
+    //cv.set(_projectionClippingVolumeStack.back());
+    cv.set(_projectionClippingVolumeStack.back(),_cullingModeStack.back());
+    _cullingModeStack.push_back(cv.getLocalMask() | (_cullingModeStack.back()&SMALL_FEATURE_CULLING));
+
+    if (!_modelviewStack.empty()) cv.transformProvidingInverse(*_modelviewStack.back());
 
     _MVPW_Stack.push_back(0L);
 
@@ -181,7 +186,8 @@ void CullVisitor::popClippingVolume()
 {
     _modelviewClippingVolumeStack.pop_back();
     _MVPW_Stack.pop_back();
-
+    _cullingModeStack.pop_back();
+    
     _windowToModelFactorDirty = true;
 }
 

@@ -46,7 +46,7 @@ class SG_EXPORT ClippingVolume
         /** Create a ClippingVolume with is cube, centered at 0,0,0, with sides of 2 units.*/
         void setToUnitFrustum()
         {
-            _planeList.clear();
+            _planeList.erase(_planeList.begin(),_planeList.end());
             _planeList.push_back(Plane(1.0f,0.0f,0.0f,1.0f)); // left plane.
             _planeList.push_back(Plane(-1.0f,0.0f,0.0f,1.0f)); // right plane.
             _planeList.push_back(Plane(0.0f,1.0f,0.0f,1.0f)); // bottom plane.
@@ -58,7 +58,7 @@ class SG_EXPORT ClippingVolume
 
         void setToUnitFrustumWithoutNearFar()
         {
-            _planeList.clear();
+            _planeList.erase(_planeList.begin(),_planeList.end());
             _planeList.push_back(Plane(1.0f,0.0f,0.0f,1.0f)); // left plane.
             _planeList.push_back(Plane(-1.0f,0.0f,0.0f,1.0f)); // right plane.
             _planeList.push_back(Plane(0.0f,1.0f,0.0f,1.0f)); // bottom plane.
@@ -68,6 +68,7 @@ class SG_EXPORT ClippingVolume
 
         inline void set(const ClippingVolume& cs, const unsigned int mask)
         {
+            _planeList.erase(_planeList.begin(),_planeList.end());
             unsigned int selector_mask = 0x1;
             for(PlaneList::const_iterator itr=cs._planeList.begin();
                 itr!=cs._planeList.end();
@@ -97,6 +98,8 @@ class SG_EXPORT ClippingVolume
                 _localMask = (_localMask<<1) | 1;
             }
         }
+        
+        unsigned int getLocalMask() const { return _localMask; }
 
 
         /** Check whether a vertex is contained with clipping set.*/

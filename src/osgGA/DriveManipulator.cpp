@@ -24,6 +24,11 @@ using namespace osgGA;
 
 #define DRIVER_HEIGHT 15
 
+
+// #define ABOSULTE_PITCH 1
+// #define INCREMENTAL_PITCH 1
+#define KEYBOARD_PITCH 1
+
 static float getHeightOfDriver()
 {
     float height = 1.5f;
@@ -41,8 +46,13 @@ DriveManipulator::DriveManipulator()
     _velocity = 0.0f;
     _height = getHeightOfDriver();
     _buffer = _height*1.3;
+    _pitch = 0.0;
     //_speedMode = USE_MOUSE_Y_FOR_SPEED;
     _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
+
+    _pitchUpKeyPressed = false;
+    _pitchDownKeyPressed = false;
+
 }
 
 
@@ -183,6 +193,8 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     computePosition(_homeEye, _homeCenter, _homeUp);
     
     _velocity = 0.0;
+    
+    _pitch = 0.0;
 
     us.requestRedraw();
 
@@ -345,8 +357,43 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
                 return true;
             }
+#ifdef KEYBOARD_PITCH
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up)
+            {
+                _pitchUpKeyPressed = true;
+                return true;
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Down)
+            {
+                _pitchDownKeyPressed = true;
+                return true;
+            }
+#endif
             return false;
         }
+
+        case(GUIEventAdapter::KEYUP):
+        {
+#ifdef KEYBOARD_PITCH
+            if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Up ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Up)
+            {
+                _pitchUpKeyPressed = false;
+                return true;
+            }
+            else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Down ||
+                     ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Down)
+            {
+                _pitchDownKeyPressed = false;
+                return true;
+            }
+#endif
+            return false;
+        }
+
+        _pitchDownKeyPressed = false;
 
         case(GUIEventAdapter::FRAME):
         {
@@ -372,6 +419,8 @@ void DriveManipulator::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("Drive: Space","Reset the viewing position to home");
     usage.addKeyboardMouseBinding("Drive: q","Use mouse y for controlling speed");
     usage.addKeyboardMouseBinding("Drive: a","Use mouse middle,right mouse buttons for speed");
+    usage.addKeyboardMouseBinding("Drive: Down","Cursor down key to look downwards");
+    usage.addKeyboardMouseBinding("Drive: Up","Cursor up key to look upwards");
 }
 
 
@@ -396,12 +445,12 @@ void DriveManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 osg::Matrixd DriveManipulator::getMatrix() const
 {
-    return osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_eye);
+    return osg::Matrixd::rotate(_pitch,1.0,0.0,0.0)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_eye);
 }
 
 osg::Matrixd DriveManipulator::getInverseMatrix() const
 {
-    return osg::Matrixd::translate(-_eye)*osg::Matrixd::rotate(_rotation.inverse());
+    return osg::Matrixd::translate(-_eye)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::rotate(-_pitch,1.0,0.0,0.0);
 }
 
 void DriveManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
@@ -481,18 +530,38 @@ bool DriveManipulator::calcMovement()
     
     osg::Vec3d up = osg::Vec3d(0.0,1.0,0.0) * rotation_matrix;
     osg::Vec3d lv = osg::Vec3d(0.0,0.0,-1.0) * rotation_matrix;
+    osg::Vec3d sv = osg::Vec3d(1.0,0.0,0.0) * rotation_matrix;
 
     // rotate the camera.
     double dx = _ga_t0->getXnormalized();
 
     double yaw = -inDegrees(dx*50.0f*dt);
 
+    
+#ifdef KEYBOARD_PITCH
+    double pitch_delta = 0.5;
+    if (_pitchUpKeyPressed) _pitch += pitch_delta*dt;
+    if (_pitchDownKeyPressed) _pitch -= pitch_delta*dt;
+#endif
+
+#if defined(ABOSULTE_PITCH)
+    // abosolute pitch
+    double dy = _ga_t0->getYnormalized();
+    _pitch = -dy*0.5;
+#elif defined(INCREMENTAL_PITCH)
+    // incremental pitch
+    double dy = _ga_t0->getYnormalized();
+    _pitch += dy*dt;
+#endif
+    
     osg::Quat yaw_rotation;
     yaw_rotation.makeRotate(yaw,up);
-
+    
     _rotation *= yaw_rotation;
+    
     rotation_matrix.makeRotate(_rotation);
-    osg::Vec3d sv = osg::Vec3d(1.0,0.0,0.0) * rotation_matrix;
+
+    sv = osg::Vec3d(1.0,0.0,0.0) * rotation_matrix;
 
     // movement is big enough the move the eye point along the look vector.
     if (fabs(_velocity*dt)>1e-8)

@@ -44,6 +44,7 @@
 
 #include "LightPointNode.h"
 #include "MultiSwitch.h"
+#include "VisibilityGroup.h"
 
 #include "Geometry.h"
 
@@ -681,6 +682,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEOCCLUDERNODE){
         node = new osg::OccluderNode();
         ((ive::OccluderNode*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEVISIBILITYGROUP){
+        node = new osgSim::VisibilityGroup();
+        ((ive::VisibilityGroup*)(node))->read(this);
     }
     else if(nodeTypeID== IVEGROUP){
         node = new osg::Group();

@@ -320,6 +320,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.cpp
 
 SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\VisibilityGroup.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -555,6 +559,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\VisibilityGroup.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

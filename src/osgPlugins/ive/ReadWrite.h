@@ -76,6 +76,7 @@ namespace ive {
 #define IVELIGHTPOINTNODE				0x00100007
 #define IVEMULTISWITCH				        0x00100008
 
+#define IVEVISIBILITYGROUP			    0x00100009
 
 class ReadWrite{
 

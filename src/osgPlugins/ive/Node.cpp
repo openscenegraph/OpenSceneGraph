@@ -55,7 +55,6 @@ void Node::write(DataOutputStream* out){
     if(getStateSet())
         out->writeStateSet(getStateSet());
 
-
     // Write UpdateCallback if any
     osg::AnimationPathCallback* nc = dynamic_cast<osg::AnimationPathCallback*>(getUpdateCallback());
     out->writeBool(nc!=0);
@@ -63,6 +62,9 @@ void Node::write(DataOutputStream* out){
         {
         ((ive::AnimationPathCallback*)(nc))->write(out);
     }
+
+	// Write NodeMask
+	out->writeUInt(getNodeMask());
 }
 
 
@@ -100,6 +102,8 @@ void Node::read(DataInputStream* in){
             ((ive::AnimationPathCallback*)(nc))->read(in);
             setUpdateCallback(nc);
         }
+		// Read NodeMask
+		setNodeMask(in->readUInt());
     }
     else{
         throw Exception("Node::read(): Expected Node identification");

@@ -100,6 +100,10 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         const osg::NodeVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
         
 
+        void setCoordindateSystemNodePath(const osg::NodePath& nodePath) { _coordinateSystemNodePath = nodePath; }
+        
+        const osg::NodePath& getCoordindateSystemNodePath() { return _coordinateSystemNodePath; }
+
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
 
@@ -178,6 +182,8 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> _keyswitchManipulator;
 
         osg::ref_ptr<osg::NodeVisitor>      _updateVisitor;
+
+        osg::NodePath                       _coordinateSystemNodePath;
 
         bool                                _recordingAnimationPath;
         double                              _recordingStartTime;

@@ -129,7 +129,7 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
 
         bool                    _thrown;
         
-        osg::CoordinateFrame    _coordinateFrame;        
+        double                  _center[3];
         osg::Quat               _rotation;
         float                   _distance;
 

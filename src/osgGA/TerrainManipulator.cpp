@@ -214,7 +214,8 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
     osg::Vec3 start_segment = eye;
     osg::Vec3 end_segment = eye + lookVector*distance;
 
-    osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(_coordinateFrame)<<std::endl;
+    //CoordinateFrame coordinateFrame = getCoordinateFrame(_center.x(), _center.y(), _center.z());
+    //osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
 
     osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
     segLookVector->set(start_segment,end_segment);
@@ -230,13 +231,16 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
         {
             notify(INFO) << "Hit terrain ok"<< std::endl;
             osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-            _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
+
+            _center[0] = ip.x();
+            _center[1] = ip.y();
+            _center[2] = ip.z();
 
             _distance = (eye-ip).length();
             
             osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
                                           matrix*
-                                          osg::Matrixd::inverse(_coordinateFrame);
+                                          osg::Matrixd::translate(-_center[0],-_center[1],-_center[2]);
 
             rotation_matrix.get(_rotation);
 
@@ -267,7 +271,9 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
                 notify(INFO) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
 
-                _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
+                _center[0] = ip.x();
+                _center[1] = ip.y();
+                _center[2] = ip.z();
 
                 _distance = (eye-ip).length();
 
@@ -284,12 +290,12 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 osg::Matrixd TerrainManipulator::getMatrix() const
 {
-    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*_coordinateFrame;
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(_center[0],_center[1],_center[2]);
 }
 
 osg::Matrixd TerrainManipulator::getInverseMatrix() const
 {
-    return osg::Matrixd::inverse(_coordinateFrame)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    return osg::Matrix::translate(-_center[0],-_center[1],-_center[2])*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up)
@@ -317,7 +323,9 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
             osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
             osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
-            _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
+            _center[0] = ip.x();
+            _center[1] = ip.y();
+            _center[2] = ip.z();
             _distance = (ip-eye).length();
             
             hitFound = true;
@@ -327,14 +335,16 @@ void TerrainManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& c
     if (!hitFound)
     {
         // ??
-        _coordinateFrame = getCoordinateFrame( center.x(), center.y(), center.z());
+        _center[0] = center.x();
+        _center[1] = center.y();
+        _center[2] = center.z();
     }
 
 
     // note LookAt = inv(CF)*inv(RM)*inv(T) which is equivilant to:
     // inv(R) = CF*LookAt.
 
-    osg::Matrixd rotation_matrix = _coordinateFrame*osg::Matrixd::lookAt(eye,center,up);
+    osg::Matrixd rotation_matrix = osg::Matrixd::lookAt(eye,center,up);
 
     rotation_matrix.get(_rotation);
     _rotation = _rotation.inverse();
@@ -387,9 +397,13 @@ bool TerrainManipulator::calcMovement()
             osg::Vec3 lookVector = -getUpVector(rotation_matrix);
             osg::Vec3 sideVector = getSideVector(rotation_matrix);
             osg::Vec3 upVector = getFrontVector(rotation_matrix);
+            
+            CoordinateFrame coordinateFrame = getCoordinateFrame(_center[0], _center[1], _center[2]);
+            osg::Vec3 localUp = getUpVector(coordinateFrame);
+            
 
-            osg::Vec3 forwardVector =osg::Vec3(0.0f,0.0f,1.0f)^sideVector;
-            sideVector = forwardVector^osg::Vec3(0.0f,0.0f,1.0f);
+            osg::Vec3 forwardVector = localUp^sideVector;
+            sideVector = forwardVector^localUp;
 
             forwardVector.normalize();
             sideVector.normalize();
@@ -398,7 +412,7 @@ bool TerrainManipulator::calcMovement()
             rotate_elevation.makeRotate(dy,sideVector);
 
             osg::Quat rotate_azim;
-            rotate_azim.makeRotate(-dx,osg::Vec3(0.0f,0.0f,1.0f));
+            rotate_azim.makeRotate(-dx,localUp);
             
             _rotation = _rotation * rotate_elevation * rotate_azim;
         }
@@ -422,30 +436,35 @@ bool TerrainManipulator::calcMovement()
         osg::Vec3 sideVector = getSideVector(rotation_matrix);
         osg::Vec3 upVector = getFrontVector(rotation_matrix);
 
-        osg::Vec3 forwardVector =osg::Vec3(0.0f,0.0f,1.0f)^sideVector;
-        sideVector = forwardVector^osg::Vec3(0.0f,0.0f,1.0f);
+        CoordinateFrame coordinateFrame = getCoordinateFrame(_center[0], _center[1], _center[2]);
+        osg::Vec3 localUp = getUpVector(coordinateFrame);
+
+        osg::Vec3 forwardVector =localUp^sideVector;
+        sideVector = forwardVector^localUp;
 
         forwardVector.normalize();
         sideVector.normalize();
 
         osg::Vec3 dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
 
-        _coordinateFrame = osg::Matrixd::translate(dv)*_coordinateFrame;
+        _center[0] += dv.x();
+        _center[1] += dv.y();
+        _center[2] += dv.z();
 
         // need to recompute the itersection point along the look vector.
         
         // now reorientate the coordinate frame to the frame coords.
-        _coordinateFrame = getCoordinateFrame( _coordinateFrame(3,0), _coordinateFrame(3,1), _coordinateFrame(3,2) );
+        coordinateFrame =  getCoordinateFrame(_center[0], _center[1], _center[2]);
 
         // need to reintersect with the terrain
         osgUtil::IntersectVisitor iv;
 
         float distance = _node->getBound().radius();
-        osg::Vec3 start_segment = _coordinateFrame.getTrans() + getUpVector(_coordinateFrame) * distance;
-        osg::Vec3 end_segment = start_segment - getUpVector(_coordinateFrame) * (2.0f*distance);
+        osg::Vec3 start_segment = osg::Vec3(_center[0],_center[1],_center[2]) + getUpVector(coordinateFrame) * distance;
+        osg::Vec3 end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
         //end_segment.set(0.0f,0.0f,0.0f);
 
-        osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(_coordinateFrame)<<std::endl;
+        osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
 
         osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
         segLookVector->set(start_segment,end_segment);
@@ -461,7 +480,9 @@ bool TerrainManipulator::calcMovement()
             {
                 notify(INFO) << "Hit terrain ok"<< std::endl;
                 osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-                _coordinateFrame = getCoordinateFrame( ip.x(), ip.y(), ip.z());
+                _center[0] = ip.x();
+                _center[1] = ip.y();
+                _center[2] = ip.z();
 
                 hitFound = true;
             }
@@ -473,6 +494,15 @@ bool TerrainManipulator::calcMovement()
             osg::notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
         }
         
+        coordinateFrame = getCoordinateFrame(_center[0], _center[1], _center[2]);
+        osg::Vec3 new_localUp = getUpVector(coordinateFrame);
+        
+        osg::Quat pan_rotation;
+        pan_rotation.makeRotate(localUp,new_localUp);
+        _rotation = _rotation * pan_rotation;
+
+        // clampOrientation();
+
         return true;
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
@@ -506,13 +536,16 @@ void TerrainManipulator::clampOrientation()
         osg::Vec3 lookVector = -getUpVector(rotation_matrix);
         osg::Vec3 upVector = getFrontVector(rotation_matrix);
 
-        osg::Vec3 sideVector = lookVector ^ osg::Vec3(0.0f,0.0f,1.0f);
+        CoordinateFrame coordinateFrame = getCoordinateFrame(_center[0],_center[1],_center[2]);
+        osg::Vec3 localUp = getUpVector(coordinateFrame);
+
+        osg::Vec3 sideVector = lookVector ^ localUp;
 
         if (sideVector.length()<0.1)
         {
             osg::notify(osg::NOTICE)<<"Side vector short "<<sideVector.length()<<std::endl;
 
-            sideVector = upVector^osg::Vec3(0.0f,0.0f,1.0f);
+            sideVector = upVector^localUp;
             sideVector.normalize();
         
         }

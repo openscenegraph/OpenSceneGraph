@@ -1039,10 +1039,10 @@ void DataSet::DestinationTile::computeNeighboursFromQuadMap()
 {
     if (_dataSet)
     {
-        setNeighbours(_dataSet->getTile(_level,_X-1,_Y),_dataSet->getTile(_level,_X-1,_Y-1),
-                      _dataSet->getTile(_level,_X,_Y-1),_dataSet->getTile(_level,_X+1,_Y-1),
-                      _dataSet->getTile(_level,_X+1,_Y),_dataSet->getTile(_level,_X+1,_Y+1),
-                      _dataSet->getTile(_level,_X,_Y+1),_dataSet->getTile(_level,_X-1,_Y+1));
+        setNeighbours(_dataSet->getTile(_level,_tileX-1,_tileY),_dataSet->getTile(_level,_tileX-1,_tileY-1),
+                      _dataSet->getTile(_level,_tileX,_tileY-1),_dataSet->getTile(_level,_tileX+1,_tileY-1),
+                      _dataSet->getTile(_level,_tileX+1,_tileY),_dataSet->getTile(_level,_tileX+1,_tileY+1),
+                      _dataSet->getTile(_level,_tileX,_tileY+1),_dataSet->getTile(_level,_tileX-1,_tileY+1));
     }
 }
 
@@ -1846,8 +1846,8 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(osgTerrain::Coord
     tile->_cs = cs;
     tile->_extents = extents;
     tile->_level = currentLevel;
-    tile->_X = currentX;
-    tile->_Y = currentY;
+    tile->_tileX = currentX;
+    tile->_tileY = currentY;
     tile->setMaximumImagerySize(maxImageSize,maxImageSize);
     tile->setMaximumTerrainSize(maxTerrainSize,maxTerrainSize);
     tile->computeMaximumSourceResolution(_sourceGraph.get());

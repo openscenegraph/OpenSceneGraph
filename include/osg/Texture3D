@@ -120,14 +120,25 @@ class SG_EXPORT Texture3D : public Texture
                 
                 void setupGLExtenions();
 
+                void setTexture3DSupported(bool flag) { _isTexture3DSupported=flag; }
                 bool isTexture3DSupported() const { return _isTexture3DSupported; }
+                
+                void setTexture3DFast(bool flag) { _isTexture3DFast=flag; }
                 bool isTexture3DFast() const { return _isTexture3DFast; }
 
+                void setMaxTexture3DSize(GLint maxsize) { _maxTexture3DSize=maxsize; }
                 GLint maxTexture3DSize() const { return _maxTexture3DSize; }
 
+                void setTexImage3DProc(void* ptr) { _glTexImage3D = ptr; }
                 void glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const;
+
+                void setTexSubImage3DProc(void* ptr) { _glTexSubImage3D = ptr; }
                 void glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels) const;
+                
+                void setCopyTexSubImage3DProc(void* ptr) { _glCopyTexSubImage3D = ptr; }
                 void glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const;
+                
+                void setBuild3DMipmapsProc(void* ptr) { _gluBuild3DMipmaps = ptr; }
                 void gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data) const;
 
             protected:
@@ -151,7 +162,7 @@ class SG_EXPORT Texture3D : public Texture
           * If 'createIfNotInitalized' is true then the Extensions object is 
           * automatically created.  However, in this case the extension object 
           * only be created with the graphics context associated with ContextID..*/
-        static const Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** setExtensions allows users to override the extensions across graphics contexts.
           * typically used when you have different extensions supported across graphics pipes

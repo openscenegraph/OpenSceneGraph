@@ -123,6 +123,7 @@ class SG_EXPORT TextureCubeMap : public Texture
                 
                 void setupGLExtenions();
 
+                void setCubeMapSupported(bool flag) { _isCubeMapSupported=flag; }
                 bool isCubeMapSupported() const { return _isCubeMapSupported; }
 
             protected:
@@ -139,7 +140,7 @@ class SG_EXPORT TextureCubeMap : public Texture
           * If 'createIfNotInitalized' is true then the Extensions object is 
           * automatically created.  However, in this case the extension object 
           * only be created with the graphics context associated with ContextID..*/
-        static const Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** setExtensions allows users to override the extensions across graphics contexts.
           * typically used when you have different extensions supported across graphics pipes

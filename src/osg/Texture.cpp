@@ -831,7 +831,7 @@ void Texture::compile(State& state) const
 typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-const Texture::Extensions* Texture::getExtensions(unsigned int contextID,bool createIfNotInitalized)
+Texture::Extensions* Texture::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
     return s_extensions[contextID].get();

@@ -516,9 +516,27 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 
+
     // create the windows and run the threads.
     viewer.realize();
 
+#if 0
+    // this optional compile block is done as a test against graphics
+    // drivers that claim support for generate mip map, but the actual
+    // implementation is flacky.  It is not compiled by default.
+
+    // go through each graphics context and switch off the generate mip map extension.
+    // note, this must be done after the realize so that init of texture state and as 
+    // result extension structures have been iniatilized.
+    for(unsigned int contextID = 0; 
+        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
+        ++contextID)
+    {
+        osg::Texture::Extensions* textureExt = osg::Texture::getExtensions(contextID,false);
+        if (textureExt) textureExt->setGenerateMipMapSupported(false);
+    }
+#endif
+    
     while( !viewer.done() )
     {
         // wait for all cull and draw threads to complete.

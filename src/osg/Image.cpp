@@ -172,24 +172,37 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
 
 unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 {
-    
-    if(format & 0x80F0)  /*  DXT* compressed formats */
+
+    switch(format)
     {
-        switch(format)
-        {
-            case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
+        default: break;
+    }
 
-            case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
-
-            case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
-
-            case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
-            default: 
-                {
-                    notify(WARN)<<"error format = "<<format<<std::endl;
-                    return 0;
-                }
-        }
+    // note, haven't yet added proper handling of the ARB GL_COMPRESSRED_* pathways
+    // yet, no clear size for these since its probably implementation dependent
+    // which raises the question of how to actually querry for these sizes...
+    // will need to revisit this issue, for now just report an error.
+    // this is possible a bit of mute point though as since the ARB compressed formats
+    // arn't yet used for storing images to disk, so its likely that users wont have
+    // osg::Image's for pixel formats set the ARB compressed formats, just using these
+    // compressed formats as internal texture modes.  This is very much speculation though
+    // if get the below error then its time to revist this issue :-)
+    // Robert Osfield, Jan 2005.
+    switch(format)
+    {
+        case(GL_COMPRESSED_ALPHA):
+        case(GL_COMPRESSED_LUMINANCE):
+        case(GL_COMPRESSED_LUMINANCE_ALPHA):
+        case(GL_COMPRESSED_INTENSITY):
+        case(GL_COMPRESSED_RGB):
+        case(GL_COMPRESSED_RGBA):
+            notify(WARN)<<"Image::computePixelSizeInBits(format,type) : cannot compute correct size of compressed format ("<<format<<") returning 0."<<std::endl;
+            return 0;
+        default: break;
     }
 
     switch(type)
@@ -281,14 +294,17 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
    if (t==0) t=1;
    if (r==0) r=1;
    
-   unsigned int sizeOfLastMipMap;
-   if(_pixelFormat & 0x80F0)
+   unsigned int sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)* r*t;
+   switch(_pixelFormat)
    {
-       unsigned int blockSize = (_pixelFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
-       sizeOfLastMipMap = maximum(computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)* r*t, blockSize);
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+           sizeOfLastMipMap = maximum(sizeOfLastMipMap, 8u); // block size of 8
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+           sizeOfLastMipMap = maximum(sizeOfLastMipMap, 16u); // block size of 16
+        default: break;
    }
-   else
-       sizeOfLastMipMap = computeRowWidthInBytes(s,_pixelFormat,_dataType,_packing)* r*t;
 
    // notify(INFO)<<"sizeOfLastMipMap="<<sizeOfLastMipMap<<"\ts="<<s<<"\tt="<<t<<"\tr"<<r<<std::endl;                  
 

@@ -78,17 +78,17 @@ void Output::moveOut()
 std::string Output::wrapString(const std::string& str)
 {
     std::string newstring;
-    newstring.push_back('"');
+    newstring += '"';
     for(unsigned int i=0;i<str.size();++i)
     {
     	if (str[i]=='"')
 	{
-	    newstring.push_back('\\');
-	    newstring.push_back('"');
+	    newstring += '\\';
+	    newstring += '"';
 	}
-	else newstring.push_back(str[i]);
+	else newstring += (str[i]);
     }
-    newstring.push_back('"');
+    newstring += '"';
     return newstring;
 }
 

@@ -13,6 +13,7 @@ CXXFILES =\
 	BoundingSphere.cpp\
 	BlendColor.cpp\
 	BlendFunc.cpp\
+	BlendEquation.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\
 	ColorMask.cpp\

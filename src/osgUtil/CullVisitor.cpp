@@ -715,8 +715,10 @@ void CullVisitor::apply(osg::OccluderNode& node)
 {
     // need to check if occlusion node is in the occluder
     // list, if so disable the appropriate ShadowOccluderVolume
+    _modelviewCullingStack.back()->disableOccluder(_nodePath);
     
     std::cout<<"We are in an Occlusion node"<<&node<<std::endl;
+
 
     if (isCulled(node)) return;
 

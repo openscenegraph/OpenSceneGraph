@@ -2,7 +2,7 @@
 #include <string>
 
 osg::NotifySeverity osg::g_NotifyLevel = osg::NOTICE;
-ofstream *osg::g_NotifyNulStream; 
+std::ofstream *osg::g_NotifyNulStream; 
 bool osg::g_NotifyInit = false;
 
 void osg::setNotifyLevel(osg::NotifySeverity severity)
@@ -27,9 +27,9 @@ bool osg::initNotifyLevel()
 
     // set up global notify null stream for inline notify
 #ifdef WIN32
-    g_NotifyNulStream = new ofstream ("nul");
+    g_NotifyNulStream = new std::ofstream ("nul");
 #else
-    g_NotifyNulStream = new ofstream ("/dev/null");
+    g_NotifyNulStream = new std::ofstream ("/dev/null");
 #endif
 
     // g_NotifyLevel

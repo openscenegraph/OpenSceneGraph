@@ -84,11 +84,11 @@ bool Fog_writeLocalData(const Object& obj,Output& fw)
 {
     const Fog& fog = static_cast<const Fog&>(obj);
 
-    fw.indent() << "mode " << Fog_getModeStr(fog.getMode()) << endl;
-    fw.indent() << "density " << fog.getDensity() << endl;
-    fw.indent() << "start " << fog.getStart() << endl;
-    fw.indent() << "end " << fog.getEnd() << endl;
-    fw.indent() << "color " << fog.getColor() << endl;
+    fw.indent() << "mode " << Fog_getModeStr(fog.getMode()) << std::endl;
+    fw.indent() << "density " << fog.getDensity() << std::endl;
+    fw.indent() << "start " << fog.getStart() << std::endl;
+    fw.indent() << "end " << fog.getEnd() << std::endl;
+    fw.indent() << "color " << fog.getColor() << std::endl;
     return true;
 }
 

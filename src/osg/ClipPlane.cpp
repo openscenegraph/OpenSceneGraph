@@ -44,7 +44,7 @@ void ClipPlane::setClipPlane(const double* plane)
     }
     else
     {
-        notify(WARN)<<"Warning: ClipPlane::setClipPlane() passed NULL plane array, ignoring operation."<<endl;
+        notify(WARN)<<"Warning: ClipPlane::setClipPlane() passed NULL plane array, ignoring operation."<<std::endl;
     }
 }
 

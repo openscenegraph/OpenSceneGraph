@@ -78,7 +78,7 @@ class OSGGLUT_EXPORT Viewer : public osgUtil::GUIActionAdapter
         double frameSeconds() { return _timer.delta_s(_lastFrameTick,_frameTick); }
         double frameRate() { return 1.0/frameSeconds(); }
 
-        void help(ostream& fout);
+        void help(std::ostream& fout);
 
         // handle multiple camera.
         unsigned int registerCameraManipulator(osgUtil::CameraManipulator* cm,

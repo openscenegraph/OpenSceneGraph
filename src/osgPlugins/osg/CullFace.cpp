@@ -61,9 +61,9 @@ bool CullFace_writeLocalData(const Object& obj, Output& fw)
 
     switch(cullface.getMode())
     {
-        case(CullFace::FRONT):          fw.indent() << "mode FRONT" << endl; break;
-        case(CullFace::BACK):           fw.indent() << "mode BACK" << endl; break;
-        case(CullFace::FRONT_AND_BACK): fw.indent() << "mode FRONT_AND_BACK" << endl; break;
+        case(CullFace::FRONT):          fw.indent() << "mode FRONT" <<std::endl; break;
+        case(CullFace::BACK):           fw.indent() << "mode BACK" <<std::endl; break;
+        case(CullFace::FRONT_AND_BACK): fw.indent() << "mode FRONT_AND_BACK" <<std::endl; break;
     }
     return true;
 }

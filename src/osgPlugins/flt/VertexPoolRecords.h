@@ -85,7 +85,7 @@ class VertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SVertex* getData() const { return (SVertex*)_pData; }
-        friend ostream& operator << (ostream& output, const VertexRecord& rec);
+        friend std::ostream& operator << (std::ostream& output, const VertexRecord& rec);
 
     protected:
         virtual ~VertexRecord();
@@ -129,7 +129,7 @@ class NormalVertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SNormalVertex* getData() const { return (SNormalVertex*)_pData; }
-        friend ostream& operator << (ostream& output, const NormalVertexRecord& rec);
+        friend std::ostream& operator << (std::ostream& output, const NormalVertexRecord& rec);
 
     protected:
         virtual ~NormalVertexRecord();
@@ -172,7 +172,7 @@ class TextureVertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual STextureVertex* getData() const { return (STextureVertex*)_pData; }
-        friend ostream& operator << (ostream& output, const TextureVertexRecord& rec);
+        friend std::ostream& operator << (std::ostream& output, const TextureVertexRecord& rec);
 
     protected:
         virtual ~TextureVertexRecord();
@@ -216,7 +216,7 @@ class NormalTextureVertexRecord : public AncillaryRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SNormalTextureVertex* getData() const { return (SNormalTextureVertex*)_pData; }
-        friend ostream& operator << (ostream& output, const NormalTextureVertexRecord& rec);
+        friend std::ostream& operator << (std::ostream& output, const NormalTextureVertexRecord& rec);
 
     protected:
         virtual ~NormalTextureVertexRecord();

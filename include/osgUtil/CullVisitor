@@ -314,7 +314,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
                    _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
             {
-                osg::notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<<endl;
+                osg::notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
                 ++_currentReuseMatrixIndex;
             }
 
@@ -344,7 +344,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             while (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size() && 
                    _reuseRenderLeafList[_currentReuseRenderLeafIndex]->referenceCount()>1)
             {
-                osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<<endl;
+                osg::notify(osg::NOTICE)<<"Warning:createOrReuseRenderLeaf() skipping multiply refrenced entry."<< std::endl;
                 ++_currentReuseRenderLeafIndex;
             }
 

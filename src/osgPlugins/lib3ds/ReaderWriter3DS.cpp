@@ -91,7 +91,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
 
         if (materialFaceMap.empty())
         {
-            osg::notify(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<<endl;
+            osg::notify(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
         }
         else
         {
@@ -164,28 +164,28 @@ osg::Texture*  ReaderWriter3DS::createTexture(Lib3dsTextureMap *texture,const ch
         std::string fileName = osgDB::findFileInDirectory(texture->name,_directory,true);
         if (fileName.empty())
         {
-            osg::notify(osg::WARN) << "texture '"<<texture->name<<"' not found"<<endl;
+            osg::notify(osg::WARN) << "texture '"<<texture->name<<"' not found"<< std::endl;
             return NULL;
         }
 
         if (label) osg::notify(osg::DEBUG_INFO) << label;
         else osg::notify(osg::DEBUG_INFO) << "texture name";
-        osg::notify(osg::DEBUG_INFO) << " '"<<texture->name<<"'"<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    texture flag        "<<texture->flags<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_DECALE       "<<((texture->flags)&LIB3DS_DECALE)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_MIRROR       "<<((texture->flags)&LIB3DS_MIRROR)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_NEGATE       "<<((texture->flags)&LIB3DS_NEGATE)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_NO_TILE      "<<((texture->flags)&LIB3DS_NO_TILE)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_SUMMED_AREA  "<<((texture->flags)&LIB3DS_SUMMED_AREA)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_ALPHA_SOURCE "<<((texture->flags)&LIB3DS_ALPHA_SOURCE)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TINT         "<<((texture->flags)&LIB3DS_TINT)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_IGNORE_ALPHA)<<endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_RGB_TINT     "<<((texture->flags)&LIB3DS_RGB_TINT)<<endl;
+        osg::notify(osg::DEBUG_INFO) << " '"<<texture->name<<"'"<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    texture flag        "<<texture->flags<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_DECALE       "<<((texture->flags)&LIB3DS_DECALE)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_MIRROR       "<<((texture->flags)&LIB3DS_MIRROR)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_NEGATE       "<<((texture->flags)&LIB3DS_NEGATE)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_NO_TILE      "<<((texture->flags)&LIB3DS_NO_TILE)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_SUMMED_AREA  "<<((texture->flags)&LIB3DS_SUMMED_AREA)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_ALPHA_SOURCE "<<((texture->flags)&LIB3DS_ALPHA_SOURCE)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TINT         "<<((texture->flags)&LIB3DS_TINT)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_IGNORE_ALPHA)<< std::endl;
+        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_RGB_TINT     "<<((texture->flags)&LIB3DS_RGB_TINT)<< std::endl;
 
         osg::Image* osg_image = osgDB::readImageFile(fileName.c_str());
         if (osg_image==NULL)
         {
-            osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<<endl;
+            osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<< std::endl;
             return NULL;
         }
 
@@ -335,7 +335,7 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList)
         }
         else
         {
-            osg::notify(osg::WARN)<<"Warning: in 3ds loader m->texels ("<<m->texels<<") != m->points ("<<m->points<<")"<<endl;
+            osg::notify(osg::WARN)<<"Warning: in 3ds loader m->texels ("<<m->texels<<") != m->points ("<<m->points<<")"<< std::endl;
         }
     }
 

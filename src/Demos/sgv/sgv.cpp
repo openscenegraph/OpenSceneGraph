@@ -71,7 +71,7 @@ osg::Node* getNodeFromFiles(int argc,char **argv)
 
     if (nodeList.size()==0)
     {
-        osg::notify(osg::WARN) << "No data loaded."<<endl;
+        osg::notify(osg::WARN) << "No data loaded."<< std::endl;
         exit(0);
     }
 
@@ -108,20 +108,20 @@ int main( int argc, char **argv )
 
     if (argc<2)
     {
-        osg::notify(osg::NOTICE)<<"usage:"<<endl;
-        osg::notify(osg::NOTICE)<<"    sgv [options] infile1 [infile2 ...]"<<endl;
-        osg::notify(osg::NOTICE)<<endl;
-        osg::notify(osg::NOTICE)<<"options:"<<endl;
-        osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<<endl;
-        osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<<endl;
-        osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<<endl;
-        osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<<endl;
-        osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<<endl;
-        osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<<endl;
-        osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<<endl;
-        osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<endl;
-        osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<endl;
-        osg::notify(osg::NOTICE)<<endl;
+        osg::notify(osg::NOTICE)<<"usage:"<< std::endl;
+        osg::notify(osg::NOTICE)<<"    sgv [options] infile1 [infile2 ...]"<< std::endl;
+        osg::notify(osg::NOTICE)<< std::endl;
+        osg::notify(osg::NOTICE)<<"options:"<< std::endl;
+        osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<< std::endl;
+        osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<< std::endl;
+        osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<< std::endl;
+        osg::notify(osg::NOTICE)<< std::endl;
 
         return 0;
     }
@@ -138,7 +138,7 @@ int main( int argc, char **argv )
     osg::Node* rootnode = getNodeFromFiles( argc, argv);
     
     osg::Timer_t after_load = timer.tick();
-    cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<endl;
+	std::cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<< std::endl;
 
 
     // run optimization over the scene graph

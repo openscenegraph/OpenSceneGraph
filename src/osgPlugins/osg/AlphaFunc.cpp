@@ -54,8 +54,8 @@ bool AlphaFunc_writeLocalData(const Object& obj,Output& fw)
 {
     const AlphaFunc& alphaFunc = static_cast<const AlphaFunc&>(obj);
 
-    fw.indent() << "comparisonFunc " << AlphaFunc_getFuncStr(alphaFunc.getFunction()) << endl;
-    fw.indent() << "referenceValue " << alphaFunc.getReferenceValue() << endl;
+    fw.indent() << "comparisonFunc " << AlphaFunc_getFuncStr(alphaFunc.getFunction()) << std::endl;
+    fw.indent() << "referenceValue " << alphaFunc.getReferenceValue() << std::endl;
     return true;
 }
 

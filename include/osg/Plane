@@ -142,7 +142,7 @@ class SG_EXPORT Plane
             calculateUpperLowerBBCorners();
         }
 
-        friend inline ostream& operator << (ostream& output, const Plane& pl);
+        friend inline std::ostream& operator << (std::ostream& output, const Plane& pl);
 
 
     protected:
@@ -156,7 +156,7 @@ class SG_EXPORT Plane
 
 };
 
-inline ostream& operator << (ostream& output, const Plane& pl)
+inline std::ostream& operator << (std::ostream& output, const Plane& pl)
 {
     output << pl._fv[0] << " "
 	   << pl._fv[1] << " "

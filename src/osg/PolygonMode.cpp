@@ -49,7 +49,7 @@ const PolygonMode::Mode PolygonMode::getMode(const Face face) const
         case(FRONT_AND_BACK):
             return _modeFront;
     }    
-    notify(WARN)<<"Warning : invalid Face passed to PolygonMode::getMode(Face face)"<<endl;
+    notify(WARN)<<"Warning : invalid Face passed to PolygonMode::getMode(Face face)"<<std::endl;
     return _modeFront;
 }
 

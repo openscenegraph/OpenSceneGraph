@@ -71,10 +71,10 @@ bool ColorMask_writeLocalData(const Object& obj,Output& fw)
 {
     const ColorMask& colormask = static_cast<const ColorMask&>(obj);
 
-    fw.indent() << "redMask " << ColorMask_getModeStr(colormask.getRedMask()) << endl;
-    fw.indent() << "greenMask " << ColorMask_getModeStr(colormask.getGreenMask()) << endl;
-    fw.indent() << "blueMask " << ColorMask_getModeStr(colormask.getBlueMask()) << endl;
-    fw.indent() << "alphaMask " << ColorMask_getModeStr(colormask.getAlphaMask()) << endl;
+    fw.indent() << "redMask " << ColorMask_getModeStr(colormask.getRedMask()) <<std::endl;
+    fw.indent() << "greenMask " << ColorMask_getModeStr(colormask.getGreenMask()) <<std::endl;
+    fw.indent() << "blueMask " << ColorMask_getModeStr(colormask.getBlueMask()) <<std::endl;
+    fw.indent() << "alphaMask " << ColorMask_getModeStr(colormask.getAlphaMask()) <<std::endl;
     return true;
 }
 

@@ -97,20 +97,20 @@ bool Light_writeLocalData(const Object& obj,Output& fw)
     const Light& light = static_cast<const Light&>(obj);
 
     // Vec4's
-    fw.indent() << "ambient " << light.getAmbient() << endl;
-    fw.indent() << "diffuse " << light.getDiffuse() << endl;
-    fw.indent() << "specular " << light.getSpecular() << endl;
-    fw.indent() << "position " << light.getPosition() << endl;
+    fw.indent() << "ambient " << light.getAmbient() << std::endl;
+    fw.indent() << "diffuse " << light.getDiffuse() << std::endl;
+    fw.indent() << "specular " << light.getSpecular() << std::endl;
+    fw.indent() << "position " << light.getPosition() << std::endl;
 
     // Vec3's
-    fw.indent() << "direction " << light.getDirection() << endl;
+    fw.indent() << "direction " << light.getDirection() << std::endl;
 
     // float's
-    fw.indent() << "constant_attenuation " << light.getConstantAttenuation() << endl;
-    fw.indent() << "linear_attenuation " << light.getLinearAttenuation () << endl;
-    fw.indent() << "quadratic_attenuation " << light.getQuadraticAttenuation() << endl;
-    fw.indent() << "spot_exponent " << light.getSpotExponent() << endl;
-    fw.indent() << "spot_cutoff " << light.getSpotCutoff() << endl;
+    fw.indent() << "constant_attenuation " << light.getConstantAttenuation() << std::endl;
+    fw.indent() << "linear_attenuation " << light.getLinearAttenuation () << std::endl;
+    fw.indent() << "quadratic_attenuation " << light.getQuadraticAttenuation() << std::endl;
+    fw.indent() << "spot_exponent " << light.getSpotExponent() << std::endl;
+    fw.indent() << "spot_cutoff " << light.getSpotCutoff() << std::endl;
 
     return true;
 }

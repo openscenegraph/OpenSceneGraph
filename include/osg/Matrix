@@ -280,7 +280,7 @@ inline std::ostream& operator<< (std::ostream& os, const Matrix& m )
             os << m(row,col) << " ";
         os << std::endl;
     }
-    os << "}" << endl;
+    os << "}" << std::endl;
     return os;
 }
 

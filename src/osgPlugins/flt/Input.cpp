@@ -169,7 +169,7 @@ Record* Input::readCreateRecord(FltFile* pFltFile)
     if (pProto == NULL)
     {
         // Should not be possible to end up here!
-        osg::notify(osg::INFO) << "UnknownRecord not in registry!" << endl;
+        osg::notify(osg::INFO) << "UnknownRecord not in registry!" << std::endl;
         ::free(pData);
         return NULL;
     }
@@ -178,7 +178,7 @@ Record* Input::readCreateRecord(FltFile* pFltFile)
     Record* pRec = pProto->cloneRecord(pData);
     if (pRec == NULL)
     {
-        osg::notify(osg::INFO) << "Can't clone record!" << endl;
+        osg::notify(osg::INFO) << "Can't clone record!" << std::endl;
         ::free(pData);
         return NULL;
     }
@@ -189,7 +189,7 @@ Record* Input::readCreateRecord(FltFile* pFltFile)
     osg::notify(osg::ALWAYS) << "class=" << pRec->className();
     osg::notify(osg::ALWAYS) << " op=" << pRec->getOpcode();
     osg::notify(osg::ALWAYS) << " name=" << pRec->getName();
-    osg::notify(osg::ALWAYS) << " offset=" << offset() << endl;
+    osg::notify(osg::ALWAYS) << " offset=" << offset() << std::endl;
     #endif
 
     if (isLittleEndianMachine()) // From Intel with love  :-(

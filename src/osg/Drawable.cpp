@@ -107,7 +107,7 @@ void Drawable::setUseDisplayList(const bool flag)
     {
         if (flag)
         {
-            notify(WARN)<<"Warning: attempt to setUseDisplayList(true) on a drawable with does not support display lists."<<endl;
+            notify(WARN)<<"Warning: attempt to setUseDisplayList(true) on a drawable with does not support display lists."<<std::endl;
         }
         else 
         {

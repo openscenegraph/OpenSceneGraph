@@ -35,7 +35,7 @@ class RegistryPtr
 // definition of the Registry
 Registry::Registry()
 {
-    notify(INFO) << "Constructing osg::Registry"<<endl;
+    notify(INFO) << "Constructing osg::Registry"<<std::endl;
 
     _createNodeFromImage = true;
     _openingLibrary = false;
@@ -73,16 +73,16 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;
 
-    if (_openingLibrary) notify(INFO) << "Opening Library : "<<endl;
+    if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
 
-    notify(INFO) << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<<endl;
+    notify(INFO) << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<< std::endl;
     const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
     
     for(DotOsgWrapper::Associates::const_iterator itr=assoc.begin();
                                                   itr!=assoc.end();
                                                   ++itr)
     {
-        notify(INFO) << "    ("<<*itr<<")"<<endl;
+        notify(INFO) << "    ("<<*itr<<")"<< std::endl;
     }
 
     const std::string& name = wrapper->getName();
@@ -111,7 +111,7 @@ void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;
 
-////    notify(INFO) << "osg::Registry::removeReaderWriter();"<<endl;
+////    notify(INFO) << "osg::Registry::removeReaderWriter();"<< std::endl;
 
     EraseMacro(_objectWrapperMap,wrapper);
     EraseMacro(_classNameWrapperMap,wrapper);
@@ -127,9 +127,9 @@ void Registry::addReaderWriter(ReaderWriter* rw)
 {
     if (rw==0L) return;
 
-    if (_openingLibrary) notify(INFO) << "Opening Library : "<<endl;
+    if (_openingLibrary) notify(INFO) << "Opening Library : "<< std::endl;
 
-    notify(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<<endl;
+    notify(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
 
     _rwList.push_back(rw);
 
@@ -140,7 +140,7 @@ void Registry::removeReaderWriter(ReaderWriter* rw)
 {
     if (rw==0L) return;
 
-//    notify(INFO) << "osg::Registry::removeReaderWriter();"<<endl;
+//    notify(INFO) << "osg::Registry::removeReaderWriter();"<< std::endl;
 
     ReaderWriterList::iterator rwitr = std::find(_rwList.begin(),_rwList.end(),rw);
     if (rwitr!=_rwList.end())
@@ -260,7 +260,7 @@ osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
         {
-            osg::notify(osg::WARN)<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<<endl;
+            osg::notify(osg::WARN)<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<< std::endl;
             return NULL;
         }
         
@@ -333,7 +333,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
         {
-            osg::notify(osg::WARN)<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<<endl;
+            osg::notify(osg::WARN)<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<< std::endl;
             return NULL;
         }
 
@@ -497,7 +497,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         std::string uniqueID;
         if (fw.getUniqueIDForObject(&obj,uniqueID))
         {
-            fw.indent() << "Use " << uniqueID << endl;
+            fw.indent() << "Use " << uniqueID << std::endl;
             return true;
         }
     }
@@ -511,7 +511,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         DotOsgWrapper* wrapper = itr->second.get();
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
 
-        fw.indent() << wrapper->getName() << " {"<<endl;
+        fw.indent() << wrapper->getName() << " {"<< std::endl;
         fw.moveIn();
 
 
@@ -521,7 +521,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
             std::string uniqueID;
             fw.createUniqueIDForObject(&obj,uniqueID);
             fw.registerUniqueIDForObject(&obj,uniqueID);
-            fw.indent() << "UniqueID " << uniqueID << endl;
+            fw.indent() << "UniqueID " << uniqueID << std::endl;
         }
 
         // read the local data by iterating through the associate
@@ -542,7 +542,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         }
 
         fw.moveOut();
-        fw.indent() << "}"<<endl;
+        fw.indent() << "}"<< std::endl;
 
         return true;
     }
@@ -778,7 +778,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    notify(INFO) << "Now checking for plug-in "<<libraryName<<endl;
+    notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
     if (loadLibrary(libraryName))
     {
         for(ReaderWriterList::iterator itr=_rwList.begin();

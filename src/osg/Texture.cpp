@@ -117,7 +117,7 @@ void Texture::setWrap(const WrapParameter which, const WrapMode wrap)
         case WRAP_S : _wrap_s = wrap; break;
         case WRAP_T : _wrap_t = wrap; break;
         case WRAP_R : _wrap_r = wrap; break;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<endl; break;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
 }
 
@@ -129,7 +129,7 @@ const Texture::WrapMode Texture::getWrap(const WrapParameter which) const
         case WRAP_S : return _wrap_s;
         case WRAP_T : return _wrap_t;
         case WRAP_R : return _wrap_r;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getWrap(which)"<<endl; return _wrap_s;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getWrap(which)"<<std::endl; return _wrap_s;
     }
 }
 
@@ -140,7 +140,7 @@ void Texture::setFilter(const FilterParameter which, const FilterMode filter)
     {
         case MIN_FILTER : _min_filter = filter; break;
         case MAG_FILTER : _mag_filter = filter; break;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<endl; break;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
     }
 }
 
@@ -151,7 +151,7 @@ const Texture::FilterMode Texture::getFilter(const FilterParameter which) const
     {
         case MIN_FILTER : return _min_filter;
         case MAG_FILTER : return _mag_filter;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getFilter(which)"<<endl; return _min_filter;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getFilter(which)"<< std::endl; return _min_filter;
     }
 }
 
@@ -539,7 +539,7 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     _textureWidth = width;
     _textureHeight = height;
     
-//    cout<<"copyTexImage2D x="<<x<<"  y="<<y<<"  w="<<width<<"  h="<<height<<endl;
+//    cout<<"copyTexImage2D x="<<x<<"  y="<<y<<"  w="<<width<<"  h="<<height<< std::endl;
 
     // inform state that this texture is the current one bound.
     state.have_applied(this);

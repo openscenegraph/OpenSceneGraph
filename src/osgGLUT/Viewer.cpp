@@ -114,10 +114,10 @@ Viewer::Viewer()
 
     _saveFileName = "saved_model.osg";
 
-    osg::notify(osg::INFO)<<"Scene Graph Viewer (sgv)"<<endl;
+    osg::notify(osg::INFO)<<"Scene Graph Viewer (sgv)"<< std::endl;
 
-//    osg::notify(osg::INFO)<<"   '"<<osgGetLibraryName()<<"' Version "<<osgGetVersion()<<endl;
-//    osg::notify(osg::INFO)<<"   '"<<osgUtilGetLibraryName()<<"' Version "<<osgUtilGetVersion()<<endl;
+//    osg::notify(osg::INFO)<<"   '"<<osgGetLibraryName()<<"' Version "<<osgGetVersion()<< std::endl;
+//    osg::notify(osg::INFO)<<"   '"<<osgUtilGetLibraryName()<<"' Version "<<osgUtilGetVersion()<< std::endl;
 
     _initialTick = _timer.tick();
     _frameTick = _initialTick;
@@ -143,11 +143,11 @@ Viewer::~Viewer()
 bool Viewer::open()
 {
     if ( _is_open ) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::open() called with window already open."<<endl;
+        osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::open() called with window already open."<< std::endl;
         return false;
     }
     if ( getNumViewports() <= 0 ) {
-        osg::notify(osg::FATAL)<<"osgGLUT::Viewer::open() called with no Viewports registered."<<endl;
+        osg::notify(osg::FATAL)<<"osgGLUT::Viewer::open() called with no Viewports registered."<< std::endl;
         return false;
     }
 
@@ -160,8 +160,8 @@ bool Viewer::open()
     {
         if (itr->_cameraManipList.empty())
         {
-            osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::open() called without any camara manipulators registered for a viewport,"<<endl;
-            osg::notify(osg::NOTICE)<<"automatically registering trackball,flight and drive manipulators."<<endl;
+            osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::open() called without any camara manipulators registered for a viewport,"<< std::endl;
+            osg::notify(osg::NOTICE)<<"automatically registering trackball,flight and drive manipulators."<< std::endl;
             registerCameraManipulator(new osgUtil::TrackballManipulator, index);
             registerCameraManipulator(new osgUtil::FlightManipulator, index);
             registerCameraManipulator(new osgUtil::DriveManipulator, index);
@@ -196,7 +196,7 @@ bool Viewer::open()
 
         if (itr->_cameraManipulator->handle(*ea,*this))
         {
-            //        osg::notify(osg::INFO) << "Handled reshape "<<endl;
+            //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
 
         if (sceneView->getStereoMode()==osgUtil::SceneView::QUAD_BUFFER_STEREO) needQuadBufferStereo = true;
@@ -252,15 +252,15 @@ bool Viewer::open()
     displayMode |= GLUT_MULTISAMPLE;
     
 
-    osg::notify(osg::INFO)                                    <<"osgGLUT::Viewer::open() requesting displayMode = "<<displayMode<<endl;
-    if (displayMode & GLUT_DOUBLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_DOUBLE."<<endl;
-    if (displayMode & GLUT_SINGLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_SINGLE."<<endl; 
-    if (displayMode & GLUT_RGB)         osg::notify(osg::INFO)<<"                        requesting GLUT_RGB."<<endl; 
-    if (displayMode & GLUT_DEPTH)       osg::notify(osg::INFO)<<"                        requesting GLUT_DEPTH."<<endl; 
-    if (displayMode & GLUT_ALPHA)       osg::notify(osg::INFO)<<"                        requesting GLUT_ALPHA."<<endl; 
-    if (displayMode & GLUT_STENCIL)     osg::notify(osg::INFO)<<"                        requesting GLUT_STENCIL."<<endl; 
-    if (displayMode & GLUT_MULTISAMPLE) osg::notify(osg::INFO)<<"                        requesting GLUT_MULTISAMPLE."<<endl; 
-    if (displayMode & GLUT_STEREO)      osg::notify(osg::INFO)<<"                        requesting GLUT_STEREO."<<endl; 
+    osg::notify(osg::INFO)                                    <<"osgGLUT::Viewer::open() requesting displayMode = "<<displayMode<< std::endl;
+    if (displayMode & GLUT_DOUBLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_DOUBLE."<< std::endl;
+    if (displayMode & GLUT_SINGLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_SINGLE."<< std::endl; 
+    if (displayMode & GLUT_RGB)         osg::notify(osg::INFO)<<"                        requesting GLUT_RGB."<< std::endl; 
+    if (displayMode & GLUT_DEPTH)       osg::notify(osg::INFO)<<"                        requesting GLUT_DEPTH."<< std::endl; 
+    if (displayMode & GLUT_ALPHA)       osg::notify(osg::INFO)<<"                        requesting GLUT_ALPHA."<< std::endl; 
+    if (displayMode & GLUT_STENCIL)     osg::notify(osg::INFO)<<"                        requesting GLUT_STENCIL."<< std::endl; 
+    if (displayMode & GLUT_MULTISAMPLE) osg::notify(osg::INFO)<<"                        requesting GLUT_MULTISAMPLE."<< std::endl; 
+    if (displayMode & GLUT_STEREO)      osg::notify(osg::INFO)<<"                        requesting GLUT_STEREO."<< std::endl; 
 
     glutInitDisplayMode( displayMode);
     
@@ -329,7 +329,7 @@ void Viewer::requestWarpPointer(int x,int y)
 {
     // glutWarpPointer core dumps if invoked before a GLUT window is open
     if ( !_is_open ) {
-        osg::notify(osg::INFO)<<"osgGLUT::Viewer::requestWarpPointer() called with window closed; ignored."<<endl;
+        osg::notify(osg::INFO)<<"osgGLUT::Viewer::requestWarpPointer() called with window closed; ignored."<< std::endl;
         return;
     }
     glutWarpPointer(x,y);
@@ -347,7 +347,7 @@ float Viewer::app(unsigned int viewport)
 
     if (_viewportList[viewport]._cameraManipulator->handle(*ea,*this))
     {
-        //        osg::notify(osg::INFO) << "Handled update frame"<<endl;
+        //        osg::notify(osg::INFO) << "Handled update frame"<< std::endl;
     }
 
     // do app traversal.
@@ -536,11 +536,11 @@ void Viewer::showStats(const unsigned int viewport)
         sprintf(clin,"Frame %.1f ms.", timeFrame);
         displaytext((int)(.75*tmax),(int)(0.98f*vh),clin);
 
- /*       osg::notify(osg::NOTICE) << "Time of App  "<<timeApp<<"ms   "<<endl;
-        osg::notify(osg::NOTICE) << "Time of Cull "<<timeCull<<"ms   "<<endl;
-        osg::notify(osg::NOTICE) << "Time of Draw "<<timeDraw<<"ms   "<<endl;
-        osg::notify(osg::NOTICE) << "Frame time   "<<frameTime<<endl;
-        osg::notify(osg::NOTICE) << "frameRate() = "<<frameRate()<<endl;*/
+ /*       osg::notify(osg::NOTICE) << "Time of App  "<<timeApp<<"ms   "<< std::endl;
+        osg::notify(osg::NOTICE) << "Time of Cull "<<timeCull<<"ms   "<< std::endl;
+        osg::notify(osg::NOTICE) << "Time of Draw "<<timeDraw<<"ms   "<< std::endl;
+        osg::notify(osg::NOTICE) << "Frame time   "<<frameTime<< std::endl;
+        osg::notify(osg::NOTICE) << "frameRate() = "<<frameRate()<< std::endl;*/
 
         glLineWidth(2.0f);
         glBegin(GL_LINE_LOOP );
@@ -622,7 +622,7 @@ void Viewer::showStats(const unsigned int viewport)
         for (int i=0; i<nbinsUsed; i++) {
             primStats[i].setType(Statistics::STAT_PRIMSPERBIN); // cuts out vertices & triangles to save space on screen
             ntop+=writePrims((int)(0.96f*vh-ntop),primStats[i]);
-             osg::notify(osg::INFO) << "ntop "<< ntop<<endl;
+             osg::notify(osg::INFO) << "ntop "<< ntop<< std::endl;
         }
         maxbins=(primStats[0].getBins()>maxbins)?primStats[0].getBins():maxbins;
         delete [] primStats; // free up
@@ -725,7 +725,7 @@ void Viewer::display()
     }
 
     glutSwapBuffers(); // moved after draw of stats & glFinish() to get accurate timing (excluding stat draw!)
-    //    cout << "Time elapsed "<<_timer.delta_s(_initialTick,_timer.tick())<<endl;
+    //    cout << "Time elapsed "<<_timer.delta_s(_initialTick,_timer.tick())<< std::endl;
 
     if (_printStats>1) glFinish();
 
@@ -758,7 +758,7 @@ void Viewer::reshape(GLint w, GLint h)
 
         if (itr->_cameraManipulator->handle(*ea,*this))
         {
-            //        osg::notify(osg::INFO) << "Handled reshape "<<endl;
+            //        osg::notify(osg::INFO) << "Handled reshape "<< std::endl;
         }
     }
 }
@@ -780,7 +780,7 @@ void Viewer::mouseMotion(int x, int y)
 
     if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
     {
-        //        osg::notify(osg::INFO) << "Handled mouseMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<<endl;
+        //        osg::notify(osg::INFO) << "Handled mouseMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
 
     mx = x;
@@ -804,7 +804,7 @@ void Viewer::mousePassiveMotion(int x, int y)
 
     if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
     {
-        //        osg::notify(osg::INFO) << "Handled mousePassiveMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<<endl;
+        //        osg::notify(osg::INFO) << "Handled mousePassiveMotion "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
 }
 
@@ -828,7 +828,7 @@ void Viewer::mouse(int button, int state, int x, int y)
 
     if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this))
     {
-        //        osg::notify(osg::INFO) << "Handled mouse "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<<endl;
+        //        osg::notify(osg::INFO) << "Handled mouse "<<ea->_buttonMask<<" x="<<ea->_mx<<" y="<<ea->_my<< std::endl;
     }
 
 }
@@ -900,7 +900,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // OpenGL display lists.
                 osgUtil::DisplayListVisitor dlv(osgUtil::DisplayListVisitor::SWITCH_ON_DISPLAY_LISTS);
                 sceneView->getSceneData()->accept(dlv);
-                osg::notify(osg::NOTICE) << "Switched on use of OpenGL Display Lists."<<endl;
+                osg::notify(osg::NOTICE) << "Switched on use of OpenGL Display Lists."<< std::endl;
             }
             else
             {
@@ -908,7 +908,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // OpenGL display lists.
                 osgUtil::DisplayListVisitor dlv(osgUtil::DisplayListVisitor::SWITCH_OFF_DISPLAY_LISTS);
                 sceneView->getSceneData()->accept(dlv);
-                osg::notify(osg::NOTICE) << "Switched off use of OpenGL Display Lists."<<endl;
+                osg::notify(osg::NOTICE) << "Switched off use of OpenGL Display Lists."<< std::endl;
             }
             break;
 
@@ -941,20 +941,20 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
         case 'S' :
         {
-            osg::notify(osg::NOTICE) << "Smoothing scene..."<<endl;
+            osg::notify(osg::NOTICE) << "Smoothing scene..."<< std::endl;
             osgUtil::SmoothingVisitor sv;
             sceneView->getSceneData()->accept(sv);
-            osg::notify(osg::NOTICE) << "Smoothed scene."<<endl;
+            osg::notify(osg::NOTICE) << "Smoothed scene."<< std::endl;
         }
 
         break;
 
         case 'R' :
         {
-            osg::notify(osg::NOTICE) << "Tri Striping scene..."<<endl;
+            osg::notify(osg::NOTICE) << "Tri Striping scene..."<< std::endl;
             osgUtil::TriStripVisitor tsv;
             sceneView->getSceneData()->accept(tsv);
-            osg::notify(osg::NOTICE) << "Tri Striping scene scene."<<endl;
+            osg::notify(osg::NOTICE) << "Tri Striping scene scene."<< std::endl;
         }
 
         break;
@@ -1037,7 +1037,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         case 'o' :
             if (sceneView->getSceneData() && osgDB::writeNodeFile(*sceneView->getSceneData(), _saveFileName))
             {
-                osg::notify(osg::NOTICE) << "Saved scene to '"<<_saveFileName<<"'"<<endl;
+                osg::notify(osg::NOTICE) << "Saved scene to '"<<_saveFileName<<"'"<< std::endl;
             }
             break;
 
@@ -1048,11 +1048,11 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 (_viewFrustumCullingActive ? osgUtil::CullViewState::VIEW_FRUSTUM_CULLING : osgUtil::CullViewState::NO_CULLING)));
             if (_smallFeatureCullingActive)
             {
-                osg::notify(osg::NOTICE) << "Small feature culling switched on   "<<endl;
+                osg::notify(osg::NOTICE) << "Small feature culling switched on   "<< std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE) << "Small feature culling switched off  "<<endl;
+                osg::notify(osg::NOTICE) << "Small feature culling switched off  "<< std::endl;
             }
             break;
 
@@ -1060,11 +1060,11 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             _viewFrustumCullingActive = !_viewFrustumCullingActive;
             if (_viewFrustumCullingActive)
             {
-                osg::notify(osg::NOTICE) << "View frustum culling switched on   "<<endl;
+                osg::notify(osg::NOTICE) << "View frustum culling switched on   "<< std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE) << "View frustum culling switched off  "<<endl;
+                osg::notify(osg::NOTICE) << "View frustum culling switched off  "<< std::endl;
             }
             sceneView->getCullVisitor()->setCullingMode((osgUtil::CullViewState::CullingMode)
                 ((_smallFeatureCullingActive ? osgUtil::CullViewState::SMALL_FEATURE_CULLING : osgUtil::CullViewState::NO_CULLING) |
@@ -1075,11 +1075,11 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             sceneView->setPrioritizeTextures(!sceneView->getPrioritizeTextures());
             if (sceneView->getPrioritizeTextures())
             {
-                osg::notify(osg::NOTICE) << "Prioritize textures switched on   "<<endl;
+                osg::notify(osg::NOTICE) << "Prioritize textures switched on   "<< std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE) << "Prioritize textures switched off  "<<endl;
+                osg::notify(osg::NOTICE) << "Prioritize textures switched off  "<< std::endl;
             }
             break;
 
@@ -1091,18 +1091,18 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         case 'i' :
         case 'r' :
         {
-            osg::notify(osg::NOTICE) << "***** Intersecting **************"<< endl;
+            osg::notify(osg::NOTICE) << "***** Intersecting **************"<< std::endl;
 
             osg::Vec3 near_point,far_point;
             if (!sceneView->projectWindowXYIntoObject(x,wh-y,near_point,far_point))
             {
-                osg::notify(osg::NOTICE) << "Failed to calculate intersection ray."<<endl;
+                osg::notify(osg::NOTICE) << "Failed to calculate intersection ray."<< std::endl;
                 return;
             }
 
             osg::ref_ptr<osg::LineSegment> LineSegment = new osg::LineSegment;
             LineSegment->set(near_point,far_point);
-            osg::notify(osg::NOTICE) << "start("<<LineSegment->start()<<")  end("<<LineSegment->end()<<")"<<endl;
+            osg::notify(osg::NOTICE) << "start("<<LineSegment->start()<<")  end("<<LineSegment->end()<<")"<< std::endl;
 
             osgUtil::IntersectVisitor iv;
             iv.addLineSegment(LineSegment.get());
@@ -1113,7 +1113,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
             float endTime = clockSeconds();
 
-            osg::notify(osg::NOTICE) << "Time for interesection = "<<(endTime-startTime)*1000<<"ms"<<endl;
+            osg::notify(osg::NOTICE) << "Time for interesection = "<<(endTime-startTime)*1000<<"ms"<< std::endl;
 
             if (iv.hits())
             {
@@ -1125,28 +1125,28 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                     osg::Vec3 ip = hitr->_intersectPoint;
                     osg::Vec3 in = hitr->_intersectNormal;
                     osg::Geode* geode = hitr->_geode;
-                    osg::notify(osg::NOTICE) << "  Itersection Point ("<<ip<<") Normal ("<<in<<")"<<endl;
+                    osg::notify(osg::NOTICE) << "  Itersection Point ("<<ip<<") Normal ("<<in<<")"<< std::endl;
                     if (hitr->_matrix)
                     {
                         osg::Vec3 ipEye = ip*(*(hitr->_matrix));
                         osg::Vec3 inEye = (in+ip)*(*(hitr->_matrix))-ipEye;
                         inEye.normalize();
-                        if (geode) osg::notify(osg::NOTICE) << "Geode '"<<geode->getName()<<endl;
-                        osg::notify(osg::NOTICE) << "  Eye Itersection Point ("<<ipEye<<") Normal ("<<inEye<<")"<<endl;
+                        if (geode) osg::notify(osg::NOTICE) << "Geode '"<<geode->getName()<< std::endl;
+                        osg::notify(osg::NOTICE) << "  Eye Itersection Point ("<<ipEye<<") Normal ("<<inEye<<")"<< std::endl;
 
                     }
                     if (key=='r' && geode)
                     {
                         // remove geoset..
                         osg::GeoSet* gset = hitr->_geoset;
-                        osg::notify(osg::NOTICE) << "  geoset ("<<gset<<") "<<geode->removeDrawable(gset)<<")"<<endl;
+                        osg::notify(osg::NOTICE) << "  geoset ("<<gset<<") "<<geode->removeDrawable(gset)<<")"<< std::endl;
                     }
 
                 }
 
             }
 
-            osg::notify(osg::NOTICE) << endl << endl;
+            osg::notify(osg::NOTICE) << std::endl << std::endl;
         }
         break;
 
@@ -1157,79 +1157,79 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 }
 
 
-void Viewer::help(ostream& fout)
+void Viewer::help(std::ostream& fout)
 {
 
-    fout <<endl
-        <<"Scene Graph Viewer (sgv) keyboard bindings:"<<endl
-        <<endl
-        <<"1     Select the trackball camera manipulator."<<endl
-        <<"      Left mouse button - rotate,"<<endl
-        <<"      Middle (or Left & Right) mouse button - pan,"<<endl
-        <<"      Right mouse button - zoom."<<endl
-        <<"2     Select the flight camera manipulator."<<endl
-        <<"      Left mouse button - speed up,"<<endl
-        <<"      Middle (or Left & Right) mouse button - stop,"<<endl
-        <<"      Right mouse button - slow down, reverse."<<endl
-        <<"      Move mouse left to roll left, right to roll right."<<endl
-        <<"      Move mouse back (down) to pitch nose up, forward to pitch down."<<endl
-        <<"      In mode Q, the default, selected by pressing 'q'"<<endl
-        <<"        The flight path is yawed automatically into the turn to"<<endl
-        <<"        produce a similar effect as flying an aircaft."<<endl
-        <<"      In mode A, selected by pressing 'a'"<<endl
-        <<"        The flight path is not yawed automatically into the turn,"<<endl
-        <<"        producing a similar effect as space/marine flight."<<endl
-        <<"3     Select the drive camera manipulator."<<endl
-        <<"      In mode Q, the default, selected by pressing 'q'"<<endl
-        <<"        Move mouse left to turn left, right to turn right."<<endl
-        <<"        Move mouse back (down) to reverse, forward to drive forward."<<endl
-        <<"      In mode A, selected by pressing 'a'"<<endl
-        <<"        Move mouse left to turn left, right to turn right."<<endl
-        <<"        Left mouse button - speed up,"<<endl
-        <<"        Middle (or Left & Right) mouse button - stop,"<<endl
-        <<"        Right mouse button - slow down, reverse."<<endl
-        <<endl
-        <<"+     Half the frame delay which speeds up the frame rate on Linux and Windows."<<endl
-        <<"-     Double the frame delay and therefore reduce the frame rate on Linux"<<endl
-        <<"      and Windows."<<endl
-        <<endl
-        <<"/     Divide the Level-Of-Detail (LOD) bias by 1.5, to encourage the"<<endl
-        <<"      selection of more complex LOD children."<<endl
-        <<"*     Multiple the Level-of-Detail (LOD) bias by 1.5, to encourage the"<<endl
-        <<"      selection of less complex LOD children."<<endl
-        <<endl
-        <<"c     Toggle Small Feature Culling on or off."<<endl
-        <<"C     Toggle View Frustum Culling on or off."<<endl
-        <<"d     Toggle use of OpenGL's display lists."<<endl
-        <<"b     Toggle OpenGL's backface culling."<<endl
-        <<"t     Toggle OpenGL texturing on or off."<<endl
-        <<"T     Toggle OpenGL two-sided lighting on or off."<<endl
-        <<"l     Toggle OpenGL lighting on or off."<<endl
-        <<"L     Toggle SceneView lighting mode between HEADLIGHT, SKY_LIGHT"<<endl
-        <<"      and NO_SCENEVIEW_LIGHT."<<endl
-        <<"s     Toggle OpenGL shade model between flat and smooth shading."<<endl
-        <<"S     Apply osgUtil::SmoothingVisitor to the scene."<<endl
-        <<"w     Toggle OpenGL polygon mode between solid, wireframe and points modes."<<endl
-        <<endl
-        <<"i     Calculate and report the intersections with the scene under the"<<endl
-        <<"      current mouse x and mouse y position."<<endl
-        <<endl
-        <<"r     Calculate and report the intersections with the scene under the"<<endl
-        <<"      current mouse x and mouse y position and delete the nearest"<<endl
-        <<"      interesected geoset."<<endl
-        <<endl
-        <<"7     Set the background color to black."<<endl
-        <<"8     Set the background color to blue."<<endl
-        <<"9     Set the background color to white."<<endl
-        <<endl
-        <<"p     Print frame rate statistics on each frame."<<endl
-        <<"o     Output the loaded scene to 'saved_model.osg'."<<endl
-        <<"?/h   Print out sgv's keyboard bindings."<<endl
-        <<"f     Toggle between fullscreen and the previous window size. Note, GLUT"<<endl
-        <<"      fullscreen works properly on Windows and Irix, but on Linux"<<endl
-        <<"      it just maximizes the window and leaves the window's borders."<<endl
-        <<"Space Reset scene to the default view."<<endl
-        <<"Esc   Exit sgv."<<endl;
+    fout << std::endl
+        <<"Scene Graph Viewer (sgv) keyboard bindings:"<< std::endl
+        << std::endl
+        <<"1     Select the trackball camera manipulator."<< std::endl
+        <<"      Left mouse button - rotate,"<< std::endl
+        <<"      Middle (or Left & Right) mouse button - pan,"<< std::endl
+        <<"      Right mouse button - zoom."<< std::endl
+        <<"2     Select the flight camera manipulator."<< std::endl
+        <<"      Left mouse button - speed up,"<< std::endl
+        <<"      Middle (or Left & Right) mouse button - stop,"<< std::endl
+        <<"      Right mouse button - slow down, reverse."<< std::endl
+        <<"      Move mouse left to roll left, right to roll right."<< std::endl
+        <<"      Move mouse back (down) to pitch nose up, forward to pitch down."<< std::endl
+        <<"      In mode Q, the default, selected by pressing 'q'"<< std::endl
+        <<"        The flight path is yawed automatically into the turn to"<< std::endl
+        <<"        produce a similar effect as flying an aircaft."<< std::endl
+        <<"      In mode A, selected by pressing 'a'"<< std::endl
+        <<"        The flight path is not yawed automatically into the turn,"<< std::endl
+        <<"        producing a similar effect as space/marine flight."<< std::endl
+        <<"3     Select the drive camera manipulator."<< std::endl
+        <<"      In mode Q, the default, selected by pressing 'q'"<< std::endl
+        <<"        Move mouse left to turn left, right to turn right."<< std::endl
+        <<"        Move mouse back (down) to reverse, forward to drive forward."<< std::endl
+        <<"      In mode A, selected by pressing 'a'"<< std::endl
+        <<"        Move mouse left to turn left, right to turn right."<< std::endl
+        <<"        Left mouse button - speed up,"<< std::endl
+        <<"        Middle (or Left & Right) mouse button - stop,"<< std::endl
+        <<"        Right mouse button - slow down, reverse."<< std::endl
+        << std::endl
+        <<"+     Half the frame delay which speeds up the frame rate on Linux and Windows."<< std::endl
+        <<"-     Double the frame delay and therefore reduce the frame rate on Linux"<< std::endl
+        <<"      and Windows."<< std::endl
+        << std::endl
+        <<"/     Divide the Level-Of-Detail (LOD) bias by 1.5, to encourage the"<< std::endl
+        <<"      selection of more complex LOD children."<< std::endl
+        <<"*     Multiple the Level-of-Detail (LOD) bias by 1.5, to encourage the"<< std::endl
+        <<"      selection of less complex LOD children."<< std::endl
+        << std::endl
+        <<"c     Toggle Small Feature Culling on or off."<< std::endl
+        <<"C     Toggle View Frustum Culling on or off."<< std::endl
+        <<"d     Toggle use of OpenGL's display lists."<< std::endl
+        <<"b     Toggle OpenGL's backface culling."<< std::endl
+        <<"t     Toggle OpenGL texturing on or off."<< std::endl
+        <<"T     Toggle OpenGL two-sided lighting on or off."<< std::endl
+        <<"l     Toggle OpenGL lighting on or off."<< std::endl
+        <<"L     Toggle SceneView lighting mode between HEADLIGHT, SKY_LIGHT"<< std::endl
+        <<"      and NO_SCENEVIEW_LIGHT."<< std::endl
+        <<"s     Toggle OpenGL shade model between flat and smooth shading."<< std::endl
+        <<"S     Apply osgUtil::SmoothingVisitor to the scene."<< std::endl
+        <<"w     Toggle OpenGL polygon mode between solid, wireframe and points modes."<< std::endl
+        << std::endl
+        <<"i     Calculate and report the intersections with the scene under the"<< std::endl
+        <<"      current mouse x and mouse y position."<< std::endl
+        << std::endl
+        <<"r     Calculate and report the intersections with the scene under the"<< std::endl
+        <<"      current mouse x and mouse y position and delete the nearest"<< std::endl
+        <<"      interesected geoset."<< std::endl
+        << std::endl
+        <<"7     Set the background color to black."<< std::endl
+        <<"8     Set the background color to blue."<< std::endl
+        <<"9     Set the background color to white."<< std::endl
+        << std::endl
+        <<"p     Print frame rate statistics on each frame."<< std::endl
+        <<"o     Output the loaded scene to 'saved_model.osg'."<< std::endl
+        <<"?/h   Print out sgv's keyboard bindings."<< std::endl
+        <<"f     Toggle between fullscreen and the previous window size. Note, GLUT"<< std::endl
+        <<"      fullscreen works properly on Windows and Irix, but on Linux"<< std::endl
+        <<"      it just maximizes the window and leaves the window's borders."<< std::endl
+        <<"Space Reset scene to the default view."<< std::endl
+        <<"Esc   Exit sgv."<< std::endl;
 }
 
 
@@ -1257,7 +1257,7 @@ osg::Timer_t Viewer::updateFrameTick()
 bool Viewer::run()
 {
     if (!_is_open) {
-        osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::run() called without window open.  Opening window."<<endl;
+        osg::notify(osg::NOTICE)<<"osgGLUT::Viewer::run() called without window open.  Opening window."<< std::endl;
         if ( !open() )
             return false;
     }
@@ -1309,9 +1309,9 @@ void Viewer::addViewport(osg::Node* rootnode,
 
 void Viewer::init(osg::Node* rootnode)
 {
-    osg::notify(osg::WARN)<<"Warning - call to Viewer::init(osg::Node*) which is a deprecated method."<<endl;
-    osg::notify(osg::WARN)<<"          This should be replaced with Viewer::addViewport(osg::Node*)."<<endl;
-    osg::notify(osg::WARN)<<"          Automatically mapping init to addViewport."<<endl;
+    osg::notify(osg::WARN)<<"Warning - call to Viewer::init(osg::Node*) which is a deprecated method."<< std::endl;
+    osg::notify(osg::WARN)<<"          This should be replaced with Viewer::addViewport(osg::Node*)."<< std::endl;
+    osg::notify(osg::WARN)<<"          Automatically mapping init to addViewport."<< std::endl;
     addViewport(rootnode);
 }
 

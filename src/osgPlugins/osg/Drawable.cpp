@@ -82,13 +82,13 @@ bool Drawable_writeLocalData(const Object& obj, Output& fw)
     if (!drawable.getSupportsDisplayList())
     {
         fw.indent()<<"supportsDisplayList ";
-        if (drawable.getSupportsDisplayList()) fw << "TRUE" <<endl;
-        else fw << "FALSE" <<endl;
+        if (drawable.getSupportsDisplayList()) fw << "TRUE" << std::endl;
+        else fw << "FALSE" << std::endl;
     }
 
     fw.indent()<<"useDisplayList ";
-    if (drawable.getUseDisplayList()) fw << "TRUE" <<endl;
-    else fw << "FALSE" <<endl;
+    if (drawable.getUseDisplayList()) fw << "TRUE" << std::endl;
+    else fw << "FALSE" << std::endl;
 
     return true;
 }

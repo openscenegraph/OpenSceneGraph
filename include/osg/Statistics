@@ -14,7 +14,7 @@ namespace osg {
  * Statistics base class. Used to extract primitive information from 
  * the renderBin(s).  Add a case of getStats(osgUtil::Statistics *stat)
  * for any new drawable (or drawable derived class) that you generate 
- * (eg see GeoSet.cpp).  There are 20 types of drawable counted - actually only
+ * (eg see Geometry.cpp).  There are 20 types of drawable counted - actually only
  * 14 cases can occur in reality.  these represent sets of GL_POINTS, GL_LINES
  * GL_LINESTRIPS, LOOPS, TRIANGLES, TRI-fans, tristrips, quads, quadstrips etc
  * The number of triangles rendered is inferred:

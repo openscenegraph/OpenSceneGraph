@@ -337,6 +337,8 @@ class SG_EXPORT GeoSet : public Drawable
         /** return the attributes successully applied in applyAttributeUpdate.*/
         virtual AttributeBitMask applyAttributeOperation(AttributeFunctor& auf);
 
+        /** apply the internal geometry as basic primitives to a PrimitiveFunctor.*/
+        virtual void applyPrimitiveOperation(PrimitiveFunctor& functor);
 
         /** convinience function for converting GeoSet's to equivilant Geometry nodes.*/
         Geometry* convertToGeometry();

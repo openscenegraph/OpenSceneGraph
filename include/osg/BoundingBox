@@ -15,7 +15,7 @@ class BoundingSphere;
 
 /** General purpose axis-aligned bounding box class for enclosing objects/vertices.
     Used to bounding the leaf objects in the scene,
-    i.e. osg::GeoSet's to assist in view frustum culling etc.
+    i.e. osg::Drawable's to assist in view frustum culling etc.
 */
 class SG_EXPORT BoundingBox
 {

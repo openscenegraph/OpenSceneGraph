@@ -3,7 +3,6 @@
 
 #include <osg/Group>
 #include <osg/Geode>
-#include <osg/GeoSet>
 
 using namespace osg;
 
@@ -163,59 +162,7 @@ float computePolytopeVolume(const PointList& front, const PointList& back)
     return volume;
 }
 
-
-Drawable* createOccluderDrawable(const PointList& front, const PointList& back)
-{
-    // create a drawable for occluder.
-    osg::GeoSet* geoset = osgNew osg::GeoSet;
-    
-    int totalNumber = front.size()+back.size();
-    osg::Vec3* coords = osgNew osg::Vec3[front.size()+back.size()];
-    osg::Vec3* cptr = coords;
-    for(PointList::const_iterator fitr=front.begin();
-        fitr!=front.end();
-        ++fitr)
-    {
-        *cptr = fitr->second;
-        ++cptr;
-    }
-
-    for(PointList::const_iterator bitr=back.begin();
-        bitr!=back.end();
-        ++bitr)
-    {
-        *cptr = bitr->second;
-        ++cptr;
-    }
-
-    geoset->setCoords(coords);
-    
-    osg::Vec4* color = osgNew osg::Vec4[1];
-    color[0].set(1.0f,1.0f,1.0f,0.5f);
-    geoset->setColors(color);
-    geoset->setColorBinding(osg::GeoSet::BIND_OVERALL);
-    
-    geoset->setPrimType(osg::GeoSet::POINTS);
-    geoset->setNumPrims(totalNumber);
-    
-    //cout << "totalNumber = "<<totalNumber<<endl;
-
-
-    osg::Geode* geode = osgNew osg::Geode;
-    geode->addDrawable(geoset);
-    
-    osg::StateSet* stateset = osgNew osg::StateSet;
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    
-    geoset->setStateSet(stateset);
-
-    return geoset;
-}
-
-
-bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool createDrawables)
+bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool /*createDrawables*/)
 {
 
 
@@ -291,24 +238,6 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         
         _volume = computePolytopeVolume(points,farPoints)/volumeview;
 
-        if (createDrawables && !nodePath.empty())
-        {
-            osg::Group* group = dynamic_cast<osg::Group*>(nodePath.back());
-            if (group)
-            {
-            
-                osg::Matrix invMV;
-                invMV.invert(MV);
-                
-                transform(points,invMV);
-                transform(farPoints,invMV);
-            
-                osg::Geode* geode = osgNew osg::Geode;
-                group->addChild(geode);
-                geode->addDrawable(createOccluderDrawable(points,farPoints));
-            }
-        }
-        
         
         for(ConvexPlanerOccluder::HoleList::const_iterator hitr=occluder.getHoleList().begin();
             hitr!=occluder.getHoleList().end();
@@ -350,24 +279,6 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
 
                 // remove the hole's volume from the occluder volume.
                 _volume -= computePolytopeVolume(points,farPoints)/volumeview;
-                
-                if (createDrawables && !nodePath.empty())
-                {
-                    osg::Group* group = dynamic_cast<osg::Group*>(nodePath.back());
-                    if (group)
-                    {
-
-                        osg::Matrix invMV;
-                        invMV.invert(MV);
-
-                        transform(points,invMV);
-                        transform(farPoints,invMV);
-
-                        osg::Geode* geode = osgNew osg::Geode;
-                        group->addChild(geode);
-                        geode->addDrawable(createOccluderDrawable(points,farPoints));
-                    }
-                }
             }
             
         }

@@ -7,7 +7,7 @@
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
-#include <osg/GeoSet>
+#include <osg/Geometry>
 
 #include <osgUtil/Export>
 
@@ -30,7 +30,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
           * NvTriStrip.  Converts all primitive types except points
           * and lines, linestrips which it leaves unchanged.
           */
-        static void stripify(osg::GeoSet& gset);
+        static void stripify(osg::Geometry& drawable);
 
         /// apply stripify method to all geode geosets.
         virtual void apply(osg::Geode& geode);

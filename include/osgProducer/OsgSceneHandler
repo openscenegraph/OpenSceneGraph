@@ -85,10 +85,6 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
     
         virtual ~OsgSceneHandler() {}
     
-
-        osg::ref_ptr<osg::RefMatrix> mm; 
-        osg::ref_ptr<osg::RefMatrix> pm;
-
         osg::ref_ptr<Callback> _clearCallback;
         osg::ref_ptr<Callback> _cullCallback;
         osg::ref_ptr<Callback> _drawCallback;

@@ -125,12 +125,12 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
             Producer::Camera* cmm=_viewer->getCamera(i);
             Producer::RenderSurface* rs = cmm->getRenderSurface();
 
-            std::cout << "checking camara "<<i<<std::endl;
+            //std::cout << "checking camara "<<i<<std::endl;
 
             float pixel_x,pixel_y;
             if (km->computePixelCoords(x,y,rs,pixel_x,pixel_y))
             {
-                std::cout << "    compute pixel coords "<<pixel_x<<"  "<<pixel_y<<std::endl;
+                //std::cout << "    compute pixel coords "<<pixel_x<<"  "<<pixel_y<<std::endl;
 
                 int pr_wx, pr_wy;
                 unsigned int pr_width, pr_height;
@@ -143,7 +143,7 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
                 pr_wx += rs_wx;
                 pr_wy += rs_wy;
 
-                std::cout << "    wx = "<<pr_wx<<"  wy = "<<pr_wy<<" width="<<pr_width<<" height="<<pr_height<<std::endl;
+                //std::cout << "    wx = "<<pr_wx<<"  wy = "<<pr_wy<<" width="<<pr_width<<" height="<<pr_height<<std::endl;
 
 
 
@@ -157,13 +157,23 @@ void PickHandler::pick(const osgGA::GUIEventAdapter& ea)
                 float rx = 2.0f*(pixel_x - (float)pr_wx)/(float)pr_width-1.0f;
                 float ry = 2.0f*(pixel_y - (float)pr_wy)/(float)pr_height-1.0f;
 
-                std::cout << "    rx "<<rx<<"  "<<ry<<std::endl;
-
-                osg::Matrix vum(osg::Matrix(cmm->getViewMatrix()) *
-                                osg::Matrix(cmm->getProjectionMatrix())/* * 
-                                osg::Matrix::translate(1.0f,1.0f,1.0f) *
-                                osg::Matrix::scale(0.5f,0.5f,0.5f)*/);
-
+                //std::cout << "    rx "<<rx<<"  "<<ry<<std::endl;
+                
+                osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(cmm->getSceneHandler());
+                osg::Matrix vum;
+                if (sh!=0 && sh->getModelViewMatrix()!=0 && sh->getProjectionMatrix()!=0)
+                {
+                    vum.set((*(sh->getModelViewMatrix())) *
+                            (*(sh->getProjectionMatrix())));
+                }
+                else
+                {
+                    vum.set(osg::Matrix(cmm->getViewMatrix()) *
+                            osg::Matrix(cmm->getProjectionMatrix())/* * 
+                            osg::Matrix::translate(1.0f,1.0f,1.0f) *
+                            osg::Matrix::scale(0.5f,0.5f,0.5f)*/);
+                }
+                
                 osgUtil::PickVisitor iv;
                 osgUtil::IntersectVisitor::HitList& hlist=iv.getHits(scene, vum, rx,ry);
                 if (iv.hits())

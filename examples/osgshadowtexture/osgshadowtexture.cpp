@@ -200,12 +200,6 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
     // load the nodes from the commandline arguments.
     osg::Node* model = createModel();
     if (!model)

@@ -61,11 +61,11 @@ void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )
     osg::ref_ptr<EventAdapter> event = new EventAdapter;
     event->adaptKeyPress(getTime(),key);
 
-
-#ifdef WIN32
-    if (_escapeKeySetsDone && 
-        event->getKey()==VK_ESCAPE) _done = true;
-#endif
+// 
+// #ifdef WIN32
+//     if (_escapeKeySetsDone && 
+//         event->getKey()==VK_ESCAPE) _done = true;
+// #endif
 
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 
@@ -96,10 +96,10 @@ void KeyboardMouseCallback::specialKeyPress( Producer::KeyCharacter key )
     event->adaptKeyPress(getTime(),key);
 
 
-#ifdef WIN32
-    if (_escapeKeySetsDone && 
-        event->getKey()==VK_ESCAPE) _done = true;
-#endif
+// #ifdef WIN32
+//     if (_escapeKeySetsDone && 
+//         event->getKey()==VK_ESCAPE) _done = true;
+// #endif
 
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 

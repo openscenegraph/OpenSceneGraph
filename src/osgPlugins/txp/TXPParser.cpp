@@ -1288,8 +1288,7 @@ osg::Texture2D* txp::getLocalTexture(trpgrImageHelper& image_helper, const trpgT
         // osg::Image do their own mipmaps
         if(num_mipmaps <= 1)
         {
-            int32 size = s.x*s.y*depth; 
-            // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
+			int32 size = tex->CalcTotalSize();
             data = new char [size];
             image_helper.GetLocalGL(tex,data,size);
             image->setImage(s.x,s.y,1,internalFormat, pixelFormat, dataType,
@@ -1361,8 +1360,7 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
         // osg::Image do their own mipmaps
         if(num_mipmaps <= 1)
         {
-            int32 size = s.x*s.y*depth; 
-            // int32 size = const_cast<trpgTexture*>(tex)->MipLevelSize(1) ;
+			int32 size = tex->CalcTotalSize();
             data = new char [size];
             image_helper.GetNthImageForLocalMat(locmat,index, data,size);
 

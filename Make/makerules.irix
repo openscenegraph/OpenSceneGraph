@@ -59,4 +59,4 @@ home :
 
 sinclude $(INSTRULES)
 
-include $(MAKEDEPEND)
+sinclude $(MAKEDEPEND)

@@ -24,14 +24,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(clv);        
         clv.combineLODs();
     }
-    
+/*    
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
         FlattenStaticTransformsVisitor fstv;
         node->accept(fstv);
         fstv.removeTransforms();
     }
-    
+*/    
     if (options & REMOVE_REDUNDENT_NODES)
     {
         RemoveRedundentNodesVisitor rrnv;

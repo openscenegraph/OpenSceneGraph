@@ -2360,6 +2360,17 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         osg::MatrixTransform* mt = new osg::MatrixTransform;
         mt->setMatrix(localToWorld);
         mt->addChild(geode);
+        
+        bool addLocalAxes = false;
+        if (addLocalAxes)
+        {
+            float s = geode->getBound().radius()*0.5f;
+            osg::MatrixTransform* scaleAxis = new osg::MatrixTransform;
+            scaleAxis->setMatrix(osg::Matrix::scale(s,s,s));
+            scaleAxis->addChild(osgDB::readNodeFile("axes.osg"));
+            mt->addChild(scaleAxis);
+        }
+                
         return mt;
     }
     else

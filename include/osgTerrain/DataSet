@@ -844,6 +844,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         void loadSources();
         
+        void setMaximumVisibleDistanceOfTopLevel(float d) { _maximumVisiableDistanceOfTopLevel = d; }
+        float getMaximumVisibleDistanceOfTopLevel() const { return _maximumVisiableDistanceOfTopLevel; }
+
         void setRadiusToMaxVisibleDistanceRatio(float ratio) { _radiusToMaxVisibleDistanceRatio = ratio; }
         float getRadiusToMaxVisibleDistanceRatio() const { return _radiusToMaxVisibleDistanceRatio; }
 	
@@ -954,6 +957,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         QuadMap                                     _quadMap;
 
 
+        float                                       _maximumVisiableDistanceOfTopLevel;
 	float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
             

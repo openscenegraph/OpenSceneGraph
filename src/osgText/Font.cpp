@@ -287,7 +287,7 @@ Font::GlyphTexture::~GlyphTexture()
 }
 
 // return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.
-int Font::GlyphTexture::compare(const StateAttribute& rhs) const
+int Font::GlyphTexture::compare(const osg::StateAttribute& rhs) const
 {
     if (this<&rhs) return -1;
     else if (this>&rhs) return 1;

@@ -2,6 +2,7 @@ TOPDIR = ../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+        DatabasePager.cpp\
 	DynamicLibrary.cpp\
 	FileNameUtils.cpp\
 	FileUtils.cpp\

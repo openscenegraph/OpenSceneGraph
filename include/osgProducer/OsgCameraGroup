@@ -26,8 +26,9 @@
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 
+#include <osgDB/DatabasePager>
+
 #include <osgProducer/OsgSceneHandler>
-#include <osgProducer/DatabasePager>
 
 namespace osgProducer {
 
@@ -190,7 +191,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         osg::Timer_t    _start_tick;
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;
         
-        osg::ref_ptr<DatabasePager>            _databasePager;
+        osg::ref_ptr<osgDB::DatabasePager>      _databasePager;
 
         void _init();
 };

@@ -56,12 +56,11 @@
 #  pragma warning (disable:4541)
 #endif
 
-#ifdef __APPLE__
-#include <sys/types.h>
-#include <sys/malloc.h>
-#else
+// Where is malloc.h really needed?
+#if !defined(__APPLE__) && !defined(macintosh)
 #include <malloc.h>
 #endif
+
 #include "mynode.h"
 #include <stdlib.h>
 #include "geometry.h"

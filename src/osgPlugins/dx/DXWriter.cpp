@@ -602,10 +602,10 @@ inline int IsNaNorInf( float f )
     case FP_PINF : return 1;
     default      : return 0;
   }
-#elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__) 
+#elif defined(__FreeBSD__) || defined(__APPLE__)
+  return isnan(f) || isinf(f); // isnanf is deprecated
+#elif defined(__linux) || defined(__CYGWIN__)
   return isnanf(f) || isinf(f);
-#elif  defined(__APPLE__)
-  return __isnanf(f) || __isinf(f);
 #elif defined(__sun)
   return isnan(f);  // KLUDGE - hack to get this to compile w/g++. 
 #elif defined(WIN32)

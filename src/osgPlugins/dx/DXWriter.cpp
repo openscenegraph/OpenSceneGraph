@@ -105,7 +105,6 @@
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/LOD>
@@ -126,12 +125,15 @@
 #include "StateSetStr.h"
 
 #if defined(__sgi) || defined(__FreeBSD__)
+	#include <unistd.h>
     #include <ieeefp.h>
 #else
     #include <math.h>
     #if defined(WIN32) || defined (macintosh)
         #include <float.h>
-    #endif
+    #else
+		#include <unistd.h>
+	#endif
 #endif
 
 namespace dx {
@@ -596,7 +598,7 @@ inline int IsNaNorInf( float f )
 #elif defined(__FreeBSD__) || defined(__linux) || defined(__CYGWIN__)
   return isnanf(f) || isinf(f);
 #elif defined(WIN32)
-  return _isnan(f) || _isinfinite(f);
+  return _isnan(f) || !_finite(f);
 #else
 #  error Teach me how to find non-numbers on this platform.
 #endif
@@ -1476,7 +1478,7 @@ std::string DXWriter::WriteImage( const osg::Image &image )
 
   // Write colors
   int found_transparent = 0;
-  for ( unsigned i = 0; i < num_pixels && !found_transparent; i++ )
+  for ( i = 0; i < num_pixels && !found_transparent; i++ )
     found_transparent = (colors[i][3] != opaque);
 
   int do_opacities = ((pixel_fmt == GL_RGBA || 
@@ -1496,7 +1498,7 @@ std::string DXWriter::WriteImage( const osg::Image &image )
                  colors_name.c_str(), colormap_name.c_str(), 
                  opacities_name.c_str(), opacitymap_name.c_str(),
                  do_opacities, "positions", wrote_maps );
-  delete colors;
+  delete [] colors;
 
   field.AddComponent( "colors", colors_name.c_str() );
   if ( do_opacities )
@@ -2278,6 +2280,10 @@ void DXWriter::CollectUnhandledModesAndAttrs( osg::StateSet *sset )
 
 //----------------------------------------------------------------------------
 
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
+
 void DXWriter::ReportUnhandledModesAndAttrs()
 {
   char msg[1024];
@@ -2388,15 +2394,15 @@ class StateSetActionVisitor : public osg::NodeVisitor
     // Give first pass traversal control back to StateSetVisitor
     void apply(osg::Node& node);
 
-    void apply(osg::Geode& node)      { osg::NodeVisitor::apply(node); }
-    void apply(osg::Billboard& node)  { osg::NodeVisitor::apply(node); }
-    void apply(osg::LightSource& node){ osg::NodeVisitor::apply(node); }
-    void apply(osg::Group& node)      { osg::NodeVisitor::apply(node); }
-    void apply(osg::Transform& node)  { osg::NodeVisitor::apply(node); }
-    void apply(osg::Switch& node)     { osg::NodeVisitor::apply(node); }
-    void apply(osg::LOD& node)        { osg::NodeVisitor::apply(node); }
-    void apply(osg::Impostor& node)   { osg::NodeVisitor::apply(node); }
-    void apply(osg::EarthSky& node)   { osg::NodeVisitor::apply(node); }
+    void apply(osg::Geode& node)      { NodeVisitor::apply(node); }
+    void apply(osg::Billboard& node)  { NodeVisitor::apply(node); }
+    void apply(osg::LightSource& node){ NodeVisitor::apply(node); }
+    void apply(osg::Group& node)      { NodeVisitor::apply(node); }
+    void apply(osg::Transform& node)  { NodeVisitor::apply(node); }
+    void apply(osg::Switch& node)     { NodeVisitor::apply(node); }
+    void apply(osg::LOD& node)        { NodeVisitor::apply(node); }
+    void apply(osg::Impostor& node)   { NodeVisitor::apply(node); }
+    void apply(osg::EarthSky& node)   { NodeVisitor::apply(node); }
 
 
     const osg::StateSet &GetActiveStateSet()

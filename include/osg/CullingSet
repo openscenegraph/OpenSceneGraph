@@ -81,12 +81,14 @@ class SG_EXPORT CullingSet : public Referenced
         inline void set(const CullingSet& cs,const Matrix& matrix, const Vec4& pixelSizeVector)
         {
             _mask = cs._mask;
-            _frustum = cs._frustum;
             _occluderList = cs._occluderList;
             _pixelSizeVector = pixelSizeVector;
             _smallFeatureCullingPixelSize = cs._smallFeatureCullingPixelSize;
 
-            _frustum.transformProvidingInverse(matrix);
+            //_frustum = cs._frustum;
+            //_frustum.transformProvidingInverse(matrix);
+            
+            _frustum.setAndTransformProvidingInverse(cs._frustum,matrix);
             
             for(OccluderList::iterator itr=_occluderList.begin();
                 itr!=_occluderList.end();

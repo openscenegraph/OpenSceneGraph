@@ -38,25 +38,39 @@ class OSGUTIL_EXPORT Optimizer
 
         enum OptimizationOptions
         {
-            FLATTEN_STATIC_TRANSFORMS = 0x1,
-            REMOVE_REDUNDANT_NODES = 0x2,
-            COMBINE_ADJACENT_LODS = 0x4,
-            SHARE_DUPLICATE_STATE = 0x8,
-            MERGE_GEOMETRY = 0x10,
-            CHECK_GEOMETRY = 0x20,
-            SPATIALIZE_GROUPS = 0x40,
+            FLATTEN_STATIC_TRANSFORMS = 0x001,
+            REMOVE_REDUNDANT_NODES =    0x002,
+            COMBINE_ADJACENT_LODS =     0x004,
+            SHARE_DUPLICATE_STATE =     0x008,
+            MERGE_GEOMETRY =            0x010,
+            CHECK_GEOMETRY =            0x020,
+            SPATIALIZE_GROUPS =         0x040,
+            COPY_SHARED_NODES =         0x080,
+            TRISTRIP_GEOMETRY =         0x100,
+            DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
+                                REMOVE_REDUNDANT_NODES |
+                                COMBINE_ADJACENT_LODS |
+                                SHARE_DUPLICATE_STATE |
+                                MERGE_GEOMETRY |
+                                CHECK_GEOMETRY,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
                                 CHECK_GEOMETRY |
-                                SPATIALIZE_GROUPS
+                                SPATIALIZE_GROUPS |
+                                COPY_SHARED_NODES |
+                                TRISTRIP_GEOMETRY
         };
 
         /** traverse the node and its subgraph with a series of optimization
           * visitors, specificied by the OptizationOptions.*/
-        virtual void optimize(osg::Node* node, unsigned int options = ALL_OPTIMIZATIONS);
+        void optimize(osg::Node* node);
+
+        /** traverse the node and its subgraph with a series of optimization
+          * visitors, specificied by the OptizationOptions.*/
+        virtual void optimize(osg::Node* node, unsigned int options);
 
 
 
@@ -231,6 +245,22 @@ class OSGUTIL_EXPORT Optimizer
                 
                 typedef std::set<osg::Group*> GroupsToDivideList;
                 GroupsToDivideList _groupsToDivideList;
+
+        };
+
+        /** Copy any shared subgraphs, enabling flattening of static transforms.*/
+        class OSGUTIL_EXPORT CopySharedSubgraphsVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                CopySharedSubgraphsVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+                
+                virtual void apply(osg::Node& node);
+
+                void copySharedNodes();
+                
+                typedef std::set<osg::Node*> SharedNodeList;
+                SharedNodeList _sharedNodeList;
 
         };
 };

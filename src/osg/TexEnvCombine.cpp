@@ -12,6 +12,7 @@
 */
 #include <osg/GLExtensions>
 #include <osg/TexEnvCombine>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -100,3 +101,42 @@ void TexEnvCombine::apply(State&) const
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     }
 }
+void TexEnvCombine::setCombine_RGB(GLint cm) { _combine_RGB = cm; }
+void TexEnvCombine::setCombine_Alpha(GLint cm) { _combine_Alpha = cm; }
+
+void TexEnvCombine::setSource0_RGB(GLint sp) { _source0_RGB = sp; computeNeedoForTexEnvCombiners(); }
+void TexEnvCombine::setSource1_RGB(GLint sp) { _source1_RGB = sp; computeNeedoForTexEnvCombiners(); }
+void TexEnvCombine::setSource2_RGB(GLint sp) { _source2_RGB = sp; computeNeedoForTexEnvCombiners(); }
+
+void TexEnvCombine::setSource0_Alpha(GLint sp) { _source0_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+void TexEnvCombine::setSource1_Alpha(GLint sp) { _source1_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+void TexEnvCombine::setSource2_Alpha(GLint sp) { _source2_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+
+void TexEnvCombine::setOperand0_RGB(GLint op) { _operand0_RGB = op; }
+void TexEnvCombine::setOperand1_RGB(GLint op) { _operand1_RGB = op; }
+void TexEnvCombine::setOperand2_RGB(GLint op) { _operand2_RGB = op; }
+
+static GLint Valid_Operand_Alpha(GLint op, const char* functionName)
+{
+    if (op==TexEnvCombine::SRC_ALPHA || op==TexEnvCombine::ONE_MINUS_SRC_ALPHA) return op;
+
+    notify(WARN)<<"Warning:: TexEnvCombine::"<<functionName<<"("<<op<<") invalid parameter value,"<<std::endl<<
+                  "          must be SRC_ALPHA or ONE_MINUS_SRC_ALPHA, resetting to SRC_ALPHA."<<std::endl;
+    return TexEnvCombine::SRC_ALPHA;
+}
+
+void TexEnvCombine::setOperand0_Alpha(GLint op)
+{
+    _operand0_Alpha = Valid_Operand_Alpha(op,"setOperand0_Alpha");
+}
+void TexEnvCombine::setOperand1_Alpha(GLint op)
+{
+    _operand1_Alpha = Valid_Operand_Alpha(op,"setOperand1_Alpha");
+}
+void TexEnvCombine::setOperand2_Alpha(GLint op)
+{ 
+    _operand2_Alpha = Valid_Operand_Alpha(op,"setOperand2_Alpha");
+}
+
+void TexEnvCombine::setScale_RGB(float scale) { _scale_RGB = scale; }
+void TexEnvCombine::setScale_Alpha(float scale) { _scale_Alpha = scale; }

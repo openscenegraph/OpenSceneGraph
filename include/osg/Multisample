@@ -77,7 +77,7 @@ class SG_EXPORT Multisample : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const {}
+        virtual void getAssociatedModes(std::vector<GLMode>& /*modes*/) const {}
 
         void setSampleCoverage(float coverage, bool invert) 
         {

@@ -25,6 +25,7 @@
 #include <osg/Switch>
 
 #include <osgUtil/TransformAttributeFunctor>
+#include <osgUtil/TriStripVisitor>
 
 #include <typeinfo>
 #include <algorithm>
@@ -48,19 +49,101 @@ static bool isNodeEmpty(const osg::Node& node)
     return true;
 }
 
+void Optimizer::optimize(osg::Node* node)
+{
+    unsigned int options = 0;
+    
+    const char* env = getenv("OSG_OPTIMIZER");
+    if (env)
+    {
+        std::string str(env);
+
+
+        if(str.find("!DEFAULT")!=std::string::npos) options ^= DEFAULT_OPTIMIZATIONS;
+        else if(str.find("DEFAULT")!=std::string::npos) options |= DEFAULT_OPTIMIZATIONS;
+
+        if(str.find("!FLATTEN_STATIC_TRANSFORMS")!=std::string::npos) options ^= FLATTEN_STATIC_TRANSFORMS;
+        else if(str.find("FLATTEN_STATIC_TRANSFORMS")!=std::string::npos) options |= FLATTEN_STATIC_TRANSFORMS;
+
+        if(str.find("!REMOVE_REDUNDANT_NODES")!=std::string::npos) options ^= REMOVE_REDUNDANT_NODES;
+        else if(str.find("REMOVE_REDUNDANT_NODES")!=std::string::npos) options |= REMOVE_REDUNDANT_NODES;
+
+        if(str.find("!COMBINE_ADJACENT_LODS")!=std::string::npos) options ^= COMBINE_ADJACENT_LODS;
+        else if(str.find("COMBINE_ADJACENT_LODS")!=std::string::npos) options |= COMBINE_ADJACENT_LODS;
+
+        if(str.find("!SHARE_DUPLICATE_STATE")!=std::string::npos) options ^= SHARE_DUPLICATE_STATE;
+        else if(str.find("SHARE_DUPLICATE_STATE")!=std::string::npos) options |= SHARE_DUPLICATE_STATE;
+
+        if(str.find("!MERGE_GEOMETRY")!=std::string::npos) options ^= MERGE_GEOMETRY;
+        else if(str.find("MERGE_GEOMETRY")!=std::string::npos) options |= MERGE_GEOMETRY;
+
+        if(str.find("!SPATIALIZE_GROUPS")!=std::string::npos) options ^= SPATIALIZE_GROUPS;
+        else if(str.find("SPATIALIZE_GROUPS")!=std::string::npos) options |= SPATIALIZE_GROUPS;
+
+        if(str.find("!COPY_SHARED_NODES")!=std::string::npos) options ^= COPY_SHARED_NODES;
+        else if(str.find("COPY_SHARED_NODES")!=std::string::npos) options |= COPY_SHARED_NODES;
+
+        if(str.find("!TRISTRIP_GEOMETRY")!=std::string::npos) options ^= TRISTRIP_GEOMETRY;
+        else if(str.find("TRISTRIP_GEOMETRY")!=std::string::npos) options |= TRISTRIP_GEOMETRY;
+
+    }
+    else
+    {
+        options = DEFAULT_OPTIMIZATIONS;
+    }
+
+    optimize(node,options);
+}
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
 
     if (options & COMBINE_ADJACENT_LODS)
     {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing COMBINE_ADJACENT_LODS"<<std::endl;
+
         CombineLODsVisitor clv;
         node->accept(clv);        
         clv.combineLODs();
     }
     
+    if (options & SHARE_DUPLICATE_STATE)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing SHARE_DUPLICATE_STATE"<<std::endl;
+
+        StateVisitor osv;
+        node->accept(osv);
+        osv.optimize();
+    }
+    
+    if (options & CHECK_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
+
+        CheckGeometryVisitor mgv;
+        node->accept(mgv);
+    }
+
+    if (options & MERGE_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
+
+        MergeGeometryVisitor mgv;
+        node->accept(mgv);
+    }
+
+    if (options & COPY_SHARED_NODES)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing COPY_SHARED_NODES"<<std::endl;
+
+        CopySharedSubgraphsVisitor cssv;
+        node->accept(cssv);
+        cssv.copySharedNodes();
+    }
+    
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS"<<std::endl;
 
         int i=0;
         bool result = false;
@@ -78,6 +161,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & REMOVE_REDUNDANT_NODES)
     {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
 
         RemoveEmptyNodesVisitor renv;
         node->accept(renv);
@@ -89,33 +173,22 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     }
     
-
-
-    if (options & SHARE_DUPLICATE_STATE)
-    {
-        StateVisitor osv;
-        node->accept(osv);
-        osv.optimize();
-    }
-    
-    if (options & CHECK_GEOMETRY)
-    {
-        CheckGeometryVisitor mgv;
-        node->accept(mgv);
-    }
-
-    if (options & MERGE_GEOMETRY)
-    {
-        MergeGeometryVisitor mgv;
-        node->accept(mgv);
-    }
-
     if (options & SPATIALIZE_GROUPS)
     {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
+
         SpatializeGroupsVisitor sv;
         node->accept(sv);
         sv.divide();
-        
+    }
+
+    if (options & TRISTRIP_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing TRISTRIP_GEOMETRY"<<std::endl;
+
+        TriStripVisitor tsv;
+        node->accept(tsv);
+        tsv.stripify();
     }
 
 }
@@ -1532,6 +1605,7 @@ bool Optimizer::MergeGeometryVisitor::mergePrimitive(osg::DrawElementsUInt& lhs,
     return true;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  Spatialize the scene to accelerate culling
@@ -1717,4 +1791,42 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
 
     return (numChildrenOnEntry<group->getNumChildren());
     
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  Spatialize the scene to accelerate culling
+//
+
+void Optimizer::CopySharedSubgraphsVisitor::apply(osg::Node& node)
+{
+    if (node.getNumParents()>1)
+    {
+        _sharedNodeList.insert(&node);
+    }
+    traverse(node);
+}
+
+void Optimizer::CopySharedSubgraphsVisitor::copySharedNodes()
+{
+    std::cout<<"Shared node "<<_sharedNodeList.size()<<std::endl;
+    for(SharedNodeList::iterator itr=_sharedNodeList.begin();
+        itr!=_sharedNodeList.end();
+        ++itr)
+    {
+        std::cout<<"   No parents "<<(*itr)->getNumParents()<<std::endl;
+        osg::Node* node = *itr;
+        for(unsigned int i=node->getNumParents()-1;i>0;--i)
+        {
+            // create a clone.
+            osg::ref_ptr<osg::Object> new_object = node->clone(osg::CopyOp::DEEP_COPY_NODES |
+                                                          osg::CopyOp::DEEP_COPY_DRAWABLES);
+            // cast it to node.                                              
+            osg::Node* new_node = dynamic_cast<osg::Node*>(new_object.get());
+
+            // replace the node by new_new 
+            if (new_node) node->getParent(i)->replaceChild(node,new_node);
+        }
+    }
 }

@@ -73,6 +73,9 @@ class SG_EXPORT Array : public Object
         virtual void accept(unsigned int index,ValueVisitor&) = 0;
         virtual void accept(unsigned int index,ConstValueVisitor&) const = 0;
 
+        /** return -1 if lhs element is less than rhs element, 0 is equal, 1 if lhs element is greater than rhs element.*/
+        virtual int compare(unsigned int lhs,unsigned int rhs) const = 0;
+
         Type                    getType() const { return _arrayType; }
         GLint                   getDataSize() const { return _dataSize; }
         GLenum                  getDataType() const { return _dataType; }
@@ -122,6 +125,15 @@ class TemplateArray : public Array, public std::vector<T>
         virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
         virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
 
+        virtual int compare(unsigned int lhs,unsigned int rhs) const
+        {
+            const T& elem_lhs = (*this)[lhs];
+            const T& elem_rhs = (*this)[rhs];
+            if (elem_lhs<elem_rhs) return -1;
+            if (elem_rhs<elem_lhs) return 1;
+            return 0;
+        }
+        
         virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return size()*sizeof(T); }
         virtual unsigned int    getNumElements() const { return size(); }
@@ -183,6 +195,15 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
 
         virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
         virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
+
+        virtual int compare(unsigned int lhs,unsigned int rhs) const
+        {
+            const T& elem_lhs = (*this)[lhs];
+            const T& elem_rhs = (*this)[rhs];
+            if (elem_lhs<elem_rhs) return -1;
+            if (elem_rhs<elem_lhs) return 1;
+            return 0;
+        }
 
         virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return size()*sizeof(T); }

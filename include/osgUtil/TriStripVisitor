@@ -20,6 +20,8 @@
 
 #include <osgUtil/Export>
 
+#include <set>
+
 namespace osgUtil {
 
 /** A tri stripping visitor for converting Geometry surface primitives into tri strips.
@@ -42,7 +44,10 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
           */
         void stripify(osg::Geometry& drawable);
 
-        /// apply stripify method to all geode geometry.
+        /** Stripfy the accumulated list of Geometry drawables.*/
+        void stripify();
+
+        /// accumulate the Geometry drawables to stripify
         virtual void apply(osg::Geode& geode);
 
         inline void setCacheSize( unsigned int size )
@@ -77,8 +82,11 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
         
     private:
     
+        typedef std::set<osg::Geometry*> GeometryList;
+
         unsigned int _cacheSize;
         unsigned int _minStripSize;
+        GeometryList _geometryList;
 };
 
 }

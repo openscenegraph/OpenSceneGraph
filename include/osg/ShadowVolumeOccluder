@@ -27,13 +27,13 @@ class SG_EXPORT ShadowVolumeOccluder
             _occluderVolume(soc._occluderVolume),
             _holeList(soc._holeList) {}
 
-        ShadowVolumeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MVP)
+        ShadowVolumeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MV,const Matrix& P)
         {
-            computeOccluder(nodePath,occluder,MVP);
+            computeOccluder(nodePath,occluder,MV,P);
         }
 
         /** compute the shadow volume occluder. */
-        void computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MVP);
+        void computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,const Matrix& MV,const Matrix& P);
         
 
         inline void disableResultMasks();

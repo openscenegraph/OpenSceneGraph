@@ -1,6 +1,6 @@
 TOPDIR = ..
-include $(TOPDIR)/Make/makedirdefs
 include $(TOPDIR)/Make/makedefs
+include $(TOPDIR)/Make/makedirdefs
 
 DIRS = $(SRC_DIRS)
 

@@ -2098,6 +2098,7 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
     osg::Group* external = NULL;
     if (pFile)
     {
+        pFile->setDesiredUnits( rec->getFltFile()->getDesiredUnits() );
         external = pFile->convert();
         if (external)
             visitAncillary(osgParent, *external, rec)->addChild(external);

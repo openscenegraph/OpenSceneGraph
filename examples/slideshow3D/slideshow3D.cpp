@@ -204,8 +204,8 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
-    double vfov = osg::RadiansToDegrees(atan2(height/2.0,distance)*2.0);
-    double hfov = osg::RadiansToDegrees(atan2(width/2.0,distance)*2.0);
+    double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
+    double hfov = osg::RadiansToDegrees(atan2(width/2.0f,distance)*2.0);
 
     viewer.setLensPerspective( hfov, vfov, 0.1, 1000.0);
     

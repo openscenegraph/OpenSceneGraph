@@ -22,11 +22,49 @@
 #  pragma warning (disable:4541)
 #endif
 #include "readerwriter.h"
-#include "main.h"
+
+#include <stdio.h>
+#include <iostream>
+
+#include <osg/Notify>
+
+#include "mynode.h"
+#include "osgvisitor.h"
+
+extern int yyparse();
+extern int yydebug;
+extern MyNode *getRoot();
+extern FILE *yyin;
+int isatty(int) { return 0; }
+extern void flush_scanner();
+
 
 osgDB::ReaderWriter::ReadResult VrmlReaderWriter::readNode(const std::string& fileName,
-							 const osgDB::ReaderWriter::Options*) {
-    return readVRMLNode(fileName.c_str());
+							 const osgDB::ReaderWriter::Options*)
+{
+    std::string ext = osgDB::getFileExtension(fileName);
+    if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    yydebug=0;
+    yyin=fopen(fileName.c_str(),"r");
+    osg::notify(osg::INFO) << "Parsing..." << std::endl;
+    if (yyparse()!=0)
+    {
+        flush_scanner();
+        return ReadResult::FILE_NOT_HANDLED;
+    }
+    osg::ref_ptr<MyNode> n=getRoot();
+    try
+    {
+	osg::notify(osg::INFO) << "Generating OSG tree..." << std::endl;
+	osg::ref_ptr<OSGVisitor> visitante=new OSGVisitor(n.get());
+	return visitante->getRoot();
+    }
+    catch (...)
+    {
+	osg::notify(osg::INFO) << "VRML: error reading" << std::endl;
+	return ReadResult::ERROR_IN_READING_FILE;
+    }
 }
 
 osgDB::RegisterReaderWriterProxy<VrmlReaderWriter> g_readerWriter_VRML_Proxy;

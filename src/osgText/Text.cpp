@@ -17,6 +17,7 @@
 
 #include <osg/Math>
 #include <osg/GL>
+#include <osg/Notify>
 #include <osgUtil/CullVisitor>
 #include <osgDB/ReadFile>
 
@@ -385,6 +386,8 @@ void Text::computeGlyphRepresentation()
     deliminatorSet.insert(':');
     deliminatorSet.insert('.');
 
+    unsigned int lineNumber = 0;
+
     for(String::iterator itr=_text.begin();
         itr!=_text.end();
         )
@@ -468,6 +471,7 @@ void Text::computeGlyphRepresentation()
                     GlyphQuads& glyphquad = _textureGlyphQuadMap[glyph->getTexture()->getStateSet()];
 
                     glyphquad._glyphs.push_back(glyph);
+                    glyphquad._lineNumbers.push_back(lineNumber);
 
                     // set up the coords of the quad
                     glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
@@ -533,17 +537,18 @@ void Text::computeGlyphRepresentation()
           }
           break;
         }
+        
+        ++lineNumber;
 
     }
 
+    // compute the bounding box
     _textBB.init();
-
     for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
         const GlyphQuads& glyphquad = titr->second;
-        
         for(GlyphQuads::Coords2::const_iterator citr = glyphquad._coords.begin();
             citr != glyphquad._coords.end();
             ++citr)
@@ -552,10 +557,125 @@ void Text::computeGlyphRepresentation()
         }
     }
 
-    if (!_textureGlyphQuadMap.empty()) 
+    if (lineNumber>1)
     {
-        setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
+        // account for line justification    
+        typedef std::vector<osg::Vec2> LineDimensions;
+        LineDimensions minLineCoords(lineNumber, osg::Vec2(FLT_MAX,FLT_MAX));
+        LineDimensions maxLineCoords(lineNumber, osg::Vec2(-FLT_MAX,-FLT_MAX));
+
+        // osg::notify(osg::NOTICE)<<"lineNumber="<<lineNumber<<std::endl;
+
+        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+            titr!=_textureGlyphQuadMap.end();
+            ++titr)
+        {
+            const GlyphQuads& glyphquad = titr->second;
+            const GlyphQuads::Coords2& coords = glyphquad._coords;
+
+            unsigned int coordIndex = 0;
+            for(GlyphQuads::LineNumbers::const_iterator litr = glyphquad._lineNumbers.begin();
+                litr != glyphquad._lineNumbers.end();
+                ++litr)
+            {
+                unsigned int line = *litr;
+                osg::Vec2& minLineCoord = minLineCoords[line];
+                osg::Vec2& maxLineCoord = maxLineCoords[line];
+                for(unsigned int ci=0;ci<4;++ci)
+                {
+                    const osg::Vec2& coord = coords[coordIndex++];
+                    if (coord.x()<minLineCoord.x()) minLineCoord.x()=coord.x();
+                    if (coord.y()<minLineCoord.y()) minLineCoord.y()=coord.y();
+                    if (coord.x()>maxLineCoord.x()) maxLineCoord.x()=coord.x();
+                    if (coord.y()>maxLineCoord.y()) maxLineCoord.y()=coord.y();
+                }
+            }
+        }
+        
+        // osg::notify(osg::NOTICE)<<"Text dimensions min="<<_textBB.xMin()<<" "<<_textBB.yMin()<<"  max="<<_textBB.xMax()<<" "<<_textBB.yMax()<<std::endl;
+        typedef std::vector<osg::Vec2> LineOffsets;
+        LineOffsets lineOffsets(lineNumber,osg::Vec2(0.0f,0.0f));
+        for(unsigned int li=0;li<lineNumber;++li)
+        {
+            osg::Vec2& minCoord = minLineCoords[li];
+            osg::Vec2& maxCoord = maxLineCoords[li];
+            osg::Vec2& lineOffset = lineOffsets[li];
+            if (horizontal)
+            {
+                switch(_alignment)
+                {
+                case LEFT_BASE_LINE:
+                case LEFT_TOP:
+                case LEFT_CENTER:
+                case LEFT_BOTTOM: lineOffset.x() = _textBB.xMin() - minCoord.x(); break;
+
+                case CENTER_BASE_LINE:
+                case CENTER_TOP:
+                case CENTER_CENTER:
+                case CENTER_BOTTOM: lineOffset.x() = (_textBB.xMin()-minCoord.x()+_textBB.xMax()-maxCoord.x())*0.5f; break;
+
+                case RIGHT_BASE_LINE:
+                case RIGHT_TOP:
+                case RIGHT_CENTER:
+                case RIGHT_BOTTOM: lineOffset.x() = _textBB.xMax() - maxCoord.x(); break;
+                }
+            }
+            else
+            {
+                switch(_alignment)
+                {
+                case LEFT_TOP: 
+                case CENTER_TOP:
+                case RIGHT_TOP: lineOffset.y() = _textBB.yMax() - maxCoord.y(); break;
+
+                case LEFT_CENTER:
+                case CENTER_CENTER:
+                case RIGHT_CENTER: lineOffset.y() = (_textBB.yMin()-minCoord.y()+_textBB.yMax()-maxCoord.y())*0.5f; break;
+
+                case LEFT_BASE_LINE:
+                case CENTER_BASE_LINE:
+                case RIGHT_BASE_LINE: break;
+
+                case LEFT_BOTTOM: 
+                case CENTER_BOTTOM:
+                case RIGHT_BOTTOM: lineOffset.y() = _textBB.yMin() - minCoord.y(); break;
+                }
+            }
+            // osg::notify(osg::NOTICE)<<"  mincoords = "<<minLineCoords[li]<<" max = "<<maxLineCoords[li]<<std::endl;
+            // osg::notify(osg::NOTICE)<<"  offset = "<<lineOffset<<std::endl;
+        }
+
+        // shift lines
+        for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+            titr!=_textureGlyphQuadMap.end();
+            ++titr)
+        {
+            GlyphQuads& glyphquad = titr->second;
+            GlyphQuads::Coords2& coords = glyphquad._coords;
+
+            unsigned int coordIndex = 0;
+            for(GlyphQuads::LineNumbers::iterator litr = glyphquad._lineNumbers.begin();
+                litr != glyphquad._lineNumbers.end();
+                ++litr)
+            {
+                unsigned int line = *litr;
+                osg::Vec2& lineOffset = lineOffsets[line];
+                if (lineOffset.x()!=0.0f || lineOffset.y()!=0.0f)
+                {
+                    for(unsigned int ci=0;ci<4;++ci)
+                    {
+                        coords[coordIndex++] += lineOffset;
+                    }
+                }
+                else
+                {
+                    coordIndex += 4;
+                }
+            }
+        }
     }
+
+    setStateSet(const_cast<osg::StateSet*>((*_textureGlyphQuadMap.begin()).first.get()));
 
     computePositions();
 }

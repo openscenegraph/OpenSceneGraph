@@ -2185,8 +2185,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
     }
     
 #if 1
-    osgUtil::Simplifier simplifier;
-    simplifier.simplify(*geometry,0.5f);  // this will replace the normal vector with a new one
+    osgUtil::Simplifier simplifier(1.0f,geometry->getBound().radius()/2000.0f);
+//    osgUtil::Simplifier simplifier(1.0f,1.0f);
+    
+    simplifier.simplify(*geometry);  // this will replace the normal vector with a new one
 #endif
 
     osg::Geode* geode = new osg::Geode;

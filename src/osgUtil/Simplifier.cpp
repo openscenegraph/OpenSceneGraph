@@ -43,14 +43,12 @@ public:
     struct Point;
 
 
-    EdgeCollapse():
-        _targetNumTriangles(0) {}
+    EdgeCollapse() {}
+        
     ~EdgeCollapse() {}
 
     void setGeometry(osg::Geometry* geometry);
     osg::Geometry* getGeometry() { return _geometry; }
-
-    void setTargetNumOfTriangles(unsigned int num) { _targetNumTriangles = num; }
 
     unsigned int getNumOfTriangles() { return _triangleSet.size(); }
 
@@ -126,7 +124,11 @@ public:
         
         edge->_proposedPoint = computeOptimalPoint(edge);
         edge->updateMaxNormalDeviationOnEdgeCollapse();
-        edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
+        
+        if (edge->getMaxNormalDeviationOnEdgeCollapse()<=1.0f && !edge->isAdjacentToBoundary())
+            edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
+        else
+            edge->setErrorMetric( FLT_MAX );
         
         _edgeSet.insert(keep_local_reference_to_edge);
     }
@@ -145,9 +147,13 @@ public:
         {
             Edge* edge = itr->get();
 
-            edge->_proposedPoint = computeOptimalPoint(edge);
-            edge->updateMaxNormalDeviationOnEdgeCollapse();
+        edge->_proposedPoint = computeOptimalPoint(edge);
+        edge->updateMaxNormalDeviationOnEdgeCollapse();
+        
+        if (edge->getMaxNormalDeviationOnEdgeCollapse()<=1.0f && !edge->isAdjacentToBoundary())
             edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
+        else
+            edge->setErrorMetric( FLT_MAX );
             
             _edgeSet.insert(edge);
         }
@@ -163,7 +169,7 @@ public:
             {
                 Edge* edge = const_cast<Edge*>(itr->get());
 
-                if (!edge->isAdjacentToBoundary())
+                // if (!edge->isAdjacentToBoundary())
                 {
                     osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
                     if (collapseEdge(edge,pNew.get())) return true;
@@ -683,7 +689,7 @@ public:
 
         if (edge->getMaxNormalDeviationOnEdgeCollapse()>1.0)
         {
-            std::cout<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
+//            std::cout<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
             return false;
         }
         else
@@ -959,14 +965,13 @@ public:
         return numErrors;
     }
     
-protected:
+//protected:
 
     typedef std::vector< osg::ref_ptr<osg::Array> > ArrayList;
 
     osg::Geometry*                  _geometry;
     ArrayList                       _arrayList;
     
-    unsigned int                    _targetNumTriangles;
     EdgeSet                         _edgeSet;
     TriangleSet                     _triangleSet;
     PointSet                        _pointSet;
@@ -1341,41 +1346,6 @@ class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
 
 void EdgeCollapse::copyBackToGeometry()
 {
-#if 1
-    updateErrorMetricForAllEdges();
-#endif
-    std::cout<<"******* BEFORE EDGE COLLAPSE ********"<<_triangleSet.size()<<std::endl;
-
-    std::cout<<"Number of triangle errors before edge collapse= "<<testAllTriangles()<<std::endl;
-    std::cout<<"Number of edge errors before edge collapse= "<<testAllEdges()<<std::endl;
-    std::cout<<"Number of point errors before edge collapse= "<<testAllPoints()<<std::endl;
-    std::cout<<"Number of triangles= "<<_triangleSet.size()<<std::endl;
-    std::cout<<"Number of points= "<<_pointSet.size()<<std::endl;
-    std::cout<<"Number of edges= "<<_edgeSet.size()<<std::endl;
-    std::cout<<"Number of boundary edges= "<<computeNumBoundaryEdges()<<std::endl;
-
-    while (_triangleSet.size()>_targetNumTriangles)
-    {
-        unsigned int numBefore = computeNumBoundaryEdges();
-        bool result = collapseMinimumErrorEdge();
-        unsigned int numAfter = computeNumBoundaryEdges();
-        if (numBefore!=numAfter) 
-        {
-            std::cout<<"After collapse edge, boundary edges changes from "<<numBefore<<" to "<<numAfter<<std::endl;
-        }
-        if (!result) break;
-    } 
-
-
-    std::cout<<"******* AFTER EDGE COLLAPSE *********"<<_triangleSet.size()<<std::endl;
-
-    std::cout<<"Number of triangle errors after edge collapse= "<<testAllTriangles()<<std::endl;
-    std::cout<<"Number of edge errors before edge collapse= "<<testAllEdges()<<std::endl;
-    std::cout<<"Number of point errors after edge collapse= "<<testAllPoints()<<std::endl;
-    std::cout<<"Number of triangles= "<<_triangleSet.size()<<std::endl;
-    std::cout<<"Number of points= "<<_pointSet.size()<<std::endl;
-    std::cout<<"Number of edges= "<<_edgeSet.size()<<std::endl;
-    std::cout<<"Number of boundary edges= "<<computeNumBoundaryEdges()<<std::endl;
 
     // rebuild the _pointList from the _pointSet
     _originalPointList.clear();
@@ -1442,37 +1412,42 @@ void EdgeCollapse::copyBackToGeometry()
 }
 
 
-Simplifier::Simplifier(float sampleRatio):
+Simplifier::Simplifier(float sampleRatio, float maximumError):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-            _sampleRatio(sampleRatio)
+            _sampleRatio(sampleRatio),
+            _maximumError(maximumError)
 {
 }
 
-void Simplifier::simplify(osg::Geometry& geometry, float sampleRatio)
+void Simplifier::simplify(osg::Geometry& geometry)
 {
     std::cout<<"++++++++++++++simplifier************"<<std::endl;
 
     EdgeCollapse ec;
     ec.setGeometry(&geometry);
 
-    ec.setTargetNumOfTriangles((unsigned int)(sampleRatio*(float)ec.getNumOfTriangles()));
+    ec.updateErrorMetricForAllEdges();
 
-    //while (ec.collapseMinimumErrorEdge()) {}
+    unsigned int numOriginalPrimitives = ec._triangleSet.size();
+
+    while (!ec._edgeSet.empty() &&
+           continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size()) && 
+           ec.collapseMinimumErrorEdge())
+    {
+       std::cout<<"Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;    
+    }
+
+    std::cout<<"******* AFTER EDGE COLLAPSE *********"<<ec._triangleSet.size()<<std::endl;
+
+    std::cout<<"Number of triangle errors after edge collapse= "<<ec.testAllTriangles()<<std::endl;
+    std::cout<<"Number of edge errors before edge collapse= "<<ec.testAllEdges()<<std::endl;
+    std::cout<<"Number of point errors after edge collapse= "<<ec.testAllPoints()<<std::endl;
+    std::cout<<"Number of triangles= "<<ec._triangleSet.size()<<std::endl;
+    std::cout<<"Number of points= "<<ec._pointSet.size()<<std::endl;
+    std::cout<<"Number of edges= "<<ec._edgeSet.size()<<std::endl;
+    std::cout<<"Number of boundary edges= "<<ec.computeNumBoundaryEdges()<<std::endl;
+
 
     ec.copyBackToGeometry();
 
-}
-
-void Simplifier::simplify(osg::Geometry& geometry, unsigned int targetNumberOfTriangles)
-{
-    std::cout<<"------------simplifier************"<<std::endl;
-
-    EdgeCollapse ec;
-    ec.setGeometry(&geometry);
-
-    ec.setTargetNumOfTriangles(targetNumberOfTriangles);
-
-    //while (ec.collapseMinimumErrorEdge()) {}
-
-    ec.copyBackToGeometry();
 }

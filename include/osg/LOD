@@ -95,8 +95,8 @@ class SG_EXPORT LOD : public Group
         virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
         virtual void childInserted(unsigned int pos);
 
-        virtual void rangeRemoved(unsigned int pos, unsigned int numChildrenToRemove) {}
-        virtual void rangeInserted(unsigned int pos) {}
+        virtual void rangeRemoved(unsigned int /*pos*/, unsigned int /*numChildrenToRemove*/) {}
+        virtual void rangeInserted(unsigned int /*pos*/) {}
 
         CenterMode                      _centerMode;
         Vec3                            _userDefinedCenter;

@@ -22,8 +22,6 @@
 #include <osgProducer/Viewer>
 
 
-const int maximumTextureSize = 256;
-
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
 struct PassThroughTransformFunction
@@ -257,7 +255,11 @@ struct ProcessRow
 };
 
 
-osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsigned int numComponentsDesired=0)
+osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, 
+            unsigned int numComponentsDesired, 
+            int s_maximumTextureSize,
+            int t_maximumTextureSize,
+            int r_maximumTextureSize )
 {
     int max_s = 0;
     int max_t = 0;
@@ -313,13 +315,13 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow, unsign
     
     // compute nearest powers of two for each axis.
     int s_nearestPowerOfTwo = 1;
-    while(s_nearestPowerOfTwo<max_s && s_nearestPowerOfTwo<maximumTextureSize) s_nearestPowerOfTwo*=2;
+    while(s_nearestPowerOfTwo<max_s && s_nearestPowerOfTwo<s_maximumTextureSize) s_nearestPowerOfTwo*=2;
 
     int t_nearestPowerOfTwo = 1;
-    while(t_nearestPowerOfTwo<max_t && t_nearestPowerOfTwo<maximumTextureSize) t_nearestPowerOfTwo*=2;
+    while(t_nearestPowerOfTwo<max_t && t_nearestPowerOfTwo<t_maximumTextureSize) t_nearestPowerOfTwo*=2;
 
     int r_nearestPowerOfTwo = 1;
-    while(r_nearestPowerOfTwo<total_r && r_nearestPowerOfTwo<maximumTextureSize) r_nearestPowerOfTwo*=2;
+    while(r_nearestPowerOfTwo<total_r && r_nearestPowerOfTwo<r_maximumTextureSize) r_nearestPowerOfTwo*=2;
 
 
     osg::notify(osg::NOTICE)<<"max image width = "<<max_s<<"  nearest power of two = "<<s_nearestPowerOfTwo<<std::endl;
@@ -777,15 +779,29 @@ int main( int argc, char **argv )
     bool createNormalMap = false;
     while (arguments.read("-n")) createNormalMap=true;
 
-   float xSize=1.0f, ySize=1.0f, zSize=1.0f;
-   while (arguments.read("--xSize",xSize)) {}
-   while (arguments.read("--ySize",ySize)) {}
-   while (arguments.read("--zSize",zSize)) {}
-   
-   float xMultiplier=1.0f, yMultiplier=1.0f, zMultiplier=1.0f;
-   while (arguments.read("--xMultiplier",xMultiplier)) {}
-   while (arguments.read("--yMultiplier",yMultiplier)) {}
-   while (arguments.read("--zMultiplier",zMultiplier)) {}
+    float xSize=1.0f, ySize=1.0f, zSize=1.0f;
+    while (arguments.read("--xSize",xSize)) {}
+    while (arguments.read("--ySize",ySize)) {}
+    while (arguments.read("--zSize",zSize)) {}
+
+    float xMultiplier=1.0f, yMultiplier=1.0f, zMultiplier=1.0f;
+    while (arguments.read("--xMultiplier",xMultiplier)) {}
+    while (arguments.read("--yMultiplier",yMultiplier)) {}
+    while (arguments.read("--zMultiplier",zMultiplier)) {}
+
+    int s_maximumTextureSize = 256;
+    int t_maximumTextureSize = 256;
+    int r_maximumTextureSize = 256;
+    int maximumTextureSize = 256;
+    while(arguments.read("--maxTextureSize",maximumTextureSize))
+    {
+        s_maximumTextureSize = maximumTextureSize;
+        t_maximumTextureSize = maximumTextureSize;
+        r_maximumTextureSize = maximumTextureSize;
+    }
+    while(arguments.read("--s_maxTextureSize",s_maximumTextureSize)) {}
+    while(arguments.read("--t_maxTextureSize",t_maximumTextureSize)) {}
+    while(arguments.read("--r_maxTextureSize",r_maximumTextureSize)) {}
 
     
     osg::ref_ptr<osg::Image> image_3d;
@@ -806,7 +822,7 @@ int main( int argc, char **argv )
         
         // pack the textures into a single texture.
         ProcessRow processRow;
-        image_3d = createTexture3D(imageList, processRow);
+        image_3d = createTexture3D(imageList, processRow, 0, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize);
     }
 
 

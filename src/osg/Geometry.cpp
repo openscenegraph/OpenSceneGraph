@@ -252,16 +252,22 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
 #ifdef COMPILE_POSSIBLE_NEW_ARRAY_METHODS
     _attributeList(geometry._attributeList),
 #endif    
-    _vertexArray(dynamic_cast<Vec3Array*>(copyop(geometry._vertexArray.get()))),
+    _vertexArray((copyop(geometry._vertexArray.get()))),
+    _vertexIndices(dynamic_cast<IndexArray*>(copyop(geometry._vertexIndices.get()))),
     _normalBinding(geometry._normalBinding),
     _normalArray(dynamic_cast<Vec3Array*>(copyop(geometry._normalArray.get()))),
+    _normalIndices(dynamic_cast<IndexArray*>(copyop(geometry._normalIndices.get()))),
     _colorBinding(geometry._colorBinding),
     _colorArray(copyop(geometry._colorArray.get())),
+    _colorIndices(dynamic_cast<IndexArray*>(copyop(geometry._colorIndices.get()))),
     _secondaryColorBinding(geometry._secondaryColorBinding),
     _secondaryColorArray(copyop(geometry._secondaryColorArray.get())),
+    _secondaryColorIndices(dynamic_cast<IndexArray*>(copyop(geometry._secondaryColorIndices.get()))),
     _fogCoordBinding(geometry._fogCoordBinding),
     _fogCoordArray(dynamic_cast<FloatArray*>(copyop(geometry._fogCoordArray.get()))),
-    _fastPath(geometry._fastPath)
+    _fogCoordIndices(dynamic_cast<IndexArray*>(copyop(geometry._fogCoordIndices.get()))),
+    _fastPath(geometry._fastPath),
+    _internalOptimizedGeometry(geometry._internalOptimizedGeometry)
 {
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
@@ -728,6 +734,12 @@ bool Geometry::computeFastPathsUsed()
 
 void Geometry::drawImplementation(State& state) const
 {
+    if (_internalOptimizedGeometry.valid())
+    {
+        _internalOptimizedGeometry->drawImplementation(state);
+        return;
+    }
+
     const Extensions* extensions = getExtensions(state.getContextID(),true);
 
     if( !( ( _vertexArray.valid() && _vertexArray->getNumElements() != 0 ) ||
@@ -2130,6 +2142,225 @@ void Geometry::computeCorrectBindingsAndArraySizes()
     
     // TODO colours and tex coords.
     
+}
+
+class ExpandIndexedArray : public osg::ConstArrayVisitor
+{
+    public:
+        ExpandIndexedArray(const osg::IndexArray& indices,Array* targetArray):
+            _indices(indices),
+            _targetArray(targetArray) {}
+        
+        template <class T,class I>
+        T* create(const T& array,const I& indices)
+        {
+            T* newArray = 0;
+
+            // if source array type and target array type are equal
+            if (_targetArray && _targetArray->getType()==array.getType())
+            {
+                // reuse exisiting target array 
+                newArray = static_cast<T*>(_targetArray);
+                if (newArray->size()!=indices.size())
+                {
+                    // make sure its the right size
+                    newArray->resize(indices.size());
+                }
+            }
+            else
+            {
+                //  else create a new array.
+                newArray = new T(indices.size());
+            }
+
+            for(unsigned int i=0;i<indices.size();++i)
+            {
+                (*newArray)[i]= array[indices[i]];
+            }
+
+            return newArray;
+        }
+
+        template <class T>
+        T* create(const T& array)
+        {
+            switch(_indices.getType())
+            {
+            case(osg::Array::ByteArrayType): return create(array,static_cast<const osg::ByteArray&>(_indices));
+            case(osg::Array::ShortArrayType): return create(array,static_cast<const osg::ShortArray&>(_indices));
+            case(osg::Array::IntArrayType): return create(array,static_cast<const osg::IntArray&>(_indices));
+            case(osg::Array::UByteArrayType): return create(array,static_cast<const osg::UByteArray&>(_indices));
+            case(osg::Array::UShortArrayType): return create(array,static_cast<const osg::UShortArray&>(_indices));
+            case(osg::Array::UIntArrayType): return create(array,static_cast<const osg::UIntArray&>(_indices));
+            default: return 0;
+            }
+            
+        }
+
+        virtual void apply(const osg::ByteArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::ShortArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::IntArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::UByteArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::UShortArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::UIntArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::UByte4Array& array) { _targetArray = create(array); }
+        virtual void apply(const osg::FloatArray& array) { _targetArray = create(array); }
+        virtual void apply(const osg::Vec2Array& array) { _targetArray = create(array); }
+        virtual void apply(const osg::Vec3Array& array) { _targetArray = create(array); }
+        virtual void apply(const osg::Vec4Array& array) { _targetArray = create(array); }
+
+        const osg::IndexArray& _indices;
+        osg::Array* _targetArray;
+};
+
+bool Geometry::suitableForOptimization() const
+{
+    bool hasIndices = false;
+
+    if (getVertexIndices()) hasIndices = true;
+
+    if (getNormalIndices()) hasIndices = true;
+
+    if (getColorIndices()) hasIndices = true;
+
+    if (getSecondaryColorIndices()) hasIndices = true;
+
+    if (getFogCoordIndices()) hasIndices = true;
+
+    for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
+    {
+        if (getTexCoordIndices(ti)) hasIndices = true;
+    }
+    
+    for(unsigned int vi=0;vi<getNumVertexAttribArrays();++vi)
+    {
+        if (getVertexAttribIndices(vi)) hasIndices = true;
+    }
+
+    return hasIndices;
+}
+
+void Geometry::copyToAndOptimize(Geometry& target)
+{
+    // copy over primitive sets.
+    target.getPrimitiveSetList() = getPrimitiveSetList();
+
+    // copy over attribute arrays.
+    if (getVertexIndices())
+    {
+        ExpandIndexedArray eia(*(getVertexIndices()),target.getVertexArray());
+        getVertexArray()->accept(eia);
+
+        target.setVertexArray(eia._targetArray);
+        target.setVertexIndices(0);
+    }
+    else if (getVertexArray())
+    {
+        target.setVertexArray(getVertexArray());
+    }
+
+    target.setNormalBinding(getNormalBinding());
+    if (getNormalIndices())
+    {
+        ExpandIndexedArray eia(*(getNormalIndices()),target.getNormalArray());
+        getNormalArray()->accept(eia);
+
+        target.setNormalArray(dynamic_cast<osg::Vec3Array*>(eia._targetArray));
+        target.setNormalIndices(0);
+    }
+    else if (getNormalArray())
+    {
+        target.setNormalArray(getNormalArray());
+    }
+
+    target.setColorBinding(getColorBinding());
+    if (getColorIndices())
+    {
+        ExpandIndexedArray eia(*(getColorIndices()),target.getColorArray());
+        getColorArray()->accept(eia);
+
+        target.setColorArray(eia._targetArray);
+        target.setColorIndices(0);
+    }
+    else if (getColorArray())
+    {
+        target.setColorArray(getColorArray());
+    }
+
+    target.setSecondaryColorBinding(getSecondaryColorBinding());
+    if (getSecondaryColorIndices())
+    {
+        ExpandIndexedArray eia(*(getSecondaryColorIndices()),target.getSecondaryColorArray());
+        getSecondaryColorArray()->accept(eia);
+
+        target.setSecondaryColorArray(eia._targetArray);
+        target.setSecondaryColorIndices(0);
+    }
+    else if (getSecondaryColorArray())
+    {
+        target.setSecondaryColorArray(getSecondaryColorArray());
+    }
+
+    target.setFogCoordBinding(getFogCoordBinding());
+    if (getFogCoordIndices())
+    {
+        ExpandIndexedArray eia(*(getFogCoordIndices()),target.getFogCoordArray());
+        getFogCoordArray()->accept(eia);
+
+        target.setFogCoordArray(eia._targetArray);
+        target.setFogCoordIndices(0);
+    }
+    else if (getFogCoordArray())
+    {
+        target.setFogCoordArray(getFogCoordArray());
+    }
+
+    for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
+    {
+        if (getTexCoordIndices(ti))
+        {
+            ExpandIndexedArray eia(*(getTexCoordIndices(ti)),target.getTexCoordArray(ti));
+            getTexCoordArray(ti)->accept(eia);
+
+            target.setTexCoordArray(ti,eia._targetArray);
+            target.setTexCoordIndices(ti,0);
+        }
+        else if (getTexCoordArray(ti)) 
+        {
+            target.setTexCoordArray(ti,getTexCoordArray(ti));
+        }
+    }
+    
+    for(unsigned int vi=0;vi<getNumVertexAttribArrays();++vi)
+    {
+        AttributeBinding vab;
+        getVertexAttribBinding(vi,vab);
+        if (getVertexAttribIndices(vi))
+        {
+            GLboolean normalize;
+            ExpandIndexedArray eia(*(getVertexAttribIndices(vi)),target.getVertexAttribArray(vi));
+            getVertexAttribArray(vi)->accept(eia);
+            getVertexAttribNormalize(vi,normalize);
+            target.setVertexAttribArray(vi,normalize,eia._targetArray,vab);
+            target.setVertexAttribIndices(vi,0);
+        }
+        else if (getVertexAttribArray(vi))
+        {
+            GLboolean normalize;
+            getVertexAttribNormalize(vi,normalize);
+            target.setVertexAttribArray(vi,normalize,getVertexAttribArray(vi),vab);
+        }
+    }
+}
+
+void Geometry::computeInternalOptimizedGeometry()
+{
+    if (suitableForOptimization())
+    {
+        if (!_internalOptimizedGeometry) _internalOptimizedGeometry = new Geometry;
+
+        copyToAndOptimize(*_internalOptimizedGeometry);
+    }
 }
 
 

@@ -176,7 +176,6 @@ void IntersectVisitor::reset()
     // create a empty IntersectState on the the intersectStateStack.
     _intersectStateStack.push_back(new IntersectState);
 
-    _nodePath.clear();
     _segHitList.clear();
 
 }
@@ -300,7 +299,6 @@ bool IntersectVisitor::enterNode(Node& node)
         IntersectState::LineSegmentMask sm=0xffffffff;
         if (cis->isCulled(bs,sm)) return false;
         cis->_segmentMaskStack.push_back(sm);
-        _nodePath.push_back(&node);
         return true;
     }
     else
@@ -314,7 +312,6 @@ void IntersectVisitor::leaveNode()
 {
     IntersectState* cis = _intersectStateStack.back().get();
     cis->_segmentMaskStack.pop_back();
-    _nodePath.pop_back();
 }
 
 
@@ -471,6 +468,13 @@ struct TriangleIntersect
         }
         
         Vec3 in = v1*r1+v2*r2+v3*r3;
+        if (!in.valid())
+        {
+            osg::notify(WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
+            osg::notify(WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
+            osg::notify(WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
+            return;
+        }
 
         float d = (in-_s)*_d;
 
@@ -482,13 +486,6 @@ struct TriangleIntersect
 
         float r = d/_length;
 
-        if (!in.valid())
-        {
-            osg::notify(WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
-            osg::notify(WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
-            osg::notify(WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
-            return;
-        }
         
         if (treatVertexDataAsTemporary)
         {

@@ -1170,7 +1170,7 @@ void Optimizer::CombineLODsVisitor::combineLODs()
 
 struct LessGeometry
 {
-    bool operator() (const osg::Geometry* lhs,const osg::Geometry* rhs)
+    bool operator() (const osg::Geometry* lhs,const osg::Geometry* rhs) const
     {
         if (lhs->getStateSet()<rhs->getStateSet()) return true;
         if (rhs->getStateSet()<lhs->getStateSet()) return false;

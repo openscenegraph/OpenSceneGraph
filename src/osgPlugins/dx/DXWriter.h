@@ -21,11 +21,7 @@
 #include <osg/Vec4>
 #include <osg/Node>
 
-#ifdef WIN32
-// windows only defines PATH_MAX on _POSIX_
-#define PATH_MAX 512
-#endif
-
+const int DX_PATH_MAX = 512;
 
 namespace dx {
 

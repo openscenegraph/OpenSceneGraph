@@ -253,12 +253,12 @@ void DisplaySettings::readEnvironmentalVariables()
     {
         if (strcmp(ptr,"OFF")==0)
         {
-            _stereo = false;
+            _splitStereoAutoAdjustAspectRatio = false;
         }
         else
         if (strcmp(ptr,"ON")==0)
         {
-            _stereo = true;
+            _splitStereoAutoAdjustAspectRatio = true;
         }
     }
 

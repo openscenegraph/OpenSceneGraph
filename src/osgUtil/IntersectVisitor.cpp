@@ -150,8 +150,15 @@ bool IntersectVisitor::IntersectState::isCulled(const BoundingBox& bb,LineSegmen
 
 IntersectVisitor::IntersectVisitor()
 {
+
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+    
+    // Initialize eyepoint to 0,0,0
+    setEyePoint(Vec3(0.0f,0.0f,0.0f));
+
+    setLODSelectionMode(USE_HEIGHEST_LEVEL_OF_DETAIL); // orignal IntersectVisitor behavior
+    //setLODSelectionMode(USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 
     reset();
 }
@@ -172,6 +179,21 @@ void IntersectVisitor::reset()
     _nodePath.clear();
     _segHitList.clear();
 
+}
+
+float IntersectVisitor::getDistanceToEyePoint(const Vec3& pos, bool /*withLODScale*/) const
+{
+    if (_lodSelectionMode==USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION)
+    {
+        // LODScale is not available to IntersectVisitor, so we ignore the withLODScale argument
+        //if (withLODScale) return (pos-getEyePoint()).length()*getLODScale();
+        //else return (pos-getEyePoint()).length();
+        return (pos-getEyePoint()).length();
+    }
+    else
+    {
+        return 0.0f;
+    }
 }
 
 
@@ -198,16 +220,19 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
         return;
     }
 
+    IntersectState* cis = _intersectStateStack.back().get();
+    
+    setEyePoint(seg->start()); // set start of line segment to be pseudo EyePoint for billboarding and LOD purposes
+
     // first check to see if segment has already been added.
-    for(LineSegmentHitListMap::iterator itr = _segHitList.begin();
-        itr != _segHitList.end();
+    for(IntersectState::LineSegmentList::iterator itr = cis->_segList.begin();
+        itr != cis->_segList.end();
         ++itr)
     {
         if (itr->first == seg) return;
     }
 
     // create a new segment transformed to local coordintes.
-    IntersectState* cis = _intersectStateStack.back().get();
     LineSegment* ns = new LineSegment;
 
     if (cis->_inverse.valid()) ns->mult(*seg,*(cis->_inverse));
@@ -291,6 +316,7 @@ void IntersectVisitor::leaveNode()
     cis->_segmentMaskStack.pop_back();
     _nodePath.pop_back();
 }
+
 
 
 void IntersectVisitor::apply(Node& node)
@@ -571,6 +597,23 @@ void IntersectVisitor::apply(Geode& geode)
 void IntersectVisitor::apply(Billboard& node)
 {
     if (!enterNode(node)) return;
+
+    // IntersectVisitor doesn't have getEyeLocal(), can we use NodeVisitor::getEyePoint()?
+    const Vec3& eye_local = getEyePoint();
+
+    for(unsigned int i = 0; i < node.getNumDrawables(); i++ )
+    {
+        const Vec3& pos = node.getPosition(i);
+        osg::ref_ptr<RefMatrix> billboard_matrix = new RefMatrix;
+        node.computeMatrix(*billboard_matrix,eye_local,pos);
+
+        pushMatrix(*billboard_matrix);
+
+        intersect(*node.getDrawable(i));
+	
+        popMatrix();
+
+    }
 
     leaveNode();
 }

@@ -144,7 +144,7 @@ public:
 			unsigned char col[4];
 			(*color_palette)[maxcol].get(col);
 			for (int i=0; i<4; i++) {
-				col[i]*=frac;
+				col[i]=(unsigned char)(col[i]*frac); // prevents warning under gcc from *=frac with frac=real
 				cll[i]=col[i]/255.0f;
 			}
 		} else {

@@ -148,7 +148,6 @@ public:
 	void writefile(std::ofstream &fout) { // write binary file
 		if (numItems<32767 && tokenId<256) {
 			osg::uchar tokid=tokenId, type=TypeId;
-			osg::ushort nits=numItems;
 			fout.write((char *)&tokid, 1);fout.write((char *)&type,1);
 			fout.write((char *)&numItems,sizeof(unsigned short));
 		} else {

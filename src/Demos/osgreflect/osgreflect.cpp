@@ -189,7 +189,8 @@ int main( int argc, char **argv )
     osg::Drawable* mirror = createMirrorSurface(xMin,xMax,yMin,yMax,z);
     
 
-    osg::Group* rootNode = new osg::Group;
+    osg::MatrixTransform* rootNode = new osg::MatrixTransform;
+    rootNode->setMatrix(osg::Matrix::rotate(osg::inDegrees(45.0f),1.0f,0.0f,0.0f));
         
     // make sure that the global color mask exists.
     osg::ColorMask* rootColorMask = new osg::ColorMask;

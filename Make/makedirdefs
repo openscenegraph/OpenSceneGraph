@@ -17,7 +17,8 @@ SRC_DIRS = \
 	osgText\
 	osgSim\
 	osgPlugins\
-	Demos
+        ../examples\
+	src/Demos
 
 
 ################################################################
@@ -70,6 +71,17 @@ PLUGIN_DIRS += gif
 # comment in if you have libtiff installed.
 PLUGIN_DIRS += tiff
 
+
+################################################################
+# Directories traversed in the TOPDIR/examples directory
+
+EXAMPLE_DIRS = \
+	osgcameragroup\
+	osgconv\
+	osgtext\
+	osgviewer\
+
+
 ################################################################
 # Directories traversed in the TOPDIR/src/Demos directory
 
@@ -112,3 +124,4 @@ DEMOS_DIRS = \
 	osgvertexprogram\
 	osgviews\
 	sgv
+

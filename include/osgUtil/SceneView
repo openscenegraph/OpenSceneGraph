@@ -191,21 +191,49 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::NodeVisitor* getInitVisitor() { return _initVisitor.get(); }
         const osg::NodeVisitor* getInitVisitor() const { return _initVisitor.get(); }
 
+
         void setUpdateVisitor(osg::NodeVisitor* av) { _updateVisitor = av; }
         osg::NodeVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
         const osg::NodeVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
+
 
         void setCullVisitor(osgUtil::CullVisitor* cv) { _cullVisitor = cv; }
         osgUtil::CullVisitor* getCullVisitor() { return _cullVisitor.get(); }
         const osgUtil::CullVisitor* getCullVisitor() const { return _cullVisitor.get(); }
 
+        void setCullVisitorLeft(osgUtil::CullVisitor* cv) { _cullVisitorLeft = cv; }
+        osgUtil::CullVisitor* getCullVisitorLeft() { return _cullVisitorLeft.get(); }
+        const osgUtil::CullVisitor* getCullVisitorLeft() const { return _cullVisitorLeft.get(); }
+
+        void setCullVisitorRight(osgUtil::CullVisitor* cv) { _cullVisitorRight = cv; }
+        osgUtil::CullVisitor* getCullVisitorRight() { return _cullVisitorRight.get(); }
+        const osgUtil::CullVisitor* getCullVisitorRight() const { return _cullVisitorRight.get(); }
+
+
         void setRenderGraph(osgUtil::RenderGraph* rg) { _rendergraph = rg; }
         osgUtil::RenderGraph* getRenderGraph() { return _rendergraph.get(); }
         const osgUtil::RenderGraph* getRenderGraph() const { return _rendergraph.get(); }
 
+        void setRenderGraphLeft(osgUtil::RenderGraph* rg) { _rendergraphLeft = rg; }
+        osgUtil::RenderGraph* getRenderGraphLeft() { return _rendergraphLeft.get(); }
+        const osgUtil::RenderGraph* getRenderGraphLeft() const { return _rendergraphLeft.get(); }
+
+        void setRenderGraphRight(osgUtil::RenderGraph* rg) { _rendergraphRight = rg; }
+        osgUtil::RenderGraph* getRenderGraphRight() { return _rendergraphRight.get(); }
+        const osgUtil::RenderGraph* getRenderGraphRight() const { return _rendergraphRight.get(); }
+
+
         void setRenderStage(osgUtil::RenderStage* rs) { _renderStage = rs; }
         osgUtil::RenderStage* getRenderStage() { return _renderStage.get(); }
         const osgUtil::RenderStage* getRenderStage() const { return _renderStage.get(); }
+
+        void setRenderStageLeft(osgUtil::RenderStage* rs) { _renderStageLeft = rs; }
+        osgUtil::RenderStage* getRenderStageLeft() { return _renderStageLeft.get(); }
+        const osgUtil::RenderStage* getRenderStageLeft() const { return _renderStageLeft.get(); }
+
+        void setRenderStageRight(osgUtil::RenderStage* rs) { _renderStageRight = rs; }
+        osgUtil::RenderStage* getRenderStageRight() { return _renderStageRight.get(); }
+        const osgUtil::RenderStage* getRenderStageRight() const { return _renderStageRight.get(); }
 
 
         void setCullMask(const osg::Node::NodeMask nm) { _cullMask = nm; }
@@ -216,6 +244,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         void setCullMaskRight(const osg::Node::NodeMask nm) { _cullMaskRight = nm; }
         osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
+
 
         /** Set the LOD bias for the CullVisitor to use.*/
         void setLODScale(float bias) { _LODScale = bias; }

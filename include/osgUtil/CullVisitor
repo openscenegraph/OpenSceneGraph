@@ -175,6 +175,11 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
         
         const float getCalculatedFarPlane() const { return _computed_zfar; }
 
+        inline const osg::Vec3& getEyeLocal() const
+        {
+            return _eyePointStack.back();
+        }
+
     protected:
 
         /** prevent unwanted copy construction.*/
@@ -197,10 +202,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             else acceptNode->accept(*this);
         }
 
-        inline const osg::Vec3& getEyeLocal() const
-        {
-            return _eyePointStack.back();
-        }
         
         inline const osg::Vec3 getUpLocal() const
         {

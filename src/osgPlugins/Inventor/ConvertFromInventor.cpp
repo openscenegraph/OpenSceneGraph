@@ -47,6 +47,8 @@
 #include <float.h>
 #endif
 
+#define DEBUG_IV_PLUGIN
+
 ConvertFromInventor::ConvertFromInventor()
 {
     numPrimitives = 0;
@@ -200,7 +202,7 @@ void ConvertFromInventor::transposeMatrix(osg::Matrix& mat)
 
 SoCallbackAction::Response 
 ConvertFromInventor::postShape(void* data, SoCallbackAction* action, 
-                               const SoNode* )
+                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
     osg::notify(osg::INFO) << "postShape()   "
@@ -208,6 +210,10 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
 #endif
 
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
+
+
+    // Create a new Geometry
+    osg::Geometry* geometry = new osg::Geometry;
 
     // Get the modeling matrix
     osg::Matrix modelMat;
@@ -217,6 +223,9 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
     osg::Vec3Array* coords = new osg::Vec3Array(thisPtr->vertices.size());
     for (unsigned int i = 0; i < thisPtr->vertices.size(); i++)
         (*coords)[i] = modelMat.preMult(thisPtr->vertices[i]);
+
+    geometry->setVertexArray(coords);
+
 
     // Normals need to be transformed using the transpose of the inverse 
     // modeling matrix
@@ -244,6 +253,8 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
             (*norms)[i].normalize();
         }
     }
+    geometry->setNormalArray(norms);
+    geometry->setNormalBinding(thisPtr->normalBinding);
 
     // Set the colors
     osg::Vec4Array* cols;
@@ -262,47 +273,47 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
         for (unsigned int i = 0; i < thisPtr->colors.size(); i++)
             (*cols)[i] = thisPtr->colors[i];
     }
-
-
-    // Get the texture transformation matrix
-    osg::Matrix textureMat;
-    textureMat.set((float *) action->getTextureMatrix().getValue());
-    
-    // Transform texture coordinates if texture matrix is not an identity mat
-    osg::Matrix identityMat;
-    identityMat.makeIdentity();
-    osg::Vec2Array* texCoords 
-        = new osg::Vec2Array(thisPtr->textureCoords.size());
-    if (textureMat == identityMat)
-    {
-        // Set the texture coordinates
-        for (unsigned int i = 0; i < thisPtr->textureCoords.size(); i++)
-            (*texCoords)[i] = thisPtr->textureCoords[i];
-    }
-    else
-    {
-        // Transform and set the texture coordinates
-        for (unsigned int i = 0; i < thisPtr->textureCoords.size(); i++)
-        {
-            osg::Vec3 transVec = textureMat.preMult(
-                    osg::Vec3(thisPtr->textureCoords[i][0], 
-                              thisPtr->textureCoords[i][1],
-                              0.0));
-            (*texCoords)[i].set(transVec.x(), transVec.y());
-        }
-    }
-
-    
-    // Create a new Geometry
-    osg::Geometry* geometry = new osg::Geometry;
-
-    // Set the parameters for the geometry
-    geometry->setVertexArray(coords);
     geometry->setColorArray(cols);
     geometry->setColorBinding(thisPtr->colorBinding);
-    geometry->setNormalArray(norms);
-    geometry->setNormalBinding(thisPtr->normalBinding);
-    geometry->setTexCoordArray(0, texCoords);
+
+
+    if (!(thisPtr->textureCoords.empty()) && action->getNumTextureCoordinates()>0)
+    {
+
+        osg::notify(osg::NOTICE)<<"tex coords found"<<std::endl;
+
+        // Get the texture transformation matrix
+        osg::Matrix textureMat;
+        textureMat.set((float *) action->getTextureMatrix().getValue());
+
+        // Transform texture coordinates if texture matrix is not an identity mat
+        osg::Matrix identityMat;
+        identityMat.makeIdentity();
+        osg::Vec2Array* texCoords 
+            = new osg::Vec2Array(thisPtr->textureCoords.size());
+        if (textureMat == identityMat)
+        {
+            // Set the texture coordinates
+            for (unsigned int i = 0; i < thisPtr->textureCoords.size(); i++)
+                (*texCoords)[i] = thisPtr->textureCoords[i];
+        }
+        else
+        {
+            // Transform and set the texture coordinates
+            for (unsigned int i = 0; i < thisPtr->textureCoords.size(); i++)
+            {
+                osg::Vec3 transVec = textureMat.preMult(
+                        osg::Vec3(thisPtr->textureCoords[i][0], 
+                                  thisPtr->textureCoords[i][1],
+                                  0.0));
+                (*texCoords)[i].set(transVec.x(), transVec.y());
+            }
+        }
+
+        geometry->setTexCoordArray(0, texCoords);
+    }
+    
+    // Set the parameters for the geometry
 
     geometry->addPrimitiveSet(new osg::DrawArrays(thisPtr->primitiveType,0,
                                                   coords->size()));
@@ -468,27 +479,42 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
         stateSet->setAttributeAndModes(point, osg::StateAttribute::ON);
     }
     
+
+    
     // Set draw mode 
-    osg::PolygonMode *polygonMode = new osg::PolygonMode;
     switch (action->getDrawStyle())
     {
         case SoDrawStyle::FILLED:
+        {
+#if 0
+// OSG defaults to filled draw style, so no need to set redundent state.
+            osg::PolygonMode *polygonMode = new osg::PolygonMode;
             polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, 
                                  osg::PolygonMode::FILL);
+            stateSet->setAttributeAndModes(polygonMode, osg::StateAttribute::ON);
+#endif
             break;
+        }
         case SoDrawStyle::LINES:
+        {
+            osg::PolygonMode *polygonMode = new osg::PolygonMode;
             polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, 
                                  osg::PolygonMode::LINE);
+            stateSet->setAttributeAndModes(polygonMode, osg::StateAttribute::ON);
             break;
+        }
         case SoDrawStyle::POINTS:
+        {
+            osg::PolygonMode *polygonMode = new osg::PolygonMode;
             polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, 
                                  osg::PolygonMode::POINT);
+            stateSet->setAttributeAndModes(polygonMode, osg::StateAttribute::ON);
             break;
+        }
         case SoDrawStyle::INVISIBLE:
             // check how to handle this in osg.
             break;
     }
-    stateSet->setAttributeAndModes(polygonMode, osg::StateAttribute::ON);
 
     // Set back face culling
     if (action->getShapeType() == SoShapeHints::SOLID)
@@ -530,11 +556,13 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
         stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
+#if 0
+// disable as two sided lighting causes problem under NVidia, and the above osg::Material settings are single sided anway..
         // Set two sided lighting
         osg::LightModel* lightModel = new osg::LightModel;
         lightModel->setTwoSided(true);
         stateSet->setAttributeAndModes(lightModel, osg::StateAttribute::ON);
-
+#endif
         // Set lights
         LightList lightList = lightStack.top();
         for (unsigned int i = 0; i < lightList.size(); i++)
@@ -545,6 +573,8 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     // Convert the IV texture to OSG texture if any
     if (soTexStack.top())
     {
+        osg::notify(osg::NOTICE)<<"Have texture"<<std::endl;
+    
         osg::Texture2D* tex;
         // Found a corresponding OSG texture object
         if (ivToOsgTexMap[soTexStack.top()])
@@ -584,6 +614,86 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
         }
         stateSet->setTextureAttributeAndModes(0,texEnv,osg::StateAttribute::ON);
     }
+    else
+    {
+        // fallback because many inventor models don't appear to have any SoTexture2..
+        SbVec2s soTexSize;
+        int soTexNC;
+        const unsigned char* texImage = action->getTextureImage(soTexSize, soTexNC);
+        if (texImage)
+        {
+            osg::notify(osg::NOTICE)<<"Image data found soTexSize[0]="<<soTexSize[0]<<", soTexSize[1]="<<soTexSize[1]<<"\tsoTexNC="<<soTexNC<<std::endl;
+
+            // Allocate memory for image data
+            unsigned char* imageData = new unsigned char[soTexSize[0] * soTexSize[1] * 
+                                                         soTexNC];
+
+            // Copy the texture image data from the inventor texture
+            memcpy(imageData, texImage, soTexSize[0] * soTexSize[1] * soTexNC);
+
+            // Create the osg image 
+            osg::Image* osgTexImage = new osg::Image;
+#if 0
+            SbString iv_string;
+            soTex->filename.get(iv_string);
+            std::string str(iv_string.getString());
+            osg::notify(osg::INFO) << str << " -> ";
+            if (str[0]=='\"') str.erase(str.begin());
+            if (str[str.size()-1]=='\"') str.erase(str.begin()+str.size()-1);
+            osg::notify(osg::INFO) << str << std::endl;
+            osgTexImage->setFileName(str);
+#endif            
+            
+            GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
+            osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
+                    formats[soTexNC-1], GL_UNSIGNED_BYTE, imageData, 
+                    osg::Image::USE_NEW_DELETE, -1);
+
+            // Create the osg texture
+            osg::Texture2D* osgTex = new osg::Texture2D;
+            osgTex->setImage(osgTexImage);
+
+            static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap2;
+            static bool firstTime2 = true;
+            if (firstTime2)
+            {
+                texWrapMap2[SoTexture2::CLAMP] = osg::Texture2D::CLAMP;
+                texWrapMap2[SoTexture2::REPEAT] = osg::Texture2D::REPEAT;
+                firstTime2 = false;
+            }
+
+            // Set texture wrap mode
+            osgTex->setWrap(osg::Texture2D::WRAP_S,texWrapMap2[action->getTextureWrapS()]);
+            osgTex->setWrap(osg::Texture2D::WRAP_T,texWrapMap2[action->getTextureWrapT()]);
+            
+            stateSet->setTextureAttributeAndModes(0,osgTex, osg::StateAttribute::ON);
+
+            // Set the texture environment
+            osg::TexEnv* texEnv = new osg::TexEnv;
+            switch (action->getTextureModel())
+            {
+                case SoTexture2::MODULATE:
+                    texEnv->setMode(osg::TexEnv::MODULATE);
+                    break;
+                case SoTexture2::DECAL:
+                    texEnv->setMode(osg::TexEnv::DECAL);
+                    break;
+                case SoTexture2::BLEND:
+                    texEnv->setMode(osg::TexEnv::BLEND);
+                    break;
+
+    #ifdef COIN_BASIC_H
+    // This check is a very crude Coin detector.
+    // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
+                case SoTexture2::REPLACE:
+                    texEnv->setMode(osg::TexEnv::REPLACE);
+                    break;
+    #endif
+            }
+            stateSet->setTextureAttributeAndModes(0,texEnv,osg::StateAttribute::ON);
+        }
+
+    }
           
     return stateSet;
 }
@@ -592,6 +702,8 @@ osg::Texture2D*
 ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex, 
                                           SoCallbackAction* action)
 {
+    osg::notify(osg::NOTICE)<<"convertIVTexToOSGTex"<<std::endl;
+
     SbVec2s soTexSize;
     int soTexNC;
     

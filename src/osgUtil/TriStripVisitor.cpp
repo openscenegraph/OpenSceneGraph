@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-#include "NvTriStripObjects.h"
+#include "TriStrip_tri_stripper.h"
 
 using namespace osg;
 using namespace osgUtil;
@@ -15,7 +15,7 @@ using namespace osgUtil;
 struct TriangleAcumulatorFunctor
 {
 
-    WordVec in_indices;
+    triangle_stripper::tri_stripper::indices in_indices;
     const Vec3* _vbase;
 
     TriangleAcumulatorFunctor() : _vbase(0) {}
@@ -94,11 +94,11 @@ void TriStripVisitor::stripify(Geometry& geom)
     if (!taf.in_indices.empty())
     {
         int in_numVertices = -1;
-        for(WordVec::iterator itr=taf.in_indices.begin();
+        for(triangle_stripper::tri_stripper::indices::iterator itr=taf.in_indices.begin();
             itr!=taf.in_indices.end();
             ++itr)
         {
-            if (*itr>in_numVertices) in_numVertices=*itr;
+            if ((int)*itr>in_numVertices) in_numVertices=*itr;
         }
         // the largest indice is in_numVertices, but indices start at 0
         // so increment to give to the corrent number of verticies.
@@ -106,99 +106,22 @@ void TriStripVisitor::stripify(Geometry& geom)
 
         int in_cacheSize = 16;
         int in_minStripLength = 2;
-        NvStripInfoVec strips;
-        NvFaceInfoVec leftoverFaces;
 
-        NvStripifier stripifier;
-        stripifier.Stripify(taf.in_indices,
-            in_numVertices,
-            in_cacheSize,
-            in_minStripLength,
-            strips,
-            leftoverFaces);
+        triangle_stripper::tri_stripper stripifier(taf.in_indices);
+        stripifier.SetCacheSize(in_cacheSize);
+        stripifier.SetMinStripSize(in_minStripLength);
 
-        unsigned int i;
-        for (i = 0; i < strips.size(); ++i)
+        triangle_stripper::tri_stripper::primitives_vector outPrimitives;
+        stripifier.Strip(&outPrimitives);
+
+        for(triangle_stripper::tri_stripper::primitives_vector::iterator itr=outPrimitives.begin();
+            itr!=outPrimitives.end();
+            ++itr)
         {
-        
-            NvStripInfo *strip = strips[i];
-            int nStripFaceCount = strip->m_faces.size();
-
-            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP);
-            elements->reserve(nStripFaceCount+2);
+            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(itr->m_Type,itr->m_Indices.begin(),itr->m_Indices.end());
             new_primitives.push_back(elements);
-
-            NvFaceInfo tLastFace(0, 0, 0);
-
-            // Handle the first face in the strip
-            {
-                NvFaceInfo tFirstFace(strip->m_faces[0]->m_v0, strip->m_faces[0]->m_v1, strip->m_faces[0]->m_v2);
-
-                // If there is a second face, reorder vertices such that the
-                // unique vertex is first
-                if (nStripFaceCount > 1)
-                {
-                    int nUnique = NvStripifier::GetUniqueVertexInB(strip->m_faces[1], &tFirstFace);
-                    if (nUnique == tFirstFace.m_v1)
-                    {
-                        std::swap(tFirstFace.m_v0, tFirstFace.m_v1);
-                    }
-                    else if (nUnique == tFirstFace.m_v2)
-                    {
-                        std::swap(tFirstFace.m_v0, tFirstFace.m_v2);
-                    }
-
-                    // If there is a third face, reorder vertices such that the
-                    // shared vertex is last
-                    if (nStripFaceCount > 2)
-                    {
-                        int nShared = NvStripifier::GetSharedVertex(strip->m_faces[2], &tFirstFace);
-                        if (nShared == tFirstFace.m_v1)
-                        {
-                            std::swap(tFirstFace.m_v1, tFirstFace.m_v2);
-                        }
-                    }
-                }
-
-                elements->push_back(tFirstFace.m_v0);
-                elements->push_back(tFirstFace.m_v1);
-                elements->push_back(tFirstFace.m_v2);
-
-                // Update last face info
-                tLastFace = tFirstFace;
-            }
-
-            for (int j = 1; j < nStripFaceCount; j++)
-            {
-                int nUnique = NvStripifier::GetUniqueVertexInB(&tLastFace, strip->m_faces[j]);
-                if (nUnique != -1)
-                {
-                    elements->push_back(nUnique);
-
-                    // Update last face info
-                    tLastFace.m_v0 = tLastFace.m_v1;
-                    tLastFace.m_v1 = tLastFace.m_v2;
-                    tLastFace.m_v2 = nUnique;
-                }
-            }
-
         }
 
-        if (leftoverFaces.size())
-        {
-
-            osg::DrawElementsUShort* triangles = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
-            triangles->reserve(leftoverFaces.size()*3);
-            new_primitives.push_back(triangles);
-
-            for (i = 0; i < leftoverFaces.size(); ++i)
-            {
-
-                triangles->push_back(leftoverFaces[i]->m_v0);
-                triangles->push_back(leftoverFaces[i]->m_v1);
-                triangles->push_back(leftoverFaces[i]->m_v2);
-            }
-        }
         geom.setPrimitiveSetList(new_primitives);
     }
 }

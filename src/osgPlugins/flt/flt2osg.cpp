@@ -1155,13 +1155,8 @@ void ConvertFromFLT::setTexture ( FaceRecord *rec, SFace *pSFace, osg::StateSet 
                 if (osgTexture)
                 {
                     osg::Image* osgImage = osgTexture->getImage();
-                    switch (osgImage->getPixelFormat())
-                    {
-                    case GL_LUMINANCE_ALPHA:
-                    case GL_RGBA:
-                        bBlend = true;
-                        break;
-                    }
+                    if (osgImage->isImageTranslucent()) bBlend = true;
+                    
                 }
 
 #if 0           // Started to experiment with OpenFlight texture mapping modes

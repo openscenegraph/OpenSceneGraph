@@ -565,8 +565,6 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, bool createNormalMap)
         bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
         bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
         bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
-        //bump_texture3D->setInternalFormatMode(osg::Texture3D::USE_USER_DEFINED_FORMAT);
-        //bump_texture3D->setInternalFormat(GL_INTENSITY);
         bump_texture3D->setImage(bumpmap_3d.get());
 
         stateset->setTextureAttributeAndModes(bumpmap_unit,bump_texture3D,osg::StateAttribute::ON);

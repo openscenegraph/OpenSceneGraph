@@ -1,0 +1,34 @@
+//C++ header 
+
+#ifndef OSGUTIL_TRANSFORMCALLBACK
+#define OSGUTIL_TRANSFORMCALLBACK 1
+
+#include <osg/Node>
+#include <osgUtil/Export>
+
+namespace osgUtil
+{
+
+class OSGUTIL_EXPORT TransformCallback : public osg::NodeCallback
+{
+
+    public:
+
+        TransformCallback(const osg::Vec3& pivot,const osg::Vec3& axis,float angularVelocity);
+
+        virtual void operator() (osg::Node* node, osg::NodeVisitor* nv);
+                
+    protected:
+    
+        float               _angular_velocity;
+        osg::Vec3           _pivot;
+        osg::Vec3           _axis;
+
+        int                 _previousTraversalNumber;
+        double              _previousTime;
+
+};
+
+};
+
+#endif

@@ -16,10 +16,10 @@
 using namespace osg;
 
 AutoTransform::AutoTransform():
-    _scale(1.0f,1.0f,1.0f),
     _autoUpdateEyeMovementTolerance(0.0f),
     _autoRotateToScreen(false),
     _autoScaleToScreen(false),
+    _scale(1.0f,1.0f,1.0f),
     _firstTimeToInitEyePoint(true),
     _matrixDirty(true)
 {
@@ -30,8 +30,8 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     Transform(pat,copyop),
     _position(pat._position),
     _pivotPoint(pat._pivotPoint),
-    _scale(pat._scale),
-    _rotation(pat._rotation)
+    _rotation(pat._rotation),
+    _scale(pat._scale)
 {
 //    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }

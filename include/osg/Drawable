@@ -250,12 +250,19 @@ class SG_EXPORT Drawable : public Object
         static void flushDeletedDisplayLists(unsigned int contextID);
 
 
-        enum AttributeType
+        typedef unsigned int AttributeType;
+        
+        enum AttributeTypes
         {
-            VERTICES,
-            NORMALS,
-            COLORS,
-            TEXTURE_COORDS,
+            VERTICES            = 0,
+            WEIGHTS             = 1,
+            NORMALS             = 2,
+            COLORS              = 3,
+            SECONDARY_COLORS    = 4,
+            FOG_COORDS          = 5,
+            ATTIBUTE_6          = 6,
+            ATTIBUTE_7          = 7,
+            TEXTURE_COORDS      = 8,
             TEXTURE_COORDS_0    = TEXTURE_COORDS,
             TEXTURE_COORDS_1    = TEXTURE_COORDS_0+1,
             TEXTURE_COORDS_2    = TEXTURE_COORDS_0+2,

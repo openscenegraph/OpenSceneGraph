@@ -13,6 +13,8 @@
 #include <osg/State>
 #include <osg/Notify>
 #include <osg/GLU>
+#include <osg/GLExtensions>
+
 
 using namespace osg;
 
@@ -611,6 +613,84 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
             s_glSecondaryColorPointer( size, type, stride, ptr );
         }
         _secondaryColorArray._dirty = false;
+    }
+}
+
+typedef void (APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+typedef void (APIENTRY * EnableVertexAttribProc) (unsigned int);
+typedef void (APIENTRY * DisableVertexAttribProc) (unsigned int);
+
+/** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
+* note, only updates values that change.*/
+void State::setVertexAttribPointer( unsigned int index,
+                                      GLint size, GLenum type, GLboolean normalized, 
+                                    GLsizei stride, const GLvoid *ptr )
+{
+    static VertexAttribPointerProc s_glVertexAttribPointer =  
+        (VertexAttribPointerProc) osg::getGLExtensionFuncPtr("glVertexAttribPointer","glVertexAttribPointerARB");
+
+    static EnableVertexAttribProc s_glEnableVertexAttribArray =  
+        (EnableVertexAttribProc) osg::getGLExtensionFuncPtr("glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+
+    if( s_glVertexAttribPointer )
+    {
+        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
+        EnabledArrayPair& eap = _vertexAttribArrayList[index];
+
+        if (!eap._enabled || eap._dirty)
+        {
+            eap._enabled = true;
+            s_glEnableVertexAttribArray( index );
+        }
+        if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
+        {
+            s_glVertexAttribPointer( index, size, type, normalized, stride, ptr );
+            eap._pointer = ptr;
+            eap._normalized = normalized;
+        }
+        eap._dirty = false;
+    }
+}      
+
+/** wrapper around DisableVertexAttribArrayARB(index);
+* note, only updates values that change.*/
+void State::disableVertexAttribPointer( unsigned int index )
+{
+    static DisableVertexAttribProc s_glDisableVertexAttribArray =  
+        (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+
+    if (s_glDisableVertexAttribArray)
+    {
+        if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
+        EnabledArrayPair& eap = _vertexAttribArrayList[index];
+
+        if (eap._enabled || eap._dirty)
+        {
+            eap._enabled = false;
+            eap._dirty = false;
+            s_glDisableVertexAttribArray( index );
+        }
+    }
+}        
+
+void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
+{
+    static DisableVertexAttribProc s_glDisableVertexAttribArray =  
+        (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+
+    if (s_glDisableVertexAttribArray)
+    {
+        while (index<_vertexAttribArrayList.size())
+        {
+            EnabledArrayPair& eap = _vertexAttribArrayList[index];
+            if (eap._enabled || eap._dirty)
+            {
+                eap._enabled = false;
+                eap._dirty = false;
+                s_glDisableVertexAttribArray( index );
+            }
+            ++index;
+        }
     }
 }
 

@@ -68,8 +68,12 @@ void FragmentProgram::read(DataInputStream* in){
         // Read data
         int i, size;
         size = in->readInt();
-        for(i=0; i<size; i++)
-            this->setProgramLocalParameter( in->readInt(), in->readVec4() );
+	for(i=0; i<size; i++)
+        {
+            int index = in->readInt();
+            osg::Vec4 v = in->readVec4();
+            this->setProgramLocalParameter( index, v );
+        }
 
         std::string fp = in->readString();
         this->setFragmentProgram( fp );

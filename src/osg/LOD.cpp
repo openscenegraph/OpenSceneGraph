@@ -26,6 +26,7 @@ LOD::LOD(const LOD& lod,const CopyOp& copyop):
         Group(lod,copyop),
         _centerMode(lod._centerMode),
         _userDefinedCenter(lod._userDefinedCenter),
+        _radius(lod._radius),
         _rangeList(lod._rangeList)
 {
 }
@@ -77,6 +78,22 @@ void LOD::traverse(NodeVisitor& nv)
         }
         default:
             break;
+    }
+}
+
+bool LOD::computeBound() const
+{
+    if (_centerMode==USER_DEFINED_CENTER && _radius>=0.0f)
+    {
+        _bsphere._center = _userDefinedCenter;
+        _bsphere._radius = _radius;
+        _bsphere_computed = true;
+
+        return true;
+    }
+    else
+    {
+        return Group::computeBound();
     }
 }
 

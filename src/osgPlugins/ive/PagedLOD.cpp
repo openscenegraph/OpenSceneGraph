@@ -62,6 +62,10 @@ void PagedLOD::write(DataOutputStream* out){
 	// Write centermode
 	out->writeInt(getCenterMode());
 	out->writeVec3(getCenter());
+
+        out->writeInt(getRangeMode());
+
+
         // Write rangelist
 	int size = getNumRanges();
 	out->writeInt(size);
@@ -110,6 +114,9 @@ void PagedLOD::read(DataInputStream* in){
 		// Read centermode
 		setCenterMode((osg::LOD::CenterMode)in->readInt());
 		setCenter(in->readVec3());
+
+                setRangeMode((RangeMode)in->readInt());
+
 		// Read rangelist
 		size = in->readInt();
 		for(i=0;i<size;i++){

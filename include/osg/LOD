@@ -76,6 +76,15 @@ class SG_EXPORT LOD : public Group
         inline const Vec3& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
 
 
+        /** Set the object-space reference radius of the volume enclosed by the LOD. 
+          * Used to detmine the bounding sphere of the LOD in the absense of any children.*/
+        inline void setRadius(float radius) { _radius = radius; }
+        
+        /** Get the object-space radius of the volume enclosed by the LOD.*/
+        inline float getRadius() const { return _radius; }
+
+
+
         /** Modes that control how the range values should be intepreted when computing which child is active.*/
         enum RangeMode
         {
@@ -110,6 +119,8 @@ class SG_EXPORT LOD : public Group
     protected :
         virtual ~LOD() {}
 
+        virtual bool computeBound() const;
+
         virtual void childRemoved(unsigned int pos, unsigned int numChildrenToRemove);
         virtual void childInserted(unsigned int pos);
 
@@ -118,6 +129,7 @@ class SG_EXPORT LOD : public Group
 
         CenterMode                      _centerMode;
         Vec3                            _userDefinedCenter;
+        float                           _radius;
 
         RangeMode                       _rangeMode;
         RangeList                       _rangeList;

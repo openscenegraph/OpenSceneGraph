@@ -55,7 +55,7 @@ class SG_EXPORT Viewport : public StateAttribute
             _height = height;
         }
         
-        void getViewport(int& x,int& y,int& width,int& height)
+        void getViewport(int& x,int& y,int& width,int& height) const
         {
             x = _x;
             y = _y;
@@ -78,7 +78,7 @@ class SG_EXPORT Viewport : public StateAttribute
           * To converted local coodinates into window coordinates use v_window = v_local * MVPW matrix, 
           * where the MVPW matrix is ModelViewMatrix * ProjectionMatrix * WindowMatrix, the later supplied by 
           * viewport::computeWindowMatrix(), the ModelView and Projection Matrix can either be sourced from the
-          * curre osg::State object, via osgUtil::SceneView or CullVisitor.*/
+          * current osg::State object, via osgUtil::SceneView or CullVisitor.*/
         inline const osg::Matrix computeWindowMatrix() const
         {
             return osg::Matrix::translate(1.0f,1.0f,1.0f)*osg::Matrix::scale(0.5f*width(),0.5f*height(),0.5f);

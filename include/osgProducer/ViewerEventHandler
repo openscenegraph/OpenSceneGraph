@@ -11,19 +11,19 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGPRODUCER_FULLSCREENEVENTHANDLER
-#define OSGPRODUCER_FULLSCREENEVENTHANDLER 1
+#ifndef OSGPRODUCER_VIEWEREVENTHANDLER
+#define OSGPRODUCER_VIEWEREVENTHANDLER 1
 
 #include <osgGA/GUIEventHandler>
 #include <osgProducer/Viewer>
 
 namespace osgProducer {
 
-class FullScreenEventHandler : public osgGA::GUIEventHandler
+class ViewerEventHandler : public osgGA::GUIEventHandler
 {
     public:
     
-        FullScreenEventHandler(osgProducer::Viewer* cg):_cg(cg) {}
+        ViewerEventHandler(osgProducer::OsgCameraGroup* cg);
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
@@ -34,7 +34,9 @@ class FullScreenEventHandler : public osgGA::GUIEventHandler
 
     protected:
         
-        osgProducer::Viewer*        _cg;
+        osgProducer::OsgCameraGroup* _cg;
+        
+        std::string _writeNodeFileName;
 };
 
 }

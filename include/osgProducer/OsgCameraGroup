@@ -19,6 +19,7 @@
 #include <Producer/CameraGroup>
 
 #include <osg/ArgumentParser>
+#include <osg/ApplicationUsage>
 #include <osg/Group>
 #include <osg/StateSet>
 #include <osg/FrameStamp>
@@ -43,8 +44,14 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         virtual ~OsgCameraGroup() {}
 
 
-        typedef std::vector < osg::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
+        void setApplicationUsage(osg::ApplicationUsage* au) { _applicationUsage = au; }
+        
+        osg::ApplicationUsage* getApplicationUsage() { return _applicationUsage; }
+        
+        const osg::ApplicationUsage* getApplicationUsage() const { return _applicationUsage; }
 
+
+        typedef std::vector < osg::ref_ptr<osgProducer::OsgSceneHandler> > SceneHandlerList;
 
         SceneHandlerList& getSceneHandlerList() { return _shvec;}
 
@@ -140,12 +147,15 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();
-
+        
+        
 
     protected :
 
         void setUpSceneViewsWithData();
 
+
+        osg::ApplicationUsage*                  _applicationUsage;
 
         osg::ref_ptr<osg::Node>                 _scene_data;
         osg::ref_ptr<osg::Group>                _scene_decorator;

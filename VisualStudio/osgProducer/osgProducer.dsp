@@ -117,7 +117,7 @@ SOURCE=..\..\src\osgProducer\StatsEventHandler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgProducer\FullScreenEventHandler.cpp
+SOURCE=..\..\src\osgProducer\ViewerEventHandler.cpp
 # End Source File
 # Begin Source File
 
@@ -161,7 +161,7 @@ SOURCE=..\..\Include\osgProducer\StatsEventHandler
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgProducer\FullScreenEventHandler
+SOURCE=..\..\Include\osgProducer\ViewerEventHandler
 # End Source File
 # Begin Source File
 

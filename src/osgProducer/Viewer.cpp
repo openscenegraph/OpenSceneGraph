@@ -14,7 +14,7 @@
 #include <osgProducer/Viewer>
 #include <osgProducer/FrameStatsHandler>
 #include <osgProducer/StatsEventHandler>
-#include <osgProducer/FullScreenEventHandler>
+#include <osgProducer/ViewerEventHandler>
 
 using namespace osgProducer;
 
@@ -155,9 +155,9 @@ void Viewer::setUpViewer(unsigned int options)
         
     }
     
-    if (options&FULLSCREEN_MANIPULATOR)
+    if (options&VIEWER_MANIPULATOR)
     {
-        getEventHandlerList().push_back(new FullScreenEventHandler(this));
+        getEventHandlerList().push_back(new ViewerEventHandler(this));
     }
     
 }

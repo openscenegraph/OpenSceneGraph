@@ -93,6 +93,7 @@ OsgCameraGroup::OsgCameraGroup(osg::ArgumentParser& arguments):
     Producer::CameraGroup(extractCameraConfigFile(arguments))
 {
     _init();
+    _applicationUsage = arguments.getApplicationUsage();
 }
 
 void OsgCameraGroup::_init()

@@ -78,7 +78,12 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
 
             initPerformer();
+
+            #ifdef __sgi
+            pfNode* root = pfdLoadFile(fileName.c_str());
+            #else
             pfNode* root = pfdLoadFile_pfb(fileName.c_str());
+            #endif
 
             ConvertFromPerformer converter;
             return converter.convert(root);

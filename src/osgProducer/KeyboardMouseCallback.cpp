@@ -10,9 +10,9 @@ using namespace osgProducer;
 void KeyboardMouseCallback::mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm )
 {
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptMouseScroll(getTime(), sm);
 
     _eventQueueMutex.lock();
+    event->adaptMouseScroll(getTime(), sm);
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
@@ -24,9 +24,9 @@ void KeyboardMouseCallback::buttonPress( float mx, float my, unsigned int mbutto
     _mbutton |= (1<<(mbutton-1));
     
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptButtonPress(getTime(),mx,my,mbutton);
     
     _eventQueueMutex.lock();
+    event->adaptButtonPress(getTime(),mx,my,mbutton);
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
@@ -38,9 +38,9 @@ void KeyboardMouseCallback::buttonRelease( float mx, float my, unsigned int mbut
     _mbutton &= ~(1<<(mbutton-1));
     
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptButtonRelease(getTime(),mx,my,mbutton);
     
     _eventQueueMutex.lock();
+    event->adaptButtonRelease(getTime(),mx,my,mbutton);
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
@@ -52,64 +52,67 @@ void KeyboardMouseCallback::doubleButtonPress( float mx, float my, unsigned int 
     _mbutton |= (1<<(mbutton-1));
     
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptButtonPress(getTime(),mx,my,mbutton);
     
     _eventQueueMutex.lock();
+    event->adaptButtonPress(getTime(),mx,my,mbutton);
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
 
 void KeyboardMouseCallback::keyPress( Producer::KeyCharacter key )
 {
-
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
+
+    _eventQueueMutex.lock();
     event->adaptKeyPress(getTime(),key);
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
 
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 
         event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
-
-
-    _eventQueueMutex.lock();
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
 }
 
 void KeyboardMouseCallback::keyRelease( Producer::KeyCharacter key )
 {
-
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptKeyRelease(getTime(),key);
     
     _eventQueueMutex.lock();
+    event->adaptKeyRelease(getTime(),key);
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
 
 void KeyboardMouseCallback::specialKeyPress( Producer::KeyCharacter key )
 {
-
-           
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
+
+    _eventQueueMutex.lock();
     event->adaptKeyPress(getTime(),key);
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
 
     // check against adapted key symbol.    
     if (_escapeKeySetsDone && 
         event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
-
-
-    _eventQueueMutex.lock();
-    _eventQueue.push_back(event);
-    _eventQueueMutex.unlock();
 }
 
 void KeyboardMouseCallback::specialKeyRelease( Producer::KeyCharacter key )
 {
-
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptKeyRelease(getTime(),key);
     
     _eventQueueMutex.lock();
+    event->adaptKeyRelease(getTime(),key);
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+}
+
+void KeyboardMouseCallback::windowConfig( int x, int y, unsigned int width, unsigned int height )
+{
+    osg::ref_ptr<EventAdapter> event = createEventAdapter();
+    
+    _eventQueueMutex.lock();
+    event->adaptResize(getTime(), x, y, x+width, y+height );
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 }
@@ -120,9 +123,9 @@ void KeyboardMouseCallback::mouseMotion( float mx, float my)
     _my = my;
     
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
-    event->adaptMouseMotion(getTime(),mx,my);
     
     _eventQueueMutex.lock();
+    event->adaptMouseMotion(getTime(),mx,my);
     _eventQueue.push_back(event);
     _eventQueueMutex.unlock();
 
@@ -136,7 +139,20 @@ void KeyboardMouseCallback::passiveMouseMotion( float mx, float my)
     //std::cout << "mx="<<mx<<" my="<<my<<std::endl;
 
     osg::ref_ptr<EventAdapter> event = createEventAdapter();
+    
+    _eventQueueMutex.lock();
     event->adaptMouseMotion(getTime(),mx,my);
+    _eventQueue.push_back(event);
+    _eventQueueMutex.unlock();
+
+}
+
+void KeyboardMouseCallback::mouseWarp( float mx, float my) 
+{
+    _mx = mx;
+    _my = my;
+    
+    osg::ref_ptr<EventAdapter> event = createEventAdapter();
     
     _eventQueueMutex.lock();
     _eventQueue.push_back(event);
@@ -144,13 +160,17 @@ void KeyboardMouseCallback::passiveMouseMotion( float mx, float my)
 
 }
 
-void KeyboardMouseCallback::getEventQueue(EventQueue& queue)
+double KeyboardMouseCallback::getEventQueue(EventQueue& queue)
 {
+    double swapTime;
+
     queue.clear();
     _eventQueueMutex.lock();
     _eventQueue.swap(queue);
+    swapTime = getTime();
     _eventQueueMutex.unlock();
     
+    return swapTime;
 }
 
 EventAdapter* KeyboardMouseCallback::createEventAdapter()

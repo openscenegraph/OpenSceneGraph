@@ -46,17 +46,20 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         virtual void mouseScroll( Producer::KeyboardMouseCallback::ScrollingMotion sm );
         virtual void mouseMotion( float mx, float my);
         virtual void passiveMouseMotion( float mx, float my);
+        virtual void mouseWarp( float mx, float my);
 
         virtual void buttonPress( float mx, float my, unsigned int mbutton );
-	virtual void doubleButtonPress( float mx, float my, unsigned int mbutton);
+        virtual void doubleButtonPress( float mx, float my, unsigned int mbutton);
         virtual void buttonRelease( float mx, float my, unsigned int mbutton );
 
         virtual void keyPress( Producer::KeyCharacter key );
         virtual void keyRelease( Producer::KeyCharacter key );
 
-	virtual void specialKeyPress( Producer::KeyCharacter key);
-	virtual void specialKeyRelease( Producer::KeyCharacter key);
+        virtual void specialKeyPress( Producer::KeyCharacter key);
+        virtual void specialKeyRelease( Producer::KeyCharacter key);
         
+        virtual void windowConfig( int x, int y, unsigned int width, unsigned int height );
+
         virtual void shutdown();
 
 
@@ -67,7 +70,7 @@ class OSGPRODUCER_EXPORT KeyboardMouseCallback : public Producer::KeyboardMouseC
         // local methods and members
         typedef std::vector< osg::ref_ptr<EventAdapter> > EventQueue;
 
-        void getEventQueue(EventQueue& queue);
+        double getEventQueue(EventQueue& queue);
 
         bool done() { return _done; }
         float mx()  { return _mx; }

@@ -245,13 +245,13 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                 }
                 else
                 {
-                    osg::uint* base = gset.getCoordIndices()._ptr._uint;
-                    osg::uint* iptr = base;
+                    GLuint* base = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        osg::uint* iend = iptr+primLength;
+                        GLuint* iend = iptr+primLength;
                         int tri=0;
                         for(int j = 2; j < primLength; j++ )
                         {
@@ -310,8 +310,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                 }
                 else
                 {
-                    osg::uint* base = gset.getCoordIndices()._ptr._uint;
-                    osg::uint* iptr = base;
+                    GLuint* base = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
@@ -363,13 +363,13 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                 }
                 else
                 {
-                    osg::uint* base = gset.getCoordIndices()._ptr._uint;
-                    osg::uint* iptr = base;
+                    GLuint* base = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
                         const int primLength = gset.getPrimLengths()[i];
-                        osg::uint* iend = iptr+primLength;
+                        GLuint* iend = iptr+primLength;
                         int tri=0;
                         for(int j = 3; j < primLength; j+=2 )
                         {
@@ -426,8 +426,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                 }
                 else
                 {
-                    osg::uint* base = gset.getCoordIndices()._ptr._uint;
-                    osg::uint* iptr = base;
+                    GLuint* base = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
@@ -487,8 +487,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                 }
                 else
                 {
-                    osg::uint* base = gset.getCoordIndices()._ptr._uint;
-                    osg::uint* iptr = base;
+                    GLuint* base = gset.getCoordIndices()._ptr._uint;
+                    GLuint* iptr = base;
                     const int numPrim = gset.getNumPrims();
                     for(int i=0; i<numPrim; ++i )
                     {
@@ -496,8 +496,8 @@ void for_each_triangle2(const osg::GeoSet& gset,T& op)
                         int tri=0;
                         if (primLength>0)
                         {
-                            osg::uint *start = iptr;
-                            osg::uint* iend = iptr+primLength;
+                            GLuint *start = iptr;
+                            GLuint* iend = iptr+primLength;
                             ++iptr;
                             for(int j = 2; j < primLength; ++j )
                             {
@@ -587,20 +587,20 @@ osg::GeoSet *AreaGeoSetTriangulator::BuildGeoSet()
           sizeof(osg::Vec2) * _area_geoset.getNumTextureCoords() );
 
   // Now generate the index arrays
-  osg::uint *new_cindex   = 0;
-  osg::uint *new_nindex   = 0;
-  osg::uint *new_colindex = 0;
-  osg::uint *new_tindex   = 0;
+  GLuint *new_cindex   = 0;
+  GLuint *new_nindex   = 0;
+  GLuint *new_colindex = 0;
+  GLuint *new_tindex   = 0;
 
-  if ( _cindex.size()   ) new_cindex   = new osg::uint[ _cindex.size()   ];
-  if ( _nindex.size()   ) new_nindex   = new osg::uint[ _nindex.size()   ];
-  if ( _colindex.size() ) new_colindex = new osg::uint[ _colindex.size() ];
-  if ( _tindex.size()   ) new_tindex   = new osg::uint[ _tindex.size()   ];
+  if ( _cindex.size()   ) new_cindex   = new GLuint[ _cindex.size()   ];
+  if ( _nindex.size()   ) new_nindex   = new GLuint[ _nindex.size()   ];
+  if ( _colindex.size() ) new_colindex = new GLuint[ _colindex.size() ];
+  if ( _tindex.size()   ) new_tindex   = new GLuint[ _tindex.size()   ];
 
-  memcpy( new_cindex  , &_cindex  [0], sizeof(osg::uint) * _cindex.size()   );
-  memcpy( new_nindex  , &_nindex  [0], sizeof(osg::uint) * _nindex.size()   );
-  memcpy( new_colindex, &_colindex[0], sizeof(osg::uint) * _colindex.size() );
-  memcpy( new_tindex  , &_tindex  [0], sizeof(osg::uint) * _tindex.size()   );
+  memcpy( new_cindex  , &_cindex  [0], sizeof(GLuint) * _cindex.size()   );
+  memcpy( new_nindex  , &_nindex  [0], sizeof(GLuint) * _nindex.size()   );
+  memcpy( new_colindex, &_colindex[0], sizeof(GLuint) * _colindex.size() );
+  memcpy( new_tindex  , &_tindex  [0], sizeof(GLuint) * _tindex.size()   );
 
   res->setCoords ( new_coords , new_cindex   );
   res->setNormals( new_normals, new_nindex   );

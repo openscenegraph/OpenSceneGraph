@@ -76,6 +76,7 @@ DEMOS_DIRS = \
 	osghangglide\
 	osghud\
 	osgimpostor\
+	osglight\
 	osgmultitexture\
 	osgoccluder\
 	osgparticle\

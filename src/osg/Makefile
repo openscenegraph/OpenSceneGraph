@@ -23,6 +23,7 @@ CXXFILES =\
 	CullStack.cpp\
 	Depth.cpp\
 	DisplaySettings.cpp\
+	DOFTransform.cpp\
 	Drawable.cpp\
 	DrawPixels.cpp\
 	EarthSky.cpp\

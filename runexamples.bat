@@ -100,7 +100,7 @@ echo osgscribe
 osgscribe cow.osg
 
 echo osgsequence
-osgsequence cow.osg dumptruck.osg cessna.osg
+osgsequence cow.osg dumptruck.osg cessna.osg glider.osg
 
 echo osgshaders
 osgshaders
@@ -119,6 +119,9 @@ osgsimulation
 
 echo osgspheresegment
 osgspheresegment
+
+echo osgspotlight
+osgspotlight
 
 echo osgstereoimage
 osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg

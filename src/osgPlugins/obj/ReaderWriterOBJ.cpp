@@ -29,6 +29,7 @@
 #include <osg/Material>
 #include <osg/Texture2D>
 #include <osg/TexGen>
+#include <osg/TexMat>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -242,16 +243,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
             if (titr==textureMap.end())
             {
         
-//                 std::string fileName = osgDB::findFileInDirectory(omtl->textureName,directory,true);
-//                 
-//                 std::cout << "omtl->textureName "<<omtl->textureName<<std::endl;
-//                 std::cout << "directory "<<directory<<std::endl;
-//                 std::cout << "fileName "<<fileName<<std::endl;
-//                 
-//                 if (!fileName.empty())
-//                 {
-// 
-                    osg::Image* osg_image = osgDB::readImageFile(omtl->textureName);
+                std::string fileName = osgDB::findFileInDirectory(omtl->textureName,directory,osgDB::CASE_INSENSITIVE);
+                if (!fileName.empty()) fileName = osgDB::findDataFile(omtl->textureName,osgDB::CASE_INSENSITIVE);
+                
+                if (!fileName.empty())
+                {
+
+                    osg::Image* osg_image = osgDB::readImageFile(fileName.c_str());
                     if (osg_image)
                     {
                         osg::Texture2D* osg_texture = new osg::Texture2D;
@@ -260,16 +258,42 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
                         
                         textureMap[omtl->textureName] = osg_texture;
 
+                        // Adjust the texture matrix if necessary
+                        bool needsUVScaling = (1.0 != omtl->textureUScale) || (1.0 != omtl->textureVScale);
+                        bool needsUVOffsetting = (0.0 != omtl->textureUOffset) || (0.0 != omtl->textureVOffset);
+
+                        if (needsUVScaling || needsUVOffsetting)
+                        {
+                            osg::TexMat* osg_texmat = new osg::TexMat;
+
+                            osg::Matrix scale;
+                            osg::Matrix translate;
+                            scale.makeIdentity();
+                            translate.makeIdentity();
+
+                            if (needsUVScaling)
+                            {
+                                scale.makeScale(omtl->textureUScale, omtl->textureVScale, 1.0f);
+                            }
+
+                            if (needsUVOffsetting)
+                            {
+                                translate.makeTranslate(omtl->textureUOffset, omtl->textureVOffset, 0.0f);
+                            }
+
+                            osg_texmat->setMatrix(scale * translate);
+                            stateset->setTextureAttributeAndModes(0,osg_texmat,osg::StateAttribute::ON);
+                        }
                     }
                     else
                     {
                         osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<omtl->textureName<< std::endl;
                     }
-//                 }
-//                 else
-//                 {
-//                     osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<< std::endl;
-//                 }
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "texture '"<<omtl->textureName<<"' not found"<< std::endl;
+                }
                 
             }
             else

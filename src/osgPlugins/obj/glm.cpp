@@ -265,6 +265,98 @@ _glmDirName(char* path)
 }
 
 
+/* _glmReadMTLTextureOptions: parses the given line for texture options
+ * and applies the options to the given model/material
+ *
+ * model         - properly initialized GLMmodel structure
+ * materialIndex - the material affected in the given model
+ * line          - white-space separated options
+ */
+GLvoid
+_glmReadMTLTextureOptions(GLMmodel* model, unsigned int materialIndex, char* line)
+{
+  char *token;
+  char seps[] = " \t\n\r\f\v";
+  std::cout<<"line ["<<line<<"]"<<std::endl;
+  token = ::strtok(line, seps);
+  while(NULL != token) 
+  {
+    std::cout<<"token ["<<token<<"]"<<std::endl;
+    switch(token[0])
+    {
+      case '-':
+        switch(token[1])
+        {
+          // Scaling:  -s <uScale> <vScale>
+          case 's':
+            float uScale, vScale;
+            token = ::strtok(NULL, seps);
+            uScale = token ? (float)::atof(token) : 1.0f;
+
+            token = ::strtok(NULL, seps);
+            vScale = token ? (float)::atof(token) : 1.0f;
+
+            if ((0.0f != uScale) && (0.0f != vScale))
+            {
+              uScale = 1.0f / uScale;
+              vScale = 1.0f / vScale;
+              model->materials[materialIndex].textureUScale = uScale;
+              model->materials[materialIndex].textureVScale = vScale;
+            }
+            break;
+
+          // Offset:  -o <uOffset> <vOffset>
+          case 'o':
+            float uOffset, vOffset;
+            token = ::strtok(NULL, seps);
+            uOffset = token ? (float)::atof(token) : 0.0f;
+
+            token = ::strtok(NULL, seps);
+            vOffset = token ? (float)::atof(token) : 0.0f;
+
+            model->materials[materialIndex].textureUOffset = uOffset;
+            model->materials[materialIndex].textureVOffset = vOffset;
+            break;
+
+          // These options are not handled - so just advance to the next 
+          // valid token
+          // ==================================================================
+          //
+
+          // Clamping:  -clamp <on|off>
+          case 'c':
+            token = ::strtok(NULL, seps);
+            break;
+
+          // Bias and gain:  -mm <bias> <gain>
+          case 'm':
+          // Turbulence/Noise:  -t <uNoise> <vNoise>
+          case 't':
+            token = ::strtok(NULL, seps);
+            token = ::strtok(NULL, seps);
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      // Image filename
+      default:
+        if (0 != strlen(token))
+        {
+          model->materials[materialIndex].textureName = strdup(token);
+            std::cout<<"token ["<<token<<"]"<<std::endl;
+            std::cout<<"reading material ["<<model->materials[materialIndex].textureName<<"]"<<std::endl;
+        }
+    }
+
+    // Advance to the next token
+    token = ::strtok(NULL, seps);
+  }
+}
+
+
 /* _glmReadMTL: read a wavefront material library file
  *
  * model - properly initialized GLMmodel structure
@@ -338,6 +430,10 @@ _glmReadMTL(GLMmodel* model, char* name)
     model->materials[i].specular[2] = 0.0f;
     model->materials[i].textureName = NULL;
     model->materials[i].textureReflection = false;
+    model->materials[i].textureUScale = 1.0f;
+    model->materials[i].textureVScale = 1.0f;
+    model->materials[i].textureUOffset = 0.0f;
+    model->materials[i].textureVOffset = 0.0f;
     model->materials[i].alpha = 1.0f;
   }
   model->materials[0].name = strdup("default");
@@ -398,8 +494,7 @@ _glmReadMTL(GLMmodel* model, char* name)
       if (strcmp(buf,"map_Kd")==0)
       {
         fgets(buf, sizeof(buf), file);
-        sscanf(buf, "%s %s", buf, buf);
-        model->materials[nummaterials].textureName = strdup(buf);
+        _glmReadMTLTextureOptions(model, nummaterials, buf);
       }
       else if (strcmp(buf,"refl")==0)
       {

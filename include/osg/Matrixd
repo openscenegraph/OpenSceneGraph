@@ -126,7 +126,7 @@ class SG_EXPORT Matrixd
 
         /** Get the othorgraphic settings of the orthographic projection matrix. 
           * Note, if matrix is not an orthographic matrix then invalid values will be returned.*/
-        void getOrtho(double& left, double& right,
+        bool getOrtho(double& left, double& right,
                       double& bottom, double& top,
                       double& zNear, double& zFar);
 
@@ -145,14 +145,22 @@ class SG_EXPORT Matrixd
 
         /** Get the frustum setting of a perspective projection matrix.
           * Note, if matrix is not an perspective matrix then invalid values will be returned.*/
-        void getFrustum(double& left, double& right,
-                         double& bottom, double& top,
-                         double& zNear, double& zFar);
+        bool getFrustum(double& left, double& right,
+                        double& bottom, double& top,
+                        double& zNear, double& zFar);
 
         /** Set to a symmetrical perspective projection, See gluPerspective for further details.
           * Aspect ratio is defined as width/height.*/
         void makePerspective(double fovy,double aspectRatio,
                              double zNear, double zFar);
+
+        /** Get the frustum setting of a symetric perspective projection matrix.
+          * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
+          * Note, if matrix is not a symetric perspective matrix then the shear will be lost.
+          * Asymetric metrices occur when stereo, power walls, caves and reality center display are used.
+          * In these configuration one should use the AsFrustum method instead.*/
+        bool getPerspective(double& fovy,double& aspectRatio,
+                            double& zNear, double& zFar);
 
         /** Set to the position and orientation modelview matrix, using the same convention as gluLookAt. */
         void makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up);

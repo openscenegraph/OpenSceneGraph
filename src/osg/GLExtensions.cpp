@@ -62,10 +62,12 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
    return wglGetProcAddress(funcName);
-#elif defined(macintosh)
-   return NULL;
 #else
+#if defined( __DARWIN_OSX__ )
+   static void *lib = dlopen("libGL.dylib", RTLD_LAZY);
+#else // all other unixes
    static void *lib = dlopen("libGL.so", RTLD_LAZY);
+#endif
    if (lib)
       return dlsym(lib, funcName);
    else

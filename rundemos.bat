@@ -28,8 +28,8 @@ osgvertexprogram
 echo sgv Town.osg
 sgv Town.osg
 
-echo sgv afterescher.geo
-sgv afterescher.geo
+#echo sgv afterescher.geo
+#sgv afterescher.geo
 
 echo osgshape
 osgshape

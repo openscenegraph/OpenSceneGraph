@@ -1,0 +1,46 @@
+
+#include <osgGA/GUIEventHandler>
+#include <osgProducer/CameraGroup>
+
+class StatsEventHandler : public osgGA::GUIEventHandler
+{
+    public:
+    
+        StatsEventHandler(osgProducer::Viewer* cg):_cg(cg) {}
+    
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+        {
+            if(!_cg) return false;
+
+            if(ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN)
+            {
+
+                switch( ea.getKey() )
+                {
+                case 's' :
+                    _cg->setInstrumentationMode(!_cg->getInstrumentationMode());
+                    return true;
+
+                case 'v' :
+                    _cg->setBlockOnVsync(!_cg->getBlockOnVsync());
+                    //std::cout<<"_cg->getBlockOnVsync()="<<_cg->getBlockOnVsync()<<std::endl;
+                    return true;
+
+                default:
+                    break;
+
+                }
+            }
+            return false;
+            
+        }
+
+        virtual void accept(osgGA::GUIEventHandlerVisitor& gehv)
+        {
+            gehv.visit(*this);
+        }
+
+    protected:
+        
+        osgProducer::Viewer*        _cg;
+};

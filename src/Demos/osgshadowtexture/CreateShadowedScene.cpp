@@ -20,7 +20,8 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
             _shadower(shadower),
             _position(position),
             _ambientLightColor(ambientLightColor),
-            _unit(textureUnit)
+            _unit(textureUnit),
+            _shadowState(new osg::StateSet)
         {
             _texture = new osg::Texture2D;
             _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
@@ -52,6 +53,7 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
         osg::Vec3                    _position;
         osg::Vec4                    _ambientLightColor;
         unsigned int                 _unit;
+        osg::ref_ptr<osg::StateSet>  _shadowState;
 
         // we need this to get round the order dependance
         // of eye linear tex gen...    
@@ -146,17 +148,15 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
 
     cv.pushModelViewMatrix(matrix);
 
-    osg::ref_ptr<osg::StateSet> shadowState = new osg::StateSet;
-
     // make the material black for a shadow.
     osg::Material* material = new osg::Material;
     material->setAmbient(osg::Material::FRONT_AND_BACK,_ambientLightColor);
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     material->setEmission(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,1.0f));
     material->setShininess(osg::Material::FRONT_AND_BACK,0.0f);
-    shadowState->setAttribute(material,osg::StateAttribute::OVERRIDE);
+    _shadowState->setAttribute(material,osg::StateAttribute::OVERRIDE);
 
-    cv.pushStateSet(shadowState.get());
+    cv.pushStateSet(_shadowState.get());
 
     {
 
@@ -202,7 +202,7 @@ void CreateShadowTextureCullCallback::doPreRender(osg::Node& node, osgUtil::Cull
     new_viewport->setViewport(center_x-width/2,center_y-height/2,width,height);
     rtts->setViewport(new_viewport);
     
-    shadowState->setAttribute(new_viewport);
+    _shadowState->setAttribute(new_viewport);
 
     // and the render to texture stage to the current stages
     // dependancy list.

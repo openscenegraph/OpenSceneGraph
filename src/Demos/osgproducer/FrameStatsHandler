@@ -22,8 +22,10 @@ class FrameStatsHandler : public CameraGroup::StatsHandler, public Camera::Callb
             _fs[_index] = cg.getFrameStats();     
         }
 
-	void operator() (const Camera &)
+	void operator() (const Camera &camera)
         {
+            if (!camera.getInstrumentationMode()) return;
+
 	    glViewport( 0, 0, 1280, 1024 );
 	    // Set up the Orthographic view
 	    glMatrixMode( GL_PROJECTION );

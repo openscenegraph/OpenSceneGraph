@@ -255,7 +255,7 @@ char *osgDB::findDSO( const char *name )
 
     #elif (_MIPS_SIM == _MIPS_SIM_ABI64)
 
-    if( !(ptr = getenv( "LD_LIBRARYN32_PATH" )))
+    if( !(ptr = getenv( "LD_LIBRARY64_PATH" )))
         ptr = getenv( "LD_LIBRARY_PATH" );
 
     if( ptr )

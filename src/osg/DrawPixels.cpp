@@ -16,7 +16,7 @@ DrawPixels::DrawPixels()
     _height = 0;
 }
 
-DrawPixels::DrawPixels(const DrawPixels& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+DrawPixels::DrawPixels(const DrawPixels& drawimage,const CopyOp& copyop):
     Drawable(drawimage,copyop),
     _position(drawimage._position),
     _image(drawimage._image),

@@ -481,7 +481,7 @@ public:
     {
         if (indices==0 || count==0) return;
     
-        typedef unsigned char* IndexPointer;
+        typedef GLubyte* IndexPointer;
     
         switch(mode)
         {
@@ -548,7 +548,7 @@ public:
     {
         if (indices==0 || count==0) return;
     
-        typedef unsigned short* IndexPointer;
+        typedef GLushort* IndexPointer;
     
         switch(mode)
         {
@@ -617,7 +617,7 @@ public:
     {
         if (indices==0 || count==0) return;
     
-        typedef unsigned int* IndexPointer;
+        typedef GLuint* IndexPointer;
     
         switch(mode)
         {

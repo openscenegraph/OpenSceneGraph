@@ -3,6 +3,8 @@
 
 #include <osg/GLU>
 
+#include <algorithm>
+
 using namespace osg;
 
 State::State()
@@ -188,9 +190,9 @@ void State::apply(const StateSet* dstate)
         const StateSet::TextureAttributeList& ds_textureAttributeList = dstate->getTextureAttributeList();
 
         unsigned int unit;
-        unsigned int unitMax = std::max(ds_textureModeList.size(),ds_textureAttributeList.size());
-        unitMax = std::max(unitMax,_textureModeMapList.size());
-        unitMax = std::max(unitMax,_textureAttributeMapList.size());
+        unsigned int unitMax = std::max(static_cast<unsigned int>(ds_textureModeList.size()),static_cast<unsigned int>(ds_textureAttributeList.size()));
+        unitMax = std::max(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureModeMapList.size()));
+        unitMax = std::max(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureAttributeMapList.size()));
         for(unit=0;unit<unitMax;++unit)
         {
             if (setActiveTextureUnit(unit))

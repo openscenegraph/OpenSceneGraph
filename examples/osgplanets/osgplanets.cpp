@@ -133,7 +133,7 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
     
     int numSamples = 1000;
     float yaw = 0.0f;
-    float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
+    float yaw_delta = -2.0f*osg::PI/((float)numSamples-1.0f);
     float roll = osg::inDegrees(30.0f);
     
     double time=0.0f;
@@ -173,6 +173,7 @@ public:
     double _RorbitMars;
     double _RorbitJupiter;
 
+    double _rotateSpeedSun;
     double _rotateSpeedMercury;
     double _rotateSpeedVenus;
     double _rotateSpeedEarthAndMoon;
@@ -193,33 +194,39 @@ public:
     std::string _mapMars;
     std::string _mapJupiter;
     
+    double _rotateSpeedFactor;
+    double _RorbitFactor;
+    double _radiusFactor;
+    
     SolarSystem()
     {
-        _radiusSpace    = 300.0;
-        _radiusSun      = 3.5;
-        _radiusMercury  = 0.7;
-        _radiusVenus    = 1.2;
-        _radiusEarth    = 2.0;
-        _radiusMoon     = 0.5;
-        _radiusMars     = 1.8;
-        _radiusJupiter  = 1.8;
+        _radiusSpace    = 500.0;
+        _radiusSun      = 109.0;
+        _radiusMercury  = 0.38;
+        _radiusVenus    = 0.95;
+        _radiusEarth    = 1.0;
+        _radiusMoon     = 0.1;
+        _radiusMars     = 0.53;
+        _radiusJupiter  = 5.0;
         
         _RorbitMercury  = 11.7;
         _RorbitVenus    = 21.6;
         _RorbitEarth    = 30.0;
-        _RorbitMoon     = 2.0;
+        _RorbitMoon     = 1.0;
         _RorbitMars     = 45.0;
         _RorbitJupiter  = 156.0;
         
-        _rotateSpeedMercury         = 1.1;
-        _rotateSpeedVenus           = 1.3;
-        _rotateSpeedEarthAndMoon    = 1.0;
-        _rotateSpeedEarth           = 1.0;
-        _rotateSpeedMoon            = 1.2;
-        _rotateSpeedMars            = 1.2;
-        _rotateSpeedJupiter         = 1.2;
+                                                // orbital period in days
+        _rotateSpeedSun             = 0.0;      // should be 11.97;  // 30.5 average
+        _rotateSpeedMercury         = 4.15;     // 87.96
+        _rotateSpeedVenus           = 1.62;     // 224.70
+        _rotateSpeedEarthAndMoon    = 1.0;      // 365.25
+        _rotateSpeedEarth           = 1.0;      // 
+        _rotateSpeedMoon            = 0.95;     //
+        _rotateSpeedMars            = 0.53;     // 686.98
+        _rotateSpeedJupiter         = 0.08;     // 4332.71
 
-        _tiltEarth                  = 18.0; // degrees
+        _tiltEarth                  = 23.45; // degrees
         
         _mapSpace       = "Images/spacemap2.jpg";
         _mapSun         = "SolarSystem/sun256128.jpg";
@@ -230,6 +237,10 @@ public:
         _mapMoon        = "SolarSystem/moon256128.jpg";
         _mapMars        = "SolarSystem/mars256128.jpg";
         _mapJupiter     = "SolarSystem/jupiter256128.jpg";
+
+        _rotateSpeedFactor = 0.5;
+        _RorbitFactor   = 15.0;
+        _radiusFactor   = 10.0;
     }
     
     osg::MatrixTransform* createTranslationAndTilt( double translation, double tilt );
@@ -240,6 +251,45 @@ public:
     osg::Geode* createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName1, const std::string& textureName2);
     osg::Group* createSunLight();
     
+    void rotateSpeedCorrection()
+    {
+        _rotateSpeedSun             *= _rotateSpeedFactor;
+        _rotateSpeedMercury         *= _rotateSpeedFactor;
+        _rotateSpeedVenus           *= _rotateSpeedFactor;
+        _rotateSpeedEarthAndMoon    *= _rotateSpeedFactor;
+        _rotateSpeedEarth           *= _rotateSpeedFactor;
+        _rotateSpeedMoon            *= _rotateSpeedFactor;
+        _rotateSpeedMars            *= _rotateSpeedFactor;
+        _rotateSpeedJupiter         *= _rotateSpeedFactor;
+        
+        std::cout << "rotateSpeed corrected by factor " << _rotateSpeedFactor << std::endl;
+    }
+    
+    void RorbitCorrection()
+    {
+        _RorbitMercury  *= _RorbitFactor;
+        _RorbitVenus    *= _RorbitFactor;
+        _RorbitEarth    *= _RorbitFactor;
+        _RorbitMoon     *= _RorbitFactor;
+        _RorbitMars     *= _RorbitFactor;
+        _RorbitJupiter  *= _RorbitFactor;
+        
+        std::cout << "Rorbits corrected by factor " << _RorbitFactor << std::endl;
+    }
+    
+    void radiusCorrection()
+    {
+        _radiusSpace    *= _radiusFactor;
+        //_radiusSun      *= _radiusFactor;
+        _radiusMercury  *= _radiusFactor;
+        _radiusVenus    *= _radiusFactor;
+        _radiusEarth    *= _radiusFactor;
+        _radiusMoon     *= _radiusFactor;
+        _radiusMars     *= _radiusFactor;
+        _radiusJupiter  *= _radiusFactor;
+ 
+        std::cout << "Radius corrected by factor " << _radiusFactor << std::endl;
+    }
     void printParameters();
         
 };  // end SolarSystem
@@ -474,21 +524,43 @@ void SolarSystem::printParameters()
 {
     std::cout << "radiusSpace(" << _radiusSpace << ")" << std::endl;
     std::cout << "radiusSun(" << _radiusSun << ")" << std::endl;
+    std::cout << "radiusMercury(" << _radiusMercury << ")" << std::endl;
+    std::cout << "radiusVenus(" << _radiusVenus << ")" << std::endl;
     std::cout << "radiusEarth(" << _radiusEarth << ")" << std::endl;
     std::cout << "radiusMoon(" << _radiusMoon << ")" << std::endl;
+    std::cout << "radiusMars(" << _radiusMars << ")" << std::endl;
+    std::cout << "radiusJupiter(" << _radiusJupiter << ")" << std::endl;
 
+    std::cout << "RorbitMercury(" << _RorbitMercury << ")" << std::endl;
+    std::cout << "RorbitVenus(" << _RorbitVenus << ")" << std::endl;
     std::cout << "RorbitEarth(" << _RorbitEarth << ")" << std::endl;
     std::cout << "RorbitMoon(" << _RorbitMoon << ")" << std::endl;
+    std::cout << "RorbitMars(" << _RorbitMars << ")" << std::endl;
+    std::cout << "RorbitJupiter(" << _RorbitJupiter << ")" << std::endl;
 
+    std::cout << "rotateSpeedMercury(" << _rotateSpeedMercury << ")" << std::endl;
+    std::cout << "rotateSpeedVenus(" << _rotateSpeedVenus << ")" << std::endl;
     std::cout << "rotateSpeedEarthAndMoon(" << _rotateSpeedEarthAndMoon << ")" << std::endl;
     std::cout << "rotateSpeedEarth(" << _rotateSpeedEarth << ")" << std::endl;
     std::cout << "rotateSpeedMoon(" << _rotateSpeedMoon << ")" << std::endl;
+    std::cout << "rotateSpeedMars(" << _rotateSpeedMars << ")" << std::endl;
+    std::cout << "rotateSpeedJupiter(" << _rotateSpeedJupiter << ")" << std::endl;
+
     std::cout << "tiltEarth(" << _tiltEarth << ")" << std::endl;
 
-    std::cout << "mapSpace(" << _radiusSpace << ")" << std::endl;
-    std::cout << "mapEarth(" << _radiusSpace << ")" << std::endl;
-    std::cout << "mapEarthNight(" << _radiusSpace << ")" << std::endl;
-    std::cout << "mapMoon(" << _radiusSpace << ")" << std::endl;
+    std::cout << "mapSpace(" << _mapSpace << ")" << std::endl;
+    std::cout << "mapSun(" << _mapSun << ")" << std::endl;
+    std::cout << "mapMercury(" << _mapMercury << ")" << std::endl;
+    std::cout << "mapVenus(" << _mapVenus << ")" << std::endl;
+    std::cout << "mapEarth(" << _mapEarth << ")" << std::endl;
+    std::cout << "mapEarthNight(" << _mapEarthNight << ")" << std::endl;
+    std::cout << "mapMoon(" << _mapMoon << ")" << std::endl;
+    std::cout << "mapMars(" << _mapMars << ")" << std::endl;
+    std::cout << "mapJupiter(" << _mapJupiter << ")" << std::endl;
+    
+    std::cout << "rotateSpeedFactor(" << _rotateSpeedFactor << ")" << std::endl;
+    std::cout << "RorbitFactor(" << _RorbitFactor << ")" << std::endl;
+    std::cout << "radiusFactor(" << _radiusFactor << ")" << std::endl;
 }
 
 
@@ -516,8 +588,12 @@ int main( int argc, char **argv )
 
     while (arguments.read("--radiusSpace",solarSystem._radiusSpace)) { }
     while (arguments.read("--radiusSun",solarSystem._radiusSun)) { }
+    while (arguments.read("--radiusMercury",solarSystem._radiusMercury)) { }
+    while (arguments.read("--radiusVenus",solarSystem._radiusVenus)) { }
     while (arguments.read("--radiusEarth",solarSystem._radiusEarth)) { }
     while (arguments.read("--radiusMoon",solarSystem._radiusMoon)) { }
+    while (arguments.read("--radiusMars",solarSystem._radiusMars)) { }
+    while (arguments.read("--radiusJupiter",solarSystem._radiusJupiter)) { }
     
     while (arguments.read("--RorbitEarth",solarSystem._RorbitEarth)) { }
     while (arguments.read("--RorbitMoon",solarSystem._RorbitMoon)) { }
@@ -531,6 +607,14 @@ int main( int argc, char **argv )
     while (arguments.read("--mapEarth",solarSystem._mapEarth)) { }
     while (arguments.read("--mapEarthNight",solarSystem._mapEarthNight)) { }
     while (arguments.read("--mapMoon",solarSystem._mapMoon)) { }
+
+    while (arguments.read("--rotateSpeedFactor",solarSystem._rotateSpeedFactor)) { }
+    while (arguments.read("--RorbitFactor",solarSystem._RorbitFactor)) { }
+    while (arguments.read("--radiusFactor",solarSystem._radiusFactor)) { }
+    
+    solarSystem.rotateSpeedCorrection();
+    solarSystem.RorbitCorrection();
+    solarSystem.radiusCorrection();
     
     std::string writeFileName;
     while (arguments.read("-o",writeFileName)) { }
@@ -569,29 +653,51 @@ int main( int argc, char **argv )
     }
     
 
-    solarSystem.printParameters();
+    // solarSystem.printParameters();
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         std::cout << "setup the following arguments: " << std::endl;
-        std::cout << "--radiusSpace: double" << std::endl;
-        std::cout << "--radiusSun: double" << std::endl;
-        std::cout << "--radiusEarth: double" << std::endl;
-        std::cout << "--radiusMoon: double" << std::endl;
+        std::cout << "\t--radiusSpace: double" << std::endl;
+        std::cout << "\t--radiusSun: double" << std::endl;
+        std::cout << "\t--radiusMercury: double" << std::endl;
+        std::cout << "\t--radiusVenus: double" << std::endl;
+        std::cout << "\t--radiusEarth: double" << std::endl;
+        std::cout << "\t--radiusMoon: double" << std::endl;
+        std::cout << "\t--radiusMars: double" << std::endl;
+        std::cout << "\t--radiusJupiter: double" << std::endl;
         
-        std::cout << "--RorbitEarth: double" << std::endl;
-        std::cout << "--RorbitMoon: double" << std::endl;
+        std::cout << "\t--RorbitMercury: double" << std::endl;
+        std::cout << "\t--RorbitVenus: double" << std::endl;
+        std::cout << "\t--RorbitEarth: double" << std::endl;
+        std::cout << "\t--RorbitMoon: double" << std::endl;
+        std::cout << "\t--RorbitMars: double" << std::endl;
+        std::cout << "\t--RorbitJupiter: double" << std::endl;
         
-        std::cout << "--rotateSpeedEarthAndMoon: double" << std::endl;
-        std::cout << "--rotateSpeedEarth: double" << std::endl;
-        std::cout << "--rotateSpeedMoon: double" << std::endl;
-        std::cout << "--tiltEarth: double" << std::endl;
+        std::cout << "\t--rotateSpeedMercury: double" << std::endl;
+        std::cout << "\t--rotateSpeedVenus: double" << std::endl;
+        std::cout << "\t--rotateSpeedEarthAndMoon: double" << std::endl;
+        std::cout << "\t--rotateSpeedEarth: double" << std::endl;
+        std::cout << "\t--rotateSpeedMoon: double" << std::endl;
+        std::cout << "\t--rotateSpeedMars: double" << std::endl;
+        std::cout << "\t--rotateSpeedJupiter: double" << std::endl;
+
+        std::cout << "\t--tiltEarth: double" << std::endl;
         
-        std::cout << "--mapSpace: string" << std::endl;
-        std::cout << "--mapEarth: string" << std::endl;
-        std::cout << "--mapEarthNight: string" << std::endl;
-        std::cout << "--mapMoon: string" << std::endl;
+        std::cout << "\t--mapSpace: string" << std::endl;
+        std::cout << "\t--mapSun: string" << std::endl;
+        std::cout << "\t--mapMercury: string" << std::endl;
+        std::cout << "\t--mapVenus: string" << std::endl;
+        std::cout << "\t--mapEarth: string" << std::endl;
+        std::cout << "\t--mapEarthNight: string" << std::endl;
+        std::cout << "\t--mapMoon: string" << std::endl;
+        std::cout << "\t--mapMars: string" << std::endl;
+        std::cout << "\t--mapJupiter: string" << std::endl;
+        
+        std::cout << "\t--rotateSpeedFactor: string" << std::endl;
+        std::cout << "\t--RorbitFactor: string" << std::endl;
+        std::cout << "\t--radiusFactor: string" << std::endl;
                         
         return 1;
     }
@@ -626,10 +732,11 @@ int main( int argc, char **argv )
     osg::Billboard* sunBillboard = new osg::Billboard();
     sunBillboard->setMode(osg::Billboard::POINT_ROT_EYE);
     sunBillboard->addDrawable(
-        createSquare(osg::Vec3(-5.0f,0.0f,-5.0f),osg::Vec3(10.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,10.0f),createBillboardImage( osg::Vec4( 1.0, 1.0, 0, 1.0f), 64, 1.0) ),
+        createSquare(osg::Vec3(-150.0f,0.0f,-150.0f),osg::Vec3(300.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,300.0f),createBillboardImage( osg::Vec4( 1.0, 1.0, 0, 1.0f), 64, 1.0) ),
         osg::Vec3(0.0f,0.0f,0.0f));
         
     sunLight->addChild( sunBillboard );
+
 
     // stick sun right under root, no transformations for the sun
     sunLight->addChild( solarSun );
@@ -647,19 +754,19 @@ int main( int argc, char **argv )
 
     // create transformations for the earthMoonGroup
     osg::MatrixTransform* aroundSunRotationEarthMoonGroup = solarSystem.createRotation( solarSystem._RorbitEarth, solarSystem._rotateSpeedEarthAndMoon );
-    osg::MatrixTransform* earthMoonGroupPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitEarth, solarSystem._tiltEarth );
+//    osg::MatrixTransform* earthMoonGroupPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitEarth, solarSystem._tiltEarth );
+    osg::MatrixTransform* earthMoonGroupPosition = solarSystem.createTranslationAndTilt( solarSystem._RorbitEarth, 0.0 );
 
 
     //Group with earth and moon under it
     osg::Group* earthMoonGroup = new osg::Group;
     
-
     //transformation to rotate the earth around itself
     osg::MatrixTransform* earthAroundItselfRotation = solarSystem.createRotation ( 0.0, solarSystem._rotateSpeedEarth );
 
     //transformations for the moon
     osg::MatrixTransform* moonAroundEarthRotation = solarSystem.createRotation( solarSystem._RorbitMoon, solarSystem._rotateSpeedMoon );
-    osg::MatrixTransform* moonTranslation = solarSystem.createTranslationAndTilt( solarSystem._RorbitMoon, 0.0f );
+    osg::MatrixTransform* moonTranslation = solarSystem.createTranslationAndTilt( solarSystem._RorbitMoon, 0.0 );
 
 
     moonTranslation->addChild( moon );
@@ -667,9 +774,8 @@ int main( int argc, char **argv )
     earthMoonGroup->addChild( moonAroundEarthRotation );
 
     earthAroundItselfRotation->addChild( earth );
-
     earthMoonGroup->addChild( earthAroundItselfRotation );
-
+    
     earthMoonGroupPosition->addChild( earthMoonGroup );
 
     aroundSunRotationEarthMoonGroup->addChild( earthMoonGroupPosition );

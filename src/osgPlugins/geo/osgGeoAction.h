@@ -37,7 +37,7 @@ public:
     virtual void setInVar(const double *indvar) {in=indvar;}
     virtual void setOutVar(double *outdvar) {out=outdvar;}
     virtual void doaction(osg::Node *)=0; // do math operation eg *out=*in or =f(*in).
-    virtual bool makeBehave(const georecord *grec, const geoHeaderGeo *theHeader) { return true;}; // pure virtual
+    virtual bool makeBehave(const georecord* /*grec*/, const geoHeaderGeo* /*theHeader*/) { return true;}; // pure virtual
 protected:
     const double *in; // address of input variable
     double *out; // address of output

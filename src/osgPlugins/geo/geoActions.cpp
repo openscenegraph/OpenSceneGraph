@@ -543,7 +543,8 @@ void geoColourBehaviour::doaction(osg::Drawable *dr)
     }
 }
 
-void geoStrContentBehaviour::doaction(osg::Drawable *node) { // do new text
+void geoStrContentBehaviour::doaction(osg::Drawable* /*node*/) 
+{ // do new text
 #ifdef USETEXT // buggy text feb 2003
     osgText::Text *txt=dynamic_cast<osgText::Text *>(node);
     char content[32];

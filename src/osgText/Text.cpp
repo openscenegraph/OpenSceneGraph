@@ -238,6 +238,8 @@ void Text::drawImplementation(State& state) const
                     break;
                 case OUTLINE:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
+                    if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
+                    else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
                     _font->output(state,_text.c_str());
                     break;
                 case BITMAP:
@@ -250,6 +252,8 @@ void Text::drawImplementation(State& state) const
                     break;
                 case TEXTURE:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
+                    if(_axisAlignment==XZ_PLANE) glRotatef(90.0f,1.0f,0.0f,0.0f);
+                    else if (_axisAlignment==YZ_PLANE) {  glRotatef(90.0f,0.0f,0.0f,1.0f); glRotatef(90.0f,1.0f,0.0f,0.0f);}
                     _font->output(state,_text.c_str());
                     break;
 

@@ -16,6 +16,8 @@
 #include "Shape.h"
 #include "Object.h"
 
+#include <osg/Endian>
+
 using namespace ive;
 
 
@@ -37,7 +39,8 @@ void Sphere::write(DataOutputStream* out)
         throw Exception("Sphere::write(): Could not cast this osg::Sphere to an osg::Object.");
 
     // Write Sphere's properties.
-    //out->writeVec4(getColor());
+    out->writeVec3(getCenter());
+    out->writeFloat(getRadius());
 }
 
 void Sphere::read(DataInputStream* in)
@@ -58,7 +61,8 @@ void Sphere::read(DataInputStream* in)
             throw Exception("Sphere::read(): Could not cast this osg::Sphere to an osg::Object.");
 
         // Read Sphere's properties
-        //setColor(in->readVec4());
+        setCenter(in->readVec3());
+        setRadius(in->readFloat());
 
     }
     else
@@ -86,7 +90,9 @@ void Box::write(DataOutputStream* out)
         throw Exception("Box::write(): Could not cast this osg::Box to an osg::Object.");
 
     // Write Box's properties.
-    //out->writeVec4(getColor());
+    out->writeVec3(getCenter());
+    out->writeVec3(getHalfLengths());
+    out->writeQuat(getRotation());
 }
 
 void Box::read(DataInputStream* in)
@@ -107,7 +113,9 @@ void Box::read(DataInputStream* in)
             throw Exception("Box::read(): Could not cast this osg::Box to an osg::Object.");
 
         // Read Box's properties
-        //setColor(in->readVec4());
+        setCenter(in->readVec3());
+        setHalfLengths(in->readVec3());
+        setRotation(in->readQuat());
 
     }
     else
@@ -135,7 +143,10 @@ void Cone::write(DataOutputStream* out)
         throw Exception("Cone::write(): Could not cast this osg::Cone to an osg::Object.");
 
     // Write Cone's properties.
-    //out->writeVec4(getColor());
+    out->writeVec3(getCenter());
+    out->writeFloat(getRadius());
+    out->writeFloat(getHeight());
+    out->writeQuat(getRotation());
 }
 
 void Cone::read(DataInputStream* in)
@@ -156,7 +167,10 @@ void Cone::read(DataInputStream* in)
             throw Exception("Cone::read(): Could not cast this osg::Cone to an osg::Object.");
 
         // Read Cone's properties
-        //setColor(in->readVec4());
+        setCenter(in->readVec3());
+        setRadius(in->readFloat());
+        setHeight(in->readFloat());
+        setRotation(in->readQuat());
 
     }
     else
@@ -184,7 +198,10 @@ void Cylinder::write(DataOutputStream* out)
         throw Exception("Cylinder::write(): Could not cast this osg::Cylinder to an osg::Object.");
 
     // Write Cylinder's properties.
-    //out->writeVec4(getColor());
+    out->writeVec3(getCenter());
+    out->writeFloat(getRadius());
+    out->writeFloat(getHeight());
+    out->writeQuat(getRotation());
 }
 
 void Cylinder::read(DataInputStream* in)
@@ -205,7 +222,10 @@ void Cylinder::read(DataInputStream* in)
             throw Exception("Cylinder::read(): Could not cast this osg::Cylinder to an osg::Object.");
 
         // Read Cylinder's properties
-        //setColor(in->readVec4());
+        setCenter(in->readVec3());
+        setRadius(in->readFloat());
+        setHeight(in->readFloat());
+        setRotation(in->readQuat());
 
     }
     else
@@ -233,7 +253,10 @@ void Capsule::write(DataOutputStream* out)
         throw Exception("Capsule::write(): Could not cast this osg::Capsule to an osg::Object.");
 
     // Write Capsule's properties.
-    //out->writeVec4(getColor());
+    out->writeVec3(getCenter());
+    out->writeFloat(getRadius());
+    out->writeFloat(getHeight());
+    out->writeQuat(getRotation());
 }
 
 void Capsule::read(DataInputStream* in)
@@ -254,7 +277,10 @@ void Capsule::read(DataInputStream* in)
             throw Exception("Capsule::read(): Could not cast this osg::Capsule to an osg::Object.");
 
         // Read Capsule's properties
-        //setColor(in->readVec4());
+        setCenter(in->readVec3());
+        setRadius(in->readFloat());
+        setHeight(in->readFloat());
+        setRotation(in->readQuat());
 
     }
     else
@@ -282,7 +308,25 @@ void HeightField::write(DataOutputStream* out)
         throw Exception("HeightField::write(): Could not cast this osg::HeightField to an osg::Object.");
 
     // Write HeightField's properties.
-    //out->writeVec4(getColor());
+    out->writeUInt(getNumColumns());
+    out->writeUInt(getNumRows());
+    out->writeVec3(getOrigin());
+    out->writeFloat(getXInterval());
+    out->writeFloat(getYInterval());
+    out->writeQuat(getRotation());
+    out->writeFloat(getSkirtHeight());
+    out->writeUInt(getBorderWidth());
+    
+    unsigned int size = getHeightList().size();
+    out->writeUInt(size);
+    for(unsigned int i = 0; i < size; i++)
+    {
+        out->writeFloat((getHeightList())[i]);
+    }
+
+    
+    
+    
 }
 
 void HeightField::read(DataInputStream* in)
@@ -304,6 +348,28 @@ void HeightField::read(DataInputStream* in)
 
         // Read HeightField's properties
         //setColor(in->readVec4());
+        unsigned int col = in->readUInt();
+        unsigned int row = in->readUInt();        
+        allocate(col,row);
+
+        setOrigin(in->readVec3());
+        setXInterval(in->readFloat());
+        setYInterval(in->readFloat());
+        setRotation(in->readQuat());
+        
+        setSkirtHeight(in->readFloat());
+        setBorderWidth(in->readUInt());
+    
+        unsigned int size = in->readUInt();
+        in->_istream->read((char*)&(getHeightList()[0]), FLOATSIZE*size);
+        if (in->_istream->rdstate() & in->_istream->failbit)
+            throw Exception("HeightField::read(): Failed to read height array.");
+        if (in->_byteswap) {
+           float *ptr = (float*)&(getHeightList()[0]) ;
+           for (unsigned int i = 0 ; i < size ; i++ ) {
+              osg::swapBytes((char *)&(ptr[i]),FLOATSIZE) ;
+           }
+        }
 
     }
     else

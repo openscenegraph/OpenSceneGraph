@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGFX_EXPORT osgFX::Effect</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGFX_EXPORT <A HREF="#DOC.DOCU">osgFX::Effect</A></H2></H2><BLOCKQUOTE> The base class for special effects.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=215>
+<param name=classes value="Mosg::Node,M,CEffect,MEffect.html,CSpecularHighlights,MSpecularHighlights.html,CScribe,MScribe.html,CCartoon,MCartoon.html,CBumpMapping,MBumpMapping.html,CAnisotropicLighting,MAnisotropicLighting.html">
+<param name=before value="M,M,M|_,MR_,MR_,MR_,Mr_">
+<param name=after value="Md_,M,M,M,M,M,M">
+<param name=indent value="0,1,1,1,1,1,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.1">Effect</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.2">Effect</A></B>(const <!1><A HREF="Effect.html#DOC.2.4.2">Effect</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual inline   bool <B><A HREF="#DOC.2.4.3">isSameKindAs</A></B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual inline   const char* <B><A HREF="#DOC.2.4.4">libraryName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual inline   const char* <B><A HREF="#DOC.2.4.5">className</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.6">effectName</A></B>() const  = 0
+<DD><I>get the name of this effect </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.7">effectDescription</A></B>() const  = 0
+<DD><I>get a brief description of this effect </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.4.8">effectAuthor</A></B>() const  = 0
+<DD><I>get the effect author's name </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline virtual   void <B><A HREF="#DOC.2.4.9">setUpDemo</A></B>()
+<DD><I> optional: set effect parameters to produce a visually significant result to be used in demo applications like osgfxbrowser.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.11">traverse</A></B>(osg::NodeVisitor &amp;nv)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.4.26">getEnabled</A></B>() const 
+<DD><I>get whether the effect is enabled or not </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.27">setEnabled</A></B>(bool v)
+<DD><I>set whether the effect is enabled or not </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Node* <B><A HREF="#DOC.2.4.28">getChild</A></B>() const 
+<DD><I>get the const child node </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   osg::Node* <B><A HREF="#DOC.2.4.29">getChild</A></B>()
+<DD><I>get the child node </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.30">setChild</A></B>(osg::Node* child)
+<DD><I>set the child node </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.4.31">getNumTechniques</A></B>() const 
+<DD><I>get the number of techniques defined for this effect </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B><A HREF="#DOC.2.4.32">getTechnique</A></B>(int i)
+<DD><I>get the i-th technique </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Technique.html">Technique</A>* <B><A HREF="#DOC.2.4.33">getTechnique</A></B>(int i) const 
+<DD><I>get the i-th const technique </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.4.34">getSelectedTechnique</A></B>() const 
+<DD><I>get the index of the currently selected technique </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.35">selectTechnique</A></B>(int i)
+<DD><I>select a technique or enable automatic detection </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.36">addTechnique</A></B>(<!1><A HREF="Technique.html">Technique</A>* tech)
+<DD><I>add a technique to the effect </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.4.37">dirtyTechniques</A></B>()
+<DD><I>force rebuilding of techniques on next traversal </I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.4.10">TechniqueSelection</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.12">~Effect</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Effect.html">Effect</A>&amp; <B><A HREF="#DOC.2.4.13">operator=</A></B>(const <!1><A HREF="Effect.html">Effect</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.14">computeBound</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.4.15">define_techniques</A></B>() = 0
+<DD><I> abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect.</I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+The base class for special effects. An effect is basically a collection of
+state attributes and an interface for configuring them in a predefined
+fashion. The Effect class does more however, as it handles multipass
+rendering transparently and it allows more than one "technique" to be
+defined. Each technique tries to implement the effect in a different way,
+often using different OpenGL extensions. The active technique can be
+selected either manually, with selectTechnique(), or automatically, in which
+case the first technique that is supported by all active rendering contexts 
+is chosen.
+If you are an Effect user, then simply use it as a single-child group.
+Create an instance of your desired effect, add it to your scene graph (it
+is a Node) and call its setChild() method to set its child node as you 
+would do with a Group.
+If you are an Effect developer, you will have to implement the method
+define_techniques() to define the different techniques that can be used
+for obtaining the desired effect. In define_techniques() you will usually
+create one or more instances of custom classes derived from Technique and
+you will add them to the effect with addTechnique(). The order is important:
+techniques added first will have higher priority and will be used first as
+soon as all rendering contexts support it.</BLOCKQUOTE>
+<DL>
+
+<A NAME="Effect"></A>
+<A NAME="DOC.2.4.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Effect()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Effect"></A>
+<A NAME="DOC.2.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Effect(const <!1><A HREF="Effect.html#DOC.2.4.2">Effect</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isSameKindAs"></A>
+<A NAME="DOC.2.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual inline   bool isSameKindAs(const osg::Object* obj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="libraryName"></A>
+<A NAME="DOC.2.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual inline   const char* libraryName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="className"></A>
+<A NAME="DOC.2.4.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual inline   const char* className() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="effectName"></A>
+<A NAME="DOC.2.4.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectName() const  = 0</B></TT>
+<DD>get the name of this effect 
+<DL><DT><DD></DL><P>
+<A NAME="effectDescription"></A>
+<A NAME="DOC.2.4.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectDescription() const  = 0</B></TT>
+<DD>get a brief description of this effect 
+<DL><DT><DD></DL><P>
+<A NAME="effectAuthor"></A>
+<A NAME="DOC.2.4.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* effectAuthor() const  = 0</B></TT>
+<DD>get the effect author's name 
+<DL><DT><DD></DL><P>
+<A NAME="setUpDemo"></A>
+<A NAME="DOC.2.4.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline virtual   void setUpDemo()</B></TT>
+<DD>
+optional: set effect parameters to produce a visually significant
+result to be used in demo applications like osgfxbrowser. Default
+is to do nothing.
+<DL><DT><DD></DL><P>
+<A NAME="TechniqueSelection"></A>
+<A NAME="DOC.2.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  TechniqueSelection</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="AUTO_DETECT"></A>
+<A NAME="DOC.2.4.10.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AUTO_DETECT</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="traverse"></A>
+<A NAME="DOC.2.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(osg::NodeVisitor &amp;nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~Effect"></A>
+<A NAME="DOC.2.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Effect()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.4.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Effect.html">Effect</A>&amp; operator=(const <!1><A HREF="Effect.html">Effect</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="computeBound"></A>
+<A NAME="DOC.2.4.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="define_techniques"></A>
+<A NAME="DOC.2.4.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool define_techniques() = 0</B></TT>
+<DD>
+abstract method to be implemented in derived classes; its purpose
+if to create the techniques that can be used for obtaining the
+desired effect. You will usually call addTechnique() inside
+this method.
+<DL><DT><DD></DL><P>
+<A NAME="getEnabled"></A>
+<A NAME="DOC.2.4.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getEnabled() const </B></TT>
+<DD>get whether the effect is enabled or not 
+<DL><DT><DD></DL><P>
+<A NAME="setEnabled"></A>
+<A NAME="DOC.2.4.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setEnabled(bool v)</B></TT>
+<DD>set whether the effect is enabled or not 
+<DL><DT><DD></DL><P>
+<A NAME="getChild"></A>
+<A NAME="DOC.2.4.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Node* getChild() const </B></TT>
+<DD>get the const child node 
+<DL><DT><DD></DL><P>
+<A NAME="getChild"></A>
+<A NAME="DOC.2.4.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   osg::Node* getChild()</B></TT>
+<DD>get the child node 
+<DL><DT><DD></DL><P>
+<A NAME="setChild"></A>
+<A NAME="DOC.2.4.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setChild(osg::Node* child)</B></TT>
+<DD>set the child node 
+<DL><DT><DD></DL><P>
+<A NAME="getNumTechniques"></A>
+<A NAME="DOC.2.4.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getNumTechniques() const </B></TT>
+<DD>get the number of techniques defined for this effect 
+<DL><DT><DD></DL><P>
+<A NAME="getTechnique"></A>
+<A NAME="DOC.2.4.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Technique.html">Technique</A>* getTechnique(int i)</B></TT>
+<DD>get the i-th technique 
+<DL><DT><DD></DL><P>
+<A NAME="getTechnique"></A>
+<A NAME="DOC.2.4.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Technique.html">Technique</A>* getTechnique(int i) const </B></TT>
+<DD>get the i-th const technique 
+<DL><DT><DD></DL><P>
+<A NAME="getSelectedTechnique"></A>
+<A NAME="DOC.2.4.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getSelectedTechnique() const </B></TT>
+<DD>get the index of the currently selected technique 
+<DL><DT><DD></DL><P>
+<A NAME="selectTechnique"></A>
+<A NAME="DOC.2.4.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void selectTechnique(int i)</B></TT>
+<DD>select a technique or enable automatic detection 
+<DL><DT><DD></DL><P>
+<A NAME="addTechnique"></A>
+<A NAME="DOC.2.4.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addTechnique(<!1><A HREF="Technique.html">Technique</A>* tech)</B></TT>
+<DD>add a technique to the effect 
+<DL><DT><DD></DL><P>
+<A NAME="dirtyTechniques"></A>
+<A NAME="DOC.2.4.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirtyTechniques()</B></TT>
+<DD>force rebuilding of techniques on next traversal 
+<DL><DT><DD></DL><P></DL>
+<HR>
+<DL><DT><B>Direct child classes:
+</B><DD><A HREF="SpecularHighlights.html">SpecularHighlights</A><BR>
+<A HREF="Scribe.html">Scribe</A><BR>
+<A HREF="Cartoon.html">Cartoon</A><BR>
+<A HREF="BumpMapping.html">BumpMapping</A><BR>
+<A HREF="AnisotropicLighting.html">AnisotropicLighting</A><BR>
+</DL>
+
+<DL><DT><DT><B>Friends:</B><DD>  class <!1><A HREF="Validator.html">Validator</A><BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

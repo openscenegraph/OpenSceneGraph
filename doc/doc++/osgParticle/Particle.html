@@ -13,122 +13,144 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.13.2">Particle</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.2">Particle</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Particle.html#DOC.2.13.1">Shape</A> <B><A HREF="#DOC.2.13.3">getShape</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Particle.html#DOC.2.14.1">Shape</A> <B><A HREF="#DOC.2.14.3">getShape</A></B>() const 
 <DD><I>Get the shape of the particle</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.13.4">update</A></B>(double dt)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.4">update</A></B>(double dt)
 <DD><I>Update the particle (don't call this method manually).</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.13.5">render</A></B>(const osg::Vec3 &amp;xpos, const osg::Vec3 &amp;px, const osg::Vec3 &amp;py, float scale = 1.0f) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.5">render</A></B>(const osg::Vec3 &amp;xpos, const osg::Vec3 &amp;px, const osg::Vec3 &amp;py, float scale = 1.0f) const 
 <DD><I>Render the particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Particle::Shape <B><A HREF="#DOC.2.13.26">getShape</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   Particle::Shape <B><A HREF="#DOC.2.14.29">getShape</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.27">setShape</A></B>(<!1><A HREF="Particle.html#DOC.2.13.1">Shape</A> s)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.30">setShape</A></B>(<!1><A HREF="Particle.html#DOC.2.14.1">Shape</A> s)
 <DD><I>Set the shape of the particle</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.13.28">isAlive</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.14.31">isAlive</A></B>() const 
 <DD><I>Get whether the particle is still alive</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.13.29">getLifeTime</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.14.32">getLifeTime</A></B>() const 
 <DD><I>Get the life time of the particle (in seconds)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.13.30">getAge</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   double <B><A HREF="#DOC.2.14.33">getAge</A></B>() const 
 <DD><I>Get the age of the particle (in seconds)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.13.31">getRadius</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.14.34">getRadius</A></B>() const 
 <DD><I>Get the physical radius of the particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.32">setRadius</A></B>(float r)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.35">setRadius</A></B>(float r)
 <DD><I>Set the physical radius of the particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="rangef.html">rangef</A>&amp; <B><A HREF="#DOC.2.13.33">getSizeRange</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="rangef.html">rangef</A>&amp; <B><A HREF="#DOC.2.14.36">getSizeRange</A></B>() const 
 <DD><I>Get the minimum and maximum values for polygon size</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="rangef.html">rangef</A>&amp; <B><A HREF="#DOC.2.13.34">getAlphaRange</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="rangef.html">rangef</A>&amp; <B><A HREF="#DOC.2.14.37">getAlphaRange</A></B>() const 
 <DD><I>Get the minimum and maximum values for alpha</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="rangev4.html">rangev4</A>&amp; <B><A HREF="#DOC.2.13.35">getColorRange</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="rangev4.html">rangev4</A>&amp; <B><A HREF="#DOC.2.14.38">getColorRange</A></B>() const 
 <DD><I>Get the minimum and maximum values for color</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* <B><A HREF="#DOC.2.13.36">getSizeInterpolator</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* <B><A HREF="#DOC.2.14.39">getSizeInterpolator</A></B>() const 
 <DD><I>Get the interpolator for computing the size of polygons</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* <B><A HREF="#DOC.2.13.37">getAlphaInterpolator</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* <B><A HREF="#DOC.2.14.40">getAlphaInterpolator</A></B>() const 
 <DD><I>Get the interpolator for computing alpha values</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* <B><A HREF="#DOC.2.13.38">getColorInterpolator</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* <B><A HREF="#DOC.2.14.41">getColorInterpolator</A></B>() const 
 <DD><I>Get the interpolator for computing color values</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.13.39">getPosition</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.14.42">getPosition</A></B>() const 
 <DD><I>Get the position vector</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.13.40">getVelocity</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.14.43">getVelocity</A></B>() const 
 <DD><I>Get the velocity vector.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.13.41">getPreviousPosition</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.14.44">getPreviousPosition</A></B>() const 
 <DD><I>Get the previous position (the position before last update)</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.42">kill</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.14.45">getAngle</A></B>() const 
+<DD><I>Get the angle vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.14.46">getAngularVelocity</A></B>() const 
+<DD><I>Get the rotational velocity vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.14.47">getPreviousAngle</A></B>() const 
+<DD><I>Get the previous angle vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.48">kill</A></B>()
 <DD><I>Kill the particle on next update NOTE: after calling this function, the <CODE>isAlive()</CODE> method will still  return true until the particle is updated again</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.43">setLifeTime</A></B>(double t)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.49">setLifeTime</A></B>(double t)
 <DD><I>Set the life time of the particle</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.44">setSizeRange</A></B>(const <!1><A HREF="rangef.html">rangef</A> &amp;r)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.50">setSizeRange</A></B>(const <!1><A HREF="rangef.html">rangef</A> &amp;r)
 <DD><I>Set the minimum and maximum values for polygon size</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.45">setAlphaRange</A></B>(const <!1><A HREF="rangef.html">rangef</A> &amp;r)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.51">setAlphaRange</A></B>(const <!1><A HREF="rangef.html">rangef</A> &amp;r)
 <DD><I>Set the minimum and maximum values for alpha</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.46">setColorRange</A></B>(const <!1><A HREF="rangev4.html">rangev4</A> &amp;r)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.52">setColorRange</A></B>(const <!1><A HREF="rangev4.html">rangev4</A> &amp;r)
 <DD><I>Set the minimum and maximum values for color</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.47">setSizeInterpolator</A></B>(<!1><A HREF="Interpolator.html">Interpolator</A>* ri)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.53">setSizeInterpolator</A></B>(<!1><A HREF="Interpolator.html">Interpolator</A>* ri)
 <DD><I>Set the interpolator for computing size values</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.48">setAlphaInterpolator</A></B>(<!1><A HREF="Interpolator.html">Interpolator</A>* ai)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.54">setAlphaInterpolator</A></B>(<!1><A HREF="Interpolator.html">Interpolator</A>* ai)
 <DD><I>Set the interpolator for computing alpha values.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.49">setColorInterpolator</A></B>(<!1><A HREF="Interpolator.html">Interpolator</A>* ci)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.55">setColorInterpolator</A></B>(<!1><A HREF="Interpolator.html">Interpolator</A>* ci)
 <DD><I>Set the interpolator for computing color values</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.50">setPosition</A></B>(const osg::Vec3 &amp;p)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.56">setPosition</A></B>(const osg::Vec3 &amp;p)
 <DD><I>Set the position vector.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.51">setVelocity</A></B>(const osg::Vec3 &amp;v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.57">setVelocity</A></B>(const osg::Vec3 &amp;v)
 <DD><I>Set the velocity vector.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.52">addVelocity</A></B>(const osg::Vec3 &amp;v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.58">addVelocity</A></B>(const osg::Vec3 &amp;dv)
 <DD><I>Add a vector to the velocity vector</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.53">transformPositionVelocity</A></B>(const osg::Matrix &amp;xform)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.59">transformPositionVelocity</A></B>(const osg::Matrix &amp;xform)
 <DD><I>Transform position and velocity vectors by a matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.13.54">getMass</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.60">setAngle</A></B>(const osg::Vec3 &amp;a)
+<DD><I>Set the angle vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.61">setAngularVelocity</A></B>(const osg::Vec3 &amp;v)
+<DD><I> Set the angular velocity vector.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.62">addAngularVelocity</A></B>(const osg::Vec3 &amp;dv)
+<DD><I>Add a vector to the angular velocity vector</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.63">transformAngleVelocity</A></B>(const osg::Matrix &amp;xform)
+<DD><I>Transform angle and angularVelocity vectors by a matrix</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.14.64">getMass</A></B>() const 
 <DD><I>Get the mass of the particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.13.55">getMassInv</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.14.65">getMassInv</A></B>() const 
 <DD><I>Get <CODE>1 / getMass()</CODE></I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.56">setMass</A></B>(float m)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.66">setMass</A></B>(float m)
 <DD><I>Set the mass of the particle.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.57">beginRender</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.67">beginRender</A></B>() const 
 <DD><I>Perform some pre-rendering tasks.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.13.58">endRender</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.14.68">endRender</A></B>() const 
 <DD><I>Perform some post-rendering tasks.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.13.59">getCurrentSize</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.14.69">getCurrentSize</A></B>() const 
 <DD><I>Get the current (interpolated) polygon size.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.13.1">Shape</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.14.1">Shape</A></B>
+<DD><I> Shape of particles.</I>
 </DL></P>
 
 </DL>
@@ -152,38 +174,45 @@ minimum values are used.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Shape"></A>
-<A NAME="DOC.2.13.1"></A>
+<A NAME="DOC.2.14.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Shape</B></TT>
+<DD>
+Shape of particles.
+NOTE: the LINE shape should be used in conjunction with FIXED alignment mode (see ParticleSystem).
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="POINT"></A>
-<A NAME="DOC.2.13.1.1"></A>
+<A NAME="DOC.2.14.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> POINT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="QUAD"></A>
-<A NAME="DOC.2.13.1.2"></A>
+<A NAME="DOC.2.14.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> QUAD</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="QUAD_TRIANGLESTRIP"></A>
-<A NAME="DOC.2.13.1.3"></A>
+<A NAME="DOC.2.14.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> QUAD_TRIANGLESTRIP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="HEXAGON"></A>
-<A NAME="DOC.2.13.1.4"></A>
+<A NAME="DOC.2.14.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HEXAGON</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="LINE"></A>
+<A NAME="DOC.2.14.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LINE</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="Particle"></A>
-<A NAME="DOC.2.13.2"></A>
+<A NAME="DOC.2.14.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Particle()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getShape"></A>
-<A NAME="DOC.2.13.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Particle.html#DOC.2.13.1">Shape</A> getShape() const </B></TT>
+<A NAME="DOC.2.14.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Particle.html#DOC.2.14.1">Shape</A> getShape() const </B></TT>
 <DD>Get the shape of the particle
 <DL><DT><DD></DL><P>
 <A NAME="update"></A>
-<A NAME="DOC.2.13.4"></A>
+<A NAME="DOC.2.14.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool update(double dt)</B></TT>
 <DD>Update the particle (don't call this method manually).
 This method is called automatically by <CODE>ParticleSystem::update()</CODE>; it
@@ -192,186 +221,223 @@ checks whether the particle is still alive, and then updates its position
 by computing <I>P = P + V * dt</I> (where <I>P</I> is the position and <I>V</I> is the velocity).
 <DL><DT><DD></DL><P>
 <A NAME="render"></A>
-<A NAME="DOC.2.13.5"></A>
+<A NAME="DOC.2.14.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void render(const osg::Vec3 &amp;xpos, const osg::Vec3 &amp;px, const osg::Vec3 &amp;py, float scale = 1.0f) const </B></TT>
 <DD>Render the particle. Called automatically by particle systems.
 <DL><DT><DD></DL><P>
 <A NAME="getShape"></A>
-<A NAME="DOC.2.13.26"></A>
+<A NAME="DOC.2.14.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   Particle::Shape getShape() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setShape"></A>
-<A NAME="DOC.2.13.27"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setShape(<!1><A HREF="Particle.html#DOC.2.13.1">Shape</A> s)</B></TT>
+<A NAME="DOC.2.14.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setShape(<!1><A HREF="Particle.html#DOC.2.14.1">Shape</A> s)</B></TT>
 <DD>Set the shape of the particle
 <DL><DT><DD></DL><P>
 <A NAME="isAlive"></A>
-<A NAME="DOC.2.13.28"></A>
+<A NAME="DOC.2.14.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isAlive() const </B></TT>
 <DD>Get whether the particle is still alive
 <DL><DT><DD></DL><P>
 <A NAME="getLifeTime"></A>
-<A NAME="DOC.2.13.29"></A>
+<A NAME="DOC.2.14.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getLifeTime() const </B></TT>
 <DD>Get the life time of the particle (in seconds)
 <DL><DT><DD></DL><P>
 <A NAME="getAge"></A>
-<A NAME="DOC.2.13.30"></A>
+<A NAME="DOC.2.14.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   double getAge() const </B></TT>
 <DD>Get the age of the particle (in seconds)
 <DL><DT><DD></DL><P>
 <A NAME="getRadius"></A>
-<A NAME="DOC.2.13.31"></A>
+<A NAME="DOC.2.14.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getRadius() const </B></TT>
 <DD>Get the physical radius of the particle.
 For built-in operators to work correctly, lengths must be expressed in meters.
 <DL><DT><DD></DL><P>
 <A NAME="setRadius"></A>
-<A NAME="DOC.2.13.32"></A>
+<A NAME="DOC.2.14.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRadius(float r)</B></TT>
 <DD>Set the physical radius of the particle.
 For built-in operators to work correctly, lengths must be expressed in meters.
 <DL><DT><DD></DL><P>
 <A NAME="getSizeRange"></A>
-<A NAME="DOC.2.13.33"></A>
+<A NAME="DOC.2.14.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="rangef.html">rangef</A>&amp; getSizeRange() const </B></TT>
 <DD>Get the minimum and maximum values for polygon size
 <DL><DT><DD></DL><P>
 <A NAME="getAlphaRange"></A>
-<A NAME="DOC.2.13.34"></A>
+<A NAME="DOC.2.14.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="rangef.html">rangef</A>&amp; getAlphaRange() const </B></TT>
 <DD>Get the minimum and maximum values for alpha
 <DL><DT><DD></DL><P>
 <A NAME="getColorRange"></A>
-<A NAME="DOC.2.13.35"></A>
+<A NAME="DOC.2.14.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="rangev4.html">rangev4</A>&amp; getColorRange() const </B></TT>
 <DD>Get the minimum and maximum values for color
 <DL><DT><DD></DL><P>
 <A NAME="getSizeInterpolator"></A>
-<A NAME="DOC.2.13.36"></A>
+<A NAME="DOC.2.14.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* getSizeInterpolator() const </B></TT>
 <DD>Get the interpolator for computing the size of polygons
 <DL><DT><DD></DL><P>
 <A NAME="getAlphaInterpolator"></A>
-<A NAME="DOC.2.13.37"></A>
+<A NAME="DOC.2.14.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* getAlphaInterpolator() const </B></TT>
 <DD>Get the interpolator for computing alpha values
 <DL><DT><DD></DL><P>
 <A NAME="getColorInterpolator"></A>
-<A NAME="DOC.2.13.38"></A>
+<A NAME="DOC.2.14.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Interpolator.html">Interpolator</A>* getColorInterpolator() const </B></TT>
 <DD>Get the interpolator for computing color values
 <DL><DT><DD></DL><P>
 <A NAME="getPosition"></A>
-<A NAME="DOC.2.13.39"></A>
+<A NAME="DOC.2.14.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getPosition() const </B></TT>
 <DD>Get the position vector
 <DL><DT><DD></DL><P>
 <A NAME="getVelocity"></A>
-<A NAME="DOC.2.13.40"></A>
+<A NAME="DOC.2.14.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getVelocity() const </B></TT>
 <DD>Get the velocity vector.
 For built-in operators to work correctly, remember that velocity components are expressed
 in meters per second.
 <DL><DT><DD></DL><P>
 <A NAME="getPreviousPosition"></A>
-<A NAME="DOC.2.13.41"></A>
+<A NAME="DOC.2.14.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getPreviousPosition() const </B></TT>
 <DD>Get the previous position (the position before last update)
 <DL><DT><DD></DL><P>
+<A NAME="getAngle"></A>
+<A NAME="DOC.2.14.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getAngle() const </B></TT>
+<DD>Get the angle vector
+<DL><DT><DD></DL><P>
+<A NAME="getAngularVelocity"></A>
+<A NAME="DOC.2.14.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getAngularVelocity() const </B></TT>
+<DD>Get the rotational velocity vector
+<DL><DT><DD></DL><P>
+<A NAME="getPreviousAngle"></A>
+<A NAME="DOC.2.14.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getPreviousAngle() const </B></TT>
+<DD>Get the previous angle vector
+<DL><DT><DD></DL><P>
 <A NAME="kill"></A>
-<A NAME="DOC.2.13.42"></A>
+<A NAME="DOC.2.14.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void kill()</B></TT>
 <DD>Kill the particle on next update
 NOTE: after calling this function, the <CODE>isAlive()</CODE> method will still 
 return true until the particle is updated again
 <DL><DT><DD></DL><P>
 <A NAME="setLifeTime"></A>
-<A NAME="DOC.2.13.43"></A>
+<A NAME="DOC.2.14.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLifeTime(double t)</B></TT>
 <DD>Set the life time of the particle
 <DL><DT><DD></DL><P>
 <A NAME="setSizeRange"></A>
-<A NAME="DOC.2.13.44"></A>
+<A NAME="DOC.2.14.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSizeRange(const <!1><A HREF="rangef.html">rangef</A> &amp;r)</B></TT>
 <DD>Set the minimum and maximum values for polygon size
 <DL><DT><DD></DL><P>
 <A NAME="setAlphaRange"></A>
-<A NAME="DOC.2.13.45"></A>
+<A NAME="DOC.2.14.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAlphaRange(const <!1><A HREF="rangef.html">rangef</A> &amp;r)</B></TT>
 <DD>Set the minimum and maximum values for alpha
 <DL><DT><DD></DL><P>
 <A NAME="setColorRange"></A>
-<A NAME="DOC.2.13.46"></A>
+<A NAME="DOC.2.14.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColorRange(const <!1><A HREF="rangev4.html">rangev4</A> &amp;r)</B></TT>
 <DD>Set the minimum and maximum values for color
 <DL><DT><DD></DL><P>
 <A NAME="setSizeInterpolator"></A>
-<A NAME="DOC.2.13.47"></A>
+<A NAME="DOC.2.14.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSizeInterpolator(<!1><A HREF="Interpolator.html">Interpolator</A>* ri)</B></TT>
 <DD>Set the interpolator for computing size values
 <DL><DT><DD></DL><P>
 <A NAME="setAlphaInterpolator"></A>
-<A NAME="DOC.2.13.48"></A>
+<A NAME="DOC.2.14.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAlphaInterpolator(<!1><A HREF="Interpolator.html">Interpolator</A>* ai)</B></TT>
 <DD>Set the interpolator for computing alpha values.        
 <DL><DT><DD></DL><P>
 <A NAME="setColorInterpolator"></A>
-<A NAME="DOC.2.13.49"></A>
+<A NAME="DOC.2.14.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setColorInterpolator(<!1><A HREF="Interpolator.html">Interpolator</A>* ci)</B></TT>
 <DD>Set the interpolator for computing color values
 <DL><DT><DD></DL><P>
 <A NAME="setPosition"></A>
-<A NAME="DOC.2.13.50"></A>
+<A NAME="DOC.2.14.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPosition(const osg::Vec3 &amp;p)</B></TT>
 <DD>Set the position vector.        
 <DL><DT><DD></DL><P>
 <A NAME="setVelocity"></A>
-<A NAME="DOC.2.13.51"></A>
+<A NAME="DOC.2.14.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVelocity(const osg::Vec3 &amp;v)</B></TT>
 <DD>Set the velocity vector.
 For built-in operators to work correctly, remember that velocity components are expressed
 in meters per second.
 <DL><DT><DD></DL><P>
 <A NAME="addVelocity"></A>
-<A NAME="DOC.2.13.52"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addVelocity(const osg::Vec3 &amp;v)</B></TT>
+<A NAME="DOC.2.14.58"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addVelocity(const osg::Vec3 &amp;dv)</B></TT>
 <DD>Add a vector to the velocity vector
 <DL><DT><DD></DL><P>
 <A NAME="transformPositionVelocity"></A>
-<A NAME="DOC.2.13.53"></A>
+<A NAME="DOC.2.14.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void transformPositionVelocity(const osg::Matrix &amp;xform)</B></TT>
 <DD>Transform position and velocity vectors by a matrix
 <DL><DT><DD></DL><P>
+<A NAME="setAngle"></A>
+<A NAME="DOC.2.14.60"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAngle(const osg::Vec3 &amp;a)</B></TT>
+<DD>Set the angle vector
+<DL><DT><DD></DL><P>
+<A NAME="setAngularVelocity"></A>
+<A NAME="DOC.2.14.61"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAngularVelocity(const osg::Vec3 &amp;v)</B></TT>
+<DD>
+Set the angular velocity vector. 
+Components x, y and z are angles of rotation around the respective axis (in radians).
+<DL><DT><DD></DL><P>
+<A NAME="addAngularVelocity"></A>
+<A NAME="DOC.2.14.62"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addAngularVelocity(const osg::Vec3 &amp;dv)</B></TT>
+<DD>Add a vector to the angular velocity vector
+<DL><DT><DD></DL><P>
+<A NAME="transformAngleVelocity"></A>
+<A NAME="DOC.2.14.63"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void transformAngleVelocity(const osg::Matrix &amp;xform)</B></TT>
+<DD>Transform angle and angularVelocity vectors by a matrix
+<DL><DT><DD></DL><P>
 <A NAME="getMass"></A>
-<A NAME="DOC.2.13.54"></A>
+<A NAME="DOC.2.14.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMass() const </B></TT>
 <DD>Get the mass of the particle.
 For built-in operators to work correctly, remember that the mass is expressed in kg.
 <DL><DT><DD></DL><P>
 <A NAME="getMassInv"></A>
-<A NAME="DOC.2.13.55"></A>
+<A NAME="DOC.2.14.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getMassInv() const </B></TT>
 <DD>Get <CODE>1 / getMass()</CODE>
 <DL><DT><DD></DL><P>
 <A NAME="setMass"></A>
-<A NAME="DOC.2.13.56"></A>
+<A NAME="DOC.2.14.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMass(float m)</B></TT>
 <DD>Set the mass of the particle.
 For built-in operators to work correctly, remember that the mass is expressed in kg.
 <DL><DT><DD></DL><P>
 <A NAME="beginRender"></A>
-<A NAME="DOC.2.13.57"></A>
+<A NAME="DOC.2.14.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void beginRender() const </B></TT>
 <DD>Perform some pre-rendering tasks. Called automatically by particle systems.
 <DL><DT><DD></DL><P>
 <A NAME="endRender"></A>
-<A NAME="DOC.2.13.58"></A>
+<A NAME="DOC.2.14.68"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void endRender() const </B></TT>
 <DD>Perform some post-rendering tasks. Called automatically by particle systems.
 <DL><DT><DD></DL><P>
 <A NAME="getCurrentSize"></A>
-<A NAME="DOC.2.13.59"></A>
+<A NAME="DOC.2.14.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getCurrentSize() const </B></TT>
 <DD>Get the current (interpolated) polygon size. Valid only after the first call to update().
 <DL><DT><DD></DL><P></DL>

@@ -13,9 +13,18 @@
  <DT>
 class  OSGSIM_EXPORT <B><A HREF="BlinkSequence.html">BlinkSequence</A></B>: public osg::Object
 <DT>
+class  OSGSIM_EXPORT <B><A HREF="ColorRange.html">ColorRange</A></B>: public <!1><A HREF="ScalarsToColors.html">ScalarsToColors</A>
+<DD><I> ColorRange is a ScalarsToColors object to define a color spectrum for a scalar range.</I>
+<DT>
 class  OSGSIM_EXPORT <B><A HREF="LightPoint.html">LightPoint</A></B>
 <DT>
 class  OSGSIM_EXPORT <B><A HREF="LightPointNode.html">LightPointNode</A></B>: public osg::Node
+<DT>
+class  OSGSIM_EXPORT <B><A HREF="ScalarBar.html">ScalarBar</A></B>: public osg::Geode
+<DD><I> A ScalarBar is an osg::Geode to render a colored bar representing a range of scalars.</I>
+<DT>
+class  OSGSIM_EXPORT <B><A HREF="ScalarsToColors.html">ScalarsToColors</A></B>: public osg::Referenced
+<DD><I> ScalarsToColors defines the interface to map a scalar value to a color, and provides a default implementation of the mapping functionaltity, with colors ranging from black to white across the min - max scalar range</I>
 <DT>
 class  <B><A HREF="Sector.html">Sector</A></B>: public osg::Object
 <DT>

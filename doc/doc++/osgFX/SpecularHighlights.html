@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGFX_EXPORT osgFX::SpecularHighlights</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGFX_EXPORT <A HREF="#DOC.DOCU">osgFX::SpecularHighlights</A></H2></H2><BLOCKQUOTE> This effect applies additive specular highlights at fragment level (instead  of OpenGL's vertex-level lighting) by using a cube map and reflective texgen.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Node,M,CEffect,MEffect.html,CSpecularHighlights,MSpecularHighlights.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.1">SpecularHighlights</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.2">SpecularHighlights</A></B>(const <!1><A HREF="SpecularHighlights.html#DOC.2.7.2">SpecularHighlights</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.3">META_Effect</A></B>(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="SpecularHighlights.html">SpecularHighlights</A>, "Specular Highlights", "This effect applies additive specular highlights at fragment level (instead " "of OpenGL's vertex-level lighting) by using a cube map and reflective texgen. " "A texture matrix is computed to rotate the cube map automatically; this makes " "the specular effect consistent with respect to view direction and light position. " "The user can choose which light should be used to compute the texture matrix.\n" "This effect requires the GL_ARB_texture_env_add extension and one of the cube map " "extensions (GL_EXT_texture_cube_map, GL_ARB_texture_cube_map or OpenGL v1.3).", "Marco Jez")
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.7.11">getLightNumber</A></B>() const 
+<DD><I>get the OpenGL light number </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.7.12">setLightNumber</A></B>(int n)
+<DD><I>set the OpenGL light number that will be used in lighting computations </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.7.13">getTextureUnit</A></B>() const 
+<DD><I>get the texture unit number </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.7.14">setTextureUnit</A></B>(int n)
+<DD><I>set the texture unit that will be used to apply the cube map </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec4&amp; <B><A HREF="#DOC.2.7.15">getSpecularColor</A></B>() const 
+<DD><I>get the specular color </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.7.16">setSpecularColor</A></B>(const osg::Vec4 &amp;color)
+<DD><I>set the specular color </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.7.17">getSpecularExponent</A></B>() const 
+<DD><I>get the specular exponent </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.7.18">setSpecularExponent</A></B>(float e)
+<DD><I>set the specular exponent </I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.7.4">~SpecularHighlights</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SpecularHighlights.html">SpecularHighlights</A>&amp; <B><A HREF="#DOC.2.7.5">operator=</A></B>(const <!1><A HREF="SpecularHighlights.html">SpecularHighlights</A> &amp;)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.7.6">define_techniques</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Effect.html">Effect</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual inline   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual inline   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual inline   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>effectName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>effectDescription</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>effectAuthor</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline virtual   void <B>setUpDemo</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(osg::NodeVisitor &amp;nv)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getEnabled</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setEnabled</B>(bool v)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const osg::Node* <B>getChild</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   osg::Node* <B>getChild</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setChild</B>(osg::Node* child)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>getNumTechniques</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Technique.html">Technique</A>* <B>getTechnique</B>(int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Technique.html">Technique</A>* <B>getTechnique</B>(int i) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>getSelectedTechnique</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>selectTechnique</B>(int i)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>addTechnique</B>(<!1><A HREF="Technique.html">Technique</A>* tech)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>dirtyTechniques</B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>TechniqueSelection</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+This effect applies additive specular highlights at fragment level (instead 
+of OpenGL's vertex-level lighting) by using a cube map and reflective texgen. 
+A texture matrix is computed to rotate the cube map automatically; this makes 
+the specular effect consistent with respect to view direction and light position. 
+The user can choose which light should be used to compute the texture matrix.
+This effect requires the GL_ARB_texture_env_add extension and one of the cube map 
+extensions (GL_EXT_texture_cube_map, GL_ARB_texture_cube_map or OpenGL v1.3).</BLOCKQUOTE>
+<DL>
+
+<A NAME="SpecularHighlights"></A>
+<A NAME="DOC.2.7.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SpecularHighlights()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SpecularHighlights"></A>
+<A NAME="DOC.2.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SpecularHighlights(const <!1><A HREF="SpecularHighlights.html#DOC.2.7.2">SpecularHighlights</A> &amp;copy, const osg::CopyOp &amp;copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="META_Effect"></A>
+<A NAME="DOC.2.7.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Effect(<!1><A HREF="osgFX.html">osgFX</A>, <!1><A HREF="SpecularHighlights.html">SpecularHighlights</A>, "Specular Highlights", "This effect applies additive specular highlights at fragment level (instead " "of OpenGL's vertex-level lighting) by using a cube map and reflective texgen. " "A texture matrix is computed to rotate the cube map automatically; this makes " "the specular effect consistent with respect to view direction and light position. " "The user can choose which light should be used to compute the texture matrix.\n" "This effect requires the GL_ARB_texture_env_add extension and one of the cube map " "extensions (GL_EXT_texture_cube_map, GL_ARB_texture_cube_map or OpenGL v1.3).", "Marco Jez")</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~SpecularHighlights"></A>
+<A NAME="DOC.2.7.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~SpecularHighlights()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator="></A>
+<A NAME="DOC.2.7.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SpecularHighlights.html">SpecularHighlights</A>&amp; operator=(const <!1><A HREF="SpecularHighlights.html">SpecularHighlights</A> &amp;)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="define_techniques"></A>
+<A NAME="DOC.2.7.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool define_techniques()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getLightNumber"></A>
+<A NAME="DOC.2.7.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getLightNumber() const </B></TT>
+<DD>get the OpenGL light number 
+<DL><DT><DD></DL><P>
+<A NAME="setLightNumber"></A>
+<A NAME="DOC.2.7.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLightNumber(int n)</B></TT>
+<DD>set the OpenGL light number that will be used in lighting computations 
+<DL><DT><DD></DL><P>
+<A NAME="getTextureUnit"></A>
+<A NAME="DOC.2.7.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int getTextureUnit() const </B></TT>
+<DD>get the texture unit number 
+<DL><DT><DD></DL><P>
+<A NAME="setTextureUnit"></A>
+<A NAME="DOC.2.7.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setTextureUnit(int n)</B></TT>
+<DD>set the texture unit that will be used to apply the cube map 
+<DL><DT><DD></DL><P>
+<A NAME="getSpecularColor"></A>
+<A NAME="DOC.2.7.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec4&amp; getSpecularColor() const </B></TT>
+<DD>get the specular color 
+<DL><DT><DD></DL><P>
+<A NAME="setSpecularColor"></A>
+<A NAME="DOC.2.7.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSpecularColor(const osg::Vec4 &amp;color)</B></TT>
+<DD>set the specular color 
+<DL><DT><DD></DL><P>
+<A NAME="getSpecularExponent"></A>
+<A NAME="DOC.2.7.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getSpecularExponent() const </B></TT>
+<DD>get the specular exponent 
+<DL><DT><DD></DL><P>
+<A NAME="setSpecularExponent"></A>
+<A NAME="DOC.2.7.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSpecularExponent(float e)</B></TT>
+<DD>set the specular exponent 
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

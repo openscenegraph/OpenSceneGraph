@@ -25,41 +25,43 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.1">ColorMask</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.2">ColorMask</A></B>(const <!1><A HREF="ColorMask.html#DOC.2.50.2">ColorMask</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.2">ColorMask</A></B>(bool red, bool green, bool blue, bool alpha)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.3">ColorMask</A></B>(const <!1><A HREF="ColorMask.html#DOC.2.50.3">ColorMask</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ColorMask.html">ColorMask</A>, <!1><A HREF="StateAttribute.html#DOC.2.183.6.31">COLORMASK</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.4">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ColorMask.html">ColorMask</A>, <!1><A HREF="StateAttribute.html#DOC.2.192.6.31">COLORMASK</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.50.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.50.5">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.50.5">setMask</A></B>(bool red, bool green, bool blue, bool alpha)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.50.6">setMask</A></B>(bool red, bool green, bool blue, bool alpha)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.6">getRedMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.7">getRedMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.7">getGreenMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.8">getGreenMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.8">getBlueMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.9">getBlueMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.9">getAlphaMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.50.10">getAlphaMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.10">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.11">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.12">_red</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.13">_red</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.13">_green</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.14">_green</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.14">_blue</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.15">_blue</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.15">_alpha</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.50.16">_alpha</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.11">~ColorMask</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.12">~ColorMask</A></B>()
 </DL></P>
 
 </DL>
@@ -77,7 +79,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.183.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.192.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -87,7 +89,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   void <B>getAssociatedModes</B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.183.1">GLMode</A>&gt;&amp; ) const 
+<IMG ALT="o" SRC=icon2.gif>virtual   void <B>getAssociatedModes</B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.192.1">GLMode</A>&gt;&amp; ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
@@ -112,9 +114,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -130,7 +132,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -174,60 +176,64 @@
 <DL><DT><DD></DL><P>
 <A NAME="ColorMask"></A>
 <A NAME="DOC.2.50.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorMask(const <!1><A HREF="ColorMask.html#DOC.2.50.2">ColorMask</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorMask(bool red, bool green, bool blue, bool alpha)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ColorMask"></A>
+<A NAME="DOC.2.50.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ColorMask(const <!1><A HREF="ColorMask.html#DOC.2.50.3">ColorMask</A>&amp; cm, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.50.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ColorMask.html">ColorMask</A>, <!1><A HREF="StateAttribute.html#DOC.2.183.6.31">COLORMASK</A>)</B></TT>
+<A NAME="DOC.2.50.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ColorMask.html">ColorMask</A>, <!1><A HREF="StateAttribute.html#DOC.2.192.6.31">COLORMASK</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.50.4"></A>
+<A NAME="DOC.2.50.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setMask"></A>
-<A NAME="DOC.2.50.5"></A>
+<A NAME="DOC.2.50.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMask(bool red, bool green, bool blue, bool alpha)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRedMask"></A>
-<A NAME="DOC.2.50.6"></A>
+<A NAME="DOC.2.50.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getRedMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getGreenMask"></A>
-<A NAME="DOC.2.50.7"></A>
+<A NAME="DOC.2.50.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getGreenMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getBlueMask"></A>
-<A NAME="DOC.2.50.8"></A>
+<A NAME="DOC.2.50.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getBlueMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAlphaMask"></A>
-<A NAME="DOC.2.50.9"></A>
+<A NAME="DOC.2.50.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getAlphaMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.50.10"></A>
+<A NAME="DOC.2.50.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~ColorMask"></A>
-<A NAME="DOC.2.50.11"></A>
+<A NAME="DOC.2.50.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ColorMask()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_red"></A>
-<A NAME="DOC.2.50.12"></A>
+<A NAME="DOC.2.50.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _red</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_green"></A>
-<A NAME="DOC.2.50.13"></A>
+<A NAME="DOC.2.50.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _green</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_blue"></A>
-<A NAME="DOC.2.50.14"></A>
+<A NAME="DOC.2.50.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _blue</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_alpha"></A>
-<A NAME="DOC.2.50.15"></A>
+<A NAME="DOC.2.50.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _alpha</B></TT>
 <DL><DT><DD></DL><P></DL>
 

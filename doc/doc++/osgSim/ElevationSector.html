@@ -22,29 +22,29 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.1">ElevationSector</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.1">ElevationSector</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.2">ElevationSector</A></B>(const <!1><A HREF="ElevationSector.html#DOC.2.8.2">ElevationSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.2">ElevationSector</A></B>(const <!1><A HREF="ElevationSector.html#DOC.2.11.2">ElevationSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.8.3">ElevationSector</A></B>(float minElevation, float maxElevation, float fadeAngle=0.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.3">ElevationSector</A></B>(float minElevation, float maxElevation, float fadeAngle=0.0f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="BlinkSequence.html#DOC.2.1.4">META_Object</A>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="ElevationSector.html">ElevationSector</A>) <B><A HREF="#DOC.2.8.4">()</A></B>(const osg::Vec3&amp; eyeLocal) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SequenceGroup.html#DOC.2.1.1.4">META_Object</A>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="ElevationSector.html">ElevationSector</A>) <B><A HREF="#DOC.2.11.4">()</A></B>(const osg::Vec3&amp; eyeLocal) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.6">_cosMinElevation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.6">_cosMinElevation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.7">_cosMinFadeElevation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.7">_cosMinFadeElevation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.8">_cosMaxElevation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.8">_cosMaxElevation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.8.9">_cosMaxFadeElevation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.9">_cosMaxFadeElevation</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.8.5">~ElevationSector</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.11.5">~ElevationSector</A></B>()
 </DL></P>
 
 </DL>
@@ -72,6 +72,8 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>float <B>getMaxElevation</B>() const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>float <B>getFadeAngle</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>inline   float <B>elevationSector</B>(const osg::Vec3&amp; eyeLocal) const 
 </DL></P>
 
@@ -83,39 +85,39 @@
 <DL>
 
 <A NAME="ElevationSector"></A>
-<A NAME="DOC.2.8.1"></A>
+<A NAME="DOC.2.11.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ElevationSector()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ElevationSector"></A>
-<A NAME="DOC.2.8.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ElevationSector(const <!1><A HREF="ElevationSector.html#DOC.2.8.2">ElevationSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.11.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ElevationSector(const <!1><A HREF="ElevationSector.html#DOC.2.11.2">ElevationSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ElevationSector"></A>
-<A NAME="DOC.2.8.3"></A>
+<A NAME="DOC.2.11.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ElevationSector(float minElevation, float maxElevation, float fadeAngle=0.0f)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="()"></A>
-<A NAME="DOC.2.8.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="BlinkSequence.html#DOC.2.1.4">META_Object</A>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="ElevationSector.html">ElevationSector</A>) ()(const osg::Vec3&amp; eyeLocal) const </B></TT>
+<A NAME="DOC.2.11.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SequenceGroup.html#DOC.2.1.1.4">META_Object</A>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="ElevationSector.html">ElevationSector</A>) ()(const osg::Vec3&amp; eyeLocal) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~ElevationSector"></A>
-<A NAME="DOC.2.8.5"></A>
+<A NAME="DOC.2.11.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ElevationSector()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosMinElevation"></A>
-<A NAME="DOC.2.8.6"></A>
+<A NAME="DOC.2.11.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosMinElevation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosMinFadeElevation"></A>
-<A NAME="DOC.2.8.7"></A>
+<A NAME="DOC.2.11.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosMinFadeElevation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosMaxElevation"></A>
-<A NAME="DOC.2.8.8"></A>
+<A NAME="DOC.2.11.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosMaxElevation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cosMaxFadeElevation"></A>
-<A NAME="DOC.2.8.9"></A>
+<A NAME="DOC.2.11.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _cosMaxFadeElevation</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -21,12 +21,12 @@ namespace osg {
 
 
 // default to using floating Matrices - Matrixf 
-    typedef Matrixf Matrix;
-    typedef RefMatrixf RefMatrix;
+//    typedef Matrixf Matrix;
+//    typedef RefMatrixf RefMatrix;
 
 // // default to using double Matrices - Matrixd
-//    typedef Matrixd Matrix;
-//    typedef RefMatrixd RefMatrix;
+    typedef Matrixd Matrix;
+    typedef RefMatrixd RefMatrix;
 
 
 } //namespace osg

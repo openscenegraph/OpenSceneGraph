@@ -20,12 +20,23 @@ Don Burns <don@andesengineering.com>
         - first version of sgv.
         - osghangglide database & osgtgz plugins.
         
+Marco Jez <marco.jez@arsenal.it>
+        - osgParticle
+        - osgFX
+        - IO support for osgText.
+
 Brede Johansen <bredej@email.com>
         - flt loader.
         - osg::Point.
         - osg::TextureCubeMap
         - osg::VertexProgram
         - assistance on visual studio workspace files.
+
+Neil Salter <neil@nackle.org>
+        - osgGA
+        - unit test framework
+        - osgSim::SphereSegment and osgSim::ScalarBar
+        - web site.
 
 Karsten Weiss <knweiss@gmx.de>
         - 1st iteration of impostor implemtentation.
@@ -38,19 +49,12 @@ Graeme Harkness <graeme@phys.strath.ac.uk>
         - reworking of old sgv into osgGLUT and a slim line Demos/sgv.
         - Demos/cube.
 
-Neil Salter <neil@nackle.org>
-        - first incarnation of osgUtil, Camera and Manipulators.
-        - web site.
 
 Ben Discoe <ben@vterrain.org>
         - osgWX and wxsgv demos for integration of OSG with wxWindows.
         - png plugin.
         - fixes to OBJ plugin.
-
-Marco Jez <marco.jez@arsenal.it>
-        - osgParticle
-        - IO support for osgText.
-        
+       
 Mike Weiblen <mike.weiblen@3dlabs.com>
         - osgGL2
 
@@ -90,6 +94,9 @@ Boris Bralo <boris.bralo@zg.tel.hr>
 Sasa Bistrovic <sasa.bistrovic@zg.hinet.hr>
         - option for detailed calculation of the near clipping plane during cull traversal.
         - osg::DOFTransform
+
+Vivek Rajan <vrajan@magic-earth.com>
+        - Inventor based .iv/.wrl plugin.
 
 Nikolaus Hanekamp <hanekamp@stn-atlas.de>
         - added support billboards to Open Flight loader.

@@ -98,9 +98,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setVisitorType</B>(<!1><A HREF="NodeVisitor.html#DOC.2.110.2">VisitorType</A> type)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setVisitorType</B>(<!1><A HREF="NodeVisitor.html#DOC.2.119.2">VisitorType</A> type)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.110.2">VisitorType</A> <B>getVisitorType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.119.2">VisitorType</A> <B>getVisitorType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setTraversalNumber</B>(int fn)
 <DT>
@@ -120,9 +120,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>validNodeMask</B>(const <!1><A HREF="Node.html">osg::Node</A>&amp; node) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setTraversalMode</B>(<!1><A HREF="NodeVisitor.html#DOC.2.110.1">TraversalMode</A> mode)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setTraversalMode</B>(<!1><A HREF="NodeVisitor.html#DOC.2.119.1">TraversalMode</A> mode)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.110.1">TraversalMode</A> <B>getTraversalMode</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeVisitor.html#DOC.2.119.1">TraversalMode</A> <B>getTraversalMode</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -139,10 +139,6 @@
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodePath.html">NodePath</A>&amp; <B>getNodePath</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="NodePath.html">NodePath</A>&amp; <B>getNodePath</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="Node.html">Node</A>* node)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>getWorldToLocalMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="Node.html">Node</A>* node)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Vec3.html">osg::Vec3</A> <B>getEyePoint</B>() const 
 <DT>
@@ -165,13 +161,13 @@ class  <B><A HREF="DatabaseRequestHandler.html">DatabaseRequestHandler</A></B>: 
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.110.2">VisitorType</A> <B>_visitorType</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.119.2">VisitorType</A> <B>_visitorType</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>int <B>_traversalNumber</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="FrameStamp.html">FrameStamp</A>&gt;  <B>_frameStamp</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.110.1">TraversalMode</A> <B>_traversalMode</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="NodeVisitor.html#DOC.2.119.1">TraversalMode</A> <B>_traversalMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>Node::NodeMask <B>_traversalMask</B>
 <DT>
@@ -222,11 +218,11 @@ class  <B><A HREF="DatabaseRequestHandler.html">DatabaseRequestHandler</A></B>: 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>popViewport</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>pushProjectionMatrix</B>(<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
+<IMG ALT="o" SRC=icon2.gif>void <B>pushProjectionMatrix</B>(<!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>popProjectionMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>pushModelViewMatrix</B>(<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* matrix)
+<IMG ALT="o" SRC=icon2.gif>void <B>pushModelViewMatrix</B>(<!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* matrix)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>popModelViewMatrix</B>()
 <DT>
@@ -274,13 +270,13 @@ class  <B><A HREF="DatabaseRequestHandler.html">DatabaseRequestHandler</A></B>: 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Viewport.html">osg::Viewport</A>* <B>getViewport</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&amp; <B>getModelViewMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>&amp; <B>getModelViewMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&amp; <B>getProjectionMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>&amp; <B>getProjectionMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">osg::Matrix</A> <B>getWindowMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A> <B>getWindowMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&amp; <B>getMVPW</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>&amp; <B>getMVPW</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <B>getEyeLocal</B>() const 
 <DT>
@@ -290,15 +286,15 @@ class  <B><A HREF="DatabaseRequestHandler.html">DatabaseRequestHandler</A></B>: 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Viewport.html">Viewport</A>* <B>getViewport</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">RefMatrix</A>&amp; <B>getModelViewMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&amp; <B>getModelViewMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">RefMatrix</A>&amp; <B>getProjectionMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&amp; <B>getProjectionMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B>getWindowMatrix</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.102">Matrix</A> <B>getWindowMatrix</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="RefMatrix.html">RefMatrix</A>&amp; <B>getMVPW</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&amp; <B>getMVPW</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">RefMatrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; value)
 </DL></P>
 
 <P><DL>
@@ -344,7 +340,7 @@ class  <B><A HREF="DatabaseRequestHandler.html">DatabaseRequestHandler</A></B>: 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_bbCornerFar</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&gt;  <B>_identity</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>&gt;  <B>_identity</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="CullStack.html#DOC.2.56.68">MatrixList</A> <B>_reuseMatrixList</B>
 <DT>
@@ -359,18 +355,18 @@ class  <B><A HREF="DatabaseRequestHandler.html">DatabaseRequestHandler</A></B>: 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>computeFrustumVolume</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="RefMatrix.html">osg::RefMatrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="Matrix.html">osg::Matrix</A>&amp; value)
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>* <B>createOrReuseMatrix</B>(const <!1><A HREF="osg.html#DOC.2.102">osg::Matrix</A>&amp; value)
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="RefMatrix.html">RefMatrix</A>&gt; &gt; <B>MatrixStack</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="osg.html#DOC.2.103">RefMatrix</A>&gt; &gt; <B>MatrixStack</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Viewport.html">Viewport</A>&gt; &gt; <B>ViewportStack</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="fast_back_stack.html">fast_back_stack</A>&lt;<!1><A HREF="Vec3.html">Vec3</A>&gt; <B>EyePointStack</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="RefMatrix.html">osg::RefMatrix</A>&gt; &gt; <B>MatrixList</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">osg::ref_ptr</A>&lt;<!1><A HREF="osg.html#DOC.2.103">osg::RefMatrix</A>&gt; &gt; <B>MatrixList</B>
 </DL></P>
 
 </DL>

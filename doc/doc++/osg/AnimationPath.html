@@ -29,51 +29,56 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.3">META_Object</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="AnimationPath.html">AnimationPath</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.5">getMatrix</A></B>(double time, <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.5">getMatrix</A></B>(double time, <!1><A HREF="Matrixf.html">Matrixf</A>&amp; matrix) const 
 <DD><I>get the transformation matrix for a point in time</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.6">getInverse</A></B>(double time, <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.6">getMatrix</A></B>(double time, <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix) const 
+<DD><I>get the transformation matrix for a point in time</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.7">getInverse</A></B>(double time, <!1><A HREF="Matrixf.html">Matrixf</A>&amp; matrix) const 
 <DD><I>get the inverse transformation matrix for a point in time</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.7">getInterpolatedControlPoint</A></B>(double time, <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; controlPoint) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.2.8">getInverse</A></B>(double time, <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.2.9">getInterpolatedControlPoint</A></B>(double time, <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; controlPoint) const 
 <DD><I>get the local ControlPoint frame for a point in time</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.8">insert</A></B>(double time, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; controlPoint)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.10">insert</A></B>(double time, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; controlPoint)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.9">getFirstTime</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.11">getFirstTime</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.10">getLastTime</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.12">getLastTime</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.11">getPeriod</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.2.13">getPeriod</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.13">setLoopMode</A></B>(<!1><A HREF="AnimationPath.html#DOC.2.2.12">LoopMode</A> lm)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.2.15">setLoopMode</A></B>(<!1><A HREF="AnimationPath.html#DOC.2.2.14">LoopMode</A> lm)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.12">LoopMode</A> <B><A HREF="#DOC.2.2.14">getLoopMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.14">LoopMode</A> <B><A HREF="#DOC.2.2.16">getLoopMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.15">TimeControlPointMap</A>&amp; <B><A HREF="#DOC.2.2.16">getTimeControlPointMap</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.17">TimeControlPointMap</A>&amp; <B><A HREF="#DOC.2.2.18">getTimeControlPointMap</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="AnimationPath.html#DOC.2.2.15">TimeControlPointMap</A>&amp; <B><A HREF="#DOC.2.2.17">getTimeControlPointMap</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="AnimationPath.html#DOC.2.2.17">TimeControlPointMap</A>&amp; <B><A HREF="#DOC.2.2.19">getTimeControlPointMap</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.2.4">ControlPoint</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.12">LoopMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.14">LoopMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;double,<!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&gt; <B><A HREF="#DOC.2.2.15">TimeControlPointMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt;double,<!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&gt; <B><A HREF="#DOC.2.2.17">TimeControlPointMap</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.15">TimeControlPointMap</A> <B><A HREF="#DOC.2.2.19">_timeControlPointMap</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.17">TimeControlPointMap</A> <B><A HREF="#DOC.2.2.21">_timeControlPointMap</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.12">LoopMode</A> <B><A HREF="#DOC.2.2.20">_loopMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="AnimationPath.html#DOC.2.2.14">LoopMode</A> <B><A HREF="#DOC.2.2.22">_loopMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.18">~AnimationPath</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.20">~AnimationPath</A></B>()
 </DL></P>
 
 </DL>
@@ -91,9 +96,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -109,7 +114,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.133.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -180,7 +185,7 @@ be attached directly to Transform nodes to move subgraphs around the scene.</BLO
 <DL><DT><DD></DL><P>
 <A NAME="ControlPoint"></A>
 <A NAME="DOC.2.2.4.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ControlPoint(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; position, const <!1><A HREF="Quat.html">osg::Quat</A>&amp; rotation, const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <!1><A HREF="Matrix.html#DOC.2.100.39">scale</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ControlPoint(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; position, const <!1><A HREF="Quat.html">osg::Quat</A>&amp; rotation, const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <!1><A HREF="Matrixf.html#DOC.2.110.49">scale</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_position"></A>
 <A NAME="DOC.2.2.4.5"></A>
@@ -196,97 +201,114 @@ be attached directly to Transform nodes to move subgraphs around the scene.</BLO
 <DL><DT><DD></DL><P>
 <A NAME="interpolate"></A>
 <A NAME="DOC.2.2.4.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void interpolate(float ratio, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; <!1><A HREF="Geometry.html#DOC.2.82.50.5">second</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void interpolate(float ratio, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; <!1><A HREF="ImpostorSpriteManager.html#DOC.2.93.3">first</A>, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; <!1><A HREF="Geometry.html#DOC.2.84.50.5">second</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
 <A NAME="DOC.2.2.4.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getMatrix(<!1><A HREF="Matrixf.html">Matrixf</A>&amp; matrix) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMatrix"></A>
+<A NAME="DOC.2.2.4.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getMatrix(<!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInverse"></A>
-<A NAME="DOC.2.2.4.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getInverse(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix) const </B></TT>
+<A NAME="DOC.2.2.4.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getInverse(<!1><A HREF="Matrixf.html">Matrixf</A>&amp; matrix) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getInverse"></A>
+<A NAME="DOC.2.2.4.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void getInverse(<!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix) const </B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="getMatrix"></A>
 <A NAME="DOC.2.2.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getMatrix(double time, <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getMatrix(double time, <!1><A HREF="Matrixf.html">Matrixf</A>&amp; matrix) const </B></TT>
+<DD>get the transformation matrix for a point in time
+<DL><DT><DD></DL><P>
+<A NAME="getMatrix"></A>
+<A NAME="DOC.2.2.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getMatrix(double time, <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix) const </B></TT>
 <DD>get the transformation matrix for a point in time
 <DL><DT><DD></DL><P>
 <A NAME="getInverse"></A>
-<A NAME="DOC.2.2.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getInverse(double time, <!1><A HREF="Matrix.html">Matrix</A>&amp; matrix) const </B></TT>
+<A NAME="DOC.2.2.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getInverse(double time, <!1><A HREF="Matrixf.html">Matrixf</A>&amp; matrix) const </B></TT>
 <DD>get the inverse transformation matrix for a point in time
 <DL><DT><DD></DL><P>
+<A NAME="getInverse"></A>
+<A NAME="DOC.2.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getInverse(double time, <!1><A HREF="Matrixd.html">Matrixd</A>&amp; matrix) const </B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="getInterpolatedControlPoint"></A>
-<A NAME="DOC.2.2.7"></A>
+<A NAME="DOC.2.2.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool getInterpolatedControlPoint(double time, <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; controlPoint) const </B></TT>
 <DD>get the local ControlPoint frame for a point in time
 <DL><DT><DD></DL><P>
 <A NAME="insert"></A>
-<A NAME="DOC.2.2.8"></A>
+<A NAME="DOC.2.2.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void insert(double time, const <!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&amp; controlPoint)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFirstTime"></A>
-<A NAME="DOC.2.2.9"></A>
+<A NAME="DOC.2.2.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getFirstTime() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLastTime"></A>
-<A NAME="DOC.2.2.10"></A>
+<A NAME="DOC.2.2.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getLastTime() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPeriod"></A>
-<A NAME="DOC.2.2.11"></A>
+<A NAME="DOC.2.2.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getPeriod() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LoopMode"></A>
-<A NAME="DOC.2.2.12"></A>
+<A NAME="DOC.2.2.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  LoopMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="SWING"></A>
-<A NAME="DOC.2.2.12.1"></A>
+<A NAME="DOC.2.2.14.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SWING</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LOOP"></A>
-<A NAME="DOC.2.2.12.2"></A>
+<A NAME="DOC.2.2.14.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LOOP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NO_LOOPING"></A>
-<A NAME="DOC.2.2.12.3"></A>
+<A NAME="DOC.2.2.14.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_LOOPING</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setLoopMode"></A>
-<A NAME="DOC.2.2.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLoopMode(<!1><A HREF="AnimationPath.html#DOC.2.2.12">LoopMode</A> lm)</B></TT>
+<A NAME="DOC.2.2.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLoopMode(<!1><A HREF="AnimationPath.html#DOC.2.2.14">LoopMode</A> lm)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getLoopMode"></A>
-<A NAME="DOC.2.2.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.12">LoopMode</A> getLoopMode() const </B></TT>
+<A NAME="DOC.2.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.14">LoopMode</A> getLoopMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TimeControlPointMap"></A>
-<A NAME="DOC.2.2.15"></A>
+<A NAME="DOC.2.2.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt;double,<!1><A HREF="AnimationPath.html#DOC.2.2.4">ControlPoint</A>&gt; TimeControlPointMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTimeControlPointMap"></A>
-<A NAME="DOC.2.2.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.15">TimeControlPointMap</A>&amp; getTimeControlPointMap()</B></TT>
+<A NAME="DOC.2.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.17">TimeControlPointMap</A>&amp; getTimeControlPointMap()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getTimeControlPointMap"></A>
-<A NAME="DOC.2.2.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="AnimationPath.html#DOC.2.2.15">TimeControlPointMap</A>&amp; getTimeControlPointMap() const </B></TT>
+<A NAME="DOC.2.2.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="AnimationPath.html#DOC.2.2.17">TimeControlPointMap</A>&amp; getTimeControlPointMap() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~AnimationPath"></A>
-<A NAME="DOC.2.2.18"></A>
+<A NAME="DOC.2.2.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~AnimationPath()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timeControlPointMap"></A>
-<A NAME="DOC.2.2.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.15">TimeControlPointMap</A> _timeControlPointMap</B></TT>
+<A NAME="DOC.2.2.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.17">TimeControlPointMap</A> _timeControlPointMap</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_loopMode"></A>
-<A NAME="DOC.2.2.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.12">LoopMode</A> _loopMode</B></TT>
+<A NAME="DOC.2.2.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="AnimationPath.html#DOC.2.2.14">LoopMode</A> _loopMode</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

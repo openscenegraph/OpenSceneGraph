@@ -23,92 +23,118 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3 <B><A HREF="#DOC.2.11.23">_centre</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec3 <B><A HREF="#DOC.2.14.33">_centre</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.24">_radius</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.14.34">_radius</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.11.25">_azMin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.14.35">_azMin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.11.26">_azMax</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float  <B><A HREF="#DOC.2.14.36">_azMax</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float   <B><A HREF="#DOC.2.11.27">_elevMin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float   <B><A HREF="#DOC.2.14.37">_elevMin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float    <B><A HREF="#DOC.2.11.28">_elevMax</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float    <B><A HREF="#DOC.2.14.38">_elevMax</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.11.29">_density</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.14.39">_density</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SphereSegment.html#DOC.2.11.1">DrawMask</A> <B><A HREF="#DOC.2.11.30">_drawMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="SphereSegment.html#DOC.2.14.1">DrawMask</A> <B><A HREF="#DOC.2.14.40">_drawMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.11.31">_surfaceColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.14.41">_surfaceColor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.11.32">_spokeColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.14.42">_spokeColor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.11.33">_edgeLineColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.14.43">_edgeLineColor</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.11.34">_planeColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.14.44">_planeColor</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.2">SphereSegment</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.2">SphereSegment</A></B>()
 <DD><I>Default constructor.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.3">SphereSegment</A></B>(const osg::Vec3&amp; centre, float radius, float azMin, float azMax, float elevMin, float elevMax, int density)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.3">SphereSegment</A></B>(const osg::Vec3&amp; centre, float radius, float azMin, float azMax, float elevMin, float elevMax, int density)
 <DD><I> Construct by angle ranges.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.4">SphereSegment</A></B>(const osg::Vec3&amp; centre, float radius, osg::Vec3 vec, float azRange, float elevRange, int density)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.4">SphereSegment</A></B>(const osg::Vec3&amp; centre, float radius, const osg::Vec3&amp; vec, float azRange, float elevRange, int density)
 <DD><I> Construct by vector.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.5">SphereSegment</A></B>(const <!1><A HREF="SphereSegment.html#DOC.2.11.5">SphereSegment</A>&amp; rhs, const osg::CopyOp&amp; co)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.5">SphereSegment</A></B>(const <!1><A HREF="SphereSegment.html#DOC.2.14.5">SphereSegment</A>&amp; rhs, const osg::CopyOp&amp; co)
 <DD><I>Copy constructor </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.6">setDrawMask</A></B>(<!1><A HREF="SphereSegment.html#DOC.2.11.1">DrawMask</A> dm)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.6">setCentre</A></B>(const osg::Vec3&amp; c)
+<DD><I>Set the centre point of the SphereSegment </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec3&amp; <B><A HREF="#DOC.2.14.7">getCentre</A></B>() const 
+<DD><I>Get the centre point of the SphereSegment </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.8">setRadius</A></B>(float r)
+<DD><I>Set the radius of the SphereSegment </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.14.9">getRadius</A></B>() const 
+<DD><I>Get the radius of the SphereSegment </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.10">setArea</A></B>(const osg::Vec3&amp; v, float azRange, float elevRange)
+<DD><I>Set the area of the sphere segment</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.11">getArea</A></B>(osg::Vec3&amp; v, float&amp; azRange, float&amp; elevRange) const 
+<DD><I>Get the area of the sphere segment</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.12">setDensity</A></B>(int d)
+<DD><I>Set the density of the sphere segment </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.14.13">getDensity</A></B>() const 
+<DD><I>Get the density of the sphere segment </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.14">setDrawMask</A></B>(<!1><A HREF="SphereSegment.html#DOC.2.14.1">DrawMask</A> dm)
 <DD><I> Specify the DrawMask.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.7">setSurfaceColor</A></B>(const osg::Vec4&amp; c)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.15">setSurfaceColor</A></B>(const osg::Vec4&amp; c)
 <DD><I>Set the color of the surface.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.8">setSpokeColor</A></B>(const osg::Vec4&amp; c)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.16">setSpokeColor</A></B>(const osg::Vec4&amp; c)
 <DD><I>Set the color of the spokes.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.9">setEdgeLineColor</A></B>(const osg::Vec4&amp; c)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.17">setEdgeLineColor</A></B>(const osg::Vec4&amp; c)
 <DD><I>Set the color of the edge line.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.10">setPlaneColor</A></B>(const osg::Vec4&amp; c)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.18">setSideColor</A></B>(const osg::Vec4&amp; c)
 <DD><I>Set the color of the planes.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.11">setAllColors</A></B>(const osg::Vec4&amp; c)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.19">setAllColors</A></B>(const osg::Vec4&amp; c)
 <DD><I>Set color of all components.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.11.12">META_Node</A></B>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="SphereSegment.html">SphereSegment</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.14.20">META_Node</A></B>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="SphereSegment.html">SphereSegment</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.13">Surface_computeBound</A></B>(osg::BoundingBox&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.21">dirtyAllDrawableDisplayLists</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.14">Surface_drawImplementation</A></B>(osg::State&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.22">dirtyAllDrawableBounds</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.15">EdgeLine_computeBound</A></B>(osg::BoundingBox&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.23">Surface_computeBound</A></B>(osg::BoundingBox&amp;) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.16">EdgeLine_drawImplementation</A></B>(osg::State&amp;) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.24">Surface_drawImplementation</A></B>(osg::State&amp;) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.19">Plane_computeBound</A></B>(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.18">PlaneOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.25">EdgeLine_computeBound</A></B>(osg::BoundingBox&amp;) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.20">Plane_drawImplementation</A></B>(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.18">PlaneOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.26">EdgeLine_drawImplementation</A></B>(osg::State&amp;) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.11.21">Spoke_computeBound</A></B>(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.29">Side_computeBound</A></B>(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.28">SideOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.22">Spoke_drawImplementation</A></B>(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.30">Side_drawImplementation</A></B>(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.28">SideOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.35">checkTransparency</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.14.31">Spoke_computeBound</A></B>(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.14.32">Spoke_drawImplementation</A></B>(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.11.1">DrawMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.14.1">DrawMask</A></B>
 <DD><I> DrawMask represents a bit field, the values of which may be OR'ed together to specify which parts of the sphere segment should be drawn.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.11.17">BoundaryAngle</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.14.27">BoundaryAngle</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.11.18">PlaneOrientation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.14.28">SideOrientation</A></B>
 </DL></P>
 
 </DL>
@@ -150,7 +176,7 @@ planes will be coincident.
 <DL>
 
 <A NAME="DrawMask"></A>
-<A NAME="DOC.2.11.1"></A>
+<A NAME="DOC.2.14.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  DrawMask</B></TT>
 <DD>
 DrawMask represents a bit field, the values of which may be OR'ed together
@@ -161,37 +187,37 @@ sphereSegment->setDrawMask(SphereSegment::DrawMask(SphereSegment::SURFACE|Sphere
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="SURFACE"></A>
-<A NAME="DOC.2.11.1.1"></A>
+<A NAME="DOC.2.14.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SURFACE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="SPOKES"></A>
-<A NAME="DOC.2.11.1.2"></A>
+<A NAME="DOC.2.14.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SPOKES</B></TT>
 <DD>< Draw the specified area on the sphere's surface
 <DL><DT><DD></DL><P>
 <A NAME="EDGELINE"></A>
-<A NAME="DOC.2.11.1.3"></A>
+<A NAME="DOC.2.14.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EDGELINE</B></TT>
 <DD>< Draw the spokes from the sphere's centre to the surface's corners
 <DL><DT><DD></DL><P>
-<A NAME="PLANES"></A>
-<A NAME="DOC.2.11.1.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PLANES</B></TT>
+<A NAME="SIDES"></A>
+<A NAME="DOC.2.14.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SIDES</B></TT>
 <DD>< Draw the line round the edge of the area on the sphere's surface
 <DL><DT><DD></DL><P>
 <A NAME="ALL"></A>
-<A NAME="DOC.2.11.1.5"></A>
+<A NAME="DOC.2.14.1.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL</B></TT>
 <DD>< Draw the planes from the sphere's centre to the edge of the sphere's surface
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="SphereSegment"></A>
-<A NAME="DOC.2.11.2"></A>
+<A NAME="DOC.2.14.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SphereSegment()</B></TT>
 <DD>Default constructor. 
 <DL><DT><DD></DL><P>
 <A NAME="SphereSegment"></A>
-<A NAME="DOC.2.11.3"></A>
+<A NAME="DOC.2.14.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SphereSegment(const osg::Vec3&amp; centre, float radius, float azMin, float azMax, float elevMin, float elevMax, int density)</B></TT>
 <DD>
 Construct by angle ranges. Note that the azimuth 'zero' is the Y axis; specifying
@@ -207,8 +233,8 @@ XY plane with +ve angles above the plane, and -ve angles below.
 <BR><B>elevMax</B> -       elevation maximum
 <BR><B>density</B> -       number of units to divide the azimuth and elevation ranges into<BR><DD></DL><P>
 <A NAME="SphereSegment"></A>
-<A NAME="DOC.2.11.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SphereSegment(const osg::Vec3&amp; centre, float radius, osg::Vec3 vec, float azRange, float elevRange, int density)</B></TT>
+<A NAME="DOC.2.14.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SphereSegment(const osg::Vec3&amp; centre, float radius, const osg::Vec3&amp; vec, float azRange, float elevRange, int density)</B></TT>
 <DD>
 Construct by vector.
 
@@ -220,163 +246,217 @@ of rendered area on sphere surface
 <BR><B>elevRange</B> -     elevation range in radians (with centre along vec)
 <BR><B>density</B> -       number of units to divide the azimuth and elevation ranges into<BR><DD></DL><P>
 <A NAME="SphereSegment"></A>
-<A NAME="DOC.2.11.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SphereSegment(const <!1><A HREF="SphereSegment.html#DOC.2.11.5">SphereSegment</A>&amp; rhs, const osg::CopyOp&amp; co)</B></TT>
+<A NAME="DOC.2.14.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SphereSegment(const <!1><A HREF="SphereSegment.html#DOC.2.14.5">SphereSegment</A>&amp; rhs, const osg::CopyOp&amp; co)</B></TT>
 <DD>Copy constructor 
 <DL><DT><DD></DL><P>
+<A NAME="setCentre"></A>
+<A NAME="DOC.2.14.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCentre(const osg::Vec3&amp; c)</B></TT>
+<DD>Set the centre point of the SphereSegment 
+<DL><DT><DD></DL><P>
+<A NAME="getCentre"></A>
+<A NAME="DOC.2.14.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Vec3&amp; getCentre() const </B></TT>
+<DD>Get the centre point of the SphereSegment 
+<DL><DT><DD></DL><P>
+<A NAME="setRadius"></A>
+<A NAME="DOC.2.14.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRadius(float r)</B></TT>
+<DD>Set the radius of the SphereSegment 
+<DL><DT><DD></DL><P>
+<A NAME="getRadius"></A>
+<A NAME="DOC.2.14.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float getRadius() const </B></TT>
+<DD>Get the radius of the SphereSegment 
+<DL><DT><DD></DL><P>
+<A NAME="setArea"></A>
+<A NAME="DOC.2.14.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setArea(const osg::Vec3&amp; v, float azRange, float elevRange)</B></TT>
+<DD>Set the area of the sphere segment
+
+<P>
+<DL><DT><DT><B>Parameters:</B><DD><B>vec</B> -           vector pointing from sphere centre to centre point
+of rendered area on sphere surface
+<BR><B>azRange</B> -       azimuth range in radians (with centre along vec)
+<BR><B>elevRange</B> -     elevation range in radians (with centre along vec)<BR><DD></DL><P>
+<A NAME="getArea"></A>
+<A NAME="DOC.2.14.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getArea(osg::Vec3&amp; v, float&amp; azRange, float&amp; elevRange) const </B></TT>
+<DD>Get the area of the sphere segment
+
+<P>
+<DL><DT><DT><B>Parameters:</B><DD><B>vec</B> -           vector pointing from sphere centre to centre point
+of rendered area on sphere surface (normalized)
+<BR><B>azRange</B> -       azimuth range in radians (with centre along vec)
+<BR><B>elevRange</B> -     elevation range in radians (with centre along vec)<BR><DD></DL><P>
+<A NAME="setDensity"></A>
+<A NAME="DOC.2.14.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDensity(int d)</B></TT>
+<DD>Set the density of the sphere segment 
+<DL><DT><DD></DL><P>
+<A NAME="getDensity"></A>
+<A NAME="DOC.2.14.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getDensity() const </B></TT>
+<DD>Get the density of the sphere segment 
+<DL><DT><DD></DL><P>
 <A NAME="setDrawMask"></A>
-<A NAME="DOC.2.11.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawMask(<!1><A HREF="SphereSegment.html#DOC.2.11.1">DrawMask</A> dm)</B></TT>
+<A NAME="DOC.2.14.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawMask(<!1><A HREF="SphereSegment.html#DOC.2.14.1">DrawMask</A> dm)</B></TT>
 <DD>
 Specify the DrawMask.
 
 <DL><DT><DT><B>Parameters:</B><DD><B>dm</B> -    Bitmask specifying which parts of the sphere segment should be drawn.
-<BR><DT><B>See Also:</B><DD><!1><A HREF="SphereSegment.html#DOC.2.11.1">DrawMask</A><BR><DD></DL><P>
+<BR><DT><B>See Also:</B><DD><!1><A HREF="SphereSegment.html#DOC.2.14.1">DrawMask</A><BR><DD></DL><P>
 <A NAME="setSurfaceColor"></A>
-<A NAME="DOC.2.11.7"></A>
+<A NAME="DOC.2.14.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSurfaceColor(const osg::Vec4&amp; c)</B></TT>
 <DD>Set the color of the surface. 
 <DL><DT><DD></DL><P>
 <A NAME="setSpokeColor"></A>
-<A NAME="DOC.2.11.8"></A>
+<A NAME="DOC.2.14.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSpokeColor(const osg::Vec4&amp; c)</B></TT>
 <DD>Set the color of the spokes. 
 <DL><DT><DD></DL><P>
 <A NAME="setEdgeLineColor"></A>
-<A NAME="DOC.2.11.9"></A>
+<A NAME="DOC.2.14.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEdgeLineColor(const osg::Vec4&amp; c)</B></TT>
 <DD>Set the color of the edge line. 
 <DL><DT><DD></DL><P>
-<A NAME="setPlaneColor"></A>
-<A NAME="DOC.2.11.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPlaneColor(const osg::Vec4&amp; c)</B></TT>
+<A NAME="setSideColor"></A>
+<A NAME="DOC.2.14.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSideColor(const osg::Vec4&amp; c)</B></TT>
 <DD>Set the color of the planes. 
 <DL><DT><DD></DL><P>
 <A NAME="setAllColors"></A>
-<A NAME="DOC.2.11.11"></A>
+<A NAME="DOC.2.14.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAllColors(const osg::Vec4&amp; c)</B></TT>
 <DD>Set color of all components. 
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.11.12"></A>
+<A NAME="DOC.2.14.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="SphereSegment.html">SphereSegment</A>)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="dirtyAllDrawableDisplayLists"></A>
+<A NAME="DOC.2.14.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyAllDrawableDisplayLists()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="dirtyAllDrawableBounds"></A>
+<A NAME="DOC.2.14.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyAllDrawableBounds()</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="Surface_computeBound"></A>
-<A NAME="DOC.2.11.13"></A>
+<A NAME="DOC.2.14.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool Surface_computeBound(osg::BoundingBox&amp;) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Surface_drawImplementation"></A>
-<A NAME="DOC.2.11.14"></A>
+<A NAME="DOC.2.14.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void Surface_drawImplementation(osg::State&amp;) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EdgeLine_computeBound"></A>
-<A NAME="DOC.2.11.15"></A>
+<A NAME="DOC.2.14.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool EdgeLine_computeBound(osg::BoundingBox&amp;) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EdgeLine_drawImplementation"></A>
-<A NAME="DOC.2.11.16"></A>
+<A NAME="DOC.2.14.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void EdgeLine_drawImplementation(osg::State&amp;) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BoundaryAngle"></A>
-<A NAME="DOC.2.11.17"></A>
+<A NAME="DOC.2.14.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  BoundaryAngle</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="MIN"></A>
-<A NAME="DOC.2.11.17.1"></A>
+<A NAME="DOC.2.14.27.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MIN</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MAX"></A>
-<A NAME="DOC.2.11.17.2"></A>
+<A NAME="DOC.2.14.27.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MAX</B></TT>
 <DL><DT><DD></DL><P></DL>
 
-<A NAME="PlaneOrientation"></A>
-<A NAME="DOC.2.11.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  PlaneOrientation</B></TT>
+<A NAME="SideOrientation"></A>
+<A NAME="DOC.2.14.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SideOrientation</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="AZIM"></A>
-<A NAME="DOC.2.11.18.1"></A>
+<A NAME="DOC.2.14.28.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AZIM</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ELEV"></A>
-<A NAME="DOC.2.11.18.2"></A>
+<A NAME="DOC.2.14.28.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ELEV</B></TT>
 <DL><DT><DD></DL><P></DL>
 
-<A NAME="Plane_computeBound"></A>
-<A NAME="DOC.2.11.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool Plane_computeBound(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.18">PlaneOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const </B></TT>
+<A NAME="Side_computeBound"></A>
+<A NAME="DOC.2.14.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool Side_computeBound(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.28">SideOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="Plane_drawImplementation"></A>
-<A NAME="DOC.2.11.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void Plane_drawImplementation(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.18">PlaneOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const </B></TT>
+<A NAME="Side_drawImplementation"></A>
+<A NAME="DOC.2.14.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void Side_drawImplementation(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.28">SideOrientation</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Spoke_computeBound"></A>
-<A NAME="DOC.2.11.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool Spoke_computeBound(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const </B></TT>
+<A NAME="DOC.2.14.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool Spoke_computeBound(osg::BoundingBox&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Spoke_drawImplementation"></A>
-<A NAME="DOC.2.11.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void Spoke_drawImplementation(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.11.17">BoundaryAngle</A>) const </B></TT>
+<A NAME="DOC.2.14.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void Spoke_drawImplementation(osg::State&amp;, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>, <!1><A HREF="SphereSegment.html#DOC.2.14.27">BoundaryAngle</A>) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_centre"></A>
-<A NAME="DOC.2.11.23"></A>
+<A NAME="DOC.2.14.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec3 _centre</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_radius"></A>
-<A NAME="DOC.2.11.24"></A>
+<A NAME="DOC.2.14.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _radius</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_azMin"></A>
-<A NAME="DOC.2.11.25"></A>
+<A NAME="DOC.2.14.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _azMin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_azMax"></A>
-<A NAME="DOC.2.11.26"></A>
+<A NAME="DOC.2.14.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float  _azMax</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_elevMin"></A>
-<A NAME="DOC.2.11.27"></A>
+<A NAME="DOC.2.14.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float   _elevMin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_elevMax"></A>
-<A NAME="DOC.2.11.28"></A>
+<A NAME="DOC.2.14.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float    _elevMax</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_density"></A>
-<A NAME="DOC.2.11.29"></A>
+<A NAME="DOC.2.14.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _density</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawMask"></A>
-<A NAME="DOC.2.11.30"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SphereSegment.html#DOC.2.11.1">DrawMask</A> _drawMask</B></TT>
+<A NAME="DOC.2.14.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="SphereSegment.html#DOC.2.14.1">DrawMask</A> _drawMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_surfaceColor"></A>
-<A NAME="DOC.2.11.31"></A>
+<A NAME="DOC.2.14.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _surfaceColor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_spokeColor"></A>
-<A NAME="DOC.2.11.32"></A>
+<A NAME="DOC.2.14.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _spokeColor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_edgeLineColor"></A>
-<A NAME="DOC.2.11.33"></A>
+<A NAME="DOC.2.14.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _edgeLineColor</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_planeColor"></A>
-<A NAME="DOC.2.11.34"></A>
+<A NAME="DOC.2.14.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _planeColor</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="checkTransparency"></A>
-<A NAME="DOC.2.11.35"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void checkTransparency()</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>
 
-<DL><DT><DT><B>Friends:</B><DD>  class Surface<BR>  class EdgeLine<BR>  class Plane<BR>  class Spoke<BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<DL><DT><DT><B>Friends:</B><DD>  class Surface<BR>  class EdgeLine<BR>  class Side<BR>  class Spoke<BR><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
 <BR>
 This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
 </BODY>

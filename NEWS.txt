@@ -3,12 +3,31 @@ OSG News (most significant items from ChangeLog)
 
 OpenSceneGraph-0.9.6
 
-    >>> osgFX Special Effects nodekit, Improved build support, thread safety and robustness.
+    >>> osgFX Special Effects nodekit, support for double Matrix traversals, 
+    >>> improved build support, thread safety and robustness.
     
     The new osgFX nodekit, written by Marco Jez, adds a set of decorator 
-    nodes that add can be convienantly added above subgraphs in your scene 
+    nodes that add can be conveniently added above subgraphs in your scene 
     to add special a range of special rendering effects.  Effects include AnisotopicLight, Scribe, Specular Highlights
     and Cartoon rendering.
+    
+    Support for double Matrices has been added with the new Matrixd class,
+    and complimented by the a Matrixf class.  The original Matrix class is
+    now a typedef which can be set to either Matrixf (the default) or
+    Matrixd,  When the Matrix typedef is set to Matrixd and the OSG and
+    dependent apps are recompiled all internal operations such a cull traversals 
+    will now be double with double matrices which much improved numerical
+    precision, making it ideal for datasets where a large values are contained
+    with transforms in the scene graph (such as with whole earth databases), 
+    and when a transforms are nested which creates requires concatenation of 
+    a number of matrices to get the final model view matrices.  
+    
+    The osgGA::MatrixManipulators (which are used to control the camera 
+    position) and osgProducer/OpenProducer have been moved across to using
+    exclusively double Matrices.  This has been done to improve numerical
+    precision when computing camera positions, whilst having little impact
+    on performance since camera operations are only done a small number of
+    times per frame.
     
     Work has been on OpenThreads and OpenProducer, in particular to improve 
     thread safety and robustness on the Win32 platform.  Reported crashes 
@@ -17,7 +36,18 @@ OpenSceneGraph-0.9.6
     
     Threading problems which caused crashes in recent updates of the Terrapage
     loader have also been fixed, and additional internal changes have been made
-    to improve the Terrapage loader's abilty to hit constant frame rates.
+    to improve the Terrapage loader's ability to hit constant frame rates.
+    
+    A new .iv/.wrl loader plugin, written by Vivek Rajan, at Magic Earth,
+    has been added to the distribution which uses with OpenInventor or Coin 
+    to load model, converting them into OSG equivalents.  Coin has support 
+    for VRML97 models, so can be used to import such models into the OSG.  
+    Since the new plugin is dependent on OpenInventor or Coin the compilation 
+    is optional, but off by default. To compile this plugin under Unix, set 
+    the environmental variable USE_INVENTOR or USE_COIN and recompile.  
+    Windows .dsp project file does to current exist, but should be 
+    possible to add this.
+    
 
 23rd July 2003 - OpenSceneGraph-0.9.5
 

@@ -86,32 +86,38 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.33">setFusionDistance</A></B>( osgUtil::SceneView::FusionDistanceMode mode, float value=1.0f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.35">setRealizeCallback</A></B>( <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* cb)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.34">setDatabasePager</A></B>( osgDB::DatabasePager* pager)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osgDB::DatabasePager* <B><A HREF="#DOC.2.3.35">getDatabasePager</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osgDB::DatabasePager* <B><A HREF="#DOC.2.3.36">getDatabasePager</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.38">setRealizeCallback</A></B>( <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* cb)
 <DD><I>Set the realize callback to use when once the render surfaces are realized</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RealizeCallback.html">RealizeCallback</A>* <B><A HREF="#DOC.2.3.36">getRealizeCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="RealizeCallback.html">RealizeCallback</A>* <B><A HREF="#DOC.2.3.39">getRealizeCallback</A></B>()
 <DD><I>Get the realize callback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* <B><A HREF="#DOC.2.3.37">getRealizeCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* <B><A HREF="#DOC.2.3.40">getRealizeCallback</A></B>() const 
 <DD><I>Get the const realize callback</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.38">advance</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.41">advance</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.3.39">realize</A></B>(ThreadingModel thread_model )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.3.42">realize</A></B>(ThreadingModel thread_model )
 <DD><I>Set the threading model and then call realize()</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.3.40">realize</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.3.43">realize</A></B>()
 <DD><I>Realize the render surfaces (OpenGL graphics) and various threads, and call any realize callbacks</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.41">setView</A></B>(const osg::Matrix&amp; matrix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.44">setView</A></B>(const osg::Matrixd&amp; matrix)
 <DD><I>Set the model view matrix of the camera group, by individually set all the camera groups's camera</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Matrix <B><A HREF="#DOC.2.3.42">getViewMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrixd <B><A HREF="#DOC.2.3.45">getViewMatrix</A></B>() const 
 <DD><I>Get the model view martrix of the camera group, taking its value for camera 0</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.43">sync</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.46">sync</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.44">frame</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.3.47">frame</A></B>()
 <DD><I>Dispatch the cull and draw for each of the Camera's for this frame</I>
 </DL></P>
 
@@ -125,46 +131,46 @@ class  OSGPRODUCER_EXPORT <B><A HREF="RealizeCallback.html">RealizeCallback</A><
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ApplicationUsage* <B><A HREF="#DOC.2.3.46">_applicationUsage</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ApplicationUsage* <B><A HREF="#DOC.2.3.49">_applicationUsage</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.3.47">_scene_data</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Node&gt;  <B><A HREF="#DOC.2.3.50">_scene_data</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Group&gt;  <B><A HREF="#DOC.2.3.48">_scene_decorator</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Group&gt;  <B><A HREF="#DOC.2.3.51">_scene_decorator</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.3.49">_global_stateset</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::StateSet&gt;  <B><A HREF="#DOC.2.3.52">_global_stateset</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.3.50">_background_color</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Vec4 <B><A HREF="#DOC.2.3.53">_background_color</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.51">_LODScale</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.54">_LODScale</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osgUtil::SceneView::FusionDistanceMode <B><A HREF="#DOC.2.3.52">_fusionDistanceMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osgUtil::SceneView::FusionDistanceMode <B><A HREF="#DOC.2.3.55">_fusionDistanceMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.53">_fusionDistanceValue</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.3.56">_fusionDistanceValue</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="OsgCameraGroup.html#DOC.2.3.9">SceneHandlerList</A> <B><A HREF="#DOC.2.3.54">_shvec</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="OsgCameraGroup.html#DOC.2.3.9">SceneHandlerList</A> <B><A HREF="#DOC.2.3.57">_shvec</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RealizeCallback.html">RealizeCallback</A>&gt;  <B><A HREF="#DOC.2.3.55">_realizeCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="RealizeCallback.html">RealizeCallback</A>&gt;  <B><A HREF="#DOC.2.3.58">_realizeCallback</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.2.3.56">_ds</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::DisplaySettings&gt;  <B><A HREF="#DOC.2.3.59">_ds</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.57">_initialized</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.3.60">_initialized</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.3.58">_frameNumber</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.3.61">_frameNumber</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer <B><A HREF="#DOC.2.3.59">_timer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer <B><A HREF="#DOC.2.3.62">_timer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.2.3.60">_start_tick</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.2.3.63">_start_tick</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.2.3.61">_frameStamp</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.2.3.64">_frameStamp</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osgDB::DatabasePager&gt;  <B><A HREF="#DOC.2.3.62">_databasePager</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osgDB::DatabasePager&gt;  <B><A HREF="#DOC.2.3.65">_databasePager</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.45">setUpSceneViewsWithData</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.48">setUpSceneViewsWithData</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.63">_init</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.3.66">_init</A></B>()
 </DL></P>
 
 </DL>
@@ -306,130 +312,142 @@ class  OSGPRODUCER_EXPORT <B><A HREF="RealizeCallback.html">RealizeCallback</A><
 <A NAME="DOC.2.3.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFusionDistance( osgUtil::SceneView::FusionDistanceMode mode, float value=1.0f)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="setRealizeCallback"></A>
+<A NAME="setDatabasePager"></A>
+<A NAME="DOC.2.3.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDatabasePager( osgDB::DatabasePager* pager)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDatabasePager"></A>
 <A NAME="DOC.2.3.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osgDB::DatabasePager* getDatabasePager()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDatabasePager"></A>
+<A NAME="DOC.2.3.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osgDB::DatabasePager* getDatabasePager() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRealizeCallback"></A>
+<A NAME="DOC.2.3.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRealizeCallback( <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* cb)</B></TT>
 <DD>Set the realize callback to use when once the render surfaces are realized
 <DL><DT><DD></DL><P>
 <A NAME="getRealizeCallback"></A>
-<A NAME="DOC.2.3.36"></A>
+<A NAME="DOC.2.3.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="RealizeCallback.html">RealizeCallback</A>* getRealizeCallback()</B></TT>
 <DD>Get the realize callback
 <DL><DT><DD></DL><P>
 <A NAME="getRealizeCallback"></A>
-<A NAME="DOC.2.3.37"></A>
+<A NAME="DOC.2.3.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="RealizeCallback.html">RealizeCallback</A>* getRealizeCallback() const </B></TT>
 <DD>Get the const realize callback
 <DL><DT><DD></DL><P>
 <A NAME="advance"></A>
-<A NAME="DOC.2.3.38"></A>
+<A NAME="DOC.2.3.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void advance()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="realize"></A>
-<A NAME="DOC.2.3.39"></A>
+<A NAME="DOC.2.3.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool realize(ThreadingModel thread_model )</B></TT>
 <DD>Set the threading model and then call realize()
 <DL><DT><DD></DL><P>
 <A NAME="realize"></A>
-<A NAME="DOC.2.3.40"></A>
+<A NAME="DOC.2.3.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool realize()</B></TT>
 <DD>Realize the render surfaces (OpenGL graphics) and various threads, and call any realize callbacks
 <DL><DT><DD></DL><P>
 <A NAME="setView"></A>
-<A NAME="DOC.2.3.41"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setView(const osg::Matrix&amp; matrix)</B></TT>
+<A NAME="DOC.2.3.44"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setView(const osg::Matrixd&amp; matrix)</B></TT>
 <DD>Set the model view matrix of the camera group,
 by individually set all the camera groups's camera
 <DL><DT><DD></DL><P>
 <A NAME="getViewMatrix"></A>
-<A NAME="DOC.2.3.42"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::Matrix getViewMatrix() const </B></TT>
+<A NAME="DOC.2.3.45"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrixd getViewMatrix() const </B></TT>
 <DD>Get the model view martrix of the camera group,
 taking its value for camera 0
 <DL><DT><DD></DL><P>
 <A NAME="sync"></A>
-<A NAME="DOC.2.3.43"></A>
+<A NAME="DOC.2.3.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void sync()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="frame"></A>
-<A NAME="DOC.2.3.44"></A>
+<A NAME="DOC.2.3.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void frame()</B></TT>
 <DD>Dispatch the cull and draw for each of the Camera's for this frame
 <DL><DT><DD></DL><P>
 <A NAME="setUpSceneViewsWithData"></A>
-<A NAME="DOC.2.3.45"></A>
+<A NAME="DOC.2.3.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setUpSceneViewsWithData()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_applicationUsage"></A>
-<A NAME="DOC.2.3.46"></A>
+<A NAME="DOC.2.3.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ApplicationUsage* _applicationUsage</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_scene_data"></A>
-<A NAME="DOC.2.3.47"></A>
+<A NAME="DOC.2.3.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _scene_data</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_scene_decorator"></A>
-<A NAME="DOC.2.3.48"></A>
+<A NAME="DOC.2.3.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Group&gt;  _scene_decorator</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_global_stateset"></A>
-<A NAME="DOC.2.3.49"></A>
+<A NAME="DOC.2.3.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::StateSet&gt;  _global_stateset</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_background_color"></A>
-<A NAME="DOC.2.3.50"></A>
+<A NAME="DOC.2.3.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Vec4 _background_color</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_LODScale"></A>
-<A NAME="DOC.2.3.51"></A>
+<A NAME="DOC.2.3.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _LODScale</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fusionDistanceMode"></A>
-<A NAME="DOC.2.3.52"></A>
+<A NAME="DOC.2.3.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osgUtil::SceneView::FusionDistanceMode _fusionDistanceMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fusionDistanceValue"></A>
-<A NAME="DOC.2.3.53"></A>
+<A NAME="DOC.2.3.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _fusionDistanceValue</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_shvec"></A>
-<A NAME="DOC.2.3.54"></A>
+<A NAME="DOC.2.3.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="OsgCameraGroup.html#DOC.2.3.9">SceneHandlerList</A> _shvec</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_realizeCallback"></A>
-<A NAME="DOC.2.3.55"></A>
+<A NAME="DOC.2.3.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="RealizeCallback.html">RealizeCallback</A>&gt;  _realizeCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ds"></A>
-<A NAME="DOC.2.3.56"></A>
+<A NAME="DOC.2.3.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::DisplaySettings&gt;  _ds</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_initialized"></A>
-<A NAME="DOC.2.3.57"></A>
+<A NAME="DOC.2.3.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _initialized</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameNumber"></A>
-<A NAME="DOC.2.3.58"></A>
+<A NAME="DOC.2.3.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _frameNumber</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_timer"></A>
-<A NAME="DOC.2.3.59"></A>
+<A NAME="DOC.2.3.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer _timer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_start_tick"></A>
-<A NAME="DOC.2.3.60"></A>
+<A NAME="DOC.2.3.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t _start_tick</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_frameStamp"></A>
-<A NAME="DOC.2.3.61"></A>
+<A NAME="DOC.2.3.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::FrameStamp&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_databasePager"></A>
-<A NAME="DOC.2.3.62"></A>
+<A NAME="DOC.2.3.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgDB::DatabasePager&gt;  _databasePager</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_init"></A>
-<A NAME="DOC.2.3.63"></A>
+<A NAME="DOC.2.3.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void _init()</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

@@ -20,7 +20,7 @@
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 #include <osg/CollectOccludersVisitor>
-
+#include <osg/CullSettings>
 
 #include <osgUtil/CullVisitor>
 
@@ -31,7 +31,7 @@ namespace osgUtil {
  * camera (modelview+projection matrices), global state, lights and the scene itself.  Provides
  * methods for setting up the view and rendering it.
 */
-class OSGUTIL_EXPORT SceneView : public osg::Referenced
+class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSettings
 {
     public:
 
@@ -211,17 +211,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
 
 
-        /** Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode */
-        void setDrawBufferValue( GLenum drawBufferValue )
-        {
-            _drawBufferValue = drawBufferValue;
-        }
-
-        /** Get the draw buffer value used at the start of each frame draw. */
-        GLenum getDrawBufferValue() const
-        {
-            return _drawBufferValue;
-        }
 
         
         void setInitVisitor(osg::NodeVisitor* av) { _initVisitor = av; }
@@ -277,39 +266,18 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         const osgUtil::RenderStage* getRenderStageRight() const { return _renderStageRight.get(); }
 
 
-        void setCullMask(const osg::Node::NodeMask nm) { _cullMask = nm; }
-        osg::Node::NodeMask getCullMask() const { return _cullMask; }
+        /** Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode */
+        void setDrawBufferValue( GLenum drawBufferValue )
+        {
+            _drawBufferValue = drawBufferValue;
+        }
 
-        void setCullMaskLeft(const osg::Node::NodeMask nm) { _cullMaskLeft = nm; }
-        osg::Node::NodeMask getCullMaskLeft() const { return _cullMaskLeft; }
+        /** Get the draw buffer value used at the start of each frame draw. */
+        GLenum getDrawBufferValue() const
+        {
+            return _drawBufferValue;
+        }
 
-        void setCullMaskRight(const osg::Node::NodeMask nm) { _cullMaskRight = nm; }
-        osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
-
-
-        /** Set the LOD bias for the CullVisitor to use.*/
-        void setLODScale(float bias) { _LODScale = bias; }
-        
-        /** Get the LOD bias.*/
-        float getLODScale() const { return _LODScale; }
-
-        /** Set the Small Feature Culling Pixel Size.*/
-        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
-
-        /** Get the Small Feature Culling Pixel Size.*/
-        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
-
-        /** Set the culling mode for the CullVisitor to use.*/
-        void setCullingMode(osg::CullStack::CullingMode mode) { _cullingMode = mode; }
-        
-        /** Returns the current CullingMode.*/
-        osg::CullStack::CullingMode getCullingMode() const { return _cullingMode; }
-
-        /** Set the ComputeNearFarMode for the CullVisitor to use.*/
-        void setComputeNearFarMode(CullVisitor::ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
-        
-        /** Get the ComputeNearFarMode.*/
-        CullVisitor::ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
 
         /** FusionDistanceMode is used only when working in stereo.*/
         enum FusionDistanceMode
@@ -340,6 +308,19 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** get whether the draw method should call renderer->prioritizeTexture.*/
         bool getPrioritizeTextures() const { return _prioritizeTextures; }
 
+        /** callback for overidding the default method for compute the offset projection and view matrices.*/
+        struct ComputeStereoMatricesCallback : public osg::Referenced
+        {
+            virtual osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection) const = 0;
+            virtual osg::Matrixd computeLeftEyeView(const osg::Matrixd& view) const = 0;
+
+            virtual osg::Matrixd computeRightEyeProjection(const osg::Matrixd& projection) const = 0;
+            virtual osg::Matrixd computeRightEyeView(const osg::Matrixd& view) const = 0;
+        };
+        
+        void setComputeStereoMatricesCallback(ComputeStereoMatricesCallback* callback) { _computeStereoMatricesCallback=callback; }
+        ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() { return _computeStereoMatricesCallback.get(); }
+        const ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() const { return _computeStereoMatricesCallback.get(); }
 
         /** Calculate, via glUnProject, the object coordinates of a window point.
             Note, current implementation requires that SceneView::draw() has been previously called
@@ -377,19 +358,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
 
 
-        /** callback for overidding the default method for compute the offset projection and view matrices.*/
-        struct ComputeStereoMatricesCallback : public osg::Referenced
-        {
-            virtual osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection) const = 0;
-            virtual osg::Matrixd computeLeftEyeView(const osg::Matrixd& view) const = 0;
-
-            virtual osg::Matrixd computeRightEyeProjection(const osg::Matrixd& projection) const = 0;
-            virtual osg::Matrixd computeRightEyeView(const osg::Matrixd& view) const = 0;
-        };
-        
-        void setComputeStereoMatricesCallback(ComputeStereoMatricesCallback* callback) { _computeStereoMatricesCallback=callback; }
-        ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() { return _computeStereoMatricesCallback.get(); }
-        const ComputeStereoMatricesCallback* getComputeStereoMatricesCallback() const { return _computeStereoMatricesCallback.get(); }
 
         inline osg::Matrixd computeLeftEyeProjection(const osg::Matrixd& projection)  const
         {
@@ -454,31 +422,25 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
 
         void clearArea(int x,int y,int width,int height,const osg::Vec4& color);
 
-        osg::ref_ptr<osg::Node>                     _sceneData;
-        osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::StateSet>                 _localStateSet;
-        osg::ref_ptr<osg::Light>                    _light;
+        osg::ref_ptr<osg::State>                    _state;
+        
         osg::Matrixd                                _projectionMatrix;
         osg::Matrixd                                _viewMatrix;
-        osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
-        osg::ref_ptr<osg::State>                    _state;
         
         bool                                        _initCalled;
         osg::ref_ptr<osg::NodeVisitor>              _initVisitor;
         osg::ref_ptr<osg::NodeVisitor>              _updateVisitor;
-        osg::Node::NodeMask                         _cullMask;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitor;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraph;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
 
         osg::ref_ptr<ComputeStereoMatricesCallback> _computeStereoMatricesCallback;
 
-        osg::Node::NodeMask                          _cullMaskLeft;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphLeft;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageLeft;
 
-        osg::Node::NodeMask                          _cullMaskRight;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorRight;
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
@@ -486,14 +448,15 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::CollectOccludersVisitor>  _collectOccludersVisistor;
         
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
+        
 
-
+        osg::ref_ptr<osg::Node>                     _sceneData;
+        osg::ref_ptr<osg::StateSet>                 _globalStateSet;
+        osg::ref_ptr<osg::Light>                    _light;
+        osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
+        
         osg::Vec4                                   _clearColor;
 
-        CullVisitor::ComputeNearFarMode             _computeNearFar;
-        osg::CullStack::CullingMode                 _cullingMode;
-        float                                       _LODScale;
-        float                                       _smallFeatureCullingPixelSize;
 
         FusionDistanceMode                          _fusionDistanceMode;
         float                                       _fusionDistanceValue;

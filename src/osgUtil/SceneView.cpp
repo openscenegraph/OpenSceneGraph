@@ -36,12 +36,6 @@ SceneView::SceneView(DisplaySettings* ds)
 
     _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
 
-    _computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
-    //_computeNearFar = CullVisitor::COMPUTE_NEAR_FAR_USING_PRIMITIVES;
-
-    _cullingMode = osg::CullStack::DEFAULT_CULLING;
-    _LODScale = 1.0f;
-    _smallFeatureCullingPixelSize = 3.0f;
 
     _fusionDistanceMode = PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
@@ -54,9 +48,6 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _initCalled = false;
 
-    _cullMask = 0xffffffff;
-    _cullMaskLeft = 0xffffffff;
-    _cullMaskRight = 0xffffffff;
     
     _drawBufferValue = GL_BACK;
 
@@ -71,6 +62,8 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults()
 {
+    CullSettings::setDefaults();
+
     _projectionMatrix.makePerspective(50.0f,1.4f,1.0f,10000.0f);
     _viewMatrix.makeIdentity();
 
@@ -134,10 +127,6 @@ void SceneView::setDefaults()
     _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
     _clearColor.set(0.2f, 0.2f, 0.4f, 1.0f);
-
-    _cullMask = 0xffffffff;
-    _cullMaskLeft = 0xffffffff;
-    _cullMaskRight = 0xffffffff;
 }
 
 void SceneView::init()
@@ -485,6 +474,8 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         
         if (!_collectOccludersVisistor) _collectOccludersVisistor = new osg::CollectOccludersVisitor;
         
+        _collectOccludersVisistor->setCullSettings(*this);
+        
         _collectOccludersVisistor->reset();
         
         _collectOccludersVisistor->setFrameStamp(_frameStamp.get());
@@ -528,10 +519,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
          cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
 
-    cullVisitor->setCullingMode(_cullingMode);
-    cullVisitor->setComputeNearFarMode(_computeNearFar);
-    cullVisitor->setLODScale(_LODScale);
-    cullVisitor->setSmallFeatureCullingPixelSize(_smallFeatureCullingPixelSize);
+    cullVisitor->setCullSettings(*this);
 
     cullVisitor->setClearNode(NULL); // reset earth sky on each frame.
     

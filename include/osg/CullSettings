@@ -1,0 +1,181 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_CULLSETTINGS
+#define OSG_CULLSETTINGS 1
+
+#include <osg/Matrix>
+#include <osg/ClearNode>
+
+namespace osg {
+
+class SG_EXPORT CullSettings
+{
+    public:
+
+        CullSettings() { setDefaults(); }
+
+        CullSettings(const CullSettings& cs) { setCullSettings(cs); }
+        ~CullSettings() {}
+        
+        CullSettings& operator = (const CullSettings& settings)
+        {
+            if (this==&settings) return *this;
+            setCullSettings(settings);
+            return *this;
+        }
+
+        void setDefaults();
+        
+        void setCullSettings(const CullSettings& settings);
+
+        /** Switch the creation of Impostors on or off.
+          * Setting active to false forces the CullVisitor to use the Impostor
+          * LOD children for rendering. Setting active to true forces the
+          * CullVisitor to create the appropriate pre-rendering stages which
+          * render to the ImpostorSprite's texture.*/
+        void setImpostorsActive(bool active) { _impostorActive = active; }
+
+        /** Get whether impostors are active or not. */
+        bool getImpostorsActive() const { return _impostorActive; }
+
+        /** Set the impostor error threshold.
+          * Used in calculation of whether impostors remain valid.*/
+        void setImpostorPixelErrorThreshold(float numPixels) { _impostorPixelErrorThreshold=numPixels; }
+
+        /** Get the impostor error threshold.*/
+        float getImpostorPixelErrorThreshold() const { return _impostorPixelErrorThreshold; }
+
+        /** Set whether ImpostorSprite's should be placed in a depth sorted bin for rendering.*/
+        void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
+
+        /** Get whether ImpostorSprite's are depth sorted bin for rendering.*/
+        bool setDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
+
+        /** Set the number of frames that an ImpostorSprite's is kept whilst not being beyond,
+          * before being recycled.*/
+        void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
+
+        /** Get the number of frames that an ImpostorSprite's is kept whilst not being beyond,
+          * before being recycled.*/
+        int getNumberOfFrameToKeepImpostorSprites() const { return _numFramesToKeepImpostorSprites; }
+
+        enum ComputeNearFarMode
+        {
+            DO_NOT_COMPUTE_NEAR_FAR = 0,
+            COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES,
+            COMPUTE_NEAR_FAR_USING_PRIMITIVES
+        };
+
+        void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
+        ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
+
+        void setNearFarRatio(double ratio) { _nearFarRatio = ratio; }
+        double getNearFarRatio() const { return _nearFarRatio; }
+
+        enum CullingModeValues
+        {
+            NO_CULLING                  = 0x0,
+            VIEW_FRUSTUM_SIDES_CULLING  = 0x1,
+            NEAR_PLANE_CULLING          = 0x2,
+            FAR_PLANE_CULLING           = 0x4,
+            VIEW_FRUSTUM_CULLING        = VIEW_FRUSTUM_SIDES_CULLING|
+                                          NEAR_PLANE_CULLING|
+                                          FAR_PLANE_CULLING,
+            SMALL_FEATURE_CULLING       = 0x8,
+            SHADOW_OCCLUSION_CULLING    = 0x10,
+            DEFAULT_CULLING             = VIEW_FRUSTUM_SIDES_CULLING|
+                                          SMALL_FEATURE_CULLING|
+                                          SHADOW_OCCLUSION_CULLING,
+            ENABLE_ALL_CULLING          = VIEW_FRUSTUM_CULLING|
+                                          SMALL_FEATURE_CULLING|
+                                          SHADOW_OCCLUSION_CULLING
+        };
+        
+        typedef unsigned int CullingMode;
+
+        /** Set the culling mode for the CullVisitor to use.*/
+        void setCullingMode(CullingMode mode) { _cullingMode = mode; }
+        
+        /** Returns the current CullingMode.*/
+        CullingMode getCullingMode() const { return _cullingMode; }
+
+
+        void setCullMask(const osg::Node::NodeMask nm) { _cullMask = nm; }
+        osg::Node::NodeMask getCullMask() const { return _cullMask; }
+
+        void setCullMaskLeft(const osg::Node::NodeMask nm) { _cullMaskLeft = nm; }
+        osg::Node::NodeMask getCullMaskLeft() const { return _cullMaskLeft; }
+
+        void setCullMaskRight(const osg::Node::NodeMask nm) { _cullMaskRight = nm; }
+        osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
+
+        /** Set the LOD bias for the CullVisitor to use.*/
+        void setLODScale(float bias) { _LODScale = bias; }
+        
+        /** Get the LOD bias.*/
+        float getLODScale() const { return _LODScale; }
+
+        /** Set the Small Feature Culling Pixel Size.*/
+        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
+
+        /** Get the Small Feature Culling Pixel Size.*/
+        float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
+
+
+
+        /** Callback for overriding the CullVisitor's default clamping of the projection matrix to computed near and far values.
+          * Note, both Matrixf and Matrixd versions of clampProjectionMatrixImplementation must be implemented as the CullVisitor
+          * can target either Matrix data type, configured at compile time.*/
+        struct ClampProjectionMatrixCallback : public osg::Referenced
+        {
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const = 0;
+            virtual bool clampProjectionMatrixImplementation(osg::Matrixd& projection, double znear, double zfar) const = 0;
+        };
+        
+        /** set the ClampProjectionMatrixCallback.*/
+        void setClampProjectionMatrixCallback(ClampProjectionMatrixCallback* cpmc) { _clampProjectionMatrixCallback = cpmc; }
+        /** get the non const ClampProjectionMatrixCallback.*/
+        ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() { return _clampProjectionMatrixCallback.get(); }
+        /** get the const ClampProjectionMatrixCallback.*/
+        const ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() const { return _clampProjectionMatrixCallback.get(); }
+
+
+
+
+    protected:
+
+
+        ComputeNearFarMode                          _computeNearFar;
+        CullingMode                                 _cullingMode;
+        float                                       _LODScale;
+        float                                       _smallFeatureCullingPixelSize;
+
+        ref_ptr<ClampProjectionMatrixCallback>      _clampProjectionMatrixCallback;
+        double                                      _nearFarRatio;
+        bool                                        _impostorActive;
+        bool                                        _depthSortImpostorSprites;
+        float                                       _impostorPixelErrorThreshold;
+        int                                         _numFramesToKeepImpostorSprites;	
+
+        Node::NodeMask                              _cullMask;
+        Node::NodeMask                              _cullMaskLeft;
+        Node::NodeMask                              _cullMaskRight;
+ 
+
+};
+
+
+}
+
+#endif

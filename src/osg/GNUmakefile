@@ -25,6 +25,7 @@ CXXFILES =\
 	CullFace.cpp\
 	CullingSet.cpp\
 	CullStack.cpp\
+	CullSettings.cpp\
 	Depth.cpp\
 	DisplaySettings.cpp\
 	Drawable.cpp\

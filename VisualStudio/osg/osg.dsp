@@ -191,6 +191,10 @@ SOURCE=..\..\src\osg\CullStack.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\CullSettings.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Depth.cpp
 # End Source File
 # Begin Source File
@@ -572,6 +576,10 @@ SOURCE=..\..\Include\Osg\CullingSet
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\CullStack
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\CullSettings
 # End Source File
 # Begin Source File
 

@@ -95,14 +95,8 @@ CullVisitor::CullVisitor():
     NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
     _currentRenderGraph(NULL),
     _currentRenderBin(NULL),
-    _computeNearFar(COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES),
-    _nearFarRatio(0.0005f),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
-    _impostorActive(true),
-    _depthSortImpostorSprites(false),
-    _impostorPixelErrorThreshold(4.0f),
-    _numFramesToKeepImpostorSprites(10),
     _currentReuseRenderLeafIndex(0)
 {
     _impostorSpriteManager = new ImpostorSpriteManager;

@@ -93,12 +93,8 @@ endif
   INSTBINCMD        = cp
   INSTDEVCMD        = cp
 
-  INST_DEMOS    = /opt/OpenSceneGraph/bin
-  INST_LIBS     = /opt/OpenSceneGrpah/lib$(ARCH) /usr/lib
-  INST_PLUGINS  = /opt/OpenSceneGraph/lib/osgPlugins
-  INST_INCLUDE  = /opt/OpenSceneGraph/include 
-  INST_DEMO_SRC = /opt/OpenSceneGraph/src/demos
-  INST_DATA     = /opt/OpenSceneGraph/data
+  INST_SYS_PREFIX   = /opt/OpenSceneGraph
+  INST_SHARE_PREFIX = /opt/OpenSceneGraph
 
 endif
 
@@ -130,8 +126,7 @@ endif
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm
 
-#  INSTLINKBIN       = install -t -m 755
-#  INSTLINKDEV       = install -t -m 644
+  
 
 endif
 
@@ -176,12 +171,9 @@ ifeq ($(OS),FreeBSD)
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
 
-  INST_DEMOS    = /usr/X11R6/bin
-  INST_LIBS     = /usr/X11R6/lib
-  INST_PLUGINS  = /usr/X11R6/lib/osgPlugins
-  INST_INCLUDE  = /usr/X11R6/include
-  INST_DEMO_SRC = /usr/share/OpenSceneGraph/src/demos
-  INST_DATA     = /usr/share/OpenSceneGraph/data
+  INST_SYS_PREFIX   = /opt/X11R6
+  INST_SHARE_PREFIX = /usr/share/OpenSceneGraph
+
 endif
 
 #### Mac OSX specific definitions

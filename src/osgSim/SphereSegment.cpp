@@ -293,6 +293,28 @@ void SphereSegment::getArea(osg::Vec3& vec, float& azRange, float& elevRange) co
     vec.set(cos(elev)*sin(az), cos(elev)*cos(az), sin(elev));
 }
 
+void SphereSegment::setArea(float azMin, float azMax,
+    float elevMin, float elevMax)
+{
+    _azMin=azMin;
+    _azMax=azMax;
+    _elevMin=elevMin;
+    _elevMax=elevMax;
+
+    dirtyAllDrawableDisplayLists();
+    dirtyAllDrawableBounds();
+    dirtyBound();
+}
+
+void SphereSegment::getArea(float &azMin, float &azMax,
+    float &elevMin, float &elevMax) const
+{
+    azMin=_azMin;
+    azMax=_azMax;
+    elevMin=_elevMin;
+    elevMax=_elevMax;
+}
+
 void SphereSegment::setDensity(int density)
 {
     _density = density;

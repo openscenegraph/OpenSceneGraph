@@ -48,20 +48,20 @@ void Tesselator::tesselate(osg::Vec3* coords,int numIndices, int* indices,InputB
 {
     init();
     _coordVec.reserve(numIndices);
-	if (ibd==COUNTER_CLOCK_WISE)
-	{
+    if (ibd==COUNTER_CLOCK_WISE)
+    {
         for(int i=0;i<numIndices;++i)
         {
             _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
         }
     }
-	else
+    else
     {
-        for(int i=numIndices-1;i>=0;--i)
-        {
+    for(int i=numIndices-1;i>=0;--i)
+    {
             _coordVec.push_back(VertexIndexSet(this,coords[indices[i]],indices[i]));
         }
-	}
+    }
     do_it();
 }
 

@@ -95,6 +95,12 @@ class ref_ptr
 
         inline const T* get() const { return _ptr; }
 
+        /** take control over the object pointed to by ref_ptr, unreference but do not delete even if ref count goes to 0,
+          * return the pointer to the object.
+          * Note, do not use this unless you are 100% sure your code handles the deletion of the object correctly, and
+          * only use when absolutely required.*/
+        inline T* take() { T* tmp=_ptr; if (_ptr) _ptr->unref_nodelete(); _ptr=0; return tmp;}
+
     private:
         T* _ptr;
 };

@@ -13,7 +13,7 @@
 #include <osg/Math>
 
 // ----------------------------------------------------------------------
-// Global variables - this is basically the stuff which will be animated
+// Global variables - this is basically the stuff wh    ich will be animated
 // ----------------------------------------------------------------------
 
 
@@ -186,12 +186,12 @@ osg::Geode* createGeometryCube()
 
     // set up the primitives
     
-    cube->addPrimtive(new osg::DrawArray(osg::Primitive::POLYGON,0,4));
-    cube->addPrimtive(new osg::DrawArray(osg::Primitive::POLYGON,4,4));
-    cube->addPrimtive(new osg::DrawArray(osg::Primitive::POLYGON,8,4));
-    cube->addPrimtive(new osg::DrawArray(osg::Primitive::POLYGON,12,4));
-    cube->addPrimtive(new osg::DrawArray(osg::Primitive::POLYGON,16,4));
-    cube->addPrimtive(new osg::DrawArray(osg::Primitive::POLYGON,20,4));
+    cube->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,0,4));
+    cube->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,4,4));
+    cube->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,8,4));
+    cube->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,12,4));
+    cube->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,16,4));
+    cube->addPrimitive(new osg::DrawArrays(osg::Primitive::POLYGON,20,4));
     
 
     // set up coords.
@@ -244,7 +244,7 @@ osg::Geode* createGeometryCube()
     (*cubeNormals)[5].set(0.0f,-1.0f,0.0f);
     
     cube->setNormalArray( cubeNormals );    
-    cube->setNormalBinding( osg::Geometry::PER_PRIMITIVE );
+    cube->setNormalBinding( osg::Geometry::BIND_PER_PRIMITIVE );
 
     // ---------------------------------------
     // Set up a StateSet to make the cube red

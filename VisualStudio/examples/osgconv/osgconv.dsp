@@ -172,6 +172,22 @@ LINK32=link.exe
 
 
 
+SOURCE=..\..\..\examples\osgconv\GeoSet.cpp
+
+# End Source File
+
+# Begin Source File
+
+
+
+SOURCE=..\..\..\examples\osgconv\IO_GeoSet.cpp
+
+# End Source File
+
+# Begin Source File
+
+
+
 SOURCE=..\..\..\examples\osgconv\OrientationConverter.cpp
 
 # End Source File

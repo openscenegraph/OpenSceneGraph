@@ -97,20 +97,20 @@ bool DynGeoSet::setLists()
 {
     if ((_primLenList.size() > 0) && (_coordList.size() > 0))
     {
-        GeoSet::setPrimLengths(_primLenList.begin());
-        GeoSet::setCoords(_coordList.begin());
+        osg::GeoSet::setPrimLengths(_primLenList.begin());
+        osg::GeoSet::setCoords(_coordList.begin());
 
         if ((_normalList.size() > 0)
         &&  (getNormalBinding() != osg::GeoSet::BIND_OFF))
-            GeoSet::setNormals(_normalList.begin());
+            osg::GeoSet::setNormals(_normalList.begin());
 
         if ((_colorList.size() > 0)
         &&  (getColorBinding() != osg::GeoSet::BIND_OFF))
-            GeoSet::setColors(_colorList.begin());
+            osg::GeoSet::setColors(_colorList.begin());
 
         if ((_tcoordList.size() > 0)
         &&  (getTextureBinding() != osg::GeoSet::BIND_OFF))
-            GeoSet::setTextureCoords(_tcoordList.begin());
+            osg::GeoSet::setTextureCoords(_tcoordList.begin());
 
         return true;
     }

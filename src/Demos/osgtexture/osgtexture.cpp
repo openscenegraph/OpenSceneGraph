@@ -14,6 +14,7 @@
 #include <GL/glut.h>
 #include <osgGLUT/Viewer>
 
+
 //
 // A simple demo demonstrating different texturing modes, 
 // including using of texture extensions.
@@ -71,7 +72,7 @@ ImageList getImagesFromFiles(int argc,char **argv)
 
     if (imageList.size()==0)
     {
-        osg::notify(osg::WARN) << "No image data loaded."<<endl;
+        osg::notify(osg::WARN) << "No image data loaded."<<std::endl;
     }
 
     return imageList;
@@ -350,24 +351,24 @@ osg::Node* createModelFromImages(ImageList& imageList)
 
 void write_usage()
 {
-    osg::notify(osg::NOTICE)<<endl;
-    osg::notify(osg::NOTICE)<<"usage:"<<endl;
-    osg::notify(osg::NOTICE)<<"    osgtexture [options] image_file1 [image_infile2 ...]"<<endl;
-    osg::notify(osg::NOTICE)<<endl;
-    osg::notify(osg::NOTICE)<<"options:"<<endl;
-    osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<<endl;
-    osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<<endl;
-    osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<<endl;
-    osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<<endl;
-    osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<<endl;
-    osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<<endl;
-    osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<<endl;
-    osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<endl;
-    osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<endl;
-    osg::notify(osg::NOTICE)<<endl;
-    osg::notify(osg::NOTICE)<<"example:"<<endl;
-    osg::notify(osg::NOTICE)<<"    osgtexture lz.rgb"<<endl;
-    osg::notify(osg::NOTICE)<<endl;
+    osg::notify(osg::NOTICE)<<std::endl;
+    osg::notify(osg::NOTICE)<<"usage:"<<std::endl;
+    osg::notify(osg::NOTICE)<<"    osgtexture [options] image_file1 [image_infile2 ...]"<<std::endl;
+    osg::notify(osg::NOTICE)<<std::endl;
+    osg::notify(osg::NOTICE)<<"options:"<<std::endl;
+    osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         Useful for loading reader/writers which can load"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         other file formats in addition to its extension."<<std::endl;
+    osg::notify(osg::NOTICE)<<"    -e extensionName   - load reader/wrter plugin for file extension"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         i.e. -e pfb"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         Useful short hand for specifying full library name as"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         done with -l above, as it automatically expands to the"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                         full library name appropriate for each platform."<<std::endl;
+    osg::notify(osg::NOTICE)<<std::endl;
+    osg::notify(osg::NOTICE)<<"example:"<<std::endl;
+    osg::notify(osg::NOTICE)<<"    osgtexture lz.rgb"<<std::endl;
+    osg::notify(osg::NOTICE)<<std::endl;
 }
 
 int main( int argc, char **argv )

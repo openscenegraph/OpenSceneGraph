@@ -54,13 +54,17 @@ static char *s_filePath = ":";
 #elif __sgi
 char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
-static const char *s_default_dso_path = "/usr/lib32/osgPlugins/";
+static const char *s_default_dso_path = "/usr/lib32/osgPlugins/:";
 static char *s_filePath = ".:";
 #else
 char *PathDelimitor = ":";
 static const char *s_default_file_path = ".:";
-static const char *s_default_dso_path = "/usr/lib/osgPlugins/";
+static const char *s_default_dso_path = "/usr/lib/osgPlugins/:";
 static char *s_filePath = ".:";
+#endif
+
+#if defined (WIN32)
+#define F_OK 4
 #endif
 
 static bool s_filePathInitialized = false;
@@ -108,27 +112,22 @@ const char* osgDB::getFilePath()
     return s_filePath;
 }
 
-
 char *osgDB::findFileInPath( const char *_file, const char * filePath )
 {
 #ifdef macintosh
     return (char *)_file;
 #else
 
-    #if defined (WIN32)
-        #define F_OK 4
-    #endif
 
 
     char pathbuff[1024];
     char *tptr, *tmppath;
     char *path = 0L;
 
-    notify(DEBUG_INFO) << "FindFileInPath() : trying ./" << _file << " ...\n";
+    notify(DEBUG_INFO) << "FindFileInPath() : trying " << _file << " ...\n";
     if( access( _file, F_OK ) == 0 ) 
     {
-        sprintf( pathbuff,"./%s", _file );
-        return (char *)strdup(pathbuff);
+        return strdup(_file);
     }
 
     tptr    = strdup( filePath );
@@ -148,9 +147,6 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
 
     if (path) notify( DEBUG_INFO ) << "FindFileInPath() : returning " << path << endl;
 	else notify( DEBUG_INFO ) << "FindFileInPath() : returning NULL" << endl;
-    #ifdef WIN32
-        #undef F_OK
-    #endif
 
     return path;
 #endif
@@ -198,6 +194,23 @@ Under Windows
 char *osgDB::findDSO( const char *name )
 {
 #ifndef macintosh
+
+    #ifdef __linux
+    if( access( name, F_OK ) == 0 ) 
+    {
+        if (name[0]!='/')
+        {
+            char pathbuff[1024];
+            sprintf( pathbuff,"./%s", name );
+            return (char *)strdup(pathbuff);
+        }
+        else
+        {
+            return (char *)strdup(_name);
+        }
+    }
+    #endif
+
     char path[1024];
     char *ptr;
 

@@ -89,6 +89,8 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
         
         osg::StateSet* stateset = new osg::StateSet;
 
+        bool isTransparent = false;
+
         // handle material colors
         {
             osg::Material* osg_material = new osg::Material;
@@ -98,6 +100,14 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK,material.diffuse);
             osg_material->setSpecular(osg::Material::FRONT_AND_BACK,material.specular);
             osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.shininess/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
+            
+            if (material.ambient[3]!=1.0 ||
+                material.diffuse[3]!=1.0 ||
+                material.specular[3]!=1.0)
+            {
+                osg::notify(osg::INFO)<<"Found transparent material"<<std::endl;
+                isTransparent = true;
+            }
         }
         
         // handle textures
@@ -127,9 +137,20 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                     texgen->setMode(osg::TexGen::SPHERE_MAP);
                     stateset->setTextureAttributeAndModes(0,texgen,osg::StateAttribute::ON);
                 }
+                
+                if  (!isTransparent && image->isImageTranslucent())
+                {
+                    osg::notify(osg::INFO)<<"Found transparent image"<<std::endl;
+                    isTransparent = true;
+                }
             }
         }
 
+        if (isTransparent)
+        {
+            stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
         
         materialToStateSetMap[material.name] = stateset;
         

@@ -36,8 +36,8 @@
 #include <osg/StateSet>
 #include <osg/Material>
 #include <osg/Texture>
-#include <osg/Transform>
-#include <osg/Transparency>
+#include <osg/MatrixTransform>
+#include <osg/BlendFunc>
 #include <osg/CullFace>
 #include <osg/FrontFace>
 #include <osg/PolygonMode>
@@ -107,7 +107,7 @@ ObjectCache::MaterialMap ObjectCache::materials;
 ObjectCache::TextureMap ObjectCache::textures;
 ObjectCache::NodeMap ObjectCache::nodos;
 
-static void makeTransform(MatrixTransform *matriz_active, osg::Transform *nodo) {
+static void makeTransform(MatrixTransform *matriz_active, osg::MatrixTransform *nodo) {
      // Original
      osg::Matrix m(matriz_active->getElem(0),matriz_active->getElem(1),matriz_active->getElem(2),matriz_active->getElem(3),
 		  matriz_active->getElem(4),matriz_active->getElem(5),matriz_active->getElem(6),matriz_active->getElem(7),
@@ -140,12 +140,14 @@ void OSGVisitor::applyCoordinate3(Coordinate3 *coord) {
     coord3_active=coord;
 }
 
-void OSGVisitor::applyMatrixTransform(MatrixTransform *tr) {
+void OSGVisitor::applyMatrixTransform(MatrixTransform *tr)
+{
     makeTransform(tr,parent);
 }
 
-void OSGVisitor::applySeparator(Separator *sep) {
-    osg::Transform *group=new osg::Transform();
+void OSGVisitor::applySeparator(Separator *sep)
+{
+    osg::MatrixTransform *group=new osg::MatrixTransform();
     if (root==0) {
 	root=group;
     }
@@ -228,7 +230,7 @@ void OSGVisitor::makeGeode(osg::Geode *geode, osg::Geometry *geometry, bool twoS
     } else {
 	//osg::notify(osg::INFO) <<  "Deactivating culling for this object" << std::endl;
 	state->setAttributeAndModes(cull,osg::StateAttribute::OFF);
-	osg::Transparency    *transp=new osg::Transparency();
+	osg::BlendFunc    *transp=new osg::BlendFunc();
 	transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	state->setAttribute(transp);
 	state->setMode(GL_BLEND,osg::StateAttribute::ON);

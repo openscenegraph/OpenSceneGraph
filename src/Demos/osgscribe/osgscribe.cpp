@@ -114,11 +114,11 @@ int main( int argc, char **argv )
     polyoffset->setUnits(-1.0f);
     osg::PolygonMode* polymode = new osg::PolygonMode;
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
-    stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE_ON);
-    stateset->setAttributeAndModes(polyoffset,osg::StateAttribute::OVERRIDE_ON);
-    stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE_ON);
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
-    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
+    stateset->setAttributeAndModes(material,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+    stateset->setAttributeAndModes(polyoffset,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+    stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+    stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
     
 //     osg::LineStipple* linestipple = new osg::LineStipple;
 //     linestipple->setFactor(1);

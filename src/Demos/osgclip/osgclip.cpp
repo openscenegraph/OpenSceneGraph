@@ -65,7 +65,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     //osg::Material* material = new osg::Material;
     osg::PolygonMode* polymode = new osg::PolygonMode;
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
-    stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE_ON);
+    stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
     
     osg::Group* wireframe_subgraph = osgNew osg::Group;
     wireframe_subgraph->setStateSet(stateset);

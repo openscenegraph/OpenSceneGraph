@@ -988,16 +988,16 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             if( backface )
                 globalStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
             else
-                globalStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
+                globalStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
 
             break;
 
         case 'l' :
             lighting = 1  - lighting ;
             if( lighting )
-                globalStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
+                globalStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
             else
-                globalStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
+                globalStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
             break;
 
         case 'L' :
@@ -1024,7 +1024,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // use blank texture to override all local texture in scene graph.
                 // thus causing them to all use the same texture attribute, hence
                 // preventing a state attribute change due to unused textures.
-                globalStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
+                globalStateSet->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
 //                static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture;
 //                globalStateSet->setTextureAttribute(0,blank_texture.get());
             }

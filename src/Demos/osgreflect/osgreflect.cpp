@@ -315,7 +315,7 @@ int main( int argc, char **argv )
 
         osg::StateSet* dstate = new osg::StateSet;
         dstate->setRenderBinDetails(4,"RenderBin");
-        dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
+        dstate->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
         dstate->setAttributeAndModes(stencil,osg::StateAttribute::ON);
         dstate->setAttributeAndModes(clipplane,osg::StateAttribute::ON);
 

@@ -141,7 +141,7 @@ bool GeoState_readLocalData(Object& obj, Input& fr)
     StateAttribute::GLModeValue mode;
     if (fr[0].matchWord("transparency") && StateSet_matchModeStr(fr[1].getStr(),mode))
     {
-        if (mode==StateAttribute::ON || mode==StateAttribute::OVERRIDE_ON)
+        if (mode&StateAttribute::ON)
         {
             statset.setRenderingHint(StateSet::TRANSPARENT_BIN);
         }
@@ -585,8 +585,8 @@ bool StateSet_matchModeStr(const char* str,StateAttribute::GLModeValue& mode)
     if (strcmp(str,"INHERIT")==0) mode = StateAttribute::INHERIT;
     else if (strcmp(str,"ON")==0) mode = StateAttribute::ON;
     else if (strcmp(str,"OFF")==0) mode = StateAttribute::OFF;
-    else if (strcmp(str,"OVERRIDE_ON")==0) mode = StateAttribute::OVERRIDE_ON;
-    else if (strcmp(str,"OVERRIDE_OFF")==0) mode = StateAttribute::OVERRIDE_OFF;
+    else if (strcmp(str,"OVERRIDE_ON")==0) mode = StateAttribute::OVERRIDE|StateAttribute::ON;
+    else if (strcmp(str,"OVERRIDE_OFF")==0) mode = StateAttribute::OVERRIDE|StateAttribute::OFF;
     else if (strcmp(str,"OVERRIDE|ON")==0) mode = StateAttribute::OVERRIDE|StateAttribute::ON;
     else if (strcmp(str,"OVERRIDE|OFF")==0) mode = StateAttribute::OVERRIDE|StateAttribute::OFF;
     else if (strcmp(str,"PROTECTED|ON")==0) mode = StateAttribute::PROTECTED|StateAttribute::ON;

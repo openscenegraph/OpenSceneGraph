@@ -15,9 +15,9 @@ void StateSetManipulator::setStateSet(StateSet *drawState)
 {
     _drawState=drawState;
     if(!_drawState.valid()) return;
-    _backface = (_drawState->getMode(GL_CULL_FACE)==osg::StateAttribute::ON);
-    _lighting =(_drawState->getMode(GL_LIGHTING)==osg::StateAttribute::ON);
-    _texture =(_drawState->getMode(GL_TEXTURE_2D)==osg::StateAttribute::ON);
+    _backface = (_drawState->getMode(GL_CULL_FACE)&osg::StateAttribute::ON);
+    _lighting =(_drawState->getMode(GL_LIGHTING)&osg::StateAttribute::ON);
+    _texture =(_drawState->getTextureMode(0,GL_TEXTURE_2D)&osg::StateAttribute::ON);
 }
 
 StateSet *StateSetManipulator::getStateSet()
@@ -41,7 +41,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
             case 'b' :
                 _backface = !_backface;
                 if( _backface ) _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
-                else _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
+                else _drawState->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
                 aa.requestRedraw();
                 return true;
                 break;
@@ -49,15 +49,15 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
             case 'l' :
                 _lighting = !_lighting ;
                 if( _lighting ) _drawState->setMode(GL_LIGHTING,osg::StateAttribute::ON);
-                else _drawState->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
+                else _drawState->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
                 aa.requestRedraw();
                 return true;
                 break;
 
             case 't' :
                 _texture = !_texture;
-                if (_texture) _drawState->setMode(GL_TEXTURE_2D,osg::StateAttribute::INHERIT);
-                else _drawState->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
+                if (_texture) _drawState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::INHERIT);
+                else _drawState->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
                 aa.requestRedraw();
                 return true;
                 break;

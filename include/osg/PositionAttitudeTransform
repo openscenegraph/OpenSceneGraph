@@ -53,7 +53,7 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         /** Callback which can be attached to a PositionAttitudeTransform
           * as an app callback to allow it to follow the path defined by a
           * AnimationPath.*/
-        class SG_EXPORT AnimationPathCallback : public NodeCallback
+        class SG_EXPORT AnimationPathCallback : public virtual NodeCallback
         {
             public:
             

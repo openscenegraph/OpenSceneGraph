@@ -199,12 +199,15 @@ class DrawVertexAttrib : public osg::Referenced, public osg::ConstValueVisitor
 {
 public:
 
-    DrawVertexAttrib(const Drawable::Extensions * extensions,unsigned int index,GLboolean normalized,const Array* attribcoords,const IndexArray* indices):    
-            _index(index),
+    DrawVertexAttrib(const Drawable::Extensions * extensions,unsigned int vertAttribIndex,GLboolean normalized,const Array* attribcoords,const IndexArray* indices):    
+            _vertAttribIndex(vertAttribIndex),
             _normalized(normalized),
             _extensions(extensions),
             _attribcoords(attribcoords),
-            _indices(indices) {;}
+            _indices(indices),
+            _index(0) {;}
+            
+    inline void applyAndIncrement() { operator()(_index++); }
 
     inline void operator () (unsigned int pos)
     {
@@ -214,41 +217,42 @@ public:
 
     virtual void apply(const GLshort& s) 
     {
-        _extensions->glVertexAttrib1s( _index, s );
+        _extensions->glVertexAttrib1s( _vertAttribIndex, s );
     }
     virtual void apply(const GLfloat& f) 
     {
-        _extensions->glVertexAttrib1f( _index, f );
+        _extensions->glVertexAttrib1f( _vertAttribIndex, f );
     }
     virtual void apply(const UByte4& v) 
     {
         if( _normalized )
         {
-            _extensions->glVertexAttrib4Nubv( _index, v.ptr() );
+            _extensions->glVertexAttrib4Nubv( _vertAttribIndex, v.ptr() );
         }
         else
         {
-            _extensions->glVertexAttrib4ubv( _index, v.ptr() );
+            _extensions->glVertexAttrib4ubv( _vertAttribIndex, v.ptr() );
         }
     }
     virtual void apply(const Vec2& v) 
     {
-        _extensions->glVertexAttrib2fv( _index, v.ptr() );
+        _extensions->glVertexAttrib2fv( _vertAttribIndex, v.ptr() );
     }
     virtual void apply(const Vec3& v) 
     {
-        _extensions->glVertexAttrib3fv( _index, v.ptr() );
+        _extensions->glVertexAttrib3fv( _vertAttribIndex, v.ptr() );
     }
     virtual void apply(const Vec4& v) 
     {
-        _extensions->glVertexAttrib4fv( _index, v.ptr() );
+        _extensions->glVertexAttrib4fv( _vertAttribIndex, v.ptr() );
     }
 
-    unsigned int                    _index;
+    unsigned int                    _vertAttribIndex;
     GLboolean                       _normalized;
     const Drawable::Extensions*     _extensions;
     const Array*                    _attribcoords;
     const IndexArray*               _indices;
+    unsigned int                    _index;
 };
 
 class DrawTexCoord : public osg::Referenced, public osg::ConstValueVisitor
@@ -1080,7 +1084,7 @@ void Geometry::drawImplementation(State& state) const
 
             for( unsigned int i = 0; i < list.size(); ++i )
             {
-                ( *( list[i] ) )(vertexAttribIndex++);
+                list[i]->applyAndIncrement();
             }
         }
 
@@ -1103,7 +1107,7 @@ void Geometry::drawImplementation(State& state) const
 
                 for( unsigned int i = 0; i < list.size(); ++i )
                 {
-                    ( *( list[i] ) )(vertexAttribIndex++);
+                    list[i]->applyAndIncrement();
                 }
             }
 
@@ -1218,7 +1222,7 @@ void Geometry::drawImplementation(State& state) const
 
             for( unsigned int i = 0; i < list.size(); ++i )
             {
-                ( *( list[i] ) )(vertexAttribIndex++);
+                list[i]->applyAndIncrement();
             }
         }
 
@@ -1255,7 +1259,7 @@ void Geometry::drawImplementation(State& state) const
 
                 for( unsigned int i = 0; i < list.size(); ++i )
                 {
-                    ( *( list[i] ) )(vertexAttribIndex++);
+                    list[i]->applyAndIncrement();
                 }
             }
 
@@ -1303,7 +1307,7 @@ void Geometry::drawImplementation(State& state) const
 
                                 for( unsigned int i = 0; i < list.size(); ++i )
                                 {
-                                    ( *( list[i] ) )(vertexAttribIndex++);
+                                    list[i]->applyAndIncrement();
                                 }
                             }                        
                         }
@@ -1318,7 +1322,7 @@ void Geometry::drawImplementation(State& state) const
 
                             for( unsigned int i = 0; i < list.size(); ++i )
                             {
-                                ( *( list[i] ) )(vertexAttribIndex++);
+                                list[i]->applyAndIncrement();
                             }
                         }  
 
@@ -1372,7 +1376,7 @@ void Geometry::drawImplementation(State& state) const
 
                                     for( unsigned int i = 0; i < list.size(); ++i )
                                     {
-                                        ( *( list[i] ) )(vertexAttribIndex++);
+                                        list[i]->applyAndIncrement();
                                     }
                                 }  
                             }
@@ -1387,7 +1391,7 @@ void Geometry::drawImplementation(State& state) const
 
                                 for( unsigned int i = 0; i < list.size(); ++i )
                                 {
-                                    ( *( list[i] ) )(vertexAttribIndex++);
+                                    list[i]->applyAndIncrement();
                                 }
                             }  
                             for(DrawTexCoordList::iterator texItr=drawTexCoordList.begin();
@@ -1440,7 +1444,7 @@ void Geometry::drawImplementation(State& state) const
 
                                 for( unsigned int i = 0; i < list.size(); ++i )
                                 {
-                                    ( *( list[i] ) )(vertexAttribIndex++);
+                                    list[i]->applyAndIncrement();
                                 }
                             }  
                         }
@@ -1457,7 +1461,7 @@ void Geometry::drawImplementation(State& state) const
 
                             for( unsigned int i = 0; i < list.size(); ++i )
                             {
-                                ( *( list[i] ) )(vertexAttribIndex++);
+                                list[i]->applyAndIncrement();
                             }
                         }  
 
@@ -1507,7 +1511,7 @@ void Geometry::drawImplementation(State& state) const
 
                                 for( unsigned int i = 0; i < list.size(); ++i )
                                 {
-                                    ( *( list[i] ) )(vertexAttribIndex++);
+                                    list[i]->applyAndIncrement();
                                 }
                             }  
                         }
@@ -1524,7 +1528,7 @@ void Geometry::drawImplementation(State& state) const
 
                             for( unsigned int i = 0; i < list.size(); ++i )
                             {
-                                ( *( list[i] ) )(vertexAttribIndex++);
+                                list[i]->applyAndIncrement();
                             }
                         }  
 
@@ -1574,7 +1578,7 @@ void Geometry::drawImplementation(State& state) const
 
                                 for( unsigned int i = 0; i < list.size(); ++i )
                                 {
-                                    ( *( list[i] ) )(vertexAttribIndex++);
+                                    list[i]->applyAndIncrement();
                                 }
                             }  
                         }
@@ -1591,7 +1595,7 @@ void Geometry::drawImplementation(State& state) const
 
                             for( unsigned int i = 0; i < list.size(); ++i )
                             {
-                                ( *( list[i] ) )(vertexAttribIndex++);
+                                list[i]->applyAndIncrement();
                             }
                         }  
 

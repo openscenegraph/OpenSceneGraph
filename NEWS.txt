@@ -10,11 +10,15 @@ OSG News (most significant items from ChangeLog)
     Improved pager support with better multi-processor stability and constant frame rate
     peformance.
     
-    STL import.
+    STL plugin.
+    
+    NET plugin
     
     Spelling and typo correction blitz on osg, osgDB and osgUtil libraries.
     
     NodeTrackManipulator improved.
+    
+    
 
     General bug fixes.    
     

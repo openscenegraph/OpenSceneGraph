@@ -295,11 +295,11 @@ bool TrackballManipulator::calcMovement()
 
         // pan model.
 
-        float scale = 0.5f*focalLength;
+        float scale = -0.5f*focalLength;
 
         osg::Vec3 uv = _camera->getUpVector();
         osg::Vec3 sv = _camera->getSideVector();
-        osg::Vec3 dv = uv*(dy*scale)-sv*(dx*scale);
+        osg::Vec3 dv = uv*(dy*scale)+sv*(dx*scale);
 
         _center += dv;
         
@@ -314,7 +314,7 @@ bool TrackballManipulator::calcMovement()
         // zoom model.
 
         float fd = focalLength;
-        float scale = 1.0f-dy;
+        float scale = 1.0f+dy;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
 
@@ -328,7 +328,7 @@ bool TrackballManipulator::calcMovement()
 
             // notify(DEBUG_INFO) << "Pushing forward"<<std::endl;
             // push the camera forward.
-            float scale = fd;
+            float scale = -fd;
             osg::Vec3 dv = _camera->getLookVector()*(dy*scale);
 
             _center += dv;

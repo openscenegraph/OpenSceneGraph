@@ -308,6 +308,7 @@ void Viewer::requestWarpPointer(float x,float y)
 {
     if (_kbmcb)
     {
+        cout << "x="<<x<<" y="<<y<<endl;
         EventAdapter::_s_mx = x;
         EventAdapter::_s_my = y;
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);

@@ -40,6 +40,7 @@ CXXFILES =\
 	Geometry.cpp\
 	Geode.cpp\
 	Group.cpp\
+        dxtctool.cpp\
 	Image.cpp\
 	ImageStream.cpp\
 	Impostor.cpp\

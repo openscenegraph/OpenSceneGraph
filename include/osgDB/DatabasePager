@@ -168,22 +168,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * note, should only be called from the draw thread.*/
         void compileGLObjects(osg::State& state,double& availableTime);
 
-        /** Helper class used internally to force the release of texture objects
-          * and displace lists.*/
-        class OSGDB_EXPORT ReleaseTexturesAndDrawablesVisitor : public osg::NodeVisitor
-        {
-        public:
-            ReleaseTexturesAndDrawablesVisitor():
-                osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
-            {
-            }
-
-            virtual void apply(osg::Node& node);
-            virtual void apply(osg::Geode& geode);
-            inline void apply(osg::StateSet* stateset);
-            inline void apply(osg::Drawable* drawable);
-
-        };
 
     public:
 
@@ -219,6 +203,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         };
         
         typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
+        typedef std::vector<  osg::ref_ptr<osg::Object> > ObjectList;
 
     protected :
 
@@ -238,8 +223,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         DatabaseRequestList             _dataToCompileList;
         OpenThreads::Mutex              _dataToCompileListMutex;
         
+
         bool                            _deleteRemovedSubgraphsInDatabaseThread;
-        osg::NodeList                   _childrenToDeleteList;
+        ObjectList                      _childrenToDeleteList;
         OpenThreads::Mutex              _childrenToDeleteListMutex;
 
         DatabaseRequestList             _dataToMergeList;

@@ -46,7 +46,7 @@ public:
     virtual void applyTransform(Transform *trans);
     osg::Node* getRoot();
 
-    virtual Object* cloneType() const  { return new OSGVisitor(0); }
+    virtual osg::Object* cloneType() const  { return new OSGVisitor(0); }
 
 };
 

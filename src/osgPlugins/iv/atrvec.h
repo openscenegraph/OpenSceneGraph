@@ -49,7 +49,7 @@ public:
     virtual char *type() { return "AtrVec"; }
 
     /** clone the an object of the same type as the node.*/
-    virtual Object* cloneType() const { return new AtrVec(name); }
+    virtual osg::Object* cloneType() const { return new AtrVec(name); }
 };
 
 

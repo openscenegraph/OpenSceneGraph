@@ -29,7 +29,7 @@ public:
     virtual char *type() { return "AtrFloat"; }
     float getValue() { return value; }
     /** clone the an object of the same type as the node.*/
-    virtual Object* cloneType() const { return new AtrFloat(name,value); }
+    virtual osg::Object* cloneType() const { return new AtrFloat(name,value); }
 };
 
 #endif

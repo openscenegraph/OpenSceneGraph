@@ -11,6 +11,7 @@ CXXFILES =\
 	Billboard.cpp\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
+	BlendColor.cpp\
 	BlendFunc.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\
@@ -51,6 +52,7 @@ CXXFILES =\
 	Matrixf.cpp\
 	Matrixd.cpp\
 	MatrixTransform.cpp\
+	Multisample.cpp\
 	Node.cpp\
 	NodeCallback.cpp\
 	NodeVisitor.cpp\

@@ -285,6 +285,10 @@ SOURCE=..\..\src\osg\MatrixTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Multisample.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Node.cpp
 # End Source File
 # Begin Source File
@@ -430,6 +434,10 @@ SOURCE=..\..\src\osg\Timer.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osg\Transform.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\BlendColor.cpp
 # End Source File
 # Begin Source File
 
@@ -685,11 +693,7 @@ SOURCE=..\..\include\osg\mem_ptr
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\MemoryAdapter
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\Osg\MemoryManager
+SOURCE=..\..\include\osg\Multisample
 # End Source File
 # Begin Source File
 
@@ -862,6 +866,10 @@ SOURCE=..\..\Include\Osg\Transform
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\TriangleFunctor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\BlendColor
 # End Source File
 # Begin Source File
 

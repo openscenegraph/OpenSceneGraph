@@ -26,23 +26,17 @@ FreeTypeLibrary::FreeTypeLibrary()
 
 FreeTypeLibrary::~FreeTypeLibrary()
 {
+    // need to remove the implementations from the Fonts here
+    // just in case the Fonts continue to have external references
+    // to them, otherwise they will try to point to an object thats
+    // definiation has been unloaded along with the unload of the FreeType
+    // plugin.
     for(FontMap::iterator itr=_fontMap.begin();
         itr!=_fontMap.end();
         ++itr)
     {
-        FreeTypeFont* freetypefont = itr->second.get();
-        if (freetypefont->referenceCount()>1)
-        {
-            // external references must exist...
-            itr->second = 0;
-            
-            freetypefont->_facade->setImplementation(0);
-        }
-        else
-        {
-            // no external references exist so its safe to delete via set the ref_ptr to 0.
-            itr->second = 0;
-        }
+        osgText::Font* font = itr->second.get();
+        font->setImplementation(0);
     }
     
     FT_Done_FreeType( _ftlibrary);
@@ -58,7 +52,7 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
 {
 
     FontMap::iterator itr = _fontMap.find(fontfile);
-    if (itr!=_fontMap.end()) return itr->second->_facade;
+    if (itr!=_fontMap.end()) return itr->second.get();
 
     FT_Face face;      /* handle to face object */
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
@@ -76,9 +70,9 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
     }
     
     FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face);
-    _fontMap[fontfile]=fontImp;
-    
     osgText::Font* font = new osgText::Font(fontImp);
+    _fontMap[fontfile]=font;
+    
     return font;
 
 }

@@ -29,25 +29,7 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
         DOFTransform();
 
         /**copy constructor*/
-        DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Transform(dof, copyop),
-            _minHPR(dof._minHPR),
-            _maxHPR(dof._maxHPR),
-            _currentHPR(dof._currentHPR),
-            _incrementHPR(dof._incrementHPR),
-            _minTranslate(dof._minTranslate),
-            _maxTranslate(dof._maxTranslate),
-            _currentTranslate(dof._currentTranslate),
-            _incrementTranslate(dof._incrementTranslate),
-            _minScale(dof._minScale),
-            _maxScale(dof._maxScale),
-            _currentScale(dof._currentScale),
-            _incrementScale(dof._incrementScale),
-            _Put(dof._Put),
-            _inversePut(dof._inversePut),
-            _limitationFlags(dof._limitationFlags),
-            _animationOn(dof._animationOn),
-            _increasingFlags(dof._increasingFlags) {}
+        DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Node(osgSim, DOFTransform);
 
@@ -111,7 +93,7 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
         inline void setAnimationOn(bool do_animate) {_animationOn = do_animate;}
         inline bool getAnimationOn() const {return _animationOn;}
 
-        void animate();
+        void animate(float deltaTime);
 
         virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
 
@@ -120,6 +102,9 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
     protected:
 
         virtual ~DOFTransform() {}
+
+        int       _previousTraversalNumber;
+        double    _previousTime;
 
         osg::Vec3 _minHPR;
         osg::Vec3 _maxHPR;

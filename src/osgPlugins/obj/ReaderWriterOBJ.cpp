@@ -51,27 +51,27 @@ public:
     ReaderWriterOBJ() { }
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }
-    virtual bool acceptsExtension(const std::string& extension) {
+    virtual bool acceptsExtension(const std::string& extension) const {
         return osgDB::equalCaseInsensitive(extension,"obj");
     }
 
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options);
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
-    virtual ReadResult readNode(std::istream& fin, const Options* options);
+    virtual ReadResult readNode(std::istream& fin, const Options* options) const;
 
 
 protected:
 
     typedef std::map< std::string, osg::ref_ptr<osg::StateSet> > MaterialToStateSetMap;
     
-    void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMap);
+    void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMap) const;
     
-    osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList);
+    osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList) const;
     
-    osg::Node* convertModelToSceneGraph(obj::Model& model);
+    osg::Node* convertModelToSceneGraph(obj::Model& model) const;
 
-    inline osg::Vec3 transformVertex(const osg::Vec3& vec) { return osg::Vec3(vec.x(),-vec.z(),vec.y()); }
-    inline osg::Vec3 transformNormal(const osg::Vec3& vec) { return osg::Vec3(vec.x(),-vec.z(),vec.y()); }
+    inline osg::Vec3 transformVertex(const osg::Vec3& vec) const { return osg::Vec3(vec.x(),-vec.z(),vec.y()); }
+    inline osg::Vec3 transformNormal(const osg::Vec3& vec) const { return osg::Vec3(vec.x(),-vec.z(),vec.y()); }
     
 };
 
@@ -79,7 +79,7 @@ protected:
 // register with Registry to instantiate the above reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
 
-void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap)
+void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap) const
 {
     for(obj::Model::MaterialMap::iterator itr = model.materialMap.begin();
         itr != model.materialMap.end();
@@ -136,7 +136,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
     }
 }
 
-osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList)
+osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList) const
 {
     
     unsigned int numVertexIndices = 0;
@@ -389,7 +389,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     return geometry;
 }
 
-osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model)
+osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model) const
 {
 
     if (model.elementStateMap.empty()) return 0;
@@ -446,7 +446,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model)
 
 
 // read file and convert to OSG.
-osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -475,7 +475,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     return ReadResult::FILE_NOT_HANDLED;
 }
 
-osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, const Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, const Options* options) const
 {
     if (fin)
     {

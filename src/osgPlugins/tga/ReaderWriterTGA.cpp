@@ -476,9 +476,9 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "TGA Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"tga"); }
+        virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"tga"); }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

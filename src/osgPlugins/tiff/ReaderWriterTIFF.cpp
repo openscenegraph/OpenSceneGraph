@@ -413,14 +413,14 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "TIFF Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) 
+        virtual bool acceptsExtension(const std::string& extension) const
         { 
             if( osgDB::equalCaseInsensitive(extension,"tiff")) return true;
             if( osgDB::equalCaseInsensitive(extension,"tif") ) return true;
             return false;
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

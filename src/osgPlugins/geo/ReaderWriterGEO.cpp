@@ -388,31 +388,20 @@ private:
 };
 
 
-class ReaderWriterGEO : public osgDB::ReaderWriter
+class ReaderGEO
 {
     public:
-        virtual const char* className() const { return "GEO Reader/Writer"; }
 
-        virtual bool acceptsExtension(const std::string& extension)
+        osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
-            return osgDB::equalCaseInsensitive(extension,"gem") || osgDB::equalCaseInsensitive(extension,"geo");
-        }
-
-        virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName,opt); }
-
-        virtual ReadResult readNode(const std::string& file, const Options* options)
-        {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
             if (fin.is_open() )
             { // read the input file.
                 // code for setting up the database path so that internally referenced file are searched for on relative paths. 
-                osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+                osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? 
+                    static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : 
+                    new osgDB::ReaderWriter::Options;
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
                 typedef std::vector<osg::Node*> NodeList;
@@ -457,7 +446,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
                 osg::Node * groupnode = NULL;
                 if  (nodeList.empty())
                 {
-                    return ReadResult("No data loaded from "+fileName);
+                    return osgDB::ReaderWriter::ReadResult("No data loaded from "+fileName);
                 }
                 else if (nodeList.size()==1)
                 {
@@ -1396,7 +1385,8 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             return clp;
         }
-        geoHeader *makeHeader(const georecord *gr, const Options* options) {
+
+        geoHeader *makeHeader(const georecord *gr, const osgDB::ReaderWriter::Options* options) {
             if (!theHeader.valid()) theHeader=new geoHeaderGeo();
             // the header contains variables as well as a transform for the XYZup cases
             const geoField *gfd;
@@ -1459,7 +1449,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             return theHeader.get();
         }
-        void makeTexture(const georecord *gr, const Options* options) {
+        void makeTexture(const georecord *gr, const osgDB::ReaderWriter::Options* options) {
             // scans the fields of this record and puts a new texture & environment into 'pool' stor
             const geoField *gfd=gr->getField(GEO_DB_TEX_FILE_NAME);
             const char *name = gfd->getChar();
@@ -1697,7 +1687,7 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
             }
             return mtr;
         }
-        std::vector<Node *> makeosg(const std::vector<georecord *> gr, const Options* options) {
+        std::vector<Node *> makeosg(const std::vector<georecord *> gr, const osgDB::ReaderWriter::Options* options) {
             // recursive traversal of records and extract osg::Nodes equivalent
             Group *geodeholder=NULL;
             std::vector<Node *> nodelist;
@@ -2199,6 +2189,33 @@ void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a rec
         }
     }
 }
+
+
+class ReaderWriterGEO : public osgDB::ReaderWriter
+{
+    public:
+        virtual const char* className() const { return "GEO Reader/Writer"; }
+
+        virtual bool acceptsExtension(const std::string& extension) const
+        {
+            return osgDB::equalCaseInsensitive(extension,"gem") || osgDB::equalCaseInsensitive(extension,"geo");
+        }
+
+        virtual ReadResult readObject(const std::string& fileName, const Options* opt) const { return readNode(fileName,opt); }
+
+        virtual ReadResult readNode(const std::string& file, const Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            ReaderGEO reader;
+            return reader.readNode(fileName,options);
+        }
+
+};
 
 
 // now register with Registry to instantiate the above

@@ -30,7 +30,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
         void initPerformer();
 
         virtual const char* className() const { return "Performer Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) 
+        virtual bool acceptsExtension(const std::string& extension) const
 	{ 
 	    return 
                 osgDB::equalCaseInsensitive(extension,"3ds")     ? true :
@@ -95,7 +95,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 		false;
 	}
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) fileName = file; // let Peformer see if it can file the filep
@@ -150,7 +150,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

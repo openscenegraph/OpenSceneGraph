@@ -72,11 +72,11 @@ class ReaderWriterAC : public osgDB::ReaderWriter
     public:
         virtual const char* className() const { return "AC3D Database Reader"; }
 
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"ac");
         }
-        virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options) const
         {
             osg::Group *grp; // holder for all loaded objects
             // GWM added Dec 2003 - get full path name (change in osgDB handling of files).
@@ -92,7 +92,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             grp=ac_load_ac3d(fileName.c_str(), local_opt.get());
             return grp;
         };
-        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* /*options*/)
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* /*options*/) const
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -121,7 +121,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             return WriteResult::FILE_SAVED;
         }
         
-        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* opts)
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* opts) const
         {
             try
             {

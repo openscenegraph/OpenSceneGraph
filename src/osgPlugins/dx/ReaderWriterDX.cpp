@@ -24,10 +24,7 @@
 #include "DXWriter.h"
 
 // FIXME:  Support options
-osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeObject( 
-                                       const osg::Object &obj,
-                                       const std::string &filename,
-                                       const Options     *options )
+osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeObject(const osg::Object &obj, const std::string &filename, const Options     *options ) const
 { 
   const osg::Node *node = dynamic_cast<const osg::Node *>(&obj);
 
@@ -39,10 +36,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeObject(
 }
 
 
-osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeNode( 
-                                       const osg::Node   &node,
-                                       const std::string &filename,
-                                       const Options     *)
+osgDB::ReaderWriter::WriteResult ReaderWriterDX::writeNode(const osg::Node &node, const std::string &filename, const Options     *) const
 {
   dx::WriterParms parms;
   std::string     messages;

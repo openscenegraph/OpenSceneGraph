@@ -304,7 +304,7 @@ int *numComponents_ret)
 
 class ReaderWriterJPEG : public osgDB::ReaderWriter
 {
-        WriteResult::WriteStatus write_JPEG_file (const char* filename,int image_width,int image_height,JSAMPLE* image_buffer,int quality = 100)
+        WriteResult::WriteStatus write_JPEG_file (const char* filename,int image_width,int image_height,JSAMPLE* image_buffer,int quality = 100) const
         {
             /* This struct contains the JPEG compression parameters and pointers to
             * working space (which is allocated as needed by the JPEG library).
@@ -412,7 +412,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             /* And we're done! */
             return WriteResult::FILE_SAVED;
         }
-        int getQuality(const osgDB::ReaderWriter::Options *options) {
+        int getQuality(const osgDB::ReaderWriter::Options *options) const {
             if(options) {
                 std::istringstream iss(options->getOptionString());
                 std::string opt;
@@ -429,12 +429,12 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
         }
     public:
         virtual const char* className() const { return "JPEG Image Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"jpeg") || osgDB::equalCaseInsensitive(extension,"jpg");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -481,7 +481,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 
             return pOsgImage;
         }
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options *options)
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options *options) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;

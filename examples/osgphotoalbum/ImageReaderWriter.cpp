@@ -58,7 +58,7 @@ ImageReaderWriter::ImageReaderWriter()
 {
 }
 
-std::string ImageReaderWriter::insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage)
+std::string ImageReaderWriter::local_insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage)
 {
     std::stringstream ostr;
     ostr<<"res_"<<res<<"_"<<fileName;
@@ -105,7 +105,7 @@ osg::Image* ImageReaderWriter::readImage_DynamicSampling(DataReference& dr, floa
 }
 
 
-osgDB::ReaderWriter::ReadResult ImageReaderWriter::readNode(const std::string& fileName, const Options*)
+osgDB::ReaderWriter::ReadResult ImageReaderWriter::local_readNode(const std::string& fileName, const Options*)
 {
     DataReferenceMap::iterator itr = _dataReferences.find(fileName);
     if (itr==_dataReferences.end()) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;

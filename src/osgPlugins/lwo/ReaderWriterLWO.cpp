@@ -47,11 +47,11 @@ public:
     ReaderWriterLWO() { }
 
     virtual const char* className() const { return "Lightwave Object Reader"; }
-    virtual bool acceptsExtension(const std::string& extension) {
+    virtual bool acceptsExtension(const std::string& extension) const {
         return osgDB::equalCaseInsensitive(extension,"lwo") || osgDB::equalCaseInsensitive(extension,"lw") || osgDB::equalCaseInsensitive(extension,"geo");
     }
 
-    virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options)
+    virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(file);        
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -76,9 +76,9 @@ public:
 
     lwosg::Converter::Options parse_options(const Options *options) const;
 
-    virtual ReadResult readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*);
-    virtual ReadResult readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*);
-    virtual ReadResult readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
+    virtual ReadResult readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
+    virtual ReadResult readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 
 protected:
 
@@ -113,7 +113,7 @@ lwosg::Converter::Options ReaderWriterLWO::parse_options(const Options *options)
 // register with Registry to instantiate the above reader/writer.
 osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
 
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string &fileName, const osgDB::ReaderWriter::Options *options)
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string &fileName, const osgDB::ReaderWriter::Options *options) const
 {
     lwosg::Converter::Options conv_options = parse_options(options);
 
@@ -127,7 +127,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string
 }
 
 
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_old_LWO2(const std::string& fileName, const osgDB::ReaderWriter::Options*) const
 {
     std::auto_ptr<Lwo2> lwo2(new Lwo2());
     if (lwo2->ReadFile(fileName))
@@ -168,7 +168,7 @@ struct GeometryCollection
 
 
 // read file and convert to OSG.
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*) const
 {
     lwObject* lw = lw_object_read(fileName.c_str(),osg::notify(osg::INFO));
     if (!lw)

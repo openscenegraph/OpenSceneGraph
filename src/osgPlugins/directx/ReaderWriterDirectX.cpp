@@ -54,16 +54,16 @@ public:
         return "DirectX Reader/Writer";
     }
 
-    virtual bool acceptsExtension(const std::string& extension) { 
-        return osgDB::equalCaseInsensitive(extension,"x") ? true : false;
+    virtual bool acceptsExtension(const std::string& extension) const
+    { 
+        return osgDB::equalCaseInsensitive(extension,"x");
     }
 
-    virtual ReadResult readNode(const std::string& fileName,
-                                const osgDB::ReaderWriter::Options* options);
+    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
 private:
     osg::Geode* convertFromDX(DX::Object& obj, bool flipTexture, float creaseAngle,
-                                               const osgDB::ReaderWriter::Options* options);
+                                               const osgDB::ReaderWriter::Options* options) const;
 };
 
 // Register with Registry to instantiate the above reader/writer.
@@ -71,8 +71,7 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterDirectX> g_readerWriter_DirectX_Pro
 
 
 // Read node
-osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string& file,
-                                                              const osgDB::ReaderWriter::Options* options)
+osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -118,7 +117,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
 // Convert DirectX mesh to osg::Geode
 osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Object& obj,
                                                bool flipTexture, float creaseAngle,
-                                               const osgDB::ReaderWriter::Options* options)
+                                               const osgDB::ReaderWriter::Options* options) const
 {
     // Fetch mesh
     const DX::Mesh* mesh = obj.getMesh();

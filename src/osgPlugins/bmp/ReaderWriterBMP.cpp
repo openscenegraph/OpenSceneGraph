@@ -317,9 +317,9 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
 {
     public:
         virtual const char* className() const { return "BMP Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) { return osgDB::equalCaseInsensitive(extension,"bmp"); }
+        virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"bmp"); }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -362,7 +362,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             return pOsgImage;
 
         }
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;

@@ -78,7 +78,7 @@ class NetReader : public osgDB::ReaderWriter
                                                                                             
         virtual const char* className() const { return "HTTP Protocol Model Reader"; }
                                                                                             
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"net");
         }
@@ -92,33 +92,33 @@ class NetReader : public osgDB::ReaderWriter
             NODE
         };
                                                                                             
-        virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options)
+        virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options) const
         {
             if (status!=READ) return ReadResult(ReadResult::FILE_NOT_HANDLED);
             else return readFile(ARCHIVE,fileName,options);
         }
 
-        virtual ReadResult readObject(const std::string& fileName, const Options* options)
+        virtual ReadResult readObject(const std::string& fileName, const Options* options) const
         {
             return readFile(OBJECT,fileName,options);
         }
                                                                                             
-        virtual ReadResult readImage(const std::string& fileName, const Options *options)
+        virtual ReadResult readImage(const std::string& fileName, const Options *options) const
         {
             return readFile(IMAGE,fileName,options);
         }
 
-        virtual ReadResult readHeightField(const std::string& fileName, const Options *options)
+        virtual ReadResult readHeightField(const std::string& fileName, const Options *options) const
         {
             return readFile(HEIGHTFIELD,fileName,options);
         }
 
-        virtual ReadResult readNode(const std::string& fileName, const Options *options)
+        virtual ReadResult readNode(const std::string& fileName, const Options *options) const
         {
             return readFile(NODE,fileName,options);
         }
 
-        ReadResult readFile(ObjectType objectType, ReaderWriter* rw, std::istream& fin, const Options *options)
+        ReadResult readFile(ObjectType objectType, ReaderWriter* rw, std::istream& fin, const Options *options) const
         {
             switch(objectType)
             {
@@ -132,7 +132,7 @@ class NetReader : public osgDB::ReaderWriter
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        virtual ReadResult readFile(ObjectType objectType, const std::string& inFileName, const Options *options)
+        virtual ReadResult readFile(ObjectType objectType, const std::string& inFileName, const Options *options) const
         {
             osg::Timer_t start = osg::Timer::instance()->tick();
 

@@ -50,15 +50,15 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         /** Get the full list of file names available in the archive.*/
         virtual bool getFileNames(FileNameList& fileNameList) const = 0;
 
-        virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) = 0;
-        virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) = 0;
-        virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) = 0;
-        virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) = 0;
+        virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) const = 0;
+        virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) const = 0;
+        virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) const = 0;
+        virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) const = 0;
 
-        virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) = 0;
-        virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) = 0;
-        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) = 0;
-        virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) = 0;       
+        virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
+        virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
+        virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
+        virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
            
 
 

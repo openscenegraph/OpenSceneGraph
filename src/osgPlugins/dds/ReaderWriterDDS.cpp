@@ -701,22 +701,22 @@ public:
         return "DDS Image Reader/Writer"; 
     }
 
-    virtual bool acceptsExtension(const std::string& extension)
+    virtual bool acceptsExtension(const std::string& extension) const
     { 
         return osgDB::equalCaseInsensitive(extension,"dds"); 
     }
 
-    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options)
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         return readImage(file,options);
     }
 
-    virtual ReadResult readObject(std::istream& fin, const Options* options)
+    virtual ReadResult readObject(std::istream& fin, const Options* options) const
     {
         return readImage(fin,options);
     }
 
-    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -731,7 +731,7 @@ public:
         return rr;
     }
 
-    virtual ReadResult readImage(std::istream& fin, const Options* options)
+    virtual ReadResult readImage(std::istream& fin, const Options* options) const
     {
         osg::Image* osgImage = ReadDDSFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
@@ -744,7 +744,7 @@ public:
         return osgImage;
     }
 
-    virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options)
+    virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
         if (!image) return WriteResult::FILE_NOT_HANDLED;
@@ -752,7 +752,7 @@ public:
         return writeImage(*image,file,options);
     }
 
-    virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options)
+    virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options) const
     {
         const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
         if (!image) return WriteResult::FILE_NOT_HANDLED;
@@ -761,7 +761,7 @@ public:
     }
 
 
-    virtual WriteResult writeImage(const osg::Image &image,const std::string& file, const osgDB::ReaderWriter::Options* options)
+    virtual WriteResult writeImage(const osg::Image &image,const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getFileExtension(file);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -772,7 +772,7 @@ public:
         return writeImage(image,fout,options);
     }
 
-    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*)
+    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*) const
     {
         bool success = WriteDDSFile(&image, fout);
 

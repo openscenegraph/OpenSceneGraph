@@ -31,16 +31,12 @@ class ReaderWriterDX : public osgDB::ReaderWriter
  public:
 
   virtual const char* className() { return "OpenDX Writer"; }
-  virtual bool acceptsExtension( const std::string &extension )
+  virtual bool acceptsExtension( const std::string &extension ) const
     { return osgDB::equalCaseInsensitive( extension, "dx" ); }
 
-  virtual WriteResult writeObject( const osg::Object &obj,
-                                   const std::string &filename,
-                                   const Options     *options = NULL );
+  virtual WriteResult writeObject( const osg::Object &obj, const std::string &filename, const Options *options = NULL ) const;
 
-  virtual WriteResult writeNode  ( const osg::Node   &node,
-                                   const std::string &filename,
-                                   const Options     *options = NULL );
+  virtual WriteResult writeNode  ( const osg::Node&node, const std::string &filename, const Options *options = NULL ) const;
 
 };
 

@@ -30,7 +30,7 @@ class OSGA_Archive : public osgDB::Archive
 
         virtual const char* className() const { return "Archive"; }
 
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"osga");
         }
@@ -57,28 +57,28 @@ class OSGA_Archive : public osgDB::Archive
 
 
         /** Read an osg::Object of specified file name from the Archive.*/
-        virtual ReadResult readObject(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readObject(const std::string& fileName,const Options* options=NULL) const;
 
         /** Read an osg::Image of specified file name from the Archive.*/
-        virtual ReadResult readImage(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readImage(const std::string& fileName,const Options* options=NULL) const;
 
         /** Read an osg::HeightField of specified file name from the Archive.*/
-        virtual ReadResult readHeightField(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readHeightField(const std::string& fileName,const Options* options=NULL) const;
 
         /** Read an osg::Node of specified file name from the Archive.*/
-        virtual ReadResult readNode(const std::string& fileName,const Options* options=NULL);
+        virtual ReadResult readNode(const std::string& fileName,const Options* options=NULL) const;
 
         /** Write an osg::Object with specified file name to the Archive.*/
-        virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const;
 
         /** Write an osg::Image with specified file name to the Archive.*/
-        virtual WriteResult writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeImage(const osg::Image& image,const std::string& fileName,const Options* options=NULL) const;
 
         /** Write an osg::HeightField with specified file name to the Archive.*/
-        virtual WriteResult writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options=NULL) const;
 
         /** Write an osg::Node with specified file name to the Archive.*/
-        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL);
+        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) const;
         
         
     protected:

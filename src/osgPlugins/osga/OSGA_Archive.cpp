@@ -580,24 +580,24 @@ ReaderWriter::ReadResult OSGA_Archive::read(const ReadFunctor& readFunctor)
     return result;
 }
 
-ReaderWriter::ReadResult OSGA_Archive::readObject(const std::string& fileName,const Options* options)
+ReaderWriter::ReadResult OSGA_Archive::readObject(const std::string& fileName,const Options* options) const
 {
-    return read(ReadObjectFunctor(fileName, options));
+    return const_cast<OSGA_Archive*>(this)->read(ReadObjectFunctor(fileName, options));
 }
 
-ReaderWriter::ReadResult OSGA_Archive::readImage(const std::string& fileName,const Options* options)
+ReaderWriter::ReadResult OSGA_Archive::readImage(const std::string& fileName,const Options* options) const
 {
-    return read(ReadImageFunctor(fileName, options));
+    return const_cast<OSGA_Archive*>(this)->read(ReadImageFunctor(fileName, options));
 }
 
-ReaderWriter::ReadResult OSGA_Archive::readHeightField(const std::string& fileName,const Options* options)
+ReaderWriter::ReadResult OSGA_Archive::readHeightField(const std::string& fileName,const Options* options) const
 {
-    return read(ReadHeightFieldFunctor(fileName, options));
+    return const_cast<OSGA_Archive*>(this)->read(ReadHeightFieldFunctor(fileName, options));
 }
 
-ReaderWriter::ReadResult OSGA_Archive::readNode(const std::string& fileName,const Options* options)
+ReaderWriter::ReadResult OSGA_Archive::readNode(const std::string& fileName,const Options* options) const
 {
-    return read(ReadNodeFunctor(fileName, options));
+    return const_cast<OSGA_Archive*>(this)->read(ReadNodeFunctor(fileName, options));
 }
 
 
@@ -618,7 +618,7 @@ struct OSGA_Archive::WriteImageFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::Image& _object;
 
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output)const  { return rw.writeImage(_object, output, _options); }    
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeImage(_object, output, _options); }    
 };
 
 struct OSGA_Archive::WriteHeightFieldFunctor : public OSGA_Archive::WriteFunctor
@@ -676,27 +676,27 @@ ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)
 }
 
 
-ReaderWriter::WriteResult OSGA_Archive::writeObject(const osg::Object& obj,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult OSGA_Archive::writeObject(const osg::Object& obj,const std::string& fileName,const Options* options) const
 {
     osg::notify(osg::INFO)<<"OSGA_Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
-    return write(WriteObjectFunctor(obj, fileName, options));
+    return const_cast<OSGA_Archive*>(this)->write(WriteObjectFunctor(obj, fileName, options));
 }
 
-ReaderWriter::WriteResult OSGA_Archive::writeImage(const osg::Image& image,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult OSGA_Archive::writeImage(const osg::Image& image,const std::string& fileName,const Options* options) const
 {
     osg::notify(osg::INFO)<<"OSGA_Archive::writeImage(obj, "<<fileName<<")"<<std::endl;
-    return write(WriteImageFunctor(image, fileName, options));
+    return const_cast<OSGA_Archive*>(this)->write(WriteImageFunctor(image, fileName, options));
 }
 
-ReaderWriter::WriteResult OSGA_Archive::writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult OSGA_Archive::writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options) const
 {
     osg::notify(osg::INFO)<<"OSGA_Archive::writeHeightField(obj, "<<fileName<<")"<<std::endl;
-    return write(WriteHeightFieldFunctor(heightField, fileName, options));
+    return const_cast<OSGA_Archive*>(this)->write(WriteHeightFieldFunctor(heightField, fileName, options));
 }
 
-ReaderWriter::WriteResult OSGA_Archive::writeNode(const osg::Node& node,const std::string& fileName,const Options* options)
+ReaderWriter::WriteResult OSGA_Archive::writeNode(const osg::Node& node,const std::string& fileName,const Options* options) const
 {
     osg::notify(osg::INFO)<<"OSGA_Archive::writeNode(obj, "<<fileName<<")"<<std::endl;
-    return write(WriteNodeFunctor(node, fileName, options));
+    return const_cast<OSGA_Archive*>(this)->write(WriteNodeFunctor(node, fileName, options));
 }
 

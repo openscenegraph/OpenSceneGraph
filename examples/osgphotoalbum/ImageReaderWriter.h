@@ -17,7 +17,12 @@
 #include <osgDB/WriteFile>
 #include <osgDB/ImageOptions>
 
+#include <OpenThreads/ScopedLock>
+#include <osgDB/ReentrantMutex>
+
 #include "PhotoArchive.h"
+
+#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
 
 class ImageReaderWriter : public osgDB::ReaderWriter
 {
@@ -29,12 +34,26 @@ class ImageReaderWriter : public osgDB::ReaderWriter
 
         void addPhotoArchive(PhotoArchive* archive) { _photoArchiveList.push_back(archive); }
 
-        std::string insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage);
+        std::string insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage)
+        {
+            SERIALIZER();
+            return insertReference(fileName, res, width, height, backPage);
+        }
 
-        virtual ReadResult readNode(const std::string& fileName, const Options*);
+        virtual ReadResult readNode(const std::string& fileName, const Options* options) const
+        {
+            SERIALIZER();
+            return readNode(fileName, options);
+        }
+
         
     protected:
 
+        std::string local_insertReference(const std::string& fileName, unsigned int res, float width, float height, bool backPage);
+
+        ReadResult local_readNode(const std::string& fileName, const Options*);
+
+        mutable osgDB::ReentrantMutex _serializerMutex;
 
         struct DataReference
         {

@@ -345,7 +345,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
     public:
         virtual const char* className() const { return "RGB Image Reader/Writer"; }
         
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"rgb") ||
                 osgDB::equalCaseInsensitive(extension,"sgi") ||
@@ -355,7 +355,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 osgDB::equalCaseInsensitive(extension,"bw");
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -406,7 +406,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
         }
 
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;

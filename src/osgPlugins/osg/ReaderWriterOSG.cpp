@@ -18,16 +18,16 @@ class OSGReaderWriter : public ReaderWriter
     public:
         virtual const char* className() const { return "OSG Reader/Writer"; }
 
-        virtual bool acceptsExtension(const std::string& extension)
+        virtual bool acceptsExtension(const std::string& extension) const
         {
             return equalCaseInsensitive(extension,"osg");
         }
 
-        virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName, opt); }
+        virtual ReadResult readObject(const std::string& fileName, const Options* opt) const { return readNode(fileName, opt); }
 
-        virtual ReadResult readObject(std::istream& fin, const Options* opt) { return readNode(fin, opt); }
+        virtual ReadResult readObject(std::istream& fin, const Options* opt) const { return readNode(fin, opt); }
 
-        virtual ReadResult readNode(const std::string& file, const Options* opt)
+        virtual ReadResult readNode(const std::string& file, const Options* opt) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -48,7 +48,7 @@ class OSGReaderWriter : public ReaderWriter
                         
         }
         
-        virtual ReadResult readNode(std::istream& fin, const Options* options)
+        virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
 
             Input fr;
@@ -89,7 +89,7 @@ class OSGReaderWriter : public ReaderWriter
 
         }
 
-        void setPrecision(Output& fout, const osgDB::ReaderWriter::Options* options)
+        void setPrecision(Output& fout, const osgDB::ReaderWriter::Options* options) const
         {
             if (options)
             {
@@ -105,7 +105,7 @@ class OSGReaderWriter : public ReaderWriter
             }
         }            
 
-        virtual WriteResult writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeObject(const Object& obj,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -122,7 +122,7 @@ class OSGReaderWriter : public ReaderWriter
             return WriteResult("Unable to open file for output");
         }
 
-        virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             Output foutput;
 
@@ -140,7 +140,7 @@ class OSGReaderWriter : public ReaderWriter
         }
 
 
-        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -158,7 +158,7 @@ class OSGReaderWriter : public ReaderWriter
             return WriteResult("Unable to open file for output");
         }
 
-        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options)
+        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             Output foutput;
 

@@ -43,6 +43,9 @@
 #include <osg/Referenced>
 #include <map>
 
+#include <OpenThreads/ScopedLock>
+#include <osgDB/ReentrantMutex>
+
 #include "TXPArchive.h"
 
 namespace txp
@@ -55,20 +58,33 @@ public:
         return "TXP Reader/Writer";
     }
     
-    virtual bool acceptsExtension(const std::string& extension)
+    virtual bool acceptsExtension(const std::string& extension) const
     {
         return osgDB::equalCaseInsensitive(extension,"txp");
     }
     
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
+    virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        if( !acceptsExtension(osgDB::getFileExtension(file) ))
+            return ReadResult::FILE_NOT_HANDLED;
+            
+        OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+
+        return const_cast<ReaderWriterTXP*>(this)->local_readNode(file, options);
+    }
     
 protected:
-    TXPArchive *getArchive(int id, const std::string&);
-    std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
 
-	osg::Node* getTileContent(TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive);
+
+    ReadResult local_readNode(const std::string& file, const osgDB::ReaderWriter::Options* options);
+
+    TXPArchive *getArchive(int id, const std::string&);
+ 
+    osg::Node* getTileContent(TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive);
     
-    static int _archiveId;
+    mutable osgDB::ReentrantMutex               _serializerMutex;
+    std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
+    static int                                  _archiveId;
 };
 
 } // namespace

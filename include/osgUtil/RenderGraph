@@ -225,7 +225,11 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             }
             
             // now pop back up both parent paths until they agree.
-            while (sg_curr->_parent!=sg_new->_parent)
+
+            // DRT - 10/22/02
+            // should be this to conform with above case where two RenderGraph
+            // nodes have the same parent
+            while (sg_curr != sg_new)
             {
                 if (sg_curr->_stateset.valid()) state.popStateSet();
                 sg_curr = sg_curr->_parent;

@@ -77,32 +77,32 @@ class OSGUTIL_EXPORT Optimizer
         virtual void optimize(osg::Node* node, unsigned int options);
 
 
-        inline void setPermissableOptionsForObject(const osg::Object* object, unsigned int options)
+        inline void setPermissableOptimizationsForObject(const osg::Object* object, unsigned int options)
         {
-            _permissableOptionsMap[object] = options;
+            _permissableOptimizationsMap[object] = options;
         }
         
-        inline unsigned int getPermissableOptionsForObject(const osg::Object* object) const
+        inline unsigned int getPermissableOptimizationsForObject(const osg::Object* object) const
         {
-            PermissableOptionsMap::const_iterator itr = _permissableOptionsMap.find(object);
-            if (itr!=_permissableOptionsMap.end()) return itr->second;
+            PermissableOptimizationsMap::const_iterator itr = _permissableOptimizationsMap.find(object);
+            if (itr!=_permissableOptimizationsMap.end()) return itr->second;
             else return 0xffffffff;
         }
         
         inline bool isOperationPermissableForObject(const osg::Object* object,unsigned int option) const
         {
-            return (option & getPermissableOptionsForObject(object))!=0; 
+            return (option & getPermissableOptimizationsForObject(object))!=0; 
         }
         
-        typedef std::map<const osg::Object*,unsigned int> PermissableOptionsMap;
+        typedef std::map<const osg::Object*,unsigned int> PermissableOptimizationsMap;
 
-        PermissableOptionsMap& getPrimissableOptionsMap() { return _permissableOptionsMap; }
-        const PermissableOptionsMap& getPrimissableOptionsMap() const { return _permissableOptionsMap; }
+        PermissableOptimizationsMap& getPrimissableOptionsMap() { return _permissableOptimizationsMap; }
+        const PermissableOptimizationsMap& getPrimissableOptionsMap() const { return _permissableOptimizationsMap; }
         
         
     protected:
     
-        PermissableOptionsMap _permissableOptionsMap;
+        PermissableOptimizationsMap _permissableOptimizationsMap;
 
 
     public:

@@ -52,7 +52,7 @@ static bool isNodeEmpty(const osg::Node& node)
 
 void Optimizer::reset()
 {
-    _permissableOptionsMap.clear();
+    _permissableOptimizationsMap.clear();
 }
 
 static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY");

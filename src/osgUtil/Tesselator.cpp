@@ -208,14 +208,38 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     for(int primNo=0;primNo<noContours;++primNo)
     {
         osg::ref_ptr<osg::PrimitiveSet> primitive = _Contours[primNo].get();
-        if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE) {
-            if (primitive->getMode()==osg::PrimitiveSet::POLYGON ||_ttype==TESS_TYPE_DRAWABLE)  {
-                beginTesselation();
-                addContour(primitive.get(), vertices);
-                endTesselation();
+        if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE)
+        {
+            if (primitive->getMode()==osg::PrimitiveSet::POLYGON || _ttype==TESS_TYPE_DRAWABLE)
+            {
 
-                collectTesselation(geom);
-            } else { // copy the contour primitive as it is not being tesselated
+                if (primitive->getType()==osg::PrimitiveSet::DrawArrayLengthsPrimitiveType)
+                {
+                    osg::DrawArrayLengths* drawArrayLengths = static_cast<osg::DrawArrayLengths*>(primitive.get());
+                    unsigned int first = drawArrayLengths->getFirst(); 
+                    for(osg::DrawArrayLengths::iterator itr=drawArrayLengths->begin();
+                        itr!=drawArrayLengths->end();
+                        ++itr)
+                    {
+                        beginTesselation();
+                            unsigned int last = first + *itr;
+                            addContour(primitive->getMode(),first,last,vertices);
+                            first = last;
+                        endTesselation();
+                        collectTesselation(geom);
+                    }
+                }
+                else
+                {
+                    beginTesselation();
+                        addContour(primitive.get(), vertices);
+                    endTesselation();
+                    collectTesselation(geom);
+                }
+
+            }
+            else
+            { // copy the contour primitive as it is not being tesselated
                 geom.addPrimitiveSet(primitive.get());
             }
         } else {
@@ -241,10 +265,78 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     }
 }
 
+void Tesselator::addContour(GLenum mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices)
+{
+    beginContour();
+
+    unsigned int idx=0;
+    unsigned int nperprim=0; // number of vertices per primitive
+    if (mode==osg::PrimitiveSet::QUADS) nperprim=4;
+    else if (mode==osg::PrimitiveSet::TRIANGLES) nperprim=3;
+
+    unsigned int i;
+    switch (mode)
+    {
+    case osg::PrimitiveSet::QUADS:
+    case osg::PrimitiveSet::TRIANGLES:
+    case osg::PrimitiveSet::POLYGON:
+    case osg::PrimitiveSet::LINE_LOOP:
+    case osg::PrimitiveSet::TRIANGLE_FAN:
+        {
+            for(i=first;i<last;++i, idx++)
+            {
+                addVertex(&((*vertices)[i]));
+                if (nperprim>0 && i<last-1 && idx%nperprim==nperprim-1) {
+                    endContour();
+                    beginContour();
+                }
+            }
+        }
+        break;
+    case osg::PrimitiveSet::QUAD_STRIP:
+        { // always has an even number of vertices
+            for(i=first;i<last;i+=2)
+            { // 0,2,4...
+                addVertex(&((*vertices)[i]));
+            }
+            for(i=last-1;i>=first;i-=2)
+            { // ...5,3,1
+                addVertex(&((*vertices)[i]));
+            }
+        }
+        break;
+    case osg::PrimitiveSet::TRIANGLE_STRIP:
+        {
+            for( i=first;i<last;i+=2)
+            {// 0,2,4,...
+                addVertex(&((*vertices)[i]));
+            }
+            for(i=((last-first)%2)?(last-2):(last-1) ;i>first&& i<last;i-=2)
+            {
+                addVertex(&((*vertices)[i]));
+            }
+        }
+        break;
+    default: // lines, points, line_strip
+        {
+            for(i=first;i<last;++i, idx++)
+            {
+                addVertex(&((*vertices)[i]));
+                if (nperprim>0 && i<last-1 && idx%nperprim==nperprim-1) {
+                    endContour();
+                    beginContour();
+                }
+            }
+        }
+        break;
+    }
+
+    endContour();
+}
+
 void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices)
 {
     // adds a single primitive as a contour.
-    beginContour();
     unsigned int nperprim=0; // number of vertices per primitive
     if (primitive->getMode()==osg::PrimitiveSet::QUADS) nperprim=4;
     if (primitive->getMode()==osg::PrimitiveSet::TRIANGLES) nperprim=3;
@@ -254,73 +346,19 @@ void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertic
     {
     case(osg::PrimitiveSet::DrawArraysPrimitiveType):
         {
-            unsigned int i;
             osg::DrawArrays* drawArray = static_cast<osg::DrawArrays*>(primitive);
             unsigned int first = drawArray->getFirst(); 
             unsigned int last = first+drawArray->getCount();
-
-            switch (primitive->getMode()) {
-            case osg::PrimitiveSet::QUADS:
-            case osg::PrimitiveSet::TRIANGLES:
-            case osg::PrimitiveSet::POLYGON:
-            case osg::PrimitiveSet::LINE_LOOP:
-            case osg::PrimitiveSet::TRIANGLE_FAN:
-                {
-                    for(i=first;i<last;++i, idx++)
-                    {
-                        addVertex(&((*vertices)[i]));
-                        if (nperprim>0 && i<last-1 && idx%nperprim==nperprim-1) {
-                            endContour();
-                            beginContour();
-                        }
-                    }
-                }
-                break;
-            case osg::PrimitiveSet::QUAD_STRIP:
-                { // always has an even number of vertices
-                    for( i=first;i<last;i+=2)
-                    { // 0,2,4...
-                        addVertex(&((*vertices)[i]));
-                    }
-                    for(i=last-1;i>=first;i-=2)
-                    { // ...5,3,1
-                        addVertex(&((*vertices)[i]));
-                    }
-                }
-                break;
-            case osg::PrimitiveSet::TRIANGLE_STRIP:
-                {
-                    for( i=first;i<last;i+=2)
-                    {// 0,2,4,...
-                        addVertex(&((*vertices)[i]));
-                    }
-                    for(i=((last-first)%2)?(last-2):(last-1) ;i>first&& i<last;i-=2)
-                    {
-                        addVertex(&((*vertices)[i]));
-                    }
-                }
-                break;
-            default: // lines, points, line_strip
-                {
-                    for(i=first;i<last;++i, idx++)
-                    {
-                        addVertex(&((*vertices)[i]));
-                        if (nperprim>0 && i<last-1 && idx%nperprim==nperprim-1) {
-                            endContour();
-                            beginContour();
-                        }
-                    }
-                }
-                break;
-            }
+            addContour(primitive->getMode(),first,last,vertices);
             break;
-        }
+         }
     case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
         {
+            beginContour();
             osg::DrawElementsUByte* drawElements = static_cast<osg::DrawElementsUByte*>(primitive);
             for(osg::DrawElementsUByte::iterator indexItr=drawElements->begin();
-            indexItr!=drawElements->end();
-            ++indexItr, idx++)
+                indexItr!=drawElements->end();
+                ++indexItr, idx++)
             {
                 addVertex(&((*vertices)[*indexItr]));
                 if (nperprim>0 && indexItr!=drawElements->end() && idx%nperprim==nperprim-1) {
@@ -328,14 +366,16 @@ void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertic
                     beginContour();
                 }
             }
+            endContour();
             break;
         }
     case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
         {
+            beginContour();
             osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>(primitive);
             for(osg::DrawElementsUShort::iterator indexItr=drawElements->begin();
-            indexItr!=drawElements->end();
-            ++indexItr, idx++)
+                indexItr!=drawElements->end();
+                ++indexItr, idx++)
             {
                 addVertex(&((*vertices)[*indexItr]));
                 if (nperprim>0 && indexItr!=drawElements->end() && idx%nperprim==nperprim-1) {
@@ -343,14 +383,16 @@ void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertic
                     beginContour();
                 }
             }
+            endContour();
             break;
         }
     case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
         {
+            beginContour();
             osg::DrawElementsUInt* drawElements = static_cast<osg::DrawElementsUInt*>(primitive);
             for(osg::DrawElementsUInt::iterator indexItr=drawElements->begin();
-            indexItr!=drawElements->end();
-            ++indexItr, idx++)
+                indexItr!=drawElements->end();
+                ++indexItr, idx++)
             {
                 addVertex(&((*vertices)[*indexItr]));
                 if (nperprim>0 && indexItr!=drawElements->end() && idx%nperprim==nperprim-1) {
@@ -358,13 +400,14 @@ void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertic
                     beginContour();
                 }
             }
+            endContour();
             break;
         }
     default:
+        osg::notify(osg::NOTICE)<<"Tesselator::addContour(primitive, vertices) : Primitive type "<<primitive->getType()<<" not handled"<<std::endl;
         break;
     }
     
-    endContour();
 }
 
 void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap)
@@ -399,8 +442,8 @@ void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vert
         
         osg::Geometry::ArrayList& tcal = geom.getTexCoordArrayList();
         for(osg::Geometry::ArrayList::iterator tcalItr=tcal.begin();
-        tcalItr!=tcal.end();
-        ++tcalItr)
+            tcalItr!=tcal.end();
+            ++tcalItr)
         {
             if (tcalItr->array.valid()) 
             {
@@ -410,8 +453,8 @@ void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vert
         
         // now add any new vertices that are required.
         for(NewVertexList::iterator itr=_newVertexList.begin();
-        itr!=_newVertexList.end();
-        ++itr)
+            itr!=_newVertexList.end();
+            ++itr)
         {
             NewVertex& newVertex = (*itr);
             osg::Vec3* vertex = newVertex._vpos;

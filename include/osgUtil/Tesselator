@@ -115,6 +115,7 @@ class OSGUTIL_EXPORT Tesselator : public osg::Referenced
         void collectTesselation(osg::Geometry &cxgeom);
         
         typedef std::map<osg::Vec3*,unsigned int> VertexPtrToIndexMap;
+        void addContour(GLenum  mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices);
         void addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices);
         void handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap);
 

@@ -19,7 +19,7 @@
 
 //#include "CreateShadowedScene.h"
 
-osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const osg::Vec3& right,float chordRatio)
+osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const osg::Vec3& right,float chordRatio,const osg::Vec4& color)
 {
     osg::Geometry* geom = new osg::Geometry;
 
@@ -51,6 +51,13 @@ osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const os
     normals->push_back(normal);
     geom->setNormalArray(normals);
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    
+    
+    osg::Vec4Array* colors = new osg::Vec4Array;
+    colors->push_back(color);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    
 
     geom->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON,0,vertices->getNumElements()));
     
@@ -132,25 +139,27 @@ osg:: Node* createBox(const osg::BoundingBox& bb,float chordRatio)
 {
     osg::Geode* geode = osgNew osg::Geode();
 
-    // front faces.
-    geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio));
-    geode->addDrawable(createWing(bb.corner(7),bb.corner(5),bb.corner(4),chordRatio));
+    osg::Vec4 white(1.0f,1.0f,1.0f,1.0f);
 
-    geode->addDrawable(createWing(bb.corner(4),bb.corner(5),bb.corner(1),chordRatio));
-    geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio));
+    // front faces.
+    geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(7),bb.corner(5),bb.corner(4),chordRatio,white));
+
+    geode->addDrawable(createWing(bb.corner(4),bb.corner(5),bb.corner(1),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio,white));
     
-    geode->addDrawable(createWing(bb.corner(1),bb.corner(5),bb.corner(7),chordRatio));
-    geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio));
+    geode->addDrawable(createWing(bb.corner(1),bb.corner(5),bb.corner(7),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio,white));
 
     // back faces
-    geode->addDrawable(createWing(bb.corner(2),bb.corner(0),bb.corner(1),chordRatio));
-    geode->addDrawable(createWing(bb.corner(1),bb.corner(3),bb.corner(2),chordRatio));
+    geode->addDrawable(createWing(bb.corner(2),bb.corner(0),bb.corner(1),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(1),bb.corner(3),bb.corner(2),chordRatio,white));
 
-    geode->addDrawable(createWing(bb.corner(2),bb.corner(3),bb.corner(7),chordRatio));
-    geode->addDrawable(createWing(bb.corner(7),bb.corner(6),bb.corner(2),chordRatio));
+    geode->addDrawable(createWing(bb.corner(2),bb.corner(3),bb.corner(7),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(7),bb.corner(6),bb.corner(2),chordRatio,white));
 
-    geode->addDrawable(createWing(bb.corner(2),bb.corner(6),bb.corner(4),chordRatio));
-    geode->addDrawable(createWing(bb.corner(4),bb.corner(0),bb.corner(2),chordRatio));
+    geode->addDrawable(createWing(bb.corner(2),bb.corner(6),bb.corner(4),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(4),bb.corner(0),bb.corner(2),chordRatio,white));
 
     return geode;
 }
@@ -159,22 +168,42 @@ osg:: Node* createBoxNo5(const osg::BoundingBox& bb,float chordRatio)
 {
     osg::Geode* geode = osgNew osg::Geode();
 
-    // front faces.
-    geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio));
+    osg::Vec4 white(1.0f,1.0f,1.0f,1.0f);
 
-    geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio));
+    // front faces.
+    geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio,white));
+
+    geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio,white));
     
-    geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio));
+    geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio,white));
 
     // back faces
-    geode->addDrawable(createWing(bb.corner(2),bb.corner(0),bb.corner(1),chordRatio));
-    geode->addDrawable(createWing(bb.corner(1),bb.corner(3),bb.corner(2),chordRatio));
+    geode->addDrawable(createWing(bb.corner(2),bb.corner(0),bb.corner(1),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(1),bb.corner(3),bb.corner(2),chordRatio,white));
 
-    geode->addDrawable(createWing(bb.corner(2),bb.corner(3),bb.corner(7),chordRatio));
-    geode->addDrawable(createWing(bb.corner(7),bb.corner(6),bb.corner(2),chordRatio));
+    geode->addDrawable(createWing(bb.corner(2),bb.corner(3),bb.corner(7),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(7),bb.corner(6),bb.corner(2),chordRatio,white));
 
-    geode->addDrawable(createWing(bb.corner(2),bb.corner(6),bb.corner(4),chordRatio));
-    geode->addDrawable(createWing(bb.corner(4),bb.corner(0),bb.corner(2),chordRatio));
+    geode->addDrawable(createWing(bb.corner(2),bb.corner(6),bb.corner(4),chordRatio,white));
+    geode->addDrawable(createWing(bb.corner(4),bb.corner(0),bb.corner(2),chordRatio,white));
+
+    return geode;
+}
+
+osg:: Node* createBoxNo5No2(const osg::BoundingBox& bb,float chordRatio)
+{
+    osg::Geode* geode = osgNew osg::Geode();
+
+    osg::Vec4 red(1.0f,0.0f,0.0f,1.0f);
+    osg::Vec4 green(0.0f,1.0f,0.0f,1.0f);
+    osg::Vec4 blue(0.0f,0.0f,1.0f,1.0f);
+
+    // front faces.
+    geode->addDrawable(createWing(bb.corner(4),bb.corner(6),bb.corner(7),chordRatio,red));
+
+    geode->addDrawable(createWing(bb.corner(1),bb.corner(0),bb.corner(4),chordRatio,green));
+    
+    geode->addDrawable(createWing(bb.corner(7),bb.corner(3),bb.corner(1),chordRatio,blue));
 
     return geode;
 }
@@ -229,8 +258,8 @@ osg::Node* createLogo()
 
     // add the box and globe to it.
     //xform->addChild(createBox(bb,chordRatio));
-    xform->addChild(createBoxNo5(bb,chordRatio));
-
+    //xform->addChild(createBoxNo5(bb,chordRatio));
+    xform->addChild(createBoxNo5No2(bb,chordRatio));
     // add the transform to the group.
     logo_group->addChild(xform);
 
@@ -250,8 +279,7 @@ osg::Node* createLogo()
     osg::Group* backdrop = new osg::Group;
     backdrop->addChild(createBackdrop(corner,top,right));
 
-    osg::Vec3 lightPosition(-500.0f,-2500.0f,500.0f);
-
+    //osg::Vec3 lightPosition(-500.0f,-2500.0f,500.0f);
     //osg::Node* scene = createShadowedScene(logo_group,backdrop,lightPosition,0.0f,0);
 
     osg::Group* scene = new osg::Group;

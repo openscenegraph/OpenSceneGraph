@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D __COMP_DLL=7931 /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41a /d "_DEBUG"
@@ -102,11 +102,19 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_basic.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_compat.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_geom.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_header.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_light.cpp
 # End Source File
 # Begin Source File
 
@@ -126,11 +134,27 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_parse.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_pparse.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_print.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_range.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_rarchive.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_readbuf.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_scene.cpp
 # End Source File
 # Begin Source File
 
@@ -170,6 +194,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trdll.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_compat.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_geom.h
 # End Source File
 # Begin Source File
@@ -179,6 +207,10 @@ SOURCE=..\..\..\src\osgPlugins\txp\trpage_ident.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\txp\trpage_io.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\txp\trpage_print.h
 # End Source File
 # Begin Source File
 

@@ -357,7 +357,7 @@ void geoMoveBehaviour::doaction(osg::Node *node) {
         case DB_DSK_ROTATE_ACTION:
             //std::cout << node->getName() << " v: " << getVar() << " rotion " << DEG2RAD(getValue()) << std::endl;
             mtr->preMult( osg::Matrix::translate(-centre)* 
-                osg::Matrix::rotate(DEG2RAD(getValue()),axis)* 
+                osg::Matrix::rotate(DEG2RAD(getValue()),axis)* // nov 2003 negative rotation convention
                 osg::Matrix::translate(centre));
             break;
         }
@@ -376,10 +376,14 @@ bool geoMoveBehaviour::makeBehave(const georecord *grec, const geoHeaderGeo *the
             if (vcon) {
                 // std::cout<< "rotInput " << fid << " : " << theHeader->getVarname(fid)<< std::endl ;
                 setVar(vcon);
-                gfd=grec->getField(GEO_DB_ROTATE_ACTION_VECTOR);
+                const geoField *gfdir=grec->getField(GEO_DB_ROTATE_ACTION_DIR);
+                int flip=gfdir!=NULL; // ?(gfdir->getInt()):false;
+//				printf("Flip %d gfdir %x\n",flip, gfdir);
+				gfd=grec->getField(GEO_DB_ROTATE_ACTION_VECTOR);
                 if (gfd) {
                     float *ax= gfd->getVec3Arr(); // field identifier
-                    setAxis(osg::Vec3(ax[0],ax[1],ax[2]));
+                    if (flip) setAxis(-osg::Vec3(ax[0],ax[1],ax[2]));
+                    else setAxis(osg::Vec3(ax[0],ax[1],ax[2]));
                 }
                 gfd=grec->getField(GEO_DB_ROTATE_ACTION_ORIGIN);
                 if (gfd) {
@@ -601,6 +605,9 @@ void geoBehaviourCB::operator() (osg::Node *node, osg::NodeVisitor* nv)
 { // callback updates the transform, colour, string content...
     MatrixTransform *mtr=dynamic_cast<MatrixTransform *> (node);
     if (mtr) mtr->setMatrix(Matrix::identity()); // all actions are multiplied to this
+//		printf("setting matrix %x\n", mtr);
+ //   PositionAttitudeTransform *patr=dynamic_cast<PositionAttitudeTransform *> (node);
+   // if (patr) patr->setMatrix(Matrix::identity()); // all actions are multiplied to this
     for (std::vector<geoBehaviour *>::const_iterator itr=gblist.begin();
     itr<gblist.end();
     itr++) { // motion behaviour

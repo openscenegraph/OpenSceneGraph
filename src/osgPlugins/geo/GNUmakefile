@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	geoActions.cpp\
+	ClipRegion.cpp\
 	ReaderWriterGEO.cpp
 
 

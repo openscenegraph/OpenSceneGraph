@@ -187,7 +187,7 @@ void CullVisitor::popProjectionMatrix()
 }
 
 template<class matrix_type, class value_type>
-bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar, value_type nearFarRatio)
+bool _clampProjectionMatrix(matrix_type& projection, double znear, double zfar, value_type nearFarRatio)
 {
     if (zfar>0.0f)
     {
@@ -251,12 +251,12 @@ bool _clampProjectionMatrix(matrix_type& projection, double& znear, double& zfar
 }
 
 
-bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixf& projection, double& znear, double& zfar) const
+bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixf& projection, double znear, double zfar) const
 {
     return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
 }
 
-bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixd& projection, double& znear, double& zfar) const
+bool CullVisitor::clampProjectionMatrixImplementation(osg::Matrixd& projection, double znear, double zfar) const
 {
     return _clampProjectionMatrix( projection, znear, zfar, _nearFarRatio );
 }

@@ -91,7 +91,7 @@ const bool ClipNode::removeClipPlane(unsigned int pos)
     }
     else
     {
-        return NULL;
+        return false;
     }
 }
 

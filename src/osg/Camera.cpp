@@ -443,26 +443,31 @@ const Matrix Camera::getModelViewMatrix() const
     switch(_lookAtType)
     {
     case(USE_HOME_POSITON):
-        if (_modelToEyeTransform.valid())
         {
-            modelViewMatrix = *_modelToEyeTransform;
-        }
-        else
-        {
-            modelViewMatrix.makeIdentity();
+            if (_eyeToModelTransform.valid()) 
+                modelViewMatrix.invert(*_eyeToModelTransform);
+            else if (_modelToEyeTransform.valid())
+                modelViewMatrix = *_modelToEyeTransform;
+            else
+                modelViewMatrix.makeIdentity();
         }
         break;
     case(USE_EYE_AND_QUATERNION): // not implemented yet, default to eye,center,up.
     case(USE_EYE_CENTER_AND_UP):
     default:
         {
-        
-            modelViewMatrix.makeLookAt(_eye,_center,_up);
-                        
-            if (_modelToEyeTransform.valid())
+            if (_eyeToModelTransform.valid()) 
             {
+                modelViewMatrix.invert(*_eyeToModelTransform);
+                modelViewMatrix.postMult(Matrix::lookAt(_eye,_center,_up));
+            }
+            else if (_modelToEyeTransform.valid())
+            {
+                modelViewMatrix.makeLookAt(_eye,_center,_up);
                 modelViewMatrix.preMult(*_modelToEyeTransform);
             }
+            else
+                modelViewMatrix.makeLookAt(_eye,_center,_up);
             
         }
         break;

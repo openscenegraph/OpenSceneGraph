@@ -216,6 +216,12 @@ TXPArchive *ReaderWriterTXP::getArchive(int id, const std::string& dir)
             return NULL;
         }
 
+		if (archive->loadTextStyles() == false)
+		{
+			ReaderWriterTXPERROR("getArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
+			return NULL;
+		}
+
         archive->setId(id);
 
         _archives[id] = archive;

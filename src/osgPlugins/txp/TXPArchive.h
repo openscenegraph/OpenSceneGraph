@@ -44,6 +44,7 @@
 #include <osg/Node>
 #include <osg/PagedLOD>
 #include <osgSim/LightPointNode>
+#include <osgText/Font>
 
 #include <OpenThreads/Mutex>
 
@@ -79,6 +80,10 @@ public:
     
     // Load the light attribs from the archive
     bool loadLightAttributes();
+
+	// Load the text styles from the archive
+	bool loadTextStyles();
+	inline std::vector< osg::ref_ptr<osgText::Font> >& getStyles() { return _fonts; }
     
     // Add light attrib
     void addLightAttribute(osgSim::LightPointNode* lpn, osg::StateSet* fallback , const osg::Vec3& attitude);
@@ -169,16 +174,19 @@ protected:
     osg::ref_ptr<TXPParser>    _parser;
     
     // Textures
-    std::vector< osg::ref_ptr<osg::Texture2D> >        _textures;
+    std::vector< osg::ref_ptr<osg::Texture2D> >	_textures;
     
     // States
-    std::vector< osg::ref_ptr<osg::StateSet> >        _gstates;
+    std::vector< osg::ref_ptr<osg::StateSet> >  _gstates;
     
     // Models
-    std::vector< osg::ref_ptr<osg::Node> >            _models;
+    std::vector< osg::ref_ptr<osg::Node> >      _models;
     
     // Light attributes vector
-    std::vector<DefferedLightAttribute>                _lights;
+    std::vector<DefferedLightAttribute>         _lights;
+
+	// Text styles / Fonts
+	std::vector< osg::ref_ptr<osgText::Font> >	_fonts;
 
     //
     OpenThreads::Mutex  _mutex;

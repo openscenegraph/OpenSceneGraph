@@ -449,6 +449,17 @@ protected:
     TXPParser *_parse;
 };
 
+//----------------------------------------------------------------------------
+class labelRead: public trpgr_Callback
+{
+public:
+    labelRead(TXPParser *in_parse)  : _parse(in_parse)
+    {};
+    void *Parse(trpgToken tok,trpgReadBuffer &buf);
+protected:
+    TXPParser *_parse;
+};
+
 } // namespace
 
 #endif // __TXPPARSER_H_

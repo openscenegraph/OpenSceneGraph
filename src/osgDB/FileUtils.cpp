@@ -32,7 +32,7 @@
 
 #else // unix
 
-#if defined( __APPLE__ ) || defined(__CYGWIN__)
+#if defined( __APPLE__ ) || defined(__CYGWIN__) || defined(__FreeBSD__)
     #define stat64 stat
 #endif
 

@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <algorithm>
+#include <map>
 
 #include "TriStrip_tri_stripper.h"
 
@@ -681,7 +682,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         }
     }
     
-    float minimum_ratio_of_indices_to_unique_vertices = 2.0;
+    float minimum_ratio_of_indices_to_unique_vertices = 1.5;
     float ratio_of_indices_to_unique_vertices = ((float)taf._in_indices.size()/(float)numUnique);
 
     std::cout<<"Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
@@ -713,35 +714,126 @@ void TriStripVisitor::stripify(Geometry& geom)
 
         triangle_stripper::tri_stripper::primitives_vector outPrimitives;
         stripifier.Strip(&outPrimitives);
+        
+        
+        typedef triangle_stripper::tri_stripper::primitives_vector::iterator prim_iterator;
+        typedef std::multimap<unsigned int,prim_iterator> QuadMap;
+        QuadMap quadMap;
 
-        for(triangle_stripper::tri_stripper::primitives_vector::iterator pitr=outPrimitives.begin();
+        triangle_stripper::tri_stripper::primitives_vector::iterator pitr;
+
+        // pick out quads and place them in the quadMap, and also look for the max 
+        for(pitr=outPrimitives.begin();
             pitr!=outPrimitives.end();
             ++pitr)
         {
-        
-            unsigned int maxValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
-            if (maxValue<256)
+            if (pitr->m_Indices.size()==4)
             {
-                osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(pitr->m_Type);
-                elements->reserve(pitr->m_Indices.size());
-                std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
-                new_primitives.push_back(elements);
+                std::swap(pitr->m_Indices[2],pitr->m_Indices[3]);
+                unsigned int minValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
+                quadMap.insert(std::pair<unsigned int,prim_iterator>(minValue,pitr));
             }
-            else if (maxValue<65536)
+        }
+
+        
+        // handle the quads
+        if (!quadMap.empty())
+        {
+            IndexList indices;
+            indices.reserve(quadMap.size());
+            
+            // adds all the quads into the quad primitive, in ascending order 
+            // and the QuadMap stores the quad's in ascending order.
+            for(QuadMap::iterator qitr=quadMap.begin();
+                qitr!=quadMap.end();
+                ++qitr)
             {
-                osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
-                elements->reserve(pitr->m_Indices.size());
-                std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
-                new_primitives.push_back(elements);
+                pitr = qitr->second;
+
+                unsigned int min_pos = 0;
+                for(i=1;i<4;++i)
+                {
+                    if (pitr->m_Indices[min_pos]>pitr->m_Indices[i]) 
+                        min_pos = i;
+                }
+                indices.push_back(pitr->m_Indices[min_pos]);
+                indices.push_back(pitr->m_Indices[(min_pos+1)%4]);
+                indices.push_back(pitr->m_Indices[(min_pos+2)%4]);
+                indices.push_back(pitr->m_Indices[(min_pos+3)%4]);
+            }            
+        
+            bool inOrder = true;
+            unsigned int previousValue = indices.front();
+            for(IndexList::iterator qi_itr=indices.begin()+1;
+                qi_itr!=indices.end() && inOrder;
+                ++qi_itr)
+            {
+                inOrder = (previousValue+1)==*qi_itr;
+                previousValue = *qi_itr;
+            }
+        
+            if (inOrder)
+            {
+                new_primitives.push_back(new osg::DrawArrays(GL_QUADS,indices.front(),indices.size()));
             }
             else
             {
-                osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(pitr->m_Type);
-                elements->reserve(pitr->m_Indices.size());
-                std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
-                new_primitives.push_back(elements);
+                unsigned int maxValue = *(std::max_element(indices.begin(),indices.end()));
+
+                if (maxValue<256)
+                {
+                    osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(GL_QUADS);
+                    std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
+                    new_primitives.push_back(elements);
+                }
+                else if (maxValue<65536)
+                {
+                    osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_QUADS);
+                    std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
+                    new_primitives.push_back(elements);
+                }
+                else 
+                {
+                    osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_QUADS);
+                    std::copy(indices.begin(),indices.end(),std::back_inserter(*elements));
+                    new_primitives.push_back(elements);
+                }
+            }
+        }    
+        
+        
+        // handle non quad primitives    
+        for(pitr=outPrimitives.begin();
+            pitr!=outPrimitives.end();
+            ++pitr)
+        {
+            if (pitr->m_Indices.size()!=4)
+            {
+                unsigned int maxValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
+                if (maxValue<256)
+                {
+                    osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(pitr->m_Type);
+                    elements->reserve(pitr->m_Indices.size());
+                    std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
+                    new_primitives.push_back(elements);
+                }
+                else if (maxValue<65536)
+                {
+                    osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
+                    elements->reserve(pitr->m_Indices.size());
+                    std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
+                    new_primitives.push_back(elements);
+                }
+                else
+                {
+                    osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(pitr->m_Type);
+                    elements->reserve(pitr->m_Indices.size());
+                    std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
+                    new_primitives.push_back(elements);
+                }
             }
         }
+        
         geom.setPrimitiveSetList(new_primitives);
         
         #if 0 

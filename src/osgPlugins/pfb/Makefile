@@ -41,6 +41,10 @@ LIBS = -losg -losgDB \
 	-lpfvct\
 	-lpfdu -lpfutil -lpf
 
+# comment in for PFB loader texture support on IRIX
+#   (note: you may need to build libimage.so from libimage.a)
+# LIBS += -limage
+
 TARGET_LOADER_FILES = osgPlugins/osgdb_pfb.$(SO_EXT)
 
 C++FLAGS += -g -I../../../include 

@@ -329,7 +329,23 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::LOD& lod)
 {
     if (!_matrixStack.empty())
     {
-        lod.setCenter(lod.getCenter()*_matrixStack.back());
+        osg::Matrix& matrix = _matrixStack.back();
+        osg::Matrix matrix_no_trans = matrix;
+        matrix_no_trans.setTrans(0.0f,0.0f,0.0f);
+        
+        osg::Vec3 v111(1.0f,1.0f,1.0f);
+        osg::Vec3 new_v111 = v111*matrix_no_trans;
+        float ratio = new_v111.length()/v111.length();
+
+        // move center point.
+        lod.setCenter(lod.getCenter()*matrix);
+        
+        // adjust ranges to new scale.
+        for(int i=0;i<lod.getNumRanges();++i)
+        {
+            lod.setRange(i,lod.getRange(i)*ratio);
+        }
+        
         lod.dirtyBound();
     }
     traverse(lod);

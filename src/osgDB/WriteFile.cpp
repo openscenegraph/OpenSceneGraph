@@ -1,13 +1,13 @@
 
-#include "osg/Notify"
-#include "osg/Object"
-#include "osg/Image"
-#include "osg/Node"
-#include "osg/Group"
-#include "osg/Geode"
+#include <osg/Notify>
+#include <osg/Object>
+#include <osg/Image>
+#include <osg/Node>
+#include <osg/Group>
+#include <osg/Geode>
 
-#include "osgDB/Registry"
-#include "osgDB/WriteFile"
+#include <osgDB/Registry>
+#include <osgDB/WriteFile>
 
 using namespace osg;
 using namespace osgDB;

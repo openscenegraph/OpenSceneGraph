@@ -1,5 +1,5 @@
-#include "osg/GL"
-#include "osg/PolygonOffset"
+#include <osg/GL>
+#include <osg/PolygonOffset>
 
 using namespace osg;
 

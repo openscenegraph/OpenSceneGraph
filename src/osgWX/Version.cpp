@@ -1,4 +1,4 @@
-#include "osgWX/Version"
+#include <osgWX/Version>
 
 const char* osgWXGetVersion()
 {

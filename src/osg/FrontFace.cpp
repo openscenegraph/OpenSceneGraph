@@ -1,5 +1,5 @@
-#include "osg/GL"
-#include "osg/FrontFace"
+#include <osg/GL>
+#include <osg/FrontFace>
 
 using namespace osg;
 

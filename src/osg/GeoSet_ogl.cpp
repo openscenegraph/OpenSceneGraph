@@ -3,9 +3,9 @@
 #endif
 
 #include <stdio.h>
-#include "osg/GL"
-#include "osg/GeoSet"
-#include "osg/Notify"
+#include <osg/GL>
+#include <osg/GeoSet>
+#include <osg/Notify>
 
 using namespace osg;
 

@@ -1,4 +1,4 @@
-#include "osg/EarthSky"
+#include <osg/EarthSky>
 
 #include <algorithm>
 

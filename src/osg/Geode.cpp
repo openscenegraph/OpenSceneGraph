@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "osg/Geode"
+#include <osg/Geode>
 
 #define square(x)   ((x)*(x))
 

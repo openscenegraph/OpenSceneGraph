@@ -6,10 +6,10 @@
 #include <math.h>
 #include <float.h>
 
-#include "osg/GeoSet"
-#include "osg/Notify"
+#include <osg/GeoSet>
+#include <osg/Notify>
 
-//#include "osg/mem_ptr"
+//#include <osg/mem_ptr>
 
 using namespace osg;
 

@@ -1,5 +1,5 @@
-#include "osg/Light"
-#include "osg/Notify"
+#include <osg/Light>
+#include <osg/Notify>
 
 using namespace osg;
 

@@ -1,4 +1,4 @@
-#include "osg/AlphaFunc"
+#include <osg/AlphaFunc>
 
 using namespace osg;
 

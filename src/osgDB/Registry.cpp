@@ -1,14 +1,14 @@
 
-#include "osg/Notify"
-#include "osg/Object"
-#include "osg/Image"
-#include "osg/Node"
-#include "osg/Group"
-#include "osg/Geode"
+#include <osg/Notify>
+#include <osg/Object>
+#include <osg/Image>
+#include <osg/Node>
+#include <osg/Group>
+#include <osg/Geode>
 
-#include "osgDB/Registry"
-#include "osgDB/FileUtils"
-#include "osgDB/FileNameUtils"
+#include <osgDB/Registry>
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 
 #include <stdio.h>
 

@@ -1,10 +1,10 @@
-#include "osg/Notify"
-#include "osg/Object"
-#include "osg/Image"
-#include "osg/Node"
+#include <osg/Notify>
+#include <osg/Object>
+#include <osg/Image>
+#include <osg/Node>
 
-#include "osgDB/Registry"
-#include "osgDB/ReadFile"
+#include <osgDB/Registry>
+#include <osgDB/ReadFile>
 
 using namespace osg;
 using namespace osgDB;

@@ -4,9 +4,9 @@
 #include <dlfcn.h>
 #endif
 
-#include "osg/GL"
-#include "osg/GLExtensions"
-#include "osg/Notify"
+#include <osg/GL>
+#include <osg/GLExtensions>
+#include <osg/Notify>
 
 
 #include <stdlib.h>

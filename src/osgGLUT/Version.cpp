@@ -1,4 +1,4 @@
-#include "osgGLUT/Version"
+#include <osgGLUT/Version>
 
 const char* osgGLUTGetVersion()
 {

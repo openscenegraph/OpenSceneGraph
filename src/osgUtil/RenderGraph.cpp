@@ -1,6 +1,6 @@
-#include "osgUtil/RenderGraph"
+#include <osgUtil/RenderGraph>
 
-#include "osg/Notify"
+#include <osg/Notify>
 
 using namespace osg;
 using namespace osgUtil;

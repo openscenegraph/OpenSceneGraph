@@ -1,5 +1,5 @@
-#include "osg/GL"
-#include "osg/CullFace"
+#include <osg/GL>
+#include <osg/CullFace>
 
 using namespace osg;
 

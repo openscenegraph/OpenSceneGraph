@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
-#include "osg/Group"
-#include "osg/BoundingBox"
+#include <osg/Group>
+#include <osg/BoundingBox>
 
 #include <algorithm>
 

@@ -1,5 +1,5 @@
-#include "osg/Material"
-#include "osg/BoundsChecking"
+#include <osg/Material>
+#include <osg/BoundsChecking>
 
 using namespace osg;
 

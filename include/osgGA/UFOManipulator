@@ -100,12 +100,16 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 
         /** Sets the viewpoint matrix to the home position */
         virtual void home(const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) ;
+        void home(void);
 
         /** Handles incoming osgGA events */
 		bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter &aa);
 
         /** Reports Usage parameters to the application */
         void getUsage(osg::ApplicationUsage& usage) const;
+
+        /** Report the current position as LookAt vectors */
+        void getCurrentPositionAsLookAt( osg::Vec3 &eye, osg::Vec3 &center, osg::Vec3 &up );
 
         protected:
 
@@ -151,7 +155,6 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 
         bool _straightenOffset;
 
-        void _home();
         void _stop();
         void _keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &);
         void _keyUp( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter &);

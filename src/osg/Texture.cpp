@@ -606,7 +606,7 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat) const
 
 void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size) const
 {
-    if (_internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || _internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
+    if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
         blockSize = 8;
     else
         blockSize = 16;

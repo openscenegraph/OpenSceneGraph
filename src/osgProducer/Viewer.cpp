@@ -865,7 +865,7 @@ void Viewer::requestRedraw()
     //osg::notify(osg::INFO)<<"Viewer::requestRedraw() called"<<std::endl;
 }
 
-void Viewer::requestContinuousUpdate(bool flag)
+void Viewer::requestContinuousUpdate(bool)
 {
     //osg::notify(osg::INFO)<<"Viewer::requestContinuousUpdate("<<flag<<") called"<<std::endl;
 }

@@ -23,9 +23,6 @@
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
-#include <iostream>
-#include <fstream>
-
 #include <osg/Notify>
 #include <osg/Geode>
 #include <osg/Group>
@@ -35,6 +32,9 @@
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+
+#include <iostream>
+#include <fstream>
 
 #include "Lwo2.h"
 #include "Lwo2Layer.h"

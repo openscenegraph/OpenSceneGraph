@@ -101,7 +101,7 @@ struct TriangleViewFrustumIntersect
         TriangleViewFrustumIntersect(
             const osg::ClippingVolume& clip_vol, 
             const osg::Matrix* matr, 
-            double current_near,
+//            double current_near,
             const osg::Vec3& eyePoint,
             const osg::Vec3& LeftUp,
             const osg::Vec3& LeftDown,
@@ -110,7 +110,7 @@ struct TriangleViewFrustumIntersect
         {
             _cv = clip_vol;
             _t_mat = matr;
-            _current_near = current_near;
+//            _current_near = current_near;
             _eye = eyePoint;
             _LeftUp = LeftUp;
             _LeftDown = LeftDown;
@@ -228,11 +228,19 @@ void TriangleViewFrustumIntersect::intersect_triangle(const osg::Vec3& vert1, co
         v3 = vert3;
     }
 
+	
     //construct positions of truncated clipping volume corners
+	/*
     osg::Vec3 UpLeft(_eye + _LeftUp * _current_near);
     osg::Vec3 DownLeft(_eye + _LeftDown*_current_near);
     osg::Vec3 UpRight(_eye + _RightUp*_current_near);
     osg::Vec3 DownRight(_eye + _RightDown*_current_near);
+	*/
+	osg::Vec3 UpLeft(_eye + _LeftUp);
+    osg::Vec3 DownLeft(_eye + _LeftDown);
+    osg::Vec3 UpRight(_eye + _RightUp);
+    osg::Vec3 DownRight(_eye + _RightDown);
+	
 
     //construct truncation "back plane"
     osg::Plane back_plane(DownLeft, DownRight, UpRight);//CCW, to have normal where it should be
@@ -617,12 +625,17 @@ void CullVisitor::calcClippingDirections() const
     osg::Vec3 t_side = _camera->getSideVector();
 
     double t_VFOV_2 = osg::DegreesToRadians(_camera->calc_fovy() * 0.5);//half of vertical FOV in radians
+	double pitch_up_angle = atan(_camera->top()/_camera->zNear());
 
     //we need to pitch up the cameras up vector for angle that is half fovy, 
-        osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
+//        osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
+	osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(pitch_up_angle, t_side.x(), t_side.y(), t_side.z());
 
     //we need also pitched down cameras up vector
-        osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
+//    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
+	double pitch_down_angle = atan(_camera->bottom()/_camera->zNear());
+//	osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
+	osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(pitch_down_angle, t_side.x(), t_side.y(), t_side.z());
 
     //we need either left and right or up and down planes of clipping volume (their normals better said)
 
@@ -708,11 +721,35 @@ void CullVisitor::updateCalculatedNearFar(osg::Drawable* pDrawable)
             current_near = _calculated_zfar * current_near;
         else current_near = 10000.0;//something must be put
 
+		double mult_factor;
+		if(_calculated_znear != FLT_MAX)//just in case this is the very first entry (i.e. the first bounding box contained eyePoint of camera
+            mult_factor = _calculated_znear * current_near;//this is side of triangle ...
+        else if(_calculated_zfar != -FLT_MAX) 
+            mult_factor = _calculated_zfar * current_near;
+        else mult_factor = 10000.0;//something must be put
+
+		double LUdistance = _LeftUp*lookVector;
+		LUdistance = mult_factor / LUdistance;
+
+		double LDdistance = _LeftDown*lookVector;
+		LDdistance = mult_factor / LDdistance;
+
+		double RUdistance = _RightUp*lookVector;
+		RUdistance = mult_factor / RUdistance;
+
+		double RDdistance = _RightDown*lookVector;
+		RDdistance = mult_factor / RDdistance;
+
         //construct functor: needs clipping volume, matrix, and current near, while some members for speed are kept in CullVisitor since
         //they need be calculated only once per frame
+		/*
         TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
             _cvs->_matrix.get(), current_near, eyePoint, 
             _LeftUp,_LeftDown,_RightUp,_RightDown);
+		*/
+		TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
+            _cvs->_matrix.get(), eyePoint, 
+            _LeftUp*LUdistance,_LeftDown*LDdistance,_RightUp*RUdistance,_RightDown*RDdistance);
 
         //this is ok, since the GeoSets are the ones we are really interested in here
         osg::GeoSet* p_gset = (osg::GeoSet*) pDrawable;
@@ -1454,7 +1491,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     
 // adjust camera left,right,up,down to fit (in world coords)
 
-//#define USE_SPHERE_NEAR_FAR    
+#define USE_SPHERE_NEAR_FAR    
 
 #ifdef USE_SPHERE_NEAR_FAR    
     Vec3 near_local  ( center_local-lv_local*width );

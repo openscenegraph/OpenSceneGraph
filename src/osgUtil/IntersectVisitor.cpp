@@ -274,6 +274,7 @@ void IntersectVisitor::leaveNode()
 {
     IntersectState* cis = _intersectStateStack.back().get();
     cis->_segmentMaskStack.pop_back();
+    _nodePath.pop_back();
 }
 
 

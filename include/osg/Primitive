@@ -9,6 +9,63 @@
 
 namespace osg {
 
+#ifndef _MSC_VER
+
+typedef std::vector<GLsizei> VectorSizei;
+typedef std::vector<GLubyte> VectorUByte;
+typedef std::vector<GLushort> VectorUShort;
+typedef std::vector<GLuint> VectorUInt;
+
+#else // _MSC_VER
+
+// work arounds for MS linker problems.
+class VectorSizei: public std::vector<GLsizei> {
+	typedef std::vector<value_type> inherited;
+public:
+	VectorSizei(): inherited() {}
+	explicit VectorSizei(size_type n): inherited(n) {}
+	VectorSizei(const VectorSizei &copy): inherited(copy) {}
+	VectorSizei(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	template<class InputIterator>
+	VectorSizei(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
+};
+
+class VectorUByte: public std::vector<GLubyte> {
+	typedef std::vector<value_type> inherited;
+public:
+	VectorUByte(): inherited() {}
+	explicit VectorUByte(size_type n): inherited(n) {}
+	VectorUByte(const VectorUByte &copy): inherited(copy) {}
+	VectorUByte(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	template<class InputIterator>
+	VectorUByte(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
+};
+
+class VectorUShort: public std::vector<GLushort> {
+	typedef std::vector<value_type> inherited;
+public:
+	VectorUShort(): inherited() {}
+	explicit VectorUShort(size_type n): inherited(n) {}
+	VectorUShort(const VectorUShort &copy): inherited(copy) {}
+	VectorUShort(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	template<class InputIterator>
+	VectorUShort(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
+};
+
+class VectorUInt: public std::vector<GLuint> {
+	typedef std::vector<value_type> inherited;
+public:
+	VectorUInt(): inherited() {}
+	explicit VectorUInt(size_type n): inherited(n) {}
+	VectorUInt(const VectorUInt &copy): inherited(copy) {}
+	VectorUInt(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	template<class InputIterator>
+	VectorUInt(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
+};
+
+#endif
+
+
 class Primitive : public Object
 {
     public:
@@ -114,7 +171,6 @@ class SG_EXPORT DrawArrays : public Primitive
         GLsizei _count;
 };
 
-typedef std::vector<GLsizei> VectorSizei;
 class SG_EXPORT DrawArrayLengths : public Primitive, public VectorSizei
 {
     public:
@@ -163,7 +219,6 @@ class SG_EXPORT DrawArrayLengths : public Primitive, public VectorSizei
         GLint   _first;
 };
 
-typedef std::vector<GLubyte>    VectorUByte;
 class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
 {
     public:
@@ -200,7 +255,6 @@ class SG_EXPORT DrawElementsUByte : public Primitive, public VectorUByte
 };
 
 
-typedef std::vector<GLushort>   VectorUShort;
 class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
 {
     public:
@@ -236,7 +290,6 @@ class SG_EXPORT DrawElementsUShort : public Primitive, public VectorUShort
         virtual void applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor);
 };
 
-typedef std::vector<GLuint>     VectorUInt;
 class SG_EXPORT DrawElementsUInt : public Primitive, public VectorUInt
 {
     public:

@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="osgPlugin osg" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgPlugin osgParticle" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgPlugin osg - Win32 Release
+CFG=osgPlugin osgParticle - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "dot_osg.mak".
+!MESSAGE NMAKE /f "dot_osgParticle.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "dot_osg.mak" CFG="osgPlugin osg - Win32 Release"
+!MESSAGE NMAKE /f "dot_osgParticle.mak" CFG="osgPlugin osgParticle - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "osgPlugin osg - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "osgPlugin osg - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin osgParticle - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin osgParticle - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "osgPlugin osg - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin osgParticle - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osg.dll" /libpath:"../../../lib"
+# ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgParticle.dll" /libpath:"../../../lib"
 # SUBTRACT LINK32 /nodefaultlib
 
-!ELSEIF  "$(CFG)" == "osgPlugin osg - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin osgParticle - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,15 +80,15 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgd.dll" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgParticled.dll" /pdbtype:sept /libpath:"../../../lib"
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ENDIF 
 
 # Begin Target
 
-# Name "osgPlugin osg - Win32 Release"
-# Name "osgPlugin osg - Win32 Debug"
+# Name "osgPlugin osgParticle - Win32 Release"
+# Name "osgPlugin osgParticle - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -96,7 +96,7 @@ LINK32=link.exe
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_AccelOperator.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_AccelOperator.cpp
 
 # End Source File
 
@@ -104,7 +104,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_AccelOperator.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_CenteredPlacer.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_CenteredPlacer.cpp
 
 # End Source File
 
@@ -112,7 +112,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_CenteredPlacer.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_Emitter.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Emitter.cpp
 
 # End Source File
 
@@ -120,7 +120,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_Emitter.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_FluidFrictionOperator.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_FluidFrictionOperator.cpp
 
 # End Source File
 
@@ -128,7 +128,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_FluidFrictionOperator.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_ForceOperator.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ForceOperator.cpp
 
 # End Source File
 
@@ -136,7 +136,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_ForceOperator.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_LinearInterpolator.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_LinearInterpolator.cpp
 
 # End Source File
 
@@ -144,7 +144,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_LinearInterpolator.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_ModularEmitter.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ModularEmitter.cpp
 
 # End Source File
 
@@ -152,7 +152,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_ModularEmitter.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_ModularProgram.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ModularProgram.cpp
 
 # End Source File
 
@@ -160,7 +160,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_ModularProgram.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_MultiSegmentPlacer.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_MultiSegmentPlacer.cpp
 
 # End Source File
 
@@ -168,7 +168,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_MultiSegmentPlacer.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_Particle.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Particle.cpp
 
 # End Source File
 
@@ -176,7 +176,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_Particle.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_ParticleProcessor.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleProcessor.cpp
 
 # End Source File
 
@@ -184,7 +184,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_ParticleProcessor.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_ParticleSystem.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleSystem.cpp
 
 # End Source File
 
@@ -192,7 +192,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_ParticleSystem.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_ParticleSystemUpdater.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_ParticleSystemUpdater.cpp
 
 # End Source File
 
@@ -200,7 +200,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_ParticleSystemUpdater.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_PointPlacer.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_PointPlacer.cpp
 
 # End Source File
 
@@ -208,7 +208,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_PointPlacer.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_Program.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_Program.cpp
 
 # End Source File
 
@@ -216,7 +216,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_Program.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_RadialShooter.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_RadialShooter.cpp
 
 # End Source File
 
@@ -224,7 +224,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_RadialShooter.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_RandomRateCounter.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_RandomRateCounter.cpp
 
 # End Source File
 
@@ -232,7 +232,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_RandomRateCounter.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_SectorPlacer.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SectorPlacer.cpp
 
 # End Source File
 
@@ -240,7 +240,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_SectorPlacer.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_SegmentPlacer.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_SegmentPlacer.cpp
 
 # End Source File
 
@@ -248,7 +248,7 @@ SOURCE=..\..\src\osgPlugins\osgParticle\IO_SegmentPlacer.cpp
 
 
 
-SOURCE=..\..\src\osgPlugins\osgParticle\IO_VariableRateCounter.cpp
+SOURCE=..\..\..\src\osgPlugins\osgParticle\IO_VariableRateCounter.cpp
 
 # End Source File
 

@@ -16,6 +16,7 @@
 #include "Exception.h"
 
 #include "StateSet.h"
+#include "AlphaFunc.h"
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
@@ -403,7 +404,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         writeInt(id);
 
         // write the stateset.
-        if(dynamic_cast<const osg::BlendFunc*>(attribute)){
+        if(dynamic_cast<const osg::AlphaFunc*>(attribute)){
+            ((ive::AlphaFunc*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);
         }
         // This is a Material

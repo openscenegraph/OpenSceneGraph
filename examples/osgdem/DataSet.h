@@ -107,6 +107,8 @@ class DataSet : public osg::Referenced
             
             SpatialProperties computeSpatialProperties(osgTerrain::CoordinateSystem* cs) const;
 
+            bool intersects(const SpatialProperties& sp) const;
+
             void read(DestinationData& destination);
             
             void readImage(DestinationData& destination);
@@ -119,6 +121,7 @@ class DataSet : public osg::Referenced
             
             osg::ref_ptr<osg::Node>                     _model;
             GDALDataset*                                _gdalDataSet;
+            
         };
 
 

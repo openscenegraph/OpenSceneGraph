@@ -2,6 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+	AlphaFunc.cpp\
 	AnimationPath.cpp\
 	AnimationPathCallback.cpp\
 	Billboard.cpp\

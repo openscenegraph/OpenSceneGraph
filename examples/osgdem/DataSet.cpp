@@ -766,7 +766,7 @@ void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* s
 
             SpatialProperties sp = data->computeSpatialProperties(_cs.get());
 
-            if (!sp._extents.intersects(data->getExtents(_cs.get())))
+            if (!sp._extents.intersects(_extents))
             {
                 std::cout<<"DataSet::DestinationTile::computeMaximumSourceResolution:: source does not overlap ignoring for this tile."<<std::endl;
                 continue;
@@ -1580,50 +1580,6 @@ void DataSet::CompositeSource::sort()
 
 void DataSet::updateSourcesForDestinationGraphNeeds()
 {
-
-    std::cout<<"Using source_iterator itr"<<std::endl;
-    for(CompositeSource::source_iterator csitr(_sourceGraph.get());csitr.valid();++csitr)
-    {
-        std::cout<<"  Source "<<(*csitr)->getFileName()<<std::endl;
-    }
-    std::cout<<"End of Using Source Iterator itr"<<std::endl;
-
-    std::cout<<"Using Iterator itr"<<std::endl;
-    for(CompositeSource::iterator csitr(_sourceGraph.get());csitr.valid();++csitr)
-    {
-        std::cout<<"    Composite Source"<<&(*csitr)<<std::endl;
-        for(CompositeSource::SourceList::iterator itr=csitr->_sourceList.begin();
-            itr!=csitr->_sourceList.end();
-            ++itr)
-        {
-            std::cout<<"      Source "<<(*itr)->getFileName()<<" res="<<(*itr)->getSortValue()<<std::endl;
-        }
-        csitr->setType(LEVEL_OF_DETAIL);
-    }
-    std::cout<<"End of Source Iterator itr"<<std::endl;
-    
-    {
-        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
-        {
-            Source* source = itr->get();
-            source->setSortValueFromSourceDataResolution();
-            std::cout<<"sort "<<source->getFileName()<<" value "<<source->getSortValue()<<std::endl;
-            
-        }
-        
-        // sort them so highest sortValue is first.
-
-        _sourceGraph->sort();
-    }
-    
-    std::cout<<"Using source_lod_iterator itr"<<std::endl;
-    for(CompositeSource::source_lod_iterator csitr(_sourceGraph.get(),CompositeSource::LODSourceAdvancer(0.0));csitr.valid();++csitr)
-    {
-        std::cout<<"  LOD "<<(*csitr)->getFileName()<<std::endl;
-    }
-    std::cout<<"End of Using Source Iterator itr"<<std::endl;
-    
-
 
     std::string temporyFilePrefix("temporaryfile_");
 

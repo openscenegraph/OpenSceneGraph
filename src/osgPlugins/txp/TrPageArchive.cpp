@@ -39,7 +39,7 @@ TrPageArchive::~TrPageArchive()
 {
 }
 
-bool TrPageArchive::OpenFile(const std::string &file)
+bool TrPageArchive::OpenFile(const char* file)
 {
     m_alternate_path = osgDB::getFilePath(file);
     std::string name = osgDB::getSimpleFileName(file);

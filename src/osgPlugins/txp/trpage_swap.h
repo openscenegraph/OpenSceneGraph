@@ -1,16 +1,15 @@
 /* ************************
    Copyright Terrain Experts Inc.
    Terrain Experts Inc (TERREX) reserves all rights to this source code
-   unless otherwise specified in writing by the Chief Operating Officer
-   of TERREX.
+   unless otherwise specified in writing by the President of TERREX.
    This copyright may be updated in the future, in which case that version
    supercedes this one.
    -------------------
    Terrex Experts Inc.
-   84 West Santa Clara St., Suite 380
-   San Jose, CA 95113
+   4400 East Broadway #314
+   Tucson, AZ  85711
    info@terrex.com
-   Tel: (408) 293-9977
+   Tel: (520) 323-7990
    ************************
    */
 
@@ -18,7 +17,7 @@
 #define trpage_swap_h_
 
 /* trpage_swap.h
-	Byte swapping utility functions.
+    Byte swapping utility functions.
   */
 
 #include "trpage_sys.h"
@@ -30,7 +29,7 @@
 short trpg_byteswap_short( short number );
 // Byte swap and return an integer
 // {group:Byte Ordering Utilities}
-int	trpg_byteswap_int( int number );
+int    trpg_byteswap_int( int number );
 // Byte swap and return a long
 // {group:Byte Ordering Utilities}
 long trpg_byteswap_long( long number );

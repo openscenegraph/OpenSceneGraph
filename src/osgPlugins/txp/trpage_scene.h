@@ -1,16 +1,15 @@
 /* ************************
    Copyright Terrain Experts Inc.
    Terrain Experts Inc (TERREX) reserves all rights to this source code
-   unless otherwise specified in writing by the Chief Operating Officer
-   of TERREX.
+   unless otherwise specified in writing by the President of TERREX.
    This copyright may be updated in the future, in which case that version
    supercedes this one.
    -------------------
    Terrex Experts Inc.
-   84 West Santa Clara St., Suite 380
-   San Jose, CA 95113
+   4400 East Broadway #314
+   Tucson, AZ  85711
    info@terrex.com
-   Tel: (408) 293-9977
+   Tel: (520) 323-7990
    ************************
    */
 
@@ -36,13 +35,13 @@ TX_EXDECL class TX_CLDECL trpgMBR {
 public:
     trpgMBR(void);
     ~trpgMBR(void) { };
-    bool isValid() const;
-    void Reset();
+    bool isValid(void) const;
+    void Reset(void);
     void AddPoint(const trpg3dPoint &);
     void AddPoint(double,double,double);
     void GetMBR(trpg3dPoint &ll,trpg3dPoint &ur) const;
-    trpg3dPoint GetLL() const;
-    trpg3dPoint GetUR() const;
+    trpg3dPoint GetLL(void) const;
+    trpg3dPoint GetUR(void) const;
     void Union(const trpgMBR &);
 //    bool Overlap(const trpgMBR &) const;
     bool Overlap(const trpg2dPoint &ll, const trpg2dPoint &ur) const;
@@ -59,10 +58,10 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadNode {
 public:
-    virtual ~trpgReadNode() { };
-    virtual bool isGroupType() = 0;
-    virtual int GetType() { return type; }
-    virtual trpgMBR GetMBR() const { return trpgMBR(); }
+    virtual ~trpgReadNode(void) { };
+    virtual bool isGroupType(void) = 0;
+    virtual int GetType(void) { return type; }
+    virtual trpgMBR GetMBR(void) const { return trpgMBR(); }
 protected:
     int type;
 };
@@ -72,18 +71,18 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadGroupBase : public trpgReadNode {
 public:
-    virtual ~trpgReadGroupBase();
+    virtual ~trpgReadGroupBase(void);
     void AddChild(trpgReadNode *);
-    bool isGroupType() { return true; }
-    int GetNumChildren() { return children.size(); }
+    bool isGroupType(void) { return true; }
+    int GetNumChildren(void) { return children.size(); }
     trpgReadNode *GetChild(int i) { return children[i]; }
-    trpgMBR GetMBR() const;
+    trpgMBR GetMBR(void) const;
     void unRefChild(int i);
-    void unRefChildren();
+    void unRefChildren(void);
 protected:
     trpgMBR mbr;
-    void DeleteChildren();
-    vector<trpgReadNode *> children;
+    void DeleteChildren(void);
+    std::vector<trpgReadNode *> children;
 };
 
 // Read Geometry
@@ -91,11 +90,11 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadGeometry : public trpgReadNode {
 public:
-    trpgReadGeometry() { type = TRPG_GEOMETRY; }
-    ~trpgReadGeometry() { };
-    bool isGroupType() { return false; }
-    trpgGeometry *GetData() { return &data; }
-    trpgMBR GetMBR() const;
+    trpgReadGeometry(void) { type = TRPG_GEOMETRY; }
+    ~trpgReadGeometry(void) { };
+    bool isGroupType(void) { return false; }
+    trpgGeometry *GetData(void) { return &data; }
+    trpgMBR GetMBR(void) const;
 protected:
     trpgMBR mbr;
     trpgGeometry data;
@@ -106,11 +105,11 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadTileHeader : public trpgReadNode {
 public:
-    trpgReadTileHeader() { type = TRPGTILEHEADER; }
-    ~trpgReadTileHeader() { };
-    bool isGroupType() { return false; }
-    trpgTileHeader *GetData() { return &data; }
-    trpgMBR GetMBR() const { trpgMBR mbr;  return mbr; };
+    trpgReadTileHeader(void) { type = TRPGTILEHEADER; }
+    ~trpgReadTileHeader(void) { };
+    bool isGroupType(void) { return false; }
+    trpgTileHeader *GetData(void) { return &data; }
+    trpgMBR GetMBR(void) const { trpgMBR mbr;  return mbr; };
 protected:
     trpgTileHeader data;
 };
@@ -120,9 +119,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadGroup : public trpgReadGroupBase {
 public:
-    trpgReadGroup() { type = TRPG_GROUP; }
-    ~trpgReadGroup() { };
-    trpgGroup *GetData() { return &data; }
+    trpgReadGroup(void) { type = TRPG_GROUP; }
+    ~trpgReadGroup(void) { };
+    trpgGroup *GetData(void) { return &data; }
 protected:
     trpgGroup data;
 };
@@ -132,9 +131,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadAttach : public trpgReadGroupBase {
 public:
-    trpgReadAttach() { type = TRPG_ATTACH; }
-    ~trpgReadAttach() { };
-    trpgAttach *GetData() { return &data; }
+    trpgReadAttach(void) { type = TRPG_ATTACH; }
+    ~trpgReadAttach(void) { };
+    trpgAttach *GetData(void) { return &data; }
 protected:
     trpgAttach data;
 };
@@ -143,9 +142,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadBillboard : public trpgReadGroupBase {
 public:
-    trpgReadBillboard() { type = TRPG_BILLBOARD; }
-    ~trpgReadBillboard() { };
-    trpgBillboard *GetData() { return &data; }
+    trpgReadBillboard(void) { type = TRPG_BILLBOARD; }
+    ~trpgReadBillboard(void) { };
+    trpgBillboard *GetData(void) { return &data; }
 protected:
     trpgBillboard data;
 };
@@ -154,9 +153,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadLod : public trpgReadGroupBase {
 public:
-    trpgReadLod() { type = TRPG_LOD; }
-    ~trpgReadLod() { };
-    trpgLod *GetData() { return &data; }
+    trpgReadLod(void) { type = TRPG_LOD; }
+    ~trpgReadLod(void) { };
+    trpgLod *GetData(void) { return &data; }
 protected:
     trpgLod data;
 };
@@ -165,9 +164,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadLayer : public trpgReadGroupBase {
 public:
-    trpgReadLayer() { type = TRPG_LAYER; }
-    ~trpgReadLayer() { };
-    trpgLayer *GetData() { return &data; }
+    trpgReadLayer(void) { type = TRPG_LAYER; }
+    ~trpgReadLayer(void) { };
+    trpgLayer *GetData(void) { return &data; }
 protected:
     trpgLayer data;
 };
@@ -176,9 +175,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadTransform : public trpgReadGroupBase {
 public:
-    trpgReadTransform() { type = TRPG_TRANSFORM; }
-    ~trpgReadTransform() { };
-    trpgTransform *GetData() { return &data; }
+    trpgReadTransform(void) { type = TRPG_TRANSFORM; }
+    ~trpgReadTransform(void) { };
+    trpgTransform *GetData(void) { return &data; }
 protected:
     trpgTransform data;
 };
@@ -187,9 +186,9 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgReadModelRef : public trpgReadGroupBase {
 public:
-    trpgReadModelRef() { type = TRPG_MODELREF; }
-    ~trpgReadModelRef() { };
-    trpgModelRef *GetData() { return &data; }
+    trpgReadModelRef(void) { type = TRPG_MODELREF; }
+    ~trpgReadModelRef(void) { };
+    trpgModelRef *GetData(void) { return &data; }
 protected:
     trpgModelRef data;
 };
@@ -204,21 +203,21 @@ protected:
 //     {group:Demonstration Scene Graph}
 TX_EXDECL class TX_CLDECL trpgSceneGraphParser : public trpgSceneParser {
 public:
-#if defined(_WIN32) && !defined(__GNUC__)
-    typedef map<int,trpgReadGroupBase *> GroupMap;
+#if defined(_WIN32)
+    typedef std::map<int,trpgReadGroupBase *> GroupMap;
 #else
-    typedef map<int,trpgReadGroupBase *,less<int> > GroupMap;
+    typedef std::map<int,trpgReadGroupBase *,less<int> > GroupMap;
 #endif
-    trpgSceneGraphParser();
-    ~trpgSceneGraphParser() { };
+    trpgSceneGraphParser(void);
+    virtual ~trpgSceneGraphParser(void) { };
     // Call this instead of Parse()
     // Deleting it is your responsibility
     trpgReadNode *ParseScene(trpgReadBuffer &,GroupMap &);
-    trpgReadGroupBase *GetCurrTop();  // Get the current parent object
-    trpgReadTileHeader *GetTileHeaderRef();
+    trpgReadGroupBase *GetCurrTop(void);  // Get the current parent object
+    trpgReadTileHeader *GetTileHeaderRef(void);
 
     // For use by the helpers only
-    GroupMap *GetGroupMap();
+    GroupMap *GetGroupMap(void);
 protected:
     bool StartChildren(void *);
     bool EndChildren(void *);

@@ -217,10 +217,10 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
       break;
     case ID_TFAL:
         if (tex) {
-            float vx,vy,vz;
-            vx = read_float(f);
-            vy = read_float(f);
-            vz = read_float(f);
+            //float vx,vy,vz;
+            /*vx =*/ read_float(f);
+            /*vy =*/ read_float(f);
+            /*vz =*/ read_float(f);
             //printf("fal %.2f %.2f %.2f\n", vx,vy,vz);
         }
         else
@@ -228,10 +228,10 @@ static void read_surf(FILE *f, gint nbytes, lwObject *lwo)
         break;
     case ID_TVEL:
         if (tex) {
-            float vx,vy,vz;
-            vx = read_float(f);
-            vy = read_float(f);
-            vz = read_float(f);
+            //float vx,vy,vz;
+            /*vx =*/ read_float(f);
+            /*vy =*/ read_float(f);
+            /*vz =*/ read_float(f);
             //printf("vel %.2f %.2f %.2f\n", vx,vy,vz);
         }
         else

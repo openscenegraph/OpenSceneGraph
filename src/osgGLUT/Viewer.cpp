@@ -381,23 +381,13 @@ float Viewer::app(unsigned int viewport)
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
     ea->adaptFrame(_frameStamp->getReferenceTime());
 
-    bool handled = false;
     for (EventHandlerList::iterator eh = _viewportList[viewport]._eventHandlerList.begin();
          eh != _viewportList[viewport]._eventHandlerList.end(); 
          eh++ )
     {
-        if ( eh->valid() )
-        {
-            if ( (*eh)->handle(*ea,*this) )
-            {
-                handled = true;
-                break;
-            }
-        }
+        if (eh->valid()) (*eh)->handle(*ea,*this);
     }
-//    if ( !handled ) {
-        _viewportList[viewport]._cameraManipulator->handle(*ea,*this);
-//    }
+    _viewportList[viewport]._cameraManipulator->handle(*ea,*this);
 
 
     if (getRecordingAnimationPath() && getAnimationPath())

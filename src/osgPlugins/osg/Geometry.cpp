@@ -38,8 +38,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 
     Geometry& geom = static_cast<Geometry&>(obj);
 
-    bool matchedFirst = false;
-    if ((matchedFirst=fr.matchSequence("Primitives %i {")) || fr.matchSequence("PrimitiveSets %i {") )
+    if (fr.matchSequence("Primitives %i {") || fr.matchSequence("PrimitiveSets %i {") )
     {
         int entry = fr[1].getNoNestedBrackets();
 

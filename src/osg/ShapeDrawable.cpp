@@ -845,8 +845,6 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
     float rBase=0.0f;
     float zBase=-sphere.getRadius();
     float vBase=0.0f;
-    float nzBase=-1.0f;
-    float nRatioBase=0.0f;
 
     for(unsigned int rowi=0;
 	rowi<numRows;
@@ -888,8 +886,6 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 	rBase=rTop;
 	zBase=zTop;
 	vBase=vTop;
-	nzBase=nzTop;
-	nRatioBase=nRatioTop;
 
     }
 }

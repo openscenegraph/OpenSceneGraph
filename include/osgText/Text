@@ -167,6 +167,9 @@ public:
     void setRotation(const osg::Quat& quat);
     const osg::Quat& getRotation() const { return _rotation; }
 
+    void setScale(float scale);
+    float getScale() const { return _scale; }
+
     void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
     float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
     
@@ -176,8 +179,6 @@ public:
     void setAutoScaleToScreen(bool autoScaleToScreen);
     bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
     
-    void setScale(float scale);
-    float getScale() const { return _scale; }
     
 
 
@@ -289,8 +290,8 @@ protected:
     String                  _text;
     osg::Vec3               _position;
     AlignmentType           _alignment;
-    float                   _scale;
     osg::Quat               _rotation;
+    float                   _scale;
     float                   _autoUpdateEyeMovementTolerance;
     bool                    _autoRotateToScreen;
     bool                    _autoScaleToScreen;

@@ -1924,6 +1924,7 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 	}
     }
 
+    //geometry->setUseDisplayList(false);
     geometry->setVertexArray(&v);
 
     if (n)
@@ -2025,7 +2026,7 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
         skirtDrawElements[ei++] = firstSkirtVertexIndex;
     }    
 
-#if 0
+#if 1
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geometry);
 #endif

@@ -15,6 +15,8 @@ CXXFILES = \
     SphereSegment.cpp\
     MultiSwitch.cpp\
     Version.cpp\
+    VisibilityGroup.cpp\
+
 
 DEF     += -DOSGSIM_LIBRARY
 

@@ -139,6 +139,10 @@ SOURCE=..\..\src\osgSim\MultiSwitch.cpp
 
 SOURCE=..\..\src\osgSim\Version.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\VisibilityGroup.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -194,6 +198,10 @@ SOURCE=..\..\include\osgSim\Export
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\Version
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\VisibilityGroup
 # End Source File
 # End Group
 # Begin Group "Resource Files"

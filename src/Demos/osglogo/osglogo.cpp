@@ -197,8 +197,8 @@ osg::Node* createLogo()
                      osg::Matrix::translate(bb.center()));
 
     // add the box and globe to it.
-    xform->addChild(createBox(bb,chordRatio));
-    //xform->addChild(createBoxNo5(bb,chordRatio));
+    //xform->addChild(createBox(bb,chordRatio));
+    xform->addChild(createBoxNo5(bb,chordRatio));
 
     // add the transform to the group.
     group->addChild(xform);

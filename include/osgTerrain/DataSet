@@ -189,7 +189,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _coordinateSystemPolicy(PREFER_FILE_SETTINGS),
                 _geoTransformPolicy(PREFER_FILE_SETTINGS),
                 _minLevel(0),
-                _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
+                _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
+                _layer(0)
                 {}
         
             Source(Type type, const std::string& filename):
@@ -200,7 +201,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
                 _coordinateSystemPolicy(PREFER_FILE_SETTINGS),
                 _geoTransformPolicy(PREFER_FILE_SETTINGS),
                 _minLevel(0),
-                _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
+                _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
+                _layer(0)
                 {}
 
             void setSortValue(double s) { _sortValue = s; }
@@ -252,6 +254,10 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             unsigned int getMinLevel() const { return _minLevel; }
             unsigned int getMaxLevel() const { return _maxLevel; }
+
+            void setLayer(unsigned int layer) { _layer = layer; }
+            unsigned int getLayer() const { return _layer; }
+
 
             void setSourceData(SourceData* data) { _sourceData = data; if (_sourceData.valid()) _sourceData->_source = this; }
             SourceData* getSourceData() { return _sourceData.get(); }
@@ -319,6 +325,7 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
             unsigned int                                _minLevel;
             unsigned int                                _maxLevel;
+            unsigned int                                _layer;
             
             osg::ref_ptr<SourceData>                    _sourceData;
             

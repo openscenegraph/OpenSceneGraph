@@ -108,7 +108,12 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
         return NULL;
     }
 #else // other unix
-    return dlsym( _handle,  procName.c_str() );
+    void* sym = dlsym( _handle,  procName.c_str() );
+    if (!sym) {
+        notify(WARN) << "DynamicLibrary::failed looking up " << procName << std::endl;
+        notify(WARN) << "DynamicLibrary::error " << dlerror() << std::endl;
+    }
+    return sym;
 #endif
     return NULL;
 }

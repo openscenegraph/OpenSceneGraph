@@ -62,6 +62,8 @@ Randall Hopper <aa8vb@yahoo.com>
 Ulrich Hertlein <u.hertlein@bit-side.com>
         - support for IBM Mirror Repeat extension in osg::Texture
         - support for texture subloading in osg::Texture
+        - osg::Sequence support.
+        - improvements to the pfb loader.
         - .lwo and .obj plugins.
 
 Axel Volley <volley@acm.org>

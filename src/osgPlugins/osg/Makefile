@@ -39,6 +39,7 @@ CXXFILES =\
         ReaderWriterOSG.cpp\
         ShadeModel.cpp\
         StateSet.cpp\
+        Sequence.cpp\
         Stencil.cpp\
         Switch.cpp\
         TexEnv.cpp\

@@ -207,6 +207,11 @@ void Texture::dirtyTextureObject()
 void Texture::apply(State& state) const
 {
 
+//     Texture* texture = const_cast<Texture*>(this);
+//     texture->_min_filter = LINEAR_MIPMAP_LINEAR;
+//     texture->_mag_filter = ANISOTROPIC;
+
+
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();

@@ -62,6 +62,7 @@ CXXFILES =\
 	Primitive.cpp\
 	Projection.cpp\
 	Quat.cpp\
+	Sequence.cpp\
 	ShadeModel.cpp\
 	ShadowVolumeOccluder.cpp\
 	State.cpp\
@@ -77,7 +78,7 @@ CXXFILES =\
 	Transform.cpp\
 	Version.cpp\
 	Viewport.cpp\
-	
+
 DEF     += -DSG_LIBRARY
 
 LIBS    += $(GL_LIBS) $(OTHER_LIBS)

@@ -1,0 +1,95 @@
+// -*-c++-*-
+
+//C++ header - Open Scene Graph - Copyright (C) 1998-2002 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_SEQUENCE
+#define OSG_SEQUENCE 1
+
+#include <osg/Switch>
+
+namespace osg {
+
+/** Sequence is a Group node which allows automatic, time based
+    switching between children.
+*/
+class SG_EXPORT Sequence : public Switch
+{
+public :
+        
+    Sequence();
+
+    /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+    Sequence(const Sequence&, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+    META_Node(osg, Sequence);
+
+    virtual void traverse(NodeVisitor& nv);
+
+    /** Set time in seconds for child */
+    void setTime(int frame, float t);
+
+    /** Get time for child */
+    const float getTime(int frame) const;
+
+    /** Interval modes */
+    enum LoopMode {
+        LOOP,
+        SWING
+    };
+
+    /** Set sequence mode & interval. */
+    void setInterval(LoopMode mode, int begin, int end);
+
+    /** Get sequence mode & interval. */
+    inline void getInterval(LoopMode& mode, int& begin, int& end) const {
+        mode = _loopMode;
+        begin = _begin;
+        end = _end;
+    }
+
+    /** Set duration: speed-up & number of repeats */
+    void setDuration(float speed, int nreps = -1);
+
+    /** Get duration */
+    inline void getDuration(float& speed, int& nreps) const {
+        speed = _speed;
+        nreps = _nreps;
+    }
+
+    /** Sequence modes */
+    enum SequenceMode {
+        START,
+        STOP,
+        PAUSE,
+        RESUME
+    };
+
+    /** Set sequence mode. Start/stop & pause/resume. */
+    void setMode(SequenceMode mode);
+
+    /** Get sequence mode. */
+    inline SequenceMode getMode() const { return _mode; }
+
+protected :
+    
+    virtual ~Sequence() {}
+
+    float _last;
+    std::vector<float> _frameTime;
+
+    int _step;
+
+    LoopMode _loopMode;
+    int _begin, _end;
+
+    float _speed;
+    int _nreps, _nrepsremain;
+
+    SequenceMode _mode;
+};
+
+}
+
+#endif

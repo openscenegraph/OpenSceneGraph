@@ -86,6 +86,7 @@ DEMOS_DIRS = \
 	osgreflect\
 	osgscribe\
 	osgstereoimage\
+	osgsequence\
 	osgtext\
 	osgtexture\
 	osgviews\

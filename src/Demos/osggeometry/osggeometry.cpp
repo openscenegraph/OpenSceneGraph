@@ -5,6 +5,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Texture2D>
 #include <osg/PolygonStipple>
+#include <osg/TriangleFunctor>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>

@@ -1,3 +1,5 @@
+#include <osg/TriangleFunctor>
+
 #include <osgUtil/SmoothingVisitor>
 
 #include <stdio.h>

@@ -4,6 +4,7 @@
 #include <osg/LOD>
 #include <osg/Billboard>
 #include <osg/Notify>
+#include <osg/TriangleFunctor>
 
 #include <float.h>
 #include <algorithm>

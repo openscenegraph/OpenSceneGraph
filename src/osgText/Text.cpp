@@ -185,6 +185,7 @@ void Text::drawImmediateMode(State& state)
     // we must disable all the vertex arrays to prevent any state
     // propagating into text.        
     state.disableAllVertexArrays();
+    state.setActiveTextureUnit(0);
     
     // draw boundingBox
     if(_drawMode & BOUNDINGBOX)

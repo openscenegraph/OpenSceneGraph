@@ -60,6 +60,18 @@ class OSGUTIL_EXPORT Hit
         const osg::Vec3 getWorldIntersectPoint() const { if (_matrix.valid()) return _intersectPoint*(*_matrix); else return _intersectPoint; }
         const osg::Vec3 getWorldIntersectNormal() const ;
 
+        float getRatio() const { return _ratio; }
+        const osg::LineSegment* getOriginalLineSegment() const { return _originalLineSegment.get(); }
+        const osg::LineSegment* getLocalLineSegment() const { return _localLineSegment.get(); }
+        const osg::NodePath& getNodePath() const { return _nodePath; }
+        const osg::Geode* getGeode() const { return _geode.get(); }
+        const osg::Drawable* getDrawable() const { return _drawable.get(); }
+        const osg::RefMatrix* getMatrix() const { return _matrix.get(); }
+        const osg::RefMatrix* getInverseMatrix() const { return _inverse.get(); }
+        const VecIndexList& getVecIndexList() const { return _vecIndexList; }
+        int getPrimitiveIndex() const { return _primitiveIndex; }
+        
+        
         float                           _ratio;
         osg::ref_ptr<osg::LineSegment>  _originalLineSegment;
         osg::ref_ptr<osg::LineSegment>  _localLineSegment;

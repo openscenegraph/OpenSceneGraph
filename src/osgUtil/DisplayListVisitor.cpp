@@ -36,12 +36,9 @@ void DisplayListVisitor::apply(osg::Geode& node)
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             Drawable* drawable = node.getDrawable(i);
-            if (drawable->getUseDisplayList())
+            if (drawable->getStateSet())
             {
-                if (drawable->getStateSet())
-                {
-                    drawable->getStateSet()->compile(*_state);
-                }
+                drawable->getStateSet()->compile(*_state);
             }
         }
     }
@@ -65,10 +62,7 @@ void DisplayListVisitor::apply(osg::Geode& node)
     {
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
-            if (node.getDrawable(i)->getUseDisplayList())
-            {
-                node.getDrawable(i)->compile(*_state);
-            }
+            node.getDrawable(i)->compile(*_state);
         }
     }
 }

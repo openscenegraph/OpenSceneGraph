@@ -38,7 +38,8 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _globjList(drawable._globjList),
     _bbox(drawable._bbox),
     _bbox_computed(drawable._bbox_computed),
-    _drawCallback(drawable._drawCallback)
+    _drawCallback(drawable._drawCallback),
+    _cullCallback(drawable._cullCallback)
 {}
 
 Drawable::~Drawable()

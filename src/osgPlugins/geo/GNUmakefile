@@ -9,6 +9,12 @@ CXXFILES =\
 ##LIBS  += -losgText -losgSim $(OSG_LIBS) $(OTHER_LIBS)
 LIBS  = 
 
+#### MacOS X specific definitions
+ifeq ($(OS),Darwin)
+LINKARGS += -Wl,multiply_defined -Wl,suppress
+endif
+
+
 TARGET_BASENAME = geo
 include $(TOPDIR)/Make/cygwin_plugin_def
 PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)

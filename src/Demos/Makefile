@@ -1,13 +1,13 @@
 #!smake
 SHELL=/bin/sh
 
-DIRS = sgv osgconv osgcube osgscribe osgreflect osgtexture osgimpostor osgviews osgcopy hangglide 
+DIRS = sgv osgconv osgcube osgscribe osgreflect osgtexture osgimpostor osgviews osgcopy osgbillboard hangglide 
 
 # comment out if you don't have the freetype and GLU1.3 library installed.
 DIRS += osgtext 
 
 # comment out if you don't have support for networking.
-#DIRS += osgcluster
+DIRS += osgcluster
 
 # comment out if you don't have the wxWindows installed.
 # DIRS += wxsgv

@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
+ * Copyright (C) 2004-2005 Nathan Cournia
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -11,7 +12,7 @@
 */
 
 /* file:	include/osg/Program
- * author:	Mike Weiblen 2005-02-20
+ * author:	Mike Weiblen 2005-03-23
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -24,22 +25,20 @@
 #ifndef OSG_PROGRAM
 #define OSG_PROGRAM 1
 
-#include <osg/buffered_value>
-#include <osg/ref_ptr>
-#include <osg/Vec2>
-#include <osg/Vec3>
-#include <osg/Vec4>
-#include <osg/Referenced>
-#include <osg/GL>
-#include <osg/Uniform>
-
 #include <string>
 #include <vector>
 
+#include <osg/buffered_value>
+#include <osg/ref_ptr>
+#include <osg/Referenced>
+#include <osg/GL>
+#include <osg/Uniform>
+#include <osg/StateAttribute>
 
 namespace osg {
 
 class State;
+class Shader;
 
 class SG_EXPORT GL2Extensions : public osg::Referenced
 {
@@ -293,13 +292,6 @@ class SG_EXPORT GL2Extensions : public osg::Referenced
 	void* _glGetHandleARB;
 };
 
-class Program;
-typedef osg::ref_ptr<Program> ProgramPtr;
-
-class Shader;
-typedef osg::ref_ptr<Shader> ShaderPtr;
-typedef std::vector< ShaderPtr > ShaderList;
-
 ///////////////////////////////////////////////////////////////////////////
 /** osg::Program is an application-level abstraction of an OpenGL glProgram.
   * It is an osg::StateAttribute that, when applied, will activate a
@@ -307,12 +299,12 @@ typedef std::vector< ShaderPtr > ShaderList;
   * osg::Shaders containing the actual shader source code are
   * attached to a Program, which will then manage the compilation,
   * linking, and activation of the GLSL program.
-  * Program will automatically manage per-context instancing of the
-  * OpenGL objects, if that is necessary for a particular display
+  * osg::Program will automatically manage per-context instancing of the
+  * OpenGL glPrograms, if that is necessary for a particular display
   * configuration.
   */
 
-class SG_EXPORT Program : public osg::Object
+class SG_EXPORT Program : public osg::StateAttribute
 {
     public:
         Program();
@@ -320,10 +312,10 @@ class SG_EXPORT Program : public osg::Object
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Program(const Program& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Object(osg, Program);
+        META_StateAttribute(osg, Program, PROGRAM);
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const osg::Program& sa) const;
+        virtual int compare(const osg::StateAttribute& sa) const;
 
 	/** If enabled, activate our program in the GL pipeline,
 	  * performing any rebuild operations that might be pending. */
@@ -336,36 +328,45 @@ class SG_EXPORT Program : public osg::Object
             State object pointer NULL.*/
         virtual void releaseGLObjects(osg::State* state=0) const;
 
-        // data access methods.
-
-	/** Mark us as "dirty" and in need of relinking. */
+	/** Mark our PCSOs as needing relink */
 	void dirtyProgram();
 
-	/** Mark our attached Shaders as "dirty" and in need of recompilation. */
-	void dirtyShaders();
+	/** Attach an osg::Shader to this osg::Program.
+	  * Mark Program as needing relink.  Return true for success */
+	bool addShader( Shader* shader );
 
-	/** Attach a Shader to this Program */
-	void addShader( Shader* shader );
+	/** Remove osg::Shader from this osg::Program.
+	  * Mark Program as needing relink.  Return true for success */
+	bool removeShader( Shader* shader );
 
-        /** Mark internal GL glProgram for deletion.
-	  * Deletion requests are queued until they can be executed
-	  * in the proper GL context. */
-        static void deleteProgram(unsigned int contextID, GLuint program);
+	/** */
+	void bindAttribLocation( GLuint index, const char* name );
 
-        /** flush all the cached glPrograms which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedGlslObjects(unsigned int contextID,double currentTime, double& availableTime);
+	/** Return true if this Program represents "fixed-functionality" rendering */
+	bool isFixedFunction() const;
 
-	/** An annotation/comment for use by the application */
-	void setComment( const std::string& comment ) { _comment = comment; }
-	void setComment( const char* comment ) { _comment = comment; }
-	const std::string& getComment() const { return _comment; }
+	/** Query InfoLog from a glProgram */
+	void getGlProgramInfoLog(unsigned int contextID, std::string& log) const;
+
+	/** A name for use by the application */
+	void setName( const std::string& name ) { _name = name; }
+	void setName( const char* name ) { _name = name; }
+	const std::string& getName() const { return _name; }
 
 	/** should Uniform values be tested to avoid redundant setting? */
 	void setAvoidRedundantUniformSetting( bool flag ) { _avoidRedundantUniformSetting = flag; }
 	bool getAvoidRedundantUniformSetting() const { return _avoidRedundantUniformSetting; }
 
 	// TODO glBindAttribLocation
+
+        /** Mark internal glProgram for deletion.
+	  * Deletion requests are queued until they can be executed
+	  * in the proper GL context. */
+        static void deleteGlProgram(unsigned int contextID, GLuint program);
+
+        /** flush all the cached glPrograms which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedGlPrograms(unsigned int contextID,double currentTime, double& availableTime);
 
 
     protected:
@@ -389,25 +390,26 @@ class SG_EXPORT Program : public osg::Object
 
 
     protected:
-	/** PCPO is an OSG-internal encapsulation of glPrograms per-GL context.  */
-	class PerContextProgObj : public osg::Referenced
+	/** PerContextProgram (PCP) is an OSG-internal encapsulation of glPrograms per-GL context.  */
+	class PerContextProgram : public osg::Referenced
 	{
 	    public:
-		PerContextProgObj(const Program* program, unsigned int contextID);
-		PerContextProgObj(const PerContextProgObj& rhs);
+		PerContextProgram(const Program* program, unsigned int contextID);
 
-		const GLuint getHandle() {return _glProgramHandle;}
+		GLuint getHandle() const {return _glProgramHandle;}
 
-		bool isDirty() const {return _dirty;}
-		void markAsDirty();
+		void requestLink();
 		void linkProgram();
+		bool needsLink() const {return _needsLink;}
+		bool isLinked() const {return _isLinked;}
+		void getInfoLog( std::string& infoLog ) const;
+
 		void useProgram() const;
 
 		void applyUniforms( osg::State& state ) const;
 
 	    protected:	/*methods*/
-		PerContextProgObj();
-		~PerContextProgObj();
+		~PerContextProgram();
 
 	    protected:	/*data*/
 		/** Pointer to our parent Program */
@@ -416,29 +418,35 @@ class SG_EXPORT Program : public osg::Object
 		osg::ref_ptr<GL2Extensions> _extensions;
 		/** Handle to the actual OpenGL glProgram */
 		GLuint _glProgramHandle;
-		/** Do we need to be linked? */
-		bool _dirty;
-		/** Queue of UniformValues awaiting assignment */
+		/** Does our glProgram need to be linked? */
+		bool _needsLink;
+		/** Is our glProgram successfully linked? */
+		bool _isLinked;
 		const unsigned int _contextID;
-		/** List of PCPO's active uniforms */
+		/** List of PCP's active uniforms */
 		ActiveUniformList _activeUniformList;
+
+	    private:
+		PerContextProgram();	// disallowed
+		PerContextProgram(const PerContextProgram&);	// disallowed
+		PerContextProgram& operator=(const PerContextProgram&);	// disallowed
 	};
 
     protected:	/*methods*/
         virtual ~Program();
-	/** Get the PCPO for a particular GL context */
-        PerContextProgObj* getPCPO(unsigned int contextID) const;
+	/** Get the PCP for a particular GL context */
+        PerContextProgram* getPCP(unsigned int contextID) const;
 
     protected:	/*data*/
 	bool _avoidRedundantUniformSetting;
-	std::string _comment;
+	std::string _name;
+	typedef std::vector< ref_ptr<Shader> > ShaderList;
 	ShaderList _shaderList;
-        mutable osg::buffered_value< osg::ref_ptr<PerContextProgObj> > _pcpoList;
+        mutable osg::buffered_value< osg::ref_ptr<PerContextProgram> > _pcpList;
 
     private:
-        const Program& operator=(const Program&);
+        Program& operator=(const Program&);	// disallowed
 };
-
 
 }
 

@@ -11,7 +11,7 @@
 */
 
 /* file:	src/osg/Uniform.cpp
- * author:	Mike Weiblen 2005-02-20
+ * author:	Mike Weiblen 2005-03-23
 */
 
 // NOTICE: This code is CLOSED during construction and/or renovation!
@@ -368,6 +368,13 @@ Uniform::Uniform( const char* name, Value::Type type ) :
 {}
 
 
+Uniform::Uniform( const Uniform& gu, const CopyOp& copyop ) :
+    Object(gu,copyop),
+    _value( gu._value )
+{
+}
+
+
 Uniform::Uniform( const char* name, float f ) :
     _value( name, Value::FLOAT )
 {
@@ -421,13 +428,6 @@ Uniform::Uniform( const char* name, int i ) :
 //TODO Uniform::Uniform( const char* name, bool b0, bool b1, bool b2 )
 
 //TODO Uniform::Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 )
-
-
-Uniform::Uniform( const Uniform& gu, const CopyOp& copyop ) :
-    Object(gu,copyop),
-    _value( gu._value )
-{
-}
 
 
 bool Uniform::set( float f )
@@ -502,6 +502,5 @@ bool Uniform::isCompatibleType( Value::Type t ) const
 	std::endl;
     return false;
 }
-
 
 /*EOF*/

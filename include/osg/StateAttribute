@@ -184,6 +184,9 @@ class SG_EXPORT StateAttribute : public Object
 
             // osgNVParse
             OSGNVPARSE_PROGRAM_PARSER,
+
+            /// core GLSL support
+            PROGRAM
         };
         
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

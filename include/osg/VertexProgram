@@ -188,7 +188,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
         /** flush all the cached vertex programs which need to be deleted
           * in the OpenGL context related to contextID.*/
-        static void flushDeletedVertexProgramObjects(unsigned int contextID);
+        static void flushDeletedVertexProgramObjects(unsigned int contextID,double currentTime, double& availableTime);
 
         virtual void apply(State& state) const;
 

@@ -95,7 +95,7 @@ void Texture::TextureObjectManager::addTextureObjectsFrom(Texture& texture)
     texture.takeTextureObjects(_textureObjectListMap);
 }
 
-void Texture::TextureObjectManager::deleteTextureObjects(unsigned int contextID,double currentTime)
+void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,double currentTime, double& availbleTime)
 {
 
     TextureObjectList& tol = _textureObjectListMap[contextID];
@@ -145,6 +145,10 @@ Texture::TextureObjectManager* Texture::getTextureObjectManager()
     return s_textureObjectManager.get();
 }
 
+void Texture::flushTextureObjects(unsigned int contextID,double currentTime, double& availbleTime)
+{
+    getTextureObjectManager()->flushTextureObjects(contextID, currentTime, availbleTime);
+}
 
 Texture::Texture():
             _wrap_s(CLAMP),
@@ -836,7 +840,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 
                     size = ((width+3)/4)*((height+3)/4)*blockSize;
 
-                    state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
+                    //state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
 
                     extensions->glCompressedTexSubImage2D(target, k,  
                                                        0, 0,
@@ -845,7 +849,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                                                        size,
                                                         image->getMipmapData(k));                
 
-                    state.checkGLErrors("after extensions->glCompressedTexSubImage2D(");
+                    //state.checkGLErrors("after extensions->glCompressedTexSubImage2D(");
 
                     width >>= 1;
                     height >>= 1;

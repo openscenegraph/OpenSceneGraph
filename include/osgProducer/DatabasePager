@@ -80,15 +80,9 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false).*/
         bool getCompileRenderingObjectsForContexID(unsigned int contextID);
 
-        /* Set the maximum amount of time available for compile rendering objects. */
-        void setMaximumTimeForCompilingRenderingObjects(double time) { _maximumTimeForCompiling = time; }
-        
-        /* Get the maximum amount of time available for compile rendering objects. */
-        double getMaximumTimeForCompilingRenderingObjects() const { return _maximumTimeForCompiling; }
-        
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
           * note, should only be called from the draw thread.*/
-        void compileRenderingObjects(osg::State& state);
+        void compileRenderingObjects(osg::State& state,double& availableTime);
 
 
     public:
@@ -141,7 +135,6 @@ class OSGPRODUCER_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseReques
         
         double                  _expiryDelay;
 
-        double                  _maximumTimeForCompiling;
         ActiveGraphicsContexts  _activeGraphicsContexts;
 
 };

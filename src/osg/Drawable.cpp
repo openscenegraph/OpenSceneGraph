@@ -45,7 +45,7 @@ void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj)
 
 /** flush all the cached display list which need to be deleted
   * in the OpenGL context related to contextID.*/
-void Drawable::flushDeletedDisplayLists(unsigned int contextID)
+void Drawable::flushDeletedDisplayLists(unsigned int contextID,double currentTime, double& availableTime)
 {
     DeletedDisplayListCache::iterator citr = s_deletedDisplayListCache.find(contextID);
     if (citr!=s_deletedDisplayListCache.end())
@@ -77,7 +77,7 @@ void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
 
 /** flush all the cached display list which need to be deleted
   * in the OpenGL context related to contextID.*/
-void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID)
+void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double currentTime, double& availableTime)
 {
     DeletedDisplayListCache::iterator citr = s_deletedVertexBufferObjectCache.find(contextID);
     if (citr!=s_deletedVertexBufferObjectCache.end())

@@ -304,7 +304,7 @@ class SG_EXPORT Drawable : public Object
         
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
-        static void flushDeletedDisplayLists(unsigned int contextID);
+        static void flushDeletedDisplayLists(unsigned int contextID,double currentTime, double& availableTime);
 
         /** use deleteVertexBufferObject instead of glDeleteList to allow
           * OpenGL buffer objects to cached until they can be deleted
@@ -314,7 +314,7 @@ class SG_EXPORT Drawable : public Object
         
         /** flush all the cached vertex buffer objects which need to be deleted
           * in the OpenGL context related to contextID.*/
-        static void flushDeletedVertexBufferObjects(unsigned int contextID);
+        static void flushDeletedVertexBufferObjects(unsigned int contextID,double currentTime, double& availableTime);
 
         typedef unsigned int AttributeType;
         

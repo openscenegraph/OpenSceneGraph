@@ -34,7 +34,7 @@ void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint hand
 }
 
 
-void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID)
+void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,double currentTime, double& availableTime)
 {
     const Extensions* extensions = getExtensions(contextID,true);
 

@@ -19,8 +19,6 @@ DatabasePager::DatabasePager()
     _deleteRemovedSubgraphsInDatabaseThread = true;
     
     _expiryDelay = 1.0;
-    
-    _maximumTimeForCompiling = 0.005; // 5ms.
 }
 
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group)
@@ -464,10 +462,10 @@ bool DatabasePager::getCompileRenderingObjectsForContexID(unsigned int contextID
 }
 
 
-void DatabasePager::compileRenderingObjects(osg::State& state)
+void DatabasePager::compileRenderingObjects(osg::State& state, double& availableTime)
 {
 
-    osg::Timer timer;
+    const osg::Timer& timer = *osg::Timer::instance();
     osg::Timer_t start_tick = timer.tick();
     double elapsedTime = 0.0;
 
@@ -480,18 +478,18 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
 
     // while there are valid databaseRequest's in the to compile list and there is
     // sufficient time left compile each databaseRequest's stateset and drawables.
-    while (databaseRequest.valid() && elapsedTime<_maximumTimeForCompiling)
+    while (databaseRequest.valid() && elapsedTime<availableTime)
     {
         DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
         DataToCompile& dtc = dcm[state.getContextID()];
-        if (!dtc.first.empty() && elapsedTime<_maximumTimeForCompiling)
+        if (!dtc.first.empty() && elapsedTime<availableTime)
         {
             // we have StateSet's to compile
             StateSetList& sslist = dtc.first;
             //std::cout<<"Compiling statesets"<<std::endl;
             StateSetList::iterator itr=sslist.begin();
             for(;
-                itr!=sslist.end() && elapsedTime<_maximumTimeForCompiling;
+                itr!=sslist.end() && elapsedTime<availableTime;
                 ++itr)
             {
                 //std::cout<<"    Compiling stateset "<<(*itr).get()<<std::endl;
@@ -501,14 +499,14 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
             // remove the compiled stateset from the list.
             sslist.erase(sslist.begin(),itr);
         }
-        if (!dtc.second.empty() && elapsedTime<_maximumTimeForCompiling)
+        if (!dtc.second.empty() && elapsedTime<availableTime)
         {
             // we have Drawable's to compile
             //std::cout<<"Compiling drawables"<<std::endl;
             DrawableList& dwlist = dtc.second;
             DrawableList::iterator itr=dwlist.begin();
             for(;
-                itr!=dwlist.end() && elapsedTime<_maximumTimeForCompiling;
+                itr!=dwlist.end() && elapsedTime<availableTime;
                 ++itr)
             {
                 //std::cout<<"    Compiling drawable "<<(*itr).get()<<std::endl;
@@ -560,5 +558,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
         
         elapsedTime = timer.delta_s(start_tick,timer.tick());
     }
+    
+    availableTime -= elapsedTime;
 }
 

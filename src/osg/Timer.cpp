@@ -24,6 +24,13 @@ using namespace osg;
 //
 // all the rest of the timer methods are implemented within the header.
 
+
+const Timer* Timer::instance()
+{
+    static Timer s_timer;
+    return &s_timer;
+}
+
 #ifdef WIN32
 
     #include <sys/types.h>

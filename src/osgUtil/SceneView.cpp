@@ -14,6 +14,7 @@
 #include <osgUtil/UpdateVisitor>
 #include <osgUtil/DisplayListVisitor>
 
+#include <osg/Timer>
 #include <osg/Notify>
 #include <osg/Texture>
 #include <osg/VertexProgram>
@@ -536,13 +537,20 @@ void SceneView::draw()
     // and texture objects is deferred until the OpenGL context is the correct
     // context for when the object were originally created.  Here we know what
     // context we are in so can flush the appropriate caches.
-    osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
-    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID());
-    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID());
-
-
+    
+    //static osg::Timer timer;
+    //osg::Timer_t tstart = timer.tick();
+    
     double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
-    osg::Texture::getTextureObjectManager()->deleteTextureObjects(_state->getContextID(),currentTime);
+    double availableTime = 0.005; // 5 ms.
+    osg::Drawable::flushDeletedDisplayLists(_state->getContextID(),currentTime,availableTime);
+    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
+    osg::Texture::flushTextureObjects(_state->getContextID(),currentTime,availableTime);
+
+    //osg::Timer_t tend = timer.tick();
+    //std::cout<<"time to flush rendering objects"<<timer.delta_m(tstart,tend)<<std::endl;
+
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 

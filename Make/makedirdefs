@@ -119,6 +119,7 @@ EXAMPLE_DIRS = \
 	osgtexture2D\
 	osgtexture3D\
 	osgunittests\
+	osgwindows\
 	osgversion\
 	osgvertexprogram\
 	osgviewer\

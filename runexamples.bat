@@ -4,14 +4,14 @@ osgversion
 echo osglogo
 osglogo
 
-echo osgviewer osgcool.osg
-osgviewer osgcool.osg
-
 echo osgviewer cow.osg
 osgviewer cow.osg
 
-echo osgkeyboard
+echo osgkeyboard 
 osgkeyboard
+
+echo osgwindows glider.osg
+osgwindows glider.osg
 
 echo osgviewer --stereo cessna.osg
 osgviewer --stereo cessna.osg
@@ -21,6 +21,9 @@ osgviewer cessnafire.osg
 
 echo osgviewer spaceship.osg
 osgviewer spaceship.osg
+
+echo osgviewer osgcool.osg
+osgviewer osgcool.osg
 
 echo osgviewer cube_mapped_torus.osg
 osgviewer cube_mapped_torus.osg

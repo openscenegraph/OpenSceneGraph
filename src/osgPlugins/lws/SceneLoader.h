@@ -100,6 +100,7 @@ namespace lwosg
             osg::Vec3 pivot;
             osg::Vec3 pivot_rot;
             Motion_envelope motion;
+            std::string name;
 
             Scene_object(): parent(-1) {}
         };

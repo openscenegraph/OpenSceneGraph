@@ -566,7 +566,8 @@ void Text::computeGlyphRepresentation()
 
         // osg::notify(osg::NOTICE)<<"lineNumber="<<lineNumber<<std::endl;
 
-        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+        TextureGlyphQuadMap::iterator titr;
+        for(titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();
             ++titr)
         {
@@ -646,7 +647,7 @@ void Text::computeGlyphRepresentation()
         }
 
         // shift lines
-        for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        for(titr=_textureGlyphQuadMap.begin();
             titr!=_textureGlyphQuadMap.end();
             ++titr)
         {

@@ -16,6 +16,7 @@
 #include <mesh.h>
 #include <material.h>
 #include <vector.h>
+#include <matrix.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -284,14 +285,14 @@ osg::StateSet* ReaderWriter3DS::createStateSet(Lib3dsMaterial *mat)
     return stateset;
 }
 
-
 osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList)
 {
 
     osg::GeoSet* geoset = new osg::GeoSet;
 
     unsigned int i;
-
+    
+    
     std::vector<int> orig2NewMapping;
     for(i=0;i<m->points;++i) orig2NewMapping.push_back(-1);
 
@@ -316,10 +317,36 @@ osg::GeoSet*   ReaderWriter3DS::createGeoSet(Lib3dsMesh *m,FaceList& faceList)
     }
 
     osg::Vec3* osg_coords = new osg::Vec3[noVertex];
+    Lib3dsVector c;
+    
+    // Note for Ben, 1st Jan 2002 from Robert.
+    // added code to use the matrix attached with each lib3dsMesh to
+    // multiply each coord on the mesh before passing to the OSG.
+    // however, this caused plenty of problems as applying the matrices
+    // moved the objects away from the original positions.
+    
+    bool useMatrix = false;
+    
+    if (useMatrix)
+    {
+        lib3ds_matrix_dump(m->matrix);
+    }
+    
     for (i=0; i<m->points; ++i)
     {
         // lib3ds_vector_transform(pos, m->matrix, m->pointL[i].pos);
-        if (orig2NewMapping[i]>=0) osg_coords[orig2NewMapping[i]].set(m->pointL[i].pos[0],m->pointL[i].pos[1],m->pointL[i].pos[2]);
+        if (orig2NewMapping[i]>=0) {
+            if (useMatrix)
+            {
+                lib3ds_vector_transform(c,m->matrix, m->pointL[i].pos);
+                osg_coords[orig2NewMapping[i]].set(c[0],c[1],c[2]);
+            }
+            else
+            {
+                // original no transform code.
+                osg_coords[orig2NewMapping[i]].set(m->pointL[i].pos[0],m->pointL[i].pos[1],m->pointL[i].pos[2]);
+            }
+        }
     }
 
     osg::Vec2* osg_tcoords = NULL;

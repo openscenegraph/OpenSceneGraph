@@ -94,304 +94,148 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\AlphaFunc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\ColorPaletteRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Billboard.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\CommentRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\ClipPlane.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\ControlRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\ColorMask.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\DofRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\CullFace.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\ExtensionRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Depth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\ExternalRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Drawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\FaceRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\EarthSky.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\flt.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Fog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\flt2osg.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\FrontFace.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\FltFile.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Geode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\GeoSetBuilder.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\GeoSet.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\GroupRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Group.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\HeaderRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Image.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Input.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Impostor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\InstanceRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Light.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\LightPointRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\LightSource.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\LightSourcePaletteRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\LOD.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\LightSourceRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Material.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\LodRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\LongIDRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Node.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\MaterialPaletteRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Object.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\ObjectRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Point.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\OldMaterialPaletteRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\PolygonMode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\OldVertexRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\PolygonOffset.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Pool.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\ReaderWriterOSG.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\ReaderWriterFLT.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\StateSet.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Record.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Stencil.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\RecordVisitor.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Switch.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\Registry.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\TexEnv.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\SwitchRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\TexGen.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\TextureMappingPaletteRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\TexMat.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\TexturePaletteRecord.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\TransformationRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\flt\UnknownRecord.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\VertexPoolRecords.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Transparency.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\BoundingVolumeRecords.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\ColorPaletteRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\CommentRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\ControlRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\DofRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\ExtensionRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\ExternalRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\FaceRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\flt.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\flt2osg.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\FltFile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\FltRecords.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\GeoSetBuilder.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\GroupRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\HeaderRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\Input.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\InstanceRecords.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LightPointRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LightSourcePaletteRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LightSourceRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LodRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\LongIDRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\MaterialPaletteRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\ObjectRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\OldMaterialPaletteRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\OldVertexRecords.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\opcodes.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\Pool.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\ReaderWriterFLT.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\Record.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\RecordVisitor.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\Registry.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\SwitchRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\TextureMappingPaletteRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\TexturePaletteRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\TransformationRecords.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\UnknownRecord.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\flt\VertexPoolRecords.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 

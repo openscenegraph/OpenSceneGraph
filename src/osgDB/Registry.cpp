@@ -68,7 +68,6 @@ using namespace osgDB;
 
 #endif
 
-
 void PrintFilePathList(std::ostream& stream,const FilePathList& filepath)
 {
     for(FilePathList::const_iterator itr=filepath.begin();
@@ -375,7 +374,6 @@ void Registry::eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper)
     }
 }
 
-    
 void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;
@@ -524,7 +522,6 @@ Registry::DynamicLibraryList::iterator Registry::getLibraryItr(const std::string
     return _dlList.end();
 }
 
-
 DynamicLibrary* Registry::getLibrary(const std::string& fileName)
 {
     DynamicLibraryList::iterator ditr = getLibraryItr(fileName);
@@ -564,18 +561,18 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
 
 }
 
+struct concrete_wrapper: basic_type_wrapper 
+{
+	concrete_wrapper(const osg::Object *myobj) : myobj_(myobj) {}
+	bool matches(const osg::Object *proto) const
+	{
+		return myobj_->isSameKindAs(proto);
+	}
+	const osg::Object *myobj_;
+};
 
 osg::Object* Registry::readObjectOfType(const osg::Object& compObj,Input& fr)
 {
-	struct concrete_wrapper: basic_type_wrapper {
-		concrete_wrapper(const osg::Object *myobj) : myobj_(myobj) {}
-		bool matches(const osg::Object *proto) const
-		{
-			return myobj_->isSameKindAs(proto);
-		}
-		const osg::Object *myobj_;
-	};
-        
 	return readObjectOfType(concrete_wrapper(&compObj), fr);
 }
 
@@ -681,11 +678,8 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
         return obj;
         
     }
-
     return 0L;
-    
 }
-
 
 //
 // read object from input iterator.
@@ -1260,7 +1254,6 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
     
     return results.front();
 }
-
 
 ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 {

@@ -198,57 +198,70 @@ void Quat::slerp( float t, const Quat& from, const Quat& to )
 
 void Quat::set( const Matrix& m )
 {
-    // Source: Gamasutra, Rotating Objects Using Quaternions
+    // Source: 
     //
-    //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
-
-    float  tr, s;
-    float  tq[4];
-    int    i, j, k;
-
-    int nxt[3] = {1, 2, 0};
-
-    tr = m(0,0) + m(1,1) + m(2,2);
-
-    // check the diagonal
-    if (tr > 0.0)
+    // http://mccammon.ucsd.edu/~adcock/matrixfaq.html#Q55
+    
+    float x_scale = sqrtf(osg::square(m(0,0))+osg::square(m(1,0))+osg::square(m(2,0)));
+    
+    if (osg::absolute(x_scale-1.0f)>1e-5)
     {
-        s = (float)sqrt (tr + 1.0);
-        QW = s / 2.0f;
-        s = 0.5f / s;
-        QX = (m(1,2) - m(2,1)) * s;
-        QY = (m(2,0) - m(0,2)) * s;
-        QZ = (m(0,1) - m(1,0)) * s;
+        osg::Matrix new_m(m*osg::Matrix::scale(1.0f/x_scale,1.0f/x_scale,1.0f/x_scale));
+        _set(new_m);
     }
     else
     {
-        // diagonal is negative
-        i = 0;
-        if (m(1,1) > m(0,0))
-            i = 1;
-        if (m(2,2) > m(i,i))
-            i = 2;
-        j = nxt[i];
-        k = nxt[j];
-
-        s = (float)sqrt ((m(i,i) - (m(j,j) + m(k,k))) + 1.0);
-
-        tq[i] = s * 0.5f;
-
-        if (s != 0.0f)
-            s = 0.5f / s;
-
-        tq[3] = (m(j,k) - m(k,j)) * s;
-        tq[j] = (m(i,j) + m(j,i)) * s;
-        tq[k] = (m(i,k) + m(k,i)) * s;
-
-        QX = tq[0];
-        QY = tq[1];
-        QZ = tq[2];
-        QW = tq[3];
+        _set(m);
     }
 }
+    
+void Quat::_set(const Matrix& m )
+{    
+    //std::cout<<"Matrix scaled "<<m<<std::endl;
 
+    double S;
+    double tr = m(0,0) + m(1,1) + m(2,2) + 1.0;
+
+    //cout << "tr="<<tr<<endl;
+
+    // check the diagonal
+    if (tr > 2e-5/*0.00000001*/)
+    {
+        //cout << "path one"<<endl;
+    
+        S = 0.5/sqrt (tr);
+        QW = 0.25 / S;
+        QX = (m(1,2) - m(2,1)) * S;
+        QY = (m(2,0) - m(0,2)) * S;
+        QZ = (m(0,1) - m(1,0)) * S;
+    }
+    else
+    {
+        //cout << "path two"<<endl;
+
+        if ( m(0,0) > m(1,1) && m(0,0) > m(2,2) )  {       // Column 0: 
+            S  = sqrt( 1.0 + m(0,0) - m(1,1) - m(2,2) ) * 2.0;
+            QX = 0.25 * S;
+            QY = (m(1,0) + m(0,1) ) / S;
+            QZ = (m(0,2) + m(2,0) ) / S;
+            QW = (m(2,1) - m(1,2) ) / S;
+
+        } else if ( m(1,1) > m(2,2) ) {                    // Column 1: 
+            S  = sqrt( 1.0 + m(1,1) - m(0,0) - m(2,2) ) * 2.0;
+            QX = (m(1,0) + m(0,1) ) / S;
+            QY = 0.25 * S;
+            QZ = (m(2,1) + m(1,2) ) / S;
+            QW = (m(0,2) - m(2,0) ) / S;
+
+        } else {                                            // Column 2:
+            S  = sqrt( 1.0 + m(2,2) - m(0,0) - m(1,1) ) * 2.0;
+            QX = (m(0,2) + m(2,0) ) / S;
+            QY = (m(2,1) + m(1,2) ) / S;
+            QZ = 0.25f * S;
+            QW = (m(1,0) - m(0,1) ) / S;
+        }
+    }
+}
 
 void Quat::get( Matrix& m ) const
 {

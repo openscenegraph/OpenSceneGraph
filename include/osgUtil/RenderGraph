@@ -43,6 +43,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
         LeafList                            _leaves;
         
         mutable float                       _averageDistance;
+        mutable float                       _minimumDistance;
         
         osg::ref_ptr<osg::Referenced>       _userData;
 
@@ -52,6 +53,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             _stateset(NULL), 
             _depth(0),
             _averageDistance(0),
+            _minimumDistance(0),
             _userData(NULL)
         {
         }
@@ -61,6 +63,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             _stateset(stateset),
             _depth(0),
             _averageDistance(0),
+            _minimumDistance(0),
             _userData(NULL)
         {
             if (_parent) _depth = _parent->_depth + 1;
@@ -104,6 +107,24 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             return _averageDistance;
         }
         
+        inline float getMinimumDistance() const
+        {
+            if (_minimumDistance==FLT_MAX && !_leaves.empty())
+            {
+                LeafList::const_iterator itr=_leaves.begin();
+                _minimumDistance = (*itr)->_depth;
+                ++itr;
+                for(;
+                    itr!=_leaves.end();
+                    ++itr)
+                {
+                   if ((*itr)->_depth<_minimumDistance) _minimumDistance=(*itr)->_depth;
+                }
+                
+            }
+            return _minimumDistance;
+        }
+
         inline void sortFrontToBack()
         {
             std::sort(_leaves.begin(),_leaves.end(),LeafDepthSortFunctor());
@@ -139,6 +160,7 @@ class OSGUTIL_EXPORT RenderGraph : public osg::Referenced
             if (leaf)
             {
                 _averageDistance = FLT_MAX; // signify dirty.
+                _minimumDistance = FLT_MAX; // signify dirty.
                 _leaves.push_back(leaf);
                 leaf->_parent = this;
             }

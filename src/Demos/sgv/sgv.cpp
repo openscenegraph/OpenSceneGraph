@@ -15,6 +15,40 @@
 
 #include <osgUtil/Optimizer>
 
+struct SortByAverageDistanceFunctor
+{
+    bool operator() (const osgUtil::RenderGraph* lhs,const osgUtil::RenderGraph* rhs) const
+    {
+        return lhs->getAverageDistance()<rhs->getAverageDistance();
+    }
+};
+
+struct SortByMinimumDistanceFunctor
+{
+    bool operator() (const osgUtil::RenderGraph* lhs,const osgUtil::RenderGraph* rhs) const
+    {
+        return lhs->getMinimumDistance()<rhs->getMinimumDistance();
+    }
+};
+
+struct MySortCallback : public osgUtil::RenderBin::SortCallback
+{
+    virtual void sort(osgUtil::RenderBin* renderbin) 
+    {
+ 
+        osgUtil::RenderBin::RenderGraphList& renderGraphList = renderbin->_renderGraphList;
+        for(osgUtil::RenderBin::RenderGraphList::iterator itr=renderGraphList.begin();
+            itr!=renderGraphList.end();
+            ++itr)
+        {
+            (*itr)->sortFrontToBack();
+        }
+        
+//        std::sort(renderGraphList.begin(),renderGraphList.end(),SortByAverageDistanceFunctor());
+       std::sort(renderGraphList.begin(),renderGraphList.end(),SortByMinimumDistanceFunctor());
+    }
+};
+
 void write_usage(std::ostream& out,const std::string& name)
 {
     out << std::endl;
@@ -96,6 +130,21 @@ int main( int argc, char **argv )
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     viewer.registerCameraManipulator(new osgGA::FlightManipulator);
     viewer.registerCameraManipulator(new osgGA::DriveManipulator);
+    
+//     osgUtil::RenderBin* depth_renderbin = osgUtil::RenderBin::getRenderBinPrototype("DepthSortedBin");
+//     if (depth_renderbin)
+//     {
+//         depth_renderbin->setSortMode(osgUtil::RenderBin::SORT_BY_STATE);
+//     }
+
+    osgUtil::RenderStage* renderstage = viewer.getViewportSceneView(0)->getRenderStage();
+    if (renderstage)
+    {
+        renderstage->setSortLocalCallback(new MySortCallback);
+//        renderstage->setSortMode(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
+    }
+    
+
 
     // open the viewer window.
     viewer.open();

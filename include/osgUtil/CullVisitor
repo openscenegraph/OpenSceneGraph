@@ -108,13 +108,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
         ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
         
-        
-        enum TransparencySortMode {
-            LOOK_VECTOR_DISTANCE,
-            OBJECT_EYE_POINT_DISTANCE
-        };
-
-        void setTransparencySortMode(TransparencySortMode tsm) { _tsm = tsm; }
         /** Push state set on the current state group.
           * If the state exists in a child state group of the current
           * state group then move the current state group to that child.
@@ -244,8 +237,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         float               _computed_zfar;
         
         osg::ref_ptr<const osg::ClearNode> _clearNode;
-
-        TransparencySortMode _tsm;
 	
         bool _impostorActive;
         bool _depthSortImpostorSprites;

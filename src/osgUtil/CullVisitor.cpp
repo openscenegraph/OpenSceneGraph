@@ -81,7 +81,6 @@ CullVisitor::CullVisitor():
     _computeNearFar(COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES),
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
-    _tsm(OBJECT_EYE_POINT_DISTANCE),
     _impostorActive(true),
     _depthSortImpostorSprites(false),
     _impostorPixelErrorThreshold(4.0f),
@@ -268,26 +267,7 @@ void CullVisitor::apply(Geode& node)
         StateSet* stateset = drawable->getStateSet();
         if (stateset) pushStateSet(stateset);
 
-        if (_currentRenderBin->getRequiresDepthValueForSort())
-        {
-
-            Vec3 center = (drawable->getBound().center())*matrix;
-
-            float depth;
-            switch(_tsm)
-            {
-                case(LOOK_VECTOR_DISTANCE):depth = -center.z();break;
-                case(OBJECT_EYE_POINT_DISTANCE):
-                default: depth = center.length2();break;
-            }
-
-            addDrawableAndDepth(drawable,&matrix,depth);
-
-        }
-        else
-        {
-            addDrawable(drawable,&matrix);
-        }
+        addDrawableAndDepth(drawable,&matrix,distance(drawable->getBound().center(),matrix));
 
         if (stateset) popStateSet();
 
@@ -322,12 +302,10 @@ void CullVisitor::apply(Billboard& node)
 
         node.getMatrix(*billboard_matrix,eye_local,pos);
 
-        Vec3 center;
-        center = pos*modelview;
 
+        float d = distance(pos,modelview);
         if (_computeNearFar)
         {
-            float d = -center.z();
             if (d<_computed_znear) _computed_znear = d;
             if (d>_computed_zfar) _computed_zfar = d;
         }
@@ -335,23 +313,7 @@ void CullVisitor::apply(Billboard& node)
         StateSet* stateset = drawable->getStateSet();
         if (stateset) pushStateSet(stateset);
         
-        if (_currentRenderBin->getRequiresDepthValueForSort())
-        {
-            float depth;
-            switch(_tsm)
-            {
-                case(LOOK_VECTOR_DISTANCE):depth = -center.z();break;
-                case(OBJECT_EYE_POINT_DISTANCE):
-                default: depth = center.length2();break;
-            }
-
-            addDrawableAndDepth(drawable,billboard_matrix,depth);
-
-        }
-        else
-        {
-            addDrawable(drawable,billboard_matrix);
-        }
+        addDrawableAndDepth(drawable,billboard_matrix,d);
 
         if (stateset) popStateSet();
 
@@ -649,24 +611,7 @@ void CullVisitor::apply(Impostor& node)
             
             if (stateset) pushStateSet(stateset);
             
-            if (_depthSortImpostorSprites)
-            {
-                Vec3 center = node.getCenter()*matrix;
-
-                float depth;
-                switch(_tsm)
-                {
-                    case(LOOK_VECTOR_DISTANCE):depth = -center.z();break;
-                    case(OBJECT_EYE_POINT_DISTANCE):
-                    default: depth = center.length2();break;
-                }
-
-                addDrawableAndDepth(impostorSprite,&matrix,depth);
-            }
-            else
-            {
-                addDrawable(impostorSprite,&matrix);
-            }
+            addDrawableAndDepth(impostorSprite,&matrix,distance(node.getCenter(),matrix));
 
             if (stateset) popStateSet();
             

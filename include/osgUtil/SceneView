@@ -101,14 +101,32 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::Light* getLight() { return _light.get(); }
         const osg::Light* getLight() const { return _light.get(); }
         
-        void setCamera(osg::Camera* camera) { _camera = camera; }
-        osg::Camera* getCamera() { return _camera.get(); }
-        const osg::Camera* getCamera() const { return _camera.get(); }
-        
         void setState(osg::State* state) { _state = state; }
         osg::State* getState() { return _state.get(); }
         const osg::State* getState() const { return _state.get(); }
+
+        enum StereoMode
+        {
+            MONO,
+            QUAD_BUFFER_STEREO,
+            RED_GREEN_STEREO,
+            HORIZONTAL_SPLIT_STEREO,
+            VERTICAL_SPLIT_STEREO
+        };
         
+        void setStereoMode(const StereoMode mode) { _stereoMode = mode; }
+        const StereoMode getStereoMode() const { return _stereoMode; }
+
+        void setLeftEyeOffset(const osg::Vec3& pos) { _leftEye = pos; }
+        void setRightEyeOffset(const osg::Vec3& pos) { _rightEye = pos; }
+
+        void setFocalLength(float length) { _focalLength = length; }
+        void setScreenDistance(float distance) { _screenDistance = distance; }
+        
+        void setCamera(osg::Camera* camera) { _camera = camera; }
+        osg::Camera* getCamera() { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
+
         
         void setInitVisitor(osg::NodeVisitor* av) { _initVisitor = av; }
         osg::NodeVisitor* getInitVisitor() { return _initVisitor.get(); }
@@ -212,6 +230,14 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::Camera>                   _camera;
         osg::ref_ptr<osg::State>                    _state;
+
+        StereoMode _stereoMode;
+
+        osg::Vec3 _leftEye;
+        osg::Vec3 _rightEye;
+
+        float _focalLength;
+        float _screenDistance;
         
         bool                                        _initCalled;
         osg::ref_ptr<osg::NodeVisitor>              _initVisitor;

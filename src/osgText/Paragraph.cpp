@@ -96,7 +96,7 @@ void Paragraph::createDrawables()
         
     osg::Vec3 pos = _position;
     
-    typedef vector<std::string> TextList;
+    typedef std::vector<std::string> TextList;
     TextList formatedText;
     
     createFormatedText(_maxCharsPerLine,_text,formatedText);

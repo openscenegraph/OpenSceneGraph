@@ -25,6 +25,8 @@ class SG_EXPORT Camera: public osg::Referenced
     public:
 
         Camera();
+        Camera(const Camera&);
+        Camera& operator=(const Camera&);
         virtual ~Camera();
 
         /** Range of projection types.
@@ -254,11 +256,15 @@ class SG_EXPORT Camera: public osg::Referenced
         const bool unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const;
 
 
+        /** Convinience method for adjusting the project and model view to account for
+          * and eye offset, as used in stereo work, assumes that the users will use
+          * a seperate camera for each eye, adjustEyePointForStereo(..) being used to
+          * specialize the camera for each eye view.*/ 
+        void adjustEyeOffsetForStereo(const osg::Vec3& offset,float screenDistance);
+
     protected:
-    
-        // Disallow copy construction & assignment (for now)
-        Camera(const Camera&);
-        Camera& operator=(const Camera&);
+
+        void copy(const Camera&);
 
         // projection details.
         ProjectionType  _projectionType;
@@ -306,7 +312,10 @@ class SG_EXPORT Camera: public osg::Referenced
 
         void calculateMatricesAndClippingVolume() const;
         
-
+        // values to offset
+        bool            _useEyeOffset;
+        osg::Vec3       _eyeOffset;
+        float           _screenDistance;
 
 
 };

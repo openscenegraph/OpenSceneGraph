@@ -174,6 +174,9 @@ bool Viewer::open()
     GLUTEventAdapter::setWindowSize( wx, wy, ww, wh );
     GLUTEventAdapter::setButtonMask(0);
 
+
+    bool needQuadBufferStereo = false;
+
     // Set the absolute viewport for each SceneView based on the
     //   relative viewport coordinates given to us
     for(itr=_viewportList.begin();
@@ -195,6 +198,9 @@ bool Viewer::open()
         {
             //        osg::notify(osg::INFO) << "Handled reshape "<<endl;
         }
+
+        if (sceneView->getStereoMode()==osgUtil::SceneView::QUAD_BUFFER_STEREO) needQuadBufferStereo = true;
+
     }
 
     //glutInit( &argc, argv );    // I moved this into main to avoid passing
@@ -238,6 +244,7 @@ bool Viewer::open()
     if (vrv.requiresDepthBuffer())      displayMode |= GLUT_DEPTH;
     if (vrv.requiresAlphaBuffer())      displayMode |= GLUT_ALPHA;
     if (vrv.requiresStencilBuffer())    displayMode |= GLUT_STENCIL;
+    if (needQuadBufferStereo)           displayMode |= GLUT_STEREO;
 
     // and we'll add in multisample so that on systems like Onyx's can
     // go ahead and use there loverly anti-aliasing.  This is ignored
@@ -245,14 +252,15 @@ bool Viewer::open()
     displayMode |= GLUT_MULTISAMPLE;
     
 
-   osg::notify(osg::INFO)                                    <<"osgGLUT::Viewer::open() requesting displayMode = "<<displayMode<<endl;
-   if (displayMode & GLUT_DOUBLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_DOUBLE."<<endl;
-   if (displayMode & GLUT_SINGLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_SINGLE."<<endl; 
-   if (displayMode & GLUT_RGB)         osg::notify(osg::INFO)<<"                        requesting GLUT_RGB."<<endl; 
-   if (displayMode & GLUT_DEPTH)       osg::notify(osg::INFO)<<"                        requesting GLUT_DEPTH."<<endl; 
-   if (displayMode & GLUT_ALPHA)       osg::notify(osg::INFO)<<"                        requesting GLUT_ALPHA."<<endl; 
-   if (displayMode & GLUT_STENCIL)     osg::notify(osg::INFO)<<"                        requesting GLUT_STENCIL."<<endl; 
-   if (displayMode & GLUT_MULTISAMPLE) osg::notify(osg::INFO)<<"                        requesting GLUT_MULTISAMPLE."<<endl; 
+    osg::notify(osg::INFO)                                    <<"osgGLUT::Viewer::open() requesting displayMode = "<<displayMode<<endl;
+    if (displayMode & GLUT_DOUBLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_DOUBLE."<<endl;
+    if (displayMode & GLUT_SINGLE)      osg::notify(osg::INFO)<<"                        requesting GLUT_SINGLE."<<endl; 
+    if (displayMode & GLUT_RGB)         osg::notify(osg::INFO)<<"                        requesting GLUT_RGB."<<endl; 
+    if (displayMode & GLUT_DEPTH)       osg::notify(osg::INFO)<<"                        requesting GLUT_DEPTH."<<endl; 
+    if (displayMode & GLUT_ALPHA)       osg::notify(osg::INFO)<<"                        requesting GLUT_ALPHA."<<endl; 
+    if (displayMode & GLUT_STENCIL)     osg::notify(osg::INFO)<<"                        requesting GLUT_STENCIL."<<endl; 
+    if (displayMode & GLUT_MULTISAMPLE) osg::notify(osg::INFO)<<"                        requesting GLUT_MULTISAMPLE."<<endl; 
+    if (displayMode & GLUT_STEREO)      osg::notify(osg::INFO)<<"                        requesting GLUT_STEREO."<<endl; 
 
     glutInitDisplayMode( displayMode);
     

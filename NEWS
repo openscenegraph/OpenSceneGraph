@@ -2,6 +2,14 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+July 2002 - OpenSceneGraph-0.9.0.tar.gz
+
+    osgcluster - ported to windows.
+
+    Multitexturing support added to osg::StateSet, osg::Geometry, osg::State
+    and txp loader.
+    
+    Geometry classes which superseeds the old Performer sytle osg::GeoSet.
 
     Occlusion culling adding to the core OSG.
 
@@ -10,14 +18,25 @@ OSG News (most significant items from ChangeLog)
 
     osgSim a seperate add-on library adds support for navigational light points.
     
-    osgGA (Gui Abstrabtion) library introduced to provide classes for adatping
+    osgGA (Gui Abstraction) library introduced to provide classes for adatping
     different GUI toolkits to work with a standard set of manipulators for
     modifying the scene, such as camera and state manipulators.
     
     Support for NodeKits.
 
+    New demos:
 
-26th April 2002 - osg-0.8.45.tar.gz
+        osgoccluder
+        osghud
+        osgparticle
+        osgprerender
+        osgcallback
+        osglight
+        osgclip
+        osggeometry
+        osgmultitexture
+
+26th April 2002 - OpenSceneGraph-0.8.45.tar.gz
 
     >>> Support added for Solaris, texture cube mapping & muliple projections.
    

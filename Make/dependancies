@@ -1,0 +1,43 @@
+################################################################
+# Dependancy library which have been installed on this system
+
+GDAL_INSTALLED = yes
+
+LIBXML2_INSTALLED = yes
+
+JASPER_INSTALLED = yes
+
+FREETYPE_INSTALLED = yes
+
+ifeq ($(OS),Darwin)
+
+    QUICKTIME_INSTALLED = yes
+
+    LIBJPEG_INSTALLED = no
+
+    LIBUNGIF_INSTALLED = no
+
+    LIBTIFF_INSTALLED = no
+
+    LIBMPEG3_INSTALLED = no
+
+else
+
+    LIBJPEG_INSTALLED = yes
+
+    LIBUNGIF_INSTALLED = yes
+
+    LIBTIFF_INSTALLED = yes
+
+    LIBMPEG3_INSTALLED = no
+
+endif
+
+
+COIN_INSTALLED = no
+
+INVENTOR_INSTALLED = no
+
+PERFORMER_INSTALLED = no
+
+DEMETER_INSTALLED = no

@@ -1,3 +1,5 @@
+include $(TOPDIR)/Make/dependancies
+
 
 ################################################################
 # Directories traversed from the top level
@@ -54,30 +56,52 @@ PLUGIN_DIRS = \
         3dc\
         ive\
 
-# comment in if you have gdal installed
-PLUGIN_DIRS += gdal
+ifeq ($(GDAL_INSTALLED),yes)
+    PLUGIN_DIRS += gdal
+endif
 
-# comment in if you have japser (JPEG2000 library) installed.
-# PLUGIN_DIRS += jp2
+ifeq ($(JASPER_INSTALLED),yes)
+    PLUGIN_DIRS += jp2
+endif
 
-# comment in if you have Performer installed.
-# PLUGIN_DIRS += pfb
+ifeq ($(FREETYPE_INSTALLED),yes)
+    PLUGIN_DIRS += freetype
+endif
 
 
-# comment in if have freetype2.x installed, provides type type font support to osgText.
-PLUGIN_DIRS += freetype
+ifeq ($(QUICKTIME_INSTALLED),yes)
+  PLUGIN_DIRS += quicktime
+endif
+  
+ifeq ($(LIBJPEG_INSTALLED),yes)
+  PLUGIN_DIRS += tiff
+endif
 
-# comment in of your have Inventor or coin installed
-ifneq ("$(USE_COIN)","")
+ifeq ($(LIBUNGIF_INSTALLED),yes)
+  PLUGIN_DIRS += jpeg
+endif
+
+ifeq ($(LIBTIFF_INSTALLED),yes)
+  PLUGIN_DIRS += png
+endif
+
+ifeq ($(LIBMPEG3_INSTALLED),yes)
+  PLUGIN_DIRS += gif
+endif
+
+
+ifeq ($(COIN_INSTALLED),yes)
     PLUGIN_DIRS += Inventor
-else 
-    ifneq ("$(USE_INVENTOR)","")
+else
+    ifeq ($(INVENTOR_INSTALLED),yes)
         PLUGIN_DIRS += Inventor
-    else
-	PLUGIN_DIRS += iv
     endif
 endif
 
+
+ifeq ($(PERFORMER_INSTALLED),yes)
+    PLUGIN_DIRS += pfb
+endif
 
 
 # Geo plugin breaks Darwin build and doens't handle BigEndian issue.
@@ -91,35 +115,8 @@ endif
 endif
 endif
 
-# comment in if you want Open DX support, currently not on by default
-# since we havn't yet checked compilation on all platforms yet.
-# note, moved to non Darwin build since it currently breaks the Drawin build.
-  
 # commented out while the DX plugin is converted across to use Geometry rather than GeoSet.
 #  PLUGIN_DIRS += dx
-
-
-#### MacOS X specific definitions
-ifeq ($(OS),Darwin)
-
-  PLUGIN_DIRS += quicktime
-  
-else  
-
-  # comment in if you have libtiff installed.
-  PLUGIN_DIRS += tiff
-
-  # comment in if you have libjpeg installed.
-  PLUGIN_DIRS += jpeg
-
-  # comment in if you have libpng installed.
-  PLUGIN_DIRS += png
-
-  # comment in if you have libungif installed.
-  PLUGIN_DIRS += gif
-
-endif
-
 
 
 ################################################################
@@ -129,21 +126,21 @@ EXAMPLE_DIRS = \
 	osganimate\
 	osgautotransform\
 	osgbillboard\
-	osgbluemarble\
-	osgdem\
-	osgdistortion\
 	osgcallback\
 	osgcameragroup\
 	osgclip\
+	osgcluster\
 	osgconv\
 	osgcopy\
 	osgcubemap\
+	osgdepthshadow\
+	osgdistortion\
+	osgforest\
+	osgfxbrowser\
 	osggeodemo\
 	osggeometry\
 	osghangglide\
 	osghud\
-	osgfxbrowser\
-	osgforest\
 	osgimpostor\
 	osgkeyboard\
 	osgkeyboardmouse\
@@ -152,25 +149,25 @@ EXAMPLE_DIRS = \
 	osglogo\
 	osgmultitexture\
 	osgoccluder\
-	osgparticle\
 	osgpagedlod\
+	osgpagedlod\
+	osgparticle\
 	osgpick\
 	osgpoints\
-	osgphotoalbum\
 	osgprerender\
 	osgprerendercubemap\
 	osgreflect\
+	osgscalarbar\
 	osgscribe\
 	osgsequence\
-	osgscalarbar\
-	osgspheresegment\
-	osgsimulation\
-	osgsimple\
-	osgsimplepager\
 	osgshaders\
 	osgshadowtexture\
-	osgdepthshadow\
 	osgshape\
+	osgsimple\
+	osgsimplepager\
+	osgsimulation\
+	osgspacewarp\
+	osgspheresegment\
 	osgstereoimage\
 	osgteapot\
 	osgtext\
@@ -182,19 +179,22 @@ EXAMPLE_DIRS = \
 	osgversion\
 	osgvertexprogram\
 	osgviewer\
-#	osgmovie\
 	osgwindows\
-        
-#	osgpagedlod\
-#	osgdemeter\
-#	osgjigsaw\
 
-
-
-ifneq ($(OS),SunOS)
-# Solaris requires an installation of libxml2
-EXAMPLE_DIRS += slideshow3D
+ifeq ($(GDAL_INSTALLED),yes)
+    EXAMPLE_DIRS += osgphotoalbum
+    EXAMPLE_DIRS += osgdem
+    EXAMPLE_DIRS += osgbluemarble
 endif
 
-# comment in you want to compile the cluster demo.
-EXAMPLE_DIRS += osgcluster
+ifeq ($(LIBMPEG3_INSTALLED),yes)
+    EXAMPLE_DIRS += osgmovie
+endif
+
+ifeq ($(LIBXML2_INSTALLED),yes)
+    EXAMPLE_DIRS += slideshow3D
+endif
+
+ifeq ($(DEMETER_INSTALLED),yes)
+    EXAMPLE_DIRS += osgdemeter
+endif

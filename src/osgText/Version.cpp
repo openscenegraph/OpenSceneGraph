@@ -8,5 +8,5 @@ const char* osgTextGetVersion()
 
 const char* osgTextGetLibraryName()
 {
-    return "Open Scene Graph Text Library";
+    return "OpenSceneGraph Text Library";
 }

@@ -8,6 +8,6 @@ const char* osgGL2GetVersion()
 
 const char* osgGL2GetLibraryName()
 {
-    return "Open Scene Graph OpenGL Shading Language Library";
+    return "OpenSceneGraph OpenGL Shading Language Library";
 }
 

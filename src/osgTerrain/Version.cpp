@@ -8,5 +8,5 @@ const char* osgTerrainGetVersion()
 
 const char* osgTerrainGetLibraryName()
 {
-    return "Open Scene Graph Terrain Library";
+    return "OpenSceneGraph Terrain Library";
 }

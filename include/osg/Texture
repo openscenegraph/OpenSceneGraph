@@ -109,7 +109,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         /** Sets the border color for this texture. Makes difference only if
           * wrap mode is CLAMP_TO_BORDER */
-        void setBorderColor(const Vec4& color) { _borderColor = color; _texParametersDirty = true; }
+        void setBorderColor(const Vec4& color) { _borderColor = color; dirtyTextureParameters(); }
         
         const Vec4& getBorderColor() const { return _borderColor; }
         
@@ -181,7 +181,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         
         /** Get the handle to the texture object for the current context.*/
         /** return the OpenGL texture object for specified context.*/
-        inline GLuint& getTextureObject(const uint contextID) const
+        inline GLuint& getTextureObject(uint contextID) const
         {
             // pad out handle list if required.
             if (_handleList.size()<=contextID)
@@ -191,7 +191,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
             return _handleList[contextID];
         }
 
-        inline uint& getModifiedTag(const uint contextID) const
+        inline uint& getModifiedTag(uint contextID) const
         {
             // pad out handle list if required.
             if (_modifiedTag.size()<=contextID)
@@ -201,9 +201,21 @@ class SG_EXPORT Texture : public osg::StateAttribute
             return _modifiedTag[contextID];
         }
 
+        inline uint& getTextureParameterDity(uint contextID) const
+        {
+            // pad out handle list if required.
+            if (_texParametersDirtyList.size()<=contextID)
+                _texParametersDirtyList.resize(contextID+1,0);
+
+            // get the dirty flag for the current contextID.
+            return _texParametersDirtyList[contextID];
+        }
+
         /** Force a recompile on next apply() of associated OpenGL texture objects.*/
         void dirtyTextureObject();
 
+        /** Force a resetting on next apply() of associated OpenGL texture parameters.*/
+        void dirtyTextureParameters();
 
 
         /** use deleteTextureObject instead of glDeleteTextures to allow
@@ -253,6 +265,8 @@ class SG_EXPORT Texture : public osg::StateAttribute
         typedef std::vector<uint> ImageModifiedTag;
         mutable ImageModifiedTag _modifiedTag;
 
+        typedef std::vector<uint> TexParameterDirtyList;
+        mutable TexParameterDirtyList _texParametersDirtyList;
 
         WrapMode _wrap_s;
         WrapMode _wrap_t;
@@ -263,10 +277,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
         float           _maxAnisotropy;
 
         Vec4 _borderColor;
-
-        // true if apply tex parameters required. 
-        mutable bool _texParametersDirty;
-
 
         InternalFormatMode  _internalFormatMode;
         mutable GLint       _internalFormat;

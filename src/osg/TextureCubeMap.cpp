@@ -209,7 +209,7 @@ void TextureCubeMap::apply(State& state) const
     if (handle != 0)
     {
         glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
-        if (_texParametersDirty) applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
+        if (getTextureParameterDity(state.getContextID())) applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
         if (_subloadCallback.valid())
         {

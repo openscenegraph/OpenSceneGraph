@@ -221,6 +221,13 @@ class SG_EXPORT State : public Referenced
         /** dirty the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
         void dirtyAllVertexArrays();
 
+
+        /** Wrapper around glInterleavedArrays(..).
+          * also resets the internal array points and modes within osg::State to keep the other
+          * vertex array operations consistent. */
+        void setInterleavedArrays( GLenum format, GLsizei stride, void* pointer);
+
+
         /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);
           * note, only updates values that change.*/
         inline void setVertexPointer( GLint size, GLenum type,

@@ -10,10 +10,7 @@
 #include <osg/Types>
 #include <osg/NodeVisitor>
 #include <osg/Shape>
-
-#include <vector>
-#include <map>
-#include <set>
+#include <osg/buffered_value>
 
 namespace osg {
 
@@ -381,18 +378,13 @@ class SG_EXPORT Drawable : public Object
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;
 
-        typedef std::vector<uint> GLObjectList;
+        typedef osg::buffered_value<uint> GLObjectList;
         mutable GLObjectList _globjList;
 
         ref_ptr<AppCallback>    _appCallback;
         ref_ptr<DrawCallback>   _drawCallback;
         ref_ptr<CullCallback>   _cullCallback;
         
-        // static cache of deleted display lists which can only 
-        // by completely deleted once the appropriate OpenGL context
-        // is set.
-        typedef std::map<uint,std::set<uint> > DeletedDisplayListCache;
-        static DeletedDisplayListCache s_deletedDisplayListCache;
 
 };
 
@@ -404,9 +396,6 @@ inline void Drawable::draw(State& state)
         // get the contextID (user defined ID of 0 upwards) for the 
         // current OpenGL context.
         uint contextID = state.getContextID();
-
-        // fill in array if required.
-        while (_globjList.size()<=contextID) _globjList.push_back(0);
 
         // get the globj for the current contextID.
         uint& globj = _globjList[contextID];

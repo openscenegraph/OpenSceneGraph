@@ -146,15 +146,28 @@ bool Group::replaceChild( Node *origNode, Node *newNode )
 {
     if (newNode==NULL || origNode==newNode) return false;
 
-    ChildList::iterator itr = findNode(origNode);
-    if (itr!=_children.end())
+    unsigned int pos = findChildNum(origNode);
+    if (pos<_children.size())
     {
+        return setChild(pos,newNode);
+    }
+    return false;
+}
+
+
+bool Group::setChild( unsigned  int i, Node* newNode )
+{
+    if (i<_children.size() && newNode)
+    {
+    
+        Node* origNode = _children[i].get();
+    
         // first remove for origNode's parent list.
         origNode->removeParent(this);
 
         // note ref_ptr<> automatically handles decrementing origNode's reference count,
         // and inccrementing newNode's reference count.
-        *itr = newNode;
+        _children[i] = newNode;
 
         // register as parent of child.
         newNode->addParent(this);

@@ -69,7 +69,7 @@ bool LOD::addChild(Node *child, float min, float max)
 bool LOD::removeChild( Node *child )
 {
     // find the child's position.
-    unsigned int pos=findChildNo(child);
+    unsigned int pos=findChildNum(child);
     if (pos==_children.size()) return false;
     
     _rangeList.erase(_rangeList.begin()+pos);

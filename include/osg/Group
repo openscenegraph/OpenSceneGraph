@@ -50,23 +50,29 @@ class SG_EXPORT Group : public Node
         virtual bool removeChild( Node *child );
 
         /** Replace specified Node with another Node.
-         *  Decrement the reference count origNode and increments the
+          * Equivalent to setChild(findChildNum(orignChild),node), 
+          * see docs for setChild for futher details on implementation.*/
+        virtual bool replaceChild( Node *origChild, Node* newChild );
+
+        /** return the number of chilren nodes.*/
+        inline unsigned int getNumChildren() const { return _children.size(); }
+
+        /** set child node at position i.
+         *  return true if set correctly, false on failure (if node==NULL || i is out of range).
+         *  When set can be successful applied, the algorithm is : decrement the reference count origNode and increments the
          *  reference count of newNode, and dirty the bounding sphere
          *  to force it to recompute on next getBound() and returns true.
          *  If origNode is not found then return false and do not 
          *  add newNode.  If newNode is NULL then return false and do
          *  not remove origNode. Also returns false if newChild is a Scene node.
          */
-        virtual bool replaceChild( Node *origChild, Node* newChild );
-
-        /** return the number of chilren nodes.*/
-        inline unsigned int getNumChildren() const { return _children.size(); }
+        virtual bool setChild( unsigned  int i, Node* node );
 
         /** return child node at position i.*/
-        inline Node *getChild( unsigned  int i ) { return _children[i].get(); }
+        inline Node* getChild( unsigned  int i ) { return _children[i].get(); }
 
         /** return child node at position i.*/
-        inline const Node *getChild( unsigned  int i ) const { return _children[i].get(); }
+        inline const Node* getChild( unsigned  int i ) const { return _children[i].get(); }
 
         /** return true if node is contained within Group.*/
         inline bool containsNode( const Node* node ) const
@@ -113,11 +119,11 @@ class SG_EXPORT Group : public Node
         /** Find the index number of child, return a value between
           * 0 and _children.size()-1 if found, if not found then
           * return _children.size().*/
-        inline unsigned int findChildNo( const Node* node ) const
+        inline unsigned int findChildNum( const Node* node ) const
         {
-            for (unsigned int childNo=0;childNo<_children.size();++childNo)
+            for (unsigned int childNum=0;childNum<_children.size();++childNum)
             {
-                if (_children[childNo]==node) return childNo;
+                if (_children[childNum]==node) return childNum;
             }
             return _children.size(); // node not found.
         }

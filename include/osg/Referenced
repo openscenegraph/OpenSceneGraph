@@ -37,7 +37,7 @@ class SG_EXPORT Referenced
             _refCount=0;
         }
 
-        inline Referenced& operator = (Referenced&) { return *this; }
+        inline Referenced& operator = (const Referenced&) { return *this; }
 
         friend class DeleteHandler;
 

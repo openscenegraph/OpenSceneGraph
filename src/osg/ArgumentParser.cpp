@@ -297,7 +297,7 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
                 if (option[prevpos]=='-') 
                 {
                     // verbose approach implemented for debugging string(const string&,unsigned int,unsigned int) operation on x86-64
-                    notify(INFO)<<"option=\""<<option<<"\" \tprevpos="<<prevpos<<" \tn="<<pos-prevpos;
+                    notify(INFO)<<"option=\""<<option<<"\" \tprevpos="<<prevpos<<" \tn="<<pos-prevpos<<"\tnpos="<<std::string::npos;
 
                     std::string str(option,prevpos,pos-prevpos);
                     
@@ -317,7 +317,7 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
             {
 
                 // verbose approach implemented for debugging string(const string&,unsigned int,unsigned int) operation on x86-64
-                notify(INFO)<<"option=\""<<option<<"\"  \tprevpos="<<prevpos<<" \tn=npos";
+                notify(INFO)<<"option=\""<<option<<"\"  \tprevpos="<<prevpos<<" \tn=npos="<<std::string::npos;
 
                 std::string str(option,prevpos,pos-prevpos);
 

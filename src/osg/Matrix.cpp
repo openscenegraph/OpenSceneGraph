@@ -153,6 +153,7 @@ void Matrix::mult( const Matrix& lhs, const Matrix& rhs )
     if (&rhs==this)
     {
         preMult(lhs);
+        return;
     }
 
 // PRECONDITION: We assume neither &lhs nor &rhs == this

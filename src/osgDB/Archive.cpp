@@ -151,7 +151,12 @@ bool Archive::IndexBlock::addFileReference(pos_type position, const std::string&
         _requiresWrite = true;
 
         osg::notify(osg::NOTICE)<<"Archive::IndexBlock::addFileReference("<<(unsigned int)position<<", "<<filename<<")"<<std::endl;
-
+        
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 

@@ -80,6 +80,8 @@ void Texture1D::setImage(Image* image)
     dirtyTextureObject();
 
     _image = image;
+    _modifiedTag.setAllElementsTo(0);
+
 }
 
 
@@ -106,6 +108,9 @@ void Texture1D::apply(State& state) const
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
             applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMimpmapLevels);
+
+            // update the modified tag to show that it is upto date.
+            getModifiedTag(contextID) = _image->getModifiedTag();
         }
 
     }
@@ -136,6 +141,10 @@ void Texture1D::apply(State& state) const
 
         applyTexImage1D(GL_TEXTURE_1D,_image.get(),state, _textureWidth, _numMimpmapLevels);
 
+        // update the modified tag to show that it is upto date.
+        getModifiedTag(contextID) = _image->getModifiedTag();
+    
+
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
@@ -165,9 +174,6 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
-    // update the modified tag to show that it is upto date.
-    getModifiedTag(contextID) = image->getModifiedTag();
-    
 
     // compute the internal texture format, this set the _internalFormat to an appropriate value.
     computeInternalFormat();

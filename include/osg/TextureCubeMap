@@ -61,6 +61,11 @@ class SG_EXPORT TextureCubeMap : public Texture
         /** Get the const texture image for specified face. */
         const Image* getImage(Face) const;
 
+        inline unsigned int& getModifiedTag(Face face,unsigned int contextID) const
+        {
+            // get the modified tag for the current contextID.
+            return _modifiedTag[face][contextID];
+        }
 
         /** Set the texture width and height. If width or height are zero then
           * the repsective size value is calculated from the source image sizes. */
@@ -159,6 +164,9 @@ class SG_EXPORT TextureCubeMap : public Texture
         mutable GLsizei _numMimpmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;
+
+        typedef buffered_value<unsigned int> ImageModifiedTag;
+        mutable ImageModifiedTag _modifiedTag[6];
 };
 
 }

@@ -201,11 +201,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
             return _handleList[contextID];
         }
 
-        inline unsigned int& getModifiedTag(unsigned int contextID) const
-        {
-            // get the modified tag for the current contextID.
-            return _modifiedTag[contextID];
-        }
 
         inline unsigned int& getTextureParameterDirty(unsigned int contextID) const
         {
@@ -326,9 +321,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         typedef buffered_value<GLuint> TextureNameList;
         mutable TextureNameList _handleList;
-
-        typedef buffered_value<unsigned int> ImageModifiedTag;
-        mutable ImageModifiedTag _modifiedTag;
 
         typedef buffered_value<unsigned int> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;

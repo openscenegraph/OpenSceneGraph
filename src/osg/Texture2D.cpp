@@ -80,13 +80,8 @@ int Texture2D::compare(const StateAttribute& sa) const
 
 void Texture2D::setImage(Image* image)
 {
-    // delete old texture objects.
-    // dirtyTextureObject();
-
-    // replace dirtyTextureObject() with reseting the modified tag.
-    _modifiedTag.setAllElementsTo(0);
-
     _image = image;
+    _modifiedTag.setAllElementsTo(0);
 }
 
 
@@ -114,6 +109,10 @@ void Texture2D::apply(State& state) const
         {
             applyTexImage2D_subload(GL_TEXTURE_2D,_image.get(),state,
                                     _textureWidth, _textureHeight, _numMimpmapLevels);
+ 
+            // update the modified tag to show that it is upto date.
+            getModifiedTag(contextID) = _image->getModifiedTag();
+     
         }
 
     }
@@ -144,6 +143,9 @@ void Texture2D::apply(State& state) const
 
         applyTexImage2D_load(GL_TEXTURE_2D,_image.get(),state,
                              _textureWidth, _textureHeight, _numMimpmapLevels);
+
+        // update the modified tag to show that it is upto date.
+        getModifiedTag(contextID) = _image->getModifiedTag();
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures

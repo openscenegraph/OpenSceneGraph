@@ -3470,10 +3470,9 @@ osg::Node* DataSet::decorateWithCoordinateSystemNode(osg::Node* subgraph)
     if (_destinationCoordinateSystem->getCoordinateSystem().empty()) 
         return subgraph;
 
-    osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode;
-    
-    // copy the destinate coordinate system string.
-    csn->setCoordinateSystem(_destinationCoordinateSystem->getCoordinateSystem());
+    osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode(
+            _destinationCoordinateSystem->getFormat(),
+            _destinationCoordinateSystem->getCoordinateSystem());
     
     // set the ellipsoid model if geocentric coords are used.
     if (getConvertFromGeographicToGeocentric()) csn->setEllipsoidModel(getEllipsoidModel());

@@ -4,10 +4,12 @@
 
 #include <iostream>
 #include <stdio.h>
+#ifndef WIN32
 #include <libgen.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#endif
 
 #include <errno.h>
 #include <string>
@@ -19,6 +21,9 @@ namespace TemporaryFileUtils {
 
 bool makeDirectory( const std::string &path )
 {
+#ifdef WIN32
+	return false;
+#else
     char *cpath = new char[path.length()+1];
     strcpy( cpath, path.c_str());
     char *p = dirname(cpath);
@@ -72,6 +77,7 @@ bool makeDirectory( const std::string &path )
         paths.pop();
     }
     return true;
+#endif
 }
 
 }

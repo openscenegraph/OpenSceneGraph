@@ -173,10 +173,9 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
         virtual void accept(unsigned int index,ValueVisitor& vv) { vv.apply( (*this)[index] ); }
         virtual void accept(unsigned int index,ConstValueVisitor& vv) const {  vv.apply( (*this)[index] );}
 
-        virtual const GLvoid*   getDataPointer() const { if (!std::vector<T>::empty()) return &front(); else return 0; }
+        virtual const GLvoid*   getDataPointer() const { if (!empty()) return &front(); else return 0; }
         virtual unsigned int    getNumElements() const { return size(); }
 
-        virtual bool            empty() const { return std::vector<T>::empty(); }
         virtual unsigned int    index(unsigned int pos) const { return (*this)[pos]; }
 
     protected:

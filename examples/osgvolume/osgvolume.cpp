@@ -906,9 +906,6 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     std::ifstream fin(raw_filename.c_str());
     if (!fin) return 0;
 
-    std::cout<<"sizeX="<<sizeX<<" sizeY="<<sizeY<<" sizeZ="<<sizeZ<<" numberBytesPerComponent="<<numberBytesPerComponent
-             <<"numberOfComponents="<<numberOfComponents<<std::endl;
-    
     GLenum pixelFormat;
     switch(numberOfComponents)
     {
@@ -940,15 +937,12 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     int sizeR = sizeZ;
     clampToNearestValidPowerOfTwo(sizeS, sizeT, sizeR, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize);
 
-    std::cout<<"sizeS="<<sizeS<<" sizeT="<<sizeT<<" sizeR="<<sizeR<<std::endl;
-
     osg::ref_ptr<osg::Image> image = new osg::Image;
     image->allocateImage(sizeS, sizeT, sizeR, pixelFormat, dataType);
     
     
     bool endianSwap = (osg::getCpuByteOrder()==osg::BigEndian) ? (endian=="big") : (endian!="big");
     
-
     unsigned int r_offset = (sizeZ<sizeR) ? sizeR/2 - sizeZ/2 : 0;
     
     int offset = endianSwap ? numberBytesPerComponent : 0;
@@ -973,7 +967,6 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
                     data += numberBytesPerComponent;
                 }
             }
-            //std::cout<<"data = "<<(unsigned int)data<<" data(0,t+1,r+r_offset) = "<<(unsigned int)image->data(0,t+1,r+r_offset)<<std::endl;
         }
     }
 
@@ -1141,17 +1134,12 @@ int main( int argc, char **argv )
     
     osg::ref_ptr<osg::Image> image_3d;
 
-    std::cout<<"about to read raw"<<std::endl;
-    
     int sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents;
     std::string endian, raw_filename;
     while (arguments.read("--raw", sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename)) 
     {
-        std::cout<<"sizeX="<<sizeX<<" sizeY="<<sizeY<<" sizeZ="<<sizeZ<<std::endl;
         image_3d = readRaw(sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename);
     }
-
-    std::cout<<"read raw data"<<std::endl;
 
     while (arguments.read("--images")) 
     {

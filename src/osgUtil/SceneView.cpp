@@ -104,7 +104,7 @@ void SceneView::setDefaults()
      _globalState->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
 
     osg::LightModel* lightmodel = osgNew osg::LightModel;
-    lightmodel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
     _globalState->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
 
     _backgroundColor.set(0.2f, 0.2f, 0.4f, 1.0f);

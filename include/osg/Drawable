@@ -604,11 +604,19 @@ class SG_EXPORT Drawable : public Object
             void glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const;
             void glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const;
 
+
             void glGenBuffers (GLsizei n, GLuint *buffers) const;
             void glBindBuffer (GLenum target, GLuint buffer) const;
             void glBufferData (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const;
             void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
             void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
+            GLboolean glIsBuffer (GLuint buffer) const;
+            void glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const;
+            GLvoid* glMapBuffer (GLenum target, GLenum access) const;
+            GLboolean glUnmapBuffer (GLenum target) const;
+            void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const;
+            void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const;
+
 
             void glGenOcclusionQueries( GLsizei n, GLuint *ids ) const;
             void glDeleteOcclusionQueries( GLsizei n, const GLuint *ids ) const;
@@ -641,11 +649,18 @@ class SG_EXPORT Drawable : public Object
             typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
             typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
 
+
             typedef void (APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
             typedef void (APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
             typedef void (APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
             typedef void (APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
             typedef void (APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
+            typedef GLboolean (APIENTRY * IsBufferProc) (GLuint buffer);
+            typedef void (APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
+            typedef GLvoid* (APIENTRY * MapBufferProc) (GLenum target, GLenum access);
+            typedef GLboolean (APIENTRY * UnmapBufferProc) (GLenum target);
+            typedef void (APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);
+            typedef void (APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
 
             typedef void (APIENTRY * GenOcclusionQueriesProc) ( GLsizei n, GLuint *ids );
             typedef void (APIENTRY * DeleteOcclusionQueriesProc) ( GLsizei n, const GLuint *ids );
@@ -691,11 +706,17 @@ class SG_EXPORT Drawable : public Object
             MultiTexCoordfvProc _glMultiTexCoord3fv;
             MultiTexCoordfvProc _glMultiTexCoord4fv;
 
-            GenBuffersProc      _glGenBuffers;
-            BindBufferProc      _glBindBuffer;
-            BufferDataProc      _glBufferData;
-            BufferSubDataProc   _glBufferSubData;
-            DeleteBuffersProc   _glDeleteBuffers;
+            GenBuffersProc          _glGenBuffers;
+            BindBufferProc          _glBindBuffer;
+            BufferDataProc          _glBufferData;
+            BufferSubDataProc       _glBufferSubData;
+            DeleteBuffersProc       _glDeleteBuffers;
+            IsBufferProc            _glIsBuffer;
+            GetBufferSubDataProc    _glGetBufferSubData;
+            MapBufferProc           _glMapBuffer;
+            UnmapBufferProc         _glUnmapBuffer;
+            GetBufferParameterivProc _glGetBufferParameteriv;
+            GetBufferPointervProc   _glGetBufferPointerv;
 
             GenOcclusionQueriesProc _glGenOcclusionQueries;
             DeleteOcclusionQueriesProc _glDeleteOcclusionQueries;

@@ -67,7 +67,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 {
     public:
 
-        static Registry* instance();
+        static Registry* instance(bool erase = false);
 
         /** read the command line arguments.*/
         void readCommandLine(osg::ArgumentParser& commandLine);
@@ -98,6 +98,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         bool loadLibrary(const std::string& fileName);
         /** close the attached library with specified name.*/
         bool closeLibrary(const std::string& fileName);
+        /** close all libraries.*/
+        void closeAllLibraries();
 
         /** get a reader writer which handles specified extension.*/
         ReaderWriter* getReaderWriterForExtension(const std::string& ext);
@@ -206,9 +208,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
 
-         typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
+        typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
 
-   protected:
+    protected:
 
         virtual ~Registry();
 

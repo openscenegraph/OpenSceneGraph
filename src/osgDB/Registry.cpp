@@ -22,6 +22,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/Archive>
 
 #include <stdio.h>
 
@@ -1112,6 +1113,162 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
     
     return false;
 }
+
+
+//
+// read object from specified file.
+//
+ReaderWriter::ReadResult Registry::openArchive(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint)
+{
+    if (containsServerAddress(fileName))
+    {
+        std::string serverName = getServerAddress(fileName);
+        std::string serverFile = getServerFileName(fileName);
+        osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
+        osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
+
+        if (serverName.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server address invalid.");
+        }
+        
+        if (serverFile.empty())
+        {
+            return ReaderWriter::ReadResult("Warning: Server file name invalid.");
+        }
+
+        ReaderWriter* rw = getReaderWriterForExtension("net");
+        if (rw)
+        {
+            return rw->openArchive(serverName+":"+serverFile, status, indexBlockSizeHint, _options.get());
+        }
+        else
+        {
+            return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
+        }
+    }
+    
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::ReadResult> Results;
+    Results results;
+
+    // first attempt to load the file from existing ReaderWriter's
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
+    {
+        ReaderWriter::ReadResult rr = itr->openArchive(fileName,status, indexBlockSizeHint, _options.get());
+        if (rr.validArchive()) return rr;
+        else results.push_back(rr);
+    }
+
+    if (!results.empty())
+    {
+        unsigned int num_FILE_NOT_HANDLED = 0;
+        unsigned int num_FILE_NOT_FOUND = 0;
+        unsigned int num_ERROR_IN_READING_FILE = 0;
+
+        for(Results::iterator ritr=results.begin();
+            ritr!=results.end();
+            ++ritr)
+        {
+            if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_HANDLED) ++num_FILE_NOT_HANDLED;
+            else if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND) ++num_FILE_NOT_FOUND;
+            else if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE) ++num_ERROR_IN_READING_FILE;
+        }
+        
+        if (num_FILE_NOT_HANDLED!=results.size())
+        {
+            // we've come across a file not found or error in reading file.
+            if (num_ERROR_IN_READING_FILE)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+            else if (num_FILE_NOT_FOUND)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<fileName<<"\""<<std::endl;
+                return NULL;
+            }
+        }
+    }
+
+    // now look for a plug-in to load the file.
+    std::string libraryName = createLibraryNameForFile(fileName);
+    if (loadLibrary(libraryName))
+    {
+        for(;itr.valid();++itr)
+        {
+            ReaderWriter::ReadResult rr = itr->openArchive(fileName,status, indexBlockSizeHint, _options.get());
+            if (rr.validArchive()) return rr;
+            else results.push_back(rr);
+        }
+    }
+    
+    if (results.empty())
+    {
+        return ReaderWriter::ReadResult("Warning: Could not find plugin to read objects from file \""+fileName+"\".");
+    }
+    
+
+    return results.front();
+}
+
+ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, CacheHintOptions useObjectCache)
+{
+    std::string file(fileName);
+
+    if (useObjectCache & CACHE_OBJECTS)
+    {
+        // search for entry in the object cache.
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            ObjectCache::iterator oitr=_objectCache.find(file);
+            if (oitr!=_objectCache.end())
+            {
+                notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
+                osgDB::Archive* archive = dynamic_cast<osgDB::Archive*>(oitr->second.first.get());
+                if (archive) return ReaderWriter::ReadResult(archive, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+            }
+        }
+        
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = openArchive(file, status, indexBlockSizeHint);
+        if (rr.validObject()) 
+        {
+            // update cache with new entry.
+            notify(INFO)<<"Adding to cache object "<<file<<std::endl;
+            addEntryToObjectCache(file,rr.getObject());
+        }
+        
+        return rr;
+
+    }
+    else
+    {
+    
+        ObjectCache tmpObjectCache;
+        
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
+        PushAndPopDataPath tmpfile(getFilePath(file));
+
+        ReaderWriter::ReadResult rr = openArchive(file, status, indexBlockSizeHint);
+
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
+        return rr;
+
+    }
+}
+
 
 //
 // read object from specified file.

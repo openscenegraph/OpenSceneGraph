@@ -301,8 +301,8 @@ class SG_EXPORT Camera: public osg::Referenced
         mutable ref_ptr<Matrix> _modelViewMatrix;
         mutable ClippingVolume  _clippingVolume;
 
-        mutable ref_ptr<Matrix> _MP;
-        mutable ref_ptr<Matrix> _inverseMP;
+        mutable ref_ptr<Matrix> _mp;
+        mutable ref_ptr<Matrix> _inversemp;
 
         void calculateMatricesAndClippingVolume() const;
         

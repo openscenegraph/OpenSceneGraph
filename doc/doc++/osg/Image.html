@@ -120,10 +120,10 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.119.37">data</A></B>(int column, int row=0, int image=0) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.38">flipHorizontal</A></B>(int image=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.38">flipHorizontal</A></B>()
 <DD><I>Flip the image horizontally</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.39">flipVertical</A></B>(int image=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.39">flipVertical</A></B>()
 <DD><I>Flip the image vertically</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.40">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.5.html#DOC.2.240.57.26">maxTextureSize</A>)
@@ -156,10 +156,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.119.53">getMipmapData</A></B>(unsigned int mipmapNumber) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.54">computeMipMaps</A></B>()
-<DD><I>converts a single image into mip mapped version image</I>
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.119.55">isImageTranslucent</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.119.54">isImageTranslucent</A></B>() const 
 <DD><I>return true of this image is translucent - ie.</I>
 </DL></P>
 
@@ -170,40 +167,40 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.119.58">_fileName</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.119.57">_fileName</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.119.59">_s</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.119.58">_s</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.119.60">_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.119.59">_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.119.61">_r</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.119.60">_r</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.119.62">_internalTextureFormat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.119.61">_internalTextureFormat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.119.63">_pixelFormat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.119.62">_pixelFormat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.119.64">_dataType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.119.63">_dataType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.119.65">_packing</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.119.64">_packing</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> <B><A HREF="#DOC.2.119.66">_allocationMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> <B><A HREF="#DOC.2.119.65">_allocationMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char* <B><A HREF="#DOC.2.119.67">_data</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char* <B><A HREF="#DOC.2.119.66">_data</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.119.70">_modifiedTag</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.119.69">_modifiedTag</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.119.49">MipmapDataType</A> <B><A HREF="#DOC.2.119.71">_mipmapData</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.119.49">MipmapDataType</A> <B><A HREF="#DOC.2.119.70">_mipmapData</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.119.56">~Image</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.119.55">~Image</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>&amp; <B><A HREF="#DOC.2.119.57">operator = </A></B>(const <!1><A HREF="Image.html">Image</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>&amp; <B><A HREF="#DOC.2.119.56">operator = </A></B>(const <!1><A HREF="Image.html">Image</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.68">deallocateData</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.67">deallocateData</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.69">setData</A></B>(unsigned char* <!1><A HREF="Image.html#DOC.2.119.35">data</A>, <!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> allocationMode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.119.68">setData</A></B>(unsigned char* <!1><A HREF="Image.html#DOC.2.119.35">data</A>, <!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> allocationMode)
 </DL></P>
 
 </DL>
@@ -462,12 +459,12 @@ If source is NULL then no operation happens, this Image is left unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="flipHorizontal"></A>
 <A NAME="DOC.2.119.38"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flipHorizontal(int image=0)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flipHorizontal()</B></TT>
 <DD>Flip the image horizontally
 <DL><DT><DD></DL><P>
 <A NAME="flipVertical"></A>
 <A NAME="DOC.2.119.39"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flipVertical(int image=0)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flipVertical()</B></TT>
 <DD>Flip the image vertically
 <DL><DT><DD></DL><P>
 <A NAME="ensureValidSizeForTexturing"></A>
@@ -533,78 +530,73 @@ the host machine.
 <A NAME="DOC.2.119.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned char* getMipmapData(unsigned int mipmapNumber) const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="computeMipMaps"></A>
-<A NAME="DOC.2.119.54"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeMipMaps()</B></TT>
-<DD>converts a single image into mip mapped version image
-<DL><DT><DD></DL><P>
 <A NAME="isImageTranslucent"></A>
-<A NAME="DOC.2.119.55"></A>
+<A NAME="DOC.2.119.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isImageTranslucent() const </B></TT>
 <DD>return true of this image is translucent - ie. it has alpha values that are less 1.0 (when normalized).
 <DL><DT><DD></DL><P>
 <A NAME="~Image"></A>
-<A NAME="DOC.2.119.56"></A>
+<A NAME="DOC.2.119.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Image()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.119.57"></A>
+<A NAME="DOC.2.119.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>&amp; operator = (const <!1><A HREF="Image.html">Image</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fileName"></A>
-<A NAME="DOC.2.119.58"></A>
+<A NAME="DOC.2.119.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _fileName</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s"></A>
-<A NAME="DOC.2.119.59"></A>
+<A NAME="DOC.2.119.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _s</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_t"></A>
-<A NAME="DOC.2.119.60"></A>
+<A NAME="DOC.2.119.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_r"></A>
-<A NAME="DOC.2.119.61"></A>
+<A NAME="DOC.2.119.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _r</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_internalTextureFormat"></A>
-<A NAME="DOC.2.119.62"></A>
+<A NAME="DOC.2.119.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _internalTextureFormat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pixelFormat"></A>
-<A NAME="DOC.2.119.63"></A>
+<A NAME="DOC.2.119.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _pixelFormat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dataType"></A>
-<A NAME="DOC.2.119.64"></A>
+<A NAME="DOC.2.119.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _dataType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_packing"></A>
-<A NAME="DOC.2.119.65"></A>
+<A NAME="DOC.2.119.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _packing</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_allocationMode"></A>
-<A NAME="DOC.2.119.66"></A>
+<A NAME="DOC.2.119.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> _allocationMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_data"></A>
-<A NAME="DOC.2.119.67"></A>
+<A NAME="DOC.2.119.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char* _data</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="deallocateData"></A>
-<A NAME="DOC.2.119.68"></A>
+<A NAME="DOC.2.119.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void deallocateData()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setData"></A>
-<A NAME="DOC.2.119.69"></A>
+<A NAME="DOC.2.119.68"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setData(unsigned char* <!1><A HREF="Image.html#DOC.2.119.35">data</A>, <!1><A HREF="Image.html#DOC.2.119.11">AllocationMode</A> allocationMode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modifiedTag"></A>
-<A NAME="DOC.2.119.70"></A>
+<A NAME="DOC.2.119.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _modifiedTag</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mipmapData"></A>
-<A NAME="DOC.2.119.71"></A>
+<A NAME="DOC.2.119.70"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.119.49">MipmapDataType</A> _mipmapData</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>

@@ -110,7 +110,10 @@ class SG_EXPORT Image : public Object
 
 
         /** Scale image to specified size. */
-        void scaleImage(int s,int t,int r);
+        void scaleImage(int s,int t,int r) { scaleImage(s,t,r, getDataType()); }
+
+        /** Scale image to specified size and with specified data type. */
+        void scaleImage(int s,int t,int r, GLenum newDataType);
 
         /** Copy a source Image into a subpart of this Image at specified position.
           * Typically used to copy to an already allocated image, such as creating

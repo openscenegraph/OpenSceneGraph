@@ -1,5 +1,7 @@
 #!/bin/sh
 
+VERSION=`gmake -s version`
+
 echo_idb()
 {
 
@@ -12,7 +14,8 @@ echo_idb()
     cd bin
     for f in `find . -type l -print | grep -v CVS | sed -e 's/\.\///' | grep -v "\."`
     do
-	echo f 0755 root sys $dd/$f $dd/$f osg.eoe.sw
+      ffd=`echo "$dd/$f" | sed 's/\/IRIX32//g'`
+	  echo f 0755 root sys $ffd $ffd osg.eoe.sw
     done
     cd ..
 
@@ -25,7 +28,8 @@ echo_idb()
     cd lib
     for f in `find . -type l -print | grep -v CVS | sed -e 's/\.\///' `
     do
-	echo f 0755 root sys $dd/$f $dd/$f osg.eoe.sw
+      ffd=`echo "$dd/$f" | sed 's/\/IRIX32//g'`
+	  echo f 0755 root sys $ffd $ffd osg.eoe.sw
     done
     cd ..
 
@@ -69,23 +73,23 @@ make_spec()
 {
     cat <<- SPEC_EOF  
 product osg
-    id "Open Scene Graph `bin/osgversion`"
+    id "Open Scene Graph $VERSION"
     image eoe
-        id "Open Scene Graph `bin/osgversion` Run-Time Environment"
-        version `bin/osgversion`
+        id "Open Scene Graph $VERSION Run-Time Environment"
+        version $VERSION
         order 9999
         subsys sw default
-            id "Open Scene Graph `bin/osgversion` Run-Time Environment"
+            id "Open Scene Graph $VERSION Run-Time Environment"
             replaces self
             exp osg.eoe.sw
         endsubsys
     endimage
     image dev
-        id "Open Scene Graph `bin/osgversion` Development Environment"
-        version `bin/osgversion`
+        id "Open Scene Graph $VERSION Development Environment"
+        version $VERSION
         order 9999
         subsys sw default
-            id "Open Scene Graph `bin/osgversion` Development Environment"
+            id "Open Scene Graph $VERSION Development Environment"
             replaces self
             exp osg.dev.sw
         endsubsys
@@ -142,7 +146,7 @@ intro || exit 0
 make_spec > dist/Irix/osg.spec
 make_idb > dist/Irix/osg.idb
 
-DIST_DIR=Distribution-`bin/osgversion`
+DIST_DIR=Distribution-$VERSION
 
 cd dist/Irix
 rm -rf $DIST_DIR

@@ -158,6 +158,10 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;
         case(GL_LUMINANCE_ALPHA): return 2;
+        case(GL_HILO_NV): return 2;
+        case(GL_DSDT_NV): return 2;
+        case(GL_DSDT_MAG_NV): return 3;
+        case(GL_DSDT_MAG_VIB_NV): return 4;
         default:
         {
             notify(WARN)<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::endl;

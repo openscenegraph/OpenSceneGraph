@@ -81,7 +81,7 @@ class SG_EXPORT MatrixTransform : public Transform
 
         /** Callback which can be attached to a MatrixTransform as an app 
           * callback to allow it to follow the path defined by a AnimationPath.*/
-        class AnimationPathCallback : public NodeCallback
+        class SG_EXPORT AnimationPathCallback : public NodeCallback
         {
             public:
             

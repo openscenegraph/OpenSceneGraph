@@ -277,34 +277,13 @@ void Viewer::requestWarpPointer(float x,float y)
     
     if (_kbmcb)
     {
+        EventAdapter::_s_mx = x;
+        EventAdapter::_s_my = y;
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);
         return;
     }
-    
-    Producer::RenderSurface* rs = 0;
-    
-    // here we need to search for which render surface contains the pointer, 
-    // but havn't implemented this yet.. follows is dummy loop really.    
-    for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
-    {
-        Producer::Camera* cam = _cfg->getCamera(i);
-        rs = cam->getRenderSurface();
-    }
-    
-    if (rs)
-    {
-        EventAdapter::_s_mx = x;
-        EventAdapter::_s_my = y;
-        rs->positionPointer(x,y);
-    }
-    else
-    {
-        osg::notify(osg::WARN) << "Warning: requestWarpPointer("<<x<<","<<y<<") not handled."<<std::endl;
-    }
-    
    
 }
-
 
 void Viewer::getUsage(osg::ApplicationUsage& usage) const
 {

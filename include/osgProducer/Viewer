@@ -49,11 +49,13 @@ class OSGPRODUCER_EXPORT Viewer : public CameraGroup, public osgGA::GUIActionAda
             STATE_MANIPULATOR       = 8,
             HEAD_LIGHT_SOURCE       = 16,
             SKY_LIGHT_SOURCE        = 32,
+            STATS_MANIPULATOR       = 64,
             STANDARD_SETTINGS = TRACKBALL_MANIPULATOR|
                                 DRIVE_MANIPULATOR |
                                 FLIGHT_MANIPULATOR |
                                 STATE_MANIPULATOR |
-                                HEAD_LIGHT_SOURCE
+                                HEAD_LIGHT_SOURCE |
+                                STATS_MANIPULATOR
         };
         
         void setUpViewer(unsigned int options=STANDARD_SETTINGS);

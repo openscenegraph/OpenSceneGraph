@@ -1,4 +1,6 @@
 #include <osgProducer/Viewer>
+#include <osgProducer/FrameStatsHandler>
+#include <osgProducer/StatsEventHandler>
 
 #include <osg/LightSource>
 
@@ -103,6 +105,18 @@ void Viewer::setUpViewer(unsigned int options)
         _eventHandlerList.push_back(statesetManipulator.get());
     }
     
+    if (options&STATS_MANIPULATOR)
+    {
+        // register the drawing of stats to pipe 0.
+        Producer::FrameStatsHandler* fsh = new Producer::FrameStatsHandler;
+        setStatsHandler(fsh);
+        getCamera(0)->addPostDrawCallback(fsh);
+
+        // register the event handler for stats.
+        getEventHandlerList().push_back(new StatsEventHandler(this));
+        
+        
+    }
 }
 
 unsigned int Viewer::addCameraManipulator(osgGA::CameraManipulator* cm)

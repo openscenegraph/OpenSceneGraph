@@ -3,8 +3,17 @@
 //as published by the Free Software Foundation.
 
 #include <osgProducer/CameraGroup>
+#include <osgDB/FileUtils>
 
 using namespace osgProducer;
+
+std::string findCameraConfigFile(const std::string& configFile)
+{
+    std::string foundFile = osgDB::findDataFile(configFile);
+    if (foundFile.empty()) return "";
+    else return foundFile;
+}
+
 
 CameraGroup::CameraGroup() : Producer::CameraGroup() 
 {
@@ -16,7 +25,7 @@ CameraGroup::CameraGroup(Producer::CameraConfig *cfg): Producer::CameraGroup(cfg
     _init();
 }
 
-CameraGroup::CameraGroup(const std::string& configFile) : Producer::CameraGroup(configFile) 
+CameraGroup::CameraGroup(const std::string& configFile) : Producer::CameraGroup(findCameraConfigFile(configFile)) 
 {
     _init();
 }

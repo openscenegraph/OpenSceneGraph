@@ -101,10 +101,6 @@ SOURCE=..\..\src\osgUtil\CullVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\DepthSortedBin.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
 # End Source File
 # Begin Source File
@@ -186,10 +182,6 @@ SOURCE=..\..\include\osgUtil\AppVisitor
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\CullVisitor
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgUtil\DepthSortedBin
 # End Source File
 # Begin Source File
 

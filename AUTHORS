@@ -123,6 +123,10 @@ Ruben Lopez <ryu@gpul.org>
 Pavel Moloshtan <pasha@moloshtan.com>
         - Support for LWO2 format in the LightWave loader.
 
+
+Daniel Sjölie <deepone@acc.umu.se>
+        - Support for multitextured flt files.
+           
 Alberto Barbati <abarbati@iaanus.com>
         - lazy evaluation of the inverse in the MatrixTransform.
 

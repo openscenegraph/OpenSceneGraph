@@ -43,6 +43,8 @@ CXXFILES =\
 	TextureMappingPaletteRecord.cpp\
 	ReaderWriterFLT.cpp\
 	ReaderWriterATTR.cpp\
+	MultiTextureRecord.cpp\
+	UVListRecord.cpp\
 #	PointLight.cpp\
 
 

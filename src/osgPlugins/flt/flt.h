@@ -15,6 +15,10 @@
 #include <sys/types.h>
 #endif
 
+#include <osg/Notify>
+#define CERR	osg::notify( osg::INFO ) << __FILE__ << ":" << __LINE__ << ": "
+#define CERR2	osg::notify( osg::NOTICE )<< __FILE__ << ":" << __LINE__ << ": "
+
 namespace flt {
 
 #define ENDIAN2(SRC, DST) endian2((void*)&(SRC), sizeof(SRC), (void*)&(DST), sizeof(DST))

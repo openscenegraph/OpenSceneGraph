@@ -32,6 +32,8 @@ Ignore 40-48
 */
 #define MATRIX_OP                       49
 #define VECTOR_OP                       50
+#define MULTI_TEXTURE_OP                52
+#define UV_LIST_OP                      53
 #define REPLICATE_OP                    60
 #define INSTANCE_REFERENCE_OP           61
 #define INSTANCE_DEFINITION_OP          62

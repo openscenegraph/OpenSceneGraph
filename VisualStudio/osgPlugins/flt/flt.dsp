@@ -120,7 +120,7 @@ SOURCE=..\..\..\src\osgPlugins\flt\ExtensionRecord.cpp
 SOURCE=..\..\..\src\osgPlugins\flt\ExternalRecord.cpp
 # End Source File
 # Begin Source File
-
+\
 SOURCE=..\..\..\src\osgPlugins\flt\FaceRecord.cpp
 # End Source File
 # Begin Source File
@@ -178,6 +178,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\MeshPrimitiveRecord.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\MeshRecord.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\MultiTextureRecord.cpp
 # End Source File
 # Begin Source File
 
@@ -246,6 +250,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\TexturePaletteRecord.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\TransformationRecords.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\UVListRecord.cpp
 # End Source File
 # Begin Source File
 
@@ -365,6 +373,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\MaterialPaletteRecord.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\flt\MultiTextureRecord.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\flt\ObjectRecord.h
 # End Source File
 # Begin Source File
@@ -418,6 +430,10 @@ SOURCE=..\..\..\src\osgPlugins\flt\TexturePaletteRecord.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\flt\TransformationRecords.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\flt\UVListRecord.h
 # End Source File
 # Begin Source File
 

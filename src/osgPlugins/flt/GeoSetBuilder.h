@@ -45,7 +45,7 @@ class DynGeoSet : public osg::GeoSet
 
         virtual osg::Object* clone() const { return new DynGeoSet(); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const DynGeoSet*>(obj)!=NULL; }
-        virtual const char* className() const { return "DynGeoSet"; }
+        virtual const char* className() const { return "GeoSet"; }
 
         int compare(const DynGeoSet& rhs) const
         {

@@ -72,6 +72,9 @@ public:
         virtual CompositeGUIEventHandler* getComposite() { return 0; }
 
         /** Handle events, return true if handled, false otherwise. */
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor*) { return handle(ea,aa); }
+
+        /** deprecated, Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter&,GUIActionAdapter&) { return false; }
 
         /** Accept visits from GUIEventHandler visitors */
@@ -98,7 +101,7 @@ public:
 
         virtual CompositeGUIEventHandler* getComposite() { return this; }
 
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa);
+        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv);
 
         virtual void accept(GUIEventHandlerVisitor& v)    { v.visit(*this); }
 

@@ -652,9 +652,9 @@ void Viewer::update()
             handler_itr!=_eventHandlerList.end() && !handled;
             ++handler_itr)
         {   
-            handled = (*handler_itr)->handle(*(*event_itr),*this);
+            handled = (*handler_itr)->handle(*(*event_itr),*this,0,0);
         }
-        if (!handled && _eventVisitor.valid())
+        if (_eventVisitor.valid())
         {
             _eventVisitor->reset();
             _eventVisitor->addEvent(event_itr->get());
@@ -854,7 +854,7 @@ bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osg::No
 
 bool Viewer::computeIntersections(float x,float y,unsigned int cameraNum,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
-    return computeIntersections(x,y,cameraNum,getSceneData(),hits,traversalMask);
+    return computeIntersections(x,y,cameraNum,getTopMostSceneData(),hits,traversalMask);
 }
 
 bool Viewer::computeIntersections(float x,float y,osg::Node *node,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
@@ -870,7 +870,7 @@ bool Viewer::computeIntersections(float x,float y,osg::Node *node,osgUtil::Inter
 
 bool Viewer::computeIntersections(float x,float y,osgUtil::IntersectVisitor::HitList& hits,osg::Node::NodeMask traversalMask)
 {
-    return computeIntersections(x,y,getSceneData(),hits,traversalMask);
+    return computeIntersections(x,y,getTopMostSceneData(),hits,traversalMask);
 }
 
 void Viewer::selectCameraManipulator(unsigned int no)

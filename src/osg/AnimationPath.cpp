@@ -147,7 +147,6 @@ class AnimationPathCallbackVisitor : public NodeVisitor
         bool _useInverseMatrix;      
 };
 
-
 void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
 {
     if (_animationPath.valid() && 
@@ -159,7 +158,8 @@ void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
 
         if (!_pause)
         {
-            if (_firstTime==0.0) _firstTime = time;
+            // Only update _firstTime the first time, when its value is still DBL_MAX
+            if (_firstTime==DBL_MAX) _firstTime = time;
             update(*node);
         }
     }

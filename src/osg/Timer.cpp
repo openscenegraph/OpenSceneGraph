@@ -197,29 +197,31 @@ using namespace osg;
         }
 
     }
+
 #elif defined (__DARWIN_OSX__)  || defined (macintosh)
 
-#if defined (__DARWIN_OSX__)
-	#include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
-#else	
-	#include <MacTypes.h>
-	#include <Timer.h>
-#endif
+    #if defined (__DARWIN_OSX__)
+	    #include <Carbon/Carbon.h>         // do I really have to link against the Carbon framework just for this?
+    #else	
+	    #include <MacTypes.h>
+	    #include <Timer.h>
+    #endif
 
-Timer_t Timer::tick(void)
-{
-	UnsignedWide usecs;
-	Microseconds(&usecs);
-	
-	return (usecs.hi * 4294967296.0) + usecs.lo;
-}
 
-Timer::Timer( void )
-{
-	_useStandardClock = false;
-	_secsPerClick = 1e-6; // Carbon timer's precision.
+    Timer::Timer( void )
+    {
+	    _useStandardClock = false;
+	    _secsPerClick = 1e-6; // Carbon timer's precision.
 
-}
+    }
+
+    Timer_t Timer::tick(void) const
+    {
+	    UnsignedWide usecs;
+	    Microseconds(&usecs);
+
+	    return (usecs.hi * 4294967296.0) + usecs.lo;
+    }
 
 #elif defined(unix)
 

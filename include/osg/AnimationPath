@@ -20,6 +20,7 @@
 #include <osg/NodeCallback>
 
 #include <map>
+#include <values.h>
 
 namespace osg {
 
@@ -188,7 +189,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
         AnimationPathCallback():
             _timeOffset(0.0),
             _timeMultiplier(1.0),
-            _firstTime(0.0),
+            _firstTime(DBL_MAX),
             _latestTime(0.0),
             _pause(false),
             _pauseTime(0.0) {}
@@ -213,7 +214,7 @@ class SG_EXPORT AnimationPathCallback : public NodeCallback
             _useInverseMatrix(false),
             _timeOffset(timeOffset),
             _timeMultiplier(timeMultiplier),
-            _firstTime(0.0),
+            _firstTime(DBL_MAX),
             _latestTime(0.0),
             _pause(false),
             _pauseTime(0.0) {}

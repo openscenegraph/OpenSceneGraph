@@ -158,8 +158,7 @@ bool OSGPageManager::EndThread()
         while(pagingThread.isRunning())
         {
             std::cout<<"Waiting for TXP pager thread to cancel"<<std::endl;
-            //OpenThreads::Thread::YieldCurrentThread();
-            OpenThreads::Thread::Yield();
+            OpenThreads::Thread::YieldCurrentThread();
         }
        
     }
@@ -279,7 +278,7 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
                 // Now add this tile to the merge list
                 pageManage->AckLoad();
 
-                //OpenThreads::Thread::Yield();
+                //OpenThreads::Thread::YieldCurrentThread();
 
             }
 
@@ -287,7 +286,7 @@ bool OSGPageManager::ThreadLoop(PagingThread* t)
         }
         else
         {
-            OpenThreads::Thread::Yield();
+            OpenThreads::Thread::YieldCurrentThread();
         }
             
     } while (!t->testCancel());

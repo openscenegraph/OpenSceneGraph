@@ -21,6 +21,7 @@
 #define OSGTEXT_FONT 1 
 
 #include <osg/Object>
+#include <osg/State>
 
 #include <osgText/Export>
 
@@ -41,11 +42,12 @@ public:
     Font();
 
 
-    virtual bool open(const std::string& font);
+    bool open(const char* font);
+    bool open(const std::string& font);
     
-    virtual bool create(int  pointSize, const unsigned int res = 72 );
-    virtual bool create();
-    virtual void output(const char* text);
+    virtual bool create(osg::State& state,int  pointSize, const unsigned int res = 72 );
+    virtual bool create(osg::State& state);
+    virtual void output(osg::State& state,const char* text);
 
     virtual bool isOk(void) const { return _init; }
     virtual bool isCreated(void) const { return isOk() && _created; }
@@ -218,6 +220,10 @@ public:
     PolygonFont(const std::string&    font, 
                 int                    point_size,
                 double                precision);
+    
+    PolygonFont(const char* font, 
+                int         point_size,
+                double      precision);
     
     META_Object(PolygonFont);
 

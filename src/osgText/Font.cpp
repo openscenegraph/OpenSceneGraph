@@ -110,21 +110,28 @@ open(const std::string& font)
         return false;
 }
 
+bool  Font::
+open(const char* font)
+ { return open(std::string(font)); }
+
 bool Font::
-create(int pointSize,const unsigned int res)
+create(osg::State& state,int pointSize,const unsigned int res)
 {
     _pointSize=pointSize;
     _res=res;
 
-    return create();
+    return create(state);
 }
 
 bool  Font::
-create()
+create(osg::State& state)
 {
     if(_init)
     {
-        if(_font->FaceSize(_pointSize,_res))
+        if(_font->Created(state.getContextID()))
+            return true;
+
+        if(_font->FaceSize(_pointSize,_res,state.getContextID()))
         {
             _created=true;
             return true;
@@ -137,12 +144,12 @@ create()
 }
 
 void Font::
-output(const char* text)
+output(osg::State& state,const char* text)
 {
     if(_created)
-        _font->render(text);
+        _font->render(text,state.getContextID());
     else
-        create(_pointSize);
+        create(state,_pointSize);
 }
 
 void  Font::
@@ -320,6 +327,19 @@ PolygonFont(const std::string&    font,
             int                    point_size,
             double                precision):
 VectorFont(font)
+{
+    if(init(font))
+    {
+    }
+    _pointSize=point_size;
+    _precision=precision;
+}
+    
+PolygonFont::
+PolygonFont(const char*    font, 
+            int                    point_size,
+            double                precision):
+VectorFont(std::string(font))
 {
     if(init(font))
     {

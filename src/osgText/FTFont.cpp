@@ -1,148 +1,179 @@
-#include	"FTFace.h"
-#include	"FTFont.h"
-#include	"FTGlyphContainer.h"
-#include	"FTGL.h"
+#include    "FTFace.h"
+#include    "FTFont.h"
+#include    "FTGlyphContainer.h"
+#include    "FTGL.h"
 
 
+// mrn@changes
 FTFont::FTFont()
-:	numFaces(0),
-	glyphList(0),
-	err(0)
+:    numFaces(0),
+    err(0)
 {
-	pen.x = 0;
-	pen.y = 0;
+    pen.x = 0;
+    pen.y = 0;
 }
 
 
 FTFont::~FTFont()
 {
-	Close();
+    Close();
 }
 
 
 bool FTFont::Open( const char* fontname )
 {
-	if( face.Open( fontname))
-	{
-		FT_Face* ftFace = face.Face();		
-		numGlyphs = (*ftFace)->num_glyphs;
-		
-		return true;
-	}
-	else
-	{
-		err = face.Error();
-		return false;
-	}
+    if( face.Open( fontname))
+    {
+        FT_Face* ftFace = face.Face();        
+        numGlyphs = (*ftFace)->num_glyphs;
+        
+        return true;
+    }
+    else
+    {
+        err = face.Error();
+        return false;
+    }
 }
 
 
+// mrn@changes
 void FTFont::Close()
 {
-	delete glyphList;
+    GlyphContextContainer::iterator    itr;
+    for(itr=_contextGlyphList.begin();itr<_contextGlyphList.begin();itr++)
+        delete *itr;
+    _contextGlyphList.clear();
 }
 
-
-bool FTFont::FaceSize( const unsigned int size, const unsigned int res )
+// mrn@changes
+bool FTFont::FaceSize( const unsigned int size, const unsigned int res , unsigned int renderContext)
 {
-	charSize = face.Size( size, res);
+    charSize = face.Size( size, res);
 
-	if( glyphList)
-		delete glyphList;
-	
-	glyphList = new FTGlyphContainer( &face, numGlyphs);
-	
-	if( MakeGlyphList())
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    // check the context
+    while (_contextGlyphList.size() <= renderContext) 
+        _contextGlyphList.push_back(NULL);
+
+    FTGlyphContainer*& glyphList=_contextGlyphList[renderContext];
+    
+    if( glyphList)
+        delete glyphList;
+    
+    glyphList = new FTGlyphContainer( &face, numGlyphs);
+    
+    if( MakeGlyphList(renderContext))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
+bool FTFont::Created(unsigned int renderContext)
+{
+    if(renderContext < _contextGlyphList.size())
+        return (_contextGlyphList[renderContext] != NULL);
+    else 
+        return false;
+}
 
 bool FTFont::CharMap( FT_Encoding encoding)
 {
-	err = face.CharMap( encoding);
-	return !err;
+    err = face.CharMap( encoding);
+    return !err;
 }
 
 
-int	FTFont::Ascender() const
+int    FTFont::Ascender() const
 {
-	return charSize.Ascender();
+    return charSize.Ascender();
 }
 
 
-int	FTFont::Descender() const
+int    FTFont::Descender() const
 {
-	return charSize.Descender();
+    return charSize.Descender();
 }
 
 
+// mrn@changes
 float FTFont::Advance( const wchar_t* string)
 {
-	const wchar_t* c = string; // wchar_t IS unsigned?
-	float width = 0;
+    // all are the same, a bit a hack
+    FTGlyphContainer* glyphList=_contextGlyphList[0];
 
-	while( *c)
-	{
-		width += glyphList->Advance( *c, *(c + 1));	
-		++c;
-	}
+    const wchar_t* c = string; // wchar_t IS unsigned?
+    float width = 0;
 
-	return width;
+    while( *c)
+    {
+        width += glyphList->Advance( *c, *(c + 1));    
+        ++c;
+    }
+
+    return width;
 }
 
 
+// mrn@changes
 float FTFont::Advance( const char* string)
 {
-	const unsigned char* c = (unsigned char*)string; // This is ugly, what is the c++ way?
-	float width = 0;
+    // all are the same, a bit a hack
+    FTGlyphContainer* glyphList=_contextGlyphList[0];
 
-	while( *c)
-	{
-		width += glyphList->Advance( *c, *(c + 1));	
-		++c;
-	}
+    const unsigned char* c = (unsigned char*)string; // This is ugly, what is the c++ way?
+    float width = 0;
 
-	return width;
+    while( *c)
+    {
+        width += glyphList->Advance( *c, *(c + 1));    
+        ++c;
+    }
+
+    return width;
 }
 
 
-void FTFont::render( const char* string )
+// mrn@changes
+void FTFont::render( const char* string , unsigned int renderContext)
 {
-	const unsigned char* c = (unsigned char*)string; // This is ugly, what is the c++ way?
-	FT_Vector kernAdvance;
-	pen.x = 0; pen.y = 0;
+    FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
 
-	while( *c)
-	{
-		kernAdvance = glyphList->render( *c, *(c + 1), pen);
-		
-		pen.x += kernAdvance.x;
-		pen.y += kernAdvance.y;
-		
-		++c;
-	}
+    const unsigned char* c = (unsigned char*)string; // This is ugly, what is the c++ way?
+    FT_Vector kernAdvance;
+    pen.x = 0; pen.y = 0;
+
+    while( *c)
+    {
+        kernAdvance = glyphList->render( *c, *(c + 1), pen);
+        
+        pen.x += kernAdvance.x;
+        pen.y += kernAdvance.y;
+        
+        ++c;
+    }
 }
 
 
-void FTFont::render( const wchar_t* string )
+// mrn@changes
+void FTFont::render( const wchar_t* string , unsigned int renderContext)
 {
-	const wchar_t* c = string; // wchar_t IS unsigned?
-	FT_Vector kernAdvance;
-	pen.x = 0; pen.y = 0;
+    FTGlyphContainer* glyphList=_contextGlyphList[renderContext];
 
-	while( *c)
-	{
-		kernAdvance = glyphList->render( *c, *(c + 1), pen);
-		
-		pen.x += kernAdvance.x;
-		pen.y += kernAdvance.y;
-		
-		++c;
-	}
+    const wchar_t* c = string; // wchar_t IS unsigned?
+    FT_Vector kernAdvance;
+    pen.x = 0; pen.y = 0;
+
+    while( *c)
+    {
+        kernAdvance = glyphList->render( *c, *(c + 1), pen);
+        
+        pen.x += kernAdvance.x;
+        pen.y += kernAdvance.y;
+        
+        ++c;
+    }
 }

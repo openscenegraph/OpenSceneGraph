@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *
- *    openscenegraph textLib / FTGL
+ *    openscenegraph textLib / FTGL wrapper (http://homepages.paradise.net.nz/henryj/code/)
  *
  * --------------------------------------------------------------------------
  *    
@@ -160,7 +160,7 @@ void Text::drawImmediateMode(State& state)
     
     if(!_font->isCreated())
     {
-        _font->create();
+        _font->create(state);
         dirtyBound();
     }
 
@@ -183,23 +183,23 @@ void Text::drawImmediateMode(State& state)
             {
                 case POLYGON:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(_text.c_str());
+                    _font->output(state,_text.c_str());
                     break;
                 case OUTLINE:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(_text.c_str());
+                    _font->output(state,_text.c_str());
                     break;
                 case BITMAP:
                     glRasterPos3f(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(_text.c_str());
+                    _font->output(state,_text.c_str());
                     break;
                 case PIXMAP:
                     glRasterPos3f(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(_text.c_str());
+                    _font->output(state,_text.c_str());
                     break;
                 case TEXTURE:
                     glTranslatef(drawPos.x(),drawPos.y(),drawPos.z());
-                    _font->output(_text.c_str());
+                    _font->output(state,_text.c_str());
                     break;
 
             };

@@ -1,5 +1,5 @@
-#ifndef		__FTLibrary__
-#define		__FTLibrary__
+#ifndef        __FTLibrary__
+#define        __FTLibrary__
 
 #include "FTGL.h"
 
@@ -23,73 +23,73 @@
  * for errors using the following code...
  * <code>err = FTLibrary::Instance().Error();</code>
  *
- * @see	"Freetype 2 Documentation - 2.0.4"
+ * @see    "Freetype 2 Documentation - 2.0.4"
  *
  */
 class FTGL_EXPORT FTLibrary
 {
-	public:
-		/**
-		 * Global acces point to the single FTLibrary object.
-		 * 
-		 * @return	The global <code>FTLibrary</code> object.
-		 */
-		static FTLibrary& Instance();
+    public:
+        /**
+         * Global acces point to the single FTLibrary object.
+         * 
+         * @return    The global <code>FTLibrary</code> object.
+         */
+        static FTLibrary& Instance();
 
-		/**
-		 * Gets a pointer to the native Freetype library.
-		 * 
-		 * @return A handle to a FreeType library instance. 
-		 */
-		FT_Library*	GetLibrary() const { return lib;}
-		
-		/**
-		 * Queries the library for errors.
-		 *
-		 * @return	The current error code.
-		 */
-		virtual FT_Error Error() const { return err;}
-		
-		/**
-		 * Destructor
-		 *
-		 * Disposes of the Freetype library
-		 */
-		virtual  ~FTLibrary();
-		
-	private:
-		/**
-		 * Default constructors.
-		 *
-		 * Made private to stop clients creating there own FTLibrary
-		 * objects.
-		 */
-		FTLibrary();
-		FTLibrary( const FT_Library&){}
-		FTLibrary&	operator=( const FT_Library&) { return *this; }
-		
-		/**
-		 * Initialises the Freetype library
-		 *
-		 * Even though this function indicates success via the return value,
-		 * clients can't see this so must check the error codes.
-		 *
-		 * @return	<code>true</code> if the Freetype library was
-		 * 			successfully initialised, <code>false</code>
-		 * 			otherwise.
-		 */
-		bool Init();
-		/**
-		 * Freetype library handle.
-		 */
-		FT_Library*	lib;
-//		FTC_Manager* manager;
+        /**
+         * Gets a pointer to the native Freetype library.
+         * 
+         * @return A handle to a FreeType library instance. 
+         */
+        FT_Library*    GetLibrary() const { return lib;}
+        
+        /**
+         * Queries the library for errors.
+         *
+         * @return    The current error code.
+         */
+        virtual FT_Error Error() const { return err;}
+        
+        /**
+         * Destructor
+         *
+         * Disposes of the Freetype library
+         */
+        virtual  ~FTLibrary();
+        
+    private:
+        /**
+         * Default constructors.
+         *
+         * Made private to stop clients creating there own FTLibrary
+         * objects.
+         */
+        FTLibrary();
+        FTLibrary( const FT_Library&){}
+        FTLibrary&    operator=( const FT_Library&) { return *this; }
+        
+        /**
+         * Initialises the Freetype library
+         *
+         * Even though this function indicates success via the return value,
+         * clients can't see this so must check the error codes.
+         *
+         * @return    <code>true</code> if the Freetype library was
+         *             successfully initialised, <code>false</code>
+         *             otherwise.
+         */
+        bool Init();
+        /**
+         * Freetype library handle.
+         */
+        FT_Library*    lib;
+//        FTC_Manager* manager;
 
-		/**
-		 * Current error code. Zero means no error.
-		 */
-		FT_Error err;
+        /**
+         * Current error code. Zero means no error.
+         */
+        FT_Error err;
 
-		
+        
 };
-#endif	//	__FTLibrary__
+#endif    //    __FTLibrary__

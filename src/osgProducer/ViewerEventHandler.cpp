@@ -839,7 +839,7 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
                         // have already been recording so switch of recording.
                         viewer->setRecordingAnimationPath(false);
 
-                        osg::notify(osg::NOTICE) << "Finished recording camera animation, press 'Z' to reply."<< std::endl;
+                        osg::notify(osg::NOTICE) << "To finished recording camera animation, press 'Z' to reply."<< std::endl;
 
                         if (viewer->getAnimationPath())
                         {

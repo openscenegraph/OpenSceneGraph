@@ -35,10 +35,23 @@ void KeySwitchCameraManipulator::selectCameraManipulator(unsigned int num)
     {
         if (_current.valid())
         {
-            itr->second.second->setNode(_current->getNode());
+            if ( !itr->second.second->getNode() ) {
+                itr->second.second->setNode(_current->getNode());
+            }
             itr->second.second->setCamera(_current->getCamera());
         }
         _current = itr->second.second;
+    }
+}
+
+void KeySwitchCameraManipulator::setNode(osg::Node* node)
+{
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+    
+        itr->second.second->setNode(node);
     }
 }
 
@@ -63,7 +76,9 @@ bool KeySwitchCameraManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
         KeyManipMap::iterator it=_manips.find(ea.getKey());
         if(it != _manips.end()){
             osg::notify(osg::INFO)<<"Switching to manipulator: "<<(*it).second.first<<std::endl;
-            it->second.second->setNode(_current->getNode());
+            if ( !it->second.second->getNode() ) {
+                it->second.second->setNode(_current->getNode());
+            }
             it->second.second->setCamera(_current->getCamera());
             it->second.second->init(ea,aa);
             _current = it->second.second;

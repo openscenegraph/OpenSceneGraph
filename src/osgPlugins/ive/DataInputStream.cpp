@@ -72,7 +72,7 @@ bool DataInputStream::readBool(){
     _istream->read(&c, CHARSIZE);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readBool(): Failed to read boolean value.");
-    return c;
+    return c!=0;
 }
 
 char DataInputStream::readChar(){

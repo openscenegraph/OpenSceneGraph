@@ -84,288 +84,280 @@ bool TXPArchive::openFile(const std::string& archiveName)
         header->GetExtents(_swExtents,_neExtents);
     }
 
-    /*
     int numTextures;
     texTable.GetNumTextures(numTextures);
     _textures.resize(numTextures);
-    */
 
     int numModel;
     modelTable.GetNumModels(numModel);
     _models.resize(numModel);
 
+	int numMaterials;
+    materialTable.GetNumMaterial(numMaterials);
+    _gstates.resize(numMaterials);
+
     return true;
 }
 
-bool TXPArchive::loadMaterial(int /*ix*/)
+bool TXPArchive::loadMaterial(int ix)
 {
-    return false;
+	int i = ix;
+
+	if (_gstates[ix].get()) return true;
+
+	osg::StateSet* osg_state_set = new osg::StateSet;
+            
+    const trpgMaterial *mat;
+    mat = materialTable.GetMaterialRef(0,i);
+
+    // Set texture
+    int numMatTex;
+    mat->GetNumTexture(numMatTex);
+    
+    // TODO : multitextuting
+    // also note that multitexturing in terrapage can came from two sides
+    // - multiple textures per material, and multiple materials per geometry
+    // Note: Only in theory.  The only type you'll encounter is multiple
+    //         materials per polygon.
+    if( numMatTex )
+    {
+        osg::Material *osg_material     = new osg::Material;
+        
+        float64 alpha;
+        mat->GetAlpha(alpha);
+        
+        trpgColor color;
+        mat->GetAmbient(color);
+        osg_material->setAmbient( osg::Material::FRONT_AND_BACK , 
+            osg::Vec4(color.red, color.green, color.blue, alpha));
+        mat->GetDiffuse(color);
+        osg_material->setDiffuse(osg::Material::FRONT_AND_BACK , 
+            osg::Vec4(color.red, color.green, color.blue, alpha));
+        
+        mat->GetSpecular(color);
+        osg_material->setSpecular(osg::Material::FRONT_AND_BACK , 
+            osg::Vec4(color.red, color.green, color.blue, alpha));
+        mat->GetEmission(color);
+        osg_material->setEmission(osg::Material::FRONT_AND_BACK , 
+            osg::Vec4(color.red, color.green, color.blue, alpha));
+
+        float64 shinines;
+        mat->GetShininess(shinines);
+        osg_material->setShininess(osg::Material::FRONT_AND_BACK , (float)shinines);
+        
+        osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
+        osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
+        
+        if( alpha < 1.0f )
+        {
+            osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
+            osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
+        
+        int alphaFunc;
+        mat->GetAlphaFunc(alphaFunc);
+        if( alphaFunc>=GL_NEVER && alphaFunc<=GL_ALWAYS)
+        {
+            float64 ref;
+            mat->GetAlphaRef(ref);
+            osg::AlphaFunc *osg_alpha_func = new osg::AlphaFunc;
+            osg_alpha_func->setFunction((osg::AlphaFunc::ComparisonFunction)alphaFunc,(float)ref);
+            osg_state_set->setAttributeAndModes(osg_alpha_func, osg::StateAttribute::ON);
+        }
+        
+        for (int ntex = 0; ntex < numMatTex; ntex ++ )
+        {
+            int texId;
+            trpgTextureEnv texEnv;
+            mat->GetTexture(ntex,texId,texEnv);
+        
+            // Set up texture environment
+            osg::TexEnv       *osg_texenv       = new osg::TexEnv();
+            int32 te_mode;
+            texEnv.GetEnvMode(te_mode);
+            switch( te_mode )
+            {
+            case trpgTextureEnv::Alpha :
+                osg_texenv->setMode(osg::TexEnv::REPLACE);
+                break;
+            case trpgTextureEnv::Decal:
+                osg_texenv->setMode(osg::TexEnv::DECAL);
+                break;
+            case trpgTextureEnv::Blend :
+                osg_texenv->setMode(osg::TexEnv::BLEND);
+                break;
+            case trpgTextureEnv::Modulate :
+                osg_texenv->setMode(osg::TexEnv::MODULATE);
+                break;
+            }
+        
+            osg_state_set->setTextureAttribute(ntex,osg_texenv);
+
+            int wrap_s, wrap_t;   
+            texEnv.GetWrap(wrap_s, wrap_t);
+
+			loadTexture(texId);
+            osg::Texture2D* osg_texture = _textures[texId].get();
+            if(osg_texture)
+            {
+
+                osg_texture->setWrap(osg::Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
+                osg_texture->setWrap(osg::Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
+
+                // -----------
+                // Min filter
+                // -----------
+                int32 minFilter;
+                texEnv.GetMinFilter(minFilter);
+                switch (minFilter)
+                {
+                case trpgTextureEnv::Point:
+                case trpgTextureEnv::Nearest:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST);
+                    break;
+                case trpgTextureEnv::Linear:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+                    break;
+                case trpgTextureEnv::MipmapPoint:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST_MIPMAP_NEAREST);
+                    break;
+                case trpgTextureEnv::MipmapLinear:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST_MIPMAP_LINEAR);
+                    break;
+                case trpgTextureEnv::MipmapBilinear:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR_MIPMAP_NEAREST);
+                    break;
+                case trpgTextureEnv::MipmapTrilinear:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR_MIPMAP_LINEAR);
+                    break;
+                default:
+                    osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+                    break;
+                }
+
+
+                // -----------
+                // Mag filter
+                // -----------
+                int32 magFilter;
+                texEnv.GetMagFilter(magFilter);
+                switch (magFilter)
+                {
+                case trpgTextureEnv::Point:
+                case trpgTextureEnv::Nearest:
+                    osg_texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
+                    break;
+                case trpgTextureEnv::Linear:
+                default:
+                    osg_texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
+                    break;
+                }
+
+                // pass on to the stateset.                
+                osg_state_set->setTextureAttributeAndModes(ntex,osg_texture, osg::StateAttribute::ON);
+
+                if(osg_texture->getImage() &&  osg_texture->getImage()->isImageTranslucent())
+                { 
+                    osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
+                    osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                }
+            }        
+        }
+        
+        int cullMode;
+        mat->GetCullMode(cullMode);
+        
+        // Culling mode in txp means opposite from osg i.e. Front-> show front face
+        if( cullMode != trpgMaterial::FrontAndBack)
+        {
+            osg::CullFace* cull_face = new osg::CullFace;
+            switch (cullMode)
+            {
+            case trpgMaterial::Front:
+                cull_face->setMode(osg::CullFace::BACK);
+                break;
+            case trpgMaterial::Back:
+                cull_face->setMode(osg::CullFace::FRONT);
+                break;
+            }
+            osg_state_set->setAttributeAndModes(cull_face, osg::StateAttribute::ON);
+        }
+    }
+    _gstates[i] = osg_state_set;
+
+    return true;
 }
 
 bool TXPArchive::loadMaterials()
 {
-    osg::notify(osg::NOTICE) << "txp:: Loading materials ..." << std::endl;
+	return true;
+}
+
+bool TXPArchive::loadTexture(int i)
+{
+	if (_textures[i].get()) return true;
 
     trpgrImageHelper image_helper(this->GetEndian(),getDir(),materialTable,texTable);
 
-    int numTextures;
+    const trpgTexture *tex;
+    tex = texTable.GetTextureRef(i);
+	if (!tex) return false;
 
-    texTable.GetNumTextures(numTextures);
-    
-    _textures.resize(numTextures);
-    
-    // these extra braces are workaroud for annoying bug in MSVC 
-    // for( int i = ....) and i is visible outside the loop
+    trpgTexture::ImageMode mode;
+    tex->GetImageMode(mode);
+    if(mode == trpgTexture::External)
     {
-        for (int i=0; i < numTextures ; i++)
-        {
-            const trpgTexture *tex;
-            tex = texTable.GetTextureRef(i);
-            trpgTexture::ImageMode mode;
-            tex->GetImageMode(mode);
-            if(mode == trpgTexture::External)
-            {
-                char texName[1024];  texName[0] = 0;
-                tex->GetName(texName,1023);
+        char texName[1024];  texName[0] = 0;
+        tex->GetName(texName,1023);
 
-                // Create a texture by name.
-                osg::ref_ptr<osg::Texture2D> osg_texture = new osg::Texture2D();
+        // Create a texture by name.
+        osg::ref_ptr<osg::Texture2D> osg_texture = new osg::Texture2D();
 
-                // make sure the Texture unref's the Image after apply, when it is no longer needed.                
-                osg_texture->setUnRefImageDataAfterApply(true);
-                
-                // Load Texture and Create Texture State
-                std::string filename = osgDB::getSimpleFileName(texName);
-                std::string path(getDir());
+        // make sure the Texture unref's the Image after apply, when it is no longer needed.                
+        osg_texture->setUnRefImageDataAfterApply(true);
+        
+        // Load Texture and Create Texture State
+        std::string filename = osgDB::getSimpleFileName(texName);
+        std::string path(getDir());
 #ifdef _WIN32
-                const char _PATHD = '\\';
+        const char _PATHD = '\\';
 #elif defined(macintosh)
-                const char _PATHD = ':';
+        const char _PATHD = ':';
 #else
-                const char _PATHD = '/';
+        const char _PATHD = '/';
 #endif
-                if( path == "." ) 
-                    path = "";
-                else
-                    path += _PATHD ;
-                
-                std::string theFile = path + filename ;
-                osg::Image* image = osgDB::readImageFile(theFile);
-                if (image)
-                {
-                    osg_texture->setImage(image);
-                }
-                else
-                {
-                    osg::notify(osg::WARN) << "TrPageArchive::LoadMaterials() error: "
-                      << "couldn't open image: " << filename << std::endl;
-                }
-                _textures[i] = osg_texture;
-            }
-            else if( mode == trpgTexture::Local )
-            {
-                _textures[i] = getLocalTexture(image_helper,tex);
-            }
-            else if( mode == trpgTexture::Template )
-            {
-                _textures[i] = 0L; //GetTemplateTexture(image_helper,0, tex);
-            }
-            else
-            {
-                _textures[i] = 0;
-            }
-        }
-    }
-
-    int numMaterials;
-    materialTable.GetNumMaterial(numMaterials);
-    {
-        _gstates.resize(numMaterials);
-        for (int i = 0; i < numMaterials; i++)
+        if( path == "." ) 
+            path = "";
+        else
+            path += _PATHD ;
+        
+        std::string theFile = path + filename ;
+        osg::Image* image = osgDB::readImageFile(theFile);
+        if (image)
         {
-            osg::StateSet* osg_state_set = new osg::StateSet;
-            
-            const trpgMaterial *mat;
-            mat = materialTable.GetMaterialRef(0,i);
-
-            // Set texture
-            int numMatTex;
-            mat->GetNumTexture(numMatTex);
-            
-            // TODO : multitextuting
-            // also note that multitexturing in terrapage can came from two sides
-            // - multiple textures per material, and multiple materials per geometry
-            // Note: Only in theory.  The only type you'll encounter is multiple
-            //         materials per polygon.
-            if( numMatTex )
-            {
-                osg::Material *osg_material     = new osg::Material;
-                
-                float64 alpha;
-                mat->GetAlpha(alpha);
-             
-                trpgColor color;
-                mat->GetAmbient(color);
-                osg_material->setAmbient( osg::Material::FRONT_AND_BACK , 
-                    osg::Vec4(color.red, color.green, color.blue, alpha));
-                mat->GetDiffuse(color);
-                osg_material->setDiffuse(osg::Material::FRONT_AND_BACK , 
-                    osg::Vec4(color.red, color.green, color.blue, alpha));
-                
-                mat->GetSpecular(color);
-                osg_material->setSpecular(osg::Material::FRONT_AND_BACK , 
-                    osg::Vec4(color.red, color.green, color.blue, alpha));
-                mat->GetEmission(color);
-                osg_material->setEmission(osg::Material::FRONT_AND_BACK , 
-                    osg::Vec4(color.red, color.green, color.blue, alpha));
-
-                float64 shinines;
-                mat->GetShininess(shinines);
-                osg_material->setShininess(osg::Material::FRONT_AND_BACK , (float)shinines);
-                
-                osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
-                osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
-                
-                if( alpha < 1.0f )
-                {
-                    osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
-                    osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                }
-                
-                int alphaFunc;
-                mat->GetAlphaFunc(alphaFunc);
-                if( alphaFunc>=GL_NEVER && alphaFunc<=GL_ALWAYS)
-                {
-                    float64 ref;
-                    mat->GetAlphaRef(ref);
-                    osg::AlphaFunc *osg_alpha_func = new osg::AlphaFunc;
-                    osg_alpha_func->setFunction((osg::AlphaFunc::ComparisonFunction)alphaFunc,(float)ref);
-                    osg_state_set->setAttributeAndModes(osg_alpha_func, osg::StateAttribute::ON);
-                }
-                
-                for (int ntex = 0; ntex < numMatTex; ntex ++ )
-                {
-                    int texId;
-                    trpgTextureEnv texEnv;
-                    mat->GetTexture(ntex,texId,texEnv);
-                
-                    // Set up texture environment
-                    osg::TexEnv       *osg_texenv       = new osg::TexEnv();
-                    int32 te_mode;
-                    texEnv.GetEnvMode(te_mode);
-                    switch( te_mode )
-                    {
-                    case trpgTextureEnv::Alpha :
-                        osg_texenv->setMode(osg::TexEnv::REPLACE);
-                        break;
-                    case trpgTextureEnv::Decal:
-                        osg_texenv->setMode(osg::TexEnv::DECAL);
-                        break;
-                    case trpgTextureEnv::Blend :
-                        osg_texenv->setMode(osg::TexEnv::BLEND);
-                        break;
-                    case trpgTextureEnv::Modulate :
-                        osg_texenv->setMode(osg::TexEnv::MODULATE);
-                        break;
-                    }
-                
-                    osg_state_set->setTextureAttribute(ntex,osg_texenv);
-
-                    int wrap_s, wrap_t;   
-                    texEnv.GetWrap(wrap_s, wrap_t);
-
-                    osg::Texture2D* osg_texture = _textures[texId].get();
-                    if(osg_texture)
-                    {
-
-                        osg_texture->setWrap(osg::Texture2D::WRAP_S, wrap_s == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
-                        osg_texture->setWrap(osg::Texture2D::WRAP_T, wrap_t == trpgTextureEnv::Repeat ? osg::Texture2D::REPEAT: osg::Texture2D::CLAMP );
-
-                        // -----------
-                        // Min filter
-                        // -----------
-                        int32 minFilter;
-                        texEnv.GetMinFilter(minFilter);
-                        switch (minFilter)
-                        {
-                        case trpgTextureEnv::Point:
-                        case trpgTextureEnv::Nearest:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST);
-                            break;
-                        case trpgTextureEnv::Linear:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
-                            break;
-                        case trpgTextureEnv::MipmapPoint:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST_MIPMAP_NEAREST);
-                            break;
-                        case trpgTextureEnv::MipmapLinear:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::NEAREST_MIPMAP_LINEAR);
-                            break;
-                        case trpgTextureEnv::MipmapBilinear:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR_MIPMAP_NEAREST);
-                            break;
-                        case trpgTextureEnv::MipmapTrilinear:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR_MIPMAP_LINEAR);
-                            break;
-                        default:
-                            osg_texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
-                            break;
-                        }
-
-
-                        // -----------
-                        // Mag filter
-                        // -----------
-                        int32 magFilter;
-                        texEnv.GetMagFilter(magFilter);
-                        switch (magFilter)
-                        {
-                        case trpgTextureEnv::Point:
-                        case trpgTextureEnv::Nearest:
-                            osg_texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
-                            break;
-                        case trpgTextureEnv::Linear:
-                        default:
-                            osg_texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
-                            break;
-                        }
-
-                        // pass on to the stateset.                
-                        osg_state_set->setTextureAttributeAndModes(ntex,osg_texture, osg::StateAttribute::ON);
-
-                        if(osg_texture->getImage() &&  osg_texture->getImage()->isImageTranslucent())
-                        { 
-                            osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
-                            osg_state_set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                        }
-                    }        
-                }
-                
-                int cullMode;
-                mat->GetCullMode(cullMode);
-                
-                // Culling mode in txp means opposite from osg i.e. Front-> show front face
-                if( cullMode != trpgMaterial::FrontAndBack)
-                {
-                    osg::CullFace* cull_face = new osg::CullFace;
-                    switch (cullMode)
-                    {
-                    case trpgMaterial::Front:
-                        cull_face->setMode(osg::CullFace::BACK);
-                        break;
-                    case trpgMaterial::Back:
-                        cull_face->setMode(osg::CullFace::FRONT);
-                        break;
-                    }
-                    osg_state_set->setAttributeAndModes(cull_face, osg::StateAttribute::ON);
-                }
-          }
-          _gstates[i] = osg_state_set;
+            osg_texture->setImage(image);
         }
+        else
+        {
+            osg::notify(osg::WARN) << "TrPageArchive::LoadMaterials() error: "
+                << "couldn't open image: " << filename << std::endl;
+        }
+        _textures[i] = osg_texture;
+    }
+    else if( mode == trpgTexture::Local )
+    {
+        _textures[i] = getLocalTexture(image_helper,tex);
+    }
+    else if( mode == trpgTexture::Template )
+    {
+        _textures[i] = 0L; //GetTemplateTexture(image_helper,0, tex);
+    }
+    else
+    {
+        _textures[i] = 0;
     }
 
-    osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
-    return true;
+	return (_textures[i].get() != 0);
 }
 
 bool TXPArchive::loadModel(int ix)
@@ -607,6 +599,19 @@ osg::Group* TXPArchive::getTileContent(
 
     osg::Group *tileGroup = _parser->parseScene(buf,_gstates,_models,realMinRange,realMaxRange,usedMaxRange);
     tileCenter = _parser->getTileCenter();
+
+	// Prune
+	unsigned int i = 0;
+	for (i = 0; i < _gstates.size(); i++) 
+	{
+		if (_gstates[i].get() && (_gstates[i]->referenceCount()==1)) _gstates[i] = 0;
+	}
+
+	for (i = 0; i < _textures.size(); i++) 
+	{
+		if (_textures[i].get() && (_textures[i]->referenceCount()==1)) _textures[i] = 0;
+	}
+
     return tileGroup;
 }
 
@@ -625,3 +630,4 @@ bool TXPArchive::getLODSize(int lod, int& x, int& y)
     
     return true;
 }
+

@@ -71,6 +71,7 @@ public:
     // Load the materials from the archve
     bool loadMaterials();
     bool loadMaterial(int ix);
+	bool loadTexture(int i);
     
     // Load the models from the archive
     bool loadModels();
@@ -187,4 +188,5 @@ protected:
 } // namespace
 
 #endif // __TXPARCHIVE_H_
+
 

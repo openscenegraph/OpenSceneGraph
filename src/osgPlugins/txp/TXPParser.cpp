@@ -943,7 +943,10 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             if( local )
                 tmp_ss = (*_parse->getLocalMaterials())[matId];
             else
-               tmp_ss = (*_parse->getMaterials())[matId];
+			{
+				_parse->loadMaterial(matId);
+				tmp_ss = (*_parse->getMaterials())[matId];
+			}
             if(sset.valid()) 
             {
                 if(tmp_ss.valid()){
@@ -1301,5 +1304,6 @@ osg::Texture2D* txp::getTemplateTexture(trpgrImageHelper& image_helper, trpgLoca
     }
     return osg_texture;
 }
+
 
 

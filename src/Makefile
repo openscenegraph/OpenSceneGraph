@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 SHELL=/bin/sh
 
 DIRS = osg osgDB osgUtil osgGLUT

@@ -1,4 +1,4 @@
-#!smake
+#!gmake
 include ../../../Make/makedefs
 
 C++FILES = \

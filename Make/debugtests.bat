@@ -98,3 +98,7 @@ more memleaks.log
 echo osgviews cow.osg
 osgviews cow.osg
 more memleaks.log
+
+echo osgoccluder glider.osg
+osgoccluder glider.osg
+more memleaks.log

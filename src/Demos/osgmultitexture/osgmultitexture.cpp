@@ -87,7 +87,7 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osg::Image* image = osgDB::readImageFile("reflect.rgb");
+    osg::Image* image = osgDB::readImageFile("Images/reflect.rgb");
     if (image)
     {
         osg::Texture* texture = new osg::Texture;

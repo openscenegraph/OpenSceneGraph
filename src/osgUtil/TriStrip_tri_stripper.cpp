@@ -199,7 +199,7 @@ void tri_stripper::Stripify()
 
 
 
-inline triangle_strip tri_stripper::FindBestStrip()
+triangle_strip tri_stripper::FindBestStrip()
 {
     triangle_strip BestStrip;
     size_t BestStripDegree = 0;
@@ -360,7 +360,7 @@ triangle_strip tri_stripper::ExtendTriToStrip(const size_t StartTriPos, const tr
 
 
 
-inline triangle_edge tri_stripper::GetLatestEdge(const triangle & Triangle, const triangle_strip::start_order Order) const
+triangle_edge tri_stripper::GetLatestEdge(const triangle & Triangle, const triangle_strip::start_order Order) const
 {
     switch (Order) {
     case triangle_strip::ABC:
@@ -482,7 +482,7 @@ void tri_stripper::MarkTriAsTaken(const size_t i)
 
 
 
-inline void tri_stripper::AddIndiceToCache(const indice i, bool CacheHitCount)
+void tri_stripper::AddIndiceToCache(const indice i, bool CacheHitCount)
 {
     // Cache simulator enabled?
     if (m_CacheSize > 0) {
@@ -501,7 +501,7 @@ inline void tri_stripper::AddIndiceToCache(const indice i, bool CacheHitCount)
 
 
 
-inline void tri_stripper::AddIndice(const indice i)
+void tri_stripper::AddIndice(const indice i)
 {
     // Add the indice to the current indices array
     m_PrimitivesVector.back().m_Indices.push_back(i);
@@ -512,7 +512,7 @@ inline void tri_stripper::AddIndice(const indice i)
 
 
 
-inline void tri_stripper::AddTriToCache(const triangle & Tri, const triangle_strip::start_order Order)
+void tri_stripper::AddTriToCache(const triangle & Tri, const triangle_strip::start_order Order)
 {
     // Add Tri indices in the right order into the indices cache simulator.
     // And enable the cache hit count
@@ -537,7 +537,7 @@ inline void tri_stripper::AddTriToCache(const triangle & Tri, const triangle_str
 
 
 
-inline void tri_stripper::AddTriToIndices(const triangle & Tri, const triangle_strip::start_order Order)
+void tri_stripper::AddTriToIndices(const triangle & Tri, const triangle_strip::start_order Order)
 {
     // Add Tri indices in the right order into the latest Indices vector.
     switch (Order) {
@@ -585,4 +585,4 @@ void tri_stripper::AddLeftTriangles()
 
 
 
-}; // namespace triangle_stripper
+} // namespace triangle_stripper

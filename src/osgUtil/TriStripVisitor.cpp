@@ -192,7 +192,6 @@ typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
 void TriStripVisitor::stripify(Geometry& geom)
 {
 
-
     if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
         geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
@@ -206,8 +205,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         geom.getFogCoordBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET) return;
 
     // no point tri stripping if we don't have enough vertices.
-    if (geom.getVertexArray()->getNumElements()<3) return;
-
+    if (!geom.getVertexArray() || geom.getVertexArray()->getNumElements()<3) return;
 
     // check to see if vertex attributes indices exists, if so expand them to remove them
     if (geom.suitableForOptimization())

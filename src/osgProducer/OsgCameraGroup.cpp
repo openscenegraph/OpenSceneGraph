@@ -14,6 +14,7 @@
 #include <osgProducer/OsgCameraGroup>
 #include <osgDB/FileUtils>
 
+using namespace Producer;
 using namespace osgProducer;
 
 std::string findCameraConfigFile(const std::string& configFile)

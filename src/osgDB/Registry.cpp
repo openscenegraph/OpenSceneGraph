@@ -211,14 +211,14 @@ Registry::~Registry()
     // clean up the SharedStateManager 
     _sharedStateManager = 0;
     
+
     // object cache clear needed here to prevent crash in unref() of
     // the objects it contains when running the TXP plugin.
     // Not sure why, but perhaps there is is something in a TXP plugin
     // which is deleted the data before its ref count hits zero, perhaps
     // even some issue with objects be allocated by a plugin that is
     // mainted after that plugin is deleted...  Robert Osfield, Jan 2004.
-    _objectCache.clear();
-
+    clearObjectCache();
 
     // unload all the plugin before we finally destruct.
     closeAllLibraries();
@@ -1190,15 +1190,18 @@ ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& c
     if (useObjectCache & CACHE_OBJECTS)
     {
         // search for entry in the object cache.
-        ObjectCache::iterator oitr=_objectCache.find(file);
-        if (oitr!=_objectCache.end())
         {
-            notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
-            osg::Object* object = oitr->second.first.get();
-            if (object) return ReaderWriter::ReadResult(object, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-            else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            ObjectCache::iterator oitr=_objectCache.find(file);
+            if (oitr!=_objectCache.end())
+            {
+                notify(INFO)<<"returning cached instanced of "<<file<<std::endl;
+                osg::Object* object = oitr->second.first.get();
+                if (object) return ReaderWriter::ReadResult(object, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+                else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
+            }
         }
-
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readObject(file);
@@ -1216,14 +1219,21 @@ ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& c
     {
     
         ObjectCache tmpObjectCache;
-        tmpObjectCache.swap(_objectCache);
-
+        
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readObject(file);
 
-        tmpObjectCache.swap(_objectCache);
-
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
         return rr;
 
     }
@@ -1336,15 +1346,18 @@ ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fi
     if (useObjectCache & CACHE_IMAGES)
     {
         // search for entry in the object cache.
-        ObjectCache::iterator oitr=_objectCache.find(file);
-        if (oitr!=_objectCache.end())
         {
-            notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-            osg::Image* image = dynamic_cast<osg::Image*>(oitr->second.first.get());
-            if (image) return ReaderWriter::ReadResult(image, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-            else return ReaderWriter::ReadResult("Error file not of type osg::Image");
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            ObjectCache::iterator oitr=_objectCache.find(file);
+            if (oitr!=_objectCache.end())
+            {
+                notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
+                osg::Image* image = dynamic_cast<osg::Image*>(oitr->second.first.get());
+                if (image) return ReaderWriter::ReadResult(image, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+                else return ReaderWriter::ReadResult("Error file not of type osg::Image");
+            }
         }
-
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readImage(file);
@@ -1364,13 +1377,19 @@ ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fi
     {
     
         ObjectCache tmpObjectCache;
-        tmpObjectCache.swap(_objectCache);
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
 
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readImage(file);
 
-        tmpObjectCache.swap(_objectCache);
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
 
         return rr;
 
@@ -1486,15 +1505,18 @@ ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::stri
     if (useObjectCache & CACHE_HEIGHTFIELDS)
     {
         // search for entry in the object cache.
-        ObjectCache::iterator oitr=_objectCache.find(file);
-        if (oitr!=_objectCache.end())
         {
-            notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-            osg::HeightField* heightField = dynamic_cast<osg::HeightField*>(oitr->second.first.get());
-            if (heightField) return ReaderWriter::ReadResult(heightField, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-            else return ReaderWriter::ReadResult("Error file not of type osg::HeightField");
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            ObjectCache::iterator oitr=_objectCache.find(file);
+            if (oitr!=_objectCache.end())
+            {
+                notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
+                osg::HeightField* heightField = dynamic_cast<osg::HeightField*>(oitr->second.first.get());
+                if (heightField) return ReaderWriter::ReadResult(heightField, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+                else return ReaderWriter::ReadResult("Error file not of type osg::HeightField");
+            }
         }
-
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readHeightField(file);
@@ -1514,13 +1536,19 @@ ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::stri
     {
     
         ObjectCache tmpObjectCache;
-        tmpObjectCache.swap(_objectCache);
-
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readHeightField(file);
 
-        tmpObjectCache.swap(_objectCache);
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
 
         return rr;
 
@@ -1648,15 +1676,18 @@ ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fil
     if (useObjectCache & CACHE_NODES)
     {
         // search for entry in the object cache.
-        ObjectCache::iterator oitr=_objectCache.find(file);
-        if (oitr!=_objectCache.end())
         {
-            notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
-            osg::Node* node = dynamic_cast<osg::Node*>(oitr->second.first.get());
-            if (node) return ReaderWriter::ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
-            else return ReaderWriter::ReadResult("Error file not of type osg::Node");
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            ObjectCache::iterator oitr=_objectCache.find(file);
+            if (oitr!=_objectCache.end())
+            {
+                notify(INFO)<< "returning cached instanced of "<<file<<std::endl;
+                osg::Node* node = dynamic_cast<osg::Node*>(oitr->second.first.get());
+                if (node) return ReaderWriter::ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
+                else return ReaderWriter::ReadResult("Error file not of type osg::Node");
+            }
         }
-
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readNode(file);
@@ -1674,14 +1705,20 @@ ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fil
     {
     
         ObjectCache tmpObjectCache;
-        tmpObjectCache.swap(_objectCache);
-
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
         PushAndPopDataPath tmpfile(getFilePath(file));
 
         ReaderWriter::ReadResult rr = readNode(file);
 
-        tmpObjectCache.swap(_objectCache);
-
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+            tmpObjectCache.swap(_objectCache);
+        }
+        
         return rr;
 
     }
@@ -1725,11 +1762,13 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
 
 void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
 {
-     _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+    _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
 }
 
 void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
     // look for objects with external references and update their time stamp.
     for(ObjectCache::iterator itr=_objectCache.begin();
@@ -1747,6 +1786,8 @@ void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double curre
 
 void Registry::removeExpiredObjectsInCache(double expiryTime)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+
     typedef std::vector<std::string> ObjectsToRemove;
     ObjectsToRemove objectsToRemove;
 
@@ -1776,6 +1817,7 @@ void Registry::removeExpiredObjectsInCache(double expiryTime)
 
 void Registry::clearObjectCache()
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     _objectCache.clear();
 }
 

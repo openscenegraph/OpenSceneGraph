@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="osgPlugin osg" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgPlugin osgText" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgPlugin osg - Win32 Release
+CFG=osgPlugin osgText - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "dot_osg.mak".
+!MESSAGE NMAKE /f "dot_osgText.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "dot_osg.mak" CFG="osgPlugin osg - Win32 Release"
+!MESSAGE NMAKE /f "dot_osgText.mak" CFG="osgPlugin osgText - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "osgPlugin osg - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "osgPlugin osg - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin osgText - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin osgText - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "osgPlugin osg - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin osgText - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osg.dll" /libpath:"../../../lib"
 # SUBTRACT LINK32 /nodefaultlib
 
-!ELSEIF  "$(CFG)" == "osgPlugin osg - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin osgText - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,29 +80,29 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgd.dll" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_osgTextd.dll" /pdbtype:sept /libpath:"../../../lib"
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ENDIF 
 
 # Begin Target
 
-# Name "osgPlugin osg - Win32 Release"
-# Name "osgPlugin osg - Win32 Debug"
+# Name "osgPlugin osgText - Win32 Release"
+# Name "osgPlugin osgText - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\osgPlugins\osgText\IO_Font.cpp
+SOURCE=..\..\..\src\osgPlugins\osgText\IO_Font.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgPlugins\osgText\IO_Paragraph.cpp
+SOURCE=..\..\..\src\osgPlugins\osgText\IO_Paragraph.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgPlugins\osgText\IO_Text.cpp
+SOURCE=..\..\..\src\osgPlugins\osgText\IO_Text.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

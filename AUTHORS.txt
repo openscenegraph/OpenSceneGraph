@@ -11,7 +11,7 @@ Robert Osfield <robert@openscenegraph.com>
         - 2nd iteration of shadow occlusion culling.
         - documentation?!
         - visual studio workspace files/unix makefiles.
-        - project adim & lead.
+        - project admin & lead.
 
 Don Burns <don@andesengineering.com>
         - Open Producer
@@ -124,7 +124,11 @@ Ruben Lopez <ryu@gpul.org>
         - Inventor ascii/VRML 1.0 loader.
 
 Pavel Moloshtan <pasha@moloshtan.com>
-        - Support for LWO2 format in the LightWave loader.
+        - First version of LightWave LWO2 format in lwo plugin.
+        - Support of GL_ARB_occlusion_query in osg::Drawable.
+        - Support of GL_ARB_shadow in osg::Texture, osgdepthtexture example.
+        - Support of GL_ARB_shadow_ambient in osg::Texture.
+        - Improvement to the ive plugin.
 
 Daniel Sjölie <deepone@acc.umu.se>
         - Support for multitextured flt files.

@@ -82,6 +82,9 @@
 #define GL_COMPARE_R_TO_TEXTURE_ARB       0x884E
 #endif
 
+#ifndef TEXTURE_COMPARE_FAIL_VALUE_ARB
+#define TEXTURE_COMPARE_FAIL_VALUE_ARB    0x80BF
+#endif
 
 namespace osg {
 
@@ -90,7 +93,6 @@ class SG_EXPORT Texture : public osg::StateAttribute
 {
 
     public :
-    
     
         Texture();
 
@@ -266,7 +268,10 @@ class SG_EXPORT Texture : public osg::StateAttribute
         void setShadowTextureMode(ShadowTextureMode mode) { _shadow_texture_mode = mode; }
         ShadowTextureMode getShadowTextureMode() { return _shadow_texture_mode; }
 
-
+        // set value of TEXTURE_COMPARE_FAIL_VALUE_ARB texture parameter
+        // http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt
+        void setShadowAmbient(float shadow_ambient) { _shadow_ambient = shadow_ambient; }
+        float getShadowAmbient() { return _shadow_ambient; }
         
         /** Texture is pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;
@@ -315,6 +320,9 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 void setShadowSupported(bool flag) { _isShadowSupported = flag; }
                 bool isShadowSupported() const { return _isShadowSupported; }
 
+                void setShadowAmbientSupported(bool flag) { _isShadowAmbientSupported = flag; }
+                bool isShadowAmbientSupported() const { return _isShadowAmbientSupported; }
+
                 void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
@@ -342,6 +350,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureBorderClampSupported;
                 bool    _isGenerateMipMapSupported;
                 bool    _isShadowSupported;
+                bool    _isShadowAmbientSupported;
                 
                 GLint   _maxTextureSize;
 
@@ -415,6 +424,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
         bool                _use_shadow_comparison;
         ShadowCompareFunc   _shadow_compare_func;
         ShadowTextureMode   _shadow_texture_mode;
+        float               _shadow_ambient;
 
     public:
     

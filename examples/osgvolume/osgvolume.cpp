@@ -25,15 +25,15 @@
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
-
-struct ReadOperator
-{
-    inline void luminance(float l) const { rgba(l,l,l,1.0f); }
-    inline void alpha(float a) const { rgba(1.0f,1.0f,1.0f,a); }
-    inline void luminance_alpha(float l,float a) const { rgba(l,l,l,a); }
-    inline void rgb(float r,float g,float b) const { rgba(r,g,b,1.0f); }
-    inline void rgba(float r,float g,float b,float a) const { std::cout<<"pixel("<<r<<", "<<g<<", "<<b<<", "<<a<<")"<<std::endl; }
-};
+//  example ReadOperator
+// struct ReadOperator
+// {
+//     inline void luminance(float l) const { rgba(l,l,l,1.0f); }
+//     inline void alpha(float a) const { rgba(1.0f,1.0f,1.0f,a); }
+//     inline void luminance_alpha(float l,float a) const { rgba(l,l,l,a); }
+//     inline void rgb(float r,float g,float b) const { rgba(r,g,b,1.0f); }
+//     inline void rgba(float r,float g,float b,float a) const { std::cout<<"pixel("<<r<<", "<<g<<", "<<b<<", "<<a<<")"<<std::endl; }
+// };
 
 
 template <typename T, class O>    
@@ -46,6 +46,8 @@ void _readRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const O
         case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { float l = float(*data++)*scale; float a = float(*data++)*scale; operation.luminance_alpha(l,a); } }  break;
         case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; operation.rgb(r,g,b); } }  break;
         case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; float a = float(*data++)*scale; operation.rgba(r,g,b,a); } }  break;
+        case(GL_BGR):               { for(unsigned int i=0;i<num;++i) { float b = float(*data++)*scale; float g = float(*data++)*scale; float r = float(*data++)*scale; operation.rgb(r,g,b); } }  break;
+        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { float b = float(*data++)*scale; float g = float(*data++)*scale; float r = float(*data++)*scale; float a = float(*data++)*scale; operation.rgba(r,g,b,a); } }  break;
     }
 }
 
@@ -64,16 +66,29 @@ void readRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned cha
     }
 }
 
-
-
-struct ModifyOperator
+template <class O>    
+void readImage(osg::Image* image, const O& operation)
 {
-    inline void luminance(float& l) const {} 
-    inline void alpha(float& a) const {} 
-    inline void luminance_alpha(float& l,float& a) const {} 
-    inline void rgb(float& r,float& g,float& b) const {}
-    inline void rgba(float& r,float& g,float& b,float& a) const {}
-};
+    if (!image) return;
+    
+    for(int r=0;r<image->r();++r)
+    {
+        for(int t=0;t<image->t();++t)
+        {
+            readRow(image->s(), image->getPixelFormat(), image->getDataType(), image->data(0,t,r), operation);
+        }
+    }
+}
+
+//  example ModifyOperator
+// struct ModifyOperator
+// {
+//     inline void luminance(float& l) const {} 
+//     inline void alpha(float& a) const {} 
+//     inline void luminance_alpha(float& l,float& a) const {} 
+//     inline void rgb(float& r,float& g,float& b) const {}
+//     inline void rgba(float& r,float& g,float& b,float& a) const {}
+// };
 
 
 template <typename T, class M>    
@@ -86,9 +101,9 @@ void _modifyRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const
         case(GL_ALPHA):             { for(unsigned int i=0;i<num;++i) { float a = float(*data)*scale; operation.alpha(a); *data++ = T(a*inv_scale); } }  break;
         case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { float l = float(*data)*scale; float a = float(*(data+1))*scale; operation.luminance_alpha(l,a); *data++ = T(l*inv_scale); *data++ = T(a*inv_scale); } }  break;
         case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; operation.rgb(r,g,b); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); } }  break;
-        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgb(r,g,b); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(g*inv_scale); *data++ = T(a*inv_scale); } }  break;
+        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgba(r,g,b,a); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(g*inv_scale); *data++ = T(a*inv_scale); } }  break;
         case(GL_BGR):               { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; operation.rgb(r,g,b); *data++ = T(b*inv_scale); *data++ = T(g*inv_scale); *data++ = T(r*inv_scale); } }  break;
-        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgb(r,g,b); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); *data++ = T(r*inv_scale); *data++ = T(a*inv_scale); } }  break;
+        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgba(r,g,b,a); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); *data++ = T(r*inv_scale); *data++ = T(a*inv_scale); } }  break;
     }
 }
 
@@ -107,6 +122,19 @@ void modifyRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned c
     }
 }
 
+template <class M>    
+void modifyImage(osg::Image* image, const M& operation)
+{
+    if (!image) return;
+    
+    for(int r=0;r<image->r();++r)
+    {
+        for(int t=0;t<image->t();++t)
+        {
+            modifyRow(image->s(), image->getPixelFormat(), image->getDataType(), image->data(0,t,r), operation);
+        }
+    }
+}
 
 struct PassThroughTransformFunction
 {
@@ -508,6 +536,7 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
     normalmap_3d->allocateImage(image_3d->s(),image_3d->t(),image_3d->r(),
                             GL_RGBA,GL_UNSIGNED_BYTE);
 
+    if (osg::getCpuByteOrder()==osg::LittleEndian) alphaOffset = sourcePixelIncrement-alphaOffset-1;
 
     for(int r=1;r<image_3d->r()-1;++r)
     {
@@ -861,8 +890,12 @@ struct FindRangeOperator
  
 struct ScaleOperator
 {
+    ScaleOperator():_scale(1.0f) {}
     ScaleOperator(float scale):_scale(scale) {}
+    ScaleOperator(const ScaleOperator& so):_scale(so._scale) {}
     
+    ScaleOperator& operator = (const ScaleOperator& so) { _scale = so._scale; return *this; }
+
     float _scale;
 
     inline void luminance(float& l) const { l*= _scale; } 
@@ -941,7 +974,7 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     image->allocateImage(sizeS, sizeT, sizeR, pixelFormat, dataType);
     
     
-    bool endianSwap = (osg::getCpuByteOrder()==osg::BigEndian) ? (endian=="big") : (endian!="big");
+    bool endianSwap = (osg::getCpuByteOrder()==osg::BigEndian) ? (endian!="big") : (endian=="big");
     
     unsigned int r_offset = (sizeZ<sizeR) ? sizeR/2 - sizeZ/2 : 0;
     
@@ -975,22 +1008,8 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     {
         // compute range of values
         FindRangeOperator rangeOp;    
-        for(int r=0;r<sizeR;++r)
-        {
-            for(int t=0;t<sizeT;++t)
-            {
-                readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), rangeOp);
-            }
-        }
-
-        // scale the values
-        for(int r=0;r<sizeR;++r)
-        {
-            for(int t=0;t<sizeT;++t)
-            {
-                modifyRow(sizeS, pixelFormat, dataType, image->data(0,t,r), ScaleOperator(1.0f/rangeOp._rmax));
-            }
-        }
+        readImage(image.get(), rangeOp);
+        modifyImage(image.get(),ScaleOperator(1.0f/rangeOp._rmax)); 
     }
     
     
@@ -1035,11 +1054,73 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     
 }
 
+enum ColourSpaceOperation
+{
+    NO_COLOUR_SPACE_OPERATION,
+    MODULATE_ALPHA_BY_LUMINANCE,
+    MODULATE_ALPHA_BY_COLOUR,
+    REPLACE_ALPHA_WITH_LUMINACE
+};
+
+struct ModulatAlphaByLuminanceOperator
+{
+    ModulatAlphaByLuminanceOperator() {}
+
+    inline void luminance(float&) const {} 
+    inline void alpha(float&) const {} 
+    inline void luminance_alpha(float& l,float& a) const { a*= l; } 
+    inline void rgb(float&,float&,float&) const {}
+    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a *= l;}
+};
+
+struct ModulatAlphaByColourOperator
+{
+    ModulatAlphaByColourOperator(const osg::Vec4& colour):_colour(colour) { _lum = _colour.length(); }
+    
+    osg::Vec4 _colour;
+    float _lum;
+
+    inline void luminance(float&) const {} 
+    inline void alpha(float&) const {} 
+    inline void luminance_alpha(float& l,float& a) const { a*= l*_lum; } 
+    inline void rgb(float&,float&,float&) const {}
+    inline void rgba(float& r,float& g,float& b,float& a) const { a = (r*_colour.red()+g*_colour.green()+b*_colour.blue()+a*_colour.alpha()); }
+};
+
+struct ReplaceAlphaWithLuminanceOperator
+{
+    ReplaceAlphaWithLuminanceOperator() {}
+
+    inline void luminance(float&) const {} 
+    inline void alpha(float&) const {} 
+    inline void luminance_alpha(float& l,float& a) const { a= l; } 
+    inline void rgb(float&,float&,float&) const { }
+    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a = l; }
+};
+
+void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Vec4& colour)
+{
+    switch(op)
+    {
+        case (MODULATE_ALPHA_BY_LUMINANCE):
+            std::cout<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
+            modifyImage(image,ModulatAlphaByLuminanceOperator()); 
+            break;
+        case (MODULATE_ALPHA_BY_COLOUR):
+            std::cout<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
+            modifyImage(image,ModulatAlphaByColourOperator(colour)); 
+            break;
+        case (REPLACE_ALPHA_WITH_LUMINACE):
+            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINACE"<<std::endl;
+            modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
+            break;
+        default:
+            break;
+    }
+}
 
 int main( int argc, char **argv )
 {
-
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -1065,6 +1146,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt1","Enable the usage of S3TC DXT1 compressed textures");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt3","Enable the usage of S3TC DXT3 compressed textures");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt5","Enable the usage of S3TC DXT5 compressed textures");
+    arguments.getApplicationUsage()->addCommandLineOption("--modulate-alpha-by-luminance","For each pixel multiple the alpha value by the luminance.");
+    arguments.getApplicationUsage()->addCommandLineOption("--replace-alpha-with-luminance","For each pixel mSet the alpha value to the luminance");
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
@@ -1132,6 +1215,15 @@ int main( int argc, char **argv )
     while(arguments.read("--compressed-dxt3")) { internalFormatMode = osg::Texture::USE_S3TC_DXT3_COMPRESSION; }
     while(arguments.read("--compressed-dxt5")) { internalFormatMode = osg::Texture::USE_S3TC_DXT5_COMPRESSION; }
     
+    
+    // set up colour space operation.
+    ColourSpaceOperation colourSpaceOperation = NO_COLOUR_SPACE_OPERATION;
+    osg::Vec4 colourModulate(0.25f,0.25f,0.25f,0.25f);
+    while(arguments.read("--modulate-alpha-by-luminance")) { colourSpaceOperation = MODULATE_ALPHA_BY_LUMINANCE; }
+    while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = MODULATE_ALPHA_BY_COLOUR; }
+    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINACE; }
+        
+    
     osg::ref_ptr<osg::Image> image_3d;
 
     int sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents;
@@ -1182,6 +1274,11 @@ int main( int argc, char **argv )
     }
     
     if (!image_3d) return 0;
+    
+    if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
+    {
+        doColourSpaceConversion(colourSpaceOperation, image_3d.get(), colourModulate);
+    }
     
     osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
 

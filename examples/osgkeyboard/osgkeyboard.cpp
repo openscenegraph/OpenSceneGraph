@@ -43,7 +43,7 @@ protected:
 
 void KeyboardModel::keyChange(int key,int value)
 {
-    std::cout << "key value change, code="<<std::hex << key << "\t value="<< value << std::dec  << std::endl;
+    osg::notify(osg::INFO) << "key value change, code="<<std::hex << key << "\t value="<< value << std::dec  << std::endl;
 
     // toggle the keys graphical representation on or off via osg::Swithc
     KeyModelMap::iterator itr = _keyModelMap.find(key);

@@ -403,8 +403,8 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
         return 0;
     }
     
-    osg::ref_ptr<osg::Image> bumpmap_3d = new osg::Image;
-    bumpmap_3d->allocateImage(image_3d->s(),image_3d->t(),image_3d->r(),
+    osg::ref_ptr<osg::Image> normalmap_3d = new osg::Image;
+    normalmap_3d->allocateImage(image_3d->s(),image_3d->t(),image_3d->r(),
                             GL_RGBA,GL_UNSIGNED_BYTE);
 
 
@@ -420,7 +420,7 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
             unsigned char* in = image_3d->data(1,t,r+1)+alphaOffset;
             unsigned char* out = image_3d->data(1,t,r-1)+alphaOffset;
 
-            unsigned char* destination = (unsigned char*) bumpmap_3d->data(1,t,r);
+            unsigned char* destination = (unsigned char*) normalmap_3d->data(1,t,r);
 
             for(int s=1;s<image_3d->s()-1;++s)
             {
@@ -459,7 +459,7 @@ osg::Image* createNormalMapTexture(osg::Image* image_3d)
         }
     }
     
-    return bumpmap_3d.release();
+    return normalmap_3d.release();
 }
 
 
@@ -507,12 +507,12 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     return billboard;
 }
 
-osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& bumpmap_3d,
+osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
                        float xSize, float ySize, float zSize,
                        float xMultiplier, float yMultiplier, float zMultiplier,
                        unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
 {
-    bool two_pass = bumpmap_3d.valid() && (image_3d->getPixelFormat()==GL_RGB || image_3d->getPixelFormat()==GL_RGBA);
+    bool two_pass = normalmap_3d.valid() && (image_3d->getPixelFormat()==GL_RGB || image_3d->getPixelFormat()==GL_RGBA);
 
     osg::Group* group = new osg::Group;
     
@@ -592,7 +592,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
     osg::Vec3 lightDirection(1.0f,-1.0f,1.0f);
     lightDirection.normalize();
 
-    if (bumpmap_3d.valid())
+    if (normalmap_3d.valid())
     {
     	if (two_pass)
 	{
@@ -604,7 +604,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
-            bump_texture3D->setImage(bumpmap_3d.get());
+            bump_texture3D->setImage(normalmap_3d.get());
 
             stateset->setTextureAttributeAndModes(0,bump_texture3D,osg::StateAttribute::ON);
 
@@ -656,14 +656,14 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 	}
         else
         {
-            osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMapTexture(image_3d.get());
+            osg::ref_ptr<osg::Image> normalmap_3d = createNormalMapTexture(image_3d.get());
             osg::Texture3D* bump_texture3D = new osg::Texture3D;
             bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
             bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP);
-            bump_texture3D->setImage(bumpmap_3d.get());
+            bump_texture3D->setImage(normalmap_3d.get());
 
             stateset->setTextureAttributeAndModes(0,bump_texture3D,osg::StateAttribute::ON);
 
@@ -688,7 +688,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             stateset->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
             stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
 
-            image_3d = bumpmap_3d;
+            image_3d = normalmap_3d;
         }
     }
     else
@@ -743,7 +743,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--yMultiplier","Tex coord y mulitplier.");
     arguments.getApplicationUsage()->addCommandLineOption("--zMultiplier","Tex coord z mulitplier.");
     arguments.getApplicationUsage()->addCommandLineOption("--clip","clip volume as a ratio, 0.0 clip all, 1.0 clip none.");
-    
+    arguments.getApplicationUsage()->addCommandLineOption("--maxTextureSize","Set the texture maximum resolution in the s,t,r (x,y,z) dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--s_maxTextureSize","Set the texture maximum resolution in the s (x) dimension.");
+    arguments.getApplicationUsage()->addCommandLineOption("--t_maxTextureSize","Set the texture maximum resolution in the t (y) dimension.");
+    arguments.getApplicationUsage()->addCommandLineOption("--r_maxTextureSize","Set the texture maximum resolution in the r (z) dimension.");
 
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -848,10 +851,10 @@ int main( int argc, char **argv )
     
     if (!image_3d) return 0;
     
-    osg::ref_ptr<osg::Image> bumpmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
+    osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
 
     // create a model from the images.
-    osg::Node* rootNode = createModel(image_3d, bumpmap_3d, 
+    osg::Node* rootNode = createModel(image_3d, normalmap_3d, 
                                       xSize, ySize, zSize,
                                       xMultiplier, yMultiplier, zMultiplier,
                                       numSlices, sliceEnd, alphaFunc);
@@ -862,8 +865,17 @@ int main( int argc, char **argv )
         std::string name_no_ext = osgDB::getNameLessExtension(outputFile);
         if (ext=="osg")
         {
-            image_3d->setFileName(name_no_ext + ".dds");
-            osgDB::writeImageFile(*image_3d, image_3d->getFileName());
+            if (image_3d.valid())
+            {
+                image_3d->setFileName(name_no_ext + ".dds");            
+                osgDB::writeImageFile(*image_3d, image_3d->getFileName());
+            }
+            if (normalmap_3d.valid())
+            {
+                normalmap_3d->setFileName(name_no_ext + "_normalmap.dds");            
+                osgDB::writeImageFile(*image_3d, normalmap_3d->getFileName());
+            }
+            
             osgDB::writeNodeFile(*rootNode, outputFile);
         }
         else if (ext=="ive")

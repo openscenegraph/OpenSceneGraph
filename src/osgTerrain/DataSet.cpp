@@ -1296,6 +1296,16 @@ void DataSet::DestinationTile::setNeighbours(DestinationTile* left, DestinationT
     _neighbour[ABOVE] = above;
     _neighbour[ABOVE_LEFT] = above_left;
     
+    
+    std::cout<<"LEFT="<<_neighbour[LEFT]<<std::endl;
+    std::cout<<"LEFT_BELOW="<<_neighbour[LEFT_BELOW]<<std::endl;
+    std::cout<<"BELOW="<<_neighbour[BELOW]<<std::endl;
+    std::cout<<"BELOW_RIGHT="<<_neighbour[BELOW_RIGHT]<<std::endl;
+    std::cout<<"RIGHT="<<_neighbour[RIGHT]<<std::endl;
+    std::cout<<"RIGHT_ABOVE="<<_neighbour[RIGHT_ABOVE]<<std::endl;
+    std::cout<<"ABOVE="<<_neighbour[ABOVE]<<std::endl;
+    std::cout<<"ABOVE_LEFT="<<_neighbour[ABOVE_LEFT]<<std::endl;
+    
     for(int i=0;i<NUMBER_OF_POSITIONS;++i)
     {
         _equalized[i]=false;
@@ -1316,7 +1326,7 @@ void DataSet::DestinationTile::checkNeighbouringTiles()
 void DataSet::DestinationTile::equalizeCorner(Position position)
 {
     // don't need to equalize if already done.
-    if (_equalized[position]) return;
+    //if (_equalized[position]) return;
 
     typedef std::pair<DestinationTile*,Position> TileCornerPair;
     typedef std::vector<TileCornerPair> TileCornerList;
@@ -1503,10 +1513,22 @@ void DataSet::DestinationTile::equalizeCorner(Position position)
 
 }
 
+const char* edgeString(DataSet::DestinationTile::Position position)
+{
+    switch(position)
+    {
+        case DataSet::DestinationTile::LEFT: return "left";
+        case DataSet::DestinationTile::BELOW: return "below";
+        case DataSet::DestinationTile::RIGHT: return "right";
+        case DataSet::DestinationTile::ABOVE: return "above";
+        default : return "<not an edge>";
+    }    
+}
+
 void DataSet::DestinationTile::equalizeEdge(Position position)
 {
     // don't need to equalize if already done.
-    if (_equalized[position]) return;
+    //if (_equalized[position]) return;
 
     DestinationTile* tile2 = _neighbour[position];
     Position position2 = (Position)((position+4)%NUMBER_OF_POSITIONS);
@@ -1521,12 +1543,17 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
     osg::Image* image1 = _imagery.valid()?_imagery->_image.get():0;
     osg::Image* image2 = tile2->_imagery.valid()?tile2->_imagery->_image.get():0;
 
+    std::cout<<"Equalizing edge "<<edgeString(position)<<" of \t"<<_level<<"\t"<<_tileX<<"\t"<<_tileY<<std::endl;
+
     if (image1 && image2 && 
         image1->getPixelFormat()==image2->getPixelFormat() &&
         image1->getDataType()==image2->getDataType() &&
         image1->getPixelFormat()==GL_RGB &&
         image1->getDataType()==GL_UNSIGNED_BYTE)
     {
+
+        std::cout<<"   Equalizing image"<<std::endl;
+
         unsigned char* data1 = 0;
         unsigned char* data2 = 0;
         unsigned int delta1 = 0;
@@ -1541,6 +1568,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(image2->s()-1,1); // RIGHT hand side
             delta2 = image2->getRowSizeInBytes();
             num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
+            std::cout<<"       left "<<num<<std::endl;
             break;
         case BELOW:
             data1 = image1->data(1,0); // BELOW hand side
@@ -1548,22 +1576,26 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             data2 = image2->data(1,image2->t()-1); // ABOVE hand side
             delta2 = 3;
             num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
+            std::cout<<"       below "<<num<<std::endl;
             break;
         case RIGHT:
-            data1 = image1->data(image2->s()-1,1); // LEFT hand side
+            data1 = image1->data(image1->s()-1,1); // LEFT hand side
             delta1 = image1->getRowSizeInBytes();
             data2 = image2->data(0,1); // RIGHT hand side
             delta2 = image2->getRowSizeInBytes();
             num = (image1->t()==image2->t())?image2->t()-2:0; // note miss out corners.
+            std::cout<<"       right "<<num<<std::endl;
             break;
         case ABOVE:
-            data1 = image1->data(1,image2->t()-1); // ABOVE hand side
+            data1 = image1->data(1,image1->t()-1); // ABOVE hand side
             delta1 = 3;
             data2 = image2->data(1,0); // BELOW hand side
             delta2 = 3;
             num = (image1->s()==image2->s())?image2->s()-2:0; // note miss out corners.
+            std::cout<<"       above "<<num<<std::endl;
             break;
         default :
+            std::cout<<"       default "<<num<<std::endl;
             break;
         }
 
@@ -1572,7 +1604,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             unsigned char red =   (unsigned char)((((int)*data1+ (int)*data2)/2));
             unsigned char green = (unsigned char)((((int)*(data1+1))+ (int)(*(data2+1)))/2);
             unsigned char blue =  (unsigned char)((((int)*(data1+2))+ (int)(*(data2+2)))/2);
-
+#if 0
             *data1 = red;
             *(data1+1) = green;
             *(data1+2) = blue;
@@ -1580,9 +1612,22 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
             *data2 = red;
             *(data2+1) = green;
             *(data2+2) = blue;
+#endif
 
+#if 1
+            *data1 = 255;
+            *(data1+1) = 0;
+            *(data1+2) = 0;
+
+            *data2 = 0;
+            *(data2+1) = 0;
+            *(data2+2) = 0;
+#endif
             data1 += delta1;
             data2 += delta2;
+
+            //std::cout<<"    equalizing colour"<<std::endl;
+
         }
 
     }
@@ -1592,6 +1637,8 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
 
     if (heightField1 && heightField2)
     {
+        std::cout<<"   Equalizing heightfield"<<std::endl;
+
         float* data1 = 0;
         float* data2 = 0;
         unsigned int delta1 = 0;
@@ -1603,7 +1650,7 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         case LEFT:
             data1 = &(heightField1->getHeight(0,1)); // LEFT hand side
             delta1 = heightField1->getNumColumns();
-            data2 = &(heightField2->getHeight(heightField2->getNumColumns()-1,1)); // LEFT hand side
+            data2 = &(heightField2->getHeight(heightField2->getNumColumns()-1,1)); // RIGHT hand side
             delta2 = heightField2->getNumColumns();
             num = (heightField1->getNumRows()==heightField2->getNumRows())?heightField1->getNumRows()-2:0; // note miss out corners.
             break;
@@ -1635,6 +1682,8 @@ void DataSet::DestinationTile::equalizeEdge(Position position)
         for(int i=0;i<num;++i)
         {
             float z = (*data1 + *data2)/2.0f;
+
+            //std::cout<<"    equalizing height"<<std::endl;
 
             *data1 = z;
             *data2 = z;
@@ -1743,8 +1792,8 @@ osg::Node* DataSet::DestinationTile::createScene()
         std::string imageName(_name+".rgb");
         _imagery->_image->setFileName(imageName.c_str());
 
-        //std::cout<<"Writing out imagery to "<<imageName<<std::endl;
-        //osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
+        std::cout<<"Writing out imagery to "<<imageName<<std::endl;
+        osgDB::writeImageFile(*_imagery->_image,_imagery->_image->getFileName().c_str());
 
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         osg::Texture2D* texture = new osg::Texture2D(_imagery->_image.get());
@@ -1854,8 +1903,8 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
 
             if (n) (*n)[vi] = grid->getNormal(c,r);
             
-	    t[vi].x() = (float)(c)/(float)(numColumns);
-	    t[vi].y() = (float)(r)/(float)(numRows);
+	    t[vi].x() = (c==numColumns-1)? 1.0f : (float)(c)/(float)(numColumns-1);
+	    t[vi].y() = (r==numRows-1)? 1.0f : (float)(r)/(float)(numRows-1);
             
             ++vi;
 	}
@@ -1962,8 +2011,10 @@ osg::Geometry* DataSet::DestinationTile::createDrawablePolygonal()
         skirtDrawElements[ei++] = firstSkirtVertexIndex;
     }    
 
+#if 0
     osgUtil::TriStripVisitor tsv;
     tsv.stripify(*geometry);
+#endif
 
     return geometry;
 }
@@ -2775,7 +2826,6 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
 
     }
 
-#if 1
     // do standardisation of coordinates systems.
     // do any reprojection if required.
     {
@@ -2794,7 +2844,6 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
             }
         }
     }
-#endif
     
     // do sampling of data to required values.
     {
@@ -2956,8 +3005,6 @@ void DataSet::_emptyRow(Row& row)
             tile->empty();
         }
     }
-
-
 
 }
 

@@ -56,9 +56,11 @@ Ignore 76-82
 #define PUT_TRANSFORM_OP                82
 */
 #define EYEPOINT_TRACKPLANE_OP          83
+#define ROAD_SEGMENT_OP                 87
 #define ROAD_ZONE_OP                    88
 #define MORPH_VERTEX_LIST_OP            89
 #define LINKAGE_PALETTE_OP              90
+#define ROAD_PATH_OP                    92
 #define SOUND_PALETTE_OP                93
 #define GENERAL_MATRIX_OP               94
 #define SWITCH_OP                       96
@@ -72,8 +74,11 @@ Ignore 76-82
 #define LIGHT_POINT_OP                  111
 #define TEXTURE_MAPPING_PALETTE_OP      112
 #define MATERIAL_PALETTE_OP             113
+#define COLOR_NAME_PALETTE_OP           114
 #define CAT_OP                          115
 #define CAT_DATA_OP                     116
+#define RESERVED_OP                     124
+#define ROAD_CONSTRUCTION_OP            127
 
 #endif // __FLT_OPCODE_H
 

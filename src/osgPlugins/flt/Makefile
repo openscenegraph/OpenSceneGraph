@@ -17,6 +17,7 @@ CXXFILES =\
 	Record.cpp\
 	FaceRecord.cpp\
 	RecordVisitor.cpp\
+	RoadRecords.cpp\
 	GeoSetBuilder.cpp\
 	Registry.cpp\
 	FltFile.cpp\

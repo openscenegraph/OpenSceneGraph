@@ -34,7 +34,7 @@ public:
 	VectorSizei(): inherited() {}
 	explicit VectorSizei(size_type n): inherited(n) {}
 	VectorSizei(const VectorSizei &copy): inherited(copy) {}
-	VectorSizei(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	//VectorSizei(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
 	template<class InputIterator>
 	VectorSizei(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
 };
@@ -45,7 +45,7 @@ public:
 	VectorUByte(): inherited() {}
 	explicit VectorUByte(size_type n): inherited(n) {}
 	VectorUByte(const VectorUByte &copy): inherited(copy) {}
-	VectorUByte(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	//VectorUByte(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
 	template<class InputIterator>
 	VectorUByte(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
 };
@@ -56,7 +56,7 @@ public:
 	VectorUShort(): inherited() {}
 	explicit VectorUShort(size_type n): inherited(n) {}
 	VectorUShort(const VectorUShort &copy): inherited(copy) {}
-	VectorUShort(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	//VectorUShort(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
 	template<class InputIterator>
 	VectorUShort(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
 };
@@ -67,7 +67,7 @@ public:
 	VectorUInt(): inherited() {}
 	explicit VectorUInt(size_type n): inherited(n) {}
 	VectorUInt(const VectorUInt &copy): inherited(copy) {}
-	VectorUInt(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
+	//VectorUInt(value_type *beg_, value_type *end_): inherited(beg_, end_) {}
 	template<class InputIterator>
 	VectorUInt(InputIterator beg_, InputIterator end_): inherited(beg_, end_) {}
 };

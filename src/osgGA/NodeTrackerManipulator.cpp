@@ -32,7 +32,6 @@ NodeTrackerManipulator::NodeTrackerManipulator()
 {
     _trackerMode = NODE_CENTER_AND_ROTATION; 
     _trackerMode = NODE_CENTER_AND_AZMIM_ROTATION;
-    _trackerMode = NODE_CENTER_AND_AZMIM_ELEVATION_ROTATION;
 
     _rotationMode = ELEVATION_AZIM; 
     _distance = 1.0;
@@ -358,39 +357,7 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
     else
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
 
-    // scale the matrix to get rid of any scales before we extract the rotation.
-    double sx = 1.0/sqrt(localToWorld(0,0)*localToWorld(0,0) + localToWorld(1,0)*localToWorld(1,0) + localToWorld(2,0)*localToWorld(2,0));
-    double sy = 1.0/sqrt(localToWorld(0,1)*localToWorld(0,1) + localToWorld(1,1)*localToWorld(1,1) + localToWorld(2,1)*localToWorld(2,1));
-    double sz = 1.0/sqrt(localToWorld(0,2)*localToWorld(0,2) + localToWorld(1,2)*localToWorld(1,2) + localToWorld(2,2)*localToWorld(2,2));
-    localToWorld = localToWorld*osg::Matrixd::scale(sx,sy,sz);
 
-
-/*
-    Euler Code not in correct coordinate frame, just an experiment here.
-
-    // Assuming the angles are in radians.
-    double heading, attitude, bank = 0;
-    if (localToWorld(0,1) > 0.998)
-    { // singularity at north pole
-        heading = atan2(localToWorld(2,0),localToWorld(2,2));
-        attitude = osg::PI_2;
-        bank = 0;
-    }
-    else if (localToWorld(0,1) < -0.998)
-    { // singularity at south pole
-        heading = atan2(localToWorld(2,0),localToWorld(2,2));
-        attitude = -osg::PI_2;
-        bank = 0;
-    }
-    else
-    {
-        heading = atan2(-localToWorld(0,2),localToWorld(0,0));
-        bank = atan2(-localToWorld(2,1),localToWorld(1,1));
-        attitude = asin(localToWorld(0,1));
-    }
-
-    osg::notify(osg::NOTICE)<<"heading = "<<heading<<" attitude="<<attitude<<" bank="<<bank<<std::endl;
-*/
     switch(_trackerMode)
     {
         case(NODE_CENTER_AND_AZMIM_ROTATION):
@@ -399,21 +366,14 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
             nodeRotation.makeRotate(-azim,0.0,0.0,1.0);
             break;
         }
-        case(NODE_CENTER_AND_AZMIM_ELEVATION_ROTATION):
-        {
-            double azim = atan2(-localToWorld(0,1),localToWorld(0,0));
-            double elevation = acos(localToWorld(2,2));
-            osg::Quat azimRotation;
-            osg::Quat elevationRotation;
-            azimRotation.makeRotate(-azim,0.0,0.0,1.0);
-            elevationRotation.makeRotate(-elevation,0.0,1.0,0.0);
-            nodeRotation = elevationRotation*azimRotation;
-            osg::notify(osg::NOTICE)<<"azimRotation = "<<azim<<std::endl;
-            osg::notify(osg::NOTICE)<<"elevationRotation = "<<elevation<<std::endl;
-            break;
-        }
         case(NODE_CENTER_AND_ROTATION):
         {
+            // scale the matrix to get rid of any scales before we extract the rotation.
+            double sx = 1.0/sqrt(localToWorld(0,0)*localToWorld(0,0) + localToWorld(1,0)*localToWorld(1,0) + localToWorld(2,0)*localToWorld(2,0));
+            double sy = 1.0/sqrt(localToWorld(0,1)*localToWorld(0,1) + localToWorld(1,1)*localToWorld(1,1) + localToWorld(2,1)*localToWorld(2,1));
+            double sz = 1.0/sqrt(localToWorld(0,2)*localToWorld(0,2) + localToWorld(1,2)*localToWorld(1,2) + localToWorld(2,2)*localToWorld(2,2));
+            localToWorld = localToWorld*osg::Matrixd::scale(sx,sy,sz);
+
             localToWorld.get(nodeRotation);
             break;
         }

@@ -70,17 +70,31 @@ void UFOManipulator::setByMatrix( const osg::Matrixd &mat )
 {
     _inverseMatrix = mat;
     _matrix.invert( _inverseMatrix );
+
+    _position.set( _inverseMatrix(3,0), _inverseMatrix(3,1), _inverseMatrix(3,2 ));
+    osg::Matrix R(_inverseMatrix);
+    R(3,0) = R(3,1) = R(3,2) = 0.0;
+    _direction = osg::Vec3(0,0,-1) * R; // yep.
+
+    _stop();
 }
 
 void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat) 
 {
     _matrix = invmat;
     _inverseMatrix.invert( _matrix );
+
+    _position.set( _inverseMatrix(3,0), _inverseMatrix(3,1), _inverseMatrix(3,2 ));
+    osg::Matrix R(_inverseMatrix);
+    R(3,0) = R(3,1) = R(3,2) = 0.0;
+    _direction = osg::Vec3(0,0,-1) * R; // yep.
+
+    _stop();
 }
 
 osg::Matrixd UFOManipulator::getMatrix() const
 {
-        return (_offset * _matrix);
+    return (_offset * _matrix);
 }
 
 osg::Matrixd UFOManipulator::getInverseMatrix() const 
@@ -136,7 +150,7 @@ void UFOManipulator::computeHomePosition()
     }
     else
     {
-        osg::notify(osg::INFO)<<"UFOManipulator : I can't find the ground!"<<std::endl;
+        //osg::notify(osg::WARN)<<"UFOManipulator : I can't find the ground!"<<std::endl;
         ground = 0.0;
     }
 
@@ -145,9 +159,13 @@ void UFOManipulator::computeHomePosition()
     setHomePosition( p, p + osg::Vec3(0,1,0), osg::Vec3(0,0,1) );
 }
 
-void UFOManipulator::init(const GUIEventAdapter& ea, GUIActionAdapter&)
+void UFOManipulator::init(const GUIEventAdapter&, GUIActionAdapter&)
 {
-    home(ea.time());
+    //home(ea.time());
+
+puts( "INIT" ) ;
+
+    _stop();
 }
 
 void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&) 

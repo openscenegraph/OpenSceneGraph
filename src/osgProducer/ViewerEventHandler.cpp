@@ -768,6 +768,18 @@ void ViewerEventHandler::setWriteImageFileName(const std::string& filename)
     }
 }
 
+void ViewerEventHandler::setFrameStatsMode(FrameStatsMode mode)
+{ 
+    _frameStatsMode = mode; 
+    if (_frameStatsMode==NO_STATS)
+    {
+        _cg->setInstrumentationMode(false);
+    }
+    else
+    {
+        _cg->setInstrumentationMode(true);
+    }    
+}
 
 bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {
@@ -780,15 +792,8 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
         {
             case 's' :
             {
-                _frameStatsMode = (FrameStatsMode)((_frameStatsMode+1)%3);
-                if (_frameStatsMode==NO_STATS)
-                {
-                    _cg->setInstrumentationMode(false);
-                }
-                else
-                {
-                    _cg->setInstrumentationMode(true);
-                }
+                FrameStatsMode newFrameStatsMode = (FrameStatsMode)((_frameStatsMode+1)%3);
+                setFrameStatsMode(newFrameStatsMode);
                 return true;
             }
             case 'v' :

@@ -52,7 +52,7 @@ class OSGPRODUCER_EXPORT ViewerEventHandler : public osgGA::GUIEventHandler
             CAMERA_STATS = 2
         };
         
-        void setFrameStatsMode(FrameStatsMode mode) { _frameStatsMode = mode; }
+        void setFrameStatsMode(FrameStatsMode mode);
         FrameStatsMode getFrameStatsMode() { return _frameStatsMode; }
 
         void setWriteImageOnNextFrame(bool writeImageOnNextFrame);

@@ -193,11 +193,21 @@ void TerrainManipulator::addMouseEvent(const GUIEventAdapter& ea)
 
 void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
+
     osg::Vec3 lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
     osg::Vec3 eye(matrix(3,0),matrix(3,1),matrix(3,2));
     
     osg::notify(INFO)<<"eye point "<<eye<<std::endl;
     osg::notify(INFO)<<"lookVector "<<lookVector<<std::endl;
+
+    if (!_node)
+    {
+        _center = eye+ lookVector;
+        _distance = lookVector.length();
+        matrix.get(_rotation);
+        return;
+    }
+
 
     // need to reintersect with the terrain
     osgUtil::IntersectVisitor iv;
@@ -291,6 +301,8 @@ osg::Matrixd TerrainManipulator::getInverseMatrix() const
 
 void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
 {
+    if (!_node) return;
+
     // compute rotation matrix
     osg::Vec3 lv(center-eye);
     _distance = lv.length();
@@ -443,64 +455,67 @@ bool TerrainManipulator::calcMovement()
 
         // need to recompute the itersection point along the look vector.
         
-        // now reorientate the coordinate frame to the frame coords.
-        CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
-
-        // need to reintersect with the terrain
-        osgUtil::IntersectVisitor iv;
-
-        double distance = _node->getBound().radius()*0.1f;
-        osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
-        osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
-
-        osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
-
-        osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-        segLookVector->set(start_segment,end_segment);
-        iv.addLineSegment(segLookVector.get());
-
-        _node->accept(iv);
-
-        bool hitFound = false;
-        if (iv.hits())
+        if (_node.valid())
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-            if (!hitList.empty())
+
+            // now reorientate the coordinate frame to the frame coords.
+            CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
+
+            // need to reintersect with the terrain
+            osgUtil::IntersectVisitor iv;
+
+            double distance = _node->getBound().radius()*0.1f;
+            osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
+            osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
+
+            osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
+
+            osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
+            segLookVector->set(start_segment,end_segment);
+            iv.addLineSegment(segLookVector.get());
+
+            _node->accept(iv);
+
+            bool hitFound = false;
+            if (iv.hits())
             {
-                notify(INFO) << "Hit terrain ok"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                _center = ip;
+                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
+                if (!hitList.empty())
+                {
+                    notify(INFO) << "Hit terrain ok"<< std::endl;
+                    osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+                    _center = ip;
 
-                hitFound = true;
+                    hitFound = true;
+                }
             }
-        }
 
-        if (!hitFound)
-        {
-            // ??
-            osg::notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
-        }
-        
-        coordinateFrame = getCoordinateFrame(_center);
-        osg::Vec3d new_localUp = getUpVector(coordinateFrame);
-        
-        
-        osg::Quat pan_rotation;
-        pan_rotation.makeRotate(localUp,new_localUp);
+            if (!hitFound)
+            {
+                // ??
+                osg::notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
+            }
 
-        if (!pan_rotation.zeroRotation())
-        {
-            _rotation = _rotation * pan_rotation;
-            _previousUp = new_localUp;
-            //osg::notify(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
+            coordinateFrame = getCoordinateFrame(_center);
+            osg::Vec3d new_localUp = getUpVector(coordinateFrame);
 
-            //clampOrientation();
-        }
-        else
-        {
-            osg::notify(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
-        }
-        
+
+            osg::Quat pan_rotation;
+            pan_rotation.makeRotate(localUp,new_localUp);
+
+            if (!pan_rotation.zeroRotation())
+            {
+                _rotation = _rotation * pan_rotation;
+                _previousUp = new_localUp;
+                //osg::notify(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
+
+                //clampOrientation();
+            }
+            else
+            {
+                osg::notify(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
+            }
+        }        
 
         return true;
     }

@@ -2,13 +2,14 @@
  *
  *    FILE:           DataOutputStream.cpp
  *
- *    DESCRIPTION:    Implements methods to write simpel datatypes to an
+ *    DESCRIPTION:    Implements methods to write simple datatypes to an
  *                    output stream.
  *
  *    CREATED BY:     Rune Schmidt Jensen
  *
  *    HISTORY:        Created 11.03.2003
  *                    Updated for 1D textures - Don Burns 27.1.2004
+ *					  Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
  *
  *    Copyright 2003 VR-C
  **********************************************************************/
@@ -34,6 +35,8 @@
 #include "TexMat.h"
 #include "FragmentProgram.h"
 #include "VertexProgram.h"
+#include "LightModel.h"
+
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -480,6 +483,12 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::VertexProgram*>(attribute)){
             ((ive::VertexProgram*)(attribute))->write(this);
         }
+
+        // This is a LightModel
+        else if(dynamic_cast<const osg::LightModel*>(attribute)){
+            ((ive::LightModel*)(attribute))->write(this);
+        }
+
         else{
             std::string className = attribute->className();
             throw Exception(std::string("StateSet::write(): Unknown StateAttribute: ").append(className));

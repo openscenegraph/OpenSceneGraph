@@ -2,13 +2,15 @@
  *
  *    FILE:            DataInputStream.cpp
  *
- *    DESCRIPTION:    Implements methods to read simpel datatypes from an
+ *    DESCRIPTION:    Implements methods to read simple datatypes from an
  *                    input stream.
  *
  *    CREATED BY:        Rune Schmidt Jensen
  *
  *    HISTORY:        Created 11.03.2003
  *                    Updated for texture1D by Don Burns, 27.1.2004
+ *					  Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
+ *
  *
  *    Copyright 2003 VR-C
  **********************************************************************/
@@ -32,6 +34,7 @@
 #include "TexMat.h"
 #include "FragmentProgram.h"
 #include "VertexProgram.h"
+#include "LightModel.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -682,6 +685,12 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::VertexProgram();
         ((ive::VertexProgram*)(attribute))->read(this);
     }
+
+    else if(attributeID == IVELIGHTMODEL){
+        attribute = new osg::LightModel();
+        ((ive::LightModel*)(attribute))->read(this);
+    }
+
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");
     }

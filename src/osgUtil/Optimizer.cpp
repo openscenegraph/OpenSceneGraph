@@ -13,6 +13,8 @@
 #include <osgUtil/Optimizer>
 
 #include <osg/Transform>
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 #include <osg/LOD>
 #include <osg/Impostor>
 #include <osg/Billboard>
@@ -55,7 +57,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
             osg::notify(osg::DEBUG_INFO) << "** RemoveStaticTransformsVisitor *** Pass "<<i<<std::endl;
             FlattenStaticTransformsVisitor fstv;
             node->accept(fstv);
-            result = fstv.removeTransforms();
+            result = fstv.removeTransforms(node);
             ++i;
         } while (result);
 
@@ -457,7 +459,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
 
         void setUpMaps();
         void disableTransform(osg::Transform* transform);
-        bool removeTransforms();
+        bool removeTransforms(osg::Node* nodeWeCannotRemove);
 
     protected:        
 
@@ -693,7 +695,7 @@ void CollectLowestTransformsVisitor::setUpMaps()
 
 }
 
-bool CollectLowestTransformsVisitor::removeTransforms()
+bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
 {
     // transform the objects that can be applied.
     for(ObjectMap::iterator oitr=_objectMap.begin();
@@ -718,22 +720,48 @@ bool CollectLowestTransformsVisitor::removeTransforms()
     {
         if (titr->second._canBeApplied)
         {
-            transformRemoved = true;
         
-            osg::ref_ptr<osg::Transform> transform = titr->first;
-            osg::ref_ptr<osg::Group>     group = new osg::Group;
-            group->setDataVariance(osg::Object::STATIC);
-            for(unsigned int i=0;i<transform->getNumChildren();++i)
+            if (titr->first!=nodeWeCannotRemove)
             {
-                for(unsigned int j=0;j<transform->getNumParents();++j)
+                transformRemoved = true;
+
+                osg::ref_ptr<osg::Transform> transform = titr->first;
+                osg::ref_ptr<osg::Group>     group = new osg::Group;
+                group->setDataVariance(osg::Object::STATIC);
+                for(unsigned int i=0;i<transform->getNumChildren();++i)
                 {
-                    group->addChild(transform->getChild(i));
+                    for(unsigned int j=0;j<transform->getNumParents();++j)
+                    {
+                        group->addChild(transform->getChild(i));
+                    }
+                }
+
+                for(int i2=transform->getNumParents()-1;i2>=0;--i2)
+                {
+                    transform->getParent(i2)->replaceChild(transform.get(),group.get());
                 }
             }
-
-            for(int i2=transform->getNumParents()-1;i2>=0;--i2)
+            else
             {
-                transform->getParent(i2)->replaceChild(transform.get(),group.get());
+                osg::MatrixTransform* mt = dynamic_cast<osg::MatrixTransform*>(titr->first);
+                if (mt) mt->setMatrix(osg::Matrix::identity());
+                else
+                {
+                    osg::PositionAttitudeTransform* pat = dynamic_cast<osg::PositionAttitudeTransform*>(titr->first);
+                    if (pat)
+                    {
+                        pat->setPosition(osg::Vec3(0.0f,0.0f,0.0f));
+                        pat->setAttitude(osg::Quat());
+                        pat->setPivotPoint(osg::Vec3(0.0f,0.0f,0.0f));
+                    }
+                    else
+                    {
+                        osg::notify(osg::WARN)<<"Warning:: during Optimize::CollectLowestTransformsVisitor::removeTransforms(Node*)"<<std::endl;
+                        osg::notify(osg::WARN)<<"          unhandled of setting of indentity matrix on "<< titr->first->className()<<std::endl;
+                        osg::notify(osg::WARN)<<"          model will appear in the incorrect position."<<std::endl;
+                    }
+                }
+                
             }                
         }
     }
@@ -781,7 +809,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
     _transformStack.pop_back();
 }
 
-bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
+bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
 {
     CollectLowestTransformsVisitor cltv;
 
@@ -809,7 +837,7 @@ bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms()
     }
     
 
-    return cltv.removeTransforms();
+    return cltv.removeTransforms(nodeWeCannotRemove);
 }
 
 

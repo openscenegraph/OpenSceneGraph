@@ -188,7 +188,7 @@ int *numComponents_ret)
                 inf.Colorbits=cbits;
                 inf.ColorUsed=pow(2.0,inf.Colorbits); // infer the colours
             }
-            long size = hd.siz[1]*65536+hd.siz[0];
+            long size = (unsigned short)hd.siz[1]*65536+(unsigned short)hd.siz[0];
             int ncpal=4; // default number of colours per palette entry
             size -= sizeof(bmpheader)+infsize;
             if (inf.ImageSize<size) inf.ImageSize=size;

@@ -129,6 +129,10 @@ SOURCE=..\..\Src\osgDB\Input.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Src\osgDB\ImageOptions.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Src\osgDB\Output.cpp
 # End Source File
 # Begin Source File
@@ -190,6 +194,10 @@ SOURCE=..\..\include\osgDB\FileUtils
 # Begin Source File
 
 SOURCE=..\..\Include\osgDB\Input
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgDB\ImageOptions
 # End Source File
 # Begin Source File
 

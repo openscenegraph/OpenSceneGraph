@@ -99,7 +99,8 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     text->setAlignment(osgText::Text::RIGHT_CENTER);
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.2f));
-    text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f));
+    //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
+    text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
     osg::StateSet* stateset = text->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
  

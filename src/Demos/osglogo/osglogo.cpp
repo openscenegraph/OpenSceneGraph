@@ -97,7 +97,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     std::string font("fonts/arial.ttf");
 
     //osgText::Text* text = osgNew  osgText::Text(osgNew osgText::PolygonFont(font,80, 3));
-    osgText::Text* text = osgNew  osgText::Text(osgNew osgText::TextureFont(font,80));
+    osgText::Text* text = osgNew  osgText::Text(osgNew osgText::TextureFont(font,85));
  
     text->setText("OpenSceneGraph");
     text->setAlignment(osgText::Text::RIGHT_CENTER);
@@ -299,6 +299,11 @@ osg::Node* createLogo()
     //osg::Node* scene = createShadowedScene(logo_group,backdrop,lightPosition,0.0f,0);
 
     osg::Group* scene = new osg::Group;
+
+    osg::StateSet* stateset = scene->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
+
+
     scene->addChild(logo_group);
     scene->addChild(backdrop);
 

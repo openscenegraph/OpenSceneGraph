@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - setCullSettingsright (C) 1998-2003 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -19,13 +19,29 @@
 
 namespace osg {
 
+// forward declare
+class ArgumentParser;
+class ApplicationUsage;
+
 class SG_EXPORT CullSettings
 {
     public:
 
-        CullSettings() { setDefaults(); }
+        CullSettings()
+        {
+            setDefaults();
+            readEnvironmentalVariables();
+        }
 
-        CullSettings(const CullSettings& cs) { setCullSettings(cs); }
+        CullSettings(ArgumentParser& arguments)
+        {
+            setDefaults();
+            readEnvironmentalVariables();
+            readCommandLine(arguments);
+        }
+
+        CullSettings(const CullSettings& cs);
+
         ~CullSettings() {}
         
         CullSettings& operator = (const CullSettings& settings)
@@ -35,9 +51,16 @@ class SG_EXPORT CullSettings
             return *this;
         }
 
-        void setDefaults();
-        
         void setCullSettings(const CullSettings& settings);
+        
+        void setDefaults();
+
+        /** read the environmental variables.*/
+        void readEnvironmentalVariables();
+
+        /** read the commandline arguments.*/
+        void readCommandLine(ArgumentParser& arguments);
+
 
         /** Switch the creation of Impostors on or off.
           * Setting active to false forces the CullVisitor to use the Impostor

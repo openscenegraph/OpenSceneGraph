@@ -54,11 +54,13 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
 
         DisplaySettings& operator = (const DisplaySettings& vs);
  
+        void setDisplaySettings(const DisplaySettings& vs);
         
         void merge(const DisplaySettings& vs);
 
         void setDefaults();
         
+        /** read the environmental variables.*/
         void readEnvironmentalVariables();
 
         /** read the commandline arguments.*/
@@ -166,7 +168,6 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
     
         virtual ~DisplaySettings();
 
-        void copy(const DisplaySettings& vs);
 
         DisplayType                     _displayType;
         bool                            _stereo;

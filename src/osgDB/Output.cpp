@@ -62,6 +62,7 @@ Output& Output::indent()
 }
 
 
+
 void Output::moveIn()
 {
     _indent += _indentStep;
@@ -72,6 +73,23 @@ void Output::moveOut()
 {
     _indent -= _indentStep;
     if (_indent<0) _indent=0;
+}
+
+std::string Output::wrapString(const std::string& str)
+{
+    std::string newstring;
+    newstring.push_back('"');
+    for(unsigned int i=0;i<str.size();++i)
+    {
+    	if (str[i]=='"')
+	{
+	    newstring.push_back('\\');
+	    newstring.push_back('"');
+	}
+	else newstring.push_back(str[i]);
+    }
+    newstring.push_back('"');
+    return newstring;
 }
 
 bool Output::writeObject(const osg::Object& obj)

@@ -106,7 +106,7 @@ void SlideShowConstructor::addLayer()
 
             osg::StateSet* backgroundStateSet = background->getOrCreateStateSet();
             backgroundStateSet->setAttributeAndModes(
-                        new osg::PolygonOffset(1.0f,1.0f),
+                        new osg::PolygonOffset(1.0f,2.0f),
                         osg::StateAttribute::ON);
 
             backgroundStateSet->setTextureAttributeAndModes(0,

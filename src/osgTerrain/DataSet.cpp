@@ -643,8 +643,10 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
             }
             else
             {
-                std::cout<<"We have no Scale"<<std::endl;
+                scale = destination._dataSet->getVerticalScale();
+                std::cout<<"We have no Scale from file so use DataSet vertical scale of "<<scale<<std::endl;
                 //scale = (xyInDegrees /*&& !destination._dataSet->getConvertFromGeographicToGeocentric()*/) ? 1.0f/111319.0f : 1.0f;
+
             }
             
             std::cout<<"********* getLinearUnits = "<<getLinearUnits(_cs.get())<<std::endl;
@@ -1272,7 +1274,7 @@ void DataSet::DestinationTile::allocate()
     if (computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
     {
 
-        _imagery = new DestinationData;
+        _imagery = new DestinationData(_dataSet);
         _imagery->_cs = _cs;
         _imagery->_extents = _extents;
         _imagery->_geoTransform.set(texture_dx,      0.0,               0.0,0.0,
@@ -1294,7 +1296,7 @@ void DataSet::DestinationTile::allocate()
     double dem_dx, dem_dy;
     if (computeTerrainResolution(dem_numColumns,dem_numRows,dem_dx,dem_dy))
     {
-        _terrain = new DestinationData;
+        _terrain = new DestinationData(_dataSet);
         _terrain->_cs = _cs;
         _terrain->_extents = _extents;
         _terrain->_geoTransform.set(dem_dx,          0.0,               0.0,0.0,

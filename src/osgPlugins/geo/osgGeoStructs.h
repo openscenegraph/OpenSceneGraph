@@ -14,15 +14,18 @@ AUTHOR:			Geoff Michel
 
 
 #ifndef _GEO_STRUCTS_H_
-#define _GEO_STRUCTS_H_
+#define _GEO_STRUCTS_H_ 1
 
+typedef std::vector< geoExtensionDefRec > geoExtensionDefList;
 
 class geoField { // holds one field of data as read from the disk of a GEO file
 public:
 	geoField() {
-		tokenId=TypeId=0; numItems=0;storeSize=0;
+		tokenId=TypeId=0; numItems=0;storeSize=0; storage=NULL;
 	}
-
+	void init() {
+		tokenId=TypeId=0; numItems=0;storeSize=0; storage=NULL;
+	}
 	unsigned char *readStorage(std::ifstream &fin, const unsigned sz) {
 		unsigned char *st=new unsigned char[numItems*sz];
 		storeSize=sz;
@@ -129,22 +132,8 @@ public:
 			break;
 		}
 	}
-	void readfile(std::ifstream &fin) { 
-		unsigned char tokid, type;
-		unsigned short nits;
-		if (!fin.eof()) {
-			fin.read((char *)&tokid,1);fin.read((char *)&type,1);
-			fin.read((char *)&nits,sizeof(unsigned short));
-			if (TypeId == GEO_DB_EXTENDED_FIELD) {
-				fin.read((char *)&tokenId,sizeof(tokenId));fin.read((char *)&TypeId,sizeof(TypeId));
-				fin.read((char *)&numItems,sizeof(unsigned int));
-			} else {
-				tokenId=tokid; TypeId=type;
-				numItems=nits;
-			}
-			storageRead(fin); // allocate & fill the storage
-		}
-	}
+	void readfile(std::ifstream &fin, const uint id); // is part of a record id 
+	void parseExt(std::ifstream &fin) const; // Feb 2003 parse node extension fields
 	void writefile(std::ofstream &fout) { // write binary file
 		if (numItems<32767 && tokenId<256) {
 			unsigned char tokid=tokenId, type=TypeId;
@@ -216,6 +205,9 @@ public:
 				<< " num its " << gf.numItems << " size " << gf.storeSize << std::endl;
 			if (gf.TypeId==DB_CHAR) output.indent();
 			for (uint i=0; i<gf.numItems; i++) {
+				if (gf.storage==NULL) {
+					output.indent() << "No storage" << std::endl;
+				} else {
 				int j,k;
 				union {
 					unsigned char *uch;
@@ -229,129 +221,130 @@ public:
 					unsigned long *uln;
 					double *dbl;
 				} st;
-				st.uch=gf.storage+i*gf.storeSize;
-				switch (gf.TypeId) {
-				case DB_CHAR:
-					if (st.ch[0]) output << st.ch[0];
-					break;
-				case DB_SHORT:
-					output.indent() << st.sh[0] << std::endl;
-					break;
-				case DB_INT:
-					output.indent() << gf.getInt() << std::endl;
-					break;
-				case DB_FLOAT:
-					output.indent() << gf.getFloat() << std::endl;
-					break;
-				case DB_LONG:
-					output.indent() << st.ln[0] << std::endl;
-					break;
-				case DB_ULONG:
-					output.indent() << st.uln[0] << std::endl;
-					break;
-				case DB_DOUBLE:
-					output.indent() << st.dbl[0] << std::endl;
-					break;
-				case DB_VEC2F:
-					output.indent() << st.ft[0] << " " << st.ft[1];
-					output << std::endl;
-					break;
-				case DB_VEC3F:
-					output.indent();
-					for (j=0; j<3; j++) output << st.ft[j] << " ";
-					output << std::endl;
-					break;
-				case DB_VEC4F:
-					output.indent();
-					for (j=0; j<4; j++) output << st.ft[j] << " ";
-					output << std::endl;
-					break;
-				case DB_VEC16F:
-					for (j=0; j<4; j++) {
-						output.indent();
-						for (k=0; k<4; k++) output << st.ft[j*4+k] << " ";
+					st.uch=gf.storage+i*gf.storeSize;
+					switch (gf.TypeId) {
+					case DB_CHAR:
+						if (st.ch[0]) output << st.ch[0];
+						break;
+					case DB_SHORT:
+						output.indent() << st.sh[0] << std::endl;
+						break;
+					case DB_INT:
+						output.indent() << gf.getInt() << std::endl;
+						break;
+					case DB_FLOAT:
+						output.indent() << gf.getFloat() << std::endl;
+						break;
+					case DB_LONG:
+						output.indent() << st.ln[0] << std::endl;
+						break;
+					case DB_ULONG:
+						output.indent() << st.uln[0] << std::endl;
+						break;
+					case DB_DOUBLE:
+						output.indent() << st.dbl[0] << std::endl;
+						break;
+					case DB_VEC2F:
+						output.indent() << st.ft[0] << " " << st.ft[1];
 						output << std::endl;
-					}
-					break;
-				case DB_VEC2I:
-					output.indent() << st.in[0] << " " << st.in[1] << std::endl;
-					break;
-				case DB_VEC3I:
-					output.indent();
-					for ( j=0; j<3; j++) output << " " << st.in[j];
-					output << std::endl;
-					break;
-				case DB_VEC4I:
-					output.indent();
-					for ( j=0; j<4; j++) output << st.in[j] << " ";
-					output << std::endl;
-					break;
-				case DB_VEC2D:
-					output.indent();
-					for ( j=0; j<2; j++) output << st.dbl[j] << " ";
-					output << std::endl;
-					break;
-				case DB_VEC3D:
-					output.indent();
-					for ( j=0; j<3; j++) output << st.dbl[j] << " ";
-					output << std::endl;
-					break;
-				case DB_VEC4D:
-					output.indent();
-					for ( j=0; j<4; j++) output << st.dbl[j] << " ";
-					output << std::endl;
-					break;
-				case DB_VEC16D:
-					for (j=0; j<4; j++) {
+						break;
+					case DB_VEC3F:
 						output.indent();
-						for (k=0; k<4; k++) output << st.dbl[j*4+k] << " ";
+						for (j=0; j<3; j++) output << st.ft[j] << " ";
 						output << std::endl;
+						break;
+					case DB_VEC4F:
+						output.indent();
+						for (j=0; j<4; j++) output << st.ft[j] << " ";
+						output << std::endl;
+						break;
+					case DB_VEC16F:
+						for (j=0; j<4; j++) {
+							output.indent();
+							for (k=0; k<4; k++) output << st.ft[j*4+k] << " ";
+							output << std::endl;
+						}
+						break;
+					case DB_VEC2I:
+						output.indent() << st.in[0] << " " << st.in[1] << std::endl;
+						break;
+					case DB_VEC3I:
+						output.indent();
+						for ( j=0; j<3; j++) output << " " << st.in[j];
+						output << std::endl;
+						break;
+					case DB_VEC4I:
+						output.indent();
+						for ( j=0; j<4; j++) output << st.in[j] << " ";
+						output << std::endl;
+						break;
+					case DB_VEC2D:
+						output.indent();
+						for ( j=0; j<2; j++) output << st.dbl[j] << " ";
+						output << std::endl;
+						break;
+					case DB_VEC3D:
+						output.indent();
+						for ( j=0; j<3; j++) output << st.dbl[j] << " ";
+						output << std::endl;
+						break;
+					case DB_VEC4D:
+						output.indent();
+						for ( j=0; j<4; j++) output << st.dbl[j] << " ";
+						output << std::endl;
+						break;
+					case DB_VEC16D:
+						for (j=0; j<4; j++) {
+							output.indent();
+							for (k=0; k<4; k++) output << st.dbl[j*4+k] << " ";
+							output << std::endl;
+						}
+						break;
+					case DB_VRTX_STRUCT:
+						output.indent() << st.ch[0] << std::endl;
+						break;
+					case DB_UINT:
+						output.indent() << st.uin[0] << std::endl;
+						break;
+					case DB_USHORT:
+						output.indent() << st.ush[0] << std::endl;
+						break;
+					case DB_UCHAR:
+						output.indent() << (int)st.ch[0] << std::endl;
+						break;
+					case DB_EXT_STRUCT:
+						output.indent() << st.ch[0] << std::endl;
+						break;
+					case DB_SHORT_WITH_PADDING:
+						output.indent() << st.ch[0] << std::endl;
+						break;
+					case DB_CHAR_WITH_PADDING:
+						output.indent() << st.ch[0] << std::endl;
+						break;
+					case DB_USHORT_WITH_PADDING:
+						output.indent() << st.ch[0] << std::endl;
+						break;
+					case DB_UCHAR_WITH_PADDING:
+						output.indent() << (int)st.ch[0] << std::endl;
+						break;
+					case DB_BOOL_WITH_PADDING:
+						output.indent() << (gf.getBool()?"True":"False") << std::endl;
+						break;
+					case DB_EXTENDED_FIELD_STRUCT:
+						output.indent() << st.ch[0] << std::endl;
+						break;
+					case DB_VEC4UC:
+						output.indent();
+						for ( j=0; j<4; j++) output << (int)st.uch[j] << " ";
+						output << std::endl;
+						break;
+					case DB_DISCRETE_MAPPING_STRUCT:
+						output.indent() << st.ch[i] << std::endl;
+						break;
+					case DB_BITFLAGS:
+						output.indent() << st.ch[i] << std::endl;
+						break;
 					}
-					break;
-				case DB_VRTX_STRUCT:
-					output.indent() << st.ch[0] << std::endl;
-					break;
-				case DB_UINT:
-					output.indent() << st.uin[0] << std::endl;
-					break;
-				case DB_USHORT:
-					output.indent() << st.ush[0] << std::endl;
-					break;
-				case DB_UCHAR:
-					output.indent() << (int)st.ch[0] << std::endl;
-					break;
-				case DB_EXT_STRUCT:
-					output.indent() << st.ch[0] << std::endl;
-					break;
-				case DB_SHORT_WITH_PADDING:
-					output.indent() << st.ch[0] << std::endl;
-					break;
-				case DB_CHAR_WITH_PADDING:
-					output.indent() << st.ch[0] << std::endl;
-					break;
-				case DB_USHORT_WITH_PADDING:
-					output.indent() << st.ch[0] << std::endl;
-					break;
-				case DB_UCHAR_WITH_PADDING:
-					output.indent() << (int)st.ch[0] << std::endl;
-					break;
-				case DB_BOOL_WITH_PADDING:
-					output.indent() << (gf.getBool()?"True":"False") << std::endl;
-					break;
-				case DB_EXTENDED_FIELD_STRUCT:
-					output.indent() << st.ch[0] << std::endl;
-					break;
-				case DB_VEC4UC:
-					output.indent();
-					for ( j=0; j<4; j++) output << (int)st.uch[j] << " ";
-					output << std::endl;
-					break;
-				case DB_DISCRETE_MAPPING_STRUCT:
-					output.indent() << st.ch[i] << std::endl;
-					break;
-				case DB_BITFLAGS:
-					output.indent() << st.ch[i] << std::endl;
-					break;
 				}
 			}
 		}
@@ -456,7 +449,8 @@ public:
 			} else { // get the fields
 				geoField gf;
 				do {
-					gf.readfile(fin);
+					gf.init();
+					gf.readfile(fin, id);
 //					if (id == DB_DSK_NORMAL_POOL && gf.getToken()==GEO_DB_NORMAL_POOL_VALUES) {
 						// uncompress the normals
 //						gf.uncompress();

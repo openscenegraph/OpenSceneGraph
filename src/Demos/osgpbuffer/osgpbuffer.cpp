@@ -215,7 +215,7 @@ class MyGeometryCallback :
             _yAxis(y),
             _zAxis(z) {}
     
-        virtual void app(osg::NodeVisitor* nv,osg::Drawable* drawable)
+        virtual void update(osg::NodeVisitor* nv,osg::Drawable* drawable)
         {
             const osg::FrameStamp* fs = nv->getFrameStamp();
             double referenceTime = fs->getReferenceTime();

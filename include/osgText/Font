@@ -14,6 +14,8 @@
 #ifndef OSGTEXT_FONT
 #define OSGTEXT_FONT 1
 
+#include <string>
+
 #include <osg/Vec2>
 #include <osg/Image>
 #include <osg/Texture2D>
@@ -22,8 +24,6 @@
 #include <osg/TexEnv>
 
 #include <osgText/Export>
-
-#include <string>
 
 namespace osgText {
 

@@ -12,11 +12,13 @@
 */
 
 
-#include <osg/GL>
+#include <vector>
+#include <osgText/Text>
+
 #include <osg/Math>
+#include <osg/GL>
 #include <osgUtil/CullVisitor>
 #include <osgDB/ReadFile>
-#include <osgText/Text>
 
 #include "DefaultFont.h"
 

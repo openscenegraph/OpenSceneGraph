@@ -147,7 +147,7 @@ inline void EllipsoidModel::convertLatLongHeightToXYZ(double latitude, double lo
     double N = _radiusEquator / sqrt( 1.0 - _eccentricitySquared*sin_latitude*sin_latitude);
     X = (N+height)*cos_latitude*cos(longitude);
     Y = (N+height)*cos_latitude*sin(longitude);
-    Z = (N*(1-_eccentricitySquared)+height)*sin(latitude);
+    Z = (N*(1-_eccentricitySquared)+height)*sin_latitude;
 }
 
 

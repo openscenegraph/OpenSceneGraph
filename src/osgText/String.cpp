@@ -1,7 +1,7 @@
 #include <osgText/String>
 
-#include <osg/Math>
 #include <osg/Notify>
+#include <osg/Math>
 
 using namespace osgText;
 

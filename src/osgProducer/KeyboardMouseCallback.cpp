@@ -1,7 +1,7 @@
+#include <osgProducer/KeyboardMouseCallback>
+
 #include <osg/Math>
 #include <osg/Notify>
-
-#include <osgProducer/KeyboardMouseCallback>
 
 #include <float.h>
 

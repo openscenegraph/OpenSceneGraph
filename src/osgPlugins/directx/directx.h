@@ -24,11 +24,11 @@
 #ifndef _DIRECTX_H_
 #define _DIRECTX_H_
 
-#include <osg/Math>
-
 #include <string>
 #include <vector>
 #include <fstream>
+
+#include <osg/Math>
 
 namespace DX {
 

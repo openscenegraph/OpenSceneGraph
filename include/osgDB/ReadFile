@@ -14,14 +14,14 @@
 #ifndef OSGDB_READFILE
 #define OSGDB_READFILE 1
 
+#include <string>
+
 #include <osg/Node>
 #include <osg/Image>
 #include <osg/ArgumentParser>
 
 #include <osgDB/Export>
 #include <osgDB/Registry>
-
-#include <string>
 
 namespace osgDB {
 

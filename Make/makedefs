@@ -197,17 +197,24 @@ ifeq ($(OS),SunOS)
     PNG_LIBS          = /usr/local/lib/libpng.a /usr/local/lib/libz.a
     FREETYPE_LIB      = /usr/local/lib/libfreetype.a
   endif 
-    DYNAMICLIBRARYLIB = -ldl
-    OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
-    GL_LIBS           = -lGLU -lGL 
-    X_INC             = -I/usr/X11R6/include
-    X_LIBS            = -lXext -lXmu -lXi -lX11 
-    SOCKET_LIBS       = -lsocket -lnsl
-    INSTBINCMD        = cp
-    INSTDEVCMD        = cp
-    INST_LOCATION     = /opt/OpenSceneGraph
-    MAKEDIST          = $(TOPDIR)/Make/makepkg
-    OTHER_LIBS        = -lOpenThreads
+
+  DYNAMICLIBRARYLIB = -ldl
+  OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
+  GL_LIBS           = -lGLU -lGL 
+  X_INC             = -I/usr/X11R6/include
+  X_LIBS            = -lXext -lXmu -lXi -lX11 
+  SOCKET_LIBS       = -lsocket -lnsl
+  INSTBINCMD        = cp
+  INSTDEVCMD        = cp
+  INST_LOCATION     = /opt/OpenSceneGraph
+  MAKEDIST          = $(TOPDIR)/Make/makepkg
+  OTHER_LIBS        = -lOpenThreads
+
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
+
+
 endif
 
 #### IRIX Specific definitions
@@ -290,6 +297,11 @@ ifeq ($(OS),IRIX)
 	GIF_LIBS          = -lungif
 	MAKEDIST          = $(TOPDIR)/Make/makeirixdist
 
+        GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+        GDAL_LIBS         = `gdal-config --dep-libs`
+        GDAL_LIBS         += `gdal-config --libs`
+
+
 endif
 
 #### Linux specific definitions
@@ -368,6 +380,10 @@ ifeq ($(OS),Linux)
     OTHER_LIBS += -lfnccheck
   endif
 
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
+
 endif
 
 #### FreeBSD specific definitions
@@ -395,6 +411,11 @@ ifeq ($(OS),FreeBSD)
   JPEG_LIBS         = -ljpeg
   TIFF_LIB          = -ltiff
   GIF_LIBS          = -lungif
+
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
+
 endif
 
 #### MacOS X specific definitions
@@ -441,6 +462,10 @@ ifeq ($(OS),Darwin)
   GIF_LIBS        = -lungif
   TIFF_LIBS       = -ltiff -lz -ljpeg
 
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
+
 endif
 
 #### Cygwin specific definitions
@@ -451,9 +476,9 @@ ifeq ($(OS),CYGWIN)
   DEF               += -DWIN32 -W -Wall -DNOMINMAX
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
-  SHARED            = -shared\
-                        -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a 
-                        -Wl,--export-all-symbols
+  SHARED            = -shared \
+                      -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a \
+                      -Wl,--export-all-symbols
 
   EXE_EXT           =.exe
   ARCH              = 
@@ -471,7 +496,11 @@ ifeq ($(OS),CYGWIN)
   JPEG_LIBS         = -ljpeg
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
-  FREETYPE_LIB      = -lfreetype
+  FREETYPE_LIB      = `freetype-config --libs`
+
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
 
   LIBINST    = bin
   PLUGININST = bin/$(OS)$(ARCH)
@@ -495,12 +524,13 @@ endif
 
 #### Mingw specific definitions
 ifeq ($(OS),MINGW)
-  C++               = c++ -mthreads
+  C++               = c++ -mthreads 
+# -fomit-frame-pointer -march=pentium3 -msse -mmmx -mfpmath=sse
   DEPARG            = -M
   INC               += 
   DEF               += -DWIN32 -Wall
 # -W
-  OPTF              = -O2 
+  OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared -mthreads \
                       -Wl,--out-implib,$(TOPDIR)/lib/$(OS)/lib$(TARGET_BASENAME).dll.a \
@@ -523,6 +553,7 @@ ifeq ($(OS),MINGW)
   GIF_LIBS          = -lungif
   TIFF_LIB          = -ltiff -lz -ljpeg
   FREETYPE_LIB      = -lfreetype
+  GDAL_LIB          =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
 
   LIBXML2_INCLUDE = -I/usr/mingw/include/libxml2
 
@@ -591,6 +622,10 @@ endif
   TIFF_LIB          = -L/opt/tiff-3.5/lib -ltiff
   GIF_INCLUDE		= -I/opt/libungif/include
   GIF_LIBS          = -L/opt/libungif/lib -lungif
+
+  GDAL_INCLUDES     = -I`gdal-config --prefix`/include
+  GDAL_LIBS         = `gdal-config --dep-libs`
+  GDAL_LIBS         += `gdal-config --libs`
 
 endif
 

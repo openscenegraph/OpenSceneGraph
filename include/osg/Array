@@ -14,14 +14,15 @@
 #ifndef OSG_ARRAY
 #define OSG_ARRAY 1
 
-#include <osg/Object>
-#include <osg/GL>
+#include <vector>
+
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/UByte4>
 
-#include <vector>
+#include <osg/Object>
+#include <osg/GL>
 
 namespace osg {
 

@@ -8,13 +8,13 @@
 
 
 /* includes */
+#include "glm.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <osg/Math>
 #include <stdlib.h>
-#include "glm.h"
 
 #include <osg/Math>
 

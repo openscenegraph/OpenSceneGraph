@@ -4,15 +4,10 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         ReaderWriterGDAL.cpp\
 
-ifneq ("$(GDAL_INCLUDES)","")
+
 INC += $(GDAL_INCLUDES)
-endif
 
-ifneq ("$(GDAL_LIB_DIR)","")
-LDFLAGS += -L$(GDAL_LIB_DIR)
-endif
-
-LIBS  += $(OSG_LIBS) -lgdal $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) $(GDAL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = gdal
 

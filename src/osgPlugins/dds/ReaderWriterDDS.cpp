@@ -111,7 +111,7 @@ typedef struct _DDSURFACEDESC2
 } DDSURFACEDESC2; 
 
 #define DDPF_ALPHAPIXELS        0x00000001l
-#define DDPF_FOURCC                0x00000004l
+#define DDPF_FOURCC             0x00000004l
 #define DDPF_RGB                0x00000040l
 
 #ifndef MAKEFOURCC
@@ -132,6 +132,8 @@ typedef struct _DDSURFACEDESC2
 osg::Image* ReadDDSFile(const char *filename)
 {
     osg::Image* osgImage = new osg::Image();    
+
+    osgImage->setFileName(filename);
 
     DDSURFACEDESC2 ddsd;
 
@@ -192,11 +194,20 @@ osg::Image* ReadDDSFile(const char *filename)
     // Compressed formats.
     else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
     {
+        bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
         switch(ddsd.ddpfPixelFormat.dwFourCC)
         {
             case FOURCC_DXT1:
-                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                if (usingAlpha)
+                {
+                    internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                    pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                }
+                else
+                {
+                    internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                    pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                }
                 break;
             case FOURCC_DXT3:
                 internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
@@ -230,8 +241,26 @@ osg::Image* ReadDDSFile(const char *filename)
     {
         // Now set mipmap data (offsets into image raw data).
         osg::Image::MipmapDataType mipmaps;
-        // Number of offsets in osg is one less than num_mipmaps
-        // because it's assumed that first offset is 0.
+
+        //This is to complete mipmap sequence until level Nx1
+
+        //debugging messages        
+        float power2_s = logf((float)s)/logf((float)2);
+        float power2_t = logf((float)t)/logf((float)2);
+        
+        osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.dwMipMapCount = "<<ddsd.dwMipMapCount<<std::endl;
+        osg::notify(osg::INFO) << "ReadDDSFile info : s = "<<s<<std::endl;
+        osg::notify(osg::INFO) << "ReadDDSFile info : t = "<<t<<std::endl;
+        osg::notify(osg::INFO) << "ReadDDSFile info : power2_s="<<power2_s<<std::endl;
+        osg::notify(osg::INFO) << "ReadDDSFile info : power2_t="<<power2_t<<std::endl;
+        
+        
+//Alberto's fix, which I can't quite figure out why its needed..
+//         int prop = (int)(s>=t ? (s/t) : (t/s));
+//         prop = (int)(log(prop)/log(2));
+//         mipmaps.resize(ddsd.dwMipMapCount+prop);
+        
+
         mipmaps.resize(ddsd.dwMipMapCount-1);
 
         // Handle compressed mipmaps.

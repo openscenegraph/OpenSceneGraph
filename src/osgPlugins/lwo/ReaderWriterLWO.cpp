@@ -136,13 +136,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
     }
     
     MaterialToGeometryCollectionMap::iterator itr;
-    for(itr=mtgcm.begin();
-        itr!=mtgcm.end();
-        ++itr)
+    for(itr=mtgcm.begin(); itr!=mtgcm.end(); ++itr)
     {
         GeometryCollection& gc = itr->second;
 
-        if (gc._numPrimitives)        
+        if (gc._numPrimitives)
         {
             lwMaterial& lw_material = lw->material[itr->first];
 
@@ -165,17 +163,31 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
             // set up texture if needed.
             if (gc._numPrimitivesWithTexCoords==gc._numPrimitives)
             {
-                if (strlen(lw_material.name)!=0)
+                if (lw_material.ctex.flags && strlen(lw_material.ctex.name)!=0)
                 {
-                    osg::Image* image = osgDB::readImageFile(lw_material.name);
+                    osg::notify(osg::INFO) << "ctex " << lw_material.ctex.name << std::endl;
+                    osg::Image* image = osgDB::readImageFile(lw_material.ctex.name);
                     if (image)
                     {
                         // create state
                         osg::StateSet* stateset = osgNew osg::StateSet;
 
+                        // create texture
                         osg::Texture2D* texture = osgNew osg::Texture2D;
                         texture->setImage(image);
-                        
+
+                        // texture wrap mode
+                        static osg::Texture::WrapMode mode[] = {
+                            osg::Texture::CLAMP,
+                            osg::Texture::CLAMP,
+                            osg::Texture::REPEAT,
+                            osg::Texture::MIRROR
+                        };
+                        texture->setWrap(osg::Texture::WRAP_S,
+                                         mode[lw_material.ctex.u_wrap]);
+                        texture->setWrap(osg::Texture::WRAP_T,
+                                         mode[lw_material.ctex.v_wrap]);
+
                         stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
                         gc._texturesActive=true;
                         

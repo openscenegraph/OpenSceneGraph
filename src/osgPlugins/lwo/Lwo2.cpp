@@ -64,12 +64,12 @@ Lwo2::~Lwo2()
 bool 
 Lwo2::ReadFile( const string& filename )
 {
-  notify(INFO)  << "Opening file: " << filename << endl;
+  notify(INFO)  << "Opening file: " << filename << std::endl;
 
   _fin.open(filename.c_str(), ios::in | ios::binary );
   if (!_fin.is_open())
     {
-      notify(NOTICE) << "Can't open file '" << filename << "'" << endl;
+      notify(NOTICE) << "Can't open file '" << filename << "'" << std::endl;
       return false;
     }
 
@@ -77,30 +77,30 @@ Lwo2::ReadFile( const string& filename )
   // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/eaiff85.html
   if (_read_long() != tag_FORM) 
     {
-      notify(INFO) << "File '" << filename << "' is not IFF format file." << endl;
+      notify(INFO) << "File '" << filename << "' is not IFF format file." << std::endl;
       _fin.close();
       return false;
     }
   else 
     {
-      notify(INFO) << "Detected EA-IFF85 format" << endl;
+      notify(INFO) << "Detected EA-IFF85 format" << std::endl;
     }
 
   unsigned long form_size = _read_long();
-  notify(DEBUG_INFO) << "Form size: " << form_size << endl;
+  notify(DEBUG_INFO) << "Form size: " << form_size << std::endl;
 
   // checking LWO2 format 
   // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/lwo2.html
   if (_read_long() != tag_LWO2) 
     {
       unsigned long make_id(const char*);
-      notify(DEBUG_INFO) << "File '" << filename << "' is not LWO2 format file." << endl;
+      notify(DEBUG_INFO) << "File '" << filename << "' is not LWO2 format file." << std::endl;
       _fin.close();
       return false;
     }
   else 
     {
-      notify(INFO) << "Detected LWO2 format" << endl;
+      notify(INFO) << "Detected LWO2 format" << std::endl;
     }
 
   _geode = osgNew osg::Geode();
@@ -229,7 +229,7 @@ Lwo2::_print_tag(unsigned int tag, unsigned int size) {
              << char(tag >>  8) 
              << char(tag) 
              << " size " << size << " bytes" 
-             << endl;
+             << std::endl;
 }
 
 // print 4-char type
@@ -240,7 +240,7 @@ Lwo2::_print_type(unsigned int type) {
              << char(type >> 16) 
              << char(type >>  8) 
              << char(type) 
-             << endl;
+             << std::endl;
 }
 
 // read TAGS info
@@ -255,7 +255,7 @@ Lwo2::_read_tag_strings(unsigned long size)
       size -= name.length() + name.length() % 2; 
       _tags.push_back(name);
 
-      notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
+      notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
     }
 }
 
@@ -298,7 +298,7 @@ void
 Lwo2::_read_points(unsigned long size) 
 {
   int count = size / 12;
-  notify(DEBUG_INFO) << "  count \t" << count << endl;
+  notify(DEBUG_INFO) << "  count \t" << count << std::endl;
 
   while (count--)
     {
@@ -342,7 +342,7 @@ Lwo2::_read_polygons(unsigned long size)
     {
   
       // not recognized yet
-      notify(DEBUG_INFO) << "  skipping..." << endl;
+      notify(DEBUG_INFO) << "  skipping..." << std::endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
 }
@@ -360,12 +360,12 @@ Lwo2::_read_vertex_mapping(unsigned long size)
   short dimension = _read_short();
   size -= 2;
 
-  notify(DEBUG_INFO) << "  dimension \t" << dimension << endl;
+  notify(DEBUG_INFO) << "  dimension \t" << dimension << std::endl;
 
   string name;
   _read_string(name);
   size -= name.length() + name.length() % 2; 
-  notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
+  notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
 
   if (type == tag_TXUV && dimension == 2) 
     {
@@ -387,7 +387,7 @@ Lwo2::_read_vertex_mapping(unsigned long size)
     {
   
       // not recognized yet
-      notify(DEBUG_INFO) << "  skipping..." << endl;
+      notify(DEBUG_INFO) << "  skipping..." << std::endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
      
@@ -406,12 +406,12 @@ Lwo2::_read_polygons_mapping(unsigned long size)
   short dimension = _read_short();
   size -= 2;
 
-  notify(DEBUG_INFO) << "  dimension \t" << dimension << endl;
+  notify(DEBUG_INFO) << "  dimension \t" << dimension << std::endl;
 
   string name;
   _read_string(name);
   size -= name.length() + name.length() % 2; 
-  notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
+  notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
 
   if (type == tag_TXUV && dimension == 2) 
     {
@@ -438,7 +438,7 @@ Lwo2::_read_polygons_mapping(unsigned long size)
     {
   
       // not recognized yet
-      notify(DEBUG_INFO) << "  skipping..." << endl;
+      notify(DEBUG_INFO) << "  skipping..." << std::endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
      
@@ -473,7 +473,7 @@ Lwo2::_read_polygon_tag_mapping(unsigned long size)
     {
   
       // not recognized yet
-      notify(DEBUG_INFO) << "  skipping..." << endl;
+      notify(DEBUG_INFO) << "  skipping..." << std::endl;
       _fin.seekg(size + size % 2, ios::cur);
     }
 }
@@ -485,7 +485,7 @@ Lwo2::_read_image_definition(unsigned long size)
 {
   unsigned int index = _read_long();
   size -= 4;
-  notify(DEBUG_INFO) << "  index  \t" << index << endl;
+  notify(DEBUG_INFO) << "  index  \t" << index << std::endl;
 
   unsigned int type;
   while (size > 0)
@@ -511,7 +511,7 @@ Lwo2::_read_image_definition(unsigned long size)
         
       _images[index] = name.c_str();
         
-      notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << endl;
+      notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
     }
 }
 
@@ -526,12 +526,12 @@ Lwo2::_read_surface(unsigned long size)
 
   _read_string(surface->name);
   size -= surface->name.length() + surface->name.length() % 2; 
-  notify(DEBUG_INFO) << "  name   \t'" << surface->name.c_str() << "'" << endl;
+  notify(DEBUG_INFO) << "  name   \t'" << surface->name.c_str() << "'" << std::endl;
 
   string source;
   _read_string(source);
   size -= source.length() + source.length() % 2; 
-  notify(DEBUG_INFO) << "  source   \t'" << source.c_str() << "'" << endl;
+  notify(DEBUG_INFO) << "  source   \t'" << source.c_str() << "'" << std::endl;
 
   unsigned long current_tag_name;
   unsigned short current_tag_size;
@@ -563,7 +563,7 @@ Lwo2::_read_surface(unsigned long size)
           if (current_tag_name == tag_IMAG)
         {
           surface->image_index = _read_short();
-          notify(DEBUG_INFO) << "    image index\t" << surface->image_index << endl;
+          notify(DEBUG_INFO) << "    image index\t" << surface->image_index << std::endl;
           blok_size -= 2;
         }
           else if (current_tag_name == tag_IMAP) 
@@ -576,7 +576,7 @@ Lwo2::_read_surface(unsigned long size)
           string ordinal;
           _read_string(ordinal);
           imap_size -= ordinal.length() + ordinal.length() % 2; 
-          notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal.c_str() << "'" << endl;
+          notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal.c_str() << "'" << std::endl;
 
           while(imap_size > 0)
             {
@@ -604,7 +604,7 @@ Lwo2::_read_surface(unsigned long size)
         float g = _read_float();
         float b = _read_float();
       surface->color.set(r,g,b);
-          notify(DEBUG_INFO) << "  color   \t" << surface->color << endl;
+          notify(DEBUG_INFO) << "  color   \t" << surface->color << std::endl;
       current_tag_size -= 12;
       size -= 12;
 
@@ -662,9 +662,9 @@ Lwo2::_generate_statesets_from_surfaces()
       // check if exist texture image for this surface
       if (surface->image_index >= 0) 
     {
-      notify(DEBUG_INFO) << "\tloading image '" << _images[surface->image_index] << "'" << endl;
+      notify(DEBUG_INFO) << "\tloading image '" << _images[surface->image_index] << "'" << std::endl;
       Image* image = osgDB::readImageFile(_images[surface->image_index]);
-      notify(DEBUG_INFO) << "\tresult - " << image << endl;
+      notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
       if (image)
         {
           Texture2D* texture = osgNew osg::Texture2D;

@@ -317,7 +317,7 @@ class SG_EXPORT Drawable : public Object
             META_Object(osg,DrawCallback)
 
             /** do customized draw code.*/
-            virtual void drawImplementation(State&,const osg::Drawable*) const {}
+            virtual void drawImplementation(osg::State&,const osg::Drawable*) const {}
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/

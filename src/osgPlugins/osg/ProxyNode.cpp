@@ -100,16 +100,17 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
 
     }
 
-    int num_children;
+    unsigned int num_children;
     if (fr[0].matchWord("num_children") &&
-        fr[1].getInt(num_children))
+        fr[1].getUInt(num_children))
     {
         // could allocate space for children here...
         fr+=2;
         iteratorAdvanced = true;
     }
 
-    for(int i=0; i<num_children; i++)
+    unsigned int i;
+    for(i=0; i<num_children; i++)
     {
         osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)fr.getOptions())->getDatabasePathList();
         fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
@@ -122,7 +123,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         fpl.pop_front();
     }
 
-    for(unsigned int i=0; i<proxyNode.getNumFileNames(); i++)
+    for(i=0; i<proxyNode.getNumFileNames(); i++)
     {
         if(i>=proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
         {

@@ -49,6 +49,7 @@
 #else
 #  include <windows.h>
 #  include <Wininet.h>
+//#  include <errno.h>
 #ifdef _MSC_VER 
 #  pragma comment(lib, "Wininet")
 #endif

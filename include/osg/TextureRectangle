@@ -20,6 +20,10 @@
 #define GL_TEXTURE_RECTANGLE_NV           0x84F5
 #endif
 
+#ifndef GL_TEXTURE_RECTANGLE
+#define GL_TEXTURE_RECTANGLE GL_TEXTURE_RECTANGLE_NV
+#endif
+
 namespace osg {
 
 /** Texture state class which encapsulates OpenGL texture functionality.*/
@@ -42,7 +46,7 @@ class SG_EXPORT TextureRectangle : public Texture
 
         virtual bool getModeUsage(ModeUsage& usage) const
         {
-            usage.usesTextureMode(GL_TEXTURE_RECTANGLE_NV);
+            usage.usesTextureMode(GL_TEXTURE_RECTANGLE);
             return true;
         }
 

@@ -136,7 +136,7 @@ void TextureRectangle::apply(State& state) const
     {
         textureObject->bind();
         if (getTextureParameterDirty(state.getContextID()))
-            applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
+            applyTexParameters(GL_TEXTURE_RECTANGLE, state);
 
         if (_subloadCallback.valid())
         {
@@ -144,7 +144,7 @@ void TextureRectangle::apply(State& state) const
         }
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
-            applyTexImage_subload(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
+            applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
  
             // update the modified tag to show that it is upto date.
             getModifiedTag(contextID) = _image->getModifiedTag();
@@ -153,11 +153,11 @@ void TextureRectangle::apply(State& state) const
     else if (_subloadCallback.valid())
     {
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE_NV);
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
         textureObject->bind();
 
-        applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
+        applyTexParameters(GL_TEXTURE_RECTANGLE, state);
 
         _subloadCallback->load(*this, state);
 
@@ -167,18 +167,18 @@ void TextureRectangle::apply(State& state) const
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        //glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        //glBindTexture(GL_TEXTURE_RECTANGLE, handle);
     }
     else if (_image.valid() && _image->data())
     {
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE_NV);
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
 
         textureObject->bind();
 
-        applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
+        applyTexParameters(GL_TEXTURE_RECTANGLE, state);
      
-        applyTexImage_load(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight);
+        applyTexImage_load(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight);
 
         textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
 
@@ -186,11 +186,11 @@ void TextureRectangle::apply(State& state) const
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        //glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        //glBindTexture(GL_TEXTURE_RECTANGLE, handle);
     }
     else
     {
-        glBindTexture(GL_TEXTURE_RECTANGLE_NV, 0);
+        glBindTexture(GL_TEXTURE_RECTANGLE, 0);
     }
 }
 

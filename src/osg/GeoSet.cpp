@@ -2,7 +2,6 @@
 	#pragma warning( disable : 4786 )
 #endif
 
-#include <stdio.h>
 #include <math.h>
 #include <float.h>
 
@@ -309,7 +308,7 @@ void GeoSet::computeNumVerts() const
 
 const bool GeoSet::computeBound() const
 {
-    if( _coords == (Vec3 *)0 ) return false;
+    if( _iaformat == IA_OFF && _coords == (Vec3 *)0 ) return false;
 
     if( _numcoords == 0 )
     {
@@ -320,21 +319,88 @@ const bool GeoSet::computeBound() const
         return false;
 
     Vec3 center(0.0f,0.0f,0.0f);
+    _bbox.init();
 
     int i;
-    for( i = 0; i < _numcoords; i++ )
+    if( _iaformat == IA_OFF )
     {
-        center += _coords[i];
+        for( i = 0; i < _numcoords; i++ )
+        {
+            center += _coords[i];
+            _bbox.expandBy(_coords[i]);
+        }
+    }
+    else
+    {
+        float *fptr = (float*)_iarray;
+	int stride = 
+	    _iaformat == IA_V2F             ?  2 :
+            _iaformat == IA_V3F             ?  3 :
+            _iaformat == IA_C4UB_V2F        ?  6 :
+            _iaformat == IA_C4UB_V3F        ?  7 :
+            _iaformat == IA_C3F_V3F         ?  6 :
+            _iaformat == IA_N3F_V3F         ?  6 :
+            _iaformat == IA_C4F_N3F_V3F     ? 10 :
+            _iaformat == IA_T2F_V3F         ?  5 : 
+            _iaformat == IA_T4F_V4F         ?  8 :
+            _iaformat == IA_T2F_C4UB_V3F    ?  9 :
+            _iaformat == IA_T2F_C3F_V3F     ?  8 :
+            _iaformat == IA_T2F_N3F_V3F     ?  8 :
+            _iaformat == IA_T2F_C4F_N3F_V3F ? 12 :
+            _iaformat == IA_T4F_C4F_N3F_V4F ? 15 : -1;
+
+	if( stride == -1 ) // INTERNAL ERROR!!
+	     return false; 
+
+	int offset = 
+	    _iaformat == IA_V2F             ?  0 :
+            _iaformat == IA_V3F             ?  0 :
+            _iaformat == IA_C4UB_V2F        ?  4 :
+            _iaformat == IA_C4UB_V3F        ?  4 :
+            _iaformat == IA_C3F_V3F         ?  3 :
+            _iaformat == IA_N3F_V3F         ?  3 :
+            _iaformat == IA_C4F_N3F_V3F     ?  7 :
+            _iaformat == IA_T2F_V3F         ?  2 : 
+            _iaformat == IA_T4F_V4F         ?  3 :
+            _iaformat == IA_T2F_C4UB_V3F    ?  6 :
+            _iaformat == IA_T2F_C3F_V3F     ?  5 :
+            _iaformat == IA_T2F_N3F_V3F     ?  5 :
+            _iaformat == IA_T2F_C4F_N3F_V3F ?  9 :
+            _iaformat == IA_T4F_C4F_N3F_V4F ? 11 : 0;
+
+	fptr += offset;
+
+	int ncomp = 
+	    _iaformat == IA_V2F             ?  2 :
+            _iaformat == IA_V3F             ?  3 :
+            _iaformat == IA_C4UB_V2F        ?  2 :
+            _iaformat == IA_C4UB_V3F        ?  3 :
+            _iaformat == IA_C3F_V3F         ?  3 :
+            _iaformat == IA_N3F_V3F         ?  3 :
+            _iaformat == IA_C4F_N3F_V3F     ?  3 :
+            _iaformat == IA_T2F_V3F         ?  3 : 
+            _iaformat == IA_T4F_V4F         ?  4 :
+            _iaformat == IA_T2F_C4UB_V3F    ?  3 :
+            _iaformat == IA_T2F_C3F_V3F     ?  3 :
+            _iaformat == IA_T2F_N3F_V3F     ?  3 :
+            _iaformat == IA_T2F_C4F_N3F_V3F ?  3 :
+            _iaformat == IA_T4F_C4F_N3F_V4F ?  4 : 0;
+        
+	
+	for( i = 0; i < _numcoords; i++ )
+	{
+	    float x = fptr[0];
+	    float y = fptr[1];
+	    float z = ncomp >= 3 ? fptr[2] : 0.0f;
+	    Vec3  vv(x,y,z);
+	    center += vv;
+	    _bbox.expandBy(vv);
+
+	    fptr += stride;
+	}
     }
 
     center /= (float)_numcoords;
-
-    _bbox.init();
-
-    for( i = 0; i < _numcoords; i++ )
-    {
-        _bbox.expandBy(_coords[i]);
-    }
 
     _bbox_computed=true;
     

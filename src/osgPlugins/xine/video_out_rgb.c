@@ -54,6 +54,8 @@
 
 #define THIS  "video_out_rgb"
 
+static int s_debugMessages = 0; 
+
 
 #define EVAL(exp) \
 {\
@@ -2290,7 +2292,7 @@ CHECK_FRAME:
 		{
 			if(!(told))
 			{
-				fprintf(stderr, THIS ": yuv format is YV12\n");
+				if (s_debugMessages) fprintf(stderr, THIS ": yuv format is YV12\n");
 				told = 1;
 			}
 			
@@ -2314,7 +2316,7 @@ CHECK_FRAME:
 		{
 			if(!(told))
 			{
-				fprintf(stderr, THIS ": yuv format is YUY2\n");
+				if (s_debugMessages) fprintf(stderr, THIS ": yuv format is YUY2\n");
 				told = 1;
 			}
 			
@@ -2334,7 +2336,7 @@ CHECK_FRAME:
 		{
 			if(!(told))
 			{
-				fprintf(stderr, THIS
+				if (s_debugMessages) fprintf(stderr, THIS
 					": unknown yuv format [%#x], assuming YV12\n",
 					frame->format);
 				told = 1;
@@ -2415,7 +2417,7 @@ rgbout_update_visual(vo_driver_t* vo_driver,
 
 	if(!(found))
 	{
-		fprintf(stderr, THIS ": unknown pixel format [%i]\n",
+		if (s_debugMessages) fprintf(stderr, THIS ": unknown pixel format [%i]\n",
 				new_visual->format);
 		goto FAILURE;
 	}
@@ -2600,8 +2602,6 @@ open_plugin(video_driver_class_t* vo_class, const void *vo_visual)
 	rgbout_visual_info_t* visual = (rgbout_visual_info_t*) vo_visual;
 	rgbout_driver_t* this        = NULL;
 
-	fprintf(stderr, "RGBout output plugin (*Experimental*)\n");
-
 	EVAL(vo_class  != NULL);
 	EVAL(vo_visual != NULL);
 	EVAL(visual->callback != NULL);
@@ -2641,7 +2641,7 @@ open_plugin(video_driver_class_t* vo_class, const void *vo_visual)
 
 				if(convert_methods[i].name)
 				{
-					fprintf(stderr, THIS
+					if (s_debugMessages) fprintf(stderr, THIS
 						": using %s acceleration\n",
 						convert_methods[i].name);
 				}
@@ -2658,7 +2658,7 @@ open_plugin(video_driver_class_t* vo_class, const void *vo_visual)
 
 	if(this->levels & ~(PXLEVEL_ALL))
 	{
-		fprintf(stderr, THIS ": wrong levels flag [%#x], assuming PXLEVEL_ALL\n",
+		if (s_debugMessages) fprintf(stderr, THIS ": wrong levels flag [%#x], assuming PXLEVEL_ALL\n",
 				visual->levels);
 		this->levels = PXLEVEL_ALL;
 	}
@@ -2678,7 +2678,7 @@ open_plugin(video_driver_class_t* vo_class, const void *vo_visual)
 
 				if(pack_methods[i].name)
 				{
-					fprintf(stderr, THIS
+					if (s_debugMessages) fprintf(stderr, THIS
 						": packing pixels in %s format\n",
 						pack_methods[i].name);
 				}
@@ -2689,7 +2689,7 @@ open_plugin(video_driver_class_t* vo_class, const void *vo_visual)
 
 		if(!(this->pack))
 		{
-			fprintf(stderr, THIS
+			if (s_debugMessages) fprintf(stderr, THIS
 				": unknown rgb pixel format [%i]\n", visual->format);
 			goto FAILURE;
 		}
@@ -2734,8 +2734,6 @@ FAILURE:
 static void*
 init_class(xine_t* xine, void* vo_visual)
 {
-    fprintf(stderr,"********------- init_class");
-
 	rgbout_class_t* rgb_class = NULL;
 
 	EVAL(xine != NULL);
@@ -2752,8 +2750,6 @@ init_class(xine_t* xine, void* vo_visual)
 	return(rgb_class);
 
 FAILURE:
-    fprintf(stderr,"******************** init_class");
-
 	release(rgb_class);
 	return(NULL);
 }
@@ -2776,8 +2772,6 @@ plugin_info_t xine_plugin_info[] =
 
 void register_rgbout_plugin(xine_t *self)
 {
-     fprintf(stderr,"register_rgbout_plugin...\n");
      xine_register_plugins(self, xine_plugin_info);
-     fprintf(stderr,"done register_rgbout_plugin\n");
 }
 

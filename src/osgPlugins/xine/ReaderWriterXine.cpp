@@ -23,7 +23,14 @@ namespace osgXine
 class XineImageStream : public osg::ImageStream
 {
     public:
-        XineImageStream() {}
+        XineImageStream():
+            _xine(0),
+            _vo(0),
+            _ao(0),
+            _visual(0),
+            _stream(0),
+            _event_queue(0),
+            _ready(false) {}
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         XineImageStream(const XineImageStream& image,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
@@ -61,11 +68,11 @@ class XineImageStream : public osg::ImageStream
             // set up stream
             _stream = xine_stream_new(_xine, _ao, _vo);
 
-            // set up queue
-            // xine_event_queue_t* queue = xine_event_new_queue(stream);
+            _event_queue = xine_event_new_queue(_stream);
+            xine_event_create_listener_thread(_event_queue, event_listener, this);
 
             int result = xine_open(_stream, filename.c_str());
-            osg::notify(osg::NOTICE)<<"XineImageStream::open - xine_open"<<result<<std::endl;
+            osg::notify(osg::INFO)<<"XineImageStream::open - xine_open"<<result<<std::endl;
              
             _ready = false;
 
@@ -85,11 +92,11 @@ class XineImageStream : public osg::ImageStream
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE)<<"XineImageStream::play()"<<std::endl;
+                    osg::notify(osg::INFO)<<"XineImageStream::play()"<<std::endl;
                     xine_play(_stream, 0, 0);
                     while (!_ready)
                     {
-                        osg::notify(osg::NOTICE)<<"waiting..."<<std::endl;
+                        osg::notify(osg::INFO)<<"   waiting..."<<std::endl;
                         usleep(10000);
                     }
                 }
@@ -166,7 +173,7 @@ class XineImageStream : public osg::ImageStream
 
         rgbout_visual_info_t*   _visual;
         xine_stream_t*          _stream;
-        
+        xine_event_queue_t*     _event_queue;
         bool                    _ready;
 
     protected:
@@ -174,41 +181,70 @@ class XineImageStream : public osg::ImageStream
 
         virtual ~XineImageStream()
         {
-            osg::notify(osg::NOTICE)<<"Killing XineImageStream"<<std::endl;
+            osg::notify(osg::INFO)<<"Killing XineImageStream"<<std::endl;
             close();
-            osg::notify(osg::NOTICE)<<"Closed XineImageStream"<<std::endl;
+            osg::notify(osg::INFO)<<"Closed XineImageStream"<<std::endl;
         }
 
         void close()
         {
 
+            osg::notify(osg::INFO)<<"XineImageStream::close()"<<std::endl;
+
             if (_stream)
             {
-                  osg::notify(osg::NOTICE)<<"Closing stream"<<std::endl;
+                  osg::notify(osg::INFO)<<"  Closing stream"<<std::endl;
                 
                   xine_close(_stream);
 
-                  osg::notify(osg::NOTICE)<<"Disposing stream"<<std::endl;
+                  osg::notify(osg::INFO)<<"  Disposing stream"<<std::endl;
 
                   xine_dispose(_stream);
                   _stream = 0;
             }
 
 
+            if (_event_queue)
+            {
+                _event_queue = 0;
+            }
+
             if (_ao)
             {
-               osg::notify(osg::NOTICE)<<"Closing audio driver"<<std::endl;
+               osg::notify(osg::INFO)<<"  Closing audio driver"<<std::endl;
 
                 xine_close_audio_driver(_xine, _ao);  
+                
+                _ao = 0;
             }
             
             if (_vo)
             {
-               osg::notify(osg::NOTICE)<<"Closing video driver"<<std::endl;
+               osg::notify(osg::INFO)<<"  Closing video driver"<<std::endl;
 
                 xine_close_video_driver(_xine, _vo);  
+                
+                _vo = 0;
             }
 
+           osg::notify(osg::INFO)<<"closed XineImageStream "<<std::endl;
+
+        }
+
+
+        static void event_listener(void *user_data, const xine_event_t *event)
+        {
+            XineImageStream* xis = reinterpret_cast<XineImageStream*>(user_data);
+            switch(event->type)
+            {
+            case XINE_EVENT_UI_PLAYBACK_FINISHED:
+                if (xis->getLoopingMode()==LOOPING)
+                {
+                    //rewind();
+                    xine_play(xis->_stream, 0, 0);
+                }
+                break;
+            }
         }
 
 };
@@ -238,7 +274,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
      
         virtual ~ReaderWriterXine()
         {
-            osg::notify(osg::NOTICE)<<"Killing Xine"<<std::endl;
+            osg::notify(osg::INFO)<<"~ReaderWriterXine()"<<std::endl;
         
             if (_xine) xine_exit(_xine);
             _xine = NULL;
@@ -271,7 +307,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
                 if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             }
 
-            osg::notify(osg::NOTICE)<<"ReaderWriterXine::readImage "<< file<< std::endl;
+            osg::notify(osg::INFO)<<"ReaderWriterXine::readImage "<< file<< std::endl;
 
             osg::ref_ptr<osgXine::XineImageStream> imageStream = new osgXine::XineImageStream();
 

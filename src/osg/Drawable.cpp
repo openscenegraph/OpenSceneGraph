@@ -54,7 +54,7 @@ void Drawable::flushDeletedDisplayLists(uint contextID)
         // in one quick pointer change.
         displayListSet.swap(citr->second);
         
-        for(std::DisplayListVector::iterator gitr=displayListSet.begin();
+        for(DisplayListVector::iterator gitr=displayListSet.begin();
                                      gitr!=displayListSet.end();
                                      ++gitr)
         {

@@ -20,6 +20,9 @@
 #ifndef OSGGL2_UNIFORMVALUE
 #define OSGGL2_UNIFORMVALUE 1
 
+#include <vector>
+#include <typeinfo>
+
 #include <osg/ref_ptr>
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -27,9 +30,6 @@
 #include <osg/Referenced>
 
 #include <osgGL2/Extensions>
-
-#include <vector>
-
 
 namespace osgGL2 {
 

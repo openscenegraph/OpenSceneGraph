@@ -45,10 +45,15 @@ bool Switch::addChild( Node *child )
 
 bool Switch::addChild( Node *child, bool value )
 {
+    unsigned int childPosition = _children.size();
     if (Group::addChild(child))
     {
-        if (_children.size()>_values.size()) _values.resize(_children.size(),value);
-        return true;
+        if (_children.size()>_values.size())
+	{
+	    _values.resize(_children.size(),_newChildDefaultValue);
+	    _values[childPosition]=value;
+	}
+	return true;
     }
     return false;
 }

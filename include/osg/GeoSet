@@ -647,7 +647,7 @@ void for_each_triangle(GeoSet& gset,T& op)
                         if (primLength>0)
                         {
                             const Vec3& start = vptr[*(iptr)];
-                            ushort* iend = iptr+primLength;
+                            GLushort* iend = iptr+primLength;
                             ++iptr;
                             for(int j = 2; j < primLength; ++j )
                             {

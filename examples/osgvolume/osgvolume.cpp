@@ -872,6 +872,35 @@ struct ScaleOperator
     inline void rgba(float& r,float& g,float& b,float& a) const { r*= _scale; g*=_scale; b*=_scale; a*=_scale; }
 };
 
+struct RecordRowOperator
+{
+    RecordRowOperator(unsigned int num):_colours(num),_pos(0) {}
+
+    mutable std::vector<osg::Vec4>  _colours;
+    mutable unsigned int            _pos;
+    
+    inline void luminance(float l) const { rgba(l,l,l,1.0f); } 
+    inline void alpha(float a) const { rgba(1.0f,1.0f,1.0f,a); } 
+    inline void luminance_alpha(float l,float a) const { rgba(l,l,l,a);  } 
+    inline void rgb(float r,float g,float b) const { rgba(r,g,b,1.0f); }
+    inline void rgba(float r,float g,float b,float a) const { _colours[_pos++].set(r,g,b,a); }
+};
+
+struct WriteRowOperator
+{
+    WriteRowOperator():_pos(0) {}
+    WriteRowOperator(unsigned int num):_colours(num),_pos(0) {}
+
+    std::vector<osg::Vec4>  _colours;
+    mutable unsigned int    _pos;
+    
+    inline void luminance(float& l) const { l = _colours[_pos++].red(); } 
+    inline void alpha(float& a) const { a = _colours[_pos++].alpha(); } 
+    inline void luminance_alpha(float& l,float& a) const { l = _colours[_pos].red(); a = _colours[_pos++].alpha(); } 
+    inline void rgb(float& r,float& g,float& b) const { r = _colours[_pos].red(); g = _colours[_pos].green(); b = _colours[_pos].blue(); }
+    inline void rgba(float& r,float& g,float& b,float& a) const {  r = _colours[_pos].red(); g = _colours[_pos].green(); b = _colours[_pos].blue(); a = _colours[_pos++].alpha(); }
+};
+
 osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent, int numberOfComponents, const std::string& endian, const std::string& raw_filename)
 {
     std::ifstream fin(raw_filename.c_str());
@@ -968,11 +997,17 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     }
 
     fin.close();
+
+    if (dataType!=GL_UNSIGNED_BYTE)
+    {
+        // need to convert to ubyte
+    }
     
     return image.release();
     
     
 }
+
 
 int main( int argc, char **argv )
 {

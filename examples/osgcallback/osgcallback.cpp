@@ -104,6 +104,20 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
         }
 };
 
+class MyReadFileCallback : public osgDB::Registry::ReadFileCallback
+{
+public:
+    virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, osgDB::Registry::CacheHintOptions useObjectCache)
+    {
+        std::cout<<"before readNode"<<std::endl;
+        // note when calling the Registry to do the read you have to call readNodeImplementation NOT readNode, as this will
+        // cause on infinite recusive loop.
+        osgDB::ReaderWriter::ReadResult result = osgDB::Registry::instance()->readNodeImplementation(fileName,useObjectCache);
+        std::cout<<"after readNode"<<std::endl;
+        return result;
+    }
+};
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -113,6 +127,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of the range of different types of callbacks supported in the OpenSceneGraph.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+   
+   // set the osgDB::Registy the read file callback to catch all requests for reading files.
+   osgDB::Registry::instance()->setReadFileCallback(new MyReadFileCallback());
    
     // initialize the viewer.
     osgProducer::Viewer viewer(arguments);

@@ -137,7 +137,7 @@ Registry::Registry()
     _createNodeFromImage = false;
     _openingLibrary = false;
     
-    _useObjectCacheHint = false;
+    _useObjectCacheHint = CACHE_NONE;
 
     initFilePathLists();
 
@@ -1244,9 +1244,11 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readObject(const std::string& file,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& constFile,CacheHintOptions useObjectCache)
 {
-    if (useObjectCache)
+    std::string file(constFile);
+
+    if (useObjectCache & CACHE_OBJECTS)
     {
         // search for entry in the object cache.
         ObjectCache::iterator oitr=_objectCache.find(file);
@@ -1288,7 +1290,7 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& file,bool useOb
     }
 }
 
-ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1390,10 +1392,9 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 }
 
 
-ReaderWriter::ReadResult Registry::readImage(const std::string& file,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& file,CacheHintOptions useObjectCache)
 {
-
-    if (useObjectCache)
+    if (useObjectCache & CACHE_IMAGES)
     {
         // search for entry in the object cache.
         ObjectCache::iterator oitr=_objectCache.find(file);
@@ -1439,7 +1440,7 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& file,bool useObj
 
 
 
-ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1541,9 +1542,9 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
 }
 
 
-ReaderWriter::ReadResult Registry::readHeightField(const std::string& file,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::string& file,CacheHintOptions useObjectCache)
 {
-    if (useObjectCache)
+    if (useObjectCache & CACHE_HEIGHTFIELDS)
     {
         // search for entry in the object cache.
         ObjectCache::iterator oitr=_objectCache.find(file);
@@ -1589,7 +1590,7 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& file,bool 
 
 
 
-ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightField,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1686,7 +1687,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 
 
     // need to sort out.
-    bool useObjectCache=true;
+    CacheHintOptions useObjectCache = CACHE_ALL;
 
     if (_createNodeFromImage)
     {
@@ -1703,9 +1704,9 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     return results.front();
 }
 
-ReaderWriter::ReadResult Registry::readNode(const std::string& file,bool useObjectCache)
+ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& file,CacheHintOptions useObjectCache)
 {
-    if (useObjectCache)
+    if (useObjectCache & CACHE_NODES)
     {
         // search for entry in the object cache.
         ObjectCache::iterator oitr=_objectCache.find(file);
@@ -1747,7 +1748,7 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& file,bool useObje
     }
 }
 
-ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;

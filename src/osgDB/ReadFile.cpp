@@ -24,7 +24,7 @@
 using namespace osg;
 using namespace osgDB;
 
-Object* osgDB::readObjectFile(const std::string& filename,bool useObjectCache)
+Object* osgDB::readObjectFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,useObjectCache);
     if (rr.validObject()) return rr.takeObject();
@@ -33,7 +33,7 @@ Object* osgDB::readObjectFile(const std::string& filename,bool useObjectCache)
 }
 
 
-Image* osgDB::readImageFile(const std::string& filename,bool useObjectCache)
+Image* osgDB::readImageFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,useObjectCache);
     if (rr.validImage()) return rr.takeImage();
@@ -42,7 +42,7 @@ Image* osgDB::readImageFile(const std::string& filename,bool useObjectCache)
 }
 
 
-HeightField* osgDB::readHeightFieldFile(const std::string& filename,bool useObjectCache)
+HeightField* osgDB::readHeightFieldFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readHeightField(filename,useObjectCache);
     if (rr.validHeightField()) return rr.takeHeightField();
@@ -51,7 +51,7 @@ HeightField* osgDB::readHeightFieldFile(const std::string& filename,bool useObje
 }
 
 
-Node* osgDB::readNodeFile(const std::string& filename,bool useObjectCache)
+Node* osgDB::readNodeFile(const std::string& filename,Registry::CacheHintOptions useObjectCache)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,useObjectCache);
     if (rr.validNode()) return rr.takeNode();
@@ -59,7 +59,7 @@ Node* osgDB::readNodeFile(const std::string& filename,bool useObjectCache)
     return NULL;
 }
 
-Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,bool useObjectCache)
+Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,Registry::CacheHintOptions useObjectCache)
 {
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;
@@ -108,7 +108,7 @@ Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,bool useObjectC
     
 }
 
-Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,bool useObjectCache)
+Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,Registry::CacheHintOptions useObjectCache)
 {
 
     typedef std::vector<osg::Node*> NodeList;

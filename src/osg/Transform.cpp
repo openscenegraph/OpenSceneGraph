@@ -39,6 +39,9 @@ bool Transform::computeBound() const
 
     getLocalToWorldMatrix(l2w,NULL);
 
+    cout << "l2w "<<l2w<<endl;
+    cout << "bound sphere in "<<_bsphere._center<<"  radius " <<_bsphere._radius<<endl;
+
     Vec3 xdash = _bsphere._center;
     xdash.x() += _bsphere._radius;
     xdash = xdash*l2w;
@@ -48,7 +51,7 @@ bool Transform::computeBound() const
     ydash = ydash*l2w;
 
     Vec3 zdash = _bsphere._center;
-    zdash.y() += _bsphere._radius;
+    zdash.z() += _bsphere._radius;
     zdash = zdash*l2w;
 
     _bsphere._center = _bsphere._center*l2w;
@@ -66,6 +69,8 @@ bool Transform::computeBound() const
     if (_bsphere._radius<len_ydash) _bsphere._radius = len_ydash;
     if (_bsphere._radius<len_zdash) _bsphere._radius = len_zdash;
     
+    cout << "bound sphere out "<<_bsphere._center<<"  radius " <<_bsphere._radius<<endl;
+
     return true;
 
 }

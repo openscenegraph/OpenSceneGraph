@@ -86,6 +86,10 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         virtual bool writeNode(const osg::Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
+            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+            if (!acceptsExtension(ext)) return false;
+
+
             osg::notify(osg::INFO)<<   "ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
             initPerformer();
             ConvertToPerformer converter;

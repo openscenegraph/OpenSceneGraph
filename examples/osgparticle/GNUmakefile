@@ -12,7 +12,7 @@ INSTFILES = \
 
 EXEC = osgparticle
 
-INC +=  -I/usr/X11R6/include
+INC +=  $(X_INC)
 
 include $(TOPDIR)/Make/makerules 
 

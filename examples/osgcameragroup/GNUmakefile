@@ -12,7 +12,7 @@ INSTFILES = \
 
 EXEC = osgcameragroup
 
-INC      += -I/usr/X11R6/include 
+INC      += $(X_INC) 
 LDFLAGS  += -L/usr/X11R6/lib
 
 

@@ -31,7 +31,7 @@ namespace osgDB {
 class OSGDB_EXPORT ReaderWriter : public osg::Referenced
 {
     public:
-        virtual ~ReaderWriter() {}
+        virtual ~ReaderWriter(); // {}
         virtual const char* className() = 0;
         virtual bool acceptsExtension(const std::string& /*extension*/) { return false; }
 

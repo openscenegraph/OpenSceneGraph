@@ -82,7 +82,7 @@ class SG_EXPORT Shape : public Object
 
     protected:
     
-    	virtual ~Shape() {}
+    	virtual ~Shape();
 };
 
 // forward declartions of Shape types.
@@ -571,7 +571,7 @@ class SG_EXPORT HeightField : public Shape
 
     protected:
     
-    	~HeightField() {}
+    	virtual ~HeightField();
 
     	unsigned int    _columns,_rows;
 

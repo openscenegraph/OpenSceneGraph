@@ -4,7 +4,7 @@
 // that is used to detail texture
 // Julian Ortiz, June 18th 2003.
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_MSC_VER)
 #pragma warning( disable : 4786 )
 #endif
 

@@ -107,6 +107,10 @@ SOURCE=..\..\src\osgGA\FlightManipulator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgGA\GUIEventAdapter.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgGA\GUIEventHandler.cpp
 # End Source File
 # Begin Source File

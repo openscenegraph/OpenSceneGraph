@@ -224,7 +224,8 @@ public:
     /** force update the drawables used to render the scalar bar.*/
     void update() { createDrawables(); }
 
-private:
+protected:
+    virtual ~ScalarBar();
 
     int _numColors;
     int _numLabels;

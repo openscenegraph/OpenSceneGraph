@@ -1,6 +1,6 @@
 // MeshRecord.cpp
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #pragma warning(disable:4786) // Truncated debug names.
 #endif
 

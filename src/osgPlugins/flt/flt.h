@@ -11,7 +11,7 @@
 #include <iostream>
 #include <assert.h>
 
-#if defined(__CYGWIN__) || defined(__MINGW32__)
+#if defined(_MSC_VER)
 #include <sys/types.h>
 #endif
 

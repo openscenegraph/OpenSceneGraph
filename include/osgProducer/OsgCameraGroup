@@ -135,7 +135,7 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
             virtual void operator()( OsgCameraGroup& cg, OsgSceneHandler& sh, const Producer::RenderSurface & rs) = 0;
             
         protected:
-            virtual ~RealizeCallback() {}
+            virtual ~RealizeCallback(); // {}
         };
 
         /** Set the realize callback to use when once the render surfaces are realized.*/

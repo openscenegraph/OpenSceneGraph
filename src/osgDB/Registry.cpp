@@ -31,6 +31,44 @@
 using namespace osg;
 using namespace osgDB;
 
+class AvailableReaderWriterIterator
+{
+public:
+    AvailableReaderWriterIterator(Registry::ReaderWriterList& rwList):
+        _rwList(rwList) {}
+
+
+    ReaderWriter& operator * () { return *get(); }
+    ReaderWriter* operator -> () { return get(); }
+    
+    bool valid() { return get()!=0; }
+    
+    void operator ++() 
+    {
+        _rwUsed.insert(get());
+    }
+    
+
+protected:
+
+    Registry::ReaderWriterList&     _rwList;
+    std::set<ReaderWriter*>         _rwUsed;
+
+    ReaderWriter* get() 
+    {
+        Registry::ReaderWriterList::iterator itr=_rwList.begin();
+        for(;itr!=_rwList.end();++itr)
+        {
+            if (_rwUsed.find(itr->get())==_rwUsed.end())
+            {
+                return itr->get();
+            }
+        }
+        return 0;
+    }
+
+};
+
 #if 0
     // temporary test of autoregistering, not compiled by default.
     enum Methods
@@ -1111,20 +1149,15 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 //
 ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-    
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());;
-        ReaderWriter::ReadResult rr = (*itr)->readObject(fileName,_options.get());
+        ReaderWriter::ReadResult rr = itr->readObject(fileName,_options.get());
         if (rr.validObject()) return rr;
         else results.push_back(rr);
     }
@@ -1164,16 +1197,11 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& fileName)
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::ReadResult rr = (*itr)->readObject(fileName,_options.get());
-                if (rr.validObject()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::ReadResult rr = itr->readObject(fileName,_options.get());
+            if (rr.validObject()) return rr;
+            else results.push_back(rr);
         }
     }
     
@@ -1232,20 +1260,15 @@ ReaderWriter::ReadResult Registry::readObject(const std::string& file,bool useOb
 
 ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::WriteResult rr = (*itr)->writeObject(obj,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1254,16 +1277,11 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::WriteResult rr = (*itr)->writeObject(obj,fileName,_options.get());
-                if (rr.success()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,_options.get());
+            if (rr.success()) return rr;
+            else results.push_back(rr);
         }
     }
 
@@ -1277,20 +1295,15 @@ ReaderWriter::WriteResult Registry::writeObject(const Object& obj,const std::str
 
 ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::ReadResult rr = (*itr)->readImage(fileName,_options.get());
+        ReaderWriter::ReadResult rr = itr->readImage(fileName,_options.get());
         if (rr.validImage())  return rr;
         else results.push_back(rr);
     }
@@ -1330,16 +1343,11 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& fileName)
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::ReadResult rr = (*itr)->readImage(fileName,_options.get());
-                if (rr.validImage()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::ReadResult rr = itr->readImage(fileName,_options.get());
+            if (rr.validImage()) return rr;
+            else results.push_back(rr);
         }
     }
 
@@ -1403,20 +1411,15 @@ ReaderWriter::ReadResult Registry::readImage(const std::string& file,bool useObj
 
 ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::WriteResult rr = (*itr)->writeImage(image,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1425,16 +1428,11 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::WriteResult rr = (*itr)->writeImage(image,fileName,_options.get());
-                if (rr.success()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,_options.get());
+            if (rr.success()) return rr;
+            else results.push_back(rr);
         }
     }
 
@@ -1448,20 +1446,15 @@ ReaderWriter::WriteResult Registry::writeImage(const Image& image,const std::str
 
 ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::ReadResult rr = (*itr)->readHeightField(fileName,_options.get());
+        ReaderWriter::ReadResult rr = itr->readHeightField(fileName,_options.get());
         if (rr.validHeightField())  return rr;
         else results.push_back(rr);
     }
@@ -1501,16 +1494,11 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& fileName)
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::ReadResult rr = (*itr)->readHeightField(fileName,_options.get());
-                if (rr.validHeightField()) return rr;
-                else  results.push_back(rr);
-            }
+            ReaderWriter::ReadResult rr = itr->readHeightField(fileName,_options.get());
+            if (rr.validHeightField()) return rr;
+            else  results.push_back(rr);
         }
     }
 
@@ -1573,20 +1561,15 @@ ReaderWriter::ReadResult Registry::readHeightField(const std::string& file,bool 
 
 ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightField,const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::WriteResult rr = (*itr)->writeHeightField(HeightField,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1595,16 +1578,11 @@ ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightFi
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::WriteResult rr = (*itr)->writeHeightField(HeightField,fileName,_options.get());
-                if (rr.success()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,_options.get());
+            if (rr.success()) return rr;
+            else results.push_back(rr);
         }
     }
 
@@ -1617,23 +1595,17 @@ ReaderWriter::WriteResult Registry::writeHeightField(const HeightField& HeightFi
 }
 
 
+
 ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
 {
-
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
 
-    // first attempt to load the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::ReadResult rr = (*itr)->readNode(fileName,_options.get());
+        ReaderWriter::ReadResult rr = itr->readNode(fileName,_options.get());
         if (rr.validNode())  return rr;
         else results.push_back(rr);
     }
@@ -1674,16 +1646,11 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& fileName)
     notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::ReadResult rr = (*itr)->readNode(fileName,_options.get());
-                if (rr.validNode()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::ReadResult rr = itr->readNode(fileName,_options.get());
+            if (rr.validNode()) return rr;
+            else results.push_back(rr);
         }
     }
 
@@ -1752,20 +1719,15 @@ ReaderWriter::ReadResult Registry::readNode(const std::string& file,bool useObje
 
 ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string& fileName)
 {
-    // record the existing reader writer.
-    std::set<ReaderWriter*> rwOriginal;
-
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
     Results results;
 
     // first attempt to write the file from existing ReaderWriter's
-    for(ReaderWriterList::iterator itr=_rwList.begin();
-        itr!=_rwList.end();
-        ++itr)
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
     {
-        rwOriginal.insert(itr->get());
-        ReaderWriter::WriteResult rr = (*itr)->writeNode(node,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1774,16 +1736,11 @@ ReaderWriter::WriteResult Registry::writeNode(const Node& node,const std::string
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
     {
-        for(ReaderWriterList::iterator itr=_rwList.begin();
-            itr!=_rwList.end();
-            ++itr)
+        for(;itr.valid();++itr)
         {
-            if (rwOriginal.find(itr->get())==rwOriginal.end())
-            {
-                ReaderWriter::WriteResult rr = (*itr)->writeNode(node,fileName,_options.get());
-                if (rr.success()) return rr;
-                else results.push_back(rr);
-            }
+            ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
+            if (rr.success()) return rr;
+            else results.push_back(rr);
         }
     }
 

@@ -43,7 +43,7 @@ class CameraPacket {
             osg::Vec3 lv = _center-_eye;
             osg::Matrix matrix;
             matrix.makeIdent();
-            matrix.makeRot(angle_offset,_up.x(),_up.y(),_up.z());
+            matrix.makeRotate(angle_offset,_up.x(),_up.y(),_up.z());
             lv = lv*matrix;
         
             camera.setLookAt(_eye,_eye+lv,_up);

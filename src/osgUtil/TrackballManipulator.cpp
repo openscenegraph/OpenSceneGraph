@@ -215,9 +215,9 @@ bool TrackballManipulator::calcMovement()
         trackball(axis,angle,px1,py1,px0,py0);
 
         osg::Matrix mat;
-        mat.makeTrans(-center.x(),-center.y(),-center.z());
+        mat.makeTranslate(-center.x(),-center.y(),-center.z());
         mat *= Matrix::rotate(angle,axis.x(),axis.y(),axis.z());
-        mat *= Matrix::trans(center.x(),center.y(),center.z());
+        mat *= Matrix::translate(center.x(),center.y(),center.z());
 
         _camera->transformLookAt(mat);
 
@@ -237,7 +237,7 @@ bool TrackballManipulator::calcMovement()
         osg::Vec3 dv = uv*(dy*scale)-sv*(dx*scale);
 
         osg::Matrix mat;
-        mat.makeTrans(dv.x(),dv.y(),dv.z());
+        mat.makeTranslate(dv.x(),dv.y(),dv.z());
 
         _camera->transformLookAt(mat);
 
@@ -257,9 +257,9 @@ bool TrackballManipulator::calcMovement()
             osg::Vec3 center = _camera->getCenterPoint();
 
             osg::Matrix mat;
-            mat.makeTrans(-center.x(),-center.y(),-center.z());
+            mat.makeTranslate(-center.x(),-center.y(),-center.z());
             mat *= Matrix::scale(scale,scale,scale);
-            mat *= Matrix::trans(center.x(),center.y(),center.z());
+            mat *= Matrix::translate(center.x(),center.y(),center.z());
 
             _camera->transformLookAt(mat);
 
@@ -273,7 +273,7 @@ bool TrackballManipulator::calcMovement()
             osg::Vec3 dv = _camera->getLookVector()*(dy*scale);
 
             osg::Matrix mat;
-            mat.makeTrans(dv.x(),dv.y(),dv.z());
+            mat.makeTranslate(dv.x(),dv.y(),dv.z());
 
             _camera->transformLookAt(mat);
 

@@ -24,7 +24,7 @@ void OrientationConverter::setRotation( const Vec3 &from, const Vec3 &to )
 
 void OrientationConverter::setTranslation( const Vec3 &trans )
 {
-    T = Matrix::trans(trans);
+    T = Matrix::translate(trans);
     _trans_set = true;
 }
 
@@ -45,9 +45,9 @@ void OrientationConverter::convert( Node &node )
     //    else
     //        - translate back to model's original origin. 
     BoundingSphere bs = node.getBound();
-    Matrix C = Matrix::trans( Vec3(0,0,0) - bs.center() );
+    Matrix C = Matrix::translate( Vec3(0,0,0) - bs.center() );
     if( _trans_set == false )
-        T = Matrix::trans( bs.center() );
+        T = Matrix::translate( bs.center() );
     _cv.setMatrix( C * R * S * T );
 
     node.accept(_cv);

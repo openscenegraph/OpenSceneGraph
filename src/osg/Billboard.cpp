@@ -84,7 +84,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
             {
                 mat.makeIdent();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
-                //mat.makeRot(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
                 float c = ev.y()*inv;
                 float s = ev.x()*inv;
@@ -122,7 +122,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
                     cp /= cp_len;
 
                     float rotation_cp = acosf(dot);
-                    mat.makeRot(inRadians(rotation_cp),cp[0],cp[1],cp[2]);
+                    mat.makeRotate(inRadians(rotation_cp),cp[0],cp[1],cp[2]);
                 }
             }
             break;
@@ -133,7 +133,7 @@ void Billboard::calcRotation(const Vec3& eye_local, const Vec3& pos_local,Matrix
 
 void Billboard::calcTransform(const Vec3& eye_local, const Vec3& pos_local,Matrix& mat) const 
 {
-    //    mat.makeTrans(pos_local[0],pos_local[1],pos_local[2]);
+    //    mat.makeTranslate(pos_local[0],pos_local[1],pos_local[2]);
     //    mat.makeIdent();
     calcRotation(eye_local,pos_local,mat);
 

@@ -1103,9 +1103,9 @@ osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
         // scale position.
         // BJ Don't know if this should be done if version > 12
         osg::Vec3 pos = m.getTrans();
-        m *= osg::Matrix::trans(-pos.x(),-pos.y(),-pos.z());
+        m *= osg::Matrix::translate(-pos.x(),-pos.y(),-pos.z());
         pos *= (float)_unitScale;
-        m *= osg::Matrix::trans(pos);
+        m *= osg::Matrix::translate(pos);
 
         dcs->setMatrix(m);
         osgParent->addChild(dcs);

@@ -199,16 +199,16 @@ class SG_EXPORT Quat
 
 	Not inlined - see the Quat.cpp file for implementation
 	-------------------------------------------------------- */
-	void makeRot ( const float angle, 
+	void makeRotate ( const float angle, 
                        const float x, const float y, const float z );
-	void makeRot ( const float angle, const Vec3& vec );
+	void makeRotate ( const float angle, const Vec3& vec );
 
         /** Make a rotation Quat which will rotate vec1 to vec2.
             Generally take adot product to get the angle between these
             and then use a cross product to get the rotation axis
             Watch out for the two special cases of when the vectors
             are co-incident or opposite in direction.*/
-        void makeRot( const Vec3& vec1, const Vec3& vec2 );
+        void makeRotate( const Vec3& vec1, const Vec3& vec2 );
 
 	/** Return the angle and vector components represented by the quaternion.*/
 	void getRot  ( float& angle, float& x, float& y, float& z ) const;

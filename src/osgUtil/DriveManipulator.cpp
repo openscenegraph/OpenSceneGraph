@@ -408,9 +408,9 @@ bool DriveManipulator::calcMovement()
     float yaw = -inDegrees(dx*0.1f*dt);
 
     osg::Matrix mat;
-    mat.makeTrans(-center.x(),-center.y(),-center.z());
+    mat.makeTranslate(-center.x(),-center.y(),-center.z());
     mat *= Matrix::rotate(yaw,uv.x(),uv.y(),uv.z());
-    mat *= Matrix::trans(center.x(),center.y(),center.z());
+    mat *= Matrix::translate(center.x(),center.y(),center.z());
 
     center = _camera->getEyePoint();
     uv = _camera->getUpVector();

@@ -45,8 +45,8 @@ class MyTransformCallback : public osg::NodeCallback{
                         float delta_angle = _angular_velocity*_timer.delta_s(_orig_t,new_t);
                         
                         osg::Matrix matrix;
-                        matrix.makeRot(delta_angle,1.0f,1.0f,1.0f);
-                        matrix *= osg::Matrix::trans(1.0f,0.0f,0.0f);
+                        matrix.makeRotate(delta_angle,1.0f,1.0f,1.0f);
+                        matrix *= osg::Matrix::translate(1.0f,0.0f,0.0f);
                         matrix *= osg::Matrix::rotate(delta_angle,0.0f,0.0f,1.0f);
                                                 
                         _nodeToOperateOn->setMatrix(matrix);

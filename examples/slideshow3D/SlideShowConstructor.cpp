@@ -14,13 +14,36 @@
 SlideShowConstructor::SlideShowConstructor()
 {
     _slideOrigin.set(0.0f,0.0f,0.0f);
-    _slideWidth = 1280.0f;
-    _slideHeight = 1024.0f;
+    
+    _slideHeight = osg::DisplaySettings::instance()->getScreenHeight();
+
+    _slideWidth = _slideHeight*1280.0f/1024.f;
 
     _backgroundColor.set(0.0f,0.0f,0.0f,1.0f);
     _textColor.set(1.0f,1.0f,1.0f,1.0f);
     _textFont = "fonts/arial.ttf";
 
+}
+
+void SlideShowConstructor::setPresentationAspectRatio(float aspectRatio)
+{
+    _slideWidth = _slideHeight*aspectRatio;
+}
+
+void SlideShowConstructor::setPresentationAspectRatio(const std::string& str)
+{
+    if (str=="Reality Theatre") setPresentationAspectRatio(3.0f);
+    else if (str=="Desktop") setPresentationAspectRatio(1280.0f/1024.0f);
+    else
+    {
+        float ratio = (float)atof(str.c_str());
+        if (ratio!=0.0) setPresentationAspectRatio(1280.0f/1024.0f);
+        else
+        {
+            std::cout<<"Error: presentation aspect ratio incorrect type"<<std::endl;
+            std::cout<<"       valid types are \"Reality Theatre\", \"Desktop\" or a numerical value."<<std::endl;
+        }
+    }
 }
 
 void SlideShowConstructor::createPresentation()
@@ -44,6 +67,17 @@ void SlideShowConstructor::createPresentation()
     _presentationSwitch->setName(std::string("Presentation_")+_presentationName);
     
     _root->addChild(_presentationSwitch.get());
+    
+    osg::Vec3 slideCenter = _slideOrigin + osg::Vec3(_slideWidth*0.5f,0.0f,_slideHeight*0.5f);
+    
+    float distanceToHeightRatio = osg::DisplaySettings::instance()->getScreenDistance()/osg::DisplaySettings::instance()->getScreenHeight();
+    
+    HomePosition* hp = new HomePosition;
+    hp->eye = slideCenter+osg::Vec3(0.0f,-distanceToHeightRatio*_slideHeight,0.0f);
+    hp->center = slideCenter;
+    hp->up.set(0.0f,0.0f,1.0f);
+     
+    _root->setUserData(hp);
     
 }
 
@@ -220,21 +254,81 @@ void SlideShowConstructor::addImage(const std::string& filename,float height)
     
     osg::Vec3 pos = _imageCursor + osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);
 
-    osg::Geometry* backgroundQuad = osg::createTexturedQuadGeometry(pos,
+    osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                                     osg::Vec3(image_width,0.0f,0.0f),
                                                     osg::Vec3(0.0f,0.0f,image_height));
 
-    osg::Geode* background = new osg::Geode;
+    osg::Geode* picture = new osg::Geode;
 
-    osg::StateSet* backgroundStateSet = background->getOrCreateStateSet();
+    osg::StateSet* pictureStateSet = picture->getOrCreateStateSet();
 
-    backgroundStateSet->setTextureAttributeAndModes(0,
+    pictureStateSet->setTextureAttributeAndModes(0,
                 new osg::Texture2D(image),
                 osg::StateAttribute::ON);
 
-    background->addDrawable(backgroundQuad);
+    picture->addDrawable(pictureQuad);
 
-    _currentLayer->addChild(background);
+    _currentLayer->addChild(picture);
+}
+
+void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft,const std::string& filenameRight,float height)
+{
+    if (!_currentLayer) addLayer();
+
+    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft);
+    osg::ref_ptr<osg::Image> imageRight = osgDB::readImageFile(filenameRight);
+    
+    if (!imageLeft && !imageRight) return;
+    
+    float s = imageLeft->s();
+    float t = imageLeft->t();
+    
+    float image_height = _slideHeight*0.6f;
+    float image_width =  image_height*s/t;
+    float offset = height*image_height*0.1f;
+    
+    osg::Vec3 pos = _imageCursor + osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);
+
+
+    osg::Geode* pictureLeft = new osg::Geode;
+    {
+        pictureLeft->setNodeMask(0x01);
+
+        osg::StateSet* pictureLeftStateSet = pictureLeft->getOrCreateStateSet();
+
+        pictureLeftStateSet->setTextureAttributeAndModes(0,
+                    new osg::Texture2D(imageLeft.get()),
+                    osg::StateAttribute::ON);
+
+        osg::Geometry* pictureLeftQuad = osg::createTexturedQuadGeometry(pos,
+                                                        osg::Vec3(image_width,0.0f,0.0f),
+                                                        osg::Vec3(0.0f,0.0f,image_height));
+        pictureLeft->addDrawable(pictureLeftQuad);
+
+    }
+    
+    osg::Geode* pictureRight = new osg::Geode;
+    {
+        pictureRight->setNodeMask(0x02);
+
+        osg::StateSet* pictureRightStateSet = pictureRight->getOrCreateStateSet();
+
+        pictureRightStateSet->setTextureAttributeAndModes(0,
+                    new osg::Texture2D(imageRight.get()),
+                    osg::StateAttribute::ON);
+
+        osg::Geometry* pictureRightQuad = osg::createTexturedQuadGeometry(pos,
+                                                        osg::Vec3(image_width,0.0f,0.0f),
+                                                        osg::Vec3(0.0f,0.0f,image_height));
+
+        pictureRight->addDrawable(pictureRightQuad);
+    }
+    
+    osg::Group* stereopair = new osg::Group;
+    stereopair->addChild(pictureLeft);
+    stereopair->addChild(pictureRight);
+
+    _currentLayer->addChild(stereopair);
 }
 
 void SlideShowConstructor::addModel(const std::string& filename,float scale,float rotation,float position)

@@ -13,11 +13,65 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
+#include <osgGA/TrackballManipulator>
 
 #include "SlideEventHandler.h"
 #include "PointsEventHandler.h"
+#include "SlideShowConstructor.h"
 
-extern osg::Node* createDefaultPresentation();
+
+class FindHomePositionVisitor : public osg::NodeVisitor
+{
+public:
+
+    FindHomePositionVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+        
+    void apply(osg::Node& node)
+    {
+        SlideShowConstructor::HomePosition* homePosition = dynamic_cast<SlideShowConstructor::HomePosition*>(node.getUserData());
+        if (homePosition)
+        {
+            _homePosition = homePosition;
+        }
+        
+        traverse(node);
+    }
+        
+    osg::ref_ptr<SlideShowConstructor::HomePosition> _homePosition;
+        
+};
+
+
+class SlideShowTrackballManipulator : public osgGA::TrackballManipulator
+{
+    public:
+    
+        SlideShowTrackballManipulator()
+        {
+        }
+    
+        virtual void home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us)
+        {
+        
+            FindHomePositionVisitor fhpv;
+            if (_node.valid()) _node->accept(fhpv);
+        
+            if (fhpv._homePosition.valid())
+            {
+                computePosition(fhpv._homePosition->eye,
+                                fhpv._homePosition->center,
+                                fhpv._homePosition->up);
+
+                us.requestRedraw();
+            }
+            else
+            {
+               TrackballManipulator::home(ea,us);
+            }
+        }
+};
+
 
 int main( int argc, char **argv )
 {
@@ -37,8 +91,18 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgProducer::Viewer viewer(arguments);
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    SlideShowTrackballManipulator* sstbm = new SlideShowTrackballManipulator;
+
+    viewer.addCameraManipulator(sstbm);
+
+    // set up the value with sensible default event handler.
+    viewer.setUpViewer(osgProducer::Viewer::DRIVE_MANIPULATOR |
+                       osgProducer::Viewer::FLIGHT_MANIPULATOR |
+                       osgProducer::Viewer::STATE_MANIPULATOR |
+                       osgProducer::Viewer::HEAD_LIGHT_SOURCE |
+                       osgProducer::Viewer::STATS_MANIPULATOR |
+                       osgProducer::Viewer::VIEWER_MANIPULATOR |
+                       osgProducer::Viewer::ESCAPE_SETS_DONE);
 
     // read any time delay argument.
     float timeDelayBetweenSlides = 1.5f;
@@ -84,13 +148,6 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
-//     // if no model loaded create a default presentation.
-//     if (!loadedModel)
-//     {
-//         loadedModel = createDefaultPresentation();
-//     }
-
-
     // if no model has been successfully loaded report failure.
     if (!loadedModel) 
     {
@@ -112,12 +169,25 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
 
+
     // pass the global stateset to the point event handler so that it can
     // alter the point size of all points in the scene.
     peh->setStateSet(viewer.getGlobalStateSet());
 
     // create the windows and run the threads.
     viewer.realize();
+
+    // set all the sceneview's up so that their left and right add cull masks are set up.
+    for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
+        itr!=viewer.getSceneHandlerList().end();
+        ++itr)
+    {
+        osgUtil::SceneView* sceneview = (*itr)->getSceneView();
+        sceneview->setCullMask(0xffffffff);
+        sceneview->setCullMaskLeft(0x00000001);
+        sceneview->setCullMaskRight(0x00000002);
+//        sceneview->setFusionDistance(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE,radius);
+    }
 
     while( !viewer.done() )
     {

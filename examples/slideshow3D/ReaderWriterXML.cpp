@@ -46,6 +46,8 @@ public:
 
     void parseModel(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur);
 
+    void parseStereoPair(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur);
+
     void parseLayer(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur);
 
     void parseSlide (SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur);
@@ -105,6 +107,44 @@ void ReaderWriterSS3D::parseModel(SlideShowConstructor& constructor, xmlDocPtr d
     if (!filename.empty()) constructor.addModel(filename,scale,rotation,position);
 }
 
+void ReaderWriterSS3D::parseStereoPair(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur)
+{
+    std::string filenameLeft;
+    std::string filenameRight;
+
+    float height = 1.0f;
+    xmlChar *key;
+    key = xmlGetProp (cur, (const xmlChar *)"height");
+    if (key) height = atoi((const char*)key);
+    xmlFree(key);
+
+    cur = cur->xmlChildrenNode;
+
+    while (cur != NULL)
+    {
+        if ((!xmlStrcmp(cur->name, (const xmlChar *)"image_left")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            if (key) filenameLeft = (const char*)key;
+            xmlFree(key);
+            
+
+        }
+        if ((!xmlStrcmp(cur->name, (const xmlChar *)"image_right")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            if (key) filenameRight = (const char*)key;
+            xmlFree(key);
+
+        }
+        cur = cur->next;
+    }
+    
+    if (!filenameLeft.empty() && !filenameRight.empty()) 
+        constructor.addStereoImagePair(filenameLeft,filenameRight,height);
+
+}
+
 void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur)
 {
     constructor.addLayer();
@@ -140,6 +180,10 @@ void ReaderWriterSS3D::parseLayer(SlideShowConstructor& constructor, xmlDocPtr d
 
             if (!filename.empty()) constructor.addImage(filename,height);
 
+        }
+        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"stereo_pair")))
+        {
+            parseStereoPair(constructor, doc,cur);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"model")))
         {
@@ -226,6 +270,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSS3D::readNode(const std::string& fi
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) constructor.setPresentationName((const char*)key);
             else constructor.setPresentationName("");
+            xmlFree(key);
+        }
+        else if ((!xmlStrcmp(cur->name, (const xmlChar *)"ratio")))
+        {
+            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            if (key) constructor.setPresentationAspectRatio((const char*)key);
             xmlFree(key);
         }
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"bgcolor")))

@@ -29,7 +29,6 @@ PLUGIN_DIRS = \
 	dds\
 	dw\
 	flt\
-	geo\
 	iv\
 	lib3ds\
 	logo\
@@ -50,12 +49,21 @@ PLUGIN_DIRS = \
 # comment in if you have Performer installed.
 # PLUGIN_DIRS += pfb
 
-# comment in if you want Open DX support, currently not on by default
-# since we havn't yet checked compilation on all platforms yet.
-PLUGIN_DIRS += dx
 
 # comment in if have freetype2.x installed, provides type type font support to osgText.
 PLUGIN_DIRS += freetype
+
+
+# Geo plugin breaks Darwin build and doens't handle BigEndian issue.
+ifneq ($(OS),Darwin)
+ifneq ($(OS),SunOS)
+ifneq ($(OS),IRIX)
+
+  PLUGIN_DIRS += geo
+
+endif
+endif
+endif
 
 
 #### MacOS X specific definitions
@@ -64,6 +72,12 @@ ifeq ($(OS),Darwin)
   PLUGIN_DIRS += quicktime
   
 else  
+
+  # comment in if you want Open DX support, currently not on by default
+  # since we havn't yet checked compilation on all platforms yet.
+  # note, moved to non Darwin build since it currently breaks the Drawin build.
+  PLUGIN_DIRS += dx
+
 
   # comment in if you have libtiff installed.
   PLUGIN_DIRS += tiff

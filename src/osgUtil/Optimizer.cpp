@@ -116,22 +116,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osv.optimize();
     }
     
-    if (options & CHECK_GEOMETRY)
-    {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
-
-        CheckGeometryVisitor mgv;
-        node->accept(mgv);
-    }
-
-    if (options & MERGE_GEOMETRY)
-    {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
-
-        MergeGeometryVisitor mgv;
-        node->accept(mgv);
-    }
-
     if (options & COPY_SHARED_NODES)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing COPY_SHARED_NODES"<<std::endl;
@@ -155,6 +139,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
             result = fstv.removeTransforms(node);
             ++i;
         } while (result);
+
+        // no combine any adjacent static transforms.
+        CombineStaticTransformsVisitor cstv;
+        node->accept(cstv);
+        cstv.removeTransforms(node);
 
     }
     
@@ -182,6 +171,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         sv.divide();
     }
 
+    if (options & CHECK_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
+
+        CheckGeometryVisitor mgv;
+        node->accept(mgv);
+    }
+
     if (options & TRISTRIP_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing TRISTRIP_GEOMETRY"<<std::endl;
@@ -189,6 +186,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         TriStripVisitor tsv;
         node->accept(tsv);
         tsv.stripify();
+    }
+
+    if (options & MERGE_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
+
+        MergeGeometryVisitor mgv;
+        node->accept(mgv);
     }
 
 }
@@ -868,6 +873,69 @@ bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* node
     return cltv.removeTransforms(nodeWeCannotRemove);
 }
 
+////////////////////////////////////////////////////////////////////////////
+// RemoveEmptyNodes.
+////////////////////////////////////////////////////////////////////////////
+
+void Optimizer::CombineStaticTransformsVisitor::apply(osg::MatrixTransform& transform)
+{
+    if (transform.getDataVariance()==osg::Object::STATIC &&
+        transform.getNumChildren()==1 &&
+        transform.getChild(0)->asTransform()!=0 &&
+        transform.getChild(0)->asTransform()->asMatrixTransform()!=0 &&
+        transform.getChild(0)->asTransform()->getDataVariance()==osg::Object::STATIC)
+    {
+        _transformSet.insert(&transform);
+    }
+    
+    traverse(transform);
+}
+
+bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRemove)
+{
+    if (nodeWeCannotRemove && nodeWeCannotRemove->asTransform()!=0 && nodeWeCannotRemove->asTransform()->asMatrixTransform()!=0)
+    {
+        // remove topmost node if it exists in the transform set.
+        TransformSet::iterator itr = _transformSet.find(nodeWeCannotRemove->asTransform()->asMatrixTransform());
+        if (itr!=_transformSet.end()) _transformSet.erase(itr);
+    }
+    
+    std::cout<<"Have found "<<_transformSet.size()<<" static Transform pairs to flatten"<<std::endl;
+    
+    bool transformRemoved = false;
+
+    while (!_transformSet.empty())
+    {
+        // get the first available transform to combine.
+        osg::ref_ptr<osg::MatrixTransform> transform = *_transformSet.begin();
+        _transformSet.erase(_transformSet.begin());
+        
+        if (transform->getNumChildren()==1 &&
+            transform->getChild(0)->asTransform()!=0 &&
+            transform->getChild(0)->asTransform()->asMatrixTransform()!=0 &&
+            transform->getChild(0)->asTransform()->getDataVariance()==osg::Object::STATIC)
+        {
+            // now combine with its child.
+            osg::MatrixTransform* child = transform->getChild(0)->asTransform()->asMatrixTransform();
+            
+            osg::Matrix newMatrix = child->getMatrix()*transform->getMatrix();
+            child->setMatrix(newMatrix);
+            
+            transformRemoved = true;
+
+            osg::Node::ParentList parents = transform->getParents();
+            for(osg::Node::ParentList::iterator pitr=parents.begin();
+                pitr!=parents.end();
+                ++pitr)
+            {
+                (*pitr)->replaceChild(transform.get(),child);
+            }
+            
+        }
+        
+    }
+    return transformRemoved;
+}
 
 ////////////////////////////////////////////////////////////////////////////
 // RemoveEmptyNodes.

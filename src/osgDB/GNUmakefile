@@ -21,7 +21,7 @@ CXXFILES =\
 	SharedStateManager.cpp\
 
 
-LIBS += -losg $(OTHER_LIBS) $(DYNAMICLIBRARYLIB) 
+LIBS += -losg $(GL_LIBS) $(OTHER_LIBS) $(DYNAMICLIBRARYLIB) 
 
 ifeq ($(OS),Darwin)
 LIBS += ${CARBON_LIB}

@@ -311,59 +311,31 @@ static unsigned char * LoadBufferFromImageFile ( FSSpec fsspecImage,
 	return pImageBuffer;
 }
 
-// takes a Darwin path name and returns the FSSpec associated with it
-// ths is pretty horrible. sorry.
-FSSpec *darwinPathToFSSpec ( char *fname )
-{
-    char cfname[256], 
-        cvolname[256], 
-        pvolname[256];
-    int i;
-    SInt16 vrefNum;
-    SInt32 dirID;
-    OSErr err;
-    FSSpec *fs=(FSSpec *) malloc(sizeof(FSSpec));
-	char *qtvolname;
-	
-	qtvolname=getenv("OSG_QTIMPORT_VOLNAME");
-	
-	if (qtvolname) 
-		strcpy ( cvolname, qtvolname );
-	else {
-		err=HGetVol ( pvolname, &vrefNum, &dirID );
-    
-		if (err==noErr) {
-			int l=0xff & pvolname[0];
-			memcpy ( cvolname, pvolname+1, l );
-			cvolname[l]=0x0;
-		}
-		else {
-			sprintf ( errMess, "failed to determine root drive name" );
-			free(fs);
-			return NULL;
-		}
-	}
-		
-    sprintf ( cfname, " %s%s", cvolname, fname );
-    
-    for (i=0; i<strlen(cfname);i++ ) 
-        if (cfname[i] == '/') cfname[i]=':';
-        
-    // fprintf ( stderr, "cfname is %s\n", cfname ); fflush(stderr);
-    
-    cfname[0]=0xff & (strlen(cfname));
-    
-    err=FSMakeFSSpec ( 0,0, cfname, fs );
+// new implementation of darwinPathToFSSpec
+// the old code fails for me under os x 10.1.5
+// the code below is from an example of apple, modified to fit our needs
+// the example can be found at
+// <http://developer.apple.com/samplecode/Sample_Code/Files/MoreFilesX.htm>
 
-    if (err == noErr) {
-        // fprintf ( stderr, "DID IT\n" );
-        return fs;
-    }
-    else {
-		sprintf ( errMess, "failed to generate filename" );
-        free(fs);
-        return NULL;
-    }
+FSSpec *darwinPathToFSSpec (char *fname ) {
+
+	FSSpec *fs;
+	OSStatus	result;
+	FSRef	ref;
+	
+	/* convert the POSIX path to an FSRef */
+	result = FSPathMakeRef(fname, &ref, false); // fname is not a directory
+
+	if (result!=0) return NULL;
+	
+	/* and then convert the FSRef to an FSSpec */
+    fs = (FSSpec *) malloc(sizeof(FSSpec));
+	result = FSGetCatalogInfo(&ref, kFSCatInfoNone, NULL, NULL, fs, NULL);
+	if (result==0) return fs;  // success
+
+	// failed:
+	free(fs);
+	return NULL;
 }
 
 

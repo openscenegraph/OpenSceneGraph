@@ -46,6 +46,8 @@ ifeq ($(OS),SunOS)
   ARCHARGS          = 
   LINKARGS          =  
   DYNAMICLIBRARYLIB = -ldl
+  OSGUTIL           = -losgUtil
+  OSGDB             = -losgDB
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
@@ -73,6 +75,8 @@ ifeq ($(OS),IRIX)
   ARCHARGS          = 
   LINKARGS          = -LANG:std -OPT:Olimit=0
   DYNAMICLIBRARYLIB = -ldl
+  OSGUTIL           = -losgUtil
+  OSGDB             = -losgDB
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
@@ -97,6 +101,8 @@ ifeq ($(OS),Linux)
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
   DYNAMICLIBRARYLIB = -ldl
+  OSGUTIL           = -losgUtil
+  OSGDB             = -losgDB
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
@@ -120,6 +126,8 @@ ifeq ($(OS),FreeBSD)
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib -L/usr/local/lib -rpath /usr/local/lib
   DYNAMICLIBRARYLIB = -ldl
+  OSGUTIL           = -losgUtil
+  OSGDB             = -losgDB
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
@@ -143,6 +151,8 @@ ifeq ($(OS),MacOSX)
   ARCHARGS          = 
   LINKARGS          = -all_load  -L/usr/local/lib -L/usr/lib  
   DYNAMICLIBRARYLIB = 
+  OSGUTIL           = -losgUtil
+  OSGDB             = -losgDB
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = 
@@ -179,6 +189,8 @@ ifeq ($(OS),CYGWIN_NT-5.0)
   ARCHARGS          = 
   LINKARGS          = -W -Wall
   DYNAMICLIBRARYLIB =
+  OSGUTIL           = -losgutil
+  OSGDB             = -losgdb
 
   OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
   GL_LIBS           = -lglu32 -lopengl32

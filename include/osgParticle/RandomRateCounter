@@ -36,7 +36,6 @@ namespace osgParticle
     protected:
         virtual ~RandomRateCounter() {}
         
-    private:
         mutable float np_;
     };
     

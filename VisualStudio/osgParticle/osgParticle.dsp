@@ -99,6 +99,22 @@ SOURCE=..\..\src\osgParticle\Emitter.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgParticle\ExplosionEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\FireEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\SmokeEffect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\ParticleEffect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgParticle\FluidFrictionOperator.cpp
 # End Source File
 # Begin Source File
@@ -164,6 +180,22 @@ SOURCE=..\..\include\osgParticle\Emitter
 # Begin Source File
 
 SOURCE=..\..\include\osgParticle\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\ExplosionEffect
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\FireEffect
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\SmokeEffect
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgParticle\ParticleEffect
 # End Source File
 # Begin Source File
 

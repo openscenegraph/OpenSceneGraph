@@ -1,51 +1,54 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
- *
- * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial applications,
- * as long as this copyright notice is maintained.
- * 
- * This application is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*/
-
-#include <osgDB/ReadFile>
-#include <osgUtil/Optimizer>
 #include <osgProducer/Viewer>
 
+#include <osg/Group>
+#include <osg/Geode>
 
-#include <osgSim/SphereSegment>
+#include <osgParticle/ExplosionEffect>
+#include <osgParticle/SmokeEffect>
+#include <osgParticle/FireEffect>
+#include <osgParticle/ParticleSystemUpdater>
 
-using namespace osgSim;
 
-osg::Node* createSphereSegment()
+//////////////////////////////////////////////////////////////////////////////
+// MAIN SCENE GRAPH BUILDING FUNCTION
+//////////////////////////////////////////////////////////////////////////////
+
+void build_world(osg::Group *root)
 {
-    osgSim::SphereSegment* ss = new osgSim::SphereSegment(osg::Vec3(0.0f,0.0f,0.0f), 1.0f,
-                                                          osg::Vec3(0.0f,1.0f,0.0f),
-                                                          osg::DegreesToRadians(360.0f),
-                                                          osg::DegreesToRadians(45.0f),
-                                                          40);
-    ss->setAllColors(osg::Vec4(1.0f,1.0f,1.0f,0.5f));
 
-    return ss;
+    osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
+    osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
+    osgParticle::FireEffect* fire = new osgParticle::FireEffect;
+
+    root->addChild(explosion);
+    root->addChild(smoke);
+    root->addChild(fire);
+
+    osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
+
+    psu->addParticleSystem(explosion->getParticleSystem());
+    psu->addParticleSystem(smoke->getParticleSystem());
+    psu->addParticleSystem(fire->getParticleSystem());
+
+    // add the updater node to the scene graph
+    root->addChild(psu);
+
 }
 
-osg::Node* createModel()
+
+//////////////////////////////////////////////////////////////////////////////
+// main()
+//////////////////////////////////////////////////////////////////////////////
+
+
+int main(int argc, char **argv)
 {
-    return createSphereSegment();
-}
-
-
-int main( int argc, char **argv )
-{
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of particle systems.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
 
@@ -75,40 +78,12 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
-//    osg::Timer timer;
-//    osg::Timer_t start_tick = timer.tick();
-//
-//    // read the scene from the list of file specified commandline args.
-//     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-// 
-//     // if no model has been successfully loaded report failure.
-//     if (!loadedModel) 
-//     {
-//         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
-//         return 1;
-//     }
-// 
-//     osg::Timer_t end_tick = timer.tick();
-// 
-//     std::cout << "Time to load = "<<timer.delta_s(start_tick,end_tick)<<std::endl;
-
-    osg::ref_ptr<osg::Node> loadedModel = createModel();
-
-
-    // optimize the scene graph, remove rendundent nodes and state etc.
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
-
-
-    // set the scene to render
-    viewer.setSceneData(loadedModel.get());
-
+    osg::Group *root = new osg::Group;
+    build_world(root);
+   
+    // add a viewport to the viewer and attach the scene graph.
+    viewer.setSceneData(root);
+        
     // create the windows and run the threads.
     viewer.realize();
 
@@ -131,4 +106,3 @@ int main( int argc, char **argv )
 
     return 0;
 }
-

@@ -97,8 +97,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
-            osg::notify(osg::INFO)<<   "ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
-
+            osg::notify(osg::INFO)<<"ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
             initPerformer();
 
             pfTexture* tex = new pfTexture;
@@ -148,20 +147,27 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
+        virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            osg::notify(osg::INFO)<<   "ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
-
+            osg::notify(osg::INFO)<<"ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
             initPerformer();
 
             pfNode* root = pfdLoadFile(fileName.c_str());
             if (root)
             {
-                root->ref();
                 ConvertFromPerformer converter;
+                if (options) {
+                    const string option = options->getOptionString();
+                    if (option.find("saveImagesAsRGB") != string::npos)
+                        converter.setSaveImagesAsRGB(true);
+                    if (option.find("saveAbsoluteImagePath") != string::npos)
+                        converter.setSaveAbsoluteImagePath(true);
+                }
+
+                root->ref();
                 osg::Node* node = converter.convert(root);
                 root->unrefDelete();
                 return node;
@@ -178,9 +184,9 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-
-            osg::notify(osg::INFO)<<   "ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
+            osg::notify(osg::INFO)<<"ReaderWriterPFB::writeNode( "<<fileName.c_str()<<" )\n";
             initPerformer();
+
             ConvertToPerformer converter;
             pfNode* root = converter.convert(&node);
             if (root)

@@ -408,7 +408,7 @@ class SG_EXPORT HeightField : public Shape
         
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const HeightField*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "HeightFiled"; }
+        virtual const char* className() const { return "HeightField"; }
         virtual void accept(osg::ShapeVisitor& sv) { sv.apply(*this); }
         virtual void accept(osg::ConstShapeVisitor& csv) const { csv.apply(*this); }
 

@@ -246,7 +246,7 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
             if (validArchive) 
             {
             
-                unsigned int endianTestWord;
+                unsigned int endianTestWord=0;
                 _input.read(reinterpret_cast<char*>(&endianTestWord),4);
                 bool doEndianSwap = (endianTestWord!=ENDIAN_TEST_NUMBER);
             
@@ -255,6 +255,9 @@ bool Archive::open(const std::string& filename, ArchiveStatus status, unsigned i
                 {
                     osg::swapBytes(reinterpret_cast<char*>(&_version),sizeof(_version));
                 }
+                
+                osg::notify(osg::NOTICE)<<"Archive::open() doEndianSwap="<<doEndianSwap<<std::endl;
+                osg::notify(osg::NOTICE)<<"Archive::open() Version="<<_version<<std::endl;
                 
                 IndexBlock *indexBlock = 0;
                 

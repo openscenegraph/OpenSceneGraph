@@ -112,6 +112,10 @@ void sizeOfTest()
 #endif
   std::cout<<"sizeof(float)=="<<sizeof(float)<<std::endl;
   std::cout<<"sizeof(double)=="<<sizeof(double)<<std::endl;
+
+  std::cout<<"sizeof(std::istream::pos_type)=="<<sizeof(std::istream::pos_type)<<std::endl;
+  std::cout<<"sizeof(std::istream::off_type)=="<<sizeof(std::istream::off_type)<<std::endl;
+
 }
 
 

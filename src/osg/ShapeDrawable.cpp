@@ -283,8 +283,8 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
 
     	unsigned int numSegments = 40;
     	unsigned int numRows = 20;
-        if (_hints && _hints->getDetailRatio() != 1.0f) {
-            float ratio = _hints->getDetailRatio();
+        float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+        if (ratio > 0.0f && ratio != 1.0f) {
             numRows = (unsigned int) (numRows * ratio);
             if (numRows < MIN_NUM_ROWS)
                 numRows = MIN_NUM_ROWS;
@@ -583,8 +583,8 @@ void DrawShapeVisitor::apply(const Cone& cone)
 
     	unsigned int numSegments = 40;
     	unsigned int numRows = 10;
-        if (_hints && _hints->getDetailRatio() != 1.0f) {
-            float ratio = _hints->getDetailRatio();
+        float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+        if (ratio > 0.0f && ratio != 1.0f) {
             numRows = (unsigned int) (numRows * ratio);
             if (numRows < MIN_NUM_ROWS)
                 numRows = MIN_NUM_ROWS;
@@ -701,8 +701,8 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
         bool createBottom = (_hints ? _hints->getCreateBottom() : true);
 
     	unsigned int numSegments = 40;
-        if (_hints && _hints->getDetailRatio() != 1.0f) {
-            float ratio = _hints->getDetailRatio();
+        float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+        if (ratio > 0.0f && ratio != 1.0f) {
             numSegments = (unsigned int) (numSegments * ratio);
             if (numSegments < MIN_NUM_SEGMENTS)
                 numSegments = MIN_NUM_SEGMENTS;
@@ -801,8 +801,8 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
 
     	unsigned int numSegments = 40;
     	unsigned int numRows = 20;
-        if (_hints && _hints->getDetailRatio() != 1.0f) {
-            float ratio = _hints->getDetailRatio();
+        float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+        if (ratio > 0.0f && ratio != 1.0f) {
             numSegments = (unsigned int) (numSegments * ratio);
             if (numSegments < MIN_NUM_SEGMENTS)
                 numSegments = MIN_NUM_SEGMENTS;

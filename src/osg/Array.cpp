@@ -4,7 +4,7 @@ using namespace osg;
 
 static char* s_ArrayNames[] =
 {
-    "AttributeArray", // 0
+    "Array", // 0
     "ByteArray",     // 1
     "ShortArray",    // 2
     "IntArray",      // 3
@@ -20,11 +20,11 @@ static char* s_ArrayNames[] =
     "Vec4Array",      // 11
 };
 
-const char* AttributeArray::className() const
+const char* Array::className() const
 {
-    if (_arrayType>=AttributeArrayType && _arrayType<=Vec4ArrayType)
+    if (_arrayType>=ArrayType && _arrayType<=Vec4ArrayType)
         return s_ArrayNames[_arrayType];
     else
-        return "UnkownAttributeArray";
+        return "UnkownArray";
 }
 

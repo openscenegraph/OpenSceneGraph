@@ -2,20 +2,46 @@
 
 using namespace osg;
 
-static char* s_PrimitiveNames[] =
+void DrawArrays::draw() const 
 {
-    "Primitive",                // 0
-    "DrawArrays",                // 1
-    "UByteDrawElements",        // 2
-    "UShortDrawElements",       // 3
-    "UIntDrawElements"          // 4
-};
-
-const char* Primitive::className() const
-{
-    if (_primitiveType>=PrimitivePrimitiveType && _primitiveType<=UIntDrawElementsPrimitiveType)
-        return s_PrimitiveNames[_primitiveType];
-    else
-        return "UnkownAttributeArray";
+    glDrawArrays(_mode,_first,_count);
 }
 
+void DrawArrays::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+{
+    functor.drawArrays(_mode,_first,_count);
+}
+
+
+void UByteDrawElements::draw() const 
+{
+    glDrawElements(_mode,size(),GL_UNSIGNED_BYTE,&front());
+}
+
+void UByteDrawElements::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+{
+    if (!empty()) functor.drawElements(_mode,size(),&front());
+}
+
+
+void UShortDrawElements::draw() const 
+{
+    glDrawElements(_mode,size(),GL_UNSIGNED_SHORT,&front());
+}
+
+void UShortDrawElements::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+{
+    if (!empty()) functor.drawElements(_mode,size(),&front());
+}
+
+
+
+void UIntDrawElements::draw() const 
+{
+    glDrawElements(_mode,size(),GL_UNSIGNED_INT,&front());
+}
+
+void UIntDrawElements::applyPrimitiveOperation(Drawable::PrimitiveFunctor& functor)
+{
+    if (!empty()) functor.drawElements(_mode,size(),&front());
+}

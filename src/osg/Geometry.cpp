@@ -24,7 +24,7 @@ Geometry::~Geometry()
     // no need to delete, all automatically handled by ref_ptr :-)
 }
 
-void Geometry::setTexCoordArray(unsigned int unit,AttributeArray* array)
+void Geometry::setTexCoordArray(unsigned int unit,Array* array)
 {
     if (_texCoordList.size()<=unit)
         _texCoordList.resize(unit+1,0);
@@ -34,7 +34,7 @@ void Geometry::setTexCoordArray(unsigned int unit,AttributeArray* array)
     dirtyDisplayList();
 }
 
-AttributeArray* Geometry::getTexCoordArray(unsigned int unit)
+Array* Geometry::getTexCoordArray(unsigned int unit)
 {
     if (unit<_texCoordList.size()) return _texCoordList[unit].get();
     else return 0;
@@ -52,7 +52,7 @@ void Geometry::drawImmediateMode(State& /*state*/)
     // set up texture coordinates.
     for(unsigned int i=0;i<_texCoordList.size();++i)
     {
-        AttributeArray* array = _texCoordList[i].get();
+        Array* array = _texCoordList[i].get();
         //glClientActiveTextureARB(GL_TEXTURE0_ARB+i);
         if (array)
         {
@@ -94,25 +94,25 @@ void Geometry::drawImmediateMode(State& /*state*/)
     // Vec3, Vec4 or UByte4 Arrays.
     const unsigned char* colorPointer = 0;
     unsigned int colorStride = 0;
-    ArrayType colorType = AttributeArrayType;
+    Array::Type colorType = Array::ArrayType;
     if (_colorArray.valid())
     {
-        colorType = _colorArray->arrayType();
+        colorType = _colorArray->getType();
         switch(colorType)
         {
-            case(UByte4ArrayType):
+            case(Array::UByte4ArrayType):
             {
                 colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->dataPointer());
                 colorStride = 4;
                 break;
             }
-            case(Vec3ArrayType):
+            case(Array::Vec3ArrayType):
             {
                 colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->dataPointer());
                 colorStride = 12;
                 break;
             }
-            case(Vec4ArrayType):
+            case(Array::Vec4ArrayType):
             {
                 colorPointer = reinterpret_cast<const unsigned char*>(_colorArray->dataPointer());
                 colorStride = 16;
@@ -132,13 +132,13 @@ void Geometry::drawImmediateMode(State& /*state*/)
             {
                 switch(colorType)
                 {
-                    case(UByte4ArrayType):
+                    case(Array::UByte4ArrayType):
                         glColor4ubv(reinterpret_cast<const GLubyte*>(colorPointer));
                         break;
-                    case(Vec3ArrayType):
+                    case(Array::Vec3ArrayType):
                         glColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
                         break;
-                    case(Vec4ArrayType):
+                    case(Array::Vec4ArrayType):
                         glColor4fv(reinterpret_cast<const GLfloat*>(colorPointer));
                         break;
                 }
@@ -167,13 +167,13 @@ void Geometry::drawImmediateMode(State& /*state*/)
         {
             switch(colorType)
             {
-                case(UByte4ArrayType):
+                case(Array::UByte4ArrayType):
                     glColor4ubv(reinterpret_cast<const GLubyte*>(colorPointer));
                     break;
-                case(Vec3ArrayType):
+                case(Array::Vec3ArrayType):
                     glColor3fv(reinterpret_cast<const GLfloat*>(colorPointer));
                     break;
-                case(Vec4ArrayType):
+                case(Array::Vec4ArrayType):
                     glColor4fv(reinterpret_cast<const GLfloat*>(colorPointer));
                     break;
             }

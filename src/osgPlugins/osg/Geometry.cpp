@@ -17,7 +17,7 @@ const char* Geometry_getBindingTypeStr(Geometry::AttributeBinding mode);
 bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode);
 const char* Geometry_getPrimitiveModeStr(GLenum mode);
 
-AttributeArray* AttributeArray_readLocalData(Input& fr);
+Array* Array_readLocalData(Input& fr);
 
 bool Primitve_readLocalData(Input& fr,osg::Geometry& geom);
 
@@ -149,7 +149,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
     if (fr.matchSequence("ColorArray %w %i {"))
     {
         ++fr;
-        AttributeArray* colors = AttributeArray_readLocalData(fr);
+        Array* colors = Array_readLocalData(fr);
         if (colors)
         {
             geom.setColorArray(colors);
@@ -163,7 +163,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
         fr[1].getInt(unit);
     
         fr+=2;
-        AttributeArray* texcoords = AttributeArray_readLocalData(fr);
+        Array* texcoords = Array_readLocalData(fr);
         if (texcoords)
         {
             geom.setTexCoordArray(unit,texcoords);
@@ -176,7 +176,7 @@ bool Geometry_readLocalData(Object& obj, Input& fr)
 }
 
 
-AttributeArray* AttributeArray_readLocalData(Input& fr)
+Array* Array_readLocalData(Input& fr)
 {
     int entry = fr[0].getNoNestedBrackets();
 
@@ -396,11 +396,11 @@ void Array_writeLocalData(Output& fw, Iterator first, Iterator last)
     
 }
 
-bool Array_writeLocalData(const AttributeArray& array,Output& fw)
+bool Array_writeLocalData(const Array& array,Output& fw)
 {
-    switch(array.arrayType())
+    switch(array.getType())
     {
-        case(ByteArrayType):
+        case(Array::ByteArrayType):
             {
                 const ByteArray& carray = static_cast<const ByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -408,7 +408,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(ShortArrayType):
+        case(Array::ShortArrayType):
             {
                 const ShortArray& carray = static_cast<const ShortArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -416,7 +416,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(IntArrayType):
+        case(Array::IntArrayType):
             {
                 const IntArray& carray = static_cast<const IntArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -424,7 +424,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(UByteArrayType):
+        case(Array::UByteArrayType):
             {
                 const UByteArray& carray = static_cast<const UByteArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -432,7 +432,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(UShortArrayType):
+        case(Array::UShortArrayType):
             {
                 const UShortArray& carray = static_cast<const UShortArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -440,7 +440,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(UIntArrayType):
+        case(Array::UIntArrayType):
             {
                 const UIntArray& carray = static_cast<const UIntArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
@@ -448,7 +448,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(UByte4ArrayType):
+        case(Array::UByte4ArrayType):
             {
                 const UByte4Array& carray = static_cast<const UByte4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<" ";
@@ -456,7 +456,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(FloatArrayType):
+        case(Array::FloatArrayType):
             {
                 const FloatArray& carray = static_cast<const FloatArray&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -464,7 +464,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(Vec2ArrayType):
+        case(Array::Vec2ArrayType):
             {
                 const Vec2Array& carray = static_cast<const Vec2Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -472,7 +472,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(Vec3ArrayType):
+        case(Array::Vec3ArrayType):
             {
                 const Vec3Array& carray = static_cast<const Vec3Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -480,7 +480,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(Vec4ArrayType):
+        case(Array::Vec4ArrayType):
             {
                 const Vec4Array& carray = static_cast<const Vec4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
@@ -488,7 +488,7 @@ bool Array_writeLocalData(const AttributeArray& array,Output& fw)
                 return true;
             }
             break;
-        case(AttributeArrayType):
+        case(Array::ArrayType):
         default:
             return false;
     }
@@ -617,16 +617,16 @@ bool Primitve_readLocalData(Input& fr,osg::Geometry& geom)
 bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
 {
 
-    switch(prim.primitiveType())
+    switch(prim.getType())
     {
-        case(DrawArraysPrimitiveType):
+        case(Primitive::DrawArraysPrimitiveType):
             {
                 const DrawArrays& cprim = static_cast<const DrawArrays&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.getCount()<<std::endl;
                 return true;
             }
             break;
-        case(UByteDrawElementsPrimitiveType):
+        case(Primitive::UByteDrawElementsPrimitiveType):
             {
                 const UByteDrawElements& cprim = static_cast<const UByteDrawElements&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
@@ -634,7 +634,7 @@ bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
                 return true;
             }
             break;
-        case(UShortDrawElementsPrimitiveType):
+        case(Primitive::UShortDrawElementsPrimitiveType):
             {
                 const UShortDrawElements& cprim = static_cast<const UShortDrawElements&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
@@ -642,7 +642,7 @@ bool Primitve_writeLocalData(const Primitive& prim,Output& fw)
                 return true;
             }
             break;
-        case(UIntDrawElementsPrimitiveType):
+        case(Primitive::UIntDrawElementsPrimitiveType):
             {
                 const UIntDrawElements& cprim = static_cast<const UIntDrawElements&>(prim);
                 fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;

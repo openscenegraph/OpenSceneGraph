@@ -38,6 +38,8 @@ class Vec4
 
 	inline const bool operator == (const Vec4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
 
+	inline const bool operator != (const Vec4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
+
 	inline const bool operator <  (const Vec4& v) const
         {
             if (_v[0]<v._v[0]) return true;

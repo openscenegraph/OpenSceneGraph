@@ -288,6 +288,14 @@ class SG_EXPORT GeoSet : public Drawable
 
         const bool check() const;
 
+
+        /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
+        virtual AttributeBitMask suppportsAttributeUpdate() const;
+
+        /** return the attributes successully applied in applyAttributeUpdate.*/
+        virtual AttributeBitMask applyAttributeUpdate(AttributeBitMask abm,AttributeUpdateFunctor& auf);
+
+
     protected:
 
         GeoSet(const GeoSet&):Drawable() {}

@@ -32,9 +32,11 @@ class Vec2
 
         float _v[2];
 
-        const bool operator == (const Vec2& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
+        inline const bool operator == (const Vec2& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1]; }
 
-	const bool operator <  (const Vec2& v) const
+        inline const bool operator != (const Vec2& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
+
+	inline const bool operator <  (const Vec2& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;

@@ -77,14 +77,43 @@ class SG_EXPORT Billboard : public Geode
          *  and do not the reference count of gset is left unchanged.
          */
         virtual const bool removeDrawable( Drawable *gset );
+                
 
-        void calcTransform(const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local,Matrix& mat) const;
+        /** Callback attached to an Billboard which allows the users to customize the billboard orientation calculation during cull traversal.*/
+        struct ComputeBillboardCallback : public osg::Referenced
+        {
+            /** Get the transformation matrix which moves from local coords to world coords.*/
+            virtual void computeMatrix(const Matrix& matrix, const Billboard* billboard, const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local) const;
+        };
+        
+        friend struct osg::Billboard::ComputeBillboardCallback;
+
+        /** Set the ComputeBillboardCallback which allows users to attach custom computation of the local transformation as 
+          * seen by cull traversers and alike.*/
+        void setComputeBillboardCallback(ComputeBillboardCallback* ctc) { _computeBillboardCallback=ctc; }
+        
+        /** Get the non const ComputeBillboardCallback.*/
+        ComputeBillboardCallback* getComputeBillboardCallback() { return _computeBillboardCallback.get(); }
+        
+        /** Get the const ComputeBillboardCallback.*/
+        const ComputeBillboardCallback* getComputeBillboardCallback() const { return _computeBillboardCallback.get(); }        
+
+        
+        inline void getMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local) const
+        {
+            if (_computeBillboardCallback.valid())
+                return _computeBillboardCallback->computeMatrix(matrix,this,eye_local,up_local,pos_local);
+            else
+                return computeMatrix(matrix,eye_local,up_local,pos_local);
+        }
 
     protected:
 
         virtual ~Billboard();
 
         virtual const bool computeBound() const;
+
+        virtual void computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local) const;
 
         enum AxisAligned
         {
@@ -94,9 +123,10 @@ class SG_EXPORT Billboard : public Geode
         };
 
 
-        Mode            _mode;
-        Vec3            _axis;
-        PositionList    _positionList;
+        Mode                                _mode;
+        Vec3                                _axis;
+        PositionList                        _positionList;
+        ref_ptr<ComputeBillboardCallback>   _computeBillboardCallback;
         
         // used internally as cache of which what _axis is aligned to help
         // deicde which method of rotation to use.

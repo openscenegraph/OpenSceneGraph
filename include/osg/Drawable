@@ -56,14 +56,7 @@ class SG_EXPORT Drawable : public Object
         Drawable();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Drawable(const Drawable& drawable,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Object(drawable,copyop),
-            _dstate(copyop(drawable._dstate.get())),
-            _supportsDisplayList(drawable._supportsDisplayList),
-            _useDisplayList(drawable._useDisplayList),
-            _globjList(drawable._globjList),
-            _bbox(drawable._bbox),
-            _bbox_computed(drawable._bbox_computed) {}
+        Drawable(const Drawable& drawable,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Drawable*>(obj)!=NULL; }
         virtual const char* className() const { return "Drawable"; }
@@ -135,11 +128,37 @@ class SG_EXPORT Drawable : public Object
             Note II, compile is not intended to be overridden in subclasses.*/
         void compile(State& state);
 
+
+        /** Callback attached to an Drawable which allows the users to customize the drawing of an exist Drawable object.
+          * The draw callback is implement as a replacement to the Drawable's own drawImmediateMode() method, if the
+          * the user intends to decorate the exist draw code then simple call the drawable->drawImmediateMode() from
+          * with the callbacks drawImmediateMode() method.  This allows the users to do both pre and post callbacks
+          * without fuss and can even diable the inner draw in required.*/
+        struct DrawCallback : public osg::Referenced
+        {
+                /** do customized draw code.*/
+                virtual void drawImmediateMode(State& state,osg::Drawable* drawable) const;
+        };
+        
+        friend struct osg::Drawable::DrawCallback;
+
+        /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
+        void setDrawCallback(DrawCallback* dc) { _drawCallback=dc; dirtyBound(); }
+        
+        /** Get the non const ComputerTransfromCallback.*/
+        DrawCallback* getDrawCallback() { return _drawCallback.get(); }
+        
+        /** Get the const ComputerTransfromCallback.*/
+        const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
+
+
         /** draw directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Drawable.
           */
         virtual void drawImmediateMode(State& state) = 0;
+
+
 
         /** use deleteDisplayList instead of glDeleteList to allow
           * OpenGL display list to cached until they can be deleted
@@ -196,6 +215,8 @@ class SG_EXPORT Drawable : public Object
         virtual AttributeBitMask applyAttributeOperation(AttributeFunctor&) { return 0; }
         
 
+
+
     protected:
 
         Drawable& operator = (const Drawable&) { return *this;}
@@ -216,6 +237,8 @@ class SG_EXPORT Drawable : public Object
 
         mutable BoundingBox     _bbox;
         mutable bool            _bbox_computed;
+        
+        ref_ptr<DrawCallback>   _drawCallback;
         
         // static cache of deleted display lists which can only 
         // by completely deleted once the appropriate OpenGL context
@@ -250,14 +273,20 @@ inline void Drawable::draw(State& state)
 #ifdef USE_SEPERATE_COMPILE_AND_EXECUTE
             globj = glGenLists( 1 );
             glNewList( globj, GL_COMPILE );
-            drawImmediateMode(state);
+            if (_drawCallback.valid())
+                _drawCallback->drawImmediateMode(state,this);
+            else 
+                drawImmediateMode(state);
             glEndList();
             
             glCallList( globj);
 #else
             globj = glGenLists( 1 );
             glNewList( globj, GL_COMPILE_AND_EXECUTE );
-            drawImmediateMode(state);
+            if (_drawCallback.valid())
+                _drawCallback->drawImmediateMode(state,this);
+            else 
+                drawImmediateMode(state);
             glEndList();
 #endif
         }
@@ -266,7 +295,10 @@ inline void Drawable::draw(State& state)
     else
     {
         // draw object as nature intended..
-        drawImmediateMode(state);
+        if (_drawCallback.valid())
+            _drawCallback->drawImmediateMode(state,this);
+        else 
+            drawImmediateMode(state);
     }
 }
 

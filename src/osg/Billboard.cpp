@@ -19,6 +19,7 @@ Billboard::Billboard(const Billboard& billboard,const CopyOp& copyop):
         _mode(billboard._mode),
         _axis(billboard._axis),
         _positionList(billboard._positionList),
+        _computeBillboardCallback(_computeBillboardCallback),
         _cachedMode(billboard._cachedMode) {}
 
 Billboard::~Billboard()
@@ -97,90 +98,32 @@ const bool Billboard::removeDrawable( Drawable *gset )
     return false;
 }
 
-void Billboard::calcTransform(const Vec3& eye_local, const Vec3& /*up_local*/, const Vec3& pos_local, Matrix& mat) const 
+void Billboard::computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& /*up_local*/, const Vec3& pos_local) const
 {
+
     Vec3 ev(pos_local-eye_local);
     switch(_cachedMode)
     {
-        case(AXIAL_ROT_Z_AXIS):
+        case(AXIAL_ROT): // need to implement 
+        case(AXIAL_ROT_Z_AXIS): // need to implement 
+        case(AXIAL_ROT_Y_AXIS): // need to implement 
+        case(AXIAL_ROT_X_AXIS): // implemented correctly..
         {
             ev.z() = 0.0f;
             float ev_length = ev.length();
             if (ev_length>0.0f)
             {
 
-                mat.makeIdentity();
+                matrix.makeIdentity();
                 //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
                 //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
                 float inv = 1.0f/ev_length;
                 float c = ev.y()*inv;
                 float s = ev.x()*inv;
-                mat(0,0) = c;
-                mat(0,1) = -s;
-                mat(1,0) = s;
-                mat(1,1) = c;
-            }
-            break;
-        }
-
-        case(AXIAL_ROT_Y_AXIS):
-        {
-            ev.z() = 0.0f;
-            float ev_length = ev.length();
-            if (ev_length>0.0f)
-            {
-
-                mat.makeIdentity();
-                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
-                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
-                float inv = 1.0f/ev_length;
-                float c = ev.y()*inv;
-                float s = ev.x()*inv;
-                mat(0,0) = c;
-                mat(0,1) = -s;
-                mat(1,0) = s;
-                mat(1,1) = c;
-            }
-            break;
-        }
-        case(AXIAL_ROT_X_AXIS):
-        {
-            ev.z() = 0.0f;
-            float ev_length = ev.length();
-            if (ev_length>0.0f)
-            {
-
-                mat.makeIdentity();
-                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
-                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
-                float inv = 1.0f/ev_length;
-                float c = ev.y()*inv;
-                float s = ev.x()*inv;
-                mat(0,0) = c;
-                mat(0,1) = -s;
-                mat(1,0) = s;
-                mat(1,1) = c;
-            }
-            break;
-        }
-        
-        case(AXIAL_ROT):
-        {
-            ev.z() = 0.0f;
-            float ev_length = ev.length();
-            if (ev_length>0.0f)
-            {
-
-                mat.makeIdentity();
-                //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
-                //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
-                float inv = 1.0f/ev_length;
-                float c = ev.y()*inv;
-                float s = ev.x()*inv;
-                mat(0,0) = c;
-                mat(0,1) = -s;
-                mat(1,0) = s;
-                mat(1,1) = c;
+                matrix(0,0) = c;
+                matrix(0,1) = -s;
+                matrix(1,0) = s;
+                matrix(1,1) = c;
             }
             break;
         }
@@ -209,14 +152,14 @@ void Billboard::calcTransform(const Vec3& eye_local, const Vec3& /*up_local*/, c
                     cp /= cp_len;
 
                     float rotation_cp = acosf(dot);
-                    mat.makeRotate(-inRadians(rotation_cp),cp[0],cp[1],cp[2]);
+                    matrix.makeRotate(-inRadians(rotation_cp),cp[0],cp[1],cp[2]);
                 }
             }
             break;
         }
     }
 
-    mat.setTrans(pos_local);
+    matrix.setTrans(pos_local);
 
 }
 

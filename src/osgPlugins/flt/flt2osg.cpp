@@ -33,7 +33,7 @@
 #include <osg/DOFTransform>
 #include <osg/Sequence>
 
-#include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 #include <osgDB/Registry>
@@ -1859,6 +1859,9 @@ osg::Group* ConvertFromFLT::visitExternal(osg::Group& osgParent, ExternalRecord*
 {
     // SExternalReference *pSExternal = (SExternalReference*)rec->getData();
 
+    osgDB::PushAndPopDataPath tmpfile(osgDB::getFilePath(rec->getFilename()));
+      
+        
     FltFile* pFile = rec->getExternal();
     osg::Group* external = NULL;
     if (pFile)

@@ -1757,15 +1757,21 @@ void DataSet::DestinationTile::optimizeResolution()
         {
             std::cout<<"******* We have a flat tile ******* "<<std::endl;
 
-            hf->allocate(2,2);
+            unsigned int numColumns = 8;
+            unsigned int numRows = 8;
+            
+            hf->allocate(numColumns,numRows);
             hf->setOrigin(osg::Vec3(_extents.xMin(),_extents.yMin(),0.0f));
-            hf->setXInterval(_extents.xMax()-_extents.xMin());
-            hf->setYInterval(_extents.yMax()-_extents.yMin());
-            hf->setHeight(0,0,minHeight);
-            hf->setHeight(1,0,minHeight);
-            hf->setHeight(1,1,minHeight);
-            hf->setHeight(0,1,minHeight);
+            hf->setXInterval((_extents.xMax()-_extents.xMin())/(float)(numColumns-1));
+            hf->setYInterval((_extents.yMax()-_extents.yMin())/(float)(numRows-1));
 
+            for(unsigned int r=0;r<numRows;++r)
+            {
+                for(unsigned int c=0;c<numColumns;++c)
+                {
+                    hf->setHeight(c,r,minHeight);
+                } 
+            } 
         }
     }
 }
@@ -2178,9 +2184,10 @@ osg::Node* DataSet::DestinationTile::createPolygonal()
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
     
+#if 0    
     osgUtil::Simplifier simplifier;
     simplifier.simplify(*geometry,0.5f);  // this will replace the normal vector with a new one
-
+#endif
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry);

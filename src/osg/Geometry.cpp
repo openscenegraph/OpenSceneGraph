@@ -15,6 +15,46 @@
 
 using namespace osg;
 
+#if 1
+class DrawVertex
+{
+    public:
+    
+        DrawVertex(const Array* vertices,const IndexArray* indices):
+            _vertices(vertices),
+            _indices(indices)
+        {
+            _verticesType = _vertices->getType();
+        }
+    
+        inline void operator () (unsigned int pos)
+        {
+            if (_indices) pos = _indices->index(pos);
+
+            switch(_verticesType)
+            {
+            case(Array::Vec3ArrayType): 
+                apply((*(static_cast<const Vec3Array*>(_vertices)))[pos]);
+                break;
+            case(Array::Vec2ArrayType): 
+                apply((*(static_cast<const Vec2Array*>(_vertices)))[pos]);
+                break;
+            case(Array::Vec4ArrayType): 
+                apply((*(static_cast<const Vec4Array*>(_vertices)))[pos]);
+                break;
+            }
+            
+        }
+        
+        inline void apply(const Vec2& v)   { glVertex2fv(v.ptr()); }
+        inline void apply(const Vec3& v)   { glVertex3fv(v.ptr()); }
+        inline void apply(const Vec4& v)   { glVertex4fv(v.ptr()); }
+
+        const Array*        _vertices;
+        const IndexArray*   _indices;
+        Array::Type         _verticesType;
+};
+#else
 class DrawVertex : public osg::ConstValueVisitor
 {
     public:
@@ -23,7 +63,7 @@ class DrawVertex : public osg::ConstValueVisitor
             _vertices(vertices),
             _indices(indices) {}
     
-        void operator () (unsigned int pos)
+        inline void operator () (unsigned int pos)
         {
             if (_indices) _vertices->accept(_indices->index(pos),*this);
             else _vertices->accept(pos,*this);
@@ -36,6 +76,7 @@ class DrawVertex : public osg::ConstValueVisitor
         const Array*        _vertices;
         const IndexArray*   _indices;
 };
+#endif
 
 class DrawNormal
 {
@@ -55,6 +96,61 @@ class DrawNormal
         const IndexArray*  _indices;
 };
 
+#if 1
+class DrawColor
+{
+    public:
+
+        DrawColor(const Array* colors,const IndexArray* indices):
+            _colors(colors),
+            _indices(indices)
+        {
+            _colorsType = _colors->getType();
+            _indicesType = _indices->getType();
+        }
+
+        inline unsigned int index(unsigned int pos)
+        {
+            switch(_indicesType)
+            {
+            case(Array::ByteArrayType): return (*static_cast<const ByteArray*>(_indices))[pos];
+            case(Array::ShortArrayType): return (*static_cast<const ShortArray*>(_indices))[pos];
+            case(Array::IntArrayType): return (*static_cast<const IntArray*>(_indices))[pos];
+            case(Array::UByteArrayType): return (*static_cast<const UByteArray*>(_indices))[pos];
+            case(Array::UShortArrayType): return (*static_cast<const UShortArray*>(_indices))[pos];
+            case(Array::UIntArrayType): return (*static_cast<const UIntArray*>(_indices))[pos];
+            default: return 0;
+            }
+        }
+
+        inline void operator () (unsigned int pos)
+        {
+            if (_indices) pos = index(pos);
+
+            switch(_colorsType)
+            {
+            case(Array::Vec4ArrayType):
+                apply((*static_cast<const Vec4Array*>(_colors))[pos]);
+                break;
+            case(Array::UByte4ArrayType):
+                apply((*static_cast<const UByte4Array*>(_colors))[pos]);
+                break;
+            case(Array::Vec3ArrayType):
+                apply((*static_cast<const Vec3Array*>(_colors))[pos]);
+                break;
+            }
+        }
+
+        inline void apply(const UByte4& v) { glColor4ubv(v.ptr()); }
+        inline void apply(const Vec3& v)   { glColor3fv(v.ptr()); }
+        inline void apply(const Vec4& v)   { glColor4fv(v.ptr()); }
+        
+        const Array*        _colors;
+        const IndexArray*   _indices;
+        Array::Type         _colorsType;
+        Array::Type         _indicesType;
+};
+#else
 class DrawColor : public osg::ConstValueVisitor
 {
     public:
@@ -63,7 +159,7 @@ class DrawColor : public osg::ConstValueVisitor
             _colors(colors),
             _indices(indices) {}
 
-        void operator () (unsigned int pos)
+        inline void operator () (unsigned int pos)
         {
             if (_indices) _colors->accept(_indices->index(pos),*this);
             else _colors->accept(pos,*this);
@@ -76,7 +172,7 @@ class DrawColor : public osg::ConstValueVisitor
         const Array*        _colors;
         const IndexArray*   _indices;
 };
-
+#endif
 class DrawVertexAttrib : public osg::Referenced, public osg::ConstValueVisitor
 {
 public:
@@ -88,7 +184,7 @@ public:
             _attribcoords(attribcoords),
             _indices(indices) {;}
 
-    void operator () (unsigned int pos)
+    inline void operator () (unsigned int pos)
     {
         if (_indices) _attribcoords->accept(_indices->index(pos),*this);
         else _attribcoords->accept(pos,*this);
@@ -141,7 +237,7 @@ class DrawTexCoord : public osg::Referenced, public osg::ConstValueVisitor
             _texcoords(texcoords),
             _indices(indices) {}
 
-        void operator () (unsigned int pos)
+        inline void operator () (unsigned int pos)
         {
             if (_indices) _texcoords->accept(_indices->index(pos),*this);
             else _texcoords->accept(pos,*this);
@@ -167,7 +263,7 @@ class DrawMultiTexCoord : public osg::Referenced, public osg::ConstValueVisitor
             _indices(indices),
             _extensions(extensions) {}
 
-        void operator () (unsigned int pos)
+        inline void operator () (unsigned int pos)
         {
             if (_indices) _texcoords->accept(_indices->index(pos),*this);
             else _texcoords->accept(pos,*this);
@@ -197,7 +293,7 @@ class DrawSecondaryColor : public osg::ConstValueVisitor
             _extensions(extensions)
             {}
     
-        void operator () (unsigned int pos)
+        inline void operator () (unsigned int pos)
         {
             if (_indices) _colors->accept(_indices->index(pos),*this);
             else _colors->accept(pos,*this);
@@ -222,7 +318,7 @@ class DrawFogCoord : public osg::ConstValueVisitor
             _indices(indices),
             _extensions(extensions) {}
     
-        void operator () (unsigned int pos)
+        inline void operator () (unsigned int pos)
         {
             if (_indices) _fogcoords->accept(_indices->index(pos),*this);
             else _fogcoords->accept(pos,*this);
@@ -245,6 +341,8 @@ Geometry::Geometry()
     _fogCoordBinding = BIND_OFF;
 
     _fastPath = false;
+
+    _fastPathHint = true;
 }
 
 Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
@@ -267,7 +365,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _fogCoordArray(dynamic_cast<FloatArray*>(copyop(geometry._fogCoordArray.get()))),
     _fogCoordIndices(dynamic_cast<IndexArray*>(copyop(geometry._fogCoordIndices.get()))),
     _fastPath(geometry._fastPath),
-    _internalOptimizedGeometry(geometry._internalOptimizedGeometry)
+    _fastPathHint(geometry._fastPathHint)
 {
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();

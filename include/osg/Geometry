@@ -248,11 +248,17 @@ class SG_EXPORT Geometry : public Drawable
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
 
 
+        /** Set whether fast paths should be used when supported.*/
+        void setFastPathHint(bool on) {  _fastPathHint = on; }
+
+        /** Get whether fast paths should be used when supported.*/
+        bool getFastPathHint() const { return _fastPathHint; }
+
         /** return true if OpenGL fast paths will be used with drawing this Geometry.
           * Fast paths use vertex arrays, and glDrawArrays/glDrawElements.  Slow paths
           * use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed
           * arrays will drop the rendering path off the fast path.*/
-        inline bool areFastPathsUsed() const { return _fastPath; }
+        inline bool areFastPathsUsed() const { return _fastPath && _fastPathHint; }
 
         bool computeFastPathsUsed();
 
@@ -343,6 +349,8 @@ class SG_EXPORT Geometry : public Drawable
         mutable VertexAttribBindingList _vertexAttribBindingList; 
 
         mutable bool                    _fastPath;
+
+        bool                            _fastPathHint;
 
         ref_ptr<Geometry>               _internalOptimizedGeometry;
 };

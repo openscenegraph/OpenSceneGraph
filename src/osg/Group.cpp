@@ -236,7 +236,7 @@ const bool Group::computeBound() const
         }
     }
 
-    if (!bb.isValid()) return false;
+    if (!bb.valid()) return false;
 
     _bsphere._center = bb.center();
     _bsphere._radius = 0.0f;

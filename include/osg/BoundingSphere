@@ -38,8 +38,7 @@ class SG_EXPORT BoundingSphere
             _radius = -1.0f;
         }
 
-        /** return true if the bounding sphere contains valid values,
-            false if the bounding sphere is effectively unset.*/
+        /** deprecated, use valid() instead.*/
         inline const bool isValid() const { return _radius>=0.0f; }
 
         /** return true if the bounding sphere contains valid values,
@@ -106,13 +105,13 @@ class SG_EXPORT BoundingSphere
         /** return true is vertex v is within the sphere.*/
         inline const bool contains(const Vec3& v) const
         {
-            return isValid() && ((v-_center).length2()<=radius2());
+            return valid() && ((v-_center).length2()<=radius2());
         }
 
         /** return true if bounding sphere's intersect each other.*/
         inline const bool intersects( const BoundingSphere& bs ) const
         {
-            return isValid() && bs.isValid() &&
+            return valid() && bs.valid() &&
                    ((_center - bs._center).length2() <= (_radius + bs._radius)*(_radius + bs._radius));
         }
 

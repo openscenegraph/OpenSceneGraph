@@ -96,7 +96,7 @@ const bool ImpostorSprite::computeBound() const
 
     _bbox_computed=true;
     
-    if (!_bbox.isValid())
+    if (!_bbox.valid())
     {
         notify(WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
         notify(WARN) << "*******  = "<<_coords[0]<<std::endl;

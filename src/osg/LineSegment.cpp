@@ -124,7 +124,7 @@ const bool LineSegment::intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb)
 
 const bool LineSegment::intersect(const BoundingBox& bb) const
 {
-    if (!bb.isValid()) return false;
+    if (!bb.valid()) return false;
 
     Vec3 s=_s,e=_e;
     return intersectAndClip(s,e,bb);
@@ -133,7 +133,7 @@ const bool LineSegment::intersect(const BoundingBox& bb) const
 
 const bool LineSegment::intersect(const BoundingBox& bb,float& r1,float& r2) const
 {
-    if (!bb.isValid()) return false;
+    if (!bb.valid()) return false;
 
     Vec3 s=_s,e=_e;
     bool result = intersectAndClip(s,e,bb);

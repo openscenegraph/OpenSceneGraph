@@ -710,7 +710,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     osg::Vec3 eye_local = getEyeLocal();
     int eval = node.evaluate(eye_local,_LODBias);
 
-    if (!bs.isValid())
+    if (!bs.valid())
     {
         osg::notify(osg::WARN) << "bb invalid"<<&node<<std::endl;
         return NULL;

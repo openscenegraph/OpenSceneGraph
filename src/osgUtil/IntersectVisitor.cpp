@@ -256,7 +256,7 @@ void IntersectVisitor::popMatrix()
 bool IntersectVisitor::enterNode(Node& node)
 {
     const BoundingSphere& bs = node.getBound();
-    if (bs.isValid())
+    if (bs.valid())
     {
         IntersectState* cis = _intersectStateStack.back().get();
         IntersectState::LineSegmentmentMask sm=0xffffffff;

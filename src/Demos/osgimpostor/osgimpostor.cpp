@@ -92,7 +92,7 @@ int main( int argc, char **argv )
     if (dynamic_cast<osg::Group*>(model)==0)
     {
         const osg::BoundingSphere& bs = model->getBound();
-        if (bs.isValid())
+        if (bs.valid())
         {
 
             osg::Impostor* impostor = new osg::Impostor;

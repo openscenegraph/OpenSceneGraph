@@ -824,6 +824,16 @@ void Viewer::selectCameraManipulator(unsigned int no)
     if (_keyswitchManipulator.valid()) _keyswitchManipulator->selectMatrixManipulator(no);
 }
 
+void Viewer::requestRedraw()
+{
+    osg::notify(osg::INFO)<<"Viewer::requestRedraw() called"<<std::endl;
+}
+
+void Viewer::requestContinuousUpdate(bool flag)
+{
+    osg::notify(osg::INFO)<<"Viewer::requestContinuousUpdate("<<flag<<") called"<<std::endl;
+}
+
 void Viewer::requestWarpPointer(float x,float y)
 {
     if (_kbmcb.valid())

@@ -210,13 +210,25 @@ else
 endif
   DEPARG            = -M
   INC               += 
-  DEF               += -W -Wall
+ifeq ($(COMPILER),intel)
+  C++               = ecc
+  LIBS              = -lgcc_s
+  DEF               += -KPIC
+  OPTF              = -O2 
+  DBGF              = -g -DOSG_COMPILE_UNIT_TESTS 
+else
+  LIBS              = -lstdc++
+  DEF               += -W -Wall -fPIC
   OPTF              = -O2 
   DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
+endif
+  SYSARCH           := $(shell arch)
+ifeq ($(SYSARCH),ia64)
+  ARCH              = 64
+endif
   SHARED            = -shared
   ARCHARGS          = 
   LINKARGS          = -L/usr/X11R6/lib
-  LIBS              = -lstdc++
   DYNAMICLIBRARYLIB = -ldl
   OSG_LIBS          = -losgGLUT -losgGA -losgDB -losgUtil -losg 
   FREETYPE_LIB      = -lfreetype

@@ -16,6 +16,11 @@ using namespace osg;
 
 GeoSet::GeoSet()
 {
+    // we will use the a default delete functor which
+    // assumes that users have allocated arrays with new only
+    // and that now sharing of attributes exists between GeoSet's.
+    _adf = new AttributeDeleteFunctor;
+
     _coords         = (Vec3 *)0;
 
     _normals = (Vec3 *)0;
@@ -50,18 +55,31 @@ GeoSet::GeoSet()
 
 }
 
+#define INDEX_ARRAY_DELETE(A) if (A._is_ushort) delete [] A._ptr._ushort; else delete [] A._ptr._uint;
+
+void GeoSet::AttributeDeleteFunctor::operator() (GeoSet* gset)
+{
+    // note, delete checks for NULL so want delete NULL pointers.
+    delete [] gset->getPrimLengths();
+    delete [] gset->getCoords();
+    INDEX_ARRAY_DELETE(gset->getCoordIndices())
+    delete [] gset->getNormals();
+    INDEX_ARRAY_DELETE(gset->getNormalIndices());
+    delete [] gset->getColors();
+    INDEX_ARRAY_DELETE(gset->getColorIndices());
+    delete [] gset->getTextureCoords();
+    INDEX_ARRAY_DELETE(gset->getTextureIndices())
+    // can't delete a void* right now... interleaved arrays needs to be reimplemented with a proper pointer..
+    //    delete [] gset->getInterleavedArray();
+    INDEX_ARRAY_DELETE(gset->getInterleavedIndices());
+}
+
+#undef INDEX_ARRAY_DELETE
 
 GeoSet::~GeoSet()
 {
-    // note all coordinates, colors, texture coordinates and normals
-    // are not currently deleted, ahh!!!!  This issue needs to be
-    // addressed.  However, since the data is simple passed in it
-    // is unclear whether the data is shared, allocated with malloc,
-    // or new [] so its difficult right now to now how to delete it
-    // appropriatly.  Should data be copied rather than simply copying
-    // pointers??  Using vector<> could simplify this issue. But then
-    // would you want to share coords etc?
-    // Robert Osfield, Decemeber 2000.
+    // if attached call the adf do delete the memory.
+    if (_adf.valid()) (*_adf)(this);
 }
 
 

@@ -94,7 +94,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         osg_mtl = new osg::StateSet*[obj->nummaterials];
         for (i = 0; i < obj->nummaterials; i++) {
             GLMmaterial* omtl = &(obj->materials[i]);
-            osg::notify(DEBUG) << "mtl: " << omtl->name << endl;
+            osg::notify(osg::DEBUG_INFO) << "mtl: " << omtl->name << endl;
 
             osg::StateSet* stateset = new osg::StateSet;
             osg_mtl[i] = stateset;

@@ -183,6 +183,11 @@ void ProgramObject::dirtyShaderObjects()
     }
 }
 
+void ProgramObject::releaseGLObjects(osg::State* state) const
+{
+    const_cast<ProgramObject*>(this)->dirtyShaderObjects();
+}
+
 
 void ProgramObject::addShader( ShaderObject* shadObj )
 {

@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_DISPLAYLISTVISITOR
-#define OSGUTIL_DISPLAYLISTVISITOR 1
+#ifndef OSGUTIL_GLOBJECTSVISITOR
+#define OSGUTIL_GLOBJECTSVISITOR 1
 
 #include <osg/NodeVisitor>
 #include <osg/Geode>
@@ -26,7 +26,7 @@ namespace osgUtil {
   * with option to immediately compile osg::Drawable OpenGL Display lists and
   * osg::StateAttribute's.
   */
-class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
 {
     public:
 
@@ -36,7 +36,9 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
             SWITCH_ON_DISPLAY_LISTS = 0x1,
             SWITCH_OFF_DISPLAY_LISTS = 0x2,
             COMPILE_DISPLAY_LISTS = 0x4,
-            COMPILE_STATE_ATTRIBUTES = 0x8
+            COMPILE_STATE_ATTRIBUTES = 0x8,
+            RELEASE_DISPLAY_LISTS = 0x10,
+            RELEASE_STATE_ATTRIBUTES = 0x20
         };
         
         typedef unsigned int Mode;
@@ -45,7 +47,7 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
           * with set specified display list mode.  Default mode is to
           * gset->setUseDisplayList(true).
           */
-        DisplayListVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES);
+        GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES);
         
         /** Set the operational mode of how the visitor should set up osg::Drawable's.*/
         void setMode(Mode mode) { _mode = mode; }
@@ -73,6 +75,9 @@ class OSGUTIL_EXPORT DisplayListVisitor : public osg::NodeVisitor
           * _displayListMode.
           */
         virtual void apply(osg::Geode& node);
+
+        void apply(osg::Drawable& drawable);
+        void apply(osg::StateSet& stateset);
 
     protected:
 

@@ -752,13 +752,13 @@ const StateSet::RefAttributePair* StateSet::getTextureAttributePair(unsigned int
 }
 
 
-void StateSet::compile(State& state) const
+void StateSet::compileGLObjects(State& state) const
 {
     for(AttributeList::const_iterator itr = _attributeList.begin();
         itr!=_attributeList.end();
         ++itr)
     {
-        itr->second.first->compile(state);
+        itr->second.first->compileGLObjects(state);
     }
 
     for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
@@ -769,7 +769,29 @@ void StateSet::compile(State& state) const
             itr!=taitr->end();
             ++itr)
         {
-            itr->second.first->compile(state);
+            itr->second.first->compileGLObjects(state);
+        }
+    }
+}
+
+void StateSet::releaseGLObjects(State* state) const
+{
+    for(AttributeList::const_iterator itr = _attributeList.begin();
+        itr!=_attributeList.end();
+        ++itr)
+    {
+        itr->second.first->releaseGLObjects(state);
+    }
+
+    for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
+        taitr!=_textureAttributeList.end();
+        ++taitr)
+    {
+        for(AttributeList::const_iterator itr = taitr->begin();
+            itr!=taitr->end();
+            ++itr)
+        {
+            itr->second.first->releaseGLObjects(state);
         }
     }
 }

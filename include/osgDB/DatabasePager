@@ -140,6 +140,21 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** get whether the removed subgraphs should be deleted in the database thread or not.*/
         bool getDeleteRemovedSubgraphsInDatabaseThread() const { return _deleteRemovedSubgraphsInDatabaseThread; }
 
+
+        /** set whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
+        void setUnrefImageDataAfterApplyPolicy(bool changeAutoUnRef, bool valueAutoUnRef) { _changeAutoUnRef = changeAutoUnRef; _valueAutoUnRef = valueAutoUnRef; }
+
+        /** get whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
+        void getUnrefImageDataAfterApplyPolicy(bool& changeAutoUnRef, bool& valueAutoUnRef) const { changeAutoUnRef = _changeAutoUnRef; valueAutoUnRef = _valueAutoUnRef; }
+
+
+        /** set whether newly loaded textures should have their MaxAnisotopy set to a specified value.*/
+        void setMaxAnisotropyPolicy(bool changeAnisotropy, float valueAnisotropy) { _changeAnisotropy = changeAnisotropy; _valueAnisotropy = valueAnisotropy; }
+
+        /** set whether newly loaded textures should have their MaxAnisotopy set to a specified value.*/
+        void getMaxAnisotropyPolicy(bool& changeAnisotropy, float& valueAnisotropy) const { changeAnisotropy = _changeAnisotropy; valueAnisotropy = _valueAnisotropy; }
+
+
         /** Iterate through the active PagedLOD nodes children removing 
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
@@ -220,7 +235,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         DatabaseRequestList             _dataToCompileList;
         OpenThreads::Mutex              _dataToCompileListMutex;
-        
+
+        bool                            _changeAutoUnRef;
+        bool                            _valueAutoUnRef;
+        bool                            _changeAnisotropy;
+        float                           _valueAnisotropy;
 
         bool                            _deleteRemovedSubgraphsInDatabaseThread;
         ObjectList                      _childrenToDeleteList;

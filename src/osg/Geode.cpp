@@ -190,6 +190,6 @@ void Geode::compileDrawables(State& state)
         itr!=_drawables.end();
         ++itr)
     {
-        (*itr)->compile(state);
+        (*itr)->compileGLObjects(state);
     }
 }

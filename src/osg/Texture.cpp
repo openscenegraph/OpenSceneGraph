@@ -1046,11 +1046,15 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 #include <set>
 
 
-void Texture::compile(State& state) const
+void Texture::compileGLObjects(State& state) const
 {
     apply(state);
 }
 
+void Texture::releaseGLObjects(State* state) const
+{
+    const_cast<Texture*>(this)->dirtyTextureObject();
+}
 
 typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;

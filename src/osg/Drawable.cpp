@@ -199,7 +199,7 @@ void Drawable::dirtyBound()
     }
 }
 
-void Drawable::compile(State& state) const
+void Drawable::compileGLObjects(State& state) const
 {
     if (!_useDisplayList) return;
 
@@ -216,12 +216,6 @@ void Drawable::compile(State& state) const
         glDeleteLists( globj, 1 );
     }
 
-    
-    if (_stateset.valid())
-    {
-        _stateset->compile(state);
-    }
-
     globj = glGenLists( 1 );
     glNewList( globj, GL_COMPILE );
 
@@ -232,6 +226,32 @@ void Drawable::compile(State& state) const
 
     glEndList();
 
+}
+
+void Drawable::releaseGLObjects(State* state) const
+{
+    if (!_useDisplayList) return;
+    
+    if (state)
+    {
+        // get the contextID (user defined ID of 0 upwards) for the 
+        // current OpenGL context.
+        unsigned int contextID = state->getContextID();
+
+        // get the globj for the current contextID.
+        GLuint& globj = _globjList[contextID];
+
+        // call the globj if already set otherwise comple and execute.
+        if( globj != 0 )
+        {
+            glDeleteLists( globj, 1 );
+            globj = 0;
+        }    
+    }
+    else
+    {
+        const_cast<Drawable*>(this)->dirtyDisplayList();
+    }
 }
 
 void Drawable::setSupportsDisplayList(bool flag)

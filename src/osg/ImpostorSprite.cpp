@@ -8,7 +8,7 @@
 
 #include <osg/Geometry>
 #include <osg/ImpostorSprite>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
 #include <osg/Notify>
@@ -107,7 +107,7 @@ const bool ImpostorSprite::computeBound() const
     return true;
 }
 
-void ImpostorSprite::setTexture(Texture* tex,int s,int t)
+void ImpostorSprite::setTexture(Texture2D* tex,int s,int t)
 {
     _texture = tex;
     _s = s;
@@ -253,9 +253,9 @@ ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,i
 
     stateset->setAttributeAndModes( _alphafunc.get(), StateAttribute::ON );
 
-    Texture* texture = osgNew Texture;
-    texture->setFilter(Texture::MIN_FILTER,Texture::LINEAR);
-    texture->setFilter(Texture::MAG_FILTER,Texture::LINEAR);
+    Texture2D* texture = osgNew Texture2D;
+    texture->setFilter(Texture2D::MIN_FILTER,Texture2D::LINEAR);
+    texture->setFilter(Texture2D::MAG_FILTER,Texture2D::LINEAR);
 
     stateset->setTextureAttributeAndModes(0,texture,StateAttribute::ON);
     stateset->setTextureAttribute(0,_texenv.get());

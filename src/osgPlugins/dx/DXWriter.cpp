@@ -2047,14 +2047,6 @@ void MyStateSet::Query( const osg::StateSet &sset )
       }
     }
 
-    if ( texture.getSubloadMode() != osg::Texture::OFF ) {
-      // FIXME:  When we generalize this, remove the static hack
-      static int been_here = 0;
-      if ( !been_here ) {
-        msg_bin.Add( "WARNING:  Texture subloading not supported.\n" );
-        been_here = 1;
-      }
-    }
   }
 
   // TEXENV

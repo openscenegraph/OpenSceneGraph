@@ -1,6 +1,6 @@
+#include <osg/GLExtensions>
 #include <osg/State>
 #include <osg/Notify>
-#include <osg/GLExtensions>
 #include <osg/GLU>
 
 #include <algorithm>

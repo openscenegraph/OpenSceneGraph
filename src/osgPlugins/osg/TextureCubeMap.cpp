@@ -11,23 +11,12 @@ using namespace osgDB;
 bool TextureCubeMap_readLocalData(Object& obj, Input& fr);
 bool TextureCubeMap_writeLocalData(const Object& obj, Output& fw);
 
-bool TextureCubeMap_matchWrapStr(const char* str,TextureCubeMap::WrapMode& wrap);
-const char* TextureCubeMap_getWrapStr(TextureCubeMap::WrapMode wrap);
-bool TextureCubeMap_matchFilterStr(const char* str,TextureCubeMap::FilterMode& filter);
-const char* TextureCubeMap_getFilterStr(TextureCubeMap::FilterMode filter);
-bool TextureCubeMap_matchInternalFormatModeStr(const char* str,TextureCubeMap::InternalFormatMode& mode);
-const char* TextureCubeMap_getInternalFormatModeStr(TextureCubeMap::InternalFormatMode mode);
-bool TextureCubeMap_matchInternalFormatValueStr(const char* str,int& value);
-const char* TextureCubeMap_getInternalFormatValueStr(int value);
-bool TextureCubeMap_matchSubloadModeStr(const char* str, TextureCubeMap::SubloadMode& value);
-const char* TextureCubeMap_getSubloadModeStr(TextureCubeMap::SubloadMode value);
-
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TextureCubeMapProxy
 (
     osgNew osg::TextureCubeMap,
     "TextureCubeMap",
-    "Object StateAttribute TextureCubeMap Texture",
+    "Object StateAttribute TextureCubeMap TextureBase",
     &TextureCubeMap_readLocalData,
     &TextureCubeMap_writeLocalData
 );

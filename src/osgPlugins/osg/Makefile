@@ -49,8 +49,10 @@ CXXFILES =\
         TexGen.cpp\
         TexMat.cpp\
         Texture.cpp\
-        Transform.cpp\
+        TextureBase.cpp\
+        Texture2D.cpp\
         TextureCubeMap.cpp\
+        Transform.cpp\
 
 
 LIBS   += $(OSG_LIBS) $(OTHER_LIBS)

@@ -938,7 +938,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
         stateset->setRenderBinDetails(1,"DepthSortedBin");
     }
     
-    Texture* texture = impostorSprite->getTexture();
+    Texture2D* texture = impostorSprite->getTexture();
 
     // update frame number to show that impostor is in action.
     impostorSprite->setLastFrameUsed(getTraversalNumber());

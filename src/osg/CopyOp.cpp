@@ -1,6 +1,7 @@
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/StateSet>
+#include <osg/TextureBase>
 #include <osg/Texture>
 #include <osg/Drawable>
 #include <osg/Array>
@@ -48,25 +49,41 @@ StateAttribute* CopyOp::operator() (const StateAttribute* attr) const
 {
     if (attr && _flags&DEEP_COPY_STATEATTRIBUTES)
     {
-        const Texture* text = dynamic_cast<const Texture*>(attr);
-        if (text)
+        const TextureBase* textbase = dynamic_cast<const TextureBase*>(attr);
+        if (textbase)
         {
-            return operator()(text);
+            return operator()(textbase);
         }
-        else        
-            return dynamic_cast<StateAttribute*>(attr->clone(*this));
+        else 
+        {
+//             const Texture* text = dynamic_cast<const Texture*>(attr);
+//             if (text)
+//             {
+//                 return operator()(text);
+//             }
+//             else        
+                return dynamic_cast<StateAttribute*>(attr->clone(*this));
+        }
     }
     else
         return const_cast<StateAttribute*>(attr);
 }
 
-Texture* CopyOp::operator() (const Texture* text) const
+TextureBase* CopyOp::operator() (const TextureBase* text) const
 {
     if (text && _flags&DEEP_COPY_TEXTURES)
-        return dynamic_cast<Texture*>(text->clone(*this));
+        return dynamic_cast<TextureBase*>(text->clone(*this));
     else
-        return const_cast<Texture*>(text);
+        return const_cast<TextureBase*>(text);
 }
+
+// Texture* CopyOp::operator() (const Texture* text) const
+// {
+//     if (text && _flags&DEEP_COPY_TEXTURES)
+//         return dynamic_cast<Texture*>(text->clone(*this));
+//     else
+//         return const_cast<Texture*>(text);
+// }
 
 Image* CopyOp::operator() (const Image* image) const
 {

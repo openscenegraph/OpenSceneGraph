@@ -14,7 +14,7 @@
 
 namespace osg {
 
-class Texture;
+class Texture2D;
 class Impostor;
 class ImpostorSpriteManager;
 
@@ -106,10 +106,10 @@ class SG_EXPORT ImpostorSprite : public Drawable
           * which transform local coords into screen space.*/
         const float calcPixelError(const Matrix& MVPW) const;
 
-        void setTexture(Texture* tex,int s,int t);
+        void setTexture(Texture2D* tex,int s,int t);
 
-        Texture* getTexture() { return _texture; }
-        const Texture* getTexture() const { return _texture; }
+        Texture2D* getTexture() { return _texture; }
+        const Texture2D* getTexture() const { return _texture; }
         const int s() const { return _s; }
         const int t() const { return _t; }
 
@@ -149,7 +149,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
         Vec2 _texcoords[4];
         Vec3 _controlcoords[4];
         
-        Texture* _texture;
+        Texture2D* _texture;
         int _s;
         int _t;
         

@@ -381,6 +381,22 @@ SOURCE=..\..\src\osg\Texture.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TextureBase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Texture1D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Texture2D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Texture3D.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\TextureCubeMap.cpp
 # End Source File
 # Begin Source File
@@ -750,6 +766,22 @@ SOURCE=..\..\Include\Osg\TexMat
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Texture
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TextureBase
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Texture1D
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Texture2D
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Texture3D
 # End Source File
 # Begin Source File
 

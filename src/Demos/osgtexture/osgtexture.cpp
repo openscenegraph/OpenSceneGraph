@@ -2,7 +2,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
-#include <osg/Texture>
+#include <osg/Texture2D>
 #include <osg/DrawPixels>
 
 #include <osgGA/TrackballManipulator>
@@ -24,22 +24,22 @@
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
-class TextureCallback : public osg::NodeCallback
+class Texture2DCallback : public osg::NodeCallback
 {
     public:
-        TextureCallback(osg::Texture* texture):_texture(texture)
+        Texture2DCallback(osg::Texture2D* texture):_texture(texture)
         {
-            _filterRange.push_back(osg::Texture::LINEAR);
-            _filterRange.push_back(osg::Texture::LINEAR_MIPMAP_LINEAR);
-            _filterRange.push_back(osg::Texture::LINEAR_MIPMAP_NEAREST);
-            _filterRange.push_back(osg::Texture::NEAREST);
-            _filterRange.push_back(osg::Texture::NEAREST_MIPMAP_LINEAR);
-            _filterRange.push_back(osg::Texture::NEAREST_MIPMAP_NEAREST);
+            _filterRange.push_back(osg::Texture2D::LINEAR);
+            _filterRange.push_back(osg::Texture2D::LINEAR_MIPMAP_LINEAR);
+            _filterRange.push_back(osg::Texture2D::LINEAR_MIPMAP_NEAREST);
+            _filterRange.push_back(osg::Texture2D::NEAREST);
+            _filterRange.push_back(osg::Texture2D::NEAREST_MIPMAP_LINEAR);
+            _filterRange.push_back(osg::Texture2D::NEAREST_MIPMAP_NEAREST);
             _currPos = 0;
             _prevTime = 0.0;
         }
         
-        virtual ~TextureCallback() {}
+        virtual ~Texture2DCallback() {}
         
         virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
         {
@@ -49,7 +49,7 @@ class TextureCallback : public osg::NodeCallback
                 if (currTime-_prevTime>1.0) 
                 {
                     std::cout<<"Updating texturing filter to "<<std::hex<<_filterRange[_currPos]<<std::dec<<std::endl;
-                    _texture->setFilter(osg::Texture::MAG_FILTER,_filterRange[_currPos]);
+                    _texture->setFilter(osg::Texture2D::MAG_FILTER,_filterRange[_currPos]);
                     _currPos++;
                     if (_currPos>=_filterRange.size()) _currPos=0;                    
                     _prevTime = currTime;
@@ -57,8 +57,8 @@ class TextureCallback : public osg::NodeCallback
             }
         }
         
-        osg::ref_ptr<osg::Texture>              _texture;
-        std::vector<osg::Texture::FilterMode>   _filterRange;
+        osg::ref_ptr<osg::Texture2D>              _texture;
+        std::vector<osg::Texture2D::FilterMode>   _filterRange;
         osg::uint                               _currPos;
         double                                  _prevTime;
 };
@@ -127,7 +127,7 @@ osg::Drawable* createSquare(float textureCoordMax=1.0f)
     return geom;
 }
 
-osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture* texture,osg::Node* geometry)
+osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture2D* texture,osg::Node* geometry)
 {
     // create a tranform node to position each square in appropriate
     // place and also to add individual texture set to it, so that
@@ -183,7 +183,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // defaults mipmapped texturing.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
         // add the transform node to root group node.
@@ -199,12 +199,12 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // bilinear
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
         
         // set up bilinear filtering.
-        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_NEAREST);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_NEAREST);
+        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
         
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
@@ -216,12 +216,12 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // trilinear
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
         
         // set up trilinear filtering.
-        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_LINEAR);
+        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
         
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
@@ -234,12 +234,12 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // anisotropic
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
         // set up anistropic filtering.
-        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
-        texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_LINEAR);
+        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
         texture->setMaxAnisotropy(2.0f);
         
         // add the transform node to root group node.
@@ -252,10 +252,10 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // arb compression
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
-        texture->setInternalFormatMode(osg::Texture::USE_ARB_COMPRESSION);
+        texture->setInternalFormatMode(osg::Texture2D::USE_ARB_COMPRESSION);
         
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
@@ -267,10 +267,10 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // s3tc_dxt1 compression
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
-        texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT1_COMPRESSION);
+        texture->setInternalFormatMode(osg::Texture2D::USE_S3TC_DXT1_COMPRESSION);
         
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometry));
@@ -279,10 +279,10 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 
     }
     
-    // default wrap mode. (osg::Texture::CLAMP)
+    // default wrap mode. (osg::Texture2D::CLAMP)
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
         // add the transform node to root group node.
@@ -295,11 +295,11 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // clamp-to-edge mode.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_EDGE);
+        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_EDGE);
 
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
@@ -311,11 +311,11 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // repeat wrap mode.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
+        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
 
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));
@@ -327,11 +327,11 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // mirror wrap mode.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
 
-        texture->setWrap(osg::Texture::WRAP_S,osg::Texture::MIRROR);
-        texture->setWrap(osg::Texture::WRAP_T,osg::Texture::MIRROR);
+        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::MIRROR);
+        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::MIRROR);
 
         // add the transform node to root group node.
         top_transform->addChild(createTexturedItem(local_offset,texture,geometryRep));

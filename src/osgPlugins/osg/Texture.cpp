@@ -1,5 +1,8 @@
 #include "osg/Texture"
 
+#ifdef TEXTURE_USE_DEPRECATED_API
+
+
 #include "osgDB/Registry"
 #include "osgDB/Input"
 #include "osgDB/Output"
@@ -27,7 +30,7 @@ RegisterDotOsgWrapperProxy g_TextureProxy
 (
     osgNew osg::Texture,
     "Texture",
-    "Object StateAttribute Texture",
+    "Object StateAttribute Texture TextureBase",
     &Texture_readLocalData,
     &Texture_writeLocalData
 );
@@ -54,70 +57,6 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         
         fr += 2;
         iteratorAdvanced = true;
-    }
-    Texture::WrapMode wrap;
-    if (fr[0].matchWord("wrap_s") && Texture_matchWrapStr(fr[1].getStr(),wrap))
-    {
-        texture.setWrap(Texture::WRAP_S,wrap);
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("wrap_t") && Texture_matchWrapStr(fr[1].getStr(),wrap))
-    {
-        texture.setWrap(Texture::WRAP_T,wrap);
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("wrap_r") && Texture_matchWrapStr(fr[1].getStr(),wrap))
-    {
-        texture.setWrap(Texture::WRAP_R,wrap);
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    Texture::FilterMode filter;
-    if (fr[0].matchWord("min_filter") && Texture_matchFilterStr(fr[1].getStr(),filter))
-    {
-        texture.setFilter(Texture::MIN_FILTER,filter);
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("mag_filter") && Texture_matchFilterStr(fr[1].getStr(),filter))
-    {
-        texture.setFilter(Texture::MAG_FILTER,filter);
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr.matchSequence("maxAnisotropy %f"))
-    {
-        float anis=1.0f;
-        fr[1].getFloat(anis);
-        texture.setMaxAnisotropy(anis);
-        fr +=2 ;
-        iteratorAdvanced = true;
-    }
-
-    Texture::InternalFormatMode mode;
-    if (fr[0].matchWord("internalFormatMode") && Texture_matchInternalFormatModeStr(fr[1].getStr(),mode))
-    {
-        texture.setInternalFormatMode(mode);
-        fr+=2;
-        iteratorAdvanced = true;
-    }
-
-    if (fr[0].matchWord("internalFormatValue"))
-    {
-        int value;
-        if (Texture_matchInternalFormatValueStr(fr[1].getStr(),value) || fr[1].getInt(value))
-        {
-            texture.setInternalFormatValue(value);
-            fr+=2;
-            iteratorAdvanced = true;
-        }
     }
 
     Texture::SubloadMode submode;
@@ -201,22 +140,6 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
         fw.indent() << "file \""<<fw.getFileNameForOutput(texture.getImage()->getFileName())<<"\""<< std::endl;
     }
 
-    fw.indent() << "wrap_s " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_S)) << std::endl;
-    fw.indent() << "wrap_t " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_T)) << std::endl;
-    fw.indent() << "wrap_r " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_R)) << std::endl;
-
-    fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << std::endl;
-    fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
-    fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
-
-    fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
-
-    if (texture.getInternalFormatMode()==Texture::USE_USER_DEFINED_FORMAT)
-    {
-        const char* str = Texture_getInternalFormatValueStr(texture.getInternalFormatValue());
-        if (str) fw.indent() << "internalFormatValue " << str << std::endl;
-        else fw.indent() << "internalFormatValue " << texture.getInternalFormatValue() << std::endl;
-    }
 
     fw.indent() << "subloadMode " << Texture_getSubloadModeStr(texture.getSubloadMode()) << std::endl;
     if (texture.getSubloadMode()!=Texture::OFF)
@@ -395,3 +318,26 @@ const char* Texture_getSubloadModeStr(Texture::SubloadMode value)
     }
     return NULL;
 }
+#else
+
+#include "osg/Texture2D"
+
+#include "osgDB/Registry"
+#include "osgDB/Input"
+#include "osgDB/Output"
+
+using namespace osg;
+using namespace osgDB;
+
+RegisterDotOsgWrapperProxy g_TextureProxy
+(
+    osgNew osg::Texture2D,
+    "Texture",
+    "Object StateAttribute Texture2D TextureBase",
+    0,
+    0
+);
+
+
+#endif
+

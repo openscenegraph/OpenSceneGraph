@@ -1,60 +1,38 @@
 #include <osg/GLExtensions>
-#include <osg/Texture>
-
-#ifdef TEXTURE_USE_DEPRECATED_API
-
-#if defined(_MSC_VER)
-    #pragma warning( disable : 4786 )
-#endif
-
-#include <osg/ref_ptr>
-#include <osg/Image>
+#include <osg/Texture2D>
 #include <osg/State>
-#include <osg/Notify>
-
 #include <osg/GLU>
+
+typedef void (APIENTRY * MyCompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
 
 using namespace osg;
 
-Texture::Texture():
+Texture2D::Texture2D():
             _textureWidth(0),
             _textureHeight(0),
-            _numMimpmapLevels(0),
-            _subloadMode(OFF),
-            _subloadTextureOffsetX(0),
-            _subloadTextureOffsetY(0),
-            _subloadImageOffsetX(0),
-            _subloadImageOffsetY(0),
-            _subloadImageWidth(0),
-            _subloadImageHeight(0)
+            _numMimpmapLevels(0)
 {
 }
 
-Texture::Texture(const Texture& text,const CopyOp& copyop):
+Texture2D::Texture2D(const Texture2D& text,const CopyOp& copyop):
             TextureBase(text,copyop),
             _image(copyop(text._image.get())),
             _textureWidth(text._textureWidth),
             _textureHeight(text._textureHeight),
             _numMimpmapLevels(text._numMimpmapLevels),
-            _subloadMode(text._subloadMode),
-            _subloadTextureOffsetX(text._subloadTextureOffsetX),
-            _subloadTextureOffsetY(text._subloadTextureOffsetY),
-            _subloadImageOffsetX(text._subloadImageOffsetX),
-            _subloadImageOffsetY(text._subloadImageOffsetY),
-            _subloadImageWidth(text._subloadImageWidth),
-            _subloadImageHeight(text._subloadImageHeight),
             _subloadCallback(text._subloadCallback)
-{}
-
-Texture::~Texture()
 {
 }
 
-int Texture::compare(const StateAttribute& sa) const
+Texture2D::~Texture2D()
+{
+}
+
+int Texture2D::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
     // used by the COMPARE_StateAttribute_Paramter macro's below.
-    COMPARE_StateAttribute_Types(Texture,sa)
+    COMPARE_StateAttribute_Types(Texture2D,sa)
 
     if (_image!=rhs._image) // smart pointer comparison.
     {
@@ -76,26 +54,18 @@ int Texture::compare(const StateAttribute& sa) const
         }
     }
 
-
     int result = compareTextureBase(rhs);
     if (result!=0) return result;
-
 
     // compare each paramter in turn against the rhs.
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_textureHeight)
-    COMPARE_StateAttribute_Parameter(_subloadMode)
-    COMPARE_StateAttribute_Parameter(_subloadTextureOffsetX)
-    COMPARE_StateAttribute_Parameter(_subloadTextureOffsetY)
-    COMPARE_StateAttribute_Parameter(_subloadImageOffsetX)
-    COMPARE_StateAttribute_Parameter(_subloadImageOffsetY)
-    COMPARE_StateAttribute_Parameter(_subloadImageWidth)
-    COMPARE_StateAttribute_Parameter(_subloadImageHeight)
+    COMPARE_StateAttribute_Parameter(_subloadCallback)
 
     return 0; // passed all the above comparison macro's, must be equal.
 }
 
-void Texture::setImage(Image* image)
+void Texture2D::setImage(Image* image)
 {
     // delete old texture objects.
     for(TextureNameList::iterator itr=_handleList.begin();
@@ -114,7 +84,8 @@ void Texture::setImage(Image* image)
     _image = image;
 }
 
-void Texture::apply(State& state) const
+
+void Texture2D::apply(State& state) const
 {
 
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -126,48 +97,25 @@ void Texture::apply(State& state) const
 
     if (handle != 0)
     {
-        if (_subloadMode == OFF)
+
+        glBindTexture( GL_TEXTURE_2D, handle );
+        if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_2D,state);
+
+        if (_subloadCallback.valid())
         {
-            glBindTexture( GL_TEXTURE_2D, handle );
-            if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_2D,state);
+            _subloadCallback->subload(*this,state);
         }
-        else  if (_image.valid() && _image->data())
-        {
-            glBindTexture( GL_TEXTURE_2D, handle );
-            if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_2D,state);
 
-            uint& modifiedTag = getModifiedTag(contextID);
-            if (_subloadMode == AUTO ||
-                (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
-            {
-                glPixelStorei(GL_UNPACK_ROW_LENGTH,_image->s());
-
-                glTexSubImage2D(GL_TEXTURE_2D, 0,
-                                _subloadTextureOffsetX, _subloadTextureOffsetY,
-                                (_subloadImageWidth>0)?_subloadImageWidth:_image->s(), (_subloadImageHeight>0)?_subloadImageHeight:_image->t(),
-                                (GLenum) _image->getPixelFormat(), (GLenum) _image->getDataType(),
-                                _image->data(_subloadImageOffsetX,_subloadImageOffsetY));
-
-                glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
-
-                // update the modified flag to show that the image has been loaded.
-                modifiedTag = _image->getModifiedTag();
-            }
-            else if (_subloadMode == USE_CALLBACK)
-            {
-                _subloadCallback->subload(GL_TEXTURE_2D,*this,state);
-            }
-            
-        }
     }
-    else if (_image.valid() && _image->data())
+    else if (_subloadCallback.valid())
     {
 
         glGenTextures( 1L, (GLuint *)&handle );
         glBindTexture( GL_TEXTURE_2D, handle );
 
         applyTexParameters(GL_TEXTURE_2D,state);
-        applyTexImage2D(GL_TEXTURE_2D,_image.get(),state, _textureWidth, _textureHeight, _numMimpmapLevels);
+
+        _subloadCallback->load(*this,state);
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
@@ -176,19 +124,36 @@ void Texture::apply(State& state) const
         glBindTexture( GL_TEXTURE_2D, handle );
 
     }
+    else if (_image.valid() && _image->data())
+    {
+
+        glGenTextures( 1L, (GLuint *)&handle );
+        glBindTexture( GL_TEXTURE_2D, handle );
+
+        applyTexParameters(GL_TEXTURE_2D,state);
+
+        applyTexImage2D(GL_TEXTURE_2D,_image.get(),state, _textureWidth, _textureHeight, _numMimpmapLevels);
+
+        // in theory the following line is redundent, but in practice
+        // have found that the first frame drawn doesn't apply the textures
+        // unless a second bind is called?!!
+        // perhaps it is the first glBind which is not required...
+        glBindTexture( GL_TEXTURE_2D, handle );
+        
+    }
     else
     {
         glBindTexture( GL_TEXTURE_2D, 0 );
     }
 }
 
-void Texture::computeInternalFormat() const
+void Texture2D::computeInternalFormat() const
 {
     if (_image.valid()) computeInternalFormatWithImage(*_image); 
 }
 
 
-void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
+void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height )
 {
     const uint contextID = state.getContextID();
 
@@ -231,7 +196,6 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     applyTexParameters(GL_TEXTURE_2D,state);
     glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
 
-
     _textureWidth = width;
     _textureHeight = height;
 
@@ -239,7 +203,7 @@ void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
     state.haveAppliedAttribute(this);
 }
 
-void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
+void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
 {
     const uint contextID = state.getContextID();
 
@@ -268,5 +232,3 @@ void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, i
         copyTexImage2D(state,x,y,width,height);
     }
 }
-
-#endif // USE_DEPRECATED_API

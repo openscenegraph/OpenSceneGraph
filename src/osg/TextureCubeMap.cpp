@@ -2,12 +2,12 @@
 	#pragma warning( disable : 4786 )
 #endif
 
+#include <osg/GLExtensions>
 #include <osg/ref_ptr>
 #include <osg/Image>
 #include <osg/State>
 #include <osg/Texture>
 #include <osg/TextureCubeMap>
-#include <osg/GLExtensions>
 
 #include <osg/GLU>
 
@@ -79,10 +79,28 @@ static GLenum faceTarget[6] =
 #endif
 
 
-TextureCubeMap::TextureCubeMap():Texture()
+TextureCubeMap::TextureCubeMap():
+            _textureWidth(0),
+            _textureHeight(0),
+            _numMimpmapLevels(0)
 {
-    _target = GL_TEXTURE_CUBE_MAP;      // default to ARB extension
 }
+
+TextureCubeMap::TextureCubeMap(const TextureCubeMap& text,const CopyOp& copyop):
+            TextureBase(text,copyop),
+            _textureWidth(text._textureWidth),
+            _textureHeight(text._textureHeight),
+            _numMimpmapLevels(text._numMimpmapLevels),
+            _subloadCallback(text._subloadCallback)
+{
+    _images[0] = copyop(text._images[0].get());
+    _images[1] = copyop(text._images[1].get());
+    _images[2] = copyop(text._images[2].get());
+    _images[3] = copyop(text._images[3].get());
+    _images[4] = copyop(text._images[4].get());
+    _images[5] = copyop(text._images[5].get());
+
+}    
 
 
 TextureCubeMap::~TextureCubeMap()
@@ -118,6 +136,14 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
             }
         }
     }
+
+    int result = compareTextureBase(rhs);
+    if (result!=0) return result;
+
+    // compare each paramter in turn against the rhs.
+    COMPARE_StateAttribute_Parameter(_textureWidth)
+    COMPARE_StateAttribute_Parameter(_textureHeight)
+    COMPARE_StateAttribute_Parameter(_subloadCallback)
 
     return 0; // passed all the above comparison macro's, must be equal.
 }
@@ -165,6 +191,10 @@ bool TextureCubeMap::imagesValid() const
     return true;
 }
 
+void TextureCubeMap::computeInternalFormat() const
+{
+    if (imagesValid()) computeInternalFormatWithImage(*_images[0]); 
+}
 
 void TextureCubeMap::apply(State& state) const
 {
@@ -183,65 +213,55 @@ void TextureCubeMap::apply(State& state) const
 
     if (handle != 0)
     {
-        if (_subloadMode == OFF)
+        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        if (_texParamtersDirty) applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
+
+        if (_subloadCallback.valid())
         {
-            glBindTexture( _target, handle );
-            if (_texParamtersDirty) applyTexParameters(_target,state);
+            _subloadCallback->subload(*this,state);
         }
-        else  if (imagesValid())
-        {
-            uint& modifiedTag = getModifiedTag(contextID);
 
-            modifiedTag = 0;
-            glBindTexture( _target, handle );
-            if (_texParamtersDirty) applyTexParameters(_target,state);
-            
-            int rowwidth = 0;
-            for (int n=0; n<6; n++)
-            {
-                if ((_subloadMode == AUTO) ||
-                    (_subloadMode == IF_DIRTY && modifiedTag != _images[n]->getModifiedTag()))
-                {
-
-                    if (rowwidth != _images[n]->s())
-                    {
-                        rowwidth = _images[n]->s();
-                        glPixelStorei(GL_UNPACK_ROW_LENGTH,rowwidth);
-                    }
-
-                    glTexSubImage2D(faceTarget[n], 0,
-                                    _subloadTextureOffsetX, _subloadTextureOffsetX,
-                                    (_subloadImageWidth>0)?_subloadImageWidth:_images[n]->s(), (_subloadImageHeight>0)?_subloadImageHeight:_images[n]->t(),
-                                    (GLenum) _images[n]->getPixelFormat(), (GLenum) _images[n]->getDataType(),
-                                    _images[n]->data(_subloadImageOffsetX,_subloadImageOffsetY));
-                    // update the modified flag to show that the image has been loaded.
-                    modifiedTag += _images[n]->getModifiedTag();
-                }
-                else if (_subloadMode == USE_CALLBACK)
-                {
-                    _subloadCallback->subload(faceTarget[n],*this,state);
-                }
-            }
-            glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
-        }
     }
-    else if (imagesValid())
+    else if (_subloadCallback.valid())
     {
         glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( _target, handle );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
 
-        applyTexParameters(_target,state);
+        applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
 
-        for (int n=0; n<6; n++)
-        {
-            applyTexImage( faceTarget[n], _images[n].get(), state);
-        }
+        _subloadCallback->load(*this,state);
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( _target, handle );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
 
+    }
+    else if (imagesValid())
+    {
+
+        glGenTextures( 1L, (GLuint *)&handle );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+
+        applyTexParameters(GL_TEXTURE_CUBE_MAP,state);
+
+
+        for (int n=0; n<6; n++)
+        {
+            applyTexImage2D( faceTarget[n], _images[n].get(), state, _textureWidth, _textureHeight, _numMimpmapLevels);
+        }
+
+
+        // in theory the following line is redundent, but in practice
+        // have found that the first frame drawn doesn't apply the textures
+        // unless a second bind is called?!!
+        // perhaps it is the first glBind which is not required...
+        glBindTexture( GL_TEXTURE_CUBE_MAP, handle );
+        
+    }
+    else
+    {
+        glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
     }
 }

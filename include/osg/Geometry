@@ -77,6 +77,10 @@ class SG_EXPORT Geometry : public Drawable
         PrimitiveList& getPrimitiveList() { return _primitives; }
         const PrimitiveList& getPrimitiveList() const { return _primitives; }
 
+        unsigned int getNumPrimitives() const { return _primitives.size(); }
+        Primitive* getPrimitive(unsigned int pos) { return _primitives[pos].get(); }
+        const Primitive* getPrimitive(unsigned int pos) const { return _primitives[pos].get(); }
+        
         void addPrimitive(Primitive* primitive) { if (primitive) _primitives.push_back(primitive); dirtyDisplayList(); }
 
 

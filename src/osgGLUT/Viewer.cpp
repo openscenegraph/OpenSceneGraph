@@ -667,7 +667,7 @@ void Viewer::display()
     // draw traverasal.
     times[2].timeDraw=0.0f;
     
-    for(int i = 0; i < getNumViewports(); i++ )
+    for(unsigned int i = 0; i < getNumViewports(); i++ )
     {
         // application traverasal.
         times[2].timeApp+=app(i);
@@ -1388,7 +1388,7 @@ bool Viewer::run()
 }
 
 
-void Viewer::addViewport(osgUtil::SceneView* sv,
+unsigned int Viewer::addViewport(osgUtil::SceneView* sv,
                          float x, float y, float width, float height) 
 { 
     ViewportDef def;
@@ -1397,21 +1397,25 @@ void Viewer::addViewport(osgUtil::SceneView* sv,
     def.viewport[1] = y;
     def.viewport[2] = width;
     def.viewport[3] = height;
+    
+    unsigned int pos = _viewportList.size();
     _viewportList.push_back(def);
+    
+    return pos;
 }
 
 
 /**
   * Adds a default SceneView referring to the passed scene graph root.
   */
-void Viewer::addViewport(osg::Node* rootnode,
+unsigned int Viewer::addViewport(osg::Node* rootnode,
                          float x, float y, float width, float height) 
 {
     osgUtil::SceneView *sceneView = osgNew osgUtil::SceneView(_displaySettings.get());
     sceneView->setDefaults();
     sceneView->setSceneData(rootnode);
 
-    addViewport( sceneView, x, y, width, height );
+    return addViewport( sceneView, x, y, width, height );
 }
 
 void Viewer::init(osg::Node* rootnode)

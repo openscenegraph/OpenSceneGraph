@@ -176,7 +176,7 @@ void MpegImageStream::load(const char* fileName)
     _rows = (unsigned char**) ::malloc(t * sizeof(unsigned char*));
     unsigned char* dp = data;
     for (int i = 0; i < t; i++) {
-        _rows[i] = dp;
+        _rows[t-i-1] = dp;
         dp += (s * 3);
     }
 

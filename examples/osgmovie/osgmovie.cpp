@@ -118,7 +118,7 @@ int main(int argc, char** argv)
     }
 
     osg::TexMat* texMat = new osg::TexMat;
-    texMat->setMatrix(osg::Matrix::scale(mpeg->s(),-mpeg->t(),1.0f)*osg::Matrix::translate(0.0f,mpeg->t(),0.0f));
+    texMat->setMatrix(osg::Matrix::scale(mpeg->s(),mpeg->t(),1.0f));
 
 
     // Create morphed geometry

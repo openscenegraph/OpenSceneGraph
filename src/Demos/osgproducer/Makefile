@@ -2,7 +2,8 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	osgproducer.cpp\
+	osgproducer_viewer.cpp\
+#	osgproducer_cameragroup.cpp\
 
 LIBS     += -losgProducer $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 

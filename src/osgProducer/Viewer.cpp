@@ -187,6 +187,12 @@ void Viewer::realize( ThreadingModel thread_model)
 
     OsgCameraGroup::realize( thread_model );
     
+    // set up osg::State objects with a the _done prt to allow early termination of 
+    // draw traversal.
+    for(SceneHandlerList::iterator p=_shvec.begin(); p!=_shvec.end(); p++ )
+    {
+        (*p)->getState()->setAbortRenderingPtr(&_done);
+    }
     
 }
 

@@ -165,6 +165,16 @@ class SG_EXPORT StateAttribute : public Object
             /// osgFX namespace
             VALIDATOR,
             VIEWMATRIXEXTRACTOR,
+            
+            // osgNV namespace
+            PARAMETER_BLOCK,
+            // osgNVExt namespace
+            TEXTURE_SHADER,
+            VERTEX_PROGRAM,
+            REGISTER_COMBINERS,
+            // osgNVParse
+            PROGRAM,
+            PROGRAM_PARSER
         };
         
         /** Simple pairing between an attribute type and the member within that attribute type group.*/

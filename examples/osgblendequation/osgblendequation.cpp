@@ -36,28 +36,28 @@ protected:
 
     static const int 	_eq_nb=8;
     int 		_eq_index;
-    static const unsigned int _equations[_eq_nb];
+    static const osg::BlendEquation::Equation _equations[_eq_nb];
     static const char* _equations_name[_eq_nb];
 };
-const unsigned int TechniqueEventHandler::_equations[_eq_nb]={
-				osg::BlendEquation::FUNC_ADD_EXT,
-				osg::BlendEquation::FUNC_SUBTRACT_EXT,
-				osg::BlendEquation::FUNC_REVERSE_SUBTRACT_EXT,
-				osg::BlendEquation::MIN_EXT,
-				osg::BlendEquation::MAX_EXT,
-				osg::BlendEquation::ALPHA_MIN_SGIX,
-				osg::BlendEquation::ALPHA_MAX_SGIX,
+const osg::BlendEquation::Equation TechniqueEventHandler::_equations[_eq_nb]={
+				osg::BlendEquation::FUNC_ADD,
+				osg::BlendEquation::FUNC_SUBTRACT,
+				osg::BlendEquation::FUNC_REVERSE_SUBTRACT,
+				osg::BlendEquation::RGBA_MIN,
+				osg::BlendEquation::RGBA_MAX,
+				osg::BlendEquation::ALPHA_MIN,
+				osg::BlendEquation::ALPHA_MAX,
 				osg::BlendEquation::LOGIC_OP
 			};
 
 const char* TechniqueEventHandler::_equations_name[_eq_nb]={
-				"osg::BlendEquation::FUNC_ADD_EXT",
-				"osg::BlendEquation::FUNC_SUBTRACT_EXT",
-				"osg::BlendEquation::FUNC_REVERSE_SUBTRACT_EXT",
-				"osg::BlendEquation::MIN_EXT",
-				"osg::BlendEquation::MAX_EXT",
-				"osg::BlendEquation::ALPHA_MIN_SGIX",
-				"osg::BlendEquation::ALPHA_MAX_SGIX",
+				"osg::BlendEquation::FUNC_ADD",
+				"osg::BlendEquation::FUNC_SUBTRACT",
+				"osg::BlendEquation::FUNC_REVERSE_SUBTRACT",
+				"osg::BlendEquation::RGBA_MIN",
+				"osg::BlendEquation::RGBA_MAX",
+				"osg::BlendEquation::ALPHA_MIN",
+				"osg::BlendEquation::ALPHA_MAX",
 				"osg::BlendEquation::LOGIC_OP"
 			};
 
@@ -132,7 +132,7 @@ int main( int argc, char **argv )
     
     
     osg::StateSet* 	stateset = 	new osg::StateSet;
-    osg::BlendEquation* blendEquation =	new osg::BlendEquation(osg::BlendEquation::FUNC_ADD_EXT);
+    osg::BlendEquation* blendEquation =	new osg::BlendEquation(osg::BlendEquation::FUNC_ADD);
 	    
     stateset->setAttributeAndModes(blendEquation,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 		    

@@ -16,32 +16,6 @@
 
 #include <osg/StateAttribute>
 
-#ifndef GL_VERSION_1_2
-/* Logic Ops */
-#define GL_LOGIC_OP                             0x0BF1
-#define GL_INDEX_LOGIC_OP                       0x0BF1
-#define GL_COLOR_LOGIC_OP                       0x0BF2
-#define GL_LOGIC_OP_MODE                        0x0BF0
-#define GL_CLEAR                                0x1500
-#define GL_SET                                  0x150F
-#define GL_COPY                                 0x1503
-#define GL_COPY_INVERTED                        0x150C
-#define GL_NOOP                                 0x1505
-#define GL_INVERT                               0x150A
-#define GL_AND                                  0x1501
-#define GL_NAND                                 0x150E
-#define GL_OR                                   0x1507
-#define GL_NOR                                  0x1508
-#define GL_XOR                                  0x1506
-#define GL_EQUIV                                0x1509
-#define GL_AND_REVERSE                          0x1502
-#define GL_AND_INVERTED                         0x1504
-#define GL_OR_REVERSE                           0x150B
-#define GL_OR_INVERTED                          0x150D
-#endif
-
-
-
 namespace osg {
 
 /** Encapsulates OpenGL LogicOp state. */
@@ -49,9 +23,28 @@ class SG_EXPORT LogicOp : public StateAttribute
 {
     public :
 
+        enum Opcode {
+            CLEAR               = GL_CLEAR,
+            SET                 = GL_SET,
+            COPY                = GL_COPY,
+            COPY_INVERTED       = GL_COPY_INVERTED,
+            NOOP                = GL_NOOP,
+            INVERT              = GL_INVERT,
+            AND                 = GL_AND,
+            NAND                = GL_NAND,
+            OR                  = GL_OR,
+            NOR                 = GL_NOR,
+            XOR                 = GL_XOR,
+            EQUIV               = GL_EQUIV,
+            AND_REVERSE         = GL_AND_REVERSE,
+            AND_INVERTED        = GL_AND_INVERTED,
+            OR_REVERSE          = GL_OR_REVERSE,
+            OR_INVERTED         = GL_OR_INVERTED
+        };
+
         LogicOp();
         
-        LogicOp(GLenum opcode);
+        LogicOp(Opcode opcode);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         LogicOp(const LogicOp& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -79,31 +72,13 @@ class SG_EXPORT LogicOp : public StateAttribute
             return true;
         }
 
-        enum LogicOpOpcode {
-		CLEAR			= GL_CLEAR,
-		SET			= GL_SET,
-		COPY			= GL_COPY,
-		COPY_INVERTED		= GL_COPY_INVERTED,
-		NOOP			= GL_NOOP,
-		INVERT			= GL_INVERT,
-		AND			= GL_AND,
-		NAND			= GL_NAND,
-		OR			= GL_OR,
-		NOR			= GL_NOR,
-		XOR			= GL_XOR,
-		EQUIV			= GL_EQUIV,
-		AND_REVERSE		= GL_AND_REVERSE,
-		AND_INVERTED		= GL_AND_INVERTED,
-		OR_REVERSE		= GL_OR_REVERSE,
-		OR_INVERTED		= GL_OR_INVERTED
-        };
 
-        inline void setOpcode( GLenum opcode )
+        inline void setOpcode(Opcode opcode)
         {
             _opcode = opcode;
         }
 
-        inline GLenum getOpcode() const { return _opcode; }
+        inline Opcode getOpcode() const { return _opcode; }
         
         virtual void apply(State& state) const;
 
@@ -111,7 +86,7 @@ class SG_EXPORT LogicOp : public StateAttribute
 
         virtual ~LogicOp();
 
-        GLenum _opcode;
+        Opcode _opcode;
 };
 
 }

@@ -19,7 +19,7 @@ LogicOp::LogicOp():
 {
 }
 
-LogicOp::LogicOp(GLenum opcode):
+LogicOp::LogicOp(Opcode opcode):
     _opcode(opcode)
 {
 }
@@ -30,6 +30,6 @@ LogicOp::~LogicOp()
 
 void LogicOp::apply(State&) const
 {
-    glLogicOp(_opcode);
+    glLogicOp(static_cast<GLenum>(_opcode));
 }
 

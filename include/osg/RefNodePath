@@ -48,6 +48,7 @@ class RefNodePath : public NodeList
         
         RefNodePath& operator = (const NodePath& rhs)
         {
+            clear();
             for(osg::NodePath::const_iterator itr=rhs.begin();
                 itr != rhs.end();
                 ++itr)

@@ -137,9 +137,9 @@ bool Image::isPackedType(GLenum type)
     }    
 }
 
-unsigned int Image::computeNumComponents(GLenum format)
+unsigned int Image::computeNumComponents(GLenum pixelFormat)
 {
-    switch(format)
+    switch(pixelFormat)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 3;
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
@@ -160,7 +160,7 @@ unsigned int Image::computeNumComponents(GLenum format)
         case(GL_LUMINANCE_ALPHA): return 2;
         default:
         {
-            notify(WARN)<<"error format = "<<std::hex<<format<<std::endl;
+            notify(WARN)<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::endl;
             return 0;
         }
     }        
@@ -215,9 +215,9 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 
 }
 
-unsigned int Image::computeRowWidthInBytes(int width,GLenum format,GLenum type,int packing)
+unsigned int Image::computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing)
 {
-    unsigned int pixelSize = computePixelSizeInBits(format,type);
+    unsigned int pixelSize = computePixelSizeInBits(pixelFormat,type);
     int widthInBits = width*pixelSize;
     int packingInBits = packing*8;
     //notify(INFO) << "width="<<width<<" pixelSize="<<pixelSize<<"  width in bit="<<widthInBits<<" packingInBits="<<packingInBits<<" widthInBits%packingInBits="<<widthInBits%packingInBits<<std::endl;
@@ -280,15 +280,15 @@ void Image::setInternalTextureFormat(GLint internalFormat)
     _internalTextureFormat = internalFormat;
 }
 
-void Image::setPixelFormat(GLenum format)
+void Image::setPixelFormat(GLenum pixelFormat)
 {
-    if (_pixelFormat==format) return; // do nothing if the same.
+    if (_pixelFormat==pixelFormat) return; // do nothing if the same.
 
-    if (computeNumComponents(_pixelFormat)==computeNumComponents(format))
+    if (computeNumComponents(_pixelFormat)==computeNumComponents(pixelFormat))
     {
        // if the two formats have the same number of componets then
        // we can do a straight swap.
-        _pixelFormat = format;
+        _pixelFormat = pixelFormat;
     }
     else
     {

@@ -61,21 +61,21 @@ ImageList getImagesFromFiles(std::vector<std::string>& commandLine)
 osg::Drawable* createSquare(float textureCoordMax=1.0f)
 {
     // set up the geoset.
-    osg::GeoSet* gset = new osg::GeoSet;
+    osg::GeoSet* gset = osgNew osg::GeoSet;
 
-    osg::Vec3* coords = new osg::Vec3 [4];
+    osg::Vec3* coords = osgNew osg::Vec3 [4];
     coords[0].set(-1.0f,0.0f,1.0f);
     coords[1].set(-1.0f,0.0f,-1.0f);
     coords[2].set(1.0f,0.0f,-1.0f);
     coords[3].set(1.0f,0.0f,1.0f);
     gset->setCoords(coords);
 
-    osg::Vec3* norms = new osg::Vec3 [1];
+    osg::Vec3* norms = osgNew osg::Vec3 [1];
     norms[0].set(0.0f,-1.0f,0.0f);
     gset->setNormals(norms);
     gset->setNormalBinding(osg::GeoSet::BIND_OVERALL);
 
-    osg::Vec2* tcoords = new osg::Vec2 [4];
+    osg::Vec2* tcoords = osgNew osg::Vec2 [4];
     tcoords[0].set(0.0f,textureCoordMax);
     tcoords[1].set(0.0f,0.0f);
     tcoords[2].set(textureCoordMax,0.0f);
@@ -94,11 +94,11 @@ osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture* texture,osg:
     // create a tranform node to position each square in appropriate
     // place and also to add individual texture set to it, so that
     // that state is inherited down to its children.
-    osg::Transform* local_transform = new osg::Transform;
+    osg::Transform* local_transform = osgNew osg::Transform;
     local_transform->postMult(osg::Matrix::translate(offset));
 
     // create the StateSet to store the texture data
-    osg::StateSet* stateset = new osg::StateSet;
+    osg::StateSet* stateset = osgNew osg::StateSet;
 
     stateset->setAttributeAndModes(texture,osg::StateAttribute::ON);
 
@@ -119,7 +119,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 {
     if (image==NULL) return NULL;
     
-    osg::Transform* top_transform = new osg::Transform;
+    osg::Transform* top_transform = osgNew osg::Transform;
     top_transform->postMult(osg::Matrix::translate(offset));
 
     osg::Vec3 local_offset(0.0f,0.0f,0.0f);
@@ -128,7 +128,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // defaults mipmapped texturing.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         // add the transform node to root group node.
@@ -142,7 +142,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // bilinear
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
         
         // set up bilinear filtering.
@@ -159,7 +159,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // trilinear
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
         
         // set up trilinear filtering.
@@ -177,7 +177,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // anisotropic
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         // set up anistropic filtering.
@@ -194,7 +194,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // arb compression
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         texture->setInternalFormatMode(osg::Texture::USE_ARB_COMPRESSION);
@@ -209,7 +209,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // s3tc_dxt1 compression
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT1_COMPRESSION);
@@ -224,7 +224,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // default wrap mode. (osg::Texture::CLAMP)
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         // add the transform node to root group node.
@@ -237,7 +237,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // clamp-to-edge mode.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
@@ -253,7 +253,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // repeat wrap mode.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
@@ -269,7 +269,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
     // mirror wrap mode.
     {
         // create the texture attribute
-        osg::Texture* texture = new osg::Texture;
+        osg::Texture* texture = osgNew osg::Texture;
         texture->setImage(image);
 
         texture->setWrap(osg::Texture::WRAP_S,osg::Texture::MIRROR);
@@ -291,13 +291,13 @@ osg::Node* createModelFromImages(ImageList& imageList)
     if (imageList.empty()) return NULL;
     
     // create the root node which will hold the model.
-    osg::Group* root = new osg::Group();
+    osg::Group* root = osgNew osg::Group();
 
     // create a single drawable to be shared by each texture instance.
     osg::Drawable* drawable_noTexCoodRep = createSquare(1.0f);
     
     // add the drawable into a single goede to be shared...
-    osg::Billboard* geode_noTexCoodRep = new osg::Billboard();
+    osg::Billboard* geode_noTexCoodRep = osgNew osg::Billboard();
     geode_noTexCoodRep->setMode(osg::Billboard::POINT_ROT_EYE);
     geode_noTexCoodRep->addDrawable(drawable_noTexCoodRep);
     geode_noTexCoodRep->setPos(0,osg::Vec3(0.0f,0.0f,0.0f));
@@ -307,7 +307,7 @@ osg::Node* createModelFromImages(ImageList& imageList)
     osg::Drawable* drawable_texCoodRep = createSquare(2.0f);
 
     // add the drawable into a single goede to be shared...
-    osg::Billboard* geode_texCoodRep = new osg::Billboard();
+    osg::Billboard* geode_texCoodRep = osgNew osg::Billboard();
     geode_texCoodRep->addDrawable(drawable_texCoodRep);
     geode_texCoodRep->setPos(0,osg::Vec3(0.0f,0.0f,0.0f));
     
@@ -403,14 +403,17 @@ int main( int argc, char **argv )
 
         // create a model from the images.
         osg::Node* rootNode = createModelFromImages(imageList);
+        
+        // no longer need images reference by imageList so clear it.
+        imageList.clear();
 
         // add model to viewer.
         viewer.addViewport( rootNode );
 
         // register trackball, flight and drive.
-        viewer.registerCameraManipulator(new osgUtil::TrackballManipulator);
-        viewer.registerCameraManipulator(new osgUtil::FlightManipulator);
-        viewer.registerCameraManipulator(new osgUtil::DriveManipulator);
+        viewer.registerCameraManipulator(osgNew osgUtil::TrackballManipulator);
+        viewer.registerCameraManipulator(osgNew osgUtil::FlightManipulator);
+        viewer.registerCameraManipulator(osgNew osgUtil::DriveManipulator);
 
         viewer.open();
 

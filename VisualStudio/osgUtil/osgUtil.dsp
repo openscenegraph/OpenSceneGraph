@@ -277,6 +277,10 @@ SOURCE=..\..\include\osgUtil\SmoothingVisitor
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgUtil\Statistics
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgUtil\Tesselator
 # End Source File
 # Begin Source File

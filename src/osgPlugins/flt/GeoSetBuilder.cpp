@@ -73,6 +73,8 @@ void DynGeoSet::append(DynGeoSet* source)
                 binding = osg::GeoSet::BIND_OFF;        \
                 list.clear(); }                         \
             break;                                      \
+        default:                                        \
+            break;                                      \
         }
 
 DynGeoSet::DynGeoSet():osg::GeoSet()
@@ -214,6 +216,7 @@ void DynGeoSet::addToGeometry(osg::Geometry* geom)
         case(osg::GeoSet::TRIANGLES):mode = osg::Primitive::TRIANGLES; break;
         case(osg::GeoSet::QUADS):mode = osg::Primitive::QUADS; break;
         case(osg::GeoSet::POLYGON):mode = osg::Primitive::POLYGON; break;
+        default: mode = osg::Primitive::POLYGON;
     }        
     
     

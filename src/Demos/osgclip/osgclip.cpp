@@ -62,7 +62,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     // create wireframe view of the model so the user can see
     // what parts are being culled away.
     osg::StateSet* stateset = new osg::StateSet;
-    osg::Material* material = new osg::Material;
+    //osg::Material* material = new osg::Material;
     osg::PolygonMode* polymode = new osg::PolygonMode;
     polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE_ON);

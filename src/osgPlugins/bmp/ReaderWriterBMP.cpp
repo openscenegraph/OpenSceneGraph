@@ -143,10 +143,15 @@ int *numComponents_ret)
     // BMP - sponsored by Seagate.
  //   unsigned char palette[256][3];
     unsigned char *buffer=NULL; // returned to sender & as read from the disk
+    long filelen;
 
     bmperror = ERROR_NO_FILE;
     FILE *fp = fopen(filename, "rb");
     if (!fp) return NULL;
+
+    fseek(fp, 0, SEEK_END);
+    filelen = ftell(fp); // determine file size so we can fill it in later if FileSize == 0
+    fseek(fp, 0, SEEK_SET);
 
     int ncolours;
     int ncomp=0;
@@ -205,6 +210,10 @@ int *numComponents_ret)
         // order of size calculation swapped, by Christo Zietsman to fix size bug.
         long size = hd.siz[1]*65536+hd.siz[0];
         osg::notify(osg::INFO) << "new size calc = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
+
+        // handle size==0 in uncompressed 24-bit BMPs -Eric Hammil
+        if (size==0) size = filelen;
+        osg::notify(osg::INFO) << "size after zero correction = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
 
 
         int ncpal=4; // default number of colours per palette entry

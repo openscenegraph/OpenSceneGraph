@@ -97,7 +97,7 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
     
         virtual bool computeBound() const;
 
-        ~LightPointDrawable() {}
+        virtual ~LightPointDrawable() {}
         
         osg::Endian                     _endian;
                

@@ -51,7 +51,7 @@ void Geometry::drawImmediateMode(State& /*state*/)
     for(unsigned int i=0;i<_texCoordList.size();++i)
     {
         AttributeArray* array = _texCoordList[i].get();
-        glClientActiveTextureARB(GL_TEXTURE0_ARB+i);
+        //glClientActiveTextureARB(GL_TEXTURE0_ARB+i);
         if (array)
         {
             glEnableClientState( GL_TEXTURE_COORD_ARRAY );

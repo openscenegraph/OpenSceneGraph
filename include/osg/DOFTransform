@@ -52,6 +52,9 @@ class SG_EXPORT DOFTransform : public Transform
 
         META_Node(osg, DOFTransform);
 
+        virtual DOFTransform* asDOFTransform() { return this; }
+        virtual const DOFTransform* asDOFTransform() const { return this; }
+
         virtual void traverse(NodeVisitor& nv);
 
         void setMinHPR(const Vec3& hpr) { _minHPR = hpr;}

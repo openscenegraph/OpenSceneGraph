@@ -128,6 +128,16 @@ Viewer::~Viewer()
 {
 }
 
+void Viewer::clear()
+{
+    _viewportList.clear();
+    _frameStamp = 0L;
+    _displaySettings = 0L;
+    
+    Window::clear();
+}
+
+
 /** read the command line string list, removing any matched control sequences.*/
 void Viewer::readCommandLine(std::vector<std::string>& commandLine)
 {
@@ -1106,13 +1116,18 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         break;
 
         case 27 :
-        	// Escape
-        	#ifdef __MWERKS__
-            std::exit(0); // avoid collision of std::exit(..) / exit(..) compile errors.
-            #else
-            exit(0);
-            #endif
-            break;
+            
+            _exit = true;
+            
+// 
+//             // Escape
+//             #ifdef __MWERKS__
+//             std::exit(0); // avoid collision of std::exit(..) / exit(..) compile errors.
+//             #else
+//             exit(0);
+//             #endif
+//             break;
+
     }
 }
 

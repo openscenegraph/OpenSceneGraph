@@ -101,7 +101,7 @@ sockinetaddr::sockinetaddr (const sockinetaddr& sina)
 {
   sin_family      = sockinetbuf::af_inet;
   sin_addr.s_addr = sina.sin_addr.s_addr;
-  sin_port	  = sina.sin_port;
+  sin_port	      = sina.sin_port;
 }   
 
 void sockinetaddr::setport(const char* sn, const char* pn)
@@ -159,10 +159,7 @@ sockinetaddr sockinetbuf::localaddr() const
 {
   sockinetaddr sin;
   int len = sin.size();
-  if (::getsockname(rep->sock, sin.addr (), 
-#ifndef __sgi
-          (socklen_t*) // LN
-#endif
+  if (::getsockname(rep->sock, sin.addr (), (socklen_t*) // LN
                     &len) == -1)
     throw sockerr (errno, "sockinetbuf::localaddr");
   return sin;
@@ -186,10 +183,7 @@ sockinetaddr sockinetbuf::peeraddr() const
 {
   sockinetaddr sin;
   int len = sin.size();
-  if (::getpeername(rep->sock, sin.addr (), 
-#ifndef __sgi
-          (socklen_t*) // LN
-#endif
+  if (::getpeername(rep->sock, sin.addr (), (socklen_t*) // LN
                     &len) == -1)
     throw sockerr (errno, "sockinetbuf::peeraddr");
   return sin;

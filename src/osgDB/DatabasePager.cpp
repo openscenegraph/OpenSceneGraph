@@ -28,6 +28,7 @@ DatabasePager::DatabasePager()
     _databasePagerThreadPaused = false;
     
     _useFrameBlock = false;
+    _numFramesActive = 0;
     _frameNumber = 0;
     _frameBlock = new Block;
     _databasePagerThreadBlock = new Block;
@@ -236,20 +237,18 @@ void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
         
     } //else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
 
+    updateFrameBlock(1);
 
-    _frameBlock->reset();
-
-    if (_threadPriorityDuringFrame!=getSchedulePriority())
+    if (_numFramesActive>0 && _threadPriorityDuringFrame!=getSchedulePriority())
         setSchedulePriority(_threadPriorityDuringFrame);
-
 }
 
 void DatabasePager::signalEndFrame()
 {
     //osg::notify(osg::INFO) << "signalEndFrame <<<<<<<<<<<<<<<<<<<< "<<std::endl;
-    _frameBlock->release();
+    updateFrameBlock(-1);
 
-    if (_threadPriorityOutwithFrame!=getSchedulePriority())
+    if (_numFramesActive<=0 && _threadPriorityOutwithFrame!=getSchedulePriority())
         setSchedulePriority(_threadPriorityOutwithFrame);
 
 }

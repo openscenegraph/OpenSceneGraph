@@ -15,6 +15,7 @@
 
 #include <osgText/Font>
 
+#include <osg/Notify>
 #include <osgDB/FileUtils>
 
 #include "FTFace.h"
@@ -50,7 +51,7 @@ std::string findFontFile(const std::string& str)
         filename = osgDB::findFileInPath(str.c_str(),s_FontFilePath);
         if (filename) return std::string(filename);
     }
-    
+    osg::notify(osg::WARN)<<"Unable to find font file '"<<str<<"'"<<endl;    
     return std::string();
 }
 

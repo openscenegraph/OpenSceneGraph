@@ -33,7 +33,7 @@ class SG_EXPORT Quat
 
 	value_type  _v[4];	// a four-vector
 
-	inline Quat() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=0.0; }
+	inline Quat() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=1.0; }
         
 	inline Quat( value_type x, value_type y, value_type z, value_type w )
         {

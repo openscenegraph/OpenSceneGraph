@@ -9,6 +9,7 @@ CXXFILES =\
 
 LIBS += $(GLUT_LIB) -losgUtil -losgDB -losg $(OTHER_LIBS)
 DEF  += -DOSGGLUT_LIBRARY
-LIB = libosgGLUT.$(SO_EXT)
+TARGET_BASENAME = osgGLUT
+LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

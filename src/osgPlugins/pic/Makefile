@@ -6,6 +6,7 @@ CXXFILES =\
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-PLUGIN = osgdb_pic.$(PLUGIN_EXT)
+TARGET_BASENAME = pic
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

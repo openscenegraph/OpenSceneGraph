@@ -38,8 +38,12 @@ list_attr_files()
 }
 
 [ -z "$OSGHOME" ] && (echo Please define OSGHOME; exit 1)
-[ -z "$OSGVERSION" ] && (echo Please define OSGVERSION; exit 1)
-[ -z "$OSGRELEASE" ] && (echo Please define OSGRELEASE; exit 1)
+
+OSGVERSION=`./version`
+OSGRELEASE=1
+
+##[ -z "$OSGVERSION" ] && (echo Please define OSGVERSION; exit 1)
+##[ -z "$OSGRELEASE" ] && (echo Please define OSGRELEASE; exit 1)
 
 
 

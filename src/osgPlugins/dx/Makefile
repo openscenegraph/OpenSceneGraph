@@ -9,6 +9,7 @@ CXXFILES =\
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-PLUGIN = osgdb_dx.$(PLUGIN_EXT)
+TARGET_BASENAME = dx
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

@@ -10,6 +10,7 @@ INC += -I$(THISDIR)
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-PLUGIN = osgdb_obj.$(PLUGIN_EXT)
+TARGET_BASENAME = obj
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

@@ -38,6 +38,7 @@ DEF += -DOSGTEXT_LIBRARY
 LINKARGS += -L/usr/local/lib\
 	    -L/usr/freeware/lib$(ARCH)
 
-LIB = libosgText.$(SO_EXT)
+TARGET_BASENAME = osgText
+LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)
 
 include $(TOPDIR)/Make/makerules 

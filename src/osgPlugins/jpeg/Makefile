@@ -8,6 +8,7 @@ INC += -I/usr/local/include/
 
 LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
 
-PLUGIN = osgdb_jpeg.$(PLUGIN_EXT)
+TARGET_BASENAME = jpeg
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

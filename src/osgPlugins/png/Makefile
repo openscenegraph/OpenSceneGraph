@@ -10,6 +10,7 @@ INC  += -I/usr/local/include\
 
 LINKARGS += -L/usr/freeware/lib$(ARCH)
 
-PLUGIN = osgdb_png.$(PLUGIN_EXT)
+TARGET_BASENAME = png
+PLUGIN = $(PLUGIN_PREFIX)$(TARGET_BASENAME).$(PLUGIN_EXT)
 
 include $(TOPDIR)/Make/makerules 

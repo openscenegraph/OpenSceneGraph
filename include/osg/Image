@@ -99,11 +99,15 @@ class SG_EXPORT Image : public Object
                       int packing=1);
             
         /** readPixels from screen at specified position and size, using glReadPixels.
-          * Create memory for storage if required, reuse existing pixel coords if possible.
-          * if pixelFormat or dataType*/
+          * Create memory for storage if required, reuse existing pixel coords if possible.*/
         void readPixels(int x,int y,int width,int height,
                         GLenum format,GLenum type);
             
+
+        /** read the contents of the current bound texture, handling compressed formats if present.
+          * Create memory for storage if required, reuse existing pixel coords if possible.*/
+        void readImageFromCurrentTexture(unsigned int contextID=0);
+
 
         /** Scale image to specified size. */
         void scaleImage(int s,int t,int r);
@@ -115,6 +119,9 @@ class SG_EXPORT Image : public Object
           * accomodate the imaging image in its offset position.
           * If source is NULL then no operation happens, this Image is left unchanged.*/
         void copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source);
+
+
+
 
 
         /** Width of image.*/

@@ -918,7 +918,7 @@ void Texture::Extensions::setupGLExtenions()
 
     _glCompressedTexImage2D = getGLExtensionFuncPtr("glCompressedTexImage2D","glCompressedTexImage2DARB");
     _glCompressedTexSubImage2D = getGLExtensionFuncPtr("glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");;
-
+    _glGetCompressedTexImage = getGLExtensionFuncPtr("glGetCompressedTexImage","glGetCompressedTexImageARB");;
 }
 
 void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
@@ -947,4 +947,16 @@ void Texture::Extensions::glCompressedTexSubImage2D(GLenum target, GLint level, 
         notify(WARN)<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
     }
     
+}
+void Texture::Extensions::glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const
+{
+    if (_glGetCompressedTexImage)
+    {
+        typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
+        ((GetCompressedTexImageArbProc)_glGetCompressedTexImage)(target, level, data);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glGetCompressedTexImage not supported by OpenGL driver"<<std::endl;
+    }
 }

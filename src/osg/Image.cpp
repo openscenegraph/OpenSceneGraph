@@ -141,6 +141,9 @@ unsigned int Image::computeNumComponents(GLenum format)
 {
     switch(format)
     {
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 3;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 4;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 4;
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
         case(GL_DEPTH_COMPONENT): return 1;
@@ -163,6 +166,12 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
 {
     switch(type)
     {
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT): return 4;
+        
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
+        
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
+    
         case(GL_BITMAP): return computeNumComponents(format);
         
         case(GL_BYTE):
@@ -317,6 +326,51 @@ void Image::readPixels(int x,int y,int width,int height,
     glPixelStorei(GL_PACK_ALIGNMENT,_packing);
 
     glReadPixels(x,y,width,height,format,type,_data);
+}
+
+
+void Image::readImageFromCurrentTexture(unsigned int contextID)
+{
+    const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
+
+    GLint internalformat;
+    GLint width;
+    GLint height;
+
+    if (extensions->isCompressedTexImage2DSupported())
+    {
+        GLint compressed;
+        GLint compressed_size;
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+
+        /* if the compression has been successful */
+        if (compressed == GL_TRUE)
+        {
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB, &compressed_size);
+
+            allocateImage(width,height,1,internalformat,internalformat);
+            
+            extensions->glGetCompressedTexImage(GL_TEXTURE_2D, 0, _data);
+            
+            return;
+        }
+        
+    }
+
+    // non compressed texture implemention.
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+
+    allocateImage(width,height,1,internalformat,GL_UNSIGNED_BYTE);
+
+    _internalTextureFormat = internalformat;
+    
+    glGetTexImage(GL_TEXTURE_2D,0,_pixelFormat,_dataType,_data);
+    
 }
 
 

@@ -30,6 +30,8 @@ OSG News (most significant items from ChangeLog)
 
     New MD2 plugin which allows Quake animated characters to be loaded
     into the OSG.
+    
+    New DDS plugin for loading compressed and non-compressed images.
 
     Completely new osgText implemention which is simpler to use, faster, and
     thread safe.  Support for high quality true type fonts has now been moved

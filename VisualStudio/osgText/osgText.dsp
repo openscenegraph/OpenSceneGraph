@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="osgText" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Core osgText" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgText - Win32 Debug
+CFG=Core osgText - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=osgText - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgText.mak" CFG="Core osgText - Win32 Debug"
+!MESSAGE NMAKE /f "osgText.mak" CFG="Core osgText - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -93,6 +93,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgText\Font.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgText\FTBitmapGlyph.cpp
 # End Source File
 # Begin Source File
@@ -165,10 +169,6 @@ SOURCE=..\..\src\osgText\FTVectoriser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgText\Font.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgText\Paragraph.cpp
 # End Source File
 # Begin Source File
@@ -186,6 +186,10 @@ SOURCE=..\..\src\osgText\Version.cpp
 # Begin Source File
 
 SOURCE=..\..\include\osgText\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgText\Font
 # End Source File
 # Begin Source File
 
@@ -265,10 +269,6 @@ SOURCE=..\..\src\osgText\FTVectoriser.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgText\Font
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgText\Paragraph
 # End Source File
 # Begin Source File
@@ -286,4 +286,3 @@ SOURCE=..\..\include\osgText\Version
 # End Group
 # End Target
 # End Project
-

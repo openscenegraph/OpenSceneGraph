@@ -3,11 +3,10 @@
 #ifndef __FLT_FILE_H
 #define __FLT_FILE_H
 
+#include <osg/Node>
 
 #include <map>
 #include <string>
-
-#include <osg/Node>
 
 #include "Pool.h"
 #include "HeaderRecord.h"

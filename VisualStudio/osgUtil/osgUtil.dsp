@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="osgUtil" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Core osgUtil" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgUtil - Win32 Debug
+CFG=Core osgUtil - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=osgUtil - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osgUtil.mak" CFG="Core osgUtil - Win32 Debug"
+!MESSAGE NMAKE /f "osgUtil.mak" CFG="Core osgUtil - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -117,6 +117,10 @@ SOURCE=..\..\src\osgUtil\DisplayListVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\DisplayRequirementsVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\DriveManipulator.cpp
 # End Source File
 # Begin Source File
@@ -185,11 +189,11 @@ SOURCE=..\..\src\osgUtil\Tesselator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\TransformCallback.cpp
+SOURCE=..\..\src\osgUtil\TrackballManipulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\TrackballManipulator.cpp
+SOURCE=..\..\src\osgUtil\TransformCallback.cpp
 # End Source File
 # Begin Source File
 
@@ -198,10 +202,6 @@ SOURCE=..\..\src\osgUtil\TriStripVisitor.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osgUtil\Version.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osgUtil\DisplayRequirementsVisitor.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -230,6 +230,10 @@ SOURCE=..\..\Include\osgUtil\DepthSortedBin
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\DisplayListVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\DisplayRequirementsVisitor
 # End Source File
 # Begin Source File
 
@@ -317,11 +321,11 @@ SOURCE=..\..\include\osgUtil\Tesselator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\TransformCallback
+SOURCE=..\..\include\osgUtil\TrackballManipulator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\TrackballManipulator
+SOURCE=..\..\include\osgUtil\TransformCallback
 # End Source File
 # Begin Source File
 
@@ -331,10 +335,6 @@ SOURCE=..\..\include\osgUtil\TriStripVisitor
 
 SOURCE=..\..\Include\osgUtil\Version
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgUtil\DisplayRequirementsVisitor
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -342,4 +342,3 @@ SOURCE=..\..\Include\osgUtil\DisplayRequirementsVisitor
 # End Group
 # End Target
 # End Project
-

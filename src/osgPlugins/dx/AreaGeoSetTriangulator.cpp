@@ -1,6 +1,8 @@
+#include <osg/GeoSet>
+
 #include <stdio.h>
 #include <string.h>
-#include <osg/GeoSet>
+
 #include "AreaGeoSetTriangulator.h"
 
 namespace dx {

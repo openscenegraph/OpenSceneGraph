@@ -2,6 +2,10 @@
 #ifndef __FLT_H
 #define __FLT_H
 
+// include osg/Export simply for the Win32 #pragma to stop VisualStudio barffing
+// nonesense, other than that there is no need for it...
+#include <osg/Export>
+
 #include <osg/Vec4>
 
 #include <iostream>

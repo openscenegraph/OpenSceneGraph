@@ -1,10 +1,10 @@
-# Microsoft Developer Studio Project File - Name="osg" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Core osg" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osg - Win32 Debug
+CFG=Core osg - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=osg - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "osg.mak" CFG="Core osg - Win32 Debug"
+!MESSAGE NMAKE /f "osg.mak" CFG="Core osg - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -141,6 +141,10 @@ SOURCE=..\..\src\osg\Depth.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\DisplaySettings.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Drawable.cpp
 # End Source File
 # Begin Source File
@@ -229,11 +233,11 @@ SOURCE=..\..\src\osg\Material.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\MemoryManager.cpp
+SOURCE=..\..\src\osg\Matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\Matrix.cpp
+SOURCE=..\..\src\osg\MemoryManager.cpp
 # End Source File
 # Begin Source File
 
@@ -339,10 +343,6 @@ SOURCE=..\..\src\osg\Version.cpp
 
 SOURCE=..\..\src\osg\Viewport.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\DisplaySettings.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -402,6 +402,10 @@ SOURCE=..\..\Include\Osg\CullFace
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Depth
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osg\DisplaySettings
 # End Source File
 # Begin Source File
 
@@ -501,10 +505,6 @@ SOURCE=..\..\Include\Osg\Material
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\MemoryManager
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osg\Math
 # End Source File
 # Begin Source File
@@ -518,6 +518,10 @@ SOURCE=..\..\include\osg\mem_ptr
 # Begin Source File
 
 SOURCE=..\..\include\osg\MemoryAdapter
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\MemoryManager
 # End Source File
 # Begin Source File
 
@@ -659,10 +663,6 @@ SOURCE=..\..\Include\Osg\Version
 
 SOURCE=..\..\include\osg\Viewport
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osg\DisplaySettings
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -670,4 +670,3 @@ SOURCE=..\..\include\osg\DisplaySettings
 # End Group
 # End Target
 # End Project
-

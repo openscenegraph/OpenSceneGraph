@@ -1,6 +1,10 @@
 #include <osg/ShadowVolumeOccluder>
 #include <osg/CullStack>
 
+#include <osg/Group>
+#include <osg/Geode>
+#include <osg/GeoSet>
+
 using namespace osg;
 
 
@@ -108,7 +112,9 @@ void pushToFarPlane(PointList& points)
         itr!=points.end();
         ++itr)
     {
-        itr->second.z()=-1.0f;
+//        std::cout << "itr->second "<< itr->second<< " after ";
+        itr->second.z() += 1.0f;
+//        std::cout << itr->second<< std::endl;
     }
 }
 
@@ -129,7 +135,59 @@ Plane computeFrontPlane(const PointList& front)
     return Plane(front[2].second,front[1].second,front[0].second);
 }
 
-bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack)
+Drawable* createOccluderDrawable(const PointList& front, const PointList& back)
+{
+    // create a drawable for occluder.
+    osg::GeoSet* geoset = osgNew osg::GeoSet;
+    
+    int totalNumber = front.size()+back.size();
+    osg::Vec3* coords = osgNew osg::Vec3[front.size()+back.size()];
+    osg::Vec3* cptr = coords;
+    for(PointList::const_iterator fitr=front.begin();
+        fitr!=front.end();
+        ++fitr)
+    {
+        *cptr = fitr->second;
+        ++cptr;
+    }
+
+    for(PointList::const_iterator bitr=back.begin();
+        bitr!=back.end();
+        ++bitr)
+    {
+        *cptr = bitr->second;
+        ++cptr;
+    }
+
+    geoset->setCoords(coords);
+    
+    osg::Vec4* color = osgNew osg::Vec4[1];
+    color[0].set(1.0f,1.0f,1.0f,0.5f);
+    geoset->setColors(color);
+    geoset->setColorBinding(osg::GeoSet::BIND_OVERALL);
+    
+    geoset->setPrimType(osg::GeoSet::POINTS);
+    geoset->setNumPrims(totalNumber);
+    
+    //cout << "totalNumber = "<<totalNumber<<endl;
+
+
+    osg::Geode* geode = osgNew osg::Geode;
+    geode->addDrawable(geoset);
+    
+    osg::StateSet* stateset = osgNew osg::StateSet;
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    
+    geoset->setStateSet(stateset);
+
+    return geoset;
+}
+
+
+
+bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool createDrawables)
 {
 
 
@@ -153,9 +211,25 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     Matrix invP;
     invP.invert(P);
     
+//     std::cout<<"P "<<P<<std::endl;
+//     std::cout<<"invP "<<invP<<std::endl;
+// 
+//     Vec3 v1(0,0,1000);
+//     std::cout<<"v1 "<<v1<<std::endl;
+//     Vec3 v2 = v1*P;
+//     std::cout<<"v2 "<<v2<<std::endl;
+//     Vec3 v3 = v2*invP;
+//     std::cout<<"v3 "<<v3<<std::endl;
+//     
+//     Vec3 v4(0,0,1);
+//     std::cout<<"v4 "<<v4<<std::endl;
+//     Vec3 v5=v4*invP;
+//     std::cout<<"v5 "<<v5<<std::endl;
+    
+    
     // compute the transformation matrix which takes form local coords into clip space.
-    Matrix MVP(MV);
-    MVP *= P;
+    Matrix MVP(MV*P);
+    //MVP *= P;
     
     // for the occluder polygon and each of the holes do
     //     first transform occluder polygon into clipspace by multiple it by c[i] = v[i]*(MV*P)
@@ -191,16 +265,32 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
         // if the front face is pointing away from the eye point flip the whole polytope.
         if (occludePlane[3]>0.0f)
         {
-//            std::cout << "    flipping polytope"<<std::endl;
             _occluderVolume.flip();
         }
-        
-        
-        for(Polytope::PlaneList::const_iterator itr=_occluderVolume.getPlaneList().begin();
-            itr!=_occluderVolume.getPlaneList().end();
-            ++itr)
+
+        if (createDrawables && !nodePath.empty())
         {
-//            std::cout << "    compute plane "<<*itr<<std::endl;
+            osg::Group* group = dynamic_cast<osg::Group*>(nodePath.back());
+            if (group)
+            {
+            
+                osg::Matrix invMV;
+                invMV.invert(MV);
+                
+                transform(points,invMV);
+                transform(farPoints,invMV);
+            
+//                Vec3 v6=v5*invMV;
+//                 std::cout<<"******************"<<std::endl;
+//                 std::cout<<"MV "<<MV<<std::endl;
+//                 std::cout<<"invMV "<<invMV<<std::endl;
+//                 std::cout<<"MV*invMV "<<MV*invMV<<std::endl;
+//                 std::cout<<"v6 "<<v6<<std::endl;
+
+                osg::Geode* geode = osgNew osg::Geode;
+                group->addChild(geode);
+                geode->addDrawable(createOccluderDrawable(points,farPoints));
+            }
         }
 
 
@@ -208,7 +298,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
     }
     else
     {
-//        std::cout << "    occluder clipped out of frustum."<<points.size()<<std::endl;
+        std::cout << "    occluder clipped out of frustum."<<points.size()<<std::endl;
         return false;
     }
 }

@@ -11,6 +11,9 @@ CollectOccludersVisitor::CollectOccludersVisitor()
 {
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+    
+    _createDrawables = false;
+    
 }
 
 CollectOccludersVisitor::~CollectOccludersVisitor()
@@ -117,11 +120,13 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
         // planes, all with their normals facing inward towards the volume,
         // and then transform them back into projection space.
         ShadowVolumeOccluder svo;
-        if (svo.computeOccluder(_nodePath, *node.getOccluder(), *this))
+        if (svo.computeOccluder(_nodePath, *node.getOccluder(), *this,_createDrawables))
         {
             // need to test occluder against view frustum.
 //            std::cout << "    adding in Occluder"<<std::endl;
             _occluderList.push_back(svo);
+            
+            
         }
     }
 

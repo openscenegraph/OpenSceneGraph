@@ -35,7 +35,7 @@ class SG_EXPORT ShadowVolumeOccluder
 
 
         /** compute the shadow volume occluder. */
-        bool computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack);
+        bool computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool createDrawables=false);
         
 
         inline void disableResultMasks();

@@ -28,6 +28,7 @@ CXXFILES =\
         Matrix.cpp\
         Node.cpp\
         Object.cpp\
+        OccluderNode.cpp\
         Point.cpp\
         PolygonMode.cpp\
         PolygonOffset.cpp\

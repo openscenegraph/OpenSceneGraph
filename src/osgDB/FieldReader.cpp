@@ -60,16 +60,16 @@ void FieldReader::_init()
 
     int i;
     for(i=0;i<256;++i) _delimiterEatLookUp[i]=false;
-    _delimiterEatLookUp[' '] = true;
-    _delimiterEatLookUp['\t'] = true;
-    _delimiterEatLookUp['\n'] = true;
-    _delimiterEatLookUp['\r'] = true;
+    _delimiterEatLookUp[int(' ')] = true;
+    _delimiterEatLookUp[int('\t')] = true;
+    _delimiterEatLookUp[int('\n')] = true;
+    _delimiterEatLookUp[int('\r')] = true;
 
     for(i=0;i<256;++i) _delimiterKeepLookUp[i]=false;
-    _delimiterKeepLookUp['{'] = true;
-    _delimiterKeepLookUp['}'] = true;
-    _delimiterKeepLookUp['"'] = true;
-    _delimiterKeepLookUp['\''] = true;
+    _delimiterKeepLookUp[int('{')] = true;
+    _delimiterKeepLookUp[int('}')] = true;
+    _delimiterKeepLookUp[int('"')] = true;
+    _delimiterKeepLookUp[int('\'')] = true;
 
 }
 
@@ -290,12 +290,12 @@ bool FieldReader::_readField(Field* fieldPtr)
                     return fieldPtr && fieldPtr->getNoCharacters()!=0;
                 }
                 c = ch;
-                if (_delimiterEatLookUp[c])
+                if (_delimiterEatLookUp[int(c)])
                 {
                     _fin->ignore(1);
                     return fieldPtr && fieldPtr->getNoCharacters()!=0;
                 }
-                if (_delimiterKeepLookUp[c])
+                if (_delimiterKeepLookUp[int(c)])
                 {
                     return fieldPtr && fieldPtr->getNoCharacters()!=0;
                 }

@@ -450,26 +450,32 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
     if (itr!=_extAliasMap.end()) return createLibraryNameForExtension(itr->second);
 
+#ifdef OSG_JAVA_BUILD
+	static std::string prepend = "java";
+#else
+	static std::string prepend = "";
+#endif
+
 #if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
     #ifdef __CYGWIN__
-        return "cygosgdb_"+ext+".dll";
+        return "cyg"+prepend+"osgdb_"+ext+".dll";
     #elif defined(__MINGW32__)
-        return "libosgdb_"+ext+".dll";
+        return "lib"+prepend+"osgdb_"+ext+".dll";
     #else
         #ifdef _DEBUG
-            return "osgdb_"+ext+"d.dll";
+            return prepend+"osgdb_"+ext+"d.dll";
         #else
-            return "osgdb_"+ext+".dll";
+            return prepend+"osgdb_"+ext+".dll";
         #endif
     #endif
 #elif macintosh
-    return "osgdb_"+ext;
+    return prepend+"osgdb_"+ext;
 #elif defined(__hpux__)
     // why don't we use PLUGIN_EXT from the makefiles here?
-    return "osgdb_"+ext+".sl";
+    return prepend+"osgdb_"+ext+".sl";
 #else
-    return "osgdb_"+ext+".so";
+    return prepend+"osgdb_"+ext+".so";
 #endif
 
 }

@@ -9,7 +9,7 @@
  *
  *    HISTORY:        Created 11.03.2003
  *                    Updated for 1D textures - Don Burns 27.1.2004
- *					  Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
+ *                      Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
  *
  *    Copyright 2003 VR-C
  **********************************************************************/
@@ -38,6 +38,7 @@
 #include "FragmentProgram.h"
 #include "VertexProgram.h"
 #include "LightModel.h"
+#include "ProxyNode.h"
 
 
 #include "Group.h"
@@ -67,13 +68,42 @@
 
 #include "Shape.h"
 
+#include <osg/Notify>
+
 using namespace ive;
+
+
+void DataOutputStream::setOptions(const osgDB::ReaderWriter::Options* options) 
+{ 
+    _options = options; 
+
+    if (_options.get())
+    {
+        setIncludeImageData(_options->getOptionString().find("noTexturesInIVEFile")==std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageData()=" << getIncludeImageData() << std::endl;
+
+        setIncludeExternalReferences(_options->getOptionString().find("inlineExternalReferencesInIVEFile")!=std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
+
+        setWriteExternalReferenceFiles(_options->getOptionString().find("noWriteExternalReferenceFiles")==std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setWriteExternalReferenceFiles()=" << getWriteExternalReferenceFiles() << std::endl;
+
+        setUseOriginalExternalReferences(_options->getOptionString().find("useOriginalExternalReferences")!=std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
+    }
+}
 
 DataOutputStream::DataOutputStream(std::ostream * ostream)
 {
     _verboseOutput = false;
 
     _includeImageData= true;
+
+    _includeExternalReferences     = false;
+    _writeExternalReferenceFiles   = true;
+    _useOriginalExternalReferences = false;
+    
+    
     _ostream = ostream;
     if(!_ostream)
         throw Exception("DataOutputStream::DataOutputStream(): null pointer exception in argument.");
@@ -687,6 +717,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osgSim::VisibilityGroup*>(node)){
             ((ive::VisibilityGroup*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::ProxyNode*>(node)){
+            ((ive::ProxyNode*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);

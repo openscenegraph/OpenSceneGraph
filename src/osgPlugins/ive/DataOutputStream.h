@@ -13,6 +13,7 @@
 #include <osg/Matrix>
 #include <osg/Geometry>
 #include <osg/Shape>
+#include <osgDB/ReaderWriter>
 
 #include "IveVersion.h"
 #include "DataTypeSize.h"
@@ -29,6 +30,9 @@ public:
 	DataOutputStream(std::ostream* ostream);
 	~DataOutputStream();
         
+	void setOptions(const osgDB::ReaderWriter::Options* options);
+	const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
+
 	unsigned int getVersion() { return VERSION; }
         
 	void writeBool(bool b);
@@ -75,7 +79,19 @@ public:
 	void setIncludeImageData(bool b) {_includeImageData=b;};
 	bool getIncludeImageData() {return _includeImageData;};
 
-        bool                _verboseOutput;
+	// Set and get include external references in stream
+	void setIncludeExternalReferences(bool b) {_includeExternalReferences=b;};
+	bool getIncludeExternalReferences() {return _includeExternalReferences;};
+
+	// Set and get if must be generated external reference ive files
+	void setWriteExternalReferenceFiles(bool b) {_writeExternalReferenceFiles=b;};
+	bool getWriteExternalReferenceFiles() {return _writeExternalReferenceFiles;};
+
+	// Set and get if must be used original external reference files
+	void setUseOriginalExternalReferences(bool b) {_useOriginalExternalReferences=b;};
+	bool getUseOriginalExternalReferences() {return _useOriginalExternalReferences;};
+
+	bool                _verboseOutput;
 
 private:
 	std::ostream* _ostream;
@@ -94,7 +110,11 @@ private:
         NodeMap             _nodeMap;
 
 	bool                _includeImageData;
+	bool                _includeExternalReferences;
+	bool                _writeExternalReferenceFiles;
+	bool                _useOriginalExternalReferences;
 	
+	osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
 };
 
 }

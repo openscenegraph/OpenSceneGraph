@@ -308,6 +308,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\ProxyNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ReaderWriterIVE.cpp
 # End Source File
 # Begin Source File
@@ -605,6 +609,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ProxyNode.h
 # End Source File
 # Begin Source File
 

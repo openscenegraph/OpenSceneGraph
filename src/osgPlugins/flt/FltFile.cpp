@@ -248,7 +248,7 @@ bool FltFile::readFile(const std::string& fileName)
 
                         //Path for Nested external references
                         osgDB::FilePathList& fpl = options->getDatabasePathList();
-                        std::string filePath = osgDB::getFilePath(filename);
+                        const std::string& filePath = osgDB::getFilePath(filename);
                         std::string pushAndPopPath;
                         //If absolute path
                         if( (filePath.length()>0 && filePath.find_first_of("/\\")==0) ||

@@ -1,0 +1,98 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_ProxyNode
+#define OSG_ProxyNode 1
+
+#include <osg/Group>
+
+namespace osg {
+
+/** ProxyNode.
+*/
+class SG_EXPORT ProxyNode : public Group
+{
+    public :
+    
+        ProxyNode();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ProxyNode(const ProxyNode&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, ProxyNode);
+        
+        virtual void traverse(NodeVisitor& nv);
+       
+        virtual bool addChild(Node *child);
+        virtual bool addChild(Node *child, const std::string& filename);
+        virtual bool removeChild(Node *child);
+
+        /** Set the database path to prepend to children's filenames.*/
+        void setDatabasePath(const std::string& path);
+        /** Get the database path used to prepend to children's filenames.*/
+        inline const std::string& getDatabasePath() const { return _databasePath; }
+
+        typedef std::vector<std::string> FileNameList;
+        
+        void setFileName(unsigned int childNo, const std::string& filename) { expandFileNameListTo(childNo); _filenameList[childNo]=filename; }
+        const std::string& getFileName(unsigned int childNo) const { return _filenameList[childNo]; }
+        unsigned int getNumFileNames() const { return _filenameList.size(); }
+
+        /** Modes which control how the center of object should be determined when computed which child is active.*/
+        enum CenterMode
+        {
+            USE_BOUNDING_SPHERE_CENTER,
+            USER_DEFINED_CENTER
+        };
+
+        /** Set how the center of object should be determined when computed which child is active.*/
+        void setCenterMode(CenterMode mode) { _centerMode=mode; }
+
+        /** Get how the center of object should be determined when computed which child is active.*/
+        CenterMode getCenterMode() const { return _centerMode; }
+
+        /** Sets the object-space point which defines the center of the osg::LOD.  
+            center is affected by any transforms in the hierarchy above the osg::LOD.*/
+        inline void setCenter(const Vec3& center) { _centerMode=USER_DEFINED_CENTER; _userDefinedCenter = center; }
+        
+        /** return the LOD center point. */
+        inline const Vec3& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
+
+
+        /** Set the object-space reference radius of the volume enclosed by the LOD. 
+          * Used to detmine the bounding sphere of the LOD in the absense of any children.*/
+        inline void setRadius(float radius) { _radius = radius; }
+        
+        /** Get the object-space radius of the volume enclosed by the LOD.*/
+        inline float getRadius() const { return _radius; }
+
+    protected :
+    
+        virtual ~ProxyNode() {}
+
+        virtual bool computeBound() const;
+
+        void expandFileNameListTo(unsigned int pos);
+
+        FileNameList        _filenameList;
+        std::string         _databasePath;
+        
+        CenterMode          _centerMode;
+        Vec3                _userDefinedCenter;
+        float               _radius;
+        
+};
+
+}
+
+#endif

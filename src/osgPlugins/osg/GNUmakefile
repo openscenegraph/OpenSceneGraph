@@ -45,6 +45,7 @@ CXXFILES =\
         PolygonOffset.cpp\
         PositionAttitudeTransform.cpp\
         Projection.cpp\
+        ProxyNode.cpp\
         ReaderWriterOSG.cpp\
         ShadeModel.cpp\
         Shape.cpp\

@@ -26,17 +26,18 @@ class OSGPRODUCER_EXPORT OsgSceneHandler : public Producer::Camera::SceneHandler
 {
     public :
     
-        OsgSceneHandler( osg::DisplaySettings *ds = NULL);
+        OsgSceneHandler(osg::DisplaySettings *ds = NULL);
 
         /// override the init method to force it be run one at a time.
         virtual void init();
 
-        void cull(Producer::Camera &cam);
+        virtual void clear(Producer::Camera& camera);
 
-        void draw(Producer::Camera &);
+        virtual void cull(Producer::Camera& camera);
+
+        virtual void draw(Producer::Camera& camera);
 
         void setContextID( int id );
-
 
     protected:
     

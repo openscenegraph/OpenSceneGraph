@@ -30,11 +30,15 @@ class IVEReaderWriter : public ReaderWriter
         
         virtual ReadResult readNode(std::istream& fin, const Options*)
         {
+        #define IVE_CATCH_EXCEPTIONS
+        #ifdef IVE_CATCH_EXCEPTIONS
 	    try{
+        #endif
                 // Create datainputstream.
                 ive::DataInputStream in(&fin);
 
                 return in.readNode();
+        #ifdef IVE_CATCH_EXCEPTIONS
 	    }
 	    catch(ive::Exception e)
             {
@@ -42,6 +46,7 @@ class IVEReaderWriter : public ReaderWriter
 	        return ReadResult::FILE_NOT_HANDLED;
 	    }
             return 0;
+        #endif
         }
 
         virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* options)

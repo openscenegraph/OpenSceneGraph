@@ -1,12 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2003 Robert Osfield 
  *
- * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial applications,
- * as long as this copyright notice is maintained.
- * 
- * This application is distributed in the hope that it will be useful,
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the GNU Public License (GPL) version 1.0 or 
+ * (at your option) any later version. 
+ *
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
 */
 
 #include <osgDB/ReadFile>
@@ -14,6 +15,7 @@
 #include <osgProducer/Viewer>
 
 #include "SlideEventHandler.h"
+#include "PointsEventHandler.h"
 
 extern osg::Node* createDefaultPresentation();
 
@@ -25,7 +27,7 @@ int main( int argc, char **argv )
     
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the application for presenting 3D interactive slide shows.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Turn auto stepping on by default");
@@ -37,9 +39,6 @@ int main( int argc, char **argv )
 
     // set up the value with sensible default event handlers.
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
 
     // read any time delay argument.
     float timeDelayBetweenSlides = 1.5f;
@@ -54,6 +53,13 @@ int main( int argc, char **argv )
     
     seh->setAutoSteppingActive(autoSteppingActive);
     seh->setTimeDelayBetweenSlides(timeDelayBetweenSlides);
+
+    // register the handler for modifying the point size
+    PointsEventHandler* peh = new PointsEventHandler;
+    viewer.getEventHandlerList().push_front(peh);
+
+    // get details on keyboard and mouse bindings used by the viewer.
+    viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -105,6 +111,10 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
+
+    // pass the global stateset to the point event handler so that it can
+    // alter the point size of all points in the scene.
+    peh->setStateSet(viewer.getGlobalStateSet());
 
     // create the windows and run the threads.
     viewer.realize();

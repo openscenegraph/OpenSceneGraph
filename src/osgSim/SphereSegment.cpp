@@ -196,7 +196,7 @@ bool SphereSegment::Spoke::computeBound() const
 
 SphereSegment::SphereSegment(const osg::Vec3& centre, float radius, const osg::Vec3& vec, float azRange,
                 float elevRange, int density):
-    Geode(),
+    osg::Geode(),
     _centre(centre), _radius(radius),
     _density(density),
     _drawMask(DrawMask(ALL))

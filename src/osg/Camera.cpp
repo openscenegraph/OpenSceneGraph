@@ -163,7 +163,6 @@ void Camera::setFrustum(const double left, const double right,
     _top = top/zNear;
     _zNear = zNear;
     _zFar = zFar;
-
     _dirty = true;
 }
 
@@ -240,17 +239,20 @@ void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRa
         return;
     }
 
-    double previousAspectRatio = (_right-_left)/(_top-_bottom);
-    double deltaRatio = newAspectRatio/previousAspectRatio;
-    if (aa == ADJUST_HORIZONTAL)
+    if(aa != ADJUST_NONE)  // If adjustment todo
     {
-        _left *= deltaRatio;
-        _right *= deltaRatio;
-    }
-    else // aa == ADJUST_VERTICAL
-    {
-        _bottom /= deltaRatio;
-        _top /= deltaRatio;
+       double previousAspectRatio = (_right-_left)/(_top-_bottom);
+       double deltaRatio = newAspectRatio/previousAspectRatio;
+       if (aa == ADJUST_HORIZONTAL)
+       {
+           _left *= deltaRatio;
+           _right *= deltaRatio;
+       }
+       else // aa == ADJUST_VERTICAL
+       {
+           _bottom /= deltaRatio;
+           _top /= deltaRatio;
+       }
     }
 
     _dirty = true;

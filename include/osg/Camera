@@ -80,7 +80,8 @@ class SG_EXPORT Camera: public osg::Referenced
         enum AdjustAspectRatioMode
         {
             ADJUST_VERTICAL,
-            ADJUST_HORIZONTAL
+            ADJUST_HORIZONTAL,
+            ADJUST_NONE
         };
         
         /** Set the way that the vertical or horizontal dimensions of the window

@@ -1031,12 +1031,12 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 return;
             }
 
-            osg::ref_ptr<osg::LineSegment> LineSegment = new osg::LineSegment;
-            LineSegment->set(near_point,far_point);
-            osg::notify(osg::NOTICE) << "start("<<LineSegment->start()<<")  end("<<LineSegment->end()<<")"<< std::endl;
+            osg::ref_ptr<osg::LineSegment> lineSegment = new osg::LineSegment;
+            lineSegment->set(near_point,far_point);
+            osg::notify(osg::NOTICE) << "start("<<lineSegment->start()<<")  end("<<lineSegment->end()<<")"<< std::endl;
 
             osgUtil::IntersectVisitor iv;
-            iv.addLineSegment(LineSegment.get());
+            iv.addLineSegment(lineSegment.get());
 
             float startTime = clockSeconds();
 
@@ -1048,7 +1048,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
             if (iv.hits())
             {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(LineSegment.get());
+                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineSegment.get());
                 for(osgUtil::IntersectVisitor::HitList::iterator hitr=hitList.begin();
                     hitr!=hitList.end();
                     ++hitr)

@@ -291,7 +291,7 @@ inline RefMatrix* CullStack::createOrReuseMatrix(const osg::Matrix& value)
     while (_currentReuseMatrixIndex<_reuseMatrixList.size() && 
            _reuseMatrixList[_currentReuseMatrixIndex]->referenceCount()>1)
     {
-        notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
+        //notify(osg::NOTICE)<<"Warning:createOrReuseMatrix() skipping multiply refrenced entry."<< std::endl;
         ++_currentReuseMatrixIndex;
     }
 

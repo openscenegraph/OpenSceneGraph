@@ -151,6 +151,9 @@ void State::pushStateSet(const StateSet* dstate)
 void State::popAllStateSets()
 {
     while (!_drawStateStack.empty()) popStateSet();
+    
+    applyProjectionMatrix(0);
+    applyModelViewMatrix(0);
 }
 
 void State::popStateSet()

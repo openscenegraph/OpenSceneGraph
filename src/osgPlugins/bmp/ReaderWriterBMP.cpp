@@ -38,7 +38,7 @@ enum ncol { BW=1, IA, RGB, RGBA};
 
 struct bmpheader {
     short FileType; //always MB
-    short siz[2]; // a dword for whole file size
+    unsigned short siz[2]; // a dword for whole file size - make unsigned Feb 2002
     short Reserved1, Reserved2; //reserved for future purposes
     short offset[2]; //offset to image in bytes
 };
@@ -138,7 +138,7 @@ int *numComponents_ret)
     // It is extremely expensive on disk space - every RGB pixel uses 3 bytes plus a header!
     // BMP - sponsored by Seagate.
  //   unsigned char palette[256][3];
-    unsigned char *buffer; // returned to sender & as read from the disk
+    unsigned char *buffer=NULL; // returned to sender & as read from the disk
 
     bmperror = ERROR_NO_FILE;
 
@@ -186,9 +186,9 @@ int *numComponents_ret)
                 inf.height=ht;
                 inf.planes=npln;
                 inf.Colorbits=cbits;
-                inf.ColorUsed=pow(2.0,inf.Colorbits); // infer the colours
+                inf.ColorUsed=(long)pow(2.0,(double)inf.Colorbits); // infer the colours
             }
-            long size = (unsigned short)hd.siz[1]*65536+(unsigned short)hd.siz[0];
+            long size = hd.siz[1]*65536+hd.siz[0];
             int ncpal=4; // default number of colours per palette entry
             size -= sizeof(bmpheader)+infsize;
             if (inf.ImageSize<size) inf.ImageSize=size;

@@ -10,18 +10,8 @@
 #include "Input.h"
 #include "FltFile.h"
 #include "Registry.h"
-/*
-#ifdef OSG_USE_IO_DOT_H
-//#include <ostream.h>
-#else
-#include <iostream>
-using namespace std;
-#endif
-*/
-//#include <stdio.h>
 
 using namespace flt;
-
 
 // static
 Registry* Registry::instance()

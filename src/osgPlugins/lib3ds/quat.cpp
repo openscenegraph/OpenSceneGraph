@@ -244,7 +244,7 @@ lib3ds_quat_ln(Lib3dsQuat c)
   Lib3dsDouble om,s,t;
 
   s=sqrt(c[0]*c[0] + c[1]*c[1] + c[2]*c[2]);
-  om=atan2(s,c[3]);
+  om=atan2(s,(Lib3dsDouble)c[3]);
   if (fabs(s)<LIB3DS_EPSILON) {
     t=0.0f;
   }

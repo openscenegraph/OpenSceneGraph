@@ -10,19 +10,7 @@
 #include "Record.h"
 #include "Registry.h"
 
-#ifdef __sgi
-using std::string;
-#endif
-
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
-#include <iostream>
-using namespace std;
-#endif
-
 using namespace flt;
-
 
 FileInput::FileInput()
 {

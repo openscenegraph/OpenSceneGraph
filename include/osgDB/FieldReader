@@ -14,7 +14,7 @@
 #include <iostream.h>
 #else
 #include <iostream>
-using namespace std;
+using std::istream;
 #endif
 
 namespace osgDB {

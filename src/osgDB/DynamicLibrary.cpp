@@ -7,11 +7,6 @@
 #include <dlfcn.h>
 #endif
 
-#ifndef OSG_USE_IO_DOT_H
-#include <iostream>
-using namespace std;
-#endif
-
 #include <osg/Notify>
 
 #include <osgDB/DynamicLibrary>

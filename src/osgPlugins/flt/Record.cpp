@@ -15,13 +15,6 @@
 #include "Input.h"
 #include "RecordVisitor.h"
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
-#include <iostream>
-using namespace std;
-#endif
-
 using namespace flt;
 
 ////////////////////////////////////////////////////////////////////

@@ -137,10 +137,11 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
             if (!fr[1].getInt(capacity)) capacity=100;
             int size = 0;
             int* list = osgNew int [capacity];
-
+            memset(list,0,capacity*sizeof(int));
             while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
             {
                 int primLength;
+
                 if (fr[0].getInt(primLength))
                 {
 
@@ -150,6 +151,7 @@ bool GeoSet_readLocalData(Object& obj, Input& fr)
                         while(capacity<=size) capacity *= 2;
                         int* oldList = list;
                         list = osgNew int[capacity];
+                        memset(list,0,capacity*sizeof(int));
                         for(int i=0;i<oldCapacity;++i)
                         {
                             list[i] = oldList[i];

@@ -118,7 +118,8 @@ Compiling under IRIX
     
     When compiling with MIPSPro7.2.1 you will need to use STLport for its
     proper implementation of Standard C++ iostreams which are missing 
-    from compiler own implementation.
+    from compiler own implementation.  See the bottom of this file for
+    further information on STLport.
 
     To compile, from the OSG root directory, type :
 
@@ -154,7 +155,8 @@ Compiling under Windows
     Service Pack 4 does not completely fix MSVC bugs associated with STL, so
     it is recommended that you also use STLPort which can be downloaded
     from http://www.stlport.org since they actually know how to write a
-    STL library and have done a rather good job at it.
+    STL library and have done a rather good job at it.  Notes on using
+    STLport at the bottom of this file.
     
     The OSG is composed of a number of libraries and executables, to get 
     running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT,
@@ -320,3 +322,46 @@ Plug-in dependencies
     itself but may not be able to use some non-native data formats. To get 
     the problematic plugins working you may need to download support libraries 
     such as libtiff, libjpeg etc.  For further details see index.html.
+
+Using STLport under Windows
+---------------------------
+
+    The OSG has been tested under Windows with STLport-4.5, which allows
+    the users to configure the type of STL support required for STLport
+    itself.  The key configuration that the OSG needs to do is to enable
+    the wrapping of MS's own iostreams, than using STLport's own 
+    implementation.  The later is not required because this has not be
+    problematic under Windows, it is only the container classes and 
+    algorithms that need replacing (thanks to MS's utterly hopeless
+    implementation of these). Using the iostream wrappping option means
+    the STLport can just be used on your include path, there is no need to
+    compile STLport itself, or link into any special libraries.
+
+    To configure STLport simply comment IN (its commented out by default),
+    the follwing line from STLport-4.5/stlport/stl_user_config.h so it
+    should look:
+    
+        # define   _STLP_NO_OWN_IOSTREAMS	1
+    
+    Then configure the includes path in Visual Studio to pick up on STLport:
+    
+        Select the "Tools" menu.
+        Select "Options"
+        In the Options dialog, select the "Directories" tab
+        Under the "include" option, add the path to STLport4.5, something like:
+            D:/STLport4.5/stlport
+        Then press the up array to move the entry all the way to the top of the
+        list, thus overriding MS's own STL implementations.    
+
+STLport under IRIX with MipsPro7.2
+----------------------------------
+
+    This hasn't been tried yet, but STLport should allow the OSG to compile
+    with the old MipsPro7.2 compilers which don't have their own StandardC++
+    iostreams implementation (they only have iostrean.h etc).  Since the
+    OSG now only links to the StandardC++ version, STLport should be able
+    to provide the StandardC++ iostreams for us. You may need to modify 
+    include paths set up in Make/makedefs.irix.nonstd. The default option 
+    of using STLport own iostreams is required, which is in contrast to 
+    the situation under Windows as outlined above.  Let us know how you
+    get on.

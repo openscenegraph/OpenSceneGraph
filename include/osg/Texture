@@ -325,7 +325,7 @@ class SG_EXPORT Texture : public osg::StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions();
+                void setupGLExtensions();
 
                 void setMultiTexturingSupported(bool flag) { _isMultiTexturingSupported=flag; }
                 bool isMultiTexturingSupported() const { return _isMultiTexturingSupported; }

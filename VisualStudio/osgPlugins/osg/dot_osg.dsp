@@ -278,11 +278,15 @@ SOURCE=..\..\..\src\osgPlugins\osg\Texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osg\TextureBase.cpp
+SOURCE=..\..\..\src\osgPlugins\osg\Texture1D.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\osg\Texture2D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osg\Texture3D.cpp
 # End Source File
 # Begin Source File
 

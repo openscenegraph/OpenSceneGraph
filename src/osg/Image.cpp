@@ -458,7 +458,7 @@ void Image::ensureValidSizeForTexturing()
     int new_s = computeNearestPowerOfTwo(_s);
     int new_t = computeNearestPowerOfTwo(_t);
     
-    static GLint max_size=TextureBase::getMaxTextureSize();
+    static GLint max_size=Texture::getMaxTextureSize();
     
     if (new_s>max_size) new_s = max_size;
     if (new_t>max_size) new_t = max_size;

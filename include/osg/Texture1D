@@ -7,12 +7,12 @@
 #ifndef OSG_TEXTURE1D
 #define OSG_TEXTURE1D 1
 
-#include <osg/TextureBase>
+#include <osg/Texture>
 
 namespace osg {
 
 /** Texture state class which encapsulates OpenGl 1D texture functionality.*/
-class SG_EXPORT Texture1D : public TextureBase
+class SG_EXPORT Texture1D : public Texture
 {
 
     public :

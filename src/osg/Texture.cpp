@@ -1,272 +1,493 @@
 #include <osg/GLExtensions>
-#include <osg/Texture>
-
-#ifdef TEXTURE_USE_DEPRECATED_API
-
-#if defined(_MSC_VER)
-    #pragma warning( disable : 4786 )
-#endif
-
-#include <osg/ref_ptr>
 #include <osg/Image>
+#include <osg/Texture>
 #include <osg/State>
 #include <osg/Notify>
-
 #include <osg/GLU>
+
+typedef void (APIENTRY * MyCompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
 
 using namespace osg;
 
+
+Texture::DeletedTextureObjectCache Texture::s_deletedTextureObjectCache;
+
 Texture::Texture():
-            _textureWidth(0),
-            _textureHeight(0),
-            _numMimpmapLevels(0),
-            _subloadMode(OFF),
-            _subloadTextureOffsetX(0),
-            _subloadTextureOffsetY(0),
-            _subloadImageOffsetX(0),
-            _subloadImageOffsetY(0),
-            _subloadImageWidth(0),
-            _subloadImageHeight(0)
+            _wrap_s(CLAMP),
+            _wrap_t(CLAMP),
+            _wrap_r(CLAMP),
+            _min_filter(LINEAR_MIPMAP_LINEAR), // trilinear
+            _mag_filter(LINEAR),
+            _maxAnisotropy(1.0f),
+            _borderColor(0.0, 0.0, 0.0, 0.0),
+            _texParametersDirty(true),
+            _internalFormatMode(USE_IMAGE_DATA_FORMAT),
+            _internalFormat(0)
 {
+    _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+    _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
 }
 
 Texture::Texture(const Texture& text,const CopyOp& copyop):
-            TextureBase(text,copyop),
-            _image(copyop(text._image.get())),
-            _textureWidth(text._textureWidth),
-            _textureHeight(text._textureHeight),
-            _numMimpmapLevels(text._numMimpmapLevels),
-            _subloadMode(text._subloadMode),
-            _subloadTextureOffsetX(text._subloadTextureOffsetX),
-            _subloadTextureOffsetY(text._subloadTextureOffsetY),
-            _subloadImageOffsetX(text._subloadImageOffsetX),
-            _subloadImageOffsetY(text._subloadImageOffsetY),
-            _subloadImageWidth(text._subloadImageWidth),
-            _subloadImageHeight(text._subloadImageHeight),
-            _subloadCallback(text._subloadCallback)
-{}
+            StateAttribute(text,copyop),
+            _wrap_s(text._wrap_s),
+            _wrap_t(text._wrap_t),
+            _wrap_r(text._wrap_r),
+            _min_filter(text._min_filter),
+            _mag_filter(text._mag_filter),
+            _maxAnisotropy(text._maxAnisotropy),
+            _borderColor(text._borderColor),
+            _texParametersDirty(false),
+            _internalFormatMode(text._internalFormatMode),
+            _internalFormat(text._internalFormat)
+{
+    _handleList.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+    _modifiedTag.resize(DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),0);
+}
 
 Texture::~Texture()
 {
-}
-
-int Texture::compare(const StateAttribute& sa) const
-{
-    // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
-    COMPARE_StateAttribute_Types(Texture,sa)
-
-    if (_image!=rhs._image) // smart pointer comparison.
-    {
-        if (_image.valid())
-        {
-            if (rhs._image.valid())
-            {
-                if (_image->getFileName()<rhs._image->getFileName()) return -1;
-                else if (_image->getFileName()>rhs._image->getFileName()) return 1;;
-            }
-            else
-            {
-                return 1; // valid lhs._image is greater than null. 
-            }
-        }
-        else if (rhs._image.valid()) 
-        {
-            return -1; // valid rhs._image is greater than null. 
-        }
-    }
-
-
-    int result = compareTextureBase(rhs);
-    if (result!=0) return result;
-
-
-    // compare each paramter in turn against the rhs.
-    COMPARE_StateAttribute_Parameter(_textureWidth)
-    COMPARE_StateAttribute_Parameter(_textureHeight)
-    COMPARE_StateAttribute_Parameter(_subloadMode)
-    COMPARE_StateAttribute_Parameter(_subloadTextureOffsetX)
-    COMPARE_StateAttribute_Parameter(_subloadTextureOffsetY)
-    COMPARE_StateAttribute_Parameter(_subloadImageOffsetX)
-    COMPARE_StateAttribute_Parameter(_subloadImageOffsetY)
-    COMPARE_StateAttribute_Parameter(_subloadImageWidth)
-    COMPARE_StateAttribute_Parameter(_subloadImageHeight)
-
-    return 0; // passed all the above comparison macro's, must be equal.
-}
-
-void Texture::setImage(Image* image)
-{
     // delete old texture objects.
-    for(TextureNameList::iterator itr=_handleList.begin();
-                               itr!=_handleList.end();
-                               ++itr)
+    dirtyTextureObject();
+}
+
+int Texture::compareTexture(const Texture& rhs) const
+{
+    COMPARE_StateAttribute_Parameter(_wrap_s)
+    COMPARE_StateAttribute_Parameter(_wrap_t)
+    COMPARE_StateAttribute_Parameter(_wrap_r)
+    COMPARE_StateAttribute_Parameter(_min_filter)
+    COMPARE_StateAttribute_Parameter(_mag_filter)
+    COMPARE_StateAttribute_Parameter(_maxAnisotropy)
+    COMPARE_StateAttribute_Parameter(_internalFormatMode)
+    COMPARE_StateAttribute_Parameter(_internalFormat)
+    
+    return 0;
+}
+
+
+void Texture::setWrap(const WrapParameter which, const WrapMode wrap)
+{
+    switch( which )
     {
-        if (*itr != 0)
+        case WRAP_S : _wrap_s = wrap; _texParametersDirty = true; break;
+        case WRAP_T : _wrap_t = wrap; _texParametersDirty = true; break;
+        case WRAP_R : _wrap_r = wrap; _texParametersDirty = true; break;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
+    }
+    
+}
+
+
+const Texture::WrapMode Texture::getWrap(const WrapParameter which) const
+{
+    switch( which )
+    {
+        case WRAP_S : return _wrap_s;
+        case WRAP_T : return _wrap_t;
+        case WRAP_R : return _wrap_r;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getWrap(which)"<<std::endl; return _wrap_s;
+    }
+}
+
+
+void Texture::setFilter(const FilterParameter which, const FilterMode filter)
+{
+    switch( which )
+    {
+        case MIN_FILTER : _min_filter = filter; _texParametersDirty = true; break;
+        case MAG_FILTER : _mag_filter = filter; _texParametersDirty = true; break;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
+    }
+}
+
+
+const Texture::FilterMode Texture::getFilter(const FilterParameter which) const
+{
+    switch( which )
+    {
+        case MIN_FILTER : return _min_filter;
+        case MAG_FILTER : return _mag_filter;
+        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getFilter(which)"<< std::endl; return _min_filter;
+    }
+}
+
+void Texture::setMaxAnisotropy(float anis)
+{
+    if (_maxAnisotropy!=anis)
+    {
+        _maxAnisotropy = anis; 
+        _texParametersDirty = true;
+    }
+}
+
+/** Force a recompile on next apply() of associated OpenGL texture objects.*/
+void Texture::dirtyTextureObject()
+{
+    for(uint i=0;i<_handleList.size();++i)
+    {
+        if (_handleList[i] != 0)
         {
-            // contact global texture object handler to delete texture objects
-            // in appropriate context.
-            // glDeleteTextures( 1L, (const GLuint *)itr );
-            *itr = 0;
+            Texture::deleteTextureObject(i,_handleList[i]);
+            _handleList[i] = 0;
+        }
+    }
+}
+
+void Texture::computeInternalFormatWithImage(osg::Image& image) const
+{
+    static bool s_ARB_Compression = isGLExtensionSupported("GL_ARB_texture_compression");
+    static bool s_S3TC_Compression = isGLExtensionSupported("GL_EXT_texture_compression_s3tc");
+
+    GLint internalFormat = image.getInternalTextureFormat();
+    switch(_internalFormatMode)
+    {
+        case(USE_IMAGE_DATA_FORMAT):
+            internalFormat = image.getInternalTextureFormat();
+            break;
+
+        case(USE_ARB_COMPRESSION):
+            if (s_ARB_Compression)
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(1): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
+                    case(2): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
+                    case(3): internalFormat = GL_COMPRESSED_RGB_ARB; break;
+                    case(4): internalFormat = GL_COMPRESSED_RGBA_ARB; break;
+                    case(GL_RGB): internalFormat = GL_COMPRESSED_RGB_ARB; break;
+                    case(GL_RGBA): internalFormat = GL_COMPRESSED_RGBA_ARB; break;
+                    case(GL_ALPHA): internalFormat = GL_COMPRESSED_ALPHA_ARB; break;
+                    case(GL_LUMINANCE): internalFormat = GL_COMPRESSED_LUMINANCE_ARB; break;
+                    case(GL_LUMINANCE_ALPHA): internalFormat = GL_COMPRESSED_LUMINANCE_ALPHA_ARB; break;
+                    case(GL_INTENSITY): internalFormat = GL_COMPRESSED_INTENSITY_ARB; break;
+                }
+            }
+            else internalFormat = image.getInternalTextureFormat();
+            break;
+
+        case(USE_S3TC_DXT1_COMPRESSION):
+            if (s_S3TC_Compression)
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(3):        internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(4):        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
+                    default:        internalFormat = image.getInternalTextureFormat(); break;
+                }
+            }
+            else internalFormat = image.getInternalTextureFormat();
+            break;
+
+        case(USE_S3TC_DXT3_COMPRESSION):
+            if (s_S3TC_Compression)
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(3):
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(4):
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
+                    default:        internalFormat = image.getInternalTextureFormat(); break;
+                }
+            }
+            else internalFormat = image.getInternalTextureFormat();
+            break;
+
+        case(USE_S3TC_DXT5_COMPRESSION):
+            if (s_S3TC_Compression)
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(3):
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(4):
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
+                    default:        internalFormat = image.getInternalTextureFormat(); break;
+                }
+            }
+            else internalFormat = image.getInternalTextureFormat();
+            break;
+
+        case(USE_USER_DEFINED_FORMAT):
+            internalFormat = _internalFormat;
+            break;
+
+    }
+    
+    _internalFormat = internalFormat;
+}
+
+bool Texture::isCompressedInternalFormat(GLint internalFormat) const
+{
+    switch(internalFormat)
+    {
+        case(GL_COMPRESSED_ALPHA_ARB):
+        case(GL_COMPRESSED_INTENSITY_ARB):
+        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB):
+        case(GL_COMPRESSED_LUMINANCE_ARB):
+        case(GL_COMPRESSED_RGBA_ARB):
+        case(GL_COMPRESSED_RGB_ARB):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+            return true;
+        default:
+            return false;
+    }
+}
+
+void Texture::applyTexParameters(GLenum target, State&) const
+{
+    WrapMode ws = _wrap_s, wt = _wrap_t;
+
+    // GL_IBM_texture_mirrored_repeat, fall-back REPEAT
+    static bool s_mirroredSupported = isGLExtensionSupported("GL_IBM_texture_mirrored_repeat");
+    if (!s_mirroredSupported)
+    {
+        if (ws == MIRROR)
+            ws = REPEAT;
+        if (wt == MIRROR)
+            wt = REPEAT;
+    }
+
+    // GL_EXT_texture_edge_clamp, fall-back CLAMP
+    static bool s_edgeClampSupported = isGLExtensionSupported("GL_EXT_texture_edge_clamp");
+    if (!s_edgeClampSupported)
+    {
+        if (ws == CLAMP_TO_EDGE)
+            ws = CLAMP;
+        if (wt == CLAMP_TO_EDGE)
+            wt = CLAMP;
+    }
+
+    static bool s_borderClampSupported = isGLExtensionSupported("GL_ARB_texture_border_clamp");
+    if(!s_borderClampSupported)
+    {
+        if(ws == CLAMP_TO_BORDER)
+            ws = CLAMP;
+        if(wt == CLAMP_TO_BORDER)
+            wt = CLAMP;
+    }
+
+    glTexParameteri( target, GL_TEXTURE_WRAP_S, ws );
+    glTexParameteri( target, GL_TEXTURE_WRAP_T, wt );
+
+    glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
+    glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
+
+    if (_maxAnisotropy>1.0f)
+    {
+        // check for support for anisotropic filter,
+        // note since this is static varible it is intialised
+        // only on the first time entering this code block,
+        // is then never reevaluated on subsequent calls.
+        static bool s_anisotropicSupported =
+            isGLExtensionSupported("GL_EXT_texture_filter_anisotropic");
+
+        if (s_anisotropicSupported)
+        {
+            // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
+            // by gl.h (or via glext.h) or by include/osg/Texture.
+            glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, _maxAnisotropy);
         }
     }
 
-    _image = image;
+    if (s_borderClampSupported)
+    {
+        glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
+    }
+
+
+    _texParametersDirty=false;
+
 }
 
-void Texture::apply(State& state) const
+void Texture::applyTexImage2D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight,GLsizei& numMimpmapLevels) const
 {
+    // if we don't have a valid image we can't create a texture!
+    if (!image || !image->data())
+        return;
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    // update the modified tag to show that it is upto date.
+    getModifiedTag(contextID) = image->getModifiedTag();
+    
 
-    if (handle != 0)
+    // compute the internal texture format, this set the _internalFormat to an appropriate value.
+    computeInternalFormat();
+
+    // select the internalFormat required for the texture.
+    bool compressed = isCompressedInternalFormat(_internalFormat);
+    
+    image->ensureValidSizeForTexturing();
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+
+    static MyCompressedTexImage2DArbProc glCompressedTexImage2D_ptr = 
+        (MyCompressedTexImage2DArbProc)getGLExtensionFuncPtr("glCompressedTexImage2DARB");
+
+    if( _min_filter == LINEAR || _min_filter == NEAREST )
     {
-        if (_subloadMode == OFF)
+        if ( !compressed )
         {
-            glBindTexture( GL_TEXTURE_2D, handle );
-            if (_texParametersDirty) applyTexParameters(GL_TEXTURE_2D,state);
+            numMimpmapLevels = 1;
+            glTexImage2D( target, 0, _internalFormat,
+                image->s(), image->t(), 0,
+                (GLenum)image->getPixelFormat(),
+                (GLenum)image->getDataType(),
+                image->data() );
+
         }
-        else  if (_image.valid() && _image->data())
+        else if(glCompressedTexImage2D_ptr)
         {
-            glBindTexture( GL_TEXTURE_2D, handle );
-            if (_texParametersDirty) applyTexParameters(GL_TEXTURE_2D,state);
+            numMimpmapLevels = 1;
+            GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+            GLint size = ((image->s()+3)/4)*((image->t()+3)/4)*blockSize;
+            glCompressedTexImage2D_ptr(target, 0, _internalFormat, 
+                  image->s(), image->t(),0, 
+                  size, 
+                  image->data());                
 
-            uint& modifiedTag = getModifiedTag(contextID);
-            if (_subloadMode == AUTO ||
-                (_subloadMode == IF_DIRTY && modifiedTag != _image->getModifiedTag()))
+        }
+
+    }
+    else
+    {
+        if(!image->isMipmap())
+        {
+
+            numMimpmapLevels = 1;
+
+            gluBuild2DMipmaps( target, _internalFormat,
+                image->s(),image->t(),
+                (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
+                image->data() );
+
+        }
+        else
+        {
+            numMimpmapLevels = image->getNumMipmapLevels();
+
+            int width  = image->s();
+            int height = image->t();
+
+            if( !compressed )
             {
-                glPixelStorei(GL_UNPACK_ROW_LENGTH,_image->s());
+                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                {
 
-                glTexSubImage2D(GL_TEXTURE_2D, 0,
-                                _subloadTextureOffsetX, _subloadTextureOffsetY,
-                                (_subloadImageWidth>0)?_subloadImageWidth:_image->s(), (_subloadImageHeight>0)?_subloadImageHeight:_image->t(),
-                                (GLenum) _image->getPixelFormat(), (GLenum) _image->getDataType(),
-                                _image->data(_subloadImageOffsetX,_subloadImageOffsetY));
+                    if (width == 0)
+                        width = 1;
+                    if (height == 0)
+                        height = 1;
 
-                glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+                    glTexImage2D( target, k, _internalFormat,
+                         width, height, 0,
+                        (GLenum)image->getPixelFormat(),
+                        (GLenum)image->getDataType(),
+                        image->getMipmapData(k));
 
-                // update the modified flag to show that the image has been loaded.
-                modifiedTag = _image->getModifiedTag();
+                    width >>= 1;
+                    height >>= 1;
+                }
             }
-            else if (_subloadMode == USE_CALLBACK)
+            else if(glCompressedTexImage2D_ptr)
             {
-                _subloadCallback->subload(GL_TEXTURE_2D,*this,state);
+                GLint blockSize = ( _internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ? 8 : 16 ); 
+                GLint size = 0; 
+                for( GLsizei k = 0 ; k < numMimpmapLevels  && (width || height) ;k++)
+                {
+                    if (width == 0)
+                        width = 1;
+                    if (height == 0)
+                        height = 1;
+
+                    size = ((width+3)/4)*((height+3)/4)*blockSize;
+                    glCompressedTexImage2D_ptr(target, k, _internalFormat, 
+                        width, height, 0, size, image->getMipmapData(k));                
+
+                    width >>= 1;
+                    height >>= 1;
+                }
+            }
+        }
+
+    }
+
+    inwidth = image->s();
+    inheight = image->t();
+    
+}
+
+/** use deleteTextureObject instead of glDeleteTextures to allow
+  * OpenGL texture objects to cached until they can be deleted
+  * by the OpenGL context in which they were created, specified
+  * by contextID.*/
+void Texture::deleteTextureObject(uint contextID,GLuint handle)
+{
+    if (handle!=0)
+    {
+        // insert the handle into the cache for the appropriate context.
+        s_deletedTextureObjectCache[contextID].insert(handle);
+    }
+}
+
+
+/** flush all the cached display list which need to be deleted
+  * in the OpenGL context related to contextID.*/
+void Texture::flushDeletedTextureObjects(uint contextID)
+{
+    DeletedTextureObjectCache::iterator citr = s_deletedTextureObjectCache.find(contextID);
+    if (citr!=s_deletedTextureObjectCache.end())
+    {
+        std::set<uint>& textureObjectSet = citr->second;
+        for(std::set<uint>::iterator titr=textureObjectSet.begin();
+                                     titr!=textureObjectSet.end();
+                                     ++titr)
+        {
+            glDeleteTextures( 1L, (const GLuint *)&(*titr ));
+        }
+        s_deletedTextureObjectCache.erase(citr);
+    }
+}
+
+
+GLint Texture::getMaxTextureSize()
+{
+    static GLint s_maxTextureSize = 0;
+    if (s_maxTextureSize == 0)
+    {
+    
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE,&s_maxTextureSize);
+        notify(INFO) << "GL_MAX_TEXTURE_SIZE "<<s_maxTextureSize<<std::endl;
+        
+        char *ptr;
+        if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+        {
+            GLint osg_max_size = atoi(ptr);
+            
+            notify(INFO) << "OSG_MAX_TEXTURE_SIZE "<<osg_max_size<<std::endl;
+            
+            if (osg_max_size<s_maxTextureSize)
+            {
+                
+                s_maxTextureSize = osg_max_size;
             }
             
-        }
+        }      
+        notify(INFO) << "Selected max texture size "<<s_maxTextureSize<<std::endl;
     }
-    else if (_image.valid() && _image->data())
-    {
-
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_2D, handle );
-
-        applyTexParameters(GL_TEXTURE_2D,state);
-        applyTexImage2D(GL_TEXTURE_2D,_image.get(),state, _textureWidth, _textureHeight, _numMimpmapLevels);
-
-        // in theory the following line is redundent, but in practice
-        // have found that the first frame drawn doesn't apply the textures
-        // unless a second bind is called?!!
-        // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_2D, handle );
-
-    }
-    else
-    {
-        glBindTexture( GL_TEXTURE_2D, 0 );
-    }
+    return s_maxTextureSize;
 }
 
-void Texture::computeInternalFormat() const
+void Texture::compile(State& state) const
 {
-    if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    apply(state);
 }
-
-
-void Texture::copyTexImage2D(State& state, int x, int y, int width, int height )
-{
-    const uint contextID = state.getContextID();
-
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
-    
-    if (handle)
-    {
-        if (width==(int)_textureWidth && height==(int)_textureHeight)
-        {
-            // we have a valid texture object which is the right size
-            // so lets play clever and use copyTexSubImage2D instead.
-            // this allows use to reuse the texture object and avoid
-            // expensive memory allocations.
-            copyTexSubImage2D(state,0 ,0, x, y, width, height);
-            return;
-        }
-        // the relevent texture object is not of the right size so
-        // needs to been deleted    
-        // remove previously bound textures. 
-        dirtyTextureObject();
-        // note, dirtyTextureObject() dirties all the texture objects for
-        // this texture, is this right?  Perhaps we should dirty just the
-        // one for this context.  Note sure yet will leave till later.
-        // RO July 2001.
-    }
-    
-    
-    // remove any previously assigned images as these are nolonger valid.
-    _image = NULL;
-
-    // switch off mip-mapping.
-    _min_filter = LINEAR;
-    _mag_filter = LINEAR;
-
-    // Get a new 2d texture handle.
-    glGenTextures( 1, &handle );
-
-    glBindTexture( GL_TEXTURE_2D, handle );
-    applyTexParameters(GL_TEXTURE_2D,state);
-    glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
-
-
-    _textureWidth = width;
-    _textureHeight = height;
-
-    // inform state that this texture is the current one bound.
-    state.haveAppliedAttribute(this);
-}
-
-void Texture::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
-{
-    const uint contextID = state.getContextID();
-
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
-    
-    if (handle)
-    {
-
-        // we have a valid image
-        glBindTexture( GL_TEXTURE_2D, handle );
-        applyTexParameters(GL_TEXTURE_2D,state);
-        glCopyTexSubImage2D( GL_TEXTURE_2D, 0, xoffset,yoffset, x, y, width, height);
-
-        /* Redundant, delete later */
-        glBindTexture( GL_TEXTURE_2D, handle );
-
-        // inform state that this texture is the current one bound.
-        state.haveAppliedAttribute(this);
-
-    }
-    else
-    {
-        // no texture object already exsits for this context so need to
-        // create it upfront - simply call copyTexImage2D.
-        copyTexImage2D(state,x,y,width,height);
-    }
-}
-
-#endif // USE_DEPRECATED_API

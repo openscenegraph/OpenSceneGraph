@@ -167,17 +167,6 @@ class SG_EXPORT Matrix : public Object
         inline static Matrix lookAt(const Vec3& eye,const Vec3& center,const Vec3& up);
 
 
-#ifdef USE_DEPRECATED_API        
-        /** make a rotation Matrix from euler angles.
-          * assume Z up, Y north, X east and euler convention
-          * as per Open Flight & Performer.
-          * Applies a positive rotation about Y axis for roll,
-          * then applies a positive roation about X for pitch,
-          * and finally a negative rotation about the Z axis.*/
-        void makeRotate( float heading, float pitch, float roll); //Euler angles
-
-        inline static Matrix rotate( float heading, float pitch, float roll);
-#endif    
 
 
         inline Vec3 preMult( const Vec3& v ) const;
@@ -299,14 +288,6 @@ inline Matrix Matrix::rotate(float angle, const Vec3& axis )
     m.makeRotate(angle,axis);
     return m;
 }
-#ifdef USE_DEPRECATED_API        
-inline Matrix Matrix::rotate(float heading, float pitch, float roll)
-{
-    Matrix m;
-    m.makeRotate(heading,pitch,roll);
-    return m;
-}
-#endif
 inline Matrix Matrix::rotate( float angle1, const Vec3& axis1, 
                               float angle2, const Vec3& axis2,
                               float angle3, const Vec3& axis3)

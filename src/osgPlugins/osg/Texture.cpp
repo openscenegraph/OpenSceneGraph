@@ -1,11 +1,8 @@
-#include "osg/Texture"
+#include <osg/Texture>
 
-#ifdef TEXTURE_USE_DEPRECATED_API
-
-
-#include "osgDB/Registry"
-#include "osgDB/Input"
-#include "osgDB/Output"
+#include <osgDB/Registry>
+#include <osgDB/Input>
+#include <osgDB/Output>
 
 using namespace osg;
 using namespace osgDB;
@@ -20,17 +17,15 @@ bool Texture_matchFilterStr(const char* str,Texture::FilterMode& filter);
 const char* Texture_getFilterStr(Texture::FilterMode filter);
 bool Texture_matchInternalFormatModeStr(const char* str,Texture::InternalFormatMode& mode);
 const char* Texture_getInternalFormatModeStr(Texture::InternalFormatMode mode);
-bool Texture_matchInternalFormatValueStr(const char* str,int& value);
-const char* Texture_getInternalFormatValueStr(int value);
-bool Texture_matchSubloadModeStr(const char* str, Texture::SubloadMode& value);
-const char* Texture_getSubloadModeStr(Texture::SubloadMode value);
+bool Texture_matchInternalFormatStr(const char* str,int& value);
+const char* Texture_getInternalFormatStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_TextureProxy
 (
-    osgNew osg::Texture,
-    "Texture",
-    "Object StateAttribute Texture TextureBase",
+    0,
+    "TextureBase",
+    "Object StateAttribute TextureBase",
     &Texture_readLocalData,
     &Texture_writeLocalData
 );
@@ -42,87 +37,67 @@ bool Texture_readLocalData(Object& obj, Input& fr)
 
     Texture& texture = static_cast<Texture&>(obj);
 
-    if (fr[0].matchWord("file") && fr[1].isString())
+    Texture::WrapMode wrap;
+    if (fr[0].matchWord("wrap_s") && Texture_matchWrapStr(fr[1].getStr(),wrap))
     {
-        std::string filename = fr[1].getStr();
-        Image* image = fr.readImage(filename.c_str());
-        if (image)
-        {
-            // name will have already been set by the image plugin,
-            // but it will have absolute path, so will override it 
-            // here to keep the original name intact.
-            //image->setFileName(filename);
-            texture.setImage(image);
-        }
-        
-        fr += 2;
+        texture.setWrap(Texture::WRAP_S,wrap);
+        fr+=2;
         iteratorAdvanced = true;
     }
 
-    Texture::SubloadMode submode;
-    if (fr[0].matchWord("subloadMode") && Texture_matchSubloadModeStr(fr[1].getStr(),submode))
+    if (fr[0].matchWord("wrap_t") && Texture_matchWrapStr(fr[1].getStr(),wrap))
     {
-        texture.setSubloadMode(submode);
-        fr += 2;
+        texture.setWrap(Texture::WRAP_T,wrap);
+        fr+=2;
         iteratorAdvanced = true;
     }
-    if (fr[0].matchWord("subloadOffset"))
+
+    if (fr[0].matchWord("wrap_r") && Texture_matchWrapStr(fr[1].getStr(),wrap))
     {
-        int x, y;
-        if (fr[1].getInt(x) && fr[2].getInt(y))
-        {
-            texture.setSubloadTextureOffset(x, y);
-            fr += 3;
-            iteratorAdvanced = true;
-        }
+        texture.setWrap(Texture::WRAP_R,wrap);
+        fr+=2;
+        iteratorAdvanced = true;
     }
-    if (fr[0].matchWord("subloadSize"))
+
+    Texture::FilterMode filter;
+    if (fr[0].matchWord("min_filter") && Texture_matchFilterStr(fr[1].getStr(),filter))
     {
-        int width, height;
-        if (fr[1].getInt(width) && fr[2].getInt(height))
-        {
-            texture.setSubloadImageSize(width, height);
-            fr += 3;
-            iteratorAdvanced = true;
-        }
+        texture.setFilter(Texture::MIN_FILTER,filter);
+        fr+=2;
+        iteratorAdvanced = true;
     }
-    if (fr[0].matchWord("subloadTextureOffset"))
+
+    if (fr[0].matchWord("mag_filter") && Texture_matchFilterStr(fr[1].getStr(),filter))
     {
-        int x, y;
-        if (fr[1].getInt(x) && fr[2].getInt(y))
-        {
-            texture.setSubloadTextureOffset(x, y);
-            fr += 3;
-            iteratorAdvanced = true;
-        }
+        texture.setFilter(Texture::MAG_FILTER,filter);
+        fr+=2;
+        iteratorAdvanced = true;
     }
-    if (fr[0].matchWord("subloadTextureSize"))
+
+    if (fr.matchSequence("maxAnisotropy %f"))
     {
-        int width, height;
-        if (fr[1].getInt(width) && fr[2].getInt(height))
-        {
-            texture.setSubloadTextureSize(width, height);
-            fr += 3;
-            iteratorAdvanced = true;
-        }
+        float anis=1.0f;
+        fr[1].getFloat(anis);
+        texture.setMaxAnisotropy(anis);
+        fr +=2 ;
+        iteratorAdvanced = true;
     }
-    if (fr[0].matchWord("subloadImageOffset"))
+
+    Texture::InternalFormatMode mode;
+    if (fr[0].matchWord("internalFormatMode") && Texture_matchInternalFormatModeStr(fr[1].getStr(),mode))
     {
-        int x, y;
-        if (fr[1].getInt(x) && fr[2].getInt(y))
-        {
-            texture.setSubloadImageOffset(x, y);
-            fr += 3;
-            iteratorAdvanced = true;
-        }
+        texture.setInternalFormatMode(mode);
+        fr+=2;
+        iteratorAdvanced = true;
     }
-    if (fr[0].matchWord("subloadImageSize"))
+
+    if (fr[0].matchWord("internalFormatValue"))
     {
-        int width, height;
-        if (fr[1].getInt(width) && fr[2].getInt(height))
+        int value;
+        if (Texture_matchInternalFormatStr(fr[1].getStr(),value) || fr[1].getInt(value))
         {
-            texture.setSubloadImageSize(width, height);
-            fr += 3;
+            texture.setInternalFormat(value);
+            fr+=2;
             iteratorAdvanced = true;
         }
     }
@@ -135,28 +110,21 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
 {
     const Texture& texture = static_cast<const Texture&>(obj);
 
-    if (texture.getImage() && !(texture.getImage()->getFileName().empty()))
+    fw.indent() << "wrap_s " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_S)) << std::endl;
+    fw.indent() << "wrap_t " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_T)) << std::endl;
+    fw.indent() << "wrap_r " << Texture_getWrapStr(texture.getWrap(Texture::WRAP_R)) << std::endl;
+
+    fw.indent() << "min_filter " << Texture_getFilterStr(texture.getFilter(Texture::MIN_FILTER)) << std::endl;
+    fw.indent() << "mag_filter " << Texture_getFilterStr(texture.getFilter(Texture::MAG_FILTER)) << std::endl;
+    fw.indent() << "maxAnisotropy " << texture.getMaxAnisotropy() << std::endl;
+
+    fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
+
+    if (texture.getInternalFormatMode()==Texture::USE_USER_DEFINED_FORMAT)
     {
-        fw.indent() << "file \""<<fw.getFileNameForOutput(texture.getImage()->getFileName())<<"\""<< std::endl;
-    }
-
-
-    fw.indent() << "subloadMode " << Texture_getSubloadModeStr(texture.getSubloadMode()) << std::endl;
-    if (texture.getSubloadMode()!=Texture::OFF)
-    {
-        int x, y;
-        texture.getSubloadTextureOffset(x, y);
-        fw.indent() << "subloadTextureOffset " << x << " " << y << std::endl;
-
-        int width, height;
-        texture.getSubloadTextureSize(width, height);
-        fw.indent() << "subloadTextureSize " << width << " " << height << std::endl;
-
-        texture.getSubloadImageOffset(x, y);
-        fw.indent() << "subloadImageOffset " << x << " " << y << std::endl;
-
-        texture.getSubloadImageSize(width, height);
-        fw.indent() << "subloadImageSize " << width << " " << height << std::endl;
+        const char* str = Texture_getInternalFormatStr(texture.getInternalFormat());
+        if (str) fw.indent() << "internalFormat " << str << std::endl;
+        else fw.indent() << "internalFormat " << texture.getInternalFormat() << std::endl;
     }
 
     return true;
@@ -245,7 +213,7 @@ const char* Texture_getInternalFormatModeStr(Texture::InternalFormatMode mode)
 }
 
 
-bool Texture_matchInternalFormatValueStr(const char* str,int& value)
+bool Texture_matchInternalFormatStr(const char* str,int& value)
 {
 
     if (     strcmp(str,"GL_INTENSITY")==0) value = GL_INTENSITY;
@@ -269,7 +237,7 @@ bool Texture_matchInternalFormatValueStr(const char* str,int& value)
 }
 
 
-const char* Texture_getInternalFormatValueStr(int value)
+const char* Texture_getInternalFormatStr(int value)
 {
     switch(value)
     {
@@ -293,29 +261,3 @@ const char* Texture_getInternalFormatValueStr(int value)
 
     return NULL;
 }
-
-
-bool Texture_matchSubloadModeStr(const char* str,Texture::SubloadMode& value)
-{
-    if (strcmp(str, "OFF") == 0)
-        value = Texture::OFF;
-    else if (strcmp(str, "AUTO") == 0)
-        value = Texture::AUTO;
-    else if (strcmp(str, "IF_DIRTY") == 0)
-        value = Texture::IF_DIRTY;
-    else
-        return false;
-    return true;
-}
-
-const char* Texture_getSubloadModeStr(Texture::SubloadMode value)
-{
-    switch (value)
-    {
-        case Texture::OFF:      return "OFF";
-        case Texture::AUTO:     return "AUTO";
-        case Texture::IF_DIRTY: return "IF_DIRTY";
-    }
-    return NULL;
-}
-#endif

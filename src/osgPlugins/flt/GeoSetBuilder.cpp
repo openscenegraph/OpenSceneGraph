@@ -12,7 +12,7 @@
 
 #include <osg/Object>
 #include <osg/LOD>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/Geode>
 #include <osg/StateSet>
 #include <osg/Material>

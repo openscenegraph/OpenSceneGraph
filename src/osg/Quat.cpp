@@ -36,22 +36,6 @@ void Quat::makeRotate( const float angle, const Vec3& vec )
     makeRotate( angle, vec[0], vec[1], vec[2] );
 }
 
-#ifdef USE_DEPRECATED_API        
-
-// assume Z up, Y north, X east and euler convention
-// as per Open Flight & Performer.
-// applies a positive rotation about Y axis for roll,
-// then applies a positive roation about X for pitch,
-// and finally a negative rotation about the Z axis.
-void Quat::makeRotate( float heading, float pitch, float roll)
-{
-    Quat q_roll; q_roll.makeRotate(roll,0.0,1.0,0.0);
-    Quat q_pitch; q_pitch.makeRotate(pitch,1.0,0.0,0.0);
-    Quat q_heading; q_heading.makeRotate(-heading,0.0,0.0,1.0);
-    
-    *this = q_roll*q_pitch*q_heading;
-}
-#endif
 
 void Quat::makeRotate ( float angle1, const Vec3& axis1, 
                         float angle2, const Vec3& axis2,

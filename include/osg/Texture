@@ -2,216 +2,282 @@
 //Distributed under the terms of the GNU Library General Public License (LGPL)
 //as published by the Free Software Foundation.
 
-// -*-c++-*-
-
-//#define TEXTURE_USE_DEPRECATED_API
-#ifdef TEXTURE_USE_DEPRECATED_API
-
 #ifndef OSG_TEXTURE
 #define OSG_TEXTURE 1
 
-#include <osg/TextureBase>
+#include <osg/GL>
+#include <osg/Types>
+#include <osg/Image>
+#include <osg/StateAttribute>
+#include <osg/ref_ptr>
+#include <osg/Vec4>
+
+#include <vector>
+#include <map>
+#include <set>
+
+// if not defined by gl.h use the definition found in:
+// http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
+#ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
+#endif
+
+#ifndef GL_ARB_texture_compression
+#define GL_COMPRESSED_ALPHA_ARB           0x84E9
+#define GL_COMPRESSED_LUMINANCE_ARB       0x84EA
+#define GL_COMPRESSED_LUMINANCE_ALPHA_ARB 0x84EB
+#define GL_COMPRESSED_INTENSITY_ARB       0x84EC
+#define GL_COMPRESSED_RGB_ARB             0x84ED
+#define GL_COMPRESSED_RGBA_ARB            0x84EE
+#define GL_TEXTURE_COMPRESSION_HINT_ARB   0x84EF
+#define GL_TEXTURE_IMAGE_SIZE_ARB         0x86A0
+#define GL_TEXTURE_COMPRESSED_ARB         0x86A1
+#define GL_NUM_COMPRESSED_TEXTURE_FORMATS_ARB 0x86A2
+#define GL_COMPRESSED_TEXTURE_FORMATS_ARB 0x86A3
+#endif
+
+#ifndef GL_EXT_texture_compression_s3tc
+#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
+#define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
+#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
+#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
+#endif
+
+#ifndef GL_MIRRORED_REPEAT_IBM
+#define GL_MIRRORED_REPEAT_IBM            0x8370
+#endif
+
+#ifndef GL_CLAMP_TO_EDGE
+#define GL_CLAMP_TO_EDGE                  0x812F
+#endif
+
+#ifndef GL_CLAMP_TO_BORDER_ARB
+#define GL_CLAMP_TO_BORDER_ARB            0x812D
+#endif
+
+#ifndef GL_GENERATE_MIPMAP_SGIS
+#define GL_GENERATE_MIPMAP_SGIS           0x8191
+#define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
+#endif
+
+#ifndef GL_TEXTURE_3D
+#define GL_TEXTURE_3D                     0x806F
+#endif
 
 namespace osg {
 
-/** Texture state class which encapsulates OpenGl texture functionality.*/
-class SG_EXPORT Texture : public TextureBase
+/** Texture base class which encapsulates OpenGl texture functionality which common betweent the various types of OpenGL textures.*/
+class SG_EXPORT Texture : public osg::StateAttribute
 {
 
     public :
-        
+    
+    
         Texture();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Texture(const Texture& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        virtual osg::Object* cloneType() const = 0;
+        virtual osg::Object* clone(const CopyOp& copyop) const = 0;
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Texture *>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Texture"; }
+        virtual const Type getType() const { return TEXTURE; }
+
+        virtual bool isTextureAttribute() const { return true; }
+
+        enum WrapParameter {
+            WRAP_S,
+            WRAP_T,
+            WRAP_R
+        };
+
+        enum WrapMode {
+            CLAMP  = GL_CLAMP,
+            CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+            CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER_ARB,
+            REPEAT = GL_REPEAT,
+            MIRROR = GL_MIRRORED_REPEAT_IBM
+        };
+
+        /** Set the texture wrap mode.*/
+        void setWrap(const WrapParameter which, const WrapMode wrap);
+        /** Get the texture wrap mode.*/
+        const WrapMode getWrap(const WrapParameter which) const;
+
+
+        /** Sets the border color for this texture. Makes difference only if
+          * wrap mode is CLAMP_TO_BORDER */
+        void setBorderColor(const Vec4& color) { _borderColor = color; _texParametersDirty = true; }
         
-        META_StateAttribute(osg, Texture,TEXTURE);
+        const Vec4& borderColor(void) const { return _borderColor; }
+        
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const StateAttribute& rhs) const;
+        enum FilterParameter {
+            MIN_FILTER,
+            MAG_FILTER
+        };
 
-        virtual void getAssociatedModes(std::vector<GLMode>& modes) const 
-        {
-            modes.push_back(GL_TEXTURE_2D);
-        }
+        enum FilterMode {
+            LINEAR                    = GL_LINEAR,
+            LINEAR_MIPMAP_LINEAR      = GL_LINEAR_MIPMAP_LINEAR,
+            LINEAR_MIPMAP_NEAREST     = GL_LINEAR_MIPMAP_NEAREST,
+            NEAREST                   = GL_NEAREST,
+            NEAREST_MIPMAP_LINEAR     = GL_NEAREST_MIPMAP_LINEAR,
+            NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST
+        };
 
-        /** Set the texture image. */
-        void setImage(Image* image);
 
-        /** Get the texture image. */
-        Image* getImage() { return _image.get(); }
+        /** Set the texture filter mode.*/
+        void setFilter(const FilterParameter which, const FilterMode filter);
 
-        /** Get the const texture image. */
-        inline const Image* getImage() const { return _image.get(); }
+        /** Get the texture filter mode.*/
+        const FilterMode getFilter(const FilterParameter which) const;
 
-        /** Copy pixels into a 2D texture image.As per glCopyTexImage2D.
-          * Creates an OpenGL texture object from the current OpenGL background
-          * framebuffer contents at pos \a x, \a y with width \a width and
-          * height \a height. \a width and \a height must be a power of two.
+        /** Set the maximum anisotropy value, default value is 1.0 for
+          * no anisotropic filtering.  If hardware does not support anisotropic
+          * filtering then normal filtering is used, equivilant to a max anisotropy value of 1.0.
+          * valid range is 1.0f upwards.  The maximum value depends on the graphics
+          * system being used.*/
+        void setMaxAnisotropy(float anis);
+        
+        /** Get the maximum anisotropy value.*/
+        inline float getMaxAnisotropy() const { return _maxAnisotropy; }
+
+        enum InternalFormatMode {
+            USE_IMAGE_DATA_FORMAT,
+            USE_USER_DEFINED_FORMAT,
+            USE_ARB_COMPRESSION,
+            USE_S3TC_DXT1_COMPRESSION,
+            USE_S3TC_DXT3_COMPRESSION,
+            USE_S3TC_DXT5_COMPRESSION
+        };
+
+        /** Set the internal format mode.
+          * Note, If the mode is set USE_IMAGE_DATA_FORMAT, USE_ARB_COMPRESSION,
+          * USE_S3TC_COMPRESSION the internalFormat is automatically selected,
+          * and will overwrite the previous _internalFormat.
           */
-        void copyTexImage2D(State& state, int x, int y, int width, int height );
+        inline void setInternalFormatMode(const InternalFormatMode mode) { _internalFormatMode = mode; }
 
-        /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
-          * Updates portion of an existing OpenGL texture object from the current OpenGL background
-          * framebuffer contents at pos \a x, \a y with width \a width and
-          * height \a height. \a width and \a height must be a power of two,
-          * and writing into the texture with offset \a xoffset and \a yoffset.
-          */
-        void copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height );
-
-
+        /** Get the internal format mode.*/
+        inline const InternalFormatMode getInternalFormatMode() const { return _internalFormatMode; }
 
         /** Set the internal format to use when creating OpenGL textures.
           * Also sets the internalFormatMode to USE_USER_DEFINED_FORMAT.
           */
-        inline void setInternalFormatValue(const int internalFormat)
+        inline void setInternalFormat(const int internalFormat)
         {
             _internalFormatMode = USE_USER_DEFINED_FORMAT;
             _internalFormat = internalFormat;
         }
 
         /** Get the internal format to use when creating OpenGL textures.*/
-        inline const int getInternalFormatValue() const { return _internalFormat; }
+        inline const int getInternalFormat() const { if (_internalFormat==0) computeInternalFormat(); return _internalFormat; }
         
+        bool isCompressedInternalFormat() const;
 
-        enum SubloadMode {
-            OFF,
-            AUTO,
-            IF_DIRTY,
-            USE_CALLBACK
-        };
-
-        /** Set the texture subload mode. */
-        inline void setSubloadMode(const SubloadMode mode) { _subloadMode = mode; }
-
-        /** Get the texture subload mode. */
-        inline const SubloadMode getSubloadMode() const { return _subloadMode; }
-
-        /** Set the texture subload texture offsets. */
-        inline void setSubloadTextureOffset(const int x, const int y)
-        {
-            _subloadTextureOffsetX = x;
-            _subloadTextureOffsetY = y;
-        }
-
-        /** Get the texture subload texture offsets. */
-        inline void getSubloadTextureOffset(int& x, int& y) const
-        {
-            x = _subloadTextureOffsetX;
-            y = _subloadTextureOffsetY;
-        }
         
-        /** Set the texture subload width. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
-        inline void setSubloadTextureSize(const int width, const int height) const
+        /** Get the handle to the texture object for the current context.*/
+        /** return the OpenGL texture object for specified context.*/
+        inline GLuint& getTextureObject(const uint contextID) const
         {
-            _textureWidth = width;
-            _textureHeight = height;
+            // pad out handle list if required.
+            if (_handleList.size()<=contextID)
+                _handleList.resize(contextID+1,0);
+
+            // get the globj for the current contextID.
+            return _handleList[contextID];
         }
 
-        /** Get the texture subload width. */
-        inline void getSubloadTextureSize(int& width, int& height) const
+        inline uint& getModifiedTag(const uint contextID) const
         {
-            width = _textureWidth;
-            height = _textureHeight;
+            // pad out handle list if required.
+            if (_modifiedTag.size()<=contextID)
+                _modifiedTag.resize(contextID+1,0);
+
+            // get the modified tag for the current contextID.
+            return _modifiedTag[contextID];
         }
 
+        /** Force a recompile on next apply() of associated OpenGL texture objects.*/
+        void dirtyTextureObject();
 
-        /** Set the subload image offsets. */
-        inline void setSubloadImageOffset(const int x, const int y)
-        {
-            _subloadImageOffsetX = x;
-            _subloadImageOffsetY = y;
-        }
 
-        /** Get the subload image offsets. */
-        inline void getSubloadImageOffset(int& x, int& y) const
-        {
-            x = _subloadImageOffsetX;
-            y = _subloadImageOffsetY;
-        }
 
-        /** Set the image subload width. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes. */
-        inline void setSubloadImageSize(const int width, const int height)
-        {
-            _subloadImageWidth = width;
-            _subloadImageHeight = height;
-        }
+        /** use deleteTextureObject instead of glDeleteTextures to allow
+          * OpenGL texture objects to cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteTextureObject(uint contextID,GLuint handle);
 
-        /** Get the image subload width. */
-        inline void getSubloadImageSize(int& width, int& height) const
-        {
-            width = _subloadImageWidth;
-            height = _subloadImageHeight;
-        }
-
-        class SubloadCallback : public Referenced
-        {
-            public:
-                virtual void load(GLenum target, const Texture& texture,State& state) const = 0;
-                virtual void subload(GLenum target, const Texture& texture,State& state) const = 0;
-        };
+        /** flush all the cached display list which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedTextureObjects(uint contextID);
         
-        void setSubloadCallback(SubloadCallback* cb) { _subloadCallback = cb; _subloadMode = cb ? USE_CALLBACK:OFF; }
+        /** Get the maximum texture size supported, this is the
+            normally define by GL_MAX_TEXTURE_SIZE, but can be overridden
+            by the OSG_MAX_TEXTURE_SIZE environmental variable.*/
+        static GLint getMaxTextureSize();
         
-        SubloadCallback* getSubloadCallback() { return _subloadCallback.get(); }
+        /** Texture is pure virtual base class, apply must be overriden. */
+        virtual void apply(State& state) const = 0;
 
-        const SubloadCallback* getSubloadCallback() const { return _subloadCallback.get(); }
-
-        /** Set the number of mip map levels the the texture has been created with,
-            should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
-        void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
-
-        /** Get the number of mip map levels the the texture has been created with.*/
-        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
-        
-        /** On first apply (unless already compiled), create the minmapped 
-          * texture and bind it, subsequent apply will simple bind to texture.*/
-        virtual void apply(State& state) const;
+        /** Calls apply(state) to compile the texture. */
+        virtual void compile(State& state) const;
 
     protected :
 
         virtual ~Texture();
 
-        virtual void computeInternalFormat() const;
-
-        // not ideal that _image is mutable, but its required since
-        // Image::ensureDimensionsArePowerOfTwo() can only be called
-        // in a valid OpenGL context, a therefore within an Texture::apply
-        // which is const...
-        mutable ref_ptr<Image> _image;
-
-        // subloaded images can have different texture and image sizes.
-        mutable GLsizei _textureWidth, _textureHeight;
+        virtual void computeInternalFormat() const = 0;
         
-        // number of mip map levels the the texture has been created with,        
-        mutable GLsizei _numMimpmapLevels;
+        void computeInternalFormatWithImage(osg::Image& image) const;
 
-        SubloadMode _subloadMode;
-        GLint _subloadTextureOffsetX, _subloadTextureOffsetY;
-        GLint _subloadImageOffsetX, _subloadImageOffsetY;
-        GLsizei _subloadImageWidth, _subloadImageHeight;
+        bool isCompressedInternalFormat(GLint internalFormat) const;
 
-        ref_ptr<SubloadCallback> _subloadCallback;
+        /** Helper method which does setting of texture paramters. */
+        void applyTexParameters(GLenum target, State& state) const;
+
+        /** Helper method which does the creation of the texture itself, and
+          * does not set or use texture binding. */
+        void applyTexImage2D(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        int compareTexture(const Texture& rhs) const;
+
+        typedef std::vector<GLuint> TextureNameList;
+        mutable TextureNameList _handleList;
+
+        typedef std::vector<uint> ImageModifiedTag;
+        mutable ImageModifiedTag _modifiedTag;
+
+
+        WrapMode _wrap_s;
+        WrapMode _wrap_t;
+        WrapMode _wrap_r;
+
+        FilterMode      _min_filter;
+        FilterMode      _mag_filter;
+        float           _maxAnisotropy;
+
+        Vec4 _borderColor;
+
+        // true if apply tex parameters required. 
+        mutable bool _texParametersDirty;
+
+
+        InternalFormatMode  _internalFormatMode;
+        mutable GLint       _internalFormat;
+
+        // static cache of deleted display lists which can only 
+        // by completely deleted once the appropriate OpenGL context
+        // is set.
+        typedef std::map<uint,std::set<uint> > DeletedTextureObjectCache;
+        static DeletedTextureObjectCache s_deletedTextureObjectCache;
 };
 
 }
 
-
 #endif
-
-#else // USE_DEPRECATED_API
-
-#ifdef USE_DEPRECATED_API
-#include <osg/Texture2D>
-
-namespace osg {
-
-    typedef Texture2D Texture;
-
-}
-
-#endif
-
-#endif // USE_DEPRECATED_API

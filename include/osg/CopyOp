@@ -13,7 +13,7 @@ class Referenced;
 class Object;
 class Image;
 //class Texture;
-class TextureBase;
+class Texture;
 class StateSet;
 class StateAttribute;
 class Node;
@@ -54,8 +54,7 @@ class SG_EXPORT CopyOp
         virtual Drawable*       operator() (const Drawable* drawable) const;
         virtual StateSet*       operator() (const StateSet* stateset) const;
         virtual StateAttribute* operator() (const StateAttribute* attr) const;
-//        virtual Texture*      operator()   (const Texture* text) const;
-        virtual TextureBase*      operator() (const TextureBase* text) const;
+        virtual Texture*        operator() (const Texture* text) const;
         virtual Image*          operator() (const Image* image) const;
         virtual Array*          operator() (const Array* image) const;
         virtual Primitive*      operator() (const Primitive* image) const;

@@ -77,7 +77,7 @@ class SG_EXPORT PagedLOD : public LOD
         /** Remove the children from the PagedLOD which haven't be visited since specified expiry time.
             The removed children are added the removeChildren list passed into the method,
             this allows the children to be deleted later at the callers discression.*/
-        void removeExpiredChildren(double expiryTime,NodeList& removedChildren);
+        virtual void removeExpiredChildren(double expiryTime,NodeList& removedChildren);
 
     protected :
     

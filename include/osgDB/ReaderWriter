@@ -18,6 +18,9 @@
 #include <osg/Image>
 #include <osg/Node>
 
+#include <osgDB/Export>
+
+
 #include <string>
 
 namespace osgDB {

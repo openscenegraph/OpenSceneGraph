@@ -30,7 +30,7 @@ class OSGTEXT_EXPORT Paragraph : public osg::Geode
         Paragraph(const Paragraph& paragraph,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         Paragraph(const osg::Vec3& position,const std::string& text,osgText::Font* font);
 
-        META_Node(osgText,Paragraph)
+        META_Node(osgText,Paragraph);
         
 
         void setFont(osgText::Font* font);

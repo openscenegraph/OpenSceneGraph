@@ -11,6 +11,7 @@ class OrientationConverter {
     	OrientationConverter(void);
 	void setRotation( const osg::Vec3 &from, 
 	                    const osg::Vec3 &to  );
+	void setRotation( float degrees, const osg::Vec3 &axis  );
 	void setTranslation( const osg::Vec3 &trans);
 	void setScale( const osg::Vec3 &trans);
         

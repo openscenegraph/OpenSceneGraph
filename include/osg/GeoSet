@@ -70,7 +70,7 @@ class SG_EXPORT GeoSet : public Drawable
         struct IndexPointer
         {
         
-            uint _size;
+            mutable uint _size;
             bool _is_ushort;
             union
             {
@@ -160,11 +160,11 @@ class SG_EXPORT GeoSet : public Drawable
         inline int  *getPrimLengths()                      { return _primLengths; }
         inline const int *getPrimLengths() const           { return _primLengths; }
 
-        void computeNumVerts();
+        void computeNumVerts() const;
 
         /** get the number of coords required by the defined primitives. */
        // inline const int getNumCoords() const                    
-        inline const int getNumCoords() 
+        inline const int getNumCoords()  const
 	{ if( _numcoords == 0 ) computeNumVerts(); return _numcoords; }
         /** get a pointer to Vec3 coord array. */
         inline Vec3* getCoords()                           { return _coords; }
@@ -292,10 +292,10 @@ class SG_EXPORT GeoSet : public Drawable
 
 
         /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
-        virtual AttributeBitMask suppportsAttributeUpdate() const;
+        virtual AttributeBitMask suppportsAttributeOperation() const;
 
         /** return the attributes successully applied in applyAttributeUpdate.*/
-        virtual AttributeBitMask applyAttributeUpdate(AttributeBitMask abm,AttributeUpdateFunctor& auf);
+        virtual AttributeBitMask applyAttributeOperation(AttributeFunctor& auf);
 
 
     protected:
@@ -312,25 +312,25 @@ class SG_EXPORT GeoSet : public Drawable
 	int             _needprimlen;
 	unsigned int    _oglprimtype;
         int             *_primLengths;
-	unsigned char   _primlength;
+	mutable unsigned char   _primlength;
 	unsigned char   _flat_shaded_skip;
 
-        int             _numcoords;
+        mutable int     _numcoords;
         Vec3            *_coords;
         IndexPointer    _cindex;
 
         BindingType     _normal_binding;
-        int             _numnormals;
+        mutable int     _numnormals;
         Vec3            *_normals;
         IndexPointer    _nindex;
 
         BindingType     _color_binding;
-        int             _numcolors;
+        mutable int     _numcolors;
         Vec4            *_colors;
         IndexPointer    _colindex;
 
         BindingType     _texture_binding;
-        int             _numtcoords;
+        mutable int     _numtcoords;
         Vec2            *_tcoords;
         IndexPointer    _tindex;
 

@@ -2,6 +2,8 @@
 #include <mcheck.h>
 #endif
 
+#include <osg/Transform>
+#include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
 
@@ -16,6 +18,173 @@
 #include <osgGLUT/Viewer>
 
 #include <osgUtil/OptimizeStateVisitor>
+
+
+
+class TransformFunctor : public osg::Drawable::AttributeFunctor
+{
+
+    public:
+    
+        osg::Matrix _m;
+
+        TransformFunctor(const osg::Matrix& m):
+            AttributeFunctor(osg::Drawable::COORDS|osg::Drawable::NORMALS),
+            _m(m) {}
+            
+        virtual ~TransformFunctor() {}
+
+        virtual bool apply(osg::Drawable::AttributeBitMask abm,osg::Vec3* begin,osg::Vec3* end)
+        {
+            if (abm == osg::Drawable::COORDS)
+            {
+                for (osg::Vec3* itr=begin;itr<end;++itr)
+                {
+                    (*itr) = (*itr)*_m;
+                }
+                return true;
+            }
+            else if (abm == osg::Drawable::NORMALS)
+            {
+                for (osg::Vec3* itr=begin;itr<end;++itr)
+                {
+                    // note post mult rather than pre mult of value.
+                    (*itr) = osg::Matrix::transform3x3(_m,(*itr));
+                    (*itr).normalize();
+                }
+                return true;
+            }
+            return false;
+
+        }
+
+};
+
+
+class FlattenStaticTransformsVisitor : public osg::NodeVisitor
+{
+    public:
+    
+        typedef std::vector<osg::Matrix> MatrixStack;
+        MatrixStack                      _matrixStack;
+        
+        typedef std::set<osg::Transform*> TransformList;
+        TransformList                     _transformList;
+    
+        FlattenStaticTransformsVisitor():NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+        virtual void apply(osg::Geode& geode)
+        {
+            if (!_matrixStack.empty())
+            {
+                TransformFunctor tf(_matrixStack.back());
+                for(int i=0;i<geode.getNumDrawables();++i)
+                {
+                    geode.getDrawable(i)->applyAttributeOperation(tf);
+                }
+            }
+        }
+        
+
+        virtual void apply(osg::Transform& transform)
+        {
+            if (_matrixStack.empty())
+            {
+                _matrixStack.push_back(transform.getMatrix());
+            }
+            else
+            {
+                _matrixStack.push_back(transform.getMatrix()*_matrixStack.back());
+            }
+            
+            traverse(transform);
+            
+            _transformList.insert(&transform);
+
+            // reset the matrix to identity.
+            transform.getMatrix().makeIdent();
+            
+            _matrixStack.pop_back();
+        }
+        
+        void removeTransforms()
+        {
+            for(TransformList::iterator itr=_transformList.begin();
+                itr!=_transformList.end();
+                ++itr)
+            {
+                osg::ref_ptr<osg::Transform> transform = *itr;
+                osg::ref_ptr<osg::Group>     group = new osg::Group;
+               
+                int i;
+                for(i=0;i<transform->getNumChildren();++i)
+                {
+                    for(int j=0;j<transform->getNumParents();++j)
+                    {
+                        group->addChild(transform->getChild(i));
+                    }
+                }
+
+                for(i=transform->getNumParents()-1;i>=0;--i)
+                {
+                    transform->getParent(i)->replaceChild(transform.get(),group.get());
+                }                
+                
+            }
+            _transformList.clear();
+        }
+        
+};
+
+
+class RemoveRedundentNodesVisitor : public osg::NodeVisitor
+{
+    public:
+    
+        typedef std::set<osg::Node*> NodeList;
+        NodeList                     _redundentNodeList;
+    
+        RemoveRedundentNodesVisitor():NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+        virtual void apply(osg::Group& group)
+        {
+            if (typeid(group)==typeid(osg::Group))
+            {
+                if (group.getNumParents()>0 && group.getNumChildren()<=1)
+                {
+                    _redundentNodeList.insert(&group);
+                }
+            }
+            traverse(group);
+        }
+
+        
+        void removeRedundentNodes()
+        {
+            for(NodeList::iterator itr=_redundentNodeList.begin();
+                itr!=_redundentNodeList.end();
+                ++itr)
+            {
+                osg::ref_ptr<osg::Group> group = dynamic_cast<osg::Group*>(*itr);
+                if (group.valid())
+                {
+
+                    for(int j=group->getNumParents()-1;j>=0;--j)
+                    {
+                        for(int i=0;i<group->getNumChildren();++i)
+                        {
+                            group->getParent(j)->addChild(group->getChild(i));
+                        }
+                        group->getParent(j)->removeChild(group.get());
+                    }
+                }                                
+            }
+            _redundentNodeList.clear();
+        }
+        
+};
+
+
 
 
 /*
@@ -141,8 +310,15 @@ int main( int argc, char **argv )
     osv.optimize();
     #endif
 
-
+/*
+    FlattenStaticTransformsVisitor fstv;
+    rootnode->accept(fstv);
+    fstv.removeTransforms();
     
+    RemoveRedundentNodesVisitor rrnv;
+    rootnode->accept(rrnv);
+    rrnv.removeRedundentNodes();
+*/
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );

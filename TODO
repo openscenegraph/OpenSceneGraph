@@ -26,9 +26,7 @@ o Core OSG Library
         . mutli-threading/shared memory support.
 
     - Maths
-        . full maths support in osg::Matrix class.
         . double matrix class.
-        . osg::Plane class.
 
     - Nodes
         . add osg::Sequence for basic animation.
@@ -39,7 +37,6 @@ o Core OSG Library
         . utilise stl vectors for osg::GeoSets?
         . add handling of memory of osg::GeoSet's attributes.
         . add osg::Terrain node.
-        . add osg::EarthSky class for rendering earth and sky backgrounds.
         . add proxy node for lazy loading of nodes, when needed.
         . implement visual proximity to assist loading of proxied data
           when the view frustum nears an unloaded proxy node, and deleting
@@ -93,16 +90,14 @@ o Under development
     - add osg::Billboard for trees etc.
     - full maths support in osg::Matrix class.
     - Netscape plug-in.
-    - add osg::Channel/sgCamera class.
-    - .pfb loader for Performer binary files (functioning already.)
-    - .flt Open Flight format (functioning already.)
-    - .3ds 3D Studio format (functioning already.)
-    - autoconf/configure support to aid portabilty to other unix's.
     - CVS support for when source is made fully public.
     - Mac port.
     - tri stripping visitor.
     - .obj      Alias wavefront's format.(functioning already.)
     - .lwo      Light Waves's format.(functioning already.)
+    - .pfb loader for Performer binary files (functioning already.)
+    - .flt Open Flight format (functioning already.)
+    - .3ds 3D Studio format (functioning already.)
 
 o Work completed
   ==============
@@ -145,3 +140,7 @@ o Work completed
     - create a base class to provide interface to objects which can render,
       derive osg::GeoSet from this.
     - add support for multi-pass rendering.
+    - full maths support in osg::Matrix class.
+    - osg::Plane class.
+    - add osg::Camera class.
+    - add osg::EarthSky class for rendering earth and sky backgrounds.

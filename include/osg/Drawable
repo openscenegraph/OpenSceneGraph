@@ -141,22 +141,30 @@ class SG_EXPORT Drawable : public Object
             TEXTURE_COORDS_3    = 0x64
         };
         
-        struct AttributeUpdateFunctor
+        class AttributeFunctor
         {
-            inline bool apply(AttributeBitMask abm,Vec2& vec) { return apply(abm,&vec,(&vec)+1); }
-            inline bool apply(AttributeBitMask abm,Vec3& vec) { return apply(abm,&vec,(&vec)+1); }
-            inline bool apply(AttributeBitMask abm,Vec4& vec) { return apply(abm,&vec,(&vec)+1); }
-
+        public:
+        
+            AttributeFunctor(AttributeBitMask abm):_abm(abm) {}
+            virtual ~AttributeFunctor() {}
+        
+            void setAttributeBitMask(AttributeBitMask abm) { _abm=abm; }
+            AttributeBitMask getAttributeBitMask() const { return _abm; }
+        
             virtual bool apply(AttributeBitMask,Vec2*,Vec2*) { return false; }
             virtual bool apply(AttributeBitMask,Vec3*,Vec3*) { return false; }
             virtual bool apply(AttributeBitMask,Vec4*,Vec4*) { return false; }
+            
+        protected:
+        
+            AttributeBitMask _abm;
         };
 
-        /** return the attributes supported by applyAttrbuteUpdate() as an AttributeBitMask.*/
-        virtual AttributeBitMask suppportsAttributeUpdate() const { return (AttributeBitMask)0; }
+        /** return the attributes supported by applyAttrbuteOperation() as an AttributeBitMask.*/
+        virtual AttributeBitMask suppportsAttributeOperation() const { return (AttributeBitMask)0; }
 
         /** return the attributes successully applied in applyAttributeUpdate.*/
-        virtual AttributeBitMask applyAttributeUpdate(AttributeBitMask,AttributeUpdateFunctor&) { return (AttributeBitMask)0; }
+        virtual AttributeBitMask applyAttributeOperation(AttributeFunctor&) { return 0; }
         
 
     protected:

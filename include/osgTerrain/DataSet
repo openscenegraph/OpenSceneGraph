@@ -921,6 +921,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
 
         void setEllipsoidModel(osg::EllipsoidModel* et) { _ellipsoidModel = et; }
         osg::EllipsoidModel* getEllipsoidModel() { return _ellipsoidModel.get(); }
+        const osg::EllipsoidModel* getEllipsoidModel() const { return _ellipsoidModel.get(); }
+        
+        bool mapLatLongsToXYZ() const { return getConvertFromGeographicToGeocentric() && getEllipsoidModel(); }
 
         void setDestinationExtents(const osg::BoundingBox& extents) { _extents = extents; }
         
@@ -1015,7 +1018,8 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
     protected:
 
         virtual ~DataSet() {}
-        
+
+
         void _readRow(Row& row);
         void _equalizeRow(Row& row);
         void _writeRow(Row& row);

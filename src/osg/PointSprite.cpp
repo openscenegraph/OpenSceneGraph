@@ -19,9 +19,12 @@ using namespace osg;
 
 int PointSprite::compare(const StateAttribute& sa) const
 {
-    // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
-    COMPARE_StateAttribute_Types(PointSprite,sa)
+    if (this==&sa) return 0;\
+    const std::type_info* type_lhs = &typeid(*this);\
+    const std::type_info* type_rhs = &typeid(sa);\
+    if (type_lhs->before(*type_rhs)) return -1;\
+    if (*type_lhs != *type_rhs) return 1;\
+
     return 0; // passed all the above comparison macro's, must be equal.
 }
 

@@ -191,7 +191,16 @@ void VertexProgram::apply(State& state) const
 
 void VertexProgram::releaseGLObjects(State* state) const
 {
-    const_cast<VertexProgram*>(this)->dirtyVertexProgramObject();
+    if (!state) const_cast<VertexProgram*>(this)->dirtyVertexProgramObject();
+    else
+    {
+        unsigned int contextID = state->getContextID();
+        if (_vertexProgramIDList[contextID] != 0)
+        {
+            VertexProgram::deleteVertexProgramObject(contextID,_vertexProgramIDList[contextID]);
+            _vertexProgramIDList[contextID] = 0;
+        }
+    }
 }
 
 

@@ -190,7 +190,16 @@ void FragmentProgram::apply(State& state) const
 
 void FragmentProgram::releaseGLObjects(State* state) const
 {
-    const_cast<FragmentProgram*>(this)->dirtyFragmentProgramObject();
+    if (!state) const_cast<FragmentProgram*>(this)->dirtyFragmentProgramObject();
+    else
+    {
+        unsigned int contextID = state->getContextID();
+        if (_fragmentProgramIDList[contextID] != 0)
+        {
+            FragmentProgram::deleteFragmentProgramObject(contextID,_fragmentProgramIDList[contextID]);
+            _fragmentProgramIDList[contextID] = 0;
+        }
+    }
 }
 
 

@@ -16,6 +16,7 @@
 #include <osgUtil/Simplifier>
 
 #include <set>
+#include <list>
 #include <iostream>
 
 using namespace osgUtil;
@@ -43,12 +44,16 @@ public:
     class Triangle;
     class Edge;
 
+    typedef std::vector<float> FloatList;
 
     struct Point : public osg::Referenced
     {
         Point() {}
         
         unsigned int _index;
+
+        osg::Vec3 _vertex;
+        FloatList _attributes;        
     };
 
     struct Edge : public osg::Referenced
@@ -81,7 +86,9 @@ public:
     };
 
 
-    struct LessPtr
+
+    
+    struct LessErrorMetricFunctor
     {
         inline bool operator() (const osg::ref_ptr<Edge>& lhs,const osg::ref_ptr<Edge>& rhs) const
         {
@@ -89,12 +96,78 @@ public:
         }
     };
 
-    typedef std::set<osg::ref_ptr<Edge>,LessPtr> EdgeSet;
+    struct LessTriangleFunctor
+    {
+        inline bool operator() (const osg::ref_ptr<Triangle>& lhs,const osg::ref_ptr<Triangle>& rhs) const
+        {
+            if (lhs->_p1 < rhs->_p1) return true;
+            if (lhs->_p1 > rhs->_p1) return false;
 
+            if (lhs->_p2 < rhs->_p2) return true;
+            if (lhs->_p2 > rhs->_p2) return false;
 
-    void addTriangle(unsigned int p1, unsigned int p2, unsigned int p3)
+            if (lhs->_p1 < rhs->_p3) return true;
+            return false;
+        }
+    };
+
+    struct LessPointFunctor
+    {
+        inline bool operator() (const osg::ref_ptr<Point>& lhs,const osg::ref_ptr<Point>& rhs) const
+        {
+            return lhs->_index<rhs->_index;
+        }
+    };
+
+    typedef std::set<osg::ref_ptr<Edge>,LessErrorMetricFunctor> EdgeSet;
+    typedef std::set< osg::ref_ptr<Point>, LessPointFunctor> PointSet;
+    typedef std::list< osg::ref_ptr<Triangle> > TriangleList;
+
+    Triangle* addTriangle(unsigned int p1, unsigned int p2, unsigned int p3)
     {
         std::cout<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
+        abort();
+#if 0
+        // detect if triangle is degenerate.
+        if (p1==p2 || p2==p3 || p1==p3) return 0;
+        
+        Triangle* triangle = new Triangle;
+
+        Point* points[3];
+        points[0] = addPoint(triangle, p1);
+        points[1] = addPoint(triangle, p2);
+        points[2] = addPoint(triangle, p3);
+        
+        // find the lowest value point in the list.
+        unsigned int lowest = 0;        
+        if (points[1]<points[lowest]) lowest = 1;
+        if (points[2]<points[lowest]) lowest = 2;
+        
+
+        triangle->_p1 = points[lowest];
+        triangle->_p2 = points[(lowest+1)%3];
+        triangle->_p3 = points[(lowest+2)%3];
+
+        triangle->_e1 = addEdge(triangle, triangle->_p1, triangle->_p2);
+        triangle->_e2 = addEdge(triangle, triangle->_p2, triangle->_p3);
+        triangle->_e3 = addEdge(triangle, triangle->_p3, triangle->_p1);
+        
+        _triangleList.insert(triangle);
+        
+        return triangle;
+#endif        
+    }
+    
+    Edge* addEdge(Triangle* triangle, Point* p1, Point* p2)
+    {
+        std::cout<<"addEdge("<<p1<<","<<p2<<")"<<std::endl;
+        
+        
+    }
+
+    Point* addPoint(Triangle* triangle, Point* p1)
+    {
+        std::cout<<"addPoint("<<p1<<")"<<std::endl;
     }
 
 protected:
@@ -102,13 +175,15 @@ protected:
     osg::Geometry*                  _geometry;
     unsigned int                    _targetNumTriangles;
     EdgeSet                         _edgeSet;
+    TriangleList                    _triangleList;
+    PointSet                        _pointSet;
     
 };
 
-struct MyTriangleOperator
+struct CollectTriangleOperator
 {
 
-    MyTriangleOperator():_ec(0) {}
+    CollectTriangleOperator():_ec(0) {}
 
     void setEdgeCollapse(EdgeCollapse* ec) { _ec = ec; }
     
@@ -122,14 +197,16 @@ struct MyTriangleOperator
 
 };
 
-typedef osg::TriangleIndexFunctor<MyTriangleOperator> MyTriangleIndexFunctor;
+typedef osg::TriangleIndexFunctor<CollectTriangleOperator> CollectTriangleIndexFunctor;
 
 void EdgeCollapse::setGeometry(osg::Geometry* geometry)
 {
     _geometry = geometry;
 
-    MyTriangleIndexFunctor collectTriangles;
+    CollectTriangleIndexFunctor collectTriangles;
     collectTriangles.setEdgeCollapse(this);
+    
+    _geometry->accept(collectTriangles);
 }
  
 Simplifier::Simplifier()
@@ -138,6 +215,8 @@ Simplifier::Simplifier()
 
 void Simplifier::simplify(osg::Geometry& geometry, float sampleRatio)
 {
+    std::cout<<"++++++++++++++simplifier************"<<std::endl;
+
     EdgeCollapse ec;
     ec.setGeometry(&geometry);
 
@@ -146,10 +225,13 @@ void Simplifier::simplify(osg::Geometry& geometry, float sampleRatio)
     while (ec.collapseMinimumErrorEdge()) {}
 
     ec.copyBackToGeometry();
+
 }
 
 void Simplifier::simplify(osg::Geometry& geometry, unsigned int targetNumberOfTriangles)
 {
+    std::cout<<"------------simplifier************"<<std::endl;
+
     EdgeCollapse ec;
     ec.setGeometry(&geometry);
 

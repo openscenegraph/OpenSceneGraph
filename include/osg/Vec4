@@ -36,11 +36,11 @@ class Vec4
 
         float _v[4];
 
-	inline const bool operator == (const Vec4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
+        inline const bool operator == (const Vec4& v) const { return _v[0]==v._v[0] && _v[1]==v._v[1] && _v[2]==v._v[2] && _v[3]==v._v[3]; }
 
-	inline const bool operator != (const Vec4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
+        inline const bool operator != (const Vec4& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1] || _v[2]!=v._v[2] || _v[3]!=v._v[3]; }
 
-	inline const bool operator <  (const Vec4& v) const
+        inline const bool operator <  (const Vec4& v) const
         {
             if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
@@ -178,9 +178,7 @@ class Vec4
             return( norm );
         }
 
-        inline operator float * (void) { return _v; }
-
-	friend inline ostream& operator << (ostream& output, const Vec4& vec)
+        friend inline ostream& operator << (ostream& output, const Vec4& vec)
         {
 	    output << vec._v[0] << " "
                    << vec._v[1] << " "

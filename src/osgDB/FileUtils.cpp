@@ -37,6 +37,9 @@
 
 bool osgDB::fileExists(const std::string& filename)
 {
+    // hack for getting TXP plugin to utilise PagedLOD.
+    if (getLowerCaseFileExtension(filename)=="txp") return true;
+
     return access( filename.c_str(), F_OK ) == 0;
 }
 

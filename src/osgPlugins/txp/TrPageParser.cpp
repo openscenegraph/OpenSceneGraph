@@ -36,7 +36,7 @@
 #include <osg/Notify>
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
-
+#include <osg/PagedLOD>
 #include <osgSim/LightPointNode>
 #include <osg/Point>
 
@@ -676,7 +676,8 @@ void* attachRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     // This sets the parent ID for the current tile too
     int32 parentID;
     group.GetParentID(parentID);
-    parse->SetParentID(parentID);
+
+    //parse->SetParentID(parentID); no need of this anymore. we force PagedLOD 
     return (void *) osg_Group;
 }
 
@@ -793,6 +794,10 @@ void* lodRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     
     // Dump this group into the hierarchy
     parse->AddIntoSceneGraph(osg_Lod);
+
+	// Sets the current parent as potentional PagedLOD
+	parse->SetPotentionalPagedLOD(parse->GetCurrTop());
+
     // Register for attachements
     int32 id;
     lod.GetID(id);
@@ -983,6 +988,44 @@ trpgTileHeader *TrPageParser::GetTileHeaderRef()
 }
 
 //----------------------------------------------------------------------------
+// Converts to PagedLOD
+void TrPageParser::ConvertToPagedLOD(osg::Group* group)
+{
+	if (group->getNumChildren() == 2)
+	{
+		osg::LOD* loLOD = dynamic_cast<osg::LOD*>(group->getChild(0));
+		osg::LOD* hiLOD = dynamic_cast<osg::LOD*>(group->getChild(1));
+
+		if (loLOD && hiLOD)
+		{
+			osg::Group *g = dynamic_cast<osg::Group*>(hiLOD->getChild(0));
+			if (!g) return;
+			if (g->getNumChildren()) return;
+
+			char pagedLODfile[1024];
+			sprintf(pagedLODfile,
+				"%s\\subtiles%d_%dx%d.txp",
+				parent_->getDir(),
+				_tileLOD,
+				_tileX,
+				_tileY
+			);
+
+			osg::PagedLOD* pagedlod = new osg::PagedLOD;
+
+			pagedlod->addChild(loLOD->getChild(0),loLOD->getMinRange(0),loLOD->getMaxRange(0));
+			pagedlod->setRange(1,0.0f,hiLOD->getMaxRange(0));
+			pagedlod->setFileName(1,pagedLODfile);
+			pagedlod->setCenter(hiLOD->getCenter());
+
+			group->addChild(pagedlod);
+
+			group->removeChild(loLOD);
+			group->removeChild(hiLOD);
+		}
+	}
+}
+//----------------------------------------------------------------------------
 // Parse a buffer and return a (chunk of) Performer
 //  scene graph.
 Group *TrPageParser::ParseScene(trpgReadBuffer &buf,vector<ref_ptr<StateSet> > &in_mat,vector<ref_ptr<Node> > &in_model)
@@ -1000,6 +1043,13 @@ Group *TrPageParser::ParseScene(trpgReadBuffer &buf,vector<ref_ptr<StateSet> > &
         notify(WARN) << "trpgFPParser::ParseScene failed to parse tile.\n";
         return NULL;
     }
+
+	// Puts PagedLODs on the right places
+	for (std::map<osg::Group*,int>::iterator i = _pagedLods.begin(); i != _pagedLods.end(); i++)
+	{
+		ConvertToPagedLOD((*i).first);
+	}
+	_pagedLods.clear();
     
     Group *ret = top;
     top = currTop = NULL;

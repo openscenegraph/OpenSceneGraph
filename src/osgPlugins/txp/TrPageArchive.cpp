@@ -534,6 +534,7 @@ Group* TrPageArchive::LoadTile(int x,int y,int lod,int &parentID)
    if (!ReadTile(x,y,lod,buf))
       return NULL;
 
+   parse->SetTile(x,y,lod);
    Group *tile = parse->ParseScene(buf, m_gstates , m_models);
    if (tile)
    {
@@ -562,6 +563,7 @@ Group* TrPageArchive::LoadTile(Group *rootNode,
 		return NULL;
 
 	// Now parse it
+	parse->SetTile(x,y,lod);
 	Group *gTile = parse->ParseScene(buf, m_gstates, m_models);
 	if (gTile && rootNode) {
 		// Hook it into its parent

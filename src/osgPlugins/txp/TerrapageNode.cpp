@@ -1,15 +1,19 @@
 #include "TerrapageNode.h"
 #include <osg/Notify>
-
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 using namespace osg;
 
 namespace txp
 {
 
+osg::ref_ptr<TrPageArchive> TerrapageNode::_archive = NULL;
+
 TerrapageNode::TerrapageNode():
     _pageManager(0)
 {
     setNumChildrenRequiringUpdateTraversal(1);
+	_dbLoaded = false;
 }
         
 TerrapageNode::TerrapageNode(const TerrapageNode& pager,const osg::CopyOp&):
@@ -21,6 +25,7 @@ TerrapageNode::TerrapageNode(const TerrapageNode& pager,const osg::CopyOp&):
     _lastRecordEyePoint(pager._lastRecordEyePoint)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+	_dbLoaded = pager._dbLoaded;
 }
 
 TerrapageNode::~TerrapageNode()
@@ -49,6 +54,45 @@ void TerrapageNode::traverse(osg::NodeVisitor& nv)
         
 bool TerrapageNode::loadDatabase()
 {
+	std::string name = osgDB::getSimpleFileName(_databaseName);
+
+	// Here we load subtiles for a tile
+	if (strncmp(name.c_str(),"subtiles",8)==0)
+	{
+		std::string path = osgDB::getFilePath(_databaseName);
+		_databaseName = path+"\\archive.txp";
+
+		int lod;
+		int x;
+		int y;
+		sscanf(name.c_str(),"subtiles%d_%dx%d",&lod,&x,&y);
+
+		float64 range;
+		TerrapageNode::_archive->GetHeader()->GetLodRange(lod+1,range);
+
+		trpg2dPoint tileSize;
+		TerrapageNode::_archive->GetHeader()->GetTileSize(lod+1,tileSize);
+
+		trpg2dPoint sw;
+		trpg2dPoint ne;
+		TerrapageNode::_archive->GetHeader()->GetExtents(sw,ne);
+
+		for (int ix = 0; ix < 2; ix++)
+			for (int iy = 0; iy < 2; iy++)
+			{
+				int tileX = x*2+ix;
+				int tileY = y*2+iy;
+				int tileLOD = lod+1;
+
+				int parentID;
+				addChild(TerrapageNode::_archive->LoadTile(tileX,tileY,tileLOD,parentID));
+			}
+
+
+		//std::cout << "subtiles paged in: " << x <<  " " << y << " " << lod << std::endl;
+		return true;
+	}
+
     // Open the TXP database
     TrPageArchive *txpArchive = new TrPageArchive();
     if (!txpArchive->OpenFile(_databaseName.c_str()))
@@ -56,7 +100,7 @@ bool TerrapageNode::loadDatabase()
         osg::notify(osg::WARN)<<"Couldn't load TerraPage archive "<<_databaseName<<std::endl;
         return false;
     }
-    
+
     // Note: Should be checking the return values
     txpArchive->LoadMaterials();
 
@@ -65,6 +109,21 @@ bool TerrapageNode::loadDatabase()
 
     // Note: Should be checking the return values
     txpArchive->LoadLightAttributes();
+
+	if (TerrapageNode::_archive == NULL)
+	{
+		TerrapageNode::_archive = new TrPageArchive();
+		if (!TerrapageNode::_archive->OpenFile(_databaseName.c_str()))
+		{
+			osg::notify(osg::WARN)<<"Couldn't load interanal TerraPage archive "<<_databaseName<<std::endl;
+			TerrapageNode::_archive = NULL;
+			return false;
+		}
+
+		TerrapageNode::_archive->LoadMaterials();
+		TerrapageNode::_archive->LoadModels();
+		TerrapageNode::_archive->LoadLightAttributes();
+	}
 
     // get the exents of the archive
     const trpgHeader *head = txpArchive->GetHeader();
@@ -131,6 +190,8 @@ bool TerrapageNode::loadDatabase()
         }
 
     }
+
+	_dbLoaded = true;
 
     return true;
 }

@@ -11,7 +11,7 @@
 
 namespace txp
 {
-
+class TrPageArchive;
 class TerrapageNode : public osg::Group
 {
     public:
@@ -54,6 +54,9 @@ class TerrapageNode : public osg::Group
         std::string         _databaseOptions;
         OSGPageManager*     _pageManager;
         mutable osg::Vec3   _lastRecordEyePoint;
+
+		static osg::ref_ptr<TrPageArchive> _archive;
+		bool _dbLoaded;
 };
 
 

@@ -160,12 +160,43 @@ namespace txp
 	
 		DefferedLightAttribute& GetLightAttribute(int attr_index);
 
+		// Sets the info about the tile that is being parsed
+		inline void SetTile(int x, int y, int lod)
+		{
+			_tileX = x; _tileY = y; _tileLOD = lod;
+		}
+
+		// Sets a group as potentinal PagedLOD - see below
+		inline void SetPotentionalPagedLOD(osg::Group* group)
+		{
+			_pagedLods[group] = 1;
+		}
+
     protected:
 		// Called on start children
         bool StartChildren(void *);
 
 		// Called on end children
         bool EndChildren(void *);
+
+		// LOD parents
+		// These will help us to find the "LOD Bridges" in the scene graph. "LOD Bridge" is a
+		// group that holds two LOD nodes: one is the parent of the "current" LOD implementation of
+		// a tile, the other is parent of the quad of the higher-res LOD implementation of the same
+		// tile - it has four higher-res tiles. After a tile is loaded, we replace the "LOD bridge"
+		// with PagedLOD node
+		// nick@terrex.com
+		std::map<osg::Group*,int> _pagedLods;
+
+		// Converts to PagedLOD
+		// If the given group is "LOD Bridge" this method will convert it into appropriate PagedLOD
+		void ConvertToPagedLOD(osg::Group* group);
+
+		// Current tile that is being loaded
+		int _tileX;
+		int _tileY;
+		int _tileLOD;
+		double _tileRange;
 
     protected:
         TrPageArchive*	parent_;		 // The archive

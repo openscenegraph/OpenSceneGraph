@@ -888,6 +888,13 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
             osgMaterial->setAlpha(osg::Material::FRONT_AND_BACK, alpha);
             osgMaterial->setShininess(osg::Material::FRONT_AND_BACK, pSMaterial->sfShininess/128.0f);
 
+            // Brede,
+            // is there anything in the fly material which might control color mode??
+            // some models work better without color mode defined, other work better without it, the
+            // effect is particularily noticable with models with alpha blending on color coords but not
+            // on material. Robert Osfield, Feb 02.
+            //osgMaterial->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
+
             if (alpha < 1.0f)
             {
                 osgStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);

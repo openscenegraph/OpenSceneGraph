@@ -318,7 +318,7 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
     const osg::Object* proto = wrapper->getPrototype();
 
     _objectWrapperMap[name] = wrapper;
-   
+    
     if (proto)
     {
         std::string libraryName = proto->libraryName();
@@ -662,6 +662,40 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
                                                           ++aitr)
             {
                 DotOsgWrapperMap::iterator mitr = _objectWrapperMap.find(*aitr);
+                if (mitr==_objectWrapperMap.end())
+                {
+                    // not found so check if a library::class composite name.
+                    std::string token = *aitr;
+                    std::string::size_type posDoubleColon = token.rfind("::");
+                    if (posDoubleColon != std::string::npos)
+                    {
+
+                        // we have a composite name so now strip off the library name
+                        // are try to load it, and then retry the find to see
+                        // if we can recongise the objects.
+
+                        std::string libraryName = std::string(token,0,posDoubleColon);
+
+                        // first try the standard nodekit library.
+                        std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
+                        if (loadLibrary(nodeKitLibraryName)) 
+                        {
+                            mitr = _objectWrapperMap.find(*aitr);
+                        }
+
+                        if (mitr==_objectWrapperMap.end())
+                        {
+                            // otherwise try the osgdb_ plugin library.
+                            std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
+                            if (loadLibrary(pluginLibraryName))
+                            {
+                                mitr = _objectWrapperMap.find(*aitr);
+                            }
+                        }
+
+                    }
+                }
+
                 if (mitr!=_objectWrapperMap.end())
                 {
                     // get the function to read the data...
@@ -750,6 +784,40 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
                                                           ++aitr)
             {
                 DotOsgWrapperMap::iterator mitr = _objectWrapperMap.find(*aitr);
+                if (mitr==_objectWrapperMap.end())
+                {
+                    // not found so check if a library::class composite name.
+                    std::string token = *aitr;
+                    std::string::size_type posDoubleColon = token.rfind("::");
+                    if (posDoubleColon != std::string::npos)
+                    {
+
+                        // we have a composite name so now strip off the library name
+                        // are try to load it, and then retry the find to see
+                        // if we can recongise the objects.
+
+                        std::string libraryName = std::string(token,0,posDoubleColon);
+
+                        // first try the standard nodekit library.
+                        std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
+                        if (loadLibrary(nodeKitLibraryName)) 
+                        {
+                            mitr = _objectWrapperMap.find(*aitr);
+                        }
+
+                        if (mitr==_objectWrapperMap.end())
+                        {
+                            // otherwise try the osgdb_ plugin library.
+                            std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
+                            if (loadLibrary(pluginLibraryName))
+                            {
+                                mitr = _objectWrapperMap.find(*aitr);
+                            }
+                        }
+
+                    }
+                }
+
                 if (mitr!=_objectWrapperMap.end())
                 {
                     // get the function to read the data...

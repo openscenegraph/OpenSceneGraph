@@ -211,7 +211,7 @@ int main(int argc, char **argv)
     std::string flightpath_filename;
     while (arguments.read("--flight-path",flightpath_filename))
     {
-        std::fstream fin(flightpath_filename.c_str());
+        std::ifstream fin(flightpath_filename.c_str());
         if (fin)
         {
             osg::AnimationPath* path = new osg::AnimationPath;

@@ -72,3 +72,6 @@ osgtexture reflect.rgb lz.rgb
 
 echo osgviews cow.osg
 osgviews cow.osg
+
+echo osgoccluder glider.osg
+osgoccluder glider.osg

@@ -89,6 +89,45 @@ class SG_EXPORT TextureCubeMap : public Texture
           * texture and bind it, subsequent apply will simple bind to texture.*/
         virtual void apply(State& state) const;
         
+
+        /** Extensions class which encapsulates the querring of extensions and
+          * associated function pointers, and provide convinience wrappers to 
+          * check for the extensions or use the associated functions.*/        
+        class Extensions : public osg::Referenced
+        {
+            public:
+                Extensions();
+
+                Extensions(const Extensions& rhs);
+                
+                void lowestCommonDenominator(const Extensions& rhs);
+                
+                void setupGLExtenions();
+
+                bool isCubeMapSupported() const { return _isCubeMapSupported; }
+
+            protected:
+
+                ~Extensions() {}
+                
+                bool    _isCubeMapSupported;
+
+        };
+        
+        /** Function to call to get the extension of a specified context.
+          * If the Exentsion object for that context has not yet been created then 
+          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+          * If 'createIfNotInitalized' is true then the Extensions object is 
+          * automatically created.  However, in this case the extension object 
+          * only be created with the graphics context associated with ContextID..*/
+        static const Extensions* getExtensions(uint contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+          * typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(uint contextID,Extensions* extensions);
+
+
     protected :
 
         virtual ~TextureCubeMap();

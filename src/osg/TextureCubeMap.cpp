@@ -177,15 +177,13 @@ void TextureCubeMap::computeInternalFormat() const
 
 void TextureCubeMap::apply(State& state) const
 {
-    static bool s_CubeMapSupported = isGLExtensionSupported("GL_ARB_texture_cube_map") ||
-                                     isGLExtensionSupported("GL_EXT_texture_cube_map");
-
-    if (!s_CubeMapSupported)
-        return;
-
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const uint contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
+
+    if (!extensions->isCubeMapSupported())
+        return;
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -243,4 +241,41 @@ void TextureCubeMap::apply(State& state) const
     {
         glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
     }
+}
+
+typedef buffered_value< ref_ptr<TextureCubeMap::Extensions> > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
+const TextureCubeMap::Extensions* TextureCubeMap::getExtensions(uint contextID,bool createIfNotInitalized)
+{
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Extensions;
+    return s_extensions[contextID].get();
+}
+
+void TextureCubeMap::setExtensions(uint contextID,Extensions* extensions)
+{
+    s_extensions[contextID] = extensions;
+}
+
+TextureCubeMap::Extensions::Extensions()
+{
+    setupGLExtenions();
+}
+
+TextureCubeMap::Extensions::Extensions(const Extensions& rhs):
+    Referenced()
+{
+    _isCubeMapSupported = rhs._isCubeMapSupported;
+}
+
+void TextureCubeMap::Extensions::lowestCommonDenominator(const Extensions& rhs)
+{
+    if (!rhs._isCubeMapSupported) _isCubeMapSupported = false;
+}
+
+void TextureCubeMap::Extensions::setupGLExtenions()
+{
+    _isCubeMapSupported = isGLExtensionSupported("GL_ARB_texture_cube_map") ||
+                          isGLExtensionSupported("GL_EXT_texture_cube_map") ||
+                          strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0;;
 }

@@ -278,12 +278,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
           * If 'createIfNotInitalized' is true then the Extensions object is 
           * automatically created.  However, in this case the extension object 
           * only be created with the graphics context associated with ContextID..*/
-        static const Extensions* getExtensions(uint contextID,bool createIfNotInitalized);
+        static const Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** setExtensions allows users to override the extensions across graphics contexts.
           * typically used when you have different extensions supported across graphics pipes
           * but need to ensure that they all use the same low common denominator extensions.*/
-        static void setExtensions(uint contextID,Extensions* extensions);
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
 
     protected :
 
@@ -308,10 +308,10 @@ class SG_EXPORT Texture : public osg::StateAttribute
         typedef buffered_value<GLuint> TextureNameList;
         mutable TextureNameList _handleList;
 
-        typedef buffered_value<uint> ImageModifiedTag;
+        typedef buffered_value<unsigned int> ImageModifiedTag;
         mutable ImageModifiedTag _modifiedTag;
 
-        typedef buffered_value<uint> TexParameterDirtyList;
+        typedef buffered_value<unsigned int> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;
 
         WrapMode _wrap_s;

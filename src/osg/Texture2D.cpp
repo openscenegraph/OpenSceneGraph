@@ -214,6 +214,8 @@ void Texture2D::computeInternalFormat() const
 void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
+    
+    if (_internalFormat==0) _internalFormat=GL_RGBA;
 
     // get the globj for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
@@ -252,7 +254,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
     textureObject->bind();
     
     applyTexParameters(GL_TEXTURE_2D,state);
-    glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
+    glCopyTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, x, y, width, height, 0 );
 
     _textureWidth = width;
     _textureHeight = height;
@@ -268,6 +270,8 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x, int y, int width, int height )
 {
     const unsigned int contextID = state.getContextID();
+
+    if (_internalFormat==0) _internalFormat=GL_RGBA;
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);

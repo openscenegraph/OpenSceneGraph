@@ -4,12 +4,7 @@
 
 #include <osg/Vec4>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using namespace std;
-#endif
 
 namespace flt {
 
@@ -81,7 +76,7 @@ struct float32x2
         ENDIAN( _v[1] );
     }
 
-    friend inline ostream& operator << (ostream& output, const float32x2& f)
+    friend inline std::ostream& operator << (std::ostream& output, const float32x2& f)
     {
         output << f._v[0] << " "
                << f._v[1];
@@ -103,7 +98,7 @@ struct float32x3
         ENDIAN( _v[2] );
     }
 
-    friend inline ostream& operator << (ostream& output, const float32x3& f)
+    friend inline std::ostream& operator << (std::ostream& output, const float32x3& f)
     {
         output << f._v[0] << " "
                << f._v[1] << " "
@@ -124,7 +119,7 @@ struct float64x2
         ENDIAN( _v[1] );
     }
 
-    friend inline ostream& operator << (ostream& output, const float64x2& f)
+    friend inline std::ostream& operator << (std::ostream& output, const float64x2& f)
     {
         output << f._v[0] << " "
                << f._v[1];
@@ -147,7 +142,7 @@ struct float64x3
         ENDIAN( _v[2] );
     }
 
-    friend inline ostream& operator << (ostream& output, const float64x3& f)
+    friend inline std::ostream& operator << (std::ostream& output, const float64x3& f)
     {
     output << f._v[0] << " "
            << f._v[1] << " "

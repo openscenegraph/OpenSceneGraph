@@ -9,13 +9,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using std::ostream;
-using std::endl;
-#endif
 
 namespace osg {
 
@@ -277,14 +271,14 @@ inline Vec4 Matrix::operator* (const Vec4& v) const
 	return postMult(v);
 }
 
-inline ostream& operator<< (ostream& os, const Matrix& m )
+inline std::ostream& operator<< (std::ostream& os, const Matrix& m )
 {
-    os << "{"<<endl;
+    os << "{"<<std::endl;
     for(int row=0; row<4; ++row) {
         os << "\t";
         for(int col=0; col<4; ++col)
             os << m(row,col) << " ";
-        os << endl;
+        os << std::endl;
     }
     os << "}" << endl;
     return os;

@@ -8,13 +8,7 @@
 #include "RecordVisitor.h"
 
 #include <map>
-
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using namespace std;
-#endif
 
 
 namespace flt {
@@ -46,7 +40,7 @@ class OldVertexRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertex* getData() const { return (SOldVertex*)_pData; }
-//        friend ostream& operator << (ostream& output, const OldVertexRecord& rec);
+//        friend std::ostream& operator << (std::ostream& output, const OldVertexRecord& rec);
 
     protected:
         virtual ~OldVertexRecord();
@@ -87,7 +81,7 @@ class OldVertexColorRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertexColor* getData() const { return (SOldVertexColor*)_pData; }
-//        friend ostream& operator << (ostream& output, const OldVertexColorRecord& rec);
+//        friend std::ostream& operator << (std::ostream& output, const OldVertexColorRecord& rec);
 
     protected:
         virtual ~OldVertexColorRecord();
@@ -128,7 +122,7 @@ class OldVertexColorNormalRecord : public PrimNodeRecord
         virtual void accept(RecordVisitor& rv) { rv.apply(*this); }
 //      virtual void traverse(RecordVisitor& rv);
         virtual SOldVertexColorNormal* getData() const { return (SOldVertexColorNormal*)_pData; }
-//        friend ostream& operator << (ostream& output, const OldVertexColorNormalRecord& rec);
+//        friend std::ostream& operator << (std::ostream& output, const OldVertexColorNormalRecord& rec);
 
     protected:
         virtual ~OldVertexColorNormalRecord();

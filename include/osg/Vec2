@@ -7,12 +7,7 @@
 
 #include <osg/Math>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using std::ostream;
-#endif
 
 namespace osg {
 
@@ -152,7 +147,7 @@ class Vec2
 	    return( norm );
 	}
 
-	friend inline ostream& operator << (ostream& output, const Vec2& vec)
+	friend inline std::ostream& operator << (std::ostream& output, const Vec2& vec)
         {
 	    output << vec._v[0] << " "
                    << vec._v[1];

@@ -22,14 +22,6 @@
 
 #include <string>
 
-/*
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
-#include <iostream>
-using namespace std;
-#endif
-*/
 namespace osgGLUT{
 
 /** A basic viewer base class which provides a window, simple keyboard and mouse interaction.

@@ -7,19 +7,8 @@
 
 #include <osg/Export>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#include <fstream.h>
-#else
 #include <iostream>
 #include <fstream>
-using std::ostream;
-using std::ofstream;
-using std::endl;
-using std::cout;
-using std::cerr;
-#endif
-
 
 namespace osg {
 
@@ -43,7 +32,7 @@ enum NotifySeverity {
 SG_EXPORT extern NotifySeverity g_NotifyLevel;
 
 /** global notify nul stream. added for Mac OSX */
-SG_EXPORT extern ofstream *g_NotifyNulStream;
+SG_EXPORT extern std::ofstream *g_NotifyNulStream;
 
 /** global notify nul stream. added for Mac OSX */
 SG_EXPORT extern bool g_NotifyInit;
@@ -79,19 +68,20 @@ SG_EXPORT extern bool initNotifyLevel();
 // previous implementation was causing Mac OSX to misbehave. This version
 // places less stress on compiler and runs on Mac
 
-inline ostream& notify(const NotifySeverity severity)
+inline std::ostream& notify(const NotifySeverity severity)
 {
     if (!g_NotifyInit) initNotifyLevel();
 
     if (severity<=g_NotifyLevel)
     {
-        if (severity<=osg::WARN) return cerr;
-        else return cout;
+        if (severity<=osg::WARN) return std::cerr;
+        else return std::cout;
     }
     return *osg::g_NotifyNulStream;
 }
 
-inline ostream& notify(void) { return notify(osg::INFO); }
+inline std::ostream& notify(void) { return notify(osg::INFO); }
+
 };
 
 #endif

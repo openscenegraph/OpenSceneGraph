@@ -10,13 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using std::istream;
-using std::ifstream;
-#endif
 
 namespace osgDB {
 
@@ -32,7 +26,7 @@ class OSGDB_EXPORT FieldReader
 
         virtual FieldReader& operator = (const FieldReader& ic);
 
-        void attach(istream* input);
+        void attach(std::istream* input);
         void detach();
 
         virtual bool eof() const;
@@ -51,7 +45,7 @@ class OSGDB_EXPORT FieldReader
         void _free();
         void _copy(const FieldReader& ic);
 
-        istream* _fin;
+        std::istream* _fin;
         bool _eof;
 
         bool findStartOfNextField();

@@ -12,18 +12,13 @@
 #include <string>
 #include <map>
 
-#ifdef OSG_USE_IO_DOT_H
-#include <fstream.h>
-#else
 #include <fstream>
-using std::ofstream;
-#endif
 
 namespace osgDB {
 
 /** ofstream wrapper class for adding support for indenting.
     Used in output of .osg ASCII files to improve their readability.*/
-class OSGDB_EXPORT Output : public ofstream
+class OSGDB_EXPORT Output : public std::ofstream
 {
     public:
 

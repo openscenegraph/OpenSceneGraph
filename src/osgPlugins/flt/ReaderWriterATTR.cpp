@@ -42,10 +42,6 @@
 #include <iostream>
 #include <fstream>
 
-#ifndef OSG_USE_IO_DOT_H
-using std::ios;
-#endif
-
 typedef signed char     int8;
 typedef unsigned char   uint8;
 typedef signed short    int16;
@@ -161,7 +157,7 @@ class Attr
 
         Attr(int version) : _flt_version(version) { init(); }
         void    init();
-        void    readField(ifstream& file, void* buf, size_t size);
+        void    readField(std::ifstream& file, void* buf, size_t size);
         bool    readAttrFile(const char* szName);
         StateSet* createOsgStateSet();
 
@@ -456,7 +452,7 @@ void Attr::init()
 }                               
 
 
-void Attr::readField(ifstream& file, void* buf, size_t size)
+void Attr::readField(std::ifstream& file, void* buf, size_t size)
 {
     if (file.eof()) return;
     file.read((char*)buf, size);
@@ -468,9 +464,9 @@ void Attr::readField(ifstream& file, void* buf, size_t size)
 bool Attr::readAttrFile(const char* szName)
 {
     int n;
-    ifstream file;
+    std::ifstream file;
 
-    file.open (szName, ios::in | ios::binary);
+    file.open (szName, std::ios::in | std::ios::binary);
 
     READ( texels_u );
     READ( textel_v );

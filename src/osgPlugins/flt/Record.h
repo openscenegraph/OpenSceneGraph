@@ -9,12 +9,7 @@
 
 #include "FltRecords.h"
 
-#ifdef OSG_USE_IO_DOT_H
-#include <iostream.h>
-#else
 #include <iostream>
-using namespace std;
-#endif
 
 
 namespace flt {
@@ -70,7 +65,7 @@ class Record : public osg::Referenced
         int             getFlightVersion();
 
 
-        friend ostream& operator << (ostream& output, const Record& rec);
+        friend std::ostream& operator << (std::ostream& output, const Record& rec);
 
     protected:
 

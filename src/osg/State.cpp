@@ -82,6 +82,8 @@ void State::reset()
     
     _modelView = _identity;
     _projection = _identity;
+    
+    dirtyAllVertexArrays();
 }
 
 void State::pushStateSet(const StateSet* dstate)

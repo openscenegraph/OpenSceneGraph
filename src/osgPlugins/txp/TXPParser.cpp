@@ -921,6 +921,8 @@ void* labelRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 _parse->getCurrTop()->addChild(group);
             }
             break;
+        default:
+            break;
         }
 
          const std::vector<trpg3dPoint> *supports = label.GetSupports();

@@ -1284,7 +1284,7 @@ osg::Group* ConvertFromFLT::visitObject(osg::Group& osgParent, ObjectRecord* rec
         std::string desc("flt object flags: 0x");
         char cflags[33];
 
-        sprintf( cflags, "%X", pSObject->dwFlags );
+        sprintf( cflags, "%X", (unsigned int)pSObject->dwFlags );
         desc = desc + cflags;
 
         object->getDescriptions().push_back( desc );

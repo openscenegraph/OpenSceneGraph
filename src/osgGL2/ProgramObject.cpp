@@ -232,7 +232,13 @@ void ProgramObject::dirtyShaderObjects()
 
 void ProgramObject::releaseGLObjects(osg::State* state) const
 {
-    const_cast<ProgramObject*>(this)->dirtyShaderObjects();
+    
+    if (!state) const_cast<ProgramObject*>(this)->dirtyShaderObjects();
+    else
+    {
+        unsigned int contextID = state->getContextID();
+        const_cast<ProgramObject*>(this)->_shaderObjectList[contextID]->dirtyShaderObject();
+    }
 }
 
 

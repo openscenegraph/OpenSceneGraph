@@ -88,7 +88,7 @@ void Texture1D::apply(State& state) const
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -162,7 +162,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
     // update the modified tag to show that it is upto date.
@@ -263,7 +263,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
 void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 {
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);
@@ -312,7 +312,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 
 void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int width)
 {
-    const uint contextID = state.getContextID();
+    const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
     GLuint& handle = getTextureObject(contextID);

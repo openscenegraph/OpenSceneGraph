@@ -6,7 +6,7 @@ CXXFILES =\
         FreeTypeFont.cpp\
         ReaderWriterFreeType.cpp\
 
-LIBS   += $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS)
+LIBS   += -losgText $(OSG_LIBS) $(FREETYPE_LIB) $(OTHER_LIBS)
 
 ifneq ($(OS),HP-UX)
 INC += -I$(OSGHOME)/include \

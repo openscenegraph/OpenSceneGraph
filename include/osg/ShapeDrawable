@@ -135,7 +135,7 @@ class SG_EXPORT ShapeDrawable : public Drawable
           */
         virtual void drawImplementation(State& state) const;
 
-        /** return false, osg::ProceduralGeoemtry does not support accept(AttributeFunctor&).*/
+        /** return false, osg::ShapeDrawable does not support accept(AttributeFunctor&).*/
         virtual bool supports(AttributeFunctor&) const { return false; }
 
         /** return true, osg::ShapeDrawable does support accept(ConstAttributeFunctor&).*/

@@ -240,8 +240,8 @@ void Text::computeGlyphRepresentation()
         
         if (charcode=='\n')
         {
-            if (horizontal) startOfLine.y() -= _fontHeight;
-            else startOfLine.x() += _fontWidth;
+            if (horizontal) startOfLine.y() -= _characterHeight;
+            else startOfLine.x() += _characterHeight;
             cursor = startOfLine;
             previous_charcode = 0;
             continue;
@@ -300,7 +300,7 @@ void Text::computeGlyphRepresentation()
                 {
                     if (local.x()+width>_maximumWidth)
                     {
-                        startOfLine.y() -= _fontHeight;
+                        startOfLine.y() -= _characterHeight;
                         cursor = startOfLine;
                         previous_charcode = 0;
 
@@ -317,7 +317,7 @@ void Text::computeGlyphRepresentation()
                 {
                     if (local.x()<-_maximumWidth)
                     {
-                        startOfLine.y() -= _fontHeight;
+                        startOfLine.y() -= _characterHeight;
                         cursor = startOfLine;
                         previous_charcode = 0;
 
@@ -333,7 +333,7 @@ void Text::computeGlyphRepresentation()
                 {
                     if (local.y()<-_maximumHeight)
                     {
-                        startOfLine.x() += _fontWidth;
+                        startOfLine.x() += _characterHeight/_characterAspectRatio;
                         cursor = startOfLine;
                         previous_charcode = 0;
 
@@ -470,8 +470,6 @@ void Text::drawImplementation(osg::State& state) const
     if (_drawMode & TEXT)
     {
 
-        bool first = false;
-        
         state.disableAllVertexArrays();
 
         for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
@@ -479,11 +477,7 @@ void Text::drawImplementation(osg::State& state) const
             ++titr)
         {
             // need to set the texture here...
-
-            if (!first)
-            {
-                state.apply(titr->first.get());
-            }
+            state.apply(titr->first.get());
 
             const GlyphQuads& glyphquad = titr->second;
 
@@ -491,8 +485,6 @@ void Text::drawImplementation(osg::State& state) const
             state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
 
             glDrawArrays(GL_QUADS,0,glyphquad._coords.size());
-
-            first = false;
 
         }
     }
@@ -536,3 +528,36 @@ void Text::drawImplementation(osg::State& state) const
     glPopMatrix();
 }
 
+void Text::accept(osg::Drawable::ConstAttributeFunctor& af) const
+{
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        const GlyphQuads& glyphquad = titr->second;
+        af.apply(osg::Drawable::VERTICES,glyphquad._coords.size(),&(glyphquad._coords.front()));
+        af.apply(osg::Drawable::TEXTURE_COORDS_0,glyphquad._texcoords.size(),&(glyphquad._texcoords.front()));
+    }
+}
+
+void Text::accept(osg::Drawable::PrimitiveFunctor& pf) const
+{
+    for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        const GlyphQuads& glyphquad = titr->second;
+
+        pf.begin(GL_QUADS);
+        for(GlyphQuads::Coords::const_iterator itr = glyphquad._coords.begin();
+            itr!=glyphquad._coords.end();
+            ++itr)
+        {
+
+            osg::Vec3 pos(itr->x(),itr->y(),0.0f);
+            pf.vertex(pos*_matrix);
+        }
+        pf.end();
+    }
+    
+}

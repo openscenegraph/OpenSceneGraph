@@ -58,6 +58,7 @@ RenderBin::RenderBin()
     _binNum = 0;
     _parent = NULL;
     _stage = NULL;
+    _sortMode = SORT_BY_STATE;
 }
 
 RenderBin::~RenderBin()

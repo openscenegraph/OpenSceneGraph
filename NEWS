@@ -23,6 +23,14 @@ OSG News (most significant items from ChangeLog)
     Draw and Sort callbacks added to osg::RenderStage.
 
     Support for multitexturing added to OpenFlight loader.
+    
+    LOD has been revamped to allow independat min and max ranges for
+    each LOD child, bringing it inline with the OpenFlight style LOD
+    representation.
+
+    Switch has been revamped to allow independat switching on or off of
+    each Switch child, bringing it inline with the OpenFlight style Switch
+    representation.
 
     Added PolygonStipple class.
 

@@ -2,19 +2,27 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.76 [en] (X11; U; Linux 2.4.2-2 i686) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en-gb]C-CCK-MCD NetscapeOnline.co.uk  (Win95; I) [Netscape]">
+   <title>OSG Distribution</title>
 </head>
-<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#FF0000" alink="#000088">
-The following is a very basic intro of how to get the OSG going under Linux,
-FreeBSD, IRIX, Windows and Mac.&nbsp; Each intro mentions OpenSceneGraph-Data,
-it is recommended that you also download it alongside this source distribution.
-<p>The scene graph depends upon Standard C++, STL and OpenGL so you need
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
+<img SRC="OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
+
+<h2>
+<a NAME="Compiling and installing the OpenSceneGraph"></a><u>Compiling and installing the OpenSceneGraph</u></h2>
+
+
+<p>
+The scene graph depends upon Standard C++, STL and OpenGL so you need
 a C++ compiler up to the task and OpenGL or Mesa installed. The viewer
 depends upon GLUT which you'll need to download and install from the GLUT
 website. The OSG has it own native ascii file format, and .rgb image reader
 inbuilt which allows you read the example data with any dependencies other
 than C++, STL and OpenGL.
-<p>The new osgText library adds the dependency of the freetype library
+</p>
+
+<p>
+The new osgText library adds the dependency of the freetype library
 for support of true type fonts, however it is not essential to the core
 library, so you can comment it out from compilation by modifying the src/Makefile,
 and src/Demos/Makefile. I you wish to use fonts then you can download freetype
@@ -23,7 +31,10 @@ GLU implementation which supports GLU1.2 tessellation routines. If you
 your current GLU is out of date you'll need to download the latest, for
 instance the sgi's sample implementation for GLU from the www.opengl.org
 website.
-<p>The OSG also has a set of plug-ins which support non-native 3d database
+</p>
+
+<p>
+The OSG also has a set of plug-ins which support non-native 3d database
 and image formats, several have no dependencies on external libraries (flt,3ds,obj,
 lwo,dw, tga &amp; pic), while others (pfb,jpeg,gif,tiff) require other
 libraries to be installed to compile them. If you don't already have them
@@ -34,13 +45,76 @@ only and if they are required to load a specific data set. If you don't
 need them for your datasets then it won't matter that you haven't been
 able to compile all the plug-ins. A full list of dependencies and where
 to download the required libraries are listed in the index.html.
-<p>If you're coming across the OSG for the first time and want to get started
+</p>
+
+<p>
+If you're coming across the OSG for the first time and want to get started
 quickly, go right ahead and follow the compilation instructions. You can
 always later download the libraries which the plug-ins require if you eventually
 need them. If you haven't already checked it out, for a list of distribution
 contents, contacts and links to documentation check out index.html.
+
+<hr>
+
 <h2>
-Compiling under all UNIX (including CYGWIN) Platforms</h2>
+Compiling under Windows</h2>
+<p>The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
+in the VisualStudio below the OSG this root directory. The OSG will compile
+with the basic VisualC++6.0, but its recommended that you use Service Pack
+4 to fix MS compiler bugs which affect the OSG. Even Service Pack 4 does
+not completely fix MSVC bugs associated with STL, so it is recommended
+that you also use STLPort which can be downloaded from http://www.stlport.org
+since they actually know how to write a STL library and have done a rather
+good job at it. Notes on using STLport at the bottom of this file.
+</p>
+<p>The OSG is composed of a number of libraries and executables, to get
+running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT, dot_osg
+and sgv. The rest of the libraries and executables are optional and can
+be compiled if you need them, however for simplicity I would recommend
+doing a batch build of all the libraries and executables in the distribution,
+some of the plug-ins which support non native file formats may not compile
+due to dependencies on other libraries (such as libpng), you can ignore
+these compilation errors unless you need to load the related file types.
+</p>
+<p>To execute the viewer the file path for the .dll's and .exe, both compiled
+into the OSG's bin directory, need to be setup, such as by adding the PATH
+to your autoexec.bat, its also useful to add the OSGFILEPATH to your autoexec.bat
+to help the location of datafiles. For example :
+</p>
+<p>SET OSGFILEPATH=D:\OpenSceneGraph-Data;D:\OpenSceneGraph-Data\Images</p>
+<br>SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;D:\osg-0.8.43\bin;
+<p>To help compilation of the image reader plugins, various image libraries
+have been zipped up for your convienice, your find these on the OSG release
+download directory.
+<h2>
+Using STLport under Windows</h2>
+</p>
+The OSG has been tested under Windows with STLport-4.5, which allows the
+users to configure the type of STL support required for STLport itself.
+The key configuration that the OSG needs to do is to enable the wrapping
+of MS's own iostreams, than using STLport's own implementation. The later
+is not required because this has not be problematic under Windows, it is
+only the container classes and algorithms that need replacing (thanks to
+MS's utterly hopeless implementation of these). Using the iostream wrappping
+option means the STLport can just be used on your include path, there is
+no need to compile STLport itself, or link into any special libraries.
+To configure STLport simply comment IN (its commented out by default),
+the follwing line from STLport-4.5/stlport/stl_user_config.h so it should
+look: # define _STLP_NO_OWN_IOSTREAMS 1 Then configure the includes path
+in Visual Studio to pick up on STLport: Select the "Tools" menu. Select
+"Options" In the Options dialog, select the "Directories" tab Under the
+"include" option, add the path to STLport4.5, something like: D:/STLport4.5/stlport
+Then press the up array to move the entry all the way to the top of the
+list, thus overriding MS's own STL implementations.
+</p>
+
+<br>
+<br>
+<hr>
+
+
+<h2>
+Compiling under all UNIX (including CYGWIN & Mac OSX) Platforms</h2>
 Building the OSG requires 'gmake', due to the extensive use of gmake directives
 in the Makefiles. You can get gmake from here if you don't already have
 it installed: http://www.gnu.org/software/make/
@@ -63,6 +137,34 @@ osgText due to GLU problems then check out the details at the bottom of
 this file, under the title RedHat7.1 &amp; GLU1.3 for a quick way of installing
 GLU1.3 in the right place.
 <h2>
+RedHat 7.2 &amp; GLU1.3</h2>
+I have posted a simple fix for those of us who have been unable to correctly
+build OSG 0.8.43 on Redhat 7.2. You can download it at http://www.openscenegraph.org/download/dependencies/ReadHat7.2_fixglu.tar.gz
+To install it, follow these steps:
+<p>English
+<blockquote>1) Untar the tarball. It will create a directory called fixosg/
+<br>2) Change to the ReadHat7.2_fixglu/ directory
+<br>3) Become root
+<br>4) Run the script called fixglu</blockquote>
+Cmd line
+<blockquote>tar xvzf ReadHat7.2_fixglu.tar.gz
+<br>cd ReadHat7.2_fixglu/
+<br>su (your root password)
+<br>./fixglu
+<br>exit</blockquote>
+You should then be able to do a "make" in your OSG directory and everything
+will build as it should. Let me know if this doesn't work and I will try
+to improve it. Email me directly for help instead of posting here. There's
+a README in the tarball with some info on what the script actually does.
+There's nothing wrong with OSG itself; the problem with Redhat 7.2 is that
+it doesn't have GLU 1.3 by default, which OSG is now dependent on (for
+osgText.) Good luck everyone. - Clay
+
+<br>
+<br>
+<hr>
+
+<h2>
 Compiling under FreeBSD</h2>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
 <blockquote><tt>% make</tt></blockquote>
@@ -74,6 +176,11 @@ or
 To get full details of make options, type:
 <blockquote><tt>%&nbsp;make help</tt></blockquote>
 (highly recommended)
+
+<br>
+<br>
+<hr>
+
 <h2>
 Compiling under IRIX</h2>
 Since the OSG uses Standard C++ features such as STL it is important to
@@ -91,8 +198,10 @@ or
 To get full details of make options, type:
 <blockquote><tt>%&nbsp;make help</tt></blockquote>
 (highly recommended)
-<br>&nbsp;
-<br>&nbsp;
+<br>
+
+<hr>
+
 <h2>
 Compiling under Solaris</h2>
 Compile, from the OSG root directory, ('%' is UNIX csh prompt) type:
@@ -105,42 +214,10 @@ or
 To get full details of make options, type:
 <blockquote><tt>%&nbsp;make help</tt></blockquote>
 (highly recommended)
-<br>&nbsp;
-<br>&nbsp;
-<h2>
-Compiling under Windows</h2>
-The Microsoft Visual C++ 6.0 workspace file is VisualStudio.dsw located
-in the VisualStudio below the OSG this root directory. The OSG will compile
-with the basic VisualC++6.0, but its recommended that you use Service Pack
-4 to fix MS compiler bugs which affect the OSG. Even Service Pack 4 does
-not completely fix MSVC bugs associated with STL, so it is recommended
-that you also use STLPort which can be downloaded from http://www.stlport.org
-since they actually know how to write a STL library and have done a rather
-good job at it. Notes on using STLport at the bottom of this file.
-<p>The OSG is composed of a number of libraries and executables, to get
-running you'll need at least to compile osg,osgUtil,osgDB,osgGLUT, dot_osg
-and sgv. The rest of the libraries and executables are optional and can
-be compiled if you need them, however for simplicity I would recommend
-doing a batch build of all the libraries and executables in the distribution,
-some of the plug-ins which support non native file formats may not compile
-due to dependencies on other libraries (such as libpng), you can ignore
-these compilation errors unless you need to load the related file types.
-<p>To execute the viewer the file path for the .dll's and .exe, both compiled
-into the OSG's bin directory, need to be setup, such as by adding the PATH
-to your autoexec.bat, its also useful to add the OSGFILEPATH to your autoexec.bat
-to help the location of datafiles. For example :
-<p>SET OSGFILEPATH=D:\OpenSceneGraph-Data;D:\OpenSceneGraph-Data\Images
-<br>SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;D:\osg-0.8.43\bin;
-<p>To help compilation of the image reader plugins, various image libraries
-have been zipped up for your convienice, your find these on the OSG release
-download directory.
-<h2>
-Compiling under MacOS 9</h2>
-The Microwerks Codewarrior workspace files can be found under the Microwerks
-directory. Further details to be fleshed out since Mac port is in its early
-stages and is not uptodate with the current release. To get it compiling
-you will have to use these Codewarrior files as a starting place. If you
-get it running and have time to maintian the port please email robert@openscenegraph.org.
+<br>
+
+<hr>
+
 <h2>
 Compiling under MacOS X (instructions written by Phil Atkin)</h2>
 For anyone who's ever used a Unix box for development it really is so simple
@@ -202,6 +279,9 @@ a CGS error (which is I think Core Graphics System). If you explicitly
 go bin/hangglide it works fine. Weird, it may be an OS X 10.04 issue which
 is gone in 10.1 or it may be a weirdy in the Mac GLUT implementation, but
 forewarned is forearmed.
+
+<hr>
+
 <h2>
 Compiling under Cygwin</h2>
 To compile, from the OSG root directory, type: make Note, make should automatically
@@ -219,6 +299,10 @@ Add the following to your .cshrc (note paths seperated by colon's): setenv
 OSGFILEPATH ./:${OSGDATA}:${OSGDATA}/Images Or the following if you're
 using a sh compatible shell : export OSGFILEPATH=./:${OSGDATA}:${OSGDATA}/Images:
 Or under windows (note paths seperated by semi-colon's) : SET OSGFILEPATH=./:${OSGDATA};${OSGDATA}/Images
+<br>
+<br>
+<hr>
+
 <h2>
 Running the demos</h2>
 To run the viewer demo type (you made need to type rehash first under Unix)
@@ -231,57 +315,7 @@ run other demos type osgcube or hangglide hangglide master.flt or osgreflect
 cow.osg or osgconv Alley.3ds Alley.osg or osgtexture lz.rgb tree.rgb or
 osgimpostor cow.osg or osgviews glider.osg (Note: the file is picked up
 by checking the directories pointed to by $OSGFILEPATH)
-<h2>
-Plug-in dependencies</h2>
-You may have compile errors if you don't have all the required libraries,
-especially for the plugins. As long as the core libraries osg, osgUtl,
-osgGLUT and sgv have compiled you won't have any problems running the osg
-itself but may not be able to use some non-native data formats. To get
-the problematic plugins working you may need to download support libraries
-such as libtiff, libjpeg etc. For further details see index.html.
-<h2>
-Using STLport under Windows</h2>
-The OSG has been tested under Windows with STLport-4.5, which allows the
-users to configure the type of STL support required for STLport itself.
-The key configuration that the OSG needs to do is to enable the wrapping
-of MS's own iostreams, than using STLport's own implementation. The later
-is not required because this has not be problematic under Windows, it is
-only the container classes and algorithms that need replacing (thanks to
-MS's utterly hopeless implementation of these). Using the iostream wrappping
-option means the STLport can just be used on your include path, there is
-no need to compile STLport itself, or link into any special libraries.
-To configure STLport simply comment IN (its commented out by default),
-the follwing line from STLport-4.5/stlport/stl_user_config.h so it should
-look: # define _STLP_NO_OWN_IOSTREAMS 1 Then configure the includes path
-in Visual Studio to pick up on STLport: Select the "Tools" menu. Select
-"Options" In the Options dialog, select the "Directories" tab Under the
-"include" option, add the path to STLport4.5, something like: D:/STLport4.5/stlport
-Then press the up array to move the entry all the way to the top of the
-list, thus overriding MS's own STL implementations.
-<h2>
-RedHat 7.2 &amp; GLU1.3</h2>
-I have posted a simple fix for those of us who have been unable to correctly
-build OSG 0.8.43 on Redhat 7.2. You can download it at http://www.openscenegraph.org/download/dependencies/ReadHat7.2_fixglu.tar.gz
-To install it, follow these steps:
-<p>English
-<blockquote>1) Untar the tarball. It will create a directory called fixosg/
-<br>2) Change to the ReadHat7.2_fixglu/ directory
-<br>3) Become root
-<br>4) Run the script called fixglu</blockquote>
-Cmd line
-<blockquote>tar xvzf ReadHat7.2_fixglu.tar.gz
-<br>cd ReadHat7.2_fixglu/
-<br>su (your root password)
-<br>./fixglu
-<br>exit</blockquote>
-You should then be able to do a "make" in your OSG directory and everything
-will build as it should. Let me know if this doesn't work and I will try
-to improve it. Email me directly for help instead of posting here. There's
-a README in the tarball with some info on what the script actually does.
-There's nothing wrong with OSG itself; the problem with Redhat 7.2 is that
-it doesn't have GLU 1.3 by default, which OSG is now dependent on (for
-osgText.) Good luck everyone. - Clay
-<p><clayfowler@earthlink.net>
-<br>&nbsp;
+
+
 </body>
 </html>

@@ -8,41 +8,48 @@
 <body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
 <img SRC="OpenSceneGraphBanner_Distribution.jpg" height=77 width=640>
 
-<h3>
-<a NAME="Windows dependency arhive"></a><u>Windows dependency archive</u></h3>
-<p>As windows doesn't natively come with a rich set of developments libraries like Unix, one is likely to need to
-download most of the dependancies below. However, to make life easier for Windows users, we have put together
-a .zip archive with all the required dependancies which can be download and installed somewhere in you system,
-you'll need to set VisualStudio to pick up on the include and libs, and the PATH set to pick up in the dll's.
-Alternatively, a more hacky but simpler solution is to unpack this archive inside you OpenSceneGraph distribution,
-so that all the include files drop into OpenSceneGraph/include, and the libs drop into OpenSceneGraph/lib, and
-all the dll's drop into OpenSceneGraph/bin, this way VisualStudio will pick up the files simpler through the
-paths set up inside the workspace and project files. The archive can be downloaded here: . .
-<ul><i><a href="http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip">
-http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip</a></i></ul>
+<h2>
+<a NAME="Scene graph dependencies"></a><u>Scene graph dependencies</u></h2>
+<p>The OpenSceneGraph is composed of core scene graph libraries, plugins libraries and demo programs. The core scene
+graph libraries (osg, osgDB, osgUtil) are only dependant upon OpenGL and Standard C++ so should compile straight out of
+the box on most systems.  To run the demos one will also need to compile osgGLUT which adds the dependancy of GLUT, and
+if true type text is required then the freetype library will be required.  The plugins which are used to read and write
+various file formats have their own sets of dependancies listed below, some have no dependancies at all.  A plugin
+is only needed if you need to load that specific file format, so it is not critical if you don't have all the reqiured
+dependencies.
+</p>
 
 <hr>
 
 <h3>
-<a NAME="Scene graph dependencies"></a><u>Scene graph dependencies</u></h3>
-<p>Currently the only dependancy of the core scene graph libraries (osg,osgUtil
-and osgDB) is Standard C++ and OpenGL. The osgText library, osgGLUT
-have the following dependancies, these arn't core libraries so arn't needed
-to be compiled unless you need that feature.  The demos do however require
-osgGLUT so its likely that you will typically need it when trying out the osg.
-The osgtext demo adds an osgText dependancies as well, you only need to compile
-them if you need to a demo of those features.
-</p>
+<a NAME="Windows dependency arhives"></a><u>Windows dependency archives</u></h3>
+<p>To make life easier for Windows users, we have put together a .zip archives with all the required dependancies
+which can be download and installed somewhere in you system. You'll need to set VisualStudio to pick up on the
+include and libs, and the PATH set to pick up in the dll's. Alternatively, a more hacky but simpler solution is
+to unpack this archive inside you OpenSceneGraph distribution, so that all the include files drop into
+OpenSceneGraph/include, and the libs drop into OpenSceneGraph/lib, and all the dll's drop into OpenSceneGraph/bin,
+this way VisualStudio will pick up the files simpler through the paths set up inside the workspace and project
+files. The archives can be downloaded here: . .
 <ul>
-<li>src/osgText</li>
+<li>freetype, libpng, libungif, libtiff, libjpeg & zlib includes, libs and dll.</li>
+<ul><i><a href="http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip">
+http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip</a></i></ul>
+<br>
+<li>GLUT include, lib and dll.</li>
+<ul><i><a href="http://www.openscenegraph.org/download/dependencies/Win32Glut.zip">
+http://www.openscenegraph.org/download/dependencies/OsgWin32Glut.zip</a></i></ul>
+</ul>
 
-<br>The osgText library supports true type fonts via the freetype library :
+<hr>
+
+<h3>
+<a NAME="Core library dependencies"></a><u>Core library dependencies</u></h3>
+<ul>
+<li>src/osgText - The osgText library supports true type fonts via the freetype library. </li>
 <ul><i><a href="http://www.freetype.org/">
 http://www.freetype.org/</a></i></ul>
 
-<br><li>src/osgGLUT</li>
-
-<br>The osgGLUT library depends upon, you guessed it, glut :
+<br><li>src/osgGLUT - The osgGLUT library depends upon, you guessed it, glut... </li>
 <ul><i><a href="http://www.opengl.org/developers/documentation/glut/index.html">
 http://www.opengl.org/developers/documentation/glut/index.html</a></i></ul></ul>
 

@@ -15,6 +15,7 @@
 #define OSGTEXT_LIBRARY
 
 #include "FreeTypeFont.h"
+#include <osgText/Font>
 
 class FreeTypeLibrary
 {
@@ -34,7 +35,7 @@ protected:
       * library is via the singleton instance method.*/
     FreeTypeLibrary();
 
-    typedef std::map< std::string, osg::ref_ptr<FreeTypeFont> > FontMap;
+    typedef std::map< std::string, osg::ref_ptr<osgText::Font> > FontMap;
 
 
     FT_Library  _ftlibrary;

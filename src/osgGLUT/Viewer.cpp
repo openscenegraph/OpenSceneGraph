@@ -116,8 +116,8 @@ Viewer::Viewer()
 
     osg::notify(osg::INFO)<<"Scene Graph Viewer (sgv)"<<endl;
 
-    osg::notify(osg::INFO)<<"   '"<<osgGetLibraryName()<<"' Version "<<osgGetVersion()<<endl;
-    osg::notify(osg::INFO)<<"   '"<<osgUtilGetLibraryName()<<"' Version "<<osgUtilGetVersion()<<endl;
+//    osg::notify(osg::INFO)<<"   '"<<osgGetLibraryName()<<"' Version "<<osgGetVersion()<<endl;
+//    osg::notify(osg::INFO)<<"   '"<<osgUtilGetLibraryName()<<"' Version "<<osgUtilGetVersion()<<endl;
 
     _initialTick = _timer.tick();
     _frameTick = _initialTick;
@@ -880,7 +880,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             if (getNumViewports()<=1 && _printStats==Statistics::STAT_PRIMSPERVIEW) _printStats++; // no need for these stats as only one view
             if (_printStats==Statistics::STAT_DC) { // count depth complexity by incrementing the stencil buffer every 
                 // time a pixel is hit
-                int nsten=0; // Number of stencil planes available
+                GLint nsten=0; // Number of stencil planes available
                 glGetIntegerv(GL_STENCIL_BITS , &nsten);
                 if (nsten>0) {
                     glEnable(GL_STENCIL_TEST);

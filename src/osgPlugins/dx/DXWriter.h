@@ -30,7 +30,7 @@ namespace dx {
 struct WriterParms {
     bool       set_default_color;       // Give color to uncolored objects
     osg::Vec4  default_color;           // Color to assign to uncolored objects
-    char       outfile[ PATH_MAX ];     // Output pathname
+    char       outfile[ DX_PATH_MAX ];     // Output pathname
     //bool     binary_mode;             // Write DX arrays in binary format
 
     WriterParms()

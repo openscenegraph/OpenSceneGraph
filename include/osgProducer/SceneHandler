@@ -18,6 +18,9 @@ class OSGPRODUCER_EXPORT SceneHandler : public Producer::Camera::SceneHandler, p
     
         SceneHandler( osg::DisplaySettings *ds = NULL);
 
+        /// override the init method to force it be run one at a time.
+        virtual void init();
+
         void cull(Producer::Camera &cam);
 
         void draw(Producer::Camera &);

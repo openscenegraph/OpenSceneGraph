@@ -110,9 +110,9 @@ class SG_EXPORT Image : public Object
 
         /** Ensure image dimensions are a power of two.
           * Mip Mapped texture require the image dimensions to be
-          * power of two.
-          */
-        void ensureDimensionsArePowerOfTwo();
+          * power of two and are within the maxiumum texture size for
+          * the host machine.*/
+        void ensureValidSizeForTexturing();
       
         /** Dirty the image, which increments the modified flag, to force osg::Texture to reload the image.*/
         inline void dirty() { ++_modifiedTag; }      

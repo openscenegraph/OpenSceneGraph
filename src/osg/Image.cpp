@@ -307,7 +307,7 @@ void Image::scaleImage(const int s,const int t,const int r)
 }
 
 
-void Image::ensureDimensionsArePowerOfTwo()
+void Image::ensureValidSizeForTexturing()
 {
     int new_s = _s;
     int new_t = _t;

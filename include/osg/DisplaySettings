@@ -76,6 +76,30 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
         void setScreenDistance(const float distance) { _screenDistance = distance; }
         const float getScreenDistance() const { return _screenDistance; }
 
+        enum SplitStereoHorizontalEyeMapping
+        {
+            LEFT_EYE_LEFT_VIEWPORT,
+            LEFT_EYE_RIGHT_VIEWPORT
+        };
+        
+        void setSplitStereoHorizontalEyeMapping(SplitStereoHorizontalEyeMapping m) { _splitStereoHorizontalEyeMapping = m; }
+        SplitStereoHorizontalEyeMapping getSplitStereoHorizontalEyeMapping() const { return _splitStereoHorizontalEyeMapping; }
+
+        void setSplitStereoHorizontalSeperation(const int s) { _splitStereoHorizontalSeperation = s; }
+        const int getSplitStereoHorizontalSeperation() const { return _splitStereoHorizontalSeperation; }
+
+        enum SplitStereoVerticalEyeMapping
+        {
+            LEFT_EYE_TOP_VIEWPORT,
+            LEFT_EYE_BOTTOM_VIEWPORT,
+        };
+
+        void setSplitStereoVerticalEyeMapping(SplitStereoVerticalEyeMapping m) { _splitStereoVerticalEyeMapping = m; }
+        SplitStereoVerticalEyeMapping getSplitStereoVerticalEyeMapping() const { return _splitStereoVerticalEyeMapping; }
+
+        void setSplitStereoVerticalSeperation(const int s) { _splitStereoVerticalSeperation = s; }
+        const int getSplitStereoVerticalSeperation() const { return _splitStereoVerticalSeperation; }
+
 
         void setScreenHeight(const float height) { _screenHeight = height; }
         const float getScreenHeight() const { return _screenHeight; }
@@ -111,19 +135,24 @@ class SG_EXPORT DisplaySettings : public osg::Referenced
     
         void copy(const DisplaySettings& vs);
 
-        bool            _stereo;
-        StereoMode      _stereoMode;
-        float           _eyeSeperation;
-        float           _screenDistance;
-        float           _screenHeight;
-    
-        bool            _doubleBuffer;
-        bool            _RGB;
-        bool            _depthBuffer;
-        unsigned int    _minimumNumberAlphaBits;
-        unsigned int    _minimumNumberStencilBits;
+        bool                            _stereo;
+        StereoMode                      _stereoMode;
+        float                           _eyeSeperation;
+        float                           _screenDistance;
+        float                           _screenHeight;
 
-        int             _maxNumOfGraphicsContexts;
+        SplitStereoHorizontalEyeMapping _splitStereoHorizontalEyeMapping;
+        int                             _splitStereoHorizontalSeperation;
+        SplitStereoVerticalEyeMapping   _splitStereoVerticalEyeMapping;
+        int                             _splitStereoVerticalSeperation;
+    
+        bool                            _doubleBuffer;
+        bool                            _RGB;
+        bool                            _depthBuffer;
+        unsigned int                    _minimumNumberAlphaBits;
+        unsigned int                    _minimumNumberStencilBits;
+
+        int                             _maxNumOfGraphicsContexts;
 
 };
 

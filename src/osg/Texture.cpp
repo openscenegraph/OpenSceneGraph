@@ -331,7 +331,7 @@ void Texture::applyTexImage(GLenum target, Image* image, State& state) const
 
 
     if (_subloadMode == OFF)
-        image->ensureDimensionsArePowerOfTwo();
+        image->ensureValidSizeForTexturing();
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->packing());
     

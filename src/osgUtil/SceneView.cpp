@@ -440,43 +440,68 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
             {
-                int left_half = _viewport->width()/2;
-                int right_half = _viewport->width()-left_half;
-                
+                int seperation = _displaySettings->getSplitStereoHorizontalSeperation();
 
-                // draw left eye.
+                int left_half_width = (_viewport->width()-seperation)/2;
+                int right_half_begin = (_viewport->width()+seperation)/2;
+                int right_half_width = _viewport->width()-right_half_begin;
+
                 osg::ref_ptr<osg::Viewport> viewportLeft = osgNew osg::Viewport;
-                viewportLeft->setViewport(_viewport->x(),_viewport->y(),left_half,_viewport->height());
-                _renderStageLeft->setViewport(viewportLeft.get());
-                drawStage(_renderStageLeft.get());
+                viewportLeft->setViewport(_viewport->x(),_viewport->y(),left_half_width,_viewport->height());
 
-                // draw right eye.
                 osg::ref_ptr<osg::Viewport> viewportRight = osgNew osg::Viewport;
-                viewportRight->setViewport(_viewport->x()+left_half,_viewport->y(),right_half,_viewport->height());
-                _renderStageRight->setViewport(viewportRight.get());
-                drawStage(_renderStageRight.get());
+                viewportRight->setViewport(_viewport->x()+right_half_begin,_viewport->y(),right_half_width,_viewport->height());
+
+                if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
+                {
+                    _renderStageLeft->setViewport(viewportLeft.get());
+                    drawStage(_renderStageLeft.get());
+
+                    _renderStageRight->setViewport(viewportRight.get());
+                    drawStage(_renderStageRight.get());
+                }
+                else
+                {
+                    _renderStageLeft->setViewport(viewportRight.get());
+                    drawStage(_renderStageLeft.get());
+
+                    _renderStageRight->setViewport(viewportLeft.get());
+                    drawStage(_renderStageRight.get());
+                }
 
             }
             break;
         case(osg::DisplaySettings::VERTICAL_SPLIT):
             {
-                int bottom_half = _viewport->height()/2;
-                int top_half = _viewport->height()-bottom_half;
 
-                // draw left eye.
-                // assume left eye at top, this could be implementation dependant...
-                osg::ref_ptr<osg::Viewport> viewportLeft = osgNew osg::Viewport;
-                viewportLeft->setViewport(_viewport->x(),_viewport->y()+bottom_half,_viewport->width(),top_half);
-                _renderStageLeft->setViewport(viewportLeft.get());
-                drawStage(_renderStageLeft.get());
+                int seperation = _displaySettings->getSplitStereoVerticalSeperation();
 
-                // draw right eye.
-                // assume right eye at top, this could be implementation dependant...
-                osg::ref_ptr<osg::Viewport> viewportRight = osgNew osg::Viewport;
-                viewportRight->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half);
-                _renderStageRight->setViewport(viewportRight.get());
-                drawStage(_renderStageRight.get());
+                int bottom_half_height = (_viewport->height()-seperation)/2;
+                int top_half_begin = (_viewport->height()+seperation)/2;
+                int top_half_height = _viewport->height()-top_half_begin;
 
+                osg::ref_ptr<osg::Viewport> viewportTop = osgNew osg::Viewport;
+                viewportTop->setViewport(_viewport->x(),_viewport->y()+top_half_begin,_viewport->width(),top_half_height);
+
+                osg::ref_ptr<osg::Viewport> viewportBottom = osgNew osg::Viewport;
+                viewportBottom->setViewport(_viewport->x(),_viewport->y(),_viewport->width(),bottom_half_height);
+
+                if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
+                {
+                    _renderStageLeft->setViewport(viewportTop.get());
+                    drawStage(_renderStageLeft.get());
+
+                    _renderStageRight->setViewport(viewportBottom.get());
+                    drawStage(_renderStageRight.get());
+                }
+                else
+                {
+                    _renderStageLeft->setViewport(viewportBottom.get());
+                    drawStage(_renderStageLeft.get());
+
+                    _renderStageRight->setViewport(viewportTop.get());
+                    drawStage(_renderStageRight.get());
+                }
             }
             break;
         default:

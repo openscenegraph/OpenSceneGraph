@@ -49,6 +49,12 @@ void DisplaySettings::copy(const DisplaySettings& vs)
     _screenDistance = vs._screenDistance;
     _screenHeight = vs._screenHeight;
 
+    _splitStereoHorizontalEyeMapping = vs._splitStereoHorizontalEyeMapping;
+    _splitStereoHorizontalSeperation = vs._splitStereoHorizontalSeperation;
+
+    _splitStereoVerticalEyeMapping = vs._splitStereoVerticalEyeMapping;
+    _splitStereoVerticalSeperation = vs._splitStereoVerticalSeperation;
+
     _doubleBuffer = vs._doubleBuffer;
     _RGB = vs._RGB;
     _depthBuffer = vs._depthBuffer;
@@ -79,6 +85,12 @@ void DisplaySettings::setDefaults()
     _eyeSeperation = 0.05f;
     _screenDistance = 0.5f;
     _screenHeight = 0.26f;
+
+    _splitStereoHorizontalEyeMapping = LEFT_EYE_LEFT_VIEWPORT;
+    _splitStereoHorizontalSeperation = 42;
+
+    _splitStereoVerticalEyeMapping = LEFT_EYE_TOP_VIEWPORT;
+    _splitStereoVerticalSeperation = 42;
 
     _doubleBuffer = true;
     _RGB = true;
@@ -145,6 +157,43 @@ void DisplaySettings::readEnvironmentalVariables()
     if( (ptr = getenv("OSG_SCREEN_HEIGHT")) != 0)
     {
         _screenHeight = atof(ptr);
+    }
+
+    if( (ptr = getenv("OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING")) != 0)
+    {
+        if (strcmp(ptr,"LEFT_EYE_LEFT_VIEWPORT")==0)
+        {
+            _splitStereoHorizontalEyeMapping = LEFT_EYE_LEFT_VIEWPORT;
+        }
+        else
+        if (strcmp(ptr,"LEFT_EYE_RIGHT_VIEWPORT")==0)
+        {
+            _splitStereoHorizontalEyeMapping = LEFT_EYE_RIGHT_VIEWPORT;
+        }
+    }
+
+    if( (ptr = getenv("OSG_SPLIT_STEREO_HORIZONTAL_SEPERATION")) != 0)
+    {
+        _splitStereoHorizontalSeperation = atoi(ptr);
+    }
+
+
+    if( (ptr = getenv("OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING")) != 0)
+    {
+        if (strcmp(ptr,"LEFT_EYE_TOP_VIEWPORT")==0)
+        {
+            _splitStereoVerticalEyeMapping = LEFT_EYE_TOP_VIEWPORT;
+        }
+        else
+        if (strcmp(ptr,"LEFT_EYE_BOTTOM_VIEWPORT")==0)
+        {
+            _splitStereoVerticalEyeMapping = LEFT_EYE_BOTTOM_VIEWPORT;
+        }
+    }
+
+    if( (ptr = getenv("OSG_SPLIT_STEREO_VERTICAL_SEPERATION")) != 0)
+    {
+        _splitStereoVerticalSeperation = atoi(ptr);
     }
 
     if( (ptr = getenv("OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS")) != 0)

@@ -1,6 +1,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osg/Quat>
 #include <osg/Notify>
+#include <osg/BoundsChecking>
 
 using namespace osg;
 using namespace osgGA;
@@ -12,6 +13,7 @@ TrackballManipulator::TrackballManipulator()
     _thrown = false;
 
     _distance = 1.0f;
+    _trackballSize = 0.8f;
 }
 
 
@@ -230,7 +232,10 @@ bool TrackballManipulator::calcMovement()
 
 
     // return if there is no movement.
-    if (dx==0 && dy==0) return false;
+    if (dx==0.0f && dy==0.0f)
+    {
+        return false;
+    }
 
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
@@ -319,7 +324,11 @@ bool TrackballManipulator::calcMovement()
  * simple example, though, so that is left as an Exercise for the
  * Programmer.
  */
-const float TRACKBALLSIZE = 0.8f;
+void TrackballManipulator::setTrackballSize(float size)
+{
+    _trackballSize = size;
+     osg::clampBetweenRange(_trackballSize,0.1f,1.0f,"TrackballManipulator::setTrackballSize(float)");
+}
 
 /*
  * Ok, simulate a track-ball.  Project the points onto the virtual
@@ -347,8 +356,8 @@ void TrackballManipulator::trackball(osg::Vec3& axis,float& angle, float p1x, fl
     osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f)*rotation_matrix;
     osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f)*rotation_matrix;
 
-    osg::Vec3 p1 = sv*p1x+uv*p1y-lv*tb_project_to_sphere(TRACKBALLSIZE,p1x,p1y);
-    osg::Vec3 p2 = sv*p2x+uv*p2y-lv*tb_project_to_sphere(TRACKBALLSIZE,p2x,p2y);
+    osg::Vec3 p1 = sv * p1x + uv * p1y - lv * tb_project_to_sphere(_trackballSize, p1x, p1y);
+    osg::Vec3 p2 = sv * p2x + uv * p2y - lv * tb_project_to_sphere(_trackballSize, p2x, p2y);
 
     /*
      *  Now, we want the cross product of P1 and P2
@@ -366,7 +375,7 @@ axis = p2^p1;
     /*
      *  Figure out how much to rotate around that axis.
      */
-    float t = (p2-p1).length() / (2.0*TRACKBALLSIZE);
+    float t = (p2 - p1).length() / (2.0 * _trackballSize);
 
     /*
      * Avoid problems with out-of-control values...

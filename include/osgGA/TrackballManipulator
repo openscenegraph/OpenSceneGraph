@@ -77,6 +77,12 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
+        /** Set the size of the trackball. */
+        void setTrackballSize(float size);
+
+        /** Get the size of the trackball. */
+        float getTrackballSize() const { return _trackballSize; }
+
     protected:
 
         virtual ~TrackballManipulator();
@@ -114,6 +120,7 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         osg::Vec3d   _center;
         osg::Quat    _rotation;
         double       _distance;
+        float        _trackballSize;
 
 };
 

@@ -8,62 +8,98 @@ OSG News (most significant items from ChangeLog)
     >>> loader and ARB_fragment_program and ARB_vertex_buffer_object extensions,
     >>> improvements to the Terrex .txp and OpenFlight .flt loaders.
 
-    The most signicifant feature of the 0.9.5 release is the combination of native
-    constant frame rate database paging support, providived by the new osg::PageLOD and 
-    osgDB::DatabasePager classes,  and the new native .ive binary plugin which supports 
+    The key new features of the 0.9.5 release are the new OpenGL2.0 nodekit, constant frame rate 
+    database paging support,  classes,  and the new native .ive binary plugin which supports 
     both reading and writing of all core osg nodes, including inlining of compressed 
     and non compressed imagery. 
     
-    The native database paging support achieves constant frame rate through threading 
-    of the database reading, and time based incremental compile and delete of display 
-    lists, vertex_buffer_objects and texture objects. A new TextureObjectManager class
-    also caches a list of expired texture objects for reuse, and allows new newly loading
-    imagery to reuse expired texture objects, with the imagery automatically subloaded
-    to the reused texture objects.  This reuse happens transparently and benifits other
-    OSG usages such as the OSG's Terrapage loader.
+    The native database paging support,providived by the new osg::PageLOD and osgDB::DatabasePager,
+    achieves constant frame rate through threading of the database reading, and time based 
+    incremental compile and delete of display lists, vertex_buffer_objects and texture objects. 
+    A new TextureObjectManager class also caches a list of expired texture objects for reuse, 
+    and allows new newly loading imagery to reuse expired texture objects, with the imagery 
+    automatically subloaded to the reused texture objects.  This reuse happens transparently 
+    and benifits other OSG usages such as the OSG's Terrapage loader.
     
-    The new .ive binary plugin was developed by Uni-C's VR-Center, and kindly
-    submitted as open source, adds support for binary reading and writing OSG nodes
-    drawable and state (including compressed/mipmapped) textures.  The .ive
-    format produces a much faster load time and smaller file size then .osg 
+    To provide support multi-thread operation of the OSG, such as multi-thread database paging
+    and multi-threaded, multi-window graphics enabled by OpenProducer, the OpenSceneGraph and
+    OpenProducer have now adopted the OpenThreads threading library, osgDB and osgProducer now
+    depend upon it.  OpenThreads is open source, light weight, cross platform C++ threading 
+    which encapsulates the low level, platform specific threading API calls.  Currently pthreads
+    under Unix and Win32 threads under Windows are supported, with Sgi Sprock threads to be 
+    released very soon.  The OpenThreads project website can be found at http://openthreads.sf.net.    
+
+    The new .ive binary plugin was developed by Uni-C's VR-Center, and kindly submitted as 
+    open source, adds support for binary reading and writing OSG nodes drawable and state 
+    (including compressed/mipmapped) textures.  The .ive format produces a much faster 
+    load times and smaller file size then native ASCII .osg format. Load times for .ive 
+    files are also 10-20x faster then equivilant OpenFlight .flt and load in an already 
+    optimised scene graph form making it much more suitable for paging.  Files can be 
+    converted easily using the osgconv utility : osgconv myfile.flt myfile.ive
     
-    New osgGL2 library
+    The new osgGL2 nodekit library adds support for the OpenGL2.0 vertex ProgramObect and fragment 
+    ShaderObject's recently ratified by the OpenGL ARB, . The osgGL2 uses the extension have local
+    prototypes which allow them to be compiled even in the absence of OpenGL headers that don't
+    support the GL2 extension, allowing to port to all platform, and at runtime the extensions are
+    querried for and used if available.  At time of release only 3DLabs WildcatVP series supported
+    this extension at runtime, but other graphics cards and manufactures will be releasing GL2
+    extension very soon and will be automatically supported by osgGL2. The osgGL2 was developed
+    by Mike Weiblen at 3DLabs whomn have kindly submitted osgGL2 as open source and for inclusion
+    with the OSG distribution.  
 
-    Adoption of OpenThreads for cross platform threading support.
+    The ARB_fragment_program, ARB_vertex_buffer_object and ARB_vertex_program attributes are
+    also now supported in core osg library.  The new osg::FragmentProgram state attribute
+    encapsulates the ARB_fragment_program which is supported by the recent graphics cards
+    from NVidia, ATI and 3DLabs.  Support for ARB_vertex_buffer_object and ARB_vertex_program 
+    attributes have been added to the osg::Geometry class.  The ARB_vertex_buffer_object extension
+    can boost peformance by as much as 50% when working on geometry bound data sets.
 
-    New osg::PagedLOD + osgDB::DatabasePager support for native, 
-    constant framerate database paging.
+    Two new image loaders, dds and pnm, and a 3dc point cloud have been added. The .dds plugin
+    adds support for compressed & mipped mapped imagery, making it ideal for applications where 
+    large texture sizes or database paging is required. The pnm image loader reads the
+    pnm, pgm and pbm image formats. See http://netghost.narod.ru/gff/vendspec/pbm/ for details.
 
-    New native IVE binary format.
+    The Terrapage .txp plugin  been updated to include support for multi-texturing, layers and billboards 
+    and includes improvements to multi-threaded pager, which has also been ported over to use OpenThreads.
+    The OpenFlight .flt plugin has also been improved and now support detail textures via multi-texturing.
 
-    Support for ARB_fragment_program
+    TessellationHints now supported by ShapeDrawable which allow the shape primitives to be rendered
+    are vary levels of detail.
+
+    Supported has been added for auto scaling and rotating text into osgText.
+
+    Five new examples have been included in the distribution:
     
-    Support for ARB_vertex_buffer_object
+    	osgtexturerectangle illustrates how to use the osg::TextureRectangle which encapsulates 
+	the NV_texture_rectangle extension.
+	
+     	osgprerendercubemap illustrates how to use pre rendering imagery to osg::TextureCubeMap
+	for tasks such as building a environmental texture maps.
+	
+	slideshow3D is a presentation tool which use a scene graph to store a render set of slides, each 
+	slide containing layers which can contain bullet points, paragraph, imagergy and 3d animated
+	models - and is effictively a 3D powerpoint. The presentations can be built seperately and stored in a .osg file or created by
+	slideshow3D via an xml file, two examples - introduction.xml and models.xml, which are included 
+	in the OpenSceneGraph-Data-0.9.5 data distribution.  slideshow3D depends upon libxml2 for parsing
+	the xml files.
+	
+	osgpoints uses the osg::Point state attribute to attenuate and control point size and any points
+	loaded by the application.  This is a useful way of visualizing point data clouds.
+	
+	osgdemeter is example of how to integrate the Demeter, OSG using osgProducer::Viewer as a viewer
+	class.  This example depends upon the demeter terrain engine, which can be download from 
+	http://www.terrainengine.com.
 
-    Support for vertex attributes in osg::Geometry.
-
-    New 3dc points data cloud loader.
-    
-    New dds image loader.
-    
-    New pnm image loader.
-
-    TessellationHints now supported by ShapeDrawable.
-
-    Supported added for auto scaling and rotating text + performance improvements.
-
-    New examples - osgtexturerectangle, osgprerendercubemap, slideshow3D, osgpoints, osgdemeter.
-
-    Support added for Open Flight detail textures via multi-texturing.
-    
-    Addition of camera style convince set and get methods to osgUtil::SceneView, consolidating
+    Camera style convince set and get methods to osgUtil::SceneView, consolidating
     previous functionality that was provided by both osg::SceneView and osg::Camara into one place.
     This move has made osg::Camera redundent so has it been removed to avoid confusion, 
     usage inconsistencies and bloat of core libraries.
     
-    Removal of the long time deprecated osg::GeoSet, osgconv still has a copy of GeoSet and the
-    .osg support for so is able to convert any remaining .osg database which contained GeoSet's.
+    The long time deprecated osg::GeoSet has been removed, to aid migration of old .osg datasets 
+    osgconv has a copy of GeoSet and the .osg support for it so is able to convert any remaining 
+    .osg database which contained GeoSet's.
 
+    
 
 28th April 2003  - OpenSceneGraph-0.9.4-2
 

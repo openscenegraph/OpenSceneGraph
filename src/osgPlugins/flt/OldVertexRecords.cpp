@@ -38,7 +38,7 @@ void OldVertexRecord::endian()
 }
 
 // virtual
-bool OldVertexRecord::readLocalData(Input& fr)
+bool OldVertexRecord::readLocalData(Input&)
 {
     return true;
 }
@@ -87,7 +87,7 @@ void OldVertexColorRecord::endian()
 
 
 // virtual
-bool OldVertexColorRecord::readLocalData(Input& fr)
+bool OldVertexColorRecord::readLocalData(Input&)
 {
     return true;
 }
@@ -140,7 +140,7 @@ void OldVertexColorNormalRecord::endian()
 
 
 // virtual
-bool OldVertexColorNormalRecord::readLocalData(Input& fr)
+bool OldVertexColorNormalRecord::readLocalData(Input&)
 {
     return true;
 }

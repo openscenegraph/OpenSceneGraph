@@ -156,7 +156,7 @@ bool PrimNodeRecord::readExtensionLevel(Input& fr)
     int extensionState = 1;
     Record* pRec;
 
-    while (pRec=fr.readCreateRecord(_pFltFile))
+    while ((pRec=fr.readCreateRecord(_pFltFile)))
     {
         if (pRec->isOfType(PUSH_EXTENSION_OP))
         {

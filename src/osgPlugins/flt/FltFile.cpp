@@ -63,8 +63,8 @@ FltFile::FltFile(
         setMaterialPool( new MaterialPool );
     }
 
-	// instances are always internally defined 
-	setInstancePool( new InstancePool );
+    // instances are always internally defined 
+    setInstancePool( new InstancePool );
 }
 
 
@@ -88,7 +88,7 @@ osg::Node* FltFile::readNode(const std::string& fileName)
 }
 
 
-osg::Node* FltFile::convert()
+osg::Group* FltFile::convert()
 {
     ConvertFromFLT visit;
     return visit.convert(getHeaderRecord());

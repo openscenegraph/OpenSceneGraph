@@ -3,7 +3,7 @@
 #ifndef __FLT_FILE_H
 #define __FLT_FILE_H
 
-#include <osg/Node>
+#include <osg/Group>
 
 #include <map>
 #include <string>
@@ -27,7 +27,7 @@ class FltFile : public osg::Referenced
 
         virtual osg::Object* readObject(const std::string& fileName);
         virtual osg::Node* readNode(const std::string& fileName);
-        osg::Node* convert();
+        osg::Group* convert();
         bool readModel(const std::string& fileName);
 
         ColorPool*      getColorPool()      { return _colorPool.get(); }

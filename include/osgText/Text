@@ -97,8 +97,8 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         Font* getFont() { return _font.get(); }
         const Font* getFont() const { return _font.get(); }
 
-        void setText(const char* text)    { _text=text; }
-        void setText(const std::string& text) { _text=text; }
+        void setText(const char* text)    { _text=text; _initAlignment=false; }
+        void setText(const std::string& text) { _text=text; _initAlignment=false; }
         const std::string& getText() const { return _text; }
 
         virtual void drawImmediateMode(osg::State& state);

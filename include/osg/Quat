@@ -86,6 +86,10 @@ class SG_EXPORT Quat
         inline float z() const { return _fv[2]; }
         inline float w() const { return _fv[3]; }
 
+    	/** return true if the Quat represents a zero rotation, and therefore can be ignored in computations.*/
+    	bool zeroRotation() const { return _fv[0]==0.0f && _fv[1]==0.0f && _fv[2]==0.0f && _fv[3]==1.0f; } 
+
+
      /* ------------------------------------------------------------- 
 	 		  BASIC ARITHMETIC METHODS		    
 	Implemented in terms of Vec4s.  Some Vec4 operators, e.g.

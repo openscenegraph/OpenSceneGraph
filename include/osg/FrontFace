@@ -43,7 +43,7 @@ class SG_EXPORT FrontFace : public StateAttribute
             COUNTER_CLOCKWISE = GL_CCW
         };
     
-        inline void setMode(const Mode mode) { _mode = mode; }
+        inline void setMode(Mode mode) { _mode = mode; }
         inline const Mode getMode() const    { return _mode; }
     
         virtual void apply(State& state) const;

@@ -47,7 +47,7 @@ class SG_EXPORT Camera: public osg::Referenced
 
         /** Get the projection type set by setOtho,setOtho2D,setFrustum,
           * and set perspective methods.*/
-        const ProjectionType getProjectionType() const { return _projectionType; }
+        ProjectionType getProjectionType() const { return _projectionType; }
 
         /** Set a orthographic projection. See glOrtho for further details.*/
         void setOrtho(double left, double right,
@@ -87,11 +87,11 @@ class SG_EXPORT Camera: public osg::Referenced
         
         /** Set the way that the vertical or horizontal dimensions of the window
           * are adjusted on a resize. */
-        void setAdjustAspectRatioMode(const AdjustAspectRatioMode aam) { _adjustAspectRatioMode = aam; }
+        void setAdjustAspectRatioMode(AdjustAspectRatioMode aam) { _adjustAspectRatioMode = aam; }
         
         /** Get the way that the vertical or horizontal dimensions of the window
           * are adjusted on a resize. */
-        const AdjustAspectRatioMode getAdjustAspectRatioMode() const { return _adjustAspectRatioMode; }
+        AdjustAspectRatioMode getAdjustAspectRatioMode() const { return _adjustAspectRatioMode; }
 
         /** Adjust the clipping planes to account for a new window aspect ratio.
           * Typically used after resizing a window. Aspect ratio is defined as
@@ -104,7 +104,7 @@ class SG_EXPORT Camera: public osg::Referenced
         /** Adjust the clipping planes to account for a new window aspect ratio.
           * Typicall used after resizeing a window. Aspect ratio is defined as
           * width/height.*/
-        void adjustAspectRatio(double newAspectRatio, const AdjustAspectRatioMode aa);
+        void adjustAspectRatio(double newAspectRatio, AdjustAspectRatioMode aa);
 
         double left() const { return _left; }
         double right() const { return _right; }
@@ -139,7 +139,7 @@ class SG_EXPORT Camera: public osg::Referenced
             USE_EYE_CENTER_AND_UP
         };
         
-        const LookAtType getLookAtType() const { return _lookAtType; }
+        LookAtType getLookAtType() const { return _lookAtType; }
 
         /**
          * hardwired home view for now, looking straight down the
@@ -217,11 +217,11 @@ class SG_EXPORT Camera: public osg::Referenced
           * basic LookAt values.
           * note: Camera internals maintains the both EYE_TO_MODEL and MODEL_TO_EYE
           * internally and ensures that they are the inverse of one another.*/
-        void attachTransform(const TransformMode mode, Matrix* modelTransform=0);
+        void attachTransform(TransformMode mode, Matrix* modelTransform=0);
 
-        Matrix* getTransform(const TransformMode mode);
+        Matrix* getTransform(TransformMode mode);
         
-        const Matrix* getTransform(const TransformMode mode) const;
+        const Matrix* getTransform(TransformMode mode) const;
 
         
         

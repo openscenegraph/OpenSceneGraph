@@ -13,21 +13,13 @@ class OSGDB_EXPORT ParameterOutput
 {
     public:
     
-        ParameterOutput(Output& fw):
-            _fw(fw),
-            _numItemsPerLine(fw.getNumIndicesPerLine()),
-            _column(0) {}
+        ParameterOutput(Output& fw);
             
-        ParameterOutput(Output& fw,int numItemsPerLine):
-            _fw(fw),
-            _numItemsPerLine(numItemsPerLine),
-            _column(0) {}
+        ParameterOutput(Output& fw,int numItemsPerLine);
     
-        void begin()
-        {
-            _fw.indent() << "{"<<std::endl;
-            _fw.moveIn();
-        }
+        void begin();
+        void newLine();
+        void end();
     
         template<class T>
         void write(const T& t)
@@ -73,19 +65,8 @@ class OSGDB_EXPORT ParameterOutput
 
         }
         
-        void newLine()
-        {
-            if (_column!=0) _fw << std::endl;
-            _column = 0;
-        }
-
-        void end()
-        {
-            if (_column!=0) _fw << std::endl;
-            _fw.moveOut();
-            _fw.indent() << "}"<<std::endl;
-            _column = 0;
-        }
+        
+    protected:
     
         Output& _fw;
         int     _numItemsPerLine;

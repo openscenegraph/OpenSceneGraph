@@ -537,6 +537,7 @@ void SceneView::draw()
     // context for when the object were originally created.  Here we know what
     // context we are in so can flush the appropriate caches.
     osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
+    osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID());
     osg::Texture::flushDeletedTextureObjects(_state->getContextID());
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID());
 

@@ -23,7 +23,6 @@
 
 namespace osg {
 
-
 class SG_EXPORT Geometry : public Drawable
 {
     public:
@@ -51,52 +50,71 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-        void setVertexArray(Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound(); }
+        template<typename T>
+        struct AttributeData
+        {
+            AttributeData():
+                _normalize(GL_FALSE),
+                _binding(BIND_OFF),
+                _offset(0) {}
+        
+            ref_ptr<T>                      _array;
+            ref_ptr<IndexArray>             _indices;
+            AttributeBinding                _binding;
+    
+            // only used in vertex attributes            
+            GLboolean                       _normalize;
+
+            unsigned int                    _offset;
+        };
+
+
+        void setVertexArray(Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound();     }
         Array* getVertexArray() { return _vertexArray.get(); }
         const Array* getVertexArray() const  { return _vertexArray.get(); }
 
-        void setVertexIndices(IndexArray* array) { _vertexIndices = array; _fastPathComputed=false; dirtyDisplayList(); dirtyBound(); }
+        void setVertexIndices(IndexArray* array) { _vertexIndices = array; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound(); }
         IndexArray* getVertexIndices() { return _vertexIndices.get(); }
         const IndexArray* getVertexIndices() const  { return _vertexIndices.get(); }
 
 
-        void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; dirtyDisplayList(); _fastPathComputed=false; }
+        void setNormalBinding(AttributeBinding ab) { _normalBinding = ab; dirtyDisplayList(); computeFastPathsUsed(); }
         AttributeBinding getNormalBinding() const { return _normalBinding; }
 
-        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=BIND_OFF; _fastPathComputed=false; dirtyDisplayList(); }
+        void setNormalArray(Vec3Array* array) { _normalArray = array; if (!_normalArray.valid()) _normalBinding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
         Vec3Array* getNormalArray() { return _normalArray.get(); }
         const Vec3Array* getNormalArray() const { return _normalArray.get(); }
 
-        void setNormalIndices(IndexArray* array) { _normalIndices = array; _fastPathComputed=false; dirtyDisplayList(); }
+        void setNormalIndices(IndexArray* array) { _normalIndices = array; computeFastPathsUsed(); dirtyDisplayList(); }
         IndexArray* getNormalIndices() { return _normalIndices.get(); }
         const IndexArray* getNormalIndices() const { return _normalIndices.get(); }
 
 
-        void setColorBinding(AttributeBinding ab) { _colorBinding = ab; _fastPathComputed=false;}
+        void setColorBinding(AttributeBinding ab) { _colorBinding = ab; computeFastPathsUsed();}
         AttributeBinding getColorBinding() const { return _colorBinding; }
 
-        void setColorArray(Array* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; _fastPathComputed=false; dirtyDisplayList(); }
+        void setColorArray(Array* array) { _colorArray = array;  if (!_colorArray.valid()) _colorBinding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
         Array* getColorArray() { return _colorArray.get(); }
         const Array* getColorArray() const { return _colorArray.get(); }
 
-        void setColorIndices(IndexArray* array) { _colorIndices = array;  _fastPathComputed=false; dirtyDisplayList(); }
+        void setColorIndices(IndexArray* array) { _colorIndices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
         IndexArray* getColorIndices() { return _colorIndices.get(); }
         const IndexArray* getColorIndices() const { return _colorIndices.get(); }
 
 
-        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorBinding = ab; _fastPathComputed=false;}
+        void setSecondaryColorBinding(AttributeBinding ab) { _secondaryColorBinding = ab; computeFastPathsUsed();}
         AttributeBinding getSecondaryColorBinding() const { return _secondaryColorBinding; }
 
-        void setSecondaryColorArray(Array* array) { _secondaryColorArray = array;  if (!_secondaryColorArray.valid()) _secondaryColorBinding=BIND_OFF; _fastPathComputed=false; dirtyDisplayList(); }
+        void setSecondaryColorArray(Array* array) { _secondaryColorArray = array;  if (!_secondaryColorArray.valid()) _secondaryColorBinding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
         Array* getSecondaryColorArray() { return _secondaryColorArray.get(); }
         const Array* getSecondaryColorArray() const { return _secondaryColorArray.get(); }
 
-        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorIndices = array;  _fastPathComputed=false; dirtyDisplayList(); }
+        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorIndices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
         IndexArray* getSecondaryColorIndices() { return _secondaryColorIndices.get(); }
         const IndexArray* getSecondaryColorIndices() const { return _secondaryColorIndices.get(); }
 
 
-        void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; _fastPathComputed=false;}
+        void setFogCoordBinding(AttributeBinding ab) { _fogCoordBinding = ab; computeFastPathsUsed();}
         AttributeBinding getFogCoordBinding() const { return _fogCoordBinding; }
 
         void setFogCoordArray(Array* array) { _fogCoordArray = array; if (!_fogCoordArray.valid()) _fogCoordBinding=BIND_OFF; dirtyDisplayList(); }
@@ -109,9 +127,29 @@ class SG_EXPORT Geometry : public Drawable
         const IndexArray* getFogCoordIndices() const { return _fogCoordIndices.get(); }
 
 
+        struct ArrayPair
+        {
+            ArrayPair():
+                offset(0) {}
+                
+            ArrayPair(const ArrayPair& rhs):
+                first(rhs.first),
+                second(rhs.second),
+                offset(rhs.offset) {}
 
-        typedef std::pair< ref_ptr<Array>, ref_ptr<IndexArray> >  TexCoordArrayPair;
-        typedef std::vector< TexCoordArrayPair >  TexCoordArrayList;
+            ArrayPair& operator = (const ArrayPair& rhs)
+            {
+                first = rhs.first;
+                second = rhs.second;
+                offset = rhs.offset;
+                return *this;
+            }
+
+            ref_ptr<Array>          first;
+            ref_ptr<IndexArray>     second;
+            mutable unsigned int    offset;
+        };
+        typedef std::vector< ArrayPair >  TexCoordArrayList;
 
 
         void setTexCoordArray(unsigned int unit,Array*);
@@ -143,17 +181,6 @@ class SG_EXPORT Geometry : public Drawable
         void setBinding(AttributeType type,AttributeBinding binding);
         AttributeBinding getBinding(AttributeType type) const;
         
-        struct AttributeData
-        {
-            AttributeData():
-                _normalize(GL_FALSE),
-                _binding(BIND_OFF) {}
-        
-            ref_ptr<Array>          _array;
-            ref_ptr<IndexArray>     _indices;
-            GLboolean               _normalize;
-            AttributeBinding        _binding;
-        };
         
         unsigned int getNumArrays() const { return _attributeList.size(); }
         
@@ -171,8 +198,7 @@ class SG_EXPORT Geometry : public Drawable
         
 #endif
 
-        typedef std::pair< ref_ptr<Array>, ref_ptr<IndexArray> > VertexAttribArrayPair;
-        typedef std::pair< GLboolean, VertexAttribArrayPair > VertexAttribNormArrayPair;
+        typedef std::pair< GLboolean, ArrayPair > VertexAttribNormArrayPair;
         typedef std::vector< VertexAttribNormArrayPair > VertexAttribArrayList;
         typedef std::vector< AttributeBinding > VertexAttribBindingList;
 
@@ -225,7 +251,9 @@ class SG_EXPORT Geometry : public Drawable
           * Fast paths use vertex arrays, and glDrawArrays/glDrawElements.  Slow paths
           * use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed
           * arrays will drop the rendering path off the fast path.*/
-        bool areFastPathsUsed() const;
+        inline bool areFastPathsUsed() const { return _fastPath; }
+
+        bool computeFastPathsUsed();
 
 
         bool verifyBindings() const;
@@ -256,103 +284,6 @@ class SG_EXPORT Geometry : public Drawable
         /** accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has.*/
         virtual void accept(PrimitiveFunctor& pf) const;
 
-        /** Extensions class which encapsulates the querring of extensions and
-        * associated function pointers, and provide convinience wrappers to 
-        * check for the extensions or use the associated functions.*/        
-        class SG_EXPORT Extensions : public osg::Referenced
-        {
-        public:
-            Extensions();
-
-            Extensions(const Extensions& rhs);
-
-            void lowestCommonDenominator(const Extensions& rhs);
-
-            void setupGLExtenions();
-
-            void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
-            bool isVertexProgramSupported() const { return _isVertexProgramSupported; }
-
-            void setSecondaryColorSupported(bool flag) { _isSecondaryColorSupported=flag; }
-            bool isSecondaryColorSupported() const { return _isSecondaryColorSupported; }
-
-            void setFogCoordSupported(bool flag) { _isFogCoordSupported=flag; }
-            bool isFogCoordSupported() const { return _isFogCoordSupported; }
-
-            void setMultiTexSupported(bool flag) { _isMultiTexSupported=flag; }
-            bool isMultiTexSupported() const { return _isMultiTexSupported; }
-
-            void glSecondaryColor3ubv(const GLubyte* coord) const;
-            void glSecondaryColor3fv(const GLfloat* coord) const;
-
-            void glFogCoordfv(const GLfloat* coord) const;
-
-            void glMultiTexCoord1f(GLenum target,GLfloat coord) const;
-            void glMultiTexCoord2fv(GLenum target,const GLfloat* coord) const;
-            void glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const;
-            void glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const;
-
-            void glVertexAttrib1s(unsigned int index, GLshort s) const;
-            void glVertexAttrib1f(unsigned int index, GLfloat f) const;
-            void glVertexAttrib2fv(unsigned int index, const GLfloat * v) const;
-            void glVertexAttrib3fv(unsigned int index, const GLfloat * v) const;
-            void glVertexAttrib4fv(unsigned int index, const GLfloat * v) const;
-            void glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const;
-            void glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const;
-
-        protected:
-
-            typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
-
-            typedef void (APIENTRY * VertexAttrib1sProc) (unsigned int index, GLshort s);
-            typedef void (APIENTRY * VertexAttrib1fProc) (unsigned int index, GLfloat f);
-            typedef void (APIENTRY * VertexAttribfvProc) (unsigned int index, const GLfloat * v);
-            typedef void (APIENTRY * VertexAttribubvProc) (unsigned int index, const GLubyte * v);
-
-            typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
-            typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
-
-            typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
-            typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
-
-            ~Extensions() {}
-
-            bool _isVertexProgramSupported;
-            bool _isSecondaryColorSupported;
-            bool _isFogCoordSupported;
-            bool _isMultiTexSupported;
- 
-            FogCoordProc _glFogCoordfv;
-
-            SecondaryColor3ubvProc _glSecondaryColor3ubv;
-            SecondaryColor3fvProc _glSecondaryColor3fv;
-
-            VertexAttrib1sProc _glVertexAttrib1s;
-            VertexAttrib1fProc _glVertexAttrib1f;
-            VertexAttribfvProc _glVertexAttrib2fv;
-            VertexAttribfvProc _glVertexAttrib3fv;
-            VertexAttribfvProc _glVertexAttrib4fv;
-            VertexAttribubvProc _glVertexAttrib4ubv;
-            VertexAttribubvProc _glVertexAttrib4Nubv;
-
-            MultiTexCoord1fProc _glMultiTexCoord1f;
-            MultiTexCoordfvProc _glMultiTexCoord2fv;
-            MultiTexCoordfvProc _glMultiTexCoord3fv;
-            MultiTexCoordfvProc _glMultiTexCoord4fv;
-        };
-
-        /** Function to call to get the extension of a specified context.
-        * If the Exentsion object for that context has not yet been created then 
-        * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-        * If 'createIfNotInitalized' is true then the Extensions object is 
-        * automatically created.  However, in this case the extension object 
-        * only be created with the graphics context associated with ContextID..*/
-        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
-
-        /** setExtensions allows users to override the extensions across graphics contexts.
-        * typically used when you have different extensions supported across graphics pipes
-        * but need to ensure that they all use the same low common denominator extensions.*/
-        static void setExtensions(unsigned int contextID,Extensions* extensions);
 
 
     protected:
@@ -368,30 +299,35 @@ class SG_EXPORT Geometry : public Drawable
 #endif
         ref_ptr<Array>                  _vertexArray;
         ref_ptr<IndexArray>             _vertexIndices;
+        mutable unsigned int            _vertexOffset;
 
         mutable AttributeBinding        _normalBinding;
-        ref_ptr<Vec3Array>                  _normalArray;
+        ref_ptr<Vec3Array>              _normalArray;
         ref_ptr<IndexArray>             _normalIndices;
+        mutable unsigned int            _normalOffset;
         
         mutable AttributeBinding        _colorBinding;
         ref_ptr<Array>                  _colorArray;
         ref_ptr<IndexArray>             _colorIndices;
+        mutable unsigned int            _colorOffset;
         
         mutable AttributeBinding        _secondaryColorBinding;
         ref_ptr<Array>                  _secondaryColorArray;
         ref_ptr<IndexArray>             _secondaryColorIndices;
+        mutable unsigned int            _secondaryColorOffset;
 
         mutable AttributeBinding        _fogCoordBinding;
         ref_ptr<Array>                  _fogCoordArray;
         ref_ptr<IndexArray>             _fogCoordIndices;
+        mutable unsigned int            _fogCoordOffset;
         
         TexCoordArrayList               _texCoordList;
         
         VertexAttribArrayList           _vertexAttribList;
         mutable VertexAttribBindingList _vertexAttribBindingList; 
 
-        mutable bool                    _fastPathComputed;
         mutable bool                    _fastPath;
+        
 };
 
 /** Convenience function to be used for creating quad geometry with texture coords.

@@ -32,11 +32,14 @@ State::State()
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
 
-    _isSecondColorSupportResolved = false;
-    _isSecondColorSupported = false;
+    _isSecondaryColorSupportResolved = false;
+    _isSecondaryColorSupported = false;
 
     _isFogCoordSupportResolved = false;
     _isFogCoordSupported = false;
+
+    _isVertexBufferObjectSupportResolved = false;
+    _isVertexBufferObjectSupported = false;
 }
 
 State::~State()
@@ -584,7 +587,7 @@ void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
             _fogArray._enabled = true;
             glEnableClientState(GL_FOG_COORDINATE_ARRAY);
         }
-        if (_fogArray._pointer!=ptr || _fogArray._dirty)
+        //if (_fogArray._pointer!=ptr || _fogArray._dirty)
         {
             _fogArray._pointer=ptr;
             s_glFogCoordPointer( type, stride, ptr );
@@ -608,7 +611,7 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
             _secondaryColorArray._enabled = true;
             glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
         }
-        if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
+        //if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
         {
             _secondaryColorArray._pointer=ptr;
             s_glSecondaryColorPointer( size, type, stride, ptr );
@@ -643,7 +646,7 @@ void State::setVertexAttribPointer( unsigned int index,
             eap._enabled = true;
             s_glEnableVertexAttribArray( index );
         }
-        if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
+        //if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
         {
             s_glVertexAttribPointer( index, size, type, normalized, stride, ptr );
             eap._pointer = ptr;
@@ -697,9 +700,9 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 
 bool State::computeSecondaryColorSupported() const
 {
-    _isSecondColorSupportResolved = true;
-    _isSecondColorSupported = osg::isGLExtensionSupported("GL_EXT_secondary_color");;
-    return _isSecondColorSupported;
+    _isSecondaryColorSupportResolved = true;
+    _isSecondaryColorSupported = osg::isGLExtensionSupported("GL_EXT_secondary_color");
+    return _isSecondaryColorSupported;
 }
 
 bool State::computeFogCoordSupported() const
@@ -707,6 +710,13 @@ bool State::computeFogCoordSupported() const
     _isFogCoordSupportResolved = true;
     _isFogCoordSupported = osg::isGLExtensionSupported("GL_EXT_fog_coord");
     return _isFogCoordSupported;
+}
+
+bool State::computeVertexBufferObjectSupported() const
+{
+    _isVertexBufferObjectSupportResolved = true;
+    _isVertexBufferObjectSupported = osg::isGLExtensionSupported("GL_ARB_vertex_buffer_object");
+    return _isVertexBufferObjectSupported;
 }
 
 bool State::checkGLErrors(const char* str) const

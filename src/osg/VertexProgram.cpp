@@ -45,10 +45,12 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID)
     if (citr!=s_deletedVertexProgramObjectCache.end())
     {
         VertexProgramObjectVector vpObjectSet;
+        vpObjectSet.reserve(1000);
 
         // this swap will transfer the content of and empty citr->second
         // in one quick pointer change.
         vpObjectSet.swap(citr->second);
+
         for(VertexProgramObjectVector::iterator titr=vpObjectSet.begin();
             titr!=vpObjectSet.end();
             ++titr)

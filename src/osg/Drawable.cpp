@@ -18,6 +18,7 @@
 #include <osg/State>
 #include <osg/Notify>
 #include <osg/Node>
+#include <osg/GLExtensions>
 
 #include <algorithm>
 #include <map>
@@ -31,6 +32,7 @@ using namespace osg;
 typedef std::vector<GLuint> DisplayListVector;
 typedef std::map<GLuint,DisplayListVector> DeletedDisplayListCache;
 static DeletedDisplayListCache s_deletedDisplayListCache;
+static DeletedDisplayListCache s_deletedVertexBufferObjectCache;
 
 void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj)
 {
@@ -49,6 +51,7 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID)
     if (citr!=s_deletedDisplayListCache.end())
     {
         DisplayListVector displayListSet;
+        displayListSet.reserve(1000);
         
         // this swap will transfer the content of and empty citr->second
         // in one quick pointer change.
@@ -59,6 +62,40 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID)
                                      ++gitr)
         {
             glDeleteLists(*gitr,1);
+        }
+    }
+}
+
+void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
+{
+    if (globj!=0)
+    {
+        // insert the globj into the cache for the appropriate context.
+        s_deletedVertexBufferObjectCache[contextID].push_back(globj);
+    }
+}
+
+/** flush all the cached display list which need to be deleted
+  * in the OpenGL context related to contextID.*/
+void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID)
+{
+    DeletedDisplayListCache::iterator citr = s_deletedVertexBufferObjectCache.find(contextID);
+    if (citr!=s_deletedVertexBufferObjectCache.end())
+    {
+        const Extensions* extensions = getExtensions(contextID,true);
+
+        DisplayListVector displayListSet;
+        displayListSet.reserve(1000);
+        
+        // this swap will transfer the content of and empty citr->second
+        // in one quick pointer change.
+        displayListSet.swap(citr->second);
+        
+        for(DisplayListVector::iterator gitr=displayListSet.begin();
+                                     gitr!=displayListSet.end();
+                                     ++gitr)
+        {
+            extensions->glDeleteBuffers(1,&(*gitr));
         }
     }
 }
@@ -75,6 +112,9 @@ Drawable::Drawable()
     // dynamic updating of data.
     _supportsDisplayList = true;
     _useDisplayList = true;
+
+    _supportsVertexBufferObjects = false;
+    _useVertexBufferObjects = true;
 }
 
 Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
@@ -86,6 +126,8 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _shape(copyop(drawable._shape.get())),
     _supportsDisplayList(drawable._supportsDisplayList),
     _useDisplayList(drawable._useDisplayList),
+    _supportsVertexBufferObjects(drawable._supportsVertexBufferObjects),
+    _useVertexBufferObjects(drawable._useVertexBufferObjects),
     _drawCallback(drawable._drawCallback),
     _cullCallback(drawable._cullCallback)
 {
@@ -229,6 +271,15 @@ void Drawable::dirtyDisplayList()
             _globjList[i] = 0;
         }
     }
+
+    for(unsigned int i=0;i<_vboList.size();++i)
+    {
+        if (_vboList[i] != 0)
+        {
+            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            _vboList[i] = 0;
+        }
+    }
 }
 
 
@@ -257,14 +308,14 @@ struct ComputeBound : public Drawable::PrimitiveFunctor
 {
         ComputeBound():_vertices(0) {}
         
-        virtual void setVertexArray(unsigned int count,const Vec2* vertices) 
+        virtual void setVertexArray(unsigned int,const Vec2*) 
         {
             notify(WARN)<<"ComputeBound does not support Vec2* vertex arrays"<<std::endl;
         }
 
         virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices = vertices; }
 
-        virtual void setVertexArray(unsigned int count,const Vec4* vertices) 
+        virtual void setVertexArray(unsigned int,const Vec4*) 
         {
             notify(WARN)<<"ComputeBound does not support Vec4* vertex arrays"<<std::endl;
         }
@@ -344,4 +395,346 @@ void Drawable::setBound(const BoundingBox& bb) const
 {
      _bbox = bb;
      _bbox_computed = true;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  Extension support
+//
+
+typedef buffered_value< ref_ptr<Drawable::Extensions> > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
+Drawable::Extensions* Drawable::getExtensions(unsigned int contextID,bool createIfNotInitalized)
+{
+    if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new Drawable::Extensions;
+    return s_extensions[contextID].get();
+}
+
+void Drawable::setExtensions(unsigned int contextID,Extensions* extensions)
+{
+    s_extensions[contextID] = extensions;
+}
+
+Drawable::Extensions::Extensions()
+{
+    setupGLExtenions();
+}
+
+Drawable::Extensions::Extensions(const Extensions& rhs):
+    Referenced()
+{
+    _isVertexProgramSupported = rhs._isVertexProgramSupported;
+    _isSecondaryColorSupported = rhs._isSecondaryColorSupported;
+    _isFogCoordSupported = rhs._isFogCoordSupported;
+    _isMultiTexSupported = rhs._isMultiTexSupported;
+    _glFogCoordfv = rhs._glFogCoordfv;
+    _glSecondaryColor3ubv = rhs._glSecondaryColor3ubv;
+    _glSecondaryColor3fv = rhs._glSecondaryColor3fv;
+    _glMultiTexCoord1f = rhs._glMultiTexCoord1f;
+    _glMultiTexCoord2fv = rhs._glMultiTexCoord2fv;
+    _glMultiTexCoord3fv = rhs._glMultiTexCoord3fv;
+    _glMultiTexCoord4fv = rhs._glMultiTexCoord4fv;
+    _glVertexAttrib1s = rhs._glVertexAttrib1s;
+    _glVertexAttrib1f = rhs._glVertexAttrib1f;
+    _glVertexAttrib2fv = rhs._glVertexAttrib2fv;
+    _glVertexAttrib3fv = rhs._glVertexAttrib3fv;
+    _glVertexAttrib4fv = rhs._glVertexAttrib4fv;
+    _glVertexAttrib4ubv = rhs._glVertexAttrib4ubv;
+    _glVertexAttrib4Nubv = rhs._glVertexAttrib4Nubv;
+    _glGenBuffers = rhs._glGenBuffers;
+    _glBindBuffer = rhs._glBindBuffer;
+    _glBufferData = rhs._glBufferData;
+    _glBufferSubData = rhs._glBufferSubData;
+    _glDeleteBuffers = rhs._glDeleteBuffers;
+}
+
+
+void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
+{
+    if (!rhs._isVertexProgramSupported) _isVertexProgramSupported = false;
+    if (!rhs._isSecondaryColorSupported) _isSecondaryColorSupported = false;
+    if (!rhs._isFogCoordSupported) _isFogCoordSupported = false;
+    if (!rhs._isMultiTexSupported) _isMultiTexSupported = false;
+
+    if (!rhs._glFogCoordfv) _glFogCoordfv = 0;
+    if (!rhs._glSecondaryColor3ubv) _glSecondaryColor3ubv = 0;
+    if (!rhs._glSecondaryColor3fv) _glSecondaryColor3fv = 0;
+    if (!rhs._glMultiTexCoord1f) _glMultiTexCoord1f = 0;
+    if (!rhs._glMultiTexCoord2fv) _glMultiTexCoord2fv = 0;
+    if (!rhs._glMultiTexCoord3fv) _glMultiTexCoord3fv = 0;
+    if (!rhs._glMultiTexCoord4fv) _glMultiTexCoord4fv = 0;
+
+    if (!rhs._glVertexAttrib1s) _glVertexAttrib1s = 0;
+    if (!rhs._glVertexAttrib1f) _glVertexAttrib1f = 0;
+    if (!rhs._glVertexAttrib2fv) _glVertexAttrib2fv = 0;
+    if (!rhs._glVertexAttrib3fv) _glVertexAttrib3fv = 0;
+    if (!rhs._glVertexAttrib4fv) _glVertexAttrib4fv = 0;
+    if (!rhs._glVertexAttrib4ubv) _glVertexAttrib4ubv = 0;
+    if (!rhs._glVertexAttrib4Nubv) _glVertexAttrib4Nubv = 0;
+
+    if (!rhs._glGenBuffers) _glGenBuffers = 0;
+    if (!rhs._glBindBuffer) _glBindBuffer = 0;
+    if (!rhs._glBufferData) _glBufferData = 0;
+    if (!rhs._glBufferSubData) _glBufferSubData = 0;
+    if (!rhs._glDeleteBuffers) _glDeleteBuffers = 0;
+}
+
+void Drawable::Extensions::setupGLExtenions()
+{
+    _isVertexProgramSupported = isGLExtensionSupported("GL_ARB_vertex_program");
+    _isSecondaryColorSupported = isGLExtensionSupported("GL_EXT_secondary_color");
+    _isFogCoordSupported = isGLExtensionSupported("GL_EXT_fog_coord");
+    _isMultiTexSupported = isGLExtensionSupported("GL_ARB_multitexture");
+
+    _glFogCoordfv = ((FogCoordProc)osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT"));
+    _glSecondaryColor3ubv = ((SecondaryColor3ubvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT"));
+    _glSecondaryColor3fv = ((SecondaryColor3fvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT"));
+    _glMultiTexCoord1f = ((MultiTexCoord1fProc)osg::getGLExtensionFuncPtr("glMultiTexCoord1f","glMultiTexCoord1fARB"));
+    _glMultiTexCoord2fv = ((MultiTexCoordfvProc)osg::getGLExtensionFuncPtr("glMultiTexCoord2fv","glMultiTexCoord2fvARB"));
+    _glMultiTexCoord3fv = ((MultiTexCoordfvProc)osg::getGLExtensionFuncPtr("glMultiTexCoord3fv","glMultiTexCoord3fvARB"));
+    _glMultiTexCoord4fv = ((MultiTexCoordfvProc)osg::getGLExtensionFuncPtr("glMultiTexCoord4fv","glMultiTexCoord4fvARB"));
+
+    _glVertexAttrib1s = ((VertexAttrib1sProc)osg::getGLExtensionFuncPtr("glVertexAttrib1s","glVertexAttrib1sARB"));
+    _glVertexAttrib1f = ((VertexAttrib1fProc)osg::getGLExtensionFuncPtr("glVertexAttrib1f","glVertexAttrib1fARB"));
+    _glVertexAttrib2fv = ((VertexAttribfvProc)osg::getGLExtensionFuncPtr("glVertexAttrib2fv","glVertexAttrib2fvARB"));
+    _glVertexAttrib3fv = ((VertexAttribfvProc)osg::getGLExtensionFuncPtr("glVertexAttrib3fv","glVertexAttrib3fvARB"));
+    _glVertexAttrib4fv = ((VertexAttribfvProc)osg::getGLExtensionFuncPtr("glVertexAttrib4fv","glVertexAttrib4fvARB"));
+    _glVertexAttrib4ubv = ((VertexAttribubvProc)osg::getGLExtensionFuncPtr("glVertexAttrib4ubv","glVertexAttrib4ubvARB"));
+    _glVertexAttrib4Nubv = ((VertexAttribubvProc)osg::getGLExtensionFuncPtr("glVertexAttrib4Nubv","glVertexAttrib4NubvARB"));
+
+    _glGenBuffers = ((GenBuffersProc)osg::getGLExtensionFuncPtr("glGenBuffers","glGenBuffersARB"));
+    _glBindBuffer = ((BindBufferProc)osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB"));
+    _glBufferData = ((BufferDataProc)osg::getGLExtensionFuncPtr("glBufferData","glBufferDataARB"));
+    _glBufferSubData = ((BufferSubDataProc)osg::getGLExtensionFuncPtr("glBufferSubData","glBufferSubDataARB"));
+    _glDeleteBuffers = ((DeleteBuffersProc)osg::getGLExtensionFuncPtr("glDeleteBuffers","glDeleteBuffersARB"));
+
+}
+void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const
+{
+    if (_glFogCoordfv)
+    {
+        _glFogCoordfv(coord);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glFogCoordfv not supported by OpenGL driver"<<std::endl;
+    }    
+}
+
+void Drawable::Extensions::glSecondaryColor3ubv(const GLubyte* coord) const
+{
+    if (_glSecondaryColor3ubv)
+    {
+        _glSecondaryColor3ubv(coord);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glSecondaryColor3ubv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glSecondaryColor3fv(const GLfloat* coord) const
+{
+    if (_glSecondaryColor3fv)
+    {
+        _glSecondaryColor3fv(coord);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glSecondaryColor3fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord1f(GLenum target,GLfloat coord) const
+{
+    if (_glMultiTexCoord1f)
+    {
+        _glMultiTexCoord1f(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glMultiTexCoord1f not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord2fv(GLenum target,const GLfloat* coord) const
+{
+    if (_glMultiTexCoord2fv)
+    {
+        _glMultiTexCoord2fv(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glMultiTexCoord2fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const
+{
+    if (_glMultiTexCoord3fv)
+    {
+        _glMultiTexCoord3fv(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: _glMultiTexCoord3fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const
+{
+    if (_glMultiTexCoord4fv)
+    {
+        _glMultiTexCoord4fv(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glMultiTexCoord4fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib1s(unsigned int index, GLshort s) const
+{
+    if (_glVertexAttrib1s)
+    {
+        _glVertexAttrib1s(index,s); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib1s not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib1f(unsigned int index, GLfloat f) const
+{
+    if (_glVertexAttrib1f)
+    {
+        _glVertexAttrib1f(index,f); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib1f not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib2fv(unsigned int index, const GLfloat * v) const
+{
+    if (_glVertexAttrib2fv)
+    {
+        _glVertexAttrib2fv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib2fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib3fv(unsigned int index, const GLfloat * v) const
+{
+    if (_glVertexAttrib3fv)
+    {
+        _glVertexAttrib3fv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib3fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib4fv(unsigned int index, const GLfloat * v) const
+{
+    if (_glVertexAttrib4fv)
+    {
+        _glVertexAttrib4fv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib4fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const
+{
+    if (_glVertexAttrib4ubv)
+    {
+        _glVertexAttrib4ubv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib4ubv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const
+{
+    if (_glVertexAttrib4Nubv)
+    {
+        _glVertexAttrib4Nubv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib4Nubv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const
+{
+    if (_glGenBuffers)
+    {
+        _glGenBuffers(n, buffers); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glBindBuffer(GLenum target, GLuint buffer) const
+{
+    if (_glBindBuffer)
+    {
+        _glBindBuffer(target, buffer); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const
+{
+    if (_glBufferData)
+    {
+        _glBufferData(target, size, data, usage); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
+{
+    if (_glBufferSubData)
+    {
+        _glBufferSubData(target, offset, size, data); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glDeleteBuffers(GLsizei n, const GLuint *buffers) const
+{
+    if (_glDeleteBuffers)
+    {
+        _glDeleteBuffers(n, buffers); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    }
 }

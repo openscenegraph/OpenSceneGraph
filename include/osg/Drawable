@@ -28,6 +28,55 @@ class Vec4;
 class UByte4;
 class Geometry;
 
+#ifndef GL_ARB_vertex_buffer_object
+
+    // for compatibility with gl.h headers that don't support VBO,
+    #if defined(_WIN64)
+        typedef __int64 GLintptrARB;
+        typedef __int64 GLsizeiptrARB;
+    #elif defined(__ia64__) || defined(__x86_64__)
+        typedef long int GLintptrARB;
+        typedef long int GLsizeiptrARB;
+    #else
+        typedef int GLintptrARB;
+        typedef int GLsizeiptrARB;
+    #endif
+    
+    #define GL_ARRAY_BUFFER_ARB               0x8892
+    #define GL_ELEMENT_ARRAY_BUFFER_ARB       0x8893
+    #define GL_ARRAY_BUFFER_BINDING_ARB       0x8894
+    #define GL_ELEMENT_ARRAY_BUFFER_BINDING_ARB 0x8895
+    #define GL_VERTEX_ARRAY_BUFFER_BINDING_ARB 0x8896
+    #define GL_NORMAL_ARRAY_BUFFER_BINDING_ARB 0x8897
+    #define GL_COLOR_ARRAY_BUFFER_BINDING_ARB 0x8898
+    #define GL_INDEX_ARRAY_BUFFER_BINDING_ARB 0x8899
+    #define GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING_ARB 0x889A
+    #define GL_EDGE_FLAG_ARRAY_BUFFER_BINDING_ARB 0x889B
+    #define GL_SECONDARY_COLOR_ARRAY_BUFFER_BINDING_ARB 0x889C
+    #define GL_FOG_COORDINATE_ARRAY_BUFFER_BINDING_ARB 0x889D
+    #define GL_WEIGHT_ARRAY_BUFFER_BINDING_ARB 0x889E
+    #define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB 0x889F
+    #define GL_STREAM_DRAW_ARB                0x88E0
+    #define GL_STREAM_READ_ARB                0x88E1
+    #define GL_STREAM_COPY_ARB                0x88E2
+    #define GL_STATIC_DRAW_ARB                0x88E4
+    #define GL_STATIC_READ_ARB                0x88E5
+    #define GL_STATIC_COPY_ARB                0x88E6
+    #define GL_DYNAMIC_DRAW_ARB               0x88E8
+    #define GL_DYNAMIC_READ_ARB               0x88E9
+    #define GL_DYNAMIC_COPY_ARB               0x88EA
+    #define GL_READ_ONLY_ARB                  0x88B8
+    #define GL_WRITE_ONLY_ARB                 0x88B9
+    #define GL_READ_WRITE_ARB                 0x88BA
+    #define GL_BUFFER_SIZE_ARB                0x8764
+    #define GL_BUFFER_USAGE_ARB               0x8765
+    #define GL_BUFFER_ACCESS_ARB              0x88BB
+    #define GL_BUFFER_MAPPED_ARB              0x88BC
+    #define GL_BUFFER_MAP_POINTER_ARB         0x88BD
+
+#endif
+
+
 // this is define to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
 // to optimize COMPILE_AND_EXECUTE in fact make it go slower than for no display 
@@ -160,6 +209,14 @@ class SG_EXPORT Drawable : public Object
         /** Return whether OpenGL display lists are being used for rendering.*/
         inline bool getUseDisplayList() const { return _useDisplayList; }
 
+        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplemention 
+            method to use OpenGL vertex buffer objects for rendering..*/
+        void setUseVertexBufferObjects(bool flag);
+
+        /** Return whether OpenGL vertex buffer objects should be used when supported by OpenGL driver.*/
+        inline bool getUseVertexBufferObjects() const { return _useVertexBufferObjects; }
+
+
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
         void dirtyDisplayList();
 
@@ -249,6 +306,15 @@ class SG_EXPORT Drawable : public Object
           * in the OpenGL context related to contextID.*/
         static void flushDeletedDisplayLists(unsigned int contextID);
 
+        /** use deleteVertexBufferObject instead of glDeleteList to allow
+          * OpenGL buffer objects to cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteVertexBufferObject(unsigned int contextID,GLuint globj);
+        
+        /** flush all the cached vertex buffer objects which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedVertexBufferObjects(unsigned int contextID);
 
         typedef unsigned int AttributeType;
         
@@ -369,6 +435,125 @@ class SG_EXPORT Drawable : public Object
           * so one cannot modify it.*/
         virtual void accept(PrimitiveFunctor&) const {}
 
+
+        /** Extensions class which encapsulates the querring of extensions and
+        * associated function pointers, and provide convinience wrappers to 
+        * check for the extensions or use the associated functions.*/        
+        class SG_EXPORT Extensions : public osg::Referenced
+        {
+        public:
+            Extensions();
+
+            Extensions(const Extensions& rhs);
+
+            void lowestCommonDenominator(const Extensions& rhs);
+
+            void setupGLExtenions();
+
+            void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
+            bool isVertexProgramSupported() const { return _isVertexProgramSupported; }
+
+            void setSecondaryColorSupported(bool flag) { _isSecondaryColorSupported=flag; }
+            bool isSecondaryColorSupported() const { return _isSecondaryColorSupported; }
+
+            void setFogCoordSupported(bool flag) { _isFogCoordSupported=flag; }
+            bool isFogCoordSupported() const { return _isFogCoordSupported; }
+
+            void setMultiTexSupported(bool flag) { _isMultiTexSupported=flag; }
+            bool isMultiTexSupported() const { return _isMultiTexSupported; }
+
+            void glSecondaryColor3ubv(const GLubyte* coord) const;
+            void glSecondaryColor3fv(const GLfloat* coord) const;
+
+            void glFogCoordfv(const GLfloat* coord) const;
+
+            void glMultiTexCoord1f(GLenum target,GLfloat coord) const;
+            void glMultiTexCoord2fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const;
+            void glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const;
+
+            void glVertexAttrib1s(unsigned int index, GLshort s) const;
+            void glVertexAttrib1f(unsigned int index, GLfloat f) const;
+            void glVertexAttrib2fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib3fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib4fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const;
+            void glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const;
+
+            void glGenBuffers (GLsizei n, GLuint *buffers) const;
+            void glBindBuffer (GLenum target, GLuint buffer) const;
+            void glBufferData (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const;
+            void glBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
+            void glDeleteBuffers (GLsizei n, const GLuint *buffers) const;
+
+
+        protected:
+
+            typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
+
+            typedef void (APIENTRY * VertexAttrib1sProc) (unsigned int index, GLshort s);
+            typedef void (APIENTRY * VertexAttrib1fProc) (unsigned int index, GLfloat f);
+            typedef void (APIENTRY * VertexAttribfvProc) (unsigned int index, const GLfloat * v);
+            typedef void (APIENTRY * VertexAttribubvProc) (unsigned int index, const GLubyte * v);
+
+            typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+            typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
+
+            typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
+            typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
+
+            typedef void (APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
+            typedef void (APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
+            typedef void (APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
+            typedef void (APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
+            typedef void (APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
+
+            ~Extensions() {}
+
+            bool _isVertexProgramSupported;
+            bool _isSecondaryColorSupported;
+            bool _isFogCoordSupported;
+            bool _isMultiTexSupported;
+ 
+            FogCoordProc _glFogCoordfv;
+
+            SecondaryColor3ubvProc _glSecondaryColor3ubv;
+            SecondaryColor3fvProc _glSecondaryColor3fv;
+
+            VertexAttrib1sProc _glVertexAttrib1s;
+            VertexAttrib1fProc _glVertexAttrib1f;
+            VertexAttribfvProc _glVertexAttrib2fv;
+            VertexAttribfvProc _glVertexAttrib3fv;
+            VertexAttribfvProc _glVertexAttrib4fv;
+            VertexAttribubvProc _glVertexAttrib4ubv;
+            VertexAttribubvProc _glVertexAttrib4Nubv;
+
+            MultiTexCoord1fProc _glMultiTexCoord1f;
+            MultiTexCoordfvProc _glMultiTexCoord2fv;
+            MultiTexCoordfvProc _glMultiTexCoord3fv;
+            MultiTexCoordfvProc _glMultiTexCoord4fv;
+
+            GenBuffersProc      _glGenBuffers;
+            BindBufferProc      _glBindBuffer;
+            BufferDataProc      _glBufferData;
+            BufferSubDataProc   _glBufferSubData;
+            DeleteBuffersProc   _glDeleteBuffers;
+        };
+
+        /** Function to call to get the extension of a specified context.
+        * If the Exentsion object for that context has not yet been created then 
+        * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+        * If 'createIfNotInitalized' is true then the Extensions object is 
+        * automatically created.  However, in this case the extension object 
+        * only be created with the graphics context associated with ContextID..*/
+        static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
+
+        /** setExtensions allows users to override the extensions across graphics contexts.
+        * typically used when you have different extensions supported across graphics pipes
+        * but need to ensure that they all use the same low common denominator extensions.*/
+        static void setExtensions(unsigned int contextID,Extensions* extensions);
+
+
     protected:
 
         Drawable& operator = (const Drawable&) { return *this;}
@@ -398,9 +583,12 @@ class SG_EXPORT Drawable : public Object
 
         bool                    _supportsDisplayList;
         bool                    _useDisplayList;
+        bool                    _supportsVertexBufferObjects;
+        bool                    _useVertexBufferObjects;
 
         typedef osg::buffered_value<GLuint> GLObjectList;
-        mutable GLObjectList _globjList;
+        mutable GLObjectList    _globjList;
+        mutable GLObjectList    _vboList;
 
         ref_ptr<UpdateCallback> _updateCallback;
         ref_ptr<DrawCallback>   _drawCallback;
@@ -411,9 +599,8 @@ class SG_EXPORT Drawable : public Object
 
 inline void Drawable::draw(State& state) const
 {
-    if (_useDisplayList)
+    if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && state.isVertexBufferObjectSupported()))
     {
-
         // get the contextID (user defined ID of 0 upwards) for the 
         // current OpenGL context.
         unsigned int contextID = state.getContextID();
@@ -448,16 +635,16 @@ inline void Drawable::draw(State& state) const
             glEndList();
 #endif
         }
+        
+        return;
 
     }
-    else
-    {
-        // draw object as nature intended..
-        if (_drawCallback.valid())
-            _drawCallback->drawImplementation(state,this);
-        else 
-            drawImplementation(state);
-    }
+
+    // draw object as nature intended..
+    if (_drawCallback.valid())
+        _drawCallback->drawImplementation(state,this);
+    else 
+        drawImplementation(state);
 };
 
 

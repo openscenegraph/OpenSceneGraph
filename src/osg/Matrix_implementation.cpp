@@ -222,14 +222,14 @@ void Matrix_implementation::makeRotate( const Vec3& from, const Vec3& to )
     set(quat);
 }
 
-void Matrix_implementation::makeRotate( float angle, const Vec3& axis )
+void Matrix_implementation::makeRotate( value_type angle, const Vec3& axis )
 {
     Quat quat;
     quat.makeRotate( angle, axis);
     set(quat);
 }
 
-void Matrix_implementation::makeRotate( float angle, float x, float y, float z ) 
+void Matrix_implementation::makeRotate( value_type angle, value_type x, value_type y, value_type z ) 
 {
     Quat quat;
     quat.makeRotate( angle, x, y, z);
@@ -241,9 +241,9 @@ void Matrix_implementation::makeRotate( const Quat& quat )
     set(quat);
 }
 
-void Matrix_implementation::makeRotate( float angle1, const Vec3& axis1, 
-                         float angle2, const Vec3& axis2,
-                         float angle3, const Vec3& axis3)
+void Matrix_implementation::makeRotate( value_type angle1, const Vec3& axis1, 
+                         value_type angle2, const Vec3& axis2,
+                         value_type angle3, const Vec3& axis3)
 {
     Quat quat;
     quat.makeRotate(angle1, axis1, 
@@ -291,8 +291,8 @@ void Matrix_implementation::preMult( const Matrix_implementation& other )
     //Matrix_implementation tmp(other* *this);
     // *this = tmp;
 
-    // more efficient method just use a float[4] for temporary storage.
-    float t[4];
+    // more efficient method just use a value_type[4] for temporary storage.
+    value_type t[4];
     for(int col=0; col<4; ++col) {
         t[0] = INNER_PRODUCT( other, *this, 0, col );
         t[1] = INNER_PRODUCT( other, *this, 1, col );
@@ -312,7 +312,7 @@ void Matrix_implementation::postMult( const Matrix_implementation& other )
     //Matrix_implementation tmp(*this * other);
     // *this = tmp;
 
-    // more efficient method just use a float[4] for temporary storage.
+    // more efficient method just use a value_type[4] for temporary storage.
     value_type t[4];
     for(int row=0; row<4; ++row)
     {
@@ -357,7 +357,7 @@ bool Matrix_implementation::invert( const Matrix_implementation& mat )
 
     for(i=0;i<4;i++)
     {
-       big=(float)0.0;
+       big=0.0;
        for (j=0; j<4; j++)
           if (ipiv[j] != 1)
              for (k=0; k<4; k++)
@@ -520,7 +520,7 @@ void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const 
     preMult(Matrix_implementation::translate(-eye));
 }
 
-void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance)
 {
     Matrix_implementation inv;
     inv.invert(*this);

@@ -631,9 +631,8 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
                         if (_transformSet.empty()) transform->computeLocalToWorldMatrix(_firstMatrix,0);
                         else
                         {
-                            osg::Matrix matrix;
                             transform->computeLocalToWorldMatrix(_firstMatrix,0);
-                            if (_firstMatrix!=matrix) _moreThanOneMatrixRequired=true;
+                            if (_firstMatrix!=_identity_matrix) _moreThanOneMatrixRequired=true;
                         }
                     }
                 }
@@ -641,7 +640,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
                 {
                     if (!_transformSet.empty()) 
                     {
-                        if (_firstMatrix!=osg::Matrix::identity()) _moreThanOneMatrixRequired=true;
+                        if (_firstMatrix!=_identity_matrix) _moreThanOneMatrixRequired=true;
                     }
 
                 }
@@ -652,6 +651,7 @@ class CollectLowestTransformsVisitor : public osg::NodeVisitor
             bool            _moreThanOneMatrixRequired;
             osg::Matrix     _firstMatrix;
             TransformSet    _transformSet;
+            osg::Matrix     _identity_matrix; 
 
         };    
 

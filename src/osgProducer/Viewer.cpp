@@ -22,7 +22,8 @@ using namespace osgProducer;
 Viewer::Viewer():
     _done(0),
     _frameNumber(0),
-    _kbmcb(0)
+    _kbmcb(0),
+    _recordingAnimationPath(false)
 {
 }
 
@@ -30,7 +31,8 @@ Viewer::Viewer(Producer::CameraConfig *cfg):
     OsgCameraGroup(cfg),
     _done(false),
     _frameNumber(0),
-    _kbmcb(0)
+    _kbmcb(0),
+    _recordingAnimationPath(false)
 {
 }
 
@@ -38,7 +40,8 @@ Viewer::Viewer(const std::string& configFile):
     OsgCameraGroup(configFile),
     _done(false),
     _frameNumber(0),
-    _kbmcb(0)
+    _kbmcb(0),
+    _recordingAnimationPath(false)
 {
 }
 
@@ -46,7 +49,8 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
     OsgCameraGroup(arguments),
     _done(false),
     _frameNumber(0),
-    _kbmcb(0)
+    _kbmcb(0),
+    _recordingAnimationPath(false)
 {
     // report the usage options.
     if (arguments.getApplicationUsage())
@@ -242,8 +246,24 @@ void Viewer::update()
     }
     
     // update the main producer camera
-    if (_old_style_osg_camera.valid()) setView(_old_style_osg_camera->getModelViewMatrix().ptr());
+    if (_old_style_osg_camera.valid()) setView(_old_style_osg_camera->getModelViewMatrix());
 }
+
+void Viewer::frame()
+{
+
+    if (getRecordingAnimationPath() && getAnimationPath())
+    {
+        osg::Matrix matrix;
+        matrix.invert(getViewMatrix());
+        osg::Quat quat;
+        quat.set(matrix);
+        getAnimationPath()->insert(_frameStamp->getReferenceTime(),osg::AnimationPath::ControlPoint(matrix.getTrans(),quat));
+    }
+
+    OsgCameraGroup::frame();
+}
+
 
 void Viewer::selectCameraManipulator(unsigned int no)
 {

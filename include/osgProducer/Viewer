@@ -18,6 +18,7 @@
 #include <osg/NodeVisitor>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/AnimationPath>
 
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventHandler>
@@ -71,12 +72,14 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         
         bool done() const { return _done; }
 
+        virtual void realize( ThreadingModel thread_model= SingleThreaded );
+
         virtual void sync();
 
         virtual void update();
 
-        
-        virtual void realize( ThreadingModel thread_model= SingleThreaded );
+        /** Dispatch the cull and draw for each of the Camera's for this frame.*/
+        virtual void frame();
 
         virtual void requestRedraw() {}
         virtual void requestContinuousUpdate(bool) {}
@@ -84,9 +87,22 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
 
         typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
         EventHandlerList& getEventHandlerList() { return _eventHandlerList; }
+        const EventHandlerList& getEventHandlerList() const { return _eventHandlerList; }
+        
+        osgGA::KeySwitchCameraManipulator* getKeySwitchCameraManipulator() { return _keyswitchManipulator.get(); }
+        const osgGA::KeySwitchCameraManipulator* getKeySwitchCameraManipulator() const { return _keyswitchManipulator.get(); }
 
         unsigned int addCameraManipulator(osgGA::CameraManipulator* cm);
         void selectCameraManipulator(unsigned int no);
+
+
+        void setRecordingAnimationPath(bool on) { _recordingAnimationPath = on; }
+        bool getRecordingAnimationPath() const { return _recordingAnimationPath; }
+
+        void setAnimationPath(osg::AnimationPath* path) { _animationPath = path; }
+        osg::AnimationPath* getAnimationPath() { return _animationPath.get(); }
+        const osg::AnimationPath* getAnimationPath() const { return _animationPath.get(); }
+
 
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
@@ -108,6 +124,11 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         osg::ref_ptr<osg::Camera> _old_style_osg_camera;
         
         osg::ref_ptr<osg::NodeVisitor> _updateVisitor;
+
+
+        bool                                _recordingAnimationPath;
+        osg::ref_ptr<osg::AnimationPath>    _animationPath;
+
 };
 
 }

@@ -141,6 +141,14 @@ class OSGPRODUCER_EXPORT OsgCameraGroup : public Producer::CameraGroup
         /** Realize the render surfaces (OpenGL graphics) and various threads, and call any realize callbacks.*/
         virtual void realize( ThreadingModel thread_model= SingleThreaded );
 
+        /** Set the model view matrix of the camera group,
+          * by individually set all the camera groups's camera.*/
+        void setView(const osg::Matrix& matrix);
+        
+        /** Get the model view martrix of the camera group,
+          * taking its value for camera 0.*/
+        const osg::Matrix getViewMatrix() const;
+
 
         /** Dispatch the cull and draw for each of the Camera's for this frame.*/
         virtual void frame();

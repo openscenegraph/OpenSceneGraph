@@ -515,9 +515,6 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 
-
-    osgDB::Registry::instance()->closeLibrary("osgdb_freetype.so");
-
     // create the windows and run the threads.
     viewer.realize(Producer::CameraGroup::ThreadPerCamera);
 

@@ -1946,6 +1946,7 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
     if (!_imagery.valid() || !_imagery->_image.valid()) return 0;
 
     std::string imageExension(".dds"); // ".rgb"
+    //std::string imageExension(".jp2"); // ".rgb"
     std::string imageName(_name+imageExension);
     _imagery->_image->setFileName(imageName.c_str());
 
@@ -3896,7 +3897,7 @@ void DataSet::_buildDestination(bool writeToDisk)
     if (!_archive && !_archiveName.empty())
     {
         unsigned int indexBlockSizeHint=4096;
-        _archive = openArchive(_archiveName, osgDB::Archive::CREATE, indexBlockSizeHint);
+        _archive = osgDB::openArchive(_archiveName, osgDB::Archive::CREATE, indexBlockSizeHint);
     }
 
     if (_destinationGraph.valid())

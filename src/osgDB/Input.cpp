@@ -85,6 +85,13 @@ osg::Object* Input::readObject(const std::string& fileName)
 
 osg::Image*  Input::readImage(const std::string& fileName)
 {
+
+    if (_options.valid() && !_options->getDatabasePath().empty())
+    {
+        osg::Image* image = readImageFile(_options->getDatabasePath()+'/'+fileName);
+        if (image) return image;
+    }
+
     return readImageFile(fileName);
 }
 

@@ -30,23 +30,55 @@
 
 namespace osgUtil {
 
-/** A simple class for tessellating a single polygon boundary.
-  * Currently uses old style glu tessellation functions for portability.
-  * It be nice to use the modern glu tessellation functions or to find
-  * a small set of code for doing this job better.*/
-class OSGUTIL_EXPORT Tesselator
+/** Originally a simple class for tessellating a single polygon boundary.
+  * Using old style glu tessellation functions for portability.
+  * Upgraded Jan 2004 to use the modern glu tessellation functions.*/
+
+class OSGUTIL_EXPORT Tesselator : public osg::Referenced
 {
     public:
    
         Tesselator();
         ~Tesselator();
 
-        enum InputBoundaryDirection
-        {
-            CLOCK_WISE,
-            COUNTER_CLOCK_WISE
+        /** The winding rule, see red book ch 11. */
+        enum WindingType{
+            TESS_WINDING_ODD          = GLU_TESS_WINDING_ODD,
+            TESS_WINDING_NONZERO      = GLU_TESS_WINDING_NONZERO     ,
+            TESS_WINDING_POSITIVE     = GLU_TESS_WINDING_POSITIVE    ,
+            TESS_WINDING_NEGATIVE     = GLU_TESS_WINDING_NEGATIVE    ,
+            TESS_WINDING_ABS_GEQ_TWO  =    GLU_TESS_WINDING_ABS_GEQ_TWO
+        } ;
+
+        /** we interpret all contours in the geometry as a single set to be tesselated or
+         * each separate drawable's contours needs to be tesselated. */
+        enum TesselationType {
+            TESS_TYPE_GEOMETRY, // tesselate everything in the geometry object
+            TESS_TYPE_DRAWABLE, // tesselate each polygon, triangles & quads drawables in geometry separately
+            TESS_TYPE_POLYGONS // tesselate ONLY polygon drawables in geometry separately
         };
-        
+
+        /** Set and get tesselation request boundary only on/off */
+        void setBoundaryOnly (const bool tt) { _boundaryOnly=tt;}
+        inline const bool getBoundaryOnly ( ) { return _boundaryOnly;}
+
+        /** Set and get tesselation windong rule */
+        void setWindingType (const WindingType wt) { _wtype=wt;}
+        inline const WindingType getWindingType ( ) { return _wtype;}
+
+        /** Set and get tesselation type */
+        void setTesselationType (const TesselationType tt) { _ttype=tt;}
+        inline const TesselationType getTesselationType ( ) { return _ttype;}
+
+        /** Change the contours lists of the geometry into tesselated primitives (the
+          * list of primitives in the original geometry is stored in the tesselator for
+          * possible re-use. 
+          * The name remains retesselatePolygons although it now handles trifans, strips, quads etc.
+          * as well as Polygons so as to not break old codes relying on this function name. */
+        void retesselatePolygons(osg::Geometry &cxgeom);
+
+        osg::Geometry::PrimitiveSetList  getContours() { return _Contours;}
+
         typedef std::vector<osg::Vec3*> VertexPointList;
         
         struct Prim : public osg::Referenced
@@ -71,12 +103,21 @@ class OSGUTIL_EXPORT Tesselator
         
         PrimList& getPrimList() { return _primList; }        
         
-        void retesselatePolygons(osg::Geometry& geom);
-        
         void reset();
         
     protected:
+
+        /** remove unused parts of the array, eg for wehn retesselating
+         * tesselation can introduce extra vertices for concave or crossing boundaries,
+         * these will leak memory if not removed when retesselating. */
+        void reduceArray(osg::Array * cold, const unsigned int nnu);
+
+        void collectTesselation(osg::Geometry &cxgeom);
         
+        typedef std::map<osg::Vec3*,unsigned int> VertexPtrToIndexMap;
+        void addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices);
+        void handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap);
+
         void begin(GLenum mode);
         void vertex(osg::Vec3* vertex);
         void combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4]);
@@ -103,6 +144,7 @@ class OSGUTIL_EXPORT Tesselator
         {
         
             NewVertex():
+                _vpos(0),
                 _f1(0),
                 _v1(0),
                 _f2(0),
@@ -113,6 +155,7 @@ class OSGUTIL_EXPORT Tesselator
                 _v4(0) {}
             
             NewVertex(const NewVertex& nv):
+                _vpos(nv._vpos),
                 _f1(nv._f1),
                 _v1(nv._v1),
                 _f2(nv._f2),
@@ -122,10 +165,12 @@ class OSGUTIL_EXPORT Tesselator
                 _f4(nv._f4),
                 _v4(nv._v4) {}
 
-            NewVertex(float f1,osg::Vec3* v1,
+            NewVertex(osg::Vec3* vx,
+                      float f1,osg::Vec3* v1,
                       float f2,osg::Vec3* v2,
                       float f3,osg::Vec3* v3,
                       float f4,osg::Vec3* v4):
+                _vpos(vx),
                 _f1(f1),
                 _v1(v1),
                 _f2(f2),
@@ -134,6 +179,8 @@ class OSGUTIL_EXPORT Tesselator
                 _v3(v3),
                 _f4(f4),
                 _v4(v4) {}
+
+            osg::Vec3  *_vpos; // added gwm Jan 2004 the vertex coords s.t. NewVertex can be used in a std::vector
         
             float       _f1;
             osg::Vec3*  _v1;
@@ -149,7 +196,10 @@ class OSGUTIL_EXPORT Tesselator
             
         };
         
-        typedef std::map<osg::Vec3*,NewVertex> NewVertexList;
+        //change NewVertexList from std::map<osg::Vec3*,NewVertex> NewVertexList;
+        // because this has undefined order of insertion for new vertices. 
+        // which occasionally corrupted the texture mapping.
+        typedef std::vector<NewVertex> NewVertexList;
         typedef std::vector<Vec3d*> Vec3dList;
 
         GLUtesselator*  _tobj;
@@ -158,6 +208,22 @@ class OSGUTIL_EXPORT Tesselator
         NewVertexList   _newVertexList;
         GLenum          _errorCode;
 
+        /** winding rule, which parts will become solid */
+        WindingType _wtype; 
+
+        /** tesselation rule, which parts will become solid */
+        TesselationType _ttype;
+
+        bool _boundaryOnly; // see gluTessProperty - if true: make the boundary edges only.
+
+        /** number of vertices that are part of the 'original' set of contours */
+        unsigned int _numberVerts;
+
+        /** List of primitives that define the contours */
+        osg::Geometry::PrimitiveSetList                _Contours;
+
+        /** count number of primitives in a geometry to get right no. of norms/colurs etc for per_primitive attributes. */
+        unsigned int _index;
 };
 
 }

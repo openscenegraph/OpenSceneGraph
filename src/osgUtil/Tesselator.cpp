@@ -19,10 +19,15 @@
 using namespace osg;
 using namespace osgUtil;
 
-Tesselator::Tesselator()
+
+Tesselator::Tesselator() :
+    _wtype(TESS_WINDING_ODD),
+    _ttype(TESS_TYPE_POLYGONS),
+    _boundaryOnly(false), _numberVerts(0) 
 {
     _tobj = 0;
     _errorCode = 0;
+    _index=0;
 }
 
 Tesselator::~Tesselator()
@@ -145,11 +150,12 @@ class InsertNewVertices : public osg::ArrayVisitor
         virtual void apply(osg::Vec4Array& ba) { apply_imp(ba,Vec4()); }
 
 };
-            
 
-void Tesselator::retesselatePolygons(osg::Geometry& geom)
+void Tesselator::retesselatePolygons(osg::Geometry &geom)
 {
+    // turn the contour list into primitives, a little like tesselator does but more generally
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
+    
     if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
 
 
@@ -166,246 +172,285 @@ void Tesselator::retesselatePolygons(osg::Geometry& geom)
         if (geom.getTexCoordIndices(unit)) return;
     }
 
-    // process the primitives 
-    int noPrimitiveAtStart = geom.getPrimitiveSetList().size();
-    for(int primNo=0;primNo<noPrimitiveAtStart;++primNo)
-    {
-        osg::PrimitiveSet* primitive = geom.getPrimitiveSetList()[primNo].get();
-        if (primitive->getMode()==osg::PrimitiveSet::POLYGON && primitive->getNumIndices()>3)
-        {
-            beginTesselation();
-            beginContour();
+    if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE) _numberVerts=0; // 09.04.04 GWM reset tesselator
+    // the reset is needed by the flt loader which reuses a tesselator for triangulating polygons.
+    // as such it might be reset by other loaders/developers in future.
+    _index=0; // reset the counter for indexed vertices
+    if (!_numberVerts) {
+        _numberVerts=geom.getVertexArray()->getNumElements();
+        // save the contours for complex (winding rule) tesselations
+        _Contours=geom.getPrimitiveSetList();
+    }
 
-            switch(primitive->getType())
+    // now cut out vertex attributes added on any previous tesselation
+    reduceArray(geom.getVertexArray(), _numberVerts);
+    reduceArray(geom.getColorArray(), _numberVerts);
+    reduceArray(geom.getNormalArray(), _numberVerts);
+    reduceArray(geom.getFogCoordArray(), _numberVerts);
+    for(unsigned int unit1=0;unit1<geom.getNumTexCoordArrays();++unit1)
+    {
+        reduceArray(geom.getTexCoordArray(unit1), _numberVerts);
+    }
+
+    // remove the existing primitives.
+    unsigned int nprimsetoriginal= geom.getNumPrimitiveSets();
+    if (nprimsetoriginal) geom.removePrimitiveSet(0, nprimsetoriginal);
+
+    // the main difference from osgUtil::tesselator for Geometry sets of multiple contours is that the begin/end tesselation
+    // occurs around the whole set of contours.
+    if (_ttype==TESS_TYPE_GEOMETRY) {
+        beginTesselation();
+        gluTessProperty(_tobj, GLU_TESS_WINDING_RULE, _wtype);
+        gluTessProperty(_tobj, GLU_TESS_BOUNDARY_ONLY , _boundaryOnly);
+    }
+    // process all the contours into the tesselator
+    int noContours = _Contours.size();
+    for(int primNo=0;primNo<noContours;++primNo)
+    {
+        osg::ref_ptr<osg::PrimitiveSet> primitive = _Contours[primNo].get();
+        if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE) {
+            if (primitive->getMode()==osg::PrimitiveSet::POLYGON ||_ttype==TESS_TYPE_DRAWABLE)  {
+                beginTesselation();
+                addContour(primitive.get(), vertices);
+                endTesselation();
+
+                collectTesselation(geom);
+            } else { // copy the contour primitive as it is not being tesselated
+                geom.addPrimitiveSet(primitive.get());
+            }
+        } else {
+            if (primitive->getMode()==osg::PrimitiveSet::POLYGON ||
+                primitive->getMode()==osg::PrimitiveSet::QUADS ||
+                primitive->getMode()==osg::PrimitiveSet::TRIANGLES ||
+                primitive->getMode()==osg::PrimitiveSet::LINE_LOOP ||
+                primitive->getMode()==osg::PrimitiveSet::QUAD_STRIP ||
+                primitive->getMode()==osg::PrimitiveSet::TRIANGLE_FAN ||
+                primitive->getMode()==osg::PrimitiveSet::TRIANGLE_STRIP)
             {
-                case(osg::PrimitiveSet::DrawArraysPrimitiveType):
+                addContour(primitive.get(), vertices);
+            } else { // copy the contour primitive as it is not being tesselated
+                // in this case points, lines or line_strip
+                geom.addPrimitiveSet(primitive.get());
+            }
+        }
+    }
+    if (_ttype==TESS_TYPE_GEOMETRY) {
+        endTesselation();
+    
+        collectTesselation(geom);    
+    }
+}
+
+void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices)
+{
+    // adds a single primitive as a contour.
+    beginContour();
+    unsigned int nperprim=0; // number of vertices per primitive
+    if (primitive->getMode()==osg::PrimitiveSet::QUADS) nperprim=4;
+    if (primitive->getMode()==osg::PrimitiveSet::TRIANGLES) nperprim=3;
+    unsigned int idx=0;
+    
+    switch(primitive->getType())
+    {
+    case(osg::PrimitiveSet::DrawArraysPrimitiveType):
+        {
+            unsigned int i;
+            osg::DrawArrays* drawArray = static_cast<osg::DrawArrays*>(primitive);
+            unsigned int first = drawArray->getFirst(); 
+            unsigned int last = first+drawArray->getCount();
+
+            switch (primitive->getMode()) {
+            case osg::PrimitiveSet::QUADS:
+            case osg::PrimitiveSet::TRIANGLES:
+            case osg::PrimitiveSet::POLYGON:
+            case osg::PrimitiveSet::LINE_LOOP:
+            case osg::PrimitiveSet::TRIANGLE_FAN:
                 {
-                    osg::DrawArrays* drawArray = static_cast<osg::DrawArrays*>(primitive);
-                    unsigned int first = drawArray->getFirst(); 
-                    unsigned int last = first+drawArray->getCount();
-                    for(unsigned int i=first;i<last;++i)
+                    for(i=first;i<last;++i, idx++)
+                    {
+                        addVertex(&((*vertices)[i]));
+                        if (nperprim>0 && i<last-1 && idx%nperprim==nperprim-1) {
+                            endContour();
+                            beginContour();
+                        }
+                    }
+                }
+                break;
+            case osg::PrimitiveSet::QUAD_STRIP:
+                { // always has an even number of vertices
+                    for( i=first;i<last;i+=2)
+                    { // 0,2,4...
+                        addVertex(&((*vertices)[i]));
+                    }
+                    for(i=last-1;i>=first;i-=2)
+                    { // ...5,3,1
+                        addVertex(&((*vertices)[i]));
+                    }
+                }
+                break;
+            case osg::PrimitiveSet::TRIANGLE_STRIP:
+                {
+                    for( i=first;i<last;i+=2)
+                    {// 0,2,4,...
+                        addVertex(&((*vertices)[i]));
+                    }
+                    for(i=((last-first)%2)?(last-2):(last-1) ;i>first&& i<last;i-=2)
                     {
                         addVertex(&((*vertices)[i]));
                     }
-                    break;
                 }
-                case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
+                break;
+            default: // lines, points, line_strip
                 {
-                    osg::DrawElementsUByte* drawElements = static_cast<osg::DrawElementsUByte*>(primitive);
-                    for(osg::DrawElementsUByte::iterator indexItr=drawElements->begin();
-                        indexItr!=drawElements->end();
-                        ++indexItr)
+                    for(i=first;i<last;++i, idx++)
                     {
-                        addVertex(&((*vertices)[*indexItr]));
+                        addVertex(&((*vertices)[i]));
+                        if (nperprim>0 && i<last-1 && idx%nperprim==nperprim-1) {
+                            endContour();
+                            beginContour();
+                        }
                     }
-                    break;
                 }
-                case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
-                {
-                    osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>(primitive);
-                    for(osg::DrawElementsUShort::iterator indexItr=drawElements->begin();
-                        indexItr!=drawElements->end();
-                        ++indexItr)
-                    {
-                        addVertex(&((*vertices)[*indexItr]));
-                    }
-                    break;
-                }
-                case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
-                {
-                    osg::DrawElementsUInt* drawElements = static_cast<osg::DrawElementsUInt*>(primitive);
-                    for(osg::DrawElementsUInt::iterator indexItr=drawElements->begin();
-                        indexItr!=drawElements->end();
-                        ++indexItr)
-                    {
-                        addVertex(&((*vertices)[*indexItr]));
-                    }
-                    break;
-                }
-                default:
-                    break;
+                break;
             }
-            
-            endContour();
-            endTesselation();
-            
-            typedef std::map<osg::Vec3*,unsigned int> VertexPtrToIndexMap;
-            VertexPtrToIndexMap vertexPtrToIndexMap;
-            
-            // populate the VertexPtrToIndexMap.
-            for(unsigned int vi=0;vi<vertices->size();++vi)
+            break;
+        }
+    case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
+        {
+            osg::DrawElementsUByte* drawElements = static_cast<osg::DrawElementsUByte*>(primitive);
+            for(osg::DrawElementsUByte::iterator indexItr=drawElements->begin();
+            indexItr!=drawElements->end();
+            ++indexItr, idx++)
             {
-                vertexPtrToIndexMap[&((*vertices)[vi])] = vi;
-            }
-            
-            if (!_newVertexList.empty())
-            {
-
-                osg::Vec3Array* normals = NULL;
-                if (geom.getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
-                {
-                    normals = geom.getNormalArray();
+                addVertex(&((*vertices)[*indexItr]));
+                if (nperprim>0 && indexItr!=drawElements->end() && idx%nperprim==nperprim-1) {
+                    endContour();
+                    beginContour();
                 }
-
-                typedef std::vector<osg::Array*> ArrayList;
-                ArrayList arrays;
+            }
+            break;
+        }
+    case(osg::PrimitiveSet::DrawElementsUShortPrimitiveType):
+        {
+            osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>(primitive);
+            for(osg::DrawElementsUShort::iterator indexItr=drawElements->begin();
+            indexItr!=drawElements->end();
+            ++indexItr, idx++)
+            {
+                addVertex(&((*vertices)[*indexItr]));
+                if (nperprim>0 && indexItr!=drawElements->end() && idx%nperprim==nperprim-1) {
+                    endContour();
+                    beginContour();
+                }
+            }
+            break;
+        }
+    case(osg::PrimitiveSet::DrawElementsUIntPrimitiveType):
+        {
+            osg::DrawElementsUInt* drawElements = static_cast<osg::DrawElementsUInt*>(primitive);
+            for(osg::DrawElementsUInt::iterator indexItr=drawElements->begin();
+            indexItr!=drawElements->end();
+            ++indexItr, idx++)
+            {
+                addVertex(&((*vertices)[*indexItr]));
+                if (nperprim>0 && indexItr!=drawElements->end() && idx%nperprim==nperprim-1) {
+                    endContour();
+                    beginContour();
+                }
+            }
+            break;
+        }
+    default:
+        break;
+    }
     
-                if (geom.getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
-                {
-                    arrays.push_back(geom.getColorArray());
-                }
-                
-                if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_VERTEX)
-                {
-                    arrays.push_back(geom.getSecondaryColorArray());
-                }
+    endContour();
+}
 
-                if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_VERTEX)
-                {
-                    arrays.push_back(geom.getFogCoordArray());
-                }
-
-                osg::Geometry::ArrayList& tcal = geom.getTexCoordArrayList();
-                for(osg::Geometry::ArrayList::iterator tcalItr=tcal.begin();
-                    tcalItr!=tcal.end();
-                    ++tcalItr)
-                {
-                    if (tcalItr->array.valid()) 
-                    {
-                        arrays.push_back(tcalItr->array.get());
-                    }
-                }
-
-                // now add any new vertices that are required.
-                for(NewVertexList::iterator itr=_newVertexList.begin();
-                    itr!=_newVertexList.end();
-                    ++itr)
-                {
-                    osg::Vec3* vertex = itr->first;
-                    NewVertex& newVertex = itr->second;
-
-                    // assign vertex.
-                    vertexPtrToIndexMap[vertex]=vertices->size();
-                    vertices->push_back(*vertex);
-                    
-                    // assign normals
-                    if (normals)
-                    {
-                        osg::Vec3 norm(0.0f,0.0f,0.0f);
-                        if (newVertex._v1) norm += (*normals)[vertexPtrToIndexMap[newVertex._v1]] * newVertex._f1;
-                        if (newVertex._v2) norm += (*normals)[vertexPtrToIndexMap[newVertex._v2]] * newVertex._f2;
-                        if (newVertex._v3) norm += (*normals)[vertexPtrToIndexMap[newVertex._v3]] * newVertex._f3;
-                        if (newVertex._v4) norm += (*normals)[vertexPtrToIndexMap[newVertex._v4]] * newVertex._f4;
-                        norm.normalize();
-                        normals->push_back(norm);
-                    }
-                    
-                    if (!arrays.empty())
-                    {
-                        InsertNewVertices inv(newVertex._f1,vertexPtrToIndexMap[newVertex._v1],
-                                              newVertex._f2,vertexPtrToIndexMap[newVertex._v2],
-                                              newVertex._f3,vertexPtrToIndexMap[newVertex._v3],
-                                              newVertex._f4,vertexPtrToIndexMap[newVertex._v4]);
-
-                                                  // assign the rest of the attributes.
-                        for(ArrayList::iterator aItr=arrays.begin();
-                            aItr!=arrays.end();
-                            ++aItr)
-                        {
-                            (*aItr)->accept(inv);
-                        }
-                    }
-                }
-
-            }
-            
-            
-            // we don't properly handle per primitive and per primitive_set bindings yet
-            // will need to address this soon. Robert Oct 2002.
+void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap)
+{
+    if (!_newVertexList.empty())
+    {
+        
+        osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
+        osg::Vec3Array* normals = NULL;
+        if (geom.getNormalBinding()==osg::Geometry::BIND_PER_VERTEX)
+        {
+            normals = geom.getNormalArray();
+        }
+        
+        typedef std::vector<osg::Array*> ArrayList;
+        ArrayList arrays;
+        
+        if (geom.getColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+        {
+            arrays.push_back(geom.getColorArray());
+        }
+        
+        if (geom.getSecondaryColorBinding()==osg::Geometry::BIND_PER_VERTEX)
+        {
+            arrays.push_back(geom.getSecondaryColorArray());
+        }
+        
+        if (geom.getFogCoordBinding()==osg::Geometry::BIND_PER_VERTEX)
+        {
+            arrays.push_back(geom.getFogCoordArray());
+        }
+        
+        osg::Geometry::ArrayList& tcal = geom.getTexCoordArrayList();
+        for(osg::Geometry::ArrayList::iterator tcalItr=tcal.begin();
+        tcalItr!=tcal.end();
+        ++tcalItr)
+        {
+            if (tcalItr->array.valid()) 
             {
-                osg::Vec3Array* normals = NULL; // GWM Sep 2002 - add normals for extra facets
-                int iprim=0;
-                if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
-                    geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
-                {
-                    normals = geom.getNormalArray(); // GWM Sep 2002
-                }
-                 // GWM Dec 2003 - nneded to add colours for extra facets
-                osg::Vec4Array* cols4 = NULL; // GWM Dec 2003 colours are vec4
-                osg::Vec3Array* cols3 = NULL; // GWM Dec 2003 colours are vec3
-                if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE/* ||
-                    geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET*/)
-                {
-                    Array* colours = geom.getColorArray(); // GWM Dec 2003 - need to duplicate face colours
-                    switch (colours->getType()) {
-                    case osg::Array::Vec4ArrayType:
-                        cols4=dynamic_cast<osg::Vec4Array *> (colours);
-                        break;
-                    case osg::Array::Vec3ArrayType:
-                        cols3=dynamic_cast<osg::Vec3Array *> (colours);
-                        break;
-                    default:
-                        // not handled cases 
-                        break;
-                    }
-
-                }
-                // GWM Dec 2003 - these holders need to go outside the loop to 
-                // retain the flat shaded colour &/or normal for each tesselated polygon
+                arrays.push_back(tcalItr->array.get());
+            }
+        }
+        
+        // now add any new vertices that are required.
+        for(NewVertexList::iterator itr=_newVertexList.begin();
+        itr!=_newVertexList.end();
+        ++itr)
+        {
+            NewVertex& newVertex = (*itr);
+            osg::Vec3* vertex = newVertex._vpos;
+            
+            // assign vertex.
+            vertexPtrToIndexMap[vertex]=vertices->size();
+            vertices->push_back(*vertex);
+            
+            // assign normals
+            if (normals)
+            {
                 osg::Vec3 norm(0.0f,0.0f,0.0f);
-                osg::Vec4 primCol4(0.0f,0.0f,0.0f,1.0f);
-                osg::Vec3 primCol3(0.0f,0.0f,0.0f);
-                for(PrimList::iterator primItr=_primList.begin();
-                primItr!=_primList.end();
-                ++primItr)
-                {
-                    Prim* prim = primItr->get();
-                    osg::Vec3 norm(0.0f,0.0f,0.0f);
-                    
-                    osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
-                    for(Prim::VecList::iterator vitr=prim->_vertices.begin();
-                    vitr!=prim->_vertices.end();
-                    ++vitr)
-                    {
-                        elements->push_back(vertexPtrToIndexMap[*vitr]);
-                    }
-                    
-                    if (primItr==_primList.begin()) 
-                    {   // first new primitive so overwrite the previous polygon & collect primitive normal & colour.
-                        geom.getPrimitiveSetList()[primNo] = elements;                    
-                        if (normals) {
-                            norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
-                        }
-                        if (cols4) {
-                            primCol4=(*cols4)[iprim]; // GWM Dec 2003 the flat shaded rgba colour
-                        }
-                        if (cols3) {
-                            primCol3=(*cols3)[iprim]; // GWM Dec 2003 flat shaded rgb colour
-                        }
-                    }
-                    else
-                    {
-                        // subsequent primitives add to the back of the primitive list, and may have same colour as hte original facet.
-                        geom.addPrimitiveSet(elements);
-                        if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
-                        if (cols4) cols4->push_back(primCol4); // GWM Dec 2003 add flat shaded colour for new facet
-                        if (cols3) cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
-                        if (prim->_mode==GL_TRIANGLES) { // also need one per triangle?
-                            int ntris=elements->getNumIndices()/3;
-                            for (int ii=1; ii<ntris; ii++) {
-                                if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
-                                if (cols4) cols4->push_back(primCol4);
-                            }
-                        }
-                //        osg::notify(osg::WARN)<<"Add: "<< iprim << std::endl; 
-                    }
-                    iprim++; // GWM Sep 2002 count which normal we should use
-                }
+                if (newVertex._v1) norm += (*normals)[vertexPtrToIndexMap[newVertex._v1]] * newVertex._f1;
+                if (newVertex._v2) norm += (*normals)[vertexPtrToIndexMap[newVertex._v2]] * newVertex._f2;
+                if (newVertex._v3) norm += (*normals)[vertexPtrToIndexMap[newVertex._v3]] * newVertex._f3;
+                if (newVertex._v4) norm += (*normals)[vertexPtrToIndexMap[newVertex._v4]] * newVertex._f4;
+                norm.normalize();
+                normals->push_back(norm);
             }
             
+            if (!arrays.empty())
+            {
+                InsertNewVertices inv(newVertex._f1,vertexPtrToIndexMap[newVertex._v1],
+                    newVertex._f2,vertexPtrToIndexMap[newVertex._v2],
+                    newVertex._f3,vertexPtrToIndexMap[newVertex._v3],
+                    newVertex._f4,vertexPtrToIndexMap[newVertex._v4]);
+                
+                // assign the rest of the attributes.
+                for(ArrayList::iterator aItr=arrays.begin();
+                aItr!=arrays.end();
+                ++aItr)
+                {
+                    (*aItr)->accept(inv);
+                }
+            }
         }
         
     }
+    
 }
 
 void Tesselator::begin(GLenum mode)
@@ -425,10 +470,11 @@ void Tesselator::vertex(osg::Vec3* vertex)
 
 void Tesselator::combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4])
 {
-    _newVertexList[vertex]=NewVertex(weight[0],(Vec3*)vertex_data[0],
+    _newVertexList.push_back(NewVertex(vertex,
+                                    weight[0],(Vec3*)vertex_data[0],
                                      weight[1],(Vec3*)vertex_data[1],
                                      weight[2],(Vec3*)vertex_data[2],
-                                     weight[3],(Vec3*)vertex_data[3]);
+                                     weight[3],(Vec3*)vertex_data[3]));
 }
 
 void Tesselator::end()
@@ -468,4 +514,205 @@ void CALLBACK Tesselator::combineCallback(GLdouble coords[3], void* vertex_data[
 void CALLBACK Tesselator::errorCallback(GLenum errorCode, void* userData)
 {
     ((Tesselator*)userData)->error(errorCode);
+}
+
+void Tesselator::reduceArray(osg::Array * cold, const unsigned int nnu)
+{ // shrinks size of array to N
+    if (cold && cold->getNumElements()>nnu) {
+        osg::Vec2Array* v2arr = NULL;
+        osg::Vec3Array* v3arr = NULL;
+        osg::Vec4Array* v4arr = NULL;
+        switch (cold->getType()) {
+        case osg::Array::Vec2ArrayType: {
+            v2arr = dynamic_cast<osg::Vec2Array*>(cold);
+            osg::Vec2Array::iterator itr=v2arr->begin()+nnu;
+            (*v2arr).erase(itr, v2arr->end());
+                                        }
+            break;
+        case osg::Array::Vec3ArrayType: {
+            v3arr = dynamic_cast<osg::Vec3Array*>(cold);
+            osg::Vec3Array::iterator itr=v3arr->begin()+nnu;
+            (*v3arr).erase(itr, v3arr->end());
+                                        }
+            break;
+        case osg::Array::Vec4ArrayType: {
+            v4arr = dynamic_cast<osg::Vec4Array*>(cold);
+            osg::Vec4Array::iterator itr=v4arr->begin()+nnu;
+            (*v4arr).erase(itr, v4arr->end());
+                                        }
+            break;
+        default: // should also handle:ArrayType' ByteArrayType' ShortArrayType' IntArrayType' 
+        // `UShortArrayType'  `UIntArrayType'  `UByte4ArrayType'  `FloatArrayType' 
+            break;
+        }
+    }
+}
+
+unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
+{
+
+    unsigned int totalNumberOfPrimitives = 0;
+    
+    for(Geometry::PrimitiveSetList::const_iterator itr=geom.getPrimitiveSetList().begin();
+        itr!=geom.getPrimitiveSetList().end();
+        ++itr)
+    {
+        const PrimitiveSet* primitiveset = itr->get();
+        GLenum mode=primitiveset->getMode();
+
+        unsigned int primLength;
+        switch(mode)
+        {
+            case(GL_POINTS):    primLength=1; break;
+            case(GL_LINES):     primLength=2; break;
+            case(GL_TRIANGLES): primLength=3; break;
+            case(GL_QUADS):     primLength=4; break;
+            default:            primLength=0; break; // compute later when =0.
+        }
+
+        // draw primtives by the more flexible "slow" path,
+        // sending OpenGL glBegin/glVertex.../glEnd().
+        switch(primitiveset->getType())
+        {
+            case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+            {
+
+                const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                    primItr!=drawArrayLengths->end();
+                    ++primItr)
+                {
+                    if (primLength==0) totalNumberOfPrimitives += 1;
+                    else totalNumberOfPrimitives += *primItr/primLength; // Dec 2003 - increment not set
+                }
+                break;
+            }
+            default:
+            {
+                if (primLength==0) totalNumberOfPrimitives += 1;
+                else totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength;
+            }
+        }
+    }
+
+    return totalNumberOfPrimitives;
+}
+//
+void Tesselator::collectTesselation(osg::Geometry &geom)
+{
+    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
+    VertexPtrToIndexMap vertexPtrToIndexMap;
+    
+    // populate the VertexPtrToIndexMap.
+    for(unsigned int vi=0;vi<vertices->size();++vi)
+    {
+        vertexPtrToIndexMap[&((*vertices)[vi])] = vi;
+    }
+    
+    handleNewVertices(geom, vertexPtrToIndexMap);
+    
+    // we don't properly handle per primitive and per primitive_set bindings yet
+    // will need to address this soon. Robert Oct 2002.
+    {
+        osg::Vec3Array* normals = NULL; // GWM Sep 2002 - add normals for extra facets
+        int iprim=0;
+        if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+            geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
+        {
+            normals = geom.getNormalArray(); // GWM Sep 2002
+        }
+        // GWM Dec 2003 - needed to add colours for extra facets
+        osg::Vec4Array* cols4 = NULL; // GWM Dec 2003 colours are vec4
+        osg::Vec3Array* cols3 = NULL; // GWM Dec 2003 colours are vec3
+        if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE ||
+              geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET)
+        {
+              Array* colours = geom.getColorArray(); // GWM Dec 2003 - need to duplicate face colours
+              switch (colours->getType()) {
+              case osg::Array::Vec4ArrayType:
+                  cols4=dynamic_cast<osg::Vec4Array *> (colours);
+                  break;
+              case osg::Array::Vec3ArrayType:
+                  cols3=dynamic_cast<osg::Vec3Array *> (colours);
+                  break;
+              default:
+                  break;
+              }
+              
+        }
+        // GWM Dec 2003 - these holders need to go outside the loop to 
+        // retain the flat shaded colour &/or normal for each tesselated polygon
+        osg::Vec3 norm(0.0f,0.0f,0.0f);
+        osg::Vec4 primCol4(0.0f,0.0f,0.0f,1.0f);
+        osg::Vec3 primCol3(0.0f,0.0f,0.0f);
+
+        for(PrimList::iterator primItr=_primList.begin();
+        primItr!=_primList.end();
+        ++primItr, ++_index)
+        {
+              Prim* prim = primItr->get();
+              
+              osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
+              for(Prim::VecList::iterator vitr=prim->_vertices.begin();
+              vitr!=prim->_vertices.end();
+              ++vitr)
+              {
+                  elements->push_back(vertexPtrToIndexMap[*vitr]);
+              }
+              
+              // add to the drawn primitive list.
+              geom.addPrimitiveSet(elements);
+              if (primItr==_primList.begin()) 
+              {   // first primitive so collect primitive normal & colour.
+                  if (normals) {
+                      norm=(*normals)[iprim]; // GWM Sep 2002 the flat shaded normal
+                  }
+                  if (cols4) {
+                      primCol4=(*cols4)[iprim]; // GWM Dec 2003 the flat shaded rgba colour
+                    if (_index>=cols4->size()) {
+                        cols4->push_back(primCol4); // GWM Dec 2003 add flat shaded colour for new facet
+                    }
+                  }
+                  if (cols3) {
+                      primCol3=(*cols3)[iprim]; // GWM Dec 2003 flat shaded rgb colour
+                    if (_index>=cols4->size()) {
+                        cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
+                    }
+                  }
+              }
+              else
+              { // later primitives use same colour
+                  if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                  if (cols4 && _index>=cols4->size()) {
+                    cols4->push_back(primCol4); // GWM Dec 2003 add flat shaded colour for new facet
+                  }
+                  if (cols3 && _index>=cols3->size()) {
+                    if (cols3) cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
+                  }
+                  if (prim->_mode==GL_TRIANGLES) {
+                      int ntris=elements->getNumIndices()/3;
+                      if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET ||
+                          geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE) { // need one per triangle? Not one per set.
+                          for (int ii=1; ii<ntris; ii++) {
+                              if (normals) normals->push_back(norm); // GWM Sep 2002 add flat shaded normal for new facet
+                          }
+                      }
+                      if (geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET ||
+                          geom.getColorBinding()==osg::Geometry::BIND_PER_PRIMITIVE) { // need one per triangle? Not one per set.
+                          for (int ii=1; ii<ntris; ii++) {
+                              if (cols3 && _index>=cols3->size()) {
+                                  if (cols3) cols3->push_back(primCol3);
+                              }
+                              if (cols4 && _index>=cols4->size()) {
+                                  if (cols4) cols4->push_back(primCol4);
+                              }
+                              _index++;
+                          }
+                      }
+                  }
+                  //        osg::notify(osg::WARN)<<"Add: "<< iprim << std::endl; 
+              }
+              iprim++; // GWM Sep 2002 count which normal we should use
+        }
+    }
 }

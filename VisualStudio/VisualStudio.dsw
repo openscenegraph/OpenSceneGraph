@@ -1596,6 +1596,36 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Example osgtesselate"=.\examples\osgtesselate\osgtesselate.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgProducer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgText
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Example osgtext"=.\examples\osgtext\osgtextdemo.dsp - Package Owner=<4>
 
 Package=<5>

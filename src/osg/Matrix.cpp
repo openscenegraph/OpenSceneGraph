@@ -149,24 +149,11 @@ void Matrix::makeRotate( const Quat& q )
     q.get(*this);    
 }
 
-void Matrix::makeRotate( float yaw, float pitch, float roll)
+void Matrix::makeRotate( float heading, float pitch, float roll)
 {
-
-    // lifted straight from SOLID library v1.01 Quaternion.h
-    // available from http://www.win.tue.nl/~gino/solid/
-    // and also distributed under the LGPL
-    float cosYaw = cos(yaw / 2);
-    float sinYaw = sin(yaw / 2);
-    float cosPitch = cos(pitch / 2);
-    float sinPitch = sin(pitch / 2);
-    float cosRoll = cos(roll / 2);
-    float sinRoll = sin(roll / 2);
-    Quat q(sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw,
-            cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw,
-            cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw,
-            cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw);
-            
-    q.get(*this);
+    Quat quat;
+    quat.makeRotate(heading,pitch,roll);
+    quat.get(*this);
 }
 
 void Matrix::mult( const Matrix& lhs, const Matrix& rhs )

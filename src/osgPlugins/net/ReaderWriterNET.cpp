@@ -28,7 +28,46 @@
   *    Method #1 takes precedence.  SO, if the hostname option is passed the
   *    plugin, but the name also contains a hostname prefix, the hostname
   *    prefix on the file name will override the option
+  *
+  *  Plugin options:
+  *           hostname=<hostname>     - Specify the host where the data file is to 
+  *                                     be fetched from.
+  *
+  *           prefix=<prefix>         - Specify a server directory to prefix the 
+  *                                     file name with.
+  *            
+  *           local_cache_dir=<dir>   - Specify a directory in which to cache files
+  *                                     on the local machine once they've been fetched.  
+  *                                     This directory is also searched before fetching
+  *                                     the file from the server when Read mode is 
+  *                                     enabled on the cache.
+  *
+  *           cache_mode=<mode>       - Set the mode for the local cache if local_cache
+  *                                     was specified.  If local_cache was not specified
+  *                                     this directive is ignored.  <mode> may
+  *                                     be specified with ReadOnly, WriteOnly, or
+  *                                     ReadWrite.  Behavior for the different modes is
+  *                                     defined as:
+  *
+  *                                       ReadOnly   - When retrieving files, cache is 
+  *                                                    searched first, and if the file is
+  *                                                    not present, it is fetched from the
+  *                                                    server.  If it is fetched from the
+  *                                                    server it is not stored in local cache
+  *
+  *                                       WriteOnly  - When retrieving files, cache is not
+  *                                                    searched, file is always retrieved
+  *                                                    from the server and always written to
+  *                                                    cache.
+  *
+  *                                       ReadWrite  - (the default).  When retrieving files
+  *                                                    cache is searched first, if file is
+  *                                                    not present in cache, it is fetched from
+  *                                                    the server.  If fetched, it is written
+  *                                                    to cache.
+  *
   */
+
 
 class NetReader : public osgDB::ReaderWriter
 {
@@ -51,6 +90,14 @@ class NetReader : public osgDB::ReaderWriter
             std::string serverPrefix;
             std::string localCacheDir;
             int port = 80;
+
+            enum CacheMode {
+                Read      = 1,
+                Write     = 2,
+                ReadWrite = 3
+            };
+
+            CacheMode cacheMode = ReadWrite;
 
             if (options)
             {
@@ -80,6 +127,20 @@ class NetReader : public osgDB::ReaderWriter
                              opt.substr( 0, index ) == "LOCAL_CACHE_DIR" )
                     {
                         localCacheDir = opt.substr(index+1);
+                    }
+                    else if( opt.substr( 0, index ) == "cache_mode" ||
+                             opt.substr( 0, index ) == "CACHE_MODE" )
+                    {
+                        if( opt.substr(index+1) == "ReadOnly" )
+                            cacheMode = Read;
+                        else if(  opt.substr(index+1) == "WriteOnly" )
+                            cacheMode = Write;
+                        else if(  opt.substr(index+1) == "ReadWrite" )
+                            cacheMode = ReadWrite;
+                        else
+                            osg::notify(osg::WARN) << 
+                                "NET plug-in warning:  cache_mode " << opt.substr(index+1) << 
+                                " not understood.  Defaulting to ReadWrite." << std::endl;
                     }
                 }
             }
@@ -127,8 +188,8 @@ class NetReader : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_HANDLED;
 
             // Before we go to the network, lets see if it is in local cache, if cache
-            // was specified
-            if( !localCacheDir.empty() )
+            // was specified and Read bit is set
+            if( !localCacheDir.empty() && (cacheMode & Read) )
             {
                 std::string cacheFile = localCacheDir + '/' + fileName;
                 if( osgDB::fileExists( cacheFile ))
@@ -136,6 +197,8 @@ class NetReader : public osgDB::ReaderWriter
                     std::ifstream  in(cacheFile.c_str());
                     readResult = reader->readNode( in );
                     in.close();
+                    osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
+                                         " fetched from local cache." << std::endl;
                     return readResult;
                 }
             }
@@ -214,14 +277,21 @@ class NetReader : public osgDB::ReaderWriter
                     osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
                     */
 
+            osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
+                                         " fetched from server." << std::endl;
+
             if( reader != 0L )
                 readResult = reader->readNode( sio );
 
-            if( !localCacheDir.empty() )
+            if( !localCacheDir.empty() && cacheMode & Write )
             {
                 std::string cacheFile = localCacheDir + '/' + fileName;
                 if( TemporaryFileUtils::makeDirectory( cacheFile ) )
+                {
                     osgDB::writeNodeFile( *(readResult.getNode()), cacheFile );
+                    osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
+                                         " stored to local cache." << std::endl;
+                }
             }
 
             return readResult;

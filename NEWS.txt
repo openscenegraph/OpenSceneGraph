@@ -1,15 +1,13 @@
-
-
 OSG News (most significant items from ChangeLog)
 ================================================
 
-18th April 2003  - OpenSceneGraph-0.9.4
+19th April 2003  - OpenSceneGraph-0.9.4
 
     >>> Multi-threaded, multi-pipe support via integration with OpenProducer,
     >>> 64bit Linux support for Intel Intanium and AMD Opteron,
     >>> new osgText library with greater performance, and thread safety,
     >>> new DDS plug-in for compressed and non-compressed images,
-    >>> new MD2 plug-in adds support for animate Quake character,
+    >>> new MD2 plug-in adds support for animate Quake character and
     >>> support added for NV_texture_rectangle.
 
     The most significant new feature is the osgProducer library that adds 
@@ -23,9 +21,10 @@ OSG News (most significant items from ChangeLog)
     multi-threading of cull-draw pairs and GUI events.
 
     All the example programs have been ported over from being based on
-    GLUT to using osgProducer. This allows all the examples to scale from
-    running on laptops up to multiple CPU and graphics pipe systems. The
-    configuration of threading and multiple camera views can all be done
+    GLUT to using osgProducer (osgGLUT can now be found in the bazaar 
+    section on the website). The move to osgProducer allows all the examples 
+    to scale from running on laptops up to multiple CPU and graphics pipe systems. 
+    The configuration of threading and multiple camera views can all be done
     via ASCII configuration files, no need to recompile.  A number of 
     new examples have also been added or revamped, bringing the total to 42.
 

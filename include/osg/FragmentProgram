@@ -177,7 +177,7 @@ class SG_EXPORT FragmentProgram : public StateAttribute
         /** Get list of Program Parameters */
         inline LocalParamList& getLocalParamList() { return _programLocalParameters; }
 
-		  /** Get const list of Program Parameters */
+        /** Get const list of Program Parameters */
         inline const LocalParamList& getLocalParamList() const { return _programLocalParameters; }
 
         /** Matrix */
@@ -190,7 +190,7 @@ class SG_EXPORT FragmentProgram : public StateAttribute
         void dirtyFragmentProgramObject();        
 
         /** use deleteFragmentProgramObject instead of glDeletePrograms to allow
-          * OpenGL Fragment Program objects to cached until they can be deleted
+          * OpenGL Fragment Program objects to be cached until they can be deleted
           * by the OpenGL context in which they were created, specified
           * by contextID.*/
         static void deleteFragmentProgramObject(unsigned int contextID,GLuint handle);
@@ -205,11 +205,11 @@ class SG_EXPORT FragmentProgram : public StateAttribute
 
         /** release an OpenGL objects in specified graphics context if State
             object is passed, otherwise release OpenGL objexts for all graphics context if
-            State object pointer NULL.*/
+            State object pointer == NULL.*/
         virtual void releaseGLObjects(State* state=0) const;
 
-        /** Extensions class which encapsulates the querring of extensions and
-          * associated function pointers, and provide convinience wrappers to 
+        /** Extensions class which encapsulates the querying of extensions and
+          * associated function pointers, and provide convenience wrappers to 
           * check for the extensions or use the associated functions.*/        
         class SG_EXPORT Extensions : public osg::Referenced
         {
@@ -245,10 +245,10 @@ class SG_EXPORT FragmentProgram : public StateAttribute
          };
         
         /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created then 
-          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+          * If the Extension object for that context has not yet been created and the 
+          * 'createIfNotInitalized' flag has been set to false then returns NULL.
           * If 'createIfNotInitalized' is true then the Extensions object is 
-          * automatically created.  However, in this case the extension object 
+          * automatically created.  However, in this case the extension object will
           * only be created with the graphics context associated with ContextID..*/
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 

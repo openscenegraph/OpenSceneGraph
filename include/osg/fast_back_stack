@@ -20,10 +20,10 @@ namespace osg {
 
 /** Simple stack implementation that keeps the back() cached locally for fast access
   * rather than at the back of the vector which is the traditional stack implementation.
-  * A conventional std::vector<> stores the rest of the stack. The fast_back_stack
-  * although contains a stl container it only implments the back push_back(),pop_back()
+  * A conventional std::vector<> stores the rest of the stack. Although fast_back_stack
+  *  contains a stl container it only implements the back push_back(),pop_back()
   * and back() methods so is not as general purpose as stl stack implementation.
-  * The focus of the fast_back_stack is purly to maximize the speed at which the
+  * The focus of the fast_back_stack is purely to maximize the speed at which the
   * back can be accessed.*/
   
 template<class T>

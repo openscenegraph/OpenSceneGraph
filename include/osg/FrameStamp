@@ -26,9 +26,9 @@ using std::tm;
 namespace osg
 {
 
-/** Class which encapsulates the frame number, reference time and calander
+/** Class which encapsulates the frame number, reference time and calendar
   * time of specific frame, used to synchonize operations on the scene graph
-  * and other machines when using a graphics cluster.  Note the calander
+  * and other machines when using a graphics cluster.  Note the calendar
   * time can be an artificial simulation time or capture the real time
   * of day etc.*/ 
 class SG_EXPORT FrameStamp : public Referenced
@@ -64,11 +64,11 @@ class SG_EXPORT FrameStamp : public Referenced
         double  _referenceTime;
         
         
-        // member varaibles of time.h's tm structure, copied here to
-        // ensure that all data is no dynamic. The tm structure itself
+        // member variables of time.h's tm structure, copied here to
+        // ensure that all data is not dynamic. The tm structure itself
         // is not completely consistent betweem implementations, which
         // could be a problem when sending the FrameStamp across a network
-        // with differnt versions of tm (i.e mixing Unix and Windows.)
+        // with different versions of tm (i.e mixing Unix and Windows.)
         int tm_sec;            /* Seconds.        [0-60] (1 leap second) */
         int tm_min;            /* Minutes.        [0-59] */
         int tm_hour;           /* Hours.          [0-23] */

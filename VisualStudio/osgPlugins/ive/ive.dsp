@@ -42,8 +42,9 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /I "../../../../OpenThreads/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -53,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_ive.dll" /libpath:"../../../lib"
+# ADD LINK32 OpenThreadsWin32.lib /nologo /dll /pdb:none /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_ive.dll" /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "osgPlugin ive - Win32 Debug"
@@ -69,8 +70,9 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
+F90=df.exe
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /vmg /vd0 /GR /GX /Zi /Od /I "../../../include" /I "../../../../OpenThreads/include" /I "../../../../Producer/include" /I "../../../../3rdParty/include" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "WIN32" /D "_DEBUG" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -80,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_ived.dll" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 OpenThreadsWin32d.lib /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"../../../bin/osgdb_ived.dll" /pdbtype:sept /libpath:"../../../lib" /libpath:"../../../../OpenThreads/lib/win32" /libpath:"../../../../Producer/lib" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ENDIF 
@@ -106,6 +108,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\AnimationPathCallback.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Billboard.cpp
 # End Source File
 # Begin Source File
@@ -114,7 +124,15 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ClusterCullingCallback.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ConeSector.cpp
 # End Source File
 # Begin Source File
 
@@ -130,10 +148,6 @@ SOURCE=..\..\..\src\osgPlugins\ive\CoordinateSystemNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\EllipsoidModel.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\ive\CullFace.cpp
 # End Source File
 # Begin Source File
@@ -143,6 +157,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DataInputStream.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.cpp
 # End Source File
 # Begin Source File
 
@@ -174,15 +192,19 @@ SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUShort.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\ElevationSector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\EllipsoidModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Exception.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\FragmentProgram.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.cpp
 # End Source File
 # Begin Source File
 
@@ -210,15 +232,23 @@ SOURCE=..\..\..\src\osgPlugins\ive\Light.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\LightSource.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\LOD.cpp
+SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.cpp
+SOURCE=..\..\..\src\osgPlugins\ive\LOD.cpp
 # End Source File
 # Begin Source File
 
@@ -227,6 +257,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Material.cpp
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\MatrixTransform.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
@@ -242,11 +276,7 @@ SOURCE=..\..\..\src\osgPlugins\ive\OccluderNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.cpp
+SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.cpp
 # End Source File
 # Begin Source File
 
@@ -254,11 +284,23 @@ SOURCE=..\..\..\src\osgPlugins\ive\Point.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.cpp
+SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\ReaderWriterIVE.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Sequence.cpp
 # End Source File
 # Begin Source File
 
@@ -274,23 +316,11 @@ SOURCE=..\..\..\src\osgPlugins\ive\ShapeDrawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\Sequence.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\ive\StateSet.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Switch.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.cpp
 # End Source File
 # Begin Source File
 
@@ -330,35 +360,7 @@ SOURCE=..\..\..\src\osgPlugins\ive\Transform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\ConeSector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\ElevationSector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.cpp
+SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.cpp
 # End Source File
 # Begin Source File
 
@@ -382,6 +384,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\AnimationPathCallback.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Billboard.h
 # End Source File
 # Begin Source File
@@ -390,7 +400,15 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\ClusterCullingCallback.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\ConeSector.h
 # End Source File
 # Begin Source File
 
@@ -402,15 +420,11 @@ SOURCE=..\..\..\src\osgPlugins\ive\ConvexPlanarPolygon.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\CullFace.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\osgPlugins\ive\CoordinateSystemNode.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\EllipsoidModel.h
+SOURCE=..\..\..\src\osgPlugins\ive\CullFace.h
 # End Source File
 # Begin Source File
 
@@ -423,6 +437,14 @@ SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\DataTypeSize.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\DOFTransform.h
 # End Source File
 # Begin Source File
 
@@ -450,7 +472,11 @@ SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUShort.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DOFTransform.h
+SOURCE=..\..\..\src\osgPlugins\ive\ElevationSector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\EllipsoidModel.h
 # End Source File
 # Begin Source File
 
@@ -459,10 +485,6 @@ SOURCE=..\..\..\src\osgPlugins\ive\Exception.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\FragmentProgram.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.h
 # End Source File
 # Begin Source File
 
@@ -490,15 +512,23 @@ SOURCE=..\..\..\src\osgPlugins\ive\Light.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\LightSource.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\LOD.h
+SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.h
+SOURCE=..\..\..\src\osgPlugins\ive\LOD.h
 # End Source File
 # Begin Source File
 
@@ -507,6 +537,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Material.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\MatrixTransform.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.h
 # End Source File
 # Begin Source File
 
@@ -522,6 +556,18 @@ SOURCE=..\..\..\src\osgPlugins\ive\OccluderNode.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Point.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\PositionAttitudeTransform.h
 # End Source File
 # Begin Source File
@@ -530,15 +576,11 @@ SOURCE=..\..\..\src\osgPlugins\ive\PrimitiveSet.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\PolygonOffset.h
+SOURCE=..\..\..\src\osgPlugins\ive\ReadWrite.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\Point.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\LineWidth.h
+SOURCE=..\..\..\src\osgPlugins\ive\Sequence.h
 # End Source File
 # Begin Source File
 
@@ -554,23 +596,11 @@ SOURCE=..\..\..\src\osgPlugins\ive\ShapeDrawable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\ReadWrite.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\Sequence.h
+SOURCE=..\..\..\src\osgPlugins\ive\StateSet.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Switch.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\MultiSwitch.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\StateSet.h
 # End Source File
 # Begin Source File
 
@@ -610,35 +640,7 @@ SOURCE=..\..\..\src\osgPlugins\ive\Transform.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\DirectionalSector.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\AzimElevationSector.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\ConeSector.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\ElevationSector.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\LightPoint.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ive\LightPointNode.h
+SOURCE=..\..\..\src\osgPlugins\ive\VertexProgram.h
 # End Source File
 # Begin Source File
 

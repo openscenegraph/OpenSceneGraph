@@ -166,7 +166,6 @@ endif
 
 EXAMPLE_DIRS = \
 	osganimate\
-	osgarchive\
 	osgautotransform\
 	osgbillboard\
 	osgblendequation\
@@ -174,7 +173,6 @@ EXAMPLE_DIRS = \
 	osgcameragroup\
 	osgclip\
 	osgcluster\
-	osgconv\
 	osgcopy\
 	osgcubemap\
 	osgdepthshadow\
@@ -192,10 +190,10 @@ EXAMPLE_DIRS = \
 	osglauncher\
 	osglight\
 	osglightpoint\
-	osglogo\
 	osglogicop\
-        osgmovie\
+	osglogo\
         osgmotionblur\
+        osgmovie\
 	osgmultitexture\
 	osgoccluder\
 	osgpagedlod\
@@ -229,9 +227,7 @@ EXAMPLE_DIRS = \
 	osgtexture3D\
 	osgtexturerectangle\
 	osgunittests\
-	osgversion\
 	osgvertexprogram\
-	osgviewer\
 	osgvolume\
 	osgwindows\
 

@@ -21,8 +21,14 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options)
         {
-            //std::string ext = osgDB::getFileExtension(file);
+            // Looks like gdal's GDALRasterBand::GetColorInterpretation()
+            // is not giving proper values for ecw images. There is small
+            // hack to get around
+            bool ecwLoad = osgDB::equalCaseInsensitive(osgDB::getFileExtension(file),"ecw");
+
             //if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::cout << "GDAL : " << file << std::endl;
 
             std::string fileName = osgDB::findDataFile( file );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
@@ -42,8 +48,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             int destX = 0;
             int destY = 0;
-           int destWidth = osg::minimum(dataWidth,1024);
-           int destHeight = osg::minimum(dataHeight,1024);
+            int destWidth = osg::minimum(dataWidth,1024);
+            int destHeight = osg::minimum(dataHeight,1024);
 //             int destWidth = osg::minimum(dataWidth,4096);
 //             int destHeight = osg::minimum(dataHeight,4096);
 
@@ -177,12 +183,35 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 osg::notify(osg::INFO) << "        DataTypeName() = "<< GDALGetDataTypeName(band->GetRasterDataType())<<std::endl;
                 osg::notify(osg::INFO) << "        ColorIntepretationName() = "<< GDALGetColorInterpretationName(band->GetColorInterpretation())<<std::endl;
                 
-                if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
-                else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
-                else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
-                else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
-                else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
-                else bandGray = band;
+                bool bandNotHandled = true;
+                if (ecwLoad)
+                {
+                    bandNotHandled = false;
+                    switch (b)
+                    {
+                    case 1:
+                        bandRed = band;
+                        break;
+                    case 2:
+                        bandGreen = band;
+                        break;
+                    case 3:
+                        bandBlue = band;
+                        break;
+                    default:
+                        bandNotHandled = true;
+                    }
+                }
+
+                if (bandNotHandled)
+                {
+                    if (band->GetColorInterpretation()==GCI_GrayIndex) bandGray = band;
+                    else if (band->GetColorInterpretation()==GCI_RedBand) bandRed = band;
+                    else if (band->GetColorInterpretation()==GCI_GreenBand) bandGreen = band;
+                    else if (band->GetColorInterpretation()==GCI_BlueBand) bandBlue = band;
+                    else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
+                    else bandGray = band;
+                }
                 
 //                 int gotMin,gotMax;
 //                 double minmax[2];
@@ -269,7 +298,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                     bandBlue->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+2),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                     
                 }
-            } else if (bandGray)
+            }
+            else if (bandGray)
             {
                 if (bandAlpha)
                 {
@@ -300,7 +330,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
                     bandGray->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
                 }
-            } else if (bandAlpha)
+            }
+            else if (bandAlpha)
             {
                 // alpha map
                 int pixelSpace=1*numBytesPerPixel;
@@ -313,7 +344,6 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 osg::notify(osg::INFO) << "reading alpha"<<std::endl;
 
                 bandAlpha->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(imageData+0),destWidth,destHeight,targetGDALType,pixelSpace,lineSpace);
-
 
             }
             else
@@ -519,66 +549,39 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                 else if (band->GetColorInterpretation()==GCI_AlphaBand) bandAlpha = band;
                 else bandGray = band;
                 
-//                 int gotMin,gotMax;
-//                 double minmax[2];
-//                 
-//                 minmax[0] = band->GetMinimum(&gotMin);
-//                 minmax[1] = band->GetMaximum(&gotMax);
-//                 if (!(gotMin && gotMax))
-//                 {
-//                     osg::notify(osg::INFO)<<" computing min max"<<std::endl;
-//                     GDALComputeRasterMinMax(band,TRUE,minmax);
-//                 }
-//                 
-//                 osg::notify(osg::INFO) << "        min "<<minmax[0]<<std::endl;
-//                 osg::notify(osg::INFO) << "        max "<<minmax[1]<<std::endl;
             }
             
                 
-	    GDALRasterBand* bandSelected = 0;
-	    if (!bandSelected && bandGray) bandSelected = bandGray;
-	    else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
-	    else if (!bandSelected && bandRed) bandSelected = bandRed;
-	    else if (!bandSelected && bandGreen) bandSelected = bandGreen;
-	    else if (!bandSelected && bandBlue) bandSelected = bandBlue;
-	    
-	    if (bandSelected)
-	    {
-		osg::HeightField* hf = new osg::HeightField;
-		hf->allocate(destWidth,destHeight);
+            GDALRasterBand* bandSelected = 0;
+            if (!bandSelected && bandGray) bandSelected = bandGray;
+            else if (!bandSelected && bandAlpha) bandSelected = bandAlpha;
+            else if (!bandSelected && bandRed) bandSelected = bandRed;
+            else if (!bandSelected && bandGreen) bandSelected = bandGreen;
+            else if (!bandSelected && bandBlue) bandSelected = bandBlue;
+
+            if (bandSelected)
+            {
+                osg::HeightField* hf = new osg::HeightField;
+                hf->allocate(destWidth,destHeight);
 
                 bandSelected->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)(&(hf->getHeightList().front())),destWidth,destHeight,GDT_Float32,0,0);
-		
-                
-//                 unsigned short* data = new unsigned short[destWidth*destHeight];
-// 		bandSelected->RasterIO(GF_Read,windowX,windowY,windowWidth,windowHeight,(void*)data,destWidth,destHeight,GDT_UInt16,0,0);
-//                 
-//                 // copy ushorts across.
-// 		for(unsigned int r=0;r<hf->getNumRows();++r)
-// 		{
-// 		    for(unsigned int c=0;c<hf->getNumColumns();++c)
-// 		    {
-//                         hf->setHeight(c,r,*data);
-//                         ++data;
-//                     }
-//                 }
-                		
-		// now need to flip since the OSG's origin is in lower left corner.
-                osg::notify(osg::INFO)<<"flipping"<<std::endl;
-                unsigned int copy_r = hf->getNumRows()-1;
-		for(unsigned int r=0;r<copy_r;++r,--copy_r)
-		{
-		    for(unsigned int c=0;c<hf->getNumColumns();++c)
-		    {
+
+                // now need to flip since the OSG's origin is in lower left corner.
+                        osg::notify(osg::INFO)<<"flipping"<<std::endl;
+                        unsigned int copy_r = hf->getNumRows()-1;
+                for(unsigned int r=0;r<copy_r;++r,--copy_r)
+                {
+                    for(unsigned int c=0;c<hf->getNumColumns();++c)
+                    {
                         float temp = hf->getHeight(c,r);
                         hf->setHeight(c,r,hf->getHeight(c,copy_r));
                         hf->setHeight(c,copy_r,temp);
-		    }
-		}
-		
-		return hf;
-	    }
-	               
+                    }
+                }
+
+                return hf;
+            }
+                   
             return ReadResult::FILE_NOT_HANDLED;
 
         }

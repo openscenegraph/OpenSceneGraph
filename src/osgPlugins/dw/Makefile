@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
         ReaderWriterDW.cpp\
 
-LIBS  += $(OSG_LIBS) $(OTHER_LIBS)
+LIBS  += $(OSG_LIBS) $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = dw
 include $(TOPDIR)/Make/cygwin_plugin_def

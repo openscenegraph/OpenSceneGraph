@@ -201,7 +201,7 @@ _glmAddGroup(GLMmodel* model, char* name)
   group = _glmFindGroup(model, name);
   if (!group) {
     group = (GLMgroup*)malloc(sizeof(GLMgroup));
-	group->init();
+    group->init();
     group->name = strdup(name);
     group->material = 0;
     group->numtriangles = 0;
@@ -246,10 +246,15 @@ _glmDirName(char* path)
 {
   char* dir;
   char* s;
+  char* s2;
 
   dir = strdup(path);
 
   s = strrchr(dir, '/');
+  s2 = strrchr(dir, '\\');    // also look for backslashes
+  if (s2 > s)                // take whichever is later
+      s = s2;
+
   if (s)
     s[1] = '\0';
   else
@@ -283,7 +288,7 @@ _glmReadMTL(GLMmodel* model, char* name)
   file = fopen(filename, "r");
   if (!file) {
     fprintf(stderr, "_glmReadMTL() failed: can't open material file \"%s\".\n",
-	    filename);
+        filename);
     return;
   }
   free(filename);
@@ -292,11 +297,11 @@ _glmReadMTL(GLMmodel* model, char* name)
   nummaterials = 1;
   while(fscanf(file, "%s", buf) != EOF) {
     switch(buf[0]) {
-    case '#':				/* comment */
+    case '#':                /* comment */
       /* eat up rest of line */
       fgets(buf, sizeof(buf), file);
       break;
-    case 'n':				/* newmtl */
+    case 'n':                /* newmtl */
       fgets(buf, sizeof(buf), file);
       nummaterials++;
       sscanf(buf, "%s %s", buf, buf);
@@ -339,11 +344,11 @@ _glmReadMTL(GLMmodel* model, char* name)
   nummaterials = 0;
   while(fscanf(file, "%s", buf) != EOF) {
     switch(buf[0]) {
-    case '#':				/* comment */
+    case '#':                /* comment */
       /* eat up rest of line */
       fgets(buf, sizeof(buf), file);
       break;
-    case 'n':				/* newmtl */
+    case 'n':                /* newmtl */
       fgets(buf, sizeof(buf), file);
       sscanf(buf, "%s %s", buf, buf);
       nummaterials++;
@@ -403,6 +408,7 @@ _glmReadMTL(GLMmodel* model, char* name)
       break;
     }
   }
+  fclose(file);
 }
 
 /* _glmWriteMTL: write a wavefront material library file
@@ -430,7 +436,7 @@ _glmWriteMTL(GLMmodel* model, char* modelpath, char* mtllibname)
   file = fopen(filename, "w");
   if (!file) {
     fprintf(stderr, "_glmWriteMTL() failed: can't open file \"%s\".\n",
-	    filename);
+        filename);
     return;
   }
   free(filename);

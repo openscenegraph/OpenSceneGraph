@@ -39,7 +39,7 @@ struct dereference_clear
     inline void operator() (const T& t)
     {
         T& non_const_t = const_cast<T&>(t);
-        return non_const_t->clear();
+        non_const_t->clear();
     }
 };
 

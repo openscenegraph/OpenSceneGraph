@@ -245,7 +245,12 @@ osg::Node* ConvertFromFLT::visitLongID(osg::Group* osgParent, LongIDRecord* rec)
 {
     SLongID *pSLongID = (SLongID*)rec->getData();
 
-    osgParent->setName(pSLongID->szIdent);
+    // these cout's are here for double checking whether handlng of the longID
+    // string is being managed corectly. 
+    // std::cout << "ConvertFromFLT::visitLongID '"<<std::string(pSLongID->szIdent,pSLongID->RecHeader.length()-4)<<"'"<<std::endl;
+    // std::cout << "ConvertFromFLT::visitLongID cstyle string '"<<pSLongID->szIdent<<"'"<<std::endl;
+
+    osgParent->setName(std::string(pSLongID->szIdent,pSLongID->RecHeader.length()-4));
 
     return NULL;
 }

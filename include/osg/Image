@@ -106,7 +106,7 @@ class SG_EXPORT Image : public Object
 
         /** read the contents of the current bound texture, handling compressed pixelFormats if present.
           * Create memory for storage if required, reuse existing pixel coords if possible.*/
-        void readImageFromCurrentTexture(unsigned int contextID=0);
+        void readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable);
 
 
         /** Scale image to specified size. */

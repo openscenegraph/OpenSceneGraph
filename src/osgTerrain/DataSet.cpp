@@ -1879,33 +1879,53 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         }
         break;
     }        
-    
+
     texture->setMaxAnisotropy(_dataSet->getMaxAnisotropy());
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
     bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
+    bool compressedImageSupported = inlineImageFile;
+    bool mipmapImageSupported = inlineImageFile;
 
     std::cout<<"__________________image->getPixelFormat()="<<image->getPixelFormat()<<std::endl;
 
-    if (inlineImageFile && 
+    if (compressedImageSupported && 
         _dataSet->getTextureType()==COMPRESSED_TEXTURE &&
         (image->getPixelFormat()==GL_RGB || image->getPixelFormat()==GL_RGBA))
     {
         texture->setInternalFormatMode(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
 
         osg::ref_ptr<osg::State> state = new osg::State;
+        
+        // force the mip mapping off temporay if we intend the graphics hardware to do the mipmapping.
+        if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+
+        // get OpenGL driver to create texture from image.
         texture->apply(*state);
 
-        image->readImageFromCurrentTexture();
+        image->readImageFromCurrentTexture(0,true);
+
+        // restore the mip mapping mode.
+        if (_dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_HARDWARE)
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
 
         texture->setInternalFormatMode(osg::Texture::USE_IMAGE_DATA_FORMAT);
 
         std::cout<<">>>>>>>>>>>>>>>compress image.<<<<<<<<<<<<<<"<<std::endl;
 
-    } else if (_dataSet->getTextureType()==RGB_16_BIT &&
-               image->getPixelFormat()==GL_RGB)
+    }
+    else
     {
-        image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
+        if (_dataSet->getTextureType()==RGB_16_BIT && image->getPixelFormat()==GL_RGB)
+        {
+            image->scaleImage(image->s(),image->t(),image->r(),GL_UNSIGNED_SHORT_5_6_5);
+        }
+        
+        if (mipmapImageSupported && _dataSet->getMipMappingMode()==DataSet::MIP_MAPPING_IMAGERY)
+        {
+            image->computeMipMaps();
+        }
     }
 
     if (!inlineImageFile)

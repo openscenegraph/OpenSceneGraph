@@ -403,50 +403,136 @@ void Image::readPixels(int x,int y,int width,int height,
 }
 
 
-void Image::readImageFromCurrentTexture(unsigned int contextID)
+void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable)
 {
     const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
 
     GLint internalformat;
     GLint width;
     GLint height;
+    GLint depth;
+    
+    GLint numMipMaps = 0;
+    if (copyMipMapsIfAvailable)
+    {
+        for(;numMipMaps<20;++numMipMaps)
+        {
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, numMipMaps, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, numMipMaps, GL_TEXTURE_HEIGHT, &height);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, numMipMaps, GL_TEXTURE_DEPTH, &depth);
+            if (width==0 || height==0 || depth==0) break;
+        }
+    }
+    else
+    {
+        numMipMaps = 1;
+    }
+
+        
+    GLint compressed = 0;
 
     if (extensions->isCompressedTexImage2DSupported())
     {
-        GLint compressed;
-        GLint compressed_size;
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+    }
+    
+    /* if the compression has been successful */
+    if (compressed == GL_TRUE)
+    {
 
-        /* if the compression has been successful */
-        if (compressed == GL_TRUE)
+        MipmapDataType mipMapData;
+        
+        unsigned int total_size = 0;
+        GLint i;
+        for(i=0;i<numMipMaps;++i)
         {
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB, &compressed_size);
-
-            allocateImage(width,height,1,internalformat,internalformat);
+            if (i>0) mipMapData.push_back(total_size);
             
-            extensions->glGetCompressedTexImage(GL_TEXTURE_2D, 0, _data);
+            GLint compressed_size;
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB, &compressed_size);
             
-            _internalTextureFormat = internalformat;
-            
-            return;
+            total_size += compressed_size;
         }
         
+        
+        osg::notify(osg::WARN)<<"********** reading from compressed texture -------------------."<<std::endl;
+
+        unsigned char* data = new unsigned char[total_size];
+        if (!data)
+        {
+            osg::notify(osg::WARN)<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, now image read."<<std::endl;
+            return; 
+        }
+
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_DEPTH, &depth);
+
+        _data = data;
+        _s = width;
+        _t = height;
+        _r = depth;
+        
+        _pixelFormat = internalformat;
+        _dataType = internalformat;
+        _internalTextureFormat = internalformat;
+        _mipmapData = mipMapData;
+        
+        for(i=0;i<numMipMaps;++i)
+        {
+            extensions->glGetCompressedTexImage(GL_TEXTURE_2D, i, getMipmapData(i));
+        }
+
     }
+    else
+    {
+        MipmapDataType mipMapData;
 
-    // non compressed texture implemention.
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+        unsigned int total_size = 0;
+        GLint i;
+        for(i=0;i<numMipMaps;++i)
+        {
+            if (i>0) mipMapData.push_back(total_size);
+            
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_WIDTH, &width);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_HEIGHT, &height);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, i, GL_TEXTURE_DEPTH, &depth);
+            
+            unsigned int level_size = computeRowWidthInBytes(width,_pixelFormat,GL_UNSIGNED_BYTE,_packing)*height*depth;
 
-    allocateImage(width,height,1,internalformat,GL_UNSIGNED_BYTE);
+            total_size += level_size;
+        }
+        
+        
+        unsigned char* data = new unsigned char[total_size];
+        if (!data)
+        {
+            osg::notify(osg::WARN)<<"Warning: Image::readImageFromCurrentTexture(..) out of memory, now image read."<<std::endl;
+            return; 
+        }
 
-    _internalTextureFormat = internalformat;
-    
-    glGetTexImage(GL_TEXTURE_2D,0,_pixelFormat,_dataType,_data);
-    
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalformat);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_DEPTH, &depth);
+
+        _data = data;
+        _s = width;
+        _t = height;
+        _r = depth;
+        
+        _pixelFormat = internalformat;
+        _dataType = GL_UNSIGNED_BYTE;
+        _internalTextureFormat = internalformat;
+        _mipmapData = mipMapData;
+        
+        for(i=0;i<numMipMaps;++i)
+        {
+            glGetTexImage(GL_TEXTURE_2D,i,_pixelFormat,_dataType,getMipmapData(i));
+        }
+
+    }    
 }
 
 

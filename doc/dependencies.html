@@ -1,191 +1,227 @@
 <!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-    
+        
   <meta http-equiv="Content-Type"
  content="text/html; charset=iso-8859-1">
-    
+        
   <meta name="GENERATOR"
  content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdk i686) [Netscape]">
   <title>Compilation dependencies</title>
 </head>
   <body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#990066"
  alink="#ff0000">
- <img src="images/OpenSceneGraphBanner_Distribution.jpg">
- 
-<table>
- <tbody>
-    <tr>
- <td><a href="index.html">Index</a></td>
-  <td><a href="introduction.html">Introduction</a></td>
-  <td><a href="contents.html">Contents</a></td>
-  <td><a href="install.html">Install</a></td>
-  <td><a href="dependencies.html">Dependencies</a></td>
-  <td><a href="examples.html">examples</a></td>
-  <td><a href="data.html">Data</a></td>
-  <td><a href="osgviewer.html">Viewer</a></td>
-  <td><a href="stereo.html">Stereo</a></td>
-  <td><a href="plan.html">Plan</a></td>
-  <td><a href="documentation.html">Reference Guides</a></td>
- </tr>
- 
-  </tbody>
-</table>
-  
-<h2> <a name="Scene graph dependencies"></a><u>Scene graph dependencies</u></h2>
- The OpenSceneGraph is composed of core scene graph libraries, plugins libraries 
-and demo programs. The core scene graph libraries (osg, osgDB, osgUtil, osgText,
-osgParticle, osgSim) are only dependent upon OpenGL and Standard C++ so should
-compile straight out of the box on most systems. To run the examples one
-will also need to compile osgProducer which adds the dependency of Producer,
-and if true type text is required then the freetype library will be required.
-The plugins which are used to read and write various file formats have their
-own sets of dependencies listed below, some have no dependencies at all.
-A plugin is only needed if you need to load that specific file format, so
-it is not critical if you don't have all the required dependencies. <br>
- 
-<hr> 
-<h3> <a name="Windows dependency arhives"></a><u>Windows dependency archives</u></h3>
- To make life easier for Windows users, we have put together a .zip archives 
-with all the required dependencies which can be download and installed somewhere
-in you system. You'll need to set VisualStudio to pick up on the include
-and libs, and the PATH set to pick up in the dll's. Alternatively, a more
-hacky but simpler solution is to unpack this archive inside you OpenSceneGraph
-distribution, so that all the include files drop into OpenSceneGraph/include, 
-and the libs drop into OpenSceneGraph/lib, and all the dll's drop into OpenSceneGraph/bin,
-this way VisualStudio will pick up the files simpler through the paths set
-up inside the workspace and project files. The archives can be downloaded
-here: . . 
-<ul>
- <li> freetype, libpng, libungif, libtiff, libjpeg &amp; zlib includes, libs 
-and dll.</li>
-  
-  <ul>
-    <i><a
- href="http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip">http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip</a></i>
-  </ul>
+  <img src="images/OpenSceneGraphBanner_Distribution.jpg">
    
-  <hr> 
+<table>
+  <tbody>
+     <tr>
+  <td><a href="index.html">Index</a></td>
+   <td><a href="introduction.html">Introduction</a></td>
+   <td><a href="contents.html">Contents</a></td>
+   <td><a href="install.html">Install</a></td>
+   <td><a href="dependencies.html">Dependencies</a></td>
+   <td><a href="examples.html">examples</a></td>
+   <td><a href="data.html">Data</a></td>
+   <td><a href="osgviewer.html">Viewer</a></td>
+   <td><a href="stereo.html">Stereo</a></td>
+   <td><a href="plan.html">Plan</a></td>
+   <td><a href="documentation.html">Reference Guides</a></td>
+  </tr>
+     
+  </tbody> 
+</table>
+    
+<h2> <a name="Scene graph dependencies"></a><u>Scene graph dependencies</u></h2>
+  The OpenSceneGraph is composed of core scene graph libraries, plugins libraries
+ and demo programs. The core scene graph libraries (osg, osgDB, osgUtil,
+osgText, osgParticle, osgSim) are only dependent upon OpenGL and Standard
+C++ so should compile straight out of the box on most systems. To run the
+examples one will also need to compile osgProducer which adds the dependency
+of Producer, and if true type text is required then the freetype library
+will be required. The plugins which are used to read and write various file
+formats have their own sets of dependencies listed below, some have no dependencies
+at all. A plugin is only needed if you need to load that specific file format,
+so it is not critical if you don't have all the required dependencies. <br>
+   
+<hr>  
+<h3> <a name="Windows dependency arhives"></a><u>Windows dependency archives</u></h3>
+  To make life easier for Windows users, we have put together a .zip archives
+ with all the required dependencies which can be download and installed somewhere 
+in you system. You'll need to set VisualStudio to pick up on the include and
+libs, and the PATH set to pick up in the dll's. Alternatively, a more hacky
+but simpler solution is to unpack this archive inside you OpenSceneGraph distribution,
+so that all the include files drop into OpenSceneGraph/include,  and the
+libs drop into OpenSceneGraph/lib, and all the dll's drop into OpenSceneGraph/bin, 
+this way VisualStudio will pick up the files simpler through the paths set 
+up inside the workspace and project files. The archives can be downloaded 
+here: . .  
+<ul>
+  <li> freetype, libpng, libungif, libtiff, libjpeg &amp; zlib includes,
+libs  and dll.</li>
+      
+  <ul>
+     <i><a
+ href="http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip">http://www.openscenegraph.org/download/dependencies/OsgWin32Dependencies.zip<br>
+    <br>
+    </a></i>   
+  </ul>
+       
+  <hr>    
   <h3> <a name="Core library dependencies"></a><u>Core library dependencies</u></h3>
-  <br>
+   <br>
+   
   <ul>
-    <li>src/osgDB + src/osgPlugin/txp + src/osgProducer all depend upong
-OpenThreads library :</li><br>
-	<ul>
-	<i><a href="http://openthreads.sourceforge.net">http:://openthreads.sourceforge.net</a></i>
-	</ul>
- <br>
-
-    <li>src/osgProducer - The osgProducer library depends upon, you guessed
-it, Producer...</li><br>
+     <li>src/osgDB + src/osgPlugin/txp + src/osgProducer all depend upon 
+OpenThreads library :</li>
+    <br>
+ 	
     <ul>
-      <i><a href="http://www.andesengineering.com/Producer">http://www.andesengineering.com/Producer</a></i>
+ 	<i><a href="http://openthreads.sourceforge.net">http:://openthreads.sourceforge.net</a></i> 
+	
     </ul>
- <br>
- The examples which are included with the distribution depend upon osgProducer
-(and hence Producer) but if you don't need the examples or osgProducer you
-need to compile them, and can remove references to osgProducer and the examples
-by editing your VisualStudio workspace files or Make/makedirdefs approrpiately. 
+  <br>
+      <li>src/osgProducer - The osgProducer library depends upon, you guessed 
+it, Producer...</li>
+    <br>
+     
+    <ul>
+       <i><a href="http://www.andesengineering.com/Producer">http://www.andesengineering.com/Producer</a></i> 
+    
+    </ul>
+  
   </ul>
-  
-  <hr> 
-  <h3> <a name="Plug-in dependencies"></a><u>Plug-in dependencies</u></h3>
- Follows is the list of dependencies which some of the osgPlugins require, 
-note the core osg and viewer do not need the following dependencies, you only
-need the following if you require each specific plugin. Note, the flt, 3ds,
-pic, tga, do not have any dependencies other than Standard C++ so will compile
-straight of the bag. Under Linux the majority of the dependencies below come
-as standard with distributions so you may not need to download them at all.
-Its best to try out a straight compile of the osg, if you get missing includes/libs
-errors then chase up the below. <br>
- 
-  <ul>
-  <br>
- <li> src/osgPlugins/freetype - The osgText library supports true type fonts
-via the freetype library.</li>
-  
-    <ul>
-      <i><a href="http://www.freetype.org/">http://www.freetype.org/</a></i>
-    </ul>
- <br>
-  <li> src/osgPlugins/pfb</li>
-  <br>
-There is a Performer plugin in this distribution for converting from Performer
-to OSG and from OSG to Performer. This plugin requires Performer to be installed
-and therefore is not compiled by default. If you have Performer (available
-under Linux and IRIX) then edit src/osgPlugins/Make to compile under the
-plugin. Performer can be downloaded from : 
-    <ul>
-      <i><a href="http://www.sgi.com/">http://www.sgi.com/</a></i>
-    </ul>
-  <br>
- <li> src/osgPlugins/png</li>
-  <br>
-The png plugin depends upon the libpng and zlib (for compression) libraries, 
-if you don't already have it installed, you'll need to download, compile and
-install it. Project home pages are: 
-    <ul>
-      <i><a href="http://www.libpng.org/pub/png/libpng.html">http://www.libpng.org/pub/png/libpng.html</a></i> 
-      <br>
-      <i><a href="http://www.info-zip.org/pub/infozip/zlib/">http://www.info-zip.org/pub/infozip/zlib/</a></i>
-    </ul>
-  <br>
- <li> src/osgPlugins/gif</li>
-  <br>
-The gif plugin depends upon the libungif library, if you don't already have
-it installed, you'll need to download, compile and install it. Project home
-page is: 
-    <ul>
-      <i><a href="http://prtr-13.ucsc.edu/%7Ebadger/software/libungif/">http://prtr-13.ucsc.edu/~badger/software/libungif/</a></i>
-    </ul>
- Ftp download at : 
-    <ul>
-      <i><a href="ftp://prtr-13.ucsc.edu/pub/libungif/">ftp://prtr-13.ucsc.edu/pub/libungif/</a></i>
-    </ul>
-  <br>
- <li> src/osgPlugins/jpeg</li>
-  <br>
-The jpeg plugin depends upon the libjpeg library, if you don't already have
-it installed, you'll need to download, compile and install it. Project home
-page is: 
-    <ul>
-      <i><a href="http://www.ijg.org/">http://www.ijg.org/</a></i>
-    </ul>
-  <br>
- <li> src/osgPlugins/tiff</li>
-  <br>
-The tiff plugin depends upon the libtiff library, if you don't already have
-it installed, you'll need to download, compile and install it. Project home
-page is: 
-    <ul>
-      <i><a href="http://www.libtiff.org">http://www.libtiff.org</a></i>
-    </ul>
-  <br>
- <li> src/osgPlugins/zip</li>
-  <br>
-The zip compressed archive plugin depends upon the unzip executable being
-available on your system. If it is not then you'll be able to find binaries
-at: 
-    <ul>
-      <i><a href="http://www.freesoftware.com/pub/infozip/">http://www.freesoftware.com/pub/infozip/</a></i>
-    </ul>
-  <br>
- <li> src/osgPlugins/tgz</li>
-  <br>
-The tgz compressed archive plugin depends upon the unzip executable being
-available on your system. If it is not then you'll be able to find binaries
-at: 
-    <ul>
-      <i><a href="http://www.gzip.org/">http://www.gzip.org/</a></i> <br>
-      <a href="ftp://prep.ai.mit.edu/pub/gnu/tar/">ftp://prep.ai.mit.edu/pub/gnu/tar/</a>
-    </ul>
-  <br>
- <li> src/osgPlugins/osgtgz</li>
-  <br>
-Has the same dependencies as the tgz plugin above.
-  </ul>
-  
 </ul>
-<br>
+<blockquote>
+  <h3><u>Example dependencies</u></h3>
+   The examples which are included with the distribution depend upon osgProducer 
+(and hence Producer) but if you don't need the examples or osgProducer you 
+need to compile them, and can remove references to osgProducer and the examples 
+by editing your VisualStudio workspace files or Make/makedirdefs approrpiately.
+     &nbsp; Additionally :<br>
+</blockquote>
+<ul>
+  <ul>
+    <li>example/slideshow3D depends upon libxml2 :</li>
+    <br>
+    <a href="http://xmlsoft.org">http://xmlsoft.org/</a>
+  </ul>
+  <ul>
+    <i><a href="http://openthreads.sourceforge.net"></a></i>
+  </ul>
+</ul>
+<ul>
+  <ul>
+    <br>
+    
+  </ul>
+      
+  <hr>    
+  <h3> <a name="Plug-in dependencies"></a><u>Plug-in dependencies</u></h3>
+  Follows is the list of dependencies which some of the osgPlugins require,
+ note the core osg and viewer do not need the following dependencies, you
+only need the following if you require each specific plugin. Note, the flt,
+3ds, pic, tga, do not have any dependencies other than Standard C++ so will
+compile straight of the bag. Under Linux the majority of the dependencies
+below come as standard with distributions so you may not need to download
+them at all. Its best to try out a straight compile of the osg, if you get
+missing includes/libs errors then chase up the below. <br>
+     
+  <ul>
+   <br>
+  <li> src/osgPlugins/freetype - The osgText library supports true type fonts 
+via the freetype library.</li>
+        
+    <ul>
+       <i><a href="http://www.freetype.org/">http://www.freetype.org/</a></i> 
+    
+    </ul>
+  <br>
+   <li> src/osgPlugins/pfb</li>
+   <br>
+ There is a Performer plugin in this distribution for converting from Performer 
+to OSG and from OSG to Performer. This plugin requires Performer to be installed 
+and therefore is not compiled by default. If you have Performer (available 
+under Linux and IRIX) then edit src/osgPlugins/Make to compile under the plugin.
+Performer can be downloaded from :      
+    <ul>
+       <i><a href="http://www.sgi.com/">http://www.sgi.com/</a></i>     
+    </ul>
+   <br>
+  <li> src/osgPlugins/png</li>
+   <br>
+ The png plugin depends upon the libpng and zlib (for compression) libraries,
+ if you don't already have it installed, you'll need to download, compile
+and install it. Project home pages are:      
+    <ul>
+       <i><a href="http://www.libpng.org/pub/png/libpng.html">http://www.libpng.org/pub/png/libpng.html</a></i>
+       <br>
+       <i><a href="http://www.info-zip.org/pub/infozip/zlib/">http://www.info-zip.org/pub/infozip/zlib/</a></i> 
+    
+    </ul>
+   <br>
+  <li> src/osgPlugins/gif</li>
+   <br>
+ The gif plugin depends upon the libungif library, if you don't already have 
+it installed, you'll need to download, compile and install it. Project home 
+page is:      
+    <ul>
+       <i><a href="http://prtr-13.ucsc.edu/%7Ebadger/software/libungif/">http://prtr-13.ucsc.edu/~badger/software/libungif/</a></i> 
+    
+    </ul>
+  Ftp download at :      
+    <ul>
+       <i><a href="ftp://prtr-13.ucsc.edu/pub/libungif/">ftp://prtr-13.ucsc.edu/pub/libungif/</a></i> 
+    
+    </ul>
+   <br>
+  <li> src/osgPlugins/jpeg</li>
+   <br>
+ The jpeg plugin depends upon the libjpeg library, if you don't already have 
+it installed, you'll need to download, compile and install it. Project home 
+page is:      
+    <ul>
+       <i><a href="http://www.ijg.org/">http://www.ijg.org/</a></i>     
+    </ul>
+   <br>
+  <li> src/osgPlugins/tiff</li>
+   <br>
+ The tiff plugin depends upon the libtiff library, if you don't already have 
+it installed, you'll need to download, compile and install it. Project home 
+page is:      
+    <ul>
+       <i><a href="http://www.libtiff.org">http://www.libtiff.org</a></i> 
+    
+    </ul>
+   <br>
+  <li> src/osgPlugins/zip</li>
+   <br>
+ The zip compressed archive plugin depends upon the unzip executable being 
+available on your system. If it is not then you'll be able to find binaries 
+at:      
+    <ul>
+       <i><a href="http://www.freesoftware.com/pub/infozip/">http://www.freesoftware.com/pub/infozip/</a></i> 
+    
+    </ul>
+   <br>
+  <li> src/osgPlugins/tgz</li>
+   <br>
+ The tgz compressed archive plugin depends upon the unzip executable being 
+available on your system. If it is not then you'll be able to find binaries 
+at:      
+    <ul>
+       <i><a href="http://www.gzip.org/">http://www.gzip.org/</a></i> <br>
+       <a href="ftp://prep.ai.mit.edu/pub/gnu/tar/">ftp://prep.ai.mit.edu/pub/gnu/tar/</a> 
+    
+    </ul>
+   <br>
+  <li> src/osgPlugins/osgtgz</li>
+   <br>
+ Has the same dependencies as the tgz plugin above.   
+  </ul>
+    
+</ul>
+ <br>
+ <br>
 </body>
 </html>

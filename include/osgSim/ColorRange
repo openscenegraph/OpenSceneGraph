@@ -33,21 +33,21 @@ class OSGSIM_EXPORT ColorRange: public ScalarsToColors
 public:
 
     /** Constructor for a ColorRange
-	@param min      minimum scalar value
-	@param max      maximum scalar value
-	@param colors   optional range of colors, defaulting to Red-Yellow-Green-Blue-Cyan
-	*/
+    @param min      minimum scalar value
+    @param max      maximum scalar value
+    @param colors   optional range of colors, defaulting to Red-Yellow-Green-Blue-Cyan
+    */
     ColorRange(float min, float max, const std::vector<osg::Vec4>& colors = std::vector<osg::Vec4>());
 
-	/** Set the range of colors. */
+    /** Set the range of colors. */
     void setColors(const std::vector<osg::Vec4>& colors);
 
-	/** Get the color for a given scalar value. */
+    /** Get the color for a given scalar value. */
     osg::Vec4 getColor(float scalar) const;
 
 private:
 
-	// Default assignment and copy construction are OK.
+    // Default assignment and copy construction are OK.
 
     std::vector<osg::Vec4> _colors;
 };

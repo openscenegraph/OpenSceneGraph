@@ -40,7 +40,7 @@ class OSGSIM_EXPORT LightPoint
         LightPoint(const osg::Vec3& position,
                    const osg::Vec4& color);
        
-        LightPoint(bool	    	    on,
+        LightPoint(bool                on,
                    const osg::Vec3& position,
                    const osg::Vec4& color,
                    float            intensity=1.0f,
@@ -55,7 +55,7 @@ class OSGSIM_EXPORT LightPoint
         LightPoint& operator = (const LightPoint& lp);
 
 
-    	bool	    	    	    _on;
+        bool                        _on;
         osg::Vec3                   _position;
         osg::Vec4                   _color;
         float                       _intensity;
@@ -64,7 +64,7 @@ class OSGSIM_EXPORT LightPoint
         osg::ref_ptr<Sector>        _sector;
         osg::ref_ptr<BlinkSequence> _blinkSequence;
 
-    	BlendingMode                _blendingMode;
+        BlendingMode                _blendingMode;
 };
 
 }

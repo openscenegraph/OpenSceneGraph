@@ -246,8 +246,8 @@ void ScalarBar::createDrawables()
 	// vertical alignment depending on the letters used in the labels. E.g. a 'y' has a dangling tail.
 	if(_orientation == HORIZONTAL)
 	{
-        std::vector<osgText::Text*>::iterator maxYIt = max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::Y_AXIS));
-        for_each(texts.begin(), texts.end(), AlignCentreOnYValue((*maxYIt)->getBound().center().y()));
+		std::vector<osgText::Text*>::iterator maxYIt = std::max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::Y_AXIS));
+		std::for_each(texts.begin(), texts.end(), AlignCentreOnYValue((*maxYIt)->getBound().center().y()));
     }
 
 	// 3. And finally the title
@@ -268,7 +268,7 @@ void ScalarBar::createDrawables()
 			// Need to move the title above any labels, using maximum y value of the
 			// existing text objects
 
-			std::vector<osgText::Text*>::iterator maxYIt = max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::Y_AXIS));
+			std::vector<osgText::Text*>::iterator maxYIt = std::max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::Y_AXIS));
 
             float titleY;
 			if(maxYIt != texts.end()) titleY = (*maxYIt)->getBound().yMax() * 1.1f;
@@ -284,7 +284,7 @@ void ScalarBar::createDrawables()
 		    // Need to move the title out beyond any labels, using the maximum x value of the
 			// existing text objects
 
-			std::vector<osgText::Text*>::iterator maxXIt = max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::X_AXIS));
+			std::vector<osgText::Text*>::iterator maxXIt = std::max_element(texts.begin(), texts.end(), MaxCoordLess(MaxCoordLess::X_AXIS));
 
             float titleX;
 			if(maxXIt != texts.end()) titleX = (*maxXIt)->getBound().xMax() * 1.1f;

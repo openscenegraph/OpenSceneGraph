@@ -874,6 +874,7 @@ bool GeoSet_writeLocalData(const Object& obj, Output& fw)
                     fw << (int)*itrRowData<<" ";
                     itrRowData += 1;
                 }
+                itrRowComp++;
             }
             fw << endl;
 

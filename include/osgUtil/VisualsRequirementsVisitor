@@ -39,16 +39,16 @@ class OSGUTIL_EXPORT VisualsRequirementsVisitor : public osg::NodeVisitor
         const bool requiresDepthBuffer() const { return _requiresDepthBuffer; }
 
 
-        void setMinumumNumAlphaBits(const unsigned int bits) { _minimumNumberAlphaBits = bits; }
+        void setMinimumNumAlphaBits(const unsigned int bits) { _minimumNumberAlphaBits = bits; }
 
-        const unsigned int getMinumumNumAlphaBits() const { return _minimumNumberAlphaBits; }
+        const unsigned int getMinimumNumAlphaBits() const { return _minimumNumberAlphaBits; }
 
         const bool requiresAlphaBuffer() const { return _minimumNumberAlphaBits!=0; }
 
 
-        void setMinumumNumStencilBits(const unsigned int bits) { _minimumNumberStencilBits = bits; }
+        void setMinimumNumStencilBits(const unsigned int bits) { _minimumNumberStencilBits = bits; }
 
-        const unsigned int getMinumumNumStencilBits() const { return _minimumNumberStencilBits; }
+        const unsigned int getMinimumNumStencilBits() const { return _minimumNumberStencilBits; }
         
         const bool requiresStencilBuffer() const { return _minimumNumberStencilBits!=0; }
 

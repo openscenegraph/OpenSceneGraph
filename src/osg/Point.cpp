@@ -1,10 +1,6 @@
 // Ideas and code borrowed from GLUT pointburst demo
 // written by Mark J. Kilgard
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 #include "osg/GL"
 #include "osg/GLExtensions"
 #include "osg/Point"

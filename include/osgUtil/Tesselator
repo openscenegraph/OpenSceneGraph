@@ -44,6 +44,8 @@ class OSGUTIL_EXPORT Tesselator
     
         struct VertexIndexSet
         {
+            VertexIndexSet() {}
+            
             VertexIndexSet(Tesselator* tess,const osg::Vec3& vec,osg::uint index)
             {
                 set(tess,vec,index);

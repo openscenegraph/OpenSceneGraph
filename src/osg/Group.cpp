@@ -5,12 +5,6 @@
 
 #include <algorithm>
 
-// #ifdef __sgi
-// using std::find;
-// using std::for_each;
-// using std::string;
-// #endif
-
 #define square(x)   ((x)*(x))
 
 using namespace osg;
@@ -58,6 +52,16 @@ bool Group::addChild( Node *child )
 
         dirtyBound();
 
+        // could now require app traversal thanks to the new subgraph,
+        // so need to check and update if required.
+        if (child->getNumChildrenRequiringAppTraversal()>0 ||
+            child->getAppCallback())
+        {
+            setNumChildrenRequiringAppTraversal(
+                getNumChildrenRequiringAppTraversal()+1
+                );
+        }
+
         return true;
     }
     else return false;
@@ -73,9 +77,22 @@ bool Group::removeChild( Node *child )
         ParentList::iterator pitr = std::find(child->_parents.begin(),child->_parents.end(),this);
         if (pitr!=child->_parents.end()) child->_parents.erase(pitr);
 
+        // could now require app traversal thanks to the new subgraph,
+        // so need to check and update if required.
+        // note, need to do this checking before the erase of the child
+        // otherwise child will be invalid.
+        if (child->getNumChildrenRequiringAppTraversal()>0 ||
+            child->getAppCallback())
+        {
+            setNumChildrenRequiringAppTraversal(
+                getNumChildrenRequiringAppTraversal()-1
+                );
+        }
+
         // note ref_ptr<> automatically handles decrementing child's reference count.
         _children.erase(itr);
         dirtyBound();
+
 
         return true;
     }

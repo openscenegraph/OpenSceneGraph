@@ -377,42 +377,6 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
     }
 
 
-#ifdef WIN32
-    #define USE_VECTOR_VERSIONS
-#endif
-
-#ifdef USE_VECTOR_VERSIONS
-
-    StateSet::ModeVector modes = stateset.getModeVector();
-    
-    for(StateSet::ModeVector::iterator mitr=modes.begin();
-        mitr!=modes.end();
-        ++mitr)
-    {
-         GLModeToGLNameMap::iterator nitr = s_GLModeToGLNameMap.find(mitr->first);
-         if (nitr!=s_GLModeToGLNameMap.end())
-         {
-             fw.indent() << nitr->second << " " << StateSet_getModeStr(mitr->second) << endl;
-         }
-         else
-         {
-            // no name defined for GLMode so just pass its value to fw.
-            fw.indent() << "0x" << hex << (osg::uint)mitr->first << dec <<" " << StateSet_getModeStr(mitr->second) << endl;
-         }
-
-    }
-    
-    StateSet::AttributeVector attributes = stateset.getAttributeVector();
-
-    for(StateSet::AttributeVector::iterator sitr=attributes.begin();
-        sitr!=attributes.end();
-        ++sitr)
-    {
-        fw.writeObject(*(*sitr));
-    }
-
-#else
-
   const StateSet::ModeList& ml = stateset.getModeList();
   const StateSet::AttributeList& sl = stateset.getAttributeList();
 
@@ -438,8 +402,6 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
     {
         fw.writeObject(*(sitr->second.first));
     }
-
-#endif
 
     return true;
 }

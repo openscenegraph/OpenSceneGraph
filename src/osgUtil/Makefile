@@ -2,6 +2,7 @@
 include ../../Make/makedefs
 
 C++FILES = \
+	AppVisitor.cpp\
 	CameraManipulator.cpp\
 	CullVisitor.cpp\
 	CullViewState.cpp\
@@ -12,6 +13,7 @@ C++FILES = \
 	IntersectVisitor.cpp\
         InsertImpostorsVisitor.cpp\
 	NvTriStripObjects.cpp\
+	OptimizeStateVisitor.cpp\
 	RenderBin.cpp\
 	RenderGraph.cpp\
 	RenderLeaf.cpp\
@@ -39,6 +41,7 @@ LIB	= ../../lib/lib$(TARGET_BASENAME).so
 
 TARGET_LIB_FILES = lib$(TARGET_BASENAME).so
 TARGET_INCLUDE_FILES = \
+	osgUtil/AppVisitor\
 	osgUtil/CameraManipulator\
 	osgUtil/CullVisitor\
 	osgUtil/CullViewState\
@@ -52,6 +55,7 @@ TARGET_INCLUDE_FILES = \
 	osgUtil/GUIEventHandler\
 	osgUtil/IntersectVisitor\
         osgUtil/InsertImpostorsVisitor\
+        osgUtil/OptimizeStateVisitor\
 	osgUtil/RenderBin\
 	osgUtil/RenderGraph\
 	osgUtil/RenderLeaf\

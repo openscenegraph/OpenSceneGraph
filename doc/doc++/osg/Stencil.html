@@ -23,72 +23,69 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.75.1">Stencil</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.82.1">Stencil</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.75.2">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.82.2">META_StateAttribute</A></B>(<!1><A HREF="Stencil.html">Stencil</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.29">STENCIL</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.75.3">clone</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.82.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.75.4">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.82.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> <B><A HREF="#DOC.2.75.5">getType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.82.6">setFunction</A></B>(const <!1><A HREF="Stencil.html#DOC.2.82.5">Function</A> func, int <!1><A HREF="Referenced.html#DOC.2.73.4">ref</A>, uint mask)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.75.6">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.82.5">Function</A> <B><A HREF="#DOC.2.82.7">getFunction</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.75.8">setFunction</A></B>(const <!1><A HREF="Stencil.html#DOC.2.75.7">Function</A> func, int <!1><A HREF="Referenced.html#DOC.2.69.4">ref</A>, uint mask)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.82.8">getFunctionRef</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.75.7">Function</A> <B><A HREF="#DOC.2.75.9">getFunction</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const uint <B><A HREF="#DOC.2.82.9">getFunctionMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.75.10">getFunctionRef</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const uint <B><A HREF="#DOC.2.75.11">getFunctionMask</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.75.13">setOperation</A></B>(const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> sfail, const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> zfail, const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> zpass)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.82.11">setOperation</A></B>(const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> sfail, const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> zfail, const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> zpass)
 <DD><I>set the operations to apply when the various stencil and depth  tests fail or pass.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> <B><A HREF="#DOC.2.75.14">getStencilFailOperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> <B><A HREF="#DOC.2.82.12">getStencilFailOperation</A></B>() const 
 <DD><I>get the operation when the stencil test fails</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> <B><A HREF="#DOC.2.75.15">getStencilPassAndDepthFailOperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> <B><A HREF="#DOC.2.82.13">getStencilPassAndDepthFailOperation</A></B>() const 
 <DD><I>get the operation when the stencil test passes but the depth test fails</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> <B><A HREF="#DOC.2.75.16">getStencilPassAndDepthPassOperation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> <B><A HREF="#DOC.2.82.14">getStencilPassAndDepthPassOperation</A></B>() const 
 <DD><I>get the operation when both the stencil test and the depth test pass</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.75.17">setWriteMask</A></B>(uint mask)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.82.15">setWriteMask</A></B>(uint mask)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const uint <B><A HREF="#DOC.2.75.18">getWriteMask</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const uint <B><A HREF="#DOC.2.82.16">getWriteMask</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.75.19">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.82.17">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.75.7">Function</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.82.5">Function</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.75.12">Operation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.82.10">Operation</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.75.7">Function</A> <B><A HREF="#DOC.2.75.21">_func</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.82.5">Function</A> <B><A HREF="#DOC.2.82.19">_func</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.75.22">_funcRef</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.82.20">_funcRef</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>uint <B><A HREF="#DOC.2.75.23">_funcMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>uint <B><A HREF="#DOC.2.82.21">_funcMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> <B><A HREF="#DOC.2.75.24">_sfail</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> <B><A HREF="#DOC.2.82.22">_sfail</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> <B><A HREF="#DOC.2.75.25">_zfail</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> <B><A HREF="#DOC.2.82.23">_zfail</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> <B><A HREF="#DOC.2.75.26">_zpass</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> <B><A HREF="#DOC.2.82.24">_zpass</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>uint <B><A HREF="#DOC.2.75.27">_writeMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>uint <B><A HREF="#DOC.2.82.25">_writeMask</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.75.20">~Stencil</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.82.18">~Stencil</A></B>()
 </DL></P>
 
 </DL>
@@ -96,6 +93,20 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.80.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
 
@@ -109,7 +120,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
@@ -143,116 +156,109 @@
 <DL>
 
 <A NAME="Stencil"></A>
-<A NAME="DOC.2.75.1"></A>
+<A NAME="DOC.2.82.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Stencil()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.75.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<A NAME="META_StateAttribute"></A>
+<A NAME="DOC.2.82.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="Stencil.html">Stencil</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.29">STENCIL</A>)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="clone"></A>
-<A NAME="DOC.2.75.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="className"></A>
-<A NAME="DOC.2.75.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getType"></A>
-<A NAME="DOC.2.75.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> getType() const </B></TT>
+<A NAME="compare"></A>
+<A NAME="DOC.2.82.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.75.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.82.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Function"></A>
-<A NAME="DOC.2.75.7"></A>
+<A NAME="DOC.2.82.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Function</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="NEVER"></A>
-<A NAME="DOC.2.75.7.1"></A>
+<A NAME="DOC.2.82.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NEVER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LESS"></A>
-<A NAME="DOC.2.75.7.2"></A>
+<A NAME="DOC.2.82.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LESS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="EQUAL"></A>
-<A NAME="DOC.2.75.7.3"></A>
+<A NAME="DOC.2.82.5.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> EQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="LEQUAL"></A>
-<A NAME="DOC.2.75.7.4"></A>
+<A NAME="DOC.2.82.5.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GREATER"></A>
-<A NAME="DOC.2.75.7.5"></A>
+<A NAME="DOC.2.82.5.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GREATER</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="NOTEQUAL"></A>
-<A NAME="DOC.2.75.7.6"></A>
+<A NAME="DOC.2.82.5.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NOTEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GEQUAL"></A>
-<A NAME="DOC.2.75.7.7"></A>
+<A NAME="DOC.2.82.5.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GEQUAL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ALWAYS"></A>
-<A NAME="DOC.2.75.7.8"></A>
+<A NAME="DOC.2.82.5.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALWAYS</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setFunction"></A>
-<A NAME="DOC.2.75.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(const <!1><A HREF="Stencil.html#DOC.2.75.7">Function</A> func, int <!1><A HREF="Referenced.html#DOC.2.69.4">ref</A>, uint mask)</B></TT>
+<A NAME="DOC.2.82.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setFunction(const <!1><A HREF="Stencil.html#DOC.2.82.5">Function</A> func, int <!1><A HREF="Referenced.html#DOC.2.73.4">ref</A>, uint mask)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFunction"></A>
-<A NAME="DOC.2.75.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.75.7">Function</A> getFunction() const </B></TT>
+<A NAME="DOC.2.82.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.82.5">Function</A> getFunction() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFunctionRef"></A>
-<A NAME="DOC.2.75.10"></A>
+<A NAME="DOC.2.82.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getFunctionRef() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFunctionMask"></A>
-<A NAME="DOC.2.75.11"></A>
+<A NAME="DOC.2.82.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const uint getFunctionMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Operation"></A>
-<A NAME="DOC.2.75.12"></A>
+<A NAME="DOC.2.82.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Operation</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="KEEP"></A>
-<A NAME="DOC.2.75.12.1"></A>
+<A NAME="DOC.2.82.10.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEEP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ZERO"></A>
-<A NAME="DOC.2.75.12.2"></A>
+<A NAME="DOC.2.82.10.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ZERO</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="REPLACE"></A>
-<A NAME="DOC.2.75.12.3"></A>
+<A NAME="DOC.2.82.10.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> REPLACE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="INCR"></A>
-<A NAME="DOC.2.75.12.4"></A>
+<A NAME="DOC.2.82.10.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> INCR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DECR"></A>
-<A NAME="DOC.2.75.12.5"></A>
+<A NAME="DOC.2.82.10.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DECR</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="INVERT"></A>
-<A NAME="DOC.2.75.12.6"></A>
+<A NAME="DOC.2.82.10.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> INVERT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setOperation"></A>
-<A NAME="DOC.2.75.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOperation(const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> sfail, const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> zfail, const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> zpass)</B></TT>
+<A NAME="DOC.2.82.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setOperation(const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> sfail, const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> zfail, const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> zpass)</B></TT>
 <DD>set the operations to apply when the various stencil and depth 
 tests fail or pass.  First paramater is to control the operation
 when the stencil test fails.  The second paramter is to control the
@@ -262,62 +268,62 @@ and depth pass.  Ordering of parameter is the same as if using
 glStencilOp(,,).
 <DL><DT><DD></DL><P>
 <A NAME="getStencilFailOperation"></A>
-<A NAME="DOC.2.75.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> getStencilFailOperation() const </B></TT>
+<A NAME="DOC.2.82.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> getStencilFailOperation() const </B></TT>
 <DD>get the operation when the stencil test fails
 <DL><DT><DD></DL><P>
 <A NAME="getStencilPassAndDepthFailOperation"></A>
-<A NAME="DOC.2.75.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> getStencilPassAndDepthFailOperation() const </B></TT>
+<A NAME="DOC.2.82.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> getStencilPassAndDepthFailOperation() const </B></TT>
 <DD>get the operation when the stencil test passes but the depth test fails
 <DL><DT><DD></DL><P>
 <A NAME="getStencilPassAndDepthPassOperation"></A>
-<A NAME="DOC.2.75.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> getStencilPassAndDepthPassOperation() const </B></TT>
+<A NAME="DOC.2.82.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> getStencilPassAndDepthPassOperation() const </B></TT>
 <DD>get the operation when both the stencil test and the depth test pass
 <DL><DT><DD></DL><P>
 <A NAME="setWriteMask"></A>
-<A NAME="DOC.2.75.17"></A>
+<A NAME="DOC.2.82.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setWriteMask(uint mask)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getWriteMask"></A>
-<A NAME="DOC.2.75.18"></A>
+<A NAME="DOC.2.82.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const uint getWriteMask() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.75.19"></A>
+<A NAME="DOC.2.82.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Stencil"></A>
-<A NAME="DOC.2.75.20"></A>
+<A NAME="DOC.2.82.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Stencil()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_func"></A>
-<A NAME="DOC.2.75.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.75.7">Function</A> _func</B></TT>
+<A NAME="DOC.2.82.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.82.5">Function</A> _func</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_funcRef"></A>
-<A NAME="DOC.2.75.22"></A>
+<A NAME="DOC.2.82.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _funcRef</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_funcMask"></A>
-<A NAME="DOC.2.75.23"></A>
+<A NAME="DOC.2.82.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>uint _funcMask</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_sfail"></A>
-<A NAME="DOC.2.75.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> _sfail</B></TT>
+<A NAME="DOC.2.82.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> _sfail</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_zfail"></A>
-<A NAME="DOC.2.75.25"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> _zfail</B></TT>
+<A NAME="DOC.2.82.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> _zfail</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_zpass"></A>
-<A NAME="DOC.2.75.26"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.75.12">Operation</A> _zpass</B></TT>
+<A NAME="DOC.2.82.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Stencil.html#DOC.2.82.10">Operation</A> _zpass</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_writeMask"></A>
-<A NAME="DOC.2.75.27"></A>
+<A NAME="DOC.2.82.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>uint _writeMask</B></TT>
 <DL><DT><DD></DL><P></DL>
 

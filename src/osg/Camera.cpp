@@ -11,6 +11,8 @@ using namespace osg;
 Camera::Camera()
 {
 
+    _adjustAspectRatioMode = ADJUST_HORIZONTAL;
+
     // projection details.
     setPerspective(60,1.0,1.0,1000.0);
         
@@ -117,6 +119,34 @@ void Camera::setPerspective(const double fovy,const double aspectRatio,
     _dirty = true;
 }
 
+/** Set a sysmetical perspective projection using field of view.*/
+void Camera::setFOV(const double fovx,const double fovy,
+                    const double zNear, const double zFar)
+{
+    _projectionType = PERSPECTIVE;
+    
+    // note, in Frustum/Perspective mode these values are scaled
+    // by the zNear from when they were initialised to ensure that
+    // subsequent changes in zNear do not affect them.
+
+    // calculate the appropriate left, right etc.
+    double tan_fovx = tan(DEG2RAD(fovx*0.5));
+    double tan_fovy = tan(DEG2RAD(fovy*0.5));
+    _right  =  tan_fovx;
+    _left   = -_right;
+    _top    =  tan_fovy;
+    _bottom =  -_top;
+
+    _zNear = zNear;
+    _zFar = zFar;
+
+    notify(INFO)<<"osg::Camera::setFOV(fovx="<<fovx<<",fovy="<<fovy<<","<<endl;
+    notify(INFO)<<"                    zNear="<<zNear<<", zFar="<<zFar<<")"<<endl;    
+    notify(INFO)<<"    osg::Camera::calc_fovx()="<<calc_fovx()<<endl;
+    notify(INFO)<<"    osg::Camera::calc_fovy()="<<calc_fovy()<<endl;
+    
+    _dirty = true;
+}
 
 /** Set the near and far clipping planes.*/
 void Camera::setNearFar(const double zNear, const double zFar)
@@ -134,7 +164,7 @@ void Camera::setNearFar(const double zNear, const double zFar)
 
 /** Adjust the clipping planes to account for a new window aspcect ratio.
   * Typicall used after resizeing a window.*/
-void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAxis aa)
+void Camera::adjustAspectRatio(const double newAspectRatio, const AdjustAspectRatioMode aa)
 {
     double previousAspectRatio = (_right-_left)/(_top-_bottom);
     double deltaRatio = newAspectRatio/previousAspectRatio;
@@ -668,15 +698,15 @@ void Camera::ensureOrthogonalUpVector()
     _up.normalize();
 }
 
-const bool Camera::project(const Vec3& obj,const int* view,Vec3& win) const
+const bool Camera::project(const Vec3& obj,const Viewport& viewport,Vec3& win) const
 {
     if (_MP.valid())
     {
         Vec3 v = obj * (*_MP);
         
         win.set(
-                view[0] + view[2]*(v[0]+1.0f)*0.5f,
-                view[1] + view[3]*(v[1]+1.0f)*0.5f,
+                (float)viewport.x() + (float)viewport.width()*(v[0]+1.0f)*0.5f,
+                (float)viewport.y() + (float)viewport.height()*(v[1]+1.0f)*0.5f,
                 (v[2]+1.0f)*0.5f
                );
         
@@ -686,13 +716,13 @@ const bool Camera::project(const Vec3& obj,const int* view,Vec3& win) const
         return false;
 }
 
-const bool Camera::unproject(const Vec3& win,const int* view,Vec3& obj) const
+const bool Camera::unproject(const Vec3& win,const Viewport& viewport,Vec3& obj) const
 {
     if (_inverseMP.valid())
     {
         Vec3 v(
-                2.0f*(win[0]-view[0])/view[2] - 1.0f,
-                2.0f*(win[1]-view[1])/view[3] - 1.0f,
+                2.0f*(win[0]-(float)viewport.x())/viewport.width() - 1.0f,
+                2.0f*(win[1]-(float)viewport.y())/viewport.height() - 1.0f,
                 2.0f*(win[2]) - 1.0f
                );
                

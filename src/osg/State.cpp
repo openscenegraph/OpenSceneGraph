@@ -8,7 +8,6 @@ using namespace osg;
 State::State()
 {
     _contextID = 0;
-    _frameNumber = 0;
     _fineGrainedErrorDetection = true;
 }
 

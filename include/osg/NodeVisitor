@@ -2,6 +2,7 @@
 #define OSG_NODEVISITOR 1
 
 #include <osg/Node>
+#include <osg/FrameStamp>
 
 namespace osg {
 
@@ -38,12 +39,62 @@ class SG_EXPORT NodeVisitor : public Referenced
             to each traversal.*/
         virtual void reset() {}
 
+
+        /** Set the traversal number. Typically used to denote the frame count.*/
+        inline void setTraversalNumber(const int fn) { _traversalNumber = fn; }
+        
+        /** Get the traversal number. Typically used to denote the frame count.*/
+        inline const int getTraversalNumber() const { return _traversalNumber; }
+
+        /** Set the FrameStamp that this traversal is assoicated with.*/
+        inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
+        
+        /** Get the FrameStamp that this traversal is assoicated with.*/
+        inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
+
+
+        /** Set the TraversalMask of this NodeVisitor.
+          * The TraversalMask is used by the NodeVisitor::validNodeMask() method
+          * to determine whether to operate on a node and its subgraph.
+          * validNodeMask() is called automaticaly in the Node::accept() method before
+          * any call to NodeVisitor::apply(), apply() is only ever called if validNodeMask
+          * returns true. Note, if NodeVisitor::_traversalMask is 0 then all operations
+          * will be swithced off for all nodes.  Whereas setting both _traversalMask and
+          * _nodeMaskOverride to 0xffffffff will allow a visitor to work on all nodes
+          * regardless of their own Node::_nodeMask state.*/
+        inline void setTraversalMask(const Node::NodeMask mask) { _traversalMask = mask; }
+
+        /** Get the TraversalMask.*/
+        inline const Node::NodeMask getTraversalMask() const { return _traversalMask; }
+
+        /** Set the NodeMaskOverride mask.
+          * Used in validNodeMask() to determine whether to operate on a node or its 
+          * subgraph, by OR'ing NodeVisitor::_nodeMaskOverride with the Node's own Node::_nodeMask.
+          * Typically used to force on nodes which may have
+          * been switched off by their own Node::_nodeMask.*/
+        inline void setNodeMaskOverride(const Node::NodeMask mask) { _nodeMaskOverride = mask; }
+
+        /** Get the NodeMaskOverride mask.*/
+        inline const Node::NodeMask getNodeMaskOverride() const { return _nodeMaskOverride; }
+        
+        /** Method to called by Node and its subclass' Node::accept() method, if the result is true
+          * to be used to cull operations of nodes and their subgraphs.
+          * Return true if the result of a bit wise and of the NodeVisitor::_traversalMask
+          * with the bit or between NodeVistor::_nodeMaskOverride and the Node::_nodeMask.
+          * default values for _traversalMask is 0xffffffff, _nodeMaskOverride is 0x0,
+          * and osg::Node::_nodeMask is 0xffffffff. */
+        inline const bool validNodeMask(const osg::Node& node) const
+        {
+            return (getTraversalMask() & (getNodeMaskOverride() | node.getNodeMask()))!=0;
+        }
+
         /** Set the traversal mode for Node::traverse() to use when 
             deciding which children of a node to traverse. If a
             NodeVisitor has been attached via setTraverseVisitor()
             and the new mode is not TRAVERSE_VISITOR then the attached
             visitor is detached. Default mode is TRAVERSE_NONE.*/
         void setTraversalMode(const TraversalMode mode);
+        
         /** Get the traversal mode.*/
         inline const TraversalMode getTraversalMode() const { return _traversalMode; }
 
@@ -54,7 +105,7 @@ class SG_EXPORT NodeVisitor : public Referenced
         /** Get the traversal visitor, returns NULL if none is attached.*/
         NodeVisitor* getTraversalVisitor() { return _traversalVisitor.get(); }
 
-        /** Inline method for passing handling traversal of a nodes.
+        /** Inline method for handling traversal of a nodes.
             If you intend to use the visitor for actively traversing 
             the scene graph then make sure the accept() methods call
             this method unless they handle traversal directly.*/
@@ -80,8 +131,15 @@ class SG_EXPORT NodeVisitor : public Referenced
 
     protected:
 
+        int                     _traversalNumber;
+        
+        ref_ptr<FrameStamp>     _frameStamp;
+
         ref_ptr<NodeVisitor>    _traversalVisitor;
+        
         TraversalMode           _traversalMode;
+        Node::NodeMask          _traversalMask;
+        Node::NodeMask          _nodeMaskOverride;
 
 };
 

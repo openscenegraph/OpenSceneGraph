@@ -5,6 +5,7 @@
 #include <osg/StateSet>
 #include <osg/BoundingSphere>
 #include <osg/MemoryAdapter>
+#include <osg/NodeCallback>
 #include <osg/ref_ptr>
 
 #include <string>
@@ -14,6 +15,16 @@ namespace osg {
 
 class NodeVisitor;
 class Group;
+
+/** META_Node macro define the standard clone, isSameKindAs, className
+  * and accept methods.  Use when subclassing from Node to make it
+  * more convinient to define the required pure virtual methods.*/
+#define META_Node(name) \
+        virtual Object* clone() const { return new name (); } \
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
+        virtual const char* className() const { return #name; } \
+        virtual void accept(NodeVisitor& nv) { if (nv.validNodeMask(*this)) nv.apply(*this); } \
+        
 
 /** Base class for all internal nodes in the scene graph.
     Provides interface for most common node operations (Composite Pattern).
@@ -59,7 +70,7 @@ class SG_EXPORT Node : public Object
         inline const ParentList& getParents() const { return _parents; }
 
         /** Get the a copy of parent list of node. A copy is returned to 
-          * prevent modifiaction of the parent list.*/
+          * prevent modification of the parent list.*/
 //        inline ParentList getParents() { return _parents; }
 
         inline Group* getParent(const int i)  { return _parents[i]; }
@@ -77,9 +88,22 @@ class SG_EXPORT Node : public Object
         inline const int getNumParents() const { return _parents.size(); }
 
 
+        /** Set app node callback, called during app traversal. */
+        void setAppCallback(NodeCallback* nc);
+
+        /** Get app node callback, called during app traversal. */
+        inline NodeCallback* getAppCallback() { return _appCallback.get(); }
+
+        /** Get const app node callback, called during app traversal. */
+        inline const NodeCallback* getAppCallback() const { return _appCallback.get(); }
+
+        /** Get the number of Children of this node which require App traversal,
+          * since they have an AppCallback attached to them or their children.*/
+        inline const int getNumChildrenRequiringAppTraversal() const { return _numChildrenRequiringAppTraversal; }
+
         /**
          * Set user data. See MemoryAdapter documention for details
-         * of how to specify memory managament of _userData.
+         * of how to specify memory management of _userData.
          */
         inline void setUserData(void* data,MemoryAdapter* ma=0L)
         {
@@ -172,6 +196,11 @@ class SG_EXPORT Node : public Object
 
         ParentList _parents;
         friend Group;
+
+        ref_ptr<NodeCallback>   _appCallback;
+        int                     _numChildrenRequiringAppTraversal;
+        
+        void setNumChildrenRequiringAppTraversal(const int num);
 
         void*                   _userData;
         ref_ptr<MemoryAdapter>  _memoryAdapter;

@@ -1,11 +1,11 @@
 
 Summary: Open Scene Graph
-Name: OpenSceneGraph
-Version: 0.8.39
+Name: osg
+Version: 0.8.42
 Release: 1
-Copyright: LGPL
+Copyright: GLPL
 Group: Graphics
-Source: osg-0.8.39.tar.gz
+Source: osg-0.8.42.tar.gz
 URL: http://www.openscenegraph.org 
 Packager: Robert Osfield
 
@@ -18,7 +18,24 @@ Open Scene Graph is an open-source scene graph API.
 %build
 %install
 
-
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/hangglide /usr/bin/hangglide
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/osgconv /usr/bin/osgconv
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/osgcube /usr/bin/osgcube
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/osgimpostor /usr/bin/osgimpostor
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/osgreflect /usr/bin/osgreflect
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/osgtexture /usr/bin/osgtexture
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/osgviews /usr/bin/osgviews
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/bin/sgv /usr/bin/sgv
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/lib/libosgDB.so /usr/lib/libosgDB.so
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/lib/libosgGLUT.so /usr/lib/libosgGLUT.so
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/lib/libosg.so /usr/lib/libosg.so
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/lib/libosgUtil.so /usr/lib/libosgUtil.so
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/lib/osgPlugins /usr/lib/osgPlugins
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/include/osg /usr/include/osg
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/include/osgDB /usr/include/osgDB
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/include/osgGLUT /usr/include/osgGLUT
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/include/osgUtil /usr/include/osgUtil
+cp -rf /usr/src/redhat/BUILD/osg-0.8.42/include/osgWX /usr/include/osgWX
 
 
 
@@ -26,7 +43,78 @@ Open Scene Graph is an open-source scene graph API.
 # FILES Sections
 %files
 
-%attr(755, root, root) /usr/bin/*
-%attr(755, root, root) /usr/lib/*
-%attr(444, root, root) /usr/include/osg/*
+%attr(755, root, root) /usr/bin/hangglide
+%attr(755, root, root) /usr/bin/osgconv
+%attr(755, root, root) /usr/bin/osgcube
+%attr(755, root, root) /usr/bin/osgimpostor
+%attr(755, root, root) /usr/bin/osgreflect
+%attr(755, root, root) /usr/bin/osgtexture
+%attr(755, root, root) /usr/bin/osgviews
+%attr(755, root, root) /usr/bin/sgv
+%attr(755, root, root) /usr/lib/libosgDB.so
+%attr(755, root, root) /usr/lib/libosgGLUT.so
+%attr(755, root, root) /usr/lib/libosg.so
+%attr(755, root, root) /usr/lib/libosgUtil.so
+%attr(755, root, root) /usr/lib/osgPlugins
+%attr(444, root, root) /usr/include/osg/AlphaFunc
+%attr(444, root, root) /usr/include/osg/Billboard
+%attr(444, root, root) /usr/include/osg/BoundingBox
+%attr(444, root, root) /usr/include/osg/BoundingSphere
+%attr(444, root, root) /usr/include/osg/BoundsChecking
+%attr(444, root, root) /usr/include/osg/Camera
+%attr(444, root, root) /usr/include/osg/ClippingVolume
+%attr(444, root, root) /usr/include/osg/ClipPlane
+%attr(444, root, root) /usr/include/osg/ColorMask
+%attr(444, root, root) /usr/include/osg/CullFace
+%attr(444, root, root) /usr/include/osg/Depth
+%attr(444, root, root) /usr/include/osg/Drawable
+%attr(444, root, root) /usr/include/osg/Export
+%attr(444, root, root) /usr/include/osg/Fog
+%attr(444, root, root) /usr/include/osg/FrontFace
+%attr(444, root, root) /usr/include/osg/Geode
+%attr(444, root, root) /usr/include/osg/GeoSet
+%attr(444, root, root) /usr/include/osg/GL
+%attr(444, root, root) /usr/include/osg/GLExtensions
+%attr(444, root, root) /usr/include/osg/Group
+%attr(444, root, root) /usr/include/osg/Image
+%attr(444, root, root) /usr/include/osg/Impostor
+%attr(444, root, root) /usr/include/osg/ImpostorSprite
+%attr(444, root, root) /usr/include/osg/Light
+%attr(444, root, root) /usr/include/osg/LightSource
+%attr(444, root, root) /usr/include/osg/LineSegment
+%attr(444, root, root) /usr/include/osg/LOD
+%attr(444, root, root) /usr/include/osg/Material
+%attr(444, root, root) /usr/include/osg/Matrix
+%attr(444, root, root) /usr/include/osg/MemoryAdapter
+%attr(444, root, root) /usr/include/osg/mem_ptr
+%attr(444, root, root) /usr/include/osg/Node
+%attr(444, root, root) /usr/include/osg/NodeCallback
+%attr(444, root, root) /usr/include/osg/NodeVisitor
+%attr(444, root, root) /usr/include/osg/Notify
+%attr(444, root, root) /usr/include/osg/Object
+%attr(444, root, root) /usr/include/osg/Plane
+%attr(444, root, root) /usr/include/osg/Point
+%attr(444, root, root) /usr/include/osg/PolygonMode
+%attr(444, root, root) /usr/include/osg/PolygonOffset
+%attr(444, root, root) /usr/include/osg/Quat
+%attr(444, root, root) /usr/include/osg/Referenced
+%attr(444, root, root) /usr/include/osg/ref_ptr
+%attr(444, root, root) /usr/include/osg/State
+%attr(444, root, root) /usr/include/osg/StateAttribute
+%attr(444, root, root) /usr/include/osg/StateSet
+%attr(444, root, root) /usr/include/osg/Stencil
+%attr(444, root, root) /usr/include/osg/Switch
+%attr(444, root, root) /usr/include/osg/TexEnv
+%attr(444, root, root) /usr/include/osg/TexGen
+%attr(444, root, root) /usr/include/osg/TexMat
+%attr(444, root, root) /usr/include/osg/Texture
+%attr(444, root, root) /usr/include/osg/Timer
+%attr(444, root, root) /usr/include/osg/Transform
+%attr(444, root, root) /usr/include/osg/Transparency
+%attr(444, root, root) /usr/include/osg/Types
+%attr(444, root, root) /usr/include/osg/Vec2
+%attr(444, root, root) /usr/include/osg/Vec3
+%attr(444, root, root) /usr/include/osg/Vec4
+%attr(444, root, root) /usr/include/osg/Version
+%attr(444, root, root) /usr/include/osg/Viewport
 

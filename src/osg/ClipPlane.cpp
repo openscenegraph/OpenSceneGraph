@@ -5,7 +5,6 @@ using namespace osg;
 
 ClipPlane::ClipPlane()
 {
-    _clipPlane = new double[4];
     _clipPlane[0] = 0.0;
     _clipPlane[1] = 0.0;
     _clipPlane[2] = 0.0;
@@ -16,7 +15,6 @@ ClipPlane::ClipPlane()
 
 ClipPlane::~ClipPlane()
 {
-    delete _clipPlane;
 }
 
 void ClipPlane::setClipPlane(const Vec4& plane)
@@ -68,17 +66,10 @@ void ClipPlane::getClipPlane(Plane& plane) const
 
 void ClipPlane::getClipPlane(double* plane) const
 {
-    if (plane)
-    {
-        plane[0] = _clipPlane[0];
-        plane[1] = _clipPlane[1];
-        plane[2] = _clipPlane[2];
-        plane[3] = _clipPlane[3];
-    }
-    else
-    {
-        notify(WARN)<<"Warning: ClipPlane::getClipPlane() passed NULL plane array, ignoring operation."<<endl;
-    }
+    plane[0] = _clipPlane[0];
+    plane[1] = _clipPlane[1];
+    plane[2] = _clipPlane[2];
+    plane[3] = _clipPlane[3];
 }
 
 void ClipPlane::setClipPlaneNum(const unsigned int num)

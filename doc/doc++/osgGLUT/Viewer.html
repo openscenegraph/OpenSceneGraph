@@ -56,13 +56,13 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>long <B><A HREF="#DOC.6.2.16">initClock</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.17">clockSeconds</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.6.2.17">clockSeconds</A></B>()
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.18">updateFrameTick</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.19">frameSeconds</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.6.2.19">frameSeconds</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.6.2.20">frameRate</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.6.2.20">frameRate</A></B>()
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.21">help</A></B>(ostream&amp; fout)
 <DT>
@@ -148,6 +148,8 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.80">_lastFrameTick</A></B>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Timer_t <B><A HREF="#DOC.6.2.81">_frameTick</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::FrameStamp&gt;  <B><A HREF="#DOC.6.2.84">_frameStamp</A></B>
 </DL></P>
 
 <P><DL>
@@ -280,7 +282,7 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="clockSeconds"></A>
 <A NAME="DOC.6.2.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float clockSeconds()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double clockSeconds()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="updateFrameTick"></A>
 <A NAME="DOC.6.2.18"></A>
@@ -288,11 +290,11 @@ only available for backwards compatibility.
 <DL><DT><DD></DL><P>
 <A NAME="frameSeconds"></A>
 <A NAME="DOC.6.2.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float frameSeconds()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double frameSeconds()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="frameRate"></A>
 <A NAME="DOC.6.2.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float frameRate()</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double frameRate()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="help"></A>
 <A NAME="DOC.6.2.21"></A>
@@ -585,6 +587,10 @@ only available for backwards compatibility.
 <A NAME="frameTick"></A>
 <A NAME="DOC.6.2.83"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Timer_t frameTick()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_frameStamp"></A>
+<A NAME="DOC.6.2.84"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::FrameStamp&gt;  _frameStamp</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -15,12 +15,25 @@ class SG_EXPORT Depth : public StateAttribute
     
     
         Depth();
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Depth*>(obj)!=0L; }
-        virtual Object* clone() const { return new Depth(); }
-        virtual const char* className() const { return "Depth"; }
-    
-        virtual const Type getType() const { return DEPTH; }
         
+        META_StateAttribute(Depth, DEPTH);
+        
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(Depth,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_func)
+            COMPARE_StateAttribute_Parameter(_depthWriteMask)
+            COMPARE_StateAttribute_Parameter(_zNear)
+            COMPARE_StateAttribute_Parameter(_zFar)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
             ds.setMode(GL_DEPTH_TEST,value);

@@ -25,36 +25,33 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.24.1">CullFace</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.24.2">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.24.2">META_StateAttribute</A></B>(<!1><A HREF="CullFace.html">CullFace</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.4">CULLFACE</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.24.3">clone</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.24.3">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.24.4">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.24.4">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> <B><A HREF="#DOC.2.24.5">getType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.24.6">setMode</A></B>(const <!1><A HREF="CullFace.html#DOC.2.24.5">Mode</A> mode)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.24.6">setStateSetModes</A></B>(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="CullFace.html#DOC.2.24.5">Mode</A> <B><A HREF="#DOC.2.24.7">getMode</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.24.8">setMode</A></B>(const <!1><A HREF="CullFace.html#DOC.2.24.7">Mode</A> mode)
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="CullFace.html#DOC.2.24.7">Mode</A> <B><A HREF="#DOC.2.24.9">getMode</A></B>() const 
-<DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.24.10">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.24.8">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.24.7">Mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.24.5">Mode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullFace.html#DOC.2.24.7">Mode</A> <B><A HREF="#DOC.2.24.12">_mode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CullFace.html#DOC.2.24.5">Mode</A> <B><A HREF="#DOC.2.24.10">_mode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.24.11">~CullFace</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.24.9">~CullFace</A></B>()
 </DL></P>
 
 </DL>
@@ -62,6 +59,20 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B>clone</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.80.5">Type</A> <B>getType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator <  </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator == </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>bool <B>operator != </B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; rhs) const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp;) const 
 </DL></P>
 
@@ -75,7 +86,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>Values</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>Type</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>Type</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>Types</B>
 </DL></P>
 
 </DL>
@@ -112,63 +125,56 @@
 <A NAME="DOC.2.24.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> CullFace()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="isSameKindAs"></A>
+<A NAME="META_StateAttribute"></A>
 <A NAME="DOC.2.24.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="CullFace.html">CullFace</A>, <!1><A HREF="StateAttribute.html#DOC.2.80.6.4">CULLFACE</A>)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="clone"></A>
+<A NAME="compare"></A>
 <A NAME="DOC.2.24.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="className"></A>
-<A NAME="DOC.2.24.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="getType"></A>
-<A NAME="DOC.2.24.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="StateAttribute.html#DOC.2.73.5">Type</A> getType() const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSetModes"></A>
-<A NAME="DOC.2.24.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.73.2">GLModeValue</A> value) const </B></TT>
+<A NAME="DOC.2.24.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setStateSetModes(<!1><A HREF="StateSet.html">StateSet</A>&amp; ds, const <!1><A HREF="StateAttribute.html#DOC.2.80.2">GLModeValue</A> value) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Mode"></A>
-<A NAME="DOC.2.24.7"></A>
+<A NAME="DOC.2.24.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Mode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="FRONT"></A>
-<A NAME="DOC.2.24.7.1"></A>
+<A NAME="DOC.2.24.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRONT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="BACK"></A>
-<A NAME="DOC.2.24.7.2"></A>
+<A NAME="DOC.2.24.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> BACK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FRONT_AND_BACK"></A>
-<A NAME="DOC.2.24.7.3"></A>
+<A NAME="DOC.2.24.5.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRONT_AND_BACK</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setMode"></A>
-<A NAME="DOC.2.24.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode(const <!1><A HREF="CullFace.html#DOC.2.24.7">Mode</A> mode)</B></TT>
+<A NAME="DOC.2.24.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMode(const <!1><A HREF="CullFace.html#DOC.2.24.5">Mode</A> mode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMode"></A>
-<A NAME="DOC.2.24.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="CullFace.html#DOC.2.24.7">Mode</A> getMode() const </B></TT>
+<A NAME="DOC.2.24.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="CullFace.html#DOC.2.24.5">Mode</A> getMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.24.10"></A>
+<A NAME="DOC.2.24.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~CullFace"></A>
-<A NAME="DOC.2.24.11"></A>
+<A NAME="DOC.2.24.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~CullFace()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mode"></A>
-<A NAME="DOC.2.24.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullFace.html#DOC.2.24.7">Mode</A> _mode</B></TT>
+<A NAME="DOC.2.24.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CullFace.html#DOC.2.24.5">Mode</A> _mode</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

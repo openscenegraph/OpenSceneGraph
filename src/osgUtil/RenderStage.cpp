@@ -1,3 +1,5 @@
+#include <osg/Notify>
+
 #include <osgUtil/RenderStage>
 
 using namespace osg;
@@ -44,6 +46,12 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 {
     if (_stageDrawnThisFrame) return;
     
+    if (!_viewport)
+    {
+        notify(FATAL) << "Error: cannot drawm stage due to undefined viewport."<<endl;
+        return;
+    }
+    
     _stageDrawnThisFrame = true;
 
     for(DependencyList::iterator itr=_dependencyList.begin();
@@ -57,11 +65,11 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
 #define USE_SISSOR_TEST
 #ifdef USE_SISSOR_TEST
-    glScissor( _view[0], _view[1], _view[2], _view[3] );
+    glScissor( _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height() );
     glEnable( GL_SCISSOR_TEST );
 #endif
 
-    glViewport( _view[0], _view[1], _view[2], _view[3] );
+    _viewport->apply(state);
 
     // glEnable( GL_DEPTH_TEST );
 
@@ -86,6 +94,10 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     glDisable( GL_SCISSOR_TEST );
 #endif
 
+    // pass the camera we're about to set up to state, so that
+    // subsequent operatiosn know about it, such as for CLOD etc.
+    state.setCamera(_camera.get());
+
     // set up projection
     const Matrix& projectionMat = _camera->getProjectionMatrix();
     glMatrixMode( GL_PROJECTION );
@@ -104,6 +116,7 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     // set up camera modelview.
     const Matrix& modelView = _camera->getModelViewMatrix();
     glMultMatrixf((GLfloat*)modelView._mat);
+    
 
     if (getLightingMode()==RenderStageLighting::SKY_LIGHT && light)
     {

@@ -15,22 +15,31 @@ class SG_EXPORT Light : public StateAttribute
 
         Light();
         
-        /** return a shallow copy of a node, with Object* return type.*/
-        virtual Object* clone() const { return new Light(); }
+        META_StateAttribute(Light, (Type)(LIGHT_0+_lightnum));
 
-        /** return true if this and obj are of the same kind of object.*/
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Light*>(obj)!=NULL; }
-
-        /** return the name of the node's class type.*/
-        virtual const char* className() const { return "Light"; }
-
-        virtual const Type getType() const { return LIGHTING; }
-        
-        virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
         {
-            ds.setMode((GLMode)(GL_LIGHT0+_lightnum),value);
-        }
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(Light,sa)
 
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_lightnum)
+            COMPARE_StateAttribute_Parameter(_on)
+            COMPARE_StateAttribute_Parameter(_ambient)
+            COMPARE_StateAttribute_Parameter(_diffuse)
+            COMPARE_StateAttribute_Parameter(_specular)
+            COMPARE_StateAttribute_Parameter(_position)
+            COMPARE_StateAttribute_Parameter(_direction)
+            COMPARE_StateAttribute_Parameter(_constant_attenuation)
+            COMPARE_StateAttribute_Parameter(_linear_attenuation)
+            COMPARE_StateAttribute_Parameter(_quadratic_attenuation)
+            COMPARE_StateAttribute_Parameter(_spot_exponent)
+            COMPARE_StateAttribute_Parameter(_spot_cutoff)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
 
 	/**
 	 * Turn the light on.

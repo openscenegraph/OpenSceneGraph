@@ -12,11 +12,22 @@ class SG_EXPORT PolygonOffset : public StateAttribute
     public :
 
         PolygonOffset();
-        virtual Object* clone() const { return new PolygonOffset(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PolygonOffset*>(obj)!=NULL; }
-        virtual const char* className() const { return "PolygonOffset"; }
 
-        virtual const Type getType() const { return POLYGONOFFSET; }
+        META_StateAttribute(PolygonOffset, POLYGONOFFSET);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(PolygonOffset,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_factor)
+            COMPARE_StateAttribute_Parameter(_units)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
 
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {

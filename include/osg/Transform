@@ -17,10 +17,7 @@ class SG_EXPORT Transform : public Group
         Transform();
         Transform(const Matrix& matix);
 
-        virtual Object* clone() const { return new Transform(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Transform*>(obj)!=NULL; }
-        virtual const char* className() const { return "Transform"; }
-        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+        META_Node(Transform);
 
         void setMatrix(const Matrix& mat );
         inline Matrix& getMatrix() { return *_matrix; }

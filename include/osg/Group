@@ -17,12 +17,9 @@ class SG_EXPORT Group : public Node
         typedef std::vector<ref_ptr<Node> > ChildList;
 
         Group();
-
-        virtual Object* clone() const { return new Group(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Group*>(obj)!=NULL; }
-        virtual const char* className() const { return "Group"; }
-        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
         
+        META_Node(Group);
+
         virtual void traverse(NodeVisitor& nv);
 
         /** Add Node to Group.

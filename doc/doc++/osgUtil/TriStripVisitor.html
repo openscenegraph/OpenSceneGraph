@@ -23,13 +23,13 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.29.1">TriStripVisitor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.31.1">TriStripVisitor</A></B>()
 <DD><I>default to traversing all children</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.29.2">stripify</A></B>(osg::GeoSet&amp; gset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.2.31.2">stripify</A></B>(osg::GeoSet&amp; gset)
 <DD><I>convert mesh primitives in geoset into Tri Strips using NvTriStrip.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.29.3">apply</A></B>(osg::Geode&amp; geode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.31.3">apply</A></B>(osg::Geode&amp; geode)
 <DD><I>apply stripify method to all geode geosets</I>
 </DL></P>
 
@@ -43,19 +43,19 @@ The current implemention is based up NVidia's NvTriStrip.</BLOCKQUOTE>
 <DL>
 
 <A NAME="TriStripVisitor"></A>
-<A NAME="DOC.2.29.1"></A>
+<A NAME="DOC.2.31.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TriStripVisitor()</B></TT>
 <DD>default to traversing all children
 <DL><DT><DD></DL><P>
 <A NAME="stripify"></A>
-<A NAME="DOC.2.29.2"></A>
+<A NAME="DOC.2.31.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void stripify(osg::GeoSet&amp; gset)</B></TT>
 <DD>convert mesh primitives in geoset into Tri Strips using
 NvTriStrip.  Converts all primtive types except points
 and lines, linestrips which it leaves unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.29.3"></A>
+<A NAME="DOC.2.31.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Geode&amp; geode)</B></TT>
 <DD>apply stripify method to all geode geosets
 <DL><DT><DD></DL><P></DL>

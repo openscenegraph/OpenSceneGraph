@@ -12,12 +12,23 @@ class SG_EXPORT Transparency : public StateAttribute
     public :
 
         Transparency();
-        virtual Object* clone() const { return new Transparency(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Transparency*>(obj)!=0L; }
-        virtual const char* className() const { return "Transparency"; }
-
-        virtual const Type getType() const { return TRANSPARENCY; }
         
+        META_StateAttribute(Transparency,TRANSPARENCY);
+        
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(Transparency,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_source_factor)
+            COMPARE_StateAttribute_Parameter(_destination_factor)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
         virtual void setStateSetModes(StateSet& ds,const GLModeValue value) const
         {
             ds.setMode(GL_BLEND,value);

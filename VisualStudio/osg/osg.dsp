@@ -142,6 +142,10 @@ SOURCE=..\..\Src\Osg\FrontFace.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Src\Osg\FrameStamp.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Geode.cpp
 # End Source File
 # Begin Source File
@@ -276,6 +280,10 @@ SOURCE=..\..\src\osg\Transparency.cpp
 
 SOURCE=..\..\src\osg\Version.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Viewport.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -335,6 +343,10 @@ SOURCE=..\..\Include\Osg\Fog
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\FrontFace
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\FrameStamp
 # End Source File
 # Begin Source File
 
@@ -415,6 +427,10 @@ SOURCE=..\..\include\osg\MemoryAdapter
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Node
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\NodeCallback
 # End Source File
 # Begin Source File
 
@@ -515,6 +531,10 @@ SOURCE=..\..\Include\Osg\Vec4
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Version
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Viewport
 # End Source File
 # End Group
 # Begin Group "Resource Files"

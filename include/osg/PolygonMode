@@ -13,11 +13,23 @@ class SG_EXPORT PolygonMode : public StateAttribute
     public :
     
         PolygonMode();
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PolygonMode*>(obj)!=0L; }
-        virtual Object* clone() const { return new PolygonMode(); }
-        virtual const char* className() const { return "PolygonMode"; }
-    
-        virtual const Type getType() const { return POLYGONMODE; }
+
+        META_StateAttribute(PolygonMode, POLYGONMODE);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(PolygonMode,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_frontAndBack)
+            COMPARE_StateAttribute_Parameter(_modeFront)
+            COMPARE_StateAttribute_Parameter(_modeBack)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
 
         enum Face {
             FRONT,

@@ -15,7 +15,8 @@
 #include <GL/glut.h>
 #include <osgGLUT/Viewer>
 
-#include <osg/Quat>
+#include <osgUtil/OptimizeStateVisitor>
+
 
 /*
  * Function to read several files (typically one) as specified on the command
@@ -130,6 +131,18 @@ int main( int argc, char **argv )
     osg::Timer_t after_load = timer.tick();
     cout << "Time for load = "<<timer.delta_s(before_load,after_load)<<" seconds"<<endl;
 
+    // note, the Microsoft visual C++ compilers can't handle the STL
+    // in the OptimizeStateVisitor and crash if we run it.  For the
+    // time being we'll just not use the optimize visitor under windows.
+    #ifndef WIN32
+    // optimize the state in scene graph, removing duplicate state.
+    osgUtil::OptimizeStateVisitor osv;
+    rootnode->accept(osv);
+    osv.optimize();
+    #endif
+
+
+    
     // initialize the viewer.
     osgGLUT::Viewer viewer;
     viewer.addViewport( rootnode );

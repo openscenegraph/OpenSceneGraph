@@ -23,21 +23,21 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.50.1">MemoryAdapter</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.51.1">MemoryAdapter</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.2">ref_data</A></B>(void* ) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.51.2">ref_data</A></B>(void* ) = 0
 <DD><I>Increment the reference count of the userData</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.50.3">unref_data</A></B>(void* ) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.51.3">unref_data</A></B>(void* ) = 0
 <DD><I>Decrement the reference count of the userData.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void* <B><A HREF="#DOC.2.50.4">clone_data</A></B>(void* )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void* <B><A HREF="#DOC.2.51.4">clone_data</A></B>(void* )
 <DD><I>not current used, but will be used in future</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.50.5">~MemoryAdapter</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.51.5">~MemoryAdapter</A></B>()
 </DL></P>
 
 </DL>
@@ -70,16 +70,16 @@ which can be attached to osg::Node.</BLOCKQUOTE>
 <DL>
 
 <A NAME="MemoryAdapter"></A>
-<A NAME="DOC.2.50.1"></A>
+<A NAME="DOC.2.51.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MemoryAdapter()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ref_data"></A>
-<A NAME="DOC.2.50.2"></A>
+<A NAME="DOC.2.51.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void ref_data(void* ) = 0</B></TT>
 <DD>Increment the reference count of the userData
 <DL><DT><DD></DL><P>
 <A NAME="unref_data"></A>
-<A NAME="DOC.2.50.3"></A>
+<A NAME="DOC.2.51.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void unref_data(void* ) = 0</B></TT>
 <DD>Decrement the reference count of the userData.
 Is usually implemented such that if reference count 
@@ -88,12 +88,12 @@ deleted.  However, this is entirely up to the
 discression of the user who is extending this base class.
 <DL><DT><DD></DL><P>
 <A NAME="clone_data"></A>
-<A NAME="DOC.2.50.4"></A>
+<A NAME="DOC.2.51.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void* clone_data(void* )</B></TT>
 <DD>not current used, but will be used in future
 <DL><DT><DD></DL><P>
 <A NAME="~MemoryAdapter"></A>
-<A NAME="DOC.2.50.5"></A>
+<A NAME="DOC.2.51.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~MemoryAdapter()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

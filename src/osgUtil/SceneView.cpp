@@ -1,4 +1,5 @@
 #include <osgUtil/SceneView>
+#include <osgUtil/AppVisitor>
 
 #include <osg/Notify>
 #include <osg/Texture>
@@ -25,12 +26,7 @@ SceneView::SceneView()
     
     _prioritizeTextures = false;
     
-    _view[0] = 0;
-    _view[1] = 0;
-    _view[2] = 1024;
-    _view[3] = 768;
-    
-    _frameNumber = 0;
+    _viewport = new Viewport;
     
 }
 
@@ -58,6 +54,10 @@ void SceneView::setDefaults()
     
     _rendergraph = new osgUtil::RenderGraph;
     _renderStage = new osgUtil::RenderStage;
+
+    _appVisitor = new osgUtil::AppVisitor;
+    
+
     _cullVisitor = new osgUtil::CullVisitor;
 
     _cullVisitor->setRenderGraph(_rendergraph.get());
@@ -88,25 +88,42 @@ void SceneView::setDefaults()
 
 void SceneView::app()
 {
-    ++_frameNumber;
-    
     if (_sceneData.valid() && _appVisitor.valid())
     { 
         _appVisitor->reset();
+
+        _appVisitor->setFrameStamp(_frameStamp.get());
+
+        // use the frame number for the traversal number.
+        if (_frameStamp.valid())
+        {
+             _appVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+        }
+        
         _sceneData->accept(*_appVisitor.get());
     }
+    
+    
 }
 
 void SceneView::cull()
 {
     if (!_sceneData) return;
 
-    _camera->adjustAspectRatio((GLfloat)_view[2]/(GLfloat) _view[3]);
+    _camera->adjustAspectRatio(_viewport->aspectRatio());
     
     
     _rendergraph->clean();
 
     _cullVisitor->reset();
+
+    _cullVisitor->setFrameStamp(_frameStamp.get());
+
+    // use the frame number for the traversal number.
+    if (_frameStamp.valid())
+    {
+         _cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+    }
 
     // comment out reset of rendergraph since clean is more efficient.
     //  _rendergraph->reset();
@@ -115,14 +132,13 @@ void SceneView::cull()
     // reuse the structure on the rendergraph in the next frame. This
     // achieves a certain amount of frame cohereancy of memory allocation.
 
-    _cullVisitor->setFrameNumber(_frameNumber);
     _cullVisitor->setLODBias(_lodBias);
     _cullVisitor->setCamera(*_camera);
-    _cullVisitor->setViewport(_view[0],_view[1],_view[2],_view[3]);
+    _cullVisitor->setViewport(_viewport.get());
 
     _renderStage->reset();
 
-    _renderStage->setViewport(_view[0],_view[1],_view[2],_view[3]);
+    _renderStage->setViewport(_viewport.get());
     _renderStage->setCamera(_camera.get());
     _renderStage->setClearColor(_backgroundColor);
     _renderStage->setLight(_light.get());
@@ -207,6 +223,8 @@ void SceneView::draw()
     }
     // we in theory should be able to 
     _state->reset();
+    
+    _state->setFrameStamp(_frameStamp.get());
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
     // and texture objects is deferred until the OpenGL context is the correct
@@ -233,7 +251,7 @@ void SceneView::draw()
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& object) const
 {
-    return _camera->unproject(window,_view,object);
+    return _camera->unproject(window,*_viewport,object);
 }
 
 
@@ -244,8 +262,8 @@ bool SceneView::projectWindowIntoObject(const osg::Vec3& window,osg::Vec3& objec
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg::Vec3& far_point) const
 {
-    bool result_near = _camera->unproject(Vec3(x,y,0.0f),_view,near_point);
-    bool result_far =  _camera->unproject(Vec3(x,y,1.0f),_view,far_point);
+    bool result_near = _camera->unproject(Vec3(x,y,0.0f),*_viewport,near_point);
+    bool result_far =  _camera->unproject(Vec3(x,y,1.0f),*_viewport,far_point);
     return result_near & result_far;
 }
 
@@ -256,5 +274,5 @@ bool SceneView::projectWindowXYIntoObject(int x,int y,osg::Vec3& near_point,osg:
     windows coordinates are calculated relative to the bottom left of the window.*/
 bool SceneView::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const
 {
-    return _camera->project(object,_view,window);
+    return _camera->project(object,*_viewport,window);
 }

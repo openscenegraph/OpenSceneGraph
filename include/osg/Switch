@@ -27,10 +27,8 @@ class SG_EXPORT Switch : public Group
 
         Switch();
 
-        virtual Object* clone() const { return new Switch(); }
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Switch*>(obj)!=NULL; }
-        virtual const char* className() const { return "Switch"; }
-        virtual void accept(NodeVisitor& nv) { nv.apply(*this); }
+        META_Node(Switch);
+
         virtual void traverse(NodeVisitor& nv);
         
 	/**

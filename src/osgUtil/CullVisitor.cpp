@@ -80,8 +80,6 @@ class PrintVisitor : public NodeVisitor
 
 CullVisitor::CullVisitor()
 {
-    _frameNumber = 0;
-
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
@@ -109,10 +107,7 @@ CullVisitor::CullVisitor()
     _calculated_znear = FLT_MAX;
     _calculated_zfar = -FLT_MAX;
     
-    _view[0] = 0;
-    _view[1] = 0;
-    _view[2] = 1024;
-    _view[3] = 768;
+    _viewport = NULL;
     
     _impostorActive = true;
     _depthSortImpostorSprites = false;
@@ -682,8 +677,14 @@ void CullVisitor::apply(Impostor& node)
         // traverse the appropriate child of the LOD.
         node.getChild(eval)->accept(*this);
     }
-    else
+    else if (!_viewport.valid())
     {
+        // need to use impostor but no valid viewport is defined to simply
+        // default to using the LOD child as above.
+        node.getChild(eval)->accept(*this);
+    }
+    else
+    {    
         // within the impostor distance threshold therefore attempt
         // to use impostor instead.
         
@@ -695,7 +696,7 @@ void CullVisitor::apply(Impostor& node)
         if (impostorSprite)
         {
             // impostor found, now check to see if it is good enough to use
-            float error = impostorSprite->calcPixelError(*_camera,_view,matrix);
+            float error = impostorSprite->calcPixelError(*_camera,*_viewport,matrix);
             
             if (error>_impostorPixelErrorThreshold)
             {
@@ -765,7 +766,7 @@ void CullVisitor::apply(Impostor& node)
             if (stateset) popStateSet();
             
             // update frame number to show that impostor is in action.
-            impostorSprite->setLastFrameUsed(_frameNumber);
+            impostorSprite->setLastFrameUsed(getTraversalNumber());
             
         }
         else
@@ -1085,8 +1086,8 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     // equivilant window coordinates by using the camera's project method.
     Vec3 c00_win;
     Vec3 c11_win;
-    _camera->project(c00_world,_view,c00_win);
-    _camera->project(c11_world,_view,c11_win);    
+    _camera->project(c00_world,*_viewport,c00_win);
+    _camera->project(c11_world,*_viewport,c11_win);    
 
 
 // adjust texture size to be nearest power of 2.
@@ -1114,17 +1115,26 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     int new_t = (int)(powf(2.0f,rounded_tp2));
 
     // if dimension is bigger than window divide it down.    
-    while (new_s>_view[2]) new_s /= 2;
+    while (new_s>_viewport->width()) new_s /= 2;
 
     // if dimension is bigger than window divide it down.    
-    while (new_t>_view[3]) new_t /= 2;
+    while (new_t>_viewport->height()) new_t /= 2;
 
-    rtts->setViewport(_view[0],_view[1],new_s,new_t);
+
+    // offset the impostor viewport from the center of the main window
+    // viewport as often the edges of the viewport might be obscured by
+    // other windows, which can cause image/reading writing problems.
+    int center_x = _viewport->x()+_viewport->width()/2;
+    int center_y = _viewport->y()+_viewport->height()/2;
+
+    Viewport* viewport = new Viewport;
+    viewport->setViewport(center_x-new_s/2,center_y-new_t/2,new_s,new_t);
+    rtts->setViewport(viewport);
 
 // create the impostor sprite.
 
     ImpostorSprite* impostorSprite = 
-        _impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,_frameNumber-_numFramesToKeepImpostorSprites);
+        _impostorSpriteManager->createOrReuseImpostorSprite(new_s,new_t,getTraversalNumber()-_numFramesToKeepImpostorSprites);
 
     if (impostorSprite==NULL) return NULL;
 
@@ -1143,7 +1153,7 @@ ImpostorSprite* CullVisitor::createImpostorSprite(Impostor& node)
     Texture* texture = impostorSprite->getTexture();
 
     // update frame number to show that impostor is in action.
-    impostorSprite->setLastFrameUsed(_frameNumber);
+    impostorSprite->setLastFrameUsed(getTraversalNumber());
 
     Vec3* coords = impostorSprite->getCoords();
     Vec2* texcoords = impostorSprite->getTexCoords();

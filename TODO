@@ -50,7 +50,7 @@ o Core OSG Library
         . spacial subdivision decoration nodes?
         
     - Visitors
-        . improve state sorting of opaque bins in osg::RenderVistor.
+        . improve state sorting of opaque bins in osg::RenderBin.
         . add statistics visitor for logging the stats of the scene graph.
         . add OpenGL picking visitor.
         

@@ -6,6 +6,8 @@
 #include <osg/Drawable>
 #include <osg/Camera>
 #include <osg/ImpostorSprite>
+#include <osg/AlphaFunc>
+#include <osg/TexEnv>
 
 namespace osg {
 
@@ -91,7 +93,7 @@ class SG_EXPORT ImpostorSprite : public Drawable
 
 
         /** calculate the pixel error value for current camera position and object position.*/
-        const float calcPixelError(const Camera& camera,const int* viewport,const osg::Matrix* matrix) const;
+        const float calcPixelError(const Camera& camera,const Viewport& viewport,const osg::Matrix* matrix) const;
 
 
         void setTexture(Texture* tex,int s,int t);
@@ -165,8 +167,11 @@ class SG_EXPORT ImpostorSpriteManager : public Referenced
 
         ~ImpostorSpriteManager();
 
-        ImpostorSprite* _first;
-        ImpostorSprite* _last;
+        ref_ptr<TexEnv>     _texenv;
+        ref_ptr<AlphaFunc>  _alphafunc;
+
+        ImpostorSprite*     _first;
+        ImpostorSprite*     _last;
 
 
 };

@@ -75,8 +75,8 @@ Viewer::Viewer()
     fullscreen = false; 
     _is_open   = 0;
     _saved_wx = wx = _saved_wy = wy = 0;
-    _saved_ww = ww = 1024,
-    _saved_wh = wh = 768;
+    _saved_ww = ww = 800,
+    _saved_wh = wh = 600;
 
     _title = "OSG Viewer";
 
@@ -119,6 +119,10 @@ Viewer::Viewer()
     frRate=0; // added by gwm to display fram Rate smoothed
 
     _focusedViewport = 0;         // The viewport with mouse/keyboard focus
+    
+    
+    _frameStamp = new osg::FrameStamp;
+    
 }
 
 
@@ -203,7 +207,9 @@ bool Viewer::open()
         Node* node = itr->sceneView->getSceneData();
         if (node) node->accept(vrv);
     }
-
+#ifdef        _DEBUG
+    vrv.setMinimumNumStencilBits(8); //gwm 12.8.01 to force stencils available for DC test
+#endif
     // set up each render stage to clear the appropriate buffers.
     GLbitfield clear_mask=0;
     if (vrv.requiresRGB())              clear_mask |= GL_COLOR_BUFFER_BIT;
@@ -322,11 +328,13 @@ float Viewer::app(unsigned int viewport)
     osg::Timer_t beforeApp = _timer.tick();
 
     // do app traversal.
+    
+    getViewportSceneView(viewport)->setFrameStamp(_frameStamp.get());
     getViewportSceneView(viewport)->app();
 
     // update the camera manipulator.
     osg::ref_ptr<GLUTEventAdapter> ea = new GLUTEventAdapter;
-    ea->adaptFrame(clockSeconds());
+    ea->adaptFrame(_frameStamp->getReferenceTime());
 
     if (_viewportList[viewport]._cameraManipulator->handle(*ea,*this))
     {
@@ -757,7 +765,8 @@ void Viewer::showStats()
         int wid=ww, ht=wh; // temporary local screen size - must change during this section
         if (wid>0 && ht>0) {
             const int blsize=16;
-            char *clin=new char[wid/blsize+2]; // buffer to print
+            char *clin=new char[wid/blsize+2]; // buffer to print dc
+            char *ctext=new char[128]; // buffer to print details
             float mdc=0;
             GLubyte *buffer=new GLubyte[wid*ht];
             if (buffer) {
@@ -786,13 +795,14 @@ void Viewer::showStats()
                     *clpt='\0';
                     displaytext(0,(int)(0.84f*vh-(j*12)/blsize),clin); // display average DC over the blsize box
                 }
-                sprintf(clin, "Pixels hit %.1f Mean DC %.2f: %4d by %4d pixels.", mdc, mdc/(wid*ht), wid, ht);
+                sprintf(ctext, "Pixels hit %.1f Mean DC %.2f: %4d by %4d pixels.", mdc, mdc/(wid*ht), wid, ht);
                 displaytext(0,(int)(0.86f*vh),clin);
                 
                 glEnable(GL_STENCIL_TEST); // re-enable stencil buffer counting
                 delete [] buffer;
             }
             delete [] clin;
+            delete [] ctext;
         }
     }
 
@@ -803,9 +813,12 @@ void Viewer::showStats()
     glPopMatrix();
 }
 
-
 void Viewer::display()
 {
+
+    _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
+    _frameStamp->setReferenceTime(clockSeconds());
+
     // application traverasal.
     times[2].timeApp=0.0f;
 
@@ -828,7 +841,7 @@ void Viewer::display()
     }
 
 
-    glFinish();
+    if (_printStats>1) glFinish();
 
     times[2].frameend=updateFrameTick(); // absolute time
 
@@ -841,8 +854,11 @@ void Viewer::display()
         times[1]=times[2];
     }
 
+
     glutSwapBuffers(); // moved after draw of stats & glFinish() to get accurate timing (excluding stat draw!)
     //    cout << "Time elapsed "<<_timer.delta_s(_initialTick,_timer.tick())<<endl;
+
+    if (_printStats>1) glFinish();
 
     #ifdef SGV_USE_RTFS
     fs->frame();
@@ -1028,14 +1044,19 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             break;
 
         case 'p' :
+            if (_printStats==4) glDisable(GL_STENCIL_TEST); // switch off stencil counting
             _printStats++; //gwm jul 2001 range of possible outputs, 0-4 = !_printStats;
             if (_printStats>4) _printStats=0;
             if (_printStats==4) { // count depth complexity by incrementing the stencil buffer every 
                 // time a pixel is hit
-                glEnable(GL_STENCIL_TEST);
-                glStencilOp(GL_INCR ,GL_INCR ,GL_INCR);
-            } else {
-                glDisable(GL_STENCIL_TEST);
+                int nsten=0; // Number of stencil planes available
+                glGetIntegerv(GL_STENCIL_BITS , &nsten);
+                if (nsten>0) {
+                    glEnable(GL_STENCIL_TEST);
+                    glStencilOp(GL_INCR ,GL_INCR ,GL_INCR);
+                } else {// skip this option
+                    _printStats++;
+                }
             }
             break;
 
@@ -1409,11 +1430,11 @@ void Viewer::addViewport(osgUtil::SceneView* sv,
 void Viewer::addViewport(osg::Node* rootnode,
                          float x, float y, float width, float height) 
 {
-  osgUtil::SceneView *sceneView = new osgUtil::SceneView;
-  sceneView->setDefaults();
-  sceneView->setSceneData(rootnode);
+    osgUtil::SceneView *sceneView = new osgUtil::SceneView;
+    sceneView->setDefaults();
+    sceneView->setSceneData(rootnode);
 
-  addViewport( sceneView, x, y, width, height );
+    addViewport( sceneView, x, y, width, height );
 }
 
 void Viewer::init(osg::Node* rootnode)

@@ -5,6 +5,7 @@
 #include <osg/StateSet>
 #include <osg/Light>
 #include <osg/Camera>
+#include <osg/FrameStamp>
 
 #include <osgUtil/CullVisitor>
 
@@ -22,6 +23,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         /** Constrcut a default scene view.*/
         SceneView();
 
+        /** Set scene view to use default global state, light, camera
+         *  and render visitor.
+        */
+        void setDefaults();
+
         /** Set the data which to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
          */
@@ -36,28 +42,37 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
          */
         const osg::Node* getSceneData() const { return _sceneData.get(); }
 
-        /** Set the viewport of the scene view. */
+        /** Set the viewport of the scene view to use specfied osg::Viewport. */
+        void setViewport(osg::Viewport* viewport)
+        {
+            if (viewport) _viewport = viewport;
+            else
+            {
+                // ensure that _viewport is always valid.
+                _viewport = new osg::Viewport;
+            }
+        }
+
+        /** Set the viewport of the scene view to specified dimensions. */
         void setViewport(int x,int y,int width,int height)
         {
-            _view[0] = x;
-            _view[1] = y;
-            _view[2] = width;
-            _view[3] = height;
+            _viewport->setViewport(x,y,width,height);
         }
         
+
+        /** Get the const viewport. */
+        const osg::Viewport* getViewport() const { return _viewport.get(); }
+
+        /** Get the viewport. */
+        osg::Viewport* getViewport() { return _viewport.get(); }
+
         /** Get the viewport of the scene view. */
         void getViewport(int& x,int& y,int& width,int& height)
         {
-            x = _view[0];
-            y = _view[1];
-            width = _view[2];
-            height = _view[3];
+            _viewport->getViewport(x,y,width,height);
         }
 
-        /** Set scene view to use default global state, light, camera
-         *  and render visitor.
-        */
-        void setDefaults();
+
 
         /** Set the background color used in glClearColor().
             Defaults to an off blue color.*/
@@ -155,6 +170,14 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         bool projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const;
 
 
+        /** Set the frame stamp for the current frame.*/
+        inline void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
+
+        /** Set the frame stamp for the current frame.*/
+        inline const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
+
+
+
         /** do app traversal of attached scene graph using App NodeVisitor.*/
         virtual void app();
 
@@ -179,6 +202,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         osg::ref_ptr<osgUtil::RenderGraph>          _rendergraph;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
         
+        osg::ref_ptr<osg::FrameStamp> _frameStamp;
 
         bool _need_compile;
         bool _calc_nearfar;
@@ -190,14 +214,12 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced
         
         float _lodBias;
 
-        // viewport x,y,width,height respectiveyly.
-        GLint _view[4];
+        osg::ref_ptr<osg::Viewport> _viewport;
 
         LightingMode _lightingMode;
         
         bool _prioritizeTextures;
         
-        int _frameNumber;
 };
 
 };

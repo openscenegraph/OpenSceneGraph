@@ -23,6 +23,8 @@
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+
 
 #include <osgGA/NodeTrackerManipulator>
 #include <osgGA/TrackballManipulator>
@@ -128,7 +130,7 @@ osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,dou
     osg::AnimationPath* animationPath = new osg::AnimationPath;
     animationPath->setLoopMode(osg::AnimationPath::LOOP);
     
-    int numSamples = 40;
+    int numSamples = 1000;
     float yaw = 0.0f;
     float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
     float roll = osg::inDegrees(30.0f);
@@ -263,6 +265,232 @@ public:
     NodeList _foundNodes;
 };
 
+
+osg::MatrixTransform* SolarSystem::createRotation( double orbit, double speed )
+{
+    osg::Vec3 center( 0.0, 0.0, 0.0 );
+    float animationLength = 10.0f;
+    osg::AnimationPath* animationPath = createAnimationPath( center, orbit, animationLength );
+
+    osg::MatrixTransform* rotation = new osg::MatrixTransform;
+    rotation->setUpdateCallback( new osg::AnimationPathCallback( animationPath, 0.0f, speed ) );
+
+    return rotation;
+}// end SolarSystem::createEarthRotation
+
+
+osg::MatrixTransform* SolarSystem::createTranslationAndTilt( double /*translation*/, double tilt )
+{
+    osg::MatrixTransform* moonPositioned = new osg::MatrixTransform;
+    moonPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, _RorbitMoon, 0.0 ) )*
+                                 osg::Matrix::scale(1.0, 1.0, 1.0)*
+                                 osg::Matrix::rotate(osg::inDegrees( tilt ),0.0f,0.0f,1.0f));
+
+    return moonPositioned;
+}// end SolarSystem::createTranslationAndTilt
+    
+    
+osg::Geode* SolarSystem::createSpace( const std::string& name, const std::string& textureName )
+{
+    osg::Sphere *spaceSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), _radiusSpace );
+
+    osg::ShapeDrawable *sSpaceSphere = new osg::ShapeDrawable( spaceSphere );
+
+    if( !textureName.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName );
+        if ( image )
+        {
+            sSpaceSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+
+            // reset the object color to white to allow the texture to set the colour.
+            sSpaceSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+        }
+    }
+
+    osg::Geode* geodeSpace = new osg::Geode();
+    geodeSpace->setName( name );
+
+    geodeSpace->addDrawable( sSpaceSphere );
+
+    return( geodeSpace );
+
+}// end SolarSystem::createSpace
+
+    
+osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName)
+{
+    // create a container that makes the sphere drawable
+    osg::Geometry *sPlanetSphere = new osg::Geometry();
+
+    {
+        // set the single colour so bind overall
+        osg::Vec4Array* colours = new osg::Vec4Array(1);
+        (*colours)[0] = color;
+        sPlanetSphere->setColorArray(colours);
+        sPlanetSphere->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+
+        // now set up the coords, normals and texcoords for geometry 
+        unsigned int numX = 100;
+        unsigned int numY = 50;
+        unsigned int numVertices = numX*numY;
+
+        osg::Vec3Array* coords = new osg::Vec3Array(numVertices);
+        sPlanetSphere->setVertexArray(coords);
+
+        osg::Vec3Array* normals = new osg::Vec3Array(numVertices);
+        sPlanetSphere->setNormalArray(normals);
+        sPlanetSphere->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+        osg::Vec2Array* texcoords = new osg::Vec2Array(numVertices);
+        sPlanetSphere->setTexCoordArray(0,texcoords);
+        sPlanetSphere->setTexCoordArray(1,texcoords);
+
+        double delta_elevation = osg::PI / (double)(numY-1);
+        double delta_azim = 2.0*osg::PI / (double)(numX-1);
+        float delta_tx = 1.0 / (float)(numX-1);
+        float delta_ty = 1.0 / (float)(numY-1);
+
+        double elevation = -osg::PI*0.5;
+        float ty = 0.0;
+        unsigned int vert = 0;
+        unsigned j;
+        for(j=0;
+            j<numY;
+            ++j, elevation+=delta_elevation, ty+=delta_ty )
+        {
+            double azim = 0.0;
+            float tx = 0.0;
+            for(unsigned int i=0;
+                i<numX;
+                ++i, ++vert, azim+=delta_azim, tx+=delta_tx)
+            {
+                osg::Vec3 direction(cos(azim)*cos(elevation), sin(azim)*cos(elevation), sin(elevation));
+                (*coords)[vert].set(direction*radius);
+                (*normals)[vert].set(direction);
+                (*texcoords)[vert].set(tx,ty);
+            }
+        }
+
+        for(j=0;
+            j<numY-1;
+            ++j)
+        {
+            unsigned int curr_row = j*numX;
+            unsigned int next_row = curr_row+numX;
+            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+            for(unsigned int i=0;
+                i<numX;
+                ++i)
+            {
+                elements->push_back(next_row + i);
+                elements->push_back(curr_row + i);
+            }
+            sPlanetSphere->addPrimitiveSet(elements);
+        }
+    }
+    
+
+    // set the object color
+    //sPlanetSphere->setColor( color );
+
+    // create a geode object to as a container for our drawable sphere object
+    osg::Geode* geodePlanet = new osg::Geode();
+    geodePlanet->setName( name );
+
+    if( !textureName.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName );
+        if ( image )
+        {
+            geodePlanet->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
+
+            // reset the object color to white to allow the texture to set the colour.
+            //sPlanetSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+        }
+    }
+
+    // add our drawable sphere to the geode container
+    geodePlanet->addDrawable( sPlanetSphere );
+
+    return( geodePlanet );
+
+}// end SolarSystem::createPlanet
+    
+osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName1, const std::string& textureName2)
+{
+    osg::Geode* geodePlanet = createPlanet( radius, name, color , textureName1);
+    
+    if( !textureName2.empty() )
+    {
+        osg::Image* image = osgDB::readImageFile( textureName2 );
+        if ( image )
+        {
+            osg::StateSet* stateset = geodePlanet->getOrCreateStateSet();
+            
+            osg::TexEnvCombine* texenv = new osg::TexEnvCombine;
+            
+            texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
+            texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
+            texenv->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
+            texenv->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
+            texenv->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
+            texenv->setSource2_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
+            texenv->setOperand2_RGB(osg::TexEnvCombine::SRC_COLOR);
+
+            stateset->setTextureAttribute( 1, texenv );
+            stateset->setTextureAttributeAndModes( 1, new osg::Texture2D( image ), osg::StateAttribute::ON );
+        }
+    }
+
+    return( geodePlanet );
+
+}// end SolarSystem::createPlanet
+
+osg::Group* SolarSystem::createSunLight()
+{
+
+    osg::LightSource* sunLightSource = new osg::LightSource;
+
+    osg::Light* sunLight = sunLightSource->getLight();
+    sunLight->setPosition( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+    sunLight->setAmbient( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+
+    sunLightSource->setLight( sunLight );
+    sunLightSource->setLocalStateSetModes( osg::StateAttribute::ON );
+    sunLightSource->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+
+    osg::LightModel* lightModel = new osg::LightModel;
+    lightModel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    sunLightSource->getOrCreateStateSet()->setAttribute(lightModel);
+
+
+    return sunLightSource;
+}// end SolarSystem::createSunLight
+    
+void SolarSystem::printParameters()
+{
+    std::cout << "radiusSpace(" << _radiusSpace << ")" << std::endl;
+    std::cout << "radiusSun(" << _radiusSun << ")" << std::endl;
+    std::cout << "radiusEarth(" << _radiusEarth << ")" << std::endl;
+    std::cout << "radiusMoon(" << _radiusMoon << ")" << std::endl;
+
+    std::cout << "RorbitEarth(" << _RorbitEarth << ")" << std::endl;
+    std::cout << "RorbitMoon(" << _RorbitMoon << ")" << std::endl;
+
+    std::cout << "rotateSpeedEarthAndMoon(" << _rotateSpeedEarthAndMoon << ")" << std::endl;
+    std::cout << "rotateSpeedEarth(" << _rotateSpeedEarth << ")" << std::endl;
+    std::cout << "rotateSpeedMoon(" << _rotateSpeedMoon << ")" << std::endl;
+    std::cout << "tiltEarth(" << _tiltEarth << ")" << std::endl;
+
+    std::cout << "mapSpace(" << _radiusSpace << ")" << std::endl;
+    std::cout << "mapEarth(" << _radiusSpace << ")" << std::endl;
+    std::cout << "mapEarthNight(" << _radiusSpace << ")" << std::endl;
+    std::cout << "mapMoon(" << _radiusSpace << ")" << std::endl;
+}
+
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -272,6 +500,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of osg::AnimationPath and UpdateCallbacks for adding animation to your scenes.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Write created model to file");
 
     // initialize the viewer.
     osgProducer::Viewer viewer(arguments);
@@ -302,6 +531,8 @@ int main( int argc, char **argv )
     while (arguments.read("--mapEarthNight",solarSystem._mapEarthNight)) { }
     while (arguments.read("--mapMoon",solarSystem._mapMoon)) { }
     
+    std::string writeFileName;
+    while (arguments.read("-o",writeFileName)) { }
     
     
     osgGA::NodeTrackerManipulator::TrackerMode trackerMode = osgGA::NodeTrackerManipulator::NODE_CENTER_AND_ROTATION;
@@ -532,6 +763,13 @@ int main( int argc, char **argv )
     root->addChild( space );
 */    
      
+    if (!writeFileName.empty())
+    {
+        osgDB::writeNodeFile(*root, writeFileName);
+        std::cout<<"Written solar system to \""<<writeFileName<<"\""<<std::endl;
+    }
+
+
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
     optimzer.optimize( root );
@@ -619,227 +857,3 @@ int main( int argc, char **argv )
     return 0;
 }// end main
 
-
-osg::MatrixTransform* SolarSystem::createRotation( double orbit, double speed )
-{
-    osg::Vec3 center( 0.0, 0.0, 0.0 );
-    float animationLength = 10.0f;
-    osg::AnimationPath* animationPath = createAnimationPath( center, orbit, animationLength );
-
-    osg::MatrixTransform* rotation = new osg::MatrixTransform;
-    rotation->setUpdateCallback( new osg::AnimationPathCallback( animationPath, 0.0f, speed ) );
-
-    return rotation;
-}// end SolarSystem::createEarthRotation
-
-
-osg::MatrixTransform* SolarSystem::createTranslationAndTilt( double /*translation*/, double tilt )
-{
-    osg::MatrixTransform* moonPositioned = new osg::MatrixTransform;
-    moonPositioned->setMatrix(osg::Matrix::translate(osg::Vec3( 0.0, _RorbitMoon, 0.0 ) )*
-                                 osg::Matrix::scale(1.0, 1.0, 1.0)*
-                                 osg::Matrix::rotate(osg::inDegrees( tilt ),0.0f,0.0f,1.0f));
-
-    return moonPositioned;
-}// end SolarSystem::createTranslationAndTilt
-    
-    
-osg::Geode* SolarSystem::createSpace( const std::string& name, const std::string& textureName )
-{
-    osg::Sphere *spaceSphere = new osg::Sphere( osg::Vec3( 0.0, 0.0, 0.0 ), _radiusSpace );
-
-    osg::ShapeDrawable *sSpaceSphere = new osg::ShapeDrawable( spaceSphere );
-
-    if( !textureName.empty() )
-    {
-        osg::Image* image = osgDB::readImageFile( textureName );
-        if ( image )
-        {
-            sSpaceSphere->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
-
-            // reset the object color to white to allow the texture to set the colour.
-            sSpaceSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
-        }
-    }
-
-    osg::Geode* geodeSpace = new osg::Geode();
-    geodeSpace->setName( name );
-
-    geodeSpace->addDrawable( sSpaceSphere );
-
-    return( geodeSpace );
-
-}// end SolarSystem::createSpace
-
-    
-osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName)
-{
-    // create a container that makes the sphere drawable
-    osg::Geometry *sPlanetSphere = new osg::Geometry();
-
-    {
-        // set the single colour so bind overall
-        osg::Vec4Array* colours = new osg::Vec4Array(1);
-        (*colours)[0] = color;
-        sPlanetSphere->setColorArray(colours);
-        sPlanetSphere->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-
-        // now set up the coords, normals and texcoords for geometry 
-        unsigned int numX = 100;
-        unsigned int numY = 50;
-        unsigned int numVertices = numX*numY;
-
-        osg::Vec3Array* coords = new osg::Vec3Array(numVertices);
-        sPlanetSphere->setVertexArray(coords);
-
-        osg::Vec3Array* normals = new osg::Vec3Array(numVertices);
-        sPlanetSphere->setNormalArray(normals);
-        sPlanetSphere->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-
-        osg::Vec2Array* texcoords = new osg::Vec2Array(numVertices);
-        sPlanetSphere->setTexCoordArray(0,texcoords);
-        sPlanetSphere->setTexCoordArray(1,texcoords);
-
-        double delta_elevation = osg::PI / (double)(numY-1);
-        double delta_azim = 2.0*osg::PI / (double)(numX-1);
-        float delta_tx = 1.0 / (float)(numX-1);
-        float delta_ty = 1.0 / (float)(numY-1);
-
-        double elevation = -osg::PI*0.5;
-        float ty = 0.0;
-        unsigned int vert = 0;
-        unsigned j;
-        for(j=0;
-            j<numY;
-            ++j, elevation+=delta_elevation, ty+=delta_ty )
-        {
-            double azim = 0.0;
-            float tx = 0.0;
-            for(unsigned int i=0;
-                i<numX;
-                ++i, ++vert, azim+=delta_azim, tx+=delta_tx)
-            {
-                osg::Vec3 direction(cos(azim)*cos(elevation), sin(azim)*cos(elevation), sin(elevation));
-                (*coords)[vert].set(direction*radius);
-                (*normals)[vert].set(direction);
-                (*texcoords)[vert].set(tx,ty);
-            }
-        }
-
-        for(j=0;
-            j<numY-1;
-            ++j)
-        {
-            unsigned int curr_row = j*numX;
-            unsigned int next_row = curr_row+numX;
-            osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
-            for(unsigned int i=0;
-                i<numX;
-                ++i)
-            {
-                elements->push_back(next_row + i);
-                elements->push_back(curr_row + i);
-            }
-            sPlanetSphere->addPrimitiveSet(elements);
-        }
-    }
-    
-
-    // set the object color
-    //sPlanetSphere->setColor( color );
-
-    // create a geode object to as a container for our drawable sphere object
-    osg::Geode* geodePlanet = new osg::Geode();
-    geodePlanet->setName( name );
-
-    if( !textureName.empty() )
-    {
-        osg::Image* image = osgDB::readImageFile( textureName );
-        if ( image )
-        {
-            geodePlanet->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D( image ), osg::StateAttribute::ON );
-
-            // reset the object color to white to allow the texture to set the colour.
-            //sPlanetSphere->setColor( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
-        }
-    }
-
-    // add our drawable sphere to the geode container
-    geodePlanet->addDrawable( sPlanetSphere );
-
-    return( geodePlanet );
-
-}// end SolarSystem::createPlanet
-    
-osg::Geode* SolarSystem::createPlanet( double radius, const std::string& name, const osg::Vec4& color , const std::string& textureName1, const std::string& textureName2)
-{
-    osg::Geode* geodePlanet = createPlanet( radius, name, color , textureName1);
-    
-    if( !textureName2.empty() )
-    {
-        osg::Image* image = osgDB::readImageFile( textureName2 );
-        if ( image )
-        {
-            osg::StateSet* stateset = geodePlanet->getOrCreateStateSet();
-            
-            osg::TexEnvCombine* texenv = new osg::TexEnvCombine;
-            
-            texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
-            texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
-            texenv->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
-            texenv->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
-            texenv->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
-            texenv->setSource2_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
-            texenv->setOperand2_RGB(osg::TexEnvCombine::SRC_COLOR);
-
-            stateset->setTextureAttribute( 1, texenv );
-            stateset->setTextureAttributeAndModes( 1, new osg::Texture2D( image ), osg::StateAttribute::ON );
-        }
-    }
-
-    return( geodePlanet );
-
-}// end SolarSystem::createPlanet
-
-osg::Group* SolarSystem::createSunLight()
-{
-
-    osg::LightSource* sunLightSource = new osg::LightSource;
-
-    osg::Light* sunLight = sunLightSource->getLight();
-    sunLight->setPosition( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
-    sunLight->setAmbient( osg::Vec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
-
-    sunLightSource->setLight( sunLight );
-    sunLightSource->setLocalStateSetModes( osg::StateAttribute::ON );
-    sunLightSource->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-
-    osg::LightModel* lightModel = new osg::LightModel;
-    lightModel->setAmbientIntensity(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
-    sunLightSource->getOrCreateStateSet()->setAttribute(lightModel);
-
-
-    return sunLightSource;
-}// end SolarSystem::createSunLight
-    
-void SolarSystem::printParameters()
-{
-    std::cout << "radiusSpace(" << _radiusSpace << ")" << std::endl;
-    std::cout << "radiusSun(" << _radiusSun << ")" << std::endl;
-    std::cout << "radiusEarth(" << _radiusEarth << ")" << std::endl;
-    std::cout << "radiusMoon(" << _radiusMoon << ")" << std::endl;
-
-    std::cout << "RorbitEarth(" << _RorbitEarth << ")" << std::endl;
-    std::cout << "RorbitMoon(" << _RorbitMoon << ")" << std::endl;
-
-    std::cout << "rotateSpeedEarthAndMoon(" << _rotateSpeedEarthAndMoon << ")" << std::endl;
-    std::cout << "rotateSpeedEarth(" << _rotateSpeedEarth << ")" << std::endl;
-    std::cout << "rotateSpeedMoon(" << _rotateSpeedMoon << ")" << std::endl;
-    std::cout << "tiltEarth(" << _tiltEarth << ")" << std::endl;
-
-    std::cout << "mapSpace(" << _radiusSpace << ")" << std::endl;
-    std::cout << "mapEarth(" << _radiusSpace << ")" << std::endl;
-    std::cout << "mapEarthNight(" << _radiusSpace << ")" << std::endl;
-    std::cout << "mapMoon(" << _radiusSpace << ")" << std::endl;
-}

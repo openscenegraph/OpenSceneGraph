@@ -1,6 +1,7 @@
 #include "TXPSeamLOD.h"
 #include "TXPArchive.h"
 #include "TXPTileNode.h"
+#include "TileMapper.h"
 
 using namespace txp;
 
@@ -52,7 +53,7 @@ void TXPSeamLOD::traverse(osg::NodeVisitor& nv)
         if (distance<_mid)
         {
             // cap the lod's that can be used to what is available in the adjacent PagedLOD.
-            osg::PagedLOD* pagedLOD = _archive->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD);
+            osg::PagedLOD* pagedLOD = TileMapper::instance()->getPagedLOD(_neighbourTileX,_neighbourTileY, _neighbourTileLOD);
             if (pagedLOD && pagedLOD->getNumChildren()>1) getChild(1)->accept(nv);
             else getChild(0)->accept(nv);
         }

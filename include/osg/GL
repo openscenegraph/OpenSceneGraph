@@ -44,7 +44,8 @@
         #ifndef APIENTRY
             #define GLUT_APIENTRY_DEFINED
             #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
-                #define APIENTRY    __stdcall
+                #define WINAPI        __stdcall
+                #define APIENTRY    WINAPI
             #else
                 #define APIENTRY
             #endif
@@ -64,7 +65,8 @@
            // XXX This is from Win32's <wingdi.h> and <winnt.h> 
     #ifndef WINGDIAPI
         #define GLUT_WINGDIAPI_DEFINED
-        #define WINGDIAPI __declspec(dllimport)
+        #define DECLSPEC_IMPORT    __declspec(dllimport)
+        #define WINGDIAPI DECLSPEC_IMPORT
     #endif
            // XXX This is from Win32's <ctype.h> 
     #ifndef _WCHAR_T_DEFINED

@@ -114,6 +114,38 @@ void sizeOfTest()
   std::cout<<"sizeof(double)=="<<sizeof(double)<<std::endl;
 }
 
+
+void testQuat()
+{
+    osg::Quat q1;
+    q1.makeRotate(osg::DegreesToRadians(30.0),0.0f,0.0f,1.0f);
+
+    osg::Quat q2;
+    q2.makeRotate(osg::DegreesToRadians(133.0),0.0f,1.0f,1.0f);
+
+    osg::Quat q1_2 = q1*q2;
+    osg::Quat q2_1 = q2*q1;
+
+    osg::Matrix m1 = osg::Matrix::rotate(q1);
+    osg::Matrix m2 = osg::Matrix::rotate(q2);
+    
+    osg::Matrix m1_2 = m1*m2;
+    osg::Matrix m2_1 = m2*m1;
+    
+    osg::Quat qm1_2;
+    qm1_2.set(m1_2);
+    
+    osg::Quat qm2_1;
+    qm2_1.set(m2_1);
+    
+    std::cout<<"q1*q2 = "<<q1_2<<std::endl;
+    std::cout<<"q2*q1 = "<<q2_1<<std::endl;
+    std::cout<<"m1*m2 = "<<qm1_2<<std::endl;
+    std::cout<<"m2*m1 = "<<qm2_1<<std::endl;
+
+    
+}
+
 int main( int argc, char** argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
@@ -142,6 +174,9 @@ int main( int argc, char** argv )
     bool printSizeOfTest = false; 
     while (arguments.read("sizeof")) printSizeOfTest = true; 
 
+    bool printQuatTest = false; 
+    while (arguments.read("quat")) printQuatTest = true; 
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -160,6 +195,11 @@ int main( int argc, char** argv )
         return 1;
     }
     
+    if (printQuatTest)
+    {
+        testQuat();
+    }
+
 
     if (printMatrixTest)
     {

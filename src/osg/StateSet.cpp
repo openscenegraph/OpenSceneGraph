@@ -25,6 +25,7 @@
 #include <osg/Depth>
 
 #include <osg/TextureCubeMap>
+#include <osg/TextureRectangle>
 
 #include <set>
 

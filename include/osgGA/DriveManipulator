@@ -99,7 +99,11 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
 
         osg::Vec3d   _eye;
         osg::Quat    _rotation;
+        double       _pitch;
         double       _distance;
+        
+        bool        _pitchUpKeyPressed;
+        bool        _pitchDownKeyPressed;
 };
 
 }

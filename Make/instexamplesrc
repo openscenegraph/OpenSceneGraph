@@ -20,8 +20,7 @@ SOCKET_LIBS=$8
 shift; shift; shift; shift; shift; shift; shift; shift;
 OTHER_LIBS=$1
 TIFF_LIB=$2
-
-[ "`uname`" = "Darwin" ] && MAKE=gnumake || MAKE=gmake
+MAKE=$3
 
 
 copy_example_source()

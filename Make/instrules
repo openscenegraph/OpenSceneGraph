@@ -55,6 +55,7 @@ __instdev:
 		"$(SOCKET_LIBS)"\
 		"$(OTHER_LIBS)"\
 		"$(TIFF_LIB)"\
+        $(MAKE)
 
 
 	@echo\

@@ -113,14 +113,20 @@ bool Node_readLocalData(Object& obj, Input& fr)
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
-            if (nodecallback) node.setUpdateCallback(nodecallback);
+            if (nodecallback) {
+                if (node.getUpdateCallback() == NULL) {
+                    node.setUpdateCallback(nodecallback);
+                } else {
+                    node.getUpdateCallback()->addNestedCallback(nodecallback);
+                }
+            }
             else ++fr;
         }
         iteratorAdvanced = true;
 
     }
 
-    while (fr.matchSequence("CullCallback {"))
+    while (fr.matchSequence("CullCallbacks {"))
     {
         int entry = fr[0].getNoNestedBrackets();
         fr += 2;
@@ -128,7 +134,13 @@ bool Node_readLocalData(Object& obj, Input& fr)
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             NodeCallback* nodecallback = dynamic_cast<NodeCallback*>(fr.readObjectOfType(*s_nodecallback));
-            if (nodecallback) node.setUpdateCallback(nodecallback);
+            if (nodecallback) {
+                if (node.getCullCallback() == NULL) {
+                    node.setCullCallback(nodecallback);
+                } else {
+                    node.getCullCallback()->addNestedCallback(nodecallback);
+                }
+            }
             else ++fr;
         }
         iteratorAdvanced = true;

@@ -23,6 +23,7 @@ State::State()
 {
     _contextID = 0;
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
+    _initialViewMatrix = _identity;
     _projection = _identity;
     _modelView = _identity;
 

@@ -553,6 +553,7 @@ void SceneView::draw()
     //osg::Timer_t tend = timer.tick();
     //std::cout<<"time to flush rendering objects"<<timer.delta_m(tstart,tend)<<std::endl;
 
+    if (_viewMatrix.valid()) _state->setInitialViewMatrix(_viewMatrix.get());
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 

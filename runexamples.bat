@@ -4,6 +4,12 @@ osgversion
 echo osglogo
 osglogo
 
+echo slideshow3D introduction.xml
+slideshow3D introduction.xml
+
+echo slideshow3D models.xml
+slideshow3D models.xml
+
 echo osgviewer cow.osg
 osgviewer cow.osg
 

@@ -260,14 +260,8 @@ void DatabasePager::run()
 
         }
         
-//         // hack hack hack... sleep for 1ms so we give other threads a chance..
-//         #ifdef WIN32
-//             Sleep(1);
-//         #else
-//             usleep(1000);
-//         #endif
-
-        yield();
+        // go to sleep till our the next time our thread gets scheduled.
+        Yield();
 
     }
     

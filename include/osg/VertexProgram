@@ -111,19 +111,19 @@ namespace osg {
 
 
 
-/** VertexProgram - encapsulates the OpenGL ARB vertex program state.*/
+/** VertexProgram - encapsulates the OpenGL ARB vertex program state. */
 class SG_EXPORT VertexProgram : public StateAttribute
 {
     public:
 
         VertexProgram();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         VertexProgram(const VertexProgram& vp,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_StateAttribute(osg, VertexProgram, VERTEXPROGRAM);
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const osg::StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
@@ -133,7 +133,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
             // compare each paramter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_vertexProgram)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
 
         virtual bool getModeUsage(ModeUsage& usage) const
@@ -144,65 +144,69 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
         // data access methods.
 
-        /** Get the handle to the vertex program id for the current context.*/
+        /** Get the handle to the vertex program ID for the current context. */
         inline GLuint& getVertexProgramID(unsigned int contextID) const
         {
             return _vertexProgramIDList[contextID];
         }
 
-        /** Set the vertex program using C++ style string.*/
+        /** Set the vertex program using C++ style string. */
         inline void setVertexProgram( const std::string& program )
         {
             _vertexProgram = program;
             dirtyVertexProgramObject();
         }
         
-        /** Set the vertex program using a C style string.*/
+        /** Set the vertex program using a C style string. */
         inline void setVertexProgram( const char* program ) 
         { 
             _vertexProgram = program; 
             dirtyVertexProgramObject();
         }
-        /** Get the vertex program.*/
+        /** Get the vertex program. */
         inline const std::string& getVertexProgram() const { return _vertexProgram; }
 
-        /** Program Parameters */
+        /** Set program parameters. */
         inline void setProgramLocalParameter(const GLuint index, const Vec4& p)
         {
             _programLocalParameters[index] = p;
         }
 
-        /** Matrix */
+        /** Set matrix. */
         inline void setMatrix(const GLenum mode, const Matrix& matrix)
         {
             _matrixList[mode] = matrix;
         }
 
-        /** Force a recompile on next apply() of associated OpenGL vertex program objects.*/
+        /** Force a recompile on next apply() of associated OpenGL vertex program objects. */
         void dirtyVertexProgramObject();        
 
-        /** use deleteVertexProgramObject instead of glDeletePrograms to allow
+        /** Use deleteVertexProgramObject instead of glDeletePrograms to allow
           * OpenGL Vertex Program objects to cached until they can be deleted
           * by the OpenGL context in which they were created, specified
-          * by contextID.*/
+          * by contextID.
+        */
         static void deleteVertexProgramObject(unsigned int contextID,GLuint handle);
 
-        /** flush all the cached vertex programs which need to be deleted
-          * in the OpenGL context related to contextID.*/
+        /** Flush all the cached vertex programs which need to be deleted
+          * in the OpenGL context related to contextID.
+        */
         static void flushDeletedVertexProgramObjects(unsigned int contextID,double currentTime, double& availableTime);
 
         virtual void apply(State& state) const;
 
         virtual void compileGLObjects(State& state) const { apply(state); }
 
-        /** release an OpenGL objects in specified graphics context if State
-            object is passed, otherwise release OpenGL objexts for all graphics context if
-            State object pointer NULL.*/
+        /** Release any OpenGL objects in specified graphics context if State
+          * object is passed, otherwise release OpenGL objexts for all graphics contexts if
+          * State object pointer is NULL.
+        */
         virtual void releaseGLObjects(State* state=0) const;
 
-        /** Extensions class which encapsulates the querring of extensions and
-          * associated function pointers, and provide convinience wrappers to 
-          * check for the extensions or use the associated functions.*/        
+        /** Extensions class which encapsulates the querying of extensions and
+          * associated function pointers, and provide convenience wrappers to 
+          * check for the extensions or use the associated functions.
+        */
         class SG_EXPORT Extensions : public osg::Referenced
         {
             public:
@@ -238,16 +242,18 @@ class SG_EXPORT VertexProgram : public StateAttribute
         };
         
         /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created then 
+          * If the Exentsion object for that context has not yet been created
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
-          * If 'createIfNotInitalized' is true then the Extensions object is 
-          * automatically created.  However, in this case the extension object 
-          * only be created with the graphics context associated with ContextID..*/
+          * If 'createIfNotInitalized' is true then the Extensions object is
+          * automatically created. However, in this case the extension object
+          * will only be created with the graphics context associated with ContextID.
+        */
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
-        /** setExtensions allows users to override the extensions across graphics contexts.
-          * typically used when you have different extensions supported across graphics pipes
-          * but need to ensure that they all use the same low common denominator extensions.*/
+        /** The setExtensions method allows users to override the extensions across graphics contexts.
+          * Typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.
+        */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
 

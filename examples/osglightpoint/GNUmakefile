@@ -12,8 +12,7 @@ INSTFILES = \
 
 EXEC = osglightpoint
 
-INC += $(PRODUCER_INCLUDE_DIR) -I/usr/X11R6/include
-LDFLAGS  += $(PRODUCER_LIB_DIR)
+INC +=  -I/usr/X11R6/includ
 
 include $(TOPDIR)/Make/makerules 
 

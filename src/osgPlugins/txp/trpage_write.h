@@ -268,11 +268,7 @@ public:
 	bool isValid(void) const;
 	const char *getErrMess() const;
 	char* getDir(void){return dir;};
-protected:
-	// Set if we're adding to an existing archive
-	bool isRegenerate;
 
-	// Used to keep track of which tiles are in which file
 	class TileFileEntry {
 	public:
 		int x,y,lod;    // Identifying info for tile
@@ -284,6 +280,12 @@ protected:
 		int id;
 		std::vector<TileFileEntry> tiles;
 	};
+
+protected:
+	// Set if we're adding to an existing archive
+	bool isRegenerate;
+
+	// Used to keep track of which tiles are in which file
 
 	trpgEndian ness,cpuNess;
 	int version;

@@ -113,6 +113,14 @@ ifneq ("$(OPENTHREADS_LIB_DIR)","")
 LDFLAGS += -L$(OPENTHREADS_LIB_DIR)
 endif
 
+ifneq ("$(PRODUCER_INC_DIR)","")
+INC += -I$(PRODUCER_INC_DIR)
+endif
+
+ifneq ("$(PRODUCER_LIB_DIR)","")
+LDFLAGS += -L$(PRODUCER_LIB_DIR)
+endif
+
 
 RECURSIVE_TARGETS = \
 	  opt\
@@ -157,7 +165,7 @@ ifeq ($(OS),SunOS)
     JPEG_LIBS         = -ljpeg 
     PNG_LIBS          = -lpng -lz 
     FREETYPE_LIB      = -lfreetype
-    OTHER_LIBS        = 
+    OTHER_LIBS        =  -lOpenThreads
 
   #### using forte compilers (default)
   else
@@ -193,6 +201,7 @@ ifeq ($(OS),SunOS)
     INSTDEVCMD        = cp
     INST_LOCATION     = /opt/OpenSceneGraph
     MAKEDIST          = $(TOPDIR)/Make/makepkg
+    OTHER_LIBS        =  -lOpenThreads
 endif
 
 #### IRIX Specific definitions

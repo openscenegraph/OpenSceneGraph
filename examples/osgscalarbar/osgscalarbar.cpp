@@ -27,6 +27,37 @@
 using namespace osgSim;
 using osgSim::ScalarBar;
 
+#if defined(_MSC_VER)
+// not have to have this pathway for just VS6.0 as its unable to handle the full
+// ScalarBar::ScalarPrinter::printScalar scoping.
+
+// Create a custom scalar printer
+struct MyScalarPrinter: public ScalarBar::ScalarPrinter
+{
+    std::string printScalar(float scalar)
+    {
+        std::cout<<"In MyScalarPrinter::printScalar"<<std::endl;
+        if(scalar==0.0f) return ScalarPrinter::printScalar(scalar)+" Bottom";
+        else if(scalar==0.5f) return ScalarPrinter::printScalar(scalar)+" Middle";
+        else if(scalar==1.0f) return ScalarPrinter::printScalar(scalar)+" Top";
+        else return ScalarPrinter::printScalar(scalar);
+    }
+};
+#else
+// Create a custom scalar printer
+struct MyScalarPrinter: public ScalarBar::ScalarPrinter
+{
+    std::string printScalar(float scalar)
+    {
+        std::cout<<"In MyScalarPrinter::printScalar"<<std::endl;
+        if(scalar==0.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Bottom";
+        else if(scalar==0.5f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Middle";
+        else if(scalar==1.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Top";
+        else return ScalarBar::ScalarPrinter::printScalar(scalar);
+    }
+};
+#endif
+
 osg::Node* createScalarBar()
 {
 #if 1
@@ -41,18 +72,6 @@ osg::Node* createScalarBar()
     cs.push_back(osg::Vec4(0.0f,0.0f,1.0f,1.0f));   // B
     cs.push_back(osg::Vec4(0.0f,1.0f,1.0f,1.0f));   // R
 
-    // Create a custom scalar printer
-    struct MyScalarPrinter: public ScalarBar::ScalarPrinter
-    {
-        std::string printScalar(float scalar)
-        {
-            std::cout<<"In MyScalarPrinter::printScalar"<<std::endl;
-            if(scalar==0.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Bottom";
-            else if(scalar==0.5f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Middle";
-            else if(scalar==1.0f) return ScalarBar::ScalarPrinter::printScalar(scalar)+" Top";
-            else return ScalarBar::ScalarPrinter::printScalar(scalar);
-        }
-    };
 
     ColorRange* cr = new ColorRange(0.0f,1.0f,cs);
     ScalarBar* sb = new ScalarBar(20, 11, cr, "ScalarBar", ScalarBar::VERTICAL, 0.1f, new MyScalarPrinter);

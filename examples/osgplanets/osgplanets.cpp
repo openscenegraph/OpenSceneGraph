@@ -11,6 +11,8 @@
 #include <osg/Light>
 #include <osg/LightSource>
 #include <osg/LightModel>
+#include <osg/Billboard>
+#include <osg/LineWidth>
 #include <osg/TexEnv>
 #include <osg/TexEnvCombine>
 
@@ -30,9 +32,92 @@
 
 static osg::Vec3 defaultPos( 0.0f, 0.0f, 0.0f );
 static osg::Vec3 centerScope(0.0f, 0.0f, 0.0f);
+
+/** create quad at specified position. */
+osg::Drawable* createSquare(const osg::Vec3& corner,const osg::Vec3& width,const osg::Vec3& height, osg::Image* image=NULL)
+{
+    // set up the Geometry.
+    osg::Geometry* geom = new osg::Geometry;
+
+    osg::Vec3Array* coords = new osg::Vec3Array(4);
+    (*coords)[0] = corner;
+    (*coords)[1] = corner+width;
+    (*coords)[2] = corner+width+height;
+    (*coords)[3] = corner+height;
+
+
+    geom->setVertexArray(coords);
+
+    osg::Vec3Array* norms = new osg::Vec3Array(1);
+    (*norms)[0] = width^height;
+    (*norms)[0].normalize();
     
+    geom->setNormalArray(norms);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
+    osg::Vec2Array* tcoords = new osg::Vec2Array(4);
+    (*tcoords)[0].set(0.0f,0.0f);
+    (*tcoords)[1].set(1.0f,0.0f);
+    (*tcoords)[2].set(1.0f,1.0f);
+    (*tcoords)[3].set(0.0f,1.0f);
+    geom->setTexCoordArray(0,tcoords);
+    
+    osg::Vec4Array* colours = new osg::Vec4Array(1);
+    (*colours)[0].set(1.0f,1.0f,1.0f,1.0f);
+    geom->setColorArray(colours);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
+    
+    if (image)
+    {
+        osg::StateSet* stateset = new osg::StateSet;
+        osg::Texture2D* texture = new osg::Texture2D;
+        texture->setImage(image);
+        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+        stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        geom->setStateSet(stateset);
+    }
+    
+    return geom;
+}
+
+osg::Image* createBillboardImage(const osg::Vec4& centerColour, unsigned int size, float power)
+{
+    osg::Vec4 backgroundColour = centerColour;
+    backgroundColour[3] = 0.0f;
+    
+    osg::Image* image = new osg::Image;
+    image->allocateImage(size,size,1,
+                         GL_RGBA,GL_UNSIGNED_BYTE);
+     
+     
+    float mid = (float(size)-1)*0.5f;
+    float div = 2.0f/float(size);
+    for(unsigned int r=0;r<size;++r)
+    {
+        unsigned char* ptr = image->data(0,r,0);
+        for(unsigned int c=0;c<size;++c)
+        {
+            float dx = (float(c) - mid)*div;
+            float dy = (float(r) - mid)*div;
+            float r = powf(1.0f-sqrtf(dx*dx+dy*dy),power);
+            if (r<0.0f) r=0.0f;
+            osg::Vec4 color = centerColour*r+backgroundColour*(1.0f-r);
+            // color.set(1.0f,1.0f,1.0f,0.5f);
+            *ptr++ = (unsigned char)((color[0])*255.0f);
+            *ptr++ = (unsigned char)((color[1])*255.0f);
+            *ptr++ = (unsigned char)((color[2])*255.0f);
+            *ptr++ = (unsigned char)((color[3])*255.0f);
+        }
+    }
+    return image;
+
+    //return osgDB::readImageFile("spot.dds");
+}
 
 
 osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
@@ -250,7 +335,16 @@ int main( int argc, char **argv )
     osg::Material* material = new osg::Material;
     material->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 0.0f, 0.0f ) );
     sunStateSet->setAttributeAndModes( material, osg::StateAttribute::ON );
-
+    
+    osg::Billboard* sunBillboard = new osg::Billboard();
+    sunBillboard->setMode(osg::Billboard::POINT_ROT_EYE);
+    sunBillboard->addDrawable(
+        createSquare(osg::Vec3(-5.0f,0.0f,-5.0f),osg::Vec3(10.0f,0.0f,0.0f),osg::Vec3(0.0f,0.0f,10.0f),createBillboardImage( osg::Vec4( 1.0, 1.0, 0, 1.0f), 64, 1.0) ),
+        osg::Vec3(0.0f,0.0f,0.0f));
+        
+    sunLight->addChild( sunBillboard );
+    
+    
     // stick sun right under root, no transformations for the sun
     sunLight->addChild( sun );
 

@@ -35,7 +35,7 @@ class Logos: public osg::Drawable
 
 	struct logosCullCallback : public osg::Drawable::CullCallback
 	{
-            virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State *state=NULL) const
+            virtual bool cull(osg::NodeVisitor *visitor, osg::Drawable* drawable, osg::State*) const
 	    {
 		Logos *logos = dynamic_cast <Logos *>(drawable);
 		osgUtil::CullVisitor *cv = dynamic_cast<osgUtil::CullVisitor *>(visitor);

@@ -122,7 +122,7 @@ ifeq ($(OS),IRIX)
 
   C++               = CC
   DEPFLAGS          = -M
-  INC               +=  -I${TOPDIR}/include
+  INC               +=  -I${TOPDIR}/include -I/usr/freeware/
   DEF               += -LANG:std -OPT:Olimit=0 \
 	 	       -DEBUG:woff=1682 -DEBUG:woff=3303\
 		       -MDupdate $(MAKEDEPEND)
@@ -250,17 +250,23 @@ ifeq ($(OS),Darwin)
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -ldl -lstdc++ -lobjc
   LIB_EXT            = dylib
-  QUICKTIME_LIB	    = -framework QuickTime
+  QUICKTIME	    = -framework QuickTime $(CARBON_LIB)
   TIFF_LIB	    = -ltiff
-  SRC_DIRS          = osg osgUtil osgDB osgGA osgGLUT osgParticle \
-			 osgPlugins Demos
-  PLUGIN_DIRS       = osg rgb lib3ds flt obj lwo txp bmp pic tga \
-			osgtgz tgz zip
-  DEMOS_DIRS        = hangglide osgbillboard osgcluster osgconv osgcopy \
-			osgcube osgcallback osgclip osgimpostor osgoccluder \
-                        osgreflect osgscribe osgstereoimage osgtexture \
-                        osgviews osgversion sgv osgparticle
-                        
+  SRC_DIRS          = osg osgUtil osgDB osgPlugins \
+                        osgGA osgGLUT osgParticle \
+                        Demos
+  # Plugins which require external libs: gif jpeg png
+  PLUGIN_DIRS       = bmp dw flt \
+                        lib3ds logos lwo obj \
+                        osg osgtgz pic \
+                        quicktime rgb tga tgz tiff \
+                        txp zip
+  # Demos which require external libs: osghud osgtext
+  DEMOS_DIRS        = osgbillboard osgcallback osgclip \
+                        osgcluster osgconv osgcopy osgcube osggeometry \
+                        osghangglide osgimpostor osgmultitexture osgoccluder \
+                        osgparticle osgprerender osgreflect osgscribe osgstereoimage \
+                        osgtexture osgversion osgviews sgv
 endif
 
 #### Cygwin/Mingw specific definitions

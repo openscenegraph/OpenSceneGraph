@@ -819,7 +819,7 @@ void DXArrayWriter::WriteIndexArray(
       fprintf( fp, " " );
     {
       if ( ip.null() ) fprintf( fp, " %d", i );
-      else             fprintf( fp, " %d", ip[i] );
+      else             fprintf( fp, " %d", static_cast<int>( ip[i] ) );
     }
     if ( (i+1) % shape == 0 )
       fprintf( fp, "\n" );
@@ -1106,18 +1106,17 @@ void DXArrayWriter::WritePerVertexColors(
   //   same applies here, namely that there may be multiple colors
   //   mapping to the same point definiton.)
 
-  int num_points     = geoset.getNumCoords();
-  int num_pindices   = geoset.getNumCoordIndices();
-  int num_colors     = geoset.getNumColors();
-  int num_cindices   = geoset.getNumColorIndices();
-  //const osg::Vec3 *points  = geoset.getCoords();
+  unsigned int num_points     = geoset.getNumCoords();
+  unsigned int num_pindices   = geoset.getNumCoordIndices();
+  unsigned int num_colors     = geoset.getNumColors();
+  unsigned int num_cindices   = geoset.getNumColorIndices();
   const osg::Vec4 *colors = geoset.getColors();
   const osg::GeoSet::IndexPointer &pindices = geoset.getCoordIndices();
   const osg::GeoSet::IndexPointer &cindices = geoset.getColorIndices();
 
   // Create a list of color indices per vertex "definition"
-  osg::uint *pt_cindices = new osg::uint[ num_points ];
-  int       *set         = new int      [ num_points ];
+  GLuint *pt_cindices = new GLuint[ num_points ];
+  int       *set         = new int[ num_points ];
 
   try {
     memset( set, '\0', num_points * sizeof(int) );
@@ -1547,7 +1546,7 @@ void DXWriter::WritePolylineConnections( osg::GeoSet &geoset,
   int count = 0;
   for ( i = 0; i < num_prims; i++ )
     count += ( line_loops ? prim_lengths[i]+1 : prim_lengths[i] );
-  osg::uint *indices = new osg::uint[ count ];
+  GLuint *indices = new GLuint[ count ];
   osg::GeoSet::IndexPointer ip;
   ip.set( count, indices );
 

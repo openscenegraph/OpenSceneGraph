@@ -23,9 +23,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.183.8.2">TestCase_</A></B>( const std::string&amp; sName, TestMethodPtr pTestMethod )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.187.8.2">TestCase_</A></B>( const std::string&amp; sName, TestMethodPtr pTestMethod )
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.183.8.3">run</A></B>( const Context&amp; ctx )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.187.8.3">run</A></B>( const <!1><A HREF="TestCase.html#DOC.187.4.1">Context</A>&amp; ctx )
 </DL></P>
 
 </DL>
@@ -33,7 +33,12 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>accept</B>( Visitor&amp; v )
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>accept</B>( <!1><A HREF="Test.html#DOC.187.1.1">Visitor</A>&amp; v )
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="TestContext.html">TestContext</A> <B>Context</B>
 </DL></P>
 
 </DL>
@@ -42,6 +47,11 @@
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>const std::string&amp; <B>name</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  <!1><A HREF="TestVisitor.html">TestVisitor</A> <B>Visitor</B>
 </DL></P>
 
 </DL>
@@ -57,12 +67,20 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline static   int <B>createdCount</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline static   int <B>deletedCount</B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   int <B>_createdCount</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   int <B>_deletedCount</B>
 </DL></P>
 
 </DL>
@@ -80,12 +98,12 @@ of information from one test case to the next.</BLOCKQUOTE>
 <DL>
 
 <A NAME="TestCase_"></A>
-<A NAME="DOC.183.8.2"></A>
+<A NAME="DOC.187.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TestCase_( const std::string&amp; sName, TestMethodPtr pTestMethod )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="run"></A>
-<A NAME="DOC.183.8.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void run( const Context&amp; ctx )</B></TT>
+<A NAME="DOC.187.8.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void run( const <!1><A HREF="TestCase.html#DOC.187.4.1">Context</A>&amp; ctx )</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -23,35 +23,35 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.1">ClearNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.43.1">ClearNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.2">ClearNode</A></B>(const <!1><A HREF="ClearNode.html#DOC.2.26.2">ClearNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.43.2">ClearNode</A></B>(const <!1><A HREF="ClearNode.html#DOC.2.43.2">ClearNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ClearNode.html">ClearNode</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.43.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ClearNode.html">ClearNode</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.26.4">setRequiresClear</A></B>(const bool requiresClear)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.43.4">setRequiresClear</A></B>(bool requiresClear)
 <DD><I>Sets the flag which control whether a glClear is required at the beginning of each frame.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const bool <B><A HREF="#DOC.2.26.5">getRequiresClear</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.43.5">getRequiresClear</A></B>() const 
 <DD><I>Gets the flag which control whether a glClear is required at the beginning of each frame.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.26.6">setClearColor</A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.43.6">setClearColor</A></B>(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)
 <DD><I>Sets the clear color.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.26.7">getClearColor</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.43.7">getClearColor</A></B>() const 
 <DD><I>Returns the clear color.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.26.9">_requiresClear</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.43.9">_requiresClear</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.26.10">_clearColor</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.43.10">_clearColor</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.26.8">~ClearNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.43.8">~ClearNode</A></B>()
 </DL></P>
 
 </DL>
@@ -59,6 +59,10 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
@@ -67,27 +71,34 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const unsigned int <B>getNumChildren</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const unsigned int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( unsigned int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const unsigned int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( unsigned int i ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>findChildNo</B>( const Node* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; <B>ChildList</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.74.1">ChildList</A> <B>_children</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>
@@ -107,47 +118,47 @@ are rendered prior to standard opaque and transparent drawables.</BLOCKQUOTE>
 <DL>
 
 <A NAME="ClearNode"></A>
-<A NAME="DOC.2.26.1"></A>
+<A NAME="DOC.2.43.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClearNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ClearNode"></A>
-<A NAME="DOC.2.26.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClearNode(const <!1><A HREF="ClearNode.html#DOC.2.26.2">ClearNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.43.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ClearNode(const <!1><A HREF="ClearNode.html#DOC.2.43.2">ClearNode</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.26.3"></A>
+<A NAME="DOC.2.43.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="ClearNode.html">ClearNode</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRequiresClear"></A>
-<A NAME="DOC.2.26.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRequiresClear(const bool requiresClear)</B></TT>
+<A NAME="DOC.2.43.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRequiresClear(bool requiresClear)</B></TT>
 <DD>Sets the flag which control whether a glClear is required at the beginning of each frame. 
 <DL><DT><DD></DL><P>
 <A NAME="getRequiresClear"></A>
-<A NAME="DOC.2.26.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const bool getRequiresClear() const </B></TT>
+<A NAME="DOC.2.43.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool getRequiresClear() const </B></TT>
 <DD>Gets the flag which control whether a glClear is required at the beginning of each frame. 
 <DL><DT><DD></DL><P>
 <A NAME="setClearColor"></A>
-<A NAME="DOC.2.26.6"></A>
+<A NAME="DOC.2.43.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setClearColor(const <!1><A HREF="Vec4.html">Vec4</A>&amp; color)</B></TT>
 <DD>Sets the clear color. 
 <DL><DT><DD></DL><P>
 <A NAME="getClearColor"></A>
-<A NAME="DOC.2.26.7"></A>
+<A NAME="DOC.2.43.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getClearColor() const </B></TT>
 <DD>Returns the clear color. 
 <DL><DT><DD></DL><P>
 <A NAME="~ClearNode"></A>
-<A NAME="DOC.2.26.8"></A>
+<A NAME="DOC.2.43.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ClearNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_requiresClear"></A>
-<A NAME="DOC.2.26.9"></A>
+<A NAME="DOC.2.43.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _requiresClear</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_clearColor"></A>
-<A NAME="DOC.2.26.10"></A>
+<A NAME="DOC.2.43.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _clearColor</B></TT>
 <DL><DT><DD></DL><P></DL>
 

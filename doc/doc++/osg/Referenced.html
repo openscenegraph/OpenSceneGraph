@@ -11,11 +11,11 @@
 <HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=545>
-<param name=classes value="CReferenced,MReferenced.html,CTest,MTest.html,CSubloadCallback,MSubloadCallback.4.html,CSubloadCallback,MSubloadCallback.3.html,CSubloadCallback,MSubloadCallback.2.html,CSubloadCallback,MSubloadCallback.html,CStatistics,MStatistics.html,CState,MState.html,CObject,MObject.html,CNodeVisitor,MNodeVisitor.html,CNodeCallback,MNodeCallback.html,CLineSegment,MLineSegment.html,CImpostorSpriteManager,MImpostorSpriteManager.html,CFrameStamp,MFrameStamp.html,CDisplaySettings,MDisplaySettings.html,CCullingSet,MCullingSet.html,CCamera,MCamera.html,CAnimationPath,MAnimationPath.html">
-<param name=before value="M,M|_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,Mr_">
-<param name=after value="M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M">
-<param name=indent value="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=635>
+<param name=classes value="CReferenced,MReferenced.html,CTest,MTest.html,CSubloadCallback,MSubloadCallback.4.html,CExtensions,MExtensions.3.html,CSubloadCallback,MSubloadCallback.3.html,CExtensions,MExtensions.2.html,CSubloadCallback,MSubloadCallback.2.html,CSubloadCallback,MSubloadCallback.html,CExtensions,MExtensions.html,CStatistics,MStatistics.html,CState,MState.html,CObject,MObject.html,CNodeVisitor,MNodeVisitor.html,CNodeCallback,MNodeCallback.html,CLineSegment,MLineSegment.html,CImpostorSpriteManager,MImpostorSpriteManager.html,CFrameStamp,MFrameStamp.html,CDisplaySettings,MDisplaySettings.html,CCullingSet,MCullingSet.html,CCamera,MCamera.html,CAnimationPath,MAnimationPath.html">
+<param name=before value="M,M|_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,MR_,Mr_">
+<param name=after value="M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M,M">
+<param name=indent value="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -23,33 +23,43 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.112.1">Referenced</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.133.1">Referenced</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.112.2">Referenced</A></B>(const <!1><A HREF="Referenced.html#DOC.2.112.2">Referenced</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.133.2">Referenced</A></B>(const <!1><A HREF="Referenced.html#DOC.2.133.2">Referenced</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B><A HREF="#DOC.2.112.3">operator = </A></B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B><A HREF="#DOC.2.133.3">operator = </A></B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.112.4">ref</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.133.4">ref</A></B>() const 
 <DD><I>increment the reference count by one, indicating that  this object has another pointer which is referencing it</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.112.5">unref</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.133.5">unref</A></B>() const 
 <DD><I>decrement the reference count by one, indicating that  a pointer to this object is referencing it.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.112.6">unref_nodelete</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.133.6">unref_nodelete</A></B>() const 
 <DD><I>decrement the reference count by one, indicating that  a pointer to this object is referencing it.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.112.7">referenceCount</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.133.7">referenceCount</A></B>() const 
 <DD><I>return the number pointers currently referencing this object.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   int <B><A HREF="#DOC.2.133.8">createdCount</A></B>()
+<DD><I>return the total number of created referenced objects </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline static   int <B><A HREF="#DOC.2.133.9">deletedCount</A></B>()
+<DD><I>return the total number of deleted referenced objects </I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.112.9">_refCount</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable int <B><A HREF="#DOC.2.133.11">_refCount</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.133.12">_createdCount</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.133.13">_deletedCount</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.112.8">~Referenced</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.133.10">~Referenced</A></B>()
 </DL></P>
 
 </DL>
@@ -61,25 +71,25 @@
 <DL>
 
 <A NAME="Referenced"></A>
-<A NAME="DOC.2.112.1"></A>
+<A NAME="DOC.2.133.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Referenced"></A>
-<A NAME="DOC.2.112.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced(const <!1><A HREF="Referenced.html#DOC.2.112.2">Referenced</A>&amp;)</B></TT>
+<A NAME="DOC.2.133.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Referenced(const <!1><A HREF="Referenced.html#DOC.2.133.2">Referenced</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.112.3"></A>
+<A NAME="DOC.2.133.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; operator = (<!1><A HREF="Referenced.html">Referenced</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ref"></A>
-<A NAME="DOC.2.112.4"></A>
+<A NAME="DOC.2.133.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void ref() const </B></TT>
 <DD>increment the reference count by one, indicating that 
 this object has another pointer which is referencing it
 <DL><DT><DD></DL><P>
 <A NAME="unref"></A>
-<A NAME="DOC.2.112.5"></A>
+<A NAME="DOC.2.133.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void unref() const </B></TT>
 <DD>decrement the reference count by one, indicating that 
 a pointer to this object is referencing it.  If the
@@ -87,7 +97,7 @@ reference count goes to zero, it is assumed that this object
 is no longer referenced and is automatically deleted.
 <DL><DT><DD></DL><P>
 <A NAME="unref_nodelete"></A>
-<A NAME="DOC.2.112.6"></A>
+<A NAME="DOC.2.133.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void unref_nodelete() const </B></TT>
 <DD>decrement the reference count by one, indicating that 
 a pointer to this object is referencing it.  However, do
@@ -97,25 +107,46 @@ be resonsible for, one should prefer unref() over unref_nodelete()
 as the later can lead to memory leaks.
 <DL><DT><DD></DL><P>
 <A NAME="referenceCount"></A>
-<A NAME="DOC.2.112.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int referenceCount() const </B></TT>
+<A NAME="DOC.2.133.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int referenceCount() const </B></TT>
 <DD>return the number pointers currently referencing this object. 
 <DL><DT><DD></DL><P>
+<A NAME="createdCount"></A>
+<A NAME="DOC.2.133.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   int createdCount()</B></TT>
+<DD>return the total number of created referenced objects 
+<DL><DT><DD></DL><P>
+<A NAME="deletedCount"></A>
+<A NAME="DOC.2.133.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline static   int deletedCount()</B></TT>
+<DD>return the total number of deleted referenced objects 
+<DL><DT><DD></DL><P>
 <A NAME="~Referenced"></A>
-<A NAME="DOC.2.112.8"></A>
+<A NAME="DOC.2.133.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Referenced()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_refCount"></A>
-<A NAME="DOC.2.112.9"></A>
+<A NAME="DOC.2.133.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable int _refCount</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_createdCount"></A>
+<A NAME="DOC.2.133.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int _createdCount</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_deletedCount"></A>
+<A NAME="DOC.2.133.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int _deletedCount</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:
 </B><DD><A HREF="Test.html">Test</A><BR>
 <A HREF="SubloadCallback.4.html">SubloadCallback</A><BR>
+<A HREF="Extensions.3.html">Extensions</A><BR>
 <A HREF="SubloadCallback.3.html">SubloadCallback</A><BR>
+<A HREF="Extensions.2.html">Extensions</A><BR>
 <A HREF="SubloadCallback.2.html">SubloadCallback</A><BR>
 <A HREF="SubloadCallback.html">SubloadCallback</A><BR>
+<A HREF="Extensions.html">Extensions</A><BR>
 <A HREF="Statistics.html">Statistics</A><BR>
 <A HREF="State.html">State</A><BR>
 <A HREF="Object.html">Object</A><BR>

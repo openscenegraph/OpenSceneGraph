@@ -13,39 +13,43 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned intinline  CopyFlags <B><A HREF="#DOC.2.34.2">CopyOp</A></B>(CopyFlags flags=<!1><A HREF="CopyOp.html#DOC.2.34.1.1">SHALLOW_COPY</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.51.3">CopyOp</A></B>(<!1><A HREF="CopyOp.html#DOC.2.51.2">CopyFlags</A> flags=<!1><A HREF="CopyOp.html#DOC.2.51.1.1">SHALLOW_COPY</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.34.3">~CopyOp</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.51.4">~CopyOp</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Referenced.html">Referenced</A>* <B><A HREF="#DOC.2.34.4">operator() </A></B>(const <!1><A HREF="Referenced.html">Referenced</A>* <!1><A HREF="Referenced.html#DOC.2.112.4">ref</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Referenced.html">Referenced</A>* <B><A HREF="#DOC.2.51.5">operator() </A></B>(const <!1><A HREF="Referenced.html">Referenced</A>* <!1><A HREF="Referenced.html#DOC.2.133.4">ref</A>) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.34.5">operator() </A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.51.6">operator() </A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   Node* <B><A HREF="#DOC.2.34.6">operator() </A></B>(const Node* node) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   Node* <B><A HREF="#DOC.2.51.7">operator() </A></B>(const Node* node) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.34.7">operator() </A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* drawable) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Drawable.html">Drawable</A>* <B><A HREF="#DOC.2.51.8">operator() </A></B>(const <!1><A HREF="Drawable.html">Drawable</A>* drawable) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="StateSet.html">StateSet</A>* <B><A HREF="#DOC.2.34.8">operator() </A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* stateset) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="StateSet.html">StateSet</A>* <B><A HREF="#DOC.2.51.9">operator() </A></B>(const <!1><A HREF="StateSet.html">StateSet</A>* stateset) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.34.9">operator() </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attr) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="StateAttribute.html">StateAttribute</A>* <B><A HREF="#DOC.2.51.10">operator() </A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attr) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.34.10">operator() </A></B>(const <!1><A HREF="Texture.html">Texture</A>* text) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Texture.html">Texture</A>* <B><A HREF="#DOC.2.51.11">operator() </A></B>(const <!1><A HREF="Texture.html">Texture</A>* text) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Image.html">Image</A>* <B><A HREF="#DOC.2.34.11">operator() </A></B>(const <!1><A HREF="Image.html">Image</A>* image) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Image.html">Image</A>* <B><A HREF="#DOC.2.51.12">operator() </A></B>(const <!1><A HREF="Image.html">Image</A>* image) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.34.12">operator() </A></B>(const <!1><A HREF="Array.html">Array</A>* image) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Array.html">Array</A>* <B><A HREF="#DOC.2.51.13">operator() </A></B>(const <!1><A HREF="Array.html">Array</A>* array) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Primitive.html">Primitive</A>* <B><A HREF="#DOC.2.34.13">operator() </A></B>(const <!1><A HREF="Primitive.html">Primitive</A>* image) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>* <B><A HREF="#DOC.2.51.14">operator() </A></B>(const <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>* primitives) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Shape.html">Shape</A>* <B><A HREF="#DOC.2.51.15">operator() </A></B>(const <!1><A HREF="Shape.html">Shape</A>* shape) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.34.1">Options</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.51.1">Options</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  unsigned int <B><A HREF="#DOC.2.51.2">CopyFlags</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>CopyFlags <B><A HREF="#DOC.2.34.14">_flags</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="CopyOp.html#DOC.2.51.2">CopyFlags</A> <B><A HREF="#DOC.2.51.16">_flags</A></B>
 </DL></P>
 
 </DL>
@@ -58,106 +62,118 @@ during copy construction and clone operation</BLOCKQUOTE>
 <DL>
 
 <A NAME="Options"></A>
-<A NAME="DOC.2.34.1"></A>
+<A NAME="DOC.2.51.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Options</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="SHALLOW_COPY"></A>
-<A NAME="DOC.2.34.1.1"></A>
+<A NAME="DOC.2.51.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SHALLOW_COPY</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_OBJECTS"></A>
-<A NAME="DOC.2.34.1.2"></A>
+<A NAME="DOC.2.51.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_OBJECTS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_NODES"></A>
-<A NAME="DOC.2.34.1.3"></A>
+<A NAME="DOC.2.51.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_NODES</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_DRAWABLES"></A>
-<A NAME="DOC.2.34.1.4"></A>
+<A NAME="DOC.2.51.1.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_DRAWABLES</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_STATESETS"></A>
-<A NAME="DOC.2.34.1.5"></A>
+<A NAME="DOC.2.51.1.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_STATESETS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_STATEATTRIBUTES"></A>
-<A NAME="DOC.2.34.1.6"></A>
+<A NAME="DOC.2.51.1.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_STATEATTRIBUTES</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_TEXTURES"></A>
-<A NAME="DOC.2.34.1.7"></A>
+<A NAME="DOC.2.51.1.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_TEXTURES</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_IMAGES"></A>
-<A NAME="DOC.2.34.1.8"></A>
+<A NAME="DOC.2.51.1.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_IMAGES</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_ARRAYS"></A>
-<A NAME="DOC.2.34.1.9"></A>
+<A NAME="DOC.2.51.1.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_ARRAYS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_PRIMITIVES"></A>
-<A NAME="DOC.2.34.1.10"></A>
+<A NAME="DOC.2.51.1.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_PRIMITIVES</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="DEEP_COPY_SHAPES"></A>
+<A NAME="DOC.2.51.1.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_SHAPES</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="DEEP_COPY_ALL"></A>
-<A NAME="DOC.2.34.1.11"></A>
+<A NAME="DOC.2.51.1.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DEEP_COPY_ALL</B></TT>
 <DL><DT><DD></DL><P></DL>
 
+<A NAME="CopyFlags"></A>
+<A NAME="DOC.2.51.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned int CopyFlags</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="CopyOp"></A>
-<A NAME="DOC.2.34.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  unsigned intinline  CopyFlags CopyOp(CopyFlags flags=<!1><A HREF="CopyOp.html#DOC.2.34.1.1">SHALLOW_COPY</A>)</B></TT>
+<A NAME="DOC.2.51.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   CopyOp(<!1><A HREF="CopyOp.html#DOC.2.51.2">CopyFlags</A> flags=<!1><A HREF="CopyOp.html#DOC.2.51.1.1">SHALLOW_COPY</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~CopyOp"></A>
-<A NAME="DOC.2.34.3"></A>
+<A NAME="DOC.2.51.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~CopyOp()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Referenced.html">Referenced</A>* operator() (const <!1><A HREF="Referenced.html">Referenced</A>* <!1><A HREF="Referenced.html#DOC.2.112.4">ref</A>) const </B></TT>
+<A NAME="DOC.2.51.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Referenced.html">Referenced</A>* operator() (const <!1><A HREF="Referenced.html">Referenced</A>* <!1><A HREF="Referenced.html#DOC.2.133.4">ref</A>) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.5"></A>
+<A NAME="DOC.2.51.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* operator() (const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.6"></A>
+<A NAME="DOC.2.51.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   Node* operator() (const Node* node) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.7"></A>
+<A NAME="DOC.2.51.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Drawable.html">Drawable</A>* operator() (const <!1><A HREF="Drawable.html">Drawable</A>* drawable) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.8"></A>
+<A NAME="DOC.2.51.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="StateSet.html">StateSet</A>* operator() (const <!1><A HREF="StateSet.html">StateSet</A>* stateset) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.9"></A>
+<A NAME="DOC.2.51.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="StateAttribute.html">StateAttribute</A>* operator() (const <!1><A HREF="StateAttribute.html">StateAttribute</A>* attr) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.10"></A>
+<A NAME="DOC.2.51.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Texture.html">Texture</A>* operator() (const <!1><A HREF="Texture.html">Texture</A>* text) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.11"></A>
+<A NAME="DOC.2.51.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Image.html">Image</A>* operator() (const <!1><A HREF="Image.html">Image</A>* image) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Array.html">Array</A>* operator() (const <!1><A HREF="Array.html">Array</A>* image) const </B></TT>
+<A NAME="DOC.2.51.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Array.html">Array</A>* operator() (const <!1><A HREF="Array.html">Array</A>* array) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator() "></A>
-<A NAME="DOC.2.34.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Primitive.html">Primitive</A>* operator() (const <!1><A HREF="Primitive.html">Primitive</A>* image) const </B></TT>
+<A NAME="DOC.2.51.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>* operator() (const <!1><A HREF="PrimitiveSet.html">PrimitiveSet</A>* primitives) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator() "></A>
+<A NAME="DOC.2.51.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Shape.html">Shape</A>* operator() (const <!1><A HREF="Shape.html">Shape</A>* shape) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_flags"></A>
-<A NAME="DOC.2.34.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>CopyFlags _flags</B></TT>
+<A NAME="DOC.2.51.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="CopyOp.html#DOC.2.51.2">CopyFlags</A> _flags</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

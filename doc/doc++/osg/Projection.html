@@ -23,36 +23,36 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.1">Projection</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.130.1">Projection</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.2">Projection</A></B>(const <!1><A HREF="Projection.html#DOC.2.109.2">Projection</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.130.2">Projection</A></B>(const <!1><A HREF="Projection.html#DOC.2.130.2">Projection</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.3">Projection</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.130.3">Projection</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.109.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Projection.html">Projection</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.130.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Projection.html">Projection</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.109.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.130.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
 <DD><I>Set the transform's matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.109.6">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.130.6">getMatrix</A></B>() const 
 <DD><I>Get the transform's matrix.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.109.7">preMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.130.7">preMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
 <DD><I>preMult transform</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.109.8">postMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.130.8">postMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
 <DD><I>postMult transform</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.109.10">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.130.10">_matrix</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.109.9">~Projection</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.130.9">~Projection</A></B>()
 </DL></P>
 
 </DL>
@@ -60,6 +60,10 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
@@ -68,27 +72,34 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const unsigned int <B>getNumChildren</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const unsigned int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( unsigned int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const unsigned int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( unsigned int i ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>findChildNo</B>( const Node* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; <B>ChildList</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.74.1">ChildList</A> <B>_children</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>
@@ -100,48 +111,48 @@
 <DL>
 
 <A NAME="Projection"></A>
-<A NAME="DOC.2.109.1"></A>
+<A NAME="DOC.2.130.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Projection()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Projection"></A>
-<A NAME="DOC.2.109.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Projection(const <!1><A HREF="Projection.html#DOC.2.109.2">Projection</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.130.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Projection(const <!1><A HREF="Projection.html#DOC.2.130.2">Projection</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="Projection"></A>
-<A NAME="DOC.2.109.3"></A>
+<A NAME="DOC.2.130.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Projection(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.109.4"></A>
+<A NAME="DOC.2.130.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Projection.html">Projection</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMatrix"></A>
-<A NAME="DOC.2.109.5"></A>
+<A NAME="DOC.2.130.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
 <DD>Set the transform's matrix
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.109.6"></A>
+<A NAME="DOC.2.130.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix() const </B></TT>
 <DD>Get the transform's matrix. 
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.109.7"></A>
+<A NAME="DOC.2.130.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void preMult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
 <DD>preMult transform
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.109.8"></A>
+<A NAME="DOC.2.130.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void postMult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
 <DD>postMult transform
 <DL><DT><DD></DL><P>
 <A NAME="~Projection"></A>
-<A NAME="DOC.2.109.9"></A>
+<A NAME="DOC.2.130.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Projection()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.109.10"></A>
+<A NAME="DOC.2.130.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _matrix</B></TT>
 <DL><DT><DD></DL><P></DL>
 

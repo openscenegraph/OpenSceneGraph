@@ -23,37 +23,59 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.129.2">Switch</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.168.1">Switch</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.129.3">Switch</A></B>(const <!1><A HREF="Switch.html#DOC.2.129.3">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.168.2">Switch</A></B>(const <!1><A HREF="Switch.html#DOC.2.168.2">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.129.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Switch.html">Switch</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.168.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Switch.html">Switch</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.129.5">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.168.4">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.129.6">setValue</A></B>(const int value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.168.5">setNewChildDefaultValue</A></B>(bool value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.6">getNewChildDefaultValue</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.168.7">addChild</A></B>( Node* child )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.168.8">addChild</A></B>( Node* child, bool value )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.168.9">removeChild</A></B>( Node* child )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.168.10">setValue</A></B>(unsigned int pos, bool value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.168.11">setValue</A></B>(const Node* child, bool value)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.12">getValue</A></B>(unsigned int pos) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.13">getValue</A></B>(const Node* child) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.168.15">setValue</A></B>(int value)
 <DD><I> Selects the active child Node or enables a special SwitchType mode.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const int <B><A HREF="#DOC.2.129.7">getValue</A></B>() const 
-<DD><I> Returns the number of the active child Node or the SwitchType</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.168.16">getValue</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Switch.html#DOC.2.168.17">ValueList</A>&amp; <B><A HREF="#DOC.2.168.18">getValueList</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.129.1">SwitchType</A></B>
-<DD><I> Special mode values for the Switch.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.168.14">Values</A></B>
+<DD><I> Special values for the Switch.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;bool&gt; <B><A HREF="#DOC.2.168.17">ValueList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.129.9">_value</A></B>
-<DD><I>The current Switch value.</I>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.168.20">_newChildDefaultValue</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Switch.html#DOC.2.168.17">ValueList</A> <B><A HREF="#DOC.2.168.21">_values</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.129.8">~Switch</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.168.19">~Switch</A></B>()
 </DL></P>
 
 </DL>
@@ -61,33 +83,40 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>( Node* child )
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const unsigned int <B>getNumChildren</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const unsigned int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( unsigned int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const unsigned int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( unsigned int i ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>findChildNo</B>( const Node* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; <B>ChildList</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.74.1">ChildList</A> <B>_children</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>
@@ -101,66 +130,116 @@ differently at different times, for instance a switch could be used
 to represent the different states of a traffic light.</BLOCKQUOTE>
 <DL>
 
-<A NAME="SwitchType"></A>
-<A NAME="DOC.2.129.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  SwitchType</B></TT>
+<A NAME="Switch"></A>
+<A NAME="DOC.2.168.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Switch"></A>
+<A NAME="DOC.2.168.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch(const <!1><A HREF="Switch.html#DOC.2.168.2">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_Node"></A>
+<A NAME="DOC.2.168.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Switch.html">Switch</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="traverse"></A>
+<A NAME="DOC.2.168.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setNewChildDefaultValue"></A>
+<A NAME="DOC.2.168.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setNewChildDefaultValue(bool value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNewChildDefaultValue"></A>
+<A NAME="DOC.2.168.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getNewChildDefaultValue() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addChild"></A>
+<A NAME="DOC.2.168.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild( Node* child )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addChild"></A>
+<A NAME="DOC.2.168.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild( Node* child, bool value )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="removeChild"></A>
+<A NAME="DOC.2.168.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild( Node* child )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setValue"></A>
+<A NAME="DOC.2.168.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setValue(unsigned int pos, bool value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setValue"></A>
+<A NAME="DOC.2.168.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setValue(const Node* child, bool value)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getValue"></A>
+<A NAME="DOC.2.168.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getValue(unsigned int pos) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getValue"></A>
+<A NAME="DOC.2.168.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getValue(const Node* child) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="Values"></A>
+<A NAME="DOC.2.168.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Values</B></TT>
 <DD>
-Special mode values for the Switch. Use these if you want to
+Special values for the Switch. Use these if you want to
 turn on/off all child nodes.
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="ALL_CHILDREN_ON"></A>
-<A NAME="DOC.2.129.1.1"></A>
+<A NAME="DOC.2.168.14.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_CHILDREN_ON</B></TT>
-<DD>Turn on all children. 
+<DD>All children turned on. 
 <DL><DT><DD></DL><P>
 <A NAME="ALL_CHILDREN_OFF"></A>
-<A NAME="DOC.2.129.1.2"></A>
+<A NAME="DOC.2.168.14.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_CHILDREN_OFF</B></TT>
-<DD>Turn off all children. 
+<DD>All children off. 
+<DL><DT><DD></DL><P>
+<A NAME="MULTIPLE_CHILDREN_ON"></A>
+<A NAME="DOC.2.168.14.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MULTIPLE_CHILDREN_ON</B></TT>
+<DD>Multiple children turned on
 <DL><DT><DD></DL><P></DL>
 
-<A NAME="Switch"></A>
-<A NAME="DOC.2.129.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch()</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="Switch"></A>
-<A NAME="DOC.2.129.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Switch(const <!1><A HREF="Switch.html#DOC.2.129.3">Switch</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
-<DD>Copy constructor using CopyOp to manage deep vs shallow copy
-<DL><DT><DD></DL><P>
-<A NAME="META_Node"></A>
-<A NAME="DOC.2.129.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Switch.html">Switch</A>)</B></TT>
-<DL><DT><DD></DL><P>
-<A NAME="traverse"></A>
-<A NAME="DOC.2.129.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="setValue"></A>
-<A NAME="DOC.2.129.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setValue(const int value)</B></TT>
+<A NAME="DOC.2.168.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setValue(int value)</B></TT>
 <DD>
 Selects the active child Node or enables a special
 SwitchType mode. 
 
 <DL><DT><DT><B>Parameters:</B><DD><B>value</B> -  the number of the active child
-(<!1><A HREF="ImpostorSpriteManager.html#DOC.2.64.3">first</A> child == number 0) or SwitchType. Invalid values
+(<!1><A HREF="ImpostorSpriteManager.html#DOC.2.80.3">first</A> child == number 0) or SwitchType. Invalid values
 will be ignored.<BR><DD></DL><P>
 <A NAME="getValue"></A>
-<A NAME="DOC.2.129.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const int getValue() const </B></TT>
-<DD>
-Returns the number of the active child Node or the SwitchType
+<A NAME="DOC.2.168.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getValue() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ValueList"></A>
+<A NAME="DOC.2.168.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;bool&gt; ValueList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getValueList"></A>
+<A NAME="DOC.2.168.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Switch.html#DOC.2.168.17">ValueList</A>&amp; getValueList() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Switch"></A>
-<A NAME="DOC.2.129.8"></A>
+<A NAME="DOC.2.168.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Switch()</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="_value"></A>
-<A NAME="DOC.2.129.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _value</B></TT>
-<DD>The current Switch value. 
+<A NAME="_newChildDefaultValue"></A>
+<A NAME="DOC.2.168.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _newChildDefaultValue</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_values"></A>
+<A NAME="DOC.2.168.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Switch.html#DOC.2.168.17">ValueList</A> _values</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:

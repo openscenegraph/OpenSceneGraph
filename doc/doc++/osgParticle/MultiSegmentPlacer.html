@@ -32,25 +32,25 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.11.4">place</A></B>(<!1><A HREF="Particle.html">Particle</A>* P) const 
 <DD><I>Place a partice.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.11.10">numVertices</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.11.12">numVertices</A></B>() const 
 <DD><I>Get the number of vertices which define the segments</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.11.11">getVertex</A></B>(int i) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Vec3&amp; <B><A HREF="#DOC.2.11.13">getVertex</A></B>(int i) const 
 <DD><I>Get a vertex</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.12">setVertex</A></B>(int i, const osg::Vec3 &amp;v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.14">setVertex</A></B>(int i, const osg::Vec3 &amp;v)
 <DD><I>Set a vertex</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.13">setVertex</A></B>(int i, float x, float y, float z)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.15">setVertex</A></B>(int i, float x, float y, float z)
 <DD><I>Set a vertex</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.14">addVertex</A></B>(const osg::Vec3 &amp;v)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.16">addVertex</A></B>(const osg::Vec3 &amp;v)
 <DD><I>Add a vertex</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.15">addVertex</A></B>(float x, float y, float z)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.17">addVertex</A></B>(float x, float y, float z)
 <DD><I>Add a vertex</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.16">removeVertex</A></B>(int i)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.11.18">removeVertex</A></B>(int i)
 <DD><I>Remove a vertex</I>
 </DL></P>
 
@@ -109,37 +109,37 @@ specified sequence of connected segments.</BLOCKQUOTE>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="MultiSegmentPlacer.html">MultiSegmentPlacer</A>&amp; operator=(const <!1><A HREF="MultiSegmentPlacer.html">MultiSegmentPlacer</A> &amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="numVertices"></A>
-<A NAME="DOC.2.11.10"></A>
+<A NAME="DOC.2.11.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int numVertices() const </B></TT>
 <DD>Get the number of vertices which define the segments
 <DL><DT><DD></DL><P>
 <A NAME="getVertex"></A>
-<A NAME="DOC.2.11.11"></A>
+<A NAME="DOC.2.11.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Vec3&amp; getVertex(int i) const </B></TT>
 <DD>Get a vertex
 <DL><DT><DD></DL><P>
 <A NAME="setVertex"></A>
-<A NAME="DOC.2.11.12"></A>
+<A NAME="DOC.2.11.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertex(int i, const osg::Vec3 &amp;v)</B></TT>
 <DD>Set a vertex
 <DL><DT><DD></DL><P>
 <A NAME="setVertex"></A>
-<A NAME="DOC.2.11.13"></A>
+<A NAME="DOC.2.11.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setVertex(int i, float x, float y, float z)</B></TT>
 <DD>Set a vertex
 <DL><DT><DD></DL><P>
 <A NAME="addVertex"></A>
-<A NAME="DOC.2.11.14"></A>
+<A NAME="DOC.2.11.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addVertex(const osg::Vec3 &amp;v)</B></TT>
 <DD>Add a vertex
 <DL><DT><DD></DL><P>
 <A NAME="addVertex"></A>
-<A NAME="DOC.2.11.15"></A>
+<A NAME="DOC.2.11.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void addVertex(float x, float y, float z)</B></TT>
 <DD>Add a vertex
 <DL><DT><DD></DL><P>
 <A NAME="removeVertex"></A>
-<A NAME="DOC.2.11.16"></A>
+<A NAME="DOC.2.11.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void removeVertex(int i)</B></TT>
 <DD>Remove a vertex
 <DL><DT><DD></DL><P></DL>

@@ -23,33 +23,33 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.77.1">MatrixTransform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.1">MatrixTransform</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.77.2">MatrixTransform</A></B>(const <!1><A HREF="MatrixTransform.html#DOC.2.77.2">MatrixTransform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.2">MatrixTransform</A></B>(const <!1><A HREF="MatrixTransform.html#DOC.2.93.2">MatrixTransform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.77.3">MatrixTransform</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.3">MatrixTransform</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.77.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="MatrixTransform.html">MatrixTransform</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="MatrixTransform.html">MatrixTransform</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.77.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.93.5">setMatrix</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
 <DD><I>Set the transform's matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.77.6">getMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.93.6">getMatrix</A></B>() const 
 <DD><I>Get the matrix.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.77.7">preMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.93.7">preMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
 <DD><I>pre multiply the transforms matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.77.8">postMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.93.8">postMult</A></B>(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)
 <DD><I>post multiply the transforms matrix</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.77.9">getInverseMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; <B><A HREF="#DOC.2.93.9">getInverseMatrix</A></B>() const 
 <DD><I>Get the inverse matrix.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.77.10">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.93.10">computeLocalToWorldMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const bool <B><A HREF="#DOC.2.77.11">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.93.11">computeWorldToLocalMatrix</A></B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const 
 </DL></P>
 
 <P><DL>
@@ -60,16 +60,16 @@ class  SG_EXPORT <B><A HREF="AnimationPathCallback.html">AnimationPathCallback</
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.77.14">_matrix</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.93.14">_matrix</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.77.15">_inverse</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  <B><A HREF="#DOC.2.93.15">_inverse</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.77.16">_inverseDirty</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable bool <B><A HREF="#DOC.2.93.16">_inverseDirty</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.77.13">~MatrixTransform</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.93.13">~MatrixTransform</A></B>()
 </DL></P>
 
 </DL>
@@ -77,19 +77,23 @@ class  SG_EXPORT <B><A HREF="AnimationPathCallback.html">AnimationPathCallback</
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setReferenceFrame</B>(<!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> rf)
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Transform.html">Transform</A>* <B>asTransform</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> <B>getReferenceFrame</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Transform.html">Transform</A>* <B>asTransform</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setComputeTransformCallback</B>(<!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* ctc)
+<IMG ALT="o" SRC=icon2.gif>void <B>setReferenceFrame</B>(<!1><A HREF="Transform.html#DOC.2.185.6">ReferenceFrame</A> rf)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.185.6">ReferenceFrame</A> <B>getReferenceFrame</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>void <B>setComputeTransformCallback</B>(<!1><A HREF="Transform.html#DOC.2.185.9">ComputeTransformCallback</A>* ctc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.185.9">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const bool <B>getWorldToLocalMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Transform.html#DOC.2.185.9">ComputeTransformCallback</A>* <B>getComputeTransformCallback</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getLocalToWorldMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getWorldToLocalMatrix</B>(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>* nv) const 
 </DL></P>
 
 <P><DL>
@@ -101,14 +105,14 @@ class  SG_EXPORT <B><A HREF="AnimationPathCallback.html">AnimationPathCallback</
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.142.7">ComputeTransformCallback</A>&gt;  <B>_computeTransformCallback</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Transform.html#DOC.2.185.9">ComputeTransformCallback</A>&gt;  <B>_computeTransformCallback</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.142.4">ReferenceFrame</A> <B>_referenceFrame</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Transform.html#DOC.2.185.6">ReferenceFrame</A> <B>_referenceFrame</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   const bool <B>computeBound</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>computeBound</B>() const 
 </DL></P>
 
 </DL>
@@ -116,6 +120,10 @@ class  SG_EXPORT <B><A HREF="AnimationPathCallback.html">AnimationPathCallback</
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>traverse</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>addChild</B>( Node* child )
@@ -124,22 +132,29 @@ class  SG_EXPORT <B><A HREF="AnimationPathCallback.html">AnimationPathCallback</
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( Node* origChild, Node* newChild )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const unsigned int <B>getNumChildren</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildren</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( const unsigned int i )
+<IMG ALT="o" SRC=icon2.gif>inline   Node* <B>getChild</B>( unsigned int i )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( const unsigned int i ) const 
+<IMG ALT="o" SRC=icon2.gif>inline   const Node* <B>getChild</B>( unsigned int i ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>containsNode</B>( const Node* node ) const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::iterator <B>findNode</B>( const Node* node )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   ChildList::const_iterator <B>findNode</B>( const Node* node ) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>findChildNo</B>( const Node* node ) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;Node&gt; &gt; <B>ChildList</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>ChildList <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.74.1">ChildList</A> <B>_children</B>
 </DL></P>
 
 </DL>
@@ -153,69 +168,69 @@ into the Transform's parent coordinates</BLOCKQUOTE>
 <DL>
 
 <A NAME="MatrixTransform"></A>
-<A NAME="DOC.2.77.1"></A>
+<A NAME="DOC.2.93.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixTransform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MatrixTransform"></A>
-<A NAME="DOC.2.77.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixTransform(const <!1><A HREF="MatrixTransform.html#DOC.2.77.2">MatrixTransform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.93.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixTransform(const <!1><A HREF="MatrixTransform.html#DOC.2.93.2">MatrixTransform</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="MatrixTransform"></A>
-<A NAME="DOC.2.77.3"></A>
+<A NAME="DOC.2.93.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MatrixTransform(const <!1><A HREF="Matrix.html">Matrix</A>&amp; matix)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.77.4"></A>
+<A NAME="DOC.2.93.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="MatrixTransform.html">MatrixTransform</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMatrix"></A>
-<A NAME="DOC.2.77.5"></A>
+<A NAME="DOC.2.93.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMatrix(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
 <DD>Set the transform's matrix
 <DL><DT><DD></DL><P>
 <A NAME="getMatrix"></A>
-<A NAME="DOC.2.77.6"></A>
+<A NAME="DOC.2.93.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getMatrix() const </B></TT>
 <DD>Get the matrix. 
 <DL><DT><DD></DL><P>
 <A NAME="preMult"></A>
-<A NAME="DOC.2.77.7"></A>
+<A NAME="DOC.2.93.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void preMult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
 <DD>pre multiply the transforms matrix
 <DL><DT><DD></DL><P>
 <A NAME="postMult"></A>
-<A NAME="DOC.2.77.8"></A>
+<A NAME="DOC.2.93.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void postMult(const <!1><A HREF="Matrix.html">Matrix</A>&amp; mat)</B></TT>
 <DD>post multiply the transforms matrix
 <DL><DT><DD></DL><P>
 <A NAME="getInverseMatrix"></A>
-<A NAME="DOC.2.77.9"></A>
+<A NAME="DOC.2.93.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Matrix.html">Matrix</A>&amp; getInverseMatrix() const </B></TT>
 <DD>Get the inverse matrix. 
 <DL><DT><DD></DL><P>
 <A NAME="computeLocalToWorldMatrix"></A>
-<A NAME="DOC.2.77.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const </B></TT>
+<A NAME="DOC.2.93.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeLocalToWorldMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeWorldToLocalMatrix"></A>
-<A NAME="DOC.2.77.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const </B></TT>
+<A NAME="DOC.2.93.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeWorldToLocalMatrix(<!1><A HREF="Matrix.html">Matrix</A>&amp; matrix, <!1><A HREF="NodeVisitor.html">NodeVisitor</A>*) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~MatrixTransform"></A>
-<A NAME="DOC.2.77.13"></A>
+<A NAME="DOC.2.93.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~MatrixTransform()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_matrix"></A>
-<A NAME="DOC.2.77.14"></A>
+<A NAME="DOC.2.93.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _matrix</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_inverse"></A>
-<A NAME="DOC.2.77.15"></A>
+<A NAME="DOC.2.93.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Matrix.html">Matrix</A>&gt;  _inverse</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_inverseDirty"></A>
-<A NAME="DOC.2.77.16"></A>
+<A NAME="DOC.2.93.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable bool _inverseDirty</B></TT>
 <DL><DT><DD></DL><P></DL>
 

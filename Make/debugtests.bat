@@ -22,6 +22,10 @@ echo sgv spaceship.osg
 sgv spaceship.osg
 more memleaks.log
 
+echo sgv cube_mapped_torus.osg
+sgv cube_mapped_torus.osg
+more memleaks.log
+
 echo sgv Town.osg
 sgv Town.osg
 more memleaks.log
@@ -54,8 +58,13 @@ echo osgclip
 osgclip cow.osg
 more memleaks.log
 
-echo osghud glider.osg
-osghud glider.osg
+
+echo osghud dumptruck.osg
+osghud dumptruck.osg
+more memleaks.log
+
+echo osglight glider.osg
+osglight glider.osg
 more memleaks.log
 
 echo osgimpostor Town.osg

@@ -40,14 +40,11 @@ class SG_EXPORT ImageStream : public Image
 
 	enum StreamStatus
         {
-            STOPPED,
             PLAYING,
             PAUSED,
             REWINDING
         };
         
-        virtual void stop() { _status=STOPPED; }
-
         virtual void play() { _status=PLAYING; }
 
         virtual void pause() { _status=PAUSED; }

@@ -1,3 +1,108 @@
+2004-08-17 08:58  robert
+
+	* include/osg/AutoTransform, src/osg/AutoTransform.cpp: From David
+	  Fries, "I added code to also check the local up vector, but only
+	  if one of the rotation modes is selected, because autoscale isn't
+	  affected by the camera rotations. "
+
+2004-08-17 08:44  robert
+
+	* src/osgPlugins/dds/ReaderWriterDDS.cpp: Changed the "flip"
+	  keyword to "dds_flip"
+
+2004-08-17 08:43  robert
+
+	* NEWS.txt, doc/dependencies.html, doc/introduction.html,
+	  doc/plan.html, doc/doc++/osg/Image.html,
+	  doc/doc++/osg/ImageStream.html: Updated docs for second rev of
+	  0.9.7
+
+2004-08-17 07:15  robert
+
+	* src/osgTerrain/DataSet.cpp: Removed computeMipMaps call
+
+2004-08-16 22:14  robert
+
+	* src/osgPlugins/dds/ReaderWriterDDS.cpp: Added support for "flip"
+	  option string, which if present flips incoming images about the
+	  vertical axis.  Accessed via -O flip on the commandline.
+
+2004-08-16 22:03  robert
+
+	* src/osg/dxtctool.h: Added a handling of different hex long long
+	  handling for VS and non VS.
+
+2004-08-16 21:57  robert
+
+	* include/osg/Image, src/osg/Image.cpp: Added support in
+	  Image::flipVertical for flipping mipmapped imagery and for
+	  flipping compressed imagery.
+
+2004-08-16 17:43  robert
+
+	* src/osg/dxtctool.h: Fixed _MSC_VAR reference
+
+2004-08-16 16:45  robert
+
+	* VisualStudio/osg/osg.dsp: Added dxtctool.h/.cpp
+
+2004-08-16 16:43  robert
+
+	* src/osg/: GNUmakefile, dxtctool.cpp, dxtctool.h: Added fxtctool
+	  in prep for adding compressed imagery swap
+
+2004-08-16 15:21  robert
+
+	* src/osgPlugins/mpeg/: MpegImageStream.cpp, MpegImageStream.h:
+	  Cleaned up output level of debugging messages
+
+2004-08-16 15:03  robert
+
+	* src/osgPlugins/obj/glm.cpp: Fix to order of materials
+
+2004-08-16 14:54  robert
+
+	* VisualStudio/osgPlugins/osg/dot_osg.dsp,
+	  src/osgPlugins/osg/GNUmakefile,
+	  src/osgPlugins/osg/NodeCallback.cpp: From Michael Gronager,
+	  addition of NodeCallback support in .osg format.
+
+2004-08-16 14:17  robert
+
+	* src/osgPlugins/obj/: ReaderWriterOBJ.cpp, glm.cpp: Improvements
+	  to the handling of OBJ files
+
+2004-08-16 09:58  robert
+
+	* examples/osgdistortion/osgdistortion.cpp: Disabled the culling on
+	  the DistortionNode.
+
+2004-08-16 09:55  robert
+
+	* src/osg/ClearNode.cpp: Disabled the culling for clear node.
+
+2004-08-16 09:32  robert
+
+	* src/osgSim/VisibilityGroup.cpp: Changed the length multiple to be
+	  2x the bounding sphere radius
+
+2004-08-16 08:29  robert
+
+	* src/osgSim/VisibilityGroup.cpp: From Michael Gronager, fix to an
+	  orientation bug.
+
+2004-08-14 16:42  don
+
+	* doc/osgdem.html: P*E*G*O*U*T Sound.  Spelling fixes.
+
+2004-08-13 16:48  robert
+
+	* NEWS.txt: Added news for release 0.9.7-2
+
+2004-08-13 16:29  robert
+
+	* ChangeLog: Updates for 0.9.7-2 release
+
 2004-08-13 15:42  robert
 
 	* src/osgTerrain/DataSet.cpp: From Corbin Holtz, addition of
@@ -750,27 +855,7 @@
 
 2004-08-01 05:10  robert
 
-	* VisualStudio/VisualStudio.dsw, VisualStudio/osgPlugins/iv/iv.dsp,
-	  src/osgPlugins/iv/COPYING, src/osgPlugins/iv/GNUmakefile,
-	  src/osgPlugins/iv/README, src/osgPlugins/iv/atrfloat.h,
-	  src/osgPlugins/iv/atrstring.h, src/osgPlugins/iv/atrvec.h,
-	  src/osgPlugins/iv/atrvec3list.h, src/osgPlugins/iv/attribute.h,
-	  src/osgPlugins/iv/coordinate3.h, src/osgPlugins/iv/geometry.h,
-	  src/osgPlugins/iv/indexedfaceset.h,
-	  src/osgPlugins/iv/indexedtristripset.h,
-	  src/osgPlugins/iv/ltstr.h, src/osgPlugins/iv/material.h,
-	  src/osgPlugins/iv/matrixtransform.h, src/osgPlugins/iv/mynode.h,
-	  src/osgPlugins/iv/mynodevisitor.h,
-	  src/osgPlugins/iv/nodecache.cpp, src/osgPlugins/iv/nodecache.h,
-	  src/osgPlugins/iv/normals.cpp, src/osgPlugins/iv/normals.h,
-	  src/osgPlugins/iv/osgvisitor.cpp, src/osgPlugins/iv/osgvisitor.h,
-	  src/osgPlugins/iv/parser.cpp, src/osgPlugins/iv/parser.hpp,
-	  src/osgPlugins/iv/parser.y, src/osgPlugins/iv/readerwriter.cpp,
-	  src/osgPlugins/iv/readerwriter.h, src/osgPlugins/iv/scanner.cpp,
-	  src/osgPlugins/iv/scanner.l, src/osgPlugins/iv/separator.h,
-	  src/osgPlugins/iv/texture2.h,
-	  src/osgPlugins/iv/texturecoordinate.h,
-	  src/osgPlugins/iv/transform.h: Removed old iv plugin
+	* VisualStudio/VisualStudio.dsw: Removed old iv plugin
 
 2004-08-01 05:06  robert
 
@@ -966,12 +1051,11 @@
 	  osgPlugins/dw/dw.dsp, osgPlugins/flt/flt.dsp,
 	  osgPlugins/freetype/freetype.dsp, osgPlugins/gdal/gdal.dsp,
 	  osgPlugins/geo/geo.dsp, osgPlugins/gif/gif.dsp,
-	  osgPlugins/iv/iv.dsp, osgPlugins/ive/ive.dsp,
-	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
-	  osgPlugins/logo/logo.dsp, osgPlugins/lwo/lwo.dsp,
-	  osgPlugins/lws/lws.dsp, osgPlugins/md2/md2.dsp,
-	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
-	  osgPlugins/osgFX/dot_osgFX.dsp,
+	  osgPlugins/ive/ive.dsp, osgPlugins/jpeg/jpeg.dsp,
+	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/logo/logo.dsp,
+	  osgPlugins/lwo/lwo.dsp, osgPlugins/lws/lws.dsp,
+	  osgPlugins/md2/md2.dsp, osgPlugins/obj/obj.dsp,
+	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgFX/dot_osgFX.dsp,
 	  osgPlugins/osgParticle/dot_osgParticle.dsp,
 	  osgPlugins/osgSim/dot_osgSim.dsp,
 	  osgPlugins/osgText/dot_osgText.dsp, osgPlugins/osgtgz/osgtgz.dsp,
@@ -2121,12 +2205,12 @@
 	  osgPlugins/directx/directx.dsp, osgPlugins/dw/dw.dsp,
 	  osgPlugins/flt/flt.dsp, osgPlugins/freetype/freetype.dsp,
 	  osgPlugins/gdal/gdal.dsp, osgPlugins/geo/geo.dsp,
-	  osgPlugins/gif/gif.dsp, osgPlugins/iv/iv.dsp,
-	  osgPlugins/ive/ive.dsp, osgPlugins/jpeg/jpeg.dsp,
-	  osgPlugins/lib3ds/lib3ds.dsp, osgPlugins/logo/logo.dsp,
-	  osgPlugins/lwo/lwo.dsp, osgPlugins/lws/lws.dsp,
-	  osgPlugins/md2/md2.dsp, osgPlugins/obj/obj.dsp,
-	  osgPlugins/osg/dot_osg.dsp, osgPlugins/osgFX/dot_osgFX.dsp,
+	  osgPlugins/gif/gif.dsp, osgPlugins/ive/ive.dsp,
+	  osgPlugins/jpeg/jpeg.dsp, osgPlugins/lib3ds/lib3ds.dsp,
+	  osgPlugins/logo/logo.dsp, osgPlugins/lwo/lwo.dsp,
+	  osgPlugins/lws/lws.dsp, osgPlugins/md2/md2.dsp,
+	  osgPlugins/obj/obj.dsp, osgPlugins/osg/dot_osg.dsp,
+	  osgPlugins/osgFX/dot_osgFX.dsp,
 	  osgPlugins/osgParticle/dot_osgParticle.dsp,
 	  osgPlugins/osgSim/dot_osgSim.dsp,
 	  osgPlugins/osgText/dot_osgText.dsp, osgPlugins/osgtgz/osgtgz.dsp,
@@ -2838,9 +2922,8 @@
 2004-04-11 22:21  robert
 
 	* include/osg/Timer, src/osg/Timer.cpp,
-	  src/osgPlugins/ac3d/ac3d.cpp, src/osgPlugins/dx/DXWriter.cpp,
-	  src/osgPlugins/iv/parser.cpp, src/osgPlugins/iv/parser.y: From
-	  Eric Wing, clean ups for OSX support.
+	  src/osgPlugins/ac3d/ac3d.cpp, src/osgPlugins/dx/DXWriter.cpp:
+	  From Eric Wing, clean ups for OSX support.
 
 2004-04-10 17:11  robert
 
@@ -3404,8 +3487,7 @@
 	  include/osg/Math, include/osg/Timer, src/osg/Timer.cpp,
 	  src/osgDB/DynamicLibrary.cpp, src/osgDB/FileUtils.cpp,
 	  src/osgDB/Registry.cpp, src/osgPlugins/ac3d/ac3d.cpp,
-	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/iv/parser.cpp,
-	  src/osgPlugins/iv/parser.y: From Bob Kuehne, change on
+	  src/osgPlugins/dx/DXWriter.cpp: From Bob Kuehne, change on
 	  __DARWIN_OSX__ define to __APPLE__
 
 2004-03-07 21:03  robert
@@ -3465,8 +3547,8 @@
 
 2004-03-06 14:13  robert
 
-	* src/osgPlugins/: gdal/ReaderWriterGDAL.cpp, iv/normals.cpp:
-	  Changed cout/cerr to osg::notify().
+	* src/osgPlugins/gdal/ReaderWriterGDAL.cpp: Changed cout/cerr to
+	  osg::notify().
 
 2004-03-05 20:07  robert
 
@@ -6889,10 +6971,9 @@
 
 2003-09-11 10:44  robert
 
-	* Make/makedefs, src/osgPlugins/iv/GNUmakefile.orig,
-	  src/osgPlugins/lwo/README.osg, src/osgPlugins/lwo/README_osg.txt,
-	  src/osgPlugins/obj/README.osg, src/osgPlugins/obj/README_osg.txt:
-	  Clean ups for the release.
+	* Make/makedefs, src/osgPlugins/lwo/README.osg,
+	  src/osgPlugins/lwo/README_osg.txt, src/osgPlugins/obj/README.osg,
+	  src/osgPlugins/obj/README_osg.txt: Clean ups for the release.
 
 2003-09-11 00:18  robert
 
@@ -9194,7 +9275,6 @@
 	  src/osgPlugins/flt/GeoSetBuilder.cpp,
 	  src/osgPlugins/flt/flt2osg.cpp,
 	  src/osgPlugins/freetype/FreeTypeFont.cpp,
-	  src/osgPlugins/iv/scanner.cpp,
 	  src/osgPlugins/ive/AnimationPathCallback.cpp,
 	  src/osgPlugins/ive/DataInputStream.cpp,
 	  src/osgPlugins/ive/DataInputStream.h,
@@ -9447,8 +9527,7 @@
 	  include/osg/VertexProgram, include/osgUtil/Optimizer,
 	  src/osg/GNUmakefile, src/osg/GeoSet.cpp, src/osg/GeoSet_ogl.cpp,
 	  src/osgPlugins/dw/ReaderWriterDW.cpp,
-	  src/osgPlugins/iv/osgvisitor.cpp, src/osgPlugins/osg/GNUmakefile,
-	  src/osgPlugins/osg/GeoSet.cpp,
+	  src/osgPlugins/osg/GNUmakefile, src/osgPlugins/osg/GeoSet.cpp,
 	  src/osgPlugins/pfb/ConvertToPerformer.cpp,
 	  src/osgPlugins/pfb/ConvertToPerformer.h,
 	  src/osgPlugins/pfb/GNUmakefile,
@@ -10629,11 +10708,6 @@
 	  osgUtil/osgUtilGetLibraryName.html,
 	  osgUtil/osgUtilGetVersion.html: Clean of doc++ directories.
 
-2003-04-11 16:33  robert
-
-	* src/osgPlugins/iv/osgvisitor.cpp: Changed the uint arrays to
-	  GLuint to keep OSX build compiling.
-
 2003-04-11 11:37  robert
 
 	* AUTHORS.txt, INSTALL.txt, NEWS.txt, README.txt,
@@ -11206,8 +11280,8 @@
 	  src/osgPlugins/dx/DXWriter.cpp, src/osgPlugins/geo/GNUmakefile,
 	  src/osgPlugins/geo/ReaderWriterGEO.cpp,
 	  src/osgPlugins/geo/geoActions.cpp,
-	  src/osgPlugins/geo/geoFormat.h, src/osgPlugins/iv/parser.cpp,
-	  src/osgPlugins/iv/parser.y: Changes to fix compiles on Mac OS X
+	  src/osgPlugins/geo/geoFormat.h: Changes to fix compiles on Mac OS
+	  X
 
 2003-04-03 08:37  robert
 
@@ -12279,9 +12353,7 @@
 	  src/osgPlugins/flt/Makefile, src/osgPlugins/freetype/GNUmakefile,
 	  src/osgPlugins/freetype/Makefile, src/osgPlugins/geo/GNUmakefile,
 	  src/osgPlugins/geo/Makefile, src/osgPlugins/gif/GNUmakefile,
-	  src/osgPlugins/gif/Makefile, src/osgPlugins/iv/GNUmakefile,
-	  src/osgPlugins/iv/GNUmakefile.orig, src/osgPlugins/iv/Makefile,
-	  src/osgPlugins/iv/Makefile.orig, src/osgPlugins/jpeg/GNUmakefile,
+	  src/osgPlugins/gif/Makefile, src/osgPlugins/jpeg/GNUmakefile,
 	  src/osgPlugins/jpeg/Makefile, src/osgPlugins/lib3ds/GNUmakefile,
 	  src/osgPlugins/lib3ds/Makefile, src/osgPlugins/lwo/GNUmakefile,
 	  src/osgPlugins/lwo/Makefile, src/osgPlugins/md2/GNUmakefile,
@@ -13777,11 +13849,6 @@
 	  Removed the unique child check from the flt::PrimRecord and
 	  osg::Group, this allows more flexibility when specifing nodes,
 	  and is faster..
-
-2003-01-20 09:09  robert
-
-	* src/osgPlugins/iv/osgvisitor.cpp: From Ruben, updates to the
-	  IV/VRML1 loader to handler large datasets.
 
 2003-01-20 08:58  robert
 
@@ -16008,7 +16075,7 @@
 	  src/osg/GeoSet.cpp, src/osg/Geometry.cpp, src/osg/Image.cpp,
 	  src/osg/IndexedGeometry.cpp, src/osg/Makefile,
 	  src/osgPlugins/flt/GeoSetBuilder.cpp,
-	  src/osgPlugins/flt/flt2osg.cpp, src/osgPlugins/iv/osgvisitor.cpp,
+	  src/osgPlugins/flt/flt2osg.cpp,
 	  src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
 	  src/osgPlugins/lwo/Lwo2Layer.cpp,
 	  src/osgPlugins/lwo/ReaderWriterLWO.cpp,
@@ -16144,7 +16211,6 @@
 	  src/osgPlugins/flt/GeoSetBuilder.cpp,
 	  src/osgPlugins/flt/GeoSetBuilder.h,
 	  src/osgPlugins/flt/Registry.cpp, src/osgPlugins/flt/flt2osg.cpp,
-	  src/osgPlugins/iv/osgvisitor.cpp,
 	  src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
 	  src/osgPlugins/lwo/Lwo2Layer.cpp,
 	  src/osgPlugins/lwo/ReaderWriterLWO.cpp,
@@ -16721,8 +16787,7 @@
 
 2002-08-28 19:38  robert
 
-	* include/osg/UnitTestFramework, src/osgPlugins/iv/normals.cpp:
-	  Fixes to Win32 build.
+	* include/osg/UnitTestFramework: Fixes to Win32 build.
 
 2002-08-28 17:59  robert
 
@@ -16771,11 +16836,6 @@
 	  Removed deprecated code from the distribution.
 
 	  Added .osg support for Texture1D and Texture3D.
-
-2002-08-28 15:28  robert
-
-	* src/osgPlugins/iv/Makefile: Added -I{THISDIR} into the iv
-	  Makefile.
 
 2002-08-28 15:27  robert
 
@@ -16929,7 +16989,7 @@
 	  src/osgPlugins/flt/GeoSetBuilder.cpp,
 	  src/osgPlugins/flt/Pool.cpp, src/osgPlugins/flt/Pool.h,
 	  src/osgPlugins/flt/ReaderWriterATTR.cpp,
-	  src/osgPlugins/flt/flt2osg.cpp, src/osgPlugins/iv/osgvisitor.cpp,
+	  src/osgPlugins/flt/flt2osg.cpp,
 	  src/osgPlugins/lib3ds/ReaderWriter3DS.cpp,
 	  src/osgPlugins/lwo/Lwo2.cpp,
 	  src/osgPlugins/lwo/ReaderWriterLWO.cpp,
@@ -17435,7 +17495,6 @@
 
 	* VisualStudio/osgPlugins/osg/dot_osg.dsp,
 	  include/osg/DOFTransform, src/osgGA/StateSetManipulator.cpp,
-	  src/osgPlugins/iv/osgvisitor.cpp, src/osgPlugins/iv/osgvisitor.h,
 	  src/osgPlugins/osg/DOFTransform.cpp, src/osgPlugins/osg/Makefile,
 	  src/osgPlugins/osg/PositionAttitudeTransform.cpp,
 	  src/osgPlugins/osg/StateSet.cpp, src/osgUtil/Optimizer.cpp: Added
@@ -17481,18 +17540,6 @@
 	  their state being affected by other overriding of light,
 	  wireframe modes etc.
 
-2002-08-04 22:10  robert
-
-	* VisualStudio/osgPlugins/iv/iv.dsp, src/osgPlugins/iv/Makefile,
-	  src/osgPlugins/iv/main.cpp, src/osgPlugins/iv/main.h,
-	  src/osgPlugins/iv/osgvisitor.cpp,
-	  src/osgPlugins/iv/readerwriter.cpp,
-	  src/osgPlugins/iv/readerwriter.h: Fix to iv/vrml loader so that
-	  it correctly passes back the right ReadResult and checks the
-	  validity of the file extension being passed to the plugin.
-	  Removed main.cpp * .h moving all its functionality into
-	  readerwriter.cpp.
-
 2002-08-04 21:51  robert
 
 	* src/osgPlugins/lwo/: Lwo2.cpp, ReaderWriterLWO.cpp, lw.cpp, lw.h:
@@ -17503,9 +17550,7 @@
 
 2002-08-04 21:34  robert
 
-	* AUTHORS, include/osg/MatrixTransform, include/osg/Transform,
-	  src/osgPlugins/iv/main.cpp, src/osgPlugins/iv/osgvisitor.cpp,
-	  src/osgPlugins/iv/scanner.cpp, src/osgPlugins/iv/scanner.l: From
+	* AUTHORS, include/osg/MatrixTransform, include/osg/Transform: From
 	  Ruben Lopez, updates to VRML/IV loader.
 
 	  From Ben Discoe, corrections to comments in osg::Transform
@@ -17527,11 +17572,10 @@
 2002-08-03 19:11  robert
 
 	* AUTHORS, Make/makedirdefs, VisualStudio/VisualStudio.dsw,
-	  VisualStudio/osg/osg.dsp, VisualStudio/osgPlugins/iv/iv.dsp,
-	  include/osg/NodeVisitor, include/osg/Sequence, src/osg/Makefile,
-	  src/osg/Sequence.cpp, src/osg/Texture.cpp,
-	  src/osgDB/DynamicLibrary.cpp, src/osgPlugins/osg/Makefile,
-	  src/osgPlugins/osg/Sequence.cpp,
+	  VisualStudio/osg/osg.dsp, include/osg/NodeVisitor,
+	  include/osg/Sequence, src/osg/Makefile, src/osg/Sequence.cpp,
+	  src/osg/Texture.cpp, src/osgDB/DynamicLibrary.cpp,
+	  src/osgPlugins/osg/Makefile, src/osgPlugins/osg/Sequence.cpp,
 	  src/osgPlugins/pfb/ConvertFromPerformer.cpp,
 	  src/osgPlugins/pfb/ReaderWriterPFB.cpp: Integrated Ulrich
 	  Hertlien's osg::Sequence node, and osgsequence demo, and support
@@ -17565,26 +17609,10 @@
 	  commented out, and are just left in so that they may be used to
 	  double check things in future.
 
-2002-08-02 20:11  robert
-
-	* src/osgPlugins/iv/parser.hpp: Fix for Win32 build
-
 2002-08-02 16:14  robert
 
 	* src/osgUtil/IntersectVisitor.cpp: Added missing _nodePath.clear()
 	  and _segHitList.clear() to InteresectVisitor::reset().
-
-2002-07-31 16:16  robert
-
-	* src/osgPlugins/iv/: atrvec3list.h, indexedtristripset.h,
-	  main.cpp, mynodevisitor.h, osgvisitor.cpp, osgvisitor.h,
-	  parser.cpp, parser.hpp, parser.y, scanner.cpp, scanner.l: Updates
-	  to iv/vrml loader from Ruben.
-
-2002-07-30 11:08  robert
-
-	* src/osgPlugins/iv/osgvisitor.cpp: Updates to the iv loader from
-	  Ruben - conversion from GeoSet to Geoemetry.
 
 2002-07-29 12:02  robert
 
@@ -17619,13 +17647,6 @@
 	  first apply, as there will be more than one texture object to
 	  update.
 
-2002-07-28 22:15  robert
-
-	* src/osgPlugins/iv/parser.hpp: Checked in Marco's commented out
-	  #defines/rejigged struct names to get things compiling under
-	  Windows, will need to check this in future as it may change with
-	  regeneration of parser files with lex/yacc.
-
 2002-07-28 13:52  robert
 
 	* src/osgPlugins/lwo/ReaderWriterLWO.cpp: Chagned the
@@ -17633,15 +17654,8 @@
 
 2002-07-28 13:49  robert
 
-	* VisualStudio/osgPlugins/iv/iv.dsp, include/osg/NodeCallback,
-	  src/osgUtil/RenderBin.cpp: Fixes to NodeCallback and RenderBin
-	  from Alberto Barbati.
-
-2002-07-27 22:35  robert
-
-	* src/osgPlugins/iv/: atrfloat.h, atrstring.h, atrvec.h,
-	  attribute.h, main.cpp, mynode.h, mynodevisitor.h, osgvisitor.cpp,
-	  osgvisitor.h, parser.cpp.h: Fixes to the inventor/vrml loader.
+	* include/osg/NodeCallback, src/osgUtil/RenderBin.cpp: Fixes to
+	  NodeCallback and RenderBin from Alberto Barbati.
 
 2002-07-27 11:34  robert
 
@@ -17649,20 +17663,10 @@
 	  src/osgParticle/ParticleSystem.cpp: From Macro, removal of use of
 	  display lists during double pass rendering of particles.
 
-2002-07-27 11:25  robert
-
-	* src/osgPlugins/iv/scanner.cpp: Fix for Windows
-
 2002-07-27 11:22  robert
 
 	* src/osgPlugins/lwo/: Lwo2.cpp, Lwo2Layer.cpp, Lwo2Layer.h: Fixes
 	  for Win32 build.
-
-2002-07-26 19:46  robert
-
-	* src/osgPlugins/iv/: atrfloat.h, atrstring.h, atrvec.h,
-	  attribute.h, mynode.h, mynodevisitor.h, osgvisitor.h: Added
-	  missing osg:: from various references to osg::Objectf
 
 2002-07-26 17:33  robert
 
@@ -17675,34 +17679,13 @@
 
 2002-07-26 17:02  robert
 
-	* VisualStudio/: VisualStudio.dsw, osgPlugins/iv/iv.dsp: Added
-	  project file for inventor plugin.
+	* VisualStudio/VisualStudio.dsw: Added project file for inventor
+	  plugin.
 
 2002-07-26 16:37  robert
 
-	* AUTHORS, Make/makedirdefs, src/osgDB/Registry.cpp,
-	  src/osgPlugins/iv/COPYING, src/osgPlugins/iv/Makefile,
-	  src/osgPlugins/iv/Makefile.orig, src/osgPlugins/iv/README,
-	  src/osgPlugins/iv/atrfloat.h, src/osgPlugins/iv/atrstring.h,
-	  src/osgPlugins/iv/atrvec.h, src/osgPlugins/iv/attribute.h,
-	  src/osgPlugins/iv/coordinate3.h, src/osgPlugins/iv/geometry.h,
-	  src/osgPlugins/iv/indexedfaceset.h, src/osgPlugins/iv/ltstr.h,
-	  src/osgPlugins/iv/main.cpp, src/osgPlugins/iv/main.h,
-	  src/osgPlugins/iv/material.h,
-	  src/osgPlugins/iv/matrixtransform.h, src/osgPlugins/iv/mynode.h,
-	  src/osgPlugins/iv/mynodevisitor.h,
-	  src/osgPlugins/iv/nodecache.cpp, src/osgPlugins/iv/nodecache.h,
-	  src/osgPlugins/iv/normals.cpp, src/osgPlugins/iv/normals.h,
-	  src/osgPlugins/iv/osgvisitor.cpp, src/osgPlugins/iv/osgvisitor.h,
-	  src/osgPlugins/iv/parser.cpp, src/osgPlugins/iv/parser.cpp.h,
-	  src/osgPlugins/iv/parser.hpp, src/osgPlugins/iv/parser.y,
-	  src/osgPlugins/iv/readerwriter.cpp,
-	  src/osgPlugins/iv/readerwriter.h, src/osgPlugins/iv/scanner.cpp,
-	  src/osgPlugins/iv/scanner.l, src/osgPlugins/iv/separator.h,
-	  src/osgPlugins/iv/texture2.h,
-	  src/osgPlugins/iv/texturecoordinate.h,
-	  src/osgPlugins/iv/transform.h: Added Ruben Lopez's Inventor/VRML
-	  1.0 loader.
+	* AUTHORS, Make/makedirdefs, src/osgDB/Registry.cpp: Added Ruben
+	  Lopez's Inventor/VRML 1.0 loader.
 
 2002-07-26 13:49  robert
 

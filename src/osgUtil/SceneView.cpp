@@ -656,40 +656,45 @@ void SceneView::draw()
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
 
-                // ensure that all color planes are active.
-                osg::ColorMask* red = _renderStageLeft->getColorMask();
-                if (red)
+                // ensure that left eye color planes are active.
+                osg::ColorMask* leftColorMask = _renderStageLeft->getColorMask();
+                if (!leftColorMask)
                 {
-                    red->setMask(true,false,false,true);
+                    leftColorMask = new osg::ColorMask();
+                    _renderStageRight->setColorMask(leftColorMask);
                 }
-                else
-                {
-                    red = new osg::ColorMask(true,false,false,true);
-                }
-                _localStateSet->setAttribute(red);
-                _renderStageLeft->setColorMask(red);
+                
+                // red
+                leftColorMask->setMask(true,false,false,true);
 
-               // draw left eye.
+                // orange
+                // leftColorMask->setMask(true,true,false,true);
+
+                _localStateSet->setAttribute(leftColorMask);
+
+                // draw left eye.
                 _renderStageLeft->draw(*_state,previous);
+                
+                
 
-                // ensure that all color planes are active.
-                osg::ColorMask* cyan = _renderStageLeft->getColorMask();
-                if (cyan)
+                // ensure that right eye color planes are active.
+                osg::ColorMask* rightColorMask = _renderStageLeft->getColorMask();
+                if (!rightColorMask)
                 {
-                    cyan->setMask(false,true,true,true);
+                    rightColorMask = new osg::ColorMask();
+                    _renderStageRight->setColorMask(rightColorMask);
                 }
-                else
-                {
-                    cyan = new osg::ColorMask(false,true,true,true);
-                }
-                _localStateSet->setAttribute(cyan);
-                _renderStageRight->setColorMask(cyan);
+
+                // cyan
+                rightColorMask->setMask(false,true,true,true);
+                
+                // blue
+                // rightColorMask->setMask(false,false,true,true);
+
+                _localStateSet->setAttribute(rightColorMask);
+                _renderStageRight->setColorMask(rightColorMask);
 
                 // draw right eye.
-                osg::ref_ptr<osg::ColorMask> green = new osg::ColorMask;
-                green->setMask(false,true,true,true);
-                _localStateSet->setAttribute(green.get());
-                _renderStageRight->setColorMask(green.get());
                 _renderStageRight->draw(*_state,previous);
 
             }

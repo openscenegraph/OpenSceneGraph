@@ -542,7 +542,7 @@ along with expression itself.
 #define OSGUTX_TEST_F( expr ) \
 	if( !(expr) ){ \
 		std::stringstream ss; \
-		ss<< #expr <<" failure: "<<__FILE__<<", line "<<__LINE__<<ends; \
+		ss<< #expr <<" failure: "<<__FILE__<<", line "<<__LINE__<<std::ends; \
 		throw osgUtx::TestFailureX(ss.str()); \
 	}
 
@@ -558,7 +558,7 @@ along with expression itself.
 #define OSGUTX_TEST_E( expr ) \
 	if( !(expr) ){ \
 		std::stringstream ss; \
-		ss<< #expr <<" error: "<<__FILE__<<", line "<<__LINE__<<ends; \
+		ss<< #expr <<" error: "<<__FILE__<<", line "<<__LINE__<<std::ends; \
 		throw osgUtx::TestErrorX(ss.str()); \
 	}
 

@@ -2,6 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+	ProducerEventCallback.cpp\
 	ProducerEventAdapter.cpp\
 	osgproducer.cpp\
 

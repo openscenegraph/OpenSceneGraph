@@ -49,6 +49,7 @@ class ProducerEventAdapter : public osgGA::GUIEventAdapter
         /** time in seconds of event. */
         virtual double time() const { return _time; }
 
+        virtual unsigned int getModKeyMask() const { return _modKeyMask; }
 
         /** static method for setting window dimensions.*/
         static void setWindowSize(int Xmin, int Ymin, int Xmax, int Ymax);
@@ -68,12 +69,13 @@ class ProducerEventAdapter : public osgGA::GUIEventAdapter
         void adaptButtonRelease(double t,float x, float y, unsigned int button);
 
         /** method for adapting keyboard events.*/
-        void adaptKeyPess( double t, Producer::KeySymbol key);
+        void adaptKeyPress( double t, Producer::KeySymbol key);
 
         void adaptKeyRelease( double t, Producer::KeySymbol key);
 
         /** method for adapting frame events, i.e. idle/display callback.*/
         void adaptFrame(double t);
+
 
         void copyStaticVariables();
 
@@ -88,6 +90,7 @@ class ProducerEventAdapter : public osgGA::GUIEventAdapter
         int _mx;
         int _my;
         unsigned int _buttonMask;
+        unsigned int _modKeyMask;
         double _time;
 
         // used to accumulate the button mask state, it represents
@@ -106,7 +109,7 @@ class ProducerEventAdapter : public osgGA::GUIEventAdapter
         static int _s_Ymax;
         static int _s_mx;
         static int _s_my;
-
+        static int _s_modKeyMask;
 
 };
 

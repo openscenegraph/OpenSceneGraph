@@ -26,6 +26,7 @@ PLUGIN_DIRS = \
 	rgb\
 	lib3ds\
 	flt\
+        iv\
 	obj\
 	lwo\
 	txp\

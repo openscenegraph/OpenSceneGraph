@@ -114,7 +114,8 @@ Kristopher Bixler <kbixler@mac.com>
 Tino Schwarze <tino.schwarze@informatik.tu-chemnitz.de>
         -port to HP-UX.
 
-
+Ruben Lopez <ryu@gpul.org>
+        - Inventor ascii/VRML 1.0 loader.
 Indirect Contributors
 ---------------------
     

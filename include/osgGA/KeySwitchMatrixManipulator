@@ -109,7 +109,7 @@ public:
 
         virtual osg::Node* getNode()                    { return _current->getNode(); }
 
-        virtual void setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up);
+        virtual void setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up, bool autoComputeHomePosition=false);
 
         virtual void setAutoComputeHomePosition(bool flag);
 

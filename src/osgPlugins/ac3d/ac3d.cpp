@@ -157,16 +157,31 @@ static std::vector<osg::Material*> palette; // change to dynamic array
 static int startmatindex = 0;
 
 
-osg::Material*ac_palette_get_material(int id)
+osg::Material*ac_palette_get_material(const unsigned int id)
 {
-    return(palette[id]);
+    if (id<palette.size()) return(palette[id]);
+    else return NULL;
 }
 
 
-Boolean read_line(FILE *f)
+Boolean read_line(std::istream &fin)
 {
-    fgets(buff, 255, f); line++;
-    return(TRUE);
+    fin.getline(buff,255);
+    return !(fin.eof());
+/*    int nread=0;
+    char c1=1;
+    do {
+        if (!fin.eof( )) {
+            fin.read(&c1,1);
+            buff[nread]=c1;
+            nread++;
+        }
+    } while (nread<255 && c1!= 13 && c1!= 10 &&  fin.eof( )== 0 );
+    if (nread>0) buff[nread-1]='\0'; // null terminate and remove training blank
+    return nread>0;*/
+
+//    fgets(buff, 255, f); line++;
+//    return(TRUE);
 }
 
 
@@ -178,42 +193,40 @@ Prototype int get_tokens(char *s, int *argc, char *argv[])
 /** bung '\0' chars at the end of tokens and set up the array (tokv) and count (tokc)
     like argv argc **/
 {
-char *p = s;
-char *st;
-char c;
-//int n;
-int tc;
-
+    char *p = s;
+    char *st;
+    char c;
+    //int n;
+    int tc;
+    
     tc = 0;
     while ((c = *p))
+    {
+        if ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13) && ( c != '\0'))
         {
-        if ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13))
-            {
             if (c == '"')
-                {
+            {
                 c = *p++;
                 st = p;
-                while ((c = *p) && ((c != '"')&&(c != '\n')&& ( c != 13)) )
-                    {
-                    if (c == '\\')
-                       strcpy(p, p+1);
-                    p++;
-                    }
-                *p=0;
-                argv[tc++] = st;
-                }
-            else
+                while ((c = *p) && ((c != '"')&&(c != '\n')&& ( c != 13) && ( c != '\0')) )
                 {
-                st = p;
-                while ((c = *p) && ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13)) )
-                        p++;
-                *p=0;
+                    if (c == '\\')
+                        strcpy(p, p+1);
+                    p++;
+                }
                 argv[tc++] = st;
-                }            
             }
-        p++;
+            else
+            {
+                st = p;
+                while ((c = *p) && ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13) && ( c != '\0')) )
+                    p++;
+                argv[tc++] = st;
+            }            
         }
-
+        if (*p) p++;
+    }
+    
     *argc = tc;
     return(tc);
 }
@@ -240,6 +253,7 @@ void initobject(ACObject *ob)
     ob->matrix[6] = 0;
     ob->matrix[7] = 0;
     ob->matrix[8] = 1;
+    ob->type=OBJECT_WORLD;
 }
 
 
@@ -261,13 +275,13 @@ void osgtri_calc_normal(osg::Vec3 &v1, osg::Vec3 &v2, osg::Vec3 &v3, osg::Vec3 &
 
 }
 
-ACSurface *read_surface(FILE *f, ACSurface *s,osg::UShortArray *nusidx,
+ACSurface *read_surface(std::istream &f, ACSurface *s,osg::UShortArray *nusidx,
                         osg::Vec2Array *tcs)
 {
-char t[20];
+    char t[20];
     init_surface(s);
 
-    while (!feof(f))
+    while (!f.eof()) //feof(f))
     {
     read_line(f);
     sscanf(buff, "%s", t);
@@ -307,7 +321,8 @@ char t[20];
 
         for (n = 0; n < num; n++)
            {
-           fscanf(f, "%d %f %f\n", &ind, &tx[0], &tx[1]); line++;
+            read_line(f);
+          sscanf(buff, "%d %f %f\n", &ind, &tx[0], &tx[1]); line++;
             nusidx->push_back(ind);
             if (tcs) tcs->push_back(tx);
            }
@@ -385,7 +400,7 @@ protate(osg::Vec3 p, float m[9])
     p[2]=m[6]*t[0]+m[7]*t[1]+m[8]*t[3];
 }
 
-osg::Group *ac_load_object(FILE *f,const ACObject *parent)
+osg::Group *ac_load_object(std::istream &f,const ACObject *parent)
 {
     // most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
     char t[20];
@@ -395,10 +410,11 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
 
     ACObject ob; // local storage for stuff taken from AC's loader
     osg::Vec3Array *vertpool = new osg::Vec3Array;
+    initobject(&ob); // zero data for object
 
     if (parent)
         ob.loc=parent->loc; // copy loc
-    while (!feof(f))
+    while (!f.eof())
     {
         read_line(f);
 
@@ -460,9 +476,10 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                 if (len > 0)
                 {
                     str = (char *)myalloc(len+1);
-                    fread(str, len, 1, f);
+                    f>>str; //fread(str, len, 1, f);
                     str[len] = 0;
-                    fscanf(f, "\n"); line++;
+                    //fscanf(f, "\n");
+                    line++;
                     ob.data = STRING(str);
                     myfree(str);
                 }
@@ -552,7 +569,7 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
             else if (ob.type == OBJECT_NORMAL)
             {
                 if (geode)
-                {
+                { // finish off the geode by making sure there are no concave polys
                     osgUtil::Tesselator tesselator;
                     for(unsigned int i=0;i<geode->getNumDrawables();++i)
                     {
@@ -563,6 +580,14 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                 geode = new osg::Geode();
                 gp->addChild(geode);
                 geode->setName(gp->getName());
+                if (ob.data) { // GWM March 8 2004 - turn comment data into descriptors
+                    char *ctmp=strtok(ob.data,"\n");
+                    while (ctmp) {
+                        if (gp) gp->addDescription(std::string(ctmp));
+                        else geode->addDescription(std::string(ctmp));
+                        ctmp=strtok(NULL,"\n");
+                    }
+                }
                 normals = new osg::Vec3Array;
             }
 
@@ -575,7 +600,8 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                 for (n = 0; n < num; n++)
                 {
                     osg::Vec3 p;
-                    fscanf(f, "%f %f %f\n", &p[0], &p[1], &p[2]); line++;
+                    read_line(f);
+                    sscanf(buff, "%f %f %f\n", &p[0], &p[1], &p[2]); line++;
                     protate(p, ob.matrix);
                     vertpool->push_back(p+ob.loc);
                 }
@@ -653,18 +679,18 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                             osg::StateSet *dstate = new osg::StateSet;
                             osg::Material*mat=ac_palette_get_material(asurf.mat);
                             if (mat) {
-                            dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-                            dstate->setAttribute(mat);
-                            const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
-                            if (cdiff[3]<0.99)
-                            {
-                                dstate->setMode(GL_BLEND,osg::StateAttribute::ON);
-                                dstate->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                            } 
-                            else
-                            {
-                                dstate->setMode(GL_BLEND,osg::StateAttribute::OFF);
-                            }
+                                dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
+                                dstate->setAttribute(mat);
+                                const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
+                                if (cdiff[3]<0.99)
+                                {
+                                    dstate->setMode(GL_BLEND,osg::StateAttribute::ON);
+                                    dstate->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                                } 
+                                else
+                                {
+                                    dstate->setMode(GL_BLEND,osg::StateAttribute::OFF);
+                                }
                             }
                             if (ob.texture.valid()) dstate->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
                             if (ob.texture.valid())
@@ -741,6 +767,13 @@ osg::Group *ac_load_object(FILE *f,const ACObject *parent)
                 // ob.kids = (ACObject **)myalloc(num * sizeof(ACObject *) );
                 ob.num_kids = num;
 
+                if (gp && ob.data) { // GWM March 8 2004 - turn comment data into descriptors
+                    char *ctmp=strtok(ob.data,"\n");
+                    while (ctmp) {
+                        gp->addDescription(std::string(ctmp));
+                        ctmp=strtok(NULL,"\n");
+                    }
+                }
                 for (n = 0; n < num; n++)
                 {
                     osg::Group *k = ac_load_object(f,&ob); //, ob);
@@ -820,20 +853,21 @@ osg::Group *ac_load_ac3d(const char *fname)
 {
     osg::Group *ret = NULL;
     if (strlen(fname)>0) {
-        FILE *f = fopen(fname, "r");
+    std::ifstream fin(fname, std::ios::in);
+//    FILE *f = fopen(fname, "r");
 
-        if (f == NULL)
+        if (!fin.is_open())
             {
-            printf("can't open %s\n", fname);
+            printf("can't open %s for loading\n", fname);
             return(NULL);
             }
 
-        read_line(f);
+        read_line(fin);
 
         if (strncmp(buff, "AC3D", 4))
             {
             printf("ac_load_ac '%s' is not a valid AC3D file.", fname);
-            fclose(f);
+            fin.close(); // fclose(f);
             return(0);
             }
 
@@ -841,10 +875,10 @@ osg::Group *ac_load_ac3d(const char *fname)
         startmatindex = palette.size(); //num_palette;
 
 
-        ret = ac_load_object(f,NULL); //, NULL);
+        ret = ac_load_object(fin,NULL); //, NULL);
 
         
-        fclose(f);
+        fin.close();
 
         // ac_calc_vertex_normals(ret);
         // here I need to calculate nromals for this object

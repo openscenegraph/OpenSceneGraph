@@ -1,3 +1,4 @@
+
 #include <osg/Group>
 #include <osg/BoundingBox>
 #include <osg/Transform>
@@ -53,7 +54,17 @@ void Group::traverse(NodeVisitor& nv)
 
 bool Group::addChild( Node *child )
 {
-    if (child && !containsNode(child))
+    if (!child) return false;
+    
+#if ENSURE_CHILD_IS_UNIQUE    
+    if (containsNode(child))
+    {
+        notify(WARN)<<"Adding non unique child to osg::Group, ignoring call"<<std::endl;
+        return false;
+    }
+#endif
+    
+    if (child)
     {
         // note ref_ptr<> automatically handles incrementing child's reference count.
         _children.push_back(child);

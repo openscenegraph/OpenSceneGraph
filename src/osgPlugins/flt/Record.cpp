@@ -132,13 +132,22 @@ void PrimNodeRecord::addChild( Record *child )
 {
     if (child==NULL) return;
 
+#if ENSURE_CHILD_IS_UNIQUE    
     ChildList::iterator itr = std::find(_children.begin(),_children.end(),child);
     if (itr==_children.end())
     {
+#endif    
         // note ref_ptr<> automatically handles incrementing child's reference count.
         _children.push_back(child);
         child->_pParent = this;
+        
+#if ENSURE_CHILD_IS_UNIQUE
     }
+    else
+    {
+        std::cout<<"Trying to add non unique child, ignoring"<<std::endl;
+    }
+#endif
 }
 
 

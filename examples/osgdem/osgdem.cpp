@@ -33,6 +33,7 @@
 
 #include <ogr_spatialref.h>
 
+
 char *SanitizeSRS( const char *pszUserInput )
 
 {
@@ -60,6 +61,7 @@ char *SanitizeSRS( const char *pszUserInput )
 
 int main( int argc, char **argv )
 {
+
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -84,21 +86,6 @@ int main( int argc, char **argv )
     // create DataSet.
     osg::ref_ptr<osgTerrain::DataSet> dataset = new osgTerrain::DataSet;
 
-    std::string filename;
-    while (arguments.read("-d",filename))
-    {
-        if (!filename.empty()) dataset->addSource(new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::HEIGHT_FIELD,filename));
-    }
-    
-    while (arguments.read("-t",filename))
-    {
-        if (!filename.empty()) dataset->addSource(new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE,filename));
-    }
-
-    while (arguments.read("-m",filename))
-    {
-        if (!filename.empty()) dataset->addSource(new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::MODEL,filename));
-    }
 
     float x,y,w,h;
     while (arguments.read("-e",x,y,w,h))
@@ -119,17 +106,6 @@ int main( int argc, char **argv )
     dataset->setDestinationTileBaseName("output");
     dataset->setDestinationTileExtension(".ive");
 
-    std::string outputFileName("output.ive");
-    while (arguments.read("-o",outputFileName)) 
-    {
-        std::string path = osgDB::getFilePath(outputFileName);
-        std::string base = path.empty()?osgDB::getStrippedName(outputFileName):
-                                        path +'/'+ osgDB::getStrippedName(outputFileName);
-        std::string extension = '.'+osgDB::getLowerCaseFileExtension(outputFileName);
-
-        dataset->setDestinationTileBaseName(base);
-        dataset->setDestinationTileExtension(extension);
-    }
 
     float numLevels = 6.0f;
     while (arguments.read("-l",numLevels)) {}
@@ -148,29 +124,105 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    std::string def;
-    while (arguments.read("--o_cs",def))
-    {
-        dataset->setDestinationCoordinateSystem(SanitizeSRS(def.c_str()) );
-    }
+
+    // read the input data
+
+    std::string filename;
+    std::string currentCS;
+    osg::Matrixd geoTransform;
+    bool geoTransformSet = false; 
     
-    if (false)
+    bool argumentRead = true;
+    int pos = 1;
+    while(pos<arguments.argc())
     {
-        // set up the coordinate system
-        OGRSpatialReference     oSRS;
-
-        oSRS.SetProjCS( "WGS 84 / UTM zone 47S" );
-        oSRS.SetWellKnownGeogCS( "WGS84" );
-        oSRS.SetUTM( 47, FALSE );
-
-        // get the Well Known Text string
-        char    *pszWKT = NULL;
-        oSRS.exportToWkt( &pszWKT );
+        argumentRead = false;
+    
+        std::string def;
+        if (arguments.read(pos, "--cs",def))
+        {
+            currentCS = !def.empty() ? SanitizeSRS(def.c_str()) : "";
+            std::cout<<"--cs "<<currentCS<<std::endl;
+            argumentRead = true;
+        }
         
-        // set the destination coordinate system
-        dataset->setDestinationCoordinateSystem(pszWKT);
-    }
+        
 
+        osgTerrain::DataSet::Source* source = 0;
+        if (arguments.read(pos, "-d",filename))
+        {
+            argumentRead = true;
+
+            if (!filename.empty())
+            {
+                std::cout<<"-d "<<filename<<std::endl;
+            
+                source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::HEIGHT_FIELD,filename);                
+            }
+        }
+
+        if (arguments.read(pos, "-t",filename))
+        {
+            argumentRead = true;
+
+            if (!filename.empty())
+            {
+                std::cout<<"-t "<<filename<<std::endl;
+                source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE,filename);
+            }
+        }
+
+        if (arguments.read(pos, "-m",filename))
+        {
+            argumentRead = true;
+
+            if (!filename.empty())
+            {
+                std::cout<<"-m "<<filename<<std::endl;
+                source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::MODEL,filename);
+            }
+        }
+
+        if (source)
+        {
+            if (!currentCS.empty())
+            {
+                std::cout<<"source->setCoordySystem "<<currentCS<<std::endl;
+                source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+                source->setCoordinateSystem(currentCS);
+            } 
+
+            if (geoTransformSet)
+            {
+                std::cout<<"source->setGeoTransform "<<geoTransform<<std::endl;
+                source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
+                source->setGeoTransform(geoTransform);
+            }
+
+            dataset->addSource(source);
+        }
+
+        if (arguments.read(pos, "-o",filename)) 
+        {
+            std::cout<<"-o "<<filename<<std::endl;
+
+            argumentRead = true;
+
+            std::string path = osgDB::getFilePath(filename);
+            std::string base = path.empty()?osgDB::getStrippedName(filename):
+                                            path +'/'+ osgDB::getStrippedName(filename);
+            std::string extension = '.'+osgDB::getLowerCaseFileExtension(filename);
+
+            dataset->setDestinationTileBaseName(base);
+            dataset->setDestinationTileExtension(extension);
+            
+            if (!currentCS.empty()) dataset->setDestinationCoordinateSystem(currentCS);
+        }
+        
+        // if no argument read advance to next argument.
+        if (!argumentRead) ++pos;
+
+    }
     
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -181,6 +233,8 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
+    
+    return 0;
     
     dataset->loadSources();
 

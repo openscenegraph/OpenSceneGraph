@@ -45,14 +45,23 @@ void SceneView::setDefaults()
 
     _lightingMode=HEADLIGHT;
     _light = new osg::Light;
-    _light->setAmbient(Vec4(0.05f,0.05f,0.05f,1.0f));
+    _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
     _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
-    _light->setSpecular(Vec4(0.1f,0.1f,0.1f,1.0f));
+    _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
 
-    _camera = new Camera;
-    
     _state = new State;
     
+    _camera = new Camera;
+    
+    _stereoMode = MONO;
+
+    _leftEye.set(-0.03f,0.0f,0.0f);
+    _rightEye.set(0.03f,0.0f,0.0f);
+
+    _focalLength = 1.0f;
+    _screenDistance = 1.0f;
+
+
     _rendergraph = new RenderGraph;
     _renderStage = new RenderStage;
 
@@ -281,7 +290,60 @@ void SceneView::draw()
     osg::Texture::flushDeletedTextureObjects(_state->getContextID());
 
     RenderLeaf* previous = NULL;
-    _renderStage->draw(*_state,previous);
+
+    switch(getStereoMode())
+    {
+    case(MONO):
+        {
+            _renderStage->draw(*_state,previous);
+        }
+        break;
+    case(QUAD_BUFFER_STEREO):
+        {
+            osg::ref_ptr<osg::Camera> left_camera = new osg::Camera(*_camera);
+            osg::ref_ptr<osg::Camera> right_camera = new osg::Camera(*_camera);
+            float screenDistance = 3.5f;
+            float iod = 0.05;
+
+            left_camera->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f),screenDistance);
+            right_camera->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f),screenDistance);
+
+            cout << "draw"<<endl;
+            cout << "   back left"<<endl;
+            glDrawBuffer(GL_BACK_LEFT);
+            _renderStage->setCamera(left_camera.get());
+            _renderStage->draw(*_state,previous);
+            
+
+            cout << "   back right"<<endl;
+            glDrawBuffer(GL_BACK_RIGHT);
+            _renderStage->setCamera(right_camera.get());
+            _renderStage->_stageDrawnThisFrame = false;
+            _renderStage->draw(*_state,previous);
+        }
+        break;
+    case(RED_GREEN_STEREO):
+        {
+            osg::ColorMask* red = new osg::ColorMask;
+            osg::ColorMask* green = new osg::ColorMask;
+
+            red->setMask(true,false,false,true);
+            _renderStage->setColorMask(red);
+            _renderStage->draw(*_state,previous);
+
+            green->setMask(false,true,false,true);
+            _renderStage->setColorMask(green);
+            _renderStage->_stageDrawnThisFrame = false;
+            _renderStage->draw(*_state,previous);
+
+        }
+        break;
+    default:
+        {
+            _renderStage->draw(*_state,previous);
+        }
+        break;
+    }
     
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)

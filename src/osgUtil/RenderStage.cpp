@@ -73,6 +73,10 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
 
     // glEnable( GL_DEPTH_TEST );
 
+    // set which color planes to operate on.
+    if (_colorMask.valid()) _colorMask->apply(state);
+    else glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+
     if (_clearMask & GL_COLOR_BUFFER_BIT)
         glClearColor( _clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
 
@@ -85,8 +89,6 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     if (_clearMask & GL_ACCUM_BUFFER_BIT)
         glClearAccum( _clearAccum[0], _clearAccum[1], _clearAccum[2], _clearAccum[3]);
 
-    // clear a color bit planes - osg::ColorMask could also be used here.
-    glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 
     glClear( _clearMask );
 

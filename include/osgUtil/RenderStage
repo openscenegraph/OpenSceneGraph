@@ -6,6 +6,7 @@
 #define OSGUTIL_RENDERSTAGE 1
 
 #include <osg/Camera>
+#include <osg/ColorMask>
 
 #include <osgUtil/RenderBin>
 #include <osgUtil/RenderStageLighting>
@@ -51,6 +52,11 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         /** Get the clear mask.*/
         const GLbitfield getClearMask() const { return _clearMask; }
+
+
+        void setColorMask(osg::ColorMask* cm) { _colorMask = cm; }
+        osg::ColorMask* getColorMask() { return _colorMask.get(); }
+        const osg::ColorMask* getColorMask() const { return _colorMask.get(); }
 
 
         /** Set the clear color used in glClearColor(..). 
@@ -131,6 +137,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         osg::ref_ptr<osg::Viewport>         _viewport;
         
         GLbitfield                          _clearMask;
+        osg::ref_ptr<osg::ColorMask>        _colorMask;
         osg::Vec4                           _clearColor;
         osg::Vec4                           _clearAccum;
         double                              _clearDepth;

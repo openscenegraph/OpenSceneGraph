@@ -14,7 +14,7 @@ Camera::Camera()
     _adjustAspectRatioMode = ADJUST_HORIZONTAL;
 
     // projection details.
-    setPerspective(60,1.0,1.0,1000.0);
+    setPerspective(30,1.0,1.0,1000.0);
         
     // look at details.
     _lookAtType =USE_HOME_POSITON;
@@ -28,8 +28,70 @@ Camera::Camera()
     _useNearClippingPlane = false;
     _useFarClippingPlane = false;
 
+    _useEyeOffset = false;
+    _eyeOffset.set(0.0f,0.0f,0.0f);
+    _screenDistance = 1.0f;
 }
 
+Camera::Camera(const Camera& camera)
+{
+    copy(camera);
+}
+
+Camera& Camera::operator=(const Camera& camera)
+{
+    if (&camera==this) return *this;
+
+    copy(camera);
+
+    return *this;
+}
+
+void Camera::copy(const Camera& camera)
+{
+    _projectionType = camera._projectionType;
+
+    // how the window dimensions should be altered during a window resize.
+    _adjustAspectRatioMode = camera._adjustAspectRatioMode;
+
+    // note, in Frustum/Perspective mode these values are scaled
+    // by the zNear from when they were initialised to ensure that
+    // subsequent changes in zNear do not affect them.
+    _left = camera._left;
+    _right = camera._right;
+    _bottom = camera._bottom;
+    _top = camera._top;
+
+    _zNear = camera._zNear;
+    _zFar = camera._zFar;
+
+
+    // look at details.
+    _lookAtType = camera._lookAtType;
+
+    _eye = camera._eye;
+    _center = camera._center;
+    _up = camera._up;
+
+    _focalLength = camera._focalLength;
+
+    _attachedTransformMode = camera._attachedTransformMode;
+    _eyeToModelTransform = camera._eyeToModelTransform;
+    _modelToEyeTransform = camera._modelToEyeTransform;
+
+    // flags to determine if near and far clipping planes are required.
+    _useNearClippingPlane = camera._useNearClippingPlane;
+    _useFarClippingPlane = camera._useFarClippingPlane;
+
+    // cached matrix and clipping volume derived from above settings.
+    _dirty = camera._dirty;
+    _projectionMatrix = camera._projectionMatrix;
+    _modelViewMatrix = camera._modelViewMatrix;
+    _clippingVolume = camera._clippingVolume;
+
+    _mp = camera._mp;
+    _inversemp = camera._inversemp;
+}
 
 Camera::~Camera()
 {
@@ -324,6 +386,10 @@ void Camera::transformLookAt(const Matrix& matrix)
     _center = _center*matrix;
     _up -= _eye;
     _up.normalize();
+
+    _focalLength = (_center-_eye).length();
+
+    _dirty = true;
 }
 
 const Vec3 Camera::getLookVector() const
@@ -520,17 +586,31 @@ const ClippingVolume& Camera::getClippingVolume() const
 void Camera::calculateMatricesAndClippingVolume() const
 {
 
+
+    float left = _left;
+    float right = _right;
+    float top = _top;
+    float bottom = _bottom;
+
+    if (_useEyeOffset)
+    {
+        float dx = -_eyeOffset.x()*(1.0f/_screenDistance);
+        left += dx;
+        right += dx;
+        cout << "dx="<<dx<<" left="<<left<<" right="<<right<<endl;
+    }
+
     // set up the projection matrix.
     switch(_projectionType)
     {
         case(ORTHO):
         case(ORTHO2D):
             {
-                float A = 2.0/(_right-_left);
-                float B = 2.0/(_top-_bottom);
+                float A = 2.0/(right-left);
+                float B = 2.0/(top-bottom);
                 float C = -2.0 / (_zFar-_zNear);
-                float tx = -(_right+_left)/(_right-_left);
-                float ty = -(_top+_bottom)/(_top-_bottom);
+                float tx = -(right+left)/(right-left);
+                float ty = -(top+bottom)/(top-bottom);
                 float tz = -(_zFar+_zNear)/(_zFar-_zNear);
 
                 _projectionMatrix = new Matrix(
@@ -548,10 +628,10 @@ void Camera::calculateMatricesAndClippingVolume() const
                 // by the zNear from when they were initialised to ensure that
                 // subsequent changes in zNear do not affect them.
 
-                float A = (2.0)/(_right-_left);
-                float B = (2.0)/(_top-_bottom);
-                float C = (_right+_left) / (_right-_left);
-                float D = (_top+_bottom) / (_top-_bottom);
+                float A = (2.0)/(right-left);
+                float B = (2.0)/(top-bottom);
+                float C = (right+left) / (right-left);
+                float D = (top+bottom) / (top-bottom);
                 float E = -(_zFar+_zNear) / (_zFar-_zNear);
                 float F = -(2.0*_zFar*_zNear) / (_zFar-_zNear);
 
@@ -614,6 +694,18 @@ void Camera::calculateMatricesAndClippingVolume() const
         }
         break;
     }
+
+    if (_useEyeOffset)
+    {
+        cout << "    screenDistance ="<<_screenDistance<<"  focalLength="<<_focalLength<<endl;
+        cout << "    offset="<<_eyeOffset<<endl;
+//        cout << "    trans ="<<-_eyeOffset*(_screenDistance/_focalLength)<<endl;
+        cout << "    trans ="<<-_eyeOffset*(_screenDistance)<<endl;
+
+//        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::trans(-_eyeOffset*(_screenDistance/_focalLength)) ;
+        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::trans(-_eyeOffset*_focalLength/_screenDistance) ;
+    }
+
 
     _clippingVolume.clear();
 
@@ -718,4 +810,12 @@ const bool Camera::unproject(const Vec3& win,const Viewport& viewport,Vec3& obj)
     }
     else
         return false;
+}
+
+void Camera::adjustEyeOffsetForStereo(const osg::Vec3& offset,float screenDistance)
+{
+    _useEyeOffset = true;
+    _eyeOffset = offset;
+    _screenDistance = screenDistance;
+    _dirty = true;
 }

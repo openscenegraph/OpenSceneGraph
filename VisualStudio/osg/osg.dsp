@@ -911,6 +911,30 @@ SOURCE=..\..\Include\Osg\Vec4
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\Vec2f
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec3f
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec4f
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec2d
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec3d
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Vec4d
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Version
 # End Source File
 # Begin Source File

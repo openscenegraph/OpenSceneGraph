@@ -106,14 +106,14 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node>       _node;
 
-        float _modelScale;
-        float _minimumZoomScale;
+        double _modelScale;
+        double _minimumZoomScale;
 
         bool _thrown;
         
-        osg::Vec3   _center;
-        osg::Quat   _rotation;
-        float       _distance;
+        osg::Vec3d   _center;
+        osg::Quat    _rotation;
+        double       _distance;
 
 };
 

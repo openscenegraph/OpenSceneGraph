@@ -57,7 +57,7 @@ class EllipsoidModel : public Object
 
         inline void computeLocalToWorldTransformFromXYZ(double X, double Y, double Z, osg::Matrixd& localToWorld) const;
 
-        inline osg::Vec3 computeLocalUpVector(double X, double Y, double Z) const;
+        inline osg::Vec3d computeLocalUpVector(double X, double Y, double Z) const;
 
     protected:
 
@@ -109,16 +109,10 @@ class SG_EXPORT CoordinateSystemNode : public Group
         const EllipsoidModel* getEllipsoidModel() const { return _ellipsoidModel.get(); }
         
         /** compute the local coorindate frame for specified point.*/
-        CoordinateFrame computeLocalCoordinateFrame(const Vec3& position) const;
+        CoordinateFrame computeLocalCoordinateFrame(const Vec3d& position) const;
         
         /** compute the local coorindate frame for specified point.*/
-        CoordinateFrame computeLocalCoordinateFrame(double X, double Y, double Z) const;
-
-        /** compute the local coorindate frame for specified point.*/
-        osg::Vec3 computeLocalUpVector(const Vec3& position) const;
-
-        /** compute the local coorindate frame for specified point.*/
-        osg::Vec3 computeLocalUpVector(double X, double Y, double Z) const;
+        osg::Vec3d computeLocalUpVector(const Vec3d& position) const;
 
     protected:
 
@@ -211,7 +205,7 @@ inline void EllipsoidModel::computeLocalToWorldTransformFromXYZ(double X, double
     localToWorld(2,2) = Z;
 }
 
-inline osg::Vec3 EllipsoidModel::computeLocalUpVector(double X, double Y, double Z) const
+inline osg::Vec3d EllipsoidModel::computeLocalUpVector(double X, double Y, double Z) const
 {
     osg::Vec3 normal(X,Y,Z);
     normal.normalize();

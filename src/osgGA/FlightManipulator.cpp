@@ -257,19 +257,19 @@ bool FlightManipulator::calcMovement()
     float dx = _ga_t0->getXnormalized();
     float dy = _ga_t0->getYnormalized();
 
-    osg::CoordinateFrame cf=getCoordinateFrame(_eye.x(), _eye.y(), _eye.z());
+    osg::CoordinateFrame cf=getCoordinateFrame(_eye);
 
     osg::Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
     
-    osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * rotation_matrix;
-    osg::Vec3 lv = osg::Vec3(0.0f,0.0f,-1.0f) * rotation_matrix;
+    osg::Vec3d up = osg::Vec3(0.0,1.0,0.0) * rotation_matrix;
+    osg::Vec3d lv = osg::Vec3(0.0,0.0,-1.0) * rotation_matrix;
 
-    osg::Vec3 sv = lv^up;
+    osg::Vec3d sv = lv^up;
     sv.normalize();
 
-    float pitch = -inDegrees(dy*75.0f*dt);
-    float roll = inDegrees(dx*50.0f*dt);
+    double pitch = -inDegrees(dy*75.0f*dt);
+    double roll = inDegrees(dx*50.0f*dt);
 
     osg::Quat delta_rotate;
 
@@ -284,8 +284,8 @@ bool FlightManipulator::calcMovement()
     if (_yawMode==YAW_AUTOMATICALLY_WHEN_BANKED)
     {
         //float bank = asinf(sv.z());
-        float bank = asinf(sv *getUpVector(cf));
-        float yaw = inRadians(bank)*dt;
+        double bank = asinf(sv *getUpVector(cf));
+        double yaw = inRadians(bank)*dt;
         
         osg::Quat yaw_rotate;
         //yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);

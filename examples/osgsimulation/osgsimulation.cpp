@@ -2,11 +2,46 @@
 
 #include <osg/Group>
 #include <osg/Geode>
+#include <osg/ShapeDrawable>
+#include <osg/Texture2D>
+#include <osg/PositionAttitudeTransform>
+
+#include <osgDB/ReadFile>
 
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/FireEffect>
 #include <osgParticle/ParticleSystemUpdater>
+
+// for the grid data..
+#include "../osghangglide/terrain_coords.h"
+
+osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
+{
+    osgUtil::IntersectVisitor iv;
+    osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
+
+    const osg::BoundingSphere& bs = subgraph->getBound();
+    float zMax = bs.center().z()+bs.radius();
+    float zMin = bs.center().z()-bs.radius();
+    
+    segDown->set(osg::Vec3(x,y,zMin),osg::Vec3(x,y,zMax));
+    iv.addLineSegment(segDown.get());
+
+    subgraph->accept(iv);
+
+    if (iv.hits())
+    {
+        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
+        if (!hitList.empty())
+        {
+            osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
+            return  ip;
+        }
+    }
+
+    return osg::Vec3(x,y,0.0f);
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -16,13 +51,57 @@
 void build_world(osg::Group *root)
 {
 
+    osg::Geode* terrainGeode = new osg::Geode;
+    {
+        osg::StateSet* stateset = new osg::StateSet();
+        osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+        if (image)
+        {
+	    osg::Texture2D* texture = new osg::Texture2D;
+	    texture->setImage(image);
+	    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        }
+
+        terrainGeode->setStateSet( stateset );
+
+        float size = 1000; // 10km;
+        float scale = size/39.0f; // 10km;
+        float z_scale = scale*3.0f;
+
+        osg::HeightField* grid = new osg::HeightField;
+        grid->allocateGrid(38,39);
+        grid->setXInterval(scale);
+        grid->setYInterval(scale);
+
+        for(unsigned int r=0;r<39;++r)
+        {
+	    for(unsigned int c=0;c<38;++c)
+	    {
+	        grid->setHeight(c,r,z_scale*vertex[r+c*39][2]);
+	    }
+        }
+        terrainGeode->addDrawable(new osg::ShapeDrawable(grid));
+        
+        root->addChild(terrainGeode);
+    }    
+
+
+    
+    osg::PositionAttitudeTransform* positionEffects = new osg::PositionAttitudeTransform;
+    positionEffects->setPosition(computeTerrainIntersection(terrainGeode,100.0f,100.0f));
+    root->addChild(positionEffects);
+
     osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
     osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
     osgParticle::FireEffect* fire = new osgParticle::FireEffect;
 
-    root->addChild(explosion);
-    root->addChild(smoke);
-    root->addChild(fire);
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),10.0f)));
+    positionEffects->addChild(geode);
+
+    positionEffects->addChild(explosion);
+    positionEffects->addChild(smoke);
+    positionEffects->addChild(fire);
 
     osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
 

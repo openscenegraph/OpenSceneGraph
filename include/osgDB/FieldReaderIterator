@@ -14,9 +14,9 @@
 #ifndef OSGDB_FIELDREADERITERATOR
 #define OSGDB_FIELDREADERITERATOR 1
 
-#include <osg/Vec2>
-#include <osg/Vec2>
-#include <osg/Vec4>
+#include <osg/Vec2f>
+#include <osg/Vec2f>
+#include <osg/Vec4f>
 
 #include <osgDB/Field>
 #include <osgDB/FieldReader>
@@ -66,17 +66,17 @@ class OSGDB_EXPORT FieldReaderIterator
         bool readSequence(const char* keyword,unsigned int& value);
         bool readSequence(const char* keyword,int& value);
         bool readSequence(const char* keyword,float& value);
-        bool readSequence(const char* keyword,osg::Vec2& value);
-        bool readSequence(const char* keyword,osg::Vec3& value);
-        bool readSequence(const char* keyword,osg::Vec4& value);
+        bool readSequence(const char* keyword,osg::Vec2f& value);
+        bool readSequence(const char* keyword,osg::Vec3f& value);
+        bool readSequence(const char* keyword,osg::Vec4f& value);
 
         bool readSequence(std::string& value);
         bool readSequence(unsigned int& value);
         bool readSequence(int& value);
         bool readSequence(float& value);
-        bool readSequence(osg::Vec2& value);
-        bool readSequence(osg::Vec3& value);
-        bool readSequence(osg::Vec4& value);
+        bool readSequence(osg::Vec2f& value);
+        bool readSequence(osg::Vec3f& value);
+        bool readSequence(osg::Vec4f& value);
 
     private:
 

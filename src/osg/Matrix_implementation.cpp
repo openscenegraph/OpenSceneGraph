@@ -175,7 +175,13 @@ void Matrix_implementation::setTrans( value_type tx, value_type ty, value_type t
 }
 
 
-void Matrix_implementation::setTrans( const Vec3& v )
+void Matrix_implementation::setTrans( const Vec3f& v )
+{
+    _mat[3][0] = v[0];
+    _mat[3][1] = v[1];
+    _mat[3][2] = v[2];
+}
+void Matrix_implementation::setTrans( const Vec3d& v )
 {
     _mat[3][0] = v[0];
     _mat[3][1] = v[1];
@@ -190,7 +196,12 @@ void Matrix_implementation::makeIdentity()
     SET_ROW(3,    0, 0, 0, 1 )
 }
 
-void Matrix_implementation::makeScale( const Vec3& v )
+void Matrix_implementation::makeScale( const Vec3f& v )
+{
+    makeScale(v[0], v[1], v[2] );
+}
+
+void Matrix_implementation::makeScale( const Vec3d& v )
 {
     makeScale(v[0], v[1], v[2] );
 }
@@ -203,7 +214,12 @@ void Matrix_implementation::makeScale( value_type x, value_type y, value_type z 
     SET_ROW(3,    0, 0, 0, 1 )
 }
 
-void Matrix_implementation::makeTranslate( const Vec3& v )
+void Matrix_implementation::makeTranslate( const Vec3f& v )
+{
+    makeTranslate( v[0], v[1], v[2] );
+}
+
+void Matrix_implementation::makeTranslate( const Vec3d& v )
 {
     makeTranslate( v[0], v[1], v[2] );
 }
@@ -216,14 +232,26 @@ void Matrix_implementation::makeTranslate( value_type x, value_type y, value_typ
     SET_ROW(3,    x, y, z, 1 )
 }
 
-void Matrix_implementation::makeRotate( const Vec3& from, const Vec3& to )
+void Matrix_implementation::makeRotate( const Vec3f& from, const Vec3f& to )
+{
+    Quat quat;
+    quat.makeRotate(from,to);
+    set(quat);
+}
+void Matrix_implementation::makeRotate( const Vec3d& from, const Vec3d& to )
 {
     Quat quat;
     quat.makeRotate(from,to);
     set(quat);
 }
 
-void Matrix_implementation::makeRotate( value_type angle, const Vec3& axis )
+void Matrix_implementation::makeRotate( value_type angle, const Vec3f& axis )
+{
+    Quat quat;
+    quat.makeRotate( angle, axis);
+    set(quat);
+}
+void Matrix_implementation::makeRotate( value_type angle, const Vec3d& axis )
 {
     Quat quat;
     quat.makeRotate( angle, axis);
@@ -242,9 +270,20 @@ void Matrix_implementation::makeRotate( const Quat& quat )
     set(quat);
 }
 
-void Matrix_implementation::makeRotate( value_type angle1, const Vec3& axis1, 
-                         value_type angle2, const Vec3& axis2,
-                         value_type angle3, const Vec3& axis3)
+void Matrix_implementation::makeRotate( value_type angle1, const Vec3f& axis1, 
+                         value_type angle2, const Vec3f& axis2,
+                         value_type angle3, const Vec3f& axis3)
+{
+    Quat quat;
+    quat.makeRotate(angle1, axis1, 
+                    angle2, axis2,
+                    angle3, axis3);
+    set(quat);
+}
+
+void Matrix_implementation::makeRotate( value_type angle1, const Vec3d& axis1, 
+                         value_type angle2, const Vec3d& axis2,
+                         value_type angle3, const Vec3d& axis3)
 {
     Quat quat;
     quat.makeRotate(angle1, axis1, 
@@ -688,13 +727,13 @@ bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
     return false;
 }
 
-void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+void Matrix_implementation::makeLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up)
 {
-    Vec3 f(center-eye);
+    Vec3d f(center-eye);
     f.normalize();
-    Vec3 s(f^up);
+    Vec3d s(f^up);
     s.normalize();
-    Vec3 u(s^f);
+    Vec3d u(s^f);
     u.normalize();
 
     set(
@@ -706,13 +745,25 @@ void Matrix_implementation::makeLookAt(const Vec3& eye,const Vec3& center,const 
     preMult(Matrix_implementation::translate(-eye));
 }
 
-void Matrix_implementation::getLookAt(Vec3& eye,Vec3& center,Vec3& up,value_type lookDistance) const
+
+void Matrix_implementation::getLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,value_type lookDistance) const
 {
     Matrix_implementation inv;
     inv.invert(*this);
-    eye = osg::Vec3(0.0,0.0,0.0)*inv;
-    up = transform3x3(*this,osg::Vec3(0.0,1.0,0.0));
-    center = transform3x3(*this,osg::Vec3(0.0,0.0,-1));
+    eye = osg::Vec3f(0.0,0.0,0.0)*inv;
+    up = transform3x3(*this,osg::Vec3f(0.0,1.0,0.0));
+    center = transform3x3(*this,osg::Vec3f(0.0,0.0,-1));
+    center.normalize();
+    center = eye + center*lookDistance;
+}
+
+void Matrix_implementation::getLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,value_type lookDistance) const
+{
+    Matrix_implementation inv;
+    inv.invert(*this);
+    eye = osg::Vec3d(0.0,0.0,0.0)*inv;
+    up = transform3x3(*this,osg::Vec3d(0.0,1.0,0.0));
+    center = transform3x3(*this,osg::Vec3d(0.0,0.0,-1));
     center.normalize();
     center = eye + center*lookDistance;
 }

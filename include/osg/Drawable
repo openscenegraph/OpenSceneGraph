@@ -22,9 +22,9 @@
 
 namespace osg {
 
-class Vec2;
-class Vec3;
-class Vec4;
+class Vec2f;
+class Vec3f;
+class Vec4f;
 class UByte4;
 class Geometry;
 

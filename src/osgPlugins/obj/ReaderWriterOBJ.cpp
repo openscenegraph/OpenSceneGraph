@@ -487,7 +487,7 @@ osg::Drawable* ReaderWriterOBJ::makeDrawable_useSeperateIndices(GLMmodel* obj, G
     // geometry
     osg::Geometry* geom = new osg::Geometry;
     
-    geom->setUseDisplayList(false);
+    // geom->setUseDisplayList(false);
     // geom->setUseVertexBufferObjects(true);
 
     // the following code for mapping the coords, normals and texcoords

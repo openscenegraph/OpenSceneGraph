@@ -2,6 +2,7 @@
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 
+#include <osg/Vec3>
 #include <osg/Matrix>
 
 #include <iostream>

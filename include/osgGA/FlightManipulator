@@ -92,14 +92,14 @@ class OSGGA_EXPORT FlightManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node>       _node;
 
-        float _modelScale;
-        float _velocity;
+        double _modelScale;
+        double _velocity;
 
         YawControlMode _yawMode;
         
-        osg::Vec3   _eye;
+        osg::Vec3d  _eye;
         osg::Quat   _rotation;
-        float       _distance;
+        double      _distance;
 
 };
 

@@ -111,7 +111,7 @@ class AnimationPathCallbackVisitor : public NodeVisitor
 {
     public:
 
-        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp, const osg::Vec3& pivotPoint, bool useInverseMatrix):
+        AnimationPathCallbackVisitor(const AnimationPath::ControlPoint& cp, const osg::Vec3d& pivotPoint, bool useInverseMatrix):
             _cp(cp),
             _pivotPoint(pivotPoint),
             _useInverseMatrix(useInverseMatrix) {}
@@ -149,7 +149,7 @@ class AnimationPathCallbackVisitor : public NodeVisitor
         }
         
         AnimationPath::ControlPoint _cp;
-        osg::Vec3 _pivotPoint;
+        osg::Vec3d _pivotPoint;
         bool _useInverseMatrix;      
 };
 

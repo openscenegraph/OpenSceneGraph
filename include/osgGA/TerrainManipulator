@@ -98,14 +98,14 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
 
-        void computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up);
+        void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
 
         /** For the give mouse movement calculate the movement of the camera.
             Return true is camera has moved and a redraw is required.*/
         bool calcMovement();
         
-        void trackball(osg::Vec3& axis,float& angle, float p1x, float p1y, float p2x, float p2y);
-        float tb_project_to_sphere(float r, float x, float y);
+        void trackball(osg::Vec3& axis,double& angle, double p1x, double p1y, double p2x, double p2y);
+        double tb_project_to_sphere(double r, double x, double y);
 
 
         /** Check the speed at which the mouse is moving.
@@ -122,14 +122,14 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node> _node;
 
-        float                   _modelScale;
+        double                   _modelScale;
 
         RotationMode            _rotationMode;
-        float                   _minimumZoomScale;
+        double                  _minimumZoomScale;
 
         bool                    _thrown;
         
-        double                  _center[3];
+        osg::Vec3d              _center;
         osg::Quat               _rotation;
         float                   _distance;
 

@@ -18,7 +18,6 @@ class LOD;
 class Geode;
 class Material;
 class Texture;
-class Vec4;
 };
 
 

@@ -45,7 +45,7 @@ public:
         class CoordinateFrameCallback : public osg::Referenced
         {
         public:
-            virtual osg::CoordinateFrame getCoordinateFrame(double X, double Y, double Z) const = 0;
+            virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const = 0;
         protected:
             virtual ~CoordinateFrameCallback() {}
         };
@@ -60,15 +60,15 @@ public:
         const CoordinateFrameCallback* getCoordinateFrameCallback() const { return _coordinateFrameCallback.get(); }
         
         /** get the coordinate frame.*/
-        osg::CoordinateFrame getCoordinateFrame(double X, double Y, double Z) const
+        osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
         {
-            if (_coordinateFrameCallback.valid()) return  _coordinateFrameCallback->getCoordinateFrame(X,Y,Z);
+            if (_coordinateFrameCallback.valid()) return  _coordinateFrameCallback->getCoordinateFrame(position);
             return osg::CoordinateFrame();
         }
         
-        osg::Vec3 getSideVector(const osg::CoordinateFrame& cf) const { return osg::Vec3(cf(0,0),cf(0,1),cf(0,2)); }
-        osg::Vec3 getFrontVector(const osg::CoordinateFrame& cf) const { return osg::Vec3(cf(1,0),cf(1,1),cf(1,2)); }
-        osg::Vec3 getUpVector(const osg::CoordinateFrame& cf) const { return osg::Vec3(cf(2,0),cf(2,1),cf(2,2)); }
+        osg::Vec3d getSideVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(0,0),cf(0,1),cf(0,2)); }
+        osg::Vec3d getFrontVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(1,0),cf(1,1),cf(1,2)); }
+        osg::Vec3d getUpVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(2,0),cf(2,1),cf(2,2)); }
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
         virtual void setByMatrix(const osg::Matrixd& matrix) = 0;

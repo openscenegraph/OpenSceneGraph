@@ -102,7 +102,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-# ADD LINK32 libxml2.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/slideshow3D.exe" /libpath:"../../../lib"
+# ADD LINK32 libxml2.lib Producer.lib /nologo /subsystem:console /pdb:none /machine:I386 /out:"../../../bin/slideshow3D.exe" /libpath:"../../../lib"
 
 
 
@@ -152,7 +152,7 @@ LINK32=link.exe
 
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
-# ADD LINK32 libxml2.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/slideshow3Dd.exe" /pdbtype:sept /libpath:"../../../lib"
+# ADD LINK32 libxml2.lib Producerd.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"libcmt" /out:"../../../bin/slideshow3Dd.exe" /pdbtype:sept /libpath:"../../../lib"
 
 # SUBTRACT LINK32 /incremental:no
 

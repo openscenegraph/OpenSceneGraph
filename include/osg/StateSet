@@ -46,6 +46,10 @@ class SG_EXPORT StateSet : public Object
         /** set all the modes to inherit, typically used to signify
             nodes which inherit all of their modes for the global state.*/
         void setAllToInherit();
+        
+        /** merge this stateset with stateset rhs, this overrides
+          * the rhs if OVERRIDE is specified, otherwise rhs takes precedence.*/
+        void merge(const StateSet& rhs);
 
         /** a container to map GLModes to their respective GLModeValues.*/
         typedef std::map<StateAttribute::GLMode,StateAttribute::GLModeValue>  ModeList;

@@ -118,6 +118,56 @@ void StateSet::setAllToInherit()
     _attributeList.clear();
 }
 
+void StateSet::merge(const StateSet& rhs)
+{
+    // merge the modes of rhs into this, 
+    // this overrides rhs if OVERRIDE defined in this.
+    for(ModeList::const_iterator rhs_mitr = rhs._modeList.begin();
+        rhs_mitr != rhs._modeList.begin();
+        ++rhs_mitr)
+    {
+        ModeList::iterator lhs_mitr = _modeList.find(rhs_mitr->first);
+        if (lhs_mitr!=_modeList.end())
+        {
+            if (!(lhs_mitr->second & StateAttribute::OVERRIDE)) 
+            {
+                // override isn't on in rhs, so overrite it with incomming
+                // value.
+                lhs_mitr->second = rhs_mitr->second;
+            }
+        }
+        else
+        {
+            // entry doesn't exist so insert it.
+            _modeList.insert(*rhs_mitr);
+        }
+    }
+
+    // merge the attributes of rhs into this, 
+    // this overrides rhs if OVERRIDE defined in this.
+    for(AttributeList::const_iterator rhs_aitr = rhs._attributeList.begin();
+        rhs_aitr != rhs._attributeList.begin();
+        ++rhs_aitr)
+    {
+        AttributeList::iterator lhs_aitr = _attributeList.find(rhs_aitr->first);
+        if (lhs_aitr!=_attributeList.end())
+        {
+            if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE)) 
+            {
+                // override isn't on in rhs, so overrite it with incomming
+                // value.
+                lhs_aitr->second = rhs_aitr->second;
+            }
+        }
+        else
+        {
+            // entry doesn't exist so insert it.
+            _attributeList.insert(*rhs_aitr);
+        }
+    }
+}
+
+
 void StateSet::setMode(const StateAttribute::GLMode mode, const StateAttribute::GLModeValue value)
 {
     if ((value&StateAttribute::INHERIT)) setModeToInherit(mode);

@@ -187,8 +187,8 @@ osg::PrimitiveSet *generatePrimitive(PolygonList &polys, unsigned primsize, unsi
     }
     // Now will generate the indices and the primitive
     if (numvertices < 65536) {
-	unsigned short *indices=new unsigned short[count*primsize];
-        unsigned count2=0;
+	GLushort *indices=new GLushort[count*primsize];
+        unsigned int count2=0;
 	for (i=0;i<polys.size();i++) {
 	    VertexIndexList vindex=*polys[i];
 	    if (vindex.size() == primsize) {
@@ -201,8 +201,8 @@ osg::PrimitiveSet *generatePrimitive(PolygonList &polys, unsigned primsize, unsi
 	p=new osg::DrawElementsUShort(mode,count*primsize,indices);
 	delete indices;
     } else {
-	unsigned int *indices=new unsigned int[count*primsize];
-        unsigned count2=0;
+	GLuint *indices=new GLuint[count*primsize];
+        unsigned int count2=0;
 	for (i=0;i<polys.size();i++) {
 	    VertexIndexList vindex=*polys[i];
 	    if (vindex.size() == primsize) {

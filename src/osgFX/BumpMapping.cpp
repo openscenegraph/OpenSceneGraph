@@ -233,6 +233,9 @@ namespace
 
         void define_passes()
         {
+            int freeunit;
+            for (freeunit=0; freeunit==diffuseunit_||freeunit==normalunit_; ++freeunit) {}
+
             // vertex program
             std::ostringstream vp_oss;
             vp_oss <<
@@ -244,8 +247,8 @@ namespace
                 "ATTRIB v5 = vertex.attrib[15];"
                 "ATTRIB v4 = vertex.attrib[7];"
                 "ATTRIB v3 = vertex.attrib[6];"
-                "ATTRIB v25 = vertex.texcoord[1];"
-                "ATTRIB v24 = vertex.texcoord[0];"
+                "ATTRIB v25 = vertex.texcoord[" << diffuseunit_ << "];"
+                "ATTRIB v24 = vertex.texcoord[" << normalunit_ << "];"
                 "ATTRIB v18 = vertex.normal;"
                 "ATTRIB v16 = vertex.position;"
                 "PARAM s259[4] = { state.matrix.mvp };"
@@ -255,12 +258,12 @@ namespace
                 "PARAM s75 = state.lightprod[0].ambient;"
                 "PARAM s223[4] = { state.matrix.modelview[0] };"
                 "PARAM c0[4] = { program.local[0..3] };"
-                "    MOV result.texcoord[2].xyz, s75.xyzx;"
-                "    MOV result.texcoord[2].w, s4.x;"
-                "    MOV result.texcoord[0].zw, s77.xyxy;"
-                "    MOV result.texcoord[0].xy, v24;"
-                "    MOV result.texcoord[1].zw, s77.zwzw;"
-                "    MOV result.texcoord[1].xy, v25;"
+                "    MOV result.texcoord[" << freeunit << "].xyz, s75.xyzx;"
+                "    MOV result.texcoord[" << freeunit << "].w, s4.x;"
+                "    MOV result.texcoord[" << normalunit_ << "].zw, s77.zwzw;"
+                "    MOV result.texcoord[" << normalunit_ << "].xy, v24;"
+                "    MOV result.texcoord[" << diffuseunit_ << "].zw, s77.xyxy;"
+                "    MOV result.texcoord[" << diffuseunit_ << "].xy, v25;"
                 "    MOV R5, c0[0];"
                 "    MUL R0, R5.y, s223[1];"
                 "    MAD R0, R5.x, s223[0], R0;"
@@ -338,8 +341,8 @@ namespace
                 "TEMP R0;"
                 "TEMP R1;"
                 "TEMP R2;"
-                "TEX R0, fragment.texcoord[0], texture[0], 2D;"
-                "TEX R1, fragment.texcoord[1], texture[1], 2D;"
+                "TEX R0, fragment.texcoord[" << normalunit_ << "], texture[" << normalunit_ << "], 2D;"
+                "TEX R1, fragment.texcoord[" << diffuseunit_ << "], texture[" << diffuseunit_ << "], 2D;"
                 "ADD R0, R0, -c0.z;"
                 "MUL R0.xyz, c0.y, R0;"
                 "ADD R2.xyz, fragment.color.primary, -c0.z;"
@@ -348,8 +351,8 @@ namespace
                 "ADD R2, fragment.color.secondary, -c0.z;"
                 "MUL R2.xyz, c0.y, R2;"
                 "DP3_SAT R0.x, R0, R2;"
-                "POW R0.x, R0.x, fragment.texcoord[2].w;"
-                "MOV R2.xyz, fragment.texcoord[2].xyyx;"
+                "POW R0.x, R0.x, fragment.texcoord[" << freeunit << "].w;"
+                "MOV R2.xyz, fragment.texcoord[" << freeunit << "].xyyx;"
                 "MOV R2.w, c1.w;"
                 "MOV_SAT R0.y, fragment.color.primary.w;"
                 "MUL R0.w, R0.y, R0.w;"
@@ -357,13 +360,13 @@ namespace
                 "MUL R1.xyz, R1, R2;"
                 "MOV_SAT R0.y, fragment.color.secondary.w;"
                 "MUL R0.xyz, R0.y, R0.x;"
-                "MOV R2.xy, fragment.texcoord[1].zwzz;"
-                "MOV R2.z, fragment.texcoord[0].z;"
+                "MOV R2.xy, fragment.texcoord[" << diffuseunit_ << "].zwzz;"
+                "MOV R2.z, fragment.texcoord[" << normalunit_ << "].z;"
                 "MUL R2.xyz, R0, R2;"
                 "ADD R2.xyz, R1, R2;"
                 "MOV result.color.xyz, R2;"
                 "MOV result.color.w, c0.x;"
-                "END\n";            
+                "END\n";
 
             osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
 
@@ -601,8 +604,8 @@ void BumpMapping::prepareNode(osg::Node *node)
 
 void BumpMapping::prepareChildren()
 {
-	for (unsigned i=0; i<getNumChildren(); ++i)
-		prepareNode(getChild(i));
+    for (unsigned i=0; i<getNumChildren(); ++i)
+        prepareNode(getChild(i));
 }
 
 void BumpMapping::setUpDemo()
@@ -610,7 +613,7 @@ void BumpMapping::setUpDemo()
     // generate texture coordinates
     TexCoordGenerator tcg(diffuseunit_, normalunit_);
     for (unsigned i=0; i<getNumChildren(); ++i)
-		getChild(i)->accept(tcg);
+        getChild(i)->accept(tcg);
 
     // set up diffuse texture
     if (!diffuse_tex_.valid()) {

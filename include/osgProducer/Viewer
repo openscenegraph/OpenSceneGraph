@@ -92,6 +92,15 @@ class OSGPRODUCER_EXPORT Viewer : public OsgCameraGroup, public osgGA::GUIAction
         virtual void requestContinuousUpdate(bool) {}
         virtual void requestWarpPointer(float x,float y);
 
+        Producer::KeyboardMouse* getKeyboardMouse() { return _kbmcb==0?0:_kbmcb->getKeyboardMouse(); }
+
+        const Producer::KeyboardMouse* getKeyboardMouse() const { return _kbmcb==0?0:_kbmcb->getKeyboardMouse(); }
+        
+        KeyboardMouseCallback* getKeyboardMouseCallback() { return _kbmcb; }
+
+        const KeyboardMouseCallback* getKeyboardMouseCallback() const { return _kbmcb; }
+
+
         typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlerList;
         EventHandlerList& getEventHandlerList() { return _eventHandlerList; }
         const EventHandlerList& getEventHandlerList() const { return _eventHandlerList; }

@@ -21,7 +21,7 @@
 namespace osg {
 
 /** META_Object macro define the standard clone, isSameKindAs and className methods.
-  * Use when subclassing from Object to make it more convinient to define 
+  * Use when subclassing from Object to make it more convenient to define 
   * the standard pure virtual clone, isSameKindAs and className methods 
   * which are required for all Object subclasses.*/
 #define META_Object(library,name) \
@@ -55,15 +55,15 @@ class SG_EXPORT Object : public Referenced
             Must be defined by derived classes.*/
         virtual Object* cloneType() const = 0;
 
-        /** Clone the an object, with Object* return type.
+        /** Clone an object, with Object* return type.
             Must be defined by derived classes.*/
         virtual Object* clone(const CopyOp&) const = 0;
 
         virtual bool isSameKindAs(const Object*) const { return true; }
 
         /** return the name of the object's library. Must be defined
-            by derived classes. The OpenSceneGraph convention the is
-            that the namspace of a library is the same as the library name.*/
+            by derived classes. The OpenSceneGraph convention is that the
+            namespace of a library is the same as the library name.*/
         virtual const char* libraryName() const = 0;
 
         /** return the name of the object's class type. Must be defined
@@ -80,7 +80,7 @@ class SG_EXPORT Object : public Referenced
         /** Set the data variance of this object.
            * Can be set to either STATIC for values that do not change over the lifetime of the object,
            * or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value
-           * can be used be routines such as optimzation codes that wish to share static data.*/
+           * can be used by routines such as optimzation codes that wish to share static data.*/
         inline void setDataVariance(DataVariance dv) { _dataVariance = dv; }
 
         /** Get the data variance of this object.*/
@@ -88,10 +88,10 @@ class SG_EXPORT Object : public Referenced
 
 
         /**
-         * Set user data, data must be subclased from Referenced to allow
-         * automatic memory handling.  If you own data isn't directly 
-         * subclassed from Referenced then create and adapter object
-         * which points to your own objects and handles the memory addressing.
+         * Set user data, data must be subclassed from Referenced to allow
+         * automatic memory handling.  If your own data isn't directly 
+         * subclassed from Referenced then create an adapter object
+         * which points to your own object and handles the memory addressing.
          */
         inline void setUserData(Referenced* obj) { _userData = obj; }
         
@@ -108,7 +108,7 @@ class SG_EXPORT Object : public Referenced
             be deleted other than by being dereferenced and the reference
             count being zero (see osg::Referenced), preventing the deletion
             of nodes which are still in use. This also means that
-            Node's cannot be created on stack i.e Node node will not compile,
+            Nodes cannot be created on stack i.e Node node will not compile,
             forcing all nodes to be created on the heap i.e Node* node
             = new Node().*/
         virtual ~Object() {}

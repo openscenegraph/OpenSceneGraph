@@ -61,7 +61,7 @@ class ref_ptr
         inline bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
         inline bool operator > (const ref_ptr& rp) const { return (_ptr>rp._ptr); }
 
-        // comparion operator for const T*.
+        // comparison operator for const T*.
         inline bool operator == (const T* ptr) const { return (_ptr==ptr); }
         inline bool operator != (const T* ptr) const { return (_ptr!=ptr); }
         inline bool operator < (const T* ptr) const { return (_ptr<ptr); }

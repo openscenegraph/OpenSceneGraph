@@ -48,7 +48,7 @@ namespace osg {
     #endif
 #endif
 
-/** macro for use with osg::StateAttrbiute::apply methods for detected and 
+/** macro for use with osg::StateAttrbiute::apply methods for detecting and 
   * reporting OpenGL error messages.*/
 #define OSG_GL_DEBUG(message) \
     if (state.getFineGrainedErrorDetection()) \
@@ -75,7 +75,7 @@ class SG_EXPORT State : public Referenced
         /** pop stateset off state stack.*/
         void popStateSet();
        
-        /** pop all stateset's off state stack, ensuring its empty ready for the next frame.
+        /** pop all statesets off state stack, ensuring it is empty ready for the next frame.
           * note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
         void popAllStateSets();
 
@@ -260,17 +260,17 @@ class SG_EXPORT State : public Referenced
 
         /** Attribute has been applied externally, 
           * and therefore this attribute type has been dirtied 
-          * and will need to be re-appplied on next osg::State.apply(..).
+          * and will need to be re-applied on next osg::State.apply(..).
           * note, if you have an osg::StateAttribute which you have applied externally
-          * then use the have_applied(attribute) method as this will the osg::State to
-          * track the current state more accuratly and enable lazy state updating such
+          * then use the have_applied(attribute) method as this will cause the osg::State to
+          * track the current state more accurately and enable lazy state updating such
           * that only changed state will be applied.*/
         void haveAppliedAttribute(StateAttribute::Type type);
 
         /** Get whether the current specified mode is enabled (true) or disabled (false).*/ 
         bool getLastAppliedMode(StateAttribute::GLMode mode) const;
         
-        /** Get the current specified attribute, return NULL is one has not yet been applied.*/ 
+        /** Get the current specified attribute, return NULL if one has not yet been applied.*/ 
         const StateAttribute* getLastAppliedAttribute(StateAttribute::Type type) const;
         
 
@@ -290,14 +290,14 @@ class SG_EXPORT State : public Referenced
           * and will need to be re-appplied on next osg::State.apply(..).
           * note, if you have an osg::StateAttribute which you have applied externally
           * then use the have_applied(attribute) method as this will the osg::State to
-          * track the current state more accuratly and enable lazy state updating such
+          * track the current state more accurately and enable lazy state updating such
           * that only changed state will be applied.*/
         void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type);
 
         /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/ 
         bool getLastAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode) const;
         
-        /** Get the current specified texture attribute, return NULL is one has not yet been applied.*/ 
+        /** Get the current specified texture attribute, return NULL if one has not yet been applied.*/ 
         const StateAttribute* getLastAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type) const;
 
 
@@ -310,7 +310,7 @@ class SG_EXPORT State : public Referenced
         /** disable the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
         void disableAllVertexArrays();
 
-        /** dirty the vertex, normal, color, tex coords, secenday color, fog coord and index arrays.*/
+        /** dirty the vertex, normal, color, tex coords, secondary color, fog coord and index arrays.*/
         void dirtyAllVertexArrays();
 
 
@@ -338,7 +338,7 @@ class SG_EXPORT State : public Referenced
             _vertexArray._dirty = false;
         }
         
-        /** wrapper glDisableClientState(GL_VERTEX_ARRAY).
+        /** wrapper around glDisableClientState(GL_VERTEX_ARRAY).
           * note, only updates values that change.*/
         inline void disableVertexPointer()
         {
@@ -596,12 +596,14 @@ class SG_EXPORT State : public Referenced
             }
         }
 
-        /** set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
+        /** set the current tex coord array texture unit, return true if selected, 
+          * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
 
 
-        /** set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
+        /** set the current texture unit, return true if selected,
+          * false if selection failed such as when multitexturing is not supported.
           * note, only updates values that change.*/
         bool setActiveTextureUnit( unsigned int unit );
         
@@ -634,9 +636,9 @@ class SG_EXPORT State : public Referenced
         /** Set the current OpenGL context uniqueID.
             Note, it is the application developers responsibility to
             set up unique ID for each OpenGL context.  This value is
-            then used by osg::StateAttribure's and osg::Drawable's to
+            then used by osg::StateAttribute's and osg::Drawable's to
             help manage OpenGL display list and texture binds appropriate
-            for each context, the contextID simply acts as an index local
+            for each context, the contextID simply acts as an index in local
             arrays that they maintain for the purpose.
             Typical settings for contextID are 0,1,2,3... up to the maximum
             number of graphics contexts you have setup.
@@ -654,7 +656,7 @@ class SG_EXPORT State : public Referenced
         inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
         
                 
-        /** Set the DisplaySettings. Note, nothing is applied, the visual settings are just used
+        /** Set the DisplaySettings. Note, nothing is applied, the visual settings are just
           * used in the State object to pass the current visual settings to Drawables
           * during rendering. */
         inline void setDisplaySettings(DisplaySettings* vs) { _displaySettings = vs; }
@@ -885,21 +887,21 @@ inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeL
         mitr!=modeList.end();
         ++mitr)
     {
-        // get the mode stack for incomming GLmode {mitr->first}.
+        // get the mode stack for incoming GLmode {mitr->first}.
         ModeStack& ms = modeMap[mitr->first];
         if (ms.valueVec.empty())
         {
-            // first pair so simply push incomming pair to back.
+            // first pair so simply push incoming pair to back.
             ms.valueVec.push_back(mitr->second);
         }
         else if ((ms.valueVec.back() & StateAttribute::OVERRIDE) && !(mitr->second & StateAttribute::PROTECTED)) // check the existing override flag 
         {
-            // push existing back since override keeps the previoius value.
+            // push existing back since override keeps the previous value.
             ms.valueVec.push_back(ms.valueVec.back());
         }
         else 
         {
-            // no override on so simply push incomming pair to back.
+            // no override on so simply push incoming pair to back.
             ms.valueVec.push_back(mitr->second);
         }
         ms.changed = true;
@@ -912,22 +914,22 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
         aitr!=attributeList.end();
         ++aitr)
     {
-        // get the attribute stack for incomming type {aitr->first}.
+        // get the attribute stack for incoming type {aitr->first}.
         AttributeStack& as = attributeMap[aitr->first];
         if (as.attributeVec.empty())
         {
-            // first pair so simply push incomming pair to back.
+            // first pair so simply push incoming pair to back.
             as.attributeVec.push_back(
                 AttributePair(aitr->second.first.get(),aitr->second.second));
         }
         else if ((as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag 
         {
-            // push existing back since override keeps the previoius value.
+            // push existing back since override keeps the previous value.
             as.attributeVec.push_back(as.attributeVec.back());
         }
         else 
         {
-            // no override on so simply push incomming pair to back.
+            // no override on so simply push incoming pair to back.
             as.attributeVec.push_back(
                 AttributePair(aitr->second.first.get(),aitr->second.second));
         }
@@ -941,7 +943,7 @@ inline void State::popModeList(ModeMap& modeMap,const StateSet::ModeList& modeLi
         mitr!=modeList.end();
         ++mitr)
     {
-        // get the mode stack for incomming GLmode {mitr->first}.
+        // get the mode stack for incoming GLmode {mitr->first}.
         ModeStack& ms = modeMap[mitr->first];
         if (!ms.valueVec.empty())
         {
@@ -957,7 +959,7 @@ inline void State::popAttributeList(AttributeMap& attributeMap,const StateSet::A
         aitr!=attributeList.end();
         ++aitr)
     {
-        // get the attribute stack for incomming type {aitr->first}.
+        // get the attribute stack for incoming type {aitr->first}.
         AttributeStack& as = attributeMap[aitr->first];
         if (!as.attributeVec.empty())
         {
@@ -1017,8 +1019,8 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
         }
         else
         {
-            // this_mitr & ds_mitr refer to the same mode, check the overide
-            // if any otherwise just apply the incomming mode.
+            // this_mitr & ds_mitr refer to the same mode, check the override
+            // if any otherwise just apply the incoming mode.
 
             ModeStack& ms = this_mitr->second;
 
@@ -1036,7 +1038,7 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
             }
             else
             {
-                // no override on or no previous entry, therefore consider incomming mode.
+                // no override on or no previous entry, therefore consider incoming mode.
                 bool new_value = ds_mitr->second & StateAttribute::ON;
                 if (applyMode(ds_mitr->first,new_value,ms))
                 {
@@ -1074,7 +1076,7 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
         }
     }        
 
-    // iterator over the remaining incomming modes to apply any new mode.
+    // iterator over the remaining incoming modes to apply any new mode.
     for(;
         ds_mitr!=modeList.end();
         ++ds_mitr)
@@ -1137,8 +1139,8 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         }
         else
         {
-            // this_mitr & ds_mitr refer to the same attribute, check the overide
-            // if any otherwise just apply the incomming attribute
+            // this_mitr & ds_mitr refer to the same attribute, check the override
+            // if any otherwise just apply the incoming attribute
 
             AttributeStack& as = this_aitr->second;
 
@@ -1155,7 +1157,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
             }
             else
             {
-                // no override on or no previous entry, therefore consider incomming mode.
+                // no override on or no previous entry, therefore consider incoming mode.
                 const StateAttribute* new_attr = ds_aitr->second.first.get();
                 if (applyAttribute(new_attr,as))
                 {
@@ -1190,7 +1192,7 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
         }
     }        
 
-    // iterator over the remaining incomming modes to apply any new mode.
+    // iterator over the remaining incoming modes to apply any new mode.
     for(;
         ds_aitr!=attributeList.end();
         ++ds_aitr)

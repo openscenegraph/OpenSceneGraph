@@ -22,8 +22,8 @@
 
 namespace osg {
 
-/** PositionAttitideTransform - is Transform the set the coordinates transform
-    up via a Vec3 position and Quat attitude.
+/** PositionAttitudeTransform - is a Transform. Sets the coordinate transform
+    via a Vec3 position and Quat attitude.
 */
 class SG_EXPORT PositionAttitudeTransform : public Transform
 {

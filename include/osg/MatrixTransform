@@ -20,7 +20,7 @@
 namespace osg {
 
 /** MatrixTransform - is a subclass of Transform which has an osg::Matrix
-  * which represent a 4x4 transformation of its children from local cordinates
+  * which represents a 4x4 transformation of its children from local coordinates
   * into the Transform's parent coordinates.
 */
 class SG_EXPORT MatrixTransform : public Transform
@@ -47,10 +47,10 @@ class SG_EXPORT MatrixTransform : public Transform
         /** Get the matrix. */
         inline const Matrix& getMatrix() const { return _matrix; }
 
-        /** pre multiply the transforms matrix.*/
+        /** pre multiply the transform's matrix.*/
         void preMult(const Matrix& mat) { _matrix.preMult(mat); _inverseDirty=true; dirtyBound(); }
         
-        /** post multiply the transforms matrix.*/
+        /** post multiply the transform's matrix.*/
         void postMult(const Matrix& mat)  { _matrix.postMult(mat); _inverseDirty=true; dirtyBound(); }
     
         /** Get the inverse matrix. */

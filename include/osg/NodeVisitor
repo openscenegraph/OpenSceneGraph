@@ -39,14 +39,14 @@ class OccluderNode;
 class Sequence;
 class CoordinateSystemNode;
 
-/** Visitor for type safe operations on osg::Node's.
+/** Visitor for type safe operations on osg::Nodes.
     Based on GOF's Visitor pattern. The NodeVisitor 
     is useful for developing type safe operations to nodes
     in the scene graph (as per Visitor pattern), and adds to this
     support for optional scene graph traversal to allow
     operations to be applied to whole scenes at once. The Visitor
     pattern uses a technique of double dispatch as a mechanism to
-    called the appropriate apply(..) method of the NodeVisitor.  To
+    call the appropriate apply(..) method of the NodeVisitor.  To
     use this feature one must use the Node::accept(NodeVisitor) which
     is extended in each Node subclass, rather than the NodeVisitor
     apply directly.  So use root->accept(myVisitor); instead of
@@ -79,14 +79,14 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         
         virtual ~NodeVisitor();
 
-        /** Method to call to reset visitor. Useful for your visitor accumulates
+        /** Method to call to reset visitor. Useful if your visitor accumulates
             state during a traversal, and you plan to reuse the visitor. 
-            To flush that state for the next traversal than call reset() prior
+            To flush that state for the next traversal: call reset() prior
             to each traversal.*/
         virtual void reset() {}
 
 
-        /** Set the VisitorType, used to distingush different visitors during
+        /** Set the VisitorType, used to distinguish different visitors during
           * traversal of the scene, typically used in the Node::traverse() method
           * to select which behaviour to use for different types of traversal/visitors.*/
         inline void setVisitorType(VisitorType type) { _visitorType = type; }
@@ -100,20 +100,20 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         /** Get the traversal number. Typically used to denote the frame count.*/
         inline int getTraversalNumber() const { return _traversalNumber; }
 
-        /** Set the FrameStamp that this traversal is assoicated with.*/
+        /** Set the FrameStamp that this traversal is associated with.*/
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
         
-        /** Get the FrameStamp that this traversal is assoicated with.*/
+        /** Get the FrameStamp that this traversal is associated with.*/
         inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 
         /** Set the TraversalMask of this NodeVisitor.
           * The TraversalMask is used by the NodeVisitor::validNodeMask() method
           * to determine whether to operate on a node and its subgraph.
-          * validNodeMask() is called automaticaly in the Node::accept() method before
+          * validNodeMask() is called automatically in the Node::accept() method before
           * any call to NodeVisitor::apply(), apply() is only ever called if validNodeMask
           * returns true. Note, if NodeVisitor::_traversalMask is 0 then all operations
-          * will be swithced off for all nodes.  Whereas setting both _traversalMask and
+          * will be switched off for all nodes.  Whereas setting both _traversalMask and
           * _nodeMaskOverride to 0xffffffff will allow a visitor to work on all nodes
           * regardless of their own Node::_nodeMask state.*/
         inline void setTraversalMask(Node::NodeMask mask) { _traversalMask = mask; }
@@ -132,7 +132,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         inline Node::NodeMask getNodeMaskOverride() const { return _nodeMaskOverride; }
         
         /** Method to called by Node and its subclass' Node::accept() method, if the result is true
-          * to be used to cull operations of nodes and their subgraphs.
+          * it is used to cull operations of nodes and their subgraphs.
           * Return true if the result of a bit wise and of the NodeVisitor::_traversalMask
           * with the bit or between NodeVistor::_nodeMaskOverride and the Node::_nodeMask.
           * default values for _traversalMask is 0xffffffff, _nodeMaskOverride is 0x0,
@@ -154,8 +154,8 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
 
         /**
          * Set user data, data must be subclased from Referenced to allow
-         * automatic memory handling.  If you own data isn't directly 
-         * subclassed from Referenced then create and adapter object
+         * automatic memory handling.  If your own data isn't directly 
+         * subclassed from Referenced then create an adapter object
          * which points to your own objects and handles the memory addressing.
          */
         inline void setUserData(Referenced* obj) { _userData = obj; }
@@ -178,7 +178,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         }
         
         /** Method called by osg::Node::accept() method before
-          * a call the NodeVisitor::apply(..).  The back of the list will,
+          * a call to the NodeVisitor::apply(..).  The back of the list will,
           * therefore, be the current node being visited inside the apply(..),
           * and the rest of the list will be the parental sequence of nodes 
           * from the top most node applied down the graph to the current node.
@@ -186,8 +186,8 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
           * will be called automatically by the Node::accept() method.*/
         inline void pushOntoNodePath(Node* node) { if (_traversalMode!=TRAVERSE_PARENTS) _nodePath.push_back(node); else _nodePath.insert(_nodePath.begin(),node); }
         
-        /** Method callby osg::Node::accept() method after
-          * a call the NodeVisitor::apply(..).
+        /** Method called by osg::Node::accept() method after
+          * a call to NodeVisitor::apply(..).
           * Note, the user does not typically call pushNodeOnPath() as it
           * will be called automatically by the Node::accept() method.*/
         inline void popFromNodePath()            { if (_traversalMode!=TRAVERSE_PARENTS) _nodePath.pop_back(); else _nodePath.erase(_nodePath.begin()); }
@@ -206,12 +206,12 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
 
         /** Get the distance from a point to the eye point, distance value in local coordinate system.
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
-          * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/
+          * If the getDistanceFromEyePoint(pos) is not implemented then a default value of 0.0 is returned.*/
         virtual float getDistanceToEyePoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
 
         /** Get the distance of a point from the eye point, distance value in the eye coordinate system.
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
-          * If the getDistianceFromEyePoint(pos) is not implmented than a default value of 0.0 is returned.*/
+          * If the getDistanceFromEyePoint(pos) is not implemented than a default value of 0.0 is returned.*/
         virtual float getDistanceFromEyePoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
 
         virtual void apply(Node& node)                      { traverse(node);}
@@ -242,7 +242,7 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(OccluderNode& node)              { apply((Group&)node); }
 
 
-        /** callback for managing database paging, such as generated by PagedLOD nodes.*/
+        /** Callback for managing database paging, such as generated by PagedLOD nodes.*/
         class DatabaseRequestHandler : public osg::Referenced
         {
         public:            

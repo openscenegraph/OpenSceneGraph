@@ -331,13 +331,13 @@ class SG_EXPORT Quat
                           value_type  angle3, const Vec3d& axis3);
 
         /** Make a rotation Quat which will rotate vec1 to vec2.
-            Generally take adot product to get the angle between these
+            Generally take a dot product to get the angle between these
             and then use a cross product to get the rotation axis
-            Watch out for the two special cases of when the vectors
+            Watch out for the two special cases when the vectors
             are co-incident or opposite in direction.*/
         void makeRotate( const Vec3f& vec1, const Vec3f& vec2 );
         /** Make a rotation Quat which will rotate vec1 to vec2.
-            Generally take adot product to get the angle between these
+            Generally take a dot product to get the angle between these
             and then use a cross product to get the rotation axis
             Watch out for the two special cases of when the vectors
             are co-incident or opposite in direction.*/

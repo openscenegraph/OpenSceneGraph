@@ -20,7 +20,7 @@
 namespace osg {
 
 
-/** A Polytope class for representing convex clipping volumes made up.
+/** A Polytope class for representing convex clipping volumes made up of a set of planes.
   * When adding planes, their normals should point inwards (into the volume) */
 class SG_EXPORT Polytope
 {
@@ -56,7 +56,7 @@ class SG_EXPORT Polytope
             return *this;
         }
         
-        /** Create a Polytope with is cube, centered at 0,0,0, with sides of 2 units.*/
+        /** Create a Polytope which is a cube, centered at 0,0,0, with sides of 2 units.*/
         void setToUnitFrustum(bool withNear=true, bool withFar=true)
         {
             _planeList.erase(_planeList.begin(),_planeList.end());
@@ -86,7 +86,7 @@ class SG_EXPORT Polytope
 
             unsigned int numActivePlanes = 0;
 
-            // count number active planes.
+            // count number of active planes.
             PlaneList::const_iterator itr;
             for(itr=pt._planeList.begin();
                 itr!=pt._planeList.end();
@@ -178,7 +178,7 @@ class SG_EXPORT Polytope
             _maskStack.pop_back();
         }
 
-        /** Check whether a vertex is contained with clipping set.*/
+        /** Check whether a vertex is contained within clipping set.*/
         inline bool contains(const osg::Vec3& v) const
         {
             if (!_maskStack.back()) return true;
@@ -194,7 +194,7 @@ class SG_EXPORT Polytope
             return true;
         }
 
-        /** Check whether any part of vertex list is contained with clipping set.*/
+        /** Check whether any part of vertex list is contained within clipping set.*/
         inline bool contains(const std::vector<Vec3>& vertices)
         {
             if (!_maskStack.back()) return true;
@@ -342,9 +342,9 @@ class SG_EXPORT Polytope
 
         
         /** Transform the clipping set by matrix.  Note, this operations carries out
-          * the calculation of the inverse of the matrix since to transforms
-          * planes must be multiplied my the inverse transposed. This
-          * make this operation expensive.  If the inverse has been already
+          * the calculation of the inverse of the matrix since a plane must 
+          * be multiplied by the inverse transposed to transform it. This
+          * makes this operation expensive.  If the inverse has been already
           * calculated elsewhere then use transformProvidingInverse() instead.
           * See http://www.worldserver.com/turk/computergraphics/NormalTransformations.pdf*/
         inline void transform(const osg::Matrix& matrix)

@@ -77,15 +77,15 @@ class SG_EXPORT PagedLOD : public LOD
         unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
 
 
-        /** Set the number of children that the PagedLOD must keep around, even if thay are older than their expiry time.*/
+        /** Set the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
         inline void setNumChildrenThatCannotBeExpired(unsigned int num) { _numChildrenThatCannotBeExpired = num; }
 
-        /** Get the number of children that the PagedLOD must keep around, even if thay are older than their expiry time.*/
+        /** Get the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
         unsigned int getNumChildrenThatCannotBeExpired() const { return _numChildrenThatCannotBeExpired; }
 
-        /** Remove the children from the PagedLOD which haven't be visited since specified expiry time.
-            The removed children are added the removeChildren list passed into the method,
-            this allows the children to be deleted later at the callers discression.*/
+        /** Remove the children from the PagedLOD which haven't been visited since specified expiry time.
+            The removed children are added to the removeChildren list passed into the method,
+            this allows the children to be deleted later at the caller's discretion.*/
         virtual void removeExpiredChildren(double expiryTime,NodeList& removedChildren);
 
     protected :

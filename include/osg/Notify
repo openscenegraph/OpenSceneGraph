@@ -36,7 +36,7 @@ enum NotifySeverity {
     DEBUG_FP=6
 };
 
-/** set the notify level, overriding the default or value set by
+/** set the notify level, overriding the default or the value set by
   * the environmental variable OSGNOTIFYLEVEL.
   */
 extern SG_EXPORT void setNotifyLevel(NotifySeverity severity);
@@ -53,7 +53,7 @@ extern SG_EXPORT bool initNotifyLevel();
   * application or via the an environmental variable. For instance
   * setenv OSGNOTIFYLEVEL DEBUG (for tsh), export OSGNOTIFYLEVEL=DEBUG
   * (for bourne shell) or set OSGNOTIFYLEVEL=DEBUG (for Windows) all
-  * set tell the osg to redirect all debugging and more important messages
+  * tell the osg to redirect all debugging and more important messages
   * to the console (useful for debugging :-)  setting ALWAYS will force
   * all messages to be absorbed, which might be appropriate for final
   * applications.  Default NotifyLevel is NOTICE.  Check the enum 

@@ -2487,7 +2487,7 @@ void Geometry::computeInternalOptimizedGeometry()
 }
 
 
-Geometry* osg::createTexturedQuadGeometry(const osg::Vec3& corner,const osg::Vec3& widthVec,const osg::Vec3& heightVec)
+Geometry* osg::createTexturedQuadGeometry(const osg::Vec3& corner,const osg::Vec3& widthVec,const osg::Vec3& heightVec, float s, float t)
 {
     Geometry* geom = new Geometry;
 
@@ -2499,10 +2499,10 @@ Geometry* osg::createTexturedQuadGeometry(const osg::Vec3& corner,const osg::Vec
     geom->setVertexArray(coords);
 
     Vec2Array* tcoords = new Vec2Array(4);
-    (*tcoords)[0].set(0.0f,1.0f);
+    (*tcoords)[0].set(0.0f,t);
     (*tcoords)[1].set(0.0f,0.0f);
-    (*tcoords)[2].set(1.0f,0.0f);
-    (*tcoords)[3].set(1.0f,1.0f);
+    (*tcoords)[2].set(s,0.0f);
+    (*tcoords)[3].set(s,t);
     geom->setTexCoordArray(0,tcoords);
 
     osg::Vec4Array* colours = new osg::Vec4Array(1);

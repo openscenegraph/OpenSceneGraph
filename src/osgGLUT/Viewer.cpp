@@ -1108,7 +1108,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         case 'l' :
             lighting = 1  - lighting ;
             if( lighting )
-                sceneView->getGlobalState()->setMode(GL_LIGHTING,osg::StateAttribute::ON);
+                sceneView->getGlobalState()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
             else
                 sceneView->getGlobalState()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
             break;

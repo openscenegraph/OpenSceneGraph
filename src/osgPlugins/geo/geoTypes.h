@@ -45,7 +45,7 @@ COPYRIGHT NOTICE:
 #endif
 
 #ifndef ushort
-//#define ushort		unsigned short
+#define ushort		unsigned short
 #endif
 
 #ifndef ubyte
@@ -65,7 +65,9 @@ const uint GEO_PLUGIN_TYPE_IMAGE_IMPORTER		= 4;
 const uint GEO_PLUGIN_TYPE_TOOL					= 5;
 const uint GEO_PLUGIN_TYPE_BEHAVIOR				= 6;
 const uint GEO_PLUGIN_TYPE_GROUP_NODE_DEF		= 7;
-const uint GEO_PLUGIN_TYPE_LAST					= GEO_PLUGIN_TYPE_GROUP_NODE_DEF;
+const uint GEO_PLUGIN_TYPE_SURFACE_NODE_DEF		= 8;
+const uint GEO_PLUGIN_TYPE_TASK					= 9;
+const uint GEO_PLUGIN_TYPE_LAST					= GEO_PLUGIN_TYPE_TASK;
 
 
 
@@ -104,62 +106,86 @@ const uint GEO_TOOL_TYPE_LAST					= GEO_TOOL_TYPE_OPTIMIZE;
  *
  *	GEO_DB_BASE
  *			GEO_DB_GROUP 
- *					GEO_DB_BILLBOARD
  *					GEO_DB_SEQUENCE
  *					GEO_DB_LOD
  *					GEO_DB_SWITCH
- *					GEO_DB_RENDERGROUP	
  *					GEO_DB_BASE_GROUP
+ *					GEO_DB_RENDERGROUP
+ *							GEO_DB_MULTI_TEX_SHADER	
+ *							GEO_DB_BASE_RENDERGROUP (*)
  *					GEO_DB_EXTERNAL
  *					GEO_DB_INSTANCE
  *					GEO_DB_PAGE
- *					GEO_DB_TRANSFORM (*)
+ *					GEO_DB_CULL_GROUP
+ *					GEO_DB_Z_OFFSET_GROUP
+ *					GEO_DB_MULTI_SAMPLE_AA_GROUP
+ *					GEO_DB_LINE_AA_GROUP
+ *					GEO_DB_FADE_GROUP
+ *					GEO_DB_TERRAIN
+ *					GEO_DB_BSP
  *			GEO_DB_GEOMETRY
  *					GEO_DB_SURFACE
- *							GEO_DB_COORDINATE_SURFACE
- *									GEO_DB_POLYGON
- *										GEO_DB_LIGHTPT
- *										GEO_DB_MESH (*)
- *							GEO_DB_PARAMETRIC_SURFACE (*)
- *									GEO_DB_QUADRIC (*)
- *							GEO_DB_TEXT
+ *							GEO_DB_POLYGON
+ *									GEO_DB_LIGHTPT
+ *									GEO_DB_MESH
  *							GEO_DB_BASE_SURFACE (*)
+ *					GEO_DB_TEXT
  *					GEO_DB_VERTEX
  *			GEO_DB_HEADER
  *
  * (*) Not available in Geo Version 1.0
  */
+
+
+//------------
+//
 const uint GEO_DB_BASE					=  0x00000003;
 const uint GEO_DB_GROUP					= (0x00000004 | GEO_DB_BASE);
+const uint GEO_DB_TERRAIN				= (0x00000008 | GEO_DB_GROUP);
+//------------
 const uint GEO_DB_SEQUENCE				= (0x00000010 | GEO_DB_GROUP);
 const uint GEO_DB_LOD					= (0x00000020 | GEO_DB_GROUP);
 const uint GEO_DB_SWITCH				= (0x00000040 | GEO_DB_GROUP);
 const uint GEO_DB_RENDERGROUP			= (0x00000080 | GEO_DB_GROUP);
+//------------
 const uint GEO_DB_GEOMETRY				= (0x00000100 | GEO_DB_BASE);
 const uint GEO_DB_SURFACE				= (0x00000200 | GEO_DB_GEOMETRY);
-const uint GEO_DB_COORDINATE_SURFACE	= (0x00000400 | GEO_DB_SURFACE);
-const uint GEO_DB_POLYGON				= (0x00000800 | GEO_DB_COORDINATE_SURFACE);
+const uint GEO_DB_BSP					= (0x00000400 | GEO_DB_GROUP);
+const uint GEO_DB_POLYGON				= (0x00000800 | GEO_DB_SURFACE);
+//------------
 const uint GEO_DB_MESH					= (0x00001000 | GEO_DB_POLYGON);
-const uint GEO_DB_PARAMETRIC_SURFACE	= (0x00002000 | GEO_DB_SURFACE);			
-const uint GEO_DB_QUADRIC				= (0x00004000 | GEO_DB_PARAMETRIC_SURFACE);	
+const uint GEO_DB_CULL_GROUP			= (0x00002000 | GEO_DB_GROUP);	
+const uint GEO_DB_MULTI_TEX_SHADER		= (0x00004000 | GEO_DB_RENDERGROUP);	
 const uint GEO_DB_PAGE					= (0x00008000 | GEO_DB_GROUP);
-const uint GEO_DB_TEXT					= (0x00040000 | GEO_DB_SURFACE);
+//------------
+const uint GEO_DB_Z_OFFSET_GROUP		= (0x00010000 | GEO_DB_GROUP);	
+const uint GEO_DB_MULTI_SAMPLE_AA_GROUP	= (0x00020000 | GEO_DB_GROUP);	
+const uint GEO_DB_TEXT					= (0x00040000 | GEO_DB_GEOMETRY);
 const uint GEO_DB_VERTEX				= (0x00080000 | GEO_DB_GEOMETRY);
+//------------
 const uint GEO_DB_HEADER				= (0x00100000 | GEO_DB_BASE);
-const uint GEO_DB_TRANSFORM				= (0x00200000 | GEO_DB_GROUP);
+const uint GEO_DB_LINE_AA_GROUP			= (0x00200000 | GEO_DB_GROUP);	
 const uint GEO_DB_BASE_GROUP			= (0x00400000 | GEO_DB_GROUP);
 const uint GEO_DB_BASE_SURFACE			= (0x00800000 | GEO_DB_SURFACE);
-const uint GEO_DB_EXTERNAL 				= (0x01000000 | GEO_DB_GROUP);	
+//------------
+const uint GEO_DB_EXTERNAL 				= (0x01000000 | GEO_DB_GROUP);					
+const uint GEO_DB_BASE_RENDERGROUP		= (0x02000000 | GEO_DB_RENDERGROUP);
 const uint GEO_DB_INSTANCE				= (0x04000000 | GEO_DB_GROUP);
 const uint GEO_DB_LIGHTPT				= (0x08000000 | GEO_DB_POLYGON);
+//------------
+const uint GEO_DB_FADE_GROUP			= (0x10000000 | GEO_DB_GROUP);	
+//
+//
+//
+//------------
+
 
 // older version types for Compatability & convenience
 //
 const uint GEO_DB_ALL					= GEO_DB_BASE;	
-const uint GEO_DB_ALL_GROUP_TYPES		= GEO_DB_GROUP;	
+const uint GEO_DB_ALL_GROUP_TYPES		= GEO_DB_GROUP;		
+const uint GEO_DB_ALL_GEOMETRY_TYPES	= GEO_DB_GEOMETRY;
 const uint GEO_DB_ALL_SURFACE_TYPES		= GEO_DB_SURFACE;	
-const uint GEO_DB_ALL_SHAPE_TYPES		= GEO_DB_PARAMETRIC_SURFACE;
-const uint GEO_DB_ALL_GEOMETRY_TYPES	= GEO_DB_GEOMETRY;	
 
 
 
@@ -169,10 +195,10 @@ const uint GEO_DB_ALL_GEOMETRY_TYPES	= GEO_DB_GEOMETRY;
 const uint GEO_PICK_GROUP				= 0x00000001; 
 const uint GEO_PICK_PRIM				= 0x00000002;
 const uint GEO_PICK_VERTEX				= 0x00000004;
-const uint GEO_PICK_EDGE				= 0x00000008;	// Future
 const uint GEO_PICK_GRID				= 0x00000010;
 const uint GEO_PICK_NON_NODE			= 0x00000020;	// manipulators, user geometry etc.
 const uint GEO_PICK_EXTERNAL			= 0x00000040;
+const uint GEO_PICK_TEXT				= 0x00000080;
 
 
 
@@ -187,6 +213,46 @@ const uint GEO_LEFT_AND_RIGHT_MOUSE		= 0x00000008;
 const uint GEO_MIDDLE_AND_RIGHT_MOUSE	= 0x00000010;
 
 
+///////////////////////////////////////////////////////////////////
+// PROPERTY TYPES
+///////////////////////////////////////////////////////////////////
+
+// Identifiers for Geo data types - Used in geoProperty & geoPropertyExtension Classes 
+const unsigned char GEO_DB_DATATYPE_STRING					= 1;
+const unsigned char GEO_DB_DATATYPE_SHORT					= 2;
+const unsigned char GEO_DB_DATATYPE_INT						= 3;
+const unsigned char GEO_DB_DATATYPE_FLOAT					= 4;
+const unsigned char GEO_DB_DATATYPE_LONG					= 5;
+const unsigned char GEO_DB_DATATYPE_DOUBLE					= 6;
+const unsigned char GEO_DB_DATATYPE_BOOL					= 28;
+
+///////////////////////////////////////////////////////////////////
+// VARIABLE TYPES
+///////////////////////////////////////////////////////////////////
+
+const uint GEO_VAR_TYPE_FLOAT			= 1;
+const uint GEO_VAR_TYPE_INT				= 2;
+const uint GEO_VAR_TYPE_LONG			= 3;
+const uint GEO_VAR_TYPE_DOUBLE			= 4;
+const uint GEO_VAR_TYPE_BOOL			= 5;
+const uint GEO_VAR_TYPE_2FV				= 6;
+const uint GEO_VAR_TYPE_3FV				= 7;
+const uint GEO_VAR_TYPE_4FV				= 8;
+const uint GEO_VAR_TYPE_STRING			= 9;
+const uint GEO_VAR_TYPE_2IV				= 10;
+const uint GEO_VAR_TYPE_3IV				= 11;
+const uint GEO_VAR_TYPE_4IV				= 12;
+
+
+
+///////////////////////////////////////////////////////////////////
+// TRANSFORM TYPES
+///////////////////////////////////////////////////////////////////
+
+const uint GEO_TRANSFORM_TYPE_TRANSLATE	= 1;
+const uint GEO_TRANSFORM_TYPE_ROTATE	= 2;
+const uint GEO_TRANSFORM_TYPE_SCALE		= 3;
+const uint GEO_TRANSFORM_TYPE_MATRIX	= 4;
 
 
 
@@ -225,18 +291,26 @@ const int GEO_DB_UP_AXIS_Z				= 3;
  */
 const uint GEO_DB_SOLID					=  0x00000001;
 const uint GEO_DB_WIRE					=  0x00000002;
-const uint GEO_DB_OUTLINED				=  0x00000008;
+const uint GEO_DB_OUTLINED				=  (GEO_DB_SOLID | GEO_DB_WIRE);
+const uint GEO_DB_WIRE_ON_MOVE			=  0x00000004;
+const uint GEO_DB_DETEXTURE_ON_MOVE		=  0x00000008;
+
+const uint GEO_DB_SHRINK				=  0x00000080;
 
 const uint GEO_DB_ZBUFFER				=  0x00000100;
 const uint GEO_DB_BACKFACE				=  0x00000400;
+const uint GEO_DB_SELECTIVE_CULLFACE	=  0x00000800;
 
 const uint GEO_DB_DRAW_FACE_NORMALS		=  0x00001000;
 const uint GEO_DB_DRAW_VERTEX_NORMALS	=  0x00002000;
+const uint GEO_DB_SELECTIVE_BLENDING	=  0x00008000;
 
 const uint GEO_DB_TEXTURE				=  0x00010000;
 const uint GEO_DB_HIGHLIGHT				=  0x00020000;
 const uint GEO_DB_PICKING				=  0x00040000;
 const uint GEO_DB_HIGHLIGHT_DASHED		=  0x00080000;
+
+const uint GEO_DB_SELECTIVE_SHADING		=  0x00100000;
 
 const uint GEO_DB_ILLUMINATED			=  0x01000000;
 const uint GEO_DB_NORMAL_PER_PRIM		=  0x04000000;
@@ -246,8 +320,22 @@ const uint GEO_DB_COLOR_PER_GEODE		=  0x10000000;
 const uint GEO_DB_COLOR_PER_PRIM		=  0x20000000;
 const uint GEO_DB_COLOR_PER_VERTEX		=  0x40000000;
 
+const uint GEO_DB_SELECTIVE_ZBUFFER		=  0x80000000;
 
 
+
+
+	
+///////////////////////////////////////////////////////////////////////////////	
+/** constants to identify the different Group types 
+*/
+const uint GEO_GROUP_TYPE_CONTAINER				= 1;
+const uint GEO_GROUP_TYPE_CULL					= 2;
+const uint GEO_GROUP_TYPE_Z_OFFSET				= 3;
+const uint GEO_GROUP_TYPE_MULTI_SAMPLE_AA		= 4;
+const uint GEO_GROUP_TYPE_LINE_AA				= 5;
+const uint GEO_GROUP_TYPE_FADE					= 6;
+const uint GEO_GROUP_TYPE_TERRAIN				= 7;
 
 
 ///////////////////////////////////////////////////////////////////////////////	
@@ -265,14 +353,16 @@ const uint GEO_SWITCH_TYPE_SELECTIVE	=  2;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/** Type Tokens for Node & Tool Gui Widgets */
+/** Type Tokens for Node & Tool Gui Widgets 
+*/
 const int GUI_FLOAT		= 1;
 const int GUI_INT		= 2;
 const int GUI_STRING	= 3;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/** geoWidget Typedef - Used by Node & Tool Gui Widgets */
+/** geoWidget Typedef - Used by Node & Tool Gui Widgets 
+*/
 typedef void geoWidget;
 
 
@@ -311,6 +401,19 @@ const int GEO_POLY_SHADEMODEL_LIT_GOURAUD	= 3;
 const int GEO_POLY_PLANAR_MAP				= 0;
 const int GEO_POLY_CYLINDRICAL_MAP			= 1;
 const int GEO_POLY_SPHERICAL_MAP			= 2;
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Texture Unit Functions - used in Polys, meshes & multi-tex shaders
+//
+
+const int GEO_DB_TEXTURE_UNIT_FUNC_AS_DEFINED	= 0;
+const int GEO_DB_TEXTURE_UNIT_FUNC_MODULATE		= 1;
+const int GEO_DB_TEXTURE_UNIT_FUNC_DECAL		= 2;
+const int GEO_DB_TEXTURE_UNIT_FUNC_BLEND		= 3;
+const int GEO_DB_TEXTURE_UNIT_FUNC_REPLACE		= 4;
+const int GEO_DB_TEXTURE_UNIT_FUNC_COMBINE		= 5;
 
 
 
@@ -370,7 +473,14 @@ const unsigned GEO_DB_TEX_LINEAR_MIPMAP_LINEAR   = 0x00000020;
 const unsigned GEO_DB_TEX_MODULATE				= 0x00000001;
 const unsigned GEO_DB_TEX_DECAL					= 0x00000002;
 const unsigned GEO_DB_TEX_BLEND					= 0x00000004;
+const unsigned GEO_DB_TEX_REPLACE				= 0x00000008;
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Header Vertex Table Usage
+const unsigned GEO_DB_USES_PRIVATE_DATA			= 0x00000000;
+const unsigned GEO_DB_USES_SHARED_TABLE_DATA	= 0x00000001;
+const unsigned GEO_DB_USES_UNSHARED_TABLE_DATA	= 0x00000002;
 
 
 #endif //_GEO_TYPES_H_

@@ -16,6 +16,7 @@
 #include <osg/Sequence>
 #include <osg/Switch>
 #include <osg/Geode>
+#include <osg/Depth>
 #include <osg/LineWidth>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
@@ -32,6 +33,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/Input>
 #include <osgDB/Output>
 #include <osgUtil/Tesselator>
@@ -175,19 +177,62 @@ public:
             }
         }
     }
+    bool addFlat( const georecord *gface)
+    { // this must only be called with a vertex georecord.
+		bool isflat=false;
+        const geoField *gfshade=gface->getField(GEO_DB_POLY_SHADEMODEL); // shaded gouraud, flat...
+		int shademodel=gfshade ? gfshade->getInt() : -1;
+		if (shademodel==GEO_POLY_SHADEMODEL_LIT) { // flat shaded - need the index
+			const geoField *gfd=gface->getField(GEO_DB_POLY_NORMAL);
+			if (gfd) {
+				float *normal= (gfd) ? (gfd->getVec3Arr()):NULL;
+				osg::Vec3 nrm(normal[0], normal[1], normal[2]);
+				norms->push_back(nrm);
+				isflat=true;
+			}
+		}
+		return isflat;
+    }
     bool addIndices(georecord *gr,    const geoHeaderGeo *ghdr, const float cdef[4], const georecord *gface)
     { // this must only be called with a vertex georecord.
         // gr is tha vertex; gface is the face containing the vertex
         bool hbeh=false; // true if this vertex has a behaviour
         if (gr->getType()==DB_DSK_VERTEX) {
-            const geoField *gfd=gr->getField(GEO_DB_VRTX_NORMAL);
-            int nrmindex=gfd ? gfd->getUInt():0;
-            normindices->push_back(nrmindex);
-            norms->push_back((*npool)[nrmindex]);
-            gfd=gr->getField(GEO_DB_VRTX_COORD);
-            unsigned int idx=gfd ? gfd->getInt():0;
-            coords->push_back((*cpool)[idx]); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
-            coordindices->push_back(txcoords->size());
+            const geoField *gfshade=gface->getField(GEO_DB_POLY_SHADEMODEL); // shaded gouraud, flat...
+            int shademodel=gfshade ? gfshade->getInt() : -1;
+            if (shademodel!=GEO_POLY_SHADEMODEL_LIT && shademodel!=GEO_POLY_SHADEMODEL_FLAT) {
+				const geoField *gfd=gr->getField(GEO_DB_VRTX_NORMAL);
+				if (gfd->getType()==DB_UINT) {
+					unsigned int idx=gfd ? gfd->getUInt():-1;
+					if (idx>=0) {
+						normindices->push_back(idx);
+						norms->push_back((*npool)[idx]);
+					} else {
+						osg::notify(osg::WARN) << "No valid vertex index" << std::endl;
+					}
+				} else if (gfd->getType()==DB_VEC3F) {
+					float *p=gfd->getVec3Arr();
+					osg::Vec3 nrm;
+					nrm.set(p[0],p[1],p[2]);
+					norms->push_back(nrm); 
+				}
+			}
+            const geoField *gfd=gr->getField(GEO_DB_VRTX_COORD);
+			osg::Vec3 pos;
+			if (gfd->getType()==DB_INT) {
+				unsigned int idx=gfd ? gfd->getInt():-1;
+				if (idx>=0) {
+					pos=(*cpool)[idx];
+					coords->push_back((*cpool)[idx]); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
+					coordindices->push_back(coords->size());
+				} else {
+					osg::notify(osg::WARN) << "No valid vertex index" << std::endl;
+				}
+			} else if (gfd->getType()==DB_VEC3F) {
+				float *p=gfd->getVec3Arr();
+				pos.set(p[0],p[1],p[2]);
+				coords->push_back(pos); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
+			}
             std::vector< georecord *>bhv=gr->getBehaviour(); // behaviours for vertices, eg tranlate, colour!
             if (!bhv.empty()) {
                 int ncoord=coords->size();
@@ -198,14 +243,14 @@ public:
                     if ((*rcitr)->getType()==DB_DSK_TRANSLATE_ACTION) {
                         geoMoveVertexBehaviour *mb=new geoMoveVertexBehaviour;
                         mb->makeBehave((*rcitr),ghdr);
-                        mb->setpos((*cpool)[idx]);
+                        mb->setpos(pos);
                         mb->setindx(ncoord-1);
                         BehList.push_back(mb);
                     }
                     if ((*rcitr)->getType()==DB_DSK_ROTATE_ACTION) {
                         geoMoveVertexBehaviour *mb=new geoMoveVertexBehaviour;
                         mb->makeBehave((*rcitr),ghdr);
-                        mb->setpos((*cpool)[idx]);
+                        mb->setpos(pos);
                         mb->setindx(ncoord-1);
                         BehList.push_back(mb);
                     }
@@ -231,16 +276,18 @@ public:
             }
             txindices->push_back(txcoords->size());
             float *uvc=NULL;
-            gfd=gr->getField(GEO_DB_VRTX_UV_SET_1);
+            gfd=gr->getField(GEO_DB_VRTX_UV_SET_0);
             if (gfd) {
                 uvc=(float *)gfd->getstore(0);
-            }
-
-            if (uvc) { // then there are tx coords
-                osg::Vec2 uv(uvc[0], uvc[1]);
-                txcoords->push_back(uv);
-            } else {
-                txcoords->push_back(osg::Vec2(0,0));
+				
+				if (uvc) { // then there are tx coords
+					osg::Vec2 uv(uvc[0], uvc[1]);
+					txcoords->push_back(uv);
+				} else {
+					txcoords->push_back(osg::Vec2(0,0));
+				}
+			} else {
+					txcoords->push_back(osg::Vec2(0,0));
             }
             gfd=gr->getField(GEO_DB_VRTX_PACKED_COLOR);
             if (gfd) {
@@ -319,8 +366,7 @@ public:
 	float getlinewidth(void) const { return linewidth;}
 	void setlineWidth(const int w) { linewidth=w;}
     void setGeom(osg::Geometry *nugeom) { geom=nugeom;}
-    osg::Geometry *getGeom() const { return geom;}
-    osg::Geometry *getGeom() { return geom;}
+    osg::Geometry *getGeom() { return geom.get();}
     uint getStart(uint nv) { uint ns=nstart; nstart+=nv; return ns; }
     bool operator == (const geoInfo *gt) { // compare two geoInfos for same type of geometry
         if (gt->texture!=texture) return false;
@@ -336,28 +382,25 @@ private:
 	int linewidth;
     vertexInfo vinf;
     uint nstart; // start vertex for a primitive
-    osg::Geometry *geom; // the geometry created for this vinf and texture
+	osg::ref_ptr<osg::Geometry> geom; // the geometry created for this vinf and texture
 };
 
 
-class ReaderWriterGEO : public ReaderWriter
+class ReaderWriterGEO : public osgDB::ReaderWriter
 {
     public:
-        ReaderWriterGEO() {  cpalrec=NULL;   }
-        ~ReaderWriterGEO() {    
-        }
         virtual const char* className() { return "GEO Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension)
         {
-            return equalCaseInsensitive(extension,"gem") || equalCaseInsensitive(extension,"geo");
+            return osgDB::equalCaseInsensitive(extension,"gem") || osgDB::equalCaseInsensitive(extension,"geo");
         }
 
         virtual ReadResult readObject(const std::string& fileName, const Options* opt) { return readNode(fileName,opt); }
 
         virtual ReadResult readNode(const std::string& fileName, const Options*)
         {
-            std::string ext = getFileExtension(fileName);
+            std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
@@ -384,12 +427,14 @@ class ReaderWriterGEO : public ReaderWriter
                 fin.close();
                 // now sort the records so that any record followed by a PUSh has a child set = next record, etc
                 std::vector<georecord *> sorted=sort(recs); // tree-list of sorted record pointers
-/*#ifdef _DEBUG
+#ifdef _DEBUG
                 osgDB::Output fout("georex.txt"); //, std::ios_base::out );
-                fout << "Debug file " << fileName << std::endl;
+              //  fout << "Debug raw file " << fileName << std::endl;
+              //  output(fout,recs);
+                fout << "Debug Sorted file " << fileName << std::endl;
                 output(fout,sorted);
                 fout.close();
-#endif */
+#endif /**/
                 nodeList=makeosg(sorted); // make a list of osg nodes           
                 recs.clear();
                 geotxlist.clear();
@@ -399,17 +444,18 @@ class ReaderWriterGEO : public ReaderWriter
                 matlist.clear();/* */
                 coord_pool.clear();
                 normal_pool.clear();
+				osg::Node * groupnode = NULL;
                 if  (nodeList.empty())
                 {
                     return ReadResult("No data loaded from "+fileName);
                 }
                 else if (nodeList.size()==1)
                 {
-                    return nodeList.front();
+                    groupnode = nodeList.front();
                 }
                 else
                 {
-                    Group* group = new Group;
+					osg::Group *group = new Group;
                     group->setName("import group");
                     for(NodeList::iterator itr=nodeList.begin();
                         itr!=nodeList.end();
@@ -417,8 +463,12 @@ class ReaderWriterGEO : public ReaderWriter
                     {
                         group->addChild(*itr);
                     }
-                    return group;
+					groupnode=group;
                 }
+#ifdef _DEBUG // output a .osg version
+				osgDB::writeNodeFile(*groupnode,"geoosg.osg");
+#endif /**/
+                return groupnode;
             }
             return 0L;
         }
@@ -434,6 +484,11 @@ class ReaderWriterGEO : public ReaderWriter
                 // now parse for push/pops and add to lists
                 
                 switch ((*itr).getType()) {
+                case 101: // old header - not appropriate!
+                    curparent= &(*itr);
+                    sorted.push_back(&(*itr));
+					osg::notify(osg::WARN) << "Old version 2 header block found - possible error!" << std::endl;
+					break;
                 case DB_DSK_PUSH:
                     if (!(curparent->getchildren().empty())) {
                         curparent= curparent->getLastChild(); // itr-1;
@@ -447,6 +502,7 @@ class ReaderWriterGEO : public ReaderWriter
                 case DB_DSK_HEADER: // attach to previous
                     curparent= &(*itr);
                     sorted.push_back(&(*itr));
+					cpalrec=NULL; 
                     break;
                 case DB_DSK_INTERNAL_VARS: // attach to parent
                 case DB_DSK_LOCAL_VARS:
@@ -577,7 +633,7 @@ class ReaderWriterGEO : public ReaderWriter
             int txidx=ginf.getTexture();
             nug=new osg::Geometry;
             const vertexInfo *vinf=ginf.getVinf();
-            nug->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+//            nug->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
             nug->setVertexArray(vinf->getCoords());
             nug->setNormalArray(vinf->getNorms());
             StateSet *dstate=new StateSet;
@@ -622,6 +678,7 @@ class ReaderWriterGEO : public ReaderWriter
             { // reclaim the colours
                 gfd=grec->getField(GEO_DB_POLY_USE_MATERIAL_DIFFUSE); // true: use material...
                 bool usemat= gfd ? gfd->getBool() : false;
+	            nug->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
                 if (!usemat) { // get the per vertex colours OR per face colours.
                     gfd=grec->getField(GEO_DB_POLY_USE_VERTEX_COLORS); // true: use material...
                     bool usevert=gfd ? gfd->getBool() : false;
@@ -632,11 +689,14 @@ class ReaderWriterGEO : public ReaderWriter
                             nug->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
                         }
                     } else {
-                        osg::Vec4Array *polycols=vinf->getPolcolours();
-                        //if (polycols->size() > 0) {
-                            nug->setColorArray(polycols);
-                            nug->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-                        //}
+						if (shademodel==GEO_POLY_SHADEMODEL_LIT_GOURAUD) {
+							nug->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+						} else if (shademodel==GEO_POLY_SHADEMODEL_LIT) {
+							nug->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+                        }
+						osg::Vec4Array *polycols=vinf->getPolcolours();
+                        nug->setColorArray(polycols);
+                        nug->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
                     }
                 }
             }
@@ -673,14 +733,11 @@ class ReaderWriterGEO : public ReaderWriter
             }
 
             if (gr.size()>0) {
+				vinf->addFlat(grec); // for flat normal shading
                 for (std::vector<georecord *>::const_iterator itr=gr.begin();
                     itr!=gr.end();
                     ++itr) {
-                    //bool hbeh=
-					vinf->addIndices((*itr), theHeader, defcol, grec);
-                    //if (hbeh) { // then add a behaviour callback to the primitive
-                    //    bool hasbehave=true;
-                    //}
+					vinf->addIndices((*itr), theHeader.get(), defcol, grec);
                     nv++;
                 }
             }
@@ -708,8 +765,8 @@ class ReaderWriterGEO : public ReaderWriter
             //int    gFontSize1=2;
             osgText::Text *text= new  osgText::Text;
             text->setFont(ttfPath);
-            const geoField *gfd=gr->getField(GEO_DB_TEXT_NAME);
-            //const char *name=gfd ? gfd->getChar() : "a text";
+            const geoField *gfd=gr->getField(GEO_DB_NODE_NAME);
+            const char *name=gfd ? gfd->getChar() : "a text";
             gfd=gr->getField(GEO_DB_TEXT_STRING);
             const char *content=gfd ? gfd->getChar() : " ";
             text->setText(std::string(content));
@@ -745,6 +802,7 @@ class ReaderWriterGEO : public ReaderWriter
             textState->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
             geod->setStateSet( textState );
             numt=new osg::MatrixTransform;
+			numt->setName(name);
             gfd=gr->getField(GEO_DB_TEXT_MATRIX);
             if (gfd) {
                 float *fmat=gfd->getMat44Arr();            
@@ -767,7 +825,7 @@ class ReaderWriterGEO : public ReaderWriter
                             geoStrContentBehaviour *cb=new geoStrContentBehaviour;
                             gfd=(*rcitr)->getField(GEO_DB_STRING_CONTENT_ACTION_INPUT_VAR);
                             if (gfd) {
-                                ok=cb->makeBehave((*rcitr), theHeader);
+                                ok=cb->makeBehave((*rcitr), theHeader.get());
                                 if (ok) gcb->addBehaviour(cb);
                                 else delete cb;
                                 // ok=false;
@@ -801,7 +859,7 @@ class ReaderWriterGEO : public ReaderWriter
                         } else { // overall
                             cb->setVertIndices(0,1); // part of colours array to be modified
                         }
-                        bool ok=cb->makeBehave((*rcitr), theHeader);
+                        bool ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                     }
@@ -820,7 +878,18 @@ class ReaderWriterGEO : public ReaderWriter
                 if ((*itr)->getType()==DB_DSK_VERTEX)
                 { // light point vertices
                     const geoField *gfd=(*itr)->getField(GEO_DB_VRTX_COORD);
-                    unsigned int idx=gfd ? gfd->getInt():0;
+					osg::Vec3 pos;
+					if (gfd->getType()==DB_INT) {
+						unsigned int idx=gfd ? gfd->getInt():-1;
+						if (idx>=0) {
+							pos=coord_pool[idx];
+						} else {
+							osg::notify(osg::WARN) << "No valid vertex index" << std::endl;
+						}
+					} else if (gfd->getType()==DB_VEC3F) {
+						float *p=gfd->getVec3Arr();
+						pos.set(p[0],p[1],p[2]);
+					}
                     gfd=(*itr)->getField(GEO_DB_VRTX_PACKED_COLOR);
                     if (gfd) {
                         unsigned char *cls=gfd->getUCh4Arr();
@@ -829,13 +898,13 @@ class ReaderWriterGEO : public ReaderWriter
                         float blue=cls[2]/255.0f;
                         //float alpha=1.0f; // cls[3]*frac/255.0f;
                         osg::Vec4 colour(red,green,blue,1.0f);
-                        lpn->addLightPoint(osgSim::LightPoint(true,coord_pool[idx],colour,1.0f,1.0f,0,0,osgSim::LightPoint::BLENDED));
+                        lpn->addLightPoint(osgSim::LightPoint(true,pos,colour,1.0f,1.0f,0,0,osgSim::LightPoint::BLENDED));
                     } else { // get colour from palette
                         gfd=(*itr)->getField(GEO_DB_VRTX_COLOR_INDEX); // use color pool...
                         int icp= gfd ? gfd->getInt() : 0;
                         float col[4];
                         theHeader->getPalette(icp, col);
-                        lpn->addLightPoint(osgSim::LightPoint((coord_pool)[idx], osg::Vec4(col[0],col[1],col[2],1.0f)));
+                        lpn->addLightPoint(osgSim::LightPoint(pos, osg::Vec4(col[0],col[1],col[2],1.0f)));
                     }
                 }
             }
@@ -856,17 +925,19 @@ class ReaderWriterGEO : public ReaderWriter
                 }
             }
         }
-        void makeAnimatedGeometry(const georecord grec, const int imat,Group *nug) {
+        int  makeAnimatedGeometry(const georecord grec, const int imat,Group *nug) {
             // animated polygons - create a matrix & geode & poly & add to group nug
             const std::vector<georecord *> gr=grec.getchildren();
+			int nanimations=0;
             bool bothsides=allOneSided(&grec);
             for (std::vector<georecord *>::const_iterator itr=gr.begin();
             itr!=gr.end();
             ++itr) {
                 std::vector< georecord *>bhv=(*itr)->getBehaviour(); // behaviours attached to facets, eg colour!
                 if ((*itr)->getType()==DB_DSK_POLYGON && !bhv.empty()) { // animated facets go here
+					nanimations++;
                     if (hasMotionAction(bhv)) { // make matrix if motion needed.
-                        const geoField *gfd=(*itr)->getField(GEO_DB_POLY_TEX);
+                        const geoField *gfd=(*itr)->getField(GEO_DB_POLY_TEX0);
                         int txidx= gfd ? gfd->getInt() : -1;
                         gfd=(*itr)->getField(GEO_DB_POLY_SHADEMODEL); // shaded gouraud, flat...
                         int shademodel=gfd ? gfd->getInt() : GEO_POLY_SHADEMODEL_LIT_GOURAUD;
@@ -910,7 +981,7 @@ class ReaderWriterGEO : public ReaderWriter
                 }
 
             }
-            return;
+            return nanimations;
         }
         bool hasColorAction(std::vector< georecord *>bhv) { // true if one of the actions changes colour
             bool ok=false;
@@ -952,11 +1023,10 @@ class ReaderWriterGEO : public ReaderWriter
         }
         geoInfo *getGeometry(const georecord *grec,Geode *nug, std::vector<class geoInfo> *ia,
             const unsigned int imat, const int shademodel, const bool bothsides) {
-            //gfd=(*itr)->getField(GEO_DB_POLY_NORMAL); // polygon normal for whole poly
             int igidx=0, igeom=-1;
-            const geoField *gfd=grec->getField(GEO_DB_POLY_TEX);
+            const geoField *gfd=grec->getField(GEO_DB_POLY_TEX0);
             int txidx= gfd ? gfd->getInt() : -1;
-            for (std::vector<class geoInfo>::const_iterator itrint=ia->begin();
+            for (std::vector<class geoInfo>::iterator itrint=ia->begin();
             itrint!=ia->end() && igeom<0;
             ++itrint) { // find a geometry that shares this texture.
                 // also test for other properties of a unique material:
@@ -983,7 +1053,7 @@ class ReaderWriterGEO : public ReaderWriter
             }
             return (&((*ia)[igeom]));
         }
-        void makeGeometry(const georecord &grec, const unsigned int imat,Geode *nug)
+        int makeGeometry(const georecord &grec, const unsigned int imat,Geode *nug)
         {    // makegeometry makes a set of Geometrys attached to current parent (Geode nug)
             const std::vector<georecord *> gr=grec.getchildren();
             // std::vector<osg::Geometry *> geom;
@@ -1062,7 +1132,7 @@ class ReaderWriterGEO : public ReaderWriter
                     }
                 }
             }
-            return;
+            return gr.size();
         }
         void makeTexts(georecord grec, Group *nug)
         {    // makeTexts adds a set of text+transform Geometrys attached to current parent (Group nug)
@@ -1085,20 +1155,24 @@ class ReaderWriterGEO : public ReaderWriter
         Group *makeTextGeode(const georecord *gr)
         { // in geo text is defined with a matrix included in the geo.geode (gr is this geo.geode)
             // - we need to create this tree to render text
+			return NULL; // temporary disable april 2003
             Group *nug=new Group;
             const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
             // may be used in future const unsigned int imat=gfd ? gfd->getInt():0;
-            gfd=gr->getField(GEO_DB_RENDERGROUP_NAME);
+            gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 nug->setName(gfd->getChar());
             }
             makeTexts((*gr),nug);
+            if (nug->getNumChildren() <=0) {
+                nug=NULL;
+            }
             return nug;
         }
         Group *makeLightPointGeodes(const georecord *gr) {
             const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
             Group *nug=new Group;
-            gfd=gr->getField(GEO_DB_RENDERGROUP_NAME);
+            gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 char *name = gfd->getChar();
                 nug->setName(name);
@@ -1126,13 +1200,13 @@ class ReaderWriterGEO : public ReaderWriter
             } else {
                 nug=new Geode;
             } */
-            gfd=gr->getField(GEO_DB_RENDERGROUP_NAME);
+            gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 char *name = gfd->getChar();
                 nug->setName(name);
             }
-            makeAnimatedGeometry((*gr),imat,nug);
-            if (nug->getNumChildren() <=0) {
+            int nans=makeAnimatedGeometry((*gr),imat,nug);
+            if (nans <=0) {
                 nug=NULL;
             }
             return nug;
@@ -1141,9 +1215,9 @@ class ReaderWriterGEO : public ReaderWriter
         {
             const geoField *gfd=gr.getField(GEO_DB_RENDERGROUP_MAT);
             const unsigned int imat=gfd ? gfd->getInt():0;
-            gfd=gr.getField(GEO_DB_RENDERGROUP_IS_BILLBOARD);
+            gfd=gr.getField(GEO_DB_RENDERGROUP_BILLBOARD);
             bool isbillb = gfd ? gfd->getBool() : false;
-            Geode *nug;
+			osg::Geode *nug;
             if (isbillb) {
                 Billboard *bilb= new Billboard ;
                 bilb->setAxis(Vec3(0,0,1));
@@ -1152,36 +1226,48 @@ class ReaderWriterGEO : public ReaderWriter
             } else {
                 nug=new Geode;
             }
-            gfd=gr.getField(GEO_DB_RENDERGROUP_NAME);
-            if (gfd) {
-                nug->setName(gfd->getChar());
-            }
-            makeGeometry(gr,imat,nug);
-            return nug;
+            int nchild=makeGeometry(gr,imat,nug);
+			if (nchild>0) { // complete the geode
+				gfd=gr.getField(GEO_DB_NODE_NAME);
+				if (gfd) {
+					nug->setName(gfd->getChar());
+				}
+				return nug;
+			} else {
+				return NULL;
+			}
         }
         osg::Group *makePage(const georecord *gr)
         {
             osg::Group *gp=new Group;
-            const geoField *gfd=gr->getField(GEO_DB_PAGE_NAME);
+            const geoField *gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 gp->setName(gfd->getChar());
             }
             return gp;
         }
-        osg::Group *makeGroup(const georecord *gr) { // group or Static transform
-            osg::Group *gp=NULL;
-            const geoField *gfd=gr->getField(GEO_DB_GRP_TRANSFORM);
+		osg::Group *setmatrix(const georecord *gr) { // find one of the type sof matrix supported
+            const geoField *gfd=gr->getField(GEO_DB_GRP_MATRIX_TRANSFORM);
+			if (!gfd) gfd=gr->getField(GEO_DB_GRP_TRANSLATE_TRANSFORM);
+			if (!gfd) gfd=gr->getField(GEO_DB_GRP_ROTATE_TRANSFORM);
+			if (!gfd) gfd=gr->getField(GEO_DB_GRP_SCALE_TRANSFORM);
             if (gfd) {
                 MatrixTransform *tr=new MatrixTransform;
                 osg::Matrix mx;
                 float * m44=gfd->getMat44Arr();
                 mx.set(m44); // hope uses same convention as OSG else will need to use set(m44[0],m44[1]...)
                 tr->setMatrix(mx);
-                gp=tr;
+                return tr;
             } else {
+                return NULL;
+            }
+		}
+        osg::Group *makeGroup(const georecord *gr) { // group or Static transform
+            osg::Group *gp=setmatrix(gr);
+            if (!gp) {
                 gp=new osg::Group;
             }
-            gfd=gr->getField(GEO_DB_GRP_NAME);
+            const geoField *gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 gp->setName(gfd->getChar());
             }
@@ -1209,7 +1295,7 @@ class ReaderWriterGEO : public ReaderWriter
                 sw->setSingleChildOn(0);
                 osg::notify(osg::WARN) << gr << " No mask " << std::endl;
             }
-            gfd=gr->getField(GEO_DB_SWITCH_NAME);
+            gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 sw->setName(gfd->getChar());
             }
@@ -1219,7 +1305,7 @@ class ReaderWriterGEO : public ReaderWriter
         osg::Sequence *makeSequence(const georecord *gr)
         {
             Sequence *sq=new Sequence;
-            const geoField *gfd=gr->getField(GEO_DB_SEQUENCE_NAME);
+            const geoField *gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 sq->setName(gfd->getChar());
             }
@@ -1233,7 +1319,7 @@ class ReaderWriterGEO : public ReaderWriter
             gfd=gr->getField(GEO_DB_LOD_OUT);
             float out = gfd ? gfd->getFloat() : 0.0;
             gp->setRange(0,out,in);
-            gfd=gr->getField(GEO_DB_LOD_NAME);
+            gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 gp->setName(gfd->getChar());
             }
@@ -1290,7 +1376,7 @@ class ReaderWriterGEO : public ReaderWriter
                 //        theHeader->setUpdateCallback(theHeader->getInternalVars());                        
                     }
                     if ((*rcitr)->getType()==DB_DSK_FLOAT_VAR) {
-                        if (theHeader) theHeader->addUserVar((**rcitr));
+                        if (theHeader.valid()) theHeader->addUserVar((**rcitr));
                     }
                 }
                 theHeader->setUpdateCallback(new geoHeaderCB);
@@ -1300,7 +1386,7 @@ class ReaderWriterGEO : public ReaderWriter
                  (*itr)->setMaterial(mt);
                  matlist.push_back(mt);
             }
-            return theHeader;
+            return theHeader.get();
         }
         void makeTexture(const georecord *gr) {
             // scans the fields of this record and puts a new texture & environment into 'pool' stor
@@ -1405,7 +1491,7 @@ class ReaderWriterGEO : public ReaderWriter
                         break;
                     case DB_DSK_ROTATE_ACTION: {
                         geoMoveBehaviour *cb= new geoMoveBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader);
+                        ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                                }
@@ -1413,14 +1499,14 @@ class ReaderWriterGEO : public ReaderWriter
                         
                     case DB_DSK_SCALE_ACTION: {
                         geoMoveBehaviour *sb=new geoMoveBehaviour;
-                        ok=sb->makeBehave((*rcitr), theHeader);
+                        ok=sb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(sb);
                         else delete sb;
                                               }
                         break;
                     case DB_DSK_TRANSLATE_ACTION: {
                         geoMoveBehaviour *cb= new geoMoveBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader);
+                        ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                                   }
@@ -1428,35 +1514,35 @@ class ReaderWriterGEO : public ReaderWriter
                         
                     case DB_DSK_COMPARE_ACTION: {
                         geoCompareBehaviour *cb=new geoCompareBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader);
+                        ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                                 }
                         break;
                     case DB_DSK_ARITHMETIC_ACTION: {
                         geoArithBehaviour *cb=new geoArithBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader);
+                        ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                                    }
                         break;
                     case DB_DSK_CLAMP_ACTION: {
                         geoClampBehaviour *cb=new geoClampBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader);
+                        ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                               }
                         break;
                     case DB_DSK_RANGE_ACTION: {
                         geoRangeBehaviour *cb=new geoRangeBehaviour;
-                        ok=cb->makeBehave((*rcitr), theHeader);
+                        ok=cb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(cb);
                         else delete cb;
                                               }
                         break;
                     case DB_DSK_VISIBILITY_ACTION: {
                         geoVisibBehaviour *vb = new geoVisibBehaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                    }
@@ -1464,49 +1550,49 @@ class ReaderWriterGEO : public ReaderWriter
                         // ar3 types
                     case DB_DSK_TRIG_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                              }
                         break;
                     case DB_DSK_INVERSE_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                 }
                         break;
                     case DB_DSK_LINEAR_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                }
                         break;
                     case DB_DSK_PERIODIC_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                  }
                         break;
                     case DB_DSK_PERIODIC2_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                   }
                         break;
                     case DB_DSK_TRUNCATE_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                                  }
                         break;
                     case DB_DSK_ABS_ACTION: {
                         geoAr3Behaviour *vb = new geoAr3Behaviour;
-                        ok=vb->makeBehave((*rcitr), theHeader);
+                        ok=vb->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(vb);
                         else delete vb;
                                             }
@@ -1515,7 +1601,7 @@ class ReaderWriterGEO : public ReaderWriter
                     case DB_DSK_DCS_ACTION: */
                     case DB_DSK_DISCRETE_ACTION: {
                         geoDiscreteBehaviour *db = new geoDiscreteBehaviour;
-                        ok=db->makeBehave((*rcitr), theHeader);
+                        ok=db->makeBehave((*rcitr), theHeader.get());
                         if (ok) gcb->addBehaviour(db);
                         else delete db;
                                                  }
@@ -1527,7 +1613,7 @@ class ReaderWriterGEO : public ReaderWriter
                     case DB_DSK_IF_THEN_ELSE_ACTION:
                         {
                             geoAr3Behaviour *vb = new geoAr3Behaviour;
-                            ok=vb->makeBehave((*rcitr), theHeader);
+                            ok=vb->makeBehave((*rcitr), theHeader.get());
                             if (ok) gcb->addBehaviour(vb);
                             else delete vb;
                         }
@@ -1550,12 +1636,27 @@ class ReaderWriterGEO : public ReaderWriter
                 ++itr) {
                     const georecord *gr=*itr;
                     Group *mtr=makeBehave(gr);
-                    if (gr->getType()== DB_DSK_GEODE) { // geodes can require >1 geometry for example if polygons have different texture indices.
+                    if (gr->getType()== DB_DSK_RENDERGROUP) { // geodes can require >1 geometry for example if polygons have different texture indices.
                         // and for example if the node has a colour or other fine behaviour
                         Geode *geode=makeGeode(*gr); // geode of geometrys
                         Group *animatedGeodes= makeAnimatedGeodes(gr);
                         Group *lightptGeodes= makeLightPointGeodes(gr);
                         Group *textgeode=makeTextGeode(gr); // group of matrices & texts
+						const geoField *gfd=gr->getField(GEO_DB_GRP_ZBUFFER);
+						if (gfd) {
+							bool onoff=gfd->getBool();
+							if (!onoff) { // no z buffer - force to use unsorted renderBin
+								StateSet *dstate=new StateSet;
+								osg::Depth* depth = new osg::Depth;
+								depth->setFunction(osg::Depth::ALWAYS);
+								dstate->setAttribute(depth);
+								dstate->setRenderBinDetails(osg::StateSet::OPAQUE_BIN + 3,  "UnSortedBin");
+								if (geode) geode->setStateSet( dstate );
+								if (animatedGeodes) animatedGeodes->setStateSet( dstate );
+								if (lightptGeodes) lightptGeodes->setStateSet( dstate );
+								if (textgeode) textgeode->setStateSet( dstate );
+							}
+						}
 
                         if (mtr) {
                             if (geode) mtr->addChild(geode);
@@ -1567,6 +1668,7 @@ class ReaderWriterGEO : public ReaderWriter
                         } else {
                             if (!geodeholder && (geode || textgeode)) {
                                 geodeholder=new osg::Group;
+								geodeholder->setName("geodeHolder");
                             }
                             if (geode) geodeholder->addChild(geode);
                             if (animatedGeodes) geodeholder->addChild(animatedGeodes);
@@ -1577,6 +1679,7 @@ class ReaderWriterGEO : public ReaderWriter
                         Group *holder=NULL;
                         const geoField *gfd;
                         switch (gr->getType()) {
+                        case 101:
                         case DB_DSK_HEADER:
                             holder=makeHeader(gr);
                             (*itr)->setNode(holder);
@@ -1607,7 +1710,7 @@ class ReaderWriterGEO : public ReaderWriter
                         case DB_DSK_CUBE:
                             holder=new Group;
                             (*itr)->setNode(holder);
-                            gfd=gr->getField(GEO_DB_GRP_NAME);
+                            gfd=gr->getField(GEO_DB_NODE_NAME);
                             if (gfd) {
                                 holder->setName(gfd->getChar());
                             }
@@ -1615,7 +1718,7 @@ class ReaderWriterGEO : public ReaderWriter
                         case DB_DSK_SPHERE:
                             holder=new Group;
                             (*itr)->setNode(holder);
-                            gfd=gr->getField(GEO_DB_GRP_NAME);
+                            gfd=gr->getField(GEO_DB_NODE_NAME);
                             if (gfd) {
                                 holder->setName(gfd->getChar());
                             }
@@ -1623,7 +1726,7 @@ class ReaderWriterGEO : public ReaderWriter
                         case DB_DSK_CONE:
                             holder=new Group;
                             (*itr)->setNode(holder);
-                            gfd=gr->getField(GEO_DB_GRP_NAME);
+                            gfd=gr->getField(GEO_DB_NODE_NAME);
                             if (gfd) {
                                 holder->setName(gfd->getChar());
                             }
@@ -1631,7 +1734,7 @@ class ReaderWriterGEO : public ReaderWriter
                         case DB_DSK_CYLINDER:
                             holder=new Group;
                             (*itr)->setNode(holder);
-                            gfd=gr->getField(GEO_DB_GRP_NAME);
+                            gfd=gr->getField(GEO_DB_NODE_NAME);
                             if (gfd) {
                                 holder->setName(gfd->getChar());
                             }
@@ -1639,11 +1742,11 @@ class ReaderWriterGEO : public ReaderWriter
                         case DB_DSK_INSTANCE:
                             {
                                 MatrixTransform *mtr=new MatrixTransform;
-                                gfd=gr->getField(GEO_DB_INSTANCE_NAME);
+                                gfd=gr->getField(GEO_DB_NODE_NAME);
                                 if (gfd) {
                                     mtr->setName(gfd->getChar());
                                 }
-                                gfd=gr->getField(GEO_DB_INSTANCE_TRANSFORM);
+                                gfd=gr->getField(GEO_DB_GRP_MATRIX_TRANSFORM); // was: GEO_DB_INSTANCE_TRANSFORM);
                                 if (gfd) {
                                     float *fmat=gfd->getMat44Arr();
                                     mtr->setMatrix(Matrix(fmat));
@@ -1732,6 +1835,17 @@ class ReaderWriterGEO : public ReaderWriter
             }
             return nodelist;
         }
+        void output(osgDB::Output &fout,std::vector<georecord> gr)
+        { // debugging - print the tree of records
+            if (gr.size()>0) {
+                for (std::vector<georecord>::iterator itr=gr.begin();
+                    itr!=gr.end();
+                    ++itr) {
+                    fout.indent() << "Node type " << (*itr).getType() << " ";
+                    fout.indent() << (*itr) << std::endl;
+                }
+            }
+        }
         void output(osgDB::Output &fout,std::vector<georecord *> gr)
         { // debugging - print the tree of records
             fout.moveIn();
@@ -1761,28 +1875,28 @@ class ReaderWriterGEO : public ReaderWriter
                     }
                     break;
                 case DB_DSK_LOD:
-                    gfd=(*itr).getField(GEO_DB_LOD_INSTANCE_DEF);
+                    gfd=(*itr).getField(GEO_DB_INSTANCE_DEF);
                     if (gfd) {
                         uint fidnod=gfd->getUInt();
                         if (fidnod==fid) return &(*itr);
                     }
                     break;
                 case DB_DSK_SEQUENCE:
-                    gfd=(*itr).getField(GEO_DB_SEQUENCE_INSTANCE_DEF);
+                    gfd=(*itr).getField(GEO_DB_INSTANCE_DEF);
                     if (gfd) {
                         uint fidnod=gfd->getUInt();
                         if (fidnod==fid) return &(*itr);
                     }
                     break;
                 case DB_DSK_SWITCH:
-                    gfd=(*itr).getField(GEO_DB_SWITCH_INSTANCE_DEF);
+                    gfd=(*itr).getField(GEO_DB_INSTANCE_DEF);
                     if (gfd) {
                         uint fidnod=gfd->getUInt();
                         if (fidnod==fid) return &(*itr);
                     }
                     break;
-                case DB_DSK_GEODE:
-                    gfd=(*itr).getField(GEO_DB_RENDERGROUP_INSTANCE_DEF);
+                case DB_DSK_RENDERGROUP:
+                    gfd=(*itr).getField(GEO_DB_INSTANCE_DEF);
                     if (gfd) {
                         uint fidnod=gfd->getUInt();
                         if (fidnod==fid) return &(*itr);
@@ -1797,7 +1911,7 @@ private:
     geoRecordList recs; // the records read from file
     std::vector<osg::Vec3> coord_pool; // current vertex ooords
     std::vector<osg::Vec3> normal_pool; // current pool of normal vectors
-    geoHeaderGeo *theHeader; // an OSG class - has animation vars etc
+	osg::ref_ptr<geoHeaderGeo> theHeader; // an OSG class - has animation vars etc
     std::vector<georecord *> geotxlist; // list of geo::textures for this model
     std::vector<georecord *> geomatlist; // list of geo::materials for this model
     std::vector<osg::Texture2D *> txlist; // list of osg::textures for this model
@@ -1947,14 +2061,14 @@ void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a rec
 		fin.read((char *)&tokid,1);fin.read((char *)&type,1);
 		fin.read((char *)&nits,sizeof(unsigned short));
 	//	osg::notify(osg::WARN) << "geoField " << (int)tokid << " type " << (int)type << " nit " << (int)nits << std::endl;
-		if (type == GEO_DB_EXTENDED_FIELD) { // change for true extended type
+		if (type == DB_EXTENDED_FIELD_STRUCT) { // change for true extended type
 			fin.read((char *)&tokenId,sizeof(tokenId));fin.read((char *)&TypeId,sizeof(TypeId));
 			fin.read((char *)&numItems,sizeof(unsigned int));
 		} else {
 			tokenId=tokid; TypeId=type;
 			numItems=nits;
 		}
-		if (id== 0 && tokenId == GEO_DB_USER_EXT_VALUE_FIELD && numItems==1) { // Feb 2003 parse extension template records
+		if (id== 0 && tokenId == GEO_DB_NODE_EXTENDED && numItems==1) { // Feb 2003 parse extension template records
 			if (TypeId == DB_SHORT ||
 				TypeId == DB_USHORT) {
 				short upad;
@@ -1973,8 +2087,8 @@ void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a rec
 		} else {
 			if (numItems>0) {
 				storageRead(fin); // allocate & fill the storage
-				if (tokenId == GEO_DB_USER_EXT_VALUE_FIELD) {
-					if (id==DB_DSK_POLYGON || id==DB_DSK_GEODE || id==DB_DSK_GROUP
+				if (tokenId == GEO_DB_NODE_EXTENDED) {
+					if (id==DB_DSK_POLYGON || id==DB_DSK_RENDERGROUP || id==DB_DSK_GROUP
 						 || id==DB_DSK_LOD || id==DB_DSK_MESH || id==DB_DSK_CUBE
 						 || id==DB_DSK_SPHERE || id==DB_DSK_CONE || id==DB_DSK_CYLINDER
 						 || id==DB_DSK_TEXTURE || id==DB_DSK_MATERIAL || id==DB_DSK_VIEW) {

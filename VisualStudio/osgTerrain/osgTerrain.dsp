@@ -127,10 +127,6 @@ SOURCE=..\..\include\osgTerrain\HeightFieldNode
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgTerrain\HeightFieldNode
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\osgTerrain\Version
 # End Source File
 # End Group

@@ -190,12 +190,18 @@ LINK32=link.exe
 
 
 
-SOURCE=..\..\..\src\osgPlugins\osgSim\IO_LightPointNode.cpp
+SOURCE=..\..\..\src\osgPlugins\osgSim\IO_DOFTransform.cpp
 
 # End Source File
 
 # Begin Source File
 
+
+SOURCE=..\..\..\src\osgPlugins\osgSim\IO_LightPointNode.cpp
+
+# End Source File
+
+# Begin Source File
 
 
 SOURCE=..\..\..\src\osgPlugins\osgSim\IO_LightPoint.cpp

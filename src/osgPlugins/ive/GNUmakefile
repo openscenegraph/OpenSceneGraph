@@ -12,6 +12,7 @@ CXXFILES =\
 	CullFace.cpp\
 	DataInputStream.cpp\
 	DataOutputStream.cpp\
+	DOFTransform.cpp\
 	DrawArrayLengths.cpp\
 	DrawArrays.cpp\
 	DrawElementsUByte.cpp\

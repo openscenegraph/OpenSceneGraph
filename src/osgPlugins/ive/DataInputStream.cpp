@@ -35,6 +35,7 @@
 #include "LOD.h"
 #include "PagedLOD.h"
 #include "PositionAttitudeTransform.h"
+#include "DOFTransform.h"
 #include "Transform.h"
 #include "Switch.h"
 #include "OccluderNode.h"
@@ -180,6 +181,17 @@ long DataInputStream::readLong(){
         throw Exception("DataInputStream::readLong(): Failed to read long value.");
 
     if (_verboseOutput) std::cout<<"read/writeLong() ["<<l<<"]"<<std::endl;
+    
+    return l;
+}
+
+unsigned long DataInputStream::readULong(){
+    unsigned long l;
+    _istream->read((char*)&l, LONGSIZE);
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readULong(): Failed to read unsigned long value.");
+
+    if (_verboseOutput) std::cout<<"read/writeULong() ["<<l<<"]"<<std::endl;
     
     return l;
 }
@@ -622,6 +634,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEPOSITIONATTITUDETRANSFORM){
         node = new osg::PositionAttitudeTransform();
         ((ive::PositionAttitudeTransform*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEDOFTRANSFORM){
+        node = new osgSim::DOFTransform();
+        ((ive::DOFTransform*)(node))->read(this);
     }
     else if(nodeTypeID== IVETRANSFORM){
         node = new osg::Transform();

@@ -84,9 +84,6 @@ class SG_EXPORT Transform : public Group
         virtual PositionAttitudeTransform* asPositionAttitudeTransform() { return 0; }
         virtual const PositionAttitudeTransform* asPositionAttitudeTransform() const { return 0; }
 
-        virtual DOFTransform* asDOFTransform() { return 0; }
-        virtual const DOFTransform* asDOFTransform() const { return 0; }
-
         enum ReferenceFrame
         {
             RELATIVE_TO_PARENTS,

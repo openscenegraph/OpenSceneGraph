@@ -2,6 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+	IO_DOFTransform.cpp\
 	IO_LightPointNode.cpp\
 	IO_LightPoint.cpp\
 	IO_BlinkSequence.cpp\

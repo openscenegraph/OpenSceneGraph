@@ -134,6 +134,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DataOutputStream.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\DOFTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\Drawable.cpp
 # End Source File
 # Begin Source File
@@ -379,6 +383,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUInt.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\DrawElementsUShort.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\DOFTransform.h
 # End Source File
 # Begin Source File
 

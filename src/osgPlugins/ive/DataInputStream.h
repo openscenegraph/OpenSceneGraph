@@ -38,6 +38,7 @@ public:
 	int peekInt();
 	float readFloat();
 	long readLong();
+	unsigned long readULong();
 	double readDouble();
 	std::string readString();
 	void readCharArray(char* data, int size);

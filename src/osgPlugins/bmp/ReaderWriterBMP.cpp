@@ -1,6 +1,7 @@
 #include <osg/Image>
 #include <osg/Notify>
 #include <osg/Geode>
+#include <osg/Image>
 #include <osg/GL>
 
 #include <osgDB/Registry>
@@ -40,8 +41,9 @@ struct bmpheader {
     short FileType; //always MB
     unsigned short siz[2]; // a dword for whole file size - make unsigned Feb 2002
     short Reserved1, Reserved2; //reserved for future purposes
-    short offset[2]; //offset to image in bytes
+    unsigned short offset[2]; //offset to image in bytes
 };
+
 struct BMPInfo {
     long width;   //width of the image in pixels
     long height;    //   height of the image in pixels
@@ -53,7 +55,8 @@ struct BMPInfo {
     long YpixPerMeter; //pixels per meter in Y
     long ColorUsed;   //number of colors used
     long Important;   //number of "important" colors
-    long os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
+//    unsigned char rgbquad[4];
+ //   long os2stuff[6]; // storage for os2.1 with 64 bytes to be read.  Dont know what these are yet.
 };
 
 int
@@ -141,7 +144,6 @@ int *numComponents_ret)
     unsigned char *buffer=NULL; // returned to sender & as read from the disk
 
     bmperror = ERROR_NO_FILE;
-
     FILE *fp = fopen(filename, "rb");
     if (!fp) return NULL;
 
@@ -167,94 +169,99 @@ int *numComponents_ret)
         unsigned char *imbuff; // returned to sender & as read from the disk
         fread((char *)&infsize, sizeof(long), 1, fp); // insert inside 'the file is bmp' clause
         if (swap) swapbyte(&infsize);
-        if ((infsize-sizeof(long))<sizeof(inf)) { // then the next bytes appear to be valid - actually infsize must be 12,40,64
-            fread((char *)&inf, infsize-sizeof(long), 1, fp);
-            if (swap) { // inverse the field of the header which need swapping
-                swapbyte(&hd.siz[0]);
-                swapbyte(&hd.siz[1]);
-                swapbyte(&inf.Colorbits);
-                swapbyte(&inf.width);
-                swapbyte(&inf.height);
-                swapbyte(&inf.ImageSize);
-            }
-            if (infsize==12) { // os2, protect us from our friends ? || infsize==64
-                int wd = inf.width&0xffff; // shorts replace longs
-                int ht = inf.width>>16;
-                int npln = inf.height&0xffff; // number of planes
-                int cbits = inf.height>>16;
-                inf.width=wd;
-                inf.height=ht;
-                inf.planes=npln;
-                inf.Colorbits=cbits;
-                inf.ColorUsed=(long)pow(2.0,(double)inf.Colorbits); // infer the colours
-            }
-            long size = hd.siz[1]*65536+hd.siz[0];
-            int ncpal=4; // default number of colours per palette entry
-            size -= sizeof(bmpheader)+infsize;
-            if (inf.ImageSize<size) inf.ImageSize=size;
-            imbuff = (unsigned char *)malloc( inf.ImageSize); // read from disk
-            fread((char *)imbuff, sizeof(unsigned char),inf.ImageSize, fp);
-            ncolours=inf.Colorbits/8;
-            switch (ncolours) {
-            case 1:
-                ncomp = BW; // actually this is a 256 colour, paletted image
-                inf.Colorbits=8; // so this is how many bits there are per index
-                inf.ColorUsed=256; // and number of colours used
-                cols=imbuff; // colour palette address - uses 4 bytes/colour
-                break;
-            case 2:
-                ncomp = IA;
-                break;
-            case 3:
-                ncomp = RGB; 
-                break;
-            case 4:
-                ncomp = RGBA;
-                break;
-            default:
-                cols=imbuff; // colour palette address - uses 4 bytes/colour
-                if (infsize==12 || infsize==64) ncpal=3; // OS2 - uses 3 colours per palette entry
-                else ncpal=4; // Windoze uses 4!
-            }
-            if (ncomp>0) buffer = (unsigned char *)malloc( (ncomp==BW?3:ncomp)*inf.width*inf.height*sizeof(unsigned char)); // to be returned
-            else buffer = (unsigned char *)malloc( 3*inf.width*inf.height*sizeof(unsigned char)); // default full colour to be returned
-            
-            unsigned long off=0;
-            unsigned long rowbytes=ncomp*sizeof(unsigned char)*inf.width;
-            unsigned long doff=(rowbytes)/4;
-            if ((rowbytes%4)) doff++; // round up if needed
-            doff*=4; // to find dword alignment
-            for(int j=0; j<inf.height; j++) {
-                if (ncomp>BW) memcpy(buffer+j*rowbytes, imbuff+off, rowbytes); // pack bytes closely
-                else { // find from the palette..
-                    unsigned char *imptr=imbuff+inf.ColorUsed*ncpal; // add size of the palette- start of image
-                    int npixperbyte=8/inf.Colorbits; // no of pixels per byte
-                    for (int ii=0; ii<inf.width/npixperbyte; ii++) {
-                        unsigned char mask=0x00; // masked with index to extract colorbits bits
-                        unsigned char byte=imptr[(j*inf.width/npixperbyte)+ii];
-                        int jj;
-                        for (jj=0; jj<inf.Colorbits; jj++) mask |= (0x80>>jj); // fill N High end bits
-                        for (jj=0; jj<npixperbyte; jj++) {
-                            int colidx=(byte&mask)>>((npixperbyte-1-jj)*inf.Colorbits);
-                            buffer[3*(j*inf.width+ii*npixperbyte+jj)+0]=cols[ncpal*colidx+2];
-                            buffer[3*(j*inf.width+ii*npixperbyte+jj)+1]=cols[ncpal*colidx+1];
-                            buffer[3*(j*inf.width+ii*npixperbyte+jj)+2]=cols[ncpal*colidx];
-                            mask>>=inf.Colorbits;
-                        }
-                    }
-                }
-                off+=doff;
-                if (ncomp>2) { // yes bill, colours are usually BGR aren't they
-                    for(int i=0; i<inf.width; i++) {
-                        int ijw=i+j*inf.width;
-                        unsigned char blu=buffer[3*ijw+0];
-                        buffer[3*ijw+0]=buffer[3*ijw+2]; // swap order of colours
-                        buffer[3*ijw+2]=blu;
-                    }
-                }
-            }
-            delete [] imbuff; // free the on-disk storage
+        unsigned char *hdr=new unsigned char[infsize]; // to hold the new header
+        fread((char *)hdr, 1,infsize-sizeof(long), fp);
+        unsigned long hsiz=sizeof(inf); // minimum of structure size & 
+        if(infsize<=hsiz) hsiz=infsize;
+        memcpy(&inf,hdr, hsiz/*-sizeof(long)*/); // copy only the bytes I can cope with
+        delete [] hdr;
+        osg::notify(osg::WARN) << "loading "<<filename <<" "<<swap<<" "<<infsize<< " "<<sizeof(inf) << " "<<sizeof(bmpheader) << std::endl;
+        if (swap) { // inverse the field of the header which need swapping
+            swapbyte(&hd.siz[0]);
+            swapbyte(&hd.siz[1]);
+            swapbyte(&inf.Colorbits);
+            swapbyte(&inf.width);
+            swapbyte(&inf.height);
+            swapbyte(&inf.ImageSize);
         }
+        if (infsize==12) { // os2, protect us from our friends ? || infsize==64
+            int wd = inf.width&0xffff; // shorts replace longs
+            int ht = inf.width>>16;
+            int npln = inf.height&0xffff; // number of planes
+            int cbits = inf.height>>16;
+            inf.width=wd;
+            inf.height=ht;
+            inf.planes=npln;
+            inf.Colorbits=cbits;
+            inf.ColorUsed=(long)pow(2.0,(double)inf.Colorbits); // infer the colours
+        }
+        osg::notify(osg::WARN) << "readbmp " <<inf.width<< " "<<inf.height << std::endl;
+        long size = hd.siz[1]+hd.siz[0]*65536;
+        int ncpal=4; // default number of colours per palette entry
+        size -= sizeof(bmpheader)+infsize;
+        if (inf.ImageSize<size) inf.ImageSize=size;
+        imbuff = (unsigned char *)malloc( inf.ImageSize); // read from disk
+        fread((char *)imbuff, sizeof(unsigned char),inf.ImageSize, fp);
+        ncolours=inf.Colorbits/8;
+        switch (ncolours) {
+        case 1:
+            ncomp = BW; // actually this is a 256 colour, paletted image
+            inf.Colorbits=8; // so this is how many bits there are per index
+            inf.ColorUsed=256; // and number of colours used
+            cols=imbuff; // colour palette address - uses 4 bytes/colour
+            break;
+        case 2:
+            ncomp = IA;
+            break;
+        case 3:
+            ncomp = RGB; 
+            break;
+        case 4:
+            ncomp = RGBA;
+            break;
+        default:
+            cols=imbuff; // colour palette address - uses 4 bytes/colour
+            if (infsize==12 || infsize==64) ncpal=3; // OS2 - uses 3 colours per palette entry
+            else ncpal=4; // Windoze uses 4!
+        }
+        if (ncomp>0) buffer = (unsigned char *)malloc( (ncomp==BW?3:ncomp)*inf.width*inf.height*sizeof(unsigned char)); // to be returned
+        else buffer = (unsigned char *)malloc( 3*inf.width*inf.height*sizeof(unsigned char)); // default full colour to be returned
+        
+        unsigned long off=0;
+        unsigned long rowbytes=ncomp*sizeof(unsigned char)*inf.width;
+        unsigned long doff=(rowbytes)/4;
+        if ((rowbytes%4)) doff++; // round up if needed
+        doff*=4; // to find dword alignment
+        for(int j=0; j<inf.height; j++) {
+            if (ncomp>BW) memcpy(buffer+j*rowbytes, imbuff+off, rowbytes); // pack bytes closely
+            else { // find from the palette..
+                unsigned char *imptr=imbuff+inf.ColorUsed*ncpal; // add size of the palette- start of image
+                int npixperbyte=8/inf.Colorbits; // no of pixels per byte
+                for (int ii=0; ii<inf.width/npixperbyte; ii++) {
+                    unsigned char mask=0x00; // masked with index to extract colorbits bits
+                    unsigned char byte=imptr[(j*inf.width/npixperbyte)+ii];
+                    int jj;
+                    for (jj=0; jj<inf.Colorbits; jj++) mask |= (0x80>>jj); // fill N High end bits
+                    for (jj=0; jj<npixperbyte; jj++) {
+                        int colidx=(byte&mask)>>((npixperbyte-1-jj)*inf.Colorbits);
+                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+0]=cols[ncpal*colidx+2];
+                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+1]=cols[ncpal*colidx+1];
+                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+2]=cols[ncpal*colidx];
+                        mask>>=inf.Colorbits;
+                    }
+                }
+            }
+            off+=doff;
+            if (ncomp>2) { // yes bill, colours are usually BGR aren't they
+                for(int i=0; i<inf.width; i++) {
+                    int ijw=i+j*inf.width;
+                    unsigned char blu=buffer[3*ijw+0];
+                    buffer[3*ijw+0]=buffer[3*ijw+2]; // swap order of colours
+                    buffer[3*ijw+2]=blu;
+                }
+            }
+        }
+        delete [] imbuff; // free the on-disk storage
         
         fclose(fp);
 
@@ -326,6 +333,63 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
 
             return pOsgImage;
 
+        }
+        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options* op)
+        {
+            FILE *fp = fopen(fileName.c_str(), "wb");
+            if (!fp) return WriteResult::ERROR_IN_WRITING_FILE;
+            // its easier for me to write a binary write using stdio than streams
+            struct bmpheader hd;
+            unsigned long nx=img.s(),ny=img.t(), ndep=img.r();
+            unsigned long size, wordsPerScan;
+            long infsize;    //size of BMPinfo in bytes
+            wordsPerScan=(nx*3+3)/4; // rounds up to next 32 bit boundary
+            size=4*ny*wordsPerScan; // rounded to 4bytes * number of scan lines
+            hd.FileType=MB;
+            hd.Reserved1=hd.Reserved2=0; // offset to image
+            hd.offset[0]=sizeof(long)+sizeof(BMPInfo)+sizeof(hd); // 26; // offset to image
+            hd.offset[1]=0; // offset to image
+            hd.siz[0]=(size&0xffff0000)>>16; // high word
+            hd.siz[1]=(size&0xffff); // low word
+            fwrite(&hd, sizeof(hd), 1, fp);
+            struct BMPInfo inf;
+            osg::notify(osg::WARN) << "sizes "<<size << " "<<sizeof(inf)<< std::endl;
+            inf.width=nx;   //width of the image in pixels
+            inf.height=ny;    //   height of the image in pixels
+            inf.planes=1;       //:word: number of planes (always 1)
+            inf.Colorbits=24;       //word: number of bits used to describe color in each pixel
+            inf.compression=0;  //compression used windows says 0= no compression
+            inf.ImageSize=size;    //nx*ny*3; //image size in bytes
+            inf.XpixPerMeter=.001; //pixels per meter in X
+            inf.YpixPerMeter=.001; //pixels per meter in Y
+            inf.ColorUsed=0;   //number of colors used
+            inf.Important=0;   //number of "important" colors
+   // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
+            infsize=sizeof(BMPInfo)+sizeof(long);
+            fwrite(&infsize, sizeof(long), 1, fp);
+            fwrite(&inf, sizeof(inf), 1, fp); // one dword shorter than the structure defined by MS
+              // the infsize value (above) completes the structure.
+            osg::notify(osg::WARN) << "save screen "<<fileName <<inf.width<< " "<<inf.height << std::endl;
+            osg::notify(osg::WARN) << "sizes "<<size << " "<<infsize <<" "<<sizeof(inf)<< std::endl;
+            // now output the bitmap
+            // 1) swap Blue with Red - needed for Windoss.
+            unsigned char *dta=new unsigned char[size];
+            unsigned char tmp;
+            memcpy(dta,img.data(),size*sizeof(unsigned char));
+            for(int i=0;i<ny;i++) { // per scanline
+                int ioff=4*wordsPerScan*i;
+                for(int j=0;j<nx;j++) {
+                tmp=dta[3*j+ioff]; // swap r with b,  thanks to good ole Bill - 
+  //"Let's use BGR it's more logical than rgb which everyone else uses."
+                dta[3*j+ioff]=dta[3*j+ioff+2];
+                dta[3*j+ioff+2]=tmp;
+                }
+            }
+            fwrite(dta, sizeof(unsigned char), size, fp);
+            delete [] dta;
+
+            fclose(fp);
+            return WriteResult::FILE_SAVED;
         }
 };
 

@@ -6,6 +6,7 @@
 #include <osg/Material>
 #include <osg/PolygonOffset>
 #include <osg/PolygonMode>
+#include <osg/LineStipple>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -120,6 +121,12 @@ int main( int argc, char **argv )
     stateset->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE_ON);
     stateset->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
+    
+//     osg::LineStipple* linestipple = new osg::LineStipple;
+//     linestipple->setFactor(1);
+//     linestipple->setPattern(0xf0f0);
+//     stateset->setAttributeAndModes(linestipple,osg::StateAttribute::OVERRIDE_ON);
+    
     decorator->setStateSet(stateset);
   
     

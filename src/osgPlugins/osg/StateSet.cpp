@@ -65,6 +65,7 @@ void initGLNames()
     ADD_NAME("GL_FOG",GL_FOG)
     ADD_NAME("GL_LIGHTING",GL_LIGHTING)
     ADD_NAME("GL_POINT_SMOOTH",GL_POINT_SMOOTH)
+    ADD_NAME("GL_LINE_STIPPLE",GL_LINE_STIPPLE)
     ADD_NAME("GL_POLYGON_OFFSET_FILL",GL_POLYGON_OFFSET_FILL)
     ADD_NAME("GL_POLYGON_OFFSET_LINE",GL_POLYGON_OFFSET_LINE)
     ADD_NAME("GL_POLYGON_OFFSET_POINT",GL_POLYGON_OFFSET_POINT)
@@ -304,7 +305,6 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         {
             if (StateSet_matchModeStr(fr[1].getStr(),value))
             {
-
                 int mode;
                 fr[0].getInt(mode);
                 stateset.setMode((StateAttribute::GLMode)mode,value);

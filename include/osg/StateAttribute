@@ -124,6 +124,7 @@ class SG_EXPORT StateAttribute : public Object
 
             POINT,
             LINEWIDTH,
+            LINESTIPPLE,
             SHADEMODEL,
             POLYGONMODE,
             POLYGONOFFSET,

@@ -380,6 +380,10 @@ SOURCE=..\..\src\osg\PrimitiveSet.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Program.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Projection.cpp
 # End Source File
 # Begin Source File
@@ -397,6 +401,10 @@ SOURCE=..\..\src\osg\Sequence.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osg\ShadeModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Shader.cpp
 # End Source File
 # Begin Source File
 
@@ -481,6 +489,10 @@ SOURCE=..\..\src\osg\Timer.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osg\Transform.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\Uniform.cpp
 # End Source File
 # Begin Source File
 
@@ -837,6 +849,10 @@ SOURCE=..\..\Include\Osg\Projection
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\Include\Osg\Program
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\Osg\Quat
 # End Source File
 # Begin Source File
@@ -854,6 +870,10 @@ SOURCE=..\..\Include\Osg\Sequence
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ShadeModel
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Shader
 # End Source File
 # Begin Source File
 
@@ -946,6 +966,10 @@ SOURCE=..\..\Include\Osg\Transform
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\TriangleFunctor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Uniform
 # End Source File
 # Begin Source File
 

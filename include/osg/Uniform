@@ -1,0 +1,299 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2005 Robert Osfield 
+ * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
+ *
+ * This application is open source and may be redistributed and/or modified   
+ * freely and without restriction, both in commericial and non commericial
+ * applications, as long as this copyright notice is maintained.
+ * 
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
+
+/* file:	include/osg/Uniform
+ * author:	Mike Weiblen 2005-02-20
+*/
+
+// NOTICE: This code is CLOSED during construction and/or renovation!
+// It is in active development, so DO NOT yet use in application code.
+// This notice will be removed when the code is open for business.
+// For development plan and status see:
+// http://www.openscenegraph.org/index.php?page=Community.DevelopmentWork
+
+
+#ifndef OSG_UNIFORM
+#define OSG_UNIFORM 1
+
+#include <osg/ref_ptr>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Matrix>
+#include <osg/StateAttribute>
+
+#include <string>
+
+#ifndef GL_VERSION_2_0
+#define GL_VERSION_2_0 1
+#define GL_BLEND_EQUATION_RGB             GL_BLEND_EQUATION
+#define GL_VERTEX_ATTRIB_ARRAY_ENABLED    0x8622
+#define GL_VERTEX_ATTRIB_ARRAY_SIZE       0x8623
+#define GL_VERTEX_ATTRIB_ARRAY_STRIDE     0x8624
+#define GL_VERTEX_ATTRIB_ARRAY_TYPE       0x8625
+#define GL_CURRENT_VERTEX_ATTRIB          0x8626
+#define GL_VERTEX_PROGRAM_POINT_SIZE      0x8642
+#define GL_VERTEX_PROGRAM_TWO_SIDE        0x8643
+#define GL_VERTEX_ATTRIB_ARRAY_POINTER    0x8645
+#define GL_STENCIL_BACK_FUNC              0x8800
+#define GL_STENCIL_BACK_FAIL              0x8801
+#define GL_STENCIL_BACK_PASS_DEPTH_FAIL   0x8802
+#define GL_STENCIL_BACK_PASS_DEPTH_PASS   0x8803
+#define GL_MAX_DRAW_BUFFERS               0x8824
+#define GL_DRAW_BUFFER0                   0x8825
+#define GL_DRAW_BUFFER1                   0x8826
+#define GL_DRAW_BUFFER2                   0x8827
+#define GL_DRAW_BUFFER3                   0x8828
+#define GL_DRAW_BUFFER4                   0x8829
+#define GL_DRAW_BUFFER5                   0x882A
+#define GL_DRAW_BUFFER6                   0x882B
+#define GL_DRAW_BUFFER7                   0x882C
+#define GL_DRAW_BUFFER8                   0x882D
+#define GL_DRAW_BUFFER9                   0x882E
+#define GL_DRAW_BUFFER10                  0x882F
+#define GL_DRAW_BUFFER11                  0x8830
+#define GL_DRAW_BUFFER12                  0x8831
+#define GL_DRAW_BUFFER13                  0x8832
+#define GL_DRAW_BUFFER14                  0x8833
+#define GL_DRAW_BUFFER15                  0x8834
+#define GL_BLEND_EQUATION_ALPHA           0x883D
+#define GL_POINT_SPRITE                   0x8861
+#define GL_COORD_REPLACE                  0x8862
+#define GL_MAX_VERTEX_ATTRIBS             0x8869
+#define GL_VERTEX_ATTRIB_ARRAY_NORMALIZED 0x886A
+#define GL_MAX_TEXTURE_COORDS             0x8871
+#define GL_MAX_TEXTURE_IMAGE_UNITS        0x8872
+#define GL_FRAGMENT_SHADER                0x8B30
+#define GL_VERTEX_SHADER                  0x8B31
+#define GL_MAX_FRAGMENT_UNIFORM_COMPONENTS 0x8B49
+#define GL_MAX_VERTEX_UNIFORM_COMPONENTS  0x8B4A
+#define GL_MAX_VARYING_FLOATS             0x8B4B
+#define GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS 0x8B4C
+#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS 0x8B4D
+#define GL_SHADER_TYPE                    0x8B4F
+#define GL_FLOAT_VEC2                     0x8B50
+#define GL_FLOAT_VEC3                     0x8B51
+#define GL_FLOAT_VEC4                     0x8B52
+#define GL_INT_VEC2                       0x8B53
+#define GL_INT_VEC3                       0x8B54
+#define GL_INT_VEC4                       0x8B55
+#define GL_BOOL                           0x8B56
+#define GL_BOOL_VEC2                      0x8B57
+#define GL_BOOL_VEC3                      0x8B58
+#define GL_BOOL_VEC4                      0x8B59
+#define GL_FLOAT_MAT2                     0x8B5A
+#define GL_FLOAT_MAT3                     0x8B5B
+#define GL_FLOAT_MAT4                     0x8B5C
+#define GL_SAMPLER_1D                     0x8B5D
+#define GL_SAMPLER_2D                     0x8B5E
+#define GL_SAMPLER_3D                     0x8B5F
+#define GL_SAMPLER_CUBE                   0x8B60
+#define GL_SAMPLER_1D_SHADOW              0x8B61
+#define GL_SAMPLER_2D_SHADOW              0x8B62
+#define GL_DELETE_STATUS                  0x8B80
+#define GL_COMPILE_STATUS                 0x8B81
+#define GL_LINK_STATUS                    0x8B82
+#define GL_VALIDATE_STATUS                0x8B83
+#define GL_INFO_LOG_LENGTH                0x8B84
+#define GL_ATTACHED_SHADERS               0x8B85
+#define GL_ACTIVE_UNIFORMS                0x8B86
+#define GL_ACTIVE_UNIFORM_MAX_LENGTH      0x8B87
+#define GL_SHADER_SOURCE_LENGTH           0x8B88
+#define GL_ACTIVE_ATTRIBUTES              0x8B89
+#define GL_ACTIVE_ATTRIBUTE_MAX_LENGTH    0x8B8A
+#define GL_FRAGMENT_SHADER_DERIVATIVE_HINT 0x8B8B
+#define GL_SHADING_LANGUAGE_VERSION       0x8B8C
+#define GL_CURRENT_PROGRAM                0x8B8D
+#define GL_POINT_SPRITE_COORD_ORIGIN      0x8CA0
+#define GL_LOWER_LEFT                     0x8CA1
+#define GL_UPPER_LEFT                     0x8CA2
+#define GL_STENCIL_BACK_REF               0x8CA3
+#define GL_STENCIL_BACK_VALUE_MASK        0x8CA4
+#define GL_STENCIL_BACK_WRITEMASK         0x8CA5
+
+typedef char GLchar;
+
+#endif
+
+namespace osg {
+
+///////////////////////////////////////////////////////////////////////////
+/** Uniform is an osg::StateAttribute to encapsulate glUniform values */
+
+class SG_EXPORT Uniform : public StateAttribute
+{
+    public:
+	class Value
+	{
+	    public:
+		enum Type {
+		    FLOAT = GL_FLOAT,
+		    FLOAT_VEC2 = GL_FLOAT_VEC2,
+		    FLOAT_VEC3 = GL_FLOAT_VEC3,
+		    FLOAT_VEC4 = GL_FLOAT_VEC4,
+		    INT = GL_INT,
+		    INT_VEC2 = GL_INT_VEC2,
+		    INT_VEC3 = GL_INT_VEC3,
+		    INT_VEC4 = GL_INT_VEC4,
+		    BOOL = GL_BOOL,
+		    BOOL_VEC2 = GL_BOOL_VEC2,
+		    BOOL_VEC3 = GL_BOOL_VEC3,
+		    BOOL_VEC4 = GL_BOOL_VEC4,
+		    FLOAT_MAT2 = GL_FLOAT_MAT2,
+		    FLOAT_MAT3 = GL_FLOAT_MAT3,
+		    FLOAT_MAT4 = GL_FLOAT_MAT4,
+		    SAMPLER_1D = GL_SAMPLER_1D,
+		    SAMPLER_2D = GL_SAMPLER_2D,
+		    SAMPLER_3D = GL_SAMPLER_3D,
+		    SAMPLER_CUBE = GL_SAMPLER_CUBE,
+		    SAMPLER_1D_SHADOW = GL_SAMPLER_1D_SHADOW,
+		    SAMPLER_2D_SHADOW = GL_SAMPLER_2D_SHADOW,
+		    UNDEFINED = -1,
+		};
+
+		Value( const char* name, Type type );
+		Value( const Value& rhs );
+
+		/** Get the name of glUniform. */
+		const std::string& getName() const { return _name; }
+
+		/** Get the type of glUniform as enum. */
+		const Type getType() const { return _type; }
+
+		/** Return the name of a type as string. */
+		static const char* getTypename(Type t);
+
+		/** Does this Value contain real data? */
+		bool isValid() const { return _isValid; }
+
+		/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+		int compare(const Value& rhs) const;
+
+		bool isCompatibleType( Type t ) const;
+
+		/** assignment */
+		void set( float f );
+		void set( const osg::Vec2& v2 );
+		void set( const osg::Vec3& v3 );
+		void set( const osg::Vec4& v4 );
+		//TODO void set( const osg::Matrix2& m2 );
+		//TODO void set( const osg::Matrix3& m3 );
+		void set( const osg::Matrix& m4 );
+		void set( int i );
+		//TODO void set( int i0, int i1 );
+		//TODO void set( int i0, int i1, int i2 );
+		//TODO void set( int i0, int i1, int i2, int i3 );
+		//TODO void set( bool b );
+		//TODO void set( bool b0, bool b1 );
+		//TODO void set( bool b0, bool b1, bool b2 );
+		//TODO void set( bool b0, bool b1, bool b2, bool b3 );
+
+
+	    protected:
+		/** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+		int compareData(const Value& rhs) const;
+		void copyData(const Value& rhs);
+
+	    protected:
+		const std::string _name;
+		const Type _type;
+		bool _isValid;	// is _data valid?
+		union {
+		    GLfloat f1;		// float
+		    GLfloat f2[2];	// vec2
+		    GLfloat f3[3];	// vec3
+		    GLfloat f4[4];	// vec4, mat2
+		    GLfloat f9[9];	// mat3
+		    GLfloat f16[16];	// mat4
+		    GLint i1;		// int, bool, sampler*
+		    GLint i2[2];	// ivec2, bvec2
+		    GLint i3[3];	// ivec3, bvec3
+		    GLint i4[4];	// ivec4, bvec4
+		} _data;
+
+	    private:
+		Value();	// disallowed
+	};
+
+
+    public:
+        Uniform();
+	Uniform( const char* name, Value::Type type );
+
+	/** convenient construction w/ assignment */
+	Uniform( const char* name, float f );
+	Uniform( const char* name, const osg::Vec2& v2 );
+	Uniform( const char* name, const osg::Vec3& v3 );
+	Uniform( const char* name, const osg::Vec4& v4 );
+	//TODO Uniform( const char* name, const osg::Matrix2& m2 );
+	//TODO Uniform( const char* name, const osg::Matrix3& m3 );
+	Uniform( const char* name, const osg::Matrix& m4 );
+	Uniform( const char* name, int i );
+	//TODO Uniform( const char* name, int i0, int i1 );
+	//TODO Uniform( const char* name, int i0, int i1, int i2 );
+	//TODO Uniform( const char* name, int i0, int i1, int i2, int i3 );
+	//TODO Uniform( const char* name, bool b );
+	//TODO Uniform( const char* name, bool b0, bool b1 );
+	//TODO Uniform( const char* name, bool b0, bool b1, bool b2 );
+	//TODO Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        Uniform(const Uniform& gu,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_StateAttribute(osg, Uniform, UNIFORM);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check if the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Parameter macros below.
+            COMPARE_StateAttribute_Types(Uniform,sa)
+
+	    return _value.compare( rhs._value );
+        }
+
+        virtual void apply( State& state ) const;
+
+	/** assignment */
+	bool set( float f );
+	bool set( const osg::Vec2& v2 );
+	bool set( const osg::Vec3& v3 );
+	bool set( const osg::Vec4& v4 );
+	//TODO bool set( const osg::Matrix2& m2 );
+	//TODO bool set( const osg::Matrix3& m3 );
+	bool set( const osg::Matrix& m4 );
+	bool set( int i );
+	//TODO bool set( int i0, int i1 );
+	//TODO bool set( int i0, int i1, int i2 );
+	//TODO bool set( int i0, int i1, int i2, int i3 );
+	//TODO bool set( bool b );
+	//TODO bool set( bool b0, bool b1 );
+	//TODO bool set( bool b0, bool b1, bool b2 );
+	//TODO bool set( bool b0, bool b1, bool b2, bool b3 );
+
+    protected:
+        virtual ~Uniform() {}
+
+	bool isCompatibleType( Value::Type t ) const;
+
+    protected:
+	Value _value;
+
+    private:
+	Uniform& operator=(const Uniform&);	// disallowed
+};
+
+}
+
+#endif
+
+/*EOF*/

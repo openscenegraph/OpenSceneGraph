@@ -6,7 +6,8 @@ using namespace osg;
  * Sequence constructor.
  */
 Sequence::Sequence() :
-    Switch(),
+    Group(),
+    _value(-1),
     _last(-1.0f),
     _step(1),
     _loopMode(LOOP),
@@ -21,7 +22,8 @@ Sequence::Sequence() :
 }
 
 Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
-    Switch(seq, copyop),
+    Group(seq, copyop),
+    _value(seq._value),
     _last(seq._last),
     _step(seq._step),
     _loopMode(seq._loopMode),
@@ -82,7 +84,7 @@ void Sequence::setMode(SequenceMode mode)
     switch (mode) {
     case START:
         // restarts sequence in 'traverse'
-        setValue(ALL_CHILDREN_OFF);
+        setValue(-1);
         _mode = mode;
         break;
     case STOP:
@@ -101,75 +103,89 @@ void Sequence::setMode(SequenceMode mode)
 
 void Sequence::traverse(NodeVisitor& nv)
 {
+    // if app traversal update the frame count.
     if (nv.getVisitorType()==NodeVisitor::APP_VISITOR && _mode == START && _nrepsremain)
     {
-        double t = nv.getFrameStamp()->getReferenceTime();
-        if (_last == -1.0)
-            _last = t;
+        const FrameStamp* framestamp = nv.getFrameStamp();
+        if (framestamp)
+        {
+    
+            double t = framestamp->getReferenceTime();
+            if (_last == -1.0)
+                _last = t;
 
-        // first and last frame of interval
-        unsigned int nch = getNumChildren();
-        int begin = (_begin < 0 ? nch + _begin : _begin);
-        int end = (_end < 0 ? nch + _end : _end);
+            // first and last frame of interval
+            unsigned int nch = getNumChildren();
+            int begin = (_begin < 0 ? nch + _begin : _begin);
+            int end = (_end < 0 ? nch + _end : _end);
 
-        int sw = getValue();
-        if (sw == ALL_CHILDREN_OFF || 
-            sw == ALL_CHILDREN_ON ||
-            sw == MULTIPLE_CHILDREN_ON ) {
-            sw = begin;
-            _step = (begin < end ? 1 : -1);
-        }
-
-        // default timeout for unset values
-        if (sw >= (int) _frameTime.size()) {
-            setTime(sw, 1.0f);
-        }
-
-        // frame time-out?
-        float dur = _frameTime[sw] * _speed;
-        if ((t - _last) > dur) {
-
-            sw += _step;
-
-            // check interval
-            int ibegin = (begin < end ? begin : end);
-            int iend = (end > begin ? end : begin);
-            //cerr << this << " interval " << ibegin << "," << iend << endl;
-
-            if (sw < ibegin || sw > iend) {
-                // stop at last frame
-                if (sw < ibegin)
-                    sw = ibegin;
-                else
-                    sw = iend;
-
-                // repeat counter
-                if (_nrepsremain > 0)
-                    _nrepsremain--;
-
-                if (_nrepsremain == 0) {
-                    // stop
-                    setMode(STOP);
-                }
-                else {
-                    // wrap around
-                    switch (_loopMode) {
-                    case LOOP:
-                        //cerr << this << " loop" << endl;
-                        sw = begin;
-                        break;
-                    case SWING:
-                        //cerr << this << " swing" << endl;
-                        _step = -_step;
-                        break;
-                    }
-                }
+            int sw = getValue();
+            if (sw<0)
+            {
+                sw = begin;
+                _step = (begin < end ? 1 : -1);
             }
 
-            _last = t;
+            // default timeout for unset values
+            if (sw >= (int) _frameTime.size())
+            {
+                setTime(sw, 1.0f);
+            }
+
+            // frame time-out?
+            float dur = _frameTime[sw] * _speed;
+            if ((t - _last) > dur) {
+
+                sw += _step;
+
+                // check interval
+                int ibegin = (begin < end ? begin : end);
+                int iend = (end > begin ? end : begin);
+                //cerr << this << " interval " << ibegin << "," << iend << endl;
+
+                if (sw < ibegin || sw > iend) {
+                    // stop at last frame
+                    if (sw < ibegin)
+                        sw = ibegin;
+                    else
+                        sw = iend;
+
+                    // repeat counter
+                    if (_nrepsremain > 0)
+                        _nrepsremain--;
+
+                    if (_nrepsremain == 0) {
+                        // stop
+                        setMode(STOP);
+                    }
+                    else {
+                        // wrap around
+                        switch (_loopMode) {
+                        case LOOP:
+                            //cerr << this << " loop" << endl;
+                            sw = begin;
+                            break;
+                        case SWING:
+                            //cerr << this << " swing" << endl;
+                            _step = -_step;
+                            break;
+                        }
+                    }
+                }
+
+                _last = t;
+            }
+            setValue(sw);
         }
-        //cerr << this << " child=" << sw << endl;
-        setValue(sw);
     }
-    Switch::traverse(nv);
+    
+    // now do the traversal
+    if (nv.getTraversalMode()==NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
+    {
+        if (getValue()>=0) _children[getValue()]->accept(nv);
+    }
+    else
+    {
+        Group::traverse(nv);
+    }
 }

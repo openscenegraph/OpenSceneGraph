@@ -31,23 +31,47 @@ bool Switch_readLocalData(Object& obj, Input& fr)
     {
         if (fr[1].matchWord("ALL_CHILDREN_ON"))
         {
-            sw.setValue(Switch::ALL_CHILDREN_ON);
+            sw.setAllChildrenOn();
             iteratorAdvanced = true;
             fr+=2;
         }
         else if (fr[1].matchWord("ALL_CHILDREN_OFF"))
         {
-            sw.setValue(Switch::ALL_CHILDREN_OFF);
+            sw.setAllChildrenOff();
             iteratorAdvanced = true;
             fr+=2;
         }
         else if (fr[1].isInt())
         {
-            int value;
-            fr[1].getInt(value);
-            sw.setValue(value);
+            unsigned int value;
+            fr[1].getUInt(value);
+            sw.setSingleChildOn(value);
             iteratorAdvanced = true;
             fr+=2;
+        }
+    }
+
+    if (fr[0].matchWord("NewChildDefaultValue"))
+    {
+        if (fr[1].matchWord("TRUE")) 
+        {
+            sw.setNewChildDefaultValue(true);
+            iteratorAdvanced = true;
+            fr += 2;
+        }
+        else if (fr[1].matchWord("FALSE"))
+        {
+            sw.setNewChildDefaultValue(false);
+            iteratorAdvanced = true;
+            fr += 2;
+        }
+        else if (fr[1].isInt())
+        {
+            int value;
+            fr[1].getInt(value);
+            sw.setNewChildDefaultValue(value);
+            iteratorAdvanced = true;
+            fr += 2;
         }
     }
 
@@ -64,7 +88,7 @@ bool Switch_readLocalData(Object& obj, Input& fr)
             int value;
             if (fr[0].getInt(value))
             {
-                sw.setValue(value);
+                sw.setValue(pos,value);
                 ++pos;
             }
             ++fr;
@@ -84,28 +108,20 @@ bool Switch_writeLocalData(const Object& obj, Output& fw)
 {
     const Switch& sw = static_cast<const Switch&>(obj);
 
-    int value=sw.getValue();
-    switch(value)
+
+    fw.indent()<<"NewChildDefaultValue "<<sw.getNewChildDefaultValue()<<std::endl;
+
+    fw.indent()<<"ValueList {"<< std::endl;
+    fw.moveIn();
+    const Switch::ValueList& values = sw.getValueList();
+    for(Switch::ValueList::const_iterator itr=values.begin();
+        itr!=values.end();
+        ++itr)
     {
-        case(Switch::MULTIPLE_CHILDREN_ON):
-        {
-            fw.indent()<<"ValueList {"<< std::endl;
-            fw.moveIn();
-            const Switch::ValueList& values = sw.getValueList();
-            for(Switch::ValueList::const_iterator itr=values.begin();
-                itr!=values.end();
-                ++itr)
-            {
-                fw.indent()<<*itr<<std::endl;
-            }
-            fw.moveOut();
-            fw.indent()<<"}"<< std::endl;
-            break;
-        }
-        case(Switch::ALL_CHILDREN_ON): fw.indent()<<"value ALL_CHILDREN_ON"<< std::endl;break;
-        case(Switch::ALL_CHILDREN_OFF): fw.indent()<<"value ALL_CHILDREN_OFF"<< std::endl;break;
-        default: fw.indent()<<"value "<<value<< std::endl;break;
+        fw.indent()<<*itr<<std::endl;
     }
+    fw.moveOut();
+    fw.indent()<<"}"<< std::endl;
 
     return true;
 }

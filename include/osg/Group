@@ -49,6 +49,8 @@ class SG_EXPORT Group : public Node
          */
         virtual bool removeChild( Node *child );
 
+        virtual bool removeChild(unsigned int pos,unsigned int numChildrenToRemove=1);
+
         /** Replace specified Node with another Node.
           * Equivalent to setChild(getChildIndex(orignChild),node), 
           * see docs for setChild for futher details on implementation.*/
@@ -85,35 +87,6 @@ class SG_EXPORT Group : public Node
                 if (itr->get()==node) return true;
             }
             return false;
-        }
-
-
-        /** return the iterator position for specified Node.
-         *  return _children.end() if node is not contained in Group.
-         */
-        inline ChildList::iterator findNode( const Node* node )
-        {
-            for (ChildList::iterator itr=_children.begin();
-                 itr!=_children.end();
-                 ++itr)
-            {
-                if (itr->get()==node) return itr;
-            }
-            return _children.end();
-        }
-
-        /** return the const_iterator position for specified Node.
-         *  return _children.end() if node is not contained in Group.
-         */
-        inline ChildList::const_iterator findNode( const Node* node ) const
-        {
-            for (ChildList::const_iterator itr=_children.begin();
-                 itr!=_children.end();
-                 ++itr)
-            {
-                if (itr->get()==node) return itr;
-            }
-            return _children.end();
         }
 
         /** Get the index number of child, return a value between

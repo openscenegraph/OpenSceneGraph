@@ -1172,14 +1172,22 @@ class ReaderWriterGEO : public ReaderWriter
         osg::Group *makeSwitch(const georecord *gr) {
             osg::Switch *sw=new Switch;
             const geoField *gfd=gr->getField(GEO_DB_SWITCH_CURRENT_MASK);
-            sw->setValue(osg::Switch::ALL_CHILDREN_OFF);
+            sw->setAllChildrenOff();
             if (gfd) {
-                int imask;
+                int imask; // bit surprised this isn't a uint.. Robert Dec 2002.
                 imask=gfd->getInt();
-                sw->setValue(imask);
+
+                // will set all 32 bits of the mask into the switch right now,
+                // should cap to only set the number of children in the switch.
+                int selector_mask = 0x1;
+                for(unsigned int i=0;i<32;++i)
+                {
+                    sw->setValue(i,(imask&selector_mask));
+                    selector_mask <<= 1;
+                }
                 osg::notify(osg::WARN) << gr << " imask " << imask << std::endl;
             } else {
-                sw->setValue(0);
+                sw->setSingleChildOn(0);
                 osg::notify(osg::WARN) << gr << " No mask " << std::endl;
             }
             gfd=gr->getField(GEO_DB_SWITCH_NAME);

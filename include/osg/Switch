@@ -40,12 +40,22 @@ class SG_EXPORT Switch : public Group
 
         void setValue(unsigned int pos,bool value);
 
-        void setValue(const Node* child,bool value);
-        
         bool getValue(unsigned int pos) const;
 
-        bool getValue(const Node* child) const;
+        void setChildValue(const Node* child,bool value);
+        
+        bool getChildValue(const Node* child) const;
 
+        /** Set all the children off (false), and set the new default child value to off (false).*/
+        bool setAllChildrenOff();
+        
+        /** Set all the children on (true), and set the new default child value to on (true).*/
+        bool setAllChildrenOn();
+        
+        /** Set a single child to be on, switch off all other children.*/
+        bool setSingleChildOn(unsigned int pos);
+        
+#ifdef USE_DEPRECTATED_API
 	/**
 	 * Special values for the Switch. Use these if you want to
 	 * turn on/off all child nodes.
@@ -69,6 +79,8 @@ class SG_EXPORT Switch : public Group
         void setValue(int value);
 
         int getValue() const;
+        
+#endif        
 
         typedef std::vector<bool>   ValueList;
         

@@ -1,6 +1,8 @@
+#include <osg/Geode>
+#include <osg/Notify>
+
 #include <stdio.h>
 #include <math.h>
-#include <osg/Geode>
 
 #define square(x)   ((x)*(x))
 
@@ -58,19 +60,36 @@ bool Geode::addDrawable( Drawable *drawable )
 
 bool Geode::removeDrawable( Drawable *drawable )
 {
-    DrawableList::iterator itr = findDrawable(drawable);
-    if (itr!=_drawables.end())
-    {
-        // remove this Geode from the child parent list.
-        drawable->removeParent(this);
+    return removeDrawable(getDrawableIndex(drawable));
+}
 
-        if (drawable->getAppCallback())
+bool Geode::removeDrawable(unsigned int pos,unsigned int numDrawablesToRemove)
+{
+    if (pos<_drawables.size() && numDrawablesToRemove>0)
+    {
+        unsigned int endOfRemoveRange = pos+numDrawablesToRemove;
+        if (endOfRemoveRange>_drawables.size())
         {
-            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()-1);
+            notify(DEBUG_INFO)<<"Warning: Geode::removeDrawable(i,numDrawablesToRemove) has been passed an excessive number"<<std::endl;
+            notify(DEBUG_INFO)<<"         of drawables to remove, trimming just to end of drawable list."<<std::endl;
+            endOfRemoveRange=_drawables.size();
         }
 
-        // note ref_ptr<> automatically handles decrementing drawable's reference count.
-        _drawables.erase(itr);        
+        unsigned int appCallbackRemoved = 0;
+        for(unsigned i=pos;i<endOfRemoveRange;++i)
+        {
+            // remove this Geode from the child parent list.
+            _drawables[i]->removeParent(this);
+            // update the number of app calbacks removed
+            if (_drawables[i]->getAppCallback()) ++appCallbackRemoved;
+        }
+
+        _drawables.erase(_drawables.begin()+pos,_drawables.begin()+endOfRemoveRange);
+
+        if (appCallbackRemoved)
+        {
+            setNumChildrenRequiringAppTraversal(getNumChildrenRequiringAppTraversal()-appCallbackRemoved);
+        }
         
         dirtyBound();
         
@@ -78,7 +97,6 @@ bool Geode::removeDrawable( Drawable *drawable )
     }
     else return false;
 }
-
 
 bool Geode::replaceDrawable( Drawable *origDrawable, Drawable *newDrawable )
 {

@@ -18,23 +18,16 @@ Switch::Switch(const Switch& sw,const CopyOp& copyop):
 
 void Switch::traverse(NodeVisitor& nv)
 {
-    switch(nv.getTraversalMode())
+    if (nv.getTraversalMode()==NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
     {
-        case(NodeVisitor::TRAVERSE_ALL_CHILDREN):
+        for(unsigned int pos=0;pos<_children.size();++pos)
         {
-            std::for_each(_children.begin(),_children.end(),NodeAcceptOp(nv));
-            break;
+            if (_values[pos]) _children[pos]->accept(nv);
         }
-        case(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN):
-        {
-            for(unsigned int pos=0;pos<_children.size();++pos)
-            {
-                if (_values[pos]) _children[pos]->accept(nv);
-            }
-            break;
-        }
-        default:
-            break;
+    }
+    else
+    {
+        Group::traverse(nv);
     }
 }
 
@@ -75,7 +68,7 @@ void Switch::setValue(unsigned int pos,bool value)
     _values[pos]=value;
 }
 
-void Switch::setValue(const Node* child,bool value)
+void Switch::setChildValue(const Node* child,bool value)
 {
     // find the child's position.
     unsigned int pos=getChildIndex(child);
@@ -90,7 +83,7 @@ bool Switch::getValue(unsigned int pos) const
     return _values[pos];
 }
 
-bool Switch::getValue(const Node* child) const
+bool Switch::getChildValue(const Node* child) const
 {
     // find the child's position.
     unsigned int pos=getChildIndex(child);
@@ -99,6 +92,43 @@ bool Switch::getValue(const Node* child) const
     return _values[pos];
 }
 
+bool Switch::setAllChildrenOff()
+{
+    _newChildDefaultValue = false;
+    for(ValueList::iterator itr=_values.begin();
+        itr!=_values.end();
+        ++itr)
+    {
+        *itr = false;
+    }
+    return true;
+}
+
+bool Switch::setAllChildrenOn()
+{
+    _newChildDefaultValue = true;
+    for(ValueList::iterator itr=_values.begin();
+        itr!=_values.end();
+        ++itr)
+    {
+        *itr = true;
+    }
+    return true;
+}
+
+bool Switch::setSingleChildOn(unsigned int pos)
+{
+    for(ValueList::iterator itr=_values.begin();
+        itr!=_values.end();
+        ++itr)
+    {
+        *itr = false;
+    }
+    setValue(pos,true);
+    return true;
+}
+
+#ifdef USE_DEPRECTATED_API
 void Switch::setValue(int value)
 {
     switch(value)
@@ -165,3 +195,4 @@ int Switch::getValue() const
     return firstChildSelected;
 
 }
+#endif

@@ -36,8 +36,10 @@ class SG_EXPORT Geode : public Node
         /** Remove Drawable from Geode.
           * Equivalent to setDrawabke(getDrawableIndex(orignChild),node), 
           * see docs for setNode for futher details on implementation.*/
-
         virtual bool removeDrawable( Drawable *drawable );
+
+        /** Remove drawable(s) from the specified position in Geode's drawable list.*/
+        virtual bool removeDrawable(unsigned int i,unsigned int numDrawablesToRemove=1);
 
         /** Replace specified Drawable with another Drawable.
           * Equivalent to setDrawable(getDrawableIndex(orignChild),node), 
@@ -75,36 +77,6 @@ class SG_EXPORT Geode : public Node
                 if (itr->get()==gset) return true;
             }
             return false;
-        }
-
-        /** return the iterator position for specified Drawable.
-         *  return _drawables.end() if gset not is contained in Geode.
-         */
-        inline DrawableList::iterator findDrawable(const Drawable* gset)
-        {
-            
-            for (DrawableList::iterator itr=_drawables.begin();
-                 itr!=_drawables.end();
-                 ++itr)
-            {
-                if (itr->get()==gset) return itr;
-            }
-            return _drawables.end();
-        }
-
-        /** return the const_iterator position for specified Drawable.
-         *  return _drawables.end() if gset not is contained in Geode.
-         */
-        inline DrawableList::const_iterator findDrawable(const Drawable* gset) const
-        {
-            
-            for (DrawableList::const_iterator itr=_drawables.begin();
-                 itr!=_drawables.end();
-                 ++itr)
-            {
-                if (itr->get()==gset) return itr;
-            }
-            return _drawables.end();
         }
 
         /** Get the index number of drawable, return a value between

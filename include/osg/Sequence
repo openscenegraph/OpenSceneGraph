@@ -14,7 +14,7 @@ namespace osg {
 /** Sequence is a Group node which allows automatic, time based
     switching between children.
 */
-class SG_EXPORT Sequence : public Switch
+class SG_EXPORT Sequence : public Group
 {
 public :
         
@@ -26,6 +26,10 @@ public :
     META_Node(osg, Sequence);
 
     virtual void traverse(NodeVisitor& nv);
+    
+    
+    void setValue(int value) { _value = value; }
+    int getValue() const { return _value; }
 
     /** Set time in seconds for child */
     void setTime(int frame, float t);
@@ -79,6 +83,8 @@ public :
 protected :
     
     virtual ~Sequence() {}
+
+    int        _value;
 
     float _last;
     std::vector<float> _frameTime;

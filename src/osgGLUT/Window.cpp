@@ -144,7 +144,7 @@ void Window::spaceballButtonCB(int button, int state)
 
 void Window::display()
 {
-    osg::notify(osg::INFO)<<"info : Window::display() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::display() unhandled."<<std::endl;
 }
 
 
@@ -166,19 +166,19 @@ void Window::visibility(int state)
 
 void Window::mouseMotion(int , int )
 {
-    osg::notify(osg::INFO)<<"info : Window::mouseMotion() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::mouseMotion() unhandled."<<std::endl;
 }
 
 
 void Window::mousePassiveMotion(int , int )
 {
-    osg::notify(osg::INFO)<<"info : Window::mousePassiveMotion() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::mousePassiveMotion() unhandled."<<std::endl;
 }
 
 
 void Window::mouse(int , int , int , int )
 {
-    osg::notify(osg::INFO)<<"info : mouse::() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : mouse::() unhandled."<<std::endl;
 }
 
 
@@ -204,22 +204,22 @@ void Window::keyboard(unsigned char key, int , int )
 
 void Window::special(int , int , int )
 {
-    osg::notify(osg::INFO)<<"info : Window::special() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::special() unhandled."<<std::endl;
 }
 
 void Window::spaceballMotion(int , int , int )
 {
-    osg::notify(osg::INFO)<<"info : Window::spaceballMotion() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::spaceballMotion() unhandled."<<std::endl;
 }
 
 void Window::spaceballRotate(int , int , int )
 {
-    osg::notify(osg::INFO)<<"info : Window::spaceballRotate() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::spaceballRotate() unhandled."<<std::endl;
 }
 
 void Window::spaceballButton(int , int )
 {
-    osg::notify(osg::INFO)<<"info : Window::spaceballButton() unhandled."<<endl;
+    osg::notify(osg::INFO)<<"info : Window::spaceballButton() unhandled."<<std::endl;
 }
 
 

@@ -1,8 +1,8 @@
 #include <osgDB/FileNameUtils>
 
-#ifdef __sgi
+#if defined(__sgi)
     #include <cctype.h>
-#else
+#elif !defined(WIN32)
     #include <cctype>
     using std::tolower;
     using std::strlen;    

@@ -87,9 +87,7 @@ public:
         node_iterator terminal() const                    { return m_Terminal; }
 
         arctype & operator * ()                            { return m_Elem; }
-        arctype * operator -> ()                        { return &m_Elem; }
         const arctype & operator * () const                { return m_Elem; }
-        const arctype * operator -> () const            { return &m_Elem; }
 
     protected:
         friend class graph_array<nodetype, arctype>;

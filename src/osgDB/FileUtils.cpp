@@ -63,6 +63,7 @@ static const char *s_default_dso_path = "/usr/lib/osgPlugins/";
 static char *s_filePath = ".:";
 #endif
 
+static bool s_filePathInitialized = false;
 
 void osgDB::initFilePath( void )
 {
@@ -76,6 +77,7 @@ void osgDB::initFilePath( void )
     {
         notify(DEBUG_INFO) << "osgDB::Init(NULL)"<<endl;
     }
+    s_filePathInitialized = true;
 }
 
 
@@ -96,6 +98,8 @@ void osgDB::setFilePath( const char *_path )
     strcat( buff, _path );
 
     s_filePath = strdup( buff );
+
+    s_filePathInitialized = true;
 }
 
 
@@ -152,6 +156,8 @@ char *osgDB::findFile( const char *file )
 {
     if (!file) return NULL;
     
+    if (!s_filePathInitialized) initFilePath();
+
     char* newFileName = findFileInPath( file, s_filePath );
     if (newFileName) return newFileName;
     

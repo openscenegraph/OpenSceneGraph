@@ -15,6 +15,8 @@
 
 #include <osgText/Text>
 
+#include <osgDB/FileUtils>
+
 #include "FTFace.h"
 #include "FTGLBitmapFont.h"
 #include "FTGLPixmapFont.h"
@@ -63,16 +65,21 @@ bool Font::
 open(const std::string& font)
 {
 	clear();
+        
+        char* filename = osgDB::findFile(font.c_str());
+        if (filename)
+        {
 
-	_font=createFontObj();
-	if( _font!=NULL && _font->Open(font.c_str()) )
-	{
-		_init=true;
-		_fontName=font;
-		return true;
-	}
-	else
-		return false;
+	    _font=createFontObj();
+	    if( _font!=NULL && _font->Open(filename) )
+	    {
+		    _init=true;
+		    _fontName=font;
+		    return true;
+	    }
+	    else
+		    return false;
+        }
 }
 
 bool Font::

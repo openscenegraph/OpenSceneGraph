@@ -153,7 +153,7 @@ void AutoTransform::accept(NodeVisitor& nv)
 
                 if (getAutoScaleToScreen())
                 {
-                    float size = 1.0f/cs->pixelSize(getPosition(),1.0f);
+                    float size = 1.0f/cs->pixelSize(getPosition(),0.48f);
                     setScale(size);
                 }
 

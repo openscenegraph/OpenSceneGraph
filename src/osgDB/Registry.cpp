@@ -150,6 +150,7 @@ Registry::Registry()
     addFileExtensionAlias("ivz",   "gz");
     addFileExtensionAlias("ozg",   "gz");
     
+
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");
@@ -159,6 +160,7 @@ Registry::Registry()
     addFileExtensionAlias("gif",  "qt");
     addFileExtensionAlias("png",  "qt");
     addFileExtensionAlias("mov",  "qt");
+    addFileExtensionAlias("avi",  "qt");
     addFileExtensionAlias("mpg",  "qt");
     addFileExtensionAlias("mpv",  "qt");
     addFileExtensionAlias("dv",   "qt");
@@ -166,8 +168,20 @@ Registry::Registry()
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");
     addFileExtensionAlias("tif",  "tiff");
-    addFileExtensionAlias("mpg",  "mpeg");
-    addFileExtensionAlias("mpv",  "mpeg");
+
+    // really need to decide this at runtime...
+    #define USE_XINE
+    #if defined(USE_XINE)
+        addFileExtensionAlias("mov",  "xine");
+        addFileExtensionAlias("mpg",  "xine");
+        addFileExtensionAlias("mpv",  "xine");
+        addFileExtensionAlias("dv",   "xine");
+        addFileExtensionAlias("avi",  "xine");
+    #else
+        addFileExtensionAlias("mpg",  "mpeg");
+        addFileExtensionAlias("mpv",  "mpeg");
+    #endif
+
 #endif
 
 

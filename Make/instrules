@@ -155,21 +155,8 @@ __instclean :
 	  empty=`ls $(INSTDEST)`;\
 	  if [ -z "$$empty" ];\
 	  then\
-        rm -rf $(INSTDEST)
-#	    repeat=1;\
-#	    while [ $$repeat = 1 ] ; \
-#	    do \
-#	      printf "$(INSTDEST) is empty.  Remove? (y/n) [y]: ";\
-#	      read resp;\
-#  	      case $$resp in  \
-#	        ""|Yes|YES|yes|Y|y) rm -rf $(INSTDEST); repeat=0;; \
-#	        n|N|no|NO)                              repeat=0;; \
-#                *)                                      repeat=1;; \
-#	      esac\
-#        done\
+        rm -rf $(INSTDEST);\
 	  fi\
 	fi
-
-
 
 

@@ -22,7 +22,6 @@ OTHER_LIBS=$1
 TIFF_LIB=$2
 MAKE=$3
 
-
 copy_example_source()
 {
     for d in `ls $TOPDIR/examples/ | grep -v CVS`

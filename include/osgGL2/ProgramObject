@@ -32,9 +32,6 @@
 #include <string>
 
 
-// TODO This type enum must be officially added to osg::StateAttribute::Types
-#define PROGRAMOBJECT (osg::StateAttribute::VERTEXPROGRAM + 1)
-
 namespace osgGL2 {
 
 /** use deleteObject instead of glDeleteObject to allow

@@ -163,7 +163,9 @@ class SG_EXPORT StateAttribute : public Object
             COLORMATRIX,
             
             VERTEXPROGRAM,
-            FRAGMENTPROGRAM
+            FRAGMENTPROGRAM,
+            
+            PROGRAMOBJECT // utilised in osgGL2/ProgramObject
         };
 
 

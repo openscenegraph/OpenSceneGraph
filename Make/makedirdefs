@@ -1,7 +1,13 @@
 
 ################################################################
 # Directories traversed from the top level
-TOP_LEVEL_DIRS = src
+TOP_LEVEL_DIRS = \
+    src\
+    applications
+
+ifeq ($(COMPILE_EXAMPLES),yes)
+TOP_LEVEL_DIRS += examples
+endif
 
 
 ################################################################
@@ -26,7 +32,6 @@ endif
 SRC_DIRS += \
 	osgPlugins\
 	osgWrappers\
-	../examples
 
 WRAPPER_DIRS = \
 	osg\
@@ -148,6 +153,14 @@ endif
 
 ################################################################
 # Directories traversed in the TOPDIR/examples directory
+
+APPLICATION_DIRS = \
+    osgarchive\
+    osgconv\
+    osgdem\
+    osgversion\
+    osgviewer\
+
 
 EXAMPLE_DIRS = \
 	osganimate\

@@ -1,15 +1,25 @@
 
 default: opt 
 
-opt: $(EXEC:=.opt)\
+opt: \
+    $(EXEC:=.opt)\
 	$(LIB:=.opt)\
 	$(WRAPPER:=.opt)\
 	$(PLUGIN:=.opt)\
 
-debug: $(EXEC:=.dbg)\
+debug: \
+    $(EXEC:=.dbg)\
 	$(LIB:=.dbg)\
 	$(WRAPPER:=.dbg)\
 	$(PLUGIN:=.dbg)\
+
+static:\
+	$(LIB:.$(LIB_EXT)=.static)\
+	$(PLUGIN:.$(PLUGIN_EXT)=.static)\
+
+staticdebug:\
+	$(LIB:.$(LIB_EXT)=.staticdbg)\
+	$(PLUGIN:.$(LIB_EXT)=.staticdbg)\
 
 cleandepend: cleandependopt cleandependdbg
 
@@ -73,18 +83,26 @@ $(LIB): $(OBJS)
 $(WRAPPER) $(PLUGIN): $(OBJS)
 	$(C++) $(LDFLAGS) -bundle $(OBJS) $(LIBS) -o $@
 
+$(PLUGIN): $(OBJS)
+	$(C++) $(LDFLAGS) -bundle $(OBJS) $(LIBS) -o $@
+
 else
-ifeq ($(OS),HP-UX)
+  ifeq ($(OS),HP-UX)
 
 # we need to explicitly tell the linker the library name - else it will
 # include paths like ../../../libosg.sl into executables
 $(LIB) $(PLUGIN) ${WRAPPER} : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -Wl,+h -Wl,$@ -o $@
-else
+
+  else
+
 $(LIB) $(PLUGIN) ${WRAPPER} : $(OBJS)
 	$(C++) $(LDFLAGS) $(SHARED) $(OBJS) $(LIBS) -o $@
 
-endif # not HP-UX
+$(STATICLIB) $(STATICPLUGIN): $(OBJS)
+	ar rv $@ $?
+
+  endif # not HP-UX
 endif # not Darwin
 
 $(EXEC:=.dbg) :
@@ -103,6 +121,14 @@ $(LIB:=.dbg) :
 	      MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
+$(LIB:.$(LIB_EXT)=.staticdbg) :
+	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
+	@cd $(DEBUGDIR);\
+      $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)" TOPDIR=../${TOPDIR} \
+            THISDIR=../$(THISDIR)\
+            MAKEDEPEND=Makedepend $(STATICLIB)
+	@$(MAKE) LNSRC=$(DEBUGDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(STATICLIB) __link
+
 $(WRAPPER:=.dbg) : 
 	@[ -d $(DEBUGDIR) ] || mkdir $(DEBUGDIR)
 	@cd $(DEBUGDIR); \
@@ -118,6 +144,14 @@ $(PLUGIN:=.dbg) :
 	      THISDIR=../$(THISDIR)\
 	      MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(DEBUGDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
+
+$(PLUGIN:.$(PLUGIN_EXT)=.staticdbg) : 
+	@[ -d $(DEBUGDIR) ] || mkdir -p $(DEBUGDIR)
+	@cd $(DEBUGDIR); \
+	  $(MAKE) -f ../GNUmakefile "DOF=$(DBGF)" TOPDIR=../${TOPDIR} \
+	    THISDIR=../$(THISDIR)\
+	               MAKEDEPEND=Makedepend STATICPLUGIN=$(PLUGIN:.$(PLUGIN_EXT)=.a) $(STATICPLUGIN)
+	@$(MAKE) LNSRC=$(DEBUGDIR)/$(STATICPLUGIN) LNDEST=$(PLUGININST)/$(STATICPLUGIN) __link
 
 $(EXEC:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
@@ -136,6 +170,15 @@ $(LIB:=.opt) :
 	        MAKEDEPEND=Makedepend $(LIB)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(LIB) LNDEST=$(LIBINST)/$(LIB) __link
 
+$(LIB:.$(LIB_EXT)=.static) :
+	[ -d $(OPTDIR) ] || mkdir $(OPTDIR)
+	cd $(OPTDIR);\
+      $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
+            THISDIR=../$(THISDIR)\
+            MAKEDEPEND=Makedepend $(STATICLIB)
+	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICLIB) LNDEST=$(LIBINST)/$(OS)$(ARCH)/$(STATICLIB) __link
+
+
 $(WRAPPER:=.opt) : 
 	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
 	@cd $(OPTDIR); \
@@ -151,6 +194,16 @@ $(PLUGIN:=.opt) :
 	    THISDIR=../$(THISDIR)\
 	               MAKEDEPEND=Makedepend $(PLUGIN)
 	@$(MAKE) LNSRC=$(OPTDIR)/$(PLUGIN) LNDEST=$(PLUGININST)/$(PLUGIN) __link
+
+$(PLUGIN:.$(PLUGIN_EXT)=.static) : 
+	@[ -d $(OPTDIR) ] || mkdir -p $(OPTDIR)
+	@cd $(OPTDIR); \
+	  $(MAKE) -f ../GNUmakefile DOF=$(OPTF) TOPDIR=../${TOPDIR} \
+	    THISDIR=../$(THISDIR)\
+	               MAKEDEPEND=Makedepend STATICPLUGIN=$(PLUGIN:.$(PLUGIN_EXT)=.a) $(STATICPLUGIN)
+	@$(MAKE) LNSRC=$(OPTDIR)/$(STATICPLUGIN) LNDEST=$(PLUGININST)/$(STATICPLUGIN) __link
+
+
 
 ## Revamped method for making Makedepend files
 ## Under this method, Makedepend simply includes
@@ -179,18 +232,6 @@ else
 endif
 
 
-ifeq (0,1) ##### OLD WAY : Keep until we've proven that this doesn't trip up
-           ##### on other OS's.
-    Makedepend : $(CXXFILES) $(CFILES) 
-    ifeq ($(OS),IRIX)   
-    	touch $@
-    else
-    	$(C++) $(INC) $(DEPARG) $^ > $(MAKEDEPEND)
-    endif
-
-endif
-
-
 .SUFFIXES: .cpp .o
 .cpp.o:
 	$(C++) $(CXXFLAGS) -c $<
@@ -198,7 +239,6 @@ endif
 depend : $(MAKEDEPEND)
 
 __link : 
-	@echo Calling dolink.sh wit LNSRC = $(LNSRC) and LNDEST = $(LNDEST)
 	@sh $(TOPDIR)/Make/dolink.sh $(TOPDIR) $(LNSRC) $(LNDEST) "$(LINK)"
 		
 __instfiles :

@@ -228,19 +228,19 @@ void TriangleViewFrustumIntersect::intersect_triangle(const osg::Vec3& vert1, co
         v3 = vert3;
     }
 
-	
+    
     //construct positions of truncated clipping volume corners
-	/*
+    /*
     osg::Vec3 UpLeft(_eye + _LeftUp * _current_near);
     osg::Vec3 DownLeft(_eye + _LeftDown*_current_near);
     osg::Vec3 UpRight(_eye + _RightUp*_current_near);
     osg::Vec3 DownRight(_eye + _RightDown*_current_near);
-	*/
-	osg::Vec3 UpLeft(_eye + _LeftUp);
+    */
+    osg::Vec3 UpLeft(_eye + _LeftUp);
     osg::Vec3 DownLeft(_eye + _LeftDown);
     osg::Vec3 UpRight(_eye + _RightUp);
     osg::Vec3 DownRight(_eye + _RightDown);
-	
+    
 
     //construct truncation "back plane"
     osg::Plane back_plane(DownLeft, DownRight, UpRight);//CCW, to have normal where it should be
@@ -624,18 +624,17 @@ void CullVisitor::calcClippingDirections() const
     osg::Vec3 t_up = _camera->getUpVector();
     osg::Vec3 t_side = _camera->getSideVector();
 
-    double t_VFOV_2 = osg::DegreesToRadians(_camera->calc_fovy() * 0.5);//half of vertical FOV in radians
-	double pitch_up_angle = atan(_camera->top()/_camera->zNear());
+    double pitch_up_angle = atan(_camera->top()/_camera->zNear());
 
     //we need to pitch up the cameras up vector for angle that is half fovy, 
 //        osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
-	osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(pitch_up_angle, t_side.x(), t_side.y(), t_side.z());
+    osg::Vec3 pitched_up_up = t_up * osg::Matrix::rotate(pitch_up_angle, t_side.x(), t_side.y(), t_side.z());
 
     //we need also pitched down cameras up vector
 //    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
-	double pitch_down_angle = atan(_camera->bottom()/_camera->zNear());
-//	osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
-	osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(pitch_down_angle, t_side.x(), t_side.y(), t_side.z());
+    double pitch_down_angle = atan(_camera->bottom()/_camera->zNear());
+//    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(-t_VFOV_2, t_side.x(), t_side.y(), t_side.z());
+    osg::Vec3 pitched_down_up = t_up * osg::Matrix::rotate(pitch_down_angle, t_side.x(), t_side.y(), t_side.z());
 
     //we need either left and right or up and down planes of clipping volume (their normals better said)
 
@@ -721,33 +720,33 @@ void CullVisitor::updateCalculatedNearFar(osg::Drawable* pDrawable)
             current_near = _calculated_zfar * current_near;
         else current_near = 10000.0;//something must be put
 
-		double mult_factor;
-		if(_calculated_znear != FLT_MAX)//just in case this is the very first entry (i.e. the first bounding box contained eyePoint of camera
+        double mult_factor;
+        if(_calculated_znear != FLT_MAX)//just in case this is the very first entry (i.e. the first bounding box contained eyePoint of camera
             mult_factor = _calculated_znear * current_near;//this is side of triangle ...
         else if(_calculated_zfar != -FLT_MAX) 
             mult_factor = _calculated_zfar * current_near;
         else mult_factor = 10000.0;//something must be put
 
-		double LUdistance = _LeftUp*lookVector;
-		LUdistance = mult_factor / LUdistance;
+        double LUdistance = _LeftUp*lookVector;
+        LUdistance = mult_factor / LUdistance;
 
-		double LDdistance = _LeftDown*lookVector;
-		LDdistance = mult_factor / LDdistance;
+        double LDdistance = _LeftDown*lookVector;
+        LDdistance = mult_factor / LDdistance;
 
-		double RUdistance = _RightUp*lookVector;
-		RUdistance = mult_factor / RUdistance;
+        double RUdistance = _RightUp*lookVector;
+        RUdistance = mult_factor / RUdistance;
 
-		double RDdistance = _RightDown*lookVector;
-		RDdistance = mult_factor / RDdistance;
+        double RDdistance = _RightDown*lookVector;
+        RDdistance = mult_factor / RDdistance;
 
         //construct functor: needs clipping volume, matrix, and current near, while some members for speed are kept in CullVisitor since
         //they need be calculated only once per frame
-		/*
+        /*
         TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
             _cvs->_matrix.get(), current_near, eyePoint, 
             _LeftUp,_LeftDown,_RightUp,_RightDown);
-		*/
-		TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
+        */
+        TriangleViewFrustumIntersect ti(_cvs->_clippingVolume, 
             _cvs->_matrix.get(), eyePoint, 
             _LeftUp*LUdistance,_LeftDown*LDdistance,_RightUp*RUdistance,_RightDown*RDdistance);
 
@@ -886,7 +885,7 @@ void CullVisitor::apply(Geode& node)
 
     if (!node.getCullingActive()) mode = 0;
     else if (node.getNumChildrenWithCullingDisabled()==0 && 
-             isCulled(node.getBound(),mode)) return;
+       isCulled(node.getBound(),mode)) return;
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -898,19 +897,19 @@ void CullVisitor::apply(Geode& node)
         Drawable* drawable = node.getDrawable(i);
         const BoundingBox &bb =drawable->getBound();
 
-	if( drawable->getCullCallback() )
-	{
-	    if( drawable->getCullCallback()->cull( this, drawable ) == true )
-		continue;
-	}
-	else
-	{
+        if( drawable->getCullCallback() )
+        {
+            if( drawable->getCullCallback()->cull( this, drawable ) == true )
+            continue;
+        }
+        else
+        {
             if (isCulled(bb,mode)) continue;
-	}
+        }
 
 
         //SandB change:      
-//        updateCalculatedNearFar(bb);
+    //        updateCalculatedNearFar(bb);
         if(_detailedCulling)
         {
             updateCalculatedNearFar(drawable);
@@ -923,7 +922,7 @@ void CullVisitor::apply(Geode& node)
 
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
-        
+
         bool isTransparent = stateset && stateset->getRenderingHint()==osg::StateSet::TRANSPARENT_BIN;
         if (isTransparent)
         {

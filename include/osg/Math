@@ -8,50 +8,51 @@
 #include <math.h>
 
 #if defined(WIN32) || defined (macintosh)
+
     #include <float.h>
+
+
+    // PJA MAC OSX
+    // This appears to be the simplest way to get these defined under MACOSX
+    // where they arent in math.h
+
+    #ifndef acosf
+    #define acosf (float)acos
+    #endif
+
+    #ifndef asinf
+    #define asinf (float)asin
+    #endif
+
+    #ifndef cosf
+    #define cosf (float)cos
+    #endif
+
+    #ifndef sinf
+    #define sinf (float)sin
+    #endif
+
+    #ifndef logf
+    #define logf (float)log
+    #endif
+
+    #ifndef floorf
+    #define floorf (float)floor
+    #endif
+
+    #ifndef powf
+    #define powf (float)pow
+    #endif
+
+    #ifndef sqrtf
+    #define sqrtf (float)sqrt
+    #endif
+
+    #ifndef fabsf
+    #define fabsf (float)fabs
+    #endif
+
 #endif
-
-
-// PJA MAC OSX
-// This appears to be the simplest way to get these defined under MACOSX
-// where they arent in math.h
-
-#ifndef acosf
-#define acosf (float)acos
-#endif
-
-#ifndef asinf
-#define asinf (float)asin
-#endif
-
-#ifndef cosf
-#define cosf (float)cos
-#endif
-
-#ifndef sinf
-#define sinf (float)sin
-#endif
-
-#ifndef logf
-#define logf (float)log
-#endif
-
-#ifndef floorf
-#define floorf (float)floor
-#endif
-
-#ifndef powf
-#define powf (float)pow
-#endif
-
-#ifndef sqrtf
-#define sqrtf (float)sqrt
-#endif
-
-#ifndef fabsf
-#define fabsf (float)fabs
-#endif
-
 
 namespace osg {
 

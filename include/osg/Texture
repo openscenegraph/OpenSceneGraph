@@ -87,6 +87,7 @@ class SG_EXPORT Texture : public StateAttribute
             _wrap_r(text._wrap_r),
             _min_filter(text._min_filter),
             _mag_filter(text._mag_filter),
+            _texParamtersDirty(false),
             _internalFormatMode(text._internalFormatMode),
             _internalFormatValue(text._internalFormatValue),
             _borderColor(text._borderColor),
@@ -150,9 +151,9 @@ class SG_EXPORT Texture : public StateAttribute
         enum WrapMode {
             CLAMP  = GL_CLAMP,
             CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+            CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER_ARB,
             REPEAT = GL_REPEAT,
-            MIRROR = GL_MIRRORED_REPEAT_IBM,
-            CLAMP_TO_BORDER_ARB = GL_CLAMP_TO_BORDER_ARB
+            MIRROR = GL_MIRRORED_REPEAT_IBM
         };
 
         /** Set the texture wrap mode.*/
@@ -160,6 +161,13 @@ class SG_EXPORT Texture : public StateAttribute
         /** Get the texture wrap mode.*/
         const WrapMode getWrap(const WrapParameter which) const;
 
+
+        /** Sets the border color for this texture. Makes difference only if
+          * wrap mode is CLAMP_TO_BORDER */
+        void setBorderColor(const Vec4& color) { _borderColor = color; _texParamtersDirty = true; }
+        
+        const Vec4& borderColor(void) const { return _borderColor; }
+        
 
         enum FilterParameter {
             MIN_FILTER,
@@ -181,22 +189,6 @@ class SG_EXPORT Texture : public StateAttribute
         void setFilter(const FilterParameter which, const FilterMode filter);
         /** Get the texture filter mode.*/
         const FilterMode getFilter(const FilterParameter which) const;
-
-	enum CompileFlags {
-	    COMPILE_NONE       = 0x0,
-	    COMPILE_MAG_FILTER = 0x1,
-	    COMPILE_MIN_FILTER = 0x2,
-	    COMPILE_WRAP_S     = 0x4,
-	    COMPILE_WRAP_T     = 0x8,
-	    COMPILE_ALL        = 0xFF
-	};
-
-	/** Set the compile flags. Whatever is set will be compiled
-	 ** when the texture object is built.  Otherwise, immediate mode
-	 ** setting of these modes will occur during the apply
-	 **/
-	void setCompileFlags( const CompileFlags compile_flags ) { _compile_flags = compile_flags; }  
-	const CompileFlags getCompileFlags( void ) const { return _compile_flags; }
 
 
         enum InternalFormatMode {
@@ -299,10 +291,6 @@ class SG_EXPORT Texture : public StateAttribute
           * does not set or use texture binding. */
         virtual void applyImmediateMode(State& state) const;
 
-        /** Sets the border color for this texture. Makes difference only if
-          * wrap mode is CLAMP_TO_BORDER_ARB */
-        void setBorderColor(const Vec4& color) {_borderColor = color;}
-        const Vec4& borderColor(void) const {return _borderColor;}
 
 
         /** use deleteTextureObject instead of glDeleteTextures to allow
@@ -320,6 +308,9 @@ class SG_EXPORT Texture : public StateAttribute
 
         virtual ~Texture();
 
+
+        void applyTexParameters(State& state) const;
+
         typedef std::vector<GLuint> TextureNameList;
         mutable TextureNameList _handleList;
 
@@ -328,6 +319,7 @@ class SG_EXPORT Texture : public StateAttribute
 
         // size of the created OpenGL texture object, may be estimated. 
         mutable uint _textureObjectSize;
+
 
         // not ideal that _image is mutable, but its required since
         // Image::ensureDimensionsArePowerOfTwo() can only be called
@@ -344,7 +336,9 @@ class SG_EXPORT Texture : public StateAttribute
         FilterMode _min_filter;
         FilterMode _mag_filter;
 
-	CompileFlags _compile_flags;
+        // true if apply tex parameters required. 
+        mutable bool _texParamtersDirty;
+
 
         InternalFormatMode  _internalFormatMode;
         int                 _internalFormatValue;

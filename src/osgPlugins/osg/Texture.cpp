@@ -174,6 +174,7 @@ bool Texture_matchWrapStr(const char* str,Texture::WrapMode& wrap)
 {
     if (strcmp(str,"CLAMP")==0) wrap = Texture::CLAMP;
     else if (strcmp(str,"CLAMP_TO_EDGE")==0) wrap = Texture::CLAMP_TO_EDGE;
+    else if (strcmp(str,"CLAMP_TO_BORDER")==0) wrap = Texture::CLAMP_TO_BORDER;
     else if (strcmp(str,"REPEAT")==0) wrap = Texture::REPEAT;
     else if (strcmp(str,"MIRROR")==0) wrap = Texture::MIRROR;
     else return false;
@@ -187,6 +188,7 @@ const char* Texture_getWrapStr(Texture::WrapMode wrap)
     {
         case(Texture::CLAMP): return "CLAMP";
         case(Texture::CLAMP_TO_EDGE): return "CLAMP_TO_EDGE";
+        case(Texture::CLAMP_TO_BORDER): return "CLAMP_TO_BORDER";
         case(Texture::REPEAT): return "REPEAT";
         case(Texture::MIRROR): return "MIRROR";
     }

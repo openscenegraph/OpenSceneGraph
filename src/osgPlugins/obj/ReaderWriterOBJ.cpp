@@ -242,18 +242,27 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         if (omtl->textureName)
         {
             TextureMap::iterator titr = textureMap.find(omtl->textureName);
+
+            osg::notify(osg::DEBUG_INFO) << "textureName: " << omtl->textureName << std::endl;
+
             if (titr==textureMap.end())
             {
-        
+            
                 std::string fileName = osgDB::findFileInDirectory(omtl->textureName,directory,osgDB::CASE_INSENSITIVE);
-                if (!fileName.empty()) fileName = osgDB::findDataFile(omtl->textureName,osgDB::CASE_INSENSITIVE);
+                if (fileName.empty()) fileName = osgDB::findDataFile(omtl->textureName,osgDB::CASE_INSENSITIVE);
                 
                 if (!fileName.empty())
                 {
 
+                    osg::notify(osg::DEBUG_INFO) << "filename: " << fileName << std::endl;
+
                     osg::Image* osg_image = osgDB::readImageFile(fileName.c_str());
                     if (osg_image)
                     {
+
+                        osg::notify(osg::DEBUG_INFO) << "imageRead: " << omtl->textureName << std::endl;
+
+
                         osg::Texture2D* osg_texture = new osg::Texture2D;
                         osg_texture->setImage(osg_image);
                         stateset->setTextureAttributeAndModes(0,osg_texture,osg::StateAttribute::ON);
@@ -351,6 +360,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
             
             // state and material (if any)
             if (!osg_mtl.empty()) {
+            
+                osg::notify(osg::NOTICE)<<"ogrp->material="<<ogrp->material<<std::endl;
+            
                 drawable->setStateSet(osg_mtl[ogrp->material].get());
             }
 

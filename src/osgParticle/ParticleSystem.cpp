@@ -69,7 +69,7 @@ void osgParticle::ParticleSystem::update(double dt)
     for (i=particles_.begin(); i!=end; ++i) {
         if (i->isAlive()) {
             if (i->update(dt)) {
-                update_bounds(i->getPosition());
+                update_bounds(i->getPosition(), i->getCurrentSize());
             } else {
                 deadparts_.push(&(*i));
             }
@@ -136,7 +136,7 @@ void osgParticle::ParticleSystem::drawImmediateMode(osg::State &state)
     }
 }
 
-void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &texturefile, bool emissive_particles, bool lighting)
+void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &texturefile, bool emissive_particles, bool lighting, int texture_unit)
 {
     osg::StateSet *stateset = osgNew osg::StateSet;
 
@@ -154,11 +154,11 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &textur
         texture->setImage(osgDB::readImageFile(texturefile));
         texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
         texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-        stateset->setAttributeAndModes(texture, osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(texture_unit, texture, osg::StateAttribute::ON);
 
         osg::TexEnv *texenv = osgNew osg::TexEnv;
         texenv->setMode(osg::TexEnv::MODULATE);
-        stateset->setAttribute(texenv);
+        stateset->setTextureAttribute(texture_unit, texenv);
     }
 
     osg::Transparency *transparency = osgNew osg::Transparency;

@@ -165,7 +165,7 @@ endif
   FREETYPE_LIB      = -lfreetype
   GLUT_LIB          = -lglut
   GL_LIBS           = -lGLU -lGL 
-  X_LIBS            = -lXmu -lX11
+  X_LIBS            = -lXi -lXmu -lX11
   SOCKET_LIBS       = 
   OTHER_LIBS        = 
   PNG_LIBS          = -lpng

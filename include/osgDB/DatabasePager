@@ -38,7 +38,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         DatabasePager();
 
         /** Add a request to load a node file to end the the database request list.*/
-        virtual void requestNodeFile(const std::string& fileName,osg::Group* group);
+        virtual void requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const osg::FrameStamp* framestamp);
 
         /** run does the database paging.*/        
         virtual void run();
@@ -113,17 +113,18 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         typedef std::set<unsigned int>                     ActiveGraphicsContexts;
 
 
-    protected :
-
-        virtual ~DatabasePager();
         
         struct DatabaseRequest : public osg::Referenced
         {
             DatabaseRequest():
                 _numOfRequests(0)
             {}
-        
+            
             std::string                 _fileName;
+            double                      _timestampFirstRequest;
+            float                       _priorityFirstRequest;
+            double                      _timestampLastRequest;
+            float                       _priorityLastRequest;
             unsigned int                _numOfRequests;
             osg::ref_ptr<osg::Group>    _groupForAddingLoadedSubgraph;
             osg::ref_ptr<osg::Node>     _loadedModel;
@@ -132,6 +133,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         };
         
         typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
+
+    protected :
+
+        virtual ~DatabasePager();
 
         DatabaseRequestList     _fileRequestList;
         OpenThreads::Mutex         _fileRequestListMutex;

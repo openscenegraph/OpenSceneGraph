@@ -47,6 +47,7 @@ void ApplicationUsage::addKeyboardMouseBinding(const std::string& option,const s
 
 void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,unsigned int widthOfOutput)
 {
+
     unsigned int maxNumCharsInOptions = 0;
     ApplicationUsage::UsageMap::const_iterator citr;
     for(citr=um.begin();
@@ -58,7 +59,6 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
     
     unsigned int fullWidth = widthOfOutput;
     unsigned int optionPos = 2;
-    unsigned int optionWidth = maxNumCharsInOptions;
     unsigned int explanationPos = 2+maxNumCharsInOptions+2;
     unsigned int explanationWidth = fullWidth-explanationPos;
 
@@ -69,7 +69,7 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
         ++citr)
     {
         line.assign(fullWidth,' ');
-        line.replace(optionPos,optionWidth,citr->first);
+        line.replace(optionPos,citr->first.length(),citr->first);
         
         const std::string& explanation = citr->second;
         std::string::size_type pos = 0;
@@ -90,6 +90,7 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
         
             std::string::size_type width = minimum((std::string::size_type)(explanation.length()-pos),(std::string::size_type)(explanationWidth-offset));
             std::string::size_type slashn_pos = explanation.find('\n',pos);
+            
             unsigned int extraSkip = 0;
             bool concatinated = false;
             if (slashn_pos!=std::string::npos)
@@ -123,13 +124,15 @@ void ApplicationUsage::getFormatedString(std::string& str, const UsageMap& um,un
                     concatinated = true;
                 }
             }
-                                              
+
             line.replace(explanationPos+offset,explanationWidth, explanation, pos, width);
+
             if (concatinated) { str += line; str += "-\n"; }
             else { str += line; str += "\n"; }
             
             // move to the next line of output.
             line.assign(fullWidth,' ');
+            
             pos += width+extraSkip;
 
             

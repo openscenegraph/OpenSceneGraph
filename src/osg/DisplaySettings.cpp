@@ -55,6 +55,8 @@ void DisplaySettings::copy(const DisplaySettings& vs)
 
     _splitStereoVerticalEyeMapping = vs._splitStereoVerticalEyeMapping;
     _splitStereoVerticalSeparation = vs._splitStereoVerticalSeparation;
+    
+    _splitStereoAutoAdjustAspectRatio = vs._splitStereoAutoAdjustAspectRatio;
 
     _doubleBuffer = vs._doubleBuffer;
     _RGB = vs._RGB;
@@ -93,6 +95,8 @@ void DisplaySettings::setDefaults()
     _splitStereoVerticalEyeMapping = LEFT_EYE_TOP_VIEWPORT;
     _splitStereoVerticalSeparation = 0;
 
+    _splitStereoAutoAdjustAspectRatio = true;
+
     _doubleBuffer = true;
     _RGB = true;
     _depthBuffer = true;
@@ -110,6 +114,7 @@ static ApplicationUsageProxy DisplaySetting_e4(ApplicationUsage::ENVIRONMENTAL_V
 static ApplicationUsageProxy DisplaySetting_e5(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING <mode>","LEFT_EYE_LEFT_VIEWPORT | LEFT_EYE_RIGHT_VIEWPORT");
 static ApplicationUsageProxy DisplaySetting_e8(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_HORIZONTAL_SEPARATION <float>","number of pixels between viewports");
 static ApplicationUsageProxy DisplaySetting_e9(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_EYE_MAPPING <mode>","LEFT_EYE_TOP_VIEWPORT | LEFT_EYE_BOTTOM_VIEWPORT");
+static ApplicationUsageProxy DisplaySetting_e10(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO <mode>","OFF | ON  Default to ON to compenstate for the compression of the aspect ratio when viewing in split screen stereo.  Note, if you are setting fovx and fovy explicityly OFF should be used.");
 static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>","number of pixels between viewports");
 static ApplicationUsageProxy DisplaySetting_e12(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
 
@@ -206,6 +211,19 @@ void DisplaySettings::readEnvironmentalVariables()
         if (strcmp(ptr,"LEFT_EYE_BOTTOM_VIEWPORT")==0)
         {
             _splitStereoVerticalEyeMapping = LEFT_EYE_BOTTOM_VIEWPORT;
+        }
+    }
+    
+    if( (ptr = getenv("OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _stereo = false;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _stereo = true;
         }
     }
 

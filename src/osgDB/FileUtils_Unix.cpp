@@ -93,6 +93,7 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
     char *path = 0L;
 
     notify(DEBUG_INFO) << "FindFileInPath() : trying " << _file << " ...\n";
+    
     if( access( _file, F_OK ) == 0 ) 
     {
         return strdup(_file);
@@ -100,7 +101,9 @@ char *osgDB::findFileInPath( const char *_file, const char * filePath )
 
     tptr    = strdup( filePath );
     tmppath = strtok(  tptr, PathDelimitor );
-
+    
+    if (!tmppath) return NULL;
+    
     do
     {
         sprintf( pathbuff, "%s/%s", tmppath, _file );

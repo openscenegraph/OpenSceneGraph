@@ -75,6 +75,10 @@ ifeq ($(GDAL_INSTALLED),yes)
     PLUGIN_DIRS += gdal
 endif
 
+ifeq ($(XINE_INSTALLED),yes)
+    PLUGIN_DIRS += xine
+endif
+
 ifeq ($(JASPER_INSTALLED),yes)
     PLUGIN_DIRS += jp2
 endif

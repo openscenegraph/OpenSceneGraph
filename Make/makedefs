@@ -12,6 +12,11 @@ ifeq ($(findstring CYGWIN,$(OS)),CYGWIN)
 OS := CYGWIN
 endif
 
+## Make MINGW_XXXX MINGW so it's "Windows cross platform" :)
+ifeq ($(findstring MINGW,$(OS)),MINGW)
+OS := MINGW
+endif
+
 # TOPDIR needs to be redefined for every Makefile
 TOPDIR     ?= ../
 THISDIR    = .
@@ -308,6 +313,78 @@ ifeq ($(OS),CYGWIN)
   INST_DOC          = $(INST_SHARE_PREFIX)/doc
   INST_DATA         = $(INST_SHARE_PREFIX)/data
 
+endif
+
+#### Cygwin/Mingw specific definitions
+ifeq ($(OS),MINGW)
+  C++               = c++
+  DEPARG            = -M
+  INC               += 
+  DEF               += -DWIN32 -Wall
+# -W
+  OPTF              = -O2 
+  DBGF              = -g
+  SHARED            = -shared\
+		      -Wl,--export-all-symbols  \
+		      -Wl,--output-def,lib$(TARGET_BASENAME).def \
+		      -Wl,--out-implib,$(TOPDIR)/lib/lib$(TARGET_BASENAME).dll.a \
+
+  ARCHARGS          = 
+  LINKARGS          = -W -Wall
+  DYNAMICLIBRARYLIB =
+
+  OSG_LIBS          = -losgGLUT -losgDB -losgUtil -losg 
+  GL_LIBS           = -lglu32 -lopengl32
+  GLUT_LIB          = -lglut32 $(GL_LIBS)
+  X_LIBS            = -lgdi32 -luser32
+  OSGDB_LIBS        = -losgdb_3ds \
+  		      -losgdb_bmp \
+		      -losgdb_dw \
+		      -losgdb_flt \
+		      -losgdb_jpg \
+		      -losgdb_lwo \
+		      -losgdb_obj \
+		      -losgdb_osg \
+		      -losgdb_osgtgz \
+		      -losgdb_pic \
+		      -losgdb_png \
+		      -losgdb_rgb \
+		      -losgdb_tga \
+		      -losgdb_tgz \
+		      -losgdb_tiff \
+		      -losgdb_zip
+  SOCKET_LIBS       = 
+  OTHER_LIBS        = $(GL_LIBS)
+  PNG_LIBS          = -lpng -lz
+  JPEG_LIBS         = -ljpeg
+  GIF_LIBS          = -lungif
+  TIFF_LIB          = -ltiff -lz -ljpeg
+  FREETYPE_LIB      = -lfreetype
+
+
+#  LIB_PREFIX        = cyg
+  LIB_PREFIX        = lib
+  LIB_EXT           = dll
+  PLUGIN_EXT        = dll
+
+  LINK              = cp -f
+
+  INST_SYS_PREFIX   = /usr/local/OpenSceneGraph
+  INST_LIBS         = $(INST_SYS_PREFIX)/bin
+  INST_PLUGINS      = $(INST_SYS_PREFIX)/bin
+  INST_INCLUDE      = $(INST_SYS_PREFIX)/include
+  INST_SHARE_PREFIX = /usr/local/OpenSceneGraph
+  INST_DEMOS        = $(INST_SHARE_PREFIX)/bin
+  INST_DEMO_SRC     = $(INST_SHARE_PREFIX)/src/demos
+  INST_DOC          = $(INST_SHARE_PREFIX)/doc
+  INST_DATA         = $(INST_SHARE_PREFIX)/data
+
+  PLUGIN_DIRS       = osg rgb lib3ds flt obj lwo bmp pic tga osgtgz tgz zip
+# txp
+  DEMOS_DIRS        = hangglide osgbillboard osgconv osgcopy osgcube osgimpostor\
+                       osgreflect osgscribe osgstereoimage osgtexture osgviews \
+                       osgversion sgv osghud osgtext 
+# osgcluster
 endif
 
 

@@ -155,7 +155,7 @@ Plane computeFrontPlane(const PointList& front)
 // }
 
 // compute the volume between the front and back polygons of the occluder/hole.
-float computeVolume(const PointList& front, const PointList& back)
+float computePolytopeVolume(const PointList& front, const PointList& back)
 {
     float volume = 0.0f;
     Vec3 frontStart = front[0].second;
@@ -167,26 +167,6 @@ float computeVolume(const PointList& front, const PointList& back)
     }
     return volume;
 }
-
-float computeVolumeOfView(osg::Matrix& invP)
-{
-    PointList front;
-    front.push_back(Point(0,osg::Vec3(-1,-1,-1)));
-    front.push_back(Point(0,osg::Vec3(-1, 1,-1)));
-    front.push_back(Point(0,osg::Vec3( 1, 1,-1)));
-    front.push_back(Point(0,osg::Vec3( 1,-1,-1)));
-    transform(front,invP);
-
-    PointList back;
-    back.push_back(Point(0,osg::Vec3(-1,-1,1)));
-    back.push_back(Point(0,osg::Vec3(-1, 1,1)));
-    back.push_back(Point(0,osg::Vec3( 1, 1,1)));
-    back.push_back(Point(0,osg::Vec3( 1,-1,1)));
-    transform(back,invP);
-    
-    return computeVolume(front,back);
-}
-
 
 
 Drawable* createOccluderDrawable(const PointList& front, const PointList& back)
@@ -310,7 +290,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
             _occluderVolume.flip();
         }
         
-        _volume = computeVolume(points,farPoints)/volumeview;
+        _volume = computePolytopeVolume(points,farPoints)/volumeview;
 
         if (createDrawables && !nodePath.empty())
         {
@@ -338,7 +318,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
             PointList points;
             if (clip(cullingset.getFrustum().getPlaneList(),hitr->getVertexList(),points)>=3)
             {
-                _holeList.push_back();
+                _holeList.push_back(Polytope());
                 Polytope& polytope = _holeList.back();
 
                 // compute the points on the far plane.
@@ -366,7 +346,7 @@ bool ShadowVolumeOccluder::computeOccluder(const NodePath& nodePath,const Convex
                 }
 
                 // remove the hole's volume from the occluder volume.
-                _volume -= computeVolume(points,farPoints)/volumeview;
+                _volume -= computePolytopeVolume(points,farPoints)/volumeview;
                 
                 if (createDrawables && !nodePath.empty())
                 {

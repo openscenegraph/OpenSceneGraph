@@ -12,12 +12,12 @@ CollectOccludersVisitor::CollectOccludersVisitor()
     // overide the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
-    /*setCullingMode(VIEW_FRUSTUM_CULLING|
+    setCullingMode(VIEW_FRUSTUM_CULLING|
                    NEAR_PLANE_CULLING|
                    FAR_PLANE_CULLING|
-                   SMALL_FEATURE_CULLING);*/
+                   SMALL_FEATURE_CULLING);
     
-    _minimumShadowOccluderVolume = 0.01;
+    _minimumShadowOccluderVolume = 0.01f;
     _createDrawables = false;
     
 }

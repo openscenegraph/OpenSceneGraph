@@ -112,7 +112,7 @@ void CullStack::pushProjectionMatrix(Matrix* matrix)
     osg::CullingSet* cullingSet = osgNew osg::CullingSet();
     
     // set up view frustum.
-    cullingSet->getFrustum().setToUnitFrustum(_cullingMode&NEAR_PLANE_CULLING,_cullingMode&FAR_PLANE_CULLING);
+    cullingSet->getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));
     cullingSet->getFrustum().transformProvidingInverse(*matrix);
     
     // set the small feature culling.

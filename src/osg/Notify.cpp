@@ -62,17 +62,24 @@ bool osg::initNotifyLevel()
 
 }
 
+#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+const char* NullStreamName = "nul";
+#else
+const char* NullStreamName = "/dev/null";
+#endif
+
 std::ostream& osg::notify(const osg::NotifySeverity severity)
 {
     // set up global notify null stream for inline notify
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
-    static std::ofstream s_NotifyNulStream("nul");
-#else
-    static std::ofstream s_NotifyNulStream("/dev/null");
-#endif
+    static std::ofstream s_NotifyNulStream(NullStreamName);
 
-    static bool initialized = osg::initNotifyLevel();
-    initialized=initialized; // statement with no effect to stop GCC warning.
+    static bool initialized = false;
+    if (!initialized) 
+    {
+        std::cerr<<""; // dummy op to force construction of cerr, before a reference is passed back to calling code.
+        std::cout<<""; // dummy op to force construction of cout, before a reference is passed back to calling code.
+        initialized = osg::initNotifyLevel();
+    }
 
     if (severity<=g_NotifyLevel)
     {

@@ -89,12 +89,15 @@ class SG_EXPORT AutoTransform : public Transform
         mutable bool        _firstTimeToInitEyePoint;
         mutable osg::Vec3   _previousEyePoint;
         mutable int         _previousWidth;
-        mutable int         _previousHeight;
+        mutable int         _previousHeight;        
+        mutable osg::Matrix _previousProjection;
 
         void computeMatrix() const;
 
         mutable bool        _matrixDirty;
         mutable osg::Matrix _cachedMatrix;
+        
+       
         
 };
 

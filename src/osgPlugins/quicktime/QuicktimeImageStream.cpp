@@ -129,6 +129,8 @@ void QuicktimeImageStream::load(std::string fileName)
 
 void QuicktimeImageStream::run()
 {
+    static OpenThreads::Mutex s_qtMutex;
+
     bool playing = false;
     bool done = false;
     OSErr err;
@@ -140,6 +142,9 @@ void QuicktimeImageStream::run()
         // osg::notify(osg::ALWAYS) << "movietime: " << _data->getMovieTime() << " state " << getCmd() << std::endl;
         // Handle commands
         ThreadCommand cmd = getCmd();
+
+	s_qtMutex.lock();
+
         if (cmd != THREAD_IDLE) {
             switch (cmd) {
                 case THREAD_START: // Start or continue stream
@@ -175,6 +180,9 @@ void QuicktimeImageStream::run()
         
         MoviesTask(_data->getMovie(),0);
         float currentTime = _data->getMovieTime();
+
+	s_qtMutex.unlock();
+
         if (_lastUpdate!= currentTime) {
             dirty();
             _lastUpdate = currentTime;

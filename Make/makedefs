@@ -105,6 +105,15 @@ PLUGIN_EXT     = so
 MAKEDIST       = echo "   === Distribution build is not implemented yet for $(OS)"; printf "\n"
 INSTLOGFILE    = /tmp/.osg_inst_log
 
+ifneq ("$(OPENTHREADS_INC_DIR)","")
+INC += -I$(OPENTHREADS_INC_DIR)
+endif
+
+ifneq ("$(OPENTHREADS_LIB_DIR)","")
+LDFLAGS += -L$(OPENTHREADS_LIB_DIR)
+endif
+
+
 RECURSIVE_TARGETS = \
 	  opt\
 	  debug\

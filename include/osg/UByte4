@@ -3,7 +3,7 @@
 //as published by the Free Software Foundation.
 
 #ifndef OSG_UBYTE4
-#define OSG_UBUTE4 1
+#define OSG_UBYTE4 1
 
 #include <osg/Vec3>
 

@@ -43,11 +43,13 @@ class OSGUTIL_EXPORT Optimizer
             COMBINE_ADJACENT_LODS = 0x4,
             SHARE_DUPLICATE_STATE = 0x8,
             MERGE_GEOMETRY = 0x10,
+            CHECK_GEOMETRY = 0x20,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
-                                MERGE_GEOMETRY
+                                MERGE_GEOMETRY |
+                                CHECK_GEOMETRY
         };
 
         /** traverse the node and its subgraph with a series of optimization
@@ -175,6 +177,18 @@ class OSGUTIL_EXPORT Optimizer
 
         };
         
+        class OSGUTIL_EXPORT CheckGeometryVisitor : public osg::NodeVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                CheckGeometryVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) {}
+
+                virtual void apply(osg::Geode& geode) { checkGeode(geode); }
+
+                static void checkGeode(osg::Geode& geode);
+
+        };
         
         class OSGUTIL_EXPORT MergeGeometryVisitor : public osg::NodeVisitor
         {

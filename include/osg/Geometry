@@ -51,53 +51,6 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-//         template<typename T>
-//         struct AttributeData
-//         {
-//             AttributeData():
-//                 binding(BIND_OFF),
-//                 normalize(GL_FALSE),
-//                 offset(0) {}
-//                 
-//             AttributeData(T* a, AttributeBinding b, GLboolean n = GL_FALSE):
-//                 array(a),
-//                 indices(0),
-//                 binding(b),
-//                 normalize(n),
-//                 offset(0) {}
-// 
-//             AttributeData(T* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
-//                 array(a),
-//                 indices(i),
-//                 binding(b),
-//                 normalize(n),
-//                 offset(0) {}
-// 
-// //             AttributeData(const AttributeData& rhs, const CopyOp& copyop=CopyOp::SHADLLOW_COPY):
-// //                 array(dynamic_cast<T*>(copyop(rhs.array)),
-// //                 indices(dynamic_cast<IndexArray*>(copyop(rhs.indices)),
-// //                 binding(ths,binding),
-// //                 normalize(GL_FALSE),
-// //                 offset(rhs.offset) {}
-// 
-//             AttributeData& operator = (const AttributeData& rhs)
-//             {
-//                 array = rhs.array;
-//                 indices = rhs.indices;
-//                 binding = rhs.binding;
-//                 normalize = rhs.normalize;
-//                 offset = rhs.offset;
-//                 return *this;
-//             }
-// 
-//             ref_ptr<T>              array;
-//             ref_ptr<IndexArray>     indices;
-//             AttributeBinding        binding;
-//             GLboolean               normalize;
-//             mutable unsigned int    offset;
-//         };
-
-//        typedef AttributeData<Array> ArrayData;
         struct ArrayData
         {
             ArrayData():
@@ -118,13 +71,6 @@ class SG_EXPORT Geometry : public Drawable
                 binding(b),
                 normalize(n),
                 offset(0) {}
-
-//             ArrayData(const ArrayData& rhs, const CopyOp& copyop=CopyOp::SHADLLOW_COPY):
-//                 array(dynamic_cast<T*>(copyop(rhs.array)),
-//                 indices(dynamic_cast<IndexArray*>(copyop(rhs.indices)),
-//                 binding(ths,binding),
-//                 normalize(GL_FALSE),
-//                 offset(rhs.offset) {}
 
             ArrayData& operator = (const ArrayData& rhs)
             {
@@ -164,13 +110,6 @@ class SG_EXPORT Geometry : public Drawable
                 normalize(n),
                 offset(0) {}
 
-//             Vec3ArrayData(const Vec3ArrayData& rhs, const CopyOp& copyop=CopyOp::SHADLLOW_COPY):
-//                 array(dynamic_cast<T*>(copyop(rhs.array)),
-//                 indices(dynamic_cast<IndexArray*>(copyop(rhs.indices)),
-//                 binding(ths,binding),
-//                 normalize(GL_FALSE),
-//                 offset(rhs.offset) {}
-
             Vec3ArrayData& operator = (const Vec3ArrayData& rhs)
             {
                 array = rhs.array;
@@ -188,8 +127,6 @@ class SG_EXPORT Geometry : public Drawable
             mutable unsigned int    offset;
         };
 
-//        typedef AttributeData<Vec3Array> Vec3ArrayData;
-        
         /** static ArrayData which is returned get getTexCoordData(i) const and getVertexAttribData(i) const 
           * when i is out of range.*/
         static const ArrayData s_InvalidArrayData;
@@ -360,8 +297,8 @@ class SG_EXPORT Geometry : public Drawable
 
         bool computeFastPathsUsed();
 
-
         bool verifyBindings() const;
+
         void computeCorrectBindingsAndArraySizes();
 
 
@@ -412,6 +349,13 @@ class SG_EXPORT Geometry : public Drawable
 
         virtual ~Geometry();
        
+        bool verifyBindings(const ArrayData& arrayData) const;
+        bool verifyBindings(const Vec3ArrayData& arrayData) const;
+        
+        void computeCorrectBindingsAndArraySizes(ArrayData& arrayData,const char* arrayName);
+        void computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData,const char* arrayName);
+        
+
         PrimitiveSetList                _primitives;
 
         ArrayData                       _vertexData;

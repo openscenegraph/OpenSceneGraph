@@ -58,6 +58,7 @@
 #include "Shape.h"
 
 #include <osg/Endian>
+#include <osg/Notify>
 #include <osgDB/ReadFile>
 
 
@@ -86,7 +87,7 @@ DataInputStream::DataInputStream(std::istream* istream)
       if ( endianType != OPPOSITE_ENDIAN_TYPE ) {
          throw Exception("DataInputStream::DataInputStream(): This file has an unreadable endian type.") ;
       }
-      if (true/*_verboseOutput*/) std::cout<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
+      osg::notify(osg::INFO)<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
       _byteswap = 1 ;
    }
     

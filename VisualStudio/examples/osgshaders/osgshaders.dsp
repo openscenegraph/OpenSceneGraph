@@ -172,6 +172,11 @@ SOURCE=..\..\..\examples\osgshaders\GL2Scene.cpp
 
 # Begin Source File
 
+SOURCE=..\..\..\examples\osgshaders\Noise.cpp
+# End Source File
+
+# Begin Source File
+
 SOURCE=..\..\..\examples\osgshaders\osgshaders.cpp
 # End Source File
 

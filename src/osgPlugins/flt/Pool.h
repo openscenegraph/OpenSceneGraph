@@ -161,7 +161,7 @@ public:
     struct PoolLtPtAppearance : public osg::Referenced
     {
         unsigned int _iBackColorIdx;
-        float _bIntensity;
+        float _sfIntensity;
         float _sfMinPixelSize;
         float _sfMaxPixelSize;
         float _sfActualSize;

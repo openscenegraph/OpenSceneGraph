@@ -45,6 +45,7 @@ CXXFILES =\
         Stencil.cpp\
         Switch.cpp\
         TexEnv.cpp\
+        TexEnvCombine.cpp\
         TexGen.cpp\
         TexMat.cpp\
         Texture.cpp\

@@ -262,6 +262,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\TexEnv.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\TexEnvCombine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\TexGen.cpp
 # End Source File
 # Begin Source File

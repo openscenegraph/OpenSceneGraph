@@ -2,7 +2,10 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES = ReaderWriterQT.cpp\
-		   QTtexture.cpp
+	   QTtexture.cpp\
+	   MovieData.cpp\
+	   QTUtils.cpp\
+	   QuicktimeImageStream.cpp\
 
 LIBS  += $(QUICKTIME) $(OSG_LIBS) $(OTHER_LIBS)
 

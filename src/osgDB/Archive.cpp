@@ -85,6 +85,10 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in, bool doEndianSw
         osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
     }
 
+    osg::notify(osg::NOTICE)<<"indexBlock->_blockSize="<<indexBlock->_blockSize<<std::endl;
+    osg::notify(osg::NOTICE)<<"indexBlock->_filePositionNextIndexBlock="<<indexBlock->_filePositionNextIndexBlock<<std::endl;
+    osg::notify(osg::NOTICE)<<"indexBlock->_offsetOfNextAvailableSpace="<<indexBlock->_offsetOfNextAvailableSpace<<std::endl;
+
     indexBlock->allocateData(indexBlock->_blockSize);
     if (indexBlock->_data)
     {
@@ -100,13 +104,15 @@ Archive::IndexBlock* Archive::IndexBlock::read(std::istream& in, bool doEndianSw
                 ptr += sizeof(pos_type);
 
                 osg::swapBytes(ptr,sizeof(size_type)); 
-                size_type size = *(reinterpret_cast<size_type*>(ptr)); 
                 ptr += sizeof(size_type);
 
                 osg::swapBytes(ptr,sizeof(unsigned int)); 
                 unsigned int filename_size = *(reinterpret_cast<unsigned int*>(ptr));
                 ptr += sizeof(unsigned int);
                 ptr += filename_size;
+
+                osg::notify(osg::NOTICE)<<"filename size="<<filename_size<<std::endl;
+
             }
         }
     }

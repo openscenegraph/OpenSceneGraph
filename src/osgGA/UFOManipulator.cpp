@@ -100,6 +100,8 @@ void UFOManipulator::computeHomePosition()
        * from a line segment extending from above to below the database at its 
        * horizontal center, that intersects the database closest to zero. */
     osgUtil::IntersectVisitor iv;
+    iv.setTraversalMask(_intersectTraversalMask);
+
     osg::ref_ptr<osg::LineSegment> seg = new osg::LineSegment;
     osg::Vec3 A = bs.center() + (osg::Vec3(0,0,1)*(bs.radius()*2));
     osg::Vec3 B = bs.center() + (osg::Vec3(0,0,-1)*(bs.radius()*2));
@@ -475,6 +477,7 @@ void UFOManipulator::_adjustPosition()
         return;
 
     osgUtil::IntersectVisitor iv;
+    iv.setTraversalMask(_intersectTraversalMask);
 
     // Forward line segment at 3 times our intersect distance
     osg::ref_ptr<osg::LineSegment> segForward = new osg::LineSegment;

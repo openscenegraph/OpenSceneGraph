@@ -46,7 +46,7 @@ osg::Node* TrackballManipulator::getNode()
 }
 
 
-void TrackballManipulator::home(double currentTime)
+void TrackballManipulator::home(double /*currentTime*/)
 {
     if (getAutoComputeHomePosition()) computeHomePosition();
     computePosition(_homeEye, _homeCenter, _homeUp);

@@ -100,6 +100,12 @@ public:
         /** Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.*/
         virtual float getFusionDistanceValue() const { return 1.0f; }
 
+        /** Set the mask to use when set up intersection traversal such as used in manipulators that follow terrain or have collision detection.
+          * The intersection traversal mask is useful for controlling what parts of the scene graph should be used for intersection purposes.*/
+        void setIntersectTraversalMask(unsigned int mask) { _intersectTraversalMask = mask; }
+
+        /** Get the mask to use when set up intersection traversal such as used in manipulators that follow terrain or have collision detection.*/
+        unsigned int getIntersectTraversalMask() const { return _intersectTraversalMask; }
 
         /**
         Attach a node to the manipulator, automatically detaching any previously attached node.
@@ -185,6 +191,8 @@ protected:
 
         double                  _minimumDistance;
         
+        unsigned int            _intersectTraversalMask;
+
         bool                    _autoComputeHomePosition;
         
         osg::Vec3d              _homeEye;
@@ -192,6 +200,7 @@ protected:
         osg::Vec3d              _homeUp;
 
         osg::ref_ptr<CoordinateFrameCallback> _coordinateFrameCallback;
+
 };
 
 }

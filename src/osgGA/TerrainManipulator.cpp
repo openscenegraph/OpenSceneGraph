@@ -214,6 +214,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
     // need to reintersect with the terrain
     osgUtil::IntersectVisitor iv;
+    iv.setTraversalMask(_intersectTraversalMask);
 
     const osg::BoundingSphere& bs = _node->getBound();
     float distance = (eye-bs.center()).length() + _node->getBound().radius();
@@ -327,6 +328,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
         {
             // compute the itersection with the scene.
             osgUtil::IntersectVisitor iv;
+            iv.setTraversalMask(_intersectTraversalMask);
 
             osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
             segLookVector->set(eye,endPoint );
@@ -475,6 +477,7 @@ bool TerrainManipulator::calcMovement()
 
             // need to reintersect with the terrain
             osgUtil::IntersectVisitor iv;
+            iv.setTraversalMask(_intersectTraversalMask);
 
             double distance = _node->getBound().radius()*0.1f;
             osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;

@@ -102,6 +102,10 @@ class TemplateArray : public Array, public std::vector<T>
         virtual void accept(ArrayVisitor& av) { av.apply(*this); }
 
         virtual const GLvoid*   dataPointer() const { if (!empty()) return &front(); else return 0; }
+
+    protected:
+    
+        virtual ~Array() {}
 };
 
 typedef TemplateArray<GLbyte,Array::ByteArrayType,1,GL_BYTE>                    ByteArray;

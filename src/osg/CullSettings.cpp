@@ -12,8 +12,17 @@
 */
 
 #include <osg/CullSettings>
+#include <osg/ArgumentParser>
+#include <osg/ApplicationUsage>
+
+#include <osg/Notify>
 
 using namespace osg;
+
+CullSettings::CullSettings(const CullSettings& cs)
+{
+    setCullSettings(cs);
+}
 
 void CullSettings::setDefaults()
 {
@@ -50,4 +59,61 @@ void CullSettings::setCullSettings(const CullSettings& settings)
     _cullingMode = settings._cullingMode;
     _LODScale = settings._LODScale;
     _smallFeatureCullingPixelSize = settings._smallFeatureCullingPixelSize;
+}
+
+static ApplicationUsageProxy ApplicationUsageProxyCullSettings_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_COMPUTE_NEAR_FAR_MODE <mode>","DO_NOT_COMPUTE_NEAR_FAR | COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES | COMPUTE_NEAR_FAR_USING_PRIMITIVES");
+static ApplicationUsageProxy ApplicationUsageProxyCullSettings_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NEAR_FAR_RATIO <float>","Set the ratio between near and far planes - must greater than 0.0 but less than 1.0.");
+
+void CullSettings::readEnvironmentalVariables()
+{
+    osg::notify(osg::INFO)<<"CullSettings::readEnvironmentalVariables()"<<std::endl;
+
+    char *ptr;
+    
+    if ((ptr = getenv("OSG_COMPUTE_NEAR_FAR_MODE")) != 0)
+    {
+        if (strcmp(ptr,"DO_NOT_COMPUTE_NEAR_FAR")==0) _computeNearFar = DO_NOT_COMPUTE_NEAR_FAR;
+        else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
+        else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_PRIMITIVES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
+
+        osg::notify(osg::INFO)<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
+        
+    }
+    
+    if ((ptr = getenv("OSG_NEAR_FAR_RATIO")) != 0)
+    {
+        _nearFarRatio = atof(ptr);
+
+        osg::notify(osg::INFO)<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
+    }
+    
+}
+
+void CullSettings::readCommandLine(ArgumentParser& arguments)
+{
+    // report the usage options.
+    if (arguments.getApplicationUsage())
+    {
+        arguments.getApplicationUsage()->addCommandLineOption("--COMPUTE_NEAR_FAR_MODE <mode>","DO_NOT_COMPUTE_NEAR_FAR | COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES | COMPUTE_NEAR_FAR_USING_PRIMITIVES");
+        arguments.getApplicationUsage()->addCommandLineOption("--NEAR_FAR_RATIO <float>","Set the ratio between near and far planes - must greater than 0.0 but less than 1.0.");
+    }
+
+    std::string str;
+    while(arguments.read("--COMPUTE_NEAR_FAR_MODE",str))
+    {
+        if (str=="DO_NOT_COMPUTE_NEAR_FAR") _computeNearFar = DO_NOT_COMPUTE_NEAR_FAR;
+        else if (str=="COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES") _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
+        else if (str=="COMPUTE_NEAR_FAR_USING_PRIMITIVES") _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
+
+        osg::notify(osg::INFO)<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
+    }
+
+    double value;
+    while(arguments.read("--NEAR_FAR_RATIO",value))
+    {
+        _nearFarRatio = value;
+
+        osg::notify(osg::INFO)<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
+    }
+
 }

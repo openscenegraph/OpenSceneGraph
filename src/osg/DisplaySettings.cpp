@@ -28,7 +28,7 @@ DisplaySettings* DisplaySettings::instance()
 
 DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced()
 {
-    copy(vs);
+    setDisplaySettings(vs);
 }
 
 DisplaySettings::~DisplaySettings()
@@ -39,11 +39,11 @@ DisplaySettings::~DisplaySettings()
  DisplaySettings& DisplaySettings::operator = (const DisplaySettings& vs)
 {
     if (this==&vs) return *this;
-    copy(vs);
+    setDisplaySettings(vs);
     return *this;
 }
 
-void DisplaySettings::copy(const DisplaySettings& vs)
+void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 {
     _displayType = vs._displayType;
     _stereoMode = vs._stereoMode;

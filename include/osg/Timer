@@ -138,20 +138,21 @@ class SG_EXPORT Timer {
 
     #include <sys/time.h>
 
-#if defined(__ia64) || defined(__x86_64__) || defined(__powerpc)
+#  if defined(__ia64) || defined(__x86_64__)
     #define CLK(x)        ((x)=0)
-#elif __powerpc
-#ifndef __HAVE_POWERPC_GET_TBL
-#define __HAVE_POWERPC_GET_TBL 1
+
+#  elif defined(__powerpc)
+#    ifndef __HAVE_POWERPC_GET_TBL
+#      define __HAVE_POWERPC_GET_TBL 1
 static inline unsigned long get_tbl(void)
 {
         unsigned long tbl;
         asm volatile ("mftb %0":"=r" (tbl));
         return tbl;
 }
-#endif
+#    endif
 
-#define CLK(x)\
+#    define CLK(x)\
 { \
         unsigned long tb, tblu; \
         do { \
@@ -160,14 +161,17 @@ static inline unsigned long get_tbl(void)
         } while (tb != get_tbl()); \
         x = (((Timer_t) tblu) << 32) | (Timer_t) tb; \
 }
-#else
+
+#  elif defined(__i386)
     #define CLK(x)      __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x))
-#endif
+
+#  endif
 
     namespace osg{
 
         inline Timer_t Timer::tick() const
         {
+#  ifdef CLK
             if (_useStandardClock)
             {
                 struct timeval tv;
@@ -178,6 +182,11 @@ static inline unsigned long get_tbl(void)
             {
                 Timer_t x;CLK(x);return x;
             }
+#  else // CLK
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+#  endif // CLK
         }
 
     }

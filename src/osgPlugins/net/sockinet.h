@@ -12,7 +12,8 @@
 #define _SOCKINET_H
 
 #include "sockstream.h"
-#ifndef WIN32
+
+#if defined(__CYGWIN__) || !defined(WIN32)
 #  include <netinet/in.h>
 #endif // !WIN32
 

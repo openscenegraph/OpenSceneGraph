@@ -40,7 +40,7 @@
 #include <string.h>
 #include <string>
 //#include <cstdio>
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
 #  include <sys/types.h>
 #  include <sys/uio.h>
 #  include <sys/socket.h>
@@ -58,7 +58,7 @@ typedef int socklen_t;
 
 using namespace std;
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__CYGWIN__)
 #  define MSG_MAXIOVLEN     16
 #endif // __linux__
 
@@ -313,8 +313,10 @@ class sockbuf: public streambuf
         inline void setname(const string &name);
         inline const string& getname();
 
-#ifndef WIN32
+#if defined(__CYGWIN__) || !defined(WIN32)
         void async(bool set=true) const;
+#endif
+#if !defined(__CYGWIN__) || !defined(WIN32)
         int  pgrp() const;
         int  pgrp(int new_pgrp) const;
         void closeonexec(bool set=true) const;

@@ -183,7 +183,9 @@ class ReaderWriterXine : public osgDB::ReaderWriter
 
             xine_init(_xine);
             
-           register_plugin(_xine, "/usr/local/lib/osgPlugins", "osgdb_xine.so");      
+            register_rgbout_plugin(_xine);
+
+            // register_plugin(_xine, "/usr/local/lib/osgPlugins", "osgdb_xine.so");      
 
         }
      

@@ -27,9 +27,7 @@ bool LightSource_readLocalData(Object& obj, Input& fr)
 
     LightSource& lightsource = static_cast<LightSource&>(obj);
 
-    static ref_ptr<Light> s_light =  osgNew osg::Light;
-
-    Light* light = static_cast<Light*>(fr.readObjectOfType(*s_light));
+    StateAttribute* light=fr.readStateAttribute();
     if (light)
     {
         lightsource.setLight(light);

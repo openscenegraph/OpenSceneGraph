@@ -383,7 +383,7 @@ void CullVisitor::apply(LightSource& node)
     if (node_state) pushStateSet(node_state);
 
     Matrix& matrix = getModelViewMatrix();
-    Light* light = node.getLight();
+    StateAttribute* light = node.getLight();
     if (light)
     {
         addPositionedAttribute(&matrix,light);

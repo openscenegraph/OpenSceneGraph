@@ -35,7 +35,8 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
         TriStripVisitor(Optimizer* optimizer=0) : 
                 osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ), 
                 _cacheSize( 16 ),
-                _minStripSize( 2 )
+                _minStripSize( 2 ),
+                _generateFourPointPrimitivesQuads ( false)
         {}
 
         /** Convert mesh primitives in Geometry into Tri Strips.
@@ -84,6 +85,10 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
         {
             return _optimizer ? _optimizer->isOperationPermissableForObject(object,osgUtil::Optimizer::TRISTRIP_GEOMETRY) : true; 
         }
+        
+        void setGenerateFourPointPrimitivesQuads(bool flag) { _generateFourPointPrimitivesQuads = flag; }
+        bool getGenerateFourPointPrimitivesQuads() const { return _generateFourPointPrimitivesQuads; }
+        
 
     private:
     
@@ -93,6 +98,7 @@ class OSGUTIL_EXPORT TriStripVisitor : public osg::NodeVisitor
         unsigned int _cacheSize;
         unsigned int _minStripSize;
         GeometryList _geometryList;
+        bool         _generateFourPointPrimitivesQuads;
 };
 
 }

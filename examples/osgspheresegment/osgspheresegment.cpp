@@ -116,6 +116,21 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
 
+        // add particle effects to cessna.
+        {
+            osg::PositionAttitudeTransform* positionEffects = new osg::PositionAttitudeTransform;
+            positionEffects->setPosition(osg::Vec3(0.0f,0.0f,0.0f));
+            xform->addChild(positionEffects);
+
+            osgParticle::ExplosionEffect* explosion = new osgParticle::ExplosionEffect;
+            osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
+            osgParticle::FireEffect* fire = new osgParticle::FireEffect;
+
+            positionEffects->addChild(explosion);
+            positionEffects->addChild(smoke);
+            positionEffects->addChild(fire);
+        }
+        
         model->addChild(xform);
     }
     
@@ -220,22 +235,10 @@ void build_world(osg::Group *root)
         osgParticle::SmokeEffect* smoke = new osgParticle::SmokeEffect;
         osgParticle::FireEffect* fire = new osgParticle::FireEffect;
 
-        //osg::Geode* geode = new osg::Geode;
-        //geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),10.0f)));
-        //positionEffects->addChild(geode);
-
         positionEffects->addChild(explosion);
         positionEffects->addChild(smoke);
         positionEffects->addChild(fire);
 
-        osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
-
-        psu->addParticleSystem(explosion->getParticleSystem());
-        psu->addParticleSystem(smoke->getParticleSystem());
-        psu->addParticleSystem(fire->getParticleSystem());
-
-        // add the updater node to the scene graph
-        root->addChild(psu);
     }
     
     

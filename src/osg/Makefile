@@ -74,7 +74,7 @@ TARGET_INCLUDE_FILES = \
 	osg/ColorMatrix\
 	osg/CullFace\
 	osg/Depth\
-        osg/VisualsSettings\
+        osg/DisplaySettings\
 	osg/Drawable\
 	osg/EarthSky\
 	osg/Export\
@@ -94,6 +94,7 @@ TARGET_INCLUDE_FILES = \
 	osg/Light\
 	osg/LightSource\
 	osg/LineSegment\
+	osg/LineWidth\
 	osg/Material\
 	osg/Math\
 	osg/Matrix\

@@ -152,6 +152,12 @@ void SceneView::cull()
     _camera->adjustAspectRatio(_viewport->aspectRatio());
     
     
+    // comment out reset of rendergraph since clean is more efficient.
+    //  _rendergraph->reset();
+
+    // use clean of the rendergraph rather than reset, as it is able to
+    // reuse the structure on the rendergraph in the next frame. This
+    // achieves a certain amount of frame cohereancy of memory allocation.
     _rendergraph->clean();
 
     _cullVisitor->reset();
@@ -164,15 +170,17 @@ void SceneView::cull()
          _cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
 
-    // comment out reset of rendergraph since clean is more efficient.
-    //  _rendergraph->reset();
+    // get the camera's modelview
+    osg::Matrix* modelview = new osg::Matrix(_camera->getModelViewMatrix());
 
-    // use clean of the rendergraph rather than reset, as it is able to
-    // reuse the structure on the rendergraph in the next frame. This
-    // achieves a certain amount of frame cohereancy of memory allocation.
+
+    // take a copy of camera, and init it home
+    osg::Camera* camera = new Camera(*_camera);
+    camera->home(); 
+
 
     _cullVisitor->setLODBias(_lodBias);
-    _cullVisitor->setCamera(*_camera);
+    _cullVisitor->setCamera(*camera);
     _cullVisitor->setViewport(_viewport.get());
     _cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
 
@@ -184,31 +192,34 @@ void SceneView::cull()
     _renderStage->reset();
 
     _renderStage->setViewport(_viewport.get());
-    _renderStage->setCamera(_camera.get());
+    _renderStage->setCamera(camera);
     _renderStage->setClearColor(_backgroundColor);
-    _renderStage->setLight(_light.get());
 
 
     switch(_lightingMode)
     {
     case(HEADLIGHT):
-        _renderStage->setLightingMode(RenderStageLighting::HEADLIGHT);
+        _renderStage->addLight(_light.get(),NULL);
         break;
     case(SKY_LIGHT):
-        _renderStage->setLightingMode(RenderStageLighting::SKY_LIGHT);
+        _renderStage->addLight(_light.get(),modelview);
         break;
     case(NO_SCENEVIEW_LIGHT):
-        _renderStage->setLightingMode(RenderStageLighting::NO_SCENEVIEW_LIGHT);
         break;
     }            
 
     if (_globalState.valid()) _cullVisitor->pushStateSet(_globalState.get());
 
 
+    _cullVisitor->pushCullViewState(modelview);
+    
+
     // traverse the scene graph to generate the rendergraph.
     _sceneData->accept(*_cullVisitor);
 
     if (_globalState.valid()) _cullVisitor->popStateSet();
+    
+    _cullVisitor->popCullViewState();
 
 
     // do any state sorting required.

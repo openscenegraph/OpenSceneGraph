@@ -26,7 +26,6 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
     {
         RenderGraph::moveToRootRenderGraph(state,previous->_parent);
         state.apply();
-        if (previous->_matrix.valid()) glPopMatrix();
         previous = NULL;
     }
 
@@ -40,12 +39,13 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
         Matrix* matrix = (*litr).second.get();
         if (matrix != prev_matrix)
         {
-            if (prev_matrix) glPopMatrix();
-
             if (matrix)
             {
-                glPushMatrix();
-                glMultMatrixf(matrix->ptr());
+                glLoadMatrixf(matrix->ptr());
+            }
+            else
+            {
+                glLoadIdentity();
             }
 
             prev_matrix = matrix;
@@ -55,7 +55,5 @@ void RenderStageLighting::draw(osg::State& state,RenderLeaf*& previous)
         litr->first->apply(state);
             
     }
-    // clean up matrix stack.
-    if (prev_matrix) glPopMatrix();
 
 }

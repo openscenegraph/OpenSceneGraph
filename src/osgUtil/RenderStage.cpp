@@ -108,22 +108,6 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
-    Light* light = getLight();
-    if (getLightingMode()==RenderStageLighting::HEADLIGHT && light)
-    {
-        light->apply(state);
-    }
-
-    // set up camera modelview.
-    const Matrix& modelView = _camera->getModelViewMatrix();
-    glLoadMatrixf(modelView.ptr());
-    
-
-    if (getLightingMode()==RenderStageLighting::SKY_LIGHT && light)
-    {
-        light->apply(state);
-    }
-
     // apply the lights.
     if (_renderStageLighting.valid()) _renderStageLighting->draw(state,previous);
 
@@ -135,7 +119,6 @@ void RenderStage::draw(osg::State& state,RenderLeaf*& previous)
     {
         RenderGraph::moveToRootRenderGraph(state,previous->_parent);
         state.apply();
-        if (previous->_matrix.valid()) glPopMatrix();
         previous = NULL;
     }
 

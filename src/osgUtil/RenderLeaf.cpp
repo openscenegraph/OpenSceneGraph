@@ -33,12 +33,14 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
         Matrix* prev_matrix = previous->_matrix.get();
         if (_matrix != prev_matrix)
         {
-            if (prev_matrix) glPopMatrix();
 
             if (_matrix.valid())
             {
-                glPushMatrix();
-                glMultMatrixf(_matrix->ptr());
+                glLoadMatrixf(_matrix->ptr());
+            }
+            else
+            {
+                glLoadIdentity();
             }
 
         }
@@ -54,8 +56,11 @@ void RenderLeaf::render(State& state,RenderLeaf* previous)
 
         if (_matrix.valid())
         {
-            glPushMatrix();
-            glMultMatrixf(_matrix->ptr());
+            glLoadMatrixf(_matrix->ptr());
+        }
+        else
+        {
+            glLoadIdentity();
         }
 
         _drawable->draw(state);

@@ -30,19 +30,6 @@ class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
 
         virtual void reset();
         
-        enum Mode {
-            HEADLIGHT, // default
-            SKY_LIGHT,
-            NO_SCENEVIEW_LIGHT
-        };
-
-        void setLightingMode(Mode mode) { _lightingMode=mode; }
-        Mode getLightingMode() const { return _lightingMode; }
-
-        void setLight(osg::Light* light) { _light = light; }
-        osg::Light* getLight() { return _light.get(); }
-        const osg::Light* getLight() const { return _light.get(); }
-
         typedef std::pair< osg::Light*, osg::ref_ptr<osg::Matrix> >     LightMatrixPair;
         typedef std::vector< LightMatrixPair >                          LightList;
 
@@ -55,10 +42,7 @@ class OSGUTIL_EXPORT RenderStageLighting : public osg::Object
         
     public:
         
-        Mode                     _lightingMode;
-        osg::ref_ptr<osg::Light> _light;
         LightList                _lightList;
-
         
     protected:
     

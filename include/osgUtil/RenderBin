@@ -31,14 +31,25 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         // static methods.
         static RenderBin* createRenderBin(const std::string& binName);
-        static void addRenderBinPrototype(RenderBin* proto);
+        static RenderBin* getRenderBinPrototype(const std::string& binName);
+        static void addRenderBinPrototype(const std::string& binName,RenderBin* proto);
         static void removeRenderBinPrototype(RenderBin* proto);
 
+        enum SortMode
+        {
+            SORT_BY_STATE,
+            SORT_FRONT_TO_BACK,
+            SORT_BACK_TO_FRONT
+        };
 
-        RenderBin();
+
+        RenderBin(SortMode mode=SORT_BY_STATE);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        RenderBin(const RenderBin& rhs,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         virtual osg::Object* cloneType() const { return osgNew RenderBin(); }
-        virtual osg::Object* clone(const osg::CopyOp&) const { return osgNew RenderBin(); } // note only implements a clone of type.
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return osgNew RenderBin(*this,copyop); } // note only implements a clone of type.
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RenderBin*>(obj)!=0L; }
         virtual const char* libraryName() const { return "osgUtil"; }
         virtual const char* className() const { return "RenderBin"; }
@@ -51,18 +62,14 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         {
             _renderGraphList.push_back(rg);
         }
+        
+        bool getRequiresDepthValueForSort() const { return _requiresDepthValueForSort; }
 
+        void setRequiresDepthValueForSort(bool flag) { _requiresDepthValueForSort=flag; }
 
         void sort();
 
-        enum SortMode
-        {
-            SORT_BY_STATE,
-            SORT_FRONT_TO_BACK,
-            SORT_BACK_TO_FONT
-        };
-
-        void setSortMode(SortMode mode) { _sortMode = mode; }
+        void setSortMode(SortMode mode);
         SortMode getSortMode() const { return _sortMode; }
 
         virtual void sort_local();
@@ -95,6 +102,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         void copyLeavesFromRenderGraphListToRenderLeafList();
    
+        bool                            _requiresDepthValueForSort;
         int                             _binNum;
         RenderBin*                      _parent;
         RenderStage*                    _stage;
@@ -117,14 +125,13 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 };
 
 /** Proxy class for automatic registration of renderbins with the RenderBin prototypelist.*/
-template<class T>
 class RegisterRenderBinProxy
 {
     public:
-        RegisterRenderBinProxy()
+        RegisterRenderBinProxy(const std::string& binName,RenderBin* proto)
         {
-            _rb = osgNew T;
-            RenderBin::addRenderBinPrototype(_rb.get());
+            _rb = proto;
+            RenderBin::addRenderBinPrototype(binName,_rb.get());
         }
 
         ~RegisterRenderBinProxy()
@@ -133,7 +140,7 @@ class RegisterRenderBinProxy
         }
         
     protected:
-        osg::ref_ptr<T> _rb;
+        osg::ref_ptr<RenderBin> _rb;
 };
 
 

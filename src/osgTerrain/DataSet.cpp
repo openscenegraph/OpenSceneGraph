@@ -2757,7 +2757,12 @@ osg::Node* DataSet::CompositeDestination::createScene()
         ++titr)
     {
         osg::Node* node = (*titr)->createScene();
-        if (node) rangeNodeListMap[_maxVisibleDistance].push_back(node);
+        
+        if (node) 
+        {
+            double maxVisibleDistance = osg::maximum(_maxVisibleDistance, node->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio());
+            rangeNodeListMap[maxVisibleDistance].push_back(node);
+        }
     }
 
     // handle chilren
@@ -2766,7 +2771,11 @@ osg::Node* DataSet::CompositeDestination::createScene()
         ++citr)
     {
         osg::Node* node = (*citr)->createScene();
-        if (node) rangeNodeListMap[(*citr)->_maxVisibleDistance].push_back(node);
+        if (node)
+        {
+            double maxVisibleDistance = osg::maximum((*citr)->_maxVisibleDistance, node->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio());
+            rangeNodeListMap[maxVisibleDistance].push_back(node);
+        }
     }
 
     osg::LOD* lod = new osg::LOD;
@@ -2956,6 +2965,7 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         cutOffDistance = osg::maximum(cutOffDistance,(*citr)->_maxVisibleDistance);
     }
 
+
     osg::PagedLOD* pagedLOD = new osg::PagedLOD;
  
     float farDistance = _dataSet->getMaximumVisibleDistanceOfTopLevel();
@@ -3002,7 +3012,7 @@ osg::Node* DataSet::CompositeDestination::createPagedLODScene()
         }
     }
         
-    // cutOffDistance = pagedLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio();
+    cutOffDistance = osg::maximum(cutOffDistance, pagedLOD->getBound().radius()*_dataSet->getRadiusToMaxVisibleDistanceRatio());
     
     pagedLOD->setRange(0,cutOffDistance,farDistance);
     
@@ -3226,6 +3236,7 @@ DataSet::CompositeDestination* DataSet::createDestinationGraph(CompositeDestinat
         unsigned int texture_numRows;
         double texture_dx;
         double texture_dy;
+        // note, resolutionSensitivityScale should probably be customizable.. will consider this option for later inclusion.
         double resolutionSensitivityScale = 0.9;
         if (tile->computeImageResolution(texture_numColumns,texture_numRows,texture_dx,texture_dy))
         {

@@ -1,6 +1,6 @@
+#include <osg/GLExtensions>
 #include <osg/ColorMatrix>
 #include <osg/GL>
-#include <osg/GLExtensions>
 
 using namespace osg;
 

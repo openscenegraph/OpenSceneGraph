@@ -187,9 +187,11 @@ class DataSet : public osg::Referenced
             void loadSourceData();
             
             bool needReproject(const osgTerrain::CoordinateSystem* cs) const;
+
+            bool needReproject(const osgTerrain::CoordinateSystem* cs, double minResolution, double maxResolution) const;
             
-            Source* doReproject(osgTerrain::CoordinateSystem* cs, const std::string& filename) const;
-            
+            Source* doReproject(const std::string& filename, osgTerrain::CoordinateSystem* cs, double targetResolution=0.0) const;
+           
             void buildOverviews();
 
         protected:

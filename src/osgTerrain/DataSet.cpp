@@ -21,6 +21,8 @@
 #include <osg/ClusterCullingCallback>
 #include <osg/Notify>
 
+#include <osg/GLU>
+
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/Simplifier>
@@ -463,6 +465,21 @@ void DataSet::SourceData::readImage(DestinationData& destination)
         my_notify(osg::INFO)<<"   copying from "<<windowX<<"\t"<<windowY<<"\t"<<windowWidth<<"\t"<<windowHeight<<std::endl;
         my_notify(osg::INFO)<<"             to "<<destX<<"\t"<<destY<<"\t"<<destWidth<<"\t"<<destHeight<<std::endl;
 
+        int readWidth = destWidth;
+        int readHeight = destHeight;
+        bool doResample = false;
+
+        float destWindowWidthRatio = (float)destWidth/(float)windowWidth;
+        float destWindowHeightRatio = (float)destHeight/(float)windowHeight;
+        const float resizeTolerance = 1.1;
+        if (destWindowWidthRatio>resizeTolerance || 
+            destWindowHeightRatio>resizeTolerance)
+        {
+            readWidth = windowWidth;
+            readHeight = windowHeight;
+            doResample = true;
+        }
+
         bool hasRGB = _gdalDataSet->GetRasterCount() >= 3;
         bool hasColorTable = _gdalDataSet->GetRasterCount() >= 1 && _gdalDataSet->GetRasterBand(1)->GetColorTable();
         bool hasGreyScale = _gdalDataSet->GetRasterCount() == 1;
@@ -475,12 +492,10 @@ void DataSet::SourceData::readImage(DestinationData& destination)
             GDALDataType targetGDALType = GDT_Byte;
 
             int pixelSpace=3*numBytesPerPixel;
-            int lineSpace=-(int)(destination._image->getRowSizeInBytes());
 
-            unsigned char* imageData = destination._image->data(destX,destY+destHeight-1);
             my_notify(osg::INFO) << "reading RGB"<<std::endl;
 
-            unsigned char* tempImage = new unsigned char[destWidth*destHeight*3];
+            unsigned char* tempImage = new unsigned char[readWidth*readHeight*pixelSpace];
 
 
             /* New code courtesy of Frank Warmerdam of the GDAL group */
@@ -497,20 +512,21 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 bandBlue = _gdalDataSet->GetRasterBand(3); 
 
 
-                bandRed->RasterIO(GF_Read, windowX,_numValuesY-(windowY+windowHeight), 
+                bandRed->RasterIO(GF_Read, 
+                                  windowX,_numValuesY-(windowY+windowHeight), 
                                   windowWidth,windowHeight, 
-                                  (void*)(tempImage+0),destWidth,destHeight, 
-                                  targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                                  (void*)(tempImage+0),readWidth,readHeight, 
+                                  targetGDALType,pixelSpace,pixelSpace*readWidth); 
                 bandGreen->RasterIO(GF_Read, 
                                     windowX,_numValuesY-(windowY+windowHeight), 
                                     windowWidth,windowHeight, 
-                                    (void*)(tempImage+1),destWidth,destHeight, 
-                                    targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                                    (void*)(tempImage+1),readWidth,readHeight, 
+                                    targetGDALType,pixelSpace,pixelSpace*readWidth); 
                 bandBlue->RasterIO(GF_Read, 
                                    windowX,_numValuesY-(windowY+windowHeight), 
                                    windowWidth,windowHeight, 
-                                   (void*)(tempImage+2),destWidth,destHeight, 
-                                   targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                                   (void*)(tempImage+2),readWidth,readHeight, 
+                                   targetGDALType,pixelSpace,pixelSpace*readWidth); 
             } 
 
             else if( hasColorTable ) 
@@ -528,14 +544,14 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 band->RasterIO(GF_Read, 
                                windowX,_numValuesY-(windowY+windowHeight), 
                                windowWidth,windowHeight, 
-                               (void*)(tempImage+0),destWidth,destHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                               (void*)(tempImage+0),readWidth,readHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
 
 
                 ct = band->GetColorTable(); 
 
 
-                for( i = 0; i < destWidth * destHeight; i++ ) 
+                for( i = 0; i < readWidth * readHeight; i++ ) 
                 { 
                     GDALColorEntry sEntry; 
 
@@ -569,27 +585,140 @@ void DataSet::SourceData::readImage(DestinationData& destination)
                 band->RasterIO(GF_Read, 
                                windowX,_numValuesY-(windowY+windowHeight), 
                                windowWidth,windowHeight, 
-                               (void*)(tempImage+0),destWidth,destHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                               (void*)(tempImage+0),readWidth,readHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
                 band->RasterIO(GF_Read, 
                                windowX,_numValuesY-(windowY+windowHeight), 
                                windowWidth,windowHeight, 
-                               (void*)(tempImage+1),destWidth,destHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                               (void*)(tempImage+1),readWidth,readHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
                 band->RasterIO(GF_Read, 
                                windowX,_numValuesY-(windowY+windowHeight), 
                                windowWidth,windowHeight, 
-                               (void*)(tempImage+2),destWidth,destHeight, 
-                               targetGDALType,pixelSpace,pixelSpace*destWidth); 
+                               (void*)(tempImage+2),readWidth,readHeight, 
+                               targetGDALType,pixelSpace,pixelSpace*readWidth); 
             } 
+
+            if (doResample || readWidth!=destWidth || readHeight!=destHeight)
+            {
+                unsigned char* destImage = new unsigned char[destWidth*destHeight*pixelSpace];
+
+#if 0
+                // glu scale appears buggy...
+                glPixelStorei(GL_PACK_ALIGNMENT,1);
+                glPixelStorei(GL_PACK_ROW_LENGTH,0);
+                glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+                glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+                GLint status = gluScaleImage(GL_RGB,
+                    readWidth,
+                    readHeight,
+                    GL_UNSIGNED_BYTE,
+                    tempImage,
+                    destWidth,
+                    destHeight,
+                    GL_UNSIGNED_BYTE,
+                    destImage);
+
+#else
+
+                // rescale image by hand as glu seem buggy....
+                for(int j=0;j<destHeight;++j)
+                {
+                    float  t_d = (float)j/((float)destHeight-1);
+                    for(int i=0;i<destWidth;++i)
+                    {
+                        float s_d = (float)i/((float)destWidth-1);
+                        
+                        float flt_read_i = s_d * ((float)readWidth-1);
+                        float flt_read_j = t_d * ((float)readHeight-1);
+                        
+                        int read_i = (int)flt_read_i;
+                        if (read_i>=readWidth) read_i=readWidth-1;
+
+                        float flt_read_ir = flt_read_i-read_i;
+                        if (read_i==readWidth-1) flt_read_ir=0.0f;
+                        
+                        int read_j = (int)flt_read_j;
+                        if (read_j>=readHeight) read_j=readHeight-1;
+
+                        float flt_read_jr = flt_read_j-read_j;
+                        if (read_j==readHeight-1) flt_read_jr=0.0f;
+                        
+                        unsigned char* dest = destImage + (j*destWidth + i) * pixelSpace;
+                        if (flt_read_ir==0.0f)  // no need to interpolate i axis.
+                        {
+                            if (flt_read_jr==0.0f)  // no need to interpolate j axis.
+                            {
+                                // copy pixels
+                                unsigned char* src = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                dest[0] = src[0];
+                                dest[1] = src[1];
+                                dest[2] = src[2];
+                                //std::cout<<"copy"<<std::endl;
+                            }
+                            else  // need to interpolate j axis.
+                            {
+                                // copy pixels
+                                unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                unsigned char* src_1 = src_0 + readWidth*pixelSpace;
+                                float r_0 = 1.0f-flt_read_jr;
+                                float r_1 = flt_read_jr;
+                                dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
+                                dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
+                                dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
+                                //std::cout<<"interpolate j axis"<<std::endl;
+                            }
+                        }
+                        else // need to interpolate i axis.
+                        {
+                            if (flt_read_jr==0.0f) // no need to interpolate j axis.
+                            {
+                                // copy pixels
+                                unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                unsigned char* src_1 = src_0 + pixelSpace;
+                                float r_0 = 1.0f-flt_read_ir;
+                                float r_1 = flt_read_ir;
+                                dest[0] = (unsigned char)((float)src_0[0]*r_0 + (float)src_1[0]*r_1);
+                                dest[1] = (unsigned char)((float)src_0[1]*r_0 + (float)src_1[1]*r_1);
+                                dest[2] = (unsigned char)((float)src_0[2]*r_0 + (float)src_1[2]*r_1);
+                                //std::cout<<"interpolate i axis"<<std::endl;
+                            }
+                            else  // need to interpolate i and j axis.
+                            {
+                                unsigned char* src_0 = tempImage + (read_j*readWidth + read_i) * pixelSpace;
+                                unsigned char* src_1 = src_0 + readWidth*pixelSpace;
+                                unsigned char* src_2 = src_0 + pixelSpace;
+                                unsigned char* src_3 = src_1 + pixelSpace;
+                                float r_0 = (1.0f-flt_read_ir)*(1.0f-flt_read_jr);
+                                float r_1 = (1.0f-flt_read_ir)*flt_read_jr;
+                                float r_2 = (flt_read_ir)*(1.0f-flt_read_jr);
+                                float r_3 = (flt_read_ir)*flt_read_jr;
+                                dest[0] = (unsigned char)(((float)src_0[0])*r_0 + ((float)src_1[0])*r_1 + ((float)src_2[0])*r_2 + ((float)src_3[0])*r_3);
+                                dest[1] = (unsigned char)(((float)src_0[1])*r_0 + ((float)src_1[1])*r_1 + ((float)src_2[1])*r_2 + ((float)src_3[1])*r_3);
+                                dest[2] = (unsigned char)(((float)src_0[2])*r_0 + ((float)src_1[2])*r_1 + ((float)src_2[2])*r_2 + ((float)src_3[2])*r_3);
+                                //std::cout<<"interpolate i & j axis"<<std::endl;
+                            }
+                        }
+                        
+                    }
+                }
+
+#endif
+
+                delete [] tempImage;  
+                tempImage = destImage;
+            }
+
+
 
 
             // now copy into destination image
             unsigned char* sourceRowPtr = tempImage;
             unsigned int sourceRowDelta = pixelSpace*destWidth;
-            unsigned char* destinationRowPtr = imageData;
-            unsigned int destinationRowDelta = lineSpace;
+            unsigned char* destinationRowPtr = destination._image->data(destX,destY+destHeight-1);
+            unsigned int destinationRowDelta = -(int)(destination._image->getRowSizeInBytes());
 
+            // copy image to destination image
             for(int row=0;
                 row<destHeight;
                 ++row, sourceRowPtr+=sourceRowDelta, destinationRowPtr+=destinationRowDelta)
@@ -1390,7 +1519,15 @@ void DataSet::DestinationTile::allocate()
                                     0.0,             -texture_dy,       0.0,0.0,
                                     0.0,             0.0,               1.0,1.0,
                                     _extents.xMin(), _extents.yMax(),   0.0,1.0);
+
+
         _imagery->_image = new osg::Image;
+
+        std::string imageExension(".dds"); // ".rgb"
+        //std::string imageExension(".jp2"); // ".rgb"
+        std::string imageName(_name+imageExension);
+        _imagery->_image->setFileName(imageName.c_str());
+
         _imagery->_image->allocateImage(texture_numColumns,texture_numRows,1,GL_RGB,GL_UNSIGNED_BYTE);
         unsigned char* data = _imagery->_image->data();
         unsigned int totalSize = _imagery->_image->getTotalSizeInBytesIncludingMipmaps();

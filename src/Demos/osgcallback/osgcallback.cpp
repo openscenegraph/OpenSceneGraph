@@ -113,19 +113,6 @@ struct TransformCallback : public osg::Transform::ComputeTransformCallback
     }
 };
 
-
-struct BillboardCallback : public osg::Billboard::ComputeBillboardCallback
-{
-    /** Get the transformation matrix which moves from local coords to world coords.*/
-    virtual const bool computeMatrix(osg::Matrix& modelview, const osg::Billboard* billboard, const osg::Vec3& eye_local, const osg::Vec3& pos_local) const
-    {
-        std::cout<<"ComputeBillboardCallback - pre billboard->computeMatrix"<<std::endl;
-        bool result = billboard->computeMatrix(modelview,eye_local,pos_local);
-        std::cout<<"ComputeBillboardCallback - post billboard->computeMatrix"<<std::endl;
-        return result;
-    }
-};
-
 struct DrawableAppCallback : public osg::Drawable::AppCallback
 {
     virtual void app(osg::NodeVisitor*, osg::Drawable* drawable)
@@ -178,12 +165,6 @@ class InsertCallbacksVisitor : public osg::NodeVisitor
             }
         }
         
-        virtual void apply(osg::Billboard& node)
-        {
-            node.setComputeBillboardCallback(new BillboardCallback());
-            apply((osg::Geode&)node);
-        }
-
         virtual void apply(osg::Transform& node)
         {
             node.setComputeTransformCallback(new TransformCallback());

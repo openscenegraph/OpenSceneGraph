@@ -7,11 +7,12 @@
 
 #include <osg/Group>
 #include <osg/Transform>
+#include <osg/AnimationPath>
 #include <osg/Quat>
 
 namespace osg {
 
-/** PositionAttitideTransform - is Transfrom the set the coordinates transform
+/** PositionAttitideTransform - is Transform the set the coordinates transform
     up via a Vec3 position and Quat attitude.
 */
 class SG_EXPORT PositionAttitudeTransform : public Transform
@@ -47,6 +48,26 @@ class SG_EXPORT PositionAttitudeTransform : public Transform
         virtual const bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
         virtual const bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor* nv) const;
+
+
+        /** Callback which can be attached to a PositionAttitudeTransform
+          * as an app callback to allow it to follow the path defined by a
+          * AnimationPath.*/
+        class AnimationPathCallback : public NodeCallback
+        {
+            public:
+            
+                AnimationPathCallback(AnimationPath* ap):
+                    _animationPath(ap),
+                    _firstTime(0.0) {}
+            
+                /** implements the callback*/
+                virtual void operator()(Node* node, NodeVisitor* nv);
+                
+                ref_ptr<AnimationPath>  _animationPath;
+                double                  _firstTime;
+        };
+
 
     protected :
             

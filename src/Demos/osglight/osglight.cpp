@@ -109,22 +109,22 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
 
     lightS2->setStateSetModes(*rootStateSet,osg::StateAttribute::ON);
     
-    osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
+    osg::MatrixTransform* mt = new osg::MatrixTransform();
     {
         // set up the animation path 
         osg::AnimationPath* animationPath = new osg::AnimationPath;
-        animationPath->insert(0.0,osg::AnimationPath::Key(bb.corner(0)));
-        animationPath->insert(1.0,osg::AnimationPath::Key(bb.corner(1)));
-        animationPath->insert(2.0,osg::AnimationPath::Key(bb.corner(2)));
-        animationPath->insert(3.0,osg::AnimationPath::Key(bb.corner(3)));
-        animationPath->insert(4.0,osg::AnimationPath::Key(bb.corner(4)));
-        animationPath->insert(5.0,osg::AnimationPath::Key(bb.corner(5)));
-        animationPath->insert(6.0,osg::AnimationPath::Key(bb.corner(6)));
-        animationPath->insert(7.0,osg::AnimationPath::Key(bb.corner(7)));
-        animationPath->insert(8.0,osg::AnimationPath::Key(bb.corner(0)));
+        animationPath->insert(0.0,osg::AnimationPath::ControlPoint(bb.corner(0)));
+        animationPath->insert(1.0,osg::AnimationPath::ControlPoint(bb.corner(1)));
+        animationPath->insert(2.0,osg::AnimationPath::ControlPoint(bb.corner(2)));
+        animationPath->insert(3.0,osg::AnimationPath::ControlPoint(bb.corner(3)));
+        animationPath->insert(4.0,osg::AnimationPath::ControlPoint(bb.corner(4)));
+        animationPath->insert(5.0,osg::AnimationPath::ControlPoint(bb.corner(5)));
+        animationPath->insert(6.0,osg::AnimationPath::ControlPoint(bb.corner(6)));
+        animationPath->insert(7.0,osg::AnimationPath::ControlPoint(bb.corner(7)));
+        animationPath->insert(8.0,osg::AnimationPath::ControlPoint(bb.corner(0)));
+        animationPath->setLoopMode(osg::AnimationPath::SWING);
         
-        // attach it to the transform as an app callback.
-        pat->setAppCallback(new osg::PositionAttitudeTransform::AnimationPathCallback(animationPath));
+        mt->setAppCallback(new osg::MatrixTransform::AnimationPathCallback(animationPath));
     }
     
     // create marker for point light.
@@ -144,12 +144,12 @@ osg::Node* createLights(osg::BoundingBox& bb,osg::StateSet* rootStateSet)
     osg::Geode* markerGeode = new osg::Geode;
     markerGeode->addDrawable(marker);
     
-    pat->addChild(lightS2);
-    pat->addChild(markerGeode);
+    mt->addChild(lightS2);
+    mt->addChild(markerGeode);
     
     lightGroup->addChild(lightS2);
 
-    lightGroup->addChild(pat);
+    lightGroup->addChild(mt);
 
     return lightGroup;
 }

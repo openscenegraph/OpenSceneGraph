@@ -3,23 +3,50 @@
 
 using namespace osg;
 
-void AnimationPath::insert(double time,const Key& key)
+void AnimationPath::insert(double time,const ControlPoint& ControlPoint)
 {
-    _timeKeyMap[time] = key;
+    _timeControlPointMap[time] = ControlPoint;
 }
 
-bool AnimationPath::getMatrix(double time,Matrix& matrix) const
+bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const
 {
-    if (_timeKeyMap.empty()) return false;
-
-    TimeKeyMap::const_iterator second = _timeKeyMap.lower_bound(time);
-    if (second==_timeKeyMap.begin())
+    if (_timeControlPointMap.empty()) return false;
+    
+    
+    
+    switch(_loopMode)
     {
-        second->second.getMatrix(matrix);
+        case(SWING):
+        {
+            double modulated_time = (time - getFirstTime())/(getPeriod()*2.0);
+            double fraction_part = modulated_time - floor(modulated_time);
+            if (fraction_part>0.5) fraction_part = 1.0-fraction_part;
+            
+            time = (fraction_part*2.0) * getPeriod();
+            break;
+        }
+        case(LOOP):
+        {
+            double modulated_time = (time - getFirstTime())/getPeriod();
+            double fraction_part = modulated_time - floor(modulated_time);
+            time = fraction_part * getPeriod();
+            break;
+        }
+        case(NO_LOOPING):
+            // no need to modulate the time.
+            break;
     }
-    else if (second!=_timeKeyMap.end())
+    
+    
+
+    TimeControlPointMap::const_iterator second = _timeControlPointMap.lower_bound(time);
+    if (second==_timeControlPointMap.begin())
     {
-        TimeKeyMap::const_iterator first = second;
+        controlPoint = second->second;
+    }
+    else if (second!=_timeControlPointMap.end())
+    {
+        TimeControlPointMap::const_iterator first = second;
         --first;        
         
         // we have both a lower bound and the next item.
@@ -28,92 +55,17 @@ bool AnimationPath::getMatrix(double time,Matrix& matrix) const
         double delta_time = second->first - first->first;
 
         if (delta_time==0.0)
-            first->second.getMatrix(matrix);
+            controlPoint = first->second;
         else
         {
-            Key key;
-            key.interpolate((time - first->first)/delta_time,
-                            first->second,
-                            second->second);
-            key.getMatrix(matrix);
-        }        
-    }
-    else // (second==_timeKeyMap.end())
-    {
-        _timeKeyMap.rbegin().base()->second.getMatrix(matrix);
-    }
-    return true;
-}
-
-bool AnimationPath::getInverse(double time,Matrix& matrix) const
-{
-    if (_timeKeyMap.empty()) return false;
-
-    TimeKeyMap::const_iterator second = _timeKeyMap.lower_bound(time);
-    if (second==_timeKeyMap.begin())
-    {
-        second->second.getInverse(matrix);
-    }
-    else if (second!=_timeKeyMap.end())
-    {
-        TimeKeyMap::const_iterator first = second;
-        --first;        
-        
-        // we have both a lower bound and the next item.
-
-        // deta_time = second.time - first.time
-        double delta_time = second->first - first->first;
-
-        if (delta_time==0.0)
-            first->second.getInverse(matrix);
-        else
-        {
-            Key key;
-            key.interpolate((time - first->first)/delta_time,
-                            first->second,
-                            second->second);
-            key.getInverse(matrix);
-        }        
-    }
-    else // (second==_timeKeyMap.end())
-    {
-        _timeKeyMap.rbegin().base()->second.getInverse(matrix);
-    }
-    return true;
-}
-
-
-bool AnimationPath::getKeyFrame(double time,Key& key) const
-{
-    if (_timeKeyMap.empty()) return false;
-
-    TimeKeyMap::const_iterator second = _timeKeyMap.lower_bound(time);
-    if (second==_timeKeyMap.begin())
-    {
-        key = second->second;
-    }
-    else if (second!=_timeKeyMap.end())
-    {
-        TimeKeyMap::const_iterator first = second;
-        --first;        
-        
-        // we have both a lower bound and the next item.
-
-        // deta_time = second.time - first.time
-        double delta_time = second->first - first->first;
-
-        if (delta_time==0.0)
-            key = first->second;
-        else
-        {
-            key.interpolate((time - first->first)/delta_time,
+            controlPoint.interpolate((time - first->first)/delta_time,
                             first->second,
                             second->second);
         }        
     }
-    else // (second==_timeKeyMap.end())
+    else // (second==_timeControlPointMap.end())
     {
-        key = _timeKeyMap.rbegin().base()->second;
+        controlPoint = _timeControlPointMap.rbegin()->second;
     }
     return true;
 }

@@ -21,7 +21,6 @@ Billboard::Billboard(const Billboard& billboard,const CopyOp& copyop):
         _axis(billboard._axis),
         _normal(billboard._normal),
         _positionList(billboard._positionList),
-        _computeBillboardCallback(_computeBillboardCallback),
         _cachedMode(billboard._cachedMode),
         _side(billboard._side) {}
 

@@ -7,7 +7,6 @@
 
 #include <osg/Matrix>
 #include <osg/Quat>
-#include <osg/Transform>
 
 #include <map>
 
@@ -17,29 +16,27 @@ namespace osg {
   * Subclassed from Transform::ComputeTransformCallback allows AnimationPath to
   * be attached directly to Transform nodes to move subgraphs around the scene.
 */
-class SG_EXPORT AnimationPath : public Transform::ComputeTransformCallback
+class SG_EXPORT AnimationPath : public osg::Referenced
 {
     public:
     
-        AnimationPath() {}
+        AnimationPath():_loopMode(LOOP) {}
 
-        /** get the local transformation matrix for a point in time.*/        
-        virtual bool getMatrix(double time,Matrix& matrix) const;
-
-        /** get the local inverse transformation matrix for a point in time.*/        
-        virtual bool getInverse(double time,Matrix& matrix) const;
-        
-        /** Get the transformation matrix which moves from local coords to world coords.*/
-        virtual const bool computeLocalToWorldMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const;
-       
-        /** Get the transformation matrix which moves from world coords to local coords.*/
-        virtual const bool computeWorldToLocalMatrix(Matrix& matrix,const Transform* transform, NodeVisitor* nv) const;
-
-        struct Key
+        struct ControlPoint
         {
-            Key() {}
+            ControlPoint() {}
 
-            Key(const osg::Vec3& position, const osg::Quat& rotation, const osg::Vec3& scale):
+            ControlPoint(const osg::Vec3& position):
+                _position(position),
+                _rotation(),
+                _scale() {}
+
+            ControlPoint(const osg::Vec3& position, const osg::Quat& rotation):
+                _position(position),
+                _rotation(rotation),
+                _scale() {}
+
+            ControlPoint(const osg::Vec3& position, const osg::Quat& rotation, const osg::Vec3& scale):
                 _position(position),
                 _rotation(rotation),
                 _scale(scale) {}
@@ -48,7 +45,7 @@ class SG_EXPORT AnimationPath : public Transform::ComputeTransformCallback
             osg::Quat _rotation;
             osg::Vec3 _scale;
             
-            inline void interpolate(const float ratio,const Key& first, const Key& second)
+            inline void interpolate(const float ratio,const ControlPoint& first, const ControlPoint& second)
             {
                 float one_minus_ratio = 1.0f-ratio;
                 _position = first._position*one_minus_ratio + second._position*ratio;
@@ -71,16 +68,53 @@ class SG_EXPORT AnimationPath : public Transform::ComputeTransformCallback
             }
         };
         
+
+        /** get the transformation matrix for a point in time.*/        
+        bool getMatrix(double time,Matrix& matrix) const
+        {
+            ControlPoint cp;
+            if (!getInterpolatedControlPoint(time,cp)) return false;
+            cp.getMatrix(matrix);
+            return true;
+        }
+
+        /** get the inverse transformation matrix for a point in time.*/        
+        bool getInverse(double time,Matrix& matrix) const
+        {
+            ControlPoint cp;
+            if (!getInterpolatedControlPoint(time,cp)) return false;
+            cp.getInverse(matrix);
+            return true;
+        }
         
-        void insert(double time,const Key& key);
+        /** get the local ControlPoint frame for a point in time.*/
+        virtual bool getInterpolatedControlPoint(double time,ControlPoint& ControlPoint) const;
+        
+        void insert(double time,const ControlPoint& ControlPoint);
+        
+        double getFirstTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.begin()->first; else return 0.0;}
+        double getLastTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.rbegin()->first; else return 0.0;}
+        double getPeriod() const { return getLastTime()-getFirstTime();}
+        
+        enum LoopMode
+        {
+            SWING,
+            LOOP,
+            NO_LOOPING
+        };
+        
+        void setLoopMode(LoopMode lm) { _loopMode = lm; }
+        
+        LoopMode getLoopMode() const { return _loopMode; }
 
     protected:
     
         virtual ~AnimationPath() {}
 
-        typedef std::map<double,Key> TimeKeyMap;
+        typedef std::map<double,ControlPoint> TimeControlPointMap;
         
-        TimeKeyMap _timeKeyMap;
+        TimeControlPointMap _timeControlPointMap;
+        LoopMode            _loopMode;
 
 };
 

@@ -30,3 +30,21 @@ MatrixTransform::MatrixTransform(const Matrix& mat )
 MatrixTransform::~MatrixTransform()
 {
 }
+
+void MatrixTransform::AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
+{
+    MatrixTransform* mt = dynamic_cast<MatrixTransform*>(node);
+    if (mt &&
+        _animationPath.valid() && 
+        nv->getVisitorType()==NodeVisitor::APP_VISITOR && 
+        nv->getFrameStamp())
+    {
+        double time = nv->getFrameStamp()->getReferenceTime();
+        if (_firstTime==0.0) _firstTime = time;
+        Matrix matrix;
+        if (_animationPath->getMatrix(time-_firstTime,matrix))
+        {
+            mt->setMatrix(matrix);
+        }
+    }
+}

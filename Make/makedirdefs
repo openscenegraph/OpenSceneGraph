@@ -182,6 +182,7 @@ EXAMPLE_DIRS = \
 	osgsimplifier\
 	osgspacewarp\
 	osgspheresegment\
+	osgspotlight\
 	osgstereoimage\
 	osgteapot\
 	osgtesselate\
@@ -197,7 +198,6 @@ EXAMPLE_DIRS = \
 	osgvolume\
 	osgwindows\
 
-#	osgspotlight\
 
 
 ifeq ($(GDAL_INSTALLED),yes)

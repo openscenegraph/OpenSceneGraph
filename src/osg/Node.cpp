@@ -36,7 +36,7 @@ Node::Node()
 
 Node::Node(const Node& node,const CopyOp& copyop):
         Object(node,copyop),
-        _bsphere(_bsphere),
+        _bsphere(node._bsphere),
         _bsphere_computed(node._bsphere_computed),
         _name(node._name),
         _parents(), // leave empty as parentList is managed by Group.

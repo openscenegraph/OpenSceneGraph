@@ -29,8 +29,8 @@ class SG_EXPORT NodeCallback : public virtual Object {
 
         NodeCallback(){}
 
-        NodeCallback(const NodeCallback&,const CopyOp&):
-            _nestedCallback(_nestedCallback) {}
+        NodeCallback(const NodeCallback& nc,const CopyOp&):
+            _nestedCallback(nc._nestedCallback) {}
 
         
         META_Object(osg,NodeCallback);

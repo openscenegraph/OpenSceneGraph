@@ -31,6 +31,8 @@ namespace ive {
 #define IVEDOFTRANSFORM                 0x00000022
 #define IVECOORDINATESYSTEMNODE         0x00000023
 #define IVEELLIPSOIDMODEL               0x00000024
+#define IVETEXGENNODE                   0x00000025
+#define IVECLIPNODE                     0x00000026
 
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050
@@ -58,7 +60,8 @@ namespace ive {
 #define IVELINEWIDTH					0x0000012D
 #define IVEFRAGMENTPROGRAM				0x0000012E
 #define IVEVERTEXPROGRAM				0x0000012F
-#define IVELIGHTMODEL				0x00001121
+#define IVELIGHTMODEL				        0x00001121
+#define IVECLIPPLANE				        0x00001122
 
 // Drawables
 #define IVEDRAWABLE					0x00001000

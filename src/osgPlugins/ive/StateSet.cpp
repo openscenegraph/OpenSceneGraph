@@ -15,18 +15,6 @@
 #include "Exception.h"
 #include "StateSet.h"
 #include "Object.h"
-#include "BlendFunc.h"
-#include "Material.h"
-#include "Material.h"
-#include "CullFace.h"
-#include "PolygonOffset.h"
-#include "ShadeModel.h"
-#include "Texture1D.h"
-#include "Texture2D.h"
-#include "TextureCubeMap.h"
-#include "TexEnv.h"
-#include "TexEnvCombine.h"
-#include "TexGen.h"
 
 #include <osg/StateAttribute>
 

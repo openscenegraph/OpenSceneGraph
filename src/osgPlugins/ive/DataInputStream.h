@@ -48,6 +48,7 @@ public:
 	osg::Vec2 readVec2();
 	osg::Vec3 readVec3();
 	osg::Vec4 readVec4();
+	osg::Plane readPlane();
 	osg::UByte4 readUByte4();
 	osg::Quat readQuat();
 	osg::Matrix readMatrix();

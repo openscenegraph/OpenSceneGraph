@@ -9,7 +9,9 @@
    stored in the 2nd 4 bytes of the file */
 
 #define VERSION_0002 0x00000002
-#define VERSION 0x00000003
+#define VERSION_0003 0x00000003
+#define VERSION_0004 0x00000004
+#define VERSION      VERSION_0004
 
 
 /* The BYTE_SEX tag is used to check the endian

@@ -28,6 +28,9 @@ class DataOutputStream{
 public:
 	DataOutputStream(std::ostream* ostream);
 	~DataOutputStream();
+        
+	unsigned int getVersion() { return VERSION; }
+        
 	void writeBool(bool b);
 	void writeChar(char c);
 	void writeUChar(unsigned char c);

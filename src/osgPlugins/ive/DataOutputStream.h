@@ -34,6 +34,7 @@ public:
 	void writeInt(int i);
 	void writeFloat(float f);
 	void writeLong(long l);
+	void writeULong(unsigned long l);
 	void writeDouble(double d);
 	void writeString(const std::string& s);
 	void writeCharArray(const char* data, int size);

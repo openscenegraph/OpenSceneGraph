@@ -91,7 +91,7 @@ bool Node_readLocalData(Object& obj, Input& fr)
 
     while (fr.matchSequence("description %s"))
     {
-        node.addDescription(fr[1].getStr());
+        if (fr[1].getStr()) node.addDescription(fr[1].getStr());
         fr+=2;
         iteratorAdvanced = true;
     }

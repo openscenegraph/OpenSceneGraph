@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES = \
     ColorRange.cpp\
+    DOFTransform.cpp\
     ScalarBar.cpp\
     ScalarsToColors.cpp\
     BlinkSequence.cpp\

@@ -37,6 +37,7 @@
 #include "LOD.h"
 #include "PagedLOD.h"
 #include "PositionAttitudeTransform.h"
+#include "DOFTransform.h"
 #include "Transform.h"
 #include "Switch.h"
 #include "OccluderNode.h"
@@ -108,6 +109,12 @@ void DataOutputStream::writeLong(long l){
     _ostream->write((char*)&l, LONGSIZE);
     
     if (_verboseOutput) std::cout<<"read/writeLong() ["<<l<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeULong(unsigned long l){
+    _ostream->write((char*)&l, LONGSIZE);
+    
+    if (_verboseOutput) std::cout<<"read/writeULong() ["<<l<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeDouble(double d){
@@ -499,6 +506,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::PositionAttitudeTransform*>(node)){
             ((ive::PositionAttitudeTransform*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgSim::DOFTransform*>(node)){
+            ((ive::DOFTransform*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::LightSource*>(node)){
             ((ive::LightSource*)(node))->write(this);

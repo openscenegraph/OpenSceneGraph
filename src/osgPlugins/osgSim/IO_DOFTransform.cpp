@@ -1,10 +1,11 @@
-#include "osg/DOFTransform"
+#include "osgSim/DOFTransform"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
 #include "osgDB/Output"
 
 using namespace osg;
+using namespace osgSim;
 using namespace osgDB;
 using namespace std;
 
@@ -15,7 +16,7 @@ bool DOFTransform_writeLocalData(const Object& obj, Output& fw);
 // register the read and write functions with the osgDB::Registry.
 RegisterDotOsgWrapperProxy g_DOFTransformProxy
 (
-    new osg::DOFTransform,
+    new osgSim::DOFTransform,
     "DOFTransform",
     "Object Node Transform DOFTransform Group",
     &DOFTransform_readLocalData,

@@ -26,7 +26,6 @@ class LightSource;
 class ClipNode;
 class Group;
 class Transform;
-class DOFTransform;
 class MatrixTransform;
 class PositionAttitudeTransform;
 class Projection;
@@ -226,7 +225,6 @@ class SG_EXPORT NodeVisitor : public virtual Referenced
         virtual void apply(LightSource& node)               { apply((Group&)node); }
 
         virtual void apply(Transform& node)                 { apply((Group&)node); }
-        virtual void apply(DOFTransform& node)              { apply((Transform&)node); }
         virtual void apply(MatrixTransform& node)           { apply((Transform&)node); }
         virtual void apply(PositionAttitudeTransform& node) { apply((Transform&)node); }
 

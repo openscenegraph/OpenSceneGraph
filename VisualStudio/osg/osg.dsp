@@ -181,10 +181,6 @@ SOURCE=..\..\src\osg\DisplaySettings.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\DOFTransform.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\Drawable.cpp
 # End Source File
 # Begin Source File
@@ -558,10 +554,6 @@ SOURCE=..\..\Include\Osg\Depth
 # Begin Source File
 
 SOURCE=..\..\include\osg\DisplaySettings
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osg\DOFTransform
 # End Source File
 # Begin Source File
 

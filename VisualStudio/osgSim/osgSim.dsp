@@ -97,6 +97,10 @@ SOURCE=..\..\src\osgSim\BlinkSequence.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\DOFTransform.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\LightPoint.cpp
 # End Source File
 # Begin Source File
@@ -138,6 +142,10 @@ SOURCE=..\..\src\osgSim\Version.cpp
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\BlinkSequence
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\DOFTransform
 # End Source File
 # Begin Source File
 

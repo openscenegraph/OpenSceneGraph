@@ -16,6 +16,8 @@
 #include "Image.h"
 #include "Object.h"
 
+#include <osg/Notify>
+
 using namespace ive;
 
 void Image::write(DataOutputStream* out)
@@ -40,7 +42,7 @@ void Image::write(DataOutputStream* out)
     out->writeInt(r());
     
     
-    std::cout << getFileName()<<"\t"<<s()<<"\t"<<t()<<std::endl;
+    osg::notify(osg::DEBUG_INFO) << "image written '" << getFileName()<<"'\t"<<s()<<"\t"<<t()<<std::endl;
 
     // Write formats, type and packing
     out->writeInt(getInternalTextureFormat());

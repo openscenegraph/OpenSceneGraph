@@ -12,7 +12,6 @@ CXXFILES =\
         CullFace.cpp\
         ClipNode.cpp\
         Depth.cpp\
-        DOFTransform.cpp\
         Drawable.cpp\
         ClearNode.cpp\
         Fog.cpp\

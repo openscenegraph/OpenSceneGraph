@@ -30,13 +30,14 @@
 #include <osg/Image>
 #include <osg/Notify>
 
-#include <osg/DOFTransform>
 #include <osg/Sequence>
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 #include <osgDB/Registry>
+
+#include <osgSim/DOFTransform>
 
 #include "opcodes.h"
 #include "flt.h"
@@ -800,7 +801,7 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 
 #if defined(USE_DOFTransform)
 
-    osg::DOFTransform* transform = new osg::DOFTransform;
+    osgSim::DOFTransform* transform = new osgSim::DOFTransform;
     transform->setName(rec->getData()->szIdent);
     transform->setDataVariance(osg::Object::DYNAMIC);
     visitAncillary(osgParent, *transform, rec)->addChild( transform );

@@ -101,6 +101,10 @@ SOURCE=..\..\src\osgGLUT\Version.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgGLUT\Window.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgGLUT\Viewer.cpp
 # End Source File
 # End Group
@@ -118,6 +122,10 @@ SOURCE=..\..\include\osgGLUT\glut
 # Begin Source File
 
 SOURCE=..\..\Include\osgGLUT\GLUTEventAdapter
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgGLUT\Window
 # End Source File
 # Begin Source File
 

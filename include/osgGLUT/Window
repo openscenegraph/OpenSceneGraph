@@ -1,0 +1,64 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSGGLUT_GLUTWINDOW
+#define OSGGLUT_GLUTWINDOW 1
+
+#include <osgGLUT/Export>
+
+#include <string>
+
+namespace osgGLUT{
+
+/** A basic GLUTWindow base class which provides a just a basic window. */
+class OSGGLUT_EXPORT GLUTWindow
+{
+    public:
+
+        GLUTWindow();
+        virtual ~GLUTWindow();
+
+        void setWindowOrigin(int x, int y) { _wx = x, _wy = y; };
+        void setWindowSize(int width, int height) { _ww = width, _wh = height; };
+        void setWindowTitle(const std::string& title) { _title = title; }
+        void setDisplayMode(unsigned int displayMode) { _displayMode = displayMode; }
+
+        virtual bool open();
+        virtual bool run();
+        virtual void display();
+
+    protected:
+
+        static void displayCB();
+        static void reshapeCB(int w, int h);
+        static void visibilityCB(int state);
+        static void mouseMotionCB(int x, int y);
+        static void mousePassiveMotionCB(int x, int y);
+        static void mouseCB(int button, int state, int x, int y);
+        static void keyboardCB(unsigned char key, int x, int y );
+
+        virtual void reshape(GLint w, GLint h);
+        virtual void visibility(int state);
+        virtual void mouseMotion(int x, int y);
+        virtual void mousePassiveMotion(int x, int y);
+        virtual void mouse(int button, int state, int x, int y);
+        virtual void keyboard(unsigned char key, int x, int y);
+
+        static GLUTWindow*    s_theGLUTWindow;
+
+        std::string _title;
+        int _wx, _wy, _ww, _wh;
+        unsigned int _displayMode;
+        int _is_open;
+
+        int _mx, _my, _mbutton;
+        bool _fullscreen;
+        int _saved_wx, _saved_wy, _saved_ww,_saved_wh;
+
+
+};
+
+};
+
+#endif                           // SG_VIEWIER_H

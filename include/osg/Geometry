@@ -38,7 +38,7 @@ class SG_EXPORT Geometry : public Drawable
             BIND_PER_VERTEX
         };
                
-        void setVertexArray(Vec3Array* array) { _vertexArray = array; dirtyDisplayList(); }
+        void setVertexArray(Vec3Array* array) { _vertexArray = array; dirtyDisplayList(); dirtyBound(); }
         Vec3Array* getVertexArray() { return _vertexArray.get(); }
         const Vec3Array* getVertexArray() const  { return _vertexArray.get(); }
 

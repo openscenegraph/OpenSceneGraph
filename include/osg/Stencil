@@ -91,7 +91,7 @@ class SG_EXPORT Stencil : public StateAttribute
         inline void setFunctionRef(int ref) { _funcRef=ref; }
         inline int getFunctionRef() const { return _funcRef; }
 
-        inline void getFunctionMask(unsigned int mask) { _funcMask=mask; }
+        inline void setFunctionMask(unsigned int mask) { _funcMask=mask; }
         inline unsigned int getFunctionMask() const { return _funcMask; }
         
         

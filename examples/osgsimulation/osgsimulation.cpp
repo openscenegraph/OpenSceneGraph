@@ -90,12 +90,12 @@ public:
     ModelPositionCallback():
         _latitude(0.0),
         _longitude(0.0),
-        _height(10000.0)
+        _height(100000.0)
          {}
 
     void updateParameters()
     {
-        _latitude -= ((2.0*osg::PI)/360.0)/100.0;
+        _latitude -= ((2.0*osg::PI)/360.0)/20.0;
     }
 
 
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
     viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
 
     viewer.getCullSettings().setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-    viewer.getCullSettings().setNearFarRatio(0.0001f);
+    viewer.getCullSettings().setNearFarRatio(0.00001f);
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -227,14 +227,21 @@ int main(int argc, char **argv)
         osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
         if (cessna)
         {
+            double s = 30000.0 / cessna->getBound().radius();
+        
+            osg::MatrixTransform* scaler = new osg::MatrixTransform;
+            scaler->addChild(cessna);
+            scaler->setMatrix(osg::Matrixd::scale(s,s,s));
+            scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
+        
             osg::MatrixTransform* mt = new osg::MatrixTransform;
-            mt->addChild(cessna);
+            mt->addChild(scaler);
             mt->setUpdateCallback(new ModelPositionCallback);
 
             csn->addChild(mt);
 
             osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
-            tm->setTrackNode(cessna);
+            tm->setTrackNode(scaler);
 
             unsigned int num = viewer.addCameraManipulator(tm);
             viewer.selectCameraManipulator(num);

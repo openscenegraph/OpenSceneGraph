@@ -84,7 +84,7 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
         osg::ref_ptr<osgUtil::SceneView>        _sceneview;
         osg::ref_ptr<osg::Group>                _rootnode;
         osg::ref_ptr<osg::Group>                _occluders;
-        osg::ref_ptr<osg::ConvexPlanerOccluder> _convexPlanerOccluder;
+        osg::ref_ptr<osg::ConvexPlanarOccluder> _convexPlanarOccluder;
 };
 
 bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
@@ -158,21 +158,21 @@ void OccluderEventHandler::addPoint(const osg::Vec3& pos)
 {
     std::cout<<"add point "<<pos<<std::endl;
     
-    if (!_convexPlanerOccluder.valid()) _convexPlanerOccluder = new osg::ConvexPlanerOccluder;
+    if (!_convexPlanarOccluder.valid()) _convexPlanarOccluder = new osg::ConvexPlanarOccluder;
     
-    osg::ConvexPlanerPolygon& occluder = _convexPlanerOccluder->getOccluder();
+    osg::ConvexPlanarPolygon& occluder = _convexPlanarOccluder->getOccluder();
     occluder.add(pos);
     
 }
                 
 void OccluderEventHandler::endOccluder()
 {
-    if (_convexPlanerOccluder.valid()) 
+    if (_convexPlanarOccluder.valid()) 
     {
-        if (_convexPlanerOccluder->getOccluder().getVertexList().size()>=3)
+        if (_convexPlanarOccluder->getOccluder().getVertexList().size()>=3)
         {
             osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
-            occluderNode->setOccluder(_convexPlanerOccluder.get());
+            occluderNode->setOccluder(_convexPlanarOccluder.get());
 
             if (!_occluders.valid())
             {
@@ -194,7 +194,7 @@ void OccluderEventHandler::endOccluder()
     }
     
     // reset current occluder.
-    _convexPlanerOccluder = NULL;
+    _convexPlanarOccluder = NULL;
 }
 
 
@@ -204,14 +204,14 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
 
     // create the convex planer occluder 
-    osg::ConvexPlanerOccluder* cpo = osgNew osg::ConvexPlanerOccluder;
+    osg::ConvexPlanarOccluder* cpo = osgNew osg::ConvexPlanarOccluder;
 
     // attach it to the occluder node.
     occluderNode->setOccluder(cpo);
     occluderNode->setName("occluder");
     
     // set the occluder up for the front face of the bounding box.
-    osg::ConvexPlanerPolygon& occluder = cpo->getOccluder();
+    osg::ConvexPlanarPolygon& occluder = cpo->getOccluder();
     occluder.add(v1);
     occluder.add(v2);
     occluder.add(v3);
@@ -229,7 +229,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
         osg::Vec3 v3dash = v3*ratio + center*one_minus_ratio;
         osg::Vec3 v4dash = v4*ratio + center*one_minus_ratio;
 
-        osg::ConvexPlanerPolygon hole;
+        osg::ConvexPlanarPolygon hole;
         hole.add(v1dash);
         hole.add(v2dash);
         hole.add(v3dash);

@@ -6,7 +6,7 @@
 #define OSG_OCCLUDERNODE 1
 
 #include <osg/Group>
-#include <osg/ConvexPlanerOccluder>
+#include <osg/ConvexPlanarOccluder>
 
 namespace osg {
 
@@ -27,14 +27,14 @@ class SG_EXPORT OccluderNode : public Group
         META_Node(osg, OccluderNode);
         
 
-        /** Attach a ConvexPlanerOccluder to an OccluderNode.*/            
-        void setOccluder(ConvexPlanerOccluder* occluder) { _occluder = occluder; }
+        /** Attach a ConvexPlanarOccluder to an OccluderNode.*/            
+        void setOccluder(ConvexPlanarOccluder* occluder) { _occluder = occluder; }
         
-        /** Get the ConvexPlanerOccluder* attached to a OccluderNode. */
-        ConvexPlanerOccluder* getOccluder() { return _occluder.get(); }
+        /** Get the ConvexPlanarOccluder* attached to a OccluderNode. */
+        ConvexPlanarOccluder* getOccluder() { return _occluder.get(); }
         
-        /** Get the const ConvexPlanerOccluder* attached to a OccluderNode.*/            
-        const ConvexPlanerOccluder* getOccluder() const { return _occluder.get(); }
+        /** Get the const ConvexPlanarOccluder* attached to a OccluderNode.*/            
+        const ConvexPlanarOccluder* getOccluder() const { return _occluder.get(); }
 
 
     protected :
@@ -44,7 +44,7 @@ class SG_EXPORT OccluderNode : public Group
         /** Override's Group's computeBound.*/
         virtual const bool computeBound() const;
 
-        ref_ptr<ConvexPlanerOccluder>   _occluder;
+        ref_ptr<ConvexPlanarOccluder>   _occluder;
 };
 
 }

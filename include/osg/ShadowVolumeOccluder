@@ -6,7 +6,7 @@
 #define OSG_SHADOWVOLUMEOCCLUDER 1
 
 #include <osg/Polytope>
-#include <osg/ConvexPlanerOccluder>
+#include <osg/ConvexPlanarOccluder>
 #include <osg/Node>
 
 namespace osg {
@@ -36,7 +36,7 @@ class SG_EXPORT ShadowVolumeOccluder
         bool operator < (const ShadowVolumeOccluder& svo) const { return getVolume()>svo.getVolume(); } // not greater volume first. 
 
         /** compute the shadow volume occluder. */
-        bool computeOccluder(const NodePath& nodePath,const ConvexPlanerOccluder& occluder,CullStack& cullStack,bool createDrawables=false);
+        bool computeOccluder(const NodePath& nodePath,const ConvexPlanarOccluder& occluder,CullStack& cullStack,bool createDrawables=false);
         
 
         inline void disableResultMasks();

@@ -15,8 +15,8 @@ CXXFILES =\
 	ColorMask.cpp\
 	ColorMatrix.cpp\
 	CollectOccludersVisitor.cpp\
-	ConvexPlanerPolygon.cpp\
-	ConvexPlanerOccluder.cpp\
+	ConvexPlanarPolygon.cpp\
+	ConvexPlanarOccluder.cpp\
 	CopyOp.cpp\
 	CullFace.cpp\
 	CullingSet.cpp\

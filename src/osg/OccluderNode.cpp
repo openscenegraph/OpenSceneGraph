@@ -8,7 +8,7 @@ OccluderNode::OccluderNode()
 
 OccluderNode::OccluderNode(const OccluderNode& node,const CopyOp& copyop):
     Group(node,copyop),
-    _occluder(dynamic_cast<ConvexPlanerOccluder*>(copyop(node._occluder.get())))
+    _occluder(dynamic_cast<ConvexPlanarOccluder*>(copyop(node._occluder.get())))
 {
 }
 
@@ -19,8 +19,8 @@ const bool OccluderNode::computeBound() const
     if (getOccluder())
     {
         BoundingBox bb;
-        const ConvexPlanerPolygon::VertexList& vertexList = getOccluder()->getOccluder().getVertexList();
-        for(ConvexPlanerPolygon::VertexList::const_iterator itr=vertexList.begin();
+        const ConvexPlanarPolygon::VertexList& vertexList = getOccluder()->getOccluder().getVertexList();
+        for(ConvexPlanarPolygon::VertexList::const_iterator itr=vertexList.begin();
             itr!=vertexList.end();
             ++itr)
         {

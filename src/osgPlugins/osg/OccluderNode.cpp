@@ -27,9 +27,9 @@ bool OccluderNode_readLocalData(Object& obj, Input& fr)
 
     OccluderNode& occludernode = static_cast<OccluderNode&>(obj);
     
-    static ref_ptr<ConvexPlanerOccluder> s_occluder = osgNew ConvexPlanerOccluder;
+    static ref_ptr<ConvexPlanarOccluder> s_occluder = osgNew ConvexPlanarOccluder;
     
-    ConvexPlanerOccluder* tmpOccluder = static_cast<ConvexPlanerOccluder*>(fr.readObjectOfType(*s_occluder));
+    ConvexPlanarOccluder* tmpOccluder = static_cast<ConvexPlanarOccluder*>(fr.readObjectOfType(*s_occluder));
     
     if (tmpOccluder)
     {

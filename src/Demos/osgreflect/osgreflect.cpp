@@ -23,7 +23,7 @@
 
 
 //
-// A simple demo demonstrating planer reflections using multiple renderings 
+// A simple demo demonstrating planar reflections using multiple renderings 
 // of a subgraph, overriding of state attribures and use of the stencil buffer.
 //
 // The multipass system implemented here is a variation if Mark Kilgard's

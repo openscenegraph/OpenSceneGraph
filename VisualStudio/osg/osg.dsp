@@ -141,11 +141,11 @@ SOURCE=..\..\src\osg\CollectOccludersVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ConvexPlanerOccluder.cpp
+SOURCE=..\..\src\osg\ConvexPlanarOccluder.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\ConvexPlanerPolygon.cpp
+SOURCE=..\..\src\osg\ConvexPlanarPolygon.cpp
 # End Source File
 # Begin Source File
 
@@ -469,11 +469,11 @@ SOURCE=..\..\Include\Osg\ClipPlane
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ConvexPlanerOccluder
+SOURCE=..\..\Include\Osg\ConvexPlanarOccluder
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\ConvexPlanerPolygon
+SOURCE=..\..\Include\Osg\ConvexPlanarPolygon
 # End Source File
 # Begin Source File
 

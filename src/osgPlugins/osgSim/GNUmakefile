@@ -7,7 +7,7 @@ CXXFILES =\
 	IO_BlinkSequence.cpp\
 	IO_Sector.cpp
 
-LIBS   += -losgSim $(OSG_LIBS) $(OTHER_LIBS)
+LIBS   += -losgSim -losgText $(OSG_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgSim
 include $(TOPDIR)/Make/cygwin_plugin_def

@@ -108,7 +108,7 @@ class DOFAnimationAppCallback : public osg::NodeCallback
 
 DOFTransform::DOFTransform():
     _limitationFlags(0), 
-    _animationOn(false), 
+    _animationOn(true), 
     _increasingFlags(0xffffff)
 {
     //default zero-ed Vec3-s are fine for all

@@ -928,7 +928,7 @@ void Geometry::drawImplementation(State& state) const
             
             //std::cout << "binding VertexBuffer "<<buffer<<std::endl;
 
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB,buffer);
+            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,buffer);
                       
             if( _vertexArray.valid() )
                 state.setVertexPointer(_vertexArray->getDataSize(),_vertexArray->getDataType(),0,(const GLvoid*)_vertexOffset);
@@ -1133,7 +1133,7 @@ void Geometry::drawImplementation(State& state) const
 
         if (_useVertexBufferObjects)
         {
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
         }
 
     }

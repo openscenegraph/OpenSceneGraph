@@ -33,6 +33,7 @@ public:
     POSITION =    0x80000000, // Has Position -   indicates that each vertex in the list includes x, y, and z coordinates (three double-precision floating point values)
     COLOR_INDEX = 0x40000000, // Has Color Index- indicates that each vertex in the list includes a color value that is a color table index (one integer value)
     RGB_COLOR =   0x20000000, // Has RGB Color -  indicates that each vertex in the list includes a color value that is a packed RGB color value (one integer value) NOTE: Bits 2 and 3 are mutually exclusive - a vertex can have either a color index or an RGB color value or neither, but cannot have both a color index and an RGB value.
+                              //    In 15.8, has RGBA color
     NORMAL =      0x10000000, // Has Normal -     indicates that each vertex in the list includes a normal (three single-precision floating point values)
     BASE_UV =     0x08000000, // Has Base UV -    indicates that each vertex in the list includes uv texture coordinates for the base texture (two single-precision floating point values)
     UV_1 =        0x04000000, // Has UV 1 -       indicates that each vertex in the list includes uv texture coordinates for layer 1 (two single-precision floating point values)
@@ -87,6 +88,9 @@ protected:
   char *                _getStartOfAttribute ( const uint32 &whichVertex, const uint32 &attributeOffset ) const;
 
   void                  _initAttributeOffsets();
+
+  int                   _getVertexSizeBytes() const;
+  mutable int           _vertexSizeBytesCache;
 };
 
 

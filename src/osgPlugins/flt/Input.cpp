@@ -127,6 +127,20 @@ bool FileInput::_readBody(SRecHeader* pData)
 }
 
 
+bool FileInput::_readContinuedBody(char* pData, int nBytes)
+{
+    // Read record body
+    if (nBytes > 0)
+    {
+        int nItemsRead = _read(pData, nBytes);
+        if (nItemsRead != 1)
+            return false;
+    }
+
+    return true;
+}
+
+
 SRecHeader* FileInput::readRecord()
 {
     SRecHeader hdr;
@@ -150,6 +164,56 @@ SRecHeader* FileInput::readRecord()
 
     if (!_readBody(pData))
         return NULL;
+
+
+    // Add support for OpenFlight 15.7 (1570) continuation records
+    //
+
+    // Record and FaceRecord both want to rewindLast, so save and restore
+    //   the current file offset.
+    const long lRecOffsetSave = _lRecOffset;
+
+    int nTotalLen = hdr.length();
+    // From spec, in practice only these three records can be continued:
+    bool bContinuationPossible = (
+        (hdr.opcode()==COLOR_NAME_PALETTE_OP) ||
+        (hdr.opcode()==EXTENSION_OP) ||
+        (hdr.opcode()==LOCAL_VERTEX_POOL_OP) );
+
+    while (bContinuationPossible)
+    {
+        SRecHeader hdr2;
+        if (_readHeader( &hdr2 ))
+        {
+            if (hdr2.opcode() == CONTINUATION_OP)
+            {
+                int nNewChunkLen = hdr2.length() - 4;
+                size_t nNewLen = nTotalLen + nNewChunkLen;
+                pData = (SRecHeader*)::realloc( (void*)pData, nNewLen );
+                if (pData == NULL)
+                    return NULL;
+
+                if (!_readContinuedBody( ((char*)pData) + nTotalLen, nNewChunkLen ))
+                    return NULL;
+                nTotalLen = (int)nNewLen;
+            }
+            else
+            {
+                // Not a continuation record. Rewind, then exit loop.
+                rewindLast();
+                bContinuationPossible = false;
+            }
+        }
+        else
+            // Probably EOF
+            bContinuationPossible = false;
+    }
+
+    _lRecOffset = lRecOffsetSave;
+
+    //
+    // END support for continuation records
+
 
     return pData;
 }

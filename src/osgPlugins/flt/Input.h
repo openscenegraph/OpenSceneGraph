@@ -45,6 +45,7 @@ class Input
 
         virtual bool _readHeader(SRecHeader* pHdr) = 0;
         virtual bool _readBody(SRecHeader* pData) = 0;
+        virtual bool _readContinuedBody(char* pData, int nBytes) = 0;
 };
 
 
@@ -67,6 +68,7 @@ class FileInput : public Input
     private:
         virtual bool _readHeader(SRecHeader* pHdr);
         virtual bool _readBody(SRecHeader* pData);
+        virtual bool _readContinuedBody(char* pData, int nBytes);
         void _init();
         size_t _read(void *buffer, size_t size);
 
@@ -95,6 +97,7 @@ class MemInput : public Input
     private:
         virtual bool _readHeader(SRecHeader* pHdr);
         virtual bool _readBody(SRecHeader* pData);
+        virtual bool _readContinuedBody(char* pData, int nBytes);
         void _init();
         size_t _read(void *buffer, size_t size);
 

@@ -56,9 +56,13 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
     EnumLabel(osg::StateAttribute::PROGRAMOBJECT);
     EnumLabel(osg::StateAttribute::VALIDATOR);
     EnumLabel(osg::StateAttribute::VIEWMATRIXEXTRACTOR);
-    EnumLabel(osg::StateAttribute::PARAMETER_BLOCK);
-    EnumLabel(osg::StateAttribute::TEXTURE_SHADER);
-    EnumLabel(osg::StateAttribute::VERTEX_PROGRAM);
-    EnumLabel(osg::StateAttribute::REGISTER_COMBINERS);
-    EnumLabel(osg::StateAttribute::PROGRAM_PARSER);
+
+    EnumLabel(osg::StateAttribute::OSGNV_PARAMETER_BLOCK);
+    EnumLabel(osg::StateAttribute::OSGNVEXT_TEXTURE_SHADER);
+    EnumLabel(osg::StateAttribute::OSGNVEXT_VERTEX_PROGRAM);
+    EnumLabel(osg::StateAttribute::OSGNVEXT_REGISTER_COMBINERS);
+    EnumLabel(osg::StateAttribute::OSGNVCG_PROGRAM);
+    EnumLabel(osg::StateAttribute::OSGNVSLANG_PROGRAM);
+    EnumLabel(osg::StateAttribute::OSGNVPARSE_PROGRAM_PARSER);
+
 END_REFLECTOR

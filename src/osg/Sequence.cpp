@@ -1,4 +1,5 @@
 #include <osg/Sequence>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -176,6 +177,10 @@ void Sequence::traverse(NodeVisitor& nv)
                 _last = t;
             }
             setValue(sw);
+        }
+        else
+        {
+            osg::notify(osg::WARN) << "osg::Sequence::traverse(NodeVisitor&) requires a valid FrameStamp to function, sequence not updated.\n";
         }
     }
     

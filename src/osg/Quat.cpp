@@ -103,34 +103,33 @@ void Quat::makeRotate( const Vec3& from, const Vec3& to )
 }
 
 
-// Get the angle of rotation and axis of this Quat object.
-// Won't give very meaningful results if the Quat is not associated
-// with a rotation!
 void Quat::getRotate( float& angle, Vec3& vec ) const
 {
-    float sinhalfangle = sqrt( _fv[0]*_fv[0] + _fv[1]*_fv[1] + _fv[2]*_fv[2] );
-    /// float coshalfangle = _fv[3];
-
-    /// These are not checked for performance reasons ? (cop out!)
-    /// Point for  discussion - how do one handle errors in the osg?
-    /// if ( abs(sinhalfangle) > 1.0 ) { error };
-    /// if ( abs(coshalfangle) > 1.0 ) { error };
-
-    // *angle = atan2( sinhalfangle, coshalfangle );	// see man atan2
-                                 // -pi < angle < pi
-    angle = 2 * atan2( sinhalfangle, _fv[3] );
-    vec = Vec3(_fv[0], _fv[1], _fv[2]) / sinhalfangle;
+    getRotate(angle,vec[0],vec[1],vec[2]);
 }
 
 
+// Get the angle of rotation and axis of this Quat object.
+// Won't give very meaningful results if the Quat is not associated
+// with a rotation!
 void Quat::getRotate( float& angle, float& x, float& y, float& z ) const
 {
     float sinhalfangle = sqrt( _fv[0]*_fv[0] + _fv[1]*_fv[1] + _fv[2]*_fv[2] );
 
     angle = 2 * atan2( sinhalfangle, _fv[3] );
-    x = _fv[0] / sinhalfangle;
-    y = _fv[1] / sinhalfangle;
-    z = _fv[2] / sinhalfangle;
+    if(sinhalfangle)
+    {
+        x = _fv[0] / sinhalfangle;
+        y = _fv[1] / sinhalfangle;
+        z = _fv[2] / sinhalfangle;
+    }
+    else
+    {
+        x = 0.0f;
+        y = 0.0f;
+        z = 1.0f;
+    }
+
 }
 
 

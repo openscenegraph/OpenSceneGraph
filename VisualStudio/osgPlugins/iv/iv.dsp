@@ -157,6 +157,14 @@ SOURCE=..\..\..\src\osgPlugins\iv\indexedfaceset.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\iv\atrvec3list.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\iv\indexedtristripset.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\iv\ltstr.h
 # End Source File
 # Begin Source File

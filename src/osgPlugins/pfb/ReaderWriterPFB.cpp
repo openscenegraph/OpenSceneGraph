@@ -102,6 +102,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             initPerformer();
 
             pfTexture* tex = new pfTexture;
+            tex->ref();
             if (tex->loadFile(fileName.c_str()))
             {
                 int s=0;
@@ -116,22 +117,33 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
                 unsigned int pixelFormat =
                     comp == 1 ? GL_LUMINANCE :
-                comp == 2 ? GL_LUMINANCE_ALPHA :
-                comp == 3 ? GL_RGB :
-                comp == 4 ? GL_RGBA : (GLenum)-1;
+                    comp == 2 ? GL_LUMINANCE_ALPHA :
+                    comp == 3 ? GL_RGB :
+                    comp == 4 ? GL_RGBA : (GLenum)-1;
 
                 unsigned int dataType = GL_UNSIGNED_BYTE;
+
+                // copy image data
+                int size = s * t * r * comp;
+                unsigned char* data = (unsigned char*) malloc(size);
+                memcpy(data, imageData, size);
 
                 osg::Image* image = new osg::Image;
                 image->setFileName(fileName.c_str());
                 image->setImage(s,t,r,
-                    internalFormat,
-                    pixelFormat,
-                    dataType,
-                    (unsigned char*)imageData);
+                                internalFormat,
+                                pixelFormat,
+                                dataType,
+                                data);
+
+                // free texture & image data
+                tex->unrefDelete();
 
                 return image;
             }
+
+            // free texture & image data
+            tex->unrefDelete();
 
             return ReadResult::FILE_NOT_HANDLED;
         }
@@ -146,12 +158,13 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             initPerformer();
 
             pfNode* root = pfdLoadFile(fileName.c_str());
-            
             if (root)
             {
-
+                root->ref();
                 ConvertFromPerformer converter;
-                return converter.convert(root);
+                osg::Node* node = converter.convert(root);
+                root->unrefDelete();
+                return node;
             }
             else
             {

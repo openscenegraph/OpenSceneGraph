@@ -16,6 +16,7 @@
 #include <osg/Material>
 #include <osg/Notify>
 #include <osg/Geometry>
+#include <osg/Sequence>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -254,23 +255,25 @@ osg::Node* ConvertFromPerformer::visitSwitch(osg::Group* osgParent,pfSwitch* swi
 }
 
 
-osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence* sequence)
+osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,
+                                               pfSequence* sequence)
 {
 
-    osg::notify(osg::WARN)<<"Warning : cannot convert pfSequence as no osg::Sequence exists, using osg::Switch instead."<<std::endl;
+    //osg::notify(osg::WARN)<<"Warning : cannot convert pfSequence as no osg::Sequence exists, using osg::Switch instead."<<std::endl;
 
-    osg::Switch* osgSequence = dynamic_cast<osg::Switch*>(getOsgObject(sequence));
+    osg::Sequence* osgSequence = dynamic_cast<osg::Sequence*>(getOsgObject(sequence));
     if (osgSequence)
     {
         if (osgParent) osgParent->addChild(osgSequence);
         return osgSequence;
     }
 
-    osgSequence = new osg::Switch;
+    osgSequence = new osg::Sequence;
     if (osgParent) osgParent->addChild(osgSequence);
 
     registerPfObjectForOsgObject(sequence,osgSequence);
 
+#if 0
     if (sequence->getNumChildren()>0)
     {
         // set switch to first child as a 'hack' to prevent all
@@ -279,11 +282,44 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence*
         // be removed.
         osgSequence->setValue(0);
     }
+#endif
 
+    // add children
     for(int i=0;i<sequence->getNumChildren();++i)
     {
+        osgSequence->setTime(i, sequence->getTime(i));
         visitNode(osgSequence,sequence->getChild(i));
     }
+
+    // interval
+    int mode, begin, end;
+    sequence->getInterval(&mode, &begin, &end);
+
+    osg::Sequence::LoopMode loopMode = osg::Sequence::LOOP;
+    if (mode == PFSEQ_SWING)
+        loopMode = osg::Sequence::SWING;
+    osgSequence->setInterval(loopMode, begin, end);
+
+    // duration
+    float speed;
+    int repeat;
+    sequence->getDuration(&speed, &repeat);
+    osgSequence->setDuration(speed, repeat);
+
+    // mode
+    mode = sequence->getMode();
+
+    osg::Sequence::SequenceMode seqMode = osg::Sequence::START;
+    switch (mode) {
+    case PFSEQ_STOP:
+        seqMode = osg::Sequence::STOP;
+        break;
+    case PFSEQ_PAUSE:
+        seqMode = osg::Sequence::PAUSE;
+        break;
+    }
+    osgSequence->setMode(seqMode);
+
     return (osg::Node*)osgSequence;
 }
 
@@ -483,6 +519,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
     // and then convert back to a osg::Geometry afterwards.
     //osg::ref_ptr<osg::GeoSet> osgGeoSet = new osg::GeoSet;
     osg::GeoSet* osgGeoSet = new osg::GeoSet;
+    osgGeoSet->ref();
 
     int i;
 
@@ -714,7 +751,7 @@ osg::Drawable* ConvertFromPerformer::visitGeoSet(osg::Geode* osgGeode,pfGeoSet* 
         osgGeode->addDrawable(osgDrawable);
         registerPfObjectForOsgObject(geoset,osgDrawable);
     }
-
+    osgGeoSet->unref();
 
     return osgDrawable;
 }
@@ -1191,7 +1228,7 @@ osg::Texture* ConvertFromPerformer::visitTexture(osg::StateSet* osgStateSet,pfTe
     unsigned int dataType = GL_UNSIGNED_BYTE;
 
     // copy image data
-    int size = s * t * comp;
+    int size = s * t * r * comp;
     unsigned char* data = (unsigned char*) malloc(size);
     memcpy(data, imageData, size);
 

@@ -43,7 +43,7 @@ bool osgDB::fileExists(const std::string& filename)
     return access( filename.c_str(), F_OK ) == 0;
 }
 
-std::string osgDB::findFileInPath(const std::string& filename, const FilePathList& filepath)
+std::string osgDB::findFileInPath(const std::string& filename, const FilePathList& filepath,CaseSensitivity caseSensitivity)
 {
     if (filename.empty()) 
         return filename;
@@ -65,25 +65,34 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
             osg::notify(osg::DEBUG_INFO) << "FindFileInPath() : USING " << path << "\n";
             return path;
         }
+#ifndef WIN32 
+// windows already case insensitive so no need to retry..
+        else if (caseSensitivity==CASE_INSENSITIVE) 
+        {
+            std::string foundfile = findFileInDirectory(filename,*itr,CASE_INSENSITIVE);
+            if (!foundfile.empty()) return foundfile;
+        }
+#endif
+            
     }
 
     return std::string();
 }
 
-std::string osgDB::findDataFile(const std::string& filename)
+std::string osgDB::findDataFile(const std::string& filename,CaseSensitivity caseSensitivity)
 {
     if (filename.empty()) return filename;
 
     const FilePathList& filepath = Registry::instance()->getDataFilePathList();
 
-    std::string fileFound = findFileInPath(filename, filepath);
+    std::string fileFound = findFileInPath(filename, filepath,caseSensitivity);
     if (!fileFound.empty()) return fileFound;
 
     // if a directory is included in the filename, get just the (simple) filename itself and try that
     std::string simpleFileName = getSimpleFileName(filename);
     if (simpleFileName!=filename)
     {
-        std::string fileFound = findFileInPath(simpleFileName, filepath);
+        std::string fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
         if (!fileFound.empty()) return fileFound;
     }
 
@@ -91,14 +100,14 @@ std::string osgDB::findDataFile(const std::string& filename)
     return std::string();
 }
 
-std::string osgDB::findLibraryFile(const std::string& filename)
+std::string osgDB::findLibraryFile(const std::string& filename,CaseSensitivity caseSensitivity)
 {
     if (filename.empty()) 
         return filename; 
 
     const FilePathList& filepath = Registry::instance()->getLibraryFilePathList();
 
-    std::string fileFound = findFileInPath(filename, filepath);
+    std::string fileFound = findFileInPath(filename, filepath,caseSensitivity);
     if (!fileFound.empty()) 
         return fileFound;
 
@@ -106,16 +115,16 @@ std::string osgDB::findLibraryFile(const std::string& filename)
     std::string simpleFileName = getSimpleFileName(filename);
     if (simpleFileName!=filename)
     {
-        std::string fileFound = findFileInPath(simpleFileName, filepath);
+        std::string fileFound = findFileInPath(simpleFileName, filepath,caseSensitivity);
         if (!fileFound.empty()) return fileFound;
     }
 
     // failed with direct paths,
     // now try prepending the filename with "osgPlugins/"
-    return findFileInPath("osgPlugins/"+simpleFileName,filepath);
+    return findFileInPath("osgPlugins/"+simpleFileName,filepath,caseSensitivity);
 }
 
-std::string osgDB::findFileInDirectory(const std::string& fileName,const std::string& dirName,bool caseInsensitive)
+std::string osgDB::findFileInDirectory(const std::string& fileName,const std::string& dirName,CaseSensitivity caseSensitivity)
 {
     bool needFollowingBackslash = false;
     bool needDirectoryName = true;
@@ -147,7 +156,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         itr!=dc.end();
         ++itr)
     {
-        if ((caseInsensitive && osgDB::equalCaseInsensitive(fileName,*itr)) ||
+        if ((caseSensitivity==CASE_INSENSITIVE && osgDB::equalCaseInsensitive(fileName,*itr)) ||
             (fileName==*itr))
         {
             if (!needDirectoryName) return *itr;

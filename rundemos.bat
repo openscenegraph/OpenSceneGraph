@@ -4,32 +4,32 @@ osgversion
 echo osglogo
 osglogo
 
-echo sgv osgcool.osg
-sgv osgcool.osg
+echo osgviewer osgcool.osg
+osgviewer osgcool.osg
 
-echo sgv cow.osg
-sgv cow.osg
+echo osgviewer cow.osg
+osgviewer cow.osg
 
-echo sgv -stereo cessna.osg
-sgv -stereo cessna.osg
+echo osgviewer --stereo cessna.osg
+osgviewer --stereo cessna.osg
 
-echo sgv cessnafire.osg
-sgv cessnafire.osg
+echo osgviewer cessnafire.osg
+osgviewer cessnafire.osg
 
-echo sgv spaceship.osg
-sgv spaceship.osg
+echo osgviewer spaceship.osg
+osgviewer spaceship.osg
 
-echo sgv cube_mapped_torus.osg
-sgv cube_mapped_torus.osg
+echo osgviewer cube_mapped_torus.osg
+osgviewer cube_mapped_torus.osg
 
 echo osgvertexprogram
 osgvertexprogram
 
-echo sgv Town.osg
-sgv Town.osg
+echo osgviewer Town.osg
+osgviewer Town.osg
 
-#echo sgv afterescher.geo
-#sgv afterescher.geo
+#echo osgviewer afterescher.geo
+#osgviewer afterescher.geo
 
 echo osgshape
 osgshape
@@ -57,9 +57,6 @@ osglightpoint
 
 echo osgbillboard
 osgbillboard
-
-echo osgcube
-osgcube
 
 echo osgcubemap cessna.osg
 osgcubemap cessna.osg
@@ -102,9 +99,6 @@ osgtexture2D Images/reflect.rgb Images/lz.rgb
 
 echo osgtexture3D
 osgtexture3D
-
-echo osgviews cow.osg
-osgviews cow.osg
 
 echo osgoccluder glider.osg
 osgoccluder glider.osg

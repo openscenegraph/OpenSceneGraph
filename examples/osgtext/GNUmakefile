@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgtext.cpp\
 
-LIBS     += -losgProducer -lProducer -losgText $(OSG_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgProducer -lProducer -losgText -losgProducer -lProducer -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\

@@ -13,4 +13,7 @@ INSTFILES =\
 	$(CXXFILES)\
 	Makefile.inst=Makefile
 
+INC += $(PRODUCER_INCLUDE_DIR)
+LDFLAGS  += $(PRODUCER_LIB_DIR)
+
 include $(TOPDIR)/Make/makerules

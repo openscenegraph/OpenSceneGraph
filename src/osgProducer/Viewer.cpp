@@ -230,6 +230,8 @@ void Viewer::update()
             handled = (*handler_itr)->handle(*(*event_itr),*this);
         }
     }
+    
+    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
 
     // update the scene by traversing it with the the update visitor which will
     // call all node update callbacks and animations.

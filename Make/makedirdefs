@@ -18,7 +18,7 @@ SRC_DIRS = \
 	osgSim\
 	osgPlugins\
 	../examples\
-	src/Demos
+#	src/Demos
 
 
 ################################################################
@@ -86,14 +86,45 @@ endif
 # Directories traversed in the TOPDIR/examples directory
 
 EXAMPLE_DIRS = \
+	osganimate\
+	osgbillboard\
+	osgcallback\
 	osgcameragroup\
-	osgviewer\
+	osgclip\
 	osgconv\
+	osgcopy\
+	osgcubemap\
+	osggeodemo\
+	osggeometry\
+	osghangglide\
 	osghud\
-	osgtext\
+	osgimpostor\
+	osglight\
+	osglightpoint\
+	osglogo\
+	osgmultitexture\
+	osgoccluder\
+	osgparticle\
+	osgprerender\
 	osgreflect\
+	osgscribe\
+	osgsequence\
+	osgshadowtexture\
+	osgshape\
 	osgstereoimage\
+	osgstereoimage\
+	osgteapot\
+	osgtext\
+	osgtexture1D\
+	osgtexture2D\
+	osgtexture3D\
+	osgunittests\
+	osgversion\
+	osgvertexprogram\
+	osgviewer\
 
+# comment in you want to compile the cluster demo.
+# EXAMPLE_DIRS += osgcluster
 
 ################################################################
 # Directories traversed in the TOPDIR/src/Demos directory

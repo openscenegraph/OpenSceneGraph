@@ -153,6 +153,7 @@ EXAMPLE_DIRS = \
 	osglight\
 	osglightpoint\
 	osglogo\
+        osgmovie\
 	osgmultitexture\
 	osgoccluder\
 	osgpagedlod\
@@ -192,10 +193,6 @@ ifeq ($(GDAL_INSTALLED),yes)
     EXAMPLE_DIRS += osgphotoalbum
     EXAMPLE_DIRS += osgdem
     EXAMPLE_DIRS += osgbluemarble
-endif
-
-ifeq ($(LIBMPEG3_INSTALLED),yes)
-    EXAMPLE_DIRS += osgmovie
 endif
 
 ifeq ($(DEMETER_INSTALLED),yes)

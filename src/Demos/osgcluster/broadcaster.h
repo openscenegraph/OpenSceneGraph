@@ -7,7 +7,9 @@
 // Class definition for broadcasting a buffer to a LAN
 //
 
-#include <netinet/in.h>
+#ifndef WIN32
+    #include <netinet/in.h>
+#endif
 
 class Broadcaster  
 {
@@ -34,12 +36,20 @@ class Broadcaster
 	bool init( void );
 
     private :
+#if defined (WIN32)
+        SOCKET _so;
+#else
         int _so;
+#endif
         bool _initialized;
         short _port;
         void *_buffer;
         unsigned int _buffer_size;
-	struct sockaddr_in saddr;
-	unsigned long _address;
+#if defined (WIN32)
+        SOCKADDR_IN saddr;
+#else
+        struct sockaddr_in saddr;
+#endif
+        unsigned long _address;
 };
 #endif

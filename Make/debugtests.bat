@@ -42,8 +42,8 @@ echo osgprerender dumptruck.osg
 osgprerender dumptruck.osg
 more memleaks.log
 
-echo osgparticle cow.osg
-osgparticle cow.osg
+echo osgparticle
+osgparticle
 more memleaks.log
 
 echo osgbillboard lz.rgb

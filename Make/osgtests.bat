@@ -31,8 +31,8 @@ osggeometry
 echo osgprerender dumptruck.osg
 osgprerender dumptruck.osg
 
-echo osgparticle cow.osg
-osgparticle cow.osg
+echo osgparticle
+osgparticle
 
 echo osgbillboard lz.rgb
 osgbillboard lz.rgb

@@ -126,6 +126,8 @@ DynamicLibrary::getLibraryHandle( const std::string& libraryName)
     return handle;
 #else // other unix
     handle = dlopen( libraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
+    if( handle == NULL )
+        printf( "dlopen: %s\n", dlerror() );
 #endif
     return handle;
 }

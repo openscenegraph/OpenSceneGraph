@@ -53,21 +53,15 @@ namespace
                 polymode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
                 ss->setAttributeAndModes(polymode.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                wf_lw_->setWidth(1);
                 ss->setAttributeAndModes(wf_lw_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                wf_mat_->setColorMode(osg::Material::OFF);
-                wf_mat_->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
-                wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
                 ss->setAttributeAndModes(wf_mat_.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
                 ss->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
                 ss->setTextureMode(0, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
                 ss->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF);
 
-                   addPass(ss.get());
+                addPass(ss.get());
             }
         }
 
@@ -83,6 +77,13 @@ Scribe::Scribe()
     wf_mat_(new osg::Material),
     wf_lw_(new osg::LineWidth)
 {
+    wf_lw_->setWidth(1.0f);
+
+    wf_mat_->setColorMode(osg::Material::OFF);
+    wf_mat_->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    wf_mat_->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    wf_mat_->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    wf_mat_->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 }
 
 Scribe::Scribe(const Scribe &copy, const osg::CopyOp &copyop)

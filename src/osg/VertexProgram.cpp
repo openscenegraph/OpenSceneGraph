@@ -17,6 +17,47 @@
 
 using namespace osg;
 
+// static cache of deleted vertex programs which can only 
+// by completely deleted once the appropriate OpenGL context
+// is set.
+typedef std::vector<GLuint> VertexProgramObjectVector;
+typedef std::map<unsigned int,VertexProgramObjectVector> DeletedVertexProgramObjectCache;
+static DeletedVertexProgramObjectCache s_deletedVertexProgramObjectCache;
+
+void VertexProgram::deleteVertexProgramObject(unsigned int contextID,GLuint handle)
+{
+    if (handle!=0)
+    {
+        // insert the handle into the cache for the appropriate context.
+        s_deletedVertexProgramObjectCache[contextID].push_back(handle);
+    }
+}
+
+
+void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID)
+{
+    const Extensions* extensions = getExtensions(contextID,true);
+
+    if (!extensions->isVertexProgramSupported())
+        return;
+
+    DeletedVertexProgramObjectCache::iterator citr = s_deletedVertexProgramObjectCache.find(contextID);
+    if (citr!=s_deletedVertexProgramObjectCache.end())
+    {
+        VertexProgramObjectVector vpObjectSet;
+
+        // this swap will transfer the content of and empty citr->second
+        // in one quick pointer change.
+        vpObjectSet.swap(citr->second);
+        for(VertexProgramObjectVector::iterator titr=vpObjectSet.begin();
+            titr!=vpObjectSet.end();
+            ++titr)
+        {
+            extensions->glDeletePrograms( 1L, &(*titr ) );
+        }
+    }
+}
+
 
 VertexProgram::VertexProgram()
 {
@@ -25,12 +66,40 @@ VertexProgram::VertexProgram()
 
 VertexProgram::VertexProgram(const VertexProgram& vp,const CopyOp& copyop):
     osg::StateAttribute(vp,copyop)
-{}
+{
+    _vertexProgram = vp._vertexProgram;
+
+    for( LocalParamList::const_iterator itr = vp._programLocalParameters.begin(); 
+        itr != vp._programLocalParameters.end(); ++itr )
+    {
+        _programLocalParameters[itr->first] = itr->second;
+    }
+
+    for( MatrixList::const_iterator mitr = vp._matrixList.begin(); 
+        mitr != vp._matrixList.end(); ++mitr )
+    {
+        _matrixList[mitr->first] = mitr->second;
+    }
+}
 
 
 // virtual
 VertexProgram::~VertexProgram()
-{}
+{
+    dirtyVertexProgramObject();
+}
+
+void VertexProgram::dirtyVertexProgramObject()
+{
+    for(unsigned int i=0;i<_vertexProgramIDList.size();++i)
+    {
+        if (_vertexProgramIDList[i] != 0)
+        {
+            VertexProgram::deleteVertexProgramObject(i,_vertexProgramIDList[i]);
+            _vertexProgramIDList[i] = 0;
+        }
+    }
+}
 
 void VertexProgram::apply(State& state) const
 {
@@ -125,6 +194,7 @@ VertexProgram::Extensions::Extensions(const Extensions& rhs):
     _isVertexProgramSupported = rhs._isVertexProgramSupported;
     _glBindProgram = rhs._glBindProgram;
     _glGenPrograms = rhs._glGenPrograms;
+    _glDeletePrograms = rhs._glDeletePrograms;
     _glProgramString = rhs._glProgramString;
     _glProgramLocalParameter4fv = rhs._glProgramLocalParameter4fv;
 }
@@ -136,6 +206,7 @@ void VertexProgram::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
     if (!rhs._glBindProgram) _glBindProgram = 0;
     if (!rhs._glGenPrograms) _glGenPrograms = 0;
+    if (!rhs._glDeletePrograms) _glDeletePrograms = 0;
     if (!rhs._glProgramString) _glProgramString = 0;
     if (!rhs._glProgramLocalParameter4fv) _glProgramLocalParameter4fv = 0;
 
@@ -147,6 +218,7 @@ void VertexProgram::Extensions::setupGLExtenions()
 
     _glBindProgram = osg::getGLExtensionFuncPtr("glBindProgramARB");
     _glGenPrograms = osg::getGLExtensionFuncPtr("glGenProgramsARB");
+    _glDeletePrograms = osg::getGLExtensionFuncPtr("glDeleteProgramsARB");
     _glProgramString = osg::getGLExtensionFuncPtr("glProgramStringARB");
     _glProgramLocalParameter4fv = osg::getGLExtensionFuncPtr("glProgramLocalParameter4fvARB");
 }
@@ -174,6 +246,19 @@ void VertexProgram::Extensions::glGenPrograms(GLsizei n, GLuint *programs) const
     else
     {
         notify(WARN)<<"Error: glGenPrograms not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void VertexProgram::Extensions::glDeletePrograms(GLsizei n, GLuint *programs) const
+{
+    if (_glDeletePrograms)
+    {
+        typedef void (APIENTRY * DeleteProgramsProc) (GLsizei n, GLuint *programs);
+        ((DeleteProgramsProc)_glDeletePrograms)(n,programs);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glDeletePrograms not supported by OpenGL driver"<<std::endl;
     }
 }
 

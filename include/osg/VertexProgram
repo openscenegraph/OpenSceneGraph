@@ -152,7 +152,12 @@ class SG_EXPORT VertexProgram : public StateAttribute
         /** Set the vertex program using C++ style string.*/
         inline void setVertexProgram( const std::string& program ) { _vertexProgram = program; }
         /** Set the vertex program using a C style string.*/
-        inline void setVertexProgram( const char* program ) { _vertexProgram = program; }
+        inline void setVertexProgram( const char* program ) 
+        { 
+            _vertexProgram = program; 
+            
+            dirtyVertexProgramObject();
+        }
         /** Get the vertex program.*/
         inline const std::string& getVertexProgram() const { return _vertexProgram; }
 
@@ -167,6 +172,19 @@ class SG_EXPORT VertexProgram : public StateAttribute
         {
             _matrixList[mode] = matrix;
         }
+
+        /** Force a recompile on next apply() of associated OpenGL vertex program objects.*/
+        void dirtyVertexProgramObject();        
+
+        /** use deleteVertexProgramObject instead of glDeletePrograms to allow
+          * OpenGL Vertex Program objects to cached until they can be deleted
+          * by the OpenGL context in which they were created, specified
+          * by contextID.*/
+        static void deleteVertexProgramObject(unsigned int contextID,GLuint handle);
+
+        /** flush all the cached vertex programs which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void flushDeletedVertexProgramObjects(unsigned int contextID);
 
         virtual void apply(State& state) const;
 
@@ -191,6 +209,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
 
                 void glBindProgram(GLenum target, GLuint id) const;
                 void glGenPrograms(GLsizei n, GLuint *programs) const;
+                void glDeletePrograms(GLsizei n, GLuint *programs) const;
                 void glProgramString(GLenum target, GLenum format, GLsizei len, const void *string) const; 
                 void glProgramLocalParameter4fv(GLenum target, GLuint index, const GLfloat *params) const;
 
@@ -202,6 +221,7 @@ class SG_EXPORT VertexProgram : public StateAttribute
                 
                 void* _glBindProgram;
                 void* _glGenPrograms;
+                void *_glDeletePrograms;
                 void* _glProgramString;
                 void* _glProgramLocalParameter4fv;
  

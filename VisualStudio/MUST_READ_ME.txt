@@ -20,11 +20,16 @@ these can be found in doc/dependancies.html.
 
 --
 
-For syntax highlighting in VisualStudio which the stanard C++ style found in the 
-OSG you can substiture the LANDEXT.DAT file found in this directory with the one found
-in :
+For syntax highlighting in VisualStudio which the stanard C++ style headers 
+found in the OSG :
 
-VisualStudio6.0               *\Common\MSDev98\Bin
+VisualStudio6.0   
 
-VisualStudio7.0/.NET          *\Common7\IDE\langext.dat
+    Substiture the LANDEXT.DAT file found in this directory with the one found
+    *\Common\MSDev98\Bin
 
+VisualStudio7.0/.NET
+
+    Install the syntaxhighlight.reg (just double click it). This will update 
+    Extensionless file for Visual Studio.  Don't worry, it will keep the 
+    current extensionless files (STL ones) intact.

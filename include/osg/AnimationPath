@@ -1,0 +1,77 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_ANIMATIONPATH
+#define OSG_ANIMATIONPATH 1
+
+#include <osg/Matrix>
+#include <osg/Quat>
+
+#include <map>
+
+namespace osg {
+
+/** Animation Path for specify the time varying transformation pathway to use when update camera and model objects.
+*/
+class SG_EXPORT AnimationPath : public osg::Referenced
+{
+    public:
+    
+        AnimationPath() {}
+        
+        virtual bool getMatrix(double time,Matrix& matrix);
+        virtual bool getInverse(double time,Matrix& matrix);
+        
+        struct Key
+        {
+            Key() {}
+
+            Key(const osg::Vec3& position, const osg::Quat& rotation, const osg::Vec3& scale):
+                _position(position),
+                _rotation(rotation),
+                _scale(scale) {}
+        
+            osg::Vec3 _position;
+            osg::Quat _rotation;
+            osg::Vec3 _scale;
+            
+            inline void interpolate(const float ratio,const Key& first, const Key& second)
+            {
+                float one_minus_ratio = 1.0f-ratio;
+                _position = first._position*one_minus_ratio + second._position*ratio;
+                _rotation.slerp(ratio,first._rotation,second._rotation);
+                _scale = first._scale*one_minus_ratio + second._scale*ratio;
+            }
+            
+            inline void getMatrix(Matrix& matrix)
+            {
+                matrix.makeScale(_scale);
+                matrix.postMult(_rotation.getMatrix());
+                matrix.postMult(osg::Matrix::translate(_position));
+            }
+
+            inline void getInverse(Matrix& matrix)
+            {
+                matrix.makeScale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.y());
+                matrix.postMult(_rotation.inverse().getMatrix());
+                matrix.postMult(osg::Matrix::translate(-_position));
+            }
+        };
+        
+        
+        void insert(double time,const Key& key);
+
+    protected:
+    
+        virtual ~AnimationPath() {}
+
+        typedef std::map<double,Key> TimeKeyMap;
+        
+        TimeKeyMap _timeKeyMap;
+
+};
+
+}
+
+#endif

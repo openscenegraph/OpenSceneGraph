@@ -45,7 +45,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.10">setImage</A></B>(int <!1><A HREF="Image.html#DOC.2.43.13">s</A>, int <!1><A HREF="Image.html#DOC.2.43.14">t</A>, int <!1><A HREF="Image.html#DOC.2.43.15">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.43.26">data</A>, int packing=1)
 <DD><I>set the image data and format.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.11">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.112.7">x</A>, int <!1><A HREF="Viewport.html#DOC.2.112.8">y</A>, int <!1><A HREF="Viewport.html#DOC.2.112.9">width</A>, int <!1><A HREF="Viewport.html#DOC.2.112.10">height</A>, GLenum format, GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.11">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.111.7">x</A>, int <!1><A HREF="Viewport.html#DOC.2.111.8">y</A>, int <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, int <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>, GLenum format, GLenum type)
 <DD><I>readPixels from screen at specified position and size, using glReadPixels.</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.43.12">scaleImage</A></B>(const int <!1><A HREF="Image.html#DOC.2.43.13">s</A>, const int <!1><A HREF="Image.html#DOC.2.43.14">t</A>, const int <!1><A HREF="Image.html#DOC.2.43.15">r</A>)
@@ -110,37 +110,47 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   const unsigned int <B><A HREF="#DOC.2.43.35">computePixelSizeInBits</A></B>(GLenum format, GLenum type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   const unsigned int <B><A HREF="#DOC.2.43.36">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.112.9">width</A>, GLenum format, GLenum type, int packing)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   const unsigned int <B><A HREF="#DOC.2.43.36">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, GLenum format, GLenum type, int packing)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; unsigned int &gt;inline  MipmapDataType bool <B><A HREF="#DOC.2.43.37">isMipmap</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.43.38">getNumMipmaps</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.43.39">setMipmapData</A></B>(const MipmapDataType&amp; mipmapDataVector)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.43.40">getMipmapData</A></B>(unsigned int mipmapNumber) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.43.39">_fileName</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.43.43">_fileName</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.43.40">_s</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.43.44">_s</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.43.41">_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.43.45">_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.43.42">_r</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.43.46">_r</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.43.43">_internalTextureFormat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.43.47">_internalTextureFormat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.43.44">_pixelFormat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.43.48">_pixelFormat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.43.45">_dataType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.43.49">_dataType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.43.46">_packing</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.43.50">_packing</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char* <B><A HREF="#DOC.2.43.47">_data</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char* <B><A HREF="#DOC.2.43.51">_data</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.43.48">_modifiedTag</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.43.52">_modifiedTag</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>MipmapDataType <B><A HREF="#DOC.2.43.53">_mipmapData</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.43.37">~Image</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.43.41">~Image</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>&amp; <B><A HREF="#DOC.2.43.38">operator = </A></B>(const <!1><A HREF="Image.html">Image</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>&amp; <B><A HREF="#DOC.2.43.42">operator = </A></B>(const <!1><A HREF="Image.html">Image</A>&amp;)
 </DL></P>
 
 </DL>
@@ -148,9 +158,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(const <!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> <B>getDataVariance</B>() const 
 </DL></P>
 
 <P><DL>
@@ -160,7 +170,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.75.7">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.74.7">DataVariance</A> <B>_dataVariance</B>
 </DL></P>
 
 </DL>
@@ -238,7 +248,7 @@ value of packing is supplied than _packing is simply set to that value.
 <DL><DT><DD></DL><P>
 <A NAME="readPixels"></A>
 <A NAME="DOC.2.43.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.112.7">x</A>, int <!1><A HREF="Viewport.html#DOC.2.112.8">y</A>, int <!1><A HREF="Viewport.html#DOC.2.112.9">width</A>, int <!1><A HREF="Viewport.html#DOC.2.112.10">height</A>, GLenum format, GLenum type)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.111.7">x</A>, int <!1><A HREF="Viewport.html#DOC.2.111.8">y</A>, int <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, int <!1><A HREF="Viewport.html#DOC.2.111.10">height</A>, GLenum format, GLenum type)</B></TT>
 <DD>readPixels from screen at specified position and size, using glReadPixels.
 Create memory for storage if required, reuse existing pixel coords if possible.
 if pixelFormat or dataType
@@ -358,55 +368,75 @@ the host machine.
 <DL><DT><DD></DL><P>
 <A NAME="computeRowWidthInBytes"></A>
 <A NAME="DOC.2.43.36"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   const unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.112.9">width</A>, GLenum format, GLenum type, int packing)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   const unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.111.9">width</A>, GLenum format, GLenum type, int packing)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="isMipmap"></A>
+<A NAME="DOC.2.43.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; unsigned int &gt;inline  MipmapDataType bool isMipmap() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumMipmaps"></A>
+<A NAME="DOC.2.43.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getNumMipmaps() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMipmapData"></A>
+<A NAME="DOC.2.43.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMipmapData(const MipmapDataType&amp; mipmapDataVector)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMipmapData"></A>
+<A NAME="DOC.2.43.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned char* getMipmapData(unsigned int mipmapNumber) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Image"></A>
-<A NAME="DOC.2.43.37"></A>
+<A NAME="DOC.2.43.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Image()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.43.38"></A>
+<A NAME="DOC.2.43.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>&amp; operator = (const <!1><A HREF="Image.html">Image</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fileName"></A>
-<A NAME="DOC.2.43.39"></A>
+<A NAME="DOC.2.43.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _fileName</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s"></A>
-<A NAME="DOC.2.43.40"></A>
+<A NAME="DOC.2.43.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _s</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_t"></A>
-<A NAME="DOC.2.43.41"></A>
+<A NAME="DOC.2.43.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_r"></A>
-<A NAME="DOC.2.43.42"></A>
+<A NAME="DOC.2.43.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _r</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_internalTextureFormat"></A>
-<A NAME="DOC.2.43.43"></A>
+<A NAME="DOC.2.43.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _internalTextureFormat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pixelFormat"></A>
-<A NAME="DOC.2.43.44"></A>
+<A NAME="DOC.2.43.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _pixelFormat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dataType"></A>
-<A NAME="DOC.2.43.45"></A>
+<A NAME="DOC.2.43.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _dataType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_packing"></A>
-<A NAME="DOC.2.43.46"></A>
+<A NAME="DOC.2.43.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _packing</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_data"></A>
-<A NAME="DOC.2.43.47"></A>
+<A NAME="DOC.2.43.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char* _data</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modifiedTag"></A>
-<A NAME="DOC.2.43.48"></A>
+<A NAME="DOC.2.43.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _modifiedTag</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_mipmapData"></A>
+<A NAME="DOC.2.43.53"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>MipmapDataType _mipmapData</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

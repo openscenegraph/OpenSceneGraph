@@ -718,12 +718,21 @@ DataSet::DestinationTile::DestinationTile():
 
 void DataSet::DestinationTile::computeMaximumSourceResolution(CompositeSource* sourceGraph)
 {
-    for(CompositeSource::iterator itr(sourceGraph);itr.valid();++itr)
+    for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
+
         SourceData* data = (*itr)->getSourceData();
         if (data && (*itr)->getType()!=Source::MODEL)
         {
+
             SpatialProperties sp = data->computeSpatialProperties(_cs.get());
+
+            if (!sp._extents.intersects(data->getExtents(_cs.get())))
+            {
+                std::cout<<"DataSet::DestinationTile::computeMaximumSourceResolution:: source does not overlap ignoring for this tile."<<std::endl;
+                continue;
+            }
+
             
             if (sp._numValuesX!=0 && sp._numValuesY!=0)
             {
@@ -1222,7 +1231,7 @@ osg::Node* DataSet::DestinationTile::createScene()
 
 void DataSet::DestinationTile::readFrom(CompositeSource* sourceGraph)
 {
-    for(CompositeSource::iterator itr(sourceGraph);itr.valid();++itr)
+    for(CompositeSource::source_iterator itr(sourceGraph);itr.valid();++itr)
     {
         SourceData* data = (*itr)->getSourceData();
         if (data)
@@ -1351,7 +1360,7 @@ void DataSet::addSource(CompositeSource* composite)
 
 void DataSet::loadSources()
 {
-    for(CompositeSource::iterator itr(_sourceGraph.get());itr.valid();++itr)
+    for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
     {
         (*itr)->loadSourceData();
     }
@@ -1363,7 +1372,7 @@ void DataSet::computeDestinationGraphFromSources()
     // ensure we have a valid coordinate system
     if (!_coordinateSystem)
     {
-        for(CompositeSource::iterator itr(_sourceGraph.get());itr.valid();++itr)
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             SourceData* sd = (*itr)->getSourceData();
             if (sd)
@@ -1382,7 +1391,7 @@ void DataSet::computeDestinationGraphFromSources()
     osg::BoundingBox extents(_extents);
     if (!extents.valid()) 
     {
-        for(CompositeSource::iterator itr(_sourceGraph.get());itr.valid();++itr)
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             SourceData* sd = (*itr)->getSourceData();
             if (sd) extents.expandBy(sd->getExtents(_coordinateSystem.get()));
@@ -1528,22 +1537,53 @@ void DataSet::CompositeSource::sort()
     {
         (*itr)->sort();
     }
-
-    // source the sources themselves
-    std::sort(_children.begin(),_children.end(),DerefLessFunctor< osg::ref_ptr<CompositeSource> >());
-
 }
 
 void DataSet::updateSourcesForDestinationGraphNeeds()
 {
 
-    std::cout<<"Using Source Iterator itr"<<std::endl;
-    for(CompositeSource::iterator csitr(_sourceGraph.get());csitr.valid();++csitr)
+    std::cout<<"Using source_iterator itr"<<std::endl;
+    for(CompositeSource::source_iterator csitr(_sourceGraph.get());csitr.valid();++csitr)
     {
         std::cout<<"  Source "<<(*csitr)->getFileName()<<std::endl;
     }
     std::cout<<"End of Using Source Iterator itr"<<std::endl;
 
+    std::cout<<"Using Iterator itr"<<std::endl;
+    for(CompositeSource::iterator csitr(_sourceGraph.get());csitr.valid();++csitr)
+    {
+        std::cout<<"    Composite Source"<<&(*csitr)<<std::endl;
+        for(CompositeSource::SourceList::iterator itr=csitr->_sourceList.begin();
+            itr!=csitr->_sourceList.end();
+            ++itr)
+        {
+            std::cout<<"      Source "<<(*itr)->getFileName()<<" res="<<(*itr)->getSortValue()<<std::endl;
+        }
+        csitr->setType(LEVEL_OF_DETAIL);
+    }
+    std::cout<<"End of Source Iterator itr"<<std::endl;
+    
+    {
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
+        {
+            Source* source = itr->get();
+            source->setSortValueFromSourceDataResolution();
+            std::cout<<"sort "<<source->getFileName()<<" value "<<source->getSortValue()<<std::endl;
+            
+        }
+        
+        // sort them so highest sortValue is first.
+
+        _sourceGraph->sort();
+    }
+    
+    std::cout<<"Using source_lod_iterator itr"<<std::endl;
+    for(CompositeSource::source_lod_iterator csitr(_sourceGraph.get(),CompositeSource::LODSourceAdvancer(0.0));csitr.valid();++csitr)
+    {
+        std::cout<<"  LOD "<<(*csitr)->getFileName()<<std::endl;
+    }
+    std::cout<<"End of Using Source Iterator itr"<<std::endl;
+    
 
 
     std::string temporyFilePrefix("temporaryfile_");
@@ -1551,7 +1591,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
     // do standardisation of coordinates systems.
     // do any reprojection if required.
     {
-        for(CompositeSource::iterator itr(_sourceGraph.get());itr.valid();++itr)
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             Source* source = itr->get();
             if (source->needReproject(_coordinateSystem.get()))
@@ -1569,7 +1609,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
     
     // do sampling of data to required values.
     {
-        for(CompositeSource::iterator itr(_sourceGraph.get());itr.valid();++itr)
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             Source* source = itr->get();
             source->buildOverviews();
@@ -1578,7 +1618,7 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
 
     // sort the sources so that the lowest res tiles are drawn first.
     {
-        for(CompositeSource::iterator itr(_sourceGraph.get());itr.valid();++itr)
+        for(CompositeSource::source_iterator itr(_sourceGraph.get());itr.valid();++itr)
         {
             Source* source = itr->get();
             source->setSortValueFromSourceDataResolution();
@@ -1591,6 +1631,12 @@ void DataSet::updateSourcesForDestinationGraphNeeds()
         _sourceGraph->sort();
     }
     
+    std::cout<<"Using source_lod_iterator itr"<<std::endl;
+    for(CompositeSource::source_lod_iterator csitr(_sourceGraph.get(),CompositeSource::LODSourceAdvancer(0.0));csitr.valid();++csitr)
+    {
+        std::cout<<"  LOD "<<(*csitr)->getFileName()<<std::endl;
+    }
+    std::cout<<"End of Using Source Iterator itr"<<std::endl;
 }
 
 void DataSet::populateDestinationGraphFromSources()

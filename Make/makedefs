@@ -367,8 +367,9 @@ ifeq ($(OS),Darwin)
   QUICKTIME	        = -framework QuickTime $(CARBON_LIB)
   FREETYPE_INCLUDE  = -I/sw/include/freetype2
   TIFF_LIB	        = -ltiff
-  LIBVERSION	    = -dylib_current_version 0.9.3
-
+  LIBVERSION	    = -current_version $(VERSION) \
+                        -compatibility_version \
+                        $(VERSION_MAJOR).$(VERSION_MINOR).0
 endif
 
 #### Cygwin/Mingw specific definitions

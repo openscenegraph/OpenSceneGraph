@@ -67,14 +67,15 @@ void tri_stripper::InitTriGraph()
     // note: setsize() completely resets the graph as well as the node markers
     m_Triangles.setsize(m_TriIndices.size() / 3);
 
-    for (size_t i = 0; i < m_Triangles.size(); ++i)
+    size_t i;
+    for (i = 0; i < m_Triangles.size(); ++i)
         m_Triangles[i] = triangle(m_TriIndices[i * 3 + 0], m_TriIndices[i * 3 + 1], m_TriIndices[i * 3 + 2]);
 
     // Build the edges lookup table
     triangle_edges TriInterface;
     TriInterface.reserve(m_Triangles.size() * 3);
 
-    for (size_t i = 0; i < m_Triangles.size(); ++i) {
+    for (i = 0; i < m_Triangles.size(); ++i) {
         TriInterface.push_back(triangle_edge(m_Triangles[i]->A(), m_Triangles[i]->B(), i)); 
         TriInterface.push_back(triangle_edge(m_Triangles[i]->B(), m_Triangles[i]->C(), i)); 
         TriInterface.push_back(triangle_edge(m_Triangles[i]->C(), m_Triangles[i]->A(), i)); 
@@ -84,7 +85,7 @@ void tri_stripper::InitTriGraph()
     std::sort(TriInterface.begin(), TriInterface.end(), _cmp_tri_interface_lt());
 
     // Link neighbour triangles together using the edges lookup table
-    for (size_t i = 0; i < m_Triangles.size(); ++i) {
+    for (i = 0; i < m_Triangles.size(); ++i) {
 
         const triangle_edge EdgeBA(m_Triangles[i]->B(), m_Triangles[i]->A(), i);
         const triangle_edge EdgeCB(m_Triangles[i]->C(), m_Triangles[i]->B(), i);

@@ -194,7 +194,7 @@ int main( int argc, char **argv )
 
 
         // update the main producer camera
-        cg->setView(old_style_osg_camera->getModelViewMatrix().ptr());
+        cg->setView(old_style_osg_camera->getModelViewMatrix());
          
         // fire off the cull and draw traversals of the scene.
         cg->frame();

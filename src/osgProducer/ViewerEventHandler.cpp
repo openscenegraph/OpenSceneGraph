@@ -1,5 +1,5 @@
 #include <osgProducer/ViewerEventHandler>
-
+#include <osgGA/AnimationPathManipulator>
 #include <osgDB/WriteFile>
 #include <osgText/Text>
 
@@ -682,7 +682,7 @@ ViewerEventHandler::ViewerEventHandler(OsgCameraGroup* cg):
     cam->addPostDrawCallback(new DrawCallback(this,0));
 }
 
-bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {
     if(!_cg) return false;
 
@@ -749,6 +749,75 @@ bool ViewerEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActio
             case 'h' :
             {
                 setDisplayHelp(!getDisplayHelp());
+                return true;
+            }
+            case 'Z' :
+            case 'z' :
+            {
+                osgProducer::Viewer* viewer = dynamic_cast<osgProducer::Viewer*>(_cg);
+                if (viewer)
+                {
+                    if (viewer->getRecordingAnimationPath())
+                    {
+                        // have already been recording so switch of recording.
+                        viewer->setRecordingAnimationPath(false);
+
+                        osg::notify(osg::NOTICE) << "Finished recording camera animation, press 'Z' to reply."<< std::endl;
+
+                        if (viewer->getAnimationPath())
+                        {
+                            std::ofstream fout("saved_animation.path");
+                            const osg::AnimationPath::TimeControlPointMap& tcpm = viewer->getAnimationPath()->getTimeControlPointMap();
+                            for(osg::AnimationPath::TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();
+                                tcpmitr!=tcpm.end();
+                                ++tcpmitr)
+                            {
+                                const osg::AnimationPath::ControlPoint& cp = tcpmitr->second;
+                                fout<<tcpmitr->first<<" "<<cp._position<<" "<<cp._rotation<<std::endl;
+                            }
+                            fout.close();
+
+                            osg::notify(osg::NOTICE) << "Saved camera animation to 'saved_animation.path'"<< std::endl;
+
+                        }
+
+                    }
+                    else if (ea.getKey()=='z') 
+                    {
+                        viewer->setRecordingAnimationPath(true);
+                        viewer->setAnimationPath(new osg::AnimationPath());
+                        viewer->getAnimationPath()->setLoopMode(osg::AnimationPath::LOOP);
+                        osg::notify(osg::NOTICE) << "Recording camera animation, press 'z' to finish recording."<< std::endl;
+                    }
+
+                    if (ea.getKey()=='Z')
+                    {
+                        osgGA::AnimationPathManipulator* apm = 0;
+                        unsigned int apmNo = 0;
+                        
+                        osgGA::KeySwitchCameraManipulator* kscm = viewer->getKeySwitchCameraManipulator();
+                        if (kscm)
+                        {
+                            for(apmNo=0;apmNo<kscm->getNumCameraManipualtors() && apm==0;++apmNo)
+                            {
+                                apm = dynamic_cast<osgGA::AnimationPathManipulator*>(kscm->getCameraManipulator(apmNo));
+                            }
+                        }
+
+                        if (!apm)
+                        {
+                            apm = new osgGA::AnimationPathManipulator();
+                            apmNo = viewer->addCameraManipulator(apm);
+                        }
+
+                        apm->setAnimationPath(viewer->getAnimationPath());
+                        apm->home(ea,aa);
+
+                        viewer->selectCameraManipulator(apmNo);
+                    }
+
+                    break;
+                }
                 return true;
             }
 

@@ -166,7 +166,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     osg::Vec3 ep = _eye;
 
-    Matrix rotation_matrix;
+    Matrixd rotation_matrix;
     rotation_matrix.get(_rotation);
     osg::Vec3 sv = osg::Vec3(1.0f,0.0f,0.0f) * rotation_matrix;
     osg::Vec3 bp = ep;
@@ -353,20 +353,20 @@ void DriveManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
-void DriveManipulator::setByMatrix(const osg::Matrix& matrix)
+void DriveManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
     _eye = matrix.getTrans();
     matrix.get(_rotation);
 }
 
-osg::Matrix DriveManipulator::getMatrix() const
+osg::Matrixd DriveManipulator::getMatrix() const
 {
-    return osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_eye);
+    return osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_eye);
 }
 
-osg::Matrix DriveManipulator::getInverseMatrix() const
+osg::Matrixd DriveManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-_eye)*osg::Matrix::rotate(_rotation.inverse());
+    return osg::Matrixd::translate(-_eye)*osg::Matrixd::rotate(_rotation.inverse());
 }
 
 void DriveManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)

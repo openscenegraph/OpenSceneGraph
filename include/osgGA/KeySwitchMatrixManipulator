@@ -66,16 +66,16 @@ public:
 
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrix& matrix) { _current->setByMatrix(matrix); }
+        virtual void setByMatrix(const osg::Matrixd& matrix) { _current->setByMatrix(matrix); }
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrix& matrix) { _current->setByInverseMatrix(matrix); }
+        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { _current->setByInverseMatrix(matrix); }
 
         /** get the position of the manipulator as 4x4 Matrix.*/
-        virtual osg::Matrix getMatrix() const { return _current->getMatrix(); }
+        virtual osg::Matrixd getMatrix() const { return _current->getMatrix(); }
 
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
-        virtual osg::Matrix getInverseMatrix() const { return _current->getInverseMatrix(); }
+        virtual osg::Matrixd getInverseMatrix() const { return _current->getInverseMatrix(); }
 
         /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return _current->getFusionDistanceMode(); }

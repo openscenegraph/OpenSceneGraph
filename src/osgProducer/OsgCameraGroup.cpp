@@ -436,19 +436,16 @@ const osg::Node* OsgCameraGroup::getTopMostSceneData() const
         return _scene_data.get(); 
 }
 
-void OsgCameraGroup::setView(const osg::Matrix& matrix)
+void OsgCameraGroup::setView(const osg::Matrixd& matrix)
 {
-    Producer::Matrix pm;//(matrix.ptr());
-    for(int i=0;i<4;++i) 
-        for(int j=0;j<4;++j)
-            pm(i,j)=matrix(i,j);
+    Producer::Matrix pm(matrix.ptr());
             
     setViewByMatrix(pm);
 }
 
-const osg::Matrix OsgCameraGroup::getViewMatrix() const
+osg::Matrixd OsgCameraGroup::getViewMatrix() const
 {
-    osg::Matrix matrix;
+    osg::Matrixd matrix;
     if (_cfg.valid() && _cfg->getNumberOfCameras()>=1)
     {
         const Producer::Camera *cam = _cfg->getCamera(0);

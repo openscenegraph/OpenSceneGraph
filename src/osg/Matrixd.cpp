@@ -12,9 +12,26 @@
 */
 
 #include <osg/Matrixd>
+#include <osg/Matrixf>
 
 // specialise Matrix_implementaiton to be Matrixd
 #define  Matrix_implementation Matrixd
+
+osg::Matrixd::Matrixd( const osg::Matrixf& mat )
+{
+    set(mat.ptr());
+}
+
+osg::Matrixd& osg::Matrixd::operator = (const osg::Matrixf& rhs)
+{
+    set(rhs.ptr());
+    return *this;
+}
+
+void osg::Matrixd::set(const osg::Matrixf& rhs)
+{
+    set(rhs.ptr());
+}
 
 // now compile up Matrix via Matrix_implementation
 #include "Matrix_implementation.cpp"

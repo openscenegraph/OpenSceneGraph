@@ -26,15 +26,18 @@
 
 namespace osg {
 
+class Matrixf;
+
 class SG_EXPORT Matrixd
 {
 
     public:
     
-        typedef double value_type;
+        typedef float value_type;
 
         inline Matrixd() { makeIdentity(); }
-        inline Matrixd( const Matrixd& other) { set(other.ptr()); }
+        inline Matrixd( const Matrixd& mat) { set(mat.ptr()); }
+        Matrixd( const Matrixf& mat );
         inline explicit Matrixd( float const * const ptr ) { set(ptr); }
         inline explicit Matrixd( double const * const ptr ) { set(ptr); }
         inline explicit Matrixd( const Quat& quat ) { set(quat); }
@@ -61,26 +64,29 @@ class SG_EXPORT Matrixd
                                                  osg::isNaN(_mat[2][0]) || osg::isNaN(_mat[2][1]) || osg::isNaN(_mat[2][2]) || osg::isNaN(_mat[2][3]) ||
                                                  osg::isNaN(_mat[3][0]) || osg::isNaN(_mat[3][1]) || osg::isNaN(_mat[3][2]) || osg::isNaN(_mat[3][3]); }
 
-        inline Matrixd& operator = (const Matrixd& other)
+        inline Matrixd& operator = (const Matrixd& rhs)
         {
-            if( &other == this ) return *this;
-            set(other.ptr());
+            if( &rhs == this ) return *this;
+            set(rhs.ptr());
             return *this;
         }
         
-        inline void set(const Matrixd& other)
-        {
-            set(other.ptr());
-        }
-        
+        inline Matrixd& operator = (const Matrixf& other);
+
+        inline void set(const Matrixd& rhs) { set(rhs.ptr()); }
+
+        void set(const Matrixf& rhs);
+
         inline void set(float const * const ptr)
         {
-            std::copy(ptr,ptr+16,(value_type*)_mat);
+            value_type* local_ptr = (value_type*)_mat;
+            for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
         
         inline void set(double const * const ptr)
         {
-            std::copy(ptr,ptr+16,(value_type*)_mat);
+            value_type* local_ptr = (value_type*)_mat;
+            for(int i=0;i<16;++i) local_ptr[i]=(value_type)ptr[i];
         }
 
         void set( value_type a00, value_type a01, value_type a02, value_type a03,
@@ -234,7 +240,7 @@ class SG_EXPORT Matrixd
             r.mult(*this,m);
 	    return  r;
 	}
-        
+
     protected:
         value_type _mat[4][4];
 
@@ -246,6 +252,7 @@ class RefMatrixd : public Object, public Matrixd
     
         RefMatrixd():Matrixd() {}
         RefMatrixd( const Matrixd& other) : Matrixd(other) {}
+        RefMatrixd( const Matrixf& other) : Matrixd(other) {}
         RefMatrixd( const RefMatrixd& other) : Object(other), Matrixd(other) {}
         explicit RefMatrixd( Matrixd::value_type const * const def ):Matrixd(def) {}
         RefMatrixd( Matrixd::value_type a00, Matrixd::value_type a01, Matrixd::value_type a02, Matrixd::value_type a03,
@@ -304,9 +311,7 @@ inline Matrixd Matrixd::translate(const Vec3& v )
 
 inline Matrixd Matrixd::rotate( const Quat& q )
 {
-    Matrixd m;
-    m.makeRotate( q );
-    return m;
+    return Matrixd(q);
 }
 inline Matrixd Matrixd::rotate(float angle, float x, float y, float z )
 {

@@ -18,7 +18,6 @@
 
 #include <Producer/Camera>
 #include <osgUtil/SceneView>
-#include <osg/Matrix>
 
 namespace osgProducer {
 

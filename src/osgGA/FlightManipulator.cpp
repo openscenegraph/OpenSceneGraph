@@ -180,21 +180,21 @@ void FlightManipulator::addMouseEvent(const GUIEventAdapter& ea)
 }
 
 
-void FlightManipulator::setByMatrix(const osg::Matrix& matrix)
+void FlightManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
     _eye = matrix.getTrans();
     matrix.get(_rotation);
     _distance = 1.0f;
 }
 
-osg::Matrix FlightManipulator::getMatrix() const
+osg::Matrixd FlightManipulator::getMatrix() const
 {
-    return osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_eye);
+    return osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_eye);
 }
 
-osg::Matrix FlightManipulator::getInverseMatrix() const
+osg::Matrixd FlightManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-_eye)*osg::Matrix::rotate(_rotation.inverse());
+    return osg::Matrixd::translate(-_eye)*osg::Matrixd::rotate(_rotation.inverse());
 }
 
 void FlightManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)
@@ -206,7 +206,7 @@ void FlightManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv
     osg::Vec3 u(s^f);
     u.normalize();
     
-    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+    osg::Matrixd rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
                                 s[1],     u[1],     -f[1],     0.0f,
                                 s[2],     u[2],     -f[2],     0.0f,
                                 0.0f,     0.0f,     0.0f,      1.0f);
@@ -258,7 +258,7 @@ bool FlightManipulator::calcMovement()
     float dy = _ga_t0->getYnormalized();
 
 
-    osg::Matrix rotation_matrix;
+    osg::Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
     
     osg::Vec3 up = osg::Vec3(0.0f,1.0f,0.0) * rotation_matrix;

@@ -179,21 +179,21 @@ void TestManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
-void TestManipulator::setByMatrix(const osg::Matrix& matrix)
+void TestManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
     _center = matrix.getTrans();
     matrix.get(_rotation);
     _distance = 1.0f;
 }
 
-osg::Matrix TestManipulator::getMatrix() const
+osg::Matrixd TestManipulator::getMatrix() const
 {
-    return osg::Matrix::rotate(_rotation)*osg::Matrix::translate(_center);
+    return osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_center);
 }
 
-osg::Matrix TestManipulator::getInverseMatrix() const
+osg::Matrixd TestManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-_center)*osg::Matrix::rotate(_rotation.inverse());
+    return osg::Matrixd::translate(-_center)*osg::Matrixd::rotate(_rotation.inverse());
 }
 
 void TestManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up)
@@ -205,7 +205,7 @@ void TestManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3& lv,c
     osg::Vec3 u(s^f);
     u.normalize();
     
-    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
+    osg::Matrixd rotation_matrix(s[0],     u[0],     -f[0],     0.0f,
                                 s[1],     u[1],     -f[1],     0.0f,
                                 s[2],     u[2],     -f[2],     0.0f,
                                 0.0f,     0.0f,     0.0f,      1.0f);
@@ -258,7 +258,7 @@ bool TestManipulator::calcMovement()
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
-        osg::Matrix rotation_matrix(_rotation);
+        osg::Matrixd rotation_matrix(_rotation);
     
         		
         osg::Vec3 uv = osg::Vec3(0.0f,1.0f,0.0f)*rotation_matrix;

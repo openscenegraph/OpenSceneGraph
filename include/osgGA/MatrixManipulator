@@ -15,7 +15,7 @@
 #define OSGGA_MatrixManipulator 1
 
 #include <osg/Node>
-#include <osg/Matrix>
+#include <osg/Matrixd>
 
 #include <osgUtil/SceneView>
 
@@ -41,16 +41,16 @@ public:
         virtual const char* className() const { return "MatrixManipulator"; }
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrix& matrix) = 0;
+        virtual void setByMatrix(const osg::Matrixd& matrix) = 0;
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrix& matrix) = 0;
+        virtual void setByInverseMatrix(const osg::Matrixd& matrix) = 0;
 
         /** get the position of the manipulator as 4x4 Matrix.*/
-        virtual osg::Matrix getMatrix() const = 0;
+        virtual osg::Matrixd getMatrix() const = 0;
 
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
-        virtual osg::Matrix getInverseMatrix() const = 0;
+        virtual osg::Matrixd getInverseMatrix() const = 0;
 
         /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE; }

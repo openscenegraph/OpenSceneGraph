@@ -16,16 +16,16 @@ class TestManipulator : public osgGA::MatrixManipulator
         virtual ~TestManipulator();
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrix& matrix);
+        virtual void setByMatrix(const osg::Matrixd& matrix);
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrix& matrix) { setByMatrix(osg::Matrix::inverse(matrix)); }
+        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
 
         /** get the position of the manipulator as 4x4 Matrix.*/
-        virtual osg::Matrix getMatrix() const;
+        virtual osg::Matrixd getMatrix() const;
 
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
-        virtual osg::Matrix getInverseMatrix() const;
+        virtual osg::Matrixd getInverseMatrix() const;
 
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.

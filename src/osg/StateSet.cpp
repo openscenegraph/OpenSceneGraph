@@ -885,7 +885,7 @@ void StateSet::setAttribute(AttributeList& attributeList,StateAttribute *attribu
 {
     if (attribute)
     {
-        attributeList[attribute->getType()] = RefAttributePair(attribute,value&StateAttribute::OVERRIDE);
+        attributeList[attribute->getType()] = RefAttributePair(attribute,value&(StateAttribute::OVERRIDE|StateAttribute::PROTECTED));
     }
 }
 

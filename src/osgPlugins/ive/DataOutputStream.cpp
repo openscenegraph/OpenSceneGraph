@@ -27,6 +27,7 @@
 #include "TexEnv.h"
 #include "TexEnvCombine.h"
 #include "TexGen.h"
+#include "TexMat.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -439,6 +440,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a TexGen
         else if(dynamic_cast<const osg::TexGen*>(attribute)){
             ((ive::TexGen*)(attribute))->write(this);
+        }
+        // This is a TexMat
+        else if(dynamic_cast<const osg::TexMat*>(attribute)){
+            ((ive::TexMat*)(attribute))->write(this);
         }
         else{
             std::string className = attribute->className();

@@ -45,6 +45,7 @@ CXXFILES =\
 	TexEnv.cpp\
 	TexEnvCombine.cpp\
 	TexGen.cpp\
+	TexMat.cpp\
 	Texture.cpp\
 	Texture2D.cpp\
 	TextureCubeMap.cpp\

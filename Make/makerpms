@@ -169,6 +169,9 @@ make_osg_dev()
     mv /usr/src/redhat/RPMS/i386/OpenSceneGraph_dev-$REV-$REL.i386.rpm dist/RPM
 }
 
+echo "The current $0 script is broken and needs to be updated."
+exit 1
+
 if [ "`whoami`" != "root" ] 
 then
     echo
@@ -197,7 +200,7 @@ shift;shift; shift;shift; shift;shift; shift;shift;
 INST_DOC=$1
 INST_DATA=$2
 
-REV="`make version`"
+REV="`make -s version`"
 [ -z "$REV" ] && die  "makerpm: requires a functional $TOPDIR/bin/osgversion"
 
 REL=1

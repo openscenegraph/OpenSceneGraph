@@ -70,7 +70,7 @@ bool ParticleProcessor_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgParticle::ParticleProcessor &myobj = static_cast<const osgParticle::ParticleProcessor &>(obj);
 
-    fw.writeObject(*myobj.getParticleSystem());
+    if (myobj.getParticleSystem()) fw.writeObject(*myobj.getParticleSystem());
 
     fw.indent() << "enabled ";
     if (myobj.isEnabled()) 

@@ -54,9 +54,9 @@ bool ModularEmitter_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgParticle::ModularEmitter &myobj = static_cast<const osgParticle::ModularEmitter &>(obj);
 
-    fw.writeObject(*myobj.getCounter());
-    fw.writeObject(*myobj.getPlacer());
-    fw.writeObject(*myobj.getShooter());
+    if (myobj.getCounter()) fw.writeObject(*myobj.getCounter());
+    if (myobj.getPlacer()) fw.writeObject(*myobj.getPlacer());
+    if (myobj.getShooter()) fw.writeObject(*myobj.getShooter());
 
     return true;
 }

@@ -98,8 +98,11 @@ const bool Billboard::removeDrawable( Drawable *gset )
     return false;
 }
 
-const bool Billboard::computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& /*up_local*/, const Vec3& pos_local) const
+const bool Billboard::computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
 {
+    //Vec3 up_local(matrix(0,1),matrix(1,1),matrix(2,1));
+
+    Matrix matrix;
 
     Vec3 ev(pos_local-eye_local);
     switch(_cachedMode)
@@ -160,6 +163,8 @@ const bool Billboard::computeMatrix(Matrix& matrix, const Vec3& eye_local, const
     }
 
     matrix.setTrans(pos_local);
+
+    modelview.preMult(matrix);
 
     return true;
 

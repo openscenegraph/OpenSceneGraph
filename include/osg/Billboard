@@ -83,7 +83,7 @@ class SG_EXPORT Billboard : public Geode
         struct ComputeBillboardCallback : public osg::Referenced
         {
             /** Get the transformation matrix which moves from local coords to world coords.*/
-            virtual const bool computeMatrix(const Matrix& matrix, const Billboard* billboard, const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local) const;
+            virtual const bool computeMatrix(const Matrix& modelview, const Billboard* billboard, const Vec3& eye_local, const Vec3& pos_local) const;
         };
         
         friend struct osg::Billboard::ComputeBillboardCallback;
@@ -99,12 +99,12 @@ class SG_EXPORT Billboard : public Geode
         const ComputeBillboardCallback* getComputeBillboardCallback() const { return _computeBillboardCallback.get(); }        
 
         
-        inline const bool getMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local) const
+        inline const bool getMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const
         {
             if (_computeBillboardCallback.valid())
-                return _computeBillboardCallback->computeMatrix(matrix,this,eye_local,up_local,pos_local);
+                return _computeBillboardCallback->computeMatrix(modelview,this,eye_local,pos_local);
             else
-                return computeMatrix(matrix,eye_local,up_local,pos_local);
+                return computeMatrix(modelview,eye_local,pos_local);
         }
 
     protected:
@@ -113,7 +113,7 @@ class SG_EXPORT Billboard : public Geode
 
         virtual const bool computeBound() const;
 
-        virtual const bool computeMatrix(Matrix& matrix, const Vec3& eye_local, const Vec3& up_local, const Vec3& pos_local) const;
+        virtual const bool computeMatrix(Matrix& modelview, const Vec3& eye_local, const Vec3& pos_local) const;
 
         enum AxisAligned
         {

@@ -28,7 +28,7 @@ namespace osgGLUT
   * but shouldn't be viewed as the be all and end of osg viewer classes.
   * Someone please rewrite it :-)
   */
-class OSGGLUT_EXPORT Viewer : public Window, osgUtil::GUIActionAdapter
+class OSGGLUT_EXPORT Viewer : public Window, public osgUtil::GUIActionAdapter
 {
     public:
 

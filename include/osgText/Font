@@ -52,7 +52,7 @@ class OSGTEXT_EXPORT Font : public osg::Object
 
         Font();
         Font(const Font& font,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Object(font,copyop),
+            osg::Object(font,copyop),
             _init(false),
             _created(false),
             _font(0L),

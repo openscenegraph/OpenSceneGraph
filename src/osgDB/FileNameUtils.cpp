@@ -1,7 +1,7 @@
 #include <osgDB/FileNameUtils>
 
 #if defined(__sgi)
-    #include <cctype.h>
+    #include <ctype.h>
 #elif !defined(WIN32)
     #include <cctype>
     using std::tolower;

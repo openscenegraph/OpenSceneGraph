@@ -79,6 +79,7 @@ class SG_EXPORT Statistics : public osg::Referenced, public osg::Drawable::Attri
                 primverts[0] += (end-begin);
                 return true;
             }
+            return false;
         }
 
         void addNumPrims(const int typ, const int nprimlen, const int numprimtype, const int primvert)

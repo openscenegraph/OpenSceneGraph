@@ -83,6 +83,9 @@ Paul Fredrikson
 Phil Atkin <philatkin@philatkin.com>
         - MacOS X port.
 
+Boris Bralo
+        - txp TerraPage loader.
+
 Sasa Bistrivic <sasa.bistrovic@zg.hinet.hr>
         - option for detailed calculation of the near clipping plane during cull traversal.
 

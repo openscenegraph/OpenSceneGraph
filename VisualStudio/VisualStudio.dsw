@@ -96,6 +96,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "txp"=".\osgPlugins\txp\txp.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name osgDB
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "gif"=".\osgPlugins\gif\gif.dsp" - Package Owner=<4>
 
 Package=<5>

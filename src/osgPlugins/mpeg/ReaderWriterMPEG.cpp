@@ -30,7 +30,7 @@ class ReaderWriterMPEG : public osgDB::ReaderWriter
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osg::MpegImageStream* mpeg = new osg::MpegImageStream(fileName.c_str());
-            mpeg->start();
+            mpeg->play();
             
             return mpeg;
         }

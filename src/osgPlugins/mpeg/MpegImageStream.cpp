@@ -57,8 +57,6 @@ MpegImageStream::MpegImageStream(const char* fileName) : ImageStream()
 
     if (fileName)
         setFileName(fileName);
-
-    startThread();
 }
 
 
@@ -269,6 +267,7 @@ void MpegImageStream::run()
                              0, 0, _s, _t,
                              _s, _t,
                              MPEG3_RGB888, str);
+
             dirty(); //Image();
             
             ++frameNumber;

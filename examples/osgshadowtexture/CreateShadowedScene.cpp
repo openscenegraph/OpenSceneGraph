@@ -26,6 +26,9 @@ class CreateShadowTextureCullCallback : public osg::NodeCallback
             _texture = new osg::Texture2D;
             _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
             _texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+            _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+            _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+            _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
         }
        
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)

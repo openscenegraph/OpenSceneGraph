@@ -712,9 +712,9 @@ void SceneView::draw()
     else
     {
         _globalState->setAttribute(_viewport.get());
-//         osg::ref_ptr<osg::ColorMask> cmask = osgNew osg::ColorMask;
-//         cmask->setMask(true,true,true,true);
-//         _globalState->setAttribute(cmask.get());
+         osg::ref_ptr<osg::ColorMask> cmask = osgNew osg::ColorMask;
+         cmask->setMask(true,true,true,true);
+         _globalState->setAttribute(cmask.get());
 
         // bog standard draw.
         _renderStage->drawPreRenderStages(*_state,previous);

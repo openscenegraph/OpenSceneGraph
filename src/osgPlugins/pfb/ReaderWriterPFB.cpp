@@ -160,10 +160,10 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             {
                 ConvertFromPerformer converter;
                 if (options) {
-                    const string option = options->getOptionString();
-                    if (option.find("saveImagesAsRGB") != string::npos)
+                    const std::string option = options->getOptionString();
+                    if (option.find("saveImagesAsRGB") != std::string::npos)
                         converter.setSaveImagesAsRGB(true);
-                    if (option.find("saveAbsoluteImagePath") != string::npos)
+                    if (option.find("saveAbsoluteImagePath") != std::string::npos)
                         converter.setSaveAbsoluteImagePath(true);
                 }
 

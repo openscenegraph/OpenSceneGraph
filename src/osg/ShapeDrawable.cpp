@@ -633,26 +633,26 @@ void ComputeBoundShapeVisitor::apply(const Box& box)
     	float y = box.getHalfLengths().y();
     	float z = box.getHalfLengths().z();
 
-    	Vec3 base_1(box.getCenter()+Vec3(-x,-y,-z));
-    	Vec3 base_2(box.getCenter()+Vec3(x,-y,-z));
-    	Vec3 base_3(box.getCenter()+Vec3(x,y,-z));
-    	Vec3 base_4(box.getCenter()+Vec3(-x,y,-z));
+    	Vec3 base_1(Vec3(-x,-y,-z));
+    	Vec3 base_2(Vec3(x,-y,-z));
+    	Vec3 base_3(Vec3(x,y,-z));
+    	Vec3 base_4(Vec3(-x,y,-z));
     
-    	Vec3 top_1(box.getCenter()+Vec3(-x,-y,z));
-    	Vec3 top_2(box.getCenter()+Vec3(x,-y,z));
-    	Vec3 top_3(box.getCenter()+Vec3(x,y,z));
-    	Vec3 top_4(box.getCenter()+Vec3(-x,y,z));
+    	Vec3 top_1(Vec3(-x,-y,z));
+    	Vec3 top_2(Vec3(x,-y,z));
+    	Vec3 top_3(Vec3(x,y,z));
+    	Vec3 top_4(Vec3(-x,y,z));
 
         Matrix matrix = box.getRotationMatrix();
-    	_bb.expandBy(base_1*matrix);
-    	_bb.expandBy(base_2*matrix);
-    	_bb.expandBy(base_3*matrix);
-    	_bb.expandBy(base_4*matrix);
+    	_bb.expandBy(box.getCenter()+base_1*matrix);
+    	_bb.expandBy(box.getCenter()+base_2*matrix);
+    	_bb.expandBy(box.getCenter()+base_3*matrix);
+    	_bb.expandBy(box.getCenter()+base_4*matrix);
 
-    	_bb.expandBy(top_1*matrix);
-    	_bb.expandBy(top_2*matrix);
-    	_bb.expandBy(top_3*matrix);
-    	_bb.expandBy(top_4*matrix);
+    	_bb.expandBy(box.getCenter()+top_1*matrix);
+    	_bb.expandBy(box.getCenter()+top_2*matrix);
+    	_bb.expandBy(box.getCenter()+top_3*matrix);
+    	_bb.expandBy(box.getCenter()+top_4*matrix);
     }
 }
 
@@ -666,18 +666,18 @@ void ComputeBoundShapeVisitor::apply(const Cone& cone)
     }
     else
     {
-    	Vec3 top(cone.getCenter()+Vec3(cone.getRadius(),cone.getRadius(),cone.getHeight()+cone.getBaseOffset()));
-    	Vec3 base_1(cone.getCenter()+Vec3(-cone.getRadius(),-cone.getRadius(),cone.getBaseOffset()));
-    	Vec3 base_2(cone.getCenter()+Vec3(cone.getRadius(),-cone.getRadius(),cone.getBaseOffset()));
-    	Vec3 base_3(cone.getCenter()+Vec3(cone.getRadius(),cone.getRadius(),cone.getBaseOffset()));
-    	Vec3 base_4(cone.getCenter()+Vec3(-cone.getRadius(),cone.getRadius(),cone.getBaseOffset()));
+    	Vec3 top(Vec3(cone.getRadius(),cone.getRadius(),cone.getHeight()+cone.getBaseOffset()));
+    	Vec3 base_1(Vec3(-cone.getRadius(),-cone.getRadius(),cone.getBaseOffset()));
+    	Vec3 base_2(Vec3(cone.getRadius(),-cone.getRadius(),cone.getBaseOffset()));
+    	Vec3 base_3(Vec3(cone.getRadius(),cone.getRadius(),cone.getBaseOffset()));
+    	Vec3 base_4(Vec3(-cone.getRadius(),cone.getRadius(),cone.getBaseOffset()));
     
         Matrix matrix = cone.getRotationMatrix();
-    	_bb.expandBy(base_1*matrix);
-    	_bb.expandBy(base_2*matrix);
-    	_bb.expandBy(base_3*matrix);
-    	_bb.expandBy(base_4*matrix);
-	_bb.expandBy(top*matrix);
+    	_bb.expandBy(cone.getCenter()+base_1*matrix);
+    	_bb.expandBy(cone.getCenter()+base_2*matrix);
+    	_bb.expandBy(cone.getCenter()+base_3*matrix);
+    	_bb.expandBy(cone.getCenter()+base_4*matrix);
+	_bb.expandBy(cone.getCenter()+top*matrix);
     }
 }
 
@@ -695,26 +695,26 @@ void ComputeBoundShapeVisitor::apply(const Cylinder& cylinder)
     	float r = cylinder.getRadius();
     	float z = cylinder.getHeight()*0.5f;
 
-    	Vec3 base_1(cylinder.getCenter()+Vec3(-r,-r,-z));
-    	Vec3 base_2(cylinder.getCenter()+Vec3(r,-r,-z));
-    	Vec3 base_3(cylinder.getCenter()+Vec3(r,r,-z));
-    	Vec3 base_4(cylinder.getCenter()+Vec3(-r,r,-z));
+    	Vec3 base_1(Vec3(-r,-r,-z));
+    	Vec3 base_2(Vec3(r,-r,-z));
+    	Vec3 base_3(Vec3(r,r,-z));
+    	Vec3 base_4(Vec3(-r,r,-z));
     
-    	Vec3 top_1(cylinder.getCenter()+Vec3(-r,-r,z));
-    	Vec3 top_2(cylinder.getCenter()+Vec3(r,-r,z));
-    	Vec3 top_3(cylinder.getCenter()+Vec3(r,r,z));
-    	Vec3 top_4(cylinder.getCenter()+Vec3(-r,r,z));
+    	Vec3 top_1(Vec3(-r,-r,z));
+    	Vec3 top_2(Vec3(r,-r,z));
+    	Vec3 top_3(Vec3(r,r,z));
+    	Vec3 top_4(Vec3(-r,r,z));
 
         Matrix matrix = cylinder.getRotationMatrix();
-    	_bb.expandBy(base_1*matrix);
-    	_bb.expandBy(base_2*matrix);
-    	_bb.expandBy(base_3*matrix);
-    	_bb.expandBy(base_4*matrix);
+    	_bb.expandBy(cylinder.getCenter()+base_1*matrix);
+    	_bb.expandBy(cylinder.getCenter()+base_2*matrix);
+    	_bb.expandBy(cylinder.getCenter()+base_3*matrix);
+    	_bb.expandBy(cylinder.getCenter()+base_4*matrix);
 
-    	_bb.expandBy(top_1*matrix);
-    	_bb.expandBy(top_2*matrix);
-    	_bb.expandBy(top_3*matrix);
-    	_bb.expandBy(top_4*matrix);
+    	_bb.expandBy(cylinder.getCenter()+top_1*matrix);
+    	_bb.expandBy(cylinder.getCenter()+top_2*matrix);
+    	_bb.expandBy(cylinder.getCenter()+top_3*matrix);
+    	_bb.expandBy(cylinder.getCenter()+top_4*matrix);
     }
 }
 
@@ -778,26 +778,26 @@ void ComputeBoundShapeVisitor::apply(const HeightField& field)
     	float x = field.getXInterval()*field.getNumColumns();
     	float y = field.getYInterval()*field.getNumRows();
 
-    	Vec3 base_1(field.getOrigin()+Vec3(0,0,zMin));
-    	Vec3 base_2(field.getOrigin()+Vec3(x,0,zMin));
-    	Vec3 base_3(field.getOrigin()+Vec3(x,y,zMin));
-    	Vec3 base_4(field.getOrigin()+Vec3(0,y,zMin));
+    	Vec3 base_1(Vec3(0,0,zMin));
+    	Vec3 base_2(Vec3(x,0,zMin));
+    	Vec3 base_3(Vec3(x,y,zMin));
+    	Vec3 base_4(Vec3(0,y,zMin));
 
-    	Vec3 top_1(field.getOrigin()+Vec3(0,0,zMax));
-    	Vec3 top_2(field.getOrigin()+Vec3(x,0,zMax));
-    	Vec3 top_3(field.getOrigin()+Vec3(x,y,zMax));
-    	Vec3 top_4(field.getOrigin()+Vec3(0,y,zMax));
+    	Vec3 top_1(Vec3(0,0,zMax));
+    	Vec3 top_2(Vec3(x,0,zMax));
+    	Vec3 top_3(Vec3(x,y,zMax));
+    	Vec3 top_4(Vec3(0,y,zMax));
 
         Matrix matrix = field.getRotationMatrix();
-    	_bb.expandBy(base_1*matrix);
-    	_bb.expandBy(base_2*matrix);
-    	_bb.expandBy(base_3*matrix);
-    	_bb.expandBy(base_4*matrix);
+    	_bb.expandBy(field.getOrigin()+base_1*matrix);
+    	_bb.expandBy(field.getOrigin()+base_2*matrix);
+    	_bb.expandBy(field.getOrigin()+base_3*matrix);
+    	_bb.expandBy(field.getOrigin()+base_4*matrix);
 
-    	_bb.expandBy(top_1*matrix);
-    	_bb.expandBy(top_2*matrix);
-    	_bb.expandBy(top_3*matrix);
-    	_bb.expandBy(top_4*matrix);
+    	_bb.expandBy(field.getOrigin()+top_1*matrix);
+    	_bb.expandBy(field.getOrigin()+top_2*matrix);
+    	_bb.expandBy(field.getOrigin()+top_3*matrix);
+    	_bb.expandBy(field.getOrigin()+top_4*matrix);
     }
 
 }

@@ -60,7 +60,7 @@ PLUGIN_DIRS += png
 PLUGIN_DIRS += jpeg
 
 # comment in if you have libungif installed.
-PLUGIN_DIRS += gif
+# PLUGIN_DIRS += gif
 
 # comment in if you have libtiff installed.
 PLUGIN_DIRS += tiff

@@ -222,7 +222,7 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 	// We turn off the additive blending, because smoke has no self-
 	// illumination.
 	osgParticle::ParticleSystem *ps = osgNew osgParticle::ParticleSystem;
-	ps->setDefaultAttributes("smoke.rgb", false, false);
+	ps->setDefaultAttributes("Images/smoke.rgb", false, false);
 
 	// assign the particle template to the system.
 	ps->setDefaultParticleTemplate(ptemplate);

@@ -33,19 +33,21 @@ class ConstructStateCallback : public osg::NodeCallback
         {
         
             // read 4 2d images
-            osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("lz.rgb");
-            osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("reflect.rgb");
-            osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("tank.rgb");
-            osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("skymap.jpg");
+            osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
+            osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
+            osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("Images/tank.rgb");
+            osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
 
             if (!image_0 || !image_1 || !image_2 || !image_3)
-            {
-                return 0;
+       	    {
+	    	std::cout << "Warning: could not open files."<<std::endl;
+                return new osg::StateSet;
             }
 
             if (image_0->getPixelFormat()!=image_1->getPixelFormat() || image_0->getPixelFormat()!=image_2->getPixelFormat() || image_0->getPixelFormat()!=image_3->getPixelFormat())
             {
-                return 0;
+	    	std::cout << "Warning: image pixel formats not compatible."<<std::endl;
+                return new osg::StateSet;
             }
 
             // get max 3D texture size
@@ -97,7 +99,7 @@ class ConstructStateCallback : public osg::NodeCallback
             stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
             stateset->setTextureAttribute(0,texgen);
             stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
-            
+
             return stateset;
         }
 

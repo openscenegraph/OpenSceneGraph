@@ -61,8 +61,8 @@ osgreflect cessna.osg
 echo osgscribe cow.osg
 osgscribe cow.osg
 
-echo osgstereoimage dog_left_eye.jpg dog_right_eye.jpg
-osgstereoimage dog_left_eye.jpg dog_right_eye.jpg
+echo osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
+osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 
 echo osgtext
 osgtext
@@ -70,8 +70,8 @@ osgtext
 echo osgtexture1D cow.osg
 osgtexture1D cow.osg
 
-echo osgtexture2D reflect.rgb lz.rgb
-osgtexture2D reflect.rgb lz.rgb
+echo osgtexture2D Images/reflect.rgb Images/lz.rgb
+osgtexture2D Images/reflect.rgb Images/lz.rgb
 
 echo osgtexture3D
 osgtexture3D

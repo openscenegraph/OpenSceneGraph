@@ -206,7 +206,7 @@ void TriStripVisitor::stripify(Geometry& geom)
 
 void TriStripVisitor::apply(Geode& geode)
 {
-    for(int i = 0; i < geode.getNumDrawables(); ++i )
+    for(unsigned int i = 0; i < geode.getNumDrawables(); ++i )
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom) stripify(*geom);

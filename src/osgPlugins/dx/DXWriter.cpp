@@ -2216,7 +2216,7 @@ std::string DXWriter::WriteGeode( osg::Geode          &geode,
     group = new DXGroup( name_mgr, &name );
 
   // For all GeoSets in this Geode...
-  for ( int i = 0; i < geode.getNumDrawables(); i++ ) {
+  for (unsigned int i = 0; i < geode.getNumDrawables(); i++ ) {
     osg::GeoSet *geoset = dynamic_cast<osg::GeoSet*>( geode.getDrawable(i) );
 
     // If we have multiple GeoSets per Geode, we need to generate different

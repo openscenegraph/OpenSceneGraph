@@ -228,7 +228,7 @@ int *numComponents_ret)
             ncomp = BW; // actually this is a 256 colour, paletted image
             inf.Colorbits=8; // so this is how many bits there are per index
             //inf.ColorUsed=256; // and number of colours used
-		if(!inf.ColorUsed) inf.ColorUsed=256; /*the bitmap has 256 colours if ColorUsed = 0 otherwise as many as stored in ColorUsed*/
+        if(!inf.ColorUsed) inf.ColorUsed=256; /*the bitmap has 256 colours if ColorUsed = 0 otherwise as many as stored in ColorUsed*/
             cols=imbuff; // colour palette address - uses 4 bytes/colour
             break;
         case 2:
@@ -402,7 +402,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             inf.YpixPerMeter=1000; //pixels per meter in Y
             inf.ColorUsed=0;   //number of colors used
             inf.Important=0;   //number of "important" colors
-   // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
+            // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
             infsize=sizeof(BMPInfo)+sizeof(long);
             fwrite(&infsize, sizeof(long), 1, fp);
             fwrite(&inf, sizeof(inf), 1, fp); // one dword shorter than the structure defined by MS
@@ -411,17 +411,40 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             osg::notify(osg::INFO) << "sizes "<<size << " "<<infsize <<" "<<sizeof(inf)<< std::endl;
             // now output the bitmap
             // 1) swap Blue with Red - needed for Windoss.
+            const unsigned char* data = img.data();
             unsigned char *dta=new unsigned char[size];
             unsigned char tmp;
-            memcpy(dta,img.data(),size*sizeof(unsigned char));
-            for(unsigned int i=0;i<ny;i++) { // per scanline
-                int ioff=4*wordsPerScan*i;
-                for(unsigned int j=0;j<nx;j++) {
-                tmp=dta[3*j+ioff]; // swap r with b,  thanks to good ole Bill - 
-  //"Let's use BGR it's more logical than rgb which everyone else uses."
-                dta[3*j+ioff]=dta[3*j+ioff+2];
-                dta[3*j+ioff+2]=tmp;
-                }
+            // we need to case between different number of components
+            switch(img.computeNumComponents(img.getPixelFormat()))
+            {
+                case(3) :
+                    memcpy(dta,img.data(),size*sizeof(unsigned char));
+                    for(unsigned int i=0;i<ny;i++) { // per scanline
+                        int ioff=4*wordsPerScan*i;
+                        for(unsigned int j=0;j<nx;j++) {
+                        tmp=dta[3*j+ioff]; // swap r with b,  thanks to good ole Bill - 
+                        //"Let's use BGR it's more logical than rgb which everyone else uses."
+                        dta[3*j+ioff]=dta[3*j+ioff+2];
+                        dta[3*j+ioff+2]=tmp;
+                        }
+                    }
+                break;
+                case(4) :
+                    for(unsigned int i=0;i<ny;i++) { // per scanline
+                        int ioff=4*wordsPerScan*i;
+                        for(unsigned int j=0;j<nx;j++) {
+                    // swap r with b,  thanks to good ole Bill - 
+                    //"Let's use BGR it's more logical than rgb which everyone else uses."
+                        dta[3*j+ioff]=dta[3*j+ioff+2];
+                        dta[3*j+ioff+0]=data[4*(j+i*nx)+2];
+                        dta[3*j+ioff+1]=data[4*(j+i*nx)+1];
+                        dta[3*j+ioff+2]=data[4*(j+i*nx)+0];
+                        }
+                    }
+                break;
+                default:
+                    osg::notify(osg::WARN) << "Cannot write images with other number of components than 3 or 4" << std::endl;
+                break;
             }
             fwrite(dta, sizeof(unsigned char), size, fp);
             delete [] dta;

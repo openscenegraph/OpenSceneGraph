@@ -8,7 +8,6 @@
 #include <osg/Vec2>
 #include <osg/BoundingSphere>
 #include <osg/Drawable>
-#include <osg/Camera>
 #include <osg/ImpostorSprite>
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>

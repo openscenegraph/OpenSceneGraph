@@ -159,20 +159,35 @@ void SceneView::cull()
 {
 
     _state->reset();
+   
+    osg::ref_ptr<osg::Matrix> projection = _projectionMatrix.get();
+    osg::ref_ptr<osg::Matrix> modelview = _modelviewMatrix.get();
     
+    if (_camera.valid())
+    {
+        _camera->adjustAspectRatio(_viewport->aspectRatio());
+        _camera->setScreenDistance(_displaySettings->getScreenDistance());
+        
+        if (!projection) projection = osgNew osg::Matrix(_camera->getProjectionMatrix());
+        if (!modelview)  modelview  = osgNew osg::Matrix(_camera->getModelViewMatrix());
+    }
+    
+    if (!projection) projection = osgNew osg::Matrix();
+    if (!modelview)  modelview  = osgNew osg::Matrix();
 
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
-    
-        _camera->setScreenDistance(_displaySettings->getScreenDistance());
 
-        _cameraLeft = osgNew osg::Camera(*_camera);
-        _cameraRight = osgNew osg::Camera(*_camera);
+        float fusionDistance = _displaySettings->getScreenDistance();
 
+        if (_camera.valid())
+        {
+            fusionDistance = _camera->getFusionDistance();
+        }
+        
         float iod = _displaySettings->getEyeSeperation();
-
-        _cameraLeft->adjustEyeOffsetForStereo(osg::Vec3(-iod*0.5,0.0f,0.0f));
-        _cameraRight->adjustEyeOffsetForStereo(osg::Vec3(iod*0.5,0.0f,0.0f));
+        float sd = _displaySettings->getScreenDistance();
+        float es = 0.5f*iod*(fusionDistance/sd);
 
         if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
         if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
@@ -182,22 +197,57 @@ void SceneView::cull()
         if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<RenderGraph*>(_rendergraph->cloneType());
         if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->cloneType());
 
+        
+        // set up the left eye.
+        osg::ref_ptr<osg::Matrix> projectionLeft = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                      0.0f,1.0f,0.0f,0.0f,
+                                                                      iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                      0.0f,0.0f,0.0f,1.0f)*
+                                                          (*projection));
+        
+        
+        osg::ref_ptr<osg::Matrix> modelviewLeft = osgNew osg::Matrix( (*modelview) *
+                                                         osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                     0.0f,1.0f,0.0f,0.0f,
+                                                                     0.0f,0.0f,1.0f,0.0f,
+                                                                     es,0.0f,0.0f,1.0f));
+        
         _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-        cullStage(_cameraLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+        cullStage(projectionLeft.get(),modelviewLeft.get(),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+
+
+        // set up the right eye.
+        osg::ref_ptr<osg::Matrix> projectionRight = osgNew osg::Matrix(osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                      0.0f,1.0f,0.0f,0.0f,
+                                                                      -iod/(2.0f*sd),0.0f,1.0f,0.0f,
+                                                                      0.0f,0.0f,0.0f,1.0f)*
+                                                          (*projection));
+
+        osg::ref_ptr<osg::Matrix> modelviewRight = osgNew osg::Matrix( (*modelview) *
+                                                         osg::Matrix(1.0f,0.0f,0.0f,0.0f,
+                                                                     0.0f,1.0f,0.0f,0.0f,
+                                                                     0.0f,0.0f,1.0f,0.0f,
+                                                                     -es,0.0f,0.0f,1.0f));
 
         _cullVisitorRight->setTraversalMask(_cullMaskRight);
-        cullStage(_cameraRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+        cullStage(projectionRight.get(),modelviewRight.get(),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+
 
     }
     else
     {
         _cullVisitor->setTraversalMask(_cullMask);
-        cullStage(_camera.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+        cullStage(projection.get(),modelview.get(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
     }
 
+    if (_camera.valid())
+    {
+        _camera->setNearFar(_near_plane,_far_plane);
+    }
+    
 }
 
-void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
+void SceneView::cullStage(osg::Matrix* projection,osg::Matrix* modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::RenderGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
     if (!_sceneData || !_viewport->valid()) return;
@@ -220,7 +270,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     _state->setDisplaySettings(_displaySettings.get());
 
 
-    camera->adjustAspectRatio(_viewport->aspectRatio());
 
     cullVisitor->reset();
 
@@ -231,10 +280,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
     {
          cullVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     }
-
-    // get the camera's modelview
-    osg::Matrix* projection = osgNew osg::Matrix(camera->getProjectionMatrix());
-    osg::Matrix* modelview = osgNew osg::Matrix(camera->getModelViewMatrix());
 
     cullVisitor->setLODBias(_lodBias);
     cullVisitor->setEarthSky(NULL); // reset earth sky on each frame.
@@ -340,7 +385,6 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
             _far_plane = 1000.0f;
         }
 
-        camera->setNearFar(_near_plane,_far_plane);
     }
 
     // prune out any empty RenderGraph children.
@@ -352,14 +396,13 @@ void SceneView::cullStage(osg::Camera* camera, osgUtil::CullVisitor* cullVisitor
 }
 
 
+
 void SceneView::draw()
 {
 
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
     
-        _camera->setScreenDistance(_displaySettings->getScreenDistance());
-
         switch(_displaySettings->getStereoMode())
         {
         case(osg::DisplaySettings::QUAD_BUFFER):

@@ -30,9 +30,6 @@ Camera::Camera(DisplaySettings* ds)
 
     _useNearAndFarClippingPlanes = false;
 
-    _useEyeOffset = false;
-    _eyeOffset.set(0.0f,0.0f,0.0f);
-
     _attachedTransformMode = NO_ATTACHED_TRANSFORM;
 
     if (ds) _screenDistance = ds->getScreenDistance();
@@ -86,20 +83,13 @@ void Camera::copy(const Camera& camera)
     _eyeToModelTransform = camera._eyeToModelTransform;
     _modelToEyeTransform = camera._modelToEyeTransform;
 
-    // flags to determine if near and far clipping planes are required.
-    _useNearAndFarClippingPlanes = camera._useNearAndFarClippingPlanes;
-
     // cached matrix and clipping volume derived from above settings.
     _dirty = false;//    camera._dirty;
     _projectionMatrix = NULL; //camera._projectionMatrix;
     _modelViewMatrix = NULL; //camera._modelViewMatrix;
-    _clippingVolume = camera._clippingVolume;
 
     _mp = NULL;
     _inversemp = NULL;
-
-    _useEyeOffset = camera._useEyeOffset;
-    _eyeOffset = camera._eyeOffset;
 
     _screenDistance = camera._screenDistance;
     _fusionDistanceMode = camera._fusionDistanceMode;
@@ -337,7 +327,7 @@ const double Camera::calc_aspectRatio() const
 
 const Matrix& Camera::getProjectionMatrix() const
 {
-    if (_dirty) calculateMatricesAndClippingVolume();
+    if (_dirty) computeMatrices();
     return *_projectionMatrix;
 }
 
@@ -582,23 +572,8 @@ const Vec3 Camera::getSideVector_Model() const
 
 const Matrix& Camera::getModelViewMatrix() const
 {
-    if (_dirty) calculateMatricesAndClippingVolume();
+    if (_dirty) computeMatrices();
     return *_modelViewMatrix;
-}
-
-void Camera::setUseNearAndFarClippingPlanes(const bool use)
-{
-    if (_useNearAndFarClippingPlanes != use)
-    {
-        _useNearAndFarClippingPlanes = use; 
-        _dirty = true;
-    }
-}
-
-const ClippingVolume& Camera::getClippingVolume() const
-{
-    if (_dirty) calculateMatricesAndClippingVolume();
-    return _clippingVolume;
 }
 
 const float Camera::getFusionDistance() const
@@ -611,7 +586,7 @@ const float Camera::getFusionDistance() const
     }        
 }
 
-void Camera::calculateMatricesAndClippingVolume() const
+void Camera::computeMatrices() const
 {
 
 
@@ -619,13 +594,6 @@ void Camera::calculateMatricesAndClippingVolume() const
     float right = _right;
     float top = _top;
     float bottom = _bottom;
-
-    if (_useEyeOffset)
-    {
-        float dx = -_eyeOffset.x()*(1.0f/_screenDistance);
-        left += dx;
-        right += dx;
-    }
 
     // set up the projection matrix.
     switch(_projectionType)
@@ -722,61 +690,7 @@ void Camera::calculateMatricesAndClippingVolume() const
         break;
     }
 
-    if (_useEyeOffset)
-    {
-        (*_modelViewMatrix) = (*_modelViewMatrix) * Matrix::translate(-_eyeOffset*(getFusionDistance()/_screenDistance));
-    }
 
-
-//     _clippingVolume.clear();
-// 
-//     // set the clipping volume.
-//     switch(_projectionType)
-//     {
-//         case(ORTHO):
-//         case(ORTHO2D):
-//             {
-//             }
-//             break;
-//         case(FRUSTUM):
-//         case(PERSPECTIVE):
-//             {
-//                 // calculate the frustum normals, postive pointing inwards.
-//                 // left clipping plane
-//                 // note, _left,_right,_top and _bottom are already devided
-//                 // by _zNear so no need to take into account for normal
-//                 // calculations.
-//                 Vec3 leftNormal  (1.0f,0.0f,left);
-//                 leftNormal.normalize();
-//                 _clippingVolume.add(Plane(leftNormal,0.0f));
-//                 
-//                 
-//                 Vec3 rightNormal (-1.0f,0.0f,-right);
-//                 rightNormal.normalize();
-//                 _clippingVolume.add(Plane(rightNormal,0.0f));
-//                 
-//                 Vec3 bottomNormal(0.0f,1.0f,bottom); 
-//                 bottomNormal.normalize();
-//                 _clippingVolume.add(Plane(bottomNormal,0.0f));
-//                 
-//                 Vec3 topNormal(0.0f,-1.0f,-top);
-//                 topNormal.normalize();
-//                 _clippingVolume.add(Plane(topNormal,0.0f));
-//                 
-//                 if (_useNearClippingPlane)
-//                 {
-//                     _clippingVolume.add(Plane(0.0f,0.0f,-1.0f,-_zNear));
-//                 }
-//             
-//                 if (_useFarClippingPlane)
-//                 {
-//                     _clippingVolume.add(Plane(0.0f,0.0f,1.0f,_zFar));
-//                 }
-// 
-//             }
-//             break;
-// 
-//     }
 
 
     if (!_mp.valid()) _mp = osgNew Matrix;
@@ -785,19 +699,8 @@ void Camera::calculateMatricesAndClippingVolume() const
     if (!_inversemp.valid()) _inversemp = osgNew Matrix;
     if (!_inversemp->invert(*_mp))
     {
-        notify(WARN)<<"Warning: Camera::calculateMatricesAndClippingVolume() failed to invert _mp"<<std::endl;
+        notify(WARN)<<"Warning: Camera::computeMatrices() failed to invert _mp"<<std::endl;
     }
-
-    // set up clipping volume.
-    if (_useNearAndFarClippingPlanes)
-    {
-        _clippingVolume.setToUnitFrustum();
-    }
-    else
-    {
-        _clippingVolume.setToUnitFrustumWithoutNearFar();
-    }
-    _clippingVolume.transformProvidingInverse(*_mp);
 
 
     _dirty = false;
@@ -845,17 +748,4 @@ const bool Camera::unproject(const Vec3& win,const Viewport& viewport,Vec3& obj)
     }
     else
         return false;
-}
-
-void Camera::adjustEyeOffsetForStereo(const osg::Vec3& offset)
-{
-    _useEyeOffset = true;
-    _eyeOffset = offset;
-    _dirty = true;
-}
-
-void Camera::apply(State& state)
-{
-    state.applyProjectionMatrix(&getProjectionMatrix());
-    state.applyModelViewMatrix(&getModelViewMatrix());    
 }

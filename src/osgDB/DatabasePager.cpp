@@ -19,10 +19,13 @@ DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
-    _useFrameBlock = false;    
+    _useFrameBlock = false;
     _frameNumber = 0;
     _frameBlock = new Block;
     _fileRequestListEmptyBlock = new Block;
+
+    _threadPriorityDuringFrame = PRIORITY_MIN;
+    _threadPriorityOutwithFrame = PRIORITY_NOMINAL;
 
     _deleteRemovedSubgraphsInDatabaseThread = true;
     
@@ -166,7 +169,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         {
             s_startThreadCalled = true;
             osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
-            setSchedulePriority(PRIORITY_MIN);
+            setSchedulePriority(_threadPriorityDuringFrame);
             startThread();
         }
                 
@@ -182,12 +185,20 @@ void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
     } //else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
 
     _frameBlock->reset();
+
+    if (_threadPriorityDuringFrame!=getSchedulePriority())
+        setSchedulePriority(_threadPriorityDuringFrame);
+
 }
 
 void DatabasePager::signalEndFrame()
 {
     //osg::notify(osg::INFO) << "signalEndFrame <<<<<<<<<<<<<<<<<<<< "<<std::endl;
     _frameBlock->release();
+
+    if (_threadPriorityOutwithFrame!=getSchedulePriority())
+        setSchedulePriority(_threadPriorityOutwithFrame);
+
 }
 
 class FindCompileableGLObjectsVisitor : public osg::NodeVisitor

@@ -327,7 +327,7 @@ class isockstream: public istream
         //isockstream (): istream(rdbuf()), ios (0) {}
 
     public:
-        isockstream(sockbuf* sb): istream(sb), ios (sb) {}
+        isockstream(sockbuf* sb): ios (sb) , istream(sb) {}
         virtual ~isockstream () {}
                 
         sockbuf* rdbuf () { return (sockbuf*)ios::rdbuf(); }
@@ -339,7 +339,7 @@ class osockstream: public ostream
     protected:
         //osockstream (): ostream(static_cast<>rdbuf()), ios (0) {}
     public:
-        osockstream(sockbuf* sb): ostream(sb), ios (sb) {}
+        osockstream(sockbuf* sb): ios (sb) , ostream(sb) {}
         virtual ~osockstream () {}
         sockbuf* rdbuf () { return (sockbuf*)ios::rdbuf(); }
         sockbuf* operator -> () { return rdbuf(); }
@@ -350,7 +350,7 @@ class iosockstream: public iostream
     protected:
         iosockstream ();
     public:
-        iosockstream(sockbuf* sb): iostream(sb), ios (sb) {}
+        iosockstream(sockbuf* sb): ios(sb), iostream(sb) {}
         virtual ~iosockstream () {}
 
         sockbuf* rdbuf () { return (sockbuf*)ios::rdbuf(); }

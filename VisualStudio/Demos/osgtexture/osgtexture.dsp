@@ -28,7 +28,7 @@ CFG=osgtexture - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgtexture.mak" CFG="osgtexture - Win32 Debug"
+!MESSAGE NMAKE /f "osgtexture.mak" CFG="Demo osgtexture - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgtexture - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgtexture - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtexture - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgtexture - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgtexture - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgtexture - Win32 Release"
+!IF  "$(CFG)" == "Demo osgtexture - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgtexture - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgtexture - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgtexture - Win32 Release"
+# Name "Demo osgtexture - Win32 Release"
 
-# Name "osgtexture - Win32 Debug"
+# Name "Demo osgtexture - Win32 Debug"
 
 # Begin Source File
 

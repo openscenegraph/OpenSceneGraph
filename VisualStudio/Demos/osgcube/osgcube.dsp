@@ -28,7 +28,7 @@ CFG=osgcube - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgcube.mak" CFG="osgcube - Win32 Debug"
+!MESSAGE NMAKE /f "osgcube.mak" CFG="Demo osgcube - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgcube - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgcube - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgcube - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgcube - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgcube - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgcube - Win32 Release"
+!IF  "$(CFG)" == "Demo osgcube - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgcube - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgcube - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgcube - Win32 Release"
+# Name "Demo osgcube - Win32 Release"
 
-# Name "osgcube - Win32 Debug"
+# Name "Demo osgcube - Win32 Debug"
 
 # Begin Source File
 

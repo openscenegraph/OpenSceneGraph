@@ -85,7 +85,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgPlugins 3ds"=".\osgPlugins\lib3ds\lib3ds.dsp" - Package Owner=<4>
+Project: "osgPlugin 3ds"=".\osgPlugins\lib3ds\osgPlugin lib3ds.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

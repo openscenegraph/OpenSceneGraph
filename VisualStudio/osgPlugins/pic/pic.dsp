@@ -28,7 +28,7 @@ CFG=pic - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "pic.mak" CFG="pic - Win32 Debug"
+!MESSAGE NMAKE /f "pic.mak" CFG="osgPlugin pic - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=pic - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "pic - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin pic - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "pic - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin pic - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "pic - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin pic - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "pic - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin pic - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "pic - Win32 Release"
+# Name "osgPlugin pic - Win32 Release"
 
-# Name "pic - Win32 Debug"
+# Name "osgPlugin pic - Win32 Debug"
 
 # Begin Group "Source Files"
 

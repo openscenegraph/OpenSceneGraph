@@ -28,7 +28,7 @@ CFG=osgcopy - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgcopy.mak" CFG="osgcopy - Win32 Debug"
+!MESSAGE NMAKE /f "osgcopy.mak" CFG="Demo osgcopy - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgcopy - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgcopy - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgcopy - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgcopy - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgcopy - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgcopy - Win32 Release"
+!IF  "$(CFG)" == "Demo osgcopy - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgcopy - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgcopy - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgcopy - Win32 Release"
+# Name "Demo osgcopy - Win32 Release"
 
-# Name "osgcopy - Win32 Debug"
+# Name "Demo osgcopy - Win32 Debug"
 
 # Begin Source File
 

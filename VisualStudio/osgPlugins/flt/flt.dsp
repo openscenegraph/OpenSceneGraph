@@ -28,7 +28,7 @@ CFG=flt - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "flt.mak" CFG="flt - Win32 Debug"
+!MESSAGE NMAKE /f "flt.mak" CFG="osgPlugin flt - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=flt - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "flt - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin flt - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "flt - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin flt - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "flt - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin flt - Win32 Release"
 
 
 
@@ -112,7 +112,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "flt - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin flt - Win32 Debug"
 
 
 
@@ -174,9 +174,9 @@ LINK32=link.exe
 
 
 
-# Name "flt - Win32 Release"
+# Name "osgPlugin flt - Win32 Release"
 
-# Name "flt - Win32 Debug"
+# Name "osgPlugin flt - Win32 Debug"
 
 # Begin Group "Source Files"
 

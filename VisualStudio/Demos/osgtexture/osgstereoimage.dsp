@@ -28,7 +28,7 @@ CFG=osgstereoimage - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgstereoimage.mak" CFG="osgstereoimage - Win32 Debug"
+!MESSAGE NMAKE /f "osgstereoimage.mak" CFG="Demo osgstereoimage - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgstereoimage - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgstereoimage - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgstereoimage - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgstereoimage - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgstereoimage - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgstereoimage - Win32 Release"
+!IF  "$(CFG)" == "Demo osgstereoimage - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgstereoimage - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgstereoimage - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgstereoimage - Win32 Release"
+# Name "Demo osgstereoimage - Win32 Release"
 
-# Name "osgstereoimage - Win32 Debug"
+# Name "Demo osgstereoimage - Win32 Debug"
 
 # Begin Source File
 

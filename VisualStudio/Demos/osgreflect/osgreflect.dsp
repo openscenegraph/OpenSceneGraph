@@ -28,7 +28,7 @@ CFG=osgreflect - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "osgreflect.mak" CFG="osgreflect - Win32 Debug"
+!MESSAGE NMAKE /f "osgreflect.mak" CFG="Demo osgreflect - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=osgreflect - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "osgreflect - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgreflect - Win32 Release" (based on "Win32 (x86) Console Application")
 
-!MESSAGE "osgreflect - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Demo osgreflect - Win32 Debug" (based on "Win32 (x86) Console Application")
 
 !MESSAGE 
 
@@ -58,7 +58,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "osgreflect - Win32 Release"
+!IF  "$(CFG)" == "Demo osgreflect - Win32 Release"
 
 
 
@@ -106,7 +106,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "osgreflect - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Demo osgreflect - Win32 Debug"
 
 
 
@@ -164,9 +164,9 @@ LINK32=link.exe
 
 
 
-# Name "osgreflect - Win32 Release"
+# Name "Demo osgreflect - Win32 Release"
 
-# Name "osgreflect - Win32 Debug"
+# Name "Demo osgreflect - Win32 Debug"
 
 # Begin Source File
 

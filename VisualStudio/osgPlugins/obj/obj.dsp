@@ -28,7 +28,7 @@ CFG=obj - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE NMAKE /f "obj.mak" CFG="obj - Win32 Debug"
+!MESSAGE NMAKE /f "obj.mak" CFG="osgPlugin obj - Win32 Debug"
 
 !MESSAGE 
 
@@ -36,9 +36,9 @@ CFG=obj - Win32 Debug
 
 !MESSAGE 
 
-!MESSAGE "obj - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin obj - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 
-!MESSAGE "obj - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgPlugin obj - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 
 !MESSAGE 
 
@@ -60,7 +60,7 @@ RSC=rc.exe
 
 
 
-!IF  "$(CFG)" == "obj - Win32 Release"
+!IF  "$(CFG)" == "osgPlugin obj - Win32 Release"
 
 
 
@@ -114,7 +114,7 @@ LINK32=link.exe
 
 
 
-!ELSEIF  "$(CFG)" == "obj - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgPlugin obj - Win32 Debug"
 
 
 
@@ -176,9 +176,9 @@ LINK32=link.exe
 
 
 
-# Name "obj - Win32 Release"
+# Name "osgPlugin obj - Win32 Release"
 
-# Name "obj - Win32 Debug"
+# Name "osgPlugin obj - Win32 Debug"
 
 # Begin Group "Source Files"
 

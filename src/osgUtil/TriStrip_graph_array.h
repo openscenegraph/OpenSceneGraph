@@ -67,10 +67,10 @@ public:
 
     // New types
     typedef size_t                                        nodeid;
-    typedef std::vector<node>::iterator                    node_iterator;
-    typedef std::vector<node>::const_iterator            const_node_iterator;
-    typedef std::vector<node>::reverse_iterator            node_reverse_iterator;
-    typedef std::vector<node>::const_reverse_iterator    const_node_reverse_iterator;
+    typedef typename std::vector<node>::iterator                    node_iterator;
+    typedef typename std::vector<node>::const_iterator            const_node_iterator;
+    typedef typename std::vector<node>::reverse_iterator            node_reverse_iterator;
+    typedef typename std::vector<node>::const_reverse_iterator    const_node_reverse_iterator;
 
     typedef graph_array<nodetype, arctype> _mytype;
     
@@ -106,8 +106,8 @@ public:
 
 
     // New types
-    typedef std::list<arc>::iterator            out_arc_iterator;
-    typedef std::list<arc>::const_iterator        const_out_arc_iterator;
+    typedef typename std::list<arc>::iterator            out_arc_iterator;
+    typedef typename std::list<arc>::const_iterator        const_out_arc_iterator;
 
 
     // graph_array::node class
@@ -205,7 +205,7 @@ template <class nodetype, class arctype>
 void unmark_nodes(graph_array<nodetype, arctype> & G);
 
 template <class nodetype, class arctype>
-void unmark_arcs_from_node(graph_array<nodetype, arctype>::node & N);
+void unmark_arcs_from_node(typename graph_array<nodetype, arctype>::node & N);
 
 template <class nodetype, class arctype>
 void unmark_arcs(graph_array<nodetype, arctype> & G);
@@ -397,7 +397,7 @@ void unmark_nodes(graph_array<nodetype, arctype> & G)
 
 
 template <class nodetype, class arctype>
-void unmark_arcs_from_node(graph_array<nodetype, arctype>::node & N)
+void unmark_arcs_from_node(typename graph_array<nodetype, arctype>::node & N)
 {
     typedef graph_array<nodetype, arctype>::out_arc_iterator arc_it;
 

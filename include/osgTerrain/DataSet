@@ -839,7 +839,9 @@ class DataSet : public osg::Referenced
 
         void loadSources();
         
-        
+        void setRadiusToMaxVisibleDistanceRatio(float ratio) { _radiusToMaxVisibleDistanceRatio = ratio; }
+        float getRadiusToMaxVisibleDistanceRatio() const { return _radiusToMaxVisibleDistanceRatio; }
+	
         void setVerticalScale(float verticalScale) { _verticalScale = verticalScale; }
         float getVerticalScale() const { return _verticalScale; }
                
@@ -935,6 +937,8 @@ class DataSet : public osg::Referenced
         
         QuadMap                                     _quadMap;
 
+
+	float                                       _radiusToMaxVisibleDistanceRatio;
         float                                       _verticalScale;
             
         osg::ref_ptr<osgTerrain::CoordinateSystem>  _destinationCoordinateSystem;

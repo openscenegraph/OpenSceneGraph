@@ -1,16 +1,15 @@
 /* ************************
    Copyright Terrain Experts Inc.
    Terrain Experts Inc (TERREX) reserves all rights to this source code
-   unless otherwise specified in writing by the Chief Operating Officer
-   of TERREX.
+   unless otherwise specified in writing by the President of TERREX.
    This copyright may be updated in the future, in which case that version
    supercedes this one.
    -------------------
    Terrex Experts Inc.
-   84 West Santa Clara St., Suite 380
-   San Jose, CA 95113
+   4400 East Broadway #314
+   Tucson, AZ  85711
    info@terrex.com
-   Tel: (408) 293-9977
+   Tel: (520) 323-7990
    ************************
    */
 
@@ -171,10 +170,14 @@ bool trpgr_Parser::Parse(trpgReadBuffer &buf)
 
             // Call our token handler for this one
             try {
-                trpgr_Token *tcb = &tokenMap[tok];
+                const trpgr_Token *tcb = NULL;
+                tok_map::const_iterator p = tokenMap.find(tok);
+                if (p != tokenMap.end())
+                    tcb = &(*p).second;
                 if (!tcb)
                     // No such token, call the default
                     tcb = &defCb;
+
                 // Run the callback
                 if (tcb->cb) {
                     void *ret = tcb->cb->Parse(tok,buf);
@@ -259,8 +262,7 @@ trpgSceneParser::trpgSceneParser()
 
     // Register for default
     SetDefaultCallback(new trpgSceneHelperDefault(this));
-};
-
+}
 trpgSceneParser::~trpgSceneParser()
 {
-};
+}

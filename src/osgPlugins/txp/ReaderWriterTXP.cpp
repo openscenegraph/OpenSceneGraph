@@ -45,8 +45,7 @@ public:
                 notify(INFO) << "TXPFile::loadFile(): loading geometry"
                     << std::endl;
 
-                ret = new Group;
-                ret->addChild(archive.LoadAllTiles());
+                ret = archive.LoadAllTiles();
                 
                 notify(INFO) << "TXPFile::loadFile(): loaded archive: "
                     << foundname << std::endl;
@@ -73,6 +72,9 @@ public:
 
 osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
+    if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
+        return ReadResult::FILE_NOT_HANDLED;
+
     TXPFile read;
 
     Object* obj = read.readObject(fileName);
@@ -83,6 +85,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readObject(const std::string& f
 
 osgDB::ReaderWriter::ReadResult ReaderWriterTXP::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
+    if( !acceptsExtension(osgDB::getFileExtension(fileName) ))
+        return ReadResult::FILE_NOT_HANDLED;
+
     TXPFile read;
     Node* node = read.readNode(fileName);
     if (node) return node;

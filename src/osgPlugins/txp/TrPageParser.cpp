@@ -72,17 +72,13 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     geom.GetPrimType(primType);
     geom.GetNumPrims(numPrims);
     geom.GetNumVertex(numVert);
-    numVert /= 3;
-    geom.GetMaterial(0,matId);
+    bool local;
+    geom.GetMaterial(0,matId, local);
     geom.GetNumNormal(numNorm);
-    numNorm /= 3;
     
     Vec3* vertices = new Vec3[numVert];
     // Get vertices
-    // it can be done this way because standard guaranties that vector is on 
-    // continuous storage and vec3 is POD
-    geom.GetVertices((float32 *)vertices);
-    
+    geom.GetVertices(vertices);
     // Turn the trpgGeometry into something Performer can understand
     GeoSet *gset      = 0L;
     
@@ -103,7 +99,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if (numNorm == numVert)
     {
         normals = new Vec3[numVert];
-        geom.GetNormals((float32 *)normals);
+        geom.GetNormals(normals);
     }
     
     Geode *geode = new Geode();

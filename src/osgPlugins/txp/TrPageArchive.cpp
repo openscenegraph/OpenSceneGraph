@@ -89,7 +89,7 @@ void TrPageArchive::LoadMaterials()
     {
         for (int i=0; i < n_textures ; i++)
         {
-            trpgTexture *tex;
+            const trpgTexture *tex;
             tex = texTable.GetTextureRef(i);
             char texName[1024];  texName[0] = 0;
             tex->GetName(texName,1023);
@@ -118,7 +118,7 @@ void TrPageArchive::LoadMaterials()
         {
             StateSet* osg_state_set = new StateSet;
             
-            trpgMaterial *mat;
+            const trpgMaterial *mat;
             mat = materialTable.GetMaterialRef(0,i);
             // Set texture
             int numMatTex;

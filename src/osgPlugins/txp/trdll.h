@@ -1,23 +1,22 @@
 /* ************************
    Copyright Terrain Experts Inc.
    Terrain Experts Inc (TERREX) reserves all rights to this source code
-   unless otherwise specified in writing by the Chief Operating Officer
-   of TERREX.
+   unless otherwise specified in writing by the President of TERREX.
    This copyright may be updated in the future, in which case that version
    supercedes this one.
    -------------------
    Terrex Experts Inc.
-   84 West Santa Clara St., Suite 380
-   San Jose, CA 95113
+   4400 East Broadway #314
+   Tucson, AZ  85711
    info@terrex.com
-   Tel: (408) 293-9977
+   Tel: (520) 323-7990
    ************************
    */
 
 /* trdll.h
-	Windows Only
+    Windows Only
 
-	This header file defines the declaration macros for DLLs.
+    This header file defines the declaration macros for DLLs.
   */
 
 // Export/import declaration for classes and functions
@@ -60,6 +59,7 @@
 //      #endif
 //      #define TX_CPPDECL extern __declspec(dllimport)
 
+#ifndef TX_CLDECL
 // Class declaration.  Goes after "class" to handle DLL export in windows.
 #define TX_CLDECL
 // Goes before "class" to handle DLL export in windows
@@ -69,7 +69,11 @@
 // Exports a C function properly in a windows DLL
 #define TX_CDECL        /* no-op */
 // {secret}
+#ifndef TXDUMMY_DLL_MAIN
 #define TXDUMMY_DLL_MAIN /* no-op */
+#endif
+#endif
+
 #else
 #define TX_CLDECL __declspec( dllexport )
 #define TX_EXDECL
@@ -83,11 +87,15 @@
 // The following is a DLL Main function for DLLs that wouldn't otherwise
 // have one.  It's needed to initialize the run time library.
 // This should appear once within every DLL
+
+// commented out by Boris Bralo for osg
+
+/*
 #ifndef TXDUMMY_DLL_MAIN
 #define TXDUMMY_DLL_MAIN \
 extern "C" { \
 BOOL WINAPI _CRT_INIT (HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved); \
-BOOL APIENTRY DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved) \
+BOOL APIENTRY DllMain (HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved) \
 { \
   switch (dwReason) \
   { \
@@ -106,8 +114,8 @@ BOOL APIENTRY DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved) \
   return TRUE; \
 } \
 }
-
 #endif
+*/
 #endif
 
 #ifndef txdll_h_

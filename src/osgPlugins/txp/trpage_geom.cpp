@@ -1,16 +1,15 @@
 /* ************************
    Copyright Terrain Experts Inc.
    Terrain Experts Inc (TERREX) reserves all rights to this source code
-   unless otherwise specified in writing by the Chief Operating Officer
-   of TERREX.
+   unless otherwise specified in writing by the President of TERREX.
    This copyright may be updated in the future, in which case that version
    supercedes this one.
    -------------------
    Terrex Experts Inc.
-   84 West Santa Clara St., Suite 380
-   San Jose, CA 95113
+   4400 East Broadway #314
+   Tucson, AZ  85711
    info@terrex.com
-   Tel: (408) 293-9977
+   Tel: (520) 323-7990
    ************************
    */
 
@@ -28,7 +27,9 @@
 #include "trpage_geom.h"
 #include "trpage_read.h"
 
-#if defined(_WIN32) && !defined(__GNUC__)
+#include <osg/Vec3>
+
+#if defined(_WIN32)
 #define ALIGNMENT_WORKAROUND    false
 #else
 #define ALIGNMENT_WORKAROUND    true
@@ -99,12 +100,12 @@ void trpgGeometry::SetNumMaterial(int no)
 
     materials.resize(no,-1);
 }
-void trpgGeometry::SetMaterial(int which,int mat)
+void trpgGeometry::SetMaterial(int which,int mat,bool isLocal)
 {
     if (which < 0 || which >= (int)materials.size())
         return;
 
-    materials[which] = mat;
+    materials[which] = (isLocal ? -(mat+1) : mat);
 }
 void trpgGeometry::SetMaterials(int32 num,const int32 *mat)
 {
@@ -318,10 +319,15 @@ bool trpgGeometry::GetNumMaterial(int &n) const
     n = materials.size();
     return true;
 }
-bool trpgGeometry::GetMaterial(int id,int32 &m) const
+bool trpgGeometry::GetMaterial(int id,int32 &m,bool &isLocal) const
 {
-    if (!isValid() || id < 0 || id >= (int)materials.size()) return false;
+    isLocal = false;
+    if (!isValid() || id < 0 || id >= materials.size()) return false;
     m = materials[id];
+    if (m < 0) {
+        m = -m - 1;
+        isLocal = true;
+    }
     return true;
 }
 bool trpgGeometry::GetNumVertex(int &v) const
@@ -330,11 +336,12 @@ bool trpgGeometry::GetNumVertex(int &v) const
     int nvf = vertDataFloat.size();
     int nvd = vertDataDouble.size();
     v = MAX(nvf,nvd);
+    v = v / 3;
     return true;
 }
 bool trpgGeometry::GetVertices(float32 *v) const
 {
-    unsigned int i;
+    int i;
 
     if (!isValid()) return false;
     if (vertDataFloat.size() != 0)
@@ -347,7 +354,7 @@ bool trpgGeometry::GetVertices(float32 *v) const
 }
 bool trpgGeometry::GetVertices(float64 *v) const
 {
-    unsigned int i;
+    int i;
 
     if (!isValid()) return false;
     if (vertDataFloat.size() != 0)
@@ -358,11 +365,36 @@ bool trpgGeometry::GetVertices(float64 *v) const
             v[i] = vertDataDouble[i];
     return true;
 }
+bool trpgGeometry::GetVertices(osg::Vec3* v) const
+{
+    int i; 
+
+    if (!isValid()) return false;
+    if (vertDataFloat.size() != 0)
+    {            
+        for (i=0;i<vertDataFloat.size()/3;i++ )
+        {
+            v[i].x() = vertDataFloat[3*i+0];
+            v[i].y() = vertDataFloat[3*i+1];
+            v[i].z() = vertDataFloat[3*i+2];
+        }
+    }
+    else
+    {
+        for (i=0;i<vertDataDouble.size()/3;i++ )
+        {
+            v[i].x() = vertDataDouble[3*i+0];
+            v[i].y() = vertDataDouble[3*i+1];
+            v[i].z() = vertDataDouble[3*i+2];
+        }
+    }
+    return true;
+}
 bool trpgGeometry::GetVertex(int n,trpg3dPoint &pt) const
 {
     int id = 3*n;
     int idMax = 3*n+2;
-    if (id < 0 || (idMax >= (int)vertDataFloat.size() && idMax >= (int)vertDataDouble.size()))
+    if (id < 0 || (idMax >= vertDataFloat.size() && idMax >= vertDataDouble.size()))
         return false;
     if (vertDataFloat.size() > vertDataDouble.size()) {
         pt.x = vertDataFloat[id];
@@ -382,11 +414,12 @@ bool trpgGeometry::GetNumNormal(int32 &n) const
         n = normDataFloat.size();
     if (normDataDouble.size() != 0)
         n = normDataDouble.size();
+    n = n / 3;
     return true;
 }
 bool trpgGeometry::GetNormals(float32 *v) const
 {
-    unsigned int i;
+    int i;
 
     if (!isValid()) return false;
     if (normDataFloat.size() != 0)
@@ -399,7 +432,7 @@ bool trpgGeometry::GetNormals(float32 *v) const
 }
 bool trpgGeometry::GetNormals(float64 *v) const
 {
-    unsigned int i;
+    int i;
 
     if (!isValid()) return false;
     if (normDataFloat.size() != 0)
@@ -410,40 +443,66 @@ bool trpgGeometry::GetNormals(float64 *v) const
             v[i] = normDataDouble[i];
     return true;
 }
+
+bool trpgGeometry::GetNormals(osg::Vec3* v) const
+{
+    int i;
+
+    if (!isValid()) return false;
+    if (normDataFloat.size() != 0)
+    {
+        for (i=0;i<normDataFloat.size()/3;i++)
+        {
+            v[i].x() = normDataFloat[3*i+0];
+            v[i].y() = normDataFloat[3*i+1];
+            v[i].z() = normDataFloat[3*i+2];
+        }
+    }
+    else
+    {
+        for (i=0;i<normDataDouble.size()/3;i++)
+        {
+            v[i].x() = normDataDouble[3*i+0];
+            v[i].y() = normDataDouble[3*i+1];
+            v[i].z() = normDataDouble[3*i+2];
+        }
+    }
+    return true;
+}
 bool trpgGeometry::GetNumColorSets(int &n) const
 {
     if (!isValid()) return false;
-    n = (int)colors.size();
+    n = colors.size();
     return true;
 }
 bool trpgGeometry::GetColorSet(int id,trpgColorInfo *ci) const
 {
-    if (!isValid() || id < 0 || id >= (int)colors.size()) return false;
+    if (!isValid() || id < 0 || id >= colors.size()) return false;
     *ci = colors[id];
     return true;
 }
 bool trpgGeometry::GetNumTexCoordSets(int &n) const
 {
     if (!isValid()) return false;
-    n = (int)texData.size();
+    n = texData.size();
     return true;
 }
 bool trpgGeometry::GetTexCoordSet(int id,trpgTexData *tx) const
 {
-    if (!isValid() || id < 0 || id >= (int)texData.size()) return false;
+    if (!isValid() || id < 0 || id >= texData.size()) return false;
     *tx = texData[id];
     return true;
 }
 bool trpgGeometry::GetNumEdgeFlag(int &n) const
 {
     if (!isValid()) return false;
-    n = (int)edgeFlags.size();
+    n = edgeFlags.size();
     return true;
 }
 bool trpgGeometry::GetEdgeFlags(char *e) const
 {
     if (!isValid()) return false;
-    for (unsigned int i=0;i<edgeFlags.size();i++)
+    for (int i=0;i<edgeFlags.size();i++)
         e[i] = edgeFlags[i];
     return true;
 }
@@ -455,9 +514,8 @@ bool trpgGeometry::isValid() const
     return true;
 }
 
-
-  // Write geometry fields.
-  // Order doesn't matter very much for this
+// Write geometry fields.
+// Order doesn't matter very much for this
 bool trpgGeometry::Write(trpgWriteBuffer &buf)
 {
     unsigned int i,j;
@@ -503,7 +561,7 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
         buf.Begin(TRPG_GEOM_VERT32);
         int32 num = vertDataFloat.size()/3;
         buf.Add(num);
-        for (i=0;i<(unsigned int)3*num;i++)
+        for (i=0;i<3*num;i++)
             buf.Add(vertDataFloat[i]);
         buf.End();
     }
@@ -511,7 +569,7 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
         buf.Begin(TRPG_GEOM_VERT64);
         int32 num = vertDataDouble.size()/3;
         buf.Add(num);
-        for (i=0;i<(unsigned int)3*num;i++)
+        for (i=0;i<3*num;i++)
             buf.Add(vertDataDouble[i]);
         buf.End();
     }
@@ -526,7 +584,7 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
         buf.Add((int32)normBind);
         int32 num = normDataFloat.size()/3;
         buf.Add(num);
-        for (i=0;i<(unsigned int)3*num;i++)
+        for (i=0;i<3*num;i++)
             buf.Add(normDataFloat[i]);
         buf.End();
     }
@@ -535,7 +593,7 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
         buf.Add((int32)normBind);
         int32 num = normDataDouble.size()/3;
         buf.Add(num);
-        for (i=0;i<(unsigned int)3*num;i++)
+        for (i=0;i<3*num;i++)
             buf.Add(normDataDouble[i]);
         buf.End();
     }
@@ -572,7 +630,7 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
             buf.Add((int32)td.bind);
             int32 num = td.floatData.size()/2;
             buf.Add(num);
-            for (j=0;j<(unsigned int)num*2;j++)
+            for (j=0;j<num*2;j++)
                 buf.Add(td.floatData[j]);
             buf.End();
         }
@@ -581,14 +639,13 @@ bool trpgGeometry::Write(trpgWriteBuffer &buf)
             buf.Add((int32)td.bind);
             int32 num = td.doubleData.size()/2;
             buf.Add(num);
-            for (j=0;j<(unsigned int)num*2;j++)
+            for (j=0;j<num*2;j++)
                 buf.Add(td.doubleData[j]);
             buf.End();
 
-            // What is going on here? - mcmillan
-            //float u;
-            //for (j=0;j<(unsigned int)num*2;j++)
-            //    u = (float)td.doubleData[j];
+            float u;
+            for (j=0;j<num*2;j++)
+                u = (float)td.doubleData[j];
         }
     }
 

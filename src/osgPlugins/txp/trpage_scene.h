@@ -206,7 +206,7 @@ public:
 #if defined(_WIN32)
     typedef std::map<int,trpgReadGroupBase *> GroupMap;
 #else
-    typedef std::map<int,trpgReadGroupBase *,less<int> > GroupMap;
+    typedef std::map<int,trpgReadGroupBase *,std::less<int> > GroupMap;
 #endif
     trpgSceneGraphParser(void);
     virtual ~trpgSceneGraphParser(void) { };

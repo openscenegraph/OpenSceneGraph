@@ -86,13 +86,8 @@ typedef double float64;
 #include <txRogueWave.h>
 #endif
 
-#if defined(_WIN32)
 #include <vector>
 #include <map>
-#else
-#include <vector.h>
-#include <map.h>
-#endif
 
 #if defined(_WIN32)     // PJM
 // Had to take this out because of an iostream conflict

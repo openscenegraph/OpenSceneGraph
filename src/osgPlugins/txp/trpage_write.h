@@ -251,9 +251,6 @@ public:
 
     bool isValid(void) const;
     char* getDir(void){return dir;};
-protected:
-    // Set if we're adding to an existing archive
-    bool isRegenerate;
 
     // Used to keep track of which tiles are in which file
     class TileFileEntry {
@@ -262,6 +259,10 @@ protected:
         float zmin,zmax;
         uint32 offset;  // Offset into file
     };
+protected:
+    // Set if we're adding to an existing archive
+    bool isRegenerate;
+
     class TileFile {
     public:
         int id;

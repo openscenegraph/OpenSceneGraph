@@ -1,0 +1,81 @@
+
+################################################################
+# Directories traversed from the top level
+TOP_LEVEL_DIRS = src
+
+
+################################################################
+# Directories traversed in the TOPDIR/src directory
+SRC_DIRS = \
+	osg\
+	osgUtil\
+	osgDB\
+	osgGLUT\
+	osgPlugins\
+	osgText\
+	Demos
+
+
+################################################################
+# Directories traversed in the TOPDIR/src/osgPlugins directory
+
+PLUGIN_DIRS = \
+	osg\
+	rgb\
+	lib3ds\
+	flt\
+	obj\
+	lwo\
+	txp\
+	dw\
+	bmp\
+	pic\
+	tga\
+	osgtgz\
+	tgz\
+	zip  
+
+# comment in if you have Performer installed.
+# PLUGIN_DIRS += pfb
+
+# comment in if you want Open DX support, currently not on by default
+# since we havn't yet checked compilation on all platforms yet.
+PLUGIN_DIRS += dx
+
+# comment in if you have Quicktime installed, i.e under Mac OS.
+# if in this case then its likely you'll want to comment out the below
+# png, jpeg, gif and tiff plugins.
+# PLUGIN_DIRS += quicktime
+
+# comment in if you have libpng installed.
+PLUGIN_DIRS += png
+
+# comment in if you have libjpeg installed.
+PLUGIN_DIRS += jpeg
+
+# comment in if you have libungif installed.
+PLUGIN_DIRS += gif
+
+# comment in if you have libtiff installed.
+PLUGIN_DIRS += tiff
+
+################################################################
+# Directories traversed in the TOPDIR/src/Demos directory
+
+DEMOS_DIRS = \
+	hangglide\
+	osgbillboard\
+	osgcluster\
+	osgconv\
+	osgcopy\
+	osgcube\
+	osghud\
+	osgimpostor\
+	osgreflect\
+	osgscribe\
+	osgstereoimage\
+	osgtext\
+	osgtexture\
+	osgviews\
+	osgversion\
+	sgv

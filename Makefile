@@ -1,7 +1,8 @@
 TOPDIR = .
 include $(TOPDIR)/Make/makedefs
+include $(TOPDIR)/Make/makedirdefs
 
-DIRS = src
+DIRS = $(TOP_LEVEL_DIRS)
 
 include $(TOPDIR)/Make/makedirrules
 include $(TOPDIR)/Make/instrules

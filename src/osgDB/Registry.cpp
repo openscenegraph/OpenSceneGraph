@@ -165,6 +165,9 @@ Registry::Registry()
     addFileExtensionAlias("tif",  "tiff");
 #endif
 
+    addFileExtensionAlias("mpg",  "mpeg");
+    addFileExtensionAlias("mpv",  "mpeg");
+
     // remove geo to lwo alias as the new Carbon Graphics GEO format
     // also uses the .geo. It is still possible to load light wave .geo
     // files via loading the lwo plugin explicitly and then doing a readNodeFile.

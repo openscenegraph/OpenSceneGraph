@@ -243,7 +243,7 @@ bool Viewer::open()
         ++itr)
     {
         osgUtil::RenderStage *stage = itr->sceneView->getRenderStage();
-        stage->setClearMask(clear_mask);
+        if (stage) stage->setClearMask(clear_mask);
     }
 
 
@@ -767,6 +767,7 @@ void Viewer::mouse(int button, int state, int x, int y)
 }
 
 
+
 void Viewer::keyboard(unsigned char key, int x, int y)
 {
     osg::ref_ptr<GLUTEventAdapter> ea = osgNew GLUTEventAdapter;
@@ -775,6 +776,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     if (_viewportList[_focusedViewport]._cameraManipulator->handle(*ea,*this)) 
       return;
 
+
+
     if (key>='1' && key<='3')
     {
         int pos = key-'1';
@@ -782,6 +785,12 @@ void Viewer::keyboard(unsigned char key, int x, int y)
     }
 
     osgUtil::SceneView* sceneView = getViewportSceneView(_focusedViewport);
+    osg::StateSet* globalStateSet = sceneView->getGlobalStateSet();
+    if (!globalStateSet)
+    {
+        globalStateSet = osgNew osg::StateSet;
+        sceneView->setGlobalStateSet(globalStateSet);
+    }
 
     switch( key )
     {
@@ -881,7 +890,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         case 's' :
         {
             flat_shade = 1  - flat_shade ;
-            osg::StateSet* stateset = sceneView->getGlobalStateSet();
+            osg::StateSet* stateset = globalStateSet;
             osg::ShadeModel* shademodel = dynamic_cast<osg::ShadeModel*>(stateset->getAttribute(osg::StateAttribute::SHADEMODEL));
             if (!shademodel)
             {
@@ -920,18 +929,18 @@ void Viewer::keyboard(unsigned char key, int x, int y)
 
             backface = 1 - backface;
             if( backface )
-                sceneView->getGlobalStateSet()->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
+                globalStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
             else
-                sceneView->getGlobalStateSet()->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
+                globalStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::OVERRIDE_OFF);
 
             break;
 
         case 'l' :
             lighting = 1  - lighting ;
             if( lighting )
-                sceneView->getGlobalStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
+                globalStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_ON);
             else
-                sceneView->getGlobalStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
+                globalStateSet->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE_OFF);
             break;
 
         case 'L' :
@@ -950,8 +959,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             texture = 1 - texture;
             if (texture)
             {
-                sceneView->getGlobalStateSet()->setModeToInherit(GL_TEXTURE_2D);
-//                sceneView->getGlobalStateSet()->setAttributeToInherit(osg::StateAttribute::TEXTURE);
+                globalStateSet->setModeToInherit(GL_TEXTURE_2D);
+//                globalStateSet->setAttributeToInherit(osg::StateAttribute::TEXTURE);
             }
             else
             {
@@ -959,18 +968,18 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 // thus causing them to all use the same texture attribute, hence
                 // preventing a state attribute change due to unused textures.
                 static osg::ref_ptr<osg::Texture> blank_texture = osgNew osg::Texture;
-                sceneView->getGlobalStateSet()->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
-//                sceneView->getGlobalStateSet()->setAttribute(blank_texture.get(),true);
+                globalStateSet->setMode(GL_TEXTURE_2D,osg::StateAttribute::OVERRIDE_OFF);
+//                globalStateSet->setAttribute(blank_texture.get(),true);
             }
             break;
 
         case 'T' :
             {
-                osg::LightModel* lightmodel = dynamic_cast<LightModel*>(sceneView->getGlobalStateSet()->getAttribute(osg::StateAttribute::LIGHTMODEL));
+                osg::LightModel* lightmodel = dynamic_cast<LightModel*>(globalStateSet->getAttribute(osg::StateAttribute::LIGHTMODEL));
                 if (lightmodel)
                 {
                     lightmodel = osgNew osg::LightModel;
-                    sceneView->getGlobalStateSet()->setAttribute(lightmodel);
+                    globalStateSet->setAttribute(lightmodel);
                 }
                 lightmodel->setTwoSided(!lightmodel->getTwoSided());
             }
@@ -981,7 +990,7 @@ void Viewer::keyboard(unsigned char key, int x, int y)
                 polymode = (polymode+1)%3;
                 osg::PolygonMode* polyModeObj = osgNew osg::PolygonMode;
                 polyModeObj->setMode(osg::PolygonMode::FRONT_AND_BACK,polymodes[polymode]);
-                sceneView->getGlobalStateSet()->setAttribute(polyModeObj);
+                globalStateSet->setAttribute(polyModeObj);
             }
             break;
 

@@ -1,4 +1,5 @@
 #include "osg/Transform"
+#include "osg/MatrixTransform"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -48,25 +49,21 @@ bool Transform_readLocalData(Object& obj, Input& fr)
         
     }    
 
-    static Matrix s_matrix;
-    
-    if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
+    #ifdef USE_DEPRECATED_API
+    if (!dynamic_cast<MatrixTransform*>(&obj))
     {
+        static Matrix s_matrix;
 
-        #ifdef USE_DEPRECATED_API
-        transform.setMatrix(*tmpMatrix);
-        #else
-        osg::notify(osg::WARN)<<"Warning: loaded Matrix inside a osg::Transform, "<<std::endl;
-        osg::notify(osg::WARN)<<"         this indicates that the file is out of date, "<<std::endl;
-        osg::notify(osg::WARN)<<"         the matrix data will be lost, convert the file by replacing "<<std::endl;
-        osg::notify(osg::WARN)<<"         instances with MatrixTransform in the .osg file, and then reload."<<endl;
-        #endif
+        if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
+        {
 
-        osgDelete tmpMatrix;
-
-        iteratorAdvanced = true;
+            transform.setMatrix(*tmpMatrix);
+            osgDelete tmpMatrix;
+            iteratorAdvanced = true;
+        }
     }
-
+    #endif
+    
     if (fr[0].matchWord("referenceFrame")) {
         if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE")) {
             transform.setReferenceFrame(Transform::RELATIVE_TO_ABSOLUTE);
@@ -89,7 +86,10 @@ bool Transform_writeLocalData(const Object& obj, Output& fw)
     const Transform& transform = static_cast<const Transform&>(obj);
 
     #ifdef USE_DEPRECATED_API
-    fw.writeObject(transform.getMatrix());
+    if (!dynamic_cast<const MatrixTransform*>(&obj))
+    {
+        fw.writeObject(transform.getMatrix());
+    }
     #endif
 
     fw.indent() << "referenceFrame ";

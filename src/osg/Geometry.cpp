@@ -1717,14 +1717,14 @@ void Geometry::drawImplementation(State& state) const
 
 }
 
-class AttrbuteFunctorArrayVisitor : public ArrayVisitor
+class AttributeFunctorArrayVisitor : public ArrayVisitor
 {
     public:
     
-        AttrbuteFunctorArrayVisitor(Drawable::AttributeFunctor& af):
+        AttributeFunctorArrayVisitor(Drawable::AttributeFunctor& af):
             _af(af) {}
     
-        virtual ~AttrbuteFunctorArrayVisitor() {}
+        virtual ~AttributeFunctorArrayVisitor() {}
 
         virtual void apply(ByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(ShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
@@ -1754,7 +1754,7 @@ class AttrbuteFunctorArrayVisitor : public ArrayVisitor
 
 void Geometry::accept(AttributeFunctor& af)
 {
-    AttrbuteFunctorArrayVisitor afav(af);
+    AttributeFunctorArrayVisitor afav(af);
     
     afav.applyArray(VERTICES,_vertexData.array.get());
     afav.applyArray(NORMALS,_normalData.array.get());
@@ -1766,14 +1766,14 @@ void Geometry::accept(AttributeFunctor& af)
     }
 }
 
-class ConstAttrbuteFunctorArrayVisitor : public ConstArrayVisitor
+class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
 {
     public:
     
-        ConstAttrbuteFunctorArrayVisitor(Drawable::ConstAttributeFunctor& af):
+        ConstAttributeFunctorArrayVisitor(Drawable::ConstAttributeFunctor& af):
             _af(af) {}
     
-        virtual ~ConstAttrbuteFunctorArrayVisitor() {}
+        virtual ~ConstAttributeFunctorArrayVisitor() {}
 
         virtual void apply(const ByteArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const ShortArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
@@ -1803,7 +1803,7 @@ class ConstAttrbuteFunctorArrayVisitor : public ConstArrayVisitor
 
 void Geometry::accept(ConstAttributeFunctor& af) const
 {
-    ConstAttrbuteFunctorArrayVisitor afav(af);
+    ConstAttributeFunctorArrayVisitor afav(af);
     
     afav.applyArray(VERTICES,_vertexData.array.get());
     afav.applyArray(NORMALS,_normalData.array.get());

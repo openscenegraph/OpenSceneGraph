@@ -566,6 +566,20 @@ void SceneView::draw()
 
                 _localStateSet->setAttribute(_viewport.get());
 
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
+
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
@@ -585,12 +599,35 @@ void SceneView::draw()
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
-                // draw left eye.
-                osg::ref_ptr<osg::ColorMask> red = new osg::ColorMask;
-                red->setMask(true,false,false,true);
-                _localStateSet->setAttribute(red.get());
-                _renderStageLeft->setColorMask(red.get());
+
+                // ensure that all color planes are active.
+                osg::ColorMask* red = _renderStageLeft->getColorMask();
+                if (red)
+                {
+                    red->setMask(true,false,false,true);
+                }
+                else
+                {
+                    red = new osg::ColorMask(true,false,false,true);
+                }
+                _localStateSet->setAttribute(red);
+                _renderStageLeft->setColorMask(red);
+
+               // draw left eye.
                 _renderStageLeft->draw(*_state,previous);
+
+                // ensure that all color planes are active.
+                osg::ColorMask* cyan = _renderStageLeft->getColorMask();
+                if (cyan)
+                {
+                    cyan->setMask(false,true,true,true);
+                }
+                else
+                {
+                    cyan = new osg::ColorMask(false,true,true,true);
+                }
+                _localStateSet->setAttribute(cyan);
+                _renderStageRight->setColorMask(cyan);
 
                 // draw right eye.
                 osg::ref_ptr<osg::ColorMask> green = new osg::ColorMask;
@@ -603,6 +640,20 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
             {
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
+
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
@@ -646,7 +697,20 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::VERTICAL_SPLIT):
             {
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
 
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
                 _renderStageLeft->drawPreRenderStages(*_state,previous);
                 _renderStageRight->drawPreRenderStages(*_state,previous);
 
@@ -689,6 +753,20 @@ void SceneView::draw()
         case(osg::DisplaySettings::RIGHT_EYE):
         case(osg::DisplaySettings::LEFT_EYE):
             {
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStage->setColorMask(cmask);
+                _renderStage->setColorMask(cmask);
+
                 _localStateSet->setAttribute(_viewport.get());
                 _renderStage->drawPreRenderStages(*_state,previous);
                 _renderStage->draw(*_state,previous);
@@ -708,9 +786,20 @@ void SceneView::draw()
 	glDrawBuffer(GL_BACK);
 
         _localStateSet->setAttribute(_viewport.get());
-        osg::ref_ptr<osg::ColorMask> cmask = new osg::ColorMask;
-        cmask->setMask(true,true,true,true);
-        _localStateSet->setAttribute(cmask.get());
+
+
+        // ensure that all color planes are active.
+        osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+        if (cmask)
+        {
+            cmask->setMask(true,true,true,true);
+        }
+        else
+        {
+            cmask = new osg::ColorMask(true,true,true,true);
+            _localStateSet->setAttribute(cmask);
+        }
+        _renderStage->setColorMask(cmask);
 
         // bog standard draw.
         _renderStage->drawPreRenderStages(*_state,previous);

@@ -179,16 +179,36 @@ void CullVisitor::popProjectionMatrix()
 
         if (projection(0,3)==0.0f && projection(1,3)==0.0f && projection(2,3)==0.0f)
         {
-            //cout << "Orthographic projection "<<projection<<endl;
+            //std::cout << "Orthographic projection "<<projection<<std::endl;
+
+            double span = (_computed_zfar-_computed_zfar);
+            double desired_znear = _computed_znear + span*0.02f;
+            double desired_zfar = _computed_zfar - span*0.02f;
+            
+            // near plane clamping.
+            //double min_near_plane = _computed_zfar*_nearFarRatio;
+            //if (desired_znear<min_near_plane) desired_znear=min_near_plane;
+
+            // assign the clamped values back to the computed values.
+            _computed_znear = desired_znear;
+            _computed_zfar = desired_zfar;
+
+            projection(2,2)=-2.0f/(desired_zfar-desired_znear);
+            projection(3,2)=-(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
+            
+            //projection(2,2)=-2.0f/(-desired_zfar+desired_znear);
+            //projection(3,2)=(desired_zfar+desired_znear)/(desired_zfar-desired_znear);
+
         }
         else
         {
 
-            //cout << "Perspective projection "<<projection<<endl;
+            //std::cout << "Perspective projection "<<projection<<std::endl;
 
             double desired_znear = _computed_znear *0.98f;
             double desired_zfar = _computed_zfar *1.02f;
 
+            // near plane clamping.
             double min_near_plane = _computed_zfar*_nearFarRatio;
             if (desired_znear<min_near_plane) desired_znear=min_near_plane;
 

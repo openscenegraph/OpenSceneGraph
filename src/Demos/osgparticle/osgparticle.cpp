@@ -1,3 +1,6 @@
+#include <osgGLUT/glut>
+#include <osgGLUT/Viewer>
+
 #include <osg/Group>
 #include <osg/Geode>
 
@@ -12,7 +15,7 @@
 #include <osgParticle/AccelOperator>
 #include <osgParticle/FluidFrictionOperator>
 
-#include <osgGLUT/Viewer>
+
 
 //////////////////////////////////////////////////////////////////////////////
 // CUSTOM OPERATOR CLASS
@@ -340,17 +343,27 @@ void build_world(osg::Group *root)
 //////////////////////////////////////////////////////////////////////////////
 
 
-int main( int /*argc*/, char **argv )
+int main(int argc, char **argv)
 {
-	osgGLUT::Viewer viewer;
-        viewer.setWindowTitle(argv[0]);
+
+    // initialize the GLUT
+   glutInit(&argc, argv);
+   
+      // initialize the viewer.
+    osgGLUT::Viewer viewer;
+    //viewer.setWindowTitle(argv[0]);
 
 	osg::Group *root = osgNew osg::Group;
 	build_world(root);
-
-	viewer.addViewport(root);
-	viewer.open();
-	viewer.run();
+   
+   // add a viewport to the viewer and attach the scene graph.
+  viewer.addViewport(root);
+        
+    // open the viewer window.
+    viewer.open();
+    
+    // fire up the event loop.
+    viewer.run();
 
 	return 0;
 }

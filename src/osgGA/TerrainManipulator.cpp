@@ -32,6 +32,18 @@ void TerrainManipulator::setRotationMode(RotationMode mode)
 void TerrainManipulator::setNode(osg::Node* node)
 {
     _node = node;
+    
+    if (_node.get())
+    {
+        const osg::BoundingSphere& boundingSphere=_node->getBound();
+        const float minimumDistanceScale = 0.001f;
+        _minimumDistance = osg::clampBetween(
+            boundingSphere._radius * minimumDistanceScale,
+            0.00001f,1.0f);
+            
+        osg::notify(osg::NOTICE)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
+    }
+    
 }
 
 

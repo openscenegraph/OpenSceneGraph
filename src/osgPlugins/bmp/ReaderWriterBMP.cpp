@@ -290,7 +290,7 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
         virtual const char* className() { return "BMP Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="bmp"; }
 
-        virtual osg::Image* readImage(const std::string& fileName)
+        virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             unsigned char *imageData = NULL;

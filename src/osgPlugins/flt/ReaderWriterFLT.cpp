@@ -14,7 +14,7 @@
 
 using namespace flt;
 
-osg::Object* ReaderWriterFLT::readObject(const std::string& fileName)
+osg::Object* ReaderWriterFLT::readObject(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     FltFile read;
 
@@ -22,7 +22,7 @@ osg::Object* ReaderWriterFLT::readObject(const std::string& fileName)
 }
 
 
-osg::Node* ReaderWriterFLT::readNode(const std::string& fileName)
+osg::Node* ReaderWriterFLT::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     FltFile read;
 

@@ -54,8 +54,8 @@ public:
         return osgDB::equalCaseInsensitive(extension,"flt");
     }
 
-    virtual osg::Object* readObject(const std::string& fileName);
-    virtual osg::Node* readNode(const std::string& fileName);
+    virtual osg::Object* readObject(const std::string& fileName, const ReaderWriter::Options*);
+    virtual osg::Node* readNode(const std::string& fileName, const ReaderWriter::Options*);
 };
 
 

@@ -298,6 +298,12 @@ int main( int argc, char **argv )
     osg::Timer timer;
     osg::Timer_t before_load = timer.tick();
     
+    // comment out right now, but the following allos users to pass option data to
+    // the ReaderWriter plugins. By default the options are set to NULL. The basic
+    // osgDB::ReaderWriter::Options stucture has just a string, but this can be
+    // subclassed to extend it to handle any options that a user desires.
+    // osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("test options"));
+
     osg::Node* rootnode = getNodeFromFiles( argc, argv);
     
     osg::Timer_t after_load = timer.tick();

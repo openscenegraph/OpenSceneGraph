@@ -43,7 +43,7 @@ public:
         return (extension == "lwo" || extension == "lw" || extension == "geo");
     }
 
-    virtual osg::Node* readNode(const std::string& fileName);
+    virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*);
 
 protected:
 };
@@ -54,7 +54,7 @@ osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
 
 
 // read file and convert to OSG.
-osg::Node* ReaderWriterLWO::readNode(const std::string& fileName)
+osg::Node* ReaderWriterLWO::readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
 {
     lwObject* lw = lw_object_read(fileName.c_str());
     if (!lw)

@@ -469,7 +469,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
         virtual const char* className() { return "TGA Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) { return extension=="tga"; }
 
-        virtual osg::Image* readImage(const std::string& fileName)
+        virtual osg::Image* readImage(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             unsigned char *imageData = NULL;

@@ -29,7 +29,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"zip");
         }
 
-        virtual osg::Node* readNode(const std::string& fileName)
+        virtual osg::Node* readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*)
         {
 
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);

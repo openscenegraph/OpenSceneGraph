@@ -202,6 +202,8 @@ bool TexEnvCombine_matchCombineParamStr(const char* str,GLint& value)
     else if (strcmp(str,"ADD_SIGNED")==0)   value = TexEnvCombine::ADD_SIGNED;
     else if (strcmp(str,"INTERPOLATE")==0)  value = TexEnvCombine::INTERPOLATE;
     else if (strcmp(str,"SUBTRACT")==0)     value = TexEnvCombine::SUBTRACT;
+    else if (strcmp(str,"DOT3_RGB")==0)     value = TexEnvCombine::DOT3_RGB;
+    else if (strcmp(str,"DOT3_RGBA")==0)    value = TexEnvCombine::DOT3_RGBA;
     else return false;
     return true;
 }
@@ -216,6 +218,8 @@ const char* TexEnvCombine_getCombineParamStr(GLint value)
         case(TexEnvCombine::ADD_SIGNED):    return "ADD_SIGNED";
         case(TexEnvCombine::INTERPOLATE):   return "INTERPOLATE";
         case(TexEnvCombine::SUBTRACT):      return "SUBTRACT";
+        case(TexEnvCombine::DOT3_RGB):      return "DOT3_RGB";
+        case(TexEnvCombine::DOT3_RGBA):     return "DOT3_RGBA";
     }
     return "";
 }

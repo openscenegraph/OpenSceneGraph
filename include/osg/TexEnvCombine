@@ -16,6 +16,8 @@
 #define GL_COMBINE_ARB                                     0x8570
 #define GL_COMBINE_RGB_ARB                                 0x8571
 #define GL_COMBINE_ALPHA_ARB                               0x8572
+#define GL_DOT3_RGB_ARB                                    0x86AE
+#define GL_DOT3_RGBA_ARB                                   0x86AF
 #define GL_SOURCE0_RGB_ARB                                 0x8580
 #define GL_SOURCE1_RGB_ARB                                 0x8581
 #define GL_SOURCE2_RGB_ARB                                 0x8582
@@ -116,7 +118,9 @@ class SG_EXPORT TexEnvCombine : public StateAttribute
             ADD             = GL_ADD,
             ADD_SIGNED      = GL_ADD_SIGNED_ARB,
             INTERPOLATE     = GL_INTERPOLATE_ARB,
-            SUBTRACT        = GL_SUBTRACT_ARB
+            SUBTRACT        = GL_SUBTRACT_ARB,
+            DOT3_RGB        = GL_DOT3_RGB_ARB,
+            DOT3_RGBA       = GL_DOT3_RGBA_ARB
         };
 
         void setCombine_RGB(GLint cm) { _combine_RGB = cm; }

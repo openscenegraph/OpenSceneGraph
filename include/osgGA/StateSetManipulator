@@ -5,12 +5,12 @@
 #ifndef OSGGA_GEOSTATE_MANIPULATOR
 #define OSGGA_GEOSTATE_MANIPULATOR 1
 
-#include <osg/StateSet>
-
 #include <osgGA/Export>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventHandler>
+
+#include <osg/StateSet>
 
 namespace osgGA{
 

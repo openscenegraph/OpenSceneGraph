@@ -303,10 +303,12 @@ WARN_LOGFILE           =
 INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgUtil \
                          $(OSGHOME)/include/osgDB \
+                         $(OSGHOME)/include/osgGA \
                          $(OSGHOME)/include/osgGLUT \
                          $(OSGHOME)/src/osg \
                          $(OSGHOME)/src/osgUtil \
                          $(OSGHOME)/src/osgDB \
+                         $(OSGHOME)/src/osgGA \
                          $(OSGHOME)/src/osgGLUT \
                          $(OSGHOME)/doc/Doxyfiles/auto_Mainpage
 

@@ -30,6 +30,7 @@ C++FILES = \
         PolygonMode.cpp\
         PolygonOffset.cpp\
         ReaderWriterOSG.cpp\
+        ShadeModel.cpp\
         StateSet.cpp\
         Stencil.cpp\
         Switch.cpp\

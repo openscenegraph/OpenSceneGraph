@@ -1,0 +1,58 @@
+//C++ header - Open Scene Graph - Copyright (C) 1998-2001 Robert Osfield
+//Distributed under the terms of the GNU Library General Public License (LGPL)
+//as published by the Free Software Foundation.
+
+#ifndef OSG_SHADEMODEL
+#define OSG_SHADEMODEL 1
+
+#include <osg/GL>
+#include <osg/StateAttribute>
+#include <osg/StateSet>
+
+namespace osg {
+
+/** Class which encapsulates glShadeModel(..).
+*/     
+class SG_EXPORT ShadeModel : public StateAttribute
+{
+    public :
+    
+        ShadeModel();
+
+        META_StateAttribute(ShadeModel, SHADEMODEL);
+        
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        virtual int compare(const StateAttribute& sa) const
+        {
+            // check the types are equal and then create the rhs variable
+            // used by the COMPARE_StateAttribute_Paramter macro's below.
+            COMPARE_StateAttribute_Types(ShadeModel,sa)
+
+            // compare each paramter in turn against the rhs.
+            COMPARE_StateAttribute_Parameter(_mode)
+
+            return 0; // passed all the above comparison macro's, must be equal.
+        }
+
+        enum Mode {
+            FLAT = GL_FLAT,
+            SMOOTH = GL_SMOOTH
+        };
+    
+        inline void setMode(const Mode mode) { _mode = mode; }
+
+        inline const Mode getMode() const { return _mode; }
+    
+        virtual void apply(State& state) const;
+        
+    protected:
+    
+        virtual ~ShadeModel();
+        
+        Mode _mode;
+
+};
+
+};
+
+#endif

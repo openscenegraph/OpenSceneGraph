@@ -26,6 +26,7 @@
 #include <osg/LineSegment>
 #include <osg/PolygonMode>
 #include <osg/Texture>
+#include <osg/ShadeModel>
 #include <osg/Notify>
 
 #include <osgDB/WriteFile>
@@ -852,14 +853,23 @@ void Viewer::keyboard(unsigned char key, int x, int y)
             break;
 
         case 's' :
+        {
             flat_shade = 1  - flat_shade ;
+            osg::StateSet* stateset = sceneView->getGlobalStateSet();
+            osg::ShadeModel* shademodel = dynamic_cast<osg::ShadeModel*>(stateset->getAttribute(osg::StateAttribute::SHADEMODEL));
+            if (!shademodel)
+            {
+                shademodel = new osg::ShadeModel;
+                stateset->setAttribute(shademodel,osg::StateAttribute::OVERRIDE);
+            }
+
             if( flat_shade )
-                glShadeModel( GL_FLAT );
+                shademodel->setMode( osg::ShadeModel::FLAT );
             else
-                glShadeModel( GL_SMOOTH );
-
+                shademodel->setMode( osg::ShadeModel::SMOOTH );
+            
             break;
-
+        }
         case 'S' :
         {
             osg::notify(osg::NOTICE) << "Smoothing scene..."<< std::endl;

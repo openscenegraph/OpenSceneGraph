@@ -249,6 +249,10 @@ SOURCE=..\..\src\osg\Quat.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ShadeModel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\State.cpp
 # End Source File
 # Begin Source File
@@ -502,6 +506,10 @@ SOURCE=..\..\include\osg\ref_ptr
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Referenced
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\ShadeModel
 # End Source File
 # Begin Source File
 

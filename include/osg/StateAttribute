@@ -123,7 +123,8 @@ class SG_EXPORT StateAttribute : public Object
 
             POINT           =LIGHT_7+1,            
             LINEWIDTH       =POINT+1,
-            POLYGONMODE     =LINEWIDTH+1,
+            SHADEMODEL      =LINEWIDTH+1,
+            POLYGONMODE     =SHADEMODEL+1,
             POLYGONOFFSET   =POLYGONMODE+1,
             TEXENV          =POLYGONOFFSET+1,
             TEXGEN          =TEXENV+1,

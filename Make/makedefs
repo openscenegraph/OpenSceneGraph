@@ -391,7 +391,7 @@ ifeq ($(OS),Darwin)
   OPTF              = -O2
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   DEPARG            = -M $(DEF)
-  SHARED            = -shared
+  SHARED            = -dynamic
   ARCH              =
   ARCHINST          = 
   ARCHARGS          = 

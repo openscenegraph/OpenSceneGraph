@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGUTIL_EXPORT osgUtil::TransformAttributeFunctor</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGUTIL_EXPORT <A HREF="#DOC.DOCU">osgUtil::TransformAttributeFunctor</A></H2></H2><BLOCKQUOTE>Functor for transforming a drawable's vertex and normal attributes by specified matrix.</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Drawable::AttributeFunctor,M,CTransformAttributeFunctor,MTransformAttributeFunctor.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrix <B><A HREF="#DOC.2.26.4">_m</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::Matrix <B><A HREF="#DOC.2.26.5">_im</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.26.1">TransformAttributeFunctor</A></B>(const osg::Matrix&amp; m)
+<DD><I>construct a functor to transform a drawable's vertex and normal attributes by specified matrix</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.26.2">~TransformAttributeFunctor</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.26.3">apply</A></B>(osg::Drawable::AttributeType type, unsigned int count, osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.25.15">begin</A>)
+<DD><I>do the work of transforming vertex and normal attributes.</I>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Functor for transforming a drawable's vertex and normal attributes by specified matrix.
+typically used for flattening transform down onto drawable leaves. </BLOCKQUOTE>
+<DL>
+
+<A NAME="TransformAttributeFunctor"></A>
+<A NAME="DOC.2.26.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TransformAttributeFunctor(const osg::Matrix&amp; m)</B></TT>
+<DD>construct a functor to transform a drawable's vertex and normal attributes by specified matrix
+<DL><DT><DD></DL><P>
+<A NAME="~TransformAttributeFunctor"></A>
+<A NAME="DOC.2.26.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TransformAttributeFunctor()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.2.26.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::Drawable::AttributeType type, unsigned int count, osg::Vec3* <!1><A HREF="Tesselator.html#DOC.2.25.15">begin</A>)</B></TT>
+<DD>do the work of transforming vertex and normal attributes. 
+<DL><DT><DD></DL><P>
+<A NAME="_m"></A>
+<A NAME="DOC.2.26.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix _m</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_im"></A>
+<A NAME="DOC.2.26.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::Matrix _im</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

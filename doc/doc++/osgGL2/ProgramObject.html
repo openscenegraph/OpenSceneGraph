@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGGL2_EXPORT osgGL2::ProgramObject</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGGL2_EXPORT <A HREF="#DOC.DOCU">osgGL2::ProgramObject</A></H2></H2><BLOCKQUOTE>Encapsulates the OpenGL Shading Language ProgramObject </BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::StateAttribute,M,CProgramObject,MProgramObject.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.2.1">ProgramObject</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.2.2">ProgramObject</A></B>(const <!1><A HREF="ProgramObject.html#DOC.57.2.2">ProgramObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.2.3">META_StateAttribute</A></B>(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ProgramObject.html">ProgramObject</A>, PROGRAMOBJECT)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.57.2.4">compare</A></B>(const osg::StateAttribute&amp; sa) const 
+<DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.57.2.5">getAssociatedModes</A></B>(std::vector&lt;GLMode&gt;&amp; ) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.57.2.6">apply</A></B>(osg::State&amp; state) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.57.2.7">compile</A></B>(osg::State&amp; state) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.2.8">dirtyProgramObject</A></B>()
+<DD><I>Force a relink on next apply() of associated glProgramObject.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.2.9">addShader</A></B>( <!1><A HREF="ShaderObject.html">ShaderObject</A>* shader )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.57.2.10">deleteObject</A></B>(unsigned int contextID, GLhandleARB handle)
+<DD><I>use deleteObject instead of glDeleteObject to allow GL2 Objects to cached until they can be deleted by the OpenGL context in which they were created, specified by contextID</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   void <B><A HREF="#DOC.57.2.11">flushDeletedGL2Objects</A></B>(unsigned int contextID, double currentTime, double&amp; availableTime)
+<DD><I>flush all the cached glProgramObjects which need to be deleted in the OpenGL context related to contextID</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ProgramObject.html#DOC.57.2.13">ShaderObjectList</A> <B><A HREF="#DOC.57.2.14">_shaderObjectList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ProgramObject.html#DOC.57.2.16">PCPOList</A> <B><A HREF="#DOC.57.2.17">_pcpoList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.57.2.12">~ProgramObject</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>* <B><A HREF="#DOC.57.2.18">getPCPO</A></B>(unsigned int contextID) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ShaderObject.html">ShaderObject</A>&gt; &gt; <B><A HREF="#DOC.57.2.13">ShaderObjectList</A></B>
+<DT>
+class  OSGGL2_EXPORT <B><A HREF="PerContextProgObj.html">PerContextProgObj</A></B>: public osg::Referenced
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>&gt; &gt; <B><A HREF="#DOC.57.2.16">PCPOList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Encapsulates the OpenGL Shading Language ProgramObject </BLOCKQUOTE>
+<DL>
+
+<A NAME="ProgramObject"></A>
+<A NAME="DOC.57.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ProgramObject()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ProgramObject"></A>
+<A NAME="DOC.57.2.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ProgramObject(const <!1><A HREF="ProgramObject.html#DOC.57.2.2">ProgramObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_StateAttribute"></A>
+<A NAME="DOC.57.2.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ProgramObject.html">ProgramObject</A>, PROGRAMOBJECT)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compare"></A>
+<A NAME="DOC.57.2.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const osg::StateAttribute&amp; sa) const </B></TT>
+<DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
+<DL><DT><DD></DL><P>
+<A NAME="getAssociatedModes"></A>
+<A NAME="DOC.57.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;GLMode&gt;&amp; ) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="apply"></A>
+<A NAME="DOC.57.2.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::State&amp; state) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="compile"></A>
+<A NAME="DOC.57.2.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void compile(osg::State&amp; state) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="dirtyProgramObject"></A>
+<A NAME="DOC.57.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyProgramObject()</B></TT>
+<DD>Force a relink on next apply() of associated glProgramObject. 
+<DL><DT><DD></DL><P>
+<A NAME="addShader"></A>
+<A NAME="DOC.57.2.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addShader( <!1><A HREF="ShaderObject.html">ShaderObject</A>* shader )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="deleteObject"></A>
+<A NAME="DOC.57.2.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void deleteObject(unsigned int contextID, GLhandleARB handle)</B></TT>
+<DD>use deleteObject instead of glDeleteObject to allow
+GL2 Objects to cached until they can be deleted
+by the OpenGL context in which they were created, specified
+by contextID
+<DL><DT><DD></DL><P>
+<A NAME="flushDeletedGL2Objects"></A>
+<A NAME="DOC.57.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   void flushDeletedGL2Objects(unsigned int contextID, double currentTime, double&amp; availableTime)</B></TT>
+<DD>flush all the cached glProgramObjects which need to be deleted
+in the OpenGL context related to contextID
+<DL><DT><DD></DL><P>
+<A NAME="~ProgramObject"></A>
+<A NAME="DOC.57.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ProgramObject()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ShaderObjectList"></A>
+<A NAME="DOC.57.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="ShaderObject.html">ShaderObject</A>&gt; &gt; ShaderObjectList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_shaderObjectList"></A>
+<A NAME="DOC.57.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ProgramObject.html#DOC.57.2.13">ShaderObjectList</A> _shaderObjectList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PCPOList"></A>
+<A NAME="DOC.57.2.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>&gt; &gt; PCPOList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pcpoList"></A>
+<A NAME="DOC.57.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ProgramObject.html#DOC.57.2.16">PCPOList</A> _pcpoList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPCPO"></A>
+<A NAME="DOC.57.2.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PerContextProgObj.html">PerContextProgObj</A>* getPCPO(unsigned int contextID) const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

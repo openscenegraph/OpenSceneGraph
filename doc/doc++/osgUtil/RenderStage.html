@@ -93,7 +93,7 @@
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::Vec4&amp; <B><A HREF="#DOC.2.19.19">getClearAccum</A></B>() const 
 <DD><I>Get the clear accum</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.20">setClearDepth</A></B>(double depth)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.20">setClearDepth</A></B>(double <!1><A HREF="Statistics.html#DOC.2.24.29">depth</A>)
 <DD><I>Set the clear depth used in glClearDepth().</I>
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.19.21">getClearDepth</A></B>() const 
@@ -119,7 +119,7 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.19.30">addToDependencyList</A></B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.19.31">getStats</A></B>(osg::Statistics* primStats)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.19.31">getStats</A></B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
 <DD><I>extract stats for current draw list.</I>
 </DL></P>
 
@@ -155,8 +155,6 @@
 <IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>&gt;  <B>_sortCallback</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>&gt;  <B>_drawCallback</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html#DOC.2.14.49">RenderBinPrototypeList</A> <B>s_renderBinPrototypeList</B>
 </DL></P>
 
 <P><DL>
@@ -201,9 +199,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* <B>getDrawCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(osg::Statistics* primStats)
+<IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(osg::Statistics* primStats, int nbin)
+<IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats, int nbin)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>copyLeavesFromRenderGraphListToRenderLeafList</B>()
 </DL></P>
@@ -221,8 +219,6 @@
 <IMG ALT="o" SRC=icon2.gif>struct  <B>SortCallback</B>: public osg::Referenced
 <DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public osg::Referenced
-<DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B>RenderBinPrototypeList</B>
 </DL></P>
 
 </DL>
@@ -330,7 +326,7 @@ glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true
 <DL><DT><DD></DL><P>
 <A NAME="setClearDepth"></A>
 <A NAME="DOC.2.19.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearDepth(double depth)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearDepth(double <!1><A HREF="Statistics.html#DOC.2.24.29">depth</A>)</B></TT>
 <DD>Set the clear depth used in glClearDepth(). Defaults to 1.0
 glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true
 <DL><DT><DD></DL><P>
@@ -380,7 +376,7 @@ glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true
 <DL><DT><DD></DL><P>
 <A NAME="getStats"></A>
 <A NAME="DOC.2.19.31"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getStats(osg::Statistics* primStats)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getStats(<!1><A HREF="Statistics.html">Statistics</A>* primStats)</B></TT>
 <DD>extract stats for current draw list. 
 <DL><DT><DD></DL><P>
 <A NAME="DependencyList"></A>

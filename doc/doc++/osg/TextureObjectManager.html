@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osg::Texture::TextureObjectManager</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">TextureObjectManager</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CTextureObjectManager,MTextureObjectManager.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.193.70.10">_expiryDelay</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Texture.html#DOC.2.193.66">TextureObjectListMap</A> <B><A HREF="#DOC.2.193.70.11">_textureObjectListMap</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="TextureObject.html">TextureObject</A>* <B><A HREF="#DOC.2.193.70.1">generateTextureObject</A></B>(unsigned int contextID, GLenum target)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="TextureObject.html">TextureObject</A>* <B><A HREF="#DOC.2.193.70.2">generateTextureObject</A></B>(unsigned int contextID, GLenum target, GLint numMipmapLevels, GLenum internalFormat, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLsizei depth, GLint border)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="TextureObject.html">TextureObject</A>* <B><A HREF="#DOC.2.193.70.3">reuseTextureObject</A></B>(unsigned int contextID, GLenum target, GLint numMipmapLevels, GLenum internalFormat, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLsizei depth, GLint border)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="TextureObject.html">TextureObject</A>* <B><A HREF="#DOC.2.193.70.4">reuseOrGenerateTextureObject</A></B>(unsigned int contextID, GLenum target, GLint numMipmapLevels, GLenum internalFormat, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLsizei depth, GLint border)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.193.70.5">addTextureObjects</A></B>(<!1><A HREF="Texture.html#DOC.2.193.66">TextureObjectListMap</A>&amp; toblm)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.193.70.6">addTextureObjectsFrom</A></B>(<!1><A HREF="Texture.html">Texture</A>&amp; texture)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.193.70.7">flushTextureObjects</A></B>(unsigned int contextID, double currentTime, double&amp; availableTime)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.193.70.8">setExpiryDelay</A></B>(double expiryDelay)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.193.70.9">getExpiryDelay</A></B>() const 
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Referenced.html">Referenced</A>&amp; <B>operator = </B>(<!1><A HREF="Referenced.html">Referenced</A>&amp;)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setDeleteHandler</B>(<!1><A HREF="DeleteHandler.html">DeleteHandler</A>* handler)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="DeleteHandler.html">DeleteHandler</A>* <B>getDeleteHandler</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref_nodelete</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   int <B>referenceCount</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="generateTextureObject"></A>
+<A NAME="DOC.2.193.70.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="TextureObject.html">TextureObject</A>* generateTextureObject(unsigned int contextID, GLenum target)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="generateTextureObject"></A>
+<A NAME="DOC.2.193.70.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="TextureObject.html">TextureObject</A>* generateTextureObject(unsigned int contextID, GLenum target, GLint numMipmapLevels, GLenum internalFormat, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLsizei depth, GLint border)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reuseTextureObject"></A>
+<A NAME="DOC.2.193.70.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="TextureObject.html">TextureObject</A>* reuseTextureObject(unsigned int contextID, GLenum target, GLint numMipmapLevels, GLenum internalFormat, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLsizei depth, GLint border)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="reuseOrGenerateTextureObject"></A>
+<A NAME="DOC.2.193.70.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="TextureObject.html">TextureObject</A>* reuseOrGenerateTextureObject(unsigned int contextID, GLenum target, GLint numMipmapLevels, GLenum internalFormat, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLsizei <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLsizei depth, GLint border)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addTextureObjects"></A>
+<A NAME="DOC.2.193.70.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addTextureObjects(<!1><A HREF="Texture.html#DOC.2.193.66">TextureObjectListMap</A>&amp; toblm)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="addTextureObjectsFrom"></A>
+<A NAME="DOC.2.193.70.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void addTextureObjectsFrom(<!1><A HREF="Texture.html">Texture</A>&amp; texture)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="flushTextureObjects"></A>
+<A NAME="DOC.2.193.70.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void flushTextureObjects(unsigned int contextID, double currentTime, double&amp; availableTime)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setExpiryDelay"></A>
+<A NAME="DOC.2.193.70.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setExpiryDelay(double expiryDelay)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getExpiryDelay"></A>
+<A NAME="DOC.2.193.70.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getExpiryDelay() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_expiryDelay"></A>
+<A NAME="DOC.2.193.70.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _expiryDelay</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_textureObjectListMap"></A>
+<A NAME="DOC.2.193.70.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Texture.html#DOC.2.193.66">TextureObjectListMap</A> _textureObjectListMap</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

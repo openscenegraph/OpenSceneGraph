@@ -23,64 +23,62 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.2">Group</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.1">Group</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.3">Group</A></B>(const <!1><A HREF="Group.html#DOC.2.78.3">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.2">Group</A></B>(const <!1><A HREF="Group.html#DOC.2.85.2">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.78.4">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Group.html">Group</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.85.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Group.html">Group</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B><A HREF="#DOC.2.78.5">asGroup</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B><A HREF="#DOC.2.85.4">asGroup</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B><A HREF="#DOC.2.78.6">asGroup</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B><A HREF="#DOC.2.85.5">asGroup</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.78.7">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.85.6">traverse</A></B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.8">addChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.7">addChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
 <DD><I>Add Node to Group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.9">removeChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.8">insertChild</A></B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="Node.html">Node</A>* child )
+<DD><I>Insert Node to Group at specific location.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.9">removeChild</A></B>( <!1><A HREF="Node.html">Node</A>* child )
 <DD><I>Remove Node from Group.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.10">removeChild</A></B>(unsigned int pos, unsigned int numChildrenToRemove=1)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.10">removeChild</A></B>(unsigned int pos, unsigned int numChildrenToRemove=1)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.11">replaceChild</A></B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.11">replaceChild</A></B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
 <DD><I>Replace specified Node with another Node.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.78.12">getNumChildren</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.85.12">getNumChildren</A></B>() const 
 <DD><I>return the number of chilren nodes</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.13">setChild</A></B>( unsigned int i, <!1><A HREF="Node.html">Node</A>* node )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.13">setChild</A></B>( unsigned int i, <!1><A HREF="Node.html">Node</A>* node )
 <DD><I>set child node at position i.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.78.14">getChild</A></B>( unsigned int i )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.85.14">getChild</A></B>( unsigned int i )
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.78.15">getChild</A></B>( unsigned int i ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Node.html">Node</A>* <B><A HREF="#DOC.2.85.15">getChild</A></B>( unsigned int i ) const 
 <DD><I>return child node at position i</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.78.16">containsNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.85.16">containsNode</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
 <DD><I>return true if node is contained within Group</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.78.17">getChildIndex</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.85.17">getChildIndex</A></B>( const <!1><A HREF="Node.html">Node</A>* node ) const 
 <DD><I>Get the index number of child, return a value between 0 and _childrensize()-1 if found, if not found then return _childrensize()</I>
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; <B><A HREF="#DOC.2.78.1">ChildList</A></B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Group.html#DOC.2.78.1">ChildList</A> <B><A HREF="#DOC.2.78.20">_children</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="osg.html#DOC.2.84">NodeList</A> <B><A HREF="#DOC.2.85.20">_children</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.78.18">~Group</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.85.18">~Group</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.78.19">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.85.19">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -106,15 +104,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.164.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.164.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.100.18">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.18">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -127,12 +125,6 @@
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenRequiringUpdateTraversal</B>() const 
 <DT>
@@ -154,13 +146,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> nm)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> nm)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> <B>getNodeMask</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
 <DT>
@@ -200,7 +192,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.18">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
@@ -214,9 +206,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> <B>_nodeMask</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 </DL></P>
@@ -239,9 +231,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -257,7 +249,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -297,37 +289,33 @@ Children are reference counted. This allows children to be shared
 with memory management handled automatically via osg::Referenced.</BLOCKQUOTE>
 <DL>
 
-<A NAME="ChildList"></A>
-<A NAME="DOC.2.78.1"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; ChildList</B></TT>
-<DL><DT><DD></DL><P>
 <A NAME="Group"></A>
-<A NAME="DOC.2.78.2"></A>
+<A NAME="DOC.2.85.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Group()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Group"></A>
-<A NAME="DOC.2.78.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Group(const <!1><A HREF="Group.html#DOC.2.78.3">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.85.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Group(const <!1><A HREF="Group.html#DOC.2.85.2">Group</A>&amp;, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.78.4"></A>
+<A NAME="DOC.2.85.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Group.html">Group</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="asGroup"></A>
-<A NAME="DOC.2.78.5"></A>
+<A NAME="DOC.2.85.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Group.html">Group</A>* asGroup()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="asGroup"></A>
-<A NAME="DOC.2.78.6"></A>
+<A NAME="DOC.2.85.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const <!1><A HREF="Group.html">Group</A>* asGroup() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="traverse"></A>
-<A NAME="DOC.2.78.7"></A>
+<A NAME="DOC.2.85.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void traverse(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addChild"></A>
-<A NAME="DOC.2.78.8"></A>
+<A NAME="DOC.2.85.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool addChild( <!1><A HREF="Node.html">Node</A>* child )</B></TT>
 <DD>Add Node to Group.
 If node is not NULL and is not contained in Group then increment its  
@@ -335,8 +323,16 @@ reference count, add it to the child list and dirty the bounding
 sphere to force it to recompute on next getBound() and return true for success.
 Otherwise return false. Scene nodes can't be added as child nodes.
 <DL><DT><DD></DL><P>
+<A NAME="insertChild"></A>
+<A NAME="DOC.2.85.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool insertChild( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="Node.html">Node</A>* child )</B></TT>
+<DD>Insert Node to Group at specific location.
+The new child node is inserted into the child list
+before the node at the specified index.  No nodes
+are removed from the group with this operation. 
+<DL><DT><DD></DL><P>
 <A NAME="removeChild"></A>
-<A NAME="DOC.2.78.9"></A>
+<A NAME="DOC.2.85.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild( <!1><A HREF="Node.html">Node</A>* child )</B></TT>
 <DD>Remove Node from Group.
 If Node is contained in Group then remove it from the child
@@ -346,23 +342,23 @@ return true for success.  If Node is not found then return false
 and do not change the reference count of the Node.
 <DL><DT><DD></DL><P>
 <A NAME="removeChild"></A>
-<A NAME="DOC.2.78.10"></A>
+<A NAME="DOC.2.85.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool removeChild(unsigned int pos, unsigned int numChildrenToRemove=1)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="replaceChild"></A>
-<A NAME="DOC.2.78.11"></A>
+<A NAME="DOC.2.85.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool replaceChild( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )</B></TT>
 <DD>Replace specified Node with another Node.
 Equivalent to setChild(getChildIndex(orignChild),node), 
 see docs for setChild for futher details on implementation.
 <DL><DT><DD></DL><P>
 <A NAME="getNumChildren"></A>
-<A NAME="DOC.2.78.12"></A>
+<A NAME="DOC.2.85.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getNumChildren() const </B></TT>
 <DD>return the number of chilren nodes
 <DL><DT><DD></DL><P>
 <A NAME="setChild"></A>
-<A NAME="DOC.2.78.13"></A>
+<A NAME="DOC.2.85.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool setChild( unsigned int i, <!1><A HREF="Node.html">Node</A>* node )</B></TT>
 <DD>set child node at position i.
 return true if set correctly, false on failure (if node==NULL || i is out of range).
@@ -374,38 +370,38 @@ add newNode.  If newNode is NULL then return false and do
 not remove origNode. Also returns false if newChild is a Scene node.
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
-<A NAME="DOC.2.78.14"></A>
+<A NAME="DOC.2.85.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Node.html">Node</A>* getChild( unsigned int i )</B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="getChild"></A>
-<A NAME="DOC.2.78.15"></A>
+<A NAME="DOC.2.85.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Node.html">Node</A>* getChild( unsigned int i ) const </B></TT>
 <DD>return child node at position i
 <DL><DT><DD></DL><P>
 <A NAME="containsNode"></A>
-<A NAME="DOC.2.78.16"></A>
+<A NAME="DOC.2.85.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool containsNode( const <!1><A HREF="Node.html">Node</A>* node ) const </B></TT>
 <DD>return true if node is contained within Group
 <DL><DT><DD></DL><P>
 <A NAME="getChildIndex"></A>
-<A NAME="DOC.2.78.17"></A>
+<A NAME="DOC.2.85.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getChildIndex( const <!1><A HREF="Node.html">Node</A>* node ) const </B></TT>
 <DD>Get the index number of child, return a value between
 0 and _childrensize()-1 if found, if not found then
 return _childrensize()
 <DL><DT><DD></DL><P>
 <A NAME="~Group"></A>
-<A NAME="DOC.2.78.18"></A>
+<A NAME="DOC.2.85.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Group()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.78.19"></A>
+<A NAME="DOC.2.85.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_children"></A>
-<A NAME="DOC.2.78.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Group.html#DOC.2.78.1">ChildList</A> _children</B></TT>
+<A NAME="DOC.2.85.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="osg.html#DOC.2.84">NodeList</A> _children</B></TT>
 <DL><DT><DD></DL><P></DL>
 <HR>
 <DL><DT><B>Direct child classes:

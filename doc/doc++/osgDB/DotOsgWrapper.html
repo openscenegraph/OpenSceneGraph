@@ -23,56 +23,56 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef bool <B><A HREF="#DOC.2.1.2">(*ReadFunc)</A></B>(osg::Object&amp;, <!1><A HREF="Input.html">osgDB::Input</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef bool <B><A HREF="#DOC.2.2.2">(*ReadFunc)</A></B>(osg::Object&amp;, <!1><A HREF="Input.html">osgDB::Input</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef bool <B><A HREF="#DOC.2.1.3">(*WriteFunc)</A></B>(const osg::Object&amp;, <!1><A HREF="Output.html">osgDB::Output</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef bool <B><A HREF="#DOC.2.2.3">(*WriteFunc)</A></B>(const osg::Object&amp;, <!1><A HREF="Output.html">osgDB::Output</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.5">DotOsgWrapper</A></B>(osg::Object* proto, const std::string&amp; name, const std::string&amp; associates, ReadFunc readFunc, WriteFunc writeFunc, <!1><A HREF="DotOsgWrapper.html#DOC.2.1.4">ReadWriteMode</A> readWriteMode=<!1><A HREF="DotOsgWrapper.html#DOC.2.1.4.1">READ_AND_WRITE</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.5">DotOsgWrapper</A></B>(osg::Object* proto, const std::string&amp; name, const std::string&amp; associates, ReadFunc readFunc, WriteFunc writeFunc, <!1><A HREF="DotOsgWrapper.html#DOC.2.2.4">ReadWriteMode</A> readWriteMode=<!1><A HREF="DotOsgWrapper.html#DOC.2.2.4.1">READ_AND_WRITE</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Object* <B><A HREF="#DOC.2.1.6">getPrototype</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const osg::Object* <B><A HREF="#DOC.2.2.6">getPrototype</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.1.7">getName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.2.7">getName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="DotOsgWrapper.html#DOC.2.1.1">Associates</A>&amp; <B><A HREF="#DOC.2.1.8">getAssociates</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="DotOsgWrapper.html#DOC.2.2.1">Associates</A>&amp; <B><A HREF="#DOC.2.2.8">getAssociates</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ReadFunc <B><A HREF="#DOC.2.1.9">getReadFunc</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   ReadFunc <B><A HREF="#DOC.2.2.9">getReadFunc</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   WriteFunc <B><A HREF="#DOC.2.1.10">getWriteFunc</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   WriteFunc <B><A HREF="#DOC.2.2.10">getWriteFunc</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="DotOsgWrapper.html#DOC.2.1.4">ReadWriteMode</A> <B><A HREF="#DOC.2.1.11">getReadWriteMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="DotOsgWrapper.html#DOC.2.2.4">ReadWriteMode</A> <B><A HREF="#DOC.2.2.11">getReadWriteMode</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;std::string&gt; <B><A HREF="#DOC.2.1.1">Associates</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt;std::string&gt; <B><A HREF="#DOC.2.2.1">Associates</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.1.4">ReadWriteMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.2.4">ReadWriteMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Object&gt;  <B><A HREF="#DOC.2.1.15">_prototype</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osg::Object&gt;  <B><A HREF="#DOC.2.2.15">_prototype</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.1.16">_name</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.2.16">_name</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DotOsgWrapper.html#DOC.2.1.1">Associates</A> <B><A HREF="#DOC.2.1.17">_associates</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DotOsgWrapper.html#DOC.2.2.1">Associates</A> <B><A HREF="#DOC.2.2.17">_associates</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReadFunc <B><A HREF="#DOC.2.1.18">_readFunc</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>ReadFunc <B><A HREF="#DOC.2.2.18">_readFunc</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>WriteFunc <B><A HREF="#DOC.2.1.19">_writeFunc</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>WriteFunc <B><A HREF="#DOC.2.2.19">_writeFunc</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DotOsgWrapper.html#DOC.2.1.4">ReadWriteMode</A> <B><A HREF="#DOC.2.1.20">_readWriteMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DotOsgWrapper.html#DOC.2.2.4">ReadWriteMode</A> <B><A HREF="#DOC.2.2.20">_readWriteMode</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.12">DotOsgWrapper</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.12">DotOsgWrapper</A></B>()
 <DD><I>protected to prevent inappropriate creation of wrappers</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.13">DotOsgWrapper</A></B>(<!1><A HREF="DotOsgWrapper.html#DOC.2.1.13">DotOsgWrapper</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.2.13">DotOsgWrapper</A></B>(<!1><A HREF="DotOsgWrapper.html#DOC.2.2.13">DotOsgWrapper</A>&amp;)
 <DD><I>protected to prevent inappropriate creation of wrappers</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.1.14">~DotOsgWrapper</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.2.14">~DotOsgWrapper</A></B>()
 <DD><I>protected to prevent wrapper being created on stack</I>
 </DL></P>
 
@@ -86,97 +86,97 @@ the osg file format. </BLOCKQUOTE>
 <DL>
 
 <A NAME="Associates"></A>
-<A NAME="DOC.2.1.1"></A>
+<A NAME="DOC.2.2.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt;std::string&gt; Associates</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="(*ReadFunc)"></A>
-<A NAME="DOC.2.1.2"></A>
+<A NAME="DOC.2.2.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef bool (*ReadFunc)(osg::Object&amp;, <!1><A HREF="Input.html">osgDB::Input</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="(*WriteFunc)"></A>
-<A NAME="DOC.2.1.3"></A>
+<A NAME="DOC.2.2.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef bool (*WriteFunc)(const osg::Object&amp;, <!1><A HREF="Output.html">osgDB::Output</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ReadWriteMode"></A>
-<A NAME="DOC.2.1.4"></A>
+<A NAME="DOC.2.2.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ReadWriteMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="READ_AND_WRITE"></A>
-<A NAME="DOC.2.1.4.1"></A>
+<A NAME="DOC.2.2.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> READ_AND_WRITE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="READ_ONLY"></A>
-<A NAME="DOC.2.1.4.2"></A>
+<A NAME="DOC.2.2.4.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> READ_ONLY</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="DotOsgWrapper"></A>
-<A NAME="DOC.2.1.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DotOsgWrapper(osg::Object* proto, const std::string&amp; name, const std::string&amp; associates, ReadFunc readFunc, WriteFunc writeFunc, <!1><A HREF="DotOsgWrapper.html#DOC.2.1.4">ReadWriteMode</A> readWriteMode=<!1><A HREF="DotOsgWrapper.html#DOC.2.1.4.1">READ_AND_WRITE</A>)</B></TT>
+<A NAME="DOC.2.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DotOsgWrapper(osg::Object* proto, const std::string&amp; name, const std::string&amp; associates, ReadFunc readFunc, WriteFunc writeFunc, <!1><A HREF="DotOsgWrapper.html#DOC.2.2.4">ReadWriteMode</A> readWriteMode=<!1><A HREF="DotOsgWrapper.html#DOC.2.2.4.1">READ_AND_WRITE</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPrototype"></A>
-<A NAME="DOC.2.1.6"></A>
+<A NAME="DOC.2.2.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const osg::Object* getPrototype() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getName"></A>
-<A NAME="DOC.2.1.7"></A>
+<A NAME="DOC.2.2.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const std::string&amp; getName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getAssociates"></A>
-<A NAME="DOC.2.1.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="DotOsgWrapper.html#DOC.2.1.1">Associates</A>&amp; getAssociates() const </B></TT>
+<A NAME="DOC.2.2.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="DotOsgWrapper.html#DOC.2.2.1">Associates</A>&amp; getAssociates() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getReadFunc"></A>
-<A NAME="DOC.2.1.9"></A>
+<A NAME="DOC.2.2.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   ReadFunc getReadFunc() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getWriteFunc"></A>
-<A NAME="DOC.2.1.10"></A>
+<A NAME="DOC.2.2.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   WriteFunc getWriteFunc() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getReadWriteMode"></A>
-<A NAME="DOC.2.1.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="DotOsgWrapper.html#DOC.2.1.4">ReadWriteMode</A> getReadWriteMode() const </B></TT>
+<A NAME="DOC.2.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="DotOsgWrapper.html#DOC.2.2.4">ReadWriteMode</A> getReadWriteMode() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DotOsgWrapper"></A>
-<A NAME="DOC.2.1.12"></A>
+<A NAME="DOC.2.2.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DotOsgWrapper()</B></TT>
 <DD>protected to prevent inappropriate creation of wrappers
 <DL><DT><DD></DL><P>
 <A NAME="DotOsgWrapper"></A>
-<A NAME="DOC.2.1.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DotOsgWrapper(<!1><A HREF="DotOsgWrapper.html#DOC.2.1.13">DotOsgWrapper</A>&amp;)</B></TT>
+<A NAME="DOC.2.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DotOsgWrapper(<!1><A HREF="DotOsgWrapper.html#DOC.2.2.13">DotOsgWrapper</A>&amp;)</B></TT>
 <DD>protected to prevent inappropriate creation of wrappers
 <DL><DT><DD></DL><P>
 <A NAME="~DotOsgWrapper"></A>
-<A NAME="DOC.2.1.14"></A>
+<A NAME="DOC.2.2.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DotOsgWrapper()</B></TT>
 <DD>protected to prevent wrapper being created on stack
 <DL><DT><DD></DL><P>
 <A NAME="_prototype"></A>
-<A NAME="DOC.2.1.15"></A>
+<A NAME="DOC.2.2.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Object&gt;  _prototype</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_name"></A>
-<A NAME="DOC.2.1.16"></A>
+<A NAME="DOC.2.2.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _name</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_associates"></A>
-<A NAME="DOC.2.1.17"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DotOsgWrapper.html#DOC.2.1.1">Associates</A> _associates</B></TT>
+<A NAME="DOC.2.2.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DotOsgWrapper.html#DOC.2.2.1">Associates</A> _associates</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_readFunc"></A>
-<A NAME="DOC.2.1.18"></A>
+<A NAME="DOC.2.2.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>ReadFunc _readFunc</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_writeFunc"></A>
-<A NAME="DOC.2.1.19"></A>
+<A NAME="DOC.2.2.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>WriteFunc _writeFunc</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_readWriteMode"></A>
-<A NAME="DOC.2.1.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DotOsgWrapper.html#DOC.2.1.4">ReadWriteMode</A> _readWriteMode</B></TT>
+<A NAME="DOC.2.2.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DotOsgWrapper.html#DOC.2.2.4">ReadWriteMode</A> _readWriteMode</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -23,31 +23,33 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.1">Input</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.28.1">Input</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.27.2">~Input</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.28.2">~Input</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.3">readObjectOfType</A></B>(const osg::Object&amp; compObj)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.28.3">readObjectOfType</A></B>(const osg::Object&amp; compObj)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.4">readObject</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.28.4">readObjectOfType</A></B>(const <!1><A HREF="basic_type_wrapper.html">basic_type_wrapper</A> &amp;btw)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Image* <B><A HREF="#DOC.2.27.5">readImage</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.28.5">readObject</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Drawable* <B><A HREF="#DOC.2.27.6">readDrawable</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Image* <B><A HREF="#DOC.2.28.6">readImage</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::StateAttribute* <B><A HREF="#DOC.2.27.7">readStateAttribute</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Drawable* <B><A HREF="#DOC.2.28.7">readDrawable</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.27.8">readNode</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::StateAttribute* <B><A HREF="#DOC.2.28.8">readStateAttribute</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.9">readObject</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.28.9">readNode</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Image* <B><A HREF="#DOC.2.27.10">readImage</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.28.10">readObject</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.27.11">readNode</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Image* <B><A HREF="#DOC.2.28.11">readImage</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.27.12">getObjectForUniqueID</A></B>(const std::string&amp; uniqueID)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Node* <B><A HREF="#DOC.2.28.12">readNode</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.27.13">regisiterUniqueIDForObject</A></B>(const std::string&amp; uniqueID, osg::Object* obj)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Object* <B><A HREF="#DOC.2.28.13">getObjectForUniqueID</A></B>(const std::string&amp; uniqueID)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.28.14">regisiterUniqueIDForObject</A></B>(const std::string&amp; uniqueID, osg::Object* obj)
 </DL></P>
 
 </DL>
@@ -65,7 +67,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="FieldReader.html">FieldReader</A>&amp; <B>getFieldReader</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>insert</B>(int pos, <!1><A HREF="Field.html">Field</A>* <!1><A HREF="FieldReaderIterator.html#DOC.2.5.13">field</A>)
+<IMG ALT="o" SRC=icon2.gif>void <B>insert</B>(int pos, <!1><A HREF="Field.html">Field</A>* <!1><A HREF="FieldReaderIterator.html#DOC.2.6.13">field</A>)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>insert</B>(int pos, const char* str)
 <DT>
@@ -128,55 +130,59 @@
 <DL>
 
 <A NAME="Input"></A>
-<A NAME="DOC.2.27.1"></A>
+<A NAME="DOC.2.28.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Input()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Input"></A>
-<A NAME="DOC.2.27.2"></A>
+<A NAME="DOC.2.28.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Input()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObjectOfType"></A>
-<A NAME="DOC.2.27.3"></A>
+<A NAME="DOC.2.28.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObjectOfType(const osg::Object&amp; compObj)</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="readObjectOfType"></A>
+<A NAME="DOC.2.28.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObjectOfType(const <!1><A HREF="basic_type_wrapper.html">basic_type_wrapper</A> &amp;btw)</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.27.4"></A>
+<A NAME="DOC.2.28.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObject()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.27.5"></A>
+<A NAME="DOC.2.28.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Image* readImage()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readDrawable"></A>
-<A NAME="DOC.2.27.6"></A>
+<A NAME="DOC.2.28.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Drawable* readDrawable()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readStateAttribute"></A>
-<A NAME="DOC.2.27.7"></A>
+<A NAME="DOC.2.28.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::StateAttribute* readStateAttribute()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.27.8"></A>
+<A NAME="DOC.2.28.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* readNode()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readObject"></A>
-<A NAME="DOC.2.27.9"></A>
+<A NAME="DOC.2.28.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* readObject(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readImage"></A>
-<A NAME="DOC.2.27.10"></A>
+<A NAME="DOC.2.28.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Image* readImage(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="readNode"></A>
-<A NAME="DOC.2.27.11"></A>
+<A NAME="DOC.2.28.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Node* readNode(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getObjectForUniqueID"></A>
-<A NAME="DOC.2.27.12"></A>
+<A NAME="DOC.2.28.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Object* getObjectForUniqueID(const std::string&amp; uniqueID)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="regisiterUniqueIDForObject"></A>
-<A NAME="DOC.2.27.13"></A>
+<A NAME="DOC.2.28.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void regisiterUniqueIDForObject(const std::string&amp; uniqueID, osg::Object* obj)</B></TT>
 <DL><DT><DD></DL><P></DL>
 

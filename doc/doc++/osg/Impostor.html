@@ -23,52 +23,52 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.82.1">Impostor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.89.1">Impostor</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.82.2">Impostor</A></B>(const <!1><A HREF="Impostor.html#DOC.2.82.2">Impostor</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.89.2">Impostor</A></B>(const <!1><A HREF="Impostor.html#DOC.2.89.2">Impostor</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.82.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Impostor.html">Impostor</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.89.3">META_Node</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Impostor.html">Impostor</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.82.5">setImpostorThreshold</A></B>(float <!1><A HREF="Plane.html#DOC.2.119.28">distance</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.89.5">setImpostorThreshold</A></B>(float <!1><A HREF="Plane.html#DOC.2.127.28">distance</A>)
 <DD><I>Set the Impostor threshold distance.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.82.6">setImpostorThresholdToBound</A></B>(float ratio=1.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.89.6">setImpostorThresholdToBound</A></B>(float ratio=1.0f)
 <DD><I>Set the Impostor threshold distance relative to the node's bounding sphere's radius</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.82.7">getImpostorThreshold</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.89.7">getImpostorThreshold</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.82.8">getImpostorThreshold2</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.89.8">getImpostorThreshold2</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* <B><A HREF="#DOC.2.82.9">findBestImpostorSprite</A></B>(unsigned int contextID, const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; currLocalEyePoint) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* <B><A HREF="#DOC.2.89.9">findBestImpostorSprite</A></B>(unsigned int contextID, const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; currLocalEyePoint) const 
 <DD><I>Find the ImposterSprite which fits the current eye point best</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.82.10">addImpostorSprite</A></B>(unsigned int contextID, <!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* is)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.89.10">addImpostorSprite</A></B>(unsigned int contextID, <!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* is)
 <DD><I>Add an ImpostorSprite to the Impostor</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Impostor.html#DOC.2.82.4">ImpostorSpriteList</A>&amp; <B><A HREF="#DOC.2.82.11">getImpostorSpriteList</A></B>(unsigned int contexID)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Impostor.html#DOC.2.89.4">ImpostorSpriteList</A>&amp; <B><A HREF="#DOC.2.89.11">getImpostorSpriteList</A></B>(unsigned int contexID)
 <DD><I>Get the list of ImpostorSprites attached to this Impostor</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Impostor.html#DOC.2.82.4">ImpostorSpriteList</A>&amp; <B><A HREF="#DOC.2.82.12">getImpostorSpriteList</A></B>(unsigned int contexID) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Impostor.html#DOC.2.89.4">ImpostorSpriteList</A>&amp; <B><A HREF="#DOC.2.89.12">getImpostorSpriteList</A></B>(unsigned int contexID) const 
 <DD><I>Get a const list of ImpostorSprites attached to this const Impostor</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&gt; &gt; <B><A HREF="#DOC.2.82.4">ImpostorSpriteList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&gt; &gt; <B><A HREF="#DOC.2.89.4">ImpostorSpriteList</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="buffered_object.html">buffered_object</A>&lt;<!1><A HREF="Impostor.html#DOC.2.82.4">ImpostorSpriteList</A>&gt;  <B><A HREF="#DOC.2.82.15">_impostorSpriteListBuffer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="buffered_object.html">buffered_object</A>&lt;<!1><A HREF="Impostor.html#DOC.2.89.4">ImpostorSpriteList</A>&gt;  <B><A HREF="#DOC.2.89.15">_impostorSpriteListBuffer</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.82.16">_impostorThreshold</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.89.16">_impostorThreshold</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.82.13">~Impostor</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.89.13">~Impostor</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.82.14">computeBound</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.89.14">computeBound</A></B>() const 
 </DL></P>
 
 </DL>
@@ -84,11 +84,11 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>removeChild</B>(<!1><A HREF="Node.html">Node</A>* child)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCenterMode</B>(<!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> mode)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCenterMode</B>(<!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> mode)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> <B>getCenterMode</B>() const 
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> <B>getCenterMode</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setCenter</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setCenter</B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B>getCenter</B>() const 
 <DT>
@@ -100,27 +100,27 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumRanges</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A>&amp; <B>getRangeList</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; <B>getRangeList</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A>&amp; <B>getRangeList</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A>&amp; <B>getRangeList</B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
 <IMG ALT="o" SRC=icon2.gif>typedef  std::pair&lt;float,float&gt; <B>MinMaxPair</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.85.8">MinMaxPair</A>&gt; <B>RangeList</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="LOD.html#DOC.2.92.8">MinMaxPair</A>&gt; <B>RangeList</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>enum  <B>CenterMode</B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.85.10">CenterMode</A> <B>_centerMode</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.92.10">CenterMode</A> <B>_centerMode</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="Vec3.html">Vec3</A> <B>_userDefinedCenter</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.85.9">RangeList</A> <B>_rangeList</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="LOD.html#DOC.2.92.9">RangeList</A> <B>_rangeList</B>
 </DL></P>
 
 </DL>
@@ -131,6 +131,8 @@
 <IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Group.html">Group</A>* <B>asGroup</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>insertChild</B>( unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="Node.html">Node</A>* child )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>replaceChild</B>( <!1><A HREF="Node.html">Node</A>* origChild, <!1><A HREF="Node.html">Node</A>* newChild )
 <DT>
@@ -148,13 +150,8 @@
 </DL></P>
 
 <P><DL>
-<DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt;<!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Node.html">Node</A>&gt; &gt; <B>ChildList</B>
-</DL></P>
-
-<P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Group.html#DOC.2.78.1">ChildList</A> <B>_children</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="osg.html#DOC.2.84">NodeList</A> <B>_children</B>
 </DL></P>
 
 </DL>
@@ -180,15 +177,15 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>ascend</B>(<!1><A HREF="NodeVisitor.html">NodeVisitor</A>&amp; nv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.164.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const std::string&amp; <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.164.1.3">name</A> )
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setName</B>( const char* <!1><A HREF="Test.html#DOC.180.1.3">name</A> )
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getName</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.100.18">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.18">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Group.html">Group</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -201,12 +198,6 @@
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getUpdateCallback</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="NodeCallback.html">NodeCallback</A>* nc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="NodeCallback.html">NodeCallback</A>* <B>getAppCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   unsigned int <B>getNumChildrenRequiringUpdateTraversal</B>() const 
 <DT>
@@ -228,13 +219,13 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>containsOccluderNodes</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> nm)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setNodeMask</B>(<!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> nm)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> <B>getNodeMask</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>getNodeMask</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A>&amp; <B>getDescriptions</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A>&amp; <B>getDescriptions</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   const std::string&amp; <B>getDescription</B>(unsigned int i) const 
 <DT>
@@ -274,7 +265,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>std::string <B>_name</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.18">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.18">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="NodeCallback.html">NodeCallback</A>&gt;  <B>_updateCallback</B>
 <DT>
@@ -288,9 +279,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>unsigned int <B>_numChildrenWithOccluderNodes</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.40">NodeMask</A> <B>_nodeMask</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.37">NodeMask</A> <B>_nodeMask</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.100.43">DescriptionList</A> <B>_descriptions</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Node.html#DOC.2.107.40">DescriptionList</A> <B>_descriptions</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 </DL></P>
@@ -313,9 +304,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -331,7 +322,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -406,76 +397,76 @@ geometry.</BLOCKQUOTE>
 <DL>
 
 <A NAME="Impostor"></A>
-<A NAME="DOC.2.82.1"></A>
+<A NAME="DOC.2.89.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Impostor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Impostor"></A>
-<A NAME="DOC.2.82.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Impostor(const <!1><A HREF="Impostor.html#DOC.2.82.2">Impostor</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.89.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Impostor(const <!1><A HREF="Impostor.html#DOC.2.89.2">Impostor</A>&amp; es, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="META_Node"></A>
-<A NAME="DOC.2.82.3"></A>
+<A NAME="DOC.2.89.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Node(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Impostor.html">Impostor</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="ImpostorSpriteList"></A>
-<A NAME="DOC.2.82.4"></A>
+<A NAME="DOC.2.89.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; <!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>&gt; &gt; ImpostorSpriteList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setImpostorThreshold"></A>
-<A NAME="DOC.2.82.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setImpostorThreshold(float <!1><A HREF="Plane.html#DOC.2.119.28">distance</A>)</B></TT>
+<A NAME="DOC.2.89.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setImpostorThreshold(float <!1><A HREF="Plane.html#DOC.2.127.28">distance</A>)</B></TT>
 <DD>Set the Impostor threshold distance.
 For eye points further than this threshold the Imposter is used if appropriate,
 otherwise the LOD children as chosen as per a standard LOD node.
 <DL><DT><DD></DL><P>
 <A NAME="setImpostorThresholdToBound"></A>
-<A NAME="DOC.2.82.6"></A>
+<A NAME="DOC.2.89.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setImpostorThresholdToBound(float ratio=1.0f)</B></TT>
 <DD>Set the Impostor threshold distance relative to the node's bounding
 sphere's radius
 <DL><DT><DD></DL><P>
 <A NAME="getImpostorThreshold"></A>
-<A NAME="DOC.2.82.7"></A>
+<A NAME="DOC.2.89.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getImpostorThreshold() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getImpostorThreshold2"></A>
-<A NAME="DOC.2.82.8"></A>
+<A NAME="DOC.2.89.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getImpostorThreshold2() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="findBestImpostorSprite"></A>
-<A NAME="DOC.2.82.9"></A>
+<A NAME="DOC.2.89.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* findBestImpostorSprite(unsigned int contextID, const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; currLocalEyePoint) const </B></TT>
 <DD>Find the ImposterSprite which fits the current eye point best
 <DL><DT><DD></DL><P>
 <A NAME="addImpostorSprite"></A>
-<A NAME="DOC.2.82.10"></A>
+<A NAME="DOC.2.89.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addImpostorSprite(unsigned int contextID, <!1><A HREF="ImpostorSprite.html">ImpostorSprite</A>* is)</B></TT>
 <DD>Add an ImpostorSprite to the Impostor
 <DL><DT><DD></DL><P>
 <A NAME="getImpostorSpriteList"></A>
-<A NAME="DOC.2.82.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Impostor.html#DOC.2.82.4">ImpostorSpriteList</A>&amp; getImpostorSpriteList(unsigned int contexID)</B></TT>
+<A NAME="DOC.2.89.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Impostor.html#DOC.2.89.4">ImpostorSpriteList</A>&amp; getImpostorSpriteList(unsigned int contexID)</B></TT>
 <DD>Get the list of ImpostorSprites attached to this Impostor
 <DL><DT><DD></DL><P>
 <A NAME="getImpostorSpriteList"></A>
-<A NAME="DOC.2.82.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Impostor.html#DOC.2.82.4">ImpostorSpriteList</A>&amp; getImpostorSpriteList(unsigned int contexID) const </B></TT>
+<A NAME="DOC.2.89.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Impostor.html#DOC.2.89.4">ImpostorSpriteList</A>&amp; getImpostorSpriteList(unsigned int contexID) const </B></TT>
 <DD>Get a const list of ImpostorSprites attached to this const Impostor
 <DL><DT><DD></DL><P>
 <A NAME="~Impostor"></A>
-<A NAME="DOC.2.82.13"></A>
+<A NAME="DOC.2.89.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Impostor()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeBound"></A>
-<A NAME="DOC.2.82.14"></A>
+<A NAME="DOC.2.89.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool computeBound() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_impostorSpriteListBuffer"></A>
-<A NAME="DOC.2.82.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="buffered_object.html">buffered_object</A>&lt;<!1><A HREF="Impostor.html#DOC.2.82.4">ImpostorSpriteList</A>&gt;  _impostorSpriteListBuffer</B></TT>
+<A NAME="DOC.2.89.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="buffered_object.html">buffered_object</A>&lt;<!1><A HREF="Impostor.html#DOC.2.89.4">ImpostorSpriteList</A>&gt;  _impostorSpriteListBuffer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_impostorThreshold"></A>
-<A NAME="DOC.2.82.16"></A>
+<A NAME="DOC.2.89.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _impostorThreshold</B></TT>
 <DL><DT><DD></DL><P></DL>
 

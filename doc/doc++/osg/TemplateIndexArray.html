@@ -7,7 +7,7 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>template&lt;typename <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <A HREF="#DOC.DOCU">osg::TemplateIndexArray</A></H2></H2><HR>
+<H2>template&lt;typename <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>, Array::Type ARRAYTYPE, int DataSize, int DataType&gt; class  <A HREF="#DOC.DOCU">osg::TemplateIndexArray</A></H2></H2><HR>
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=185>
@@ -28,9 +28,9 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.3">TemplateIndexArray</A></B>(unsigned int no)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.4">TemplateIndexArray</A></B>(unsigned int no, <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.4">TemplateIndexArray</A></B>(unsigned int no, <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class InputIterator&gt;  <B><A HREF="#DOC.2.10.5">TemplateIndexArray</A></B>(InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>template&lt;class InputIterator&gt;  <B><A HREF="#DOC.2.10.5">TemplateIndexArray</A></B>(InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.4">last</A>)
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.10.6">cloneType</A></B>() const 
 <DT>
@@ -40,20 +40,22 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.9">accept</A></B>(<!1><A HREF="ConstArrayVisitor.html">ConstArrayVisitor</A>&amp; av) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.10">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp; vv)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.10">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp; vv)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.11">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp; vv) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.11">accept</A></B>(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp; vv) const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const GLvoid* <B><A HREF="#DOC.2.10.12">getDataPointer</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.10.13">getNumElements</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.10.13">getTotalDataSize</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.10.14">index</A></B>(unsigned int pos) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.10.14">getNumElements</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.10.15">index</A></B>(unsigned int pos) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.10.15">~TemplateIndexArray</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.10.16">~TemplateIndexArray</A></B>()
 </DL></P>
 
 </DL>
@@ -99,9 +101,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -117,7 +119,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -168,11 +170,11 @@
 <DL><DT><DD></DL><P>
 <A NAME="TemplateIndexArray"></A>
 <A NAME="DOC.2.10.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TemplateIndexArray(unsigned int no, <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>* <!1><A HREF="Vec4.html#DOC.2.210.8">ptr</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> TemplateIndexArray(unsigned int no, <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>* <!1><A HREF="Vec4.html#DOC.2.217.8">ptr</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="TemplateIndexArray"></A>
 <A NAME="DOC.2.10.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class InputIterator&gt;  TemplateIndexArray(InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.3">first</A>, InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.84.4">last</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>template&lt;class InputIterator&gt;  TemplateIndexArray(InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.3">first</A>, InputIterator <!1><A HREF="ImpostorSpriteManager.html#DOC.2.91.4">last</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
 <A NAME="DOC.2.10.6"></A>
@@ -192,26 +194,30 @@
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
 <A NAME="DOC.2.10.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp; vv)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ValueVisitor.html">ValueVisitor</A>&amp; vv)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="accept"></A>
 <A NAME="DOC.2.10.11"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.14">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp; vv) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void accept(unsigned int <!1><A HREF="TemplateIndexArray.html#DOC.2.10.15">index</A>, <!1><A HREF="ConstValueVisitor.html">ConstValueVisitor</A>&amp; vv) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDataPointer"></A>
 <A NAME="DOC.2.10.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const GLvoid* getDataPointer() const </B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="getNumElements"></A>
+<A NAME="getTotalDataSize"></A>
 <A NAME="DOC.2.10.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getTotalDataSize() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getNumElements"></A>
+<A NAME="DOC.2.10.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getNumElements() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="index"></A>
-<A NAME="DOC.2.10.14"></A>
+<A NAME="DOC.2.10.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int index(unsigned int pos) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~TemplateIndexArray"></A>
-<A NAME="DOC.2.10.15"></A>
+<A NAME="DOC.2.10.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~TemplateIndexArray()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -22,58 +22,58 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.2.45.1">GlyphTexture</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.3.45.1">GlyphTexture</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.6.2.45.2">compare</A></B>(const osg::StateAttribute&amp; rhs) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.6.3.45.2">compare</A></B>(const osg::StateAttribute&amp; rhs) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.45.3">setStateSet</A></B>(osg::StateSet* stateset)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.45.3">setStateSet</A></B>(osg::StateSet* stateset)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.6.2.45.4">getStateSet</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.6.3.45.4">getStateSet</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::StateSet* <B><A HREF="#DOC.6.2.45.5">getStateSet</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osg::StateSet* <B><A HREF="#DOC.6.3.45.5">getStateSet</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.45.6">setGlyphImageMargin</A></B>(unsigned int margin)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.45.6">setGlyphImageMargin</A></B>(unsigned int margin)
 <DD><I>Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.2.45.7">getGlyphImageMargin</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.6.3.45.7">getGlyphImageMargin</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.2.45.8">getSpaceForGlyph</A></B>(<!1><A HREF="Glyph.html">Glyph</A>* glyph, int&amp; posX, int&amp; posY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.6.3.45.8">getSpaceForGlyph</A></B>(<!1><A HREF="Glyph.html">Glyph</A>* glyph, int&amp; posX, int&amp; posY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.45.9">addGlyph</A></B>(<!1><A HREF="Glyph.html">Glyph</A>* glyph, int posX, int posY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.45.9">addGlyph</A></B>(<!1><A HREF="Glyph.html">Glyph</A>* glyph, int posX, int posY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.45.10">apply</A></B>(osg::State&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.3.45.10">apply</A></B>(osg::State&amp; state) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.6.2.45.12">_stateset</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::StateSet* <B><A HREF="#DOC.6.3.45.12">_stateset</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.45.13">_margin</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.3.45.13">_margin</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.45.14">_usedY</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.3.45.14">_usedY</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.45.15">_partUsedX</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.3.45.15">_partUsedX</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.2.45.16">_partUsedY</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.6.3.45.16">_partUsedY</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GlyphTexture.html#DOC.6.2.45.17">GlyphRefList</A> <B><A HREF="#DOC.6.2.45.20">_glyphs</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GlyphTexture.html#DOC.6.3.45.17">GlyphRefList</A> <B><A HREF="#DOC.6.3.45.20">_glyphs</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="GlyphTexture.html#DOC.6.2.45.19">GlyphBuffer</A> <B><A HREF="#DOC.6.2.45.21">_glyphsToSubload</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="GlyphTexture.html#DOC.6.3.45.19">GlyphBuffer</A> <B><A HREF="#DOC.6.3.45.21">_glyphsToSubload</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.2.45.11">~GlyphTexture</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.3.45.11">~GlyphTexture</A></B>()
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; <B><A HREF="#DOC.6.2.45.17">GlyphRefList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; <B><A HREF="#DOC.6.3.45.17">GlyphRefList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; const <!1><A HREF="Glyph.html">Glyph</A>* &gt; <B><A HREF="#DOC.6.2.45.18">GlyphPtrList</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; const <!1><A HREF="Glyph.html">Glyph</A>* &gt; <B><A HREF="#DOC.6.3.45.18">GlyphPtrList</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  osg::buffered_object&lt; <!1><A HREF="GlyphTexture.html#DOC.6.2.45.18">GlyphPtrList</A> &gt; <B><A HREF="#DOC.6.2.45.19">GlyphBuffer</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  osg::buffered_object&lt; <!1><A HREF="GlyphTexture.html#DOC.6.3.45.18">GlyphPtrList</A> &gt; <B><A HREF="#DOC.6.3.45.19">GlyphBuffer</A></B>
 </DL></P>
 
 </DL>
@@ -84,90 +84,90 @@
 <DL>
 
 <A NAME="GlyphTexture"></A>
-<A NAME="DOC.6.2.45.1"></A>
+<A NAME="DOC.6.3.45.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GlyphTexture()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.6.2.45.2"></A>
+<A NAME="DOC.6.3.45.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const osg::StateAttribute&amp; rhs) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setStateSet"></A>
-<A NAME="DOC.6.2.45.3"></A>
+<A NAME="DOC.6.3.45.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStateSet(osg::StateSet* stateset)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStateSet"></A>
-<A NAME="DOC.6.2.45.4"></A>
+<A NAME="DOC.6.3.45.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::StateSet* getStateSet()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getStateSet"></A>
-<A NAME="DOC.6.2.45.5"></A>
+<A NAME="DOC.6.3.45.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osg::StateSet* getStateSet() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setGlyphImageMargin"></A>
-<A NAME="DOC.6.2.45.6"></A>
+<A NAME="DOC.6.3.45.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setGlyphImageMargin(unsigned int margin)</B></TT>
 <DD>Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other
 <DL><DT><DD></DL><P>
 <A NAME="getGlyphImageMargin"></A>
-<A NAME="DOC.6.2.45.7"></A>
+<A NAME="DOC.6.3.45.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getGlyphImageMargin() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSpaceForGlyph"></A>
-<A NAME="DOC.6.2.45.8"></A>
+<A NAME="DOC.6.3.45.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getSpaceForGlyph(<!1><A HREF="Glyph.html">Glyph</A>* glyph, int&amp; posX, int&amp; posY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addGlyph"></A>
-<A NAME="DOC.6.2.45.9"></A>
+<A NAME="DOC.6.3.45.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addGlyph(<!1><A HREF="Glyph.html">Glyph</A>* glyph, int posX, int posY)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.6.2.45.10"></A>
+<A NAME="DOC.6.3.45.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(osg::State&amp; state) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~GlyphTexture"></A>
-<A NAME="DOC.6.2.45.11"></A>
+<A NAME="DOC.6.3.45.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~GlyphTexture()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_stateset"></A>
-<A NAME="DOC.6.2.45.12"></A>
+<A NAME="DOC.6.3.45.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::StateSet* _stateset</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_margin"></A>
-<A NAME="DOC.6.2.45.13"></A>
+<A NAME="DOC.6.3.45.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _margin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_usedY"></A>
-<A NAME="DOC.6.2.45.14"></A>
+<A NAME="DOC.6.3.45.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _usedY</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_partUsedX"></A>
-<A NAME="DOC.6.2.45.15"></A>
+<A NAME="DOC.6.3.45.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _partUsedX</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_partUsedY"></A>
-<A NAME="DOC.6.2.45.16"></A>
+<A NAME="DOC.6.3.45.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _partUsedY</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GlyphRefList"></A>
-<A NAME="DOC.6.2.45.17"></A>
+<A NAME="DOC.6.3.45.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; GlyphRefList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GlyphPtrList"></A>
-<A NAME="DOC.6.2.45.18"></A>
+<A NAME="DOC.6.3.45.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; const <!1><A HREF="Glyph.html">Glyph</A>* &gt; GlyphPtrList</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="GlyphBuffer"></A>
-<A NAME="DOC.6.2.45.19"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  osg::buffered_object&lt; <!1><A HREF="GlyphTexture.html#DOC.6.2.45.18">GlyphPtrList</A> &gt; GlyphBuffer</B></TT>
+<A NAME="DOC.6.3.45.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  osg::buffered_object&lt; <!1><A HREF="GlyphTexture.html#DOC.6.3.45.18">GlyphPtrList</A> &gt; GlyphBuffer</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_glyphs"></A>
-<A NAME="DOC.6.2.45.20"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GlyphTexture.html#DOC.6.2.45.17">GlyphRefList</A> _glyphs</B></TT>
+<A NAME="DOC.6.3.45.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GlyphTexture.html#DOC.6.3.45.17">GlyphRefList</A> _glyphs</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_glyphsToSubload"></A>
-<A NAME="DOC.6.2.45.21"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="GlyphTexture.html#DOC.6.2.45.19">GlyphBuffer</A> _glyphsToSubload</B></TT>
+<A NAME="DOC.6.3.45.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="GlyphTexture.html#DOC.6.3.45.19">GlyphBuffer</A> _glyphsToSubload</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

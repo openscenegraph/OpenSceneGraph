@@ -10,11 +10,11 @@
 <H2>class  OSGPRODUCER_EXPORT <A HREF="#DOC.DOCU">osgProducer::OsgSceneHandler</A></H2></H2><HR>
 
 <H2>Inheritance:</H2>
-<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
-<param name=classes value="MosgUtil::SceneView,M,MProducer::Camera::SceneHandler,M,COsgSceneHandler,MOsgSceneHandler.html">
-<param name=before value="M,M,M">
-<param name=after value="Ml_,MD_,M">
-<param name=indent value="0,0,1">
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="MProducer::Camera::SceneHandler,M,COsgSceneHandler,MOsgSceneHandler.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
 <param name=arrowdir value="down">
 </APPLET>
 <HR>
@@ -24,40 +24,49 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.4.1">OsgSceneHandler</A></B>(osg::DisplaySettings* ds = NULL)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.2">init</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.2">setSceneView</A></B>(osgUtil::SceneView* sceneView)
+<DD><I>set the scene view to which will manage rendering of the OSG scene</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osgUtil::SceneView* <B><A HREF="#DOC.2.4.3">getSceneView</A></B>()
+<DD><I>get the scene view</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const osgUtil::SceneView* <B><A HREF="#DOC.2.4.4">getSceneView</A></B>() const 
+<DD><I>get the const scene view</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.5">init</A></B>()
 <DD><I>override the init method to force it be run one at a time</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.4">clear</A></B>(Producer::Camera&amp; camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.7">clear</A></B>(Producer::Camera&amp; camera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.5">clearImplementation</A></B>(Producer::Camera&amp; camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.8">clearImplementation</A></B>(Producer::Camera&amp; camera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.6">setClearCallback</A></B>(<!1><A HREF="Callback.html">Callback</A>* callback)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.9">setClearCallback</A></B>(<!1><A HREF="Callback.html">Callback</A>* callback)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.7">getClearCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.10">getClearCallback</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.8">getClearCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.11">getClearCallback</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.9">cull</A></B>(Producer::Camera&amp; camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.12">cull</A></B>(Producer::Camera&amp; camera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.10">cullImplementation</A></B>(Producer::Camera&amp; camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.13">cullImplementation</A></B>(Producer::Camera&amp; camera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.11">setCullCallback</A></B>(<!1><A HREF="Callback.html">Callback</A>* callback)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.14">setCullCallback</A></B>(<!1><A HREF="Callback.html">Callback</A>* callback)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.12">getCullCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.15">getCullCallback</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.13">getCullCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.16">getCullCallback</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.14">draw</A></B>(Producer::Camera&amp; camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.17">draw</A></B>(Producer::Camera&amp; camera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.15">drawImplementation</A></B>(Producer::Camera&amp; camera)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.4.18">drawImplementation</A></B>(Producer::Camera&amp; camera)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.16">setDrawCallback</A></B>(<!1><A HREF="Callback.html">Callback</A>* callback)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.19">setDrawCallback</A></B>(<!1><A HREF="Callback.html">Callback</A>* callback)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.17">getDrawCallback</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.20">getDrawCallback</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.18">getDrawCallback</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="Callback.html">Callback</A>* <B><A HREF="#DOC.2.4.21">getDrawCallback</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.19">setContextID</A></B>( int id )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.4.22">setContextID</A></B>( int id )
 </DL></P>
 
 <P><DL>
@@ -67,16 +76,18 @@ class  <B><A HREF="Callback.html">Callback</A></B>: public osg::Referenced
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  <B><A HREF="#DOC.2.4.21">_clearCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;osgUtil::SceneView&gt;  <B><A HREF="#DOC.2.4.24">_sceneView</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  <B><A HREF="#DOC.2.4.22">_cullCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  <B><A HREF="#DOC.2.4.25">_clearCallback</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  <B><A HREF="#DOC.2.4.23">_drawCallback</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  <B><A HREF="#DOC.2.4.26">_cullCallback</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  <B><A HREF="#DOC.2.4.27">_drawCallback</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.20">~OsgSceneHandler</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.4.23">~OsgSceneHandler</A></B>()
 </DL></P>
 
 </DL>
@@ -90,89 +101,108 @@ class  <B><A HREF="Callback.html">Callback</A></B>: public osg::Referenced
 <A NAME="DOC.2.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> OsgSceneHandler(osg::DisplaySettings* ds = NULL)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="init"></A>
+<A NAME="setSceneView"></A>
 <A NAME="DOC.2.4.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSceneView(osgUtil::SceneView* sceneView)</B></TT>
+<DD>set the scene view to which will manage rendering of the OSG scene
+<DL><DT><DD></DL><P>
+<A NAME="getSceneView"></A>
+<A NAME="DOC.2.4.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osgUtil::SceneView* getSceneView()</B></TT>
+<DD>get the scene view
+<DL><DT><DD></DL><P>
+<A NAME="getSceneView"></A>
+<A NAME="DOC.2.4.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const osgUtil::SceneView* getSceneView() const </B></TT>
+<DD>get the const scene view
+<DL><DT><DD></DL><P>
+<A NAME="init"></A>
+<A NAME="DOC.2.4.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void init()</B></TT>
 <DD>override the init method to force it be run one at a time
 <DL><DT><DD></DL><P>
 <A NAME="clear"></A>
-<A NAME="DOC.2.4.4"></A>
+<A NAME="DOC.2.4.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void clear(Producer::Camera&amp; camera)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clearImplementation"></A>
-<A NAME="DOC.2.4.5"></A>
+<A NAME="DOC.2.4.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void clearImplementation(Producer::Camera&amp; camera)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setClearCallback"></A>
-<A NAME="DOC.2.4.6"></A>
+<A NAME="DOC.2.4.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setClearCallback(<!1><A HREF="Callback.html">Callback</A>* callback)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getClearCallback"></A>
-<A NAME="DOC.2.4.7"></A>
+<A NAME="DOC.2.4.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Callback.html">Callback</A>* getClearCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getClearCallback"></A>
-<A NAME="DOC.2.4.8"></A>
+<A NAME="DOC.2.4.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Callback.html">Callback</A>* getClearCallback() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cull"></A>
-<A NAME="DOC.2.4.9"></A>
+<A NAME="DOC.2.4.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void cull(Producer::Camera&amp; camera)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="cullImplementation"></A>
-<A NAME="DOC.2.4.10"></A>
+<A NAME="DOC.2.4.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void cullImplementation(Producer::Camera&amp; camera)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCullCallback"></A>
-<A NAME="DOC.2.4.11"></A>
+<A NAME="DOC.2.4.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCullCallback(<!1><A HREF="Callback.html">Callback</A>* callback)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullCallback"></A>
-<A NAME="DOC.2.4.12"></A>
+<A NAME="DOC.2.4.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Callback.html">Callback</A>* getCullCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCullCallback"></A>
-<A NAME="DOC.2.4.13"></A>
+<A NAME="DOC.2.4.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Callback.html">Callback</A>* getCullCallback() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="draw"></A>
-<A NAME="DOC.2.4.14"></A>
+<A NAME="DOC.2.4.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void draw(Producer::Camera&amp; camera)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="drawImplementation"></A>
-<A NAME="DOC.2.4.15"></A>
+<A NAME="DOC.2.4.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void drawImplementation(Producer::Camera&amp; camera)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setDrawCallback"></A>
-<A NAME="DOC.2.4.16"></A>
+<A NAME="DOC.2.4.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDrawCallback(<!1><A HREF="Callback.html">Callback</A>* callback)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDrawCallback"></A>
-<A NAME="DOC.2.4.17"></A>
+<A NAME="DOC.2.4.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Callback.html">Callback</A>* getDrawCallback()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDrawCallback"></A>
-<A NAME="DOC.2.4.18"></A>
+<A NAME="DOC.2.4.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="Callback.html">Callback</A>* getDrawCallback() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setContextID"></A>
-<A NAME="DOC.2.4.19"></A>
+<A NAME="DOC.2.4.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setContextID( int id )</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~OsgSceneHandler"></A>
-<A NAME="DOC.2.4.20"></A>
+<A NAME="DOC.2.4.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~OsgSceneHandler()</B></TT>
 <DL><DT><DD></DL><P>
+<A NAME="_sceneView"></A>
+<A NAME="DOC.2.4.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osgUtil::SceneView&gt;  _sceneView</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="_clearCallback"></A>
-<A NAME="DOC.2.4.21"></A>
+<A NAME="DOC.2.4.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  _clearCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_cullCallback"></A>
-<A NAME="DOC.2.4.22"></A>
+<A NAME="DOC.2.4.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  _cullCallback</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_drawCallback"></A>
-<A NAME="DOC.2.4.23"></A>
+<A NAME="DOC.2.4.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;<!1><A HREF="Callback.html">Callback</A>&gt;  _drawCallback</B></TT>
 <DL><DT><DD></DL><P></DL>
 

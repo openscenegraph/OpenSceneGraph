@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGDB_EXPORT osgDB::DatabasePager</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGDB_EXPORT <A HREF="#DOC.DOCU">osgDB::DatabasePager</A></H2></H2><BLOCKQUOTE>Database paging class which manages the loading of files in a background thread,  and syncronizing of loaded models with the main scene graph</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="MOpenThreads::Thread,M,Mosg::NodeVisitor::DatabaseRequestHandler,M,CDatabasePager,MDatabasePager.html">
+<param name=before value="M,M,M">
+<param name=after value="Ml_,MD_,M">
+<param name=indent value="0,0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.1.1">DatabasePager</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.2">requestNodeFile</A></B>(const std::string&amp; fileName, osg::Group* group)
+<DD><I>Add a request to load a node file to end the the database request list</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.1.3">run</A></B>()
+<DD><I>run does the database paging</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.4">addLoadedDataToSceneGraph</A></B>(double timeStamp)
+<DD><I>Add the loaded data to the scene graph</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.5">registerPagedLODs</A></B>(osg::Node* subgraph)
+<DD><I>Find all PagedLOD nodes in a subgraph and register them with  the DatabasePager so it can keep track of expired nodes.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.6">setExpiryDelay</A></B>(double expiryDelay)
+<DD><I>Set the amount of time that a subgraph will be kept without being visited in the cull traversal before being removed</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.7">getExpiryDelay</A></B>() const 
+<DD><I>Get the amount of time that a subgraph will be kept without being visited in the cull traversal before being removed</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.8">setDeleteRemovedSubgraphsInDatabaseThread</A></B>(bool flag)
+<DD><I>set whether the removed subgraphs should be deleted in the database thread or not</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.9">getDeleteRemovedSubgraphsInDatabaseThread</A></B>() const 
+<DD><I>get whether the removed subgraphs should be deleted in the database thread or not</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.10">removeExpiredSubgraphs</A></B>(double currentFrameTime)
+<DD><I>Iterate through the active PagedLOD nodes children removing  children which havn't been visited since specified expiryTime.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.11">setCompileRenderingObjectsForContexID</A></B>(unsigned int contextID, bool on)
+<DD><I>Turn the compilation of rendering objects for specfied graphics context on (true) or off(false)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.12">getCompileRenderingObjectsForContexID</A></B>(unsigned int contextID)
+<DD><I>Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false)</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.1.13">compileRenderingObjects</A></B>(osg::State&amp; state, double&amp; availableTime)
+<DD><I>Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.</I>
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::PagedLOD&gt; &gt; <B><A HREF="#DOC.2.1.14">PagedLODList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; <B><A HREF="#DOC.2.1.15">StateSetList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::Drawable&gt; &gt; <B><A HREF="#DOC.2.1.16">DrawableList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::pair&lt;<!1><A HREF="DatabasePager.html#DOC.2.1.15">StateSetList</A>,<!1><A HREF="DatabasePager.html#DOC.2.1.16">DrawableList</A>&gt; <B><A HREF="#DOC.2.1.17">DataToCompile</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::map&lt; unsigned int, <!1><A HREF="DatabasePager.html#DOC.2.1.17">DataToCompile</A> &gt; <B><A HREF="#DOC.2.1.18">DataToCompileMap</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::set&lt;unsigned int&gt; <B><A HREF="#DOC.2.1.19">ActiveGraphicsContexts</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DatabasePager.html#DOC.2.1.22">DatabaseRequestList</A> <B><A HREF="#DOC.2.1.23">_fileRequestList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OpenThreads::Mutex <B><A HREF="#DOC.2.1.24">_fileRequestListMutex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DatabasePager.html#DOC.2.1.22">DatabaseRequestList</A> <B><A HREF="#DOC.2.1.25">_dataToCompileList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OpenThreads::Mutex <B><A HREF="#DOC.2.1.26">_dataToCompileListMutex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.1.27">_deleteRemovedSubgraphsInDatabaseThread</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>osg::NodeList <B><A HREF="#DOC.2.1.28">_childrenToDeleteList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OpenThreads::Mutex <B><A HREF="#DOC.2.1.29">_childrenToDeleteListMutex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DatabasePager.html#DOC.2.1.22">DatabaseRequestList</A> <B><A HREF="#DOC.2.1.30">_dataToMergeList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>OpenThreads::Mutex <B><A HREF="#DOC.2.1.31">_dataToMergeListMutex</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DatabasePager.html#DOC.2.1.14">PagedLODList</A> <B><A HREF="#DOC.2.1.32">_pagedLODList</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>double <B><A HREF="#DOC.2.1.33">_expiryDelay</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DatabasePager.html#DOC.2.1.19">ActiveGraphicsContexts</A> <B><A HREF="#DOC.2.1.34">_activeGraphicsContexts</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.1.20">~DatabasePager</A></B>()
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>struct  <B><A HREF="#DOC.2.1.21">DatabaseRequest</A></B>: public osg::Referenced
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DatabasePager.html#DOC.2.1.21">DatabaseRequest</A>&gt; &gt; <B><A HREF="#DOC.2.1.22">DatabaseRequestList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Database paging class which manages the loading of files in a background thread, 
+and syncronizing of loaded models with the main scene graph</BLOCKQUOTE>
+<DL>
+
+<A NAME="DatabasePager"></A>
+<A NAME="DOC.2.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DatabasePager()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="requestNodeFile"></A>
+<A NAME="DOC.2.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void requestNodeFile(const std::string&amp; fileName, osg::Group* group)</B></TT>
+<DD>Add a request to load a node file to end the the database request list
+<DL><DT><DD></DL><P>
+<A NAME="run"></A>
+<A NAME="DOC.2.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void run()</B></TT>
+<DD>run does the database paging
+<DL><DT><DD></DL><P>
+<A NAME="addLoadedDataToSceneGraph"></A>
+<A NAME="DOC.2.1.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addLoadedDataToSceneGraph(double timeStamp)</B></TT>
+<DD>Add the loaded data to the scene graph
+<DL><DT><DD></DL><P>
+<A NAME="registerPagedLODs"></A>
+<A NAME="DOC.2.1.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void registerPagedLODs(osg::Node* subgraph)</B></TT>
+<DD>Find all PagedLOD nodes in a subgraph and register them with 
+the DatabasePager so it can keep track of expired nodes.
+note, should be only be called from the update thread. 
+<DL><DT><DD></DL><P>
+<A NAME="setExpiryDelay"></A>
+<A NAME="DOC.2.1.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setExpiryDelay(double expiryDelay)</B></TT>
+<DD>Set the amount of time that a subgraph will be kept without being visited in the cull traversal
+before being removed
+<DL><DT><DD></DL><P>
+<A NAME="getExpiryDelay"></A>
+<A NAME="DOC.2.1.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double getExpiryDelay() const </B></TT>
+<DD>Get the amount of time that a subgraph will be kept without being visited in the cull traversal
+before being removed
+<DL><DT><DD></DL><P>
+<A NAME="setDeleteRemovedSubgraphsInDatabaseThread"></A>
+<A NAME="DOC.2.1.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDeleteRemovedSubgraphsInDatabaseThread(bool flag)</B></TT>
+<DD>set whether the removed subgraphs should be deleted in the database thread or not
+<DL><DT><DD></DL><P>
+<A NAME="getDeleteRemovedSubgraphsInDatabaseThread"></A>
+<A NAME="DOC.2.1.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getDeleteRemovedSubgraphsInDatabaseThread() const </B></TT>
+<DD>get whether the removed subgraphs should be deleted in the database thread or not
+<DL><DT><DD></DL><P>
+<A NAME="removeExpiredSubgraphs"></A>
+<A NAME="DOC.2.1.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void removeExpiredSubgraphs(double currentFrameTime)</B></TT>
+<DD>Iterate through the active PagedLOD nodes children removing 
+children which havn't been visited since specified expiryTime.
+note, should be only be called from the update thread. 
+<DL><DT><DD></DL><P>
+<A NAME="setCompileRenderingObjectsForContexID"></A>
+<A NAME="DOC.2.1.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setCompileRenderingObjectsForContexID(unsigned int contextID, bool on)</B></TT>
+<DD>Turn the compilation of rendering objects for specfied graphics context on (true) or off(false)
+<DL><DT><DD></DL><P>
+<A NAME="getCompileRenderingObjectsForContexID"></A>
+<A NAME="DOC.2.1.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool getCompileRenderingObjectsForContexID(unsigned int contextID)</B></TT>
+<DD>Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false)
+<DL><DT><DD></DL><P>
+<A NAME="compileRenderingObjects"></A>
+<A NAME="DOC.2.1.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void compileRenderingObjects(osg::State&amp; state, double&amp; availableTime)</B></TT>
+<DD>Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
+note, should only be called from the draw thread.
+<DL><DT><DD></DL><P>
+<A NAME="PagedLODList"></A>
+<A NAME="DOC.2.1.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::PagedLOD&gt; &gt; PagedLODList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="StateSetList"></A>
+<A NAME="DOC.2.1.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; StateSetList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DrawableList"></A>
+<A NAME="DOC.2.1.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;osg::Drawable&gt; &gt; DrawableList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DataToCompile"></A>
+<A NAME="DOC.2.1.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::pair&lt;<!1><A HREF="DatabasePager.html#DOC.2.1.15">StateSetList</A>,<!1><A HREF="DatabasePager.html#DOC.2.1.16">DrawableList</A>&gt; DataToCompile</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DataToCompileMap"></A>
+<A NAME="DOC.2.1.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::map&lt; unsigned int, <!1><A HREF="DatabasePager.html#DOC.2.1.17">DataToCompile</A> &gt; DataToCompileMap</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ActiveGraphicsContexts"></A>
+<A NAME="DOC.2.1.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::set&lt;unsigned int&gt; ActiveGraphicsContexts</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~DatabasePager"></A>
+<A NAME="DOC.2.1.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DatabasePager()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DatabaseRequest"></A>
+<A NAME="DOC.2.1.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>struct  DatabaseRequest: public osg::Referenced</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="DatabaseRequest"></A>
+<A NAME="DOC.2.1.21.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DatabaseRequest()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fileName"></A>
+<A NAME="DOC.2.1.21.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _fileName</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_numOfRequests"></A>
+<A NAME="DOC.2.1.21.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _numOfRequests</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_groupForAddingLoadedSubgraph"></A>
+<A NAME="DOC.2.1.21.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Group&gt;  _groupForAddingLoadedSubgraph</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_loadedModel"></A>
+<A NAME="DOC.2.1.21.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::ref_ptr&lt;osg::Node&gt;  _loadedModel</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataToCompileMap"></A>
+<A NAME="DOC.2.1.21.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DatabasePager.html#DOC.2.1.18">DataToCompileMap</A> _dataToCompileMap</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="DatabaseRequestList"></A>
+<A NAME="DOC.2.1.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="DatabasePager.html#DOC.2.1.21">DatabaseRequest</A>&gt; &gt; DatabaseRequestList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fileRequestList"></A>
+<A NAME="DOC.2.1.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DatabasePager.html#DOC.2.1.22">DatabaseRequestList</A> _fileRequestList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_fileRequestListMutex"></A>
+<A NAME="DOC.2.1.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OpenThreads::Mutex _fileRequestListMutex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataToCompileList"></A>
+<A NAME="DOC.2.1.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DatabasePager.html#DOC.2.1.22">DatabaseRequestList</A> _dataToCompileList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataToCompileListMutex"></A>
+<A NAME="DOC.2.1.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OpenThreads::Mutex _dataToCompileListMutex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_deleteRemovedSubgraphsInDatabaseThread"></A>
+<A NAME="DOC.2.1.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _deleteRemovedSubgraphsInDatabaseThread</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_childrenToDeleteList"></A>
+<A NAME="DOC.2.1.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>osg::NodeList _childrenToDeleteList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_childrenToDeleteListMutex"></A>
+<A NAME="DOC.2.1.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OpenThreads::Mutex _childrenToDeleteListMutex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataToMergeList"></A>
+<A NAME="DOC.2.1.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DatabasePager.html#DOC.2.1.22">DatabaseRequestList</A> _dataToMergeList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_dataToMergeListMutex"></A>
+<A NAME="DOC.2.1.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>OpenThreads::Mutex _dataToMergeListMutex</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pagedLODList"></A>
+<A NAME="DOC.2.1.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DatabasePager.html#DOC.2.1.14">PagedLODList</A> _pagedLODList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_expiryDelay"></A>
+<A NAME="DOC.2.1.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>double _expiryDelay</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_activeGraphicsContexts"></A>
+<A NAME="DOC.2.1.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DatabasePager.html#DOC.2.1.19">ActiveGraphicsContexts</A> _activeGraphicsContexts</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

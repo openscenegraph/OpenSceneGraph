@@ -112,7 +112,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>const osg::Vec4&amp; <B>getClearAccum</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setClearDepth</B>(double depth)
+<IMG ALT="o" SRC=icon2.gif>void <B>setClearDepth</B>(double <!1><A HREF="Statistics.html#DOC.2.24.29">depth</A>)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>double <B>getClearDepth</B>() const 
 <DT>
@@ -132,7 +132,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>addToDependencyList</B>(<!1><A HREF="RenderStage.html">RenderStage</A>* rs)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>bool <B>getStats</B>(osg::Statistics* primStats)
+<IMG ALT="o" SRC=icon2.gif>bool <B>getStats</B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
 </DL></P>
 
 <P><DL>
@@ -162,8 +162,6 @@
 <IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.26">SortCallback</A>&gt;  <B>_sortCallback</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>&gt;  <B>_drawCallback</B>
-<DT>
-<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="RenderBin.html#DOC.2.14.49">RenderBinPrototypeList</A> <B>s_renderBinPrototypeList</B>
 </DL></P>
 
 <P><DL>
@@ -206,9 +204,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="RenderBin.html#DOC.2.14.32">DrawCallback</A>* <B>getDrawCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(osg::Statistics* primStats)
+<IMG ALT="o" SRC=icon2.gif>void <B>getPrims</B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(osg::Statistics* primStats, int nbin)
+<IMG ALT="o" SRC=icon2.gif>bool <B>getPrims</B>(<!1><A HREF="Statistics.html">Statistics</A>* primStats, int nbin)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>copyLeavesFromRenderGraphListToRenderLeafList</B>()
 </DL></P>
@@ -226,8 +224,6 @@
 <IMG ALT="o" SRC=icon2.gif>struct  <B>SortCallback</B>: public osg::Referenced
 <DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public osg::Referenced
-<DT>
-<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; std::string, osg::ref_ptr&lt;<!1><A HREF="RenderBin.html">RenderBin</A>&gt; &gt; <B>RenderBinPrototypeList</B>
 </DL></P>
 
 </DL>

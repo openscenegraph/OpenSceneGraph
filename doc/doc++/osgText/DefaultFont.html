@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  osgText::DefaultFont</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  <A HREF="#DOC.DOCU">osgText::DefaultFont</A></H2></H2><HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=95>
+<param name=classes value="Mosg::Object,M,CFont,MFont.html,CDefaultFont,MDefaultFont.html">
+<param name=before value="M,M,M">
+<param name=after value="Md_SP,Md_,M">
+<param name=indent value="0,1,2">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="DefaultFont.html">DefaultFont</A>* <B><A HREF="#DOC.6.6.1">instance</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   std::string <B><A HREF="#DOC.6.6.2">getFileName</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.6.3">setSize</A></B>(unsigned int width, unsigned int height)
+<DD><I>NOP with DefaultFont since it only supports a single fixed sized font.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   Font::Glyph* <B><A HREF="#DOC.6.6.4">getGlyph</A></B>(unsigned int charcode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.6.6.5">getKerning</A></B>(unsigned int leftcharcode, unsigned int rightcharcode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.6.6">hasVertical</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.6.6.7">DefaultFont</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.6.6.8">~DefaultFont</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.6.9">constructGlyphs</A></B>()
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Font.html">Font</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   osg::Object* <B>cloneType</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   osg::Object* <B>clone</B>(const osg::CopyOp&amp;) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getWidth</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getHeight</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setGlyphImageMargin</B>(unsigned int margin)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getGlyphImageMargin</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setTextureSizeHint</B>(unsigned int width, unsigned int height)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getTextureWidthHint</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>getTextureHeightHint</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setMinFilterHint</B>(osg::Texture::FilterMode mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Texture::FilterMode <B>getMinFilterHint</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setMagFilterHint</B>(osg::Texture::FilterMode mode)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Texture::FilterMode <B>getMagFilterHint</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setImplementation</B>(<!1><A HREF="FontImplementation.html">FontImplementation</A>* implementation)
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="FontImplementation.html">FontImplementation</A>* <B>getImplementation</B>()
+<DT>
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="FontImplementation.html">FontImplementation</A>* <B>getImplementation</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+class  <B><A HREF="FontImplementation.html">FontImplementation</A></B>: public osg::Referenced
+<DT>
+class  OSGTEXT_EXPORT <B><A HREF="GlyphTexture.html">GlyphTexture</A></B>: public osg::Texture2D
+<DT>
+class  OSGTEXT_EXPORT <B><A HREF="Glyph.html">Glyph</A></B>: public osg::Image
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Font.html#DOC.6.3.32">SizeGlyphMap</A> <B>_sizeGlyphMap</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Font.html#DOC.6.3.28">GlyphTextureList</A> <B>_glyphTextureList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Font.html#DOC.6.3.29">StateSetList</A> <B>_stateSetList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_width</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_height</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_margin</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_textureWidthHint</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>unsigned int <B>_textureHeightHint</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Texture::FilterMode <B>_minFilterHint</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::Texture::FilterMode <B>_magFilterHint</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>osg::ref_ptr&lt;<!1><A HREF="FontImplementation.html">FontImplementation</A>&gt;  <B>_implementation</B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>addGlyph</B>(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; osg::ref_ptr&lt;<!1><A HREF="GlyphTexture.html">GlyphTexture</A>&gt; &gt; <B>GlyphTextureList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::vector&lt; osg::ref_ptr&lt;osg::StateSet&gt; &gt; <B>StateSetList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; unsigned int, osg::ref_ptr&lt;<!1><A HREF="Glyph.html">Glyph</A>&gt; &gt; <B>GlyphMap</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::pair&lt; unsigned int, unsigned int &gt; <B>SizePair</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>typedef  std::map&lt; <!1><A HREF="Font.html#DOC.6.3.31">SizePair</A>, <!1><A HREF="Font.html#DOC.6.3.30">GlyphMap</A> &gt; <B>SizeGlyphMap</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<DL>
+
+<A NAME="instance"></A>
+<A NAME="DOC.6.6.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="DefaultFont.html">DefaultFont</A>* instance()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getFileName"></A>
+<A NAME="DOC.6.6.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   std::string getFileName() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setSize"></A>
+<A NAME="DOC.6.6.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setSize(unsigned int width, unsigned int height)</B></TT>
+<DD>NOP with DefaultFont since it only supports a single fixed sized font. 
+<DL><DT><DD></DL><P>
+<A NAME="getGlyph"></A>
+<A NAME="DOC.6.6.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   Font::Glyph* getGlyph(unsigned int charcode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getKerning"></A>
+<A NAME="DOC.6.6.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec2 getKerning(unsigned int leftcharcode, unsigned int rightcharcode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="hasVertical"></A>
+<A NAME="DOC.6.6.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool hasVertical() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DefaultFont"></A>
+<A NAME="DOC.6.6.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DefaultFont()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~DefaultFont"></A>
+<A NAME="DOC.6.6.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DefaultFont()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="constructGlyphs"></A>
+<A NAME="DOC.6.6.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void constructGlyphs()</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

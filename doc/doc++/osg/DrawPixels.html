@@ -52,9 +52,9 @@
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.61.14">setUseCompleteImage</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.61.15">setSubImageDimensions</A></B>(unsigned int offsetX, unsigned int offsetY, unsigned int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, unsigned int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.61.15">setSubImageDimensions</A></B>(unsigned int offsetX, unsigned int offsetY, unsigned int <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, unsigned int <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.61.16">getSubImageDimensions</A></B>(unsigned int&amp; offsetX, unsigned int&amp; offsetY, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.61.16">getSubImageDimensions</A></B>(unsigned int&amp; offsetX, unsigned int&amp; offsetY, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>) const 
 <DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.61.17">getUseSubImage</A></B>() const 
 <DT>
@@ -96,9 +96,9 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const <!1><A HREF="Geometry.html">Geometry</A>* <B>asGeometry</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.63.8">ParentList</A>&amp; <B>getParents</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   const <!1><A HREF="Drawable.html#DOC.2.69.8">ParentList</A>&amp; <B>getParents</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.63.8">ParentList</A> <B>getParents</B>()
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Drawable.html#DOC.2.69.8">ParentList</A> <B>getParents</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Node.html">Node</A>* <B>getParent</B>(unsigned int i)
 <DT>
@@ -132,35 +132,37 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   bool <B>getUseDisplayList</B>() const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>void <B>setUseVertexBufferObjects</B>(bool flag)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   bool <B>getUseVertexBufferObjects</B>() const 
+<DT>
 <IMG ALT="o" SRC=icon2.gif>void <B>dirtyDisplayList</B>()
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>compile</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setUpdateCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>* ac)
+<IMG ALT="o" SRC=icon2.gif>void <B>setUpdateCallback</B>(<!1><A HREF="Drawable.html#DOC.2.69.31">UpdateCallback</A>* ac)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>* <B>getUpdateCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.69.31">UpdateCallback</A>* <B>getUpdateCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setAppCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.32">AppCallback</A>* ac)
+<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.69.34">CullCallback</A>* cc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.32">AppCallback</A>* <B>getAppCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.69.34">CullCallback</A>* <B>getCullCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.63.32">AppCallback</A>* <B>getAppCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.69.34">CullCallback</A>* <B>getCullCallback</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setCullCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>* cc)
+<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.69.38">DrawCallback</A>* dc)
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>* <B>getCullCallback</B>()
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.69.38">DrawCallback</A>* <B>getDrawCallback</B>()
 <DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>* <B>getCullCallback</B>() const 
-<DT>
-<IMG ALT="o" SRC=icon2.gif>void <B>setDrawCallback</B>(<!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>* dc)
-<DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>* <B>getDrawCallback</B>()
-<DT>
-<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>* <B>getDrawCallback</B>() const 
+<IMG ALT="o" SRC=icon2.gif>const <!1><A HREF="Drawable.html#DOC.2.69.38">DrawCallback</A>* <B>getDrawCallback</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>static   void <B>deleteDisplayList</B>(unsigned int contextID, GLuint globj)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedDisplayLists</B>(unsigned int contextID)
+<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedDisplayLists</B>(unsigned int contextID, double currentTime, double&amp; availableTime)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>deleteVertexBufferObject</B>(unsigned int contextID, GLuint globj)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>flushDeletedVertexBufferObjects</B>(unsigned int contextID, double currentTime, double&amp; availableTime)
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>supports</B>(<!1><A HREF="AttributeFunctor.html">AttributeFunctor</A>&amp;) const 
 <DT>
@@ -174,6 +176,10 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   void <B>accept</B>(<!1><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A>&amp;) const 
 <DT>
+<IMG ALT="o" SRC=icon2.gif>static   <!1><A HREF="Extensions.html">Extensions</A>* <B>getExtensions</B>(unsigned int contextID, bool createIfNotInitalized)
+<DT>
+<IMG ALT="o" SRC=icon2.gif>static   void <B>setExtensions</B>(unsigned int contextID, <!1><A HREF="Extensions.html">Extensions</A>* extensions)
+<DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>draw</B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 </DL></P>
 
@@ -183,24 +189,27 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>UpdateCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>struct  <B>AppCallback</B>: public <!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>
-<DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>CullCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>struct  <B>DrawCallback</B>: public virtual <!1><A HREF="Referenced.html">osg::Referenced</A>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>enum  <B>AttributeType</B>
+<IMG ALT="o" SRC=icon2.gif>typedef  unsigned int <B>AttributeType</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif>enum  <B>AttributeTypes</B>
 <DT>
 class  <B><A HREF="AttributeFunctor.html">AttributeFunctor</A></B>
 <DT>
 class  <B><A HREF="ConstAttributeFunctor.html">ConstAttributeFunctor</A></B>
 <DT>
 class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
+<DT>
+class  SG_EXPORT <B><A HREF="Extensions.html">Extensions</A></B>: public <!1><A HREF="Referenced.html">osg::Referenced</A>
+<DD><I>Extensions class which encapsulates the querring of extensions and associated function pointers, and provide convinience wrappers to  check for the extensions or use the associated functions</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.63.8">ParentList</A> <B>_parents</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Drawable.html#DOC.2.69.8">ParentList</A> <B>_parents</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="StateSet.html">StateSet</A>&gt;  <B>_stateset</B>
 <DT>
@@ -214,13 +223,19 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif>bool <B>_useDisplayList</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Drawable.html#DOC.2.63.70">GLObjectList</A> <B>_globjList</B>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_supportsVertexBufferObjects</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.63.29">UpdateCallback</A>&gt;  <B>_updateCallback</B>
+<IMG ALT="o" SRC=icon2.gif>bool <B>_useVertexBufferObjects</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.63.40">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Drawable.html#DOC.2.69.76">GLObjectList</A> <B>_globjList</B>
 <DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.63.36">CullCallback</A>&gt;  <B>_cullCallback</B>
+<IMG ALT="o" SRC=icon2.gif>mutable <!1><A HREF="Drawable.html#DOC.2.69.76">GLObjectList</A> <B>_vboList</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.69.31">UpdateCallback</A>&gt;  <B>_updateCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.69.38">DrawCallback</A>&gt;  <B>_drawCallback</B>
+<DT>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Drawable.html#DOC.2.69.34">CullCallback</A>&gt;  <B>_cullCallback</B>
 </DL></P>
 
 <P><DL>
@@ -242,9 +257,9 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -260,7 +275,7 @@ class  <B><A HREF="PrimitiveFunctor.html">PrimitiveFunctor</A></B>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -356,11 +371,11 @@ images using glDrawPixels</BLOCKQUOTE>
 <DL><DT><DD></DL><P>
 <A NAME="setSubImageDimensions"></A>
 <A NAME="DOC.2.61.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSubImageDimensions(unsigned int offsetX, unsigned int offsetY, unsigned int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, unsigned int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setSubImageDimensions(unsigned int offsetX, unsigned int offsetY, unsigned int <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, unsigned int <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getSubImageDimensions"></A>
 <A NAME="DOC.2.61.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getSubImageDimensions(unsigned int&amp; offsetX, unsigned int&amp; offsetY, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>) const </B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void getSubImageDimensions(unsigned int&amp; offsetX, unsigned int&amp; offsetY, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, unsigned int&amp; <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getUseSubImage"></A>
 <A NAME="DOC.2.61.17"></A>

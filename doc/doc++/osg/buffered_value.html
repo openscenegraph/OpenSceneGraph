@@ -7,30 +7,32 @@
 </HEAD>
 <BODY BGCOLOR="#ffffff">
 
-<H2>template&lt;class <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt; class  <A HREF="#DOC.DOCU">osg::buffered_value</A></H2></H2><BLOCKQUOTE>Simple buffered value array which is used for values that need to multibuffered on one per graphics context basis</BLOCKQUOTE>
+<H2>template&lt;class <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt; class  <A HREF="#DOC.DOCU">osg::buffered_value</A></H2></H2><BLOCKQUOTE>Simple buffered value array which is used for values that need to multibuffered on one per graphics context basis</BLOCKQUOTE>
 <HR>
 
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.215.1">buffered_value</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <B><A HREF="#DOC.2.222.1">buffered_value</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="buffered_value.html">buffered_value</A>&amp; <B><A HREF="#DOC.2.215.2">operator = </A></B>(const <!1><A HREF="buffered_value.html">buffered_value</A>&amp; rhs)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="buffered_value.html">buffered_value</A>&amp; <B><A HREF="#DOC.2.222.2">operator = </A></B>(const <!1><A HREF="buffered_value.html">buffered_value</A>&amp; rhs)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.215.3">setAllElementsTo</A></B>(const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; <!1><A HREF="ImpostorSprite.html#DOC.2.83.25">t</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.222.3">setAllElementsTo</A></B>(const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; <!1><A HREF="ImpostorSprite.html#DOC.2.90.25">t</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.215.4">clear</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.222.4">clear</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.215.5">empty</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.222.5">empty</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.215.6">size</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.222.6">size</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; <B><A HREF="#DOC.2.215.7">operator[] </A></B>(unsigned int pos)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; <B><A HREF="#DOC.2.222.7">operator[] </A></B>(unsigned int pos)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> <B><A HREF="#DOC.2.222.8">operator[] </A></B>(unsigned int pos) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;  <B><A HREF="#DOC.2.215.8">_array</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;  <B><A HREF="#DOC.2.222.9">_array</A></B>
 </DL></P>
 
 </DL>
@@ -43,36 +45,40 @@ one per graphics context basis</BLOCKQUOTE>
 <DL>
 
 <A NAME="buffered_value"></A>
-<A NAME="DOC.2.215.1"></A>
+<A NAME="DOC.2.222.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   buffered_value()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.215.2"></A>
+<A NAME="DOC.2.222.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="buffered_value.html">buffered_value</A>&amp; operator = (const <!1><A HREF="buffered_value.html">buffered_value</A>&amp; rhs)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setAllElementsTo"></A>
-<A NAME="DOC.2.215.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAllElementsTo(const <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; <!1><A HREF="ImpostorSprite.html#DOC.2.83.25">t</A>)</B></TT>
+<A NAME="DOC.2.222.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAllElementsTo(const <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; <!1><A HREF="ImpostorSprite.html#DOC.2.90.25">t</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clear"></A>
-<A NAME="DOC.2.215.4"></A>
+<A NAME="DOC.2.222.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void clear()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="empty"></A>
-<A NAME="DOC.2.215.5"></A>
+<A NAME="DOC.2.222.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool empty() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="size"></A>
-<A NAME="DOC.2.215.6"></A>
+<A NAME="DOC.2.222.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int size() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator[] "></A>
-<A NAME="DOC.2.215.7"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&amp; operator[] (unsigned int pos)</B></TT>
+<A NAME="DOC.2.222.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&amp; operator[] (unsigned int pos)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator[] "></A>
+<A NAME="DOC.2.222.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A> operator[] (unsigned int pos) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_array"></A>
-<A NAME="DOC.2.215.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.184.11.2">T</A>&gt;  _array</B></TT>
+<A NAME="DOC.2.222.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable std::vector&lt;<!1><A HREF="TexGen.html#DOC.2.191.11.2">T</A>&gt;  _array</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

@@ -23,76 +23,76 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.6.2">EventType</A> <B><A HREF="#DOC.2.6.5">getEventType</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.5.2">EventType</A> <B><A HREF="#DOC.2.5.5">getEventType</A></B>() const  = 0
 <DD><I>Get the EventType of the GUI event</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.6.6">getKey</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.5.6">getKey</A></B>() const  = 0
 <DD><I>key pressed, return -1 if inappr   opriate for this event.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.6.7">getButton</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.5.7">getButton</A></B>() const  = 0
 <DD><I>button pressed/released, return -1 if inappropriate for this event</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.6.9">setMouseYOrientation</A></B>(<!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> myo)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.5.9">setMouseYOrientation</A></B>(<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> myo)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> <B><A HREF="#DOC.2.6.10">getMouseYOrientation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> <B><A HREF="#DOC.2.5.10">getMouseYOrientation</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.6.11">getXmin</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.11">getXmin</A></B>() const  = 0
 <DD><I>manimum x mouse position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.6.12">getXmax</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.12">getXmax</A></B>() const  = 0
 <DD><I>maximum x mouse position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.6.13">getYmin</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.13">getYmin</A></B>() const  = 0
 <DD><I>minimum y mouse position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.6.14">getYmax</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.14">getYmax</A></B>() const  = 0
 <DD><I>maximum y mouse position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.6.15">getX</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.15">getX</A></B>() const  = 0
 <DD><I>current mouse x position</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.6.16">getY</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.5.16">getY</A></B>() const  = 0
 <DD><I>current mouse y position</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.6.17">getButtonMask</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.17">getButtonMask</A></B>() const  = 0
 <DD><I>current mouse button state </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.6.18">getModKeyMask</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   unsigned int <B><A HREF="#DOC.2.5.18">getModKeyMask</A></B>() const  = 0
 <DD><I>current modkey state </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.2.6.19">time</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   double <B><A HREF="#DOC.2.5.19">time</A></B>() const  = 0
 <DD><I>time in seconds of event.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.6.20">getXnormalized</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.20">getXnormalized</A></B>() const 
 <DD><I>return the getX() value normalised to the range of -1 to 1.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.6.21">getYnormalized</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.5.21">getYnormalized</A></B>() const 
 <DD><I>return the getY() value normalised to the range of -1 to 1.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.1">MouseButtonMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.1">MouseButtonMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.2">EventType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.2">EventType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.3">KeySymbol</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.3">KeySymbol</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.4">ModKeyMask</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.4">ModKeyMask</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.6.8">MouseYOrientation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.5.8">MouseYOrientation</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> <B><A HREF="#DOC.2.6.24">_mouseYOrientation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> <B><A HREF="#DOC.2.5.24">_mouseYOrientation</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.6.22">GUIEventAdapter</A></B>(<!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> myo=<!1><A HREF="GUIEventAdapter.html#DOC.2.6.8.2">Y_INCREASING_DOWNWARDS</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.5.22">GUIEventAdapter</A></B>(<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> myo=<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8.2">Y_INCREASING_DOWNWARDS</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.6.23">~GUIEventAdapter</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.5.23">~GUIEventAdapter</A></B>()
 <DD><I>Force users to create on heap, so that multiple referencing is safe</I>
 </DL></P>
 
@@ -112,709 +112,725 @@ as appropriate.</BLOCKQUOTE>
 <DL>
 
 <A NAME="MouseButtonMask"></A>
-<A NAME="DOC.2.6.1"></A>
+<A NAME="DOC.2.5.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  MouseButtonMask</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="LEFT_MOUSE_BUTTON"></A>
-<A NAME="DOC.2.6.1.1"></A>
+<A NAME="DOC.2.5.1.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> LEFT_MOUSE_BUTTON</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MIDDLE_MOUSE_BUTTON"></A>
-<A NAME="DOC.2.6.1.2"></A>
+<A NAME="DOC.2.5.1.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MIDDLE_MOUSE_BUTTON</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RIGHT_MOUSE_BUTTON"></A>
-<A NAME="DOC.2.6.1.3"></A>
+<A NAME="DOC.2.5.1.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RIGHT_MOUSE_BUTTON</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="EventType"></A>
-<A NAME="DOC.2.6.2"></A>
+<A NAME="DOC.2.5.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  EventType</B></TT>
 <DL><DT><DD></DL><P><DL>
 
+<A NAME="NONE"></A>
+<A NAME="DOC.2.5.2.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NONE</B></TT>
+<DL><DT><DD></DL><P>
 <A NAME="PUSH"></A>
-<A NAME="DOC.2.6.2.1"></A>
+<A NAME="DOC.2.5.2.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> PUSH</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RELEASE"></A>
-<A NAME="DOC.2.6.2.2"></A>
+<A NAME="DOC.2.5.2.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RELEASE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DOUBLECLICK"></A>
-<A NAME="DOC.2.6.2.3"></A>
+<A NAME="DOC.2.5.2.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DOUBLECLICK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="DRAG"></A>
-<A NAME="DOC.2.6.2.4"></A>
+<A NAME="DOC.2.5.2.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DRAG</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MOVE"></A>
-<A NAME="DOC.2.6.2.5"></A>
+<A NAME="DOC.2.5.2.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MOVE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEYDOWN"></A>
-<A NAME="DOC.2.6.2.6"></A>
+<A NAME="DOC.2.5.2.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEYDOWN</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEYUP"></A>
-<A NAME="DOC.2.6.2.7"></A>
+<A NAME="DOC.2.5.2.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEYUP</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="FRAME"></A>
-<A NAME="DOC.2.6.2.8"></A>
+<A NAME="DOC.2.5.2.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRAME</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="RESIZE"></A>
-<A NAME="DOC.2.6.2.9"></A>
+<A NAME="DOC.2.5.2.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> RESIZE</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="NONE"></A>
-<A NAME="DOC.2.6.2.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NONE</B></TT>
+<A NAME="SCROLLUP"></A>
+<A NAME="DOC.2.5.2.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SCROLLUP</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SCROLLDOWN"></A>
+<A NAME="DOC.2.5.2.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SCROLLDOWN</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SCROLLLEFT"></A>
+<A NAME="DOC.2.5.2.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SCROLLLEFT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="SCROLLRIGHT"></A>
+<A NAME="DOC.2.5.2.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SCROLLRIGHT</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="KeySymbol"></A>
-<A NAME="DOC.2.6.3"></A>
+<A NAME="DOC.2.5.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  KeySymbol</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="KEY_Space"></A>
-<A NAME="DOC.2.6.3.1"></A>
+<A NAME="DOC.2.5.3.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Space</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_BackSpace"></A>
-<A NAME="DOC.2.6.3.2"></A>
+<A NAME="DOC.2.5.3.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_BackSpace</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Tab"></A>
-<A NAME="DOC.2.6.3.3"></A>
+<A NAME="DOC.2.5.3.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Tab</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Linefeed"></A>
-<A NAME="DOC.2.6.3.4"></A>
+<A NAME="DOC.2.5.3.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Linefeed</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Clear"></A>
-<A NAME="DOC.2.6.3.5"></A>
+<A NAME="DOC.2.5.3.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Clear</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Return"></A>
-<A NAME="DOC.2.6.3.6"></A>
+<A NAME="DOC.2.5.3.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Return</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Pause"></A>
-<A NAME="DOC.2.6.3.7"></A>
+<A NAME="DOC.2.5.3.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Pause</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Scroll_Lock"></A>
-<A NAME="DOC.2.6.3.8"></A>
+<A NAME="DOC.2.5.3.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Scroll_Lock</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Sys_Req"></A>
-<A NAME="DOC.2.6.3.9"></A>
+<A NAME="DOC.2.5.3.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Sys_Req</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Escape"></A>
-<A NAME="DOC.2.6.3.10"></A>
+<A NAME="DOC.2.5.3.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Escape</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Delete"></A>
-<A NAME="DOC.2.6.3.11"></A>
+<A NAME="DOC.2.5.3.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Delete</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Home"></A>
-<A NAME="DOC.2.6.3.12"></A>
+<A NAME="DOC.2.5.3.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Home</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Left"></A>
-<A NAME="DOC.2.6.3.13"></A>
+<A NAME="DOC.2.5.3.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Left</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Up"></A>
-<A NAME="DOC.2.6.3.14"></A>
+<A NAME="DOC.2.5.3.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Up</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Right"></A>
-<A NAME="DOC.2.6.3.15"></A>
+<A NAME="DOC.2.5.3.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Right</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Down"></A>
-<A NAME="DOC.2.6.3.16"></A>
+<A NAME="DOC.2.5.3.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Down</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Prior"></A>
-<A NAME="DOC.2.6.3.17"></A>
+<A NAME="DOC.2.5.3.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Prior</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Page_Up"></A>
-<A NAME="DOC.2.6.3.18"></A>
+<A NAME="DOC.2.5.3.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Page_Up</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Next"></A>
-<A NAME="DOC.2.6.3.19"></A>
+<A NAME="DOC.2.5.3.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Next</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Page_Down"></A>
-<A NAME="DOC.2.6.3.20"></A>
+<A NAME="DOC.2.5.3.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Page_Down</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_End"></A>
-<A NAME="DOC.2.6.3.21"></A>
+<A NAME="DOC.2.5.3.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_End</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Begin"></A>
-<A NAME="DOC.2.6.3.22"></A>
+<A NAME="DOC.2.5.3.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Begin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Select"></A>
-<A NAME="DOC.2.6.3.23"></A>
+<A NAME="DOC.2.5.3.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Select</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Print"></A>
-<A NAME="DOC.2.6.3.24"></A>
+<A NAME="DOC.2.5.3.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Print</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Execute"></A>
-<A NAME="DOC.2.6.3.25"></A>
+<A NAME="DOC.2.5.3.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Execute</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Insert"></A>
-<A NAME="DOC.2.6.3.26"></A>
+<A NAME="DOC.2.5.3.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Insert</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Undo"></A>
-<A NAME="DOC.2.6.3.27"></A>
+<A NAME="DOC.2.5.3.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Undo</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Redo"></A>
-<A NAME="DOC.2.6.3.28"></A>
+<A NAME="DOC.2.5.3.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Redo</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Menu"></A>
-<A NAME="DOC.2.6.3.29"></A>
+<A NAME="DOC.2.5.3.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Menu</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Find"></A>
-<A NAME="DOC.2.6.3.30"></A>
+<A NAME="DOC.2.5.3.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Find</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Cancel"></A>
-<A NAME="DOC.2.6.3.31"></A>
+<A NAME="DOC.2.5.3.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Cancel</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Help"></A>
-<A NAME="DOC.2.6.3.32"></A>
+<A NAME="DOC.2.5.3.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Help</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Break"></A>
-<A NAME="DOC.2.6.3.33"></A>
+<A NAME="DOC.2.5.3.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Break</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Mode_switch"></A>
-<A NAME="DOC.2.6.3.34"></A>
+<A NAME="DOC.2.5.3.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Mode_switch</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Script_switch"></A>
-<A NAME="DOC.2.6.3.35"></A>
+<A NAME="DOC.2.5.3.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Script_switch</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Num_Lock"></A>
-<A NAME="DOC.2.6.3.36"></A>
+<A NAME="DOC.2.5.3.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Num_Lock</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Space"></A>
-<A NAME="DOC.2.6.3.37"></A>
+<A NAME="DOC.2.5.3.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Space</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Tab"></A>
-<A NAME="DOC.2.6.3.38"></A>
+<A NAME="DOC.2.5.3.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Tab</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Enter"></A>
-<A NAME="DOC.2.6.3.39"></A>
+<A NAME="DOC.2.5.3.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Enter</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_F1"></A>
-<A NAME="DOC.2.6.3.40"></A>
+<A NAME="DOC.2.5.3.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_F1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_F2"></A>
-<A NAME="DOC.2.6.3.41"></A>
+<A NAME="DOC.2.5.3.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_F2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_F3"></A>
-<A NAME="DOC.2.6.3.42"></A>
+<A NAME="DOC.2.5.3.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_F3</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_F4"></A>
-<A NAME="DOC.2.6.3.43"></A>
+<A NAME="DOC.2.5.3.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_F4</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Home"></A>
-<A NAME="DOC.2.6.3.44"></A>
+<A NAME="DOC.2.5.3.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Home</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Left"></A>
-<A NAME="DOC.2.6.3.45"></A>
+<A NAME="DOC.2.5.3.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Left</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Up"></A>
-<A NAME="DOC.2.6.3.46"></A>
+<A NAME="DOC.2.5.3.46"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Up</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Right"></A>
-<A NAME="DOC.2.6.3.47"></A>
+<A NAME="DOC.2.5.3.47"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Right</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Down"></A>
-<A NAME="DOC.2.6.3.48"></A>
+<A NAME="DOC.2.5.3.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Down</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Prior"></A>
-<A NAME="DOC.2.6.3.49"></A>
+<A NAME="DOC.2.5.3.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Prior</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Page_Up"></A>
-<A NAME="DOC.2.6.3.50"></A>
+<A NAME="DOC.2.5.3.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Page_Up</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Next"></A>
-<A NAME="DOC.2.6.3.51"></A>
+<A NAME="DOC.2.5.3.51"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Next</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Page_Down"></A>
-<A NAME="DOC.2.6.3.52"></A>
+<A NAME="DOC.2.5.3.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Page_Down</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_End"></A>
-<A NAME="DOC.2.6.3.53"></A>
+<A NAME="DOC.2.5.3.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_End</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Begin"></A>
-<A NAME="DOC.2.6.3.54"></A>
+<A NAME="DOC.2.5.3.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Begin</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Insert"></A>
-<A NAME="DOC.2.6.3.55"></A>
+<A NAME="DOC.2.5.3.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Insert</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Delete"></A>
-<A NAME="DOC.2.6.3.56"></A>
+<A NAME="DOC.2.5.3.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Delete</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Equal"></A>
-<A NAME="DOC.2.6.3.57"></A>
+<A NAME="DOC.2.5.3.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Equal</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Multiply"></A>
-<A NAME="DOC.2.6.3.58"></A>
+<A NAME="DOC.2.5.3.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Multiply</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Add"></A>
-<A NAME="DOC.2.6.3.59"></A>
+<A NAME="DOC.2.5.3.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Add</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Separator"></A>
-<A NAME="DOC.2.6.3.60"></A>
+<A NAME="DOC.2.5.3.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Separator</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Subtract"></A>
-<A NAME="DOC.2.6.3.61"></A>
+<A NAME="DOC.2.5.3.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Subtract</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Decimal"></A>
-<A NAME="DOC.2.6.3.62"></A>
+<A NAME="DOC.2.5.3.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Decimal</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_Divide"></A>
-<A NAME="DOC.2.6.3.63"></A>
+<A NAME="DOC.2.5.3.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_Divide</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_0"></A>
-<A NAME="DOC.2.6.3.64"></A>
+<A NAME="DOC.2.5.3.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_1"></A>
-<A NAME="DOC.2.6.3.65"></A>
+<A NAME="DOC.2.5.3.65"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_2"></A>
-<A NAME="DOC.2.6.3.66"></A>
+<A NAME="DOC.2.5.3.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_3"></A>
-<A NAME="DOC.2.6.3.67"></A>
+<A NAME="DOC.2.5.3.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_3</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_4"></A>
-<A NAME="DOC.2.6.3.68"></A>
+<A NAME="DOC.2.5.3.68"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_4</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_5"></A>
-<A NAME="DOC.2.6.3.69"></A>
+<A NAME="DOC.2.5.3.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_5</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_6"></A>
-<A NAME="DOC.2.6.3.70"></A>
+<A NAME="DOC.2.5.3.70"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_6</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_7"></A>
-<A NAME="DOC.2.6.3.71"></A>
+<A NAME="DOC.2.5.3.71"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_7</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_8"></A>
-<A NAME="DOC.2.6.3.72"></A>
+<A NAME="DOC.2.5.3.72"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_8</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_KP_9"></A>
-<A NAME="DOC.2.6.3.73"></A>
+<A NAME="DOC.2.5.3.73"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_KP_9</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F1"></A>
-<A NAME="DOC.2.6.3.74"></A>
+<A NAME="DOC.2.5.3.74"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F1</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F2"></A>
-<A NAME="DOC.2.6.3.75"></A>
+<A NAME="DOC.2.5.3.75"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F2</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F3"></A>
-<A NAME="DOC.2.6.3.76"></A>
+<A NAME="DOC.2.5.3.76"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F3</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F4"></A>
-<A NAME="DOC.2.6.3.77"></A>
+<A NAME="DOC.2.5.3.77"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F4</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F5"></A>
-<A NAME="DOC.2.6.3.78"></A>
+<A NAME="DOC.2.5.3.78"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F5</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F6"></A>
-<A NAME="DOC.2.6.3.79"></A>
+<A NAME="DOC.2.5.3.79"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F6</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F7"></A>
-<A NAME="DOC.2.6.3.80"></A>
+<A NAME="DOC.2.5.3.80"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F7</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F8"></A>
-<A NAME="DOC.2.6.3.81"></A>
+<A NAME="DOC.2.5.3.81"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F8</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F9"></A>
-<A NAME="DOC.2.6.3.82"></A>
+<A NAME="DOC.2.5.3.82"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F9</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F10"></A>
-<A NAME="DOC.2.6.3.83"></A>
+<A NAME="DOC.2.5.3.83"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F10</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F11"></A>
-<A NAME="DOC.2.6.3.84"></A>
+<A NAME="DOC.2.5.3.84"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F11</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F12"></A>
-<A NAME="DOC.2.6.3.85"></A>
+<A NAME="DOC.2.5.3.85"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F12</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F13"></A>
-<A NAME="DOC.2.6.3.86"></A>
+<A NAME="DOC.2.5.3.86"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F13</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F14"></A>
-<A NAME="DOC.2.6.3.87"></A>
+<A NAME="DOC.2.5.3.87"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F14</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F15"></A>
-<A NAME="DOC.2.6.3.88"></A>
+<A NAME="DOC.2.5.3.88"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F15</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F16"></A>
-<A NAME="DOC.2.6.3.89"></A>
+<A NAME="DOC.2.5.3.89"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F16</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F17"></A>
-<A NAME="DOC.2.6.3.90"></A>
+<A NAME="DOC.2.5.3.90"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F17</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F18"></A>
-<A NAME="DOC.2.6.3.91"></A>
+<A NAME="DOC.2.5.3.91"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F18</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F19"></A>
-<A NAME="DOC.2.6.3.92"></A>
+<A NAME="DOC.2.5.3.92"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F19</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F20"></A>
-<A NAME="DOC.2.6.3.93"></A>
+<A NAME="DOC.2.5.3.93"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F20</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F21"></A>
-<A NAME="DOC.2.6.3.94"></A>
+<A NAME="DOC.2.5.3.94"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F21</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F22"></A>
-<A NAME="DOC.2.6.3.95"></A>
+<A NAME="DOC.2.5.3.95"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F22</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F23"></A>
-<A NAME="DOC.2.6.3.96"></A>
+<A NAME="DOC.2.5.3.96"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F23</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F24"></A>
-<A NAME="DOC.2.6.3.97"></A>
+<A NAME="DOC.2.5.3.97"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F24</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F25"></A>
-<A NAME="DOC.2.6.3.98"></A>
+<A NAME="DOC.2.5.3.98"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F25</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F26"></A>
-<A NAME="DOC.2.6.3.99"></A>
+<A NAME="DOC.2.5.3.99"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F26</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F27"></A>
-<A NAME="DOC.2.6.3.100"></A>
+<A NAME="DOC.2.5.3.100"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F27</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F28"></A>
-<A NAME="DOC.2.6.3.101"></A>
+<A NAME="DOC.2.5.3.101"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F28</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F29"></A>
-<A NAME="DOC.2.6.3.102"></A>
+<A NAME="DOC.2.5.3.102"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F29</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F30"></A>
-<A NAME="DOC.2.6.3.103"></A>
+<A NAME="DOC.2.5.3.103"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F30</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F31"></A>
-<A NAME="DOC.2.6.3.104"></A>
+<A NAME="DOC.2.5.3.104"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F31</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F32"></A>
-<A NAME="DOC.2.6.3.105"></A>
+<A NAME="DOC.2.5.3.105"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F32</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F33"></A>
-<A NAME="DOC.2.6.3.106"></A>
+<A NAME="DOC.2.5.3.106"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F33</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F34"></A>
-<A NAME="DOC.2.6.3.107"></A>
+<A NAME="DOC.2.5.3.107"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F34</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_F35"></A>
-<A NAME="DOC.2.6.3.108"></A>
+<A NAME="DOC.2.5.3.108"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_F35</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Shift_L"></A>
-<A NAME="DOC.2.6.3.109"></A>
+<A NAME="DOC.2.5.3.109"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Shift_L</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Shift_R"></A>
-<A NAME="DOC.2.6.3.110"></A>
+<A NAME="DOC.2.5.3.110"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Shift_R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Control_L"></A>
-<A NAME="DOC.2.6.3.111"></A>
+<A NAME="DOC.2.5.3.111"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Control_L</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Control_R"></A>
-<A NAME="DOC.2.6.3.112"></A>
+<A NAME="DOC.2.5.3.112"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Control_R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Caps_Lock"></A>
-<A NAME="DOC.2.6.3.113"></A>
+<A NAME="DOC.2.5.3.113"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Caps_Lock</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Shift_Lock"></A>
-<A NAME="DOC.2.6.3.114"></A>
+<A NAME="DOC.2.5.3.114"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Shift_Lock</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Meta_L"></A>
-<A NAME="DOC.2.6.3.115"></A>
+<A NAME="DOC.2.5.3.115"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Meta_L</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Meta_R"></A>
-<A NAME="DOC.2.6.3.116"></A>
+<A NAME="DOC.2.5.3.116"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Meta_R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Alt_L"></A>
-<A NAME="DOC.2.6.3.117"></A>
+<A NAME="DOC.2.5.3.117"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Alt_L</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Alt_R"></A>
-<A NAME="DOC.2.6.3.118"></A>
+<A NAME="DOC.2.5.3.118"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Alt_R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Super_L"></A>
-<A NAME="DOC.2.6.3.119"></A>
+<A NAME="DOC.2.5.3.119"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Super_L</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Super_R"></A>
-<A NAME="DOC.2.6.3.120"></A>
+<A NAME="DOC.2.5.3.120"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Super_R</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Hyper_L"></A>
-<A NAME="DOC.2.6.3.121"></A>
+<A NAME="DOC.2.5.3.121"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Hyper_L</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="KEY_Hyper_R"></A>
-<A NAME="DOC.2.6.3.122"></A>
+<A NAME="DOC.2.5.3.122"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> KEY_Hyper_R</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="ModKeyMask"></A>
-<A NAME="DOC.2.6.4"></A>
+<A NAME="DOC.2.5.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  ModKeyMask</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="MODKEY_LEFT_SHIFT"></A>
-<A NAME="DOC.2.6.4.1"></A>
+<A NAME="DOC.2.5.4.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_LEFT_SHIFT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_RIGHT_SHIFT"></A>
-<A NAME="DOC.2.6.4.2"></A>
+<A NAME="DOC.2.5.4.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_RIGHT_SHIFT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_LEFT_CTRL"></A>
-<A NAME="DOC.2.6.4.3"></A>
+<A NAME="DOC.2.5.4.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_LEFT_CTRL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_RIGHT_CTRL"></A>
-<A NAME="DOC.2.6.4.4"></A>
+<A NAME="DOC.2.5.4.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_RIGHT_CTRL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_LEFT_ALT"></A>
-<A NAME="DOC.2.6.4.5"></A>
+<A NAME="DOC.2.5.4.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_LEFT_ALT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_RIGHT_ALT"></A>
-<A NAME="DOC.2.6.4.6"></A>
+<A NAME="DOC.2.5.4.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_RIGHT_ALT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_LEFT_META"></A>
-<A NAME="DOC.2.6.4.7"></A>
+<A NAME="DOC.2.5.4.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_LEFT_META</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_RIGHT_META"></A>
-<A NAME="DOC.2.6.4.8"></A>
+<A NAME="DOC.2.5.4.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_RIGHT_META</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_NUM_LOCK"></A>
-<A NAME="DOC.2.6.4.9"></A>
+<A NAME="DOC.2.5.4.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_NUM_LOCK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_CAPS_LOCK"></A>
-<A NAME="DOC.2.6.4.10"></A>
+<A NAME="DOC.2.5.4.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_CAPS_LOCK</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_CTRL"></A>
-<A NAME="DOC.2.6.4.11"></A>
+<A NAME="DOC.2.5.4.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_CTRL</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_SHIFT"></A>
-<A NAME="DOC.2.6.4.12"></A>
+<A NAME="DOC.2.5.4.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_SHIFT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_ALT"></A>
-<A NAME="DOC.2.6.4.13"></A>
+<A NAME="DOC.2.5.4.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_ALT</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MODKEY_META"></A>
-<A NAME="DOC.2.6.4.14"></A>
+<A NAME="DOC.2.5.4.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MODKEY_META</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="getEventType"></A>
-<A NAME="DOC.2.6.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.6.2">EventType</A> getEventType() const  = 0</B></TT>
+<A NAME="DOC.2.5.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="GUIEventAdapter.html#DOC.2.5.2">EventType</A> getEventType() const  = 0</B></TT>
 <DD>Get the EventType of the GUI event
 <DL><DT><DD></DL><P>
 <A NAME="getKey"></A>
-<A NAME="DOC.2.6.6"></A>
+<A NAME="DOC.2.5.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int getKey() const  = 0</B></TT>
 <DD>key pressed, return -1 if inappr   opriate for this event. 
 <DL><DT><DD></DL><P>
 <A NAME="getButton"></A>
-<A NAME="DOC.2.6.7"></A>
+<A NAME="DOC.2.5.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int getButton() const  = 0</B></TT>
 <DD>button pressed/released, return -1 if inappropriate for this event
 <DL><DT><DD></DL><P>
 <A NAME="MouseYOrientation"></A>
-<A NAME="DOC.2.6.8"></A>
+<A NAME="DOC.2.5.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  MouseYOrientation</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="Y_INCREASING_UPWARDS"></A>
-<A NAME="DOC.2.6.8.1"></A>
+<A NAME="DOC.2.5.8.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Y_INCREASING_UPWARDS</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Y_INCREASING_DOWNWARDS"></A>
-<A NAME="DOC.2.6.8.2"></A>
+<A NAME="DOC.2.5.8.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Y_INCREASING_DOWNWARDS</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setMouseYOrientation"></A>
-<A NAME="DOC.2.6.9"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMouseYOrientation(<!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> myo)</B></TT>
+<A NAME="DOC.2.5.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMouseYOrientation(<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> myo)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMouseYOrientation"></A>
-<A NAME="DOC.2.6.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> getMouseYOrientation() const </B></TT>
+<A NAME="DOC.2.5.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> getMouseYOrientation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getXmin"></A>
-<A NAME="DOC.2.6.11"></A>
+<A NAME="DOC.2.5.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getXmin() const  = 0</B></TT>
 <DD>manimum x mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getXmax"></A>
-<A NAME="DOC.2.6.12"></A>
+<A NAME="DOC.2.5.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getXmax() const  = 0</B></TT>
 <DD>maximum x mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getYmin"></A>
-<A NAME="DOC.2.6.13"></A>
+<A NAME="DOC.2.5.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getYmin() const  = 0</B></TT>
 <DD>minimum y mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getYmax"></A>
-<A NAME="DOC.2.6.14"></A>
+<A NAME="DOC.2.5.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getYmax() const  = 0</B></TT>
 <DD>maximum y mouse position. 
 <DL><DT><DD></DL><P>
 <A NAME="getX"></A>
-<A NAME="DOC.2.6.15"></A>
+<A NAME="DOC.2.5.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getX() const  = 0</B></TT>
 <DD>current mouse x position
 <DL><DT><DD></DL><P>
 <A NAME="getY"></A>
-<A NAME="DOC.2.6.16"></A>
+<A NAME="DOC.2.5.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float getY() const  = 0</B></TT>
 <DD>current mouse y position
 <DL><DT><DD></DL><P>
 <A NAME="getButtonMask"></A>
-<A NAME="DOC.2.6.17"></A>
+<A NAME="DOC.2.5.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getButtonMask() const  = 0</B></TT>
 <DD>current mouse button state 
 <DL><DT><DD></DL><P>
 <A NAME="getModKeyMask"></A>
-<A NAME="DOC.2.6.18"></A>
+<A NAME="DOC.2.5.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   unsigned int getModKeyMask() const  = 0</B></TT>
 <DD>current modkey state 
 <DL><DT><DD></DL><P>
 <A NAME="time"></A>
-<A NAME="DOC.2.6.19"></A>
+<A NAME="DOC.2.5.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   double time() const  = 0</B></TT>
 <DD>time in seconds of event. 
 <DL><DT><DD></DL><P>
 <A NAME="getXnormalized"></A>
-<A NAME="DOC.2.6.20"></A>
+<A NAME="DOC.2.5.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getXnormalized() const </B></TT>
 <DD>return the getX() value normalised to the range of -1 to 1.
 -1 would be the left hand side of the window.
@@ -822,7 +838,7 @@ as appropriate.</BLOCKQUOTE>
 +1 would be the right hand side of the window.
 <DL><DT><DD></DL><P>
 <A NAME="getYnormalized"></A>
-<A NAME="DOC.2.6.21"></A>
+<A NAME="DOC.2.5.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getYnormalized() const </B></TT>
 <DD>return the getY() value normalised to the range of -1 to 1.
 -1 would be the bottom of the window.
@@ -830,17 +846,17 @@ as appropriate.</BLOCKQUOTE>
 +1 would be the top of the window.
 <DL><DT><DD></DL><P>
 <A NAME="GUIEventAdapter"></A>
-<A NAME="DOC.2.6.22"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GUIEventAdapter(<!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> myo=<!1><A HREF="GUIEventAdapter.html#DOC.2.6.8.2">Y_INCREASING_DOWNWARDS</A>)</B></TT>
+<A NAME="DOC.2.5.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> GUIEventAdapter(<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> myo=<!1><A HREF="GUIEventAdapter.html#DOC.2.5.8.2">Y_INCREASING_DOWNWARDS</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~GUIEventAdapter"></A>
-<A NAME="DOC.2.6.23"></A>
+<A NAME="DOC.2.5.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~GUIEventAdapter()</B></TT>
 <DD>Force users to create on heap, so that multiple referencing is safe
 <DL><DT><DD></DL><P>
 <A NAME="_mouseYOrientation"></A>
-<A NAME="DOC.2.6.24"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GUIEventAdapter.html#DOC.2.6.8">MouseYOrientation</A> _mouseYOrientation</B></TT>
+<A NAME="DOC.2.5.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="GUIEventAdapter.html#DOC.2.5.8">MouseYOrientation</A> _mouseYOrientation</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

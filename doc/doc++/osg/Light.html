@@ -23,121 +23,121 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.86.1">Light</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.1">Light</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.86.2">Light</A></B>(const <!1><A HREF="Light.html#DOC.2.86.2">Light</A>&amp; light, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.2">Light</A></B>(const <!1><A HREF="Light.html#DOC.2.93.2">Light</A>&amp; light, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.86.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Light.html">Light</A>, (<!1><A HREF="StateAttribute.html#DOC.2.175.5">Type</A>)(<!1><A HREF="StateAttribute.html#DOC.2.175.6.12">LIGHT_0</A>+<!1><A HREF="Light.html#DOC.2.86.32">_lightnum</A>))
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.93.3">META_StateAttribute</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Light.html">Light</A>, (<!1><A HREF="StateAttribute.html#DOC.2.183.5">Type</A>)(<!1><A HREF="StateAttribute.html#DOC.2.183.6.12">LIGHT_0</A>+<!1><A HREF="Light.html#DOC.2.93.32">_lightnum</A>))
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.86.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.93.4">compare</A></B>(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.86.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.175.1">GLMode</A>&gt;&amp; modes) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.93.5">getAssociatedModes</A></B>(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.183.1">GLMode</A>&gt;&amp; modes) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.6">setLightNum</A></B>(int num)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.93.6">setLightNum</A></B>(int num)
 <DD><I>Set which OpenGL light to operate on</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.86.7">getLightNum</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.93.7">getLightNum</A></B>() const 
 <DD><I>Get which OpenGL light this osg::Light operates on</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.8">setAmbient</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.8">setAmbient</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )
 <DD><I>Set the ambient component of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.86.9">getAmbient</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.93.9">getAmbient</A></B>() const 
 <DD><I>Get the ambient component of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.10">setDiffuse</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.10">setDiffuse</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )
 <DD><I>Set the diffuse component of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.86.11">getDiffuse</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.93.11">getDiffuse</A></B>() const 
 <DD><I>Get the diffuse component of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.12">setSpecular</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.12">setSpecular</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )
 <DD><I>Set the specular component of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.86.13">getSpecular</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.93.13">getSpecular</A></B>() const 
 <DD><I>Get the specular component of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.14">setPosition</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; position )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.14">setPosition</A></B>( const <!1><A HREF="Vec4.html">Vec4</A>&amp; position )
 <DD><I>Set the position of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.86.15">getPosition</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; <B><A HREF="#DOC.2.93.15">getPosition</A></B>() const 
 <DD><I>Get the position of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.16">setDirection</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; direction )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.16">setDirection</A></B>( const <!1><A HREF="Vec3.html">Vec3</A>&amp; direction )
 <DD><I>Set the direction of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.86.17">getDirection</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.93.17">getDirection</A></B>() const 
 <DD><I>Get the direction of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.18">setConstantAttenuation</A></B>( float constant_attenuation )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.18">setConstantAttenuation</A></B>( float constant_attenuation )
 <DD><I>Set the constant attenuation of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.86.19">getConstantAttenuation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.93.19">getConstantAttenuation</A></B>() const 
 <DD><I>Get the constant attenuation of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.20">setLinearAttenuation</A></B>( float linear_attenuation )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.20">setLinearAttenuation</A></B>( float linear_attenuation )
 <DD><I>Set the linear attenuation of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.86.21">getLinearAttenuation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.93.21">getLinearAttenuation</A></B>() const 
 <DD><I>Get the linear attenuation of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.22">setQuadraticAttenuation</A></B>( float quadratic_attenuation )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.22">setQuadraticAttenuation</A></B>( float quadratic_attenuation )
 <DD><I>Set the quadratic attenuation of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.86.23">getQuadraticAttenuation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.93.23">getQuadraticAttenuation</A></B>() const 
 <DD><I>Get the quadratic attenuation of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.24">setSpotExponent</A></B>( float spot_exponent )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.24">setSpotExponent</A></B>( float spot_exponent )
 <DD><I>Set the spot exponent of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.86.25">getSpotExponent</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.93.25">getSpotExponent</A></B>() const 
 <DD><I>Get the spot exponent of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.26">setSpotCutoff</A></B>( float spot_cutoff )
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.93.26">setSpotCutoff</A></B>( float spot_cutoff )
 <DD><I>Set the spot cutoff of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.86.27">getSpotCutoff</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.93.27">getSpotCutoff</A></B>() const 
 <DD><I>Get the spot cutoff of the light.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.28">captureLightState</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.93.28">captureLightState</A></B>()
 <DD><I> Capture the lighting settings of the current OpenGL state and store them in this object</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.86.29">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.93.29">apply</A></B>(<!1><A HREF="State.html">State</A>&amp; state) const 
 <DD><I>Apply the light's state to the OpenGL state machine.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.86.32">_lightnum</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.93.32">_lightnum</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.86.33">_ambient</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.93.33">_ambient</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.86.34">_diffuse</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.93.34">_diffuse</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.86.35">_specular</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.93.35">_specular</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.86.36">_position</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec4.html">Vec4</A> <B><A HREF="#DOC.2.93.36">_position</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.86.37">_direction</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.93.37">_direction</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.86.38">_constant_attenuation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.93.38">_constant_attenuation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.86.39">_linear_attenuation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.93.39">_linear_attenuation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.86.40">_quadratic_attenuation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.93.40">_quadratic_attenuation</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.86.41">_spot_exponent</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.93.41">_spot_exponent</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.86.42">_spot_cutoff</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.93.42">_spot_cutoff</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.86.30">~Light</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.93.30">~Light</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.31">init</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.93.31">init</A></B>()
 <DD><I>Initialize the light's settings with some decent defaults.</I>
 </DL></P>
 
@@ -156,7 +156,7 @@
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
 <DT>
-<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.175.5">Type</A> <B>getType</B>() const 
+<IMG ALT="o" SRC=icon2.gif>virtual   <!1><A HREF="StateAttribute.html#DOC.2.183.5">Type</A> <B>getType</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isTextureAttribute</B>() const 
 <DT>
@@ -189,9 +189,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -207,7 +207,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -246,200 +246,200 @@
 <DL>
 
 <A NAME="Light"></A>
-<A NAME="DOC.2.86.1"></A>
+<A NAME="DOC.2.93.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Light()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Light"></A>
-<A NAME="DOC.2.86.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Light(const <!1><A HREF="Light.html#DOC.2.86.2">Light</A>&amp; light, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.93.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Light(const <!1><A HREF="Light.html#DOC.2.93.2">Light</A>&amp; light, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="META_StateAttribute"></A>
-<A NAME="DOC.2.86.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Light.html">Light</A>, (<!1><A HREF="StateAttribute.html#DOC.2.175.5">Type</A>)(<!1><A HREF="StateAttribute.html#DOC.2.175.6.12">LIGHT_0</A>+<!1><A HREF="Light.html#DOC.2.86.32">_lightnum</A>))</B></TT>
+<A NAME="DOC.2.93.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_StateAttribute(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Light.html">Light</A>, (<!1><A HREF="StateAttribute.html#DOC.2.183.5">Type</A>)(<!1><A HREF="StateAttribute.html#DOC.2.183.6.12">LIGHT_0</A>+<!1><A HREF="Light.html#DOC.2.93.32">_lightnum</A>))</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.86.4"></A>
+<A NAME="DOC.2.93.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="StateAttribute.html">StateAttribute</A>&amp; sa) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="getAssociatedModes"></A>
-<A NAME="DOC.2.86.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.175.1">GLMode</A>&gt;&amp; modes) const </B></TT>
+<A NAME="DOC.2.93.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void getAssociatedModes(std::vector&lt;<!1><A HREF="StateAttribute.html#DOC.2.183.1">GLMode</A>&gt;&amp; modes) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setLightNum"></A>
-<A NAME="DOC.2.86.6"></A>
+<A NAME="DOC.2.93.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setLightNum(int num)</B></TT>
 <DD>Set which OpenGL light to operate on
 <DL><DT><DD></DL><P>
 <A NAME="getLightNum"></A>
-<A NAME="DOC.2.86.7"></A>
+<A NAME="DOC.2.93.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int getLightNum() const </B></TT>
 <DD>Get which OpenGL light this osg::Light operates on
 <DL><DT><DD></DL><P>
 <A NAME="setAmbient"></A>
-<A NAME="DOC.2.86.8"></A>
+<A NAME="DOC.2.93.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setAmbient( const <!1><A HREF="Vec4.html">Vec4</A>&amp; ambient )</B></TT>
 <DD>Set the ambient component of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getAmbient"></A>
-<A NAME="DOC.2.86.9"></A>
+<A NAME="DOC.2.93.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getAmbient() const </B></TT>
 <DD>Get the ambient component of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setDiffuse"></A>
-<A NAME="DOC.2.86.10"></A>
+<A NAME="DOC.2.93.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDiffuse( const <!1><A HREF="Vec4.html">Vec4</A>&amp; diffuse )</B></TT>
 <DD>Set the diffuse component of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getDiffuse"></A>
-<A NAME="DOC.2.86.11"></A>
+<A NAME="DOC.2.93.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getDiffuse() const </B></TT>
 <DD>Get the diffuse component of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setSpecular"></A>
-<A NAME="DOC.2.86.12"></A>
+<A NAME="DOC.2.93.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSpecular( const <!1><A HREF="Vec4.html">Vec4</A>&amp; specular )</B></TT>
 <DD>Set the specular component of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getSpecular"></A>
-<A NAME="DOC.2.86.13"></A>
+<A NAME="DOC.2.93.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getSpecular() const </B></TT>
 <DD>Get the specular component of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setPosition"></A>
-<A NAME="DOC.2.86.14"></A>
+<A NAME="DOC.2.93.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setPosition( const <!1><A HREF="Vec4.html">Vec4</A>&amp; position )</B></TT>
 <DD>Set the position of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getPosition"></A>
-<A NAME="DOC.2.86.15"></A>
+<A NAME="DOC.2.93.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec4.html">Vec4</A>&amp; getPosition() const </B></TT>
 <DD>Get the position of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setDirection"></A>
-<A NAME="DOC.2.86.16"></A>
+<A NAME="DOC.2.93.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setDirection( const <!1><A HREF="Vec3.html">Vec3</A>&amp; direction )</B></TT>
 <DD>Set the direction of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getDirection"></A>
-<A NAME="DOC.2.86.17"></A>
+<A NAME="DOC.2.93.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getDirection() const </B></TT>
 <DD>Get the direction of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setConstantAttenuation"></A>
-<A NAME="DOC.2.86.18"></A>
+<A NAME="DOC.2.93.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setConstantAttenuation( float constant_attenuation )</B></TT>
 <DD>Set the constant attenuation of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getConstantAttenuation"></A>
-<A NAME="DOC.2.86.19"></A>
+<A NAME="DOC.2.93.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getConstantAttenuation() const </B></TT>
 <DD>Get the constant attenuation of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setLinearAttenuation"></A>
-<A NAME="DOC.2.86.20"></A>
+<A NAME="DOC.2.93.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setLinearAttenuation( float linear_attenuation )</B></TT>
 <DD>Set the linear attenuation of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getLinearAttenuation"></A>
-<A NAME="DOC.2.86.21"></A>
+<A NAME="DOC.2.93.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getLinearAttenuation() const </B></TT>
 <DD>Get the linear attenuation of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setQuadraticAttenuation"></A>
-<A NAME="DOC.2.86.22"></A>
+<A NAME="DOC.2.93.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setQuadraticAttenuation( float quadratic_attenuation )</B></TT>
 <DD>Set the quadratic attenuation of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getQuadraticAttenuation"></A>
-<A NAME="DOC.2.86.23"></A>
+<A NAME="DOC.2.93.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getQuadraticAttenuation() const </B></TT>
 <DD>Get the quadratic attenuation of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setSpotExponent"></A>
-<A NAME="DOC.2.86.24"></A>
+<A NAME="DOC.2.93.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSpotExponent( float spot_exponent )</B></TT>
 <DD>Set the spot exponent of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getSpotExponent"></A>
-<A NAME="DOC.2.86.25"></A>
+<A NAME="DOC.2.93.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getSpotExponent() const </B></TT>
 <DD>Get the spot exponent of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="setSpotCutoff"></A>
-<A NAME="DOC.2.86.26"></A>
+<A NAME="DOC.2.93.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setSpotCutoff( float spot_cutoff )</B></TT>
 <DD>Set the spot cutoff of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="getSpotCutoff"></A>
-<A NAME="DOC.2.86.27"></A>
+<A NAME="DOC.2.93.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getSpotCutoff() const </B></TT>
 <DD>Get the spot cutoff of the light. 
 <DL><DT><DD></DL><P>
 <A NAME="captureLightState"></A>
-<A NAME="DOC.2.86.28"></A>
+<A NAME="DOC.2.93.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void captureLightState()</B></TT>
 <DD>
 Capture the lighting settings of the current OpenGL state
 and store them in this object
 <DL><DT><DD></DL><P>
 <A NAME="apply"></A>
-<A NAME="DOC.2.86.29"></A>
+<A NAME="DOC.2.93.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void apply(<!1><A HREF="State.html">State</A>&amp; state) const </B></TT>
 <DD>Apply the light's state to the OpenGL state machine. 
 <DL><DT><DD></DL><P>
 <A NAME="~Light"></A>
-<A NAME="DOC.2.86.30"></A>
+<A NAME="DOC.2.93.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Light()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="init"></A>
-<A NAME="DOC.2.86.31"></A>
+<A NAME="DOC.2.93.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void init()</B></TT>
 <DD>Initialize the light's settings with some decent defaults. 
 <DL><DT><DD></DL><P>
 <A NAME="_lightnum"></A>
-<A NAME="DOC.2.86.32"></A>
+<A NAME="DOC.2.93.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _lightnum</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_ambient"></A>
-<A NAME="DOC.2.86.33"></A>
+<A NAME="DOC.2.93.33"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _ambient</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_diffuse"></A>
-<A NAME="DOC.2.86.34"></A>
+<A NAME="DOC.2.93.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _diffuse</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_specular"></A>
-<A NAME="DOC.2.86.35"></A>
+<A NAME="DOC.2.93.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _specular</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_position"></A>
-<A NAME="DOC.2.86.36"></A>
+<A NAME="DOC.2.93.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec4.html">Vec4</A> _position</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_direction"></A>
-<A NAME="DOC.2.86.37"></A>
+<A NAME="DOC.2.93.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _direction</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_constant_attenuation"></A>
-<A NAME="DOC.2.86.38"></A>
+<A NAME="DOC.2.93.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _constant_attenuation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_linear_attenuation"></A>
-<A NAME="DOC.2.86.39"></A>
+<A NAME="DOC.2.93.39"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _linear_attenuation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_quadratic_attenuation"></A>
-<A NAME="DOC.2.86.40"></A>
+<A NAME="DOC.2.93.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _quadratic_attenuation</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_spot_exponent"></A>
-<A NAME="DOC.2.86.41"></A>
+<A NAME="DOC.2.93.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _spot_exponent</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_spot_cutoff"></A>
-<A NAME="DOC.2.86.42"></A>
+<A NAME="DOC.2.93.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _spot_cutoff</B></TT>
 <DL><DT><DD></DL><P></DL>
 

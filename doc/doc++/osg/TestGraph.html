@@ -13,12 +13,12 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="TestGraph.html">TestGraph</A>&amp; <B><A HREF="#DOC.164.10.1">instance</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   <!1><A HREF="TestGraph.html">TestGraph</A>&amp; <B><A HREF="#DOC.180.10.1">instance</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TestSuite.html">TestSuite</A>* <B><A HREF="#DOC.164.10.2">root</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TestSuite.html">TestSuite</A>* <B><A HREF="#DOC.180.10.2">root</A></B>()
 <DD><I> </I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TestSuite.html">TestSuite</A>* <B><A HREF="#DOC.164.10.3">suite</A></B>(const std::string&amp; path, <!1><A HREF="TestSuite.html">TestSuite</A>* tsuite = 0, bool createIfNecessary = false)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="TestSuite.html">TestSuite</A>* <B><A HREF="#DOC.180.10.3">suite</A></B>(const std::string&amp; path, <!1><A HREF="TestSuite.html">TestSuite</A>* tsuite = 0, bool createIfNecessary = false)
 <DD><I> A utility function for accessing an arbitrary quite by pathname, relative to the suite 'tsuite' (defaults to root if null), and with the option of creating the \em TestSuite designated by \em path, if it does not already exist.</I>
 </DL></P>
 
@@ -33,17 +33,17 @@ primarily, it provides access to the root suite</BLOCKQUOTE>
 <DL>
 
 <A NAME="instance"></A>
-<A NAME="DOC.164.10.1"></A>
+<A NAME="DOC.180.10.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   <!1><A HREF="TestGraph.html">TestGraph</A>&amp; instance()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="root"></A>
-<A NAME="DOC.164.10.2"></A>
+<A NAME="DOC.180.10.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TestSuite.html">TestSuite</A>* root()</B></TT>
 <DD>
 
 <DL><DT><DT><B>Returns:</B><DD>  a pointer to the root TestSuite.<BR><DD></DL><P>
 <A NAME="suite"></A>
-<A NAME="DOC.164.10.3"></A>
+<A NAME="DOC.180.10.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="TestSuite.html">TestSuite</A>* suite(const std::string&amp; path, <!1><A HREF="TestSuite.html">TestSuite</A>* tsuite = 0, bool createIfNecessary = false)</B></TT>
 <DD>
 A utility function for accessing an arbitrary quite by pathname, relative to
@@ -62,10 +62,10 @@ already exists.
 
 <P>
 
-<DL><DT><DT><B>Parameters:</B><DD><B>path</B> - 					The <!1><A HREF="Test.html#DOC.164.1.3">name</A> of the <!1><A HREF="TestSuite.html">TestSuite</A> to return.
-<BR><B>tsuite</B> - 				The <!1><A HREF="TestGraph.html#DOC.164.10.3">suite</A> to '<!1><A HREF="TestRecord.html#DOC.164.13.1">start</A> from'. Path is relative to this
-<!1><A HREF="TestGraph.html#DOC.164.10.3">suite</A> (defaults to <!1><A HREF="TestGraph.html#DOC.164.10.2">root</A> <!1><A HREF="TestGraph.html#DOC.164.10.3">suite</A>).
-<BR><B>createIfNecessary</B> - 	Optionally create the <!1><A HREF="TestSuite.html">TestSuite</A>(<!1><A HREF="ImpostorSprite.html#DOC.2.83.24">s</A>) denoted by path if
+<DL><DT><DT><B>Parameters:</B><DD><B>path</B> - 					The <!1><A HREF="Test.html#DOC.180.1.3">name</A> of the <!1><A HREF="TestSuite.html">TestSuite</A> to return.
+<BR><B>tsuite</B> - 				The <!1><A HREF="TestGraph.html#DOC.180.10.3">suite</A> to '<!1><A HREF="TestRecord.html#DOC.180.13.1">start</A> from'. Path is relative to this
+<!1><A HREF="TestGraph.html#DOC.180.10.3">suite</A> (defaults to <!1><A HREF="TestGraph.html#DOC.180.10.2">root</A> <!1><A HREF="TestGraph.html#DOC.180.10.3">suite</A>).
+<BR><B>createIfNecessary</B> - 	Optionally create the <!1><A HREF="TestSuite.html">TestSuite</A>(<!1><A HREF="ImpostorSprite.html#DOC.2.90.24">s</A>) denoted by path if
 they do not exist.<BR><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

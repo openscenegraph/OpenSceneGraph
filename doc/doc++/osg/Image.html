@@ -23,178 +23,181 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.79.1">Image</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.86.1">Image</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.79.2">Image</A></B>(const <!1><A HREF="Image.html#DOC.2.79.2">Image</A>&amp; image, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.86.2">Image</A></B>(const <!1><A HREF="Image.html#DOC.2.86.2">Image</A>&amp; image, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.79.3">cloneType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.86.3">cloneType</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.79.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Object.html">Object</A>* <B><A HREF="#DOC.2.86.4">clone</A></B>(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.79.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.2.86.5">isSameKindAs</A></B>(const <!1><A HREF="Object.html">Object</A>* obj) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.79.6">libraryName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.86.6">libraryName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.79.7">className</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   const char* <B><A HREF="#DOC.2.86.7">className</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.79.8">compare</A></B>(const <!1><A HREF="Image.html">Image</A>&amp; rhs) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   int <B><A HREF="#DOC.2.86.8">compare</A></B>(const <!1><A HREF="Image.html">Image</A>&amp; rhs) const 
 <DD><I>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.9">setFileName</A></B>(const std::string&amp; fileName)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.9">setFileName</A></B>(const std::string&amp; fileName)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.79.10">getFileName</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.2.86.10">getFileName</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.12">setAllocationMode</A></B>(<!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> mode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.12">setAllocationMode</A></B>(<!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> mode)
 <DD><I>Set the method used for deleting data once it goes out of scope</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> <B><A HREF="#DOC.2.79.13">setAllocationMode</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> <B><A HREF="#DOC.2.86.13">setAllocationMode</A></B>() const 
 <DD><I>Get the method used for deleting data once it goes out of scope</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.14">allocateImage</A></B>(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, int <!1><A HREF="Image.html#DOC.2.79.21">t</A>, int <!1><A HREF="Image.html#DOC.2.79.22">r</A>, GLenum format, GLenum type, int packing=1)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.14">allocateImage</A></B>(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, int <!1><A HREF="Image.html#DOC.2.86.21">t</A>, int <!1><A HREF="Image.html#DOC.2.86.22">r</A>, GLenum format, GLenum type, int packing=1)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.15">setImage</A></B>(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, int <!1><A HREF="Image.html#DOC.2.79.21">t</A>, int <!1><A HREF="Image.html#DOC.2.79.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.79.33">data</A>, <!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> mode, int packing=1)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.15">setImage</A></B>(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, int <!1><A HREF="Image.html#DOC.2.86.21">t</A>, int <!1><A HREF="Image.html#DOC.2.86.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, <!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> mode, int packing=1)
 <DD><I>set the image data and format.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.16">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.214.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.214.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLenum format, GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.16">readPixels</A></B>(int <!1><A HREF="Viewport.html#DOC.2.221.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.221.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLenum format, GLenum type)
 <DD><I>readPixels from screen at specified position and size, using glReadPixels.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.17">readImageFromCurrentTexture</A></B>(unsigned int contextID=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.17">readImageFromCurrentTexture</A></B>(unsigned int contextID=0)
 <DD><I>read the contents of the current bound texture, handling compressed formats if present.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.18">scaleImage</A></B>(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, int <!1><A HREF="Image.html#DOC.2.79.21">t</A>, int <!1><A HREF="Image.html#DOC.2.79.22">r</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.18">scaleImage</A></B>(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, int <!1><A HREF="Image.html#DOC.2.86.21">t</A>, int <!1><A HREF="Image.html#DOC.2.86.22">r</A>)
 <DD><I>Scale image to specified size.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.19">copySubImage</A></B>(int s_offset, int t_offset, int r_offset, <!1><A HREF="Image.html">osg::Image</A>* source)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.19">copySubImage</A></B>(int s_offset, int t_offset, int r_offset, <!1><A HREF="Image.html">osg::Image</A>* source)
 <DD><I>Copy a source Image into a subpart of this Image at specified position.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.79.20">s</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.86.20">s</A></B>() const 
 <DD><I>Width of image</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.79.21">t</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.86.21">t</A></B>() const 
 <DD><I>Height of image</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.79.22">r</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   int <B><A HREF="#DOC.2.86.22">r</A></B>() const 
 <DD><I>Depth of image</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.23">setInternalTextureFormat</A></B>(GLint internalFormat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.23">setInternalTextureFormat</A></B>(GLint internalFormat)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLint <B><A HREF="#DOC.2.79.24">getInternalTextureFormat</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLint <B><A HREF="#DOC.2.86.24">getInternalTextureFormat</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.25">setPixelFormat</A></B>(GLenum format)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.25">setPixelFormat</A></B>(GLenum format)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLenum <B><A HREF="#DOC.2.79.26">getPixelFormat</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLenum <B><A HREF="#DOC.2.86.26">getPixelFormat</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLenum <B><A HREF="#DOC.2.79.27">getDataType</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   GLenum <B><A HREF="#DOC.2.86.27">getDataType</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.79.28">getPacking</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.86.28">getPacking</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.79.29">getPixelSizeInBits</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.86.29">getPixelSizeInBits</A></B>() const 
 <DD><I>return the numbers of bits required for each pixel</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.79.30">getRowSizeInBytes</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.86.30">getRowSizeInBytes</A></B>() const 
 <DD><I>return the numbers of bytes each row of pixels occupies once it has been packed</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.79.31">getImageSizeInBytes</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.86.31">getImageSizeInBytes</A></B>() const 
 <DD><I>return the numbers of bytes each image (_s*_t) of pixels occupies</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.79.32">getTotalSizeInBytes</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.86.32">getTotalSizeInBytes</A></B>() const 
 <DD><I>return the numbers of bytes the whole row/image/volume of pixels occupies</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.79.33">data</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.86.33">getTotalSizeInBytesIncludingMipmaps</A></B>() const 
+<DD><I>return the numbers of bytes the whole row/image/volume of pixels occupies, including all mip maps if included</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.86.34">data</A></B>()
 <DD><I>raw image data</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned char* <B><A HREF="#DOC.2.79.34">data</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const unsigned char* <B><A HREF="#DOC.2.86.35">data</A></B>() const 
 <DD><I>raw const image data</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.79.35">data</A></B>(int column, int row=0, int image=0) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.86.36">data</A></B>(int column, int row=0, int image=0) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.36">flipHorizontal</A></B>(int image=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.37">flipHorizontal</A></B>(int image=0)
 <DD><I>Flip the image horizontally</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.37">flipVertical</A></B>(int image=0)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.38">flipVertical</A></B>(int image=0)
 <DD><I>Flip the image vertically</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.38">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.html#DOC.2.186.40.22">maxTextureSize</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.39">ensureValidSizeForTexturing</A></B>(GLint <!1><A HREF="Extensions.3.html#DOC.2.193.39.22">maxTextureSize</A>)
 <DD><I>Ensure image dimensions are a power of two.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.79.39">dirty</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.40">dirty</A></B>()
 <DD><I>Dirty the image, which increments the modified flag, to force osg::Texture to reload the image</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.79.40">setModifiedTag</A></B>(unsigned int value)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.41">setModifiedTag</A></B>(unsigned int value)
 <DD><I>Set the modified tag value, only used by osg::Texture when using texture subloading.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.79.41">getModifiedTag</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned int <B><A HREF="#DOC.2.86.42">getModifiedTag</A></B>() const 
 <DD><I>Get modified tag value, only used by osg::Texture when using texture subloading.</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   bool <B><A HREF="#DOC.2.79.42">isPackedType</A></B>(GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   bool <B><A HREF="#DOC.2.86.43">isPackedType</A></B>(GLenum type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.79.43">computeNumComponents</A></B>(GLenum format)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.86.44">computeNumComponents</A></B>(GLenum format)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.79.44">computePixelSizeInBits</A></B>(GLenum format, GLenum type)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.86.45">computePixelSizeInBits</A></B>(GLenum format, GLenum type)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.79.45">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLenum format, GLenum type, int packing)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   unsigned int <B><A HREF="#DOC.2.86.46">computeRowWidthInBytes</A></B>(int <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLenum format, GLenum type, int packing)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.79.46">computeNearestPowerOfTwo</A></B>(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, float bias=0.5f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>static   int <B><A HREF="#DOC.2.86.47">computeNearestPowerOfTwo</A></B>(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, float bias=0.5f)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.79.48">isMipmap</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.86.49">isMipmap</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.79.49">getNumMipmapLevels</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.86.50">getNumMipmapLevels</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.79.50">setMipmapData</A></B>(const <!1><A HREF="Image.html#DOC.2.79.47">MipmapDataType</A>&amp; mipmapDataVector)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.86.51">setMipmapData</A></B>(const <!1><A HREF="Image.html#DOC.2.86.48">MipmapDataType</A>&amp; mipmapDataVector)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.79.51">getMipmapData</A></B>(unsigned int mipmapNumber) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   unsigned char* <B><A HREF="#DOC.2.86.52">getMipmapData</A></B>(unsigned int mipmapNumber) const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.52">computeMipMaps</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.53">computeMipMaps</A></B>()
 <DD><I>converts a single image into mip mapped version image</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.79.53">isImageTranslucent</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.86.54">isImageTranslucent</A></B>() const 
 <DD><I>return true of this image is translucent - ie.</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.79.11">AllocationMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.86.11">AllocationMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; unsigned int &gt; <B><A HREF="#DOC.2.79.47">MipmapDataType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  std::vector&lt; unsigned int &gt; <B><A HREF="#DOC.2.86.48">MipmapDataType</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.79.56">_fileName</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.2.86.57">_fileName</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.79.57">_s</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.2.86.58">_s</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.79.58">_t</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int  <B><A HREF="#DOC.2.86.59">_t</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.79.59">_r</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int   <B><A HREF="#DOC.2.86.60">_r</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.79.60">_internalTextureFormat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLint <B><A HREF="#DOC.2.86.61">_internalTextureFormat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.79.61">_pixelFormat</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.86.62">_pixelFormat</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.79.62">_dataType</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>GLenum <B><A HREF="#DOC.2.86.63">_dataType</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.79.63">_packing</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.86.64">_packing</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> <B><A HREF="#DOC.2.79.64">_allocationMode</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> <B><A HREF="#DOC.2.86.65">_allocationMode</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char* <B><A HREF="#DOC.2.79.65">_data</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char* <B><A HREF="#DOC.2.86.66">_data</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.79.68">_modifiedTag</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.86.69">_modifiedTag</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.79.47">MipmapDataType</A> <B><A HREF="#DOC.2.79.69">_mipmapData</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html#DOC.2.86.48">MipmapDataType</A> <B><A HREF="#DOC.2.86.70">_mipmapData</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.79.54">~Image</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.86.55">~Image</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>&amp; <B><A HREF="#DOC.2.79.55">operator = </A></B>(const <!1><A HREF="Image.html">Image</A>&amp;)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Image.html">Image</A>&amp; <B><A HREF="#DOC.2.86.56">operator = </A></B>(const <!1><A HREF="Image.html">Image</A>&amp;)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.66">deallocateData</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.67">deallocateData</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.79.67">setData</A></B>(unsigned char* <!1><A HREF="Image.html#DOC.2.79.33">data</A>, <!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> allocationMode)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.86.68">setData</A></B>(unsigned char* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, <!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> allocationMode)
 </DL></P>
 
 </DL>
@@ -202,9 +205,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -220,7 +223,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -257,82 +260,82 @@
 <DL>
 
 <A NAME="Image"></A>
-<A NAME="DOC.2.79.1"></A>
+<A NAME="DOC.2.86.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Image()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Image"></A>
-<A NAME="DOC.2.79.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Image(const <!1><A HREF="Image.html#DOC.2.79.2">Image</A>&amp; image, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.86.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Image(const <!1><A HREF="Image.html#DOC.2.86.2">Image</A>&amp; image, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DD>Copy constructor using CopyOp to manage deep vs shallow copy
 <DL><DT><DD></DL><P>
 <A NAME="cloneType"></A>
-<A NAME="DOC.2.79.3"></A>
+<A NAME="DOC.2.86.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* cloneType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="clone"></A>
-<A NAME="DOC.2.79.4"></A>
+<A NAME="DOC.2.86.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Object.html">Object</A>* clone(const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isSameKindAs"></A>
-<A NAME="DOC.2.79.5"></A>
+<A NAME="DOC.2.86.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool isSameKindAs(const <!1><A HREF="Object.html">Object</A>* obj) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="libraryName"></A>
-<A NAME="DOC.2.79.6"></A>
+<A NAME="DOC.2.86.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* libraryName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="className"></A>
-<A NAME="DOC.2.79.7"></A>
+<A NAME="DOC.2.86.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   const char* className() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="compare"></A>
-<A NAME="DOC.2.79.8"></A>
+<A NAME="DOC.2.86.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   int compare(const <!1><A HREF="Image.html">Image</A>&amp; rhs) const </B></TT>
 <DD>return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs
 <DL><DT><DD></DL><P>
 <A NAME="setFileName"></A>
-<A NAME="DOC.2.79.9"></A>
+<A NAME="DOC.2.86.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setFileName(const std::string&amp; fileName)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getFileName"></A>
-<A NAME="DOC.2.79.10"></A>
+<A NAME="DOC.2.86.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const std::string&amp; getFileName() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="AllocationMode"></A>
-<A NAME="DOC.2.79.11"></A>
+<A NAME="DOC.2.86.11"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  AllocationMode</B></TT>
 <DL><DT><DD></DL><P><DL>
 
 <A NAME="NO_DELETE"></A>
-<A NAME="DOC.2.79.11.1"></A>
+<A NAME="DOC.2.86.11.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> NO_DELETE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="USE_NEW_DELETE"></A>
-<A NAME="DOC.2.79.11.2"></A>
+<A NAME="DOC.2.86.11.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_NEW_DELETE</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="USE_MALLOC_FREE"></A>
-<A NAME="DOC.2.79.11.3"></A>
+<A NAME="DOC.2.86.11.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> USE_MALLOC_FREE</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="setAllocationMode"></A>
-<A NAME="DOC.2.79.12"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAllocationMode(<!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> mode)</B></TT>
+<A NAME="DOC.2.86.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setAllocationMode(<!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> mode)</B></TT>
 <DD>Set the method used for deleting data once it goes out of scope
 <DL><DT><DD></DL><P>
 <A NAME="setAllocationMode"></A>
-<A NAME="DOC.2.79.13"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> setAllocationMode() const </B></TT>
+<A NAME="DOC.2.86.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> setAllocationMode() const </B></TT>
 <DD>Get the method used for deleting data once it goes out of scope
 <DL><DT><DD></DL><P>
 <A NAME="allocateImage"></A>
-<A NAME="DOC.2.79.14"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void allocateImage(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, int <!1><A HREF="Image.html#DOC.2.79.21">t</A>, int <!1><A HREF="Image.html#DOC.2.79.22">r</A>, GLenum format, GLenum type, int packing=1)</B></TT>
+<A NAME="DOC.2.86.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void allocateImage(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, int <!1><A HREF="Image.html#DOC.2.86.21">t</A>, int <!1><A HREF="Image.html#DOC.2.86.22">r</A>, GLenum format, GLenum type, int packing=1)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setImage"></A>
-<A NAME="DOC.2.79.15"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, int <!1><A HREF="Image.html#DOC.2.79.21">t</A>, int <!1><A HREF="Image.html#DOC.2.79.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.79.33">data</A>, <!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> mode, int packing=1)</B></TT>
+<A NAME="DOC.2.86.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setImage(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, int <!1><A HREF="Image.html#DOC.2.86.21">t</A>, int <!1><A HREF="Image.html#DOC.2.86.22">r</A>, GLint internalTextureformat, GLenum format, GLenum type, unsigned char* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, <!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> mode, int packing=1)</B></TT>
 <DD>set the image data and format.
 note, when the packing value is negative (the default is -1) this method assumes
 a _packing width of 1 if the width is not a multiple of 4,
@@ -340,24 +343,24 @@ otherwise automatically sets to _packing to 4. If a positive
 value of packing is supplied than _packing is simply set to that value.
 <DL><DT><DD></DL><P>
 <A NAME="readPixels"></A>
-<A NAME="DOC.2.79.16"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.214.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.214.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>, GLenum format, GLenum type)</B></TT>
+<A NAME="DOC.2.86.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readPixels(int <!1><A HREF="Viewport.html#DOC.2.221.8">x</A>, int <!1><A HREF="Viewport.html#DOC.2.221.9">y</A>, int <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, int <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>, GLenum format, GLenum type)</B></TT>
 <DD>readPixels from screen at specified position and size, using glReadPixels.
 Create memory for storage if required, reuse existing pixel coords if possible.
 <DL><DT><DD></DL><P>
 <A NAME="readImageFromCurrentTexture"></A>
-<A NAME="DOC.2.79.17"></A>
+<A NAME="DOC.2.86.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readImageFromCurrentTexture(unsigned int contextID=0)</B></TT>
 <DD>read the contents of the current bound texture, handling compressed formats if present.
 Create memory for storage if required, reuse existing pixel coords if possible.
 <DL><DT><DD></DL><P>
 <A NAME="scaleImage"></A>
-<A NAME="DOC.2.79.18"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void scaleImage(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, int <!1><A HREF="Image.html#DOC.2.79.21">t</A>, int <!1><A HREF="Image.html#DOC.2.79.22">r</A>)</B></TT>
+<A NAME="DOC.2.86.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void scaleImage(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, int <!1><A HREF="Image.html#DOC.2.86.21">t</A>, int <!1><A HREF="Image.html#DOC.2.86.22">r</A>)</B></TT>
 <DD>Scale image to specified size. 
 <DL><DT><DD></DL><P>
 <A NAME="copySubImage"></A>
-<A NAME="DOC.2.79.19"></A>
+<A NAME="DOC.2.86.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copySubImage(int s_offset, int t_offset, int r_offset, <!1><A HREF="Image.html">osg::Image</A>* source)</B></TT>
 <DD>Copy a source Image into a subpart of this Image at specified position.
 Typically used to copy to an already allocated image, such as creating
@@ -367,224 +370,229 @@ accomodate the imaging image in its offset position.
 If source is NULL then no operation happens, this Image is left unchanged.
 <DL><DT><DD></DL><P>
 <A NAME="s"></A>
-<A NAME="DOC.2.79.20"></A>
+<A NAME="DOC.2.86.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int s() const </B></TT>
 <DD>Width of image
 <DL><DT><DD></DL><P>
 <A NAME="t"></A>
-<A NAME="DOC.2.79.21"></A>
+<A NAME="DOC.2.86.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int t() const </B></TT>
 <DD>Height of image
 <DL><DT><DD></DL><P>
 <A NAME="r"></A>
-<A NAME="DOC.2.79.22"></A>
+<A NAME="DOC.2.86.22"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   int r() const </B></TT>
 <DD>Depth of image
 <DL><DT><DD></DL><P>
 <A NAME="setInternalTextureFormat"></A>
-<A NAME="DOC.2.79.23"></A>
+<A NAME="DOC.2.86.23"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setInternalTextureFormat(GLint internalFormat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getInternalTextureFormat"></A>
-<A NAME="DOC.2.79.24"></A>
+<A NAME="DOC.2.86.24"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   GLint getInternalTextureFormat() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setPixelFormat"></A>
-<A NAME="DOC.2.79.25"></A>
+<A NAME="DOC.2.86.25"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setPixelFormat(GLenum format)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPixelFormat"></A>
-<A NAME="DOC.2.79.26"></A>
+<A NAME="DOC.2.86.26"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   GLenum getPixelFormat() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getDataType"></A>
-<A NAME="DOC.2.79.27"></A>
+<A NAME="DOC.2.86.27"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   GLenum getDataType() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPacking"></A>
-<A NAME="DOC.2.79.28"></A>
+<A NAME="DOC.2.86.28"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getPacking() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getPixelSizeInBits"></A>
-<A NAME="DOC.2.79.29"></A>
+<A NAME="DOC.2.86.29"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getPixelSizeInBits() const </B></TT>
 <DD>return the numbers of bits required for each pixel
 <DL><DT><DD></DL><P>
 <A NAME="getRowSizeInBytes"></A>
-<A NAME="DOC.2.79.30"></A>
+<A NAME="DOC.2.86.30"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getRowSizeInBytes() const </B></TT>
 <DD>return the numbers of bytes each row of pixels occupies once it has been packed
 <DL><DT><DD></DL><P>
 <A NAME="getImageSizeInBytes"></A>
-<A NAME="DOC.2.79.31"></A>
+<A NAME="DOC.2.86.31"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getImageSizeInBytes() const </B></TT>
 <DD>return the numbers of bytes each image (_s*_t) of pixels occupies
 <DL><DT><DD></DL><P>
 <A NAME="getTotalSizeInBytes"></A>
-<A NAME="DOC.2.79.32"></A>
+<A NAME="DOC.2.86.32"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getTotalSizeInBytes() const </B></TT>
 <DD>return the numbers of bytes the whole row/image/volume of pixels occupies
 <DL><DT><DD></DL><P>
+<A NAME="getTotalSizeInBytesIncludingMipmaps"></A>
+<A NAME="DOC.2.86.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getTotalSizeInBytesIncludingMipmaps() const </B></TT>
+<DD>return the numbers of bytes the whole row/image/volume of pixels occupies, including all mip maps if included
+<DL><DT><DD></DL><P>
 <A NAME="data"></A>
-<A NAME="DOC.2.79.33"></A>
+<A NAME="DOC.2.86.34"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned char* data()</B></TT>
 <DD>raw image data
 <DL><DT><DD></DL><P>
 <A NAME="data"></A>
-<A NAME="DOC.2.79.34"></A>
+<A NAME="DOC.2.86.35"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const unsigned char* data() const </B></TT>
 <DD>raw const image data
 <DL><DT><DD></DL><P>
 <A NAME="data"></A>
-<A NAME="DOC.2.79.35"></A>
+<A NAME="DOC.2.86.36"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned char* data(int column, int row=0, int image=0) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="flipHorizontal"></A>
-<A NAME="DOC.2.79.36"></A>
+<A NAME="DOC.2.86.37"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flipHorizontal(int image=0)</B></TT>
 <DD>Flip the image horizontally
 <DL><DT><DD></DL><P>
 <A NAME="flipVertical"></A>
-<A NAME="DOC.2.79.37"></A>
+<A NAME="DOC.2.86.38"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void flipVertical(int image=0)</B></TT>
 <DD>Flip the image vertically
 <DL><DT><DD></DL><P>
 <A NAME="ensureValidSizeForTexturing"></A>
-<A NAME="DOC.2.79.38"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureValidSizeForTexturing(GLint <!1><A HREF="Extensions.html#DOC.2.186.40.22">maxTextureSize</A>)</B></TT>
+<A NAME="DOC.2.86.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void ensureValidSizeForTexturing(GLint <!1><A HREF="Extensions.3.html#DOC.2.193.39.22">maxTextureSize</A>)</B></TT>
 <DD>Ensure image dimensions are a power of two.
 Mip Mapped texture require the image dimensions to be
 power of two and are within the maxiumum texture size for
 the host machine.
 <DL><DT><DD></DL><P>
 <A NAME="dirty"></A>
-<A NAME="DOC.2.79.39"></A>
+<A NAME="DOC.2.86.40"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void dirty()</B></TT>
 <DD>Dirty the image, which increments the modified flag, to force osg::Texture to reload the image
 <DL><DT><DD></DL><P>
 <A NAME="setModifiedTag"></A>
-<A NAME="DOC.2.79.40"></A>
+<A NAME="DOC.2.86.41"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setModifiedTag(unsigned int value)</B></TT>
 <DD>Set the modified tag value, only used by osg::Texture when using texture subloading. 
 <DL><DT><DD></DL><P>
 <A NAME="getModifiedTag"></A>
-<A NAME="DOC.2.79.41"></A>
+<A NAME="DOC.2.86.42"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned int getModifiedTag() const </B></TT>
 <DD>Get modified tag value, only used by osg::Texture when using texture subloading. 
 <DL><DT><DD></DL><P>
 <A NAME="isPackedType"></A>
-<A NAME="DOC.2.79.42"></A>
+<A NAME="DOC.2.86.43"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   bool isPackedType(GLenum type)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeNumComponents"></A>
-<A NAME="DOC.2.79.43"></A>
+<A NAME="DOC.2.86.44"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeNumComponents(GLenum format)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computePixelSizeInBits"></A>
-<A NAME="DOC.2.79.44"></A>
+<A NAME="DOC.2.86.45"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computePixelSizeInBits(GLenum format, GLenum type)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeRowWidthInBytes"></A>
-<A NAME="DOC.2.79.45"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.214.10">width</A>, GLenum format, GLenum type, int packing)</B></TT>
+<A NAME="DOC.2.86.46"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   unsigned int computeRowWidthInBytes(int <!1><A HREF="Viewport.html#DOC.2.221.10">width</A>, GLenum format, GLenum type, int packing)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeNearestPowerOfTwo"></A>
-<A NAME="DOC.2.79.46"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int computeNearestPowerOfTwo(int <!1><A HREF="Image.html#DOC.2.79.20">s</A>, float bias=0.5f)</B></TT>
+<A NAME="DOC.2.86.47"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>static   int computeNearestPowerOfTwo(int <!1><A HREF="Image.html#DOC.2.86.20">s</A>, float bias=0.5f)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="MipmapDataType"></A>
-<A NAME="DOC.2.79.47"></A>
+<A NAME="DOC.2.86.48"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  std::vector&lt; unsigned int &gt; MipmapDataType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="isMipmap"></A>
-<A NAME="DOC.2.79.48"></A>
+<A NAME="DOC.2.86.49"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool isMipmap() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getNumMipmapLevels"></A>
-<A NAME="DOC.2.79.49"></A>
+<A NAME="DOC.2.86.50"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int getNumMipmapLevels() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setMipmapData"></A>
-<A NAME="DOC.2.79.50"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMipmapData(const <!1><A HREF="Image.html#DOC.2.79.47">MipmapDataType</A>&amp; mipmapDataVector)</B></TT>
+<A NAME="DOC.2.86.51"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setMipmapData(const <!1><A HREF="Image.html#DOC.2.86.48">MipmapDataType</A>&amp; mipmapDataVector)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getMipmapData"></A>
-<A NAME="DOC.2.79.51"></A>
+<A NAME="DOC.2.86.52"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   unsigned char* getMipmapData(unsigned int mipmapNumber) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="computeMipMaps"></A>
-<A NAME="DOC.2.79.52"></A>
+<A NAME="DOC.2.86.53"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void computeMipMaps()</B></TT>
 <DD>converts a single image into mip mapped version image
 <DL><DT><DD></DL><P>
 <A NAME="isImageTranslucent"></A>
-<A NAME="DOC.2.79.53"></A>
+<A NAME="DOC.2.86.54"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool isImageTranslucent() const </B></TT>
 <DD>return true of this image is translucent - ie. it has alpha values that are less 1.0 (when normalized).
 <DL><DT><DD></DL><P>
 <A NAME="~Image"></A>
-<A NAME="DOC.2.79.54"></A>
+<A NAME="DOC.2.86.55"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Image()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="operator = "></A>
-<A NAME="DOC.2.79.55"></A>
+<A NAME="DOC.2.86.56"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html">Image</A>&amp; operator = (const <!1><A HREF="Image.html">Image</A>&amp;)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_fileName"></A>
-<A NAME="DOC.2.79.56"></A>
+<A NAME="DOC.2.86.57"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _fileName</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_s"></A>
-<A NAME="DOC.2.79.57"></A>
+<A NAME="DOC.2.86.58"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int _s</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_t"></A>
-<A NAME="DOC.2.79.58"></A>
+<A NAME="DOC.2.86.59"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int  _t</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_r"></A>
-<A NAME="DOC.2.79.59"></A>
+<A NAME="DOC.2.86.60"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int   _r</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_internalTextureFormat"></A>
-<A NAME="DOC.2.79.60"></A>
+<A NAME="DOC.2.86.61"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLint _internalTextureFormat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_pixelFormat"></A>
-<A NAME="DOC.2.79.61"></A>
+<A NAME="DOC.2.86.62"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _pixelFormat</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_dataType"></A>
-<A NAME="DOC.2.79.62"></A>
+<A NAME="DOC.2.86.63"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GLenum _dataType</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_packing"></A>
-<A NAME="DOC.2.79.63"></A>
+<A NAME="DOC.2.86.64"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _packing</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_allocationMode"></A>
-<A NAME="DOC.2.79.64"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> _allocationMode</B></TT>
+<A NAME="DOC.2.86.65"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> _allocationMode</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_data"></A>
-<A NAME="DOC.2.79.65"></A>
+<A NAME="DOC.2.86.66"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char* _data</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="deallocateData"></A>
-<A NAME="DOC.2.79.66"></A>
+<A NAME="DOC.2.86.67"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void deallocateData()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setData"></A>
-<A NAME="DOC.2.79.67"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setData(unsigned char* <!1><A HREF="Image.html#DOC.2.79.33">data</A>, <!1><A HREF="Image.html#DOC.2.79.11">AllocationMode</A> allocationMode)</B></TT>
+<A NAME="DOC.2.86.68"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setData(unsigned char* <!1><A HREF="Image.html#DOC.2.86.34">data</A>, <!1><A HREF="Image.html#DOC.2.86.11">AllocationMode</A> allocationMode)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_modifiedTag"></A>
-<A NAME="DOC.2.79.68"></A>
+<A NAME="DOC.2.86.69"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _modifiedTag</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_mipmapData"></A>
-<A NAME="DOC.2.79.69"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.79.47">MipmapDataType</A> _mipmapData</B></TT>
+<A NAME="DOC.2.86.70"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Image.html#DOC.2.86.48">MipmapDataType</A> _mipmapData</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <HR><DL><DT><B>This class has no child classes.</B></DL>

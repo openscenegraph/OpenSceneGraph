@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  OSGGL2_EXPORT osgGL2::ShaderObject</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.10">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  OSGGL2_EXPORT <A HREF="#DOC.DOCU">osgGL2::ShaderObject</A></H2></H2><BLOCKQUOTE>Encapsulates the OpenGL Shading Language ShaderObject </BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="Mosg::Object,M,CShaderObject,MShaderObject.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.3.2">ShaderObject</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.3.3">ShaderObject</A></B>(<!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> type)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.3.4">ShaderObject</A></B>(<!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> type, const char* sourceText)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.3.5">ShaderObject</A></B>(const <!1><A HREF="ShaderObject.html#DOC.57.3.5">ShaderObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)
+<DD><I>Copy constructor using CopyOp to manage deep vs shallow copy</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.57.3.6">META_Object</A></B>(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ShaderObject.html">ShaderObject</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.3.7">setShaderSource</A></B>( const char* sourceText )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const std::string&amp; <B><A HREF="#DOC.57.3.8">getShaderSource</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.57.3.9">loadShaderSourceFromFile</A></B>( const char* fileName )
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> <B><A HREF="#DOC.57.3.10">getType</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.3.11">dirtyShaderObject</A></B>()
+<DD><I>Force a recompile on next apply() of associated glShaderObject.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.57.3.12">build</A></B>(unsigned int contextID) const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.57.3.13">attach</A></B>(unsigned int contextID, GLhandleARB progObj) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.57.3.1">Type</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>std::string <B><A HREF="#DOC.57.3.15">_shaderSource</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> <B><A HREF="#DOC.57.3.16">_type</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>mutable <!1><A HREF="ShaderObject.html#DOC.57.3.18">PCSOList</A> <B><A HREF="#DOC.57.3.19">_pcsoList</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.57.3.14">~ShaderObject</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="PerContextShaderObj.html">PerContextShaderObj</A>* <B><A HREF="#DOC.57.3.20">getPCSO</A></B>(unsigned int contextID) const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Members</H3><DD><DT>
+class  OSGGL2_EXPORT <B><A HREF="PerContextShaderObj.html">PerContextShaderObj</A></B>: public osg::Referenced
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>typedef  osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextShaderObj.html">PerContextShaderObj</A>&gt; &gt; <B><A HREF="#DOC.57.3.18">PCSOList</A></B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Encapsulates the OpenGL Shading Language ShaderObject </BLOCKQUOTE>
+<DL>
+
+<A NAME="Type"></A>
+<A NAME="DOC.57.3.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  Type</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="VERTEX"></A>
+<A NAME="DOC.57.3.1.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VERTEX</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="FRAGMENT"></A>
+<A NAME="DOC.57.3.1.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> FRAGMENT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="UNKNOWN"></A>
+<A NAME="DOC.57.3.1.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> UNKNOWN</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="ShaderObject"></A>
+<A NAME="DOC.57.3.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShaderObject()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ShaderObject"></A>
+<A NAME="DOC.57.3.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShaderObject(<!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> type)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ShaderObject"></A>
+<A NAME="DOC.57.3.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShaderObject(<!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> type, const char* sourceText)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ShaderObject"></A>
+<A NAME="DOC.57.3.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ShaderObject(const <!1><A HREF="ShaderObject.html#DOC.57.3.5">ShaderObject</A>&amp; rhs, const osg::CopyOp&amp; copyop=osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DD>Copy constructor using CopyOp to manage deep vs shallow copy
+<DL><DT><DD></DL><P>
+<A NAME="META_Object"></A>
+<A NAME="DOC.57.3.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Object(<!1><A HREF="osgGL2.html">osgGL2</A>, <!1><A HREF="ShaderObject.html">ShaderObject</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setShaderSource"></A>
+<A NAME="DOC.57.3.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setShaderSource( const char* sourceText )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getShaderSource"></A>
+<A NAME="DOC.57.3.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const std::string&amp; getShaderSource() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="loadShaderSourceFromFile"></A>
+<A NAME="DOC.57.3.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool loadShaderSourceFromFile( const char* fileName )</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getType"></A>
+<A NAME="DOC.57.3.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> getType() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="dirtyShaderObject"></A>
+<A NAME="DOC.57.3.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void dirtyShaderObject()</B></TT>
+<DD>Force a recompile on next apply() of associated glShaderObject. 
+<DL><DT><DD></DL><P>
+<A NAME="build"></A>
+<A NAME="DOC.57.3.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool build(unsigned int contextID) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="attach"></A>
+<A NAME="DOC.57.3.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void attach(unsigned int contextID, GLhandleARB progObj) const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~ShaderObject"></A>
+<A NAME="DOC.57.3.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~ShaderObject()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_shaderSource"></A>
+<A NAME="DOC.57.3.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>std::string _shaderSource</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_type"></A>
+<A NAME="DOC.57.3.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="ShaderObject.html#DOC.57.3.1">Type</A> _type</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="PCSOList"></A>
+<A NAME="DOC.57.3.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>typedef  osg::buffered_value&lt; osg::ref_ptr&lt;<!1><A HREF="PerContextShaderObj.html">PerContextShaderObj</A>&gt; &gt; PCSOList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_pcsoList"></A>
+<A NAME="DOC.57.3.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>mutable <!1><A HREF="ShaderObject.html#DOC.57.3.18">PCSOList</A> _pcsoList</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getPCSO"></A>
+<A NAME="DOC.57.3.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="PerContextShaderObj.html">PerContextShaderObj</A>* getPCSO(unsigned int contextID) const </B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

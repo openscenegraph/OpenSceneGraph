@@ -11,7 +11,7 @@
 
 <H2>Inheritance:</H2>
 <APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=125>
-<param name=classes value="CAzimRange,MAzimRange.html,Mosg::Referenced,M,CSector,MSector.html,CAzimSector,MAzimSector.html">
+<param name=classes value="CAzimRange,MAzimRange.html,Mosg::Object,M,CSector,MSector.html,CAzimSector,MAzimSector.html">
 <param name=before value="M,M,M,M">
 <param name=after value="Ml_,Md_||,MD_,M">
 <param name=indent value="1,0,1,2">
@@ -24,19 +24,32 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.1">AzimSector</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.2">AzimSector</A></B>(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.2">AzimSector</A></B>(const <!1><A HREF="AzimSector.html#DOC.2.7.2">AzimSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   float <B><A HREF="#DOC.2.7.3">operator() </A></B>(const osg::Vec3&amp; eyeLocal) const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.7.3">AzimSector</A></B>(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="BlinkSequence.html#DOC.2.1.4">META_Object</A>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="AzimSector.html">AzimSector</A>) <B><A HREF="#DOC.2.7.4">()</A></B>(const osg::Vec3&amp; eyeLocal) const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.7.4">~AzimSector</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.7.5">~AzimSector</A></B>()
 </DL></P>
 
 </DL>
 <HR><H3>Inherited from <A HREF="Sector.html">Sector</A>:</H3>
 <DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>libraryName</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   const char* <B>className</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   bool <B>isSameKindAs</B>(const osg::Object* obj) const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>virtual   float <B>operator() </B>(const osg::Vec3&amp;yeLocal*/) const 
+</DL></P>
+
 </DL>
 <HR><H3>Inherited from <A HREF="AzimRange.html">AzimRange</A>:</H3>
 <DL>
@@ -71,14 +84,18 @@
 <DL><DT><DD></DL><P>
 <A NAME="AzimSector"></A>
 <A NAME="DOC.2.7.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AzimSector(const <!1><A HREF="AzimSector.html#DOC.2.7.2">AzimSector</A>&amp; copy, const osg::CopyOp&amp; copyop = osg::CopyOp::SHALLOW_COPY)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="AzimSector"></A>
+<A NAME="DOC.2.7.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> AzimSector(float minAzimuth, float maxAzimuth, float fadeAngle=0.0f)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="operator() "></A>
-<A NAME="DOC.2.7.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   float operator() (const osg::Vec3&amp; eyeLocal) const </B></TT>
+<A NAME="()"></A>
+<A NAME="DOC.2.7.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="BlinkSequence.html#DOC.2.1.4">META_Object</A>(<!1><A HREF="osgSim.html">osgSim</A>, <!1><A HREF="AzimSector.html">AzimSector</A>) ()(const osg::Vec3&amp; eyeLocal) const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~AzimSector"></A>
-<A NAME="DOC.2.7.4"></A>
+<A NAME="DOC.2.7.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~AzimSector()</B></TT>
 <DL><DT><DD></DL><P></DL>
 

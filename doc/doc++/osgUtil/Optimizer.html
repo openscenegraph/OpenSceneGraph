@@ -15,16 +15,13 @@
 <DT><H3>Public Methods</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.10.1">Optimizer</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.3">optimize</A></B>(osg::Node* node, unsigned int options = <!1><A HREF="Optimizer.html#DOC.2.10.2.5">ALL_OPTIMIZATIONS</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.2.10.3">optimize</A></B>(osg::Node* node, unsigned int options = <!1><A HREF="Optimizer.html#DOC.2.10.2.6">ALL_OPTIMIZATIONS</A>)
 <DD><I>traverse the node and its subgraph with a series of optimization visitors, specificied by the OptizationOptions</I>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Members</H3><DD><DT>
 <IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.10.2">OptimizationOptions</A></B>
-<DT>
-class  OSGUTIL_EXPORT <B><A HREF="ConvertGeoSetsToGeometryVisitor.html">ConvertGeoSetsToGeometryVisitor</A></B>: public osg::NodeVisitor
-<DD><I>ConvertGeoSetsToGeometryVisitor all the old GeoSet Drawables to the new Geometry Drawables</I>
 <DT>
 class  OSGUTIL_EXPORT <B><A HREF="FlattenStaticTransformsVisitor.html">FlattenStaticTransformsVisitor</A></B>: public osg::NodeVisitor
 <DD><I>Flatten Static Trasform nodes by applying their transform to the geometry on the leaves of the scene graph, then removing the  now redundant transforms</I>
@@ -78,14 +75,18 @@ For example of usage see src/Demos/osgimpostor.</BLOCKQUOTE>
 <A NAME="DOC.2.10.2.4"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> SHARE_DUPLICATE_STATE</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="ALL_OPTIMIZATIONS"></A>
+<A NAME="MERGE_GEOMETRY"></A>
 <A NAME="DOC.2.10.2.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> MERGE_GEOMETRY</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ALL_OPTIMIZATIONS"></A>
+<A NAME="DOC.2.10.2.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ALL_OPTIMIZATIONS</B></TT>
 <DL><DT><DD></DL><P></DL>
 
 <A NAME="optimize"></A>
 <A NAME="DOC.2.10.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void optimize(osg::Node* node, unsigned int options = <!1><A HREF="Optimizer.html#DOC.2.10.2.5">ALL_OPTIMIZATIONS</A>)</B></TT>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void optimize(osg::Node* node, unsigned int options = <!1><A HREF="Optimizer.html#DOC.2.10.2.6">ALL_OPTIMIZATIONS</A>)</B></TT>
 <DD>traverse the node and its subgraph with a series of optimization
 visitors, specificied by the OptizationOptions
 <DL><DT><DD></DL><P></DL>

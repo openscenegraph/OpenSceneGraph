@@ -22,51 +22,53 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.157.1">Cylinder</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.1">Cylinder</A></B>()
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.157.2">Cylinder</A></B>(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.29.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.2">Cylinder</A></B>(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.30.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.157.3">Cylinder</A></B>(const <!1><A HREF="Cylinder.html#DOC.2.157.3">Cylinder</A>&amp; cylinder, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.3">Cylinder</A></B>(const <!1><A HREF="Cylinder.html#DOC.2.165.3">Cylinder</A>&amp; cylinder, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="InfinitePlane.html#DOC.2.158.3">META_Shape</A> <B><A HREF="#DOC.2.157.4">(osg, Cylinder)</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.165.4">META_Shape</A></B>(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Cylinder.html">Cylinder</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.157.5">set</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.29.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   bool <B><A HREF="#DOC.2.165.5">valid</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.157.6">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.6">set</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.30.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.157.7">getCenter</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.7">setCenter</A></B>(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.157.8">setRadius</A></B>(float <!1><A HREF="BoundingSphere.html#DOC.2.29.10">radius</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; <B><A HREF="#DOC.2.165.8">getCenter</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.157.9">getRadius</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.9">setRadius</A></B>(float <!1><A HREF="BoundingSphere.html#DOC.2.30.10">radius</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.157.10">setHeight</A></B>(float <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.165.10">getRadius</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.157.11">getHeight</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.11">setHeight</A></B>(float <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.157.12">setRotation</A></B>(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   float <B><A HREF="#DOC.2.165.12">getHeight</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Quat.html">Quat</A>&amp; <B><A HREF="#DOC.2.157.13">getRotation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   void <B><A HREF="#DOC.2.165.13">setRotation</A></B>(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.157.14">getRotationMatrix</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   const <!1><A HREF="Quat.html">Quat</A>&amp; <B><A HREF="#DOC.2.165.14">getRotation</A></B>() const 
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.157.15">zeroRotation</A></B>() const 
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>inline   <!1><A HREF="Matrix.html">Matrix</A> <B><A HREF="#DOC.2.165.15">getRotationMatrix</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.165.16">zeroRotation</A></B>() const 
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.157.17">_center</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Vec3.html">Vec3</A> <B><A HREF="#DOC.2.165.18">_center</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.157.18">_radius</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.165.19">_radius</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.157.19">_height</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.165.20">_height</A></B>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.157.20">_rotation</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Quat.html">Quat</A> <B><A HREF="#DOC.2.165.21">_rotation</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Protected Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.157.16">~Cylinder</A></B>()
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.165.17">~Cylinder</A></B>()
 </DL></P>
 
 </DL>
@@ -94,9 +96,9 @@
 <DL>
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> dv)
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>setDataVariance</B>(<!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> dv)
 <DT>
-<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>getDataVariance</B>() const 
+<IMG ALT="o" SRC=icon2.gif>inline   <!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>getDataVariance</B>() const 
 <DT>
 <IMG ALT="o" SRC=icon2.gif>inline   void <B>setUserData</B>(<!1><A HREF="Referenced.html">Referenced</A>* obj)
 <DT>
@@ -112,7 +114,7 @@
 
 <P><DL>
 <DT><H3>Protected Fields</H3><DD><DT>
-<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.117.8">DataVariance</A> <B>_dataVariance</B>
+<IMG ALT="o" SRC=icon2.gif><!1><A HREF="Object.html#DOC.2.124.8">DataVariance</A> <B>_dataVariance</B>
 <DT>
 <IMG ALT="o" SRC=icon2.gif><!1><A HREF="ref_ptr.html">ref_ptr</A>&lt;<!1><A HREF="Referenced.html">Referenced</A>&gt;  <B>_userData</B>
 </DL></P>
@@ -150,83 +152,87 @@
 <DL>
 
 <A NAME="Cylinder"></A>
-<A NAME="DOC.2.157.1"></A>
+<A NAME="DOC.2.165.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cylinder()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Cylinder"></A>
-<A NAME="DOC.2.157.2"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cylinder(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.29.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)</B></TT>
+<A NAME="DOC.2.165.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cylinder(const <!1><A HREF="Vec3.html">osg::Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.30.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="Cylinder"></A>
-<A NAME="DOC.2.157.3"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cylinder(const <!1><A HREF="Cylinder.html#DOC.2.157.3">Cylinder</A>&amp; cylinder, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
+<A NAME="DOC.2.165.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> Cylinder(const <!1><A HREF="Cylinder.html#DOC.2.165.3">Cylinder</A>&amp; cylinder, const <!1><A HREF="CopyOp.html">CopyOp</A>&amp; copyop=CopyOp::SHALLOW_COPY)</B></TT>
 <DL><DT><DD></DL><P>
-<A NAME="(osg, Cylinder)"></A>
-<A NAME="DOC.2.157.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="InfinitePlane.html#DOC.2.158.3">META_Shape</A> (osg, Cylinder)() const </B></TT>
+<A NAME="META_Shape"></A>
+<A NAME="DOC.2.165.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> META_Shape(<!1><A HREF="osg.html">osg</A>, <!1><A HREF="Cylinder.html">Cylinder</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="valid"></A>
+<A NAME="DOC.2.165.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   bool valid() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="set"></A>
-<A NAME="DOC.2.157.5"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.29.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)</B></TT>
+<A NAME="DOC.2.165.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void set(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>, float <!1><A HREF="BoundingSphere.html#DOC.2.30.10">radius</A>, float <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setCenter"></A>
-<A NAME="DOC.2.157.6"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.29.8">center</A>)</B></TT>
+<A NAME="DOC.2.165.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setCenter(const <!1><A HREF="Vec3.html">Vec3</A>&amp; <!1><A HREF="BoundingSphere.html#DOC.2.30.8">center</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getCenter"></A>
-<A NAME="DOC.2.157.7"></A>
+<A NAME="DOC.2.165.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Vec3.html">Vec3</A>&amp; getCenter() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRadius"></A>
-<A NAME="DOC.2.157.8"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRadius(float <!1><A HREF="BoundingSphere.html#DOC.2.29.10">radius</A>)</B></TT>
+<A NAME="DOC.2.165.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRadius(float <!1><A HREF="BoundingSphere.html#DOC.2.30.10">radius</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRadius"></A>
-<A NAME="DOC.2.157.9"></A>
+<A NAME="DOC.2.165.10"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getRadius() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setHeight"></A>
-<A NAME="DOC.2.157.10"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setHeight(float <!1><A HREF="Viewport.html#DOC.2.214.11">height</A>)</B></TT>
+<A NAME="DOC.2.165.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setHeight(float <!1><A HREF="Viewport.html#DOC.2.221.11">height</A>)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getHeight"></A>
-<A NAME="DOC.2.157.11"></A>
+<A NAME="DOC.2.165.12"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   float getHeight() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setRotation"></A>
-<A NAME="DOC.2.157.12"></A>
+<A NAME="DOC.2.165.13"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   void setRotation(const <!1><A HREF="Quat.html">Quat</A>&amp; quat)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRotation"></A>
-<A NAME="DOC.2.157.13"></A>
+<A NAME="DOC.2.165.14"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   const <!1><A HREF="Quat.html">Quat</A>&amp; getRotation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="getRotationMatrix"></A>
-<A NAME="DOC.2.157.14"></A>
+<A NAME="DOC.2.165.15"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>inline   <!1><A HREF="Matrix.html">Matrix</A> getRotationMatrix() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="zeroRotation"></A>
-<A NAME="DOC.2.157.15"></A>
+<A NAME="DOC.2.165.16"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool zeroRotation() const </B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="~Cylinder"></A>
-<A NAME="DOC.2.157.16"></A>
+<A NAME="DOC.2.165.17"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~Cylinder()</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_center"></A>
-<A NAME="DOC.2.157.17"></A>
+<A NAME="DOC.2.165.18"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Vec3.html">Vec3</A> _center</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_radius"></A>
-<A NAME="DOC.2.157.18"></A>
+<A NAME="DOC.2.165.19"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _radius</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_height"></A>
-<A NAME="DOC.2.157.19"></A>
+<A NAME="DOC.2.165.20"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _height</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_rotation"></A>
-<A NAME="DOC.2.157.20"></A>
+<A NAME="DOC.2.165.21"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Quat.html">Quat</A> _rotation</B></TT>
 <DL><DT><DD></DL><P></DL>
 

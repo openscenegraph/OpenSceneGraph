@@ -22,30 +22,30 @@
 <DL>
 <P><DL>
 <DT><H3>Public Fields</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html">Font</A>* <B><A HREF="#DOC.6.2.44.9">_facade</A></B>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="Font.html">Font</A>* <B><A HREF="#DOC.6.3.44.9">_facade</A></B>
 </DL></P>
 
 <P><DL>
 <DT><H3>Public Methods</H3><DD><DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   std::string <B><A HREF="#DOC.6.2.44.1">getFileName</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   std::string <B><A HREF="#DOC.6.3.44.1">getFileName</A></B>() const  = 0
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.2.44.2">setSize</A></B>(unsigned int width, unsigned int height) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   void <B><A HREF="#DOC.6.3.44.2">setSize</A></B>(unsigned int width, unsigned int height) = 0
 <DD><I>Set the pixel width and height hint</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Glyph.html">Glyph</A>* <B><A HREF="#DOC.6.2.44.3">getGlyph</A></B>(unsigned int charcode) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <!1><A HREF="Glyph.html">Glyph</A>* <B><A HREF="#DOC.6.3.44.3">getGlyph</A></B>(unsigned int charcode) = 0
 <DD><I>Get a Glyph for specified charcode, and the font size nearest to the current font size hint</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.6.2.44.4">getKerning</A></B>(unsigned int leftcharcode, unsigned int rightcharcode) = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   osg::Vec2 <B><A HREF="#DOC.6.3.44.4">getKerning</A></B>(unsigned int leftcharcode, unsigned int rightcharcode, <!1><A HREF="KerningType.html">KerningType</A> kerningType) = 0
 <DD><I>Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, wrt the current font size hint</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.2.44.5">hasVertical</A></B>() const  = 0
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   bool <B><A HREF="#DOC.6.3.44.5">hasVertical</A></B>() const  = 0
 <DD><I>Return true if this font provides vertical alignments and spacing or glyphs</I>
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.44.6">setWidth</A></B>(unsigned int width)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.44.6">setWidth</A></B>(unsigned int width)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.44.7">setHeight</A></B>(unsigned int height)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.44.7">setHeight</A></B>(unsigned int height)
 <DT>
-<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.2.44.8">addGlyph</A></B>(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.6.3.44.8">addGlyph</A></B>(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)
 </DL></P>
 
 </DL>
@@ -56,43 +56,43 @@
 <DL>
 
 <A NAME="getFileName"></A>
-<A NAME="DOC.6.2.44.1"></A>
+<A NAME="DOC.6.3.44.1"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   std::string getFileName() const  = 0</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setSize"></A>
-<A NAME="DOC.6.2.44.2"></A>
+<A NAME="DOC.6.3.44.2"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   void setSize(unsigned int width, unsigned int height) = 0</B></TT>
 <DD>Set the pixel width and height hint
 <DL><DT><DD></DL><P>
 <A NAME="getGlyph"></A>
-<A NAME="DOC.6.2.44.3"></A>
+<A NAME="DOC.6.3.44.3"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   <!1><A HREF="Glyph.html">Glyph</A>* getGlyph(unsigned int charcode) = 0</B></TT>
 <DD>Get a Glyph for specified charcode, and the font size nearest to the current font size hint
 <DL><DT><DD></DL><P>
 <A NAME="getKerning"></A>
-<A NAME="DOC.6.2.44.4"></A>
-<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec2 getKerning(unsigned int leftcharcode, unsigned int rightcharcode) = 0</B></TT>
+<A NAME="DOC.6.3.44.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   osg::Vec2 getKerning(unsigned int leftcharcode, unsigned int rightcharcode, <!1><A HREF="KerningType.html">KerningType</A> kerningType) = 0</B></TT>
 <DD>Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, wrt the current font size hint
 <DL><DT><DD></DL><P>
 <A NAME="hasVertical"></A>
-<A NAME="DOC.6.2.44.5"></A>
+<A NAME="DOC.6.3.44.5"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   bool hasVertical() const  = 0</B></TT>
 <DD>Return true if this font provides vertical alignments and spacing or glyphs
 <DL><DT><DD></DL><P>
 <A NAME="setWidth"></A>
-<A NAME="DOC.6.2.44.6"></A>
+<A NAME="DOC.6.3.44.6"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setWidth(unsigned int width)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="setHeight"></A>
-<A NAME="DOC.6.2.44.7"></A>
+<A NAME="DOC.6.3.44.7"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setHeight(unsigned int height)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="addGlyph"></A>
-<A NAME="DOC.6.2.44.8"></A>
+<A NAME="DOC.6.3.44.8"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, <!1><A HREF="Glyph.html">Glyph</A>* glyph)</B></TT>
 <DL><DT><DD></DL><P>
 <A NAME="_facade"></A>
-<A NAME="DOC.6.2.44.9"></A>
+<A NAME="DOC.6.3.44.9"></A>
 <DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="Font.html">Font</A>* _facade</B></TT>
 <DL><DT><DD></DL><P></DL>
 

@@ -108,12 +108,26 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
 
 
-            //	if (!(PalettedTextures && mipmap >= 0 && trans == PNG_SOLID))
+            //    if (!(PalettedTextures && mipmap >= 0 && trans == PNG_SOLID))
+            //if (color == PNG_COLOR_TYPE_PALETTE)
+            //    png_set_expand(png);
+
+            // In addition to expanding the palette, we also need to check
+            // to expand greyscale and alpha images.  See libpng man page.
             if (color == PNG_COLOR_TYPE_PALETTE)
-                png_set_expand(png);
+                png_set_palette_to_rgb(png);
+            if (color == PNG_COLOR_TYPE_GRAY && depth < 8)
+                png_set_gray_1_2_4_to_8(png);
+            if (png_get_valid(png, info, PNG_INFO_tRNS))
+                png_set_tRNS_to_alpha(png);
+
+            // Make sure that files of small depth are packed properly.
+            if (depth < 8)
+                png_set_packing(png);
+
 
             /*--GAMMA--*/
-            //	checkForGammaEnv();
+            //    checkForGammaEnv();
             double screenGamma = 2.2 / 1.0;
             if (png_get_gAMA(png, info, &fileGamma))
                 png_set_gamma(png, screenGamma, fileGamma);
@@ -136,6 +150,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             png_read_image(png, row_p);
             delete [] row_p;
+            png_read_end(png, endinfo);
 
             GLenum pixelFormat = 0;
             GLenum dataType = depth==8?GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT;
@@ -150,13 +165,20 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
               case(PNG_COLOR_TYPE_RGB_ALPHA): pixelFormat = GL_RGBA; break;
               default: break;                
             }
-            
+
+            // Some paletted images contain alpha information.  To be
+            // able to give that back to the calling program, we need to
+            // check the number of channels in the image.  However, the
+            // call might not return correct information unless
+            // png_read_end is called first.  See libpng man page.
+            if (pixelFormat == GL_RGB && png_get_channels(png, info) == 4)
+                pixelFormat = GL_RGBA;
+
             int internalFormat = pixelFormat;
 
-            png_read_end(png, endinfo);
             png_destroy_read_struct(&png, &info, &endinfo);
 
-            //	delete [] data;
+            //    delete [] data;
 
             if (fp)
                 fclose(fp);

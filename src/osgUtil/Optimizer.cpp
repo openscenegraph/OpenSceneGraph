@@ -1210,13 +1210,13 @@ struct LessGeometry
             {
                 case(osg::Array::UByte4ArrayType):
                     if ((*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]<(*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]) return true;
-                    if ((*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]>(*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]) return false;
+                    if ((*static_cast<const osg::UByte4Array*>(rhs_colorArray))[0]<(*static_cast<const osg::UByte4Array*>(lhs_colorArray))[0]) return false;
                 case(osg::Array::Vec3ArrayType):
                     if ((*static_cast<const osg::Vec3Array*>(lhs_colorArray))[0]<(*static_cast<const osg::Vec3Array*>(rhs_colorArray))[0]) return true;
-                    if ((*static_cast<const osg::Vec3Array*>(lhs_colorArray))[0]>(*static_cast<const osg::Vec3Array*>(rhs_colorArray))[0]) return false;
+                    if ((*static_cast<const osg::Vec3Array*>(rhs_colorArray))[0]<(*static_cast<const osg::Vec3Array*>(lhs_colorArray))[0]) return false;
                 case(osg::Array::Vec4ArrayType):
                     if ((*static_cast<const osg::Vec4Array*>(lhs_colorArray))[0]<(*static_cast<const osg::Vec4Array*>(rhs_colorArray))[0]) return true;
-                    if ((*static_cast<const osg::Vec4Array*>(lhs_colorArray))[0]>(*static_cast<const osg::Vec4Array*>(rhs_colorArray))[0]) return false;
+                    if ((*static_cast<const osg::Vec4Array*>(rhs_colorArray))[0]<(*static_cast<const osg::Vec4Array*>(lhs_colorArray))[0]) return false;
                     break;
                 default:
                     break;

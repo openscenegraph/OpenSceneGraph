@@ -12,7 +12,7 @@
 */
 
 /* file:	src/osgGL2/ProgramObject.cpp
- * author:	Mike Weiblen 2003-12-27
+ * author:	Mike Weiblen 2004-02-04
  *
  * See http://www.3dlabs.com/opengl2/ for more information regarding
  * the OpenGL Shading Language.
@@ -56,7 +56,10 @@ public:
 	}
     }
 
-    const std::string& operator()() { return _text; }
+    friend std::ostream& operator<< ( std::ostream& o, const InfoLog& log )
+    {
+        return o << log._text;
+    }
 
 private:
     InfoLog();
@@ -338,7 +341,7 @@ void ProgramObject::PerContextProgObj::build()
     if( _dirty )
     {
 	InfoLog log( _extensions.get(), _glProgObjHandle );
-	osg::notify(osg::WARN) << "glLinkProgram FAILED:\n" << log() << std::endl;
+	osg::notify(osg::WARN) << "glLinkProgram FAILED:\n" << log << std::endl;
     }
 }
 
@@ -533,7 +536,7 @@ void ShaderObject::PerContextShaderObj::build()
     {
 	InfoLog log( _extensions.get(), _glShaderObjHandle );
 	osg::notify(osg::WARN) << _shadObj->getTypename() <<
-		" glCompileShader FAILED:\n" << log() << std::endl;
+		" glCompileShader FAILED:\n" << log << std::endl;
     }
 }
 

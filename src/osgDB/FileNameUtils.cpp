@@ -71,12 +71,19 @@ std::string osgDB::getLowerCaseFileExtension(const std::string& filename)
 }
 
 
+// strip one level of extension from the filename.
+std::string osgDB::getNameLessExtension(const std::string& fileName)
+{
+    std::string::size_type dot = fileName.find_last_of('.');
+    if (dot==std::string::npos) return fileName;
+    return std::string(fileName.begin(),fileName.begin()+dot);
+}
+
+
 std::string osgDB::getStrippedName(const std::string& fileName)
 {
     std::string simpleName = getSimpleFileName(fileName);
-    std::string::size_type dot = simpleName.find_last_of('.');
-    if (dot==std::string::npos) return simpleName;
-    return std::string(simpleName.begin(),simpleName.begin()+dot);
+    return getNameLessExtension( simpleName );
 }
 
 

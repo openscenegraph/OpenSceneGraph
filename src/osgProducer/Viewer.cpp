@@ -360,9 +360,7 @@ class DatabasePagerCompileCallback : public OsgSceneHandler::Callback
 {
 public:
 
-        DatabasePagerCompileCallback(osgDB::DatabasePager* databasePager):
-            _databasePager(databasePager)
-        {}
+        DatabasePagerCompileCallback() {}
 
        virtual void operator()(OsgSceneHandler& sh, Producer::Camera& camera)
        {
@@ -383,8 +381,6 @@ public:
             if (dp) dp->signalEndFrame();
 
        }
-       
-       osg::ref_ptr<osgDB::DatabasePager> _databasePager;
 };
 
 class PostSwapCompileCallback : public Producer::Camera::Callback
@@ -400,7 +396,7 @@ public:
             
             osgDB::DatabasePager* dp = osgDB::Registry::instance()->getDatabasePager();
 
-            double availableTime = 0.0025; //  5 ms
+            double availableTime = 0.0025; //  2.5 ms
 
             // flush deleted GL objects.
             _sceneView->flushDeletedGLObjects(availableTime);
@@ -438,7 +434,7 @@ bool Viewer::realize()
 
             // set up a draw callback to pre compile any rendering object of database has loaded, 
             // but not yet merged with the main scene graph.
-            (*p)->setDrawCallback(new DatabasePagerCompileCallback(databasePager));
+            (*p)->setDrawCallback(new DatabasePagerCompileCallback());
 
             
             // tell the database pager which graphic context the compile of rendering objexts is needed.

@@ -37,6 +37,10 @@ using namespace osg;
 #define GL_STORAGE_SHARED_APPLE           0x85BF
 #endif
 
+unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
+unsigned int Texture::s_numberNewTextureInLastFrame = 0;
+unsigned int Texture::s_numberDeletedTextureInLastFrame = 0;
+
 Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,GLenum target)
 {
     GLuint id;
@@ -44,6 +48,8 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(uns
 
     return new Texture::TextureObject(id,target);
 }
+
+static int s_number = 0;
 
 Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,
                                                                              GLenum    target,
@@ -54,6 +60,10 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(uns
                                                                              GLsizei   depth,
                                                                              GLint     border)
 {
+    ++s_number;
+    ++s_numberNewTextureInLastFrame;
+    // notify(NOTICE)<<"creating new texture object "<<s_number<<std::endl;
+
     // no useable texture object found so return 0
     GLuint id;
     glGenTextures( 1L, &id );
@@ -85,8 +95,10 @@ Texture::TextureObject* Texture::TextureObjectManager::reuseTextureObject(unsign
             Texture::TextureObject* textureObject = (*itr).release();
             tol.erase(itr);
             
-            //notify(INFO)<<"reusing texture object "<<textureObject<<std::endl;
+            // notify(NOTICE)<<"reusing texture object "<<std::endl;
             
+            ++s_numberTextureReusedLastInLastFrame;
+
             return textureObject;
         }
     }
@@ -125,11 +137,14 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
+    unsigned int numObjectsDeleted = 0;
+    unsigned int maxNumObjectsToDelete = 4;
 
     const osg::Timer& timer = *osg::Timer::instance();
     osg::Timer_t start_tick = timer.tick();
     double elapsedTime = 0.0;
 
+    unsigned int numTexturesDeleted = 0;
     {    
 #ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
@@ -151,16 +166,19 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
 
             double expiryTime = currentTime-_expiryDelay;
 
-            unsigned int numTexturesDeleted = 0;
             for(itr=tol.begin();
-                itr!=tol.end() && elapsedTime<availableTime;
+                itr!=tol.end() && elapsedTime<availableTime && numObjectsDeleted<maxNumObjectsToDelete;
                 )
             {
                 if ((*itr)->_timeStamp<expiryTime)
                 {
+                    --s_number;
+                    ++s_numberDeletedTextureInLastFrame;
+                
                     glDeleteTextures( 1L, &((*itr)->_id));
                     itr = tol.erase(itr);
                     ++numTexturesDeleted;
+                    ++numObjectsDeleted;
                 }
                 else
                 {
@@ -169,9 +187,10 @@ void Texture::TextureObjectManager::flushTextureObjects(unsigned int contextID,d
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
 
-            if (numTexturesDeleted) notify(osg::INFO)<<"Number of Texture's deleted = "<<numTexturesDeleted<<std::endl;
         }
     }
+    elapsedTime = timer.delta_s(start_tick,timer.tick());
+    // if (numTexturesDeleted) notify(osg::NOTICE)<<"Number of Texture's deleted = "<<numTexturesDeleted<<" new total "<<s_number<<" elapsed time"<<elapsedTime<<std::endl;
         
     availableTime -= elapsedTime;
 }

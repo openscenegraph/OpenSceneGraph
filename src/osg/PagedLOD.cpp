@@ -25,6 +25,7 @@ PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& 
 
 PagedLOD::PagedLOD()
 {
+    _frameNumberOfLastTraversal = 0;
     _centerMode = USER_DEFINED_CENTER;
     _radius = -1;
     _numChildrenThatCannotBeExpired = 0;
@@ -32,6 +33,7 @@ PagedLOD::PagedLOD()
 
 PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
     LOD(plod,copyop),
+    _frameNumberOfLastTraversal(plod._frameNumberOfLastTraversal),
     _numChildrenThatCannotBeExpired(plod._numChildrenThatCannotBeExpired),
     _perRangeDataList(plod._perRangeDataList)
 {
@@ -40,6 +42,9 @@ PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
 
 void PagedLOD::traverse(NodeVisitor& nv)
 {
+    // set the frame number of the traversal so that external nodes can find out how active this
+    // node is.
+    if (nv.getFrameStamp()) setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
     bool updateTimeStamp = nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR;
@@ -179,7 +184,7 @@ bool PagedLOD::removeChild( Node *child )
     return Group::removeChild(child);    
 }
 
-void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
+bool PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
 {
     if (_children.size()>_numChildrenThatCannotBeExpired)
     {
@@ -187,7 +192,8 @@ void PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren
         {
             osg::Node* nodeToRemove = _children[_children.size()-1].get();
             removedChildren.push_back(nodeToRemove);
-            Group::removeChild(nodeToRemove);
+            return Group::removeChild(nodeToRemove);
         }
     }
+    return false;
 }

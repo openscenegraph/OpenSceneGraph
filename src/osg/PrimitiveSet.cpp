@@ -77,6 +77,18 @@ unsigned int DrawArrayLengths::getNumIndices() const
     return count;
 }
 
+DrawElementsUByte::~DrawElementsUByte()
+{
+    for(unsigned int i=0;i<_vboList.size();++i)
+    {
+        if (_vboList[i] != 0)
+        {
+            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            _vboList[i] = 0;
+        }
+    }
+}
+
 void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const 
 {
     if (useVertexBufferObjects)
@@ -125,6 +137,18 @@ void DrawElementsUByte::offsetIndices(int offset)
 }
 
 
+DrawElementsUShort::~DrawElementsUShort()
+{
+    for(unsigned int i=0;i<_vboList.size();++i)
+    {
+        if (_vboList[i] != 0)
+        {
+            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            _vboList[i] = 0;
+        }
+    }
+}
+
 void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const 
 {
     if (useVertexBufferObjects)
@@ -172,6 +196,18 @@ void DrawElementsUShort::offsetIndices(int offset)
     }
 }
 
+
+DrawElementsUInt::~DrawElementsUInt()
+{
+    for(unsigned int i=0;i<_vboList.size();++i)
+    {
+        if (_vboList[i] != 0)
+        {
+            Drawable::deleteVertexBufferObject(i,_vboList[i]);
+            _vboList[i] = 0;
+        }
+    }
+}
 
 void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const 
 {

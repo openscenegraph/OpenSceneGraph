@@ -33,6 +33,9 @@
 
 using namespace osg;
 
+unsigned int Drawable::s_numberNewDrawablesInLastFrame = 0;
+unsigned int Drawable::s_numberDeletedDrawablesInLastFrame = 0;
+
 // static cache of deleted display lists which can only 
 // by completely deleted once the appropriate OpenGL context
 // is set.  Used osg::Drawable::deleteDisplayList(..) and flushDeletedDisplayLists(..) below.
@@ -45,7 +48,23 @@ typedef std::map<GLuint,DisplayListList> DeletedDisplayListCache;
 
 static DeletedDisplayListCache s_deletedDisplayListCache;
 
-void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj)
+GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHint)
+{
+#ifdef THREAD_SAFE_GLOBJECT_DELETE_LISTS
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+#endif
+    DisplayListList& dll = s_deletedDisplayListCache[contextID];
+    if (dll.empty()) return  glGenLists( 1 );
+    else 
+    {
+        notify(NOTICE)<<"reusing display list "<<std::endl;
+        GLuint globj = dll.back();
+        dll.pop_back();
+        return globj;
+    }
+}
+
+void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint)
 {
     if (globj!=0)
     {
@@ -88,11 +107,14 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID,double /*currentT
                 ditr = dll.erase(ditr);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
                ++noDeleted;
+               
+               ++Drawable::s_numberDeletedDrawablesInLastFrame;
              }
         }
     }
+    elapsedTime = timer.delta_s(start_tick,timer.tick());
     
-    if (noDeleted!=0) notify(INFO)<<"Number display lists deleted = "<<noDeleted<<std::endl;
+    if (noDeleted) notify(NOTICE)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
 
     availableTime -= elapsedTime;
 }
@@ -363,7 +385,7 @@ void Drawable::dirtyDisplayList()
     {
         if (_globjList[i] != 0)
         {
-            Drawable::deleteDisplayList(i,_globjList[i]);
+            Drawable::deleteDisplayList(i,_globjList[i], getGLObjectSizeHint());
             _globjList[i] = 0;
         }
     }

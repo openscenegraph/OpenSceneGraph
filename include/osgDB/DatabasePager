@@ -28,7 +28,7 @@
 #include <osgDB/Export>
 
 #include <map>
-#include <set>
+#include <list>
 
 namespace osgDB {
 
@@ -211,7 +211,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
     public:
 
-        typedef std::set< osg::ref_ptr<osg::PagedLOD> >     PagedLODList;
+        typedef std::list< osg::ref_ptr<osg::PagedLOD> >   PagedLODList;
 
         typedef std::vector< osg::ref_ptr<osg::StateSet> > StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> > DrawableList;
@@ -288,7 +288,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         OpenThreads::Mutex              _dataToMergeListMutex;
         
         
-        PagedLODList                    _pagedLODList;
+        PagedLODList                    _activePagedLODList;
+        PagedLODList                    _inactivePagedLODList;
         
         double                          _expiryDelay;
 

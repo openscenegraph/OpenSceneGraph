@@ -77,6 +77,15 @@ class SG_EXPORT PagedLOD : public LOD
         unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
 
 
+        /** Set the frame number of the last time that this PageLOD node was traversed.
+          * Note, this frame number is automatically set by the traverse() method for all traversals (update, cull etc.). 
+          */
+        inline void setFrameNumberOfLastTraversal(int frameNumber) { _frameNumberOfLastTraversal=frameNumber; }
+
+        /** Get the frame number of the last time that this PageLOD node was traversed.*/
+        inline int getFrameNumberOfLastTraversal() const { return _frameNumberOfLastTraversal; }
+
+
         /** Set the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
         inline void setNumChildrenThatCannotBeExpired(unsigned int num) { _numChildrenThatCannotBeExpired = num; }
 
@@ -84,9 +93,12 @@ class SG_EXPORT PagedLOD : public LOD
         unsigned int getNumChildrenThatCannotBeExpired() const { return _numChildrenThatCannotBeExpired; }
 
         /** Remove the children from the PagedLOD which haven't been visited since specified expiry time.
-            The removed children are added to the removeChildren list passed into the method,
-            this allows the children to be deleted later at the caller's discretion.*/
-        virtual void removeExpiredChildren(double expiryTime,NodeList& removedChildren);
+          * The removed children are added to the removeChildren list passed into the method,
+          * this allows the children to be deleted later at the caller's discretion.
+          * Return true if children are removed, false otherwise. */
+        bool removeExpiredChildren(double expiryTime,NodeList& removedChildren);
+        
+        
 
     protected :
     
@@ -100,8 +112,8 @@ class SG_EXPORT PagedLOD : public LOD
         
         void expandPerRangeDataTo(unsigned int pos);
 
-        unsigned int    _numChildrenThatCannotBeExpired;
-
+        int                 _frameNumberOfLastTraversal;
+        unsigned int        _numChildrenThatCannotBeExpired;
         PerRangeDataList    _perRangeDataList;
 };
 

@@ -330,6 +330,10 @@ class SG_EXPORT Geometry : public Drawable
         const osg::Geometry* getInternalOptimizedGeometry() const { return _internalOptimizedGeometry.get(); }
 
 
+        /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
+          * This size is used a hint for reuse of deleteed display lists/vertex buffer objects. */
+        virtual unsigned int getGLObjectSizeHint() const;
+        
         /** Draw Geometry directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Geometry for user-drawn objects.

@@ -162,6 +162,7 @@
 
 namespace osg {
 
+
 /** Texture pure virtual base class that encapsulates OpenGl texture
   * functionality common to the various types of OSG textures.
 */
@@ -170,6 +171,10 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
     public :
     
+        static unsigned int s_numberTextureReusedLastInLastFrame;
+        static unsigned int s_numberNewTextureInLastFrame;
+        static unsigned int s_numberDeletedTextureInLastFrame;
+
         Texture();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */

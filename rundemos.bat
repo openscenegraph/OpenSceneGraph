@@ -22,7 +22,7 @@ sgv spaceship.osg
 echo sgv cube_mapped_torus.osg
 sgv cube_mapped_torus.osg
 
-echo sgv osgvertexprogram
+echo osgvertexprogram
 osgvertexprogram
 
 echo sgv Town.osg

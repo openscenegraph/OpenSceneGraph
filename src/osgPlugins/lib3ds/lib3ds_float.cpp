@@ -20,7 +20,7 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <lib3ds_float.h>
+#include "lib3ds_float.h"
 
 
 /*!

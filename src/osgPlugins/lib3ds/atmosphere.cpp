@@ -20,9 +20,9 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <atmosphere.h>
-#include <chunk.h>
-#include <readwrite.h>
+#include "atmosphere.h"
+#include "chunk.h"
+#include "readwrite.h"
 
 
 /*!

@@ -20,7 +20,7 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <quat.h>
+#include "quat.h"
 #include <math.h>
 
 

@@ -20,9 +20,9 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <background.h>
-#include <chunk.h>
-#include <readwrite.h>
+#include "background.h"
+#include "chunk.h"
+#include "readwrite.h"
 #include <string.h>
 #include <math.h>
 

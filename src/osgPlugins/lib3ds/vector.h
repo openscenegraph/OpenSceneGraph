@@ -24,7 +24,7 @@
  */
 
 #ifndef INCLUDED_LIB3DS_TYPES_H
-#include <types.h>
+#include "types.h"
 #endif
 
 #ifdef __cplusplus

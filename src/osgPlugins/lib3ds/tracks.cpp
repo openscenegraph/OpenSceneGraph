@@ -20,16 +20,16 @@
  * $Id$
  */
 #define LIB3DS_EXPORT
-#include <tracks.h>
-#include <readwrite.h>
-#include <chunk.h>
-#include <lib3ds_float.h>
-#include <vector.h>
-#include <quat.h>
+#include "tracks.h"
+#include "readwrite.h"
+#include "chunk.h"
+#include "lib3ds_float.h"
+#include "vector.h"
+#include "quat.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <config.h>
+#include "config.h"
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
 #endif

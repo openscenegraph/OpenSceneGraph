@@ -1,4 +1,5 @@
 #include <osg/Texture>
+#include <osg/Notify>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -145,7 +146,7 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr[0].matchWord("internalFormatValue"))
+    if (fr[0].matchWord("internalFormat"))
     {
         int value;
         if (Texture_matchInternalFormatStr(fr[1].getStr(),value) || fr[1].getInt(value))
@@ -179,14 +180,15 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "unRefImageDataAfterApply "<< (texture.getUnRefImageDataAfterApply()?"TRUE":"FALSE") << std::endl;
             
     fw.indent() << "internalFormatMode " << Texture_getInternalFormatModeStr(texture.getInternalFormatMode()) << std::endl;
-
     if (texture.getInternalFormatMode()==Texture::USE_USER_DEFINED_FORMAT)
     {
+
         const char* str = Texture_getInternalFormatStr(texture.getInternalFormat());
+
         if (str) fw.indent() << "internalFormat " << str << std::endl;
         else fw.indent() << "internalFormat " << texture.getInternalFormat() << std::endl;
-    }
 
+    }
     return true;
 }
 
@@ -275,7 +277,6 @@ const char* Texture_getInternalFormatModeStr(Texture::InternalFormatMode mode)
 
 bool Texture_matchInternalFormatStr(const char* str,int& value)
 {
-
     if (     strcmp(str,"GL_INTENSITY")==0) value = GL_INTENSITY;
     else if (strcmp(str,"GL_LUMINANCE")==0) value = GL_LUMINANCE;
     else if (strcmp(str,"GL_ALPHA")==0) value = GL_ALPHA;
@@ -318,6 +319,5 @@ const char* Texture_getInternalFormatStr(int value)
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return "GL_COMPRESSED_RGBA_S3TC_DXT3_EXT";
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return "GL_COMPRESSED_RGBA_S3TC_DXT5_EXT";
     }
-
     return NULL;
 }

@@ -39,6 +39,22 @@ bool Transform_readLocalData(Object& obj, Input& fr)
 
     Transform& transform = static_cast<Transform&>(obj);
 
+
+    if (fr[0].matchWord("Type"))
+    {
+        if (fr[1].matchWord("DYNAMIC"))
+        {
+            transform.setType(osg::Transform::DYNAMIC);
+            fr +=2 ;
+        }
+        else if (fr[1].matchWord("STATIC"))
+        {
+            transform.setType(osg::Transform::STATIC);
+            fr +=2 ;
+        }
+        
+    }    
+
     static Matrix s_matrix;
     
     if (Matrix* tmpMatrix = static_cast<Matrix*>(fr.readObjectOfType(s_matrix)))
@@ -58,6 +74,12 @@ bool Transform_readLocalData(Object& obj, Input& fr)
 bool Transform_writeLocalData(const Object& obj, Output& fw)
 {
     const Transform& transform = static_cast<const Transform&>(obj);
+
+    switch(transform.getType())
+    {
+        case(osg::Transform::STATIC): fw.indent() << "Type STATIC" << std::endl;
+        default:                      fw.indent() << "Type DYNAMIC" << std::endl;
+    }
 
     fw.writeObject(transform.getMatrix());
 

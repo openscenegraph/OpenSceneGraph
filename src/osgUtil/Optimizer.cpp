@@ -367,7 +367,7 @@ void Optimizer::FlattenStaticTransformsVisitor::apply(osg::Transform& transform)
     _transformList.insert(&transform);
 
     // reset the matrix to identity.
-    transform.getMatrix().makeIdent();
+    transform.setMatrix(osg::Matrix::identity());
     
     transform.dirtyBound();
 

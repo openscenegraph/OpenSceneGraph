@@ -551,6 +551,7 @@ osg::Node* ConvertFromFLT::visitDOF(osg::Group* osgParent, DofRecord* rec)
 
         visitPrimaryNode(transform, (PrimNodeRecord*)rec);
         transform->setName(rec->getData()->szIdent);
+        transform->setType(osg::Transform::DYNAMIC);
         
         // note for Judd (and others) shouldn't there be code in here to set up the transform matrix?
         // as a transform with an identity matrix is effectively only a
@@ -1088,8 +1089,8 @@ osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
 {
     SMatrix* pSMatrix = (SMatrix*)rec->getData();
 
-    osg::Transform* dcs = new osg::Transform;
-    if (dcs)
+    osg::Transform* transform = new osg::Transform;
+    if (transform)
     {
         osg::Matrix m;
         for(int i=0;i<4;++i)
@@ -1107,9 +1108,11 @@ osg::Node* ConvertFromFLT::visitMatrix(osg::Group* osgParent, MatrixRecord* rec)
         pos *= (float)_unitScale;
         m *= osg::Matrix::translate(pos);
 
-        dcs->setMatrix(m);
-        osgParent->addChild(dcs);
-        return (osg::Node*)dcs;
+        transform->setType(osg::Transform::STATIC);
+        transform->setMatrix(m);
+        
+        osgParent->addChild(transform);
+        return (osg::Node*)transform;
     }
 
     return NULL;

@@ -95,7 +95,7 @@ void Matrix::setTrans( const Vec3& v )
     _mat[3][2] = v[2];
 }
 
-void Matrix::makeIdent()
+void Matrix::makeIdentity()
 {
     SET_ROW(0,    1, 0, 0, 0 )
     SET_ROW(1,    0, 1, 0, 0 )

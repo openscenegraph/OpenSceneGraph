@@ -323,7 +323,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor
             if (_currentReuseMatrixIndex<_reuseMatrixList.size())
             {
                 osg::Matrix* matrix = _reuseMatrixList[_currentReuseMatrixIndex++].get();
-                matrix->makeIdent();
+                matrix->makeIdentity();
                 return matrix;
             }
 

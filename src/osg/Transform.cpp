@@ -6,7 +6,7 @@ Transform::Transform()
 {
     _type = DYNAMIC;
     _matrix = new osg::Matrix();
-    _matrix->makeIdent();
+    _matrix->makeIdentity();
 }
 
 

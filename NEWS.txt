@@ -1,6 +1,29 @@
 OSG News (most significant items from ChangeLog)
 ================================================
 
+4th August 2003 - OpenSceneGraph-0.9.7
+
+    >>> new osgTerrain library for generating large scale geospatial databases.
+    
+    osgTerrain
+    
+    Improved TXP plugin
+    
+    DatabasePager
+    
+    osgUtil - tristipper, simplifier, GLObjectVisitor.
+    
+    Examples - osgdem, osgphotoalbum, osgbluemarble, osgtesselate, osgsimulation
+    
+    New manipulators - TerrainManipulator and TrackerManipulator.
+    
+    Movie support under Linux and OSX via LibMpeg3 and Quicktime respectively. 
+    
+    Support for compressing textures and mipmap generation in osgconv.
+    
+    Bug fixes.
+
+
 2nd October 2003 - OpenSceneGraph-0.9.6-2
 
     >>> osgFX Special Effects nodekit (for bumping mapping & cartoon effects etc), support for double Matrix traversals, 

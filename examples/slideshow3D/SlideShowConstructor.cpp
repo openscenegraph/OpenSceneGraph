@@ -383,12 +383,12 @@ void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame
 
     if (coordinate_frame==SLIDE)
     {
-        osg::Vec3 pos(_slideWidth*position.x(),
-                      _slideDistance*position.y(),
-                      _slideHeight*position.z());
+
+
+        osg::Vec3 pos = (_slideOrigin+osg::Vec3(_slideWidth*position.x(),0.0f,_slideHeight*position.y()))*(1.0f-position.z());
      
         const osg::BoundingSphere& bs = model->getBound();
-        float model_scale = scale*_slideHeight*0.7f/bs.radius();
+        float model_scale = scale*_slideHeight*(1.0f-position.z())*0.7f/bs.radius();
 
         osg::MatrixTransform* transform = new osg::MatrixTransform;
         transform->setDataVariance(osg::Object::STATIC);
@@ -416,11 +416,14 @@ void SlideShowConstructor::addModel(const std::string& filename, CoordinateFrame
     }
     else
     {
+        osg::Matrix matrix(osg::Matrix::scale(1.0f/scale,1.0f/scale,1.0f/scale)*
+                           osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3])*
+                           osg::Matrix::translate(position));
+                           
+
         osg::MatrixTransform* transform = new osg::MatrixTransform;
         transform->setDataVariance(osg::Object::STATIC);
-        transform->setMatrix(osg::Matrix::translate(-position)*
-                             osg::Matrix::scale(scale,scale,scale)*
-                             osg::Matrix::rotate(osg::DegreesToRadians(rotate[0]),rotate[1],rotate[2],rotate[3]));
+        transform->setMatrix(osg::Matrix::inverse(matrix));
 
         transform->addChild(model);
         
@@ -586,6 +589,7 @@ void SlideShowConstructor::addModelWithCameraPath(const std::string& filename, C
         {
             osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
             animation_transform->setDataVariance(osg::Object::DYNAMIC);
+            animation_transform->setReferenceFrame(osg::Transform::RELATIVE_TO_ABSOLUTE);
             
             osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
             apc->setUseInverseMatrix(true);
@@ -593,14 +597,16 @@ void SlideShowConstructor::addModelWithCameraPath(const std::string& filename, C
             animation_transform->setUpdateCallback(apc);
             animation_transform->addChild(transform);    
 
-            osg::MatrixTransform* orientation_transform = new osg::MatrixTransform;
-            orientation_transform->setDataVariance(osg::Object::STATIC);
-            orientation_transform->addChild(animation_transform);
-            
-            //orientation_transform->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(-00.0f),0.0f,1.0f,0.0f));
-            orientation_transform->setMatrix(osg::Matrix::inverse(osg::Matrix::lookAt(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0))));
+            _currentLayer->addChild(animation_transform);
 
-            _currentLayer->addChild(orientation_transform);
+//             osg::MatrixTransform* orientation_transform = new osg::MatrixTransform;
+//             orientation_transform->setDataVariance(osg::Object::STATIC);
+//             orientation_transform->addChild(animation_transform);
+//             
+//             //orientation_transform->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(-00.0f),0.0f,1.0f,0.0f));
+//             orientation_transform->setMatrix(osg::Matrix::inverse(osg::Matrix::lookAt(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1.0,0.0),osg::Vec3(0.0,0.0,1.0))));
+// 
+//             _currentLayer->addChild(orientation_transform);
 
         }
         else

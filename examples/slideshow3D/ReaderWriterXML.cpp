@@ -228,16 +228,42 @@ void ReaderWriterSS3D::parseModel(SlideShowConstructor& constructor, xmlDocPtr d
         else std::cout<<"Parser error - coordinate_frame=\""<<str<<"\" unrecongonized value"<<std::endl;
     }
 
-    if (getProperty(cur, "position", str))
+    if (coordinate_frame==SlideShowConstructor::SLIDE)
     {
-        bool fail = false;
-        if (str=="center") position.set(0.0f,1.0f,0.0f);
-        else if (str=="eye") position.set(0.0f,0.0f,0.0f);
-        else if (!read(str,position)) fail = true;
+        position.set(0.5,0.5,0.0);
         
-        if (fail) std::cout<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl;
-        else std::cout<<"Read position="<<position<<std::endl;
+        if (getProperty(cur, "position", str))
+        {
+            osg::Vec2 vec2;
+            osg::Vec3 vec3;
+        
+            bool fail = false;
+            if (str=="center") position.set(0.5f,.5f,0.0f);
+            else if (str=="eye") position.set(0.0f,0.0f,1.0f);
+            else if (read(str,vec3)) position = vec3;
+            else if (read(str,vec2)) position.set(vec3.x(),vec3.y(),0.0f);
+            else fail = true;
+
+            if (fail) std::cout<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl;
+            else std::cout<<"Read position="<<position<<std::endl;
+        }
     }
+    else // coordinate_frame==SlideShowConstructor::MODEL
+    {
+        position.set(0.0,0.0,0.0);
+
+        if (getProperty(cur, "position", str))
+        {
+            bool fail = false;
+            if (str=="center") position.set(0.0f,1.0f,0.0f);
+            else if (str=="eye") position.set(0.0f,0.0f,0.0f);
+            else if (!read(str,position)) fail = true;
+
+            if (fail) std::cout<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl;
+            else std::cout<<"Read position="<<position<<std::endl;
+        }
+    }
+
     
     if (getProperty(cur, "scale", scale))
     {

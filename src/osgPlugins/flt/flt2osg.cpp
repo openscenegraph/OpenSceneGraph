@@ -626,21 +626,27 @@ osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 
 osg::Group* ConvertFromFLT::visitSwitch(osg::Group& osgParent, SwitchRecord* rec)
 {
-    osg::Switch* switc = new osg::Switch;
+    SSwitch *pSSwitch = (SSwitch*)rec->getData();
+    osg::Group* group = new osg::Group;
 
-    switc->setName(rec->getData()->szIdent);
-    switc->setValue(rec->getData()->dwCurrentMask);
-    visitAncillary(osgParent, *switc, rec)->addChild( switc );
-    visitPrimaryNode(*switc, (PrimNodeRecord*)rec);
+    group->setName(pSSwitch->szIdent);
+    visitAncillary(osgParent, *group, rec)->addChild( group );
+    visitPrimaryNode(*group, (PrimNodeRecord*)rec);
 
-    /*
-            TODO:
-            mask_bit = 1 << (child_num % 32)
-            mask_word = mask_words [mask_num * num_words + child_num / 32]
-            child_selected = mask_word & mask_bit
-    */
+    for(int nChild=0; nChild<rec->getNumChildren(); nChild++)
+    {
+        int nMaskBit = nChild % 32;
+        int nMaskWord = pSSwitch->nCurrentMask * pSSwitch->nWordsInMask + nChild / 32;
 
-    return switc;
+        if (!(pSSwitch->aMask[nMaskWord] & (uint32(1) << nMaskBit)))
+        {
+            osg::Node* node = group->getChild(nChild);
+            if (node)
+                node->setNodeMask(0);
+        }
+    }
+
+    return group;
 }
 
 

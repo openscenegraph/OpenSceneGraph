@@ -6,7 +6,7 @@
 #define OSG_CullingSet 1
 
 #include <osg/Polytope>
-#include <osg/ShadowOccluderVolume>
+#include <osg/ShadowVolumeOccluder>
 #include <osg/Referenced>
 
 namespace osg {

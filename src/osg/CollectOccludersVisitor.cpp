@@ -114,7 +114,7 @@ void CollectOccludersVisitor::apply(osg::OccluderNode& node)
     
         // need to test occluder against view frustum.
         std::cout << "    adding in Occluder"<<std::endl;
-        _occluderList.push_back(ShadowVolumeOccluder(_nodePath, *node.getOccluder(), getModelViewMatrix()));
+        _occluderList.push_back(ShadowVolumeOccluder(_nodePath, *node.getOccluder(), getModelViewMatrix(),getProjectionMatrix()));
     }
 
     traverse(node);

@@ -4,7 +4,7 @@
 
 #include <osg/Group>
 #include <osg/LOD>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Switch>
 #include <osg/Geode>
 #include <osg/GeoSet>
@@ -13,7 +13,7 @@
 #include <osg/TexEnv>
 #include <osg/TexGen>
 #include <osg/AlphaFunc>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/Point>
 #include <osg/Material>
 #include <osg/PolygonOffset>
@@ -625,7 +625,7 @@ osg::Group* ConvertFromFLT::visitOldLOD(osg::Group& osgParent, OldLodRecord* rec
 // Converted DOF to use transform - jtracy@ist.ucf.edu
 osg::Group* ConvertFromFLT::visitDOF(osg::Group& osgParent, DofRecord* rec)
 {
-    osg::Transform* transform = new osg::Transform;
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
 
     transform->setName(rec->getData()->szIdent);
     transform->setDataVariance(osg::Object::DYNAMIC);
@@ -966,9 +966,9 @@ void ConvertFromFLT::visitFace(GeoSetBuilder* pBuilder, FaceRecord* rec)
 
     if (bBlend)
     {
-        osg::Transparency* osgTransparency = new osg::Transparency();
-        osgTransparency->setFunction(osg::Transparency::SRC_ALPHA, osg::Transparency::ONE_MINUS_SRC_ALPHA);
-        osgStateSet->setAttribute(osgTransparency);
+        osg::BlendFunc* osgBlendFunc = new osg::BlendFunc();
+        osgBlendFunc->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+        osgStateSet->setAttribute(osgBlendFunc);
         osgStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
         osgStateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
@@ -1180,7 +1180,7 @@ int ConvertFromFLT::addVertex(DynGeoSet* dgset, Record* rec)
 osg::Group* ConvertFromFLT::visitMatrix(osg::Group& osgParent, const osg::Group& /*osgPrimary*/, MatrixRecord* rec)
 {
     SMatrix* pSMatrix = (SMatrix*)rec->getData();
-    osg::Transform* transform = new osg::Transform;
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
 
     osg::Matrix m;
     for(int i=0;i<4;++i)

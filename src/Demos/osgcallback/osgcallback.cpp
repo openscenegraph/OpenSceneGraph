@@ -129,7 +129,7 @@ struct BillboardCallback : public osg::Billboard::ComputeBillboardCallback
 struct DrawableCullCallback : public osg::Drawable::CullCallback
 {
     /** do customized cull code.*/
-    virtual bool cull(osg::NodeVisitor*, osg::Drawable* drawable, osg::State *state=NULL) const
+    virtual bool cull(osg::NodeVisitor*, osg::Drawable* drawable, osg::State *state) const
     {
         std::cout<<"Drawable cull callback "<<drawable<<std::endl;
         return false;

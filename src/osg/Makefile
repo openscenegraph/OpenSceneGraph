@@ -47,6 +47,7 @@ CXXFILES =\
 	LineWidth.cpp\
 	Material.cpp\
 	Matrix.cpp\
+	MatrixTransform.cpp\
 	MemoryManager.cpp\
 	Node.cpp\
 	NodeCallback.cpp\

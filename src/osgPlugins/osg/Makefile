@@ -28,6 +28,7 @@ CXXFILES =\
         LOD.cpp\
         Material.cpp\
         Matrix.cpp\
+        MatrixTransform.cpp\
         Node.cpp\
         Object.cpp\
         OccluderNode.cpp\

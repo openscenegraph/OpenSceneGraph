@@ -29,11 +29,10 @@
 #include <osg/Geode>
 #include <osg/Billboard>
 #include <osg/Matrix>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Geometry>
 #include <osg/CullFace>
 #include <osg/Light>
-#include <osg/Transparency>
 #include <osg/Notify>
 
 
@@ -531,7 +530,7 @@ void *modelRefRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     Node *osg_Model = (*parse->GetModels())[modelID].get();
     // Create the SCS and position the model
     if (osg_Model) {
-        Transform *scs = new Transform();
+        MatrixTransform *scs = new MatrixTransform();
         scs->setMatrix(osg_Mat);
         scs->addChild(osg_Model);
         // Add the SCS to the hierarchy

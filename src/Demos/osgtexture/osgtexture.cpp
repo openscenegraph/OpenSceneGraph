@@ -1,7 +1,7 @@
 #include <osg/Node>
 #include <osg/Geometry>
 #include <osg/Notify>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/Texture>
 #include <osg/DrawPixels>
 
@@ -133,7 +133,7 @@ osg::Node* createTexturedItem(const osg::Vec3& offset,osg::Texture* texture,osg:
     // create a tranform node to position each square in appropriate
     // place and also to add individual texture set to it, so that
     // that state is inherited down to its children.
-    osg::Transform* local_transform = new osg::Transform;
+    osg::MatrixTransform* local_transform = new osg::MatrixTransform;
     local_transform->postMult(osg::Matrix::translate(offset));
 
     // create the StateSet to store the texture data
@@ -158,7 +158,7 @@ osg::Node* createLayer(const osg::Vec3& offset,osg::Image* image,osg::Node* geom
 {
     if (image==NULL) return NULL;
     
-    osg::Transform* top_transform = new osg::Transform;
+    osg::MatrixTransform* top_transform = new osg::MatrixTransform;
     top_transform->postMult(osg::Matrix::translate(offset));
 
     osg::Vec3 local_offset(0.0f,0.0f,0.0f);

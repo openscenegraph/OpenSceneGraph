@@ -6,7 +6,7 @@
 #include <osg/Material>
 #include <osg/TexEnv>
 #include <osg/ref_ptr>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
@@ -324,7 +324,7 @@ osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,L
 
         if (pivoted) {
             // Transform object's pivot point to the world origin
-            osg::Transform* T=new osg::Transform;
+            osg::MatrixTransform* T=new osg::MatrixTransform;
             osgmatrix.set(
                 N[0][0],N[0][1],N[0][2],N[0][3],
                 N[1][0],N[1][1],N[1][2],N[1][3],
@@ -336,7 +336,7 @@ osg::Node* ReaderWriter3DS::processNode(StateSetMap drawStateMap,Lib3dsFile *f,L
 
             // rotate about "origin" (after the transform this is the world origin)
             // BUG this matrix also contains the translation to the pivot point - we should plit that out (maybe)
-            osg::Transform* R=new osg::Transform;
+            osg::MatrixTransform* R=new osg::MatrixTransform;
             osgmatrix.set(
                 M[0][0],M[0][1],M[0][2],M[0][3],
                 M[1][0],M[1][1],M[1][2],M[1][3],

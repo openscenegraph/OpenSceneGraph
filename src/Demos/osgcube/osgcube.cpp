@@ -2,7 +2,7 @@
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osg/Vec3>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 
 #include <osgGA/TrackballManipulator>
 
@@ -20,7 +20,7 @@ class MyTransformCallback : public osg::NodeCallback{
 
     public:
 
-        MyTransformCallback(osg::Transform* node,float angularVelocity)
+        MyTransformCallback(osg::MatrixTransform* node,float angularVelocity)
         {
             _nodeToOperateOn = node;
             _angular_velocity = angularVelocity;
@@ -62,7 +62,7 @@ class MyTransformCallback : public osg::NodeCallback{
         
     protected:
     
-        osg::Transform*     _nodeToOperateOn;
+        osg::MatrixTransform*     _nodeToOperateOn;
         float               _angular_velocity;
 
         int                 _previousTraversalNumber;
@@ -175,7 +175,7 @@ int main( int argc, char **argv )
     // parameters that have been matched.
     viewer.readCommandLine(commandLine);
     
-    osg::Transform* myTransform = new osg::Transform();
+    osg::MatrixTransform* myTransform = new osg::MatrixTransform();
     myTransform->addChild( createGeometryCube() );
     
     // move node in a circle at 90 degrees a sec.

@@ -3,7 +3,7 @@
 #include "ConvertFromPerformer.h"
 
 #include <osg/Group>
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/LOD>
 #include <osg/Switch>
 #include <osg/Geode>
@@ -291,14 +291,14 @@ osg::Node* ConvertFromPerformer::visitSequence(osg::Group* osgParent,pfSequence*
 osg::Node* ConvertFromPerformer::visitDCS(osg::Group* osgParent,pfDCS* dcs)
 {
 
-    osg::Transform* osgTransform = dynamic_cast<osg::Transform*>(getOsgObject(dcs));
+    osg::MatrixTransform* osgTransform = dynamic_cast<osg::MatrixTransform*>(getOsgObject(dcs));
     if (osgTransform)
     {
         if (osgParent) osgParent->addChild(osgTransform);
         return osgTransform;
     }
 
-    osgTransform = new osg::Transform;
+    osgTransform = new osg::MatrixTransform;
     if (osgParent) osgParent->addChild(osgTransform);
 
     registerPfObjectForOsgObject(dcs,osgTransform);
@@ -327,15 +327,17 @@ osg::Node* ConvertFromPerformer::visitDCS(osg::Group* osgParent,pfDCS* dcs)
 osg::Node* ConvertFromPerformer::visitSCS(osg::Group* osgParent,pfSCS* scs)
 {
     // note the OSG does not currently have a SCS, so use DCS instead.
-    osg::Transform* osgTransform = dynamic_cast<osg::Transform*>(getOsgObject(scs));
+    osg::MatrixTransform* osgTransform = dynamic_cast<osg::MatrixTransform*>(getOsgObject(scs));
     if (osgTransform)
     {
         if (osgParent) osgParent->addChild(osgTransform);
         return osgTransform;
     }
 
-    osgTransform = new osg::Transform;
+    osgTransform = new osg::MatrixTransform;
     if (osgParent) osgParent->addChild(osgTransform);
+    
+    osgTransform->setDataVariance(osg::Object::STATIC);
 
     registerPfObjectForOsgObject(scs,osgTransform);
 

@@ -1,4 +1,4 @@
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osg/ClipNode>
 #include <osg/Billboard>
 #include <osg/Geode>
@@ -95,7 +95,7 @@ osg::Node* decorate_with_clip_node(osg::Node* subgraph)
     // ClipNode node to be transformed independantly from the subgraph
     // that it is clipping.
     
-    osg::Transform* transform= osgNew osg::Transform;
+    osg::MatrixTransform* transform= osgNew osg::MatrixTransform;
 
     osg::NodeCallback* nc = new osgUtil::TransformCallback(subgraph->getBound().center(),osg::Vec3(0.0f,0.0f,1.0f),osg::inDegrees(45.0f));
     transform->setAppCallback(nc);

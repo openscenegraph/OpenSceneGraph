@@ -9,7 +9,7 @@
 #include <osg/GL>
 #include <osg/StateSet>
 #include <osg/Texture>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/TexEnv>
 #include <osg/Material>
 
@@ -161,13 +161,13 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string &textur
         stateset->setTextureAttribute(texture_unit, texenv);
     }
 
-    osg::Transparency *transparency = osgNew osg::Transparency;
+    osg::BlendFunc *blend = osgNew osg::BlendFunc;
     if (emissive_particles) {    
-        transparency->setFunction(osg::Transparency::SRC_ALPHA, osg::Transparency::ONE);
+        blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE);
     } else {
-        transparency->setFunction(osg::Transparency::SRC_ALPHA, osg::Transparency::ONE_MINUS_SRC_ALPHA);
+        blend->setFunction(osg::BlendFunc::SRC_ALPHA, osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
     }
-    stateset->setAttributeAndModes(transparency, osg::StateAttribute::ON);
+    stateset->setAttributeAndModes(blend, osg::StateAttribute::ON);
 
     setStateSet(stateset);
 }

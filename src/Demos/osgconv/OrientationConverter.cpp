@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <osg/Transform>
+#include <osg/MatrixTransform>
 #include <osgUtil/Optimizer>
 
 #include "OrientationConverter.h"
@@ -48,7 +48,7 @@ Node* OrientationConverter::convert( Node *node )
         T = Matrix::translate( bs.center() );
 
     osg::Group* root = new osg::Group;
-    osg::Transform* transform = new osg::Transform;
+    osg::MatrixTransform* transform = new osg::MatrixTransform;
 
     transform->setDataVariance(osg::Object::STATIC);
     transform->setMatrix( C * R * S * T );

@@ -6,7 +6,7 @@
 #include <osg/Geometry>
 #include <osg/Texture>
 #include <osg/TexEnv>
-#include <osg/Transparency>
+#include <osg/BlendFunc>
 #include <osg/AlphaFunc>
 
 #include <osgDB/ReadFile>
@@ -224,7 +224,7 @@ Node *makeTrees( void )
     dstate->setTextureAttributeAndModes(0, tex, StateAttribute::ON );
     dstate->setTextureAttribute(0, new TexEnv );
 
-    dstate->setAttributeAndModes( new Transparency, StateAttribute::ON );
+    dstate->setAttributeAndModes( new BlendFunc, StateAttribute::ON );
 
     AlphaFunc* alphaFunc = new AlphaFunc;
     alphaFunc->setFunction(AlphaFunc::GEQUAL,0.05f);

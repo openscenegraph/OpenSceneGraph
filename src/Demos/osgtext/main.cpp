@@ -13,8 +13,8 @@
 #include <osg/Node>
 #include <osg/StateSet>
 #include <osg/Material>
-#include <osg/Transparency>
-#include <osg/Transform>
+#include <osg/BlendFunc>
+#include <osg/MatrixTransform>
 #include <osg/PolygonMode>
 #include <osg/Depth>
 #include <osg/Notify>
@@ -105,7 +105,7 @@ void set2dScene(osg::Group* rootNode)
     geode->addDrawable( text );
 
     // to get antiaA pixmapFonts we have to draw them with blending
-    osg::Transparency    *transp= osgNew  osg::Transparency();
+    osg::BlendFunc    *transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
@@ -138,7 +138,7 @@ void set2dScene(osg::Group* rootNode)
     geode->addDrawable( text );
 
     // to get antiaA pixmapFonts we have to draw them with blending
-    transp= osgNew  osg::Transparency();
+    transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
@@ -267,7 +267,7 @@ void setScene(osg::Group* rootNode)
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
     // to get antiaA pixmapFonts we have to draw them with blending
-    osg::Transparency    *transp= osgNew  osg::Transparency();
+    osg::BlendFunc    *transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
@@ -301,7 +301,7 @@ void setScene(osg::Group* rootNode)
     textMaterial->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE);
     textMaterial->setDiffuse( osg::Material::FRONT_AND_BACK,TEXT_COL_3D);
     // to get antiaA pixmapFonts we have to draw them with blending
-    transp= osgNew  osg::Transparency();
+    transp= osgNew  osg::BlendFunc();
     transp->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     textState = osgNew osg::StateSet();
@@ -540,7 +540,7 @@ int main( int argc, char **argv )
 
     osg::Group*            rootNode = osgNew osg::Group;
     osg::Group*            scene2d = osgNew osg::Group;
-    osg::Transform*        textGroup = osgNew osg::Transform;
+    osg::MatrixTransform*        textGroup = osgNew osg::MatrixTransform;
 
     // set the name for the hole group
     rootNode->setName("sceneGroup");

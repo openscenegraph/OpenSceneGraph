@@ -55,8 +55,12 @@ Ben Discoe <ben@vterrain.org>
         - png plugin.
         - fixes to OBJ plugin.
        
-Mike Weiblen <mike.weiblen@3dlabs.com>
-        - osgGL2
+Mike Weiblen <mike.weiblen@3dlabs.com> <mew@mew.cx>
+        - osgGL2, osgshaders example
+	- win32 binary installer package.
+	- rot, scale, trans pseudoloader plugins.
+        - assistance on visual studio workspace files.
+	- osg.ico windows icon
 
 Randall Hopper <aa8vb@yahoo.com>
         - port to FreeBSD.

@@ -21,7 +21,7 @@
 // if not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
 #ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
-#define GL_TEXTURE_MAX_ANISOTROPY_EXT (GLenum)0x84fe
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
 #endif
 
 #ifndef GL_ARB_texture_compression
@@ -50,7 +50,7 @@
 #endif
 
 #ifndef GL_GENERATE_MIPMAP_SGIS
-#define GL_GENERATE_MIPMAP_SGIS           (GLenum)0x8191
+#define GL_GENERATE_MIPMAP_SGIS           0x8191
 #define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
 #endif
 

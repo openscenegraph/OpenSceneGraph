@@ -435,7 +435,7 @@ public:
                 for(GLsizei i=3;i<count;i+=2,vptr+=2)
                 {
                     operator()(*(vptr),*(vptr+1),*(vptr+2));
-                    operator()(*(vptr),*(vptr+2),*(vptr+3));
+                    operator()(*(vptr+1),*(vptr+3),*(vptr+2));
                 }
                 break;
             }
@@ -501,7 +501,7 @@ public:
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
                     operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
-                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                    operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -570,7 +570,7 @@ public:
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
                     operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
-                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                    operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }
@@ -637,7 +637,7 @@ public:
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
                     operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)]);
-                    operator()(_vertexArrayPtr[*(iptr)],_vertexArrayPtr[*(iptr+2)],_vertexArrayPtr[*(iptr+3)]);
+                    operator()(_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+3)],_vertexArrayPtr[*(iptr+2)]);
                 }
                 break;
             }

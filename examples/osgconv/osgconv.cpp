@@ -8,6 +8,7 @@
 #include <osg/Geometry>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
+#include <osg/BlendFunc>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -163,6 +164,121 @@ public:
 };
 
 
+class FixTransparencyVisitor : public osg::NodeVisitor
+{
+public:
+
+    enum FixTransparencyMode
+    {
+        NO_TRANSPARANCY_FIXING,
+        MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE,
+        MAKE_ALL_STATESET_OPAQUE,
+    };
+
+    FixTransparencyVisitor(FixTransparencyMode mode=MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _numTransparent(0),
+        _numOpaque(0),
+        _numTransparentMadeOpaque(0),
+        _mode(mode)
+    {
+        std::cout<<"Running FixTransparencyVisitor..."<<std::endl;
+    }
+        
+    ~FixTransparencyVisitor()
+    {
+        std::cout<<"  Number of Transparent StateSet "<<_numTransparent<<std::endl;
+        std::cout<<"  Number of Opaque StateSet "<<_numOpaque<<std::endl;
+        std::cout<<"  Number of Transparent State made Opaque "<<_numTransparentMadeOpaque<<std::endl;
+    }
+
+    virtual void apply(osg::Node& node)
+    {
+        if (node.getStateSet()) isTransparent(*node.getStateSet());
+        traverse(node);
+    }
+    
+    virtual void apply(osg::Geode& node)
+    {
+        if (node.getStateSet()) isTransparent(*node.getStateSet());
+        
+        for(unsigned int i=0;i<node.getNumDrawables();++i)
+        {
+            osg::Drawable* drawable = node.getDrawable(i);
+            if (drawable && drawable->getStateSet()) isTransparent(*drawable->getStateSet());
+        }
+        
+        traverse(node);
+    }
+    
+    virtual bool isTransparent(osg::StateSet& stateset)
+    {
+        bool hasTranslucentTexture = false;
+        bool hasBlendFunc = dynamic_cast<osg::BlendFunc*>(stateset.getAttribute(osg::StateAttribute::BLENDFUNC))!=0;
+        bool hasTransparentRenderingHint = stateset.getRenderingHint()==osg::StateSet::TRANSPARENT_BIN;
+        bool hasDepthSortBin = (stateset.getRenderBinMode()==osg::StateSet::USE_RENDERBIN_DETAILS)?(stateset.getBinName()=="DepthSortedBin"):false;
+        bool hasTexture = false;
+
+
+        // search for the existance of any texture object attributes
+        for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
+        {
+            osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+            if (texture)
+            {
+                hasTexture = true;
+                for (unsigned int im=0;im<texture->getNumImages();++im)
+                {
+                    osg::Image* image = texture->getImage(im);
+                    if (image->isImageTranslucent()) hasTranslucentTexture = true;   
+                }
+            }
+        }
+        
+        if (hasTranslucentTexture || hasBlendFunc || hasTransparentRenderingHint || hasDepthSortBin)
+        {
+            ++_numTransparent;
+            
+            bool makeNonTransparent = false;
+
+            switch(_mode)
+            {
+            case(MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE):
+                if (hasTexture && !hasTranslucentTexture)
+                {
+                    makeNonTransparent = true;
+                }
+                break;
+            case(MAKE_ALL_STATESET_OPAQUE):
+                makeNonTransparent = true;
+                break;
+            }
+        
+            if (makeNonTransparent)
+            {
+                stateset.removeAttribute(osg::StateAttribute::BLENDFUNC);
+                stateset.removeMode(GL_BLEND);
+                stateset.setRenderingHint(osg::StateSet::DEFAULT_BIN);
+                ++_numTransparentMadeOpaque;
+            }
+
+
+            return true;
+        }
+        else
+        {
+            ++_numOpaque;
+            return false;
+        }
+    }
+
+    unsigned int _numTransparent;
+    unsigned int _numOpaque;    
+    unsigned int _numTransparentMadeOpaque;
+    FixTransparencyMode _mode;
+};
+
+
 static void usage( const char *prog, const char *msg )
 {
     if (msg)
@@ -177,12 +293,22 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"options:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    -O option          - ReaderWriter option"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --compressed       - Compress textures."<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --compressed       - Enable the usage of compressed textures."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --compressed       - Enable the usage of compressed textures,"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         defaults to OpenGL ARB compressed textures."<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-arb   - Enable the usage of OpenGL ARB compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-dxt1  - Enable the usage of S3TC DXT1 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-dxt3  - Enable the usage of S3TC DXT3 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-dxt5  - Enable the usage of S3TC DXT5 compressed textures"<< std::endl;
+    osg::notify(osg::NOTICE)<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fixTransparency  - fix stateset which are curerntly declared as transprent,"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         but should be opaque. Defaults to using the "<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         fixTranspancyMode MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fixTransparencyMode <mode_string>  - fix stateset which are curerntly declared as"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         transprent but should be opaque. The mode_string determines"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         algorithm is used to fix the transparency, options are:    "<< std::endl;
+    osg::notify(osg::NOTICE)<<"                                 MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE,"<<std::endl;
+    osg::notify(osg::NOTICE)<<"                                 MAKE_ALL_STATESET_OPAQUE."<<std::endl;
+
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"    -l libraryName     - load plugin of name libraryName"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         i.e. -l osgdb_pfb"<< std::endl;
@@ -282,27 +408,6 @@ int main( int argc, char **argv )
     {
         osgDB::Registry::instance()->loadLibrary(libName);
     }
-#if 0 
-
-                        if( nexti < argc )
-                        {
-                            osg::Vec3 scale(0,0,0);
-                            if( sscanf( argv[nexti++], "%f,%f,%f",
-                                    &scale[0], &scale[1], &scale[2] ) != 3 )
-                            {
-                                usage( argv[0], "Scale argument format incorrect." );
-                                return false;
-                            }
-                            oc.setScale( scale );
-                            do_convert = true;
-                        }
-                        else
-                        {
-                            usage( argv[0], "Scale conversion option requires an argument." );
-                            return false;
-                        }
-                        break;
-#endif
 
     while (arguments.read("-o",str))
     {
@@ -360,7 +465,16 @@ int main( int argc, char **argv )
         do_convert = true;
     }
 
-
+    
+    FixTransparencyVisitor::FixTransparencyMode fixTransparencyMode = FixTransparencyVisitor::NO_TRANSPARANCY_FIXING;
+    std::string fixString;
+    while(arguments.read("--fixTransparency")) fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
+    while(arguments.read("--fixTransparencyMode",fixString))
+    {
+         if (fixString=="MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE") fixTransparencyMode = FixTransparencyVisitor::MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE;
+         if (fixString=="MAKE_ALL_STATESET_OPAQUE") fixTransparencyMode = FixTransparencyVisitor::MAKE_ALL_STATESET_OPAQUE;
+    };
+    
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
     while(arguments.read("--compressed") || arguments.read("--compressed-arb")) { internalFormatMode = osg::Texture::USE_ARB_COMPRESSION; }
 
@@ -395,6 +509,12 @@ int main( int argc, char **argv )
     }
 
     osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
+
+    if (fixTransparencyMode != FixTransparencyVisitor::NO_TRANSPARANCY_FIXING)
+    {
+        FixTransparencyVisitor atv(fixTransparencyMode);
+        root->accept(atv);
+    }
 
     if ( root.valid() )
     {

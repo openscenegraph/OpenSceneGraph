@@ -43,13 +43,14 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         
         typedef unsigned int Mode;
 
-        /** Construct a DisplayListVisior to traverse all child,
-          * with set specified display list mode.  Default mode is to
-          * gset->setUseDisplayList(true).
+        /** Construct a GLObjectsVisior to traverse all child, operating on
+          * node according to specified mode, such as to compile or release 
+          * display list/texture objects etc. Default mode is to compile 
+          * GL objects.
           */
         GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES);
         
-        /** Set the operational mode of how the visitor should set up osg::Drawable's.*/
+        /** Set the operational mode of what operations to do on the scene graph.*/
         void setMode(Mode mode) { _mode = mode; }
 
         /** Get the operational mode.*/

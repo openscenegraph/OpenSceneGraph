@@ -108,6 +108,10 @@ void Texture3D::apply(State& state) const
         {
             _subloadCallback->subload(*this,state);
         }
+        else if(getModifiedTag(contextID) != _image->getModifiedTag())
+        {
+            applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMimpmapLevels);
+        }
 
     }
     else if (_subloadCallback.valid())

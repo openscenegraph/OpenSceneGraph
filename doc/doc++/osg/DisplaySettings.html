@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML>
+<HEAD>
+   <TITLE>class  SG_EXPORT osg::DisplaySettings</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.8">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>class  SG_EXPORT <A HREF="#DOC.DOCU">osg::DisplaySettings</A></H2></H2><BLOCKQUOTE>DisplaySettings class for encapsulating what visuals are required and have been set up, and the status of stereo viewing</BLOCKQUOTE>
+<HR>
+
+<H2>Inheritance:</H2>
+<APPLET CODE="ClassGraph.class" WIDTH=600 HEIGHT=65>
+<param name=classes value="CReferenced,MReferenced.html,CDisplaySettings,MDisplaySettings.html">
+<param name=before value="M,M">
+<param name=after value="Md_,M">
+<param name=indent value="0,1">
+<param name=arrowdir value="down">
+</APPLET>
+<HR>
+
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.1">DisplaySettings</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.2">DisplaySettings</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif> <B><A HREF="#DOC.2.27.3">DisplaySettings</A></B>(const <!1><A HREF="DisplaySettings.html#DOC.2.27.3">DisplaySettings</A>&amp; vs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>virtual   <B><A HREF="#DOC.2.27.4">~DisplaySettings</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; <B><A HREF="#DOC.2.27.5">operator = </A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.6">merge</A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.7">setDefaults</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.8">readEnvironmentalVariables</A></B>()
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.9">readCommandLine</A></B>(std::vector&lt;std::string&gt;&amp; commandLine)
+<DD><I>read the command line string list, removing any matched control sequences</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.10">setStereo</A></B>(const bool on)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.11">getStereo</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.13">setStereoMode</A></B>(const <!1><A HREF="DisplaySettings.html#DOC.2.27.12">StereoMode</A> mode)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const <!1><A HREF="DisplaySettings.html#DOC.2.27.12">StereoMode</A> <B><A HREF="#DOC.2.27.14">getStereoMode</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.15">setEyeSeperation</A></B>(const float eyeSeperation)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.27.16">getEyeSeperation</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.17">setScreenDistance</A></B>(const float <!1><A HREF="Plane.html#DOC.2.82.20">distance</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.27.18">getScreenDistance</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.19">setScreenHeight</A></B>(const float <!1><A HREF="Viewport.html#DOC.2.112.9">height</A>)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const float <B><A HREF="#DOC.2.27.20">getScreenHeight</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.21">setDoubleBuffer</A></B>(const bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.22">getDoubleBuffer</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.23">setRGB</A></B>(const bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.24">getRGB</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.25">setDepthBuffer</A></B>(const bool flag)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.26">getDepthBuffer</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.27">setMinimumNumAlphaBits</A></B>(const unsigned int bits)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.27.28">getMinimumNumAlphaBits</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.29">getAlphaBuffer</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.30">setMinimumNumStencilBits</A></B>(const unsigned int bits)
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const unsigned int <B><A HREF="#DOC.2.27.31">getMinimumNumStencilBits</A></B>() const 
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>const bool <B><A HREF="#DOC.2.27.32">getStencilBuffer</A></B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Public Members</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>enum  <B><A HREF="#DOC.2.27.12">StereoMode</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.34">_stereo</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif><!1><A HREF="DisplaySettings.html#DOC.2.27.12">StereoMode</A> <B><A HREF="#DOC.2.27.35">_stereoMode</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.27.36">_eyeSeperation</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.27.37">_screenDistance</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>float <B><A HREF="#DOC.2.27.38">_screenHeight</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.39">_doubleBuffer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.40">_RGB</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>bool <B><A HREF="#DOC.2.27.41">_depthBuffer</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.27.42">_minimumNumberAlphaBits</A></B>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.2.27.43">_minimumNumberStencilBits</A></B>
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Methods</H3><DD><DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void <B><A HREF="#DOC.2.27.33">copy</A></B>(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)
+</DL></P>
+
+</DL>
+<HR><H3>Inherited from <A HREF="Referenced.html">Referenced</A>:</H3>
+<DL>
+<P><DL>
+<DT><H3>Public Methods</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>ref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   void <B>unref</B>() const 
+<DT>
+<IMG ALT="o" SRC=icon2.gif>inline   const int <B>referenceCount</B>() const 
+</DL></P>
+
+<P><DL>
+<DT><H3>Protected Fields</H3><DD><DT>
+<IMG ALT="o" SRC=icon2.gif>mutable int <B>_refCount</B>
+</DL></P>
+
+</DL>
+
+<A NAME="DOC.DOCU"></A>
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>DisplaySettings class for encapsulating what visuals are required and
+have been set up, and the status of stereo viewing</BLOCKQUOTE>
+<DL>
+
+<A NAME="DisplaySettings"></A>
+<A NAME="DOC.2.27.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DisplaySettings"></A>
+<A NAME="DOC.2.27.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings(std::vector&lt;std::string&gt;&amp; commandLine)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="DisplaySettings"></A>
+<A NAME="DOC.2.27.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> DisplaySettings(const <!1><A HREF="DisplaySettings.html#DOC.2.27.3">DisplaySettings</A>&amp; vs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="~DisplaySettings"></A>
+<A NAME="DOC.2.27.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>virtual   ~DisplaySettings()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="operator = "></A>
+<A NAME="DOC.2.27.5"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; operator = (const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="merge"></A>
+<A NAME="DOC.2.27.6"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void merge(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDefaults"></A>
+<A NAME="DOC.2.27.7"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDefaults()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readEnvironmentalVariables"></A>
+<A NAME="DOC.2.27.8"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readEnvironmentalVariables()</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="readCommandLine"></A>
+<A NAME="DOC.2.27.9"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void readCommandLine(std::vector&lt;std::string&gt;&amp; commandLine)</B></TT>
+<DD>read the command line string list, removing any matched control sequences
+<DL><DT><DD></DL><P>
+<A NAME="setStereo"></A>
+<A NAME="DOC.2.27.10"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStereo(const bool on)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStereo"></A>
+<A NAME="DOC.2.27.11"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getStereo() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="StereoMode"></A>
+<A NAME="DOC.2.27.12"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>enum  StereoMode</B></TT>
+<DL><DT><DD></DL><P><DL>
+
+<A NAME="QUAD_BUFFER"></A>
+<A NAME="DOC.2.27.12.1"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> QUAD_BUFFER</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ANAGLYPHIC"></A>
+<A NAME="DOC.2.27.12.2"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> ANAGLYPHIC</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="HORIZONTAL_SPLIT"></A>
+<A NAME="DOC.2.27.12.3"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> HORIZONTAL_SPLIT</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="VERTICAL_SPLIT"></A>
+<A NAME="DOC.2.27.12.4"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B> VERTICAL_SPLIT</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<A NAME="setStereoMode"></A>
+<A NAME="DOC.2.27.13"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setStereoMode(const <!1><A HREF="DisplaySettings.html#DOC.2.27.12">StereoMode</A> mode)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStereoMode"></A>
+<A NAME="DOC.2.27.14"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const <!1><A HREF="DisplaySettings.html#DOC.2.27.12">StereoMode</A> getStereoMode() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setEyeSeperation"></A>
+<A NAME="DOC.2.27.15"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setEyeSeperation(const float eyeSeperation)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getEyeSeperation"></A>
+<A NAME="DOC.2.27.16"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getEyeSeperation() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setScreenDistance"></A>
+<A NAME="DOC.2.27.17"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScreenDistance(const float <!1><A HREF="Plane.html#DOC.2.82.20">distance</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getScreenDistance"></A>
+<A NAME="DOC.2.27.18"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getScreenDistance() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setScreenHeight"></A>
+<A NAME="DOC.2.27.19"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setScreenHeight(const float <!1><A HREF="Viewport.html#DOC.2.112.9">height</A>)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getScreenHeight"></A>
+<A NAME="DOC.2.27.20"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const float getScreenHeight() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDoubleBuffer"></A>
+<A NAME="DOC.2.27.21"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDoubleBuffer(const bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDoubleBuffer"></A>
+<A NAME="DOC.2.27.22"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getDoubleBuffer() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setRGB"></A>
+<A NAME="DOC.2.27.23"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setRGB(const bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getRGB"></A>
+<A NAME="DOC.2.27.24"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getRGB() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setDepthBuffer"></A>
+<A NAME="DOC.2.27.25"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setDepthBuffer(const bool flag)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getDepthBuffer"></A>
+<A NAME="DOC.2.27.26"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getDepthBuffer() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMinimumNumAlphaBits"></A>
+<A NAME="DOC.2.27.27"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinimumNumAlphaBits(const unsigned int bits)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinimumNumAlphaBits"></A>
+<A NAME="DOC.2.27.28"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const unsigned int getMinimumNumAlphaBits() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getAlphaBuffer"></A>
+<A NAME="DOC.2.27.29"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getAlphaBuffer() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="setMinimumNumStencilBits"></A>
+<A NAME="DOC.2.27.30"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void setMinimumNumStencilBits(const unsigned int bits)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getMinimumNumStencilBits"></A>
+<A NAME="DOC.2.27.31"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const unsigned int getMinimumNumStencilBits() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="getStencilBuffer"></A>
+<A NAME="DOC.2.27.32"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>const bool getStencilBuffer() const </B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="copy"></A>
+<A NAME="DOC.2.27.33"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void copy(const <!1><A HREF="DisplaySettings.html">DisplaySettings</A>&amp; vs)</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_stereo"></A>
+<A NAME="DOC.2.27.34"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _stereo</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_stereoMode"></A>
+<A NAME="DOC.2.27.35"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B><!1><A HREF="DisplaySettings.html#DOC.2.27.12">StereoMode</A> _stereoMode</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_eyeSeperation"></A>
+<A NAME="DOC.2.27.36"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _eyeSeperation</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_screenDistance"></A>
+<A NAME="DOC.2.27.37"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _screenDistance</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_screenHeight"></A>
+<A NAME="DOC.2.27.38"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>float _screenHeight</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_doubleBuffer"></A>
+<A NAME="DOC.2.27.39"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _doubleBuffer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_RGB"></A>
+<A NAME="DOC.2.27.40"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _RGB</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_depthBuffer"></A>
+<A NAME="DOC.2.27.41"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>bool _depthBuffer</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_minimumNumberAlphaBits"></A>
+<A NAME="DOC.2.27.42"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _minimumNumberAlphaBits</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="_minimumNumberStencilBits"></A>
+<A NAME="DOC.2.27.43"></A>
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int _minimumNumberStencilBits</B></TT>
+<DL><DT><DD></DL><P></DL>
+
+<HR><DL><DT><B>This class has no child classes.</B></DL>
+
+<DL><DT><DD></DL><P><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://docpp.sourceforge.net">DOC++</A>.
+</BODY>
+</HTML>

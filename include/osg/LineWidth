@@ -23,7 +23,7 @@ class SG_EXPORT LineWidth : public StateAttribute
 {
     public :
 
-        LineWidth();
+        LineWidth(float width=1.0f);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         LineWidth(const LineWidth& lw,const CopyOp& copyop=CopyOp::SHALLOW_COPY):

@@ -161,7 +161,9 @@ int main( int argc, char **argv )
     // fire up the event loop.
     viewer->run();
 
-	// Close things down
+
+	// Close things down  
+        // (note from Robert Osfield, umm.... we should be using ref_ptr<> for handling memory here, this isn't robust..)
 	delete pageManager;
 	delete txpArchive;
 	delete viewer;

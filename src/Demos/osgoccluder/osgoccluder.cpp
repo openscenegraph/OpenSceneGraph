@@ -7,15 +7,18 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
+#include <osg/LineSegment>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 
 #include <osgUtil/Optimizer>
+#include <osgUtil/IntersectVisitor>
 
 #include <osg/OccluderNode>
 #include <osg/Geometry>
@@ -27,6 +30,13 @@ void write_usage(std::ostream& out,const std::string& name)
     out <<"    "<<name<<" [options] infile1 [infile2 ...]"<< std::endl;
     out << std::endl;
     out <<"options:"<< std::endl;
+    out <<"    -c                  - set osgoccluder's manual mode for creating occluders."<< std::endl;
+    out <<"                          press 'a' to start/add points to an occluder, using "<< std::endl;
+    out <<"                                the nearest vertex to the current mouse poistion."<< std::endl;
+    out <<"                          press 'e' to end occluder, this occluder is then added"<< std::endl;
+    out <<"                                    into the model."<< std::endl;
+    out <<"                          press 'O' save just the occluders to disk. "<< std::endl;
+    out << std::endl;
     out <<"    -l libraryName      - load plugin of name libraryName"<< std::endl;
     out <<"                          i.e. -l osgdb_pfb"<< std::endl;
     out <<"                          Useful for loading reader/writers which can load"<< std::endl;
@@ -49,6 +59,142 @@ void write_usage(std::ostream& out,const std::string& name)
     out <<"                          also allows the depth complexity statistics mode"<< std::endl;
     out <<"                          to be used (press 'p' three times to cycle to it)."<< std::endl;
     out << std::endl;
+}
+
+
+
+class OccluderEventHandler : public osgGA::GUIEventHandler
+{
+    public:
+    
+        OccluderEventHandler(osgUtil::SceneView* sceneview,osg::Group* rootnode):_sceneview(sceneview),_rootnode(rootnode) {}
+    
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
+
+        virtual void accept(osgGA::GUIEventHandlerVisitor& v)
+        {
+            v.visit(*this);
+        }
+        
+        void addPoint(const osg::Vec3& pos);
+                
+        void endOccluder();
+        
+        
+        osg::ref_ptr<osgUtil::SceneView>        _sceneview;
+        osg::ref_ptr<osg::Group>                _rootnode;
+        osg::ref_ptr<osg::Group>                _occluders;
+        osg::ref_ptr<osg::ConvexPlanerOccluder> _convexPlanerOccluder;
+};
+
+bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+{
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::KEYBOARD):
+        {
+            if (ea.getKey()=='a')
+            {
+
+                int x = ea.getX();
+                int y = ea.getY();
+ 
+                osg::Vec3 near_point,far_point;
+                if (!_sceneview->projectWindowXYIntoObject(x,ea.getYmax()-y,near_point,far_point))
+                {
+                     return true;
+                }
+
+                osg::ref_ptr<osg::LineSegment> lineSegment = osgNew osg::LineSegment;
+                lineSegment->set(near_point,far_point);
+
+                osgUtil::IntersectVisitor iv;
+                iv.addLineSegment(lineSegment.get());
+
+                _rootnode->accept(iv);
+
+                if (iv.hits())
+                {
+                
+                    osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineSegment.get());
+                    if (!hitList.empty())
+                    {
+                    
+                        osgUtil::Hit& hit = hitList.front();
+                        addPoint(hit.getWorldIntersectPoint());
+                    }
+
+                }
+
+                return true;
+            }
+            else if (ea.getKey()=='e')
+            {
+                endOccluder();
+                return true;
+            }
+            else if (ea.getKey()=='O')
+            {
+                if (_occluders.valid())
+                {
+                    std::cout<<"saving occluders to 'saved_occluders.osg'"<<std::endl;
+                    osgDB::writeNodeFile(*_occluders,"saved_occluders.osg");
+                }
+                else
+                {
+                    std::cout<<"no occluders to save"<<std::endl;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        default:
+            return false;
+    }
+}
+
+void OccluderEventHandler::addPoint(const osg::Vec3& pos)
+{
+    std::cout<<"add point "<<pos<<std::endl;
+    
+    if (!_convexPlanerOccluder.valid()) _convexPlanerOccluder = new osg::ConvexPlanerOccluder;
+    
+    osg::ConvexPlanerPolygon& occluder = _convexPlanerOccluder->getOccluder();
+    occluder.add(pos);
+    
+}
+                
+void OccluderEventHandler::endOccluder()
+{
+    if (_convexPlanerOccluder.valid()) 
+    {
+        if (_convexPlanerOccluder->getOccluder().getVertexList().size()>=3)
+        {
+            osg::OccluderNode* occluderNode = osgNew osg::OccluderNode;
+            occluderNode->setOccluder(_convexPlanerOccluder.get());
+
+            if (!_occluders.valid())
+            {
+                _occluders = new osg::Group;
+                _rootnode->addChild(_occluders.get());
+            }
+            _occluders->addChild(occluderNode);
+
+            std::cout<<"created occluder"<<std::endl;
+        }
+        else
+        {
+            std::cout<<"Occluder requires at least 3 points to create occluder."<<std::endl;
+        }
+    }
+    else
+    {
+        std::cout<<"No occluder points to create occluder with."<<std::endl;
+    }
+    
+    // reset current occluder.
+    _convexPlanerOccluder = NULL;
 }
 
 
@@ -125,7 +271,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
  
  }
 
-osg::Node* createOccludersAroundModel(osg::Node* model)
+osg::Group* createOccludersAroundModel(osg::Node* model)
 {
     osg::Group* scene = osgNew osg::Group;
     scene->setName("rootgroup");
@@ -187,6 +333,14 @@ int main( int argc, char **argv )
     std::vector<std::string> commandLine;
     for(int i=1;i<argc;++i) commandLine.push_back(argv[i]);
     
+    bool manuallyCreateImpostors = false;
+
+    std::vector<std::string>::iterator itr=std::find(commandLine.begin(),commandLine.end(),std::string("-c"));
+    if (itr!=commandLine.end())    
+    {
+        manuallyCreateImpostors = true;
+        commandLine.erase(itr);
+    }
 
     // initialize the viewer.
     osgGLUT::Viewer viewer;
@@ -208,12 +362,23 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    // add the occluders to the loaded model.
-    osg::Node* rootnode = createOccludersAroundModel(loadedmodel);
-    
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
-    optimzer.optimize(rootnode);
+    optimzer.optimize(loadedmodel);
+
+    // add the occluders to the loaded model.
+    osg::Group* rootnode = NULL;
+    
+    if (manuallyCreateImpostors)
+    {
+        rootnode = new osg::Group;
+        rootnode->addChild(loadedmodel);
+    }
+    else    
+    {
+        rootnode = createOccludersAroundModel(loadedmodel);
+    }
+    
      
     // add a viewport to the viewer and attach the scene graph.
     viewer.addViewport( rootnode );
@@ -222,6 +387,11 @@ int main( int argc, char **argv )
     viewer.registerCameraManipulator(new osgGA::TrackballManipulator);
     viewer.registerCameraManipulator(new osgGA::FlightManipulator);
     viewer.registerCameraManipulator(new osgGA::DriveManipulator);
+
+    if (manuallyCreateImpostors)
+    {
+        viewer.setEventHandler(new OccluderEventHandler(viewer.getViewportSceneView(0),rootnode));
+    }
 
     // open the viewer window.
     viewer.open();

@@ -213,7 +213,7 @@ void EncodedText::setText(const unsigned char* text, int length)
 
         int character = getNextCharacter(text);
         int charCount = (int)(text-textStart);
-        while ((character) && (charCount <= length))
+        while ((character) && (length<0 || (charCount <= length)))
         {
             _unicodeText.push_back(character);
             character = getNextCharacter(text);

@@ -98,7 +98,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("BitmapFont");
@@ -126,7 +126,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("PixmapFont");
@@ -166,7 +166,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("TextureFont");
@@ -203,7 +203,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("PolygonFont");
@@ -233,7 +233,7 @@ void set2dScene(osg::Group* rootNode)
     text->setPosition(osg::Vec3(xOffset,yOffset,0));
     text->setDrawMode( osgText::Text::TEXT |
                        osgText::Text::BOUNDINGBOX |
-                       osgText::Text::ALIGNEMENT );
+                       osgText::Text::ALIGNMENT );
     text->setAlignment(gAlignment);
     geode = osgNew osg::Geode();
     geode->setName("OutlineFont");

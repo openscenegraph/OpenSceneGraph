@@ -59,9 +59,9 @@ class OSGTEXT_EXPORT Text : public osg::Drawable
         enum DrawModeType
         {    // from left to right, top to bottom
             TEXT            =    1<<0,
-            BOUNDINGBOX        =    1<<1,
-            ALIGNEMENT        =    1<<2,
-            DEFAULT            =    TEXT,
+            BOUNDINGBOX     =    1<<1,
+            ALIGNMENT       =    1<<2,
+            DEFAULT         =    TEXT,
         };
 
         Text();

@@ -10,26 +10,30 @@
 
 using namespace std;
 
-// 
-// // mac requires std::tolower, but IRIX MipsPro doesn't like it,
-// // so use this preprocessor to allow mac and mipspro to work.
-// #ifdef macintosh
-// using std::tolower;
-// using std::strlen;
-// #endif
-
 std::string osgDB::getFilePath(const std::string& fileName)
 {
+    // try unix directory slash first.
     std::string::size_type slash = fileName.find_last_of('/');
-    if (slash==std::string::npos) return std::string("");
+    if (slash==std::string::npos) 
+    {
+        // then try windows directory slash.
+        slash = fileName.find_last_of('\\');
+        if (slash==std::string::npos) return std::string("");
+    }
     return std::string(fileName.begin(),fileName.begin()+slash+1);
 }
 
 
 std::string osgDB::getSimpleFileName(const std::string& fileName)
 {
+    // try unix directory slash first.
     std::string::size_type slash = fileName.find_last_of('/');
-    if (slash==std::string::npos) return fileName;
+    if (slash==std::string::npos)
+    {
+        // then try windows directory slash.
+        slash = fileName.find_last_of('\\');
+        if (slash==std::string::npos) return fileName;
+    }
     return std::string(fileName.begin()+slash+1,fileName.end());
 }
 
@@ -57,23 +61,10 @@ std::string osgDB::getLowerCaseFileExtension(const std::string& filename)
 
 std::string osgDB::getStrippedName(const std::string& fileName)
 {
-    std::string::size_type slash = fileName.find_last_of('/');
-    std::string::size_type dot = fileName.find_last_of('.');
-
-    // Ignore '.'s that aren't in the last component
-    if (slash != std::string::npos && dot < slash)
-      dot = std::string::npos;
-
-    if (slash==std::string::npos)
-    {
-        if (dot==std::string::npos) return fileName;
-        else return std::string(fileName.begin(),fileName.begin()+dot);
-    }
-    else
-    {
-        if (dot==std::string::npos) return std::string(fileName.begin()+slash+1,fileName.end());
-        else return std::string(fileName.begin()+slash+1,fileName.begin()+dot);
-    }
+    std::string simpleName = getSimpleFileName(fileName);
+    std::string::size_type dot = simpleName.find_last_of('.');
+    if (dot==std::string::npos) return simpleName;
+    return std::string(simpleName.begin(),simpleName.begin()+dot);
 }
 
 
@@ -104,3 +95,17 @@ bool osgDB::equalCaseInsensitive(const std::string& lhs,const char* rhs)
     }
     return true;
 }
+
+// // here a little test I wrote to make sure a couple of the above methods are
+// // working fine.
+// void test()
+// {
+//     std::string test("/here/we/are.exe");
+//     std::string test2("\\there\\you\\go.dll");
+//     std::cout << "getFilePath("<<test<<") "<<osgDB::getFilePath(test)<<std::endl;
+//     std::cout << "getFilePath("<<test2<<") "<<osgDB::getFilePath(test2)<<std::endl;
+//     std::cout << "getSimpleFileName("<<test<<") "<<osgDB::getSimpleFileName(test)<<std::endl;
+//     std::cout << "getSimpleFileName("<<test2<<") "<<osgDB::getSimpleFileName(test2)<<std::endl;
+//     std::cout << "getStrippedName("<<test<<") "<<osgDB::getStrippedName(test)<<std::endl;
+//     std::cout << "getStrippedName("<<test2<<") "<<osgDB::getStrippedName(test2)<<std::endl;
+// }

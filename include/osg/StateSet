@@ -69,6 +69,7 @@ class SG_EXPORT StateSet : public Object
 
         /** set this StateSet to contain specified GLMode and value.*/
         void setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue value);
+        
         /** set this StateSet to inherit specified GLMode type from parents.
           * has the effect of deleting any GlMode of specified type from StateSet.*/
         void setModeToInherit(StateAttribute::GLMode mode);

@@ -103,12 +103,12 @@ void TextureRectangle::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
 
-    if (handle != 0)
+    if (textureObject != 0)
     {
-        glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        textureObject->bind();
         if (getTextureParameterDirty(state.getContextID()))
             applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
 
@@ -117,33 +117,41 @@ void TextureRectangle::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-        glGenTextures(1L, (GLuint *)&handle);
-        glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE_NV);
+
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
 
         _subloadCallback->load(*this, state);
 
+        textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
+
         // in theory the following line is redundant, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        //glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
     }
     else if (_image.valid() && _image->data())
     {
-        glGenTextures(1L, (GLuint *)&handle);
-        glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_RECTANGLE_NV);
+
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_RECTANGLE_NV, state);
      
         applyTexImage(GL_TEXTURE_RECTANGLE_NV, _image.get(), state, _textureWidth, _textureHeight);
 
+        textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
+
         // in theory the following line is redundant, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
+        //glBindTexture(GL_TEXTURE_RECTANGLE_NV, handle);
     }
     else
     {

@@ -538,8 +538,11 @@ void SceneView::draw()
     // context we are in so can flush the appropriate caches.
     osg::Drawable::flushDeletedDisplayLists(_state->getContextID());
     osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID());
-    osg::Texture::flushDeletedTextureObjects(_state->getContextID());
     osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID());
+
+
+    double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+    osg::Texture::getTextureObjectManager()->deleteTextureObjects(_state->getContextID(),currentTime);
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 

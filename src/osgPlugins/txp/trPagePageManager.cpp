@@ -21,6 +21,8 @@
 #include <osg/Object>
 #include <osg/Node>
 #include <osg/Notify>
+#include <osg/Geode>
+#include <osg/Texture>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
@@ -378,6 +380,68 @@ void OSGPageManager::UpdatePositionThread(double inLocX,double inLocY)
     osgSetEvent(locationChangeEvent);
 }
 
+class ReleaseTexturesAndDrawablesVisitor : public osg::NodeVisitor
+{
+public:
+    ReleaseTexturesAndDrawablesVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+    {
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        apply(node.getStateSet());
+
+        traverse(node);
+    }
+    
+    virtual void apply(osg::Geode& geode)
+    {
+        apply(geode.getStateSet());
+    
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            apply(geode.getDrawable(i));
+        }
+
+        traverse(geode);
+    }
+    
+    inline void apply(osg::StateSet* stateset)
+    {
+        if (stateset)
+        {
+            // search for the existance of any texture object attributes
+            bool foundTextureState = false;
+            osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+            for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
+                itr!=tal.end() && !foundTextureState;
+                ++itr)
+            {
+                osg::StateSet::AttributeList& al = *itr;
+                osg::StateSet::AttributeList::iterator alitr = al.find(osg::StateAttribute::TEXTURE);
+                if (alitr!=al.end())
+                {
+                    // found texture, so place it in the texture list.
+                    osg::Texture* texture = static_cast<osg::Texture*>(alitr->second.first.get());
+                    texture->dirtyTextureObject();
+                }
+            }
+        }
+    }
+    
+    inline void apply(osg::Drawable* drawable)
+    {
+        apply(drawable->getStateSet());
+
+        if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects());
+        {
+            drawable->dirtyDisplayList();
+        }
+    }
+        
+};
+
 /* Merge Updates
     Merge in the new tiles and unhook the ones we'll be deleting.
     Actually, we'll hand these back to the paging thread for deletion.
@@ -418,9 +482,13 @@ bool OSGPageManager::MergeUpdateThread(osg::Group *rootNode)
 #ifdef USE_THREADLOOP_DELETE
     // Put the unhooked things on the list to delete
     {
+        ReleaseTexturesAndDrawablesVisitor rtadv;
         osgLockMutex(changeListMutex);
         for (unsigned int di=0;di<unhookList.size();di++)
+        {
             toDelete.push_back(unhookList[di]);
+            unhookList[di]->accept(rtadv);
+        }
         osgUnLockMutex(changeListMutex);
     }
 #endif

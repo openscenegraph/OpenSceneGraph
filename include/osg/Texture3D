@@ -88,10 +88,10 @@ class SG_EXPORT Texture3D : public Texture
 
         /** Set the number of mip map levels the the texture has been created with,
             should only be called within an osg::Texuture::apply() and custom OpenGL texture load.*/
-        void setNumMipmapLevels(unsigned int num) const { _numMimpmapLevels=num; }
+        void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
         /** Get the number of mip map levels the the texture has been created with.*/
-        unsigned int getNumMipmapLevels() const { return _numMimpmapLevels; }
+        unsigned int getNumMipmapLevels() const { return _numMipmapLevels; }
         
 
         /** Copy a two-dimensional texture subimage. As per glCopyTexSubImage2D.
@@ -175,7 +175,7 @@ class SG_EXPORT Texture3D : public Texture
 
         virtual void computeInternalFormat() const;
 
-        void applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMimpmapLevels) const;
+        void applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMipmapLevels) const;
 
         // not ideal that _image is mutable, but its required since
         // Image::ensureDimensionsArePowerOfTwo() can only be called
@@ -187,7 +187,7 @@ class SG_EXPORT Texture3D : public Texture
         mutable GLsizei _textureWidth, _textureHeight, _textureDepth;
         
         // number of mip map levels the the texture has been created with,        
-        mutable GLsizei _numMimpmapLevels;
+        mutable GLsizei _numMipmapLevels;
 
         ref_ptr<SubloadCallback> _subloadCallback;
 

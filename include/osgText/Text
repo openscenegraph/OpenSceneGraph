@@ -202,9 +202,8 @@ public:
     enum DrawModeMask
     {
         TEXT        = 1, /// default
-        TEXT_PIXMAP = 2,
-        BOUNDINGBOX = 4,
-        ALIGNMENT   = 8
+        BOUNDINGBOX = 2,
+        ALIGNMENT   = 4
     };
 
     void setDrawMode(unsigned int mode);

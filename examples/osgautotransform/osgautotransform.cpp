@@ -46,30 +46,6 @@ osg::Node* createLabel(const osg::Vec3& pos, float size, const std::string& labe
     return geode;    
 }
 
-osg::Node* createLabel2(const osg::Vec3& pos, float size, const std::string& label)
-{
-    osg::Geode* geode = new osg::Geode();
-    
-    std::string timesFont("fonts/arial.ttf");
-
-    {
-        osgText::Text* text = new  osgText::Text;
-        geode->addDrawable( text );
-
-        text->setFont(timesFont);
-        text->setPosition(pos);
-        text->setFontResolution(40,40);
-        text->setCharacterSize(size);
-        text->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
-        text->setAlignment(osgText::Text::CENTER_CENTER);
-        text->setAutoRotateToScreen(true);
-        text->setDrawMode(osgText::Text::TEXT_PIXMAP);
-        text->setText(label);
-        
-    }
-    
-    return geode;    
-}
 
 osg::Node* createLabel3(const osg::Vec3& pos, float size, const std::string& label)
 {

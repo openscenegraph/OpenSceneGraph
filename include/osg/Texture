@@ -21,6 +21,8 @@
 #include <osg/Vec4>
 #include <osg/buffered_value>
 
+#include <list>
+#include <map>
 
 // if not defined by gl.h use the definition found in:
 // http://oss.sgi.com/projects/ogl-sample/registry/EXT/texture_filter_anisotropic.txt
@@ -204,11 +206,19 @@ class SG_EXPORT Texture : public osg::StateAttribute
         bool isCompressedInternalFormat() const;
 
 
+        class TextureObject;
+
         /** Get the handle to the texture object for the current context.*/
-        inline GLuint& getTextureObject(unsigned int contextID) const
+        inline TextureObject* getTextureObject(unsigned int contextID) const
         {
-            return _handleList[contextID];
+            return _textureObjectBuffer[contextID].get();
         }
+
+        /** Force a recompile on next apply() of associated OpenGL texture objects.*/
+        void dirtyTextureObject();
+
+        /** return true if the texture objects for all the required graphics contexts are loaded.*/
+        bool areAllTextureObjectsLoaded() const;
 
 
         /** get the dirty flag for the current contextID.*/
@@ -217,22 +227,12 @@ class SG_EXPORT Texture : public osg::StateAttribute
             return _texParametersDirtyList[contextID];
         }
 
-        /** Force a recompile on next apply() of associated OpenGL texture objects.*/
-        void dirtyTextureObject();
 
         /** Force a resetting on next apply() of associated OpenGL texture parameters.*/
         void dirtyTextureParameters();
 
 
-        /** use deleteTextureObject instead of glDeleteTextures to allow
-          * OpenGL texture objects to cached until they can be deleted
-          * by the OpenGL context in which they were created, specified
-          * by contextID.*/
-        static void deleteTextureObject(unsigned int contextID,GLuint handle);
 
-        /** flush all the cached display list which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedTextureObjects(unsigned int contextID);
         
         /** Texture is pure virtual base class, apply must be overriden. */
         virtual void apply(State& state) const = 0;
@@ -326,13 +326,14 @@ class SG_EXPORT Texture : public osg::StateAttribute
           * but need to ensure that they all use the same low common denominator extensions.*/
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
+
         /** Helper method which does the creation of the texture itself, but does not set or use texture binding. 
           * Note, do not call this method directly unless you are implementing your own Subload callback*/
-        void applyTexImage2D_load(GLenum target, const Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+        void applyTexImage2D_load(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height,GLsizei numMipmapLevels) const;
         
         /** Helper method which subloads images to the texture itself, but does not set or use texture binding. 
           * Note, do not call this method directly unless you are implementing your own Subload callback*/
-        void applyTexImage2D_subload(GLenum target, const Image* image, State& state, GLsizei& width, GLsizei& height,GLsizei& numMimpmapLevels) const;
+        void applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height,GLsizei numMipmapLevels) const;
 
     protected :
 
@@ -342,17 +343,17 @@ class SG_EXPORT Texture : public osg::StateAttribute
         
         void computeInternalFormatWithImage(const osg::Image& image) const;
 
+        void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& numMipmapLevels) const;
+
         bool isCompressedInternalFormat(GLint internalFormat) const;
 
         /** Helper method which does setting of texture paramters. */
         void applyTexParameters(GLenum target, State& state) const;
+        
 
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compareTexture(const Texture& rhs) const;
-
-        typedef buffered_value<GLuint> TextureNameList;
-        mutable TextureNameList _handleList;
 
         typedef buffered_value<unsigned int> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;
@@ -371,6 +372,172 @@ class SG_EXPORT Texture : public osg::StateAttribute
 
         InternalFormatMode  _internalFormatMode;
         mutable GLint       _internalFormat;
+        
+        
+    public:
+    
+        class TextureObject : public osg::Referenced
+        {
+        public:
+        
+            inline TextureObject(GLuint    id,GLenum target):
+                _id(id),
+                _target(target),
+                _numMipmapLevels(0),
+                _internalFormat(0),
+                _width(0),
+                _height(0),
+                _depth(0),
+                _border(0),
+                _allocated(false),
+                _timeStamp(0) {}
+                
+            inline TextureObject(GLuint    id,
+                          GLenum    target,
+                          GLint     numMipmapLevels,
+                          GLenum    internalFormat,
+                          GLsizei   width,
+                          GLsizei   height,
+                          GLsizei   depth,
+                          GLint     border):
+                _id(id),
+                _target(target),
+                _numMipmapLevels(numMipmapLevels),
+                _internalFormat(internalFormat),
+                _width(width),
+                _height(height),
+                _depth(depth),
+                _border(border),
+                _allocated(false),
+                _timeStamp(0) {}
+                          
+            inline bool match(GLenum    target,
+                       GLint     numMipmapLevels,
+                       GLenum    internalFormat,
+                       GLsizei   width,
+                       GLsizei   height,
+                       GLsizei   depth,
+                       GLint     border)
+            {
+                return isReusable() &&
+                       (_target == target) &&
+                       (_numMipmapLevels == numMipmapLevels) &&
+                       (_internalFormat == internalFormat) &&
+                       (_width == width) &&
+                       (_height == height) &&
+                       (_depth == depth) &&
+                       (_border == border);
+            }
+            
+            
+            inline void bind()
+            {
+                glBindTexture( _target, _id);
+            }
+
+
+            inline void setAllocated(bool allocated=true) { _allocated = allocated; }
+            
+            inline void setAllocated(GLint     numMipmapLevels,
+                              GLenum    internalFormat,
+                              GLsizei   width,
+                              GLsizei   height,
+                              GLsizei   depth,
+                              GLint     border)
+            {
+                _allocated=true;
+                _numMipmapLevels = numMipmapLevels;
+                _internalFormat = internalFormat;
+                _width = width;
+                _height = height;
+                _depth = depth;
+                _border = border;
+            }
+        
+            inline bool isAllocated() const { return _allocated; }
+
+            inline bool isReusable() const { return _allocated && _width!=0; }
+
+            GLuint      _id;
+            GLenum      _target;
+            GLint       _numMipmapLevels;
+            GLenum      _internalFormat;
+            GLsizei     _width;
+            GLsizei     _height;
+            GLsizei     _depth;
+            GLint       _border;
+
+            bool        _allocated;
+            double      _timeStamp;
+        };
+        
+        typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
+        typedef std::map<unsigned int, TextureObjectList > TextureObjectListMap; 
+
+        /** take the active texture objects from the Texture and place them in the specified TextureObjectListMap.*/
+        void takeTextureObjects(TextureObjectListMap& toblm);
+        
+        typedef buffered_object< ref_ptr<TextureObject> >  TextureObjectBuffer;
+        mutable TextureObjectBuffer _textureObjectBuffer;
+
+
+        class TextureObjectManager : public osg::Referenced
+        {
+        public:        
+
+            virtual TextureObject* generateTextureObject(unsigned int contextID,GLenum target);
+
+            virtual TextureObject* generateTextureObject(unsigned int contextID,
+                                                         GLenum    target,
+                                                         GLint     numMipmapLevels,
+                                                         GLenum    internalFormat,
+                                                         GLsizei   width,
+                                                         GLsizei   height,
+                                                         GLsizei   depth,
+                                                         GLint     border);
+
+            virtual TextureObject* reuseTextureObject(unsigned int contextID,
+                                                      GLenum    target,
+                                                      GLint     numMipmapLevels,
+                                                      GLenum    internalFormat,
+                                                      GLsizei   width,
+                                                      GLsizei   height,
+                                                      GLsizei   depth,
+                                                      GLint     border);
+            
+            inline TextureObject* reuseOrGenerateTextureObject(unsigned int contextID,
+                                                      GLenum    target,
+                                                      GLint     numMipmapLevels,
+                                                      GLenum    internalFormat,
+                                                      GLsizei   width,
+                                                      GLsizei   height,
+                                                      GLsizei   depth,
+                                                      GLint     border)
+            {
+                TextureObject* to = reuseTextureObject(contextID,target,numMipmapLevels,internalFormat,width,height,depth,border);
+                if (to) return to;
+                else return generateTextureObject(contextID,target,numMipmapLevels,internalFormat,width,height,depth,border);
+            }                                                      
+
+            virtual void addTextureObjects(TextureObjectListMap& toblm);
+            
+            virtual void addTextureObjectsFrom(Texture& texture);
+            
+            virtual void deleteTextureObjects(unsigned int contextID,double currentTime);
+            
+            
+            // how long to keep unsed texture objects around for before deleting.
+            double                  _expiryDelay;
+            
+            TextureObjectListMap    _textureObjectListMap;
+            
+        };
+        
+        
+        static void setTextureObjectManager(TextureObjectManager* tom);
+        static TextureObjectManager* getTextureObjectManager();
+        
+        
 
 };
 

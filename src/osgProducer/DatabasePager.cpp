@@ -2,6 +2,7 @@
 #include <osgDB/ReadFile>
 #include <osg/Geode>
 #include <osg/Timer>
+#include <osg/Texture>
 
 #ifdef WIN32
 #include <windows.h>
@@ -301,6 +302,68 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
     
 }
 
+class ReleaseTexturesAndDrawablesVisitor : public osg::NodeVisitor
+{
+public:
+    ReleaseTexturesAndDrawablesVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+    {
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        apply(node.getStateSet());
+
+        traverse(node);
+    }
+    
+    virtual void apply(osg::Geode& geode)
+    {
+        apply(geode.getStateSet());
+    
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            apply(geode.getDrawable(i));
+        }
+
+        traverse(geode);
+    }
+    
+    inline void apply(osg::StateSet* stateset)
+    {
+        if (stateset)
+        {
+            // search for the existance of any texture object attributes
+            bool foundTextureState = false;
+            osg::StateSet::TextureAttributeList& tal = stateset->getTextureAttributeList();
+            for(osg::StateSet::TextureAttributeList::iterator itr=tal.begin();
+                itr!=tal.end() && !foundTextureState;
+                ++itr)
+            {
+                osg::StateSet::AttributeList& al = *itr;
+                osg::StateSet::AttributeList::iterator alitr = al.find(osg::StateAttribute::TEXTURE);
+                if (alitr!=al.end())
+                {
+                    // found texture, so place it in the texture list.
+                    osg::Texture* texture = static_cast<osg::Texture*>(alitr->second.first.get());
+                    texture->dirtyTextureObject();
+                }
+            }
+        }
+    }
+    
+    inline void apply(osg::Drawable* drawable)
+    {
+        apply(drawable->getStateSet());
+
+        if (drawable->getUseDisplayList() || drawable->getUseVertexBufferObjects());
+        {
+            drawable->dirtyDisplayList();
+        }
+    }
+        
+};
+
 void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 {
     double expiryTime = currentFrameTime - _expiryDelay;
@@ -333,7 +396,20 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
             //std::cout<<"    PagedLOD "<<plod<<" refcount "<<plod->referenceCount()<<std::endl;
         }
     }
-        
+     
+    // for all the subgraphs to remove find all the textures and drawables and
+    // strip them from the display lists.   
+    {
+        ReleaseTexturesAndDrawablesVisitor rtadv;
+        for(osg::NodeList::iterator nitr=childrenRemoved.begin();
+            nitr!=childrenRemoved.end();
+            ++nitr)
+        {
+            (*nitr)->accept(rtadv);
+        }
+    }
+
+
     if (_deleteRemovedSubgraphsInDatabaseThread)
     {
         // transfer the removed children over to the to delete list so the database thread can delete them.
@@ -418,7 +494,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
                 itr!=sslist.end() && elapsedTime<_maximumTimeForCompiling;
                 ++itr)
             {
-                std::cout<<"    Compiling stateset "<<(*itr).get()<<std::endl;
+                //std::cout<<"    Compiling stateset "<<(*itr).get()<<std::endl;
                 (*itr)->compile(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
@@ -435,7 +511,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
                 itr!=dwlist.end() && elapsedTime<_maximumTimeForCompiling;
                 ++itr)
             {
-                std::cout<<"    Compiling drawable "<<(*itr).get()<<std::endl;
+                //std::cout<<"    Compiling drawable "<<(*itr).get()<<std::endl;
                 (*itr)->compile(state);
                 elapsedTime = timer.delta_s(start_tick,timer.tick());
             }
@@ -478,7 +554,7 @@ void DatabasePager::compileRenderingObjects(osg::State& state)
         }
         else 
         {
-            std::cout<<"Not all compiled"<<std::endl;
+            //std::cout<<"Not all compiled"<<std::endl;
             databaseRequest = 0;
         }
         

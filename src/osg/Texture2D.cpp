@@ -98,16 +98,19 @@ void Texture2D::setImage(Image* image)
 void Texture2D::apply(State& state) const
 {
 
+    state.setReportGLErrors(true);
+
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
 
-    if (handle != 0)
+    if (textureObject != 0)
     {
-        glBindTexture( GL_TEXTURE_2D, handle );
+        textureObject->bind();
+        
         if (getTextureParameterDirty(state.getContextID()))
             applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -117,7 +120,7 @@ void Texture2D::apply(State& state) const
         }
         else if (_image.valid() && getModifiedTag(contextID) != _image->getModifiedTag())
         {
-            applyTexImage2D_subload(GL_TEXTURE_2D,_image.get(),state,
+            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
                                     _textureWidth, _textureHeight, _numMipmapLevels);
  
             // update the modified tag to show that it is upto date.
@@ -129,55 +132,71 @@ void Texture2D::apply(State& state) const
     else if (_subloadCallback.valid())
     {
 
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_2D, handle );
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
+
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
         _subloadCallback->load(*this,state);
+        
+        textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_2D, handle );
+        //glBindTexture( GL_TEXTURE_2D, handle );
 
     }
     else if (_image.valid() && _image->data())
     {
 
-        glGenTextures( 1L, (GLuint *)&handle );
-        glBindTexture( GL_TEXTURE_2D, handle );
+        // compute the internal texture format, this set the _internalFormat to an appropriate value.
+        computeInternalFormat();
+        
+        // compute the dimensions of the texture.
+        computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _numMipmapLevels);
+        
+        
+        _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->reuseOrGenerateTextureObject(
+                contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        
+        textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_2D,state);
 
-        applyTexImage2D_load(GL_TEXTURE_2D,_image.get(),state,
-                             _textureWidth, _textureHeight, _numMipmapLevels);
-
+        if (textureObject->isAllocated())
+        {
+            //std::cout<<"Reusing texture object"<<std::endl;
+            applyTexImage2D_subload(state,GL_TEXTURE_2D,_image.get(),
+                                 _textureWidth, _textureHeight, _numMipmapLevels);
+        }
+        else
+        {
+            //std::cout<<"Creating new texture object"<<std::endl;
+            applyTexImage2D_load(state,GL_TEXTURE_2D,_image.get(),
+                                 _textureWidth, _textureHeight, _numMipmapLevels);
+                                 
+            textureObject->setAllocated(true);
+        }
+        
+        
         // update the modified tag to show that it is upto date.
         getModifiedTag(contextID) = _image->getModifiedTag();
 
 
-        if (_unrefImageDataAfterApply)
+        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {
-            // only unref image once all the graphics contexts has been set up.
-            unsigned int numLeftToBind=0;
-            for(unsigned int i=0;i<DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();++i)
-            {
-                if (_handleList[i]==0) ++numLeftToBind;
-            }
-            if (numLeftToBind==0)
-            {
-                Texture2D* non_const_this = const_cast<Texture2D*>(this);
-                non_const_this->_image = 0;
-            }
+            Texture2D* non_const_this = const_cast<Texture2D*>(this);
+            non_const_this->_image = 0;
         }
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...
-        glBindTexture( GL_TEXTURE_2D, handle );
+        //glBindTexture( GL_TEXTURE_2D, handle );
         
     }
     else
@@ -197,9 +216,9 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
     const unsigned int contextID = state.getContextID();
 
     // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    TextureObject* textureObject = getTextureObject(contextID);
     
-    if (handle)
+    if (textureObject)
     {
         if (width==(int)_textureWidth && height==(int)_textureHeight)
         {
@@ -228,15 +247,19 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
     _min_filter = LINEAR;
     _mag_filter = LINEAR;
 
-    // Get a new 2d texture handle.
-    glGenTextures( 1, &handle );
+    _textureObjectBuffer[contextID] = textureObject = getTextureObjectManager()->generateTextureObject(contextID,GL_TEXTURE_2D);
 
-    glBindTexture( GL_TEXTURE_2D, handle );
+    textureObject->bind();
+    
     applyTexParameters(GL_TEXTURE_2D,state);
     glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, x, y, width, height, 0 );
 
     _textureWidth = width;
     _textureHeight = height;
+    _numMipmapLevels = 1;
+    
+    textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+
 
     // inform state that this texture is the current one bound.
     state.haveAppliedAttribute(this);
@@ -246,19 +269,19 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
 {
     const unsigned int contextID = state.getContextID();
 
-    // get the globj for the current contextID.
-    GLuint& handle = getTextureObject(contextID);
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
     
-    if (handle)
+    if (textureObject)
     {
-
         // we have a valid image
-        glBindTexture( GL_TEXTURE_2D, handle );
+        textureObject->bind();
+        
         applyTexParameters(GL_TEXTURE_2D,state);
         glCopyTexSubImage2D( GL_TEXTURE_2D, 0, xoffset,yoffset, x, y, width, height);
 
         /* Redundant, delete later */
-        glBindTexture( GL_TEXTURE_2D, handle );
+        //glBindTexture( GL_TEXTURE_2D, handle );
 
         // inform state that this texture is the current one bound.
         state.haveAppliedAttribute(this);

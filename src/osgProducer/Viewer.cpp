@@ -38,6 +38,10 @@ public:
         // the ray transformed by Projection
         _lineSegment = new osg::LineSegment;
         _lineSegment->set(nr,fr); // make a line segment
+        
+        std::cout<<"near "<<nr<<std::endl;
+        std::cout<<"far "<<fr<<std::endl;
+        
         addLineSegment(_lineSegment.get());
 
         scene->accept(*this);
@@ -65,7 +69,7 @@ public:
         // Assumes that the Projection is an absolute projection
         osg::Matrix mt;
         mt.invert(pr.getMatrix());
-        osg::Vec3 npt=osg::Vec3(xp,yp,1.0f) * mt, farpt=osg::Vec3(xp,yp,-1.0f) * mt;
+        osg::Vec3 npt=osg::Vec3(xp,yp,-1.0f) * mt, farpt=osg::Vec3(xp,yp,1.0f) * mt;
 
         // traversing the nodes children, using the projection direction
         for (unsigned int i=0; i<pr.getNumChildren(); i++) 
@@ -102,8 +106,8 @@ public:
         // x,y are values returned by 
         osg::Matrix inverseMVPW;
         inverseMVPW.invert(projm);
-        osg::Vec3 near_point = osg::Vec3(x,y,1.0f)*inverseMVPW;
-        osg::Vec3 far_point = osg::Vec3(x,y,-1.0f)*inverseMVPW;
+        osg::Vec3 near_point = osg::Vec3(x,y,-1.0f)*inverseMVPW;
+        osg::Vec3 far_point = osg::Vec3(x,y,1.0f)*inverseMVPW;
         setxy(x,y);    
         getHits(node,near_point,far_point);
         return _PIVsegHitList;

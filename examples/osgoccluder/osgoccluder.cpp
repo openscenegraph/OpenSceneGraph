@@ -20,6 +20,7 @@
 
 #include <osg/OccluderNode>
 #include <osg/Geometry>
+#include <osg/ShapeDrawable>
 
 
 class OccluderEventHandler : public osgGA::GUIEventHandler
@@ -43,7 +44,6 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
         
         
         osgProducer::Viewer*                    _viewer;
-        osg::ref_ptr<osg::Group>                _rootnode;
         osg::ref_ptr<osg::Group>                _occluders;
         osg::ref_ptr<osg::ConvexPlanarOccluder> _convexPlanarOccluder;
 };
@@ -110,6 +110,16 @@ void OccluderEventHandler::addPoint(const osg::Vec3& pos)
     
     osg::ConvexPlanarPolygon& occluder = _convexPlanarOccluder->getOccluder();
     occluder.add(pos);
+
+//     
+//     osg::BoundingSphere bs = rootNode()->getBound();
+// 
+//     osg::ShapeDrawable* sd = new osg::ShapeDrawable(new osg::Sphere(pos,bs.radius()*0.001f));
+//     osg::Geode* geode = new osg::Geode;
+//     geode->addDrawable(sd);
+// 
+//     rootNode()->addChild(geode);
+// 
     
 }
                 

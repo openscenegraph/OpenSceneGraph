@@ -933,7 +933,8 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
     if (group.getNumParents()>0)
     {
         // only remove empty groups, but not empty occluders.
-        if (group.getNumChildren()==0 && !dynamic_cast<osg::OccluderNode*>(&group))
+        if (group.getNumChildren()==0 && 
+            (typeid(group)==typeid(osg::Group) || dynamic_cast<osg::Transform*>(&group)))
         {
             _redundentNodeList.insert(&group);
         }

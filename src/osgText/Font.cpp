@@ -45,6 +45,16 @@ std::string findFontFile(const std::string& str)
     char* filename = osgDB::findFile(str.c_str());
     if (filename) return std::string(filename);
 
+#if defined(WIN32)
+    // try windir environment
+    char *ptr;
+    if ((ptr = getenv( "windir" )))
+    {
+        static std::string osPath(ptr);
+        s_FontFilePath = const_cast<char*>(osPath.c_str());
+    }
+#endif
+
     // else fallback into the standard font file paths.
     if (s_FontFilePath)
     {

@@ -34,6 +34,7 @@ NodeTrackerManipulator::NodeTrackerManipulator()
     _trackerMode = NODE_CENTER_AND_AZMIM_ROTATION;
 
     _rotationMode = ELEVATION_AZIM; 
+    // _rotationMode = ELEVATION_AZIM_ROLL; 
     _distance = 1.0;
 
     _thrown = false;
@@ -392,7 +393,8 @@ osg::Matrixd NodeTrackerManipulator::getMatrix() const
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter,nodeRotation);
-    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
+//    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::rotate(nodeRotation)*osg::Matrix::translate(nodeCenter);
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(nodeRotation)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(nodeCenter);
 }
 
 osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
@@ -400,7 +402,8 @@ osg::Matrixd NodeTrackerManipulator::getInverseMatrix() const
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter,nodeRotation);
-    return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    //return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    return osg::Matrixd::translate(-nodeCenter)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::rotate(nodeRotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
@@ -479,6 +482,10 @@ bool NodeTrackerManipulator::calcMovement()
     if (dx==0 && dy==0) return false;
 
 
+    osg::Vec3d nodeCenter;
+    osg::Quat nodeRotation;
+    computeNodeCenterAndRotation(nodeCenter, nodeRotation);
+
     if (validateNodePath())
     {
         osg::Matrix localToWorld;
@@ -488,11 +495,14 @@ bool NodeTrackerManipulator::calcMovement()
     }
 
     unsigned int buttonMask = _ga_t1->getButtonMask();
+
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
         if (_rotationMode==ELEVATION_AZIM_ROLL)
         {
+
+            osg::notify(osg::NOTICE)<<"ELEVATION_AZIM_ROLL"<<std::endl;
             // rotate camera.
             osg::Vec3 axis;
             double angle;
@@ -513,14 +523,15 @@ bool NodeTrackerManipulator::calcMovement()
         }
         else
         {
+            osg::notify(osg::NOTICE)<<"!!!!ELEVATION_AZIM_ROLL"<<std::endl;
             osg::Matrix rotation_matrix;
-            rotation_matrix.set(_rotation);
+            rotation_matrix.set(nodeRotation*_rotation);
 
             osg::Vec3d lookVector = -getUpVector(rotation_matrix);
             osg::Vec3d sideVector = getSideVector(rotation_matrix);
             osg::Vec3d upVector = getFrontVector(rotation_matrix);
             
-            CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+            CoordinateFrame coordinateFrame = getCoordinateFrame(nodeCenter);
             osg::Vec3d localUp = getUpVector(coordinateFrame);
             //osg::Vec3d localUp = _previousUp;
             

@@ -30,7 +30,7 @@ inline void swapBytes(  T &s )
     BytePtr sptr = (BytePtr)&s;
     BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]); 
 
-    for( int i = 0; i < sizeof(T); i++ )
+    for( unsigned int i = 0; i < sizeof(T); i++ )
         *(sptr++) = *(dptr--);
 }
 

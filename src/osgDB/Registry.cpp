@@ -1002,7 +1002,16 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         else
         {
             // member of the node kit so must use composite library::class name.
-            fw.indent() << obj.libraryName()<<"::"<< wrapper->getName() << " {"<< std::endl;
+            std::string::size_type posDoubleColon = wrapper->getName().find("::");
+            if (posDoubleColon != std::string::npos)
+            {
+                fw.indent() << wrapper->getName() << " {"<< std::endl;
+            }
+            else
+            {
+                fw.indent() << obj.libraryName()<<"::"<< wrapper->getName() << " {"<< std::endl;
+            }
+
             fw.moveIn();
         }
 

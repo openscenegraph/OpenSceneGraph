@@ -15,9 +15,11 @@
 
 // ReaderWriterDX.cpp
 
+#include <osg/Notify>
+
 #include <iostream>
 #include <string.h>
-#include <osg/Notify>
+
 #include "ReaderWriterDX.h"
 #include "DXWriter.h"
 

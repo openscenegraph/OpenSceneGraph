@@ -33,7 +33,7 @@ namespace osgDB {
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to read the specified file.*/
-extern OSGDB_EXPORT osg::Object* readObjectFile(const std::string& filename,bool useObjectCache);
+extern OSGDB_EXPORT osg::Object* readObjectFile(const std::string& filename,Registry::CacheHintOptions useObjectCache);
 
 /** Read an osg::Object from file. 
   * Return valid osg::Object on success,
@@ -54,7 +54,7 @@ inline osg::Object* readObjectFile(const std::string& filename)
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to read the specified file.*/
-extern OSGDB_EXPORT osg::Image*  readImageFile(const std::string& filename,bool useObjectCache);
+extern OSGDB_EXPORT osg::Image*  readImageFile(const std::string& filename,Registry::CacheHintOptions useObjectCache);
 
 /** Read an osg::Image from file. 
   * Return valid osg::Image on success,
@@ -74,7 +74,7 @@ inline osg::Image*  readImageFile(const std::string& filename)
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to read the specified file.*/
-extern OSGDB_EXPORT osg::HeightField*  readHeightFieldFile(const std::string& filename,bool useObjectCache);
+extern OSGDB_EXPORT osg::HeightField*  readHeightFieldFile(const std::string& filename,Registry::CacheHintOptions useObjectCache);
 
 /** Read an osg::HeightField from file. 
   * Return valid osg::HeightField on success,
@@ -94,7 +94,7 @@ inline osg::HeightField*  readHeightFieldFile(const std::string& filename)
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to read the specified file.*/
-extern OSGDB_EXPORT osg::Node*  readNodeFile(const std::string& filename,bool useObjectCache);
+extern OSGDB_EXPORT osg::Node*  readNodeFile(const std::string& filename,Registry::CacheHintOptions useObjectCache);
 
 /** Read an osg::Node from file. 
   * Return valid osg::Node on success,
@@ -111,7 +111,7 @@ inline osg::Node*  readNodeFile(const std::string& filename)
 /** Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
   * than one subgraph has been loaded.
   * Use the useObjectCache flag to override the osgDB::Regisytr::getUseObjectCacheHint().*/
-extern OSGDB_EXPORT osg::Node* readNodeFiles(std::vector<std::string>& commandLine,bool useObjectCache);
+extern OSGDB_EXPORT osg::Node* readNodeFiles(std::vector<std::string>& commandLine,Registry::CacheHintOptions useObjectCache);
 
 /** Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
   * than one subgraph has been loaded.*/
@@ -124,7 +124,7 @@ inline osg::Node* readNodeFiles(std::vector<std::string>& commandLine)
 /** Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
   * than one subgraph has been loaded.
   * Use the useObjectCache flag to override the osgDB::Regisytr::getUseObjectCacheHint().*/
-extern OSGDB_EXPORT osg::Node* readNodeFiles(osg::ArgumentParser& parser,bool useObjectCache);
+extern OSGDB_EXPORT osg::Node* readNodeFiles(osg::ArgumentParser& parser,Registry::CacheHintOptions useObjectCache);
 
 /** Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
   * than one subgraph has been loaded.*/

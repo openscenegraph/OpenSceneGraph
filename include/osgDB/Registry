@@ -32,21 +32,21 @@ namespace osgDB {
 
 /** basic structure for custom runtime inheritance checking */
 struct basic_type_wrapper {
-	virtual bool matches(const osg::Object *proto) const = 0;
+    virtual bool matches(const osg::Object *proto) const = 0;
 };
 
 /** a class template that checks inheritance between a given
     Object's class and a class defined at compile time through
-		the template parameter T.
-		This is used in conjunction with readObjectOfType() to
-		specify an abstract class as reference type.
+        the template parameter T.
+        This is used in conjunction with readObjectOfType() to
+        specify an abstract class as reference type.
 **/
 template<class T>
 struct type_wrapper: basic_type_wrapper {
-	bool matches(const osg::Object *proto) const
-	{
-		return dynamic_cast<const T*>(proto) != 0;
-	}
+    bool matches(const osg::Object *proto) const
+    {
+        return dynamic_cast<const T*>(proto) != 0;
+    }
 };
 
 /** list of directories to search through which searching for files. */
@@ -68,6 +68,21 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 {
     public:
 
+        enum CacheHintOptions
+        {
+            CACHE_NONE          = 0,
+            CACHE_NODES         = 1,
+            CACHE_IMAGES        = 2,
+            CACHE_HEIGHTFIELDS  = 4,
+            CACHE_OBJECTS       = 8,
+            CACHE_ALL           = CACHE_NODES |
+                                  CACHE_IMAGES |
+                                  CACHE_HEIGHTFIELDS |
+                                  CACHE_OBJECTS
+        };
+
+
+        
         static Registry* instance(bool erase = false);
 
         /** read the command line arguments.*/
@@ -117,20 +132,143 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         bool                 writeObject(const osg::Object& obj,Output& fw);
 
         
-        ReaderWriter::ReadResult readObject(const std::string& fileName,bool useObjectCache);
-        ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName);
+        class ReadFileCallback : public osg::Referenced
+        {
+        public:
+        
+            virtual ReaderWriter::ReadResult readObject(const std::string& filename, CacheHintOptions options)
+            {
+                return osgDB::Registry::instance()->readObjectImplementation(filename,options);
+            }
 
-        ReaderWriter::ReadResult readImage(const std::string& fileName,bool useObjectCache);
-        ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName);
+            virtual ReaderWriter::ReadResult readImage(const std::string& filename, CacheHintOptions options)
+            {
+                return osgDB::Registry::instance()->readImageImplementation(filename,options);
+            }
+            
+            virtual ReaderWriter::ReadResult readHeightField(const std::string& filename, CacheHintOptions options)
+            {
+                return osgDB::Registry::instance()->readImageImplementation(filename,options);
+            }
+            
+            virtual ReaderWriter::ReadResult readNode(const std::string& filename, CacheHintOptions options)
+            {
+                return osgDB::Registry::instance()->readImageImplementation(filename,options);
+            }
+            
+        protected:
+               virtual ~ReadFileCallback() {}
+        };
 
-        ReaderWriter::ReadResult readHeightField(const std::string& fileName,bool useObjectCache);
-        ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName);
+        /** Set the Registry callback to use in place of the default readFile calls.*/
+        void setReadFileCallback( ReadFileCallback* cb) { _readFileCallback = cb; }
 
-        ReaderWriter::ReadResult readNode(const std::string& fileName,bool useObjectCache);
-        ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName);
+        /** Get the readFile callback.*/
+        ReadFileCallback* getReadFileCallback() { return _readFileCallback.get(); }
+        
+        /** Get the const readFile callback.*/
+        const ReadFileCallback* getReadFileCallback() const { return _readFileCallback.get(); }
+
+
+        ReaderWriter::ReadResult readObject(const std::string& fileName,CacheHintOptions useObjectCache)
+        {
+            if (_readFileCallback.valid()) return _readFileCallback->readObject(fileName,useObjectCache);
+            else return readObjectImplementation(fileName,useObjectCache);
+        }
+        ReaderWriter::ReadResult readObjectImplementation(const std::string& fileName,CacheHintOptions useObjectCache);
+        
+        ReaderWriter::ReadResult readImage(const std::string& fileName,CacheHintOptions useObjectCache)
+        {
+            if (_readFileCallback.valid()) return _readFileCallback->readImage(fileName,useObjectCache);
+            else return readImageImplementation(fileName,useObjectCache);
+        }
+        ReaderWriter::ReadResult readImageImplementation(const std::string& fileName,CacheHintOptions useObjectCache);
+
+        ReaderWriter::ReadResult readHeightField(const std::string& fileName,CacheHintOptions useObjectCache)
+        {
+            if (_readFileCallback.valid()) return _readFileCallback->readHeightField(fileName,useObjectCache);
+            else return readHeightFieldImplementation(fileName,useObjectCache);
+        }
+        ReaderWriter::ReadResult readHeightFieldImplementation(const std::string& fileName,CacheHintOptions useObjectCache);
+
+        ReaderWriter::ReadResult readNode(const std::string& fileName,CacheHintOptions useObjectCache)
+        {
+            if (_readFileCallback.valid()) return _readFileCallback->readNode(fileName,useObjectCache);
+            else return readNodeImplementation(fileName,useObjectCache);
+        }
+        ReaderWriter::ReadResult readNodeImplementation(const std::string& fileName,CacheHintOptions useObjectCache);
+
+
+        class WriteFileCallback : public osg::Referenced
+        {
+        public:
+        
+            virtual ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName)
+            {
+                return osgDB::Registry::instance()->writeObjectImplementation(obj,fileName);
+            }
+
+            virtual ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName)
+            {
+                return osgDB::Registry::instance()->writeImageImplementation(obj,fileName);
+            }
+            
+            virtual ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName)
+            {
+                return osgDB::Registry::instance()->writeHeightFieldImplementation(obj,fileName);
+            }
+            
+            virtual ReaderWriter::WriteResult writeNode(const osg::Node& obj, const std::string& fileName)
+            {
+                return osgDB::Registry::instance()->writeNodeImplementation(obj,fileName);
+            }
+            
+        protected:
+               virtual ~WriteFileCallback() {}
+        };
+
+        /** Set the Registry callback to use in place of the default writeFile calls.*/
+        void setWriteFileCallback( WriteFileCallback* cb) { _writeFileCallback = cb; }
+
+        /** Get the writeFile callback.*/
+        WriteFileCallback* getWriteFileCallback() { return _writeFileCallback.get(); }
+        
+        /** Get the const writeFile callback.*/
+        const WriteFileCallback* getWriteFileCallback() const { return _writeFileCallback.get(); }
+
+
+        ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName)
+        {
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeObject(obj,fileName);
+            else return writeObjectImplementation(obj,fileName);
+        }
+        ReaderWriter::WriteResult writeObjectImplementation(const osg::Object& obj, const std::string& fileName);
+
+        ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName)
+        {
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeImage(obj,fileName);
+            else return writeImageImplementation(obj,fileName);
+        }
+        ReaderWriter::WriteResult writeImageImplementation(const osg::Image& obj, const std::string& fileName);
+
+        ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName)
+        {
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeHeightField(obj,fileName);
+            else return writeHeightFieldImplementation(obj,fileName);
+        }
+        ReaderWriter::WriteResult writeHeightFieldImplementation(const osg::HeightField& obj, const std::string& fileName);
+
+        ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName)
+        {
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeNode(node,fileName);
+            else return writeNodeImplementation(node,fileName);
+        }
+        ReaderWriter::WriteResult writeNodeImplementation(const osg::Node& node, const std::string& fileName);
+        
         
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
         bool getCreateNodeFromImage() const { return _createNodeFromImage; }
+
 
         void setOptions(ReaderWriter::Options* opt) { _options = opt; }
         ReaderWriter::Options* getOptions() { return _options.get(); }
@@ -201,10 +339,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
         
         /** Set whether the Registry::ObjectCache should be used by default.*/
-        void setUseObjectCacheHint(bool useObjectCache) { _useObjectCacheHint = useObjectCache; }
+        void setUseObjectCacheHint(CacheHintOptions useObjectCache) { _useObjectCacheHint = useObjectCache; }
 
         /** Get whether the Registry::ObjectCache should be used by default.*/
-        bool getUseObjectCacheHint() const { return _useObjectCacheHint; }
+        CacheHintOptions getUseObjectCacheHint() const { return _useObjectCacheHint; }
 
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
@@ -261,6 +399,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriter::ReadResult readHeightField(const std::string& fileName);
         ReaderWriter::ReadResult readNode(const std::string& fileName);
 
+        osg::ref_ptr<ReadFileCallback>      _readFileCallback;
+        osg::ref_ptr<WriteFileCallback>     _writeFileCallback;
+
         DotOsgWrapperMap   _objectWrapperMap;
         DotOsgWrapperMap   _imageWrapperMap;
         DotOsgWrapperMap   _drawableWrapperMap;
@@ -273,9 +414,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         DynamicLibraryList  _dlList;
 
         bool _openingLibrary;
-	
-	// map to alias to extensions to plugins.
-	ExtensionAliasMap  _extAliasMap;
+    
+        // map to alias to extensions to plugins.
+        ExtensionAliasMap  _extAliasMap;
         
         // options to pass to reader writers.
         osg::ref_ptr<ReaderWriter::Options>  _options;
@@ -283,7 +424,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         FilePathList       _dataFilePath;
         FilePathList       _libraryFilePath;
 
-        bool                _useObjectCacheHint;        
+        CacheHintOptions   _useObjectCacheHint;        
         ObjectCache         _objectCache;
         
         osg::ref_ptr<DatabasePager>         _databasePager;

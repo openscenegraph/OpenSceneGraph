@@ -346,7 +346,7 @@ ifeq ($(OS),Darwin)
   GL_LIBS           = -framework OpenGL $(CARBON_LIB)
   X_LIBS            = -lX11 
   SOCKET_LIBS       = 
-  OTHER_LIBS        = -lm -lstdc++ -lobjc
+  OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib
   QUICKTIME	        = -framework QuickTime $(CARBON_LIB)
   FREETYPE_INCLUDE  = -I/sw/include/freetype2

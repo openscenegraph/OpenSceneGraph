@@ -18,6 +18,8 @@
 #include <osg/Group>
 #include <osg/Geometry>
 #include <osg/MatrixTransform>
+#include <osg/ClusterCullingCallback>
+#include <osg/Notify>
 
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/TriStripVisitor>
@@ -1846,9 +1848,30 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
     texture->setImage(image);
     texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-    texture->setMaxAnisotropy(8);
+    switch (_dataSet->getMipMappingMode())
+    {
+      case(DataSet::NO_MIP_MAPPING):
+        {
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        }
+        break;
+      case(DataSet::MIP_MAPPING_HARDWARE):
+        {
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        }
+        break;
+      case(DataSet::MIP_MAPPING_IMAGERY):
+        {
+            osg::notify(osg::NOTICE)<<"Mip mapped imagery not currently supported, falling back to hardware mip mapping."<<std::endl;
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR_MIPMAP_LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+        }
+        break;
+    }        
+    
+    texture->setMaxAnisotropy(_dataSet->getMaxAnisotropy());
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
     bool inlineImageFile = _dataSet->getDestinationTileExtension()==".ive";
@@ -2814,6 +2837,9 @@ DataSet::DataSet()
     _databaseType = PagedLOD_DATABASE;
     _geometryType = POLYGONAL;
     _textureType = COMPRESSED_TEXTURE;
+    _maxAnisotropy = 1.0;
+    _mipMappingMode = MIP_MAPPING_HARDWARE;
+
     _useLocalTileTransform = true;
     
     _decorateWithCoordinateSystemNode = true;

@@ -909,9 +909,25 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         void setTextureType(TextureType type) { _textureType = type; }
         TextureType getTextureType() const { return _textureType; }
 
+        void setMaxAnisotropy(float d) { _maxAnisotropy = d; }
+        float getMaxAnisotropy() const { return _maxAnisotropy; }
+
+
+        enum MipMappingMode
+        {
+            NO_MIP_MAPPING, /// disable mip mapping - use LINEAR, LINEAR filters.
+            MIP_MAPPING_HARDWARE, /// use mip mapping, dynamically compute them in hardware if supported
+            MIP_MAPPING_IMAGERY /// use mip mapping, and store imagery along with associated mip maps.
+        };
+
+        void setMipMappingMode(MipMappingMode mipMappingMode) { _mipMappingMode = mipMappingMode; }
+        MipMappingMode getMipMappingMode() const { return _mipMappingMode; }
+
+
         void setUseLocalTileTransform(bool flag) { _useLocalTileTransform = flag; }
         bool getUseLocalTileTransform() const { return _useLocalTileTransform; }
         
+
         void setDecorateGeneratedSceneGraphWithCoordinateSystemNode(bool flag) { _decorateWithCoordinateSystemNode = flag; }
         bool getDecorateGeneratedSceneGraphWithCoordinateSystemNode() const { return _decorateWithCoordinateSystemNode; }
         
@@ -979,6 +995,9 @@ class OSGTERRAIN_EXPORT DataSet : public osg::Referenced
         DatabaseType                                _databaseType;
         GeometryType                                _geometryType;
         TextureType                                 _textureType;
+        float                                       _maxAnisotropy;
+        MipMappingMode                              _mipMappingMode;
+
         bool                                        _useLocalTileTransform;
 
         bool                                        _decorateWithCoordinateSystemNode;
